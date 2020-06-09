@@ -72,7 +72,7 @@
       </a-tabs>
 
       <a-form-item>
-        <a-checkbox v-decorator="['rememberMe', { valuePropName: 'checked' }]">自动登录</a-checkbox>
+        <a-checkbox v-decorator="['rememberMe', { valuePropName: 'checked' }]">记住我</a-checkbox>
         <router-link
           :to="{ name: 'recover', params: { user: 'aaa'} }"
           class="forge-password"
@@ -116,7 +116,6 @@
 </template>
 
 <script>
-import md5 from 'md5'
 import TwoStepCaptcha from '@/components/tools/TwoStepCaptcha'
 import { mapActions } from 'vuex'
 import { timeFix } from '@/utils/util'
@@ -187,11 +186,13 @@ export default {
 
       validateFields(validateFieldsKey, { force: true }, (err, values) => {
         if (!err) {
-          console.log('login form', values)
           const loginParams = { ...values }
           delete loginParams.username
           loginParams[!state.loginType ? 'email' : 'username'] = values.username
-          loginParams.password = md5(values.password)
+          loginParams.expires = values.rememberMe === 'checked' ? -1 : 3600000
+          loginParams.tokenType = 'default'
+          delete loginParams.rememberMe
+          console.log('login form', loginParams)
           Login(loginParams)
             .then((res) => this.loginSuccess(res))
             .catch(err => this.requestFailed(err))

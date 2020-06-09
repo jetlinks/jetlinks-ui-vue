@@ -1,16 +1,15 @@
 import request from '@/utils/request'
 
 const userApi = {
-  Login: '/auth/login',
-  Logout: '/auth/logout',
+  Login: '/authorize/login',
+  Logout: '/user-token/reset',
   ForgePassword: '/auth/forge-password',
   Register: '/auth/register',
   twoStepCode: '/auth/2step-code',
   SendSms: '/account/sms',
   SendSmsErr: '/account/sms_err',
   // get my info
-  UserInfo: '/user/info',
-  UserMenu: '/user/nav'
+  UserInfo: '/authorize/me'
 }
 
 /**
@@ -50,17 +49,10 @@ export function getInfo () {
   })
 }
 
-export function getCurrentUserNav () {
-  return request({
-    url: userApi.UserMenu,
-    method: 'get'
-  })
-}
-
 export function logout () {
   return request({
     url: userApi.Logout,
-    method: 'post',
+    method: 'get',
     headers: {
       'Content-Type': 'application/json;charset=UTF-8'
     }
