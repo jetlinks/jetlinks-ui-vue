@@ -12,6 +12,7 @@ import TransferBar from '@/components/Charts/TransferBar'
 import TagCloud from '@/components/Charts/TagCloud'
 import Gauge from '@/components/Charts/Gauge'
 import GaugeColor from '@/components/Charts/GaugeColor'
+import GaugeCard from '@/components/Charts/GaugeCard'
 
 // pro components
 import AvatarList from '@/components/AvatarList'
@@ -42,6 +43,7 @@ export {
   TagCloud,
   Gauge,
   GaugeColor,
+  GaugeCard,
   RankList,
   TransferBar,
   Trend,

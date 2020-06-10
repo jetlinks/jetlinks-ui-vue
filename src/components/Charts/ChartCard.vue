@@ -84,10 +84,12 @@ export default {
     }
 
     .field {
+      display: flex;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       margin: 0;
+      justify-content: space-between;
     }
   }
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-chart :forceFit="true" :height="height" :data="data" :scale="scale" :animate="true">
-      <v-coord type="polar" :startAngle="-202.5" :endAngle="22.5" :radius="0.75"></v-coord>
+      <v-coord type="polar" :startAngle="-202.5" :endAngle="22.5" :radius="0.9"></v-coord>
       <v-axis
         data-key="value"
         :zIndex="2"
@@ -29,7 +29,7 @@
         :zIndex="1"
         :start="[color.length * scale[0].tickInterval * i, 0.945]"
         :end="[Math.max(color.length * scale[0].tickInterval * i, Math.min(color.length * scale[0].tickInterval * (i + 1), data[0].value)), 0.945]"
-        :vStyle="{ stroke: item, lineWidth: 18}"
+        :vStyle="{ stroke: item, lineWidth: 10}"
       ></v-guide>
       <v-guide type="html" :position="htmlGuidePosition" :html="htmlGuideHtml"></v-guide>
     </v-chart>
@@ -56,7 +56,7 @@ registerShape('point', 'pointer', {
         x2: point.x,
         y2: point.y,
         stroke: cfg.color,
-        lineWidth: 5,
+        lineWidth: 2,
         lineCap: 'round'
       }
     })
@@ -64,9 +64,9 @@ registerShape('point', 'pointer', {
       attrs: {
         x: center.x,
         y: center.y,
-        r: 9.75,
+        r: 6,
         stroke: cfg.color,
-        lineWidth: 4.5,
+        lineWidth: 3,
         fill: '#fff'
       }
     })
@@ -110,33 +110,33 @@ export default {
   data () {
     return {
       axisLabel: {
-        offset: -16,
+        offset: -10,
         textStyle: {
-          fontSize: 18,
+          fontSize: 14,
           textAlign: 'center',
           textBaseline: 'middle'
         }
       },
       axisSubTickLine: {
-        length: -8,
-        stroke: '#fff',
-        strokeOpacity: 1
+        length: 2,
+        stroke: '#ccc',
+        strokeOpacity: 0
       },
       axisTickLine: {
-        length: -17,
-        stroke: '#fff',
+        length: 3,
+        stroke: '#999',
         strokeOpacity: 1
       },
       arcGuideBgStart: [this.scale[0].min, 0.945],
       arcGuideBgEnd: [this.scale[0].max, 0.945],
       arcGuideBgStyle: {
-        stroke: '#CBCBCB',
-        lineWidth: 18
+        stroke: '#e5e5e5',
+        lineWidth: 10
       },
-      htmlGuidePosition: ['50%', '95%'],
+      htmlGuidePosition: ['50%', '80%'],
       htmlGuideHtml: `
         <div style="width: 300px;text-align: center;">
-          <p style="font-size: 26px;color: #545454;margin: 0;">${this.data[0].value * 10}%</p>
+          <p style="font-size: 22px;color: #545454;margin: 0;">${this.data[0].value * 10}%</p>
         </div>
       `
     }
