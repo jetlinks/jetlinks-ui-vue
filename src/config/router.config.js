@@ -1,5 +1,5 @@
 // eslint-disable-next-line
-import { UserLayout, BasicLayout, BlankLayout } from '@/layouts'
+import { UserLayout, BasicLayout, PageView, BlankLayout } from '@/layouts'
 
 const RouteView = {
   name: 'RouteView',
@@ -238,6 +238,125 @@ export const asyncRouterMap = [
             name: 'Exception500',
             component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/500'),
             meta: { title: '500', permission: [ 'exception' ] }
+          }
+        ]
+      },
+
+      // account
+      {
+        hidden: true,
+        path: '/account',
+        component: RouteView,
+        redirect: '/account/center',
+        name: 'account',
+        meta: { title: '个人页', icon: 'user', keepAlive: true, permission: [ 'user' ] },
+        children: [
+          {
+            path: '/account/center',
+            name: 'center',
+            component: () => import('@/views/account/center'),
+            meta: { title: '个人中心', keepAlive: true, permission: [ 'user' ] }
+          },
+          {
+            path: '/account/settings',
+            name: 'settings',
+            component: () => import('@/views/account/settings/Index'),
+            meta: { title: '个人设置', hideHeader: true, permission: [ 'user' ] },
+            redirect: '/account/settings/base',
+            hideChildrenInMenu: true,
+            children: [
+              {
+                path: '/account/settings/base',
+                name: 'BaseSettings',
+                component: () => import('@/views/account/settings/BaseSetting'),
+                meta: { title: '基本设置', hidden: true, permission: [ 'user' ] }
+              },
+              {
+                path: '/account/settings/security',
+                name: 'SecuritySettings',
+                component: () => import('@/views/account/settings/Security'),
+                meta: { title: '安全设置', hidden: true, keepAlive: true, permission: [ 'user' ] }
+              },
+              {
+                path: '/account/settings/custom',
+                name: 'CustomSettings',
+                component: () => import('@/views/account/settings/Custom'),
+                meta: { title: '个性化设置', hidden: true, keepAlive: true, permission: [ 'user' ] }
+              },
+              {
+                path: '/account/settings/binding',
+                name: 'BindingSettings',
+                component: () => import('@/views/account/settings/Binding'),
+                meta: { title: '账户绑定', hidden: true, keepAlive: true, permission: [ 'user' ] }
+              },
+              {
+                path: '/account/settings/notification',
+                name: 'NotificationSettings',
+                component: () => import('@/views/account/settings/Notification'),
+                meta: { title: '新消息通知', hidden: true, keepAlive: true, permission: [ 'user' ] }
+              }
+            ]
+          }
+        ]
+      },
+
+      // demo
+      {
+        path: '/other',
+        name: 'otherPage',
+        component: PageView,
+        meta: { title: '组件示例', icon: 'slack', permission: [ 'template' ] },
+        redirect: '/other/icon-selector',
+        children: [
+          {
+            path: '/other/icon-selector',
+            name: 'TestIconSelect',
+            component: () => import('@/views/other/IconSelectorView'),
+            meta: { title: 'IconSelector', icon: 'tool', keepAlive: true, permission: [ 'template' ] }
+          },
+          {
+            path: '/other/list',
+            component: RouteView,
+            meta: { title: '业务布局', icon: 'layout', permission: [ 'template' ] },
+            redirect: '/other/list/tree-list',
+            children: [
+              {
+                path: '/other/list/tree-list',
+                name: 'TreeList',
+                component: () => import('@/views/other/TreeList'),
+                meta: { title: '树目录表格', keepAlive: true }
+              },
+              {
+                path: '/other/list/edit-table',
+                name: 'EditList',
+                component: () => import('@/views/other/TableInnerEditList'),
+                meta: { title: '内联编辑表格', keepAlive: true }
+              },
+              {
+                path: '/other/list/user-list',
+                name: 'UserList',
+                component: () => import('@/views/other/UserList'),
+                meta: { title: '用户列表', keepAlive: true }
+              },
+              {
+                path: '/other/list/role-list',
+                name: 'RoleList',
+                component: () => import('@/views/other/RoleList'),
+                meta: { title: '角色列表', keepAlive: true }
+              },
+              {
+                path: '/other/list/system-role',
+                name: 'SystemRoleDemo',
+                component: () => import('@/views/role/RoleList'),
+                meta: { title: '角色列表2', keepAlive: true }
+              },
+              {
+                path: '/other/list/permission-list',
+                name: 'PermissionList',
+                component: () => import('@/views/other/PermissionList'),
+                meta: { title: '权限列表', keepAlive: true }
+              }
+            ]
           }
         ]
       }

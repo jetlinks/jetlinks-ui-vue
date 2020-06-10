@@ -11,55 +11,55 @@
       ref="formLogin"
       :form="form"
       @submit="handleSubmit">
-    <div class="bg">
-      <div class="wel">用户登录</div>
-      <div class="user">
-        <div class="userLabel">用户名</div>
-        <a-form-item>
-          <a-input
-            size="large"
-            type="text"
-            placeholder=""
-            v-decorator="[
-              'username',
-              {rules: [{ required: true, message: '请输入帐户名或邮箱地址' }, { validator: handleUsernameOrEmail }], validateTrigger: 'change'}
-            ]">
-          </a-input>
-        </a-form-item>
-      </div>
-      <div class="password">
-        <div class="userLabel">密<span style="margin-left:1em" />码</div>
-        <a-form-item>
-          <a-input
-            size="large"
-            type="password"
-            autocomplete="false"
-            placeholder=""
-            v-decorator="[
-              'password',
-              {rules: [{ required: true, message: '请输入密码' }], validateTrigger: 'blur'}
-            ]">
-          </a-input>
-        </a-form-item>
-      </div>
-      <div class="rem">
-        <a-form-item>
-          <a-checkbox v-decorator="['rememberMe', { valuePropName: 'checked' }]">记住我</a-checkbox>
-        </a-form-item>
-      </div>
+      <div class="bg">
+        <div class="wel">用户登录</div>
+        <div class="user">
+          <div class="userLabel">用户名</div>
+          <a-form-item>
+            <a-input
+              size="large"
+              type="text"
+              placeholder=""
+              v-decorator="[
+                'username',
+                {rules: [{ required: true, message: '请输入帐户名或邮箱地址' }, { validator: handleUsernameOrEmail }], validateTrigger: 'change'}
+              ]">
+            </a-input>
+          </a-form-item>
+        </div>
+        <div class="password">
+          <div class="userLabel">密<span style="margin-left:1em" />码</div>
+          <a-form-item>
+            <a-input
+              size="large"
+              type="password"
+              autocomplete="false"
+              placeholder=""
+              v-decorator="[
+                'password',
+                {rules: [{ required: true, message: '请输入密码' }], validateTrigger: 'blur'}
+              ]">
+            </a-input>
+          </a-form-item>
+        </div>
+        <div class="rem">
+          <a-form-item>
+            <a-checkbox v-decorator="['rememberMe', { valuePropName: 'checked' }]">记住我</a-checkbox>
+          </a-form-item>
+        </div>
 
-      <div class="btn-con">
-        <a-form-item style="margin-top:256px">
-          <a-button
-            size="large"
-            type="primary"
-            htmlType="submit"
-            class="login-button"
-            :loading="state.loginBtn"
-            :disabled="state.loginBtn">确定</a-button>
-        </a-form-item>
+        <div class="btn-con">
+          <a-form-item style="margin-top:256px">
+            <a-button
+              size="large"
+              type="primary"
+              htmlType="submit"
+              class="login-button"
+              :loading="state.loginBtn"
+              :disabled="state.loginBtn">确定</a-button>
+          </a-form-item>
+        </div>
       </div>
-    </div>
     </a-form>
   </div>
 </template>
@@ -123,7 +123,6 @@ export default {
           loginParams.expires = values.rememberMe === 'checked' ? -1 : 3600000
           loginParams.tokenType = 'default'
           delete loginParams.rememberMe
-          console.log('login form', loginParams)
           Login(loginParams)
             .then(res => this.loginSuccess(res))
             .catch(err => this.requestFailed(err))
@@ -138,7 +137,6 @@ export default {
       })
     },
     loginSuccess (res) {
-      console.log(res)
       // check res.homePage define, set $router.push name res.homePage
       // Why not enter onComplete
       this.$router.push({ path: '/' })

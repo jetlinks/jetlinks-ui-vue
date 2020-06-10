@@ -10,6 +10,8 @@ import Radar from '@/components/Charts/Radar'
 import RankList from '@/components/Charts/RankList'
 import TransferBar from '@/components/Charts/TransferBar'
 import TagCloud from '@/components/Charts/TagCloud'
+import Gauge from '@/components/Charts/Gauge'
+import GaugeColor from '@/components/Charts/GaugeColor'
 
 // pro components
 import AvatarList from '@/components/AvatarList'
@@ -38,6 +40,8 @@ export {
   MiniProgress,
   Radar,
   TagCloud,
+  Gauge,
+  GaugeColor,
   RankList,
   TransferBar,
   Trend,
