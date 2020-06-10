@@ -140,6 +140,15 @@ export default {
         </div>
       `
     }
+  },
+  watch: {
+    data () {
+      this.htmlGuideHtml = `
+        <div style="width: 300px;text-align: center;">
+          <p style="font-size: 22px;color: #545454;margin: 0;">${(this.data[0].value * 10).toFixed(1)}%</p>
+        </div>
+      `
+    }
   }
 }
 </script>

@@ -7,8 +7,14 @@
             <a-icon type="sync" />
           </a-tooltip>
           <template slot="footer">
-            <template style="margin-right:100px;">设备总数<span>0</span></template>
-            <template>未激活设备<span>0</span></template>
+            <template style="margin-right:100px;">
+              设备总数
+              <span>0</span>
+            </template>
+            <template>
+              未激活设备
+              <span>0</span>
+            </template>
           </template>
         </chart-card>
       </a-col>
@@ -17,7 +23,10 @@
           <a-tooltip title="刷新" slot="action">
             <a-icon type="sync" />
           </a-tooltip>
-          <template slot="footer">当月设备消息量<span> {{ '0' | NumberFormat }}</span></template>
+          <template slot="footer">
+            当月设备消息量
+            <span>{{ '0' | NumberFormat }}</span>
+          </template>
         </chart-card>
       </a-col>
       <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
@@ -26,7 +35,12 @@
             <a-icon type="info-circle-o" />
           </a-tooltip>
           <div>
-            <gauge-color :height="300" :color="['#0086FA', '#FFBF00', '#F5222D']" :scale="[{dataKey: 'value',min: 0,max: 10,tickInterval: 1,nice: false}]" :data="[{ value: 4.2 }]" />
+            <gauge-color
+              :height="300"
+              :color="['#0086FA', '#FFBF00', '#F5222D']"
+              :scale="[{dataKey: 'value',min: 0,max: 10,tickInterval: 1,nice: false}]"
+              :data="[{ value: cpuUsage }]"
+            />
           </div>
         </gauge-card>
       </a-col>
@@ -36,7 +50,11 @@
             <a-icon type="info-circle-o" />
           </a-tooltip>
           <div>
-            <gauge :height="300" :scale="[{dataKey: 'value',min: 0,max: 4,tickInterval: 1,nice: false}]" :data="[{ value: 0.5 }]" />
+            <gauge
+              :height="300"
+              :scale="[{dataKey: 'value',min: 0,max: memeryUsage.max,tickInterval: 1,nice: false}]"
+              :data="[{ value: memeryUsage.usage }]"
+            />
           </div>
         </gauge-card>
       </a-col>
@@ -44,7 +62,11 @@
 
     <a-card :loading="loading" :bordered="false" :body-style="{padding: '0'}">
       <div class="salesCard">
-        <a-tabs default-active-key="1" size="large" :tab-bar-style="{marginBottom: '24px', paddingLeft: '16px'}">
+        <a-tabs
+          default-active-key="1"
+          size="large"
+          :tab-bar-style="{marginBottom: '24px', paddingLeft: '16px'}"
+        >
           <div class="extra-wrapper" slot="tabBarExtraContent">
             <div class="extra-item">
               <a>今日</a>
@@ -60,7 +82,7 @@
                 <bar :data="barData" title="销售额排行" />
               </a-col>
               <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
-                <rank-list title="门店销售排行榜" :list="rankList"/>
+                <rank-list title="门店销售排行榜" :list="rankList" />
               </a-col>
             </a-row>
           </a-tab-pane>
@@ -70,7 +92,7 @@
                 <bar :data="barData2" title="销售额趋势" />
               </a-col>
               <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
-                <rank-list title="门店销售排行榜" :list="rankList"/>
+                <rank-list title="门店销售排行榜" :list="rankList" />
               </a-col>
             </a-row>
           </a-tab-pane>
@@ -107,7 +129,11 @@
                 </number-info>
                 <!-- miniChart -->
                 <div>
-                  <mini-smooth-area :style="{ height: '45px' }" :dataSource="searchUserData" :scale="searchUserScale" />
+                  <mini-smooth-area
+                    :style="{ height: '45px' }"
+                    :dataSource="searchUserData"
+                    :scale="searchUserScale"
+                  />
                 </div>
               </a-col>
               <a-col :xs="24" :sm="12" :style="{ marginBottom: ' 24px'}">
@@ -121,7 +147,11 @@
                 </number-info>
                 <!-- miniChart -->
                 <div>
-                  <mini-smooth-area :style="{ height: '45px' }" :dataSource="searchUserData" :scale="searchUserScale" />
+                  <mini-smooth-area
+                    :style="{ height: '45px' }"
+                    :dataSource="searchUserData"
+                    :scale="searchUserScale"
+                  />
                 </div>
               </a-col>
             </a-row>
@@ -134,16 +164,20 @@
                 :pagination="{ pageSize: 5 }"
               >
                 <span slot="range" slot-scope="text, record">
-                  <trend :flag="record.status === 0 ? 'up' : 'down'">
-                    {{ text }}%
-                  </trend>
+                  <trend :flag="record.status === 0 ? 'up' : 'down'">{{ text }}%</trend>
                 </span>
               </a-table>
             </div>
           </a-card>
         </a-col>
         <a-col :xl="12" :lg="24" :md="24" :sm="24" :xs="24">
-          <a-card class="antd-pro-pages-dashboard-analysis-salesCard" :loading="loading" :bordered="false" title="销售额类别占比" :style="{ height: '100%' }">
+          <a-card
+            class="antd-pro-pages-dashboard-analysis-salesCard"
+            :loading="loading"
+            :bordered="false"
+            title="销售额类别占比"
+            :style="{ height: '100%' }"
+          >
             <div slot="extra" style="height: inherit;">
               <!-- style="bottom: 12px;display: inline-block;" -->
               <span class="dashboard-analysis-iconGroup">
@@ -166,22 +200,20 @@
                   <a-radio-button value="c">门店</a-radio-button>
                 </a-radio-group>
               </div>
-
             </div>
             <h4>销售额</h4>
             <div>
               <!-- style="width: calc(100% - 240px);" -->
               <div>
                 <v-chart :force-fit="true" :height="405" :data="pieData" :scale="pieScale">
-                  <v-tooltip :showTitle="false" dataKey="item*percent" />
+                  <v-tooltip :showTitle="false" data-key="item*percent" />
                   <v-axis />
                   <!-- position="right" :offsetX="-140" -->
-                  <v-legend dataKey="item"/>
+                  <v-legend data-key="item" />
                   <v-pie position="percent" color="item" :vStyle="pieStyle" />
                   <v-coord type="theta" :radius="0.75" :innerRadius="0.6" />
                 </v-chart>
               </div>
-
             </div>
           </a-card>
         </a-col>
@@ -207,6 +239,8 @@ import {
   GaugeCard
 } from '@/components'
 import { baseMixin } from '@/store/app-mixin'
+import { wsUrl } from '@/api/analysis'
+import Message from '@/utils/message'
 
 const barData = []
 const barData2 = []
@@ -232,7 +266,9 @@ for (let i = 0; i < 7; i++) {
 const searchUserData = []
 for (let i = 0; i < 7; i++) {
   searchUserData.push({
-    x: moment().add(i, 'days').format('YYYY-MM-DD'),
+    x: moment()
+      .add(i, 'days')
+      .format('YYYY-MM-DD'),
     y: Math.ceil(Math.random() * 10)
   })
 }
@@ -246,7 +282,8 @@ const searchUserScale = [
     alias: '用户数',
     min: 0,
     max: 10
-  }]
+  }
+]
 
 const searchTableColumns = [
   {
@@ -292,11 +329,13 @@ const sourceData = [
   { item: '其他', count: 7.8 }
 ]
 
-const pieScale = [{
-  dataKey: 'percent',
-  min: 0,
-  formatter: '.0%'
-}]
+const pieScale = [
+  {
+    dataKey: 'percent',
+    min: 0,
+    formatter: '.0%'
+  }
+]
 
 const dv = new DataSet.View().source(sourceData)
 dv.transform({
@@ -327,6 +366,9 @@ export default {
   data () {
     return {
       loading: true,
+      cpuUsage: 0,
+      memeryUsage: { usage: 0, max: 8 },
+
       rankList,
 
       // 搜索用户数
@@ -348,55 +390,99 @@ export default {
       }
     }
   },
+  computed: {
+    message () {
+      return this.$store.state.socket.message
+    }
+  },
+  watch: {
+    message () {
+      switch (this.message.requestId) {
+        case Message.ids.CPUSTATE:
+          this.cpuUsage = this.message.payload.value / 10
+          break
+        case Message.ids.JVMSTATE:
+          this.memeryUsage = { usage: this.message.payload.value.usage / 1024, max: Math.floor(this.message.payload.value.max / 1024) }
+          break
+        default:
+          console.log('不支持的消息' + this.message)
+      }
+    }
+  },
+  methods: {
+    watchServerInfo () {
+      const messageCPU = Message.createMessage(Message.ids.CPUSTATE, Message.topics.CPUTOPIC, {
+        params: {
+          'history': 1
+        }
+      }, 'sub')
+      this.sendMessage(messageCPU)
+      const messageJVM = Message.createMessage(Message.ids.JVMSTATE, Message.topics.JVMTOPIC, {
+        params: {
+          'history': 1
+        }
+      }, 'sub')
+      this.sendMessage(messageJVM)
+    }
+  },
+  mounted () {
+    this.$connect(wsUrl)
+    setTimeout(() => {
+      this.watchServerInfo()
+    }, 1200)
+  },
   created () {
     setTimeout(() => {
       this.loading = !this.loading
     }, 1000)
+  },
+  beforeDestroy () {
+    this.$disconnect()
   }
 }
 </script>
 
 <style lang="less" scoped>
-  .extra-wrapper {
-    line-height: 55px;
-    padding-right: 24px;
+.extra-wrapper {
+  line-height: 55px;
+  padding-right: 24px;
 
-    .extra-item {
-      display: inline-block;
-      margin-right: 24px;
+  .extra-item {
+    display: inline-block;
+    margin-right: 24px;
 
-      a {
-        margin-left: 24px;
-      }
+    a {
+      margin-left: 24px;
     }
   }
+}
 
-  .antd-pro-pages-dashboard-analysis-twoColLayout {
+.antd-pro-pages-dashboard-analysis-twoColLayout {
+  position: relative;
+  display: flex;
+  display: block;
+  flex-flow: row wrap;
+}
+
+.antd-pro-pages-dashboard-analysis-salesCard {
+  height: calc(100% - 24px);
+  /deep/ .ant-card-head {
     position: relative;
-    display: flex;
-    display: block;
-    flex-flow: row wrap;
   }
+}
 
-  .antd-pro-pages-dashboard-analysis-salesCard {
-    height: calc(100% - 24px);
-    /deep/ .ant-card-head {
-      position: relative;
-    }
+.dashboard-analysis-iconGroup {
+  i {
+    margin-left: 16px;
+    color: rgba(0, 0, 0, 0.45);
+    cursor: pointer;
+    transition: color 0.32s;
+    color: black;
   }
-
-  .dashboard-analysis-iconGroup {
-    i {
-      margin-left: 16px;
-      color: rgba(0,0,0,.45);
-      cursor: pointer;
-      transition: color .32s;
-      color: black;
-    }
-  }
-  .analysis-salesTypeRadio {
-    position: absolute;
-    right: 54px;
-    bottom: 12px;
-  }
+}
+.analysis-salesTypeRadio {
+  position: absolute;
+  right: 54px;
+  bottom: 12px;
+}
 </style>
