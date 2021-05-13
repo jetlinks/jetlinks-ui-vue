@@ -1,0 +1,494 @@
+{
+  "result": [
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 632046,
+        "timeString": "03月18日14时00分",
+        "timestamp": 60
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 967023,
+        "timeString": "03月18日16时48分",
+        "timestamp": 59
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1007933,
+        "timeString": "03月18日19时36分",
+        "timestamp": 58
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1007927,
+        "timeString": "03月18日22时24分",
+        "timestamp": 57
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1007941,
+        "timeString": "03月19日01时12分",
+        "timestamp": 56
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1007926,
+        "timeString": "03月19日04时00分",
+        "timestamp": 55
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1007959,
+        "timeString": "03月19日06时48分",
+        "timestamp": 54
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1007955,
+        "timeString": "03月19日09时36分",
+        "timestamp": 53
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 949073,
+        "timeString": "03月19日12时24分",
+        "timestamp": 52
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008083,
+        "timeString": "03月19日15时12分",
+        "timestamp": 51
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008286,
+        "timeString": "03月19日18时00分",
+        "timestamp": 50
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 997893,
+        "timeString": "03月19日20时48分",
+        "timestamp": 49
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008308,
+        "timeString": "03月19日23时36分",
+        "timestamp": 48
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008303,
+        "timeString": "03月20日02时24分",
+        "timestamp": 47
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008304,
+        "timeString": "03月20日05时12分",
+        "timestamp": 46
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008436,
+        "timeString": "03月20日08时00分",
+        "timestamp": 45
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008305,
+        "timeString": "03月20日10时48分",
+        "timestamp": 44
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008319,
+        "timeString": "03月20日13时36分",
+        "timestamp": 43
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008306,
+        "timeString": "03月20日16时24分",
+        "timestamp": 42
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008300,
+        "timeString": "03月20日19时12分",
+        "timestamp": 41
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008333,
+        "timeString": "03月20日22时00分",
+        "timestamp": 40
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008320,
+        "timeString": "03月21日00时48分",
+        "timestamp": 39
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008433,
+        "timeString": "03月21日03时36分",
+        "timestamp": 38
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008307,
+        "timeString": "03月21日06时24分",
+        "timestamp": 37
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008312,
+        "timeString": "03月21日09时12分",
+        "timestamp": 36
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008306,
+        "timeString": "03月21日12时00分",
+        "timestamp": 35
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008309,
+        "timeString": "03月21日14时48分",
+        "timestamp": 34
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008308,
+        "timeString": "03月21日17时36分",
+        "timestamp": 33
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008326,
+        "timeString": "03月21日20时24分",
+        "timestamp": 32
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008304,
+        "timeString": "03月21日23时12分",
+        "timestamp": 31
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008318,
+        "timeString": "03月22日02时00分",
+        "timestamp": 30
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008294,
+        "timeString": "03月22日04时48分",
+        "timestamp": 29
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008303,
+        "timeString": "03月22日07时36分",
+        "timestamp": 28
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008313,
+        "timeString": "03月22日10时24分",
+        "timestamp": 27
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008307,
+        "timeString": "03月22日13时12分",
+        "timestamp": 26
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008363,
+        "timeString": "03月22日16时00分",
+        "timestamp": 25
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008305,
+        "timeString": "03月22日18时48分",
+        "timestamp": 24
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008303,
+        "timeString": "03月22日21时36分",
+        "timestamp": 23
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008303,
+        "timeString": "03月23日00时24分",
+        "timestamp": 22
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008332,
+        "timeString": "03月23日03时12分",
+        "timestamp": 21
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008309,
+        "timeString": "03月23日06时00分",
+        "timestamp": 20
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008340,
+        "timeString": "03月23日08时48分",
+        "timestamp": 19
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1001308,
+        "timeString": "03月23日11时36分",
+        "timestamp": 18
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 985298,
+        "timeString": "03月23日14时24分",
+        "timestamp": 17
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008302,
+        "timeString": "03月23日17时12分",
+        "timestamp": 16
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008303,
+        "timeString": "03月23日20时00分",
+        "timestamp": 15
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008298,
+        "timeString": "03月23日22时48分",
+        "timestamp": 14
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008295,
+        "timeString": "03月24日01时36分",
+        "timestamp": 13
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008333,
+        "timeString": "03月24日04时24分",
+        "timestamp": 12
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008313,
+        "timeString": "03月24日07时12分",
+        "timestamp": 11
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008375,
+        "timeString": "03月24日10时00分",
+        "timestamp": 10
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008300,
+        "timeString": "03月24日12时48分",
+        "timestamp": 9
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1002306,
+        "timeString": "03月24日15时36分",
+        "timestamp": 8
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 964906,
+        "timeString": "03月24日18时24分",
+        "timestamp": 7
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 885581,
+        "timeString": "03月24日21时12分",
+        "timestamp": 6
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 837686,
+        "timeString": "03月25日00时00分",
+        "timestamp": 5
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 803810,
+        "timeString": "03月25日02时48分",
+        "timestamp": 4
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 824273,
+        "timeString": "03月25日05时36分",
+        "timestamp": 3
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 988024,
+        "timeString": "03月25日08时24分",
+        "timestamp": 2
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 1008307,
+        "timeString": "03月25日11时12分",
+        "timestamp": 1
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 354123,
+        "timeString": "03月25日14时00分",
+        "timestamp": 0
+      }
+    }
+  ],
+  "status": 200,
+  "code": "success"
+}

@@ -30,8 +30,7 @@
 
 <script>
 import moment from 'moment'
-import { TagSelect, StandardFormRow, Ellipsis, AvatarList } from '@/components'
-const TagSelectOption = TagSelect.Option
+import { Ellipsis, AvatarList } from '@/components'
 const AvatarListItem = AvatarList.AvatarItem
 
 export default {
@@ -39,10 +38,7 @@ export default {
   components: {
     AvatarList,
     AvatarListItem,
-    Ellipsis,
-    TagSelect,
-    TagSelectOption,
-    StandardFormRow
+    Ellipsis
   },
   data () {
     return {

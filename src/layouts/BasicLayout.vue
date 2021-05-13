@@ -1,6 +1,6 @@
 <template>
   <pro-layout
-    title="JetLinks"
+    :title="title"
     :menus="menus"
     :collapsed="collapsed"
     :mediaQuery="query"
@@ -13,50 +13,54 @@
   >
     <setting-drawer :settings="settings" @change="handleSettingChange" />
     <template v-slot:rightContentRender>
-      <right-content :top-menu="settings.layout === 'topmenu'" :theme="settings.theme" />
+      <right-content :top-menu="settings.layout === 'topmenu'" :is-mobile="isMobile" :theme="settings.theme" />
     </template>
     <template v-slot:footerRender>
-      <global-footer />
+      <div></div>
     </template>
     <router-view />
   </pro-layout>
 </template>
 
 <script>
-import { SettingDrawer } from '@ant-design-vue/pro-layout'
+import { SettingDrawer, updateTheme } from '@ant-design-vue/pro-layout'
 import { i18nRender } from '@/locales'
 import { mapState } from 'vuex'
 import { SIDEBAR_TYPE, TOGGLE_MOBILE_TYPE } from '@/store/mutation-types'
 
+import defaultSettings from '@/config/defaultSettings'
 import RightContent from '@/components/GlobalHeader/RightContent'
-import GlobalFooter from '@/components/GlobalFooter'
 import LogoSvg from '../assets/logo.svg?inline'
-
+import { asyncRouterMap } from '@/config/router.config.js'
 export default {
   name: 'BasicLayout',
   components: {
     SettingDrawer,
-    RightContent,
-    GlobalFooter
+    RightContent
   },
   data () {
     return {
+      // preview.pro.antdv.com only use.
+      isProPreviewSite: process.env.VUE_APP_PREVIEW === 'true' && process.env.NODE_ENV !== 'development',
+      // end
+
       // base
       menus: [],
       // 侧栏收起状态
       collapsed: false,
+      title: defaultSettings.title,
       settings: {
         // 布局类型
-        layout: 'sidemenu', // 'sidemenu', 'topmenu'
+        layout: defaultSettings.layout, // 'sidemenu', 'topmenu'
         // 定宽: true / 流式: false
-        contentWidth: false,
+        contentWidth: defaultSettings.layout === 'sidemenu' ? false : defaultSettings.contentWidth === 'Fixed',
         // 主题 'dark' | 'light'
-        theme: 'dark',
+        theme: defaultSettings.navTheme,
         // 主色调
-        primaryColor: '#1890ff',
-        fixedHeader: false,
-        fixSiderbar: false,
-        colorWeak: false,
+        primaryColor: defaultSettings.primaryColor,
+        fixedHeader: defaultSettings.fixedHeader,
+        fixSiderbar: defaultSettings.fixSiderbar,
+        colorWeak: defaultSettings.colorWeak,
 
         hideHintAlert: false,
         hideCopyButton: false
@@ -75,8 +79,10 @@ export default {
     })
   },
   created () {
-    const routes = this.mainMenu.find(item => item.path === '/')
+    const routes = asyncRouterMap.find((item) => item.path === '/')
+    // const routes = this.mainMenu.find((item) => item.path === '/')
     this.menus = (routes && routes.children) || []
+
     // 处理侧栏收起状态
     this.$watch('collapsed', () => {
       this.$store.commit(SIDEBAR_TYPE, this.collapsed)
@@ -94,6 +100,12 @@ export default {
           this.collapsed = !this.collapsed
         }, 16)
       })
+    }
+
+    // first update color
+    // TIPS: THEME COLOR HANDLER!! PLEASE CHECK THAT!!
+    if (process.env.NODE_ENV !== 'production' || process.env.VUE_APP_PREVIEW === 'true') {
+      updateTheme(this.settings.primaryColor)
     }
   },
   methods: {

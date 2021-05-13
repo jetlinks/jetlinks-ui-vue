@@ -29,7 +29,6 @@
 
 <script>
 import { Modal } from 'ant-design-vue'
-import { mapActions } from 'vuex'
 
 export default {
   name: 'AvatarDropdown',
@@ -44,7 +43,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['Logout']),
     handleToCenter () {
       this.$router.push({ path: '/account/center' })
     },
@@ -52,17 +50,16 @@ export default {
       this.$router.push({ path: '/account/settings' })
     },
     handleLogout (e) {
-      const { Logout } = this
       Modal.confirm({
         title: this.$t('layouts.usermenu.dialog.title'),
         content: this.$t('layouts.usermenu.dialog.content'),
         onOk: () => {
           // return new Promise((resolve, reject) => {
-            // setTimeout(Math.random() > 0.5 ? resolve : reject, 1500)
-            Logout().then(() => {
-              this.$router.push({ path: '/user/login' })
-            })
+          //   setTimeout(Math.random() > 0.5 ? resolve : reject, 1500)
           // }).catch(() => console.log('Oops errors!'))
+          return this.$store.dispatch('Logout').then(() => {
+            this.$router.push({ name: 'login' })
+          })
         },
         onCancel () {}
       })

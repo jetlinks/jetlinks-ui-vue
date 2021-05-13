@@ -1,16 +1,5 @@
 import request from '@/utils/request'
-
-const userApi = {
-  Login: '/authorize/login',
-  Logout: '/user-token/reset',
-  ForgePassword: '/auth/forge-password',
-  Register: '/auth/register',
-  twoStepCode: '/auth/2step-code',
-  SendSms: '/account/sms',
-  SendSmsErr: '/account/sms_err',
-  // get my info
-  UserInfo: '/authorize/me'
-}
+import { userApi } from '@/config/api/user'
 
 /**
  * login func
@@ -49,10 +38,17 @@ export function getInfo () {
   })
 }
 
+export function getCurrentUserNav () {
+  return request({
+    url: userApi.UserMenu,
+    method: 'get'
+  })
+}
+
 export function logout () {
   return request({
     url: userApi.Logout,
-    method: 'get',
+    method: 'post',
     headers: {
       'Content-Type': 'application/json;charset=UTF-8'
     }

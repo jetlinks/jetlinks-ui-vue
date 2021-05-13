@@ -1,3 +1,5 @@
+import proxy from '../../config/proxy'
+
 export function timeFix () {
   const time = new Date()
   const hour = time.getHours()
@@ -64,4 +66,30 @@ export function removeLoadingAnimate (id = '', timeout = 1500) {
   setTimeout(() => {
     document.body.removeChild(document.getElementById(id))
   }, timeout)
+}
+
+/**
+ * @description 数据为空状态的判断处理
+ * @param {*} data 数据源
+ * @param {*} key 属性值
+ */
+export function ExixtKeys (data, key, resultType = []) {
+  if (data !== null && typeof headers === 'object' && Object.keys(data).length) {
+    return data[key]
+  }
+  return resultType
+}
+
+/**
+ * @description 数据为空状态的判断处理
+ * @param {*} data 数据源
+ * @param {*} key 属性值
+ */
+export const wrapAPI = (url) => {
+  // eslint-disable-next-line no-undef
+  const { VUE_APP_ENV } = process.env
+  if (VUE_APP_ENV === 'dev') {
+    return url.replace('/jetlinks/', proxy.dev_aly['/jetlinks'].target)
+  }
+  return url
 }

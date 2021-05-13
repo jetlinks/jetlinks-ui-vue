@@ -10,32 +10,24 @@ import i18n from './locales'
 import { VueAxios } from './utils/request'
 import ProLayout, { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import themePluginConfig from '../config/themePluginConfig'
-import VueNativeSock from 'vue-native-websocket'
 
 // mock
 // WARNING: `mockjs` NOT SUPPORT `IE` PLEASE DO NOT USE IN `production` ENV.
-import './mock'
+// import './mock'
 
 import bootstrap from './core/bootstrap'
 import './core/lazy_use'
-import './permission' // permission control
+import './jet_permission' // permission control
 import './utils/filter' // global filter
 import './global.less'
-
+import ValueType from '@/views/device/product/save/definition/ValueType'
+Vue.component('value-type', ValueType)
 Vue.config.productionTip = false
 
 // mount axios to `Vue.$http` and `this.$http`
 Vue.use(VueAxios)
 Vue.component('pro-layout', ProLayout)
 Vue.component('page-header-wrapper', PageHeaderWrapper)
-Vue.use(VueNativeSock, 'ws://localhost:3721', {
-    store,
-    format: 'json',
-    connectManually: true,
-    reconnection: true,
-    reconnectionAttempts: 5,
-    reconnectionDelay: 5000
-})
 
 window.umi_plugin_ant_themeVar = themePluginConfig.theme
 

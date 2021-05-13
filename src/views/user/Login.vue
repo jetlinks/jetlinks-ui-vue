@@ -29,10 +29,8 @@
           </a-form-item>
 
           <a-form-item>
-            <a-input
+            <a-input-password
               size="large"
-              type="password"
-              autocomplete="false"
               placeholder="密码: admin or ant.design"
               v-decorator="[
                 'password',
@@ -40,7 +38,7 @@
               ]"
             >
               <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }"/>
-            </a-input>
+            </a-input-password>
           </a-form-item>
         </a-tab-pane>
         <a-tab-pane key="tab2" tab="手机号登录">
@@ -72,7 +70,7 @@
       </a-tabs>
 
       <a-form-item>
-        <a-checkbox v-decorator="['rememberMe', { valuePropName: 'checked' }]">记住我</a-checkbox>
+        <a-checkbox v-decorator="['rememberMe', { valuePropName: 'checked' }]">自动登录</a-checkbox>
         <router-link
           :to="{ name: 'recover', params: { user: 'aaa'} }"
           class="forge-password"
@@ -105,13 +103,13 @@
         <router-link class="register" :to="{ name: 'register' }">注册账户</router-link>
       </div>
     </a-form>
-
-    <two-step-captcha
+    <!-- 一个验证的模态框 -->
+    <!-- <two-step-captcha
       v-if="requiredTwoStepCaptcha"
       :visible="stepCaptchaVisible"
       @success="stepCaptchaSuccess"
       @cancel="stepCaptchaCancel"
-    ></two-step-captcha>
+    ></two-step-captcha> -->
   </div>
 </template>
 
@@ -119,7 +117,7 @@
 import TwoStepCaptcha from '@/components/tools/TwoStepCaptcha'
 import { mapActions } from 'vuex'
 import { timeFix } from '@/utils/util'
-import { getSmsCaptcha, get2step } from '@/api/login'
+import { getSmsCaptcha } from '@/api/login'
 
 export default {
   components: {
@@ -132,8 +130,8 @@ export default {
       // login type: 0 email, 1 username, 2 telephone
       loginType: 0,
       isLoginError: false,
-      requiredTwoStepCaptcha: false,
-      stepCaptchaVisible: false,
+      // requiredTwoStepCaptcha: false, // 是否激活两步验证
+      // stepCaptchaVisible: false, // 验证模态框展示
       form: this.$form.createForm(this),
       state: {
         time: 60,
@@ -145,13 +143,13 @@ export default {
     }
   },
   created () {
-    get2step({ })
-      .then(res => {
-        this.requiredTwoStepCaptcha = res.result.stepCode
-      })
-      .catch(() => {
-        this.requiredTwoStepCaptcha = false
-      })
+    // get2step({ })
+    //   .then(res => {
+    //     this.requiredTwoStepCaptcha = res.result.stepCode
+    //   })
+    //   .catch(() => {
+    //     this.requiredTwoStepCaptcha = false
+    //   })
     // this.requiredTwoStepCaptcha = true
   },
   methods: {
@@ -186,14 +184,7 @@ export default {
 
       validateFields(validateFieldsKey, { force: true }, (err, values) => {
         if (!err) {
-          const loginParams = { ...values }
-          delete loginParams.username
-          loginParams[!state.loginType ? 'email' : 'username'] = values.username
-          loginParams.expires = values.rememberMe === 'checked' ? -1 : 3600000
-          loginParams.tokenType = 'default'
-          delete loginParams.rememberMe
-          console.log('login form', loginParams)
-          Login(loginParams)
+          Login(values)
             .then((res) => this.loginSuccess(res))
             .catch(err => this.requestFailed(err))
             .finally(() => {

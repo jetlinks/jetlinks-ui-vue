@@ -1,5 +1,5 @@
 // eslint-disable-next-line
-import { UserLayout, BasicLayout, PageView, BlankLayout } from '@/layouts'
+import { UserLayout, BasicLayout, BlankLayout } from '@/layouts'
 
 const RouteView = {
   name: 'RouteView',
@@ -12,226 +12,180 @@ export const asyncRouterMap = [
     path: '/',
     name: 'index',
     component: BasicLayout,
+    icon: '',
     meta: { title: 'menu.home' },
-    redirect: '/dashboard/analysis',
+    redirect: '/analysis',
     children: [
-      // dashboard
       {
-        path: '/dashboard',
-        name: 'dashboard',
-        redirect: '/dashboard/analysis',
-        hideChildrenInMenu: true,
-        component: RouteView,
-        meta: { title: 'menu.dashboard', keepAlive: true, icon: 'bar-chart' },
-        children: [
-          {
-            path: '/dashboard/analysis',
-            name: 'Analysis',
-            component: () => import('@/views/dashboard/Analysis'),
-            meta: { title: 'menu.dashboard.analysis', keepAlive: false }
-          }
-        ]
+        path: '/analysis/:pageNo([1-9]\\d*)?',
+        name: 'Analysis',
+        component: () => import('@/views/dashboard/Analysis'),
+        meta: { title: 'menu.dashboard.analysis', icon: 'dashboard', keepAlive: false, permission: [ 'dashboard' ] }
       },
 
-      // system
-      {
-        path: '/system',
-        redirect: '/system/user',
-        component: RouteView,
-        meta: { title: '系统设置', icon: 'setting', permission: ['user', 'role', 'permission', 'dictionary', 'admin'] },
-        children: [
-          {
-            path: '/system/user',
-            name: 'SystemUser',
-            component: () => import('@/views/form/basicForm'),
-            meta: { title: '用户管理', keepAlive: true, permission: ['user', 'admin'] }
-          },
-          {
-            path: '/system/permission',
-            name: 'SystemPermission',
-            component: () => import('@/views/form/stepForm/StepForm'),
-            meta: { title: '权限管理', keepAlive: true, permission: ['permission', 'admin'] }
-          },
-          {
-            path: '/system/open-api',
-            name: 'SystemOpenApi',
-            component: () => import('@/views/form/advancedForm/AdvancedForm'),
-            meta: { title: 'OpenApi客户端', keepAlive: true, permission: ['open-api', 'admin'] }
-          },
-          {
-            path: '/system/org',
-            name: 'SystemOrg',
-            component: () => import('@/views/form/advancedForm/AdvancedForm'),
-            meta: { title: '机构管理', keepAlive: true, permission: ['dimension', 'admin'] }
-          },
-          {
-            path: '/system/role',
-            name: 'SystemRole',
-            component: () => import('@/views/form/advancedForm/AdvancedForm'),
-            meta: { title: '角色管理', keepAlive: true, permission: ['dimension', 'admin'] }
-          },
-          {
-            path: '/system/config',
-            name: 'SystemConfig',
-            component: () => import('@/views/form/stepForm/StepForm'),
-            meta: { title: '系统配置', keepAlive: true, permission: ['system-config', 'admin'] }
-          }
-        ]
-      },
-
-      // device
+      // Menulist
       {
         path: '/device',
-        name: 'Device',
+        name: 'device',
         component: RouteView,
-        redirect: '/device/protocol',
-        meta: { title: '设备管理', icon: 'usb', permission: ['device-product', 'device-instance', 'admin'] },
+        redirect: '/device/product',
+        meta: { title: '设备管理', icon: 'box-plot', permission: [ 'table' ] },
         children: [
-          {
-            path: '/device/protocol',
-            name: 'DeviceProtocol',
-            component: () => import('@/views/list/TableList'),
-            meta: { title: '协议管理', keepAlive: true, permission: ['protocol-supports', 'admin'] }
-          },
           {
             path: '/device/product',
             name: 'DeviceProduct',
-            component: () => import('@/views/list/BasicList'),
-            meta: { title: '设备型号', keepAlive: true, permission: ['device-product', 'admin'] }
-          },
-          {
-            hidden: true,
-            path: '/device/product/save/:id',
-            name: 'DeviceSave',
-            component: () => import('@/views/list/CardList'),
-            meta: { title: '编辑设备型号', keepAlive: true }
-          },
-          {
-            hidden: true,
-            path: '/device/product/add',
-            name: 'DeviceAdd',
-            component: () => import('@/views/list/search/SearchLayout'),
-            meta: { title: '添加设备型号', keepAlive: true }
+            hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
+            component: () => import('@/views/device/product'),
+            meta: { title: '产品', keepAlive: true, icon: 'laptop', permission: [ 'table' ] },
+            children: [
+              {
+                path: '/device/product/add',
+                name: 'AddProduct',
+                hidden: true,
+                component: () => import('@/views/device/product/add'),
+                meta: { title: '新建产品', keepAlive: true, permission: [ 'table' ] }
+              },
+              {
+                path: '/device/product/save/:id',
+                props: true,
+                name: 'ProductDetail',
+                hidden: true,
+                component: () => import('@/views/device/product/save'),
+                meta: { title: '产品详情', keepAlive: true, permission: [ 'table' ] }
+              }
+            ]
           },
           {
             path: '/device/instance',
-            name: 'DeviceInstance',
-            component: () => import('@/views/list/search/SearchLayout'),
-            meta: { title: '设备实例', keepAlive: true, permission: ['device-instance', 'admin'] }
+            name: 'instance',
+            component: () => import('@/views/device/instance'),
+            hideChildrenInMenu: true,
+            meta: { title: '设备', icon: 'desktop', keepAlive: true, permission: [ 'table' ] },
+            children: [
+              {
+                path: '/device/instance/save/:id',
+                name: 'InstanceDetail',
+                hidden: true,
+                component: () => import('@/views/device/instance/editor'),
+                meta: { title: '设备详情', keepAlive: true, permission: [ 'table' ] }
+              }
+            ]
           },
           {
-            hidden: true,
-            path: '/device/instance/save/:id',
-            name: 'DeviceInstanceSave',
-            component: () => import('@/views/list/search/SearchLayout'),
-            meta: { title: '设备详情', keepAlive: true }
-          },
-          {
-            hidden: true,
-            path: '/device/instance/add',
-            name: 'DeviceInstanceAdd',
-            component: () => import('@/views/list/search/SearchLayout'),
-            meta: { title: '添加设备实例', keepAlive: true }
-          },
-          {
-            path: '/device/gateway',
-            name: 'DeviceGateway',
-            component: () => import('@/views/list/search/SearchLayout'),
-            meta: { title: '网关设备', keepAlive: true, permission: ['device-gateway', 'admin'] }
-          },
-          {
-            path: '/device/location',
-            name: 'DeviceLocation',
-            component: () => import('@/views/list/search/SearchLayout'),
-            meta: { title: '地理位置', keepAlive: true, permission: ['geo-manager', 'admin'] }
-          },
-          {
-            path: '/device/firmware',
-            name: 'DeviceFirmware',
-            component: () => import('@/views/list/search/SearchLayout'),
-            meta: { title: '固件升级', keepAlive: true, permission: ['firmware-manager', 'admin'] }
-          },
-          {
-            hidden: true,
-            path: '/device/firmware/save/:id',
-            name: 'DeviceFirmwareSave',
-            component: () => import('@/views/list/search/SearchLayout'),
-            meta: { title: '固件详情', keepAlive: true }
+            path: '/device/alarm',
+            name: 'deviceAlarm',
+            component: () => import('@/views/device/alarmlog'),
+            meta: { title: '设备告警', icon: 'alert', keepAlive: true, permission: [ 'table' ] }
           }
         ]
       },
-
-      // network
       {
         path: '/network',
-        name: 'Network',
+        name: 'network',
         component: RouteView,
-        redirect: '/network/certificate',
-        meta: { title: '网络组件', icon: 'appstore', permission: ['certificate', 'network-config', 'device-gateway', 'admin'] },
+        meta: { title: '设备接入', icon: 'login', permission: [ 'exception' ] },
         children: [
           {
             path: '/network/certificate',
             name: 'NetworkCertificate',
-            component: () => import('@/views/profile/basic'),
-            meta: { title: '证书管理', icon: 'book', permission: ['certificate', 'admin'] }
+            component: () => import(/* webpackChunkName: "NetworkCertificate" */ '@/views/network/certificate'),
+            meta: { title: '证书管理', icon: 'book', permission: [ 'exception' ] }
+          },
+          {
+            path: '/network/protocol',
+            name: 'networkProtocol',
+            component: () => import(/* webpackChunkName: "networkProtocol" */ '@/views/network/protocol'),
+            meta: { title: '协议管理', icon: 'wallet', permission: [ 'exception' ] }
           },
           {
             path: '/network/type',
-            name: 'NetworkType',
-            component: () => import('@/views/profile/advanced/Advanced'),
-            meta: { title: '组件管理', icon: 'flag', permission: ['network-config', 'admin'] }
+            name: 'networkType',
+            component: () => import(/* webpackChunkName: "networkType" */ '@/views/network/type'),
+            meta: { title: '网络组件', icon: 'deployment-unit', permission: [ 'exception' ] }
           },
           {
             path: '/network/gateway',
-            name: 'NetworkGateway',
-            component: () => import('@/views/profile/advanced/Advanced'),
-            meta: { title: '设备网关', icon: 'thunderbolt', permission: ['device-gateway', 'admin'] }
+            name: 'networkGateway',
+            component: () => import(/* webpackChunkName: "networkGateway" */ '@/views/network/gateway'),
+            meta: { title: '设备网关', icon: 'cloud-server', permission: [ 'exception' ] }
           }
         ]
       },
-
-      // notice
       {
         path: '/notice',
-        name: 'Notice',
+        name: 'notice',
         component: RouteView,
-        redirect: '/notice/config',
-        meta: { title: '通知管理', icon: 'sound', permission: ['notifier', 'template', 'admin'] },
+        meta: { title: '通知管理', icon: 'message', permission: [ 'exception' ] },
         children: [
           {
             path: '/notice/config',
             name: 'NoticeConfig',
-            component: () => import(/* webpackChunkName: "result" */ '@/views/result/Success'),
-            meta: { title: '通知配置', icon: 'setting', keepAlive: false, hiddenHeaderContent: true, permission: ['notifier', 'admin'] }
+            component: () => import(/* webpackChunkName: "NoticeConfig" */ '@/views/notice/config'),
+            meta: { title: '通知配置', icon: 'alert', permission: [ 'exception' ] }
           },
           {
             path: '/notice/template',
             name: 'NoticeTemplate',
-            component: () => import(/* webpackChunkName: "result" */ '@/views/result/Error'),
-            meta: { title: '通知模版', icon: 'tags', keepAlive: false, hiddenHeaderContent: true, permission: ['template', 'admin'] }
+            component: () => import(/* webpackChunkName: "NoticeTemplate" */ '@/views/notice/template'),
+            meta: { title: '通知模版', icon: 'bell', permission: [ 'exception' ] }
+          }
+        ]
+      },
+      {
+        path: '/rule-engine',
+        name: 'ruleEngine',
+        component: RouteView,
+        meta: { title: '规则引擎', icon: 'retweet', permission: [ 'exception' ] },
+        children: [
+          {
+            path: '/rule-engine/sqlRule',
+            name: 'RuleEngineSqlrule',
+            component: () => import(/* webpackChunkName: "RuleEngineSqlrule" */ '@/views/rule-engine/sqlRule'),
+            meta: { title: '数据转发', icon: 'rise', permission: [ 'exception' ] }
+          }
+        ]
+      },
+      {
+        path: '/logger',
+        name: 'logger',
+        component: RouteView,
+        meta: { title: '日志管理', icon: 'calendar', permission: [ 'exception' ] },
+        children: [
+          {
+            path: '/logger/access',
+            name: 'LoggerAccess',
+            component: () => import(/* webpackChunkName: "LoggerAccess" */ '@/views/logger/access'),
+            meta: { title: '证书管理', icon: 'dash', permission: [ 'exception' ] }
+          },
+          {
+            path: '/logger/system',
+            name: 'LoggerSystem',
+            component: () => import(/* webpackChunkName: "LoggerSystem" */ '@/views/logger/system'),
+            meta: { title: '系统日志', icon: 'ordered-list', permission: [ 'exception' ] }
           }
         ]
       },
 
-      // logger
+      // Exception
       {
-        path: '/logger',
-        name: 'Logger',
+        path: '/exception',
+        name: 'exception',
         component: RouteView,
-        redirect: '/logger/access',
-        meta: { title: '日志管理', icon: 'wallet', permission: ['system-logger', 'access-logger', 'admin'] },
+        redirect: '/exception/403',
+        hidden: true,
+        meta: { title: '异常页', icon: 'warning', permission: [ 'exception' ] },
         children: [
           {
-            path: '/logger/access',
-            name: 'LogAccess',
+            path: '/exception/403',
+            name: 'Exception403',
             component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/403'),
-            meta: { title: '访问日志', icon: 'ordered-list', permission: ['access-logger', 'admin'] }
+            meta: { title: '403', permission: [ 'exception' ] }
           },
           {
-            path: './logger/system',
-            name: 'LogSystem',
+            path: '/exception/404',
+            name: 'Exception404',
             component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/404'),
-            meta: { title: '系统日志', icon: 'bars', permission: ['system-logger', 'admin'] }
+            meta: { title: '404', permission: [ 'exception' ] }
           },
           {
             path: '/exception/500',
@@ -244,11 +198,11 @@ export const asyncRouterMap = [
 
       // account
       {
-        hidden: true,
         path: '/account',
         component: RouteView,
         redirect: '/account/center',
         name: 'account',
+        hidden: true,
         meta: { title: '个人页', icon: 'user', keepAlive: true, permission: [ 'user' ] },
         children: [
           {
@@ -298,26 +252,27 @@ export const asyncRouterMap = [
             ]
           }
         ]
-      },
+      }
 
-      // demo
+      // other
+      /*
       {
         path: '/other',
         name: 'otherPage',
         component: PageView,
-        meta: { title: '组件示例', icon: 'slack', permission: [ 'template' ] },
+        meta: { title: '其他组件', icon: 'slack', permission: [ 'dashboard' ] },
         redirect: '/other/icon-selector',
         children: [
           {
             path: '/other/icon-selector',
             name: 'TestIconSelect',
             component: () => import('@/views/other/IconSelectorView'),
-            meta: { title: 'IconSelector', icon: 'tool', keepAlive: true, permission: [ 'template' ] }
+            meta: { title: 'IconSelector', icon: 'tool', keepAlive: true, permission: [ 'dashboard' ] }
           },
           {
             path: '/other/list',
             component: RouteView,
-            meta: { title: '业务布局', icon: 'layout', permission: [ 'template' ] },
+            meta: { title: '业务布局', icon: 'layout', permission: [ 'support' ] },
             redirect: '/other/list/tree-list',
             children: [
               {
@@ -346,7 +301,7 @@ export const asyncRouterMap = [
               },
               {
                 path: '/other/list/system-role',
-                name: 'SystemRoleDemo',
+                name: 'SystemRole',
                 component: () => import('@/views/role/RoleList'),
                 meta: { title: '角色列表2', keepAlive: true }
               },
@@ -360,6 +315,7 @@ export const asyncRouterMap = [
           }
         ]
       }
+      */
     ]
   },
   {
@@ -381,7 +337,7 @@ export const constantRouterMap = [
       {
         path: 'login',
         name: 'login',
-        component: () => import(/* webpackChunkName: "user" */ '@/views/user/LoginJet')
+        component: () => import(/* webpackChunkName: "user" */ '@/views/user/Login')
       },
       {
         path: 'register',

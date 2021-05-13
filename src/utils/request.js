@@ -1,8 +1,11 @@
 import axios from 'axios'
 import store from '@/store'
+import storage from 'store'
 import notification from 'ant-design-vue/es/notification'
 import { VueAxios } from './axios'
-import { getAccessToken } from '@/utils/permissions'
+import { ACCESS_TOKEN } from '@/store/mutation-types'
+import { getAccessToken } from './authority'
+import { builder } from '@/utils/models'
 
 // 创建 axios 实例
 const request = axios.create({
@@ -16,7 +19,13 @@ const errorHandler = (error) => {
   if (error.response) {
     const data = error.response.data
     // 从 localstorage 获取 token
-    const token = getAccessToken()
+    const token = storage.get(ACCESS_TOKEN)
+    if (error.response.status === 400) {
+      notification.error({
+        message: data.code,
+        description: data.message
+      })
+    }
     if (error.response.status === 403) {
       notification.error({
         message: 'Forbidden',
@@ -53,7 +62,11 @@ request.interceptors.request.use(config => {
 
 // response interceptor
 request.interceptors.response.use((response) => {
-  return response.data
+  // 统一前端数据格式
+  const result = response.data
+  const data = result.result !== undefined ? result.result : []
+  const { status = 0, code = '', timestamp = 0, message = '' } = response
+  return builder(data, message, status, code, timestamp)
 }, errorHandler)
 
 const installer = {

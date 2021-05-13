@@ -17,12 +17,12 @@
         </slot>
       </div>
     </div>
-    <div class="chart-card-content">
+    <div class="chart-card-content" :style="!showFooter ? contentStyle:''">
       <div class="content-fix">
         <slot></slot>
       </div>
     </div>
-    <div class="chart-card-footer">
+    <div class="chart-card-footer" :style="!showFooter ? { display: 'none' }:''">
       <div class="field">
         <slot name="footer"></slot>
       </div>
@@ -46,6 +46,14 @@ export default {
     loading: {
       type: Boolean,
       default: false
+    },
+    showFooter: {
+      type: Boolean,
+      default: true
+    },
+    contentStyle: {
+      type: Object,
+      default: () => {}
     }
   }
 }
@@ -84,12 +92,10 @@ export default {
     }
 
     .field {
-      display: flex;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       margin: 0;
-      justify-content: space-between;
     }
   }
 

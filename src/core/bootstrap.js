@@ -13,7 +13,7 @@ import { printANSI } from '@/utils/screenLog'
 import defaultSettings from '@/config/defaultSettings'
 
 export default function Initializer () {
-  printANSI() // 请自行一处改行.  please remove this line
+  printANSI() // 请自行移除该行.  please remove this line
 
   store.commit(TOGGLE_LAYOUT, storage.get(TOGGLE_LAYOUT, defaultSettings.layout))
   store.commit(TOGGLE_FIXED_HEADER, storage.get(TOGGLE_FIXED_HEADER, defaultSettings.fixedHeader))
@@ -26,6 +26,6 @@ export default function Initializer () {
   store.commit(TOGGLE_MULTI_TAB, storage.get(TOGGLE_MULTI_TAB, defaultSettings.multiTab))
   store.commit('SET_TOKEN', storage.get(ACCESS_TOKEN))
 
-  store.dispatch('setLang', storage.get(APP_LANGUAGE, 'en-US'))
+  store.dispatch('setLang', storage.get(APP_LANGUAGE, 'zh-CN'))
   // last step
 }

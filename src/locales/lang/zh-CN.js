@@ -9,11 +9,10 @@ const components = {
 
 const locale = {
   'message': '-',
-  'menu.home': '主页',
-  'menu.dashboard': '统计分析',
+  'menu.home': '首页',
+  'menu.dashboard': '仪表盘',
   'menu.dashboard.analysis': '统计分析',
-  'menu.dashboard.monitor': '监控页',
-  'menu.dashboard.workplace': '工作台'
+  'menu.dashboard.monitor': '监控页'
 }
 
 export default {

@@ -1,0 +1,286 @@
+{
+  "result": [
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 4456375,
+        "timeString": "2021-03-24",
+        "timestamp": 1
+      }
+    },
+    {
+      "group": "sameDay",
+      "data": {
+        "value": 3488775,
+        "timeString": "2021-03-25",
+        "timestamp": 0
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 5315382,
+        "timeString": "2021-02-23",
+        "timestamp": 30
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8298566,
+        "timeString": "2021-02-24",
+        "timestamp": 29
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8398856,
+        "timeString": "2021-02-25",
+        "timestamp": 28
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 7513141,
+        "timeString": "2021-02-26",
+        "timestamp": 27
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 7616772,
+        "timeString": "2021-02-27",
+        "timestamp": 26
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8640078,
+        "timeString": "2021-02-28",
+        "timestamp": 25
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8495019,
+        "timeString": "2021-03-01",
+        "timestamp": 24
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 7703530,
+        "timeString": "2021-03-02",
+        "timestamp": 23
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 7863552,
+        "timeString": "2021-03-03",
+        "timestamp": 22
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8767797,
+        "timeString": "2021-03-04",
+        "timestamp": 21
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8315474,
+        "timeString": "2021-03-05",
+        "timestamp": 20
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 7617572,
+        "timeString": "2021-03-06",
+        "timestamp": 19
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 7268843,
+        "timeString": "2021-03-07",
+        "timestamp": 18
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8441982,
+        "timeString": "2021-03-08",
+        "timestamp": 17
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8570019,
+        "timeString": "2021-03-09",
+        "timestamp": 16
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8142850,
+        "timeString": "2021-03-10",
+        "timestamp": 15
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8643514,
+        "timeString": "2021-03-11",
+        "timestamp": 14
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8630063,
+        "timeString": "2021-03-12",
+        "timestamp": 13
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8640032,
+        "timeString": "2021-03-13",
+        "timestamp": 12
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8640011,
+        "timeString": "2021-03-14",
+        "timestamp": 11
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8631627,
+        "timeString": "2021-03-15",
+        "timestamp": 10
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8640111,
+        "timeString": "2021-03-16",
+        "timestamp": 9
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8640827,
+        "timeString": "2021-03-17",
+        "timestamp": 8
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8554365,
+        "timeString": "2021-03-18",
+        "timestamp": 7
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8573300,
+        "timeString": "2021-03-19",
+        "timestamp": 6
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8642619,
+        "timeString": "2021-03-20",
+        "timestamp": 5
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8642693,
+        "timeString": "2021-03-21",
+        "timestamp": 4
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8642796,
+        "timeString": "2021-03-22",
+        "timestamp": 3
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 6949712,
+        "timeString": "2021-03-23",
+        "timestamp": 2
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 8456693,
+        "timeString": "2021-03-24",
+        "timestamp": 1
+      }
+    },
+    {
+      "group": "sameMonth",
+      "data": {
+        "value": 3488775,
+        "timeString": "2021-03-25",
+        "timestamp": 0
+      }
+    },
+    {
+      "group": "month",
+      "data": {
+        "value": 45782795,
+        "timeString": "2021-02-01",
+        "timestamp": 1
+      }
+    },
+    {
+      "group": "month",
+      "data": {
+        "value": 203603776,
+        "timeString": "2021-03-01",
+        "timestamp": 0
+      }
+    }
+  ],
+  "status": 200,
+  "code": "success"
+}
