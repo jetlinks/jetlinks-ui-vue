@@ -5,11 +5,13 @@ import router from './router'
 import components from './components'
 import './style.css'
 import 'ant-design-vue/es/notification/style/css';
+import Antd from 'ant-design-vue/es'
 
 const app = createApp(App)
 
 app.use(store)
 app.use(router)
 app.use(components)
+app.use(Antd)
 
 app.mount('#app')
