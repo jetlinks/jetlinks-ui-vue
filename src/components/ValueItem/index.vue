@@ -100,7 +100,7 @@ interface EmitProps {
 const props = defineProps({
     itemData: {
         type: Object,
-        default: () => ({ type: 'geoPoint' }),
+        default: () => ({ type: 'object' }),
     },
     modelValue: {
         type: [Number, String],
@@ -167,6 +167,7 @@ const myValue = computed({
         return props.modelValue;
     },
     set: (val: any) => {
+        objectValue.value = val;
         emit('update:modelValue', val);
     },
 });
