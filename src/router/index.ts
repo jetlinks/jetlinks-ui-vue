@@ -10,6 +10,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const token = LocalStore.get(TOKEN_KEY)
+    next()
     if (token) {
         next()
     } else {

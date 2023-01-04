@@ -36,7 +36,11 @@ declare module '@vue/runtime-core' {
     ATabPane: typeof import('ant-design-vue/es')['TabPane']
     ATabs: typeof import('ant-design-vue/es')['Tabs']
     ATextarea: typeof import('ant-design-vue/es')['Textarea']
+    AUpload: typeof import('ant-design-vue/es')['Upload']
+    GeoComponent: typeof import('./src/components/GeoComponent/index.vue')['default']
+    MonacoEditor: typeof import('./src/components/MonacoEditor/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ValueItem: typeof import('./src/components/ValueItem/index.vue')['default']
   }
 }
