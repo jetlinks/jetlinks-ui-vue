@@ -86,16 +86,10 @@ import GeoComponent from '@/components/GeoComponent/index.vue';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { LocalStore } from '@/utils/comm';
 
-type valueType = string | number | boolean | undefined;
-
-interface Prop {
-    itemData?: any;
-    modelValue?: valueType;
-}
-
-interface EmitProps {
-    (e: 'update:modelValue', data: valueType): void;
-}
+type Emits = {
+    (e: 'update:modelValue', data: string | number | boolean): void;
+};
+const emit = defineEmits<Emits>();
 
 const props = defineProps({
     itemData: {
@@ -107,7 +101,14 @@ const props = defineProps({
         default: '',
     },
 });
-const emit = defineEmits<EmitProps>();
+// type Props = {
+//     itemData?: Object;
+//     modelValue?: string | number | boolean;
+// };
+// const props = withDefaults(defineProps<Props>(), {
+//     itemData: () => ({ type: 'object' }),
+//     modelValue: '',
+// });
 
 const componentsType = computed(() => {
     switch (props.itemData.type) {
