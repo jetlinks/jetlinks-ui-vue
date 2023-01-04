@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import menus, { LoginPath } from './menu'
-import {LocalStore} from "@/utils/comm";
-import {TOKEN_KEY} from "@/utils/variable";
+import { LocalStore } from "@/utils/comm";
+import { TOKEN_KEY } from "@/utils/variable";
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -10,14 +10,14 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const token = LocalStore.get(TOKEN_KEY)
-    next()
+    next() // 测试用, 可删除
     if (token) {
         next()
     } else {
-        if(to.path === LoginPath) {
+        if (to.path === LoginPath) {
             next()
         } else {
-            next({ path: LoginPath})
+            next({ path: LoginPath })
         }
     }
 })
