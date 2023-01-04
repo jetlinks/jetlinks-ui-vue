@@ -5,6 +5,7 @@ import {AntDesignVueResolver} from 'unplugin-vue-components/resolvers'
 import AutoImport from 'unplugin-auto-import/vite'
 import { createHtmlPlugin } from 'vite-plugin-html'
 import Config from './config/config'
+import {VueAmapResolver} from '@vuemap/unplugin-resolver'
 
 import * as path from 'path'
 
@@ -46,7 +47,7 @@ export default defineConfig(({ mode}) => {
       plugins: [
           vue(),
           Components({
-              resolvers: [AntDesignVueResolver({ importStyle: 'less' })],
+              resolvers: [AntDesignVueResolver({ importStyle: 'less' }), VueAmapResolver()],
               directoryAsNamespace: true
           }),
           AutoImport({
@@ -54,7 +55,8 @@ export default defineConfig(({ mode}) => {
                   'vue',
                   'vue-router'
               ],
-              dts: 'src/auto-imports.d.ts'
+              dts: 'src/auto-imports.d.ts',
+              resolvers: [VueAmapResolver()],
           }),
           createHtmlPlugin({
               inject: {

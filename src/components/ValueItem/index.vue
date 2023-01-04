@@ -100,7 +100,7 @@ interface EmitProps {
 const props = defineProps({
     itemData: {
         type: Object,
-        default: () => ({ type: 'object' }),
+        default: () => ({ type: 'geoPoint' }),
     },
     modelValue: {
         type: [Number, String],

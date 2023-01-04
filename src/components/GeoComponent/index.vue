@@ -31,7 +31,15 @@
 </template>
 
 <script setup lang="ts">
+import { initAMapApiLoader } from '@vuemap/vue-amap';
+import '@vuemap/vue-amap/dist/style.css';
 import { EnvironmentOutlined } from '@ant-design/icons-vue';
+
+initAMapApiLoader({
+    // key: '95fa72137f4263f8e64ae01f766ad09c',
+    key: 'a0415acfc35af15f10221bfa5a6850b4',
+    securityJsCode: 'cae6108ec3dd222f946d1a7237c78be0',
+});
 
 interface EmitProps {
     (e: 'update:point', data: string): void;
