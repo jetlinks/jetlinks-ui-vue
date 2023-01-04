@@ -3,6 +3,8 @@ import vue from '@vitejs/plugin-vue'
 import Components from 'unplugin-vue-components/vite'
 import {AntDesignVueResolver} from 'unplugin-vue-components/resolvers'
 import AutoImport from 'unplugin-auto-import/vite'
+import { createHtmlPlugin } from 'vite-plugin-html'
+import Config from './config/config'
 
 import * as path from 'path'
 
@@ -53,6 +55,14 @@ export default defineConfig(({ mode}) => {
                   'vue-router'
               ],
               dts: 'src/auto-imports.d.ts'
+          }),
+          createHtmlPlugin({
+              inject: {
+                  data: {
+                      title: Config.title,
+                      favicon: `<link rel="icon" type="image/svg+xml" href="${Config.logo}" />`
+                  }
+              }
           })
       ],
       server: {
@@ -64,7 +74,7 @@ export default defineConfig(({ mode}) => {
                   // target: 'http://192.168.32.244:8881',
                   target: 'http://47.112.135.104:5096', // opcua
                   changeOrigin: true,
-                  rewrite: (path) => path.replace(/^\/api/, '')
+                  rewrite: (path) => path.replace('^'+env.VITE_APP_BASE_API, '')
               }
           }
       },
@@ -72,7 +82,7 @@ export default defineConfig(({ mode}) => {
           preprocessorOptions: {
               less: {
                   modifyVars: {
-                      'primary-color': '#00A4FF',
+                      ...Config.theme,
                       hack: `true; @import (reference) "${path.resolve('src/style/variable.less')}";`
                   },
                   javascriptEnabled: true,
