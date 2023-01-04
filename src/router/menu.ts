@@ -18,4 +18,11 @@ export default [
     //   path: '/initsetting',
     //   component: () => import('@/view/Login/initSet.vue')
     // }
+
+    // start: 测试用, 可删除
+    {
+        path: '/demo',
+        component: () => import('@/views/demo/index.vue')
+    }
+    // end: 测试用, 可删除
 ]

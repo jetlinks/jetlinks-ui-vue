@@ -1,0 +1,65 @@
+<!-- 代码编辑器 -->
+<template>
+    <div class="editor" ref="dom"></div>
+</template>
+
+<script setup>
+import * as monaco from 'monaco-editor';
+
+import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
+import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker';
+import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker';
+import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker';
+import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
+
+self.MonacoEnvironment = {
+    getWorker(workerId, label) {
+        if (label === 'json') {
+            return new jsonWorker();
+        }
+        if (label === 'css') {
+            return new cssWorker();
+        }
+        if (label === 'html') {
+            return new htmlWorker();
+        }
+        if (label === 'ts') {
+            return new tsWorker();
+        }
+        return new editorWorker();
+    },
+};
+
+const props = defineProps({
+    modelValue: [String, Number],
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+const dom = ref();
+
+let instance;
+
+onMounted(() => {
+    const jsonModel = monaco.editor.createModel(props.modelValue, 'json');
+
+    instance = monaco.editor.create(dom.value, {
+        model: jsonModel,
+        tabSize: 2,
+        automaticLayout: true,
+        scrollBeyondLastLine: false,
+        theme: 'vs-dark', // 主题色: vs(默认高亮), vs-dark(黑色), hc-black(高亮黑色)
+    });
+
+    instance.onDidChangeModelContent(() => {
+        const value = instance.getValue();
+        emit('update:modelValue', value);
+    });
+});
+</script>
+
+<style lang="less" scoped>
+.editor {
+    height: 100%;
+}
+</style>
