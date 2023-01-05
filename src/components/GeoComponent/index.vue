@@ -75,7 +75,6 @@ const mapPoint = ref('');
 const zoom = ref(12);
 const center = ref([106.55, 29.56]);
 let map: any = null;
-let marker: any = null;
 
 // 地图经纬度
 const position = ref<number[] | string[]>([]);
