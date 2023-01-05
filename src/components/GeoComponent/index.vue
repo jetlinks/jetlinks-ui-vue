@@ -1,3 +1,4 @@
+<!-- 坐标点拾取组件 -->
 <template>
     <div class="page-container">
         <a-input allowClear v-model:value="inputPoint">
