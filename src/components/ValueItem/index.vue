@@ -1,14 +1,14 @@
 <template>
     <div class="wrapper">
         <a-select
-            v-if="componentsType === 'select'"
+            v-if="typeMap.get(itemType) === 'select'"
             v-model:value="myValue"
             :options="options"
             allowClear
             style="width: 100%"
         />
         <a-date-picker
-            v-else-if="componentsType === 'date'"
+            v-else-if="typeMap.get(itemType) === 'date'"
             v-model:value="myValue"
             allowClear
             showTime
@@ -17,14 +17,14 @@
             style="width: 100%"
         />
         <a-input-number
-            v-else-if="componentsType === 'inputNumber'"
+            v-else-if="typeMap.get(itemType) === 'inputNumber'"
             v-model:value="myValue"
             allowClear
             style="width: 100%"
         />
         <a-input
             allowClear
-            v-else-if="componentsType === 'object'"
+            v-else-if="typeMap.get(itemType) === 'object'"
             v-model:value="myValue"
         >
             <template #addonAfter>
@@ -32,11 +32,11 @@
             </template>
         </a-input>
         <GeoComponent
-            v-else-if="componentsType === 'geoPoint'"
+            v-else-if="typeMap.get(itemType) === 'geoPoint'"
             v-model:point="myValue"
         />
         <a-input
-            v-else-if="componentsType === 'file'"
+            v-else-if="typeMap.get(itemType) === 'file'"
             v-model:value="myValue"
             placeholder="请输入图片链接"
             allowClear
@@ -79,12 +79,15 @@
 </template>
 
 <script setup lang="ts">
+import { PropType } from 'vue';
 import { FormOutlined, CloudUploadOutlined } from '@ant-design/icons-vue';
 import { UploadChangeParam, UploadFile } from 'ant-design-vue';
+import { DefaultOptionType } from 'ant-design-vue/lib/select';
 import MonacoEditor from '@/components/MonacoEditor/index.vue';
 import GeoComponent from '@/components/GeoComponent/index.vue';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { LocalStore } from '@/utils/comm';
+import { ItemData, ITypes } from './types';
 
 type Emits = {
     (e: 'update:modelValue', data: string | number | boolean): void;
@@ -93,12 +96,23 @@ const emit = defineEmits<Emits>();
 
 const props = defineProps({
     itemData: {
-        type: Object,
-        default: () => ({ type: 'object' }),
+        type: Object as PropType<ItemData>,
+        default: () => ({}),
     },
+    // 组件双向绑定的值
     modelValue: {
         type: [Number, String],
         default: '',
+    },
+    // 组件类型
+    itemType: {
+        type: String,
+        default: () => 'object',
+    },
+    // 下拉选择框下拉数据
+    options: {
+        type: Array as PropType<DefaultOptionType[]>,
+        default: () => [],
     },
 });
 // type Props = {
@@ -110,59 +124,23 @@ const props = defineProps({
 //     modelValue: '',
 // });
 
-const componentsType = computed(() => {
-    switch (props.itemData.type) {
-        case 'int':
-            return 'inputNumber';
-        case 'long':
-            return 'inputNumber';
-        case 'float':
-            return 'inputNumber';
-        case 'double':
-            return 'inputNumber';
-        case 'string':
-            return 'input';
-        case 'array':
-            return 'input';
-        case 'password':
-            return 'input';
-        case 'enum':
-            return 'select';
-        case 'boolean':
-            return 'select';
-        case 'date':
-            return 'date';
-        case 'object':
-            return 'object';
-        case 'geoPoint':
-            return 'geoPoint';
-        case 'file':
-            return 'file';
-        default:
-            return 'input';
-    }
+const componentsType = ref<ITypes>({
+    int: 'inputNumber',
+    long: 'inputNumber',
+    float: 'inputNumber',
+    double: 'inputNumber',
+    string: 'input',
+    array: 'input',
+    password: 'input',
+    enum: 'select',
+    boolean: 'select',
+    date: 'date',
+    object: 'object',
+    geoPoint: 'geoPoint',
+    file: 'file',
 });
+const typeMap = new Map(Object.entries(componentsType.value));
 
-const options = computed(() => {
-    if (props.itemData.type === 'boolean') {
-        return [
-            {
-                label: 'true',
-                value: true,
-            },
-            {
-                label: 'false',
-                value: false,
-            },
-        ];
-    }
-    return props.itemData.options
-        ? props.itemData.options.map((m: any) => ({
-              label: m.text,
-              value: m.value,
-          }))
-        : [];
-});
 const myValue = computed({
     get: () => {
         return props.modelValue;
@@ -172,10 +150,6 @@ const myValue = computed({
         emit('update:modelValue', val);
     },
 });
-
-const handleValueData = (value: any) => {
-    emit('update:modelValue', value);
-};
 
 // 代码编辑器弹窗
 const modalVis = ref<boolean>(false);
@@ -192,7 +166,7 @@ const handleFileChange = (info: UploadChangeParam<UploadFile<any>>) => {
     if (info.file.status === 'done') {
         const url = info.file.response?.result;
         myValue.value = url;
-        handleValueData(url);
+        emit('update:modelValue', url);
     }
 };
 </script>
