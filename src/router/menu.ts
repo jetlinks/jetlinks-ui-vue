@@ -23,6 +23,10 @@ export default [
     {
         path: '/demo',
         component: () => import('@/views/demo/index.vue')
-    }
+    },
+    {
+        path: '/iot/home',
+        component: () => import('@/views/iot/home/index.vue')
+    },
     // end: 测试用, 可删除
 ]
