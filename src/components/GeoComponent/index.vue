@@ -1,3 +1,4 @@
+<!-- 坐标点拾取组件 -->
 <template>
     <div class="page-container">
         <a-input allowClear v-model:value="inputPoint">
@@ -23,6 +24,7 @@
                     @click="clickMap"
                 >
                     <el-amap-search-box visible @select="selectPoi" />
+                    <el-amap-marker :position="position" />
                 </el-amap>
                 {{ mapPoint }}
             </div>
@@ -49,7 +51,7 @@ const props = defineProps({
 });
 const emit = defineEmits<EmitProps>();
 
-// 手动输入的坐标点
+// 手动输入的坐标点(经纬度字符串)
 const inputPoint = computed({
     get: () => {
         return props.point;
@@ -67,13 +69,15 @@ const handleModalSubmit = () => {
     modalVis.value = false;
 };
 
-// 地图拾取的坐标点
+// 地图拾取的坐标点(经纬度字符串)
 const mapPoint = ref('');
 
 const zoom = ref(12);
 const center = ref([106.55, 29.56]);
 let map: any = null;
-let marker: any = null;
+
+// 地图经纬度
+const position = ref<number[] | string[]>([]);
 
 /**
  * 地图初始化
@@ -83,11 +87,7 @@ const initMap = (e: any) => {
     map = e;
 
     const pointStr = mapPoint.value as string;
-    if (marker) map.remove(marker);
-    marker = new AMap.Marker({
-        position: pointStr ? pointStr.split(',') : center.value,
-    });
-    map.add(marker);
+    position.value = pointStr ? pointStr.split(',') : center.value;
 };
 
 /**
@@ -96,13 +96,7 @@ const initMap = (e: any) => {
  */
 const clickMap = (e: any) => {
     mapPoint.value = `${e.lnglat.lng},${e.lnglat.lat}`;
-
-    if (marker) map.remove(marker);
-
-    marker = new AMap.Marker({
-        position: [e.lnglat.lng, e.lnglat.lat],
-    });
-    map.add(marker);
+    position.value = [e.lnglat.lng, e.lnglat.lat];
 };
 
 /**
