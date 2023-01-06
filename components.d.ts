@@ -11,6 +11,8 @@ declare module '@vue/runtime-core' {
     ACol: typeof import('ant-design-vue/es')['Col']
     ARow: typeof import('ant-design-vue/es')['Row']
     ATooltip: typeof import('ant-design-vue/es')['Tooltip']
+    BadgeStatus: typeof import('./src/components/BadgeStatus/index.vue')['default']
+    CardBox: typeof import('./src/components/CardBox/index.vue')['default']
     GeoComponent: typeof import('./src/components/GeoComponent/index.vue')['default']
     MonacoEditor: typeof import('./src/components/MonacoEditor/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

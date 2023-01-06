@@ -17,3 +17,14 @@ export const STATE_COLOR = {
     // 已停止
     'stopped': '#F2994A'
 }
+
+/**
+ * 卡片组件状态
+ */
+export const StatusColorEnum = {
+  'success': 'success',
+  'error': 'error',
+  'processing': 'processing',
+  'warning': 'warning',
+  'default': 'default',
+}
