@@ -2,7 +2,7 @@
 <template>
     <div class="page-container">
         父级: {{ testValue }}
-        <ViewItem v-model="testValue" />
+        <ValueItem v-model="testValue" />
         <!-- 卡片 -->
         <br />卡片组件：
         <a-row :gutter="20">
@@ -41,7 +41,6 @@
 </template>
 
 <script setup lang="ts">
-import ViewItem from '@/components/ValueItem/index.vue';
 import CardBox from '@/components/CardBox/index.vue';
 import { StatusColorEnum } from '@/utils/consts';
 import { getImage } from '@/utils/comm';

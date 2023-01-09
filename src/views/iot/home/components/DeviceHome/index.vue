@@ -26,7 +26,6 @@ import BootCard from '../BootCard.vue';
 import DeviceCountCard from '../DeviceCountCard.vue';
 import PlatformPicCard from '../PlatformPicCard.vue';
 import StepCard from '../StepCard.vue';
-
 // import {getImage} from '@/utils/comm'
 
 // 物联网引导-数据
@@ -36,21 +35,21 @@ const bootConfig = [
         label: '创建产品',
         link: '/a',
         auth: true,
-        save: true,
+        params: {},
     },
     {
         english: 'STEP2',
         label: '创建设备',
         link: '/b',
         auth: true,
-        save: true,
+        params: {},
     },
     {
         english: 'STEP3',
         label: '规则引擎',
         link: '/c',
         auth: false,
-        save: true,
+        params: {},
     },
 ];
 // 设备接入推荐步骤-数据
