@@ -7,10 +7,18 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    AButton: typeof import('ant-design-vue/es')['Button']
     ACard: typeof import('ant-design-vue/es')['Card']
     ACol: typeof import('ant-design-vue/es')['Col']
+    AForm: typeof import('ant-design-vue/es')['Form']
+    AFormItem: typeof import('ant-design-vue/es')['FormItem']
+    AInput: typeof import('ant-design-vue/es')['Input']
+    ARadioButton: typeof import('ant-design-vue/es')['RadioButton']
+    ARadioGroup: typeof import('ant-design-vue/es')['RadioGroup']
     ARow: typeof import('ant-design-vue/es')['Row']
-    ATooltip: typeof import('ant-design-vue/es')['Tooltip']
+    ASpin: typeof import('ant-design-vue/es')['Spin']
+    ATextarea: typeof import('ant-design-vue/es')['Textarea']
+    AUpload: typeof import('ant-design-vue/es')['Upload']
     BadgeStatus: typeof import('./src/components/BadgeStatus/index.vue')['default']
     CardBox: typeof import('./src/components/CardBox/index.vue')['default']
     GeoComponent: typeof import('./src/components/GeoComponent/index.vue')['default']
