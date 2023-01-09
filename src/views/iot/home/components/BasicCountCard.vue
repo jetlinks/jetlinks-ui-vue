@@ -13,20 +13,34 @@
             <div class="box-item">
                 <div class="label">CPU使用率</div>
                 <div class="value">{{ cpu }}</div>
-                <div class="chart" ref="cpuChart"></div>
+                <Pie
+                    class="chart"
+                    chart-ref="cpuChart"
+                    :value="20"
+                    :color-arr="['#ebebeb', '#d3adf7']"
+                    image="/images/home/top-3.svg"
+                />
             </div>
             <div class="box-item">
                 <div class="label">JVM内存</div>
                 <div class="value">{{ jvm }}</div>
-                <div class="chart" ref="jvmChart"></div>
+                <Pie
+                    class="chart"
+                    chart-ref="jvmChart"
+                    :value="31"
+                    :color-arr="['#d6e4ff', '#85a5ff']"
+                    image="/images/home/top-4.svg"
+                />
             </div>
         </div>
     </a-card>
 </template>
 
 <script setup lang="ts">
-const cpu = ref('0%');
-const jvm = ref('10%');
+import Pie from './Pie.vue';
+
+const cpu = ref('20%');
+const jvm = ref('31%');
 
 const jumpPage = () => {};
 </script>
