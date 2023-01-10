@@ -162,16 +162,16 @@ const handleSubmit = () => {
 </script>
 
 <style lang="less" scoped>
-.page-container:deep {
-    .ant-form-item-label
-        > label.ant-form-item-required:not(
-            .ant-form-item-required-mark-optional
-        )::before {
-        display: none;
-    }
-    .ant-form-item-label > label {
-        font-weight: bold;
-    }
+:deep(
+        .ant-form-item-label
+            > label.ant-form-item-required:not(
+                .ant-form-item-required-mark-optional
+            )::before
+    ) {
+    display: none;
+}
+:deep(.ant-form-item-label > label) {
+    font-weight: bold;
 }
 .page-container {
     width: 100%;
