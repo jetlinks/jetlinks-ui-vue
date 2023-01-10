@@ -7,6 +7,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import { createHtmlPlugin } from 'vite-plugin-html'
 import Config from './config/config'
 import {VueAmapResolver} from '@vuemap/unplugin-resolver'
+import VueSetupExtend from 'vite-plugin-vue-setup-extend'
 
 import * as path from 'path'
 
@@ -67,7 +68,8 @@ export default defineConfig(({ mode}) => {
                       favicon: `<link rel="icon" type="image/svg+xml" href="${Config.logo}" />`
                   }
               }
-          })
+          }),
+          VueSetupExtend()
       ],
       server: {
           host:'0.0.0.0',
