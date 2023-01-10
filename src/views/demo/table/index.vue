@@ -16,15 +16,16 @@
                     title: '住址',
                     dataIndex: 'address',
                     key: 'address',
-                }
+                },
             ]"
+            :actions="actions"
             :request="request"
         >
             <template #headerTitle>
                 <a-button type="primary">新增</a-button>
             </template>
             <template #cardRender="slotProps">
-                <CardBox>
+                <CardBox :actions="actions">
                     <template #content>
                         {{slotProps.item.name}}
                     </template>
@@ -37,8 +38,13 @@
 <script setup lang="ts">
 import server from "@/utils/request";
 import CardBox from '@/components/CardBox/index.vue';
-const request = (data: any) => server.post(`/device-product/_query`, data)
 
+const request = (data: any) => server.post(`/device-product/_query`, data)
+const actions = [{
+    key: 'delete',
+    disabled: true,
+    text: "删除"
+}]
 </script>
 
 
