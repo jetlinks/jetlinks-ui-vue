@@ -53,29 +53,46 @@
                         你已通过微信授权,完善以下登录信息即可以完成绑定
                     </div>
                     <div class="login-form">
-                        <a-form layout="vertical" :model="formData">
-                            <a-form-item label="账户">
+                        <a-form layout="vertical">
+                            <a-form-item
+                                label="账户"
+                                v-bind="validateInfos.username"
+                            >
                                 <a-input
                                     v-model:value="formData.username"
                                     placeholder="请输入账户"
                                 />
                             </a-form-item>
-                            <a-form-item label="密码">
+                            <a-form-item
+                                label="密码"
+                                v-bind="validateInfos.password"
+                            >
                                 <a-input-password
                                     v-model:value="formData.password"
                                     placeholder="请输入密码"
                                 />
                             </a-form-item>
-                            <a-form-item label="验证码">
+                            <a-form-item
+                                label="验证码"
+                                v-bind="validateInfos.captcha"
+                            >
                                 <a-input
                                     v-model:value="formData.captcha"
                                     placeholder="请输入验证码"
                                 >
-                                    <template #addonAfter>图形验证码</template>
+                                    <template #addonAfter>
+                                        <span style="cursor: pointer">
+                                            图形验证码
+                                        </span>
+                                    </template>
                                 </a-input>
                             </a-form-item>
                             <a-form-item>
-                                <a-button type="primary" style="width: 100%">
+                                <a-button
+                                    type="primary"
+                                    @click="handleSubmit"
+                                    style="width: 100%"
+                                >
                                     登录并绑定账户
                                 </a-button>
                             </a-form-item>
@@ -89,20 +106,100 @@
 
 <script setup lang="ts">
 import { getImage } from '@/utils/comm';
+import { Form } from 'ant-design-vue';
+
+import { applicationInfo } from '@/api/bind';
+
+const useForm = Form.useForm;
 
 interface formData {
     username: string;
     password: string;
     captcha: string;
 }
+
+// 三方应用信息
+const getAppInfo = async () => {
+    const code: string = '73ab60c88979a1475963a5dde31e374b';
+    const res = await applicationInfo(code);
+    console.log('getAppInfo: ', res);
+};
+getAppInfo();
+
+// 登录表单
 const formData = ref<formData>({
     username: '',
     password: '',
     captcha: '',
 });
+const formRules = ref({
+    username: [
+        {
+            required: true,
+            message: '请输入账户',
+        },
+    ],
+    password: [
+        {
+            required: true,
+            message: '请输入密码',
+        },
+    ],
+    captcha: [
+        {
+            required: true,
+            message: '请输入验证码',
+        },
+    ],
+});
+
+const { resetFields, validate, validateInfos } = useForm(
+    formData.value,
+    formRules.value,
+);
+
+/**
+ * 登录并绑定账户
+ */
+const handleSubmit = () => {
+    validate()
+        .then(() => {
+            console.log('toRaw:', toRaw(formData.value));
+            console.log('formData.value:', formData.value);
+        })
+        .catch((err) => {
+            console.log('error', err);
+        });
+};
+
+/**
+ * 绑定成功跳转至页面url的: redirect
+ */
+const goRedirect = () => {
+    const urlParams = new URLSearchParams(window.location.hash);
+    const redirectUrl =
+        urlParams.get('redirect') ||
+        window.location.href.split('redirect=')?.[1];
+    console.log('redirectUrl: ', redirectUrl);
+    //内部集成需要跳回它们页面
+    if (redirectUrl && redirectUrl.indexOf('account/center/bind') === -1) {
+        window.location.href = decodeURIComponent(redirectUrl);
+    }
+};
 </script>
 
 <style lang="less" scoped>
+:deep(
+        .ant-form-item-label
+            > label.ant-form-item-required:not(
+                .ant-form-item-required-mark-optional
+            )::before
+    ) {
+    display: none;
+}
+:deep(.ant-form-item-label > label) {
+    font-weight: bold;
+}
 .page-container {
     width: 100%;
     height: 100vh;
