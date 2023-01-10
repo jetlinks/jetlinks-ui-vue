@@ -36,6 +36,10 @@ export default [
         path: '/iot/home',
         component: () => import('@/views/iot/home/index.vue')
     },
+    {
+        path: '/table',
+        component: () => import('@/views/table/index.vue')
+    },
     // end: 测试用, 可删除
 
     {
