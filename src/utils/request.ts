@@ -162,7 +162,7 @@ request.interceptors.request.use(config => {
     // 让每个请求携带自定义 token 请根据实际情况自行修改
     const token = LocalStore.get(TOKEN_KEY)
     // const token = store.$state.tokenAlias
-    if (token) {
+    if (!token) {
         setTimeout(() => {
             router.replace({
                 path: LoginPath

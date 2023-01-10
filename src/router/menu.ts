@@ -36,8 +36,13 @@ export default [
         path: '/iot/home',
         component: () => import('@/views/iot/home/index.vue')
     },
+    {
+        path: '/table',
+        component: () => import('@/views/table/index.vue')
+    },
     // end: 测试用, 可删除
 
+    // link 运维管理
     {
         path: '/link/log',
         component: () => import('@/views/link/Log/index.vue')
@@ -49,5 +54,9 @@ export default [
     {
         path: '/link/certificate/detail/add',
         component: () => import('@/views/link/Certificate/Detail/index.vue')
+    },
+    {
+        path: '/link/accessConfig/detail/add',
+        component: () => import('@/views/link/AccessConfig/Detail/index.vue')
     },
 ]
