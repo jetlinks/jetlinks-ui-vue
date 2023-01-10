@@ -36,6 +36,8 @@
 
 <script setup lang="ts">
 import { ComponentInternalInstance } from 'vue';
+
+import { getProductList_api } from '@/api/home';
 import { productItem } from '../../index';
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const props = defineProps({
@@ -51,7 +53,14 @@ const productList = ref<[productItem] | []>([]);
 
 const getContainer = () => proxy?.$refs.modal as HTMLElement;
 const getOptions = () => {
-    productList.value = [];
+    getProductList_api().then((resp) => {
+        productList.value = resp.result
+            .filter((i: any) => !i?.accessId)
+            .map((item: { name: any; id: any }) => ({
+                label: item.name,
+                value: item.id,
+            })) as [productItem];
+    });
 };
 const handleOk = () => {
     emits('confirm', form.value);
