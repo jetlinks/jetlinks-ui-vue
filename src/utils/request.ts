@@ -66,10 +66,10 @@ export const patch = function(url: string, data = {}) {
  * GET method request
  * @param {String} url
  * @param {Object} [params]
- * @param {Object} [ext], 扩展参数
+ * @param {Object} [ext] 扩展参数
  * @returns {AxiosInstance}
  */
-export const get = function(url: string, params = {},  ext: any) {
+export const get = function(url: string, params = {},  ext?: any) {
     return request({
         method: 'GET',
         url,
@@ -82,10 +82,10 @@ export const get = function(url: string, params = {},  ext: any) {
  * DELETE method request
  * @param {String} url
  * @param {Object} [params]
- * @param {Object} [ext], 扩展参数
+ * @param {Object} [ext] 扩展参数
  * @returns {AxiosInstance}
  */
-export const remove = function(url: string, params = {}, ext: any) {
+export const remove = function(url: string, params = {}, ext?: any) {
     return request({
         method: 'DELETE',
         url,
@@ -162,7 +162,7 @@ request.interceptors.request.use(config => {
     // 让每个请求携带自定义 token 请根据实际情况自行修改
     const token = LocalStore.get(TOKEN_KEY)
     // const token = store.$state.tokenAlias
-    if (token) {
+    if (!token) {
         setTimeout(() => {
             router.replace({
                 path: LoginPath

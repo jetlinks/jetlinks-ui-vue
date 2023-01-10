@@ -24,6 +24,7 @@ declare module '@vue/runtime-core' {
     PermissionButton: typeof import('./src/components/PermissionButton/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TitleComponent: typeof import('./src/components/TitleComponent/index.vue')['default']
     ValueItem: typeof import('./src/components/ValueItem/index.vue')['default']
   }
 }
