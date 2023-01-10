@@ -33,4 +33,17 @@ export default [
         component: () => import('@/views/iot/home/index.vue')
     },
     // end: 测试用, 可删除
+
+    {
+        path: '/link/log',
+        component: () => import('@/views/link/Log/index.vue')
+    },
+    {
+        path: '/link/certificate',
+        component: () => import('@/views/link/Certificate/index.vue')
+    },
+    {
+        path: '/link/certificate/detail/add',
+        component: () => import('@/views/link/Certificate/Detail/index.vue')
+    },
 ]
