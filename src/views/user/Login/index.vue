@@ -121,7 +121,19 @@
                                         style="position: 'relative', bottom: '10px'"
                                         v-for="(item, index) in bindings"
                                         :key="index"
-                                    ></div>
+                                    >
+                                        <Button type="link" @Click="handle">
+                                            <img
+                                                style="width: 32, height: 33"
+                                                :alt="item.name"
+                                                :src="
+                                                    iconMap.get(
+                                                        item.provider,
+                                                    ) || defaultImg
+                                                "
+                                            />
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
