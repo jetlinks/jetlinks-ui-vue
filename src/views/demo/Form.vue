@@ -1,10 +1,8 @@
 <template>
-  <div class=''>
-
-  </div>
+  <Form />
 </template>
 
-<script setup type='ts' name='FormBuilder'>
+<script setup name='FormDemo'>
 const data = reactive({})
 </script>
 
