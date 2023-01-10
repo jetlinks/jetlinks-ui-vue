@@ -1,0 +1,271 @@
+<!-- 第三方账户绑定 -->
+<template>
+    <div class="page-container">
+        <div class="content">
+            <div class="title">第三方账户绑定</div>
+            <!-- 已登录-绑定三方账号 -->
+            <template v-if="false">
+                <div class="info">
+                    <a-card style="width: 280px">
+                        <template #title>
+                            <div class="info-head">
+                                <img :src="getImage('/bind/Rectangle.png')" />
+                                <span>个人信息</span>
+                            </div>
+                        </template>
+                        <div class="info-body">
+                            <img :src="getImage('/bind/jetlinksLogo.png')" />
+                            <p>账号：admin</p>
+                            <p>用户名：超级管理员</p>
+                        </div>
+                    </a-card>
+                    <img :src="getImage('/bind/Vector.png')" />
+                    <a-card style="width: 280px">
+                        <template #title>
+                            <div class="info-head">
+                                <img :src="getImage('/bind/Rectangle.png')" />
+                                <span>三方账户信息</span>
+                            </div>
+                        </template>
+                        <div class="info-body">
+                            <img :src="getImage('/bind/wechat-webapp.png')" />
+                            <p>用户名：-</p>
+                            <p>名称：微信昵称</p>
+                        </div>
+                    </a-card>
+                </div>
+                <div class="btn">
+                    <a-button type="primary">立即绑定</a-button>
+                </div>
+            </template>
+            <!-- 未登录-绑定三方账号 -->
+            <template v-else>
+                <div class="not-login">
+                    <div class="logo">
+                        <img :src="getImage('/bind/jetlinksLogo.png')" />
+                        <img
+                            class="arrow"
+                            :src="getImage('/bind/Vector.png')"
+                        />
+                        <img :src="getImage('/bind/wechat-webapp.png')" />
+                    </div>
+                    <div class="desc">
+                        你已通过微信授权,完善以下登录信息即可以完成绑定
+                    </div>
+                    <div class="login-form">
+                        <a-form layout="vertical">
+                            <a-form-item
+                                label="账户"
+                                v-bind="validateInfos.username"
+                            >
+                                <a-input
+                                    v-model:value="formData.username"
+                                    placeholder="请输入账户"
+                                />
+                            </a-form-item>
+                            <a-form-item
+                                label="密码"
+                                v-bind="validateInfos.password"
+                            >
+                                <a-input-password
+                                    v-model:value="formData.password"
+                                    placeholder="请输入密码"
+                                />
+                            </a-form-item>
+                            <a-form-item
+                                label="验证码"
+                                v-bind="validateInfos.captcha"
+                            >
+                                <a-input
+                                    v-model:value="formData.captcha"
+                                    placeholder="请输入验证码"
+                                >
+                                    <template #addonAfter>
+                                        <span style="cursor: pointer">
+                                            图形验证码
+                                        </span>
+                                    </template>
+                                </a-input>
+                            </a-form-item>
+                            <a-form-item>
+                                <a-button
+                                    type="primary"
+                                    @click="handleSubmit"
+                                    style="width: 100%"
+                                >
+                                    登录并绑定账户
+                                </a-button>
+                            </a-form-item>
+                        </a-form>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>
+
+<script setup lang="ts">
+import { getImage } from '@/utils/comm';
+import { Form } from 'ant-design-vue';
+
+import { applicationInfo } from '@/api/bind';
+
+const useForm = Form.useForm;
+
+interface formData {
+    username: string;
+    password: string;
+    captcha: string;
+}
+
+// 三方应用信息
+const getAppInfo = async () => {
+    const code: string = '73ab60c88979a1475963a5dde31e374b';
+    const res = await applicationInfo(code);
+    console.log('getAppInfo: ', res);
+};
+getAppInfo();
+
+// 登录表单
+const formData = ref<formData>({
+    username: '',
+    password: '',
+    captcha: '',
+});
+const formRules = ref({
+    username: [
+        {
+            required: true,
+            message: '请输入账户',
+        },
+    ],
+    password: [
+        {
+            required: true,
+            message: '请输入密码',
+        },
+    ],
+    captcha: [
+        {
+            required: true,
+            message: '请输入验证码',
+        },
+    ],
+});
+
+const { resetFields, validate, validateInfos } = useForm(
+    formData.value,
+    formRules.value,
+);
+
+/**
+ * 登录并绑定账户
+ */
+const handleSubmit = () => {
+    validate()
+        .then(() => {
+            console.log('toRaw:', toRaw(formData.value));
+            console.log('formData.value:', formData.value);
+        })
+        .catch((err) => {
+            console.log('error', err);
+        });
+};
+</script>
+
+<style lang="less" scoped>
+:deep(
+        .ant-form-item-label
+            > label.ant-form-item-required:not(
+                .ant-form-item-required-mark-optional
+            )::before
+    ) {
+    display: none;
+}
+:deep(.ant-form-item-label > label) {
+    font-weight: bold;
+}
+.page-container {
+    width: 100%;
+    height: 100vh;
+    background: url(/images/bind/bindPage.png) 0% 0% / 100% 100% no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .content {
+        box-sizing: border-box;
+        width: 850px;
+        min-height: 510px;
+        background: #fff;
+        border: 1px solid #e0e4e8;
+        border-radius: 2px;
+        .title {
+            margin: 30px 0;
+            color: #0f1222;
+            font-weight: 400;
+            font-size: 20px;
+            font-family: 'PingFang SC';
+            font-style: normal;
+            line-height: 25px;
+            text-align: center;
+        }
+        // 已登录-绑定三方账号
+        .info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            &-head {
+                display: flex;
+                align-items: baseline;
+                gap: 10px;
+            }
+            &-body {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+                img {
+                    width: 70px;
+                    height: 70px;
+                }
+            }
+        }
+        .btn {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        // 未登录
+        .not-login {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            .logo {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                img {
+                    width: 50px;
+                    height: 50px;
+                }
+                .arrow {
+                    width: 15px;
+                    height: 15px;
+                }
+            }
+            .desc {
+                margin-top: 30px;
+                margin-bottom: 30px;
+                font-size: 14px;
+                font-family: 'PingFang SC';
+                font-style: normal;
+                line-height: 14px;
+                opacity: 0.75;
+                mix-blend-mode: normal;
+            }
+        }
+    }
+}
+</style>

@@ -23,36 +23,53 @@
                 <div class="box-details">{{ item.details }}</div>
             </div>
         </div>
+
+        <div class="dialogs">
+            <AccessMethodDialog :open-number="openAccess" />
+        </div>
     </a-card>
 </template>
 
 <script setup lang="ts">
+import { PropType } from 'vue';
 import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 
-interface listConfig {
-    title: string;
-    details: string;
-    iconUrl: string;
-    linkUrl: string;
-    params?: object;
-    auth: boolean;
-}
+import AccessMethodDialog from './dialogs/AccessMethodDialog.vue';
+
+import { recommendList } from '../index';
+
 const props = defineProps({
     cardTitle: String,
     tooltip: String,
-    dataList: Array<listConfig>,
+    dataList: Array as PropType<recommendList[]>,
 });
 const router = useRouter();
 
 const { cardTitle, tooltip, dataList } = toRefs(props);
+const openAccess = ref<number>(0);
+const openFunc = ref<number>(0);
 
-const jumpPage = (row: listConfig) => {
-    if (row.auth && row.linkUrl) {
-        router.push(`${row.linkUrl}${row.params ? '?save=true' : ''}`);
-    } else {
-        message.warning('暂无权限，请联系管理员');
+const jumpPage = (row: recommendList) => {
+    if (!row.auth) return message.warning('暂无权限，请联系管理员');
+    else if (row.dialogTag == 'accessMethod') return (openAccess.value += 1);
+    else if (row.dialogTag === 'funcTest') return (openFunc.value += 1);
+    else if (row.linkUrl) {
+        router.push(`${row.linkUrl}${objToParams(row.params || {})}`);
     }
+};
+
+const objToParams = (source: object): string => {
+    if (Object.prototype.toString.call(source) === '[object Object]') {
+        const paramsArr = <any>[];
+        // 直接使用for in遍历对象ts会报错
+        Object.entries(source).forEach(([prop, value]) => {
+            if (typeof value === 'object') value = JSON.stringify(value);
+            paramsArr.push(`${prop}=${value}`);
+        });
+        if (paramsArr.length > 0) return '?' + paramsArr.join('&');
+    }
+    return '';
 };
 </script>
 

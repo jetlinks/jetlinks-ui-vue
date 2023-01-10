@@ -1,5 +1,6 @@
 import {defineConfig, loadEnv} from 'vite'
 import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 import Components from 'unplugin-vue-components/vite'
 import {AntDesignVueResolver} from 'unplugin-vue-components/resolvers'
 import AutoImport from 'unplugin-auto-import/vite'
@@ -46,6 +47,7 @@ export default defineConfig(({ mode}) => {
       },
       plugins: [
           vue(),
+          vueJsx(),
           Components({
               resolvers: [AntDesignVueResolver({ importStyle: 'less' }), VueAmapResolver()],
               directoryAsNamespace: true
@@ -74,9 +76,10 @@ export default defineConfig(({ mode}) => {
               [env.VITE_APP_BASE_API]: {
                   // target: 'http://192.168.33.22:8800',
                   // target: 'http://192.168.32.244:8881',
-                  target: 'http://47.112.135.104:5096', // opcua
+                //   target: 'http://47.112.135.104:5096', // opcua
+                  target: 'http://47.108.63.174:8845', // 测试
                   changeOrigin: true,
-                  rewrite: (path) => path.replace('^'+env.VITE_APP_BASE_API, '')
+                  rewrite: (path) => path.replace(/^\/api/, '')
               }
           }
       },
