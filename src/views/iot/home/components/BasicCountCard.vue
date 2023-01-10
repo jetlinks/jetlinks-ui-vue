@@ -42,6 +42,10 @@ import Pie from './Pie.vue';
 const cpu = ref('20%');
 const jvm = ref('31%');
 
+const getData = ()=>{
+    
+}
+
 const jumpPage = () => {};
 </script>
 

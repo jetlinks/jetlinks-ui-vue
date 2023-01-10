@@ -25,9 +25,22 @@
 </template>
 
 <script setup lang="ts">
+import { getDeviceCount_api, getProductCount_api } from '@/api/home';
 const projectNum = ref(0);
 const deviceNum = ref(0);
 
+onMounted(() => {
+    getData();
+});
+
+const getData = () => {
+    getDeviceCount_api().then((resp) => {
+        deviceNum.value = resp.result;
+    });
+    getProductCount_api().then((resp) => {
+        projectNum.value = resp.result;
+    });
+};
 const jumpPage = () => {};
 </script>
 
