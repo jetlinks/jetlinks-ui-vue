@@ -27,6 +27,7 @@ import BasicCountCard from '../BasicCountCard.vue';
 import PlatformPicCard from '../PlatformPicCard.vue';
 import StepCard from '../StepCard.vue';
 
+import {recommendList} from '../../index'
 // import {getImage} from '@/utils/comm'
 
 // 运维引导-数据
@@ -93,7 +94,7 @@ const stepDetails = [
         linkUrl: '/a',
         auth: false,
     },
-];
+] as recommendList[];
 </script>
 
 <style lang="less" scoped>
