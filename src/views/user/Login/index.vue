@@ -109,22 +109,25 @@
                                         </a-button>
                                     </a-form-item>
                                 </a-form>
-                                <div style="margin-top: 20">
-                                    <a-divider plain style="height: 12">
+                                <div style="margin-top: 20px">
+                                    <a-divider plain style="height: 12px">
                                         <div
-                                            style="color: '#807676d9', fontSize: 12"
+                                            style="color: #807676d9, font-size: 12px"
                                         >
                                             其他方式登录
                                         </div>
                                     </a-divider>
                                     <div
-                                        style="position: 'relative', bottom: '10px'"
-                                        v-for="(item, index) in bindings"
-                                        :key="index"
+                                        style="position: relative, bottom: 10px; text-align: center"
                                     >
-                                        <Button type="link" @Click="handle">
+                                        <a-button
+                                            v-for="(item, index) in bindings"
+                                            :key="index"
+                                            type="link"
+                                            @Click="handleClickOther(item)"
+                                        >
                                             <img
-                                                style="width: 32, height: 33"
+                                                style="width: 32px, height: 33px"
                                                 :alt="item.name"
                                                 :src="
                                                     iconMap.get(
@@ -132,7 +135,7 @@
                                                     ) || defaultImg
                                                 "
                                             />
-                                        </Button>
+                                        </a-button>
                                     </div>
                                 </div>
                             </div>
@@ -174,7 +177,7 @@ import {
 import Cookies from 'js-cookie';
 import { useUserInfo } from '@/store/userInfo';
 import { LocalStore } from '@/utils/comm';
-import { TOKEN_KEY, Version_Code } from '@/utils/variable';
+import { BASE_API_PATH, TOKEN_KEY, Version_Code } from '@/utils/variable';
 
 const store = useUserInfo();
 const router = useRouter();
@@ -203,6 +206,11 @@ const codeConfig = ref(false);
 const loading = ref(false);
 const bindings = ref<any[]>();
 
+const defaultImg = getImage('/apply/provider1.png');
+const iconMap = new Map();
+iconMap.set('dingtalk-ent-app', getImage('/bind/dingtalk.png'));
+iconMap.set('wechat-webapp', getImage('/bind/wechat-webapp.png'));
+
 const onFinish = async () => {
     form.remember
         ? Cookies.set('user', encodeURIComponent(JSON.stringify(form)), {
@@ -213,18 +221,20 @@ const onFinish = async () => {
     try {
         loading.value = true;
         const res: any = await authLogin(form);
-        if (res.status === 200) {
+        if (res.success) {
             store.$patch({
                 ...res.result,
                 username: form.username,
             });
             LocalStore.set(TOKEN_KEY, res?.result.token);
             const resp: any = await getInitSet();
-            if (resp.status === 200) {
+            if (resp.success) {
                 router.push('/demo');
             }
         }
     } catch (error) {
+        form.verifyCode = '';
+        getCode();
         loading.value = false;
     }
 };
@@ -253,17 +263,27 @@ const getCookie = () => {
 
 const getOpen = () => {
     systemVersion().then((res: any) => {
-        if (res.status === 200 && res.result) {
+        if (res.success && res.result) {
             LocalStore.set(Version_Code, res.result.edition);
             if (res.result.edition !== 'community') {
                 bindInfo().then((res: any) => {
-                    if (res.status === 200) {
+                    if (res.success) {
                         bindings.value = res.result;
                     }
                 });
             }
         }
     });
+};
+
+const handleClickOther = (item: any) => {
+    LocalStore.set('onLogin', 'no');
+    window.open(`${BASE_API_PATH}/application/sso/${item.id}/login`);
+    window.onstorage = (e) => {
+        if (e.newValue) {
+            window.location.href = '/';
+        }
+    };
 };
 
 const screenRotation = (width: number, height: number) => {
@@ -335,11 +355,12 @@ screenRotation(screenWidth.value, screenHeight.value);
 
             .top {
                 width: 100%;
-                text-align: center;
+                // text-align: center;
 
                 .header {
                     height: 44px;
                     line-height: 44px;
+                    text-align: center;
 
                     a {
                         text-decoration: none;
@@ -371,6 +392,7 @@ screenRotation(screenWidth.value, screenHeight.value);
                     font-size: 22px;
                     font-family: Avenir, 'Helvetica Neue', Arial, Helvetica,
                         sans-serif;
+                    text-align: center;
                 }
 
                 .main {
@@ -425,6 +447,27 @@ screenRotation(screenWidth.value, screenHeight.value);
                         display: flex;
                         flex-direction: row;
                         margin-bottom: 30px;
+                    }
+
+                    .verifyCode {
+                        .login-code-input {
+                            width: 70%;
+                            float: left;
+                        }
+                        .login-code {
+                            width: 30%;
+                            height: 32px;
+                            float: left;
+                            background-color: #e4e6e7;
+                            img {
+                                cursor: pointer;
+                                vertical-align: middle;
+                            }
+                            .login-code-img {
+                                width: 100%;
+                                height: 100%;
+                            }
+                        }
                     }
                 }
             }
