@@ -29,7 +29,7 @@ export default [
         component: () => import('@/views/demo/index.vue')
     },
     {
-        path: '/bind',
+        path: '/account/center/bind',
         component: () => import('@/views/account/Center/bind/index.vue')
     },
     {
