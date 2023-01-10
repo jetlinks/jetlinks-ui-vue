@@ -1,88 +1,91 @@
 <template>
-  <a-spin :spinning="loading">
-    <div>
-      <a-textarea
-        :rows="4"
-        @change="textChange"
-        v-model="keystoreBase64"
-        :placeholder=placeholder
-      />
-      <a-upload
-        accept=".pem"
-        listType="text"
-        :action="action"
-        :headers="headers"
-        :showUploadList="false"
-        @change="handleChange"
-      >
-        <a-button style="margin-top: 10px">
-          <upload-outlined></upload-outlined>
-
-          上传文件</a-button>
-      </a-upload>
-    </div>
-  </a-spin>
+    <a-spin :spinning="loading">
+        <div>
+            <a-textarea
+                :rows="4"
+                @change="textChange"
+                v-model:value="keystoreBase64"
+                :placeholder="placeholder"
+            />
+            <a-upload
+                accept=".pem"
+                listType="text"
+                :action="`${BASE_API_PATH}${NETWORK_CERTIFICATE_UPLOAD}`"
+                :headers="{
+                    [TOKEN_KEY]: LocalStore.get(TOKEN_KEY),
+                }"
+                :showUploadList="false"
+                @change="handleChange"
+            >
+                <a-button style="margin-top: 10px">
+                    <upload-outlined />
+                    上传文件</a-button
+                >
+            </a-upload>
+        </div>
+    </a-spin>
 </template>
 
-<script>
-// import storage from 'store'
-// import { ACCESS_TOKEN } from '@/store/mutation-types'
-// import { ACCESS_TOKEN_KEY } from '@/utils/consts'
+<script setup lang="ts" name="CertificateFile">
 import { UploadOutlined } from '@ant-design/icons-vue';
+import { message } from 'ant-design-vue';
+import type { UploadChangeParam } from 'ant-design-vue';
+import { LocalStore } from '@/utils/comm';
+import {
+    BASE_API_PATH,
+    TOKEN_KEY,
+    NETWORK_CERTIFICATE_UPLOAD,
+} from '@/utils/variable';
+import type { UploadProps } from 'ant-design-vue';
 
-export default {
-  name: 'CertificateFile',
-  data () {
-    return {
-      keystoreBase64: '',
-      loading: false,
-      action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-      headers:{
-        authorization: 'authorization-text',
-      }
-      // action: process.env.VUE_APP_BASE_API + `/network/certificate/upload`,
-      // headers: {
-      //   [ACCESS_TOKEN_KEY]: storage.get(ACCESS_TOKEN)
-      // }
-    }
-  },
-  model: {
-    prop: 'value',
-    event: 'change'
-  },
-  props: {
-    value: {
-      type: String,
-      default: () => ''
+const emit = defineEmits(['update:modelValue', 'change']);
+
+const props = defineProps({
+    name: {
+        type: String,
+        default: () => '',
+    },
+    modelValue: {
+        type: String,
+        default: () => '',
     },
     placeholder: {
-      type: String,
-      default: () => ''
-    }
-  },
-  watch: {
-    value: {
-        handler (v) {
-            this.keystoreBase64 = v
-        }
-    }
-  },
-  methods: {
-    handleChange (info) {
-      this.loading = true
-      if (info.file.status === 'done') {
-        this.$message.success('上传成功！')
-        const result = info.file.response?.result
-        this.loading = false
-        this.$emit('change', result)
-      }
+        type: String,
+        default: () => '',
     },
-    textChange (val) {
-        this.$emit('change', val)
+});
+
+const keystoreBase64 = ref(props.modelValue);
+const loading = ref(false);
+
+const handleChange = (info: UploadChangeParam) => {
+    loading.value = true;
+    if (info.file.status === 'done') {
+        message.success('上传成功！');
+        const result = info.file.response?.result;
+        keystoreBase64.value = result;
+        console.log(1114, result);
+        loading.value = false;
+        emit('change', result);
+        emit('update:modelValue', result);
     }
-  }
-}
+};
+const textChange = (val: any) => {
+    val.name = props.name;
+    emit('change', val);
+    // emit('update:modelValue', val);
+};
+
+watch(
+    () => props.modelValue,
+    (v) => {
+        keystoreBase64.value = v;
+    },
+    {
+        deep: true,
+        immediate: true,
+    },
+);
 </script>
 
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>
