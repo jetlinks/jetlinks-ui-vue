@@ -171,6 +171,21 @@ const handleSubmit = () => {
             console.log('error', err);
         });
 };
+
+/**
+ * 绑定成功跳转至页面url的: redirect
+ */
+const goRedirect = () => {
+    const urlParams = new URLSearchParams(window.location.hash);
+    const redirectUrl =
+        urlParams.get('redirect') ||
+        window.location.href.split('redirect=')?.[1];
+    console.log('redirectUrl: ', redirectUrl);
+    //内部集成需要跳回它们页面
+    if (redirectUrl && redirectUrl.indexOf('account/center/bind') === -1) {
+        window.location.href = decodeURIComponent(redirectUrl);
+    }
+};
 </script>
 
 <style lang="less" scoped>
