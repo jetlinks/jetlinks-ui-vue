@@ -40,6 +40,10 @@ export default [
         path: '/table',
         component: () => import('@/views/table/index.vue')
     },
+    {
+        path: '/form',
+        component: () => import('@/views/demo/Form.vue')
+    },
     // end: 测试用, 可删除
 
     // link 运维管理
