@@ -108,6 +108,8 @@
 import { getImage } from '@/utils/comm';
 import { Form } from 'ant-design-vue';
 
+import { applicationInfo } from '@/api/bind';
+
 const useForm = Form.useForm;
 
 interface formData {
@@ -115,6 +117,16 @@ interface formData {
     password: string;
     captcha: string;
 }
+
+// 三方应用信息
+const getAppInfo = async () => {
+    const code: string = '73ab60c88979a1475963a5dde31e374b';
+    const res = await applicationInfo(code);
+    console.log('getAppInfo: ', res);
+};
+getAppInfo();
+
+// 登录表单
 const formData = ref<formData>({
     username: '',
     password: '',
@@ -158,6 +170,21 @@ const handleSubmit = () => {
         .catch((err) => {
             console.log('error', err);
         });
+};
+
+/**
+ * 绑定成功跳转至页面url的: redirect
+ */
+const goRedirect = () => {
+    const urlParams = new URLSearchParams(window.location.hash);
+    const redirectUrl =
+        urlParams.get('redirect') ||
+        window.location.href.split('redirect=')?.[1];
+    console.log('redirectUrl: ', redirectUrl);
+    //内部集成需要跳回它们页面
+    if (redirectUrl && redirectUrl.indexOf('account/center/bind') === -1) {
+        window.location.href = decodeURIComponent(redirectUrl);
+    }
 };
 </script>
 

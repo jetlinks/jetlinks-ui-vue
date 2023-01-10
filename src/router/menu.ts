@@ -29,7 +29,7 @@ export default [
         component: () => import('@/views/demo/index.vue')
     },
     {
-        path: '/bind',
+        path: '/account/center/bind',
         component: () => import('@/views/account/Center/bind/index.vue')
     },
     {
@@ -38,7 +38,11 @@ export default [
     },
     {
         path: '/table',
-        component: () => import('@/views/table/index.vue')
+        component: () => import('@/views/demo/table/index.vue')
+    },
+    {
+        path: '/form',
+        component: () => import('@/views/demo/Form.vue')
     },
     // end: 测试用, 可删除
 
