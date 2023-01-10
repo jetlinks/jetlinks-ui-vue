@@ -1,7 +1,7 @@
 import type { App } from 'vue'
 import AIcon from './AIcon'
 import PermissionButton from './PermissionButton/index.vue'
-import JTable from './Table/index'
+import JTable from './Table/index.vue'
 import TitleComponent from "./TitleComponent/index.vue";
 import Form from './Form'
 

@@ -1,7 +1,8 @@
 import { UnorderedListOutlined, AppstoreOutlined } from '@ant-design/icons-vue'
 import styles from './index.module.less'
-import { Space, Pagination, Table, Empty } from 'ant-design-vue'
+import { Pagination, Table, Empty } from 'ant-design-vue'
 import type { TableProps } from 'ant-design-vue/es/table'
+
 enum ModelEnum {
     TABLE = 'TABLE',
     CARD = 'CARD',
@@ -17,17 +18,14 @@ export declare type RequestData = {
     };
     status: number;
 } & Record<string, any>;
-// interface ColumnType extends 
 
 interface JTableProps extends TableProps{
-    // columns?: ColumnsType<RecordType>;
     request: (params: Record<string, any> & {
-        pageSize?: number;
-        pageIndex?: number;
+        pageSize: number;
+        pageIndex: number;
     }) => Promise<Partial<RequestData>>;
-    cardBodyClass?: string;
+    cardBodyClass: string;
 }
-
 
 const JTable = defineComponent<JTableProps>({
     name: 'JTable',
@@ -38,10 +36,15 @@ const JTable = defineComponent<JTableProps>({
     emits: [
         'modelChange', // 切换卡片和表格
     ],
-    setup(props: JTableProps, { slots, emit }){
+    props: {
+        cardBodyClass: '',
+        request: undefined,
+        columns: []
+    } as any,
+    setup(props ,{ slots, emit }){
         const model = ref<keyof typeof ModelEnum>(ModelEnum.CARD); // 模式切换
         const column = ref<number>(3);
-        console.log(props)
+        console.log(props.columns, props.request)
         const dataSource = ref<any[]>([
             {
               key: '1',
@@ -80,6 +83,8 @@ const JTable = defineComponent<JTableProps>({
                 address: '西湖区湖底公园1号',
               },
         ])
+
+        // 请求数据
 
         onMounted(() => {
 

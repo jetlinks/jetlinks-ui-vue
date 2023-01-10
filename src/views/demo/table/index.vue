@@ -18,20 +18,27 @@
                     key: 'address',
                 }
             ]"
+            :request="request"
         >
             <template #headerTitle>
                 <a-button type="primary">新增</a-button>
             </template>
             <template #cardRender="slotProps">
-                {{slotProps.name}}
+                <CardBox>
+                    <template #content>
+                        {{slotProps.item.name}}
+                    </template>
+                </CardBox>
             </template>
         </JTable>
     </div>
 </template>
 
 <script setup lang="ts">
-import { post } from "@/utils/request";
-// :request="post('/device-product/_query', {})"
+import server from "@/utils/request";
+import CardBox from '@/components/CardBox/index.vue';
+const request = (data: any) => server.post(`/device-product/_query`, data)
+
 </script>
 
 

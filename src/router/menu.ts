@@ -38,7 +38,7 @@ export default [
     },
     {
         path: '/table',
-        component: () => import('@/views/table/index.vue')
+        component: () => import('@/views/demo/table/index.vue')
     },
     {
         path: '/form',
