@@ -2,12 +2,43 @@
     <div class="init-home-container">
         <div class="title">请选择首页视图</div>
 
-        
-
+        <div class="choose-view">
+            <a-row class="view-content" :gutter="24">
+                <a-col
+                    :span="8"
+                    class="select-item"
+                    :class="{ selected: selectId === '1' }"
+                    @click="selectId = '1'"
+                >
+                    <img src="/images/home/device.png" alt="" />
+                </a-col>
+                <a-col
+                    :span="8"
+                    class="select-item"
+                    :class="{ selected: selectId === '2' }"
+                    @click="selectId = '2'"
+                >
+                    <img src="/images/home/ops.png" alt="" />
+                </a-col>
+                <a-col
+                    :span="8"
+                    class="select-item"
+                    :class="{ selected: selectId === '3' }"
+                    @click="selectId = '3'"
+                >
+                    <img src="/images/home/comprehensive.png" alt="" />
+                </a-col>
+            </a-row>
+            <a-button type="primary" class="btn" @click="confirm">确定</a-button>
+        </div>
     </div>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+const selectId = ref('1');
+
+const confirm = ()=>{}
+</script>
 
 <style lang="less" scoped>
 .init-home-container {
@@ -25,6 +56,30 @@
         font-weight: 400;
         font-size: 26px;
         text-align: center;
+    }
+
+    .choose-view {
+        width: 100%;
+        .view-content {
+            display: flex;
+            flex-flow: row wrap;
+            .select-item {
+                border: 2px solid transparent;
+                img {
+                    width: 100%;
+                }
+
+                &.selected {
+                    border-color: #10239e;
+                }
+            }
+        }
+
+        .btn {
+            display: block;
+            margin: 48px auto;
+            margin-bottom: 0;
+        }
     }
 }
 </style>

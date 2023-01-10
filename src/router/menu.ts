@@ -25,6 +25,10 @@ export default [
         component: () => import('@/views/demo/index.vue')
     },
     {
+        path: '/bind',
+        component: () => import('@/views/account/Center/bind/index.vue')
+    },
+    {
         path: '/iot/home',
         component: () => import('@/views/iot/home/index.vue')
     },

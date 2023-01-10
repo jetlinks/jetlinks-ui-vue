@@ -4,11 +4,19 @@
             <span>平台架构图</span>
             <p>PLATFORM ARCHITECTURE DIAGRAM</p>
         </div>
-        <img src="/images/home/content.png" class="bj" alt="" />
+        <img
+            :src="props.image || '/images/home/content.png'"
+            class="bj"
+            alt=""
+        />
     </a-card>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const props = defineProps({
+    image: String,
+});
+</script>
 
 <style lang="less" scoped>
 :deep(.ant-card-body) {
@@ -18,7 +26,7 @@
     position: relative;
     width: 100%;
     overflow: hidden;
-    min-height: 480px;
+    border-bottom: 1px solid #2f54eb;
 
     .bj {
         display: block;
@@ -36,12 +44,12 @@
         padding: 24px 40px;
         font-weight: 700;
         font-size: 18px;
-        
-        p{
+
+        p {
             position: absolute;
             top: 50px;
             width: 100%;
-            opacity: .3;
+            opacity: 0.3;
             font-size: 12px;
         }
 

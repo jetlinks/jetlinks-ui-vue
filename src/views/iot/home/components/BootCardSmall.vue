@@ -9,13 +9,18 @@
                 v-for="(item, index) in cardData"
                 @click="jumpPage(item)"
             >
-                <div class="item-english">{{ item.english }}</div>
-                <div class="item-title">{{ item.label }}</div>
-                <img
-                    class="item-image"
-                    :src="`/images/home/${index + 1}.png`"
-                    alt=""
-                />
+                <div class="item-content">
+                    <div class="icon">
+                        <img :src="item.image" alt="" />
+                    </div>
+                    <div class="intro">
+                        <div class="item-english">{{ item.english }}</div>
+                        <div class="item-label">{{ item.label }}</div>
+                    </div>
+                </div>
+                <div class="right-bj">
+                    <img :src="`/images/home/home-${index + 1}.png`" alt="" />
+                </div>
             </div>
         </div>
     </a-card>
@@ -30,6 +35,7 @@ type configItem = {
     english: string;
     label: string;
     params?: object;
+    image: string;
 };
 
 const router = useRouter();
@@ -50,6 +56,7 @@ const jumpPage = (row: configItem): void => {
 const objToParams = (source: object): string => {
     if (Object.prototype.toString.call(source) === '[object Object]') {
         const paramsArr = <any>[];
+        // 直接使用for in遍历对象ts会报错
         Object.entries(source).forEach(([prop, value]) => {
             if (typeof value === 'object') value = JSON.stringify(value);
             paramsArr.push(`${prop}=${value}`);
@@ -88,13 +95,15 @@ const objToParams = (source: object): string => {
         }
     }
     .box {
-        display: grid;
-        grid-column-gap: 56px;
-        grid-template-columns: repeat(3, 1fr);
+        font-size: 14px;
         .box-item {
             cursor: pointer;
             position: relative;
-            padding: 16px;
+            border-width: 1px 1px 1px 2px;
+            border-style: solid;
+            border-color: rgb(238, 238, 238) rgb(238, 238, 238)
+                rgb(238, 238, 238) rgb(133, 165, 255);
+            padding: 11px;
             background: linear-gradient(
                 135.62deg,
                 #f6f7fd 22.27%,
@@ -102,39 +111,25 @@ const objToParams = (source: object): string => {
             );
             border-radius: 2px;
             box-shadow: 0 4px 18px #efefef;
-            .item-english {
-                color: #4f4f4f;
+            &:not(:first-child) {
+                margin-top: 12px;
             }
 
-            .item-title {
-                margin: 20px 0;
-                color: @text-color;
-                font-weight: 700;
-                font-size: 20px;
+            .item-content {
+                display: flex;
+                align-items: center;
+                .item-label {
+                    color: #252526;
+                    font-size: 18px;
+                    font-weight: 700;
+                }
             }
-            .item-image {
+
+            .right-bj {
                 position: absolute;
                 right: 10%;
                 bottom: 0;
-            }
-            &::after {
-                position: absolute;
-                top: 50%;
-                right: -60px;
-                width: 60px;
-                height: 40px;
-                transform: translateY(-50%);
-                content: ' ';
-            }
-            &:nth-child(1) {
-                &::after {
-                    background: url('/images/home/arrow-2.png') no-repeat center;
-                }
-            }
-            &:nth-child(2) {
-                &::after {
-                    background: url('/images/home/arrow-2.png') no-repeat center;
-                }
+                width: 37px;
             }
         }
     }
