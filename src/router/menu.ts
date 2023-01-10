@@ -21,6 +21,10 @@ export default [
 
     // start: 测试用, 可删除
     {
+        path: '/login',
+        component: () => import('@/views/user/Login/index.vue')
+    },
+    {
         path: '/demo',
         component: () => import('@/views/demo/index.vue')
     },
@@ -31,6 +35,10 @@ export default [
     {
         path: '/iot/home',
         component: () => import('@/views/iot/home/index.vue')
+    },
+    {
+        path: '/table',
+        component: () => import('@/views/table/index.vue')
     },
     // end: 测试用, 可删除
 
