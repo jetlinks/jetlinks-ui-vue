@@ -21,6 +21,10 @@ export default [
 
     // start: 测试用, 可删除
     {
+        path: '/login',
+        component: () => import('@/views/user/Login/index.vue')
+    },
+    {
         path: '/demo',
         component: () => import('@/views/demo/index.vue')
     },
