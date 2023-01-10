@@ -30,6 +30,8 @@
 </template>
 
 <script setup lang="ts">
+import { post } from "@/utils/request";
+// :request="post('/device-product/_query', {})"
 </script>
 
 
