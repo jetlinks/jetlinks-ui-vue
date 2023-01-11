@@ -81,6 +81,9 @@ const combData = (dataSource: object) => {
 
 <style lang="less">
 .left-tree-container {
+    border-right: 1px solid #e9e9e9;
+    height: calc(100vh - 150px);
+    overflow-y: auto;
     .ant-tree-list {
         .ant-tree-list-holder-inner {
             .ant-tree-switcher-noop {

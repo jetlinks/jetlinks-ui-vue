@@ -6,9 +6,17 @@ export type treeNodeTpye = {
     children?: treeNodeTpye[];
 };
 export type methodType = {
-    [key:string]: object
+    [key: string]: object
 }
 export type apiObjType = {
     url: string,
     method: methodType
+}
+
+export type apiDetailsType = {
+    url: string;
+    method: string;
+    summary: string;
+    parameters: [];
+    requestBody?: any;
 }
