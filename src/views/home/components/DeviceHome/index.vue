@@ -26,6 +26,9 @@ import BootCard from '../BootCard.vue';
 import DeviceCountCard from '../DeviceCountCard.vue';
 import PlatformPicCard from '../PlatformPicCard.vue';
 import StepCard from '../StepCard.vue';
+
+import {recommendList} from '../../index'
+
 // import {getImage} from '@/utils/comm'
 
 // 物联网引导-数据
@@ -90,7 +93,7 @@ const stepDetails = [
         linkUrl: '/a',
         auth: false,
     },
-];
+] as recommendList[];
 </script>
 
 <style lang="less" scoped>

@@ -13,3 +13,11 @@ export interface productItem {
     label: string;
     value: string
 }
+
+export interface deviceInfo {
+    deviceId: string,
+    deviceName: string,
+    productName: string,
+    createTime: string,
+    status: boolean
+}

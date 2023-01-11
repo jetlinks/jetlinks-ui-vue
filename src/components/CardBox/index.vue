@@ -60,7 +60,7 @@
         </div>
 
         <!-- 按钮 -->
-        <slot name="botton-tool">
+        <slot name="bottom-tool">
             <div v-if="showTool" class="card-tools">
                 <div
                     v-for="item in actions"

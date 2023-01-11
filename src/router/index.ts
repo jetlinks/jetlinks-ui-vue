@@ -10,7 +10,6 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const token = LocalStore.get(TOKEN_KEY)
-    next() // 测试用, 可删除
     if (token) {
         next()
     } else {

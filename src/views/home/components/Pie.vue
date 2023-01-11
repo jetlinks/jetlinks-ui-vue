@@ -4,8 +4,9 @@
 
 <script setup lang="ts">
 import * as echarts from 'echarts';
+import { ComponentInternalInstance } from 'vue';
 
-const { proxy } = getCurrentInstance();
+const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 
 const props = defineProps({
     chartRef: String,
@@ -50,7 +51,7 @@ watch(options, () => {
 });
 const initChart = () => {
     nextTick(() => {
-        const myChart = echarts.init(proxy.$refs[props.chartRef]);
+        const myChart = echarts.init(proxy?.$refs[props.chartRef as string] as HTMLElement);
 
         myChart.clear();
         myChart.setOption(options.value);

@@ -29,16 +29,16 @@ export default [
         component: () => import('@/views/demo/index.vue')
     },
     {
-        path: '/bind',
+        path: '/account/center/bind',
         component: () => import('@/views/account/Center/bind/index.vue')
     },
     {
         path: '/iot/home',
-        component: () => import('@/views/iot/home/index.vue')
+        component: () => import('@/views/home/index.vue')
     },
     {
         path: '/table',
-        component: () => import('@/views/table/index.vue')
+        component: () => import('@/views/demo/table/index.vue')
     },
     {
         path: '/form',

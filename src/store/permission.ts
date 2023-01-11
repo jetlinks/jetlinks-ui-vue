@@ -1,10 +1,9 @@
 import { defineStore } from "pinia";
-import type { MENUS_CODE_TYPE, BUTTON_PERMISSION } from '@/router/router'
 
 export const usePermissionStore = defineStore({
   id: 'permission',
   state: () => ({
-    permissions: {} as {[key: MENUS_CODE_TYPE]: BUTTON_PERMISSION},
+    permissions: {} as {[key: string]: string},
   }),
   getters:  {
     check(state) {

@@ -186,5 +186,5 @@ const opsStepDetails = [
         linkUrl: '/a',
         auth: false,
     },
-];
+] as recommendList[];
 </script>
