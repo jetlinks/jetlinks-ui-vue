@@ -64,16 +64,14 @@ const handleChange = (info: UploadChangeParam) => {
         message.success('上传成功！');
         const result = info.file.response?.result;
         keystoreBase64.value = result;
-        console.log(1114, result);
         loading.value = false;
         emit('change', result);
         emit('update:modelValue', result);
     }
 };
 const textChange = (val: any) => {
-    val.name = props.name;
-    emit('change', val);
-    // emit('update:modelValue', val);
+    emit('change', keystoreBase64.value);
+    emit('update:modelValue', keystoreBase64.value);
 };
 
 watch(

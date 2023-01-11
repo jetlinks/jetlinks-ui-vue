@@ -11,8 +11,8 @@
                     status="disable"
                     :statusNames="{ disable: StatusColorEnum.error }"
                     statusText="正常"
-                    :showMask="false"
                     :actions="actions"
+                    v-model="data"
                 >
                     <template #img>
                         <img :src="getImage('/device-product.png')" />
@@ -63,6 +63,10 @@ const actions = ref([
         label: '删除',
     },
 ]);
+const data = ref({
+    id: 123
+})
+
 </script>
 
 <style lang="less" scoped>

@@ -4,7 +4,7 @@
         <div class="content">
             <div class="title">第三方账户绑定</div>
             <!-- 已登录-绑定三方账号 -->
-            <template v-if="false">
+            <template v-if="!token">
                 <div class="info">
                     <a-card style="width: 280px">
                         <template #title>
@@ -28,14 +28,21 @@
                             </div>
                         </template>
                         <div class="info-body">
-                            <img :src="getImage('/bind/wechat-webapp.png')" />
+                            <img
+                                :src="
+                                    accountInfo?.avatar ||
+                                    getImage('/bind/wechat-webapp.png')
+                                "
+                            />
                             <p>用户名：-</p>
-                            <p>名称：微信昵称</p>
+                            <p>名称：{{ accountInfo?.name || '-' }}</p>
                         </div>
                     </a-card>
                 </div>
                 <div class="btn">
-                    <a-button type="primary">立即绑定</a-button>
+                    <a-button type="primary" @click="handleBind"
+                        >立即绑定</a-button
+                    >
                 </div>
             </template>
             <!-- 未登录-绑定三方账号 -->
@@ -74,23 +81,25 @@
                             </a-form-item>
                             <a-form-item
                                 label="验证码"
-                                v-bind="validateInfos.captcha"
+                                v-bind="validateInfos.verifyCode"
                             >
                                 <a-input
-                                    v-model:value="formData.captcha"
+                                    v-model:value="formData.verifyCode"
                                     placeholder="请输入验证码"
                                 >
                                     <template #addonAfter>
-                                        <span style="cursor: pointer">
-                                            图形验证码
-                                        </span>
+                                        <img
+                                            :src="captcha.base64"
+                                            @click="getCode"
+                                            style="cursor: pointer"
+                                        />
                                     </template>
                                 </a-input>
                             </a-form-item>
                             <a-form-item>
                                 <a-button
                                     type="primary"
-                                    @click="handleSubmit"
+                                    @click="handleLoginBind"
                                     style="width: 100%"
                                 >
                                     登录并绑定账户
@@ -105,32 +114,58 @@
 </template>
 
 <script setup lang="ts">
-import { getImage } from '@/utils/comm';
+import { getImage, LocalStore } from '@/utils/comm';
+import { TOKEN_KEY } from '@/utils/variable';
 import { Form } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
-import { applicationInfo } from '@/api/bind';
+import { applicationInfo, bindAccount } from '@/api/bind';
+import { code, authLogin } from '@/api/login';
 
 const useForm = Form.useForm;
 
 interface formData {
     username: string;
     password: string;
-    captcha: string;
+    verifyCode: string;
 }
 
+const token = computed(() => LocalStore.get(TOKEN_KEY));
+
+// 已登录直接绑定
+const getUrlCode = () => {
+    const url = new URLSearchParams(window.location.href);
+    return url.get('code') as string;
+};
 // 三方应用信息
+const accountInfo = ref({
+    avatar: '',
+    name: '',
+});
 const getAppInfo = async () => {
-    const code: string = '73ab60c88979a1475963a5dde31e374b';
+    const code = getUrlCode();
     const res = await applicationInfo(code);
-    console.log('getAppInfo: ', res);
+    accountInfo.value = res?.result?.result;
 };
 getAppInfo();
 
-// 登录表单
+/**
+ * 立即绑定
+ */
+const handleBind = async () => {
+    const code = getUrlCode();
+    const res = await bindAccount(code);
+    console.log('bindAccount: ', res);
+    message.success('绑定成功');
+    goRedirect();
+    setTimeout(() => window.close(), 1000);
+};
+
+// 未登录-先登录再绑定
 const formData = ref<formData>({
     username: '',
     password: '',
-    captcha: '',
+    verifyCode: '',
 });
 const formRules = ref({
     username: [
@@ -145,7 +180,7 @@ const formRules = ref({
             message: '请输入密码',
         },
     ],
-    captcha: [
+    verifyCode: [
         {
             required: true,
             message: '请输入验证码',
@@ -159,16 +194,39 @@ const { resetFields, validate, validateInfos } = useForm(
 );
 
 /**
+ * 获取图形验证码
+ */
+const captcha = ref({
+    base64: '',
+    key: '',
+});
+const getCode = async () => {
+    const res: any = await code();
+    captcha.value = res.result;
+};
+getCode();
+
+/**
  * 登录并绑定账户
  */
-const handleSubmit = () => {
+const handleLoginBind = () => {
     validate()
-        .then(() => {
-            console.log('toRaw:', toRaw(formData.value));
-            console.log('formData.value:', formData.value);
+        .then(async () => {
+            const code = getUrlCode();
+            const params = {
+                ...formData.value,
+                verifyKey: captcha.value.key,
+                bindCode: code,
+                expires: 3600000,
+            };
+            const res = await authLogin(params);
+            console.log('res: ', res);
+            message.success('登录成功');
+            goRedirect();
+            setTimeout(() => window.close(), 1000);
         })
         .catch((err) => {
-            console.log('error', err);
+            getCode();
         });
 };
 

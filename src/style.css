@@ -1,0 +1,4 @@
+.ant-form-item-required:before {
+    position: absolute;
+    right: -12px;
+}

@@ -30,18 +30,10 @@
                 重置
             </a-button>
         </div>
-        <a-table
-            :columns="columns"
-            :data-source="tableData"
-            :row-selection="{
-                onChange: (selectedRowKeys, selectedRows) =>
-                    (selectItem = selectedRows),
-                type: 'radio',
-            }"
-        >
-        </a-table>
+        <JTable :columns="columns"> 
+            
+        </JTable>
 
-        
         <template #footer>
             <a-button key="back" @click="visible = false">取消</a-button>
             <a-button key="submit" type="primary" @click="handleOk"
@@ -90,9 +82,7 @@ const productList = ref<[productItem] | []>([]);
 const getOptions = () => {
     productList.value = [];
 };
-const clickSearch = ()=>{
-
-}
+const clickSearch = () => {};
 const clickReset = () => {
     Object.entries(form.value).forEach(([prop]) => {
         form.value[prop] = '';
@@ -102,27 +92,27 @@ const clickReset = () => {
 // 表格部分
 const columns = [
     {
-        name: 'deviceId',
+        title: '设备Id',
         dataIndex: 'deviceId',
         key: 'deviceId',
     },
     {
-        name: 'deviceName',
+        title: '设备名称',
         dataIndex: 'deviceName',
         key: 'deviceName',
     },
     {
-        name: 'productName',
+        title: '产品名称',
         dataIndex: 'productName',
         key: 'productName',
     },
     {
-        name: 'createTime',
+        title: '注册时间',
         dataIndex: 'createTime',
         key: 'createTime',
     },
     {
-        name: 'status',
+        title: '状态',
         dataIndex: 'status',
         key: 'status',
     },
