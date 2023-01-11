@@ -33,7 +33,7 @@
                 </div>
             </div>
             <div v-else>
-                <a-table {...props} :columns="[..._columns]" :dataSource="dataSource" :pagination="false">
+                <a-table {...props} :columns="[..._columns]" :dataSource="dataSource" :pagination="false" :scroll="{ x: 1366 }">
                     <template #bodyCell="{ column, record }">
                         <template v-if="column.key === 'action'">
                             <a-space>
