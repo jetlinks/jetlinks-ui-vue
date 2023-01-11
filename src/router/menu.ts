@@ -60,6 +60,10 @@ export default [
         component: () => import('@/views/link/Certificate/Detail/index.vue')
     },
     {
+        path: '/link/accessConfig',
+        component: () => import('@/views/link/AccessConfig/index.vue')
+    },
+    {
         path: '/link/accessConfig/detail/add',
         component: () => import('@/views/link/AccessConfig/Detail/index.vue')
     },

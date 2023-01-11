@@ -1,62 +1,93 @@
 <template>
-    <a-card :bordered="false">
-        <TitleComponent data="自定义设备接入"></TitleComponent>
-        <div>
-            <a-row :gutter="[24, 24]">
-                <a-col :span="12" v-for="item in items" :key="item.id">
-                    <div class="provider">
-                        <div class="box">
-                            <div class="left">
-                                <div class="images">
-                                    <img :src="backMap.get(item.id)" />
-                                </div>
-                                <div class="context">
-                                    <div class="title">{{ item.name }}</div>
-                                    <div class="desc">
-                                        <a-tooltip :title="item.description">
-                                            {{ item.description || '' }}
-                                        </a-tooltip>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="right">
-                                <a-button
-                                    type="primary"
-                                    @click="goProviders(item)"
-                                    >接入</a-button
-                                >
-                            </div>
-                        </div>
-                    </div>
-                </a-col>
-            </a-row>
-        </div>
-    </a-card>
+    <a-spin :spinning="loading">
+        <a-card :bordered="false">
+            <div v-if="type">
+                <Provider
+                    @onClick="goProviders"
+                    :dataSource="dataSource"
+                ></Provider>
+            </div>
+            <div v-else>
+                <div v-if="!id"><a @click="goBack">返回</a></div>
+                <AccessNetwork :provider="provider" :data="data" />
+            </div>
+        </a-card>
+    </a-spin>
 </template>
 
 <script lang="ts" setup name="AccessConfigDetail">
 import { getImage } from '@/utils/comm';
 import TitleComponent from '@/components/TitleComponent/index.vue';
+import AccessNetwork from '../components/Network.vue';
+import Provider from '../components/Provider/index.vue';
+import { getProviders, detail } from '@/api/link/accessConfig';
 
-const items = [
-    { id: 'mqtt-server-gateway', name: '测试1', description: '测试1' },
-    { id: 'websocket-server', name: '测试2', description: '测试' },
-    { id: 'coap-server-gateway', name: '测试3', description: '测试' },
-];
+// const router = useRouter();
+const route = useRoute();
 
-const backMap = new Map();
-backMap.set('mqtt-server-gateway', getImage('/access/mqtt.png'));
-backMap.set('websocket-server', getImage('/access/websocket.png'));
-backMap.set('coap-server-gateway', getImage('/access/coap.png'));
-backMap.set('tcp-server-gateway', getImage('/access/tcp.png'));
-backMap.set('child-device', getImage('/access/child-device.png'));
-backMap.set('http-server-gateway', getImage('/access/http.png'));
-backMap.set('udp-device-gateway', getImage('/access/udp.png'));
-backMap.set('mqtt-client-gateway', getImage('/access/mqtt-broke.png'));
+const id = route.query.id;
 
-const goProviders = (value: object) => {
-    console.log(111, value);
+const dataSource = ref([]);
+const type = ref(false);
+const loading = ref(true);
+const provider = ref({});
+const data = ref({});
+
+const goProviders = (param: object) => {
+    provider.value = param;
+    type.value = false;
 };
+
+const goBack = () => {
+    provider.value = {};
+    type.value = true;
+};
+
+const queryProviders = async () => {
+    const resp = await getProviders();
+    if (resp.status === 200) {
+        dataSource.value = resp.result.filter(
+            (item) =>
+                item.channel === 'network' || item.channel === 'child-device',
+        );
+    }
+};
+
+const getProvidersData = async () => {
+    if (id) {
+        getProviders().then((response) => {
+            if (response.status === 200) {
+                dataSource.value = response.result.filter(
+                    (item) =>
+                        item.channel === 'network' ||
+                        item.channel === 'child-device',
+                );
+                detail(id).then((resp) => {
+                    if (resp.status === 200) {
+                        const dt = response.result.find(
+                            (item) => item?.id === resp.result.provider,
+                        );
+                        provider.value = dt;
+                        data.value = resp.result;
+                        type.value = false;
+                    }
+                });
+                loading.value = false;
+            } else {
+                loading.value = false;
+            }
+        });
+    } else {
+        type.value = true;
+        queryProviders();
+        loading.value = false;
+    }
+};
+
+onMounted(() => {
+    loading.value = true;
+    getProvidersData();
+});
 </script>
 
 <style lang="less" scoped>

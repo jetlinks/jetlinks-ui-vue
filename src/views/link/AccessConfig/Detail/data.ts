@@ -1,21 +1,30 @@
-const MetworkTypeMapping = new Map();
-MetworkTypeMapping.set('websocket-server', 'WEB_SOCKET_SERVER');
-MetworkTypeMapping.set('http-server-gateway', 'HTTP_SERVER');
-MetworkTypeMapping.set('udp-device-gateway', 'UDP');
-MetworkTypeMapping.set('coap-server-gateway', 'COAP_SERVER');
-MetworkTypeMapping.set('mqtt-client-gateway', 'MQTT_CLIENT');
-MetworkTypeMapping.set('mqtt-server-gateway', 'MQTT_SERVER');
-MetworkTypeMapping.set('tcp-server-gateway', 'TCP_SERVER');
 
-const ProcotoleMapping = new Map();
-ProcotoleMapping.set('websocket-server', 'WebSocket');
-ProcotoleMapping.set('http-server-gateway', 'HTTP');
-ProcotoleMapping.set('udp-device-gateway', 'UDP');
-ProcotoleMapping.set('coap-server-gateway', 'CoAP');
-ProcotoleMapping.set('mqtt-client-gateway', 'MQTT');
-ProcotoleMapping.set('mqtt-server-gateway', 'MQTT');
-ProcotoleMapping.set('tcp-server-gateway', 'TCP');
-ProcotoleMapping.set('child-device', '');
+const ProtocolMapping = new Map();
+ProtocolMapping.set('websocket-server', 'WebSocket');
+ProtocolMapping.set('http-server-gateway', 'HTTP');
+ProtocolMapping.set('udp-device-gateway', 'UDP');
+ProtocolMapping.set('coap-server-gateway', 'CoAP');
+ProtocolMapping.set('mqtt-client-gateway', 'MQTT');
+ProtocolMapping.set('mqtt-server-gateway', 'MQTT');
+ProtocolMapping.set('tcp-server-gateway', 'TCP');
+ProtocolMapping.set('child-device', '');
+ProtocolMapping.set('OneNet', 'HTTP');
+ProtocolMapping.set('Ctwing', 'HTTP');
+ProtocolMapping.set('modbus-tcp', 'MODBUS_TCP');
+ProtocolMapping.set('opc-ua', 'OPC_UA');
+ProtocolMapping.set('edge-child-device', 'EdgeGateway');
+ProtocolMapping.set('official-edge-gateway', 'MQTT');
+
+const NetworkTypeMapping = new Map();
+NetworkTypeMapping.set('websocket-server', 'WEB_SOCKET_SERVER');
+NetworkTypeMapping.set('http-server-gateway', 'HTTP_SERVER');
+NetworkTypeMapping.set('udp-device-gateway', 'UDP');
+NetworkTypeMapping.set('coap-server-gateway', 'COAP_SERVER');
+NetworkTypeMapping.set('mqtt-client-gateway', 'MQTT_CLIENT');
+NetworkTypeMapping.set('mqtt-server-gateway', 'MQTT_SERVER');
+NetworkTypeMapping.set('tcp-server-gateway', 'TCP_SERVER');
+NetworkTypeMapping.set('official-edge-gateway', 'MQTT_SERVER');
+
 
 const descriptionList = {
     'udp-device-gateway':
@@ -96,4 +105,4 @@ const columnsHTTP = [
       },
 ]
 
-export { MetworkTypeMapping, ProcotoleMapping, descriptionList, columnsMQTT, columnsHTTP };
+export { NetworkTypeMapping, ProtocolMapping, descriptionList, columnsMQTT, columnsHTTP };
