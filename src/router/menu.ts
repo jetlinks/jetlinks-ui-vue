@@ -63,4 +63,9 @@ export default [
         path: '/link/accessConfig/detail/add',
         component: () => import('@/views/link/AccessConfig/Detail/index.vue')
     },
+    // 初始化
+    {
+      path: '/init-home',
+      component: () => import('@/views/init-home/index.vue')
+  },
 ]
