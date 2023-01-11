@@ -5,6 +5,7 @@ import JTable from './Table/index.vue'
 import TitleComponent from "./TitleComponent/index.vue";
 import Form from './Form';
 import CardBox from './CardBox/index.vue';
+import Search from './Search'
 
 export default  {
     install(app: App) {
@@ -14,5 +15,6 @@ export default  {
             .component('TitleComponent', TitleComponent)
             .component('Form', Form)
             .component('CardBox', CardBox)
+            .component('Search', Search)
     }
 }

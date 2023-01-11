@@ -21,7 +21,7 @@ const submit = () => {
 }
 
 const reset = () => {
-
+  form.value.reset()
 }
 
 const setValue =() => {
