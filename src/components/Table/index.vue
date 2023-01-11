@@ -53,8 +53,13 @@
             <a-pagination
                 size="small"
                 :total="total"
-                :show-total="total => `第 ${1} - ${1} 条/总共 ${total} 条`"
+                :showQuickJumper="false"
+                :showSizeChanger="true"
+                v-model:current="pageIndex"
+                v-model:page-size="pageSize"
+                :show-total="(total, range) => `第 ${range[0]} - ${range[1]} 条/总共 ${total} 条`"
                 @change="pageChange"
+                :page-size-options="[12, 24, 48, 60, 100]"
             />
         </div>
     </div>
@@ -135,33 +140,30 @@ const modelChange = (type: keyof typeof ModelEnum) => {
 // 请求数据
 const handleSearch = async (params1?: Record<string, any>) => {
     const resp = await props.request({
-        pageSize: 10,
+        pageSize: 12,
         pageIndex: 1,
         ...params1
     })
     if(resp.status === 200){
-        dataSource.value = [ // resp.result?.data || 
-          {
-            key: '1',
-            name: '胡彦斌',
-            age: 32,
-            address: '西湖区湖底公园1号',
-          },
-          {
-            key: '2',
-            name: '胡彦祖',
-            age: 42,
-            address: '西湖区湖底公园1号',
-          },
-        ],
+        dataSource.value = resp.result?.data || []
         pageIndex.value = resp.result?.pageIndex || 0
         pageSize.value = resp.result?.pageSize || 6
         total.value = resp.result?.total || 0
     }
 }
 
-const pageChange = () => {
-
+const pageChange = (page: number, size: number) => {
+    if(pageSize.value === size) {
+        handleSearch({
+            pageSize: size,
+            pageIndex: page,
+        })
+    } else {
+        handleSearch({
+            pageSize: size,
+            pageIndex: 1,
+        })
+    }
 }
 
 watchEffect(() => {
@@ -226,9 +228,9 @@ watchEffect(() => {
         margin-top: 20px;
         display: flex;
         justify-content: flex-end;
-        // position: absolute;
-        // right: 24px;
-        // bottom: 24px;
+        /deep/  .ant-pagination-item {
+            display: none !important;
+        }
     }
 }   
 </style>

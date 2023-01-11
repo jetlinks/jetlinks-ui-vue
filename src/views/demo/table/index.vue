@@ -3,19 +3,19 @@
         <JTable 
             :columns="[
                 {
-                    title: '姓名',
+                    title: '名称',
                     dataIndex: 'name',
                     key: 'name',
                 },
                 {
-                    title: '年龄',
-                    dataIndex: 'age',
-                    key: 'age',
+                    title: 'ID',
+                    dataIndex: 'id',
+                    key: 'id',
                 },
                 {
-                    title: '住址',
-                    dataIndex: 'address',
-                    key: 'address',
+                    title: '分类',
+                    dataIndex: 'classifiedName',
+                    key: 'classifiedName',
                 },
             ]"
             :actions="actions"
@@ -40,11 +40,18 @@ import server from "@/utils/request";
 import CardBox from '@/components/CardBox/index.vue';
 
 const request = (data: any) => server.post(`/device-product/_query`, data)
-const actions = [{
-    key: 'delete',
-    disabled: true,
-    text: "删除"
-}]
+const actions = [
+    {
+        key: 'edit',
+        // disabled: true,
+        text: "编辑"
+    },
+    {
+        key: 'delete',
+        disabled: true,
+        text: "删除"
+    }
+]
 </script>
 
 
