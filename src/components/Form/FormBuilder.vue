@@ -1,6 +1,7 @@
 <template>
   <div class='JForm-content'>
     <a-form
+      ref='form'
       v-bind='props'
       :model='formData.data'
       layout='vertical'
@@ -95,13 +96,12 @@ import type { Options, OptionsItem, OptionsComponent } from './index.modules'
 import { PropType } from 'vue'
 import { get, isArray, isString, pick, set } from 'lodash-es'
 import { formProps } from 'ant-design-vue/es/form'
-import { Form } from 'ant-design-vue';
 import componentType from './util'
 import {
   QuestionCircleOutlined
 } from '@ant-design/icons-vue';
 
-const useform = Form.useForm;
+const form = ref()
 
 const props = defineProps({
   ...formProps,
@@ -127,8 +127,6 @@ const formData = reactive({
 const formOptions = reactive<{ data: OptionsComponent[]}>({
   data: []
 }) // 表单Item
-
-const { resetFields, validate} = useform(formData, props.rules)
 
 const rowType = ref<string | undefined>(undefined)
 
@@ -196,7 +194,7 @@ const handleFormData = (data: Options, parentKey: Array<string> = []): any => {
  * 重置表单
  */
 const resetModel = () => {
-  resetFields()
+  form.value.resetFields()
 }
 
 /**
@@ -204,9 +202,9 @@ const resetModel = () => {
  */
 const formValidate = () => {
   return new Promise((res, rej) => {
-    validate().then(data => {
+    form.value.validate().then(() => {
       res(formData.data)
-    }).catch(err => {
+    }).catch((err: any) => {
       rej(err)
     })
   })
