@@ -20,7 +20,7 @@ export default defineConfig(({ mode}) => {
       resolve: {
           alias: {
               '@': path.resolve(__dirname, 'src'),
-              'styles': path.resolve(__dirname, 'src/style'),
+              'style': path.resolve(__dirname, 'src/style'),
               'layouts': path.resolve(__dirname, 'src/layouts'),
               'components': path.resolve(__dirname, 'src/components'),
               'store': path.resolve(__dirname, 'src/store'),

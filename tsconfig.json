@@ -16,7 +16,11 @@
     "allowJs": true,
     "baseUrl": "./",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "components/*": ["./src/components/*"],
+      "layouts/*": ["./src/layouts/*"],
+      "store/*": ["./src/store/*"],
+      "style/*": ["./src/style/*"],
     },
     "types": ["ant-design-vue/typings/global"],
     "suppressImplicitAnyIndexErrors": true
