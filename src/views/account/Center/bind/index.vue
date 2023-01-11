@@ -120,7 +120,9 @@ interface formData {
 
 // 三方应用信息
 const getAppInfo = async () => {
-    const code: string = '73ab60c88979a1475963a5dde31e374b';
+    // const code: string = '73ab60c88979a1475963a5dde31e374b';
+    const url = new URLSearchParams(window.location.href);
+    const code = url.get('code') as string;
     const res = await applicationInfo(code);
     console.log('getAppInfo: ', res);
 };
