@@ -1,68 +1,89 @@
 <template>
-    <div class="jtable-body">
-        <div class="jtable-body-header">
-            <div class="jtable-body-header-left">
-                <slot name="headerTitle"></slot>
-            </div>
-            <div class="jtable-body-header-right" v-if="!model">
-                <div class="jtable-setting-item" :class="[ModelEnum.CARD === _model ? 'active' : '']" @click="modelChange(ModelEnum.CARD)">
-                    <AppstoreOutlined />
+    <a-spin :spinning="loading">
+        <div class="jtable-body">
+            <div class="jtable-body-header">
+                <div class="jtable-body-header-left">
+                    <slot name="headerTitle"></slot>
                 </div>
-                <div class="jtable-setting-item" :class="[ModelEnum.TABLE === _model ? 'active' : '']" @click="modelChange(ModelEnum.TABLE)">
-                    <UnorderedListOutlined  />
+                <div class="jtable-body-header-right" v-if="!model">
+                    <div class="jtable-setting-item" :class="[ModelEnum.CARD === _model ? 'active' : '']" @click="modelChange(ModelEnum.CARD)">
+                        <AppstoreOutlined />
+                    </div>
+                    <div class="jtable-setting-item" :class="[ModelEnum.TABLE === _model ? 'active' : '']" @click="modelChange(ModelEnum.TABLE)">
+                        <UnorderedListOutlined  />
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="jtable-content">
-            <div v-if="_model === ModelEnum.CARD" class="jtable-card">
-                <div 
-                    v-if="dataSource.length"
-                    class="jtable-card-items"
-                    :style="{gridTemplateColumns: `repeat(${column}, 1fr)`}"
-                >
+            <div class="jtable-content">
+                <!-- <div class="jtable-alert">
+                    <a-alert message="Info Text" type="info" />
+                </div> -->
+                <div v-if="_model === ModelEnum.CARD" class="jtable-card">
                     <div 
-                        class="jtable-card-item" 
-                        v-for="(item, index) in dataSource" 
-                        :key="index"
+                        v-if="_dataSource.length"
+                        class="jtable-card-items"
+                        :style="{gridTemplateColumns: `repeat(${column}, 1fr)`}"
                     >
-                        <slot name="cardRender" :item="item" :index="index"></slot>
+                        <div 
+                            class="jtable-card-item" 
+                            v-for="(item, index) in _dataSource" 
+                            :key="index"
+                        >
+                            <CardBox :actions="actions" v-bind="cardProps">
+                                <template #img>
+                                    <slot name="img">
+                                        <img :src="getImage('/device-product.png')" />
+                                    </slot>
+                                </template>
+                                <template #content>
+                                    <slot name="cardContent" :item="item" :index="index"></slot>
+                                </template>
+                            </CardBox>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <a-empty :image="Empty.PRESENTED_IMAGE_SIMPLE" />
                     </div>
                 </div>
                 <div v-else>
-                    <a-empty :image="Empty.PRESENTED_IMAGE_SIMPLE" />
+                    <a-table :rowSelection="rowSelection" :columns="[..._columns]" :dataSource="_dataSource" :pagination="false" :scroll="{ x: 1366 }">
+                        <template #bodyCell="{ column, record }">
+                            <template v-if="column.key === 'action'">
+                                <a-space>
+                                    <a-tooltip v-for="i in actions" :key="i.key" v-bind="i.tooltip">
+                                        <a-popconfirm v-if="i.popConfirm" v-bind="i.popConfirm">
+                                            <a>
+                                                {{i.text}}
+                                            </a>
+                                        </a-popconfirm>
+                                        <a v-else @click="i.onClick && i.onClick(record)">
+                                            {{i.text}}
+                                        </a>
+                                    </a-tooltip>
+                                </a-space>
+                            </template>
+                            <template v-else-if="column.scopedSlots">
+                               <slot :name="column.key" :row="record"></slot>
+                            </template>
+                        </template>
+                    </a-table>
                 </div>
             </div>
-            <div v-else>
-                <a-table {...props} :columns="[..._columns]" :dataSource="dataSource" :pagination="false" :scroll="{ x: 1366 }">
-                    <template #bodyCell="{ column, record }">
-                        <template v-if="column.key === 'action'">
-                            <a-space>
-                                <a-tooltip v-for="i in actions" :key="i.key" {...i.tooltip}>
-                                    <a-popconfirm v-if="i.popConfirm" {...i.popConfirm}>
-                                        <a>{{i.text}}</a>
-                                    </a-popconfirm>
-                                    <a v-else @click="i.onClick && i.onClick(record)">{{i.text}}</a>
-                                </a-tooltip>
-                            </a-space>
-                        </template>
-                    </template>
-                </a-table>
+            <div class="jtable-pagination" v-if="_dataSource.length && !noPagination">
+                <a-pagination
+                    size="small"
+                    :total="total"
+                    :showQuickJumper="false"
+                    :showSizeChanger="true"
+                    v-model:current="pageIndex"
+                    v-model:page-size="pageSize"
+                    :show-total="(total, range) => `第 ${range[0]} - ${range[1]} 条/总共 ${total} 条`"
+                    @change="pageChange"
+                    :page-size-options="[12, 24, 48, 60, 100]"
+                />
             </div>
         </div>
-        <div class="jtable-pagination" v-if="dataSource.length">
-            <a-pagination
-                size="small"
-                :total="total"
-                :showQuickJumper="false"
-                :showSizeChanger="true"
-                v-model:current="pageIndex"
-                v-model:page-size="pageSize"
-                :show-total="(total, range) => `第 ${range[0]} - ${range[1]} 条/总共 ${total} 条`"
-                @change="pageChange"
-                :page-size-options="[12, 24, 48, 60, 100]"
-            />
-        </div>
-    </div>
+    </a-spin>
 </template>
 
 <script setup lang="ts">
@@ -72,6 +93,7 @@ import type { TooltipProps } from 'ant-design-vue/es/tooltip'
 import type { PopconfirmProps } from 'ant-design-vue/es/popconfirm'
 import { Empty } from 'ant-design-vue'
 import { CSSProperties } from 'vue';
+import { getImage } from '@/utils/comm';
 
 enum ModelEnum {
     TABLE = 'TABLE',
@@ -91,17 +113,18 @@ type RequestData = {
 
 export interface ActionsType {
     key: string;
-    text: string;
+    text?: string;
     disabled?: boolean;
-    permission: boolean;
+    permission?: boolean;
     onClick?: (data: any) => void;
     style?: CSSProperties;
     tooltip?: TooltipProps;
-    popConfirm: PopconfirmProps
+    popConfirm?: PopconfirmProps;
+    icon?: string;
 }
 
 interface JTableProps extends TableProps{
-    request: (params: Record<string, any> & {
+    request?: (params: Record<string, any> & {
         pageSize: number;
         pageIndex: number;
     }) => Promise<Partial<RequestData>>;
@@ -112,10 +135,13 @@ interface JTableProps extends TableProps{
         pageIndex: number;
     };
     model?: keyof typeof ModelEnum | undefined; // 显示table还是card
-    actions?: ActionsType[]
+    actions?: ActionsType[];
+    noPagination?: boolean;
+    rowSelection?: TableProps['rowSelection'];
+    cardProps?:  Record<string, any>;
+    dataSource?:  Record<string, any>[];
 }
-// props和emit
-// const emit = defineEmits(["modelChange"]);
+// props
 const props = withDefaults(defineProps<JTableProps>(), {
     cardBodyClass: '',
     request: undefined,
@@ -125,45 +151,56 @@ const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE
 
 const _model = ref<keyof typeof ModelEnum>(props.model ? props.model : ModelEnum.CARD); // 模式切换
 const column = ref<number>(4);
-const dataSource = ref<Record<string, any>[]>([])
+const _dataSource = ref<Record<string, any>[]>([])
 const pageIndex = ref<number>(0)
 const pageSize = ref<number>(6)
 const total = ref<number>(0)
 const _columns = ref<Record<string, any>[]>([])
+const loading = ref<boolean>(true)
+// 
+// const slotColumns = computed(() => props.columns.filter((item) => item.scopedSlots))
 // 方法
-
 // 切换卡片和表格
 const modelChange = (type: keyof typeof ModelEnum) => {
     _model.value = type
 }
-
 // 请求数据
-const handleSearch = async (params1?: Record<string, any>) => {
+const handleSearch = async (_params?: Record<string, any>) => {
+    loading.value = true
+    if(props.request) {
     const resp = await props.request({
-        pageSize: 12,
-        pageIndex: 1,
-        ...params1
-    })
-    if(resp.status === 200){
-        dataSource.value = resp.result?.data || []
-        pageIndex.value = resp.result?.pageIndex || 0
-        pageSize.value = resp.result?.pageSize || 6
-        total.value = resp.result?.total || 0
+            pageSize: 12,
+            pageIndex: 1,
+            ..._params
+        })
+        if(resp.status === 200){
+            // 判断如果是最后一页且最后一页为空，就跳转到前一页
+            if(resp.result?.data?.length === 0 && resp.result.total && resp.result.pageSize && resp.result.pageIndex) {
+                handleSearch({
+                    ..._params,
+                    pageSize: pageSize.value,
+                    pageIndex: pageIndex.value - 1,
+                })
+            } else {
+                _dataSource.value = resp.result?.data || []
+                pageIndex.value = resp.result?.pageIndex || 0
+                pageSize.value = resp.result?.pageSize || 6
+                total.value = resp.result?.total || 0
+            }
+        }
+    } else {
+        _dataSource.value = props?.dataSource || []
     }
+    
+    loading.value = false
 }
 
 const pageChange = (page: number, size: number) => {
-    if(pageSize.value === size) {
-        handleSearch({
-            pageSize: size,
-            pageIndex: page,
-        })
-    } else {
-        handleSearch({
-            pageSize: size,
-            pageIndex: 1,
-        })
-    }
+    handleSearch({
+        ...props.params,
+        pageSize: size,
+        pageIndex: pageSize.value === size ? page : 1,
+    })
 }
 
 watchEffect(() => {
