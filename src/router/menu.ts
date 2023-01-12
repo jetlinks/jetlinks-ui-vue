@@ -44,6 +44,10 @@ export default [
         path: '/form',
         component: () => import('@/views/demo/Form.vue')
     },
+    {
+        path: '/test',
+        component: () => import('@/views/demo/test')
+    },
     // end: 测试用, 可删除
 
     // link 运维管理
