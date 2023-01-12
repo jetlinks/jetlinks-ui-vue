@@ -54,31 +54,24 @@
                         delete: item.key === 'delete',
                     }"
                 >
+                <!-- <slot name="actions" v-bind="item"></slot> -->
                 <a-popconfirm  v-if="item.popConfirm" v-bind="item.popConfirm">
-                    <template v-if="item.key === 'delete'">
-                        <a-button :disabled="item.disabled">
-                            <DeleteOutlined />
-                        </a-button>
-                    </template>
-                    <template v-else>
-                        <a-button :disabled="item.disabled">
+                    <a-button :disabled="item.disabled">
+                        <DeleteOutlined v-if="item.key === 'delete'" />
+                        <template v-else>
                             <AIcon :type="item.icon" />
                             <span>{{ item.text }}</span>
-                        </a-button>
-                    </template>
+                        </template>
+                    </a-button>
                 </a-popconfirm>
                 <template v-else>
-                    <template v-if="item.key === 'delete'">
-                        <a-button :disabled="item.disabled">
-                            <DeleteOutlined />
-                        </a-button>
-                    </template>
-                    <template v-else>
-                        <a-button :disabled="item.disabled">
+                    <a-button :disabled="item.disabled">
+                        <DeleteOutlined v-if="item.key === 'delete'" />
+                        <template v-else>
                             <AIcon :type="item.icon" />
                             <span>{{ item.text }}</span>
-                        </a-button>
-                    </template>
+                        </template>
+                    </a-button>
                 </template>
                 </div>
             </div>
@@ -291,10 +284,10 @@ const handleClick = () => {
             display: flex;
             flex-grow: 1;
 
-            > span,
-            & button {
-                width: 100%;
-                border-radius: 0;
+            & > span,
+            button {
+                width: 100% !important;
+                border-radius: 0 !important;
             }
 
             button {
@@ -372,9 +365,9 @@ const handleClick = () => {
                 }
             }
 
-            :deep(.ant-tooltip-disabled-compatible-wrapper) {
-                width: 100%;
-            }
+            // :deep(.ant-tooltip-disabled-compatible-wrapper) {
+            //     width: 100%;
+            // }
         }
     }
 }
