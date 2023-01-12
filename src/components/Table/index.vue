@@ -79,7 +79,7 @@
     </a-spin>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="JTable">
 import { UnorderedListOutlined, AppstoreOutlined } from '@ant-design/icons-vue'
 import type { TableProps, ColumnsType } from 'ant-design-vue/es/table'
 import type { TooltipProps } from 'ant-design-vue/es/tooltip'

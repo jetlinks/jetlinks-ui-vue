@@ -1,34 +1,36 @@
 <template>
-    <TitleComponent data="自定义设备接入"></TitleComponent>
-    <div>
-        <a-row :gutter="[24, 24]">
-            <a-col :span="12" v-for="item in dataSource" :key="item.id">
-                <div class="provider">
-                    <div class="box">
-                        <div class="left">
-                            <div class="images">
-                                <img :src="backMap.get(item.id)" />
-                            </div>
-                            <div class="context">
-                                <div class="title">
-                                    {{ item.name }}
+    <div v-for="items in dataSource" :key="items.type">
+        <a-card  class="card-items">
+            <TitleComponent :data="items.title"></TitleComponent>
+            <a-row :gutter="[24, 24]">
+                <a-col :span="12" v-for="item in items.list" :key="item.id">
+                    <div class="provider">
+                        <div class="box">
+                            <div class="left">
+                                <div class="images">
+                                    <img :src="backMap.get(item.id)" />
                                 </div>
-                                <div class="desc">
-                                    <a-tooltip :title="item.description">
-                                        {{ item.description || '' }}
-                                    </a-tooltip>
+                                <div class="context">
+                                    <div class="title">
+                                        {{ item.name }}
+                                    </div>
+                                    <div class="desc">
+                                        <a-tooltip :title="item.description">
+                                            {{ item.description || '' }}
+                                        </a-tooltip>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="right">
-                            <a-button type="primary" @click="click(item)"
-                                >接入</a-button
-                            >
+                            <div class="right">
+                                <a-button type="primary" @click="click(item)"
+                                    >接入</a-button
+                                >
+                            </div>
                         </div>
                     </div>
-                </div>
-            </a-col>
-        </a-row>
+                </a-col>
+            </a-row>
+        </a-card>
     </div>
 </template>
 
@@ -38,8 +40,8 @@ import { getImage } from '@/utils/comm';
 
 const props = defineProps({
     dataSource: {
-        type: Array,
-        default: () => [],
+        type: Object,
+        default: () => {},
     },
 });
 
@@ -66,10 +68,12 @@ backMap.set('official-edge-gateway', getImage('/access/edge.png'));
 const click = (value: object) => {
     emit('onClick', value);
 };
-
 </script>
 
 <style lang="less" scoped>
+.card-items{
+    margin-bottom: 24px;
+}
 .provider {
     position: relative;
     width: 100%;

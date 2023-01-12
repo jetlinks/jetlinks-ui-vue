@@ -8,7 +8,7 @@ import { createHtmlPlugin } from 'vite-plugin-html'
 import Config from './config/config'
 import {VueAmapResolver} from '@vuemap/unplugin-resolver'
 import VueSetupExtend from 'vite-plugin-vue-setup-extend'
-
+import { createStyleImportPlugin, AndDesignVueResolve } from 'vite-plugin-style-import'
 import * as path from 'path'
 
 
@@ -69,7 +69,10 @@ export default defineConfig(({ mode}) => {
                   }
               }
           }),
-          VueSetupExtend()
+          VueSetupExtend(),
+          createStyleImportPlugin({
+            resolves: [AndDesignVueResolve()]
+          })
       ],
       server: {
           host:'0.0.0.0',
