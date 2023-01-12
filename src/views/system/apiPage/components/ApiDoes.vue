@@ -28,7 +28,7 @@
                     model="TABLE"
                 >
                     <template #required="slotProps">
-                        <span>{{ slotProps.row.required + '' }}</span>
+                        <span>{{ Boolean(slotProps.row.required) + '' }}</span>
                     </template>
                     <template #type="slotProps">
                         <span>{{ slotProps.row.schema.type }}</span>
@@ -178,7 +178,7 @@ const respParamsCard = reactive<tableCardType>({
     columns: [
         {
             title: '参数名称',
-            dataIndex: 'name',
+            dataIndex: 'paramsName',
         },
         {
             title: '参数说明',
@@ -186,7 +186,7 @@ const respParamsCard = reactive<tableCardType>({
         },
         {
             title: '类型',
-            dataIndex: 'type',
+            dataIndex: 'paramsType',
         },
     ],
     tableData: [],
@@ -201,11 +201,9 @@ const respParamsCard = reactive<tableCardType>({
         const schemaName = responseStatusCard.tableData.find(
             (item: any) => item.code === code,
         ).schema;
-        console.log(1212, schemaName);
         const schemas = toRaw(props.schemas);
         function findData(schemaName: string) {
-            if (!schemaName || schemas[schemaName]) {
-                console.log(schemaName, schemas);
+            if (!schemaName || !schemas[schemaName]) {
                 return [];
             }
             const result: schemaObjType[] = [];
