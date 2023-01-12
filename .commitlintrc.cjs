@@ -17,12 +17,18 @@ module.exports = {
         'perf', // 性能优化
       ]
     ],
-    'type-case': [0],
-    'type-empty': [0],
-    'scope-empty': [0],
     'scope-case': [0],
-    'subject-full-stop': [0, 'never'],
-    'subject-case': [0, 'never'],
-    'header-max-length': [0, 'always', 72]
-  }
+  },
+  plugins: [
+    {
+      rules: {
+        "commit-rule": ({ raw }) => {
+          return [
+            /^\[(build|feat|fix|update|refactor|docs|chore|style|revert|perf)].+/g.test(raw),
+            `commit备注信息格式错误，格式为 <[type] 修改内容>，type支持${types.join(",")}`
+          ]
+        }
+      }
+    }
+  ]
 }
