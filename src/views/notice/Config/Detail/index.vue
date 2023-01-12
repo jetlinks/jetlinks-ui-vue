@@ -238,6 +238,13 @@
                                     placeholder="请输入Webhook"
                                 />
                             </a-form-item>
+                            <a-form-item label="请求头">
+                                <EditTable
+                                    v-model:headers="
+                                        formData.configuration.headers
+                                    "
+                                />
+                            </a-form-item>
                         </template>
                         <a-form-item label="说明">
                             <a-textarea
@@ -276,6 +283,7 @@ import {
     MSG_TYPE,
 } from '@/views/notice/const';
 import regionList from './regionId';
+import EditTable from './components/EditTable.vue'
 
 const useForm = Form.useForm;
 
