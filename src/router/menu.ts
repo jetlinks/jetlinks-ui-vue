@@ -76,4 +76,9 @@ export default [
       path: '/init-home',
       component: () => import('@/views/init-home/index.vue')
   },
+    // 物联卡 iot-card
+    {
+      path: '/iot-card/home',
+      component: () => import('@/views/iot-card/Home/index.vue')
+    }
 ]
