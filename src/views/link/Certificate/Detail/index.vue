@@ -10,10 +10,8 @@
                     :label-col="{ span: 8 }"
                     :wrapper-col="{ span: 16 }"
                     autocomplete="off"
-                    @finish="onFinish"
-                    :rules="formRules"
                 >
-                    <a-form-item label="证书标准" name="type">
+                    <a-form-item label="证书标准" v-bind="validateInfos.type">
                         <a-radio-group v-model:value="formData.type">
                             <a-radio-button
                                 class="form-radio-button"
@@ -24,25 +22,29 @@
                         </a-radio-group>
                     </a-form-item>
 
-                    <a-form-item label="证书名称" name="name">
+                    <a-form-item label="证书名称" v-bind="validateInfos.name">
                         <a-input
                             placeholder="请输入证书名称"
                             v-model:value="formData.name"
                         />
                     </a-form-item>
-                    <a-form-item label="证书文件" name="cert">
+                    <a-form-item
+                        label="证书文件"
+                        v-bind="validateInfos['configs.cert']"
+                    >
                         <CertificateFile
                             name="cert"
-                            v-model:modelValue="formData.cert"
-                            @change="changeFileValue"
+                            v-model:modelValue="formData.configs.cert"
                             placeholder='证书格式以"-----BEGIN CERTIFICATE-----"开头，以"-----END CERTIFICATE-----"结尾"'
                         />
                     </a-form-item>
-                    <a-form-item label="证书私钥" name="key">
+                    <a-form-item
+                        label="证书私钥"
+                        v-bind="validateInfos['configs.key']"
+                    >
                         <CertificateFile
                             name="key"
-                            v-model:modelValue="formData.key"
-                            @change="changeFileValue"
+                            v-model:modelValue="formData.configs.key"
                             placeholder='证书私钥格式以"-----BEGIN (RSA|EC) PRIVATE KEY-----"开头，以"-----END(RSA|EC) PRIVATE KEY-----"结尾。'
                         />
                     </a-form-item>
@@ -61,6 +63,8 @@
                             class="form-submit"
                             html-type="submit"
                             type="primary"
+                            @click.prevent="onSubmit"
+                            :loading="loading"
                             >保存</a-button
                         >
                     </a-form-item>
@@ -89,7 +93,7 @@
 </template>
 
 <script lang="ts" setup name="CertificateDetail">
-import { message } from 'ant-design-vue';
+import { message, Form } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 import CertificateFile from './CertificateFile.vue';
 import type { UploadChangeParam } from 'ant-design-vue';
@@ -101,57 +105,65 @@ import {
 } from '@/utils/variable';
 import { save } from '@/api/link/certificate';
 
+const router = useRouter();
+
+const useForm = Form.useForm;
+
+const fileLoading = ref(false);
 const loading = ref(false);
 
 const formData = reactive({
     type: 'common',
     name: '',
-    cert: '',
-    key: '',
-    // configs: {
-    //     cert: '',
-    //     key: '',
-    // },
+    configs: {
+        cert: '',
+        key: '',
+    },
     description: '',
 });
 
-const formRules = {
-    type: [{ required: true, message: '请选择证书标准', trigger: 'blur' }],
-    name: [
-        { required: true, message: '请输入证书名称', trigger: 'blur' },
-        { max: 64, message: '最多可输入64个字符' },
-    ],
-    cert: [{ required: true, message: '请输入或上传文件', trigger: 'blur' }],
-    key: [{ required: true, message: '请输入或上传文件', trigger: 'blur' }],
-    description: [{ max: 200, message: '最多可输入200个字符' }],
-};
+const { resetFields, validate, validateInfos } = useForm(
+    formData,
+    reactive({
+        type: [{ required: true, message: '请选择证书标准', trigger: 'blur' }],
+        name: [
+            { required: true, message: '请输入证书名称', trigger: 'blur' },
+            { max: 64, message: '最多可输入64个字符' },
+        ],
+        'configs.cert': [
+            { required: true, message: '请输入或上传文件', trigger: 'blur' },
+        ],
+        'configs.key': [
+            { required: true, message: '请输入或上传文件', trigger: 'blur' },
+        ],
+        description: [{ max: 200, message: '最多可输入200个字符' }],
+    }),
+);
 
-const onFinish = async (values: any) => {
-    values.configs = {
-        cert: formData.cert,
-        key: formData.key,
-    };
-    delete values.cert;
-    delete values.key;
-
-    const response = await save(values)
-      if (response.status === 200) {
-        message.success('操作成功')
-      }
-
-};
-
-const changeFileValue = (v: any) => {
-    formData[v.name] = v.data;
+const onSubmit = () => {
+    validate()
+        .then(async (res) => {
+            const params = toRaw(formData);
+            loading.value = true;
+            const response = await save(params);
+            if (response.status === 200) {
+                message.success('操作成功');
+                router.push('/link/certificate');
+            }
+            loading.value = false;
+        })
+        .catch((err) => {
+            loading.value = false;
+        });
 };
 
 const handleChange = (info: UploadChangeParam) => {
-    loading.value = true;
+    fileLoading.value = true;
     if (info.file.status === 'done') {
         message.success('上传成功！');
         const result = info.file.response?.result;
-        formData.cert = result;
-        loading.value = false;
+        formData.configs.cert = result;
+        fileLoading.value = false;
     }
 };
 </script>

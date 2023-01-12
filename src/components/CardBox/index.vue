@@ -2,17 +2,10 @@
     <div class="card">
         <div
             class="card-warp"
-            :class="{
-                hover: maskShow ? 'hover' : '',
-                active: actived ? 'active' : '',
-            }"
+            :class="{ active: active ? 'active' : ''}"
             @click="handleClick"
         >
-            <div
-                class="card-content"
-                @mouseenter="setMaskShow(true)"
-                @mouseleave="setMaskShow(false)"
-            >
+            <div class="card-content">
                 <a-row>
                     <a-col :span="6">
                         <!-- 图片 -->
@@ -27,7 +20,7 @@
                 </a-row>
 
                 <!-- 勾选 -->
-                <div v-if="actived" class="checked-icon">
+                <div v-if="active" class="checked-icon">
                     <div>
                         <CheckOutlined />
                     </div>
@@ -47,21 +40,12 @@
                         ></BadgeStatus>
                     </div>
                 </div>
-
-                <!-- 遮罩层 -->
-                <div
-                    v-if="showMask"
-                    class="card-mask"
-                    :class="maskShow ? 'show' : ''"
-                >
-                    <slot name="mask"></slot>
-                </div>
             </div>
         </div>
 
         <!-- 按钮 -->
         <slot name="bottom-tool">
-            <div v-if="showTool" class="card-tools">
+            <div v-if="showTool && actions && actions.length" class="card-tools">
                 <div
                     v-for="item in actions"
                     :key="item.key"
@@ -70,18 +54,32 @@
                         delete: item.key === 'delete',
                     }"
                 >
-                    <a-tooltip v-if="item.disabled === true">
-                        <template #title>{{ item.message }}</template>
+                <a-popconfirm  v-if="item.popConfirm" v-bind="item.popConfirm">
+                    <template v-if="item.key === 'delete'">
                         <a-button :disabled="item.disabled">
-                            <template #icon><SearchOutlined /></template>
-                            <span>{{ item.label }}</span>
+                            <DeleteOutlined />
                         </a-button>
-                    </a-tooltip>
-
-                    <a-button v-else :disabled="item.disabled">
-                        <template #icon><SearchOutlined /></template>
-                        <span>{{ item.label }}</span>
-                    </a-button>
+                    </template>
+                    <template v-else>
+                        <a-button :disabled="item.disabled">
+                            <AIcon :type="item.icon" />
+                            <span>{{ item.text }}</span>
+                        </a-button>
+                    </template>
+                </a-popconfirm>
+                <template v-else>
+                    <template v-if="item.key === 'delete'">
+                        <a-button :disabled="item.disabled">
+                            <DeleteOutlined />
+                        </a-button>
+                    </template>
+                    <template v-else>
+                        <a-button :disabled="item.disabled">
+                            <AIcon :type="item.icon" />
+                            <span>{{ item.text }}</span>
+                        </a-button>
+                    </template>
+                </template>
                 </div>
             </div>
         </slot>
@@ -89,18 +87,26 @@
 </template>
 
 <script setup lang="ts">
-import { SearchOutlined, CheckOutlined } from '@ant-design/icons-vue';
+import { SearchOutlined, CheckOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
 import { StatusColorEnum } from '@/utils/consts.ts';
+import type { ActionsType } from '@/components/Table/index.vue'
+import { PropType } from 'vue';
 
 type EmitProps = {
-    (e: 'update:modelvalue', data: string | number): void;
-    (e: 'actived', data: boolean): void;
+    // (e: 'update:modelValue', data: Record<string, any>): void;
+    (e: 'click', data: Record<string, any>): void;
 };
+
+type TableActionsType  = Partial<ActionsType>
 
 const emit = defineEmits<EmitProps>();
 
 const props = defineProps({
+    value: {
+        type: Object as PropType<Record<string, any>>,
+        default: () => {}
+    },
     showStatus: {
         type: Boolean,
         default: true,
@@ -109,10 +115,7 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
-    showMask: {
-        type: Boolean,
-        default: true,
-    },
+
     statusText: {
         type: String,
         default: '正常',
@@ -125,21 +128,17 @@ const props = defineProps({
         type: Object,
     },
     actions: {
-        type: Array as any,
+        type: Array as PropType<TableActionsType[]>,
         default: () => [],
     },
+    active: {
+        type: Boolean,
+        default: false
+    }
 });
 
-const maskShow = ref(false);
-const actived = ref(false);
-
-const setMaskShow = (val: boolean) => {
-    maskShow.value = val;
-};
-
 const handleClick = () => {
-    actived.value = !actived.value;
-    emit('actived', actived.value);
+    emit('click', props.value);
 };
 </script>
 

@@ -3,8 +3,11 @@
 </template>
 <script lang="ts" setup name="CertificatePage">
 
-const handlAdd = (e: any) => {
-  console.log(111,e);
+const router = useRouter();
+
+
+const handlAdd = () => {
+  router.push('/link/certificate/detail/add');
   
 }
 

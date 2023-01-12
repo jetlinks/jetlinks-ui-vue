@@ -30,6 +30,8 @@
                                             >
                                                 <a-input
                                                     v-model:value="form.title"
+                                                    :maxlength="64"
+                                                    placeholder="请输入系统名称"
                                                 />
                                             </a-form-item>
                                             <a-form-item
@@ -69,6 +71,7 @@
                                                 </template>
                                                 <a-input
                                                     v-model:value="form.apikey"
+                                                    placeholder="请输入高德API Key"
                                                 />
                                             </a-form-item>
                                             <a-form-item>
@@ -91,6 +94,7 @@
                                                     v-model:value="
                                                         form.basePath
                                                     "
+                                                    placeholder="请输入高德API Key"
                                                 />
                                             </a-form-item>
                                             <a-row :gutter="24" :span="24">
@@ -224,7 +228,7 @@
                                                                         class="upload-image-content-logo"
                                                                     >
                                                                         <div
-                                                                            class="upload-image"
+                                                                            class="upload-image-icon"
                                                                             v-if="
                                                                                 iconValue
                                                                             "
@@ -293,7 +297,14 @@
                                                     <div
                                                         class="upload-image-border-back"
                                                     >
-                                                        <a-upload>
+                                                        <a-upload
+                                                            @beforeUpload="
+                                                                beforeBackUpload
+                                                            "
+                                                            @change="
+                                                                changeBackUpload
+                                                            "
+                                                        >
                                                             <div
                                                                 class="upload-image-content-back"
                                                             >
@@ -338,26 +349,6 @@
                                                                 </div>
                                                             </div>
                                                         </a-upload>
-
-                                                        <!-- <div
-                                                            v-if="
-                                                                logoValue &&
-                                                                logoLoading
-                                                            "
-                                                        >
-                                                            <div
-                                                                class="upload-loading-mask"
-                                                            >
-                                                                <LoadingOutlined
-                                                                    v-if="
-                                                                        loading
-                                                                    "
-                                                                    style="
-                                                                        font-size: 28px;
-                                                                    "
-                                                                />
-                                                            </div>
-                                                        </div> -->
                                                     </div>
                                                 </div>
                                                 <div class="upload-tips">
@@ -387,7 +378,7 @@
                                         />
                                     </div>
                                     <div class="menu-info">
-                                        <b>系统初始化xxx个菜单</b>
+                                        <b>系统初始化{{ count }}个菜单</b>
                                         <div>
                                             初始化后的菜单可在“菜单管理”页面进行维护管理
                                         </div>
@@ -645,7 +636,12 @@
                             </a-collapse-panel>
                         </a-collapse>
                     </a-spin>
-                    <a-button type="primary" class="btn-style">确定</a-button>
+                    <a-button
+                        type="primary"
+                        class="btn-style"
+                        @click="submitData"
+                        >确定</a-button
+                    >
                 </div>
             </div>
         </div>
@@ -659,12 +655,17 @@ import {
     LoadingOutlined,
 } from '@ant-design/icons-vue';
 import { ROLEKEYS, RoleData } from './data/RoleData';
-import type { FormInstance } from 'ant-design-vue';
 import type { Rule } from 'ant-design-vue/es/form';
-import { Form } from 'ant-design-vue';
-import type { UploadChangeParam } from 'antd/lib/upload/interface';
+import type {
+    FormInstance,
+    UploadChangeParam,
+    UploadProps,
+} from 'ant-design-vue';
 import { modalState, formState, logoState } from './data/interface';
-const formRef = ref<FormInstance>();
+import BaseMenu from './data/baseMenu';
+import { getSystemPermission, save } from '@/api/initHome';
+const formRef = ref();
+const menuRef = ref();
 const formBasicRef = ref<FormInstance>();
 /**
  * 表单数据
@@ -673,7 +674,7 @@ const form = reactive<formState>({
     title: '',
     headerTheme: 'light',
     apikey: '',
-    basePath: '',
+    basePath: `${window.location.origin}/api`,
     logo: '',
     icon: '',
     rulesFrom: {
@@ -688,14 +689,14 @@ const form = reactive<formState>({
             {
                 required: true,
                 message: '请选择主题色',
-                trigger: '[blur, change]',
+                trigger: 'blur',
             },
         ],
         basePath: [
             {
                 required: true,
                 message: '请输入base-path',
-                trigger: 'blur, change',
+                trigger: 'blur',
             },
         ],
     },
@@ -762,7 +763,6 @@ const ModalForm = reactive<modalState>({
             {
                 required: true,
                 validator: validateNumber,
-
                 trigger: 'change',
             },
         ],
@@ -815,17 +815,17 @@ const cancel = () => {
  * 提交图片
  */
 const logoData = reactive<logoState>({
-    logoValue: '',
+    logoValue: '/public/logo.png',
     logoLoading: false,
     inLogo: false,
     inIcon: false,
     inBackground: false,
-    iconValue: '',
-    backValue: '',
+    iconValue: '/public/favicon.ico',
+    backValue: '/public/images/login.png',
     /**
      * 图片上传改变事件
      */
-    handleChangeLogo: (info: UploadChangeParam) => {
+    handleChangeLogo: (info) => {
         if (info.file.status === 'uploading') {
             logoData.logoLoading = true;
         }
@@ -835,6 +835,14 @@ const logoData = reactive<logoState>({
             logoData.logoValue = info.file.response?.result;
         }
     },
+    /**
+     * 背景图片上传之前
+     */
+    beforeBackUpload: (file) => {},
+    /**
+     * 背景图片发生改变
+     */
+    changeBackUpload: (info) => {},
 });
 
 const {
@@ -847,6 +855,79 @@ const {
     backValue,
     handleChangeLogo,
 } = toRefs(logoData);
+/**
+ * 提交基础表单
+ */
+const basicData = reactive({
+    /**
+     * 提交基础表单数据
+     */
+    saveBasicInfo: async () => {},
+});
+
+/**
+ * 获取菜单数据
+ */
+const menuDatas = reactive({
+    count: 0,
+    /**
+     * 获取当前系统权限信息
+     */
+    getSystemPermissionData: async () => {
+        const resp = await getSystemPermission();
+        if (resp.status === 200) {
+            const newTree = menuDatas.filterMenu(
+                resp.result.map((item: any) => JSON.parse(item).id),
+                BaseMenu,
+            );
+            const _count = menuDatas.menuCount(newTree);
+            menuDatas.count = _count;
+            console.log(menuDatas.count, 'menuDatas.count');
+        }
+    },
+    /**
+     * 过滤菜单
+     */
+    filterMenu: (permissions: string[], menus: any[]) => {
+        return menus.filter((item) => {
+            let isShow = false;
+            if (item.showPage && item.showPage.length) {
+                isShow = item.showPage.every((pItem: any) => {
+                    return permissions.includes(pItem);
+                });
+            }
+            if (item.children) {
+                item.children = menuDatas.filterMenu(
+                    permissions,
+                    item.children,
+                );
+            }
+            return isShow || !!item.children?.length;
+        });
+    },
+    /**
+     * 计算菜单数量
+     */
+    menuCount: (menus: any[]) => {
+        return menus.reduce((pre, next) => {
+            let _count = 1;
+            if (next.children) {
+                _count = menuDatas.menuCount(next.children);
+            }
+            return pre + _count;
+        }, 0);
+    },
+});
+
+const { count } = toRefs(menuDatas);
+/**
+ * 初始化
+ */
+menuDatas.getSystemPermissionData();
+/**
+ * 提交所有数据
+ */
+const submit = () => {};
 </script>
 <style scoped lang="less">
 .page-container {
@@ -998,6 +1079,13 @@ const {
                                 background-repeat: no-repeat;
                                 background-position: 50%;
                                 background-size: cover;
+                            }
+                            .upload-image-icon {
+                                width: 100%;
+                                height: 100%;
+                                background-repeat: no-repeat;
+                                background-position: 50%;
+                                background-size: inherit;
                             }
                             .upload-image-mask {
                                 align-items: center;

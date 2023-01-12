@@ -15,9 +15,13 @@
                 </div>
             </div>
             <div class="jtable-content">
-                <!-- <div class="jtable-alert">
-                    <a-alert message="Info Text" type="info" />
-                </div> -->
+                <div class="jtable-alert" v-if="rowSelection.selectedRowKeys && rowSelection.selectedRowKeys.length">
+                    <a-alert :message="'已选择' + rowSelection.selectedRowKeys.length + '项'" type="info" :afterClose="handleAlertClose">
+                        <template #closeText>
+                            <a>取消选择</a>
+                        </template>
+                    </a-alert>
+                </div>
                 <div v-if="_model === ModelEnum.CARD" class="jtable-card">
                     <div 
                         v-if="_dataSource.length"
@@ -29,16 +33,7 @@
                             v-for="(item, index) in _dataSource" 
                             :key="index"
                         >
-                            <CardBox :actions="actions" v-bind="cardProps">
-                                <template #img>
-                                    <slot name="img">
-                                        <img :src="getImage('/device-product.png')" />
-                                    </slot>
-                                </template>
-                                <template #content>
-                                    <slot name="cardContent" :item="item" :index="index"></slot>
-                                </template>
-                            </CardBox>
+                            <slot name="card" v-bind="item" :index="index"></slot>
                         </div>
                     </div>
                     <div v-else>
@@ -46,23 +41,21 @@
                     </div>
                 </div>
                 <div v-else>
-                    <a-table :rowSelection="rowSelection" :columns="[..._columns]" :dataSource="_dataSource" :pagination="false" :scroll="{ x: 1366 }">
+                    <a-table rowKey="id" :rowSelection="rowSelection" :columns="[..._columns]" :dataSource="_dataSource" :pagination="false" :scroll="{ x: 1366 }">
                         <template #bodyCell="{ column, record }">
-                            <template v-if="column.key === 'action'">
+                            <!-- <template v-if="column.key === 'action'">
                                 <a-space>
                                     <a-tooltip v-for="i in actions" :key="i.key" v-bind="i.tooltip">
                                         <a-popconfirm v-if="i.popConfirm" v-bind="i.popConfirm">
-                                            <a>
-                                                {{i.text}}
-                                            </a>
+                                            <a><AIcon :type="i.icon" /></a>
                                         </a-popconfirm>
                                         <a v-else @click="i.onClick && i.onClick(record)">
-                                            {{i.text}}
+                                            <AIcon :type="i.icon" />
                                         </a>
                                     </a-tooltip>
                                 </a-space>
-                            </template>
-                            <template v-else-if="column.scopedSlots">
+                            </template> -->
+                            <template v-if="column.scopedSlots">
                                <slot :name="column.key" :row="record"></slot>
                             </template>
                         </template>
@@ -88,12 +81,11 @@
 
 <script setup lang="ts">
 import { UnorderedListOutlined, AppstoreOutlined } from '@ant-design/icons-vue'
-import type { TableProps } from 'ant-design-vue/es/table'
+import type { TableProps, ColumnsType } from 'ant-design-vue/es/table'
 import type { TooltipProps } from 'ant-design-vue/es/tooltip'
 import type { PopconfirmProps } from 'ant-design-vue/es/popconfirm'
 import { Empty } from 'ant-design-vue'
 import { CSSProperties } from 'vue';
-import { getImage } from '@/utils/comm';
 
 enum ModelEnum {
     TABLE = 'TABLE',
@@ -123,13 +115,17 @@ export interface ActionsType {
     icon?: string;
 }
 
-interface JTableProps extends TableProps{
+export interface JColumnsProps extends ColumnsType{
+    scopedSlots?: boolean; // 是否为插槽 true: 是 false: 否
+}
+
+export interface JTableProps extends TableProps{
     request?: (params: Record<string, any> & {
         pageSize: number;
         pageIndex: number;
     }) => Promise<Partial<RequestData>>;
     cardBodyClass?: string;
-    columns: Record<string, any>[];
+    columns: JColumnsProps;
     params?: Record<string, any> & {
         pageSize: number;
         pageIndex: number;
@@ -147,6 +143,11 @@ const props = withDefaults(defineProps<JTableProps>(), {
     request: undefined,
 })
 
+// emit 
+const emit = defineEmits<{
+  (e: 'cancelSelect'): void
+}>()
+
 const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE
 
 const _model = ref<keyof typeof ModelEnum>(props.model ? props.model : ModelEnum.CARD); // 模式切换
@@ -155,16 +156,17 @@ const _dataSource = ref<Record<string, any>[]>([])
 const pageIndex = ref<number>(0)
 const pageSize = ref<number>(6)
 const total = ref<number>(0)
-const _columns = ref<Record<string, any>[]>([])
+const _columns = ref<Record<string, any>[]>([...props.columns])
 const loading = ref<boolean>(true)
-// 
-// const slotColumns = computed(() => props.columns.filter((item) => item.scopedSlots))
+
 // 方法
 // 切换卡片和表格
 const modelChange = (type: keyof typeof ModelEnum) => {
     _model.value = type
 }
-// 请求数据
+/**
+ * 请求数据
+ */
 const handleSearch = async (_params?: Record<string, any>) => {
     loading.value = true
     if(props.request) {
@@ -194,7 +196,9 @@ const handleSearch = async (_params?: Record<string, any>) => {
     
     loading.value = false
 }
-
+/**
+ * 页码变化
+ */
 const pageChange = (page: number, size: number) => {
     handleSearch({
         ...props.params,
@@ -203,22 +207,30 @@ const pageChange = (page: number, size: number) => {
     })
 }
 
+// alert关闭，取消选择
+const handleAlertClose = () => {
+    emit('cancelSelect')
+}
+
+// watchEffect(() => {
+//     if(Array.isArray(props.actions) && props.actions.length) {
+//          _columns.value = [...props.columns,
+//             {
+//                 title: '操作',
+//                 key: 'action',
+//                 fixed: 'right',
+//                 width: 250
+//             }   
+//         ]
+//     } else {
+//          _columns.value = [...props.columns]
+//     }
+// })
+
 watchEffect(() => {
-    if(Array.isArray(props.actions) && props.actions.length) {
-         _columns.value = [...props.columns,
-            {
-                title: '操作',
-                key: 'action',
-                fixed: 'right',
-                width: 250
-            }   
-        ]
-    } else {
-         _columns.value = [...props.columns]
-    }
     handleSearch(props.params)
 })
-
+// TODO 选择的双向绑定和图标的渲染
 </script>
 
 <style lang="less" scoped> 
@@ -250,11 +262,13 @@ watchEffect(() => {
         }
     }
     .jtable-content {
+        .jtable-alert {
+            margin-bottom: 16px;
+        }
         .jtable-card {
             .jtable-card-items {
                 display: grid;
                 grid-gap: 26px;
-                // grid-template-columns: repeat(4, 1fr);
                 .jtable-card-item {
                     display: flex;
                 }

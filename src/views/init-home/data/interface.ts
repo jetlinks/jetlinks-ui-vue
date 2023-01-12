@@ -1,3 +1,5 @@
+import type { Rule } from 'ant-design-vue/es/form';
+import type { UploadChangeParam, UploadProps } from 'ant-design-vue';
 /** 初始化数据提交表单 */
 export interface modalState  {
   host: string; // 本地地址
@@ -19,7 +21,7 @@ export interface formState  {
 }
 
 /**
- * logo上传表当
+ * logo上传表单
  */
 export interface logoState  {
   logoValue: string;
@@ -29,5 +31,7 @@ export interface logoState  {
   inBackground: boolean;
   iconValue: string;
   backValue: string;
-  handleChangeLogo:(url: string) => void
+  handleChangeLogo:(info: UploadChangeParam ) => void
+  beforeBackUpload:(file: UploadProps['beforeUpload']) => void
+  changeBackUpload:(info: UploadChangeParam ) => void
 }
