@@ -3,7 +3,7 @@ import App from './App.vue'
 import store from './store'
 import router from './router'
 import components from './components'
-import './style.css'
+import './style.less'
 import 'ant-design-vue/es/notification/style/css';
 import Antd from 'ant-design-vue/es'
 

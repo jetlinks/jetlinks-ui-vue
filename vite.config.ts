@@ -8,7 +8,7 @@ import { createHtmlPlugin } from 'vite-plugin-html'
 import Config from './config/config'
 import {VueAmapResolver} from '@vuemap/unplugin-resolver'
 import VueSetupExtend from 'vite-plugin-vue-setup-extend'
-
+import { createStyleImportPlugin, AndDesignVueResolve } from 'vite-plugin-style-import'
 import * as path from 'path'
 
 
@@ -20,7 +20,7 @@ export default defineConfig(({ mode}) => {
       resolve: {
           alias: {
               '@': path.resolve(__dirname, 'src'),
-              'styles': path.resolve(__dirname, 'src/style'),
+              'style': path.resolve(__dirname, 'src/style'),
               'layouts': path.resolve(__dirname, 'src/layouts'),
               'components': path.resolve(__dirname, 'src/components'),
               'store': path.resolve(__dirname, 'src/store'),
@@ -69,7 +69,10 @@ export default defineConfig(({ mode}) => {
                   }
               }
           }),
-          VueSetupExtend()
+          VueSetupExtend(),
+          createStyleImportPlugin({
+            resolves: [AndDesignVueResolve()]
+          })
       ],
       server: {
           host:'0.0.0.0',
@@ -89,8 +92,8 @@ export default defineConfig(({ mode}) => {
           preprocessorOptions: {
               less: {
                   modifyVars: {
+                      hack: `true; @import (reference) "${path.resolve('src/style/variable.less')}";`,
                       ...Config.theme,
-                      hack: `true; @import (reference) "${path.resolve('src/style/variable.less')}";`
                   },
                   javascriptEnabled: true,
               }

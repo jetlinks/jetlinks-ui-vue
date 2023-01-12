@@ -241,7 +241,7 @@ watch(props.initValue, (newValue: any) => {
 })
 
 defineExpose({
-  resetModel,
+  reset: resetModel,
   formValidate,
   setItemValue,
   setData
