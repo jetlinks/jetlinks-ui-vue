@@ -89,8 +89,8 @@ export default defineConfig(({ mode}) => {
           preprocessorOptions: {
               less: {
                   modifyVars: {
+                      hack: `true; @import (reference) "${path.resolve('src/style/variable.less')}";`,
                       ...Config.theme,
-                      hack: `true; @import (reference) "${path.resolve('src/style/variable.less')}";`
                   },
                   javascriptEnabled: true,
               }
