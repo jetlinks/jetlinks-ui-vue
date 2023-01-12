@@ -26,23 +26,24 @@ export const request = axios.create({
  * @param {String} responseType 如果接口是需要导出文件流，那么responseType = 'blob'
  * @returns {AxiosInstance}
  */
-export const post = function(url: string, data = {}, params = {}) {
+export const post = function<T>(url: string, data = {}, params = {}) {
     params = typeof params === 'string' ? { responseType: params } : params
-    return request({
+    return request<any, AxiosResponseRewrite<T>>({
         ...params,
         method: 'POST',
         url,
         data
     })
 }
+
 /**
  * put method request
  * @param {String} url
  * @param {Object} [data]
  * @returns {AxiosInstance}
  */
-export const put = function(url: string, data = {},) {
-    return request({
+export const put = function<T>(url: string, data = {},) {
+    return request<any, AxiosResponseRewrite<T>>({
         method: 'PUT',
         url,
         data
@@ -55,8 +56,8 @@ export const put = function(url: string, data = {},) {
  * @param {Object} [data]
  * @returns {AxiosInstance}
  */
-export const patch = function(url: string, data = {}) {
-    return request({
+export const patch = function<T>(url: string, data = {}) {
+    return request<any, AxiosResponseRewrite<T>>({
         method: 'PATCH',
         url,
         data
@@ -69,8 +70,8 @@ export const patch = function(url: string, data = {}) {
  * @param {Object} [ext] 扩展参数
  * @returns {AxiosInstance}
  */
-export const get = function(url: string, params = {},  ext?: any) {
-    return request({
+export const get = function<T>(url: string, params = {},  ext?: any) {
+    return request<any, AxiosResponseRewrite<T>>({
         method: 'GET',
         url,
         params,
@@ -85,8 +86,8 @@ export const get = function(url: string, params = {},  ext?: any) {
  * @param {Object} [ext] 扩展参数
  * @returns {AxiosInstance}
  */
-export const remove = function(url: string, params = {}, ext?: any) {
-    return request({
+export const remove = function<T>(url: string, params = {}, ext?: any) {
+    return request<any, AxiosResponseRewrite<T>>({
         method: 'DELETE',
         url,
         params,
@@ -101,7 +102,7 @@ export const remove = function(url: string, params = {}, ext?: any) {
  * @return {*}
  */
 export const getStream = function(url: string, params = {}) {
-    return get(url, params, {
+    return get<any>(url, params, {
         responseType: 'arraybuffer' // 设置请求数据类型，返回blob可解析类型
     })
 }
