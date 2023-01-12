@@ -25,7 +25,7 @@
     <a-button v-else v-bind="buttonProps" :disabled="_isPermission"></a-button>
   </a-tooltip>
 </template>
-<script setup lang="ts">
+<script setup lang="ts" name="PermissionButton">
 import type { ButtonProps, TooltipProps, PopconfirmProps } from 'ant-design-vue'
 import { usePermissionStore } from '@/store/permission';
 

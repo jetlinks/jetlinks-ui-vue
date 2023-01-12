@@ -8,9 +8,15 @@ const router = createRouter({
     routes: menus
 })
 
+const filterPath = [
+  '/form',
+  '/search'
+]
+
 router.beforeEach((to, from, next) => {
     const token = LocalStore.get(TOKEN_KEY)
-    if (token) {
+
+    if (token || filterPath.includes(to.path)) {
         next()
     } else {
         if (to.path === LoginPath) {

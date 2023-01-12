@@ -45,8 +45,8 @@ export default [
         component: () => import('@/views/demo/Form.vue')
     },
     {
-        path: '/test',
-        component: () => import('@/views/demo/test')
+        path: '/search',
+        component: () => import('@/views/demo/Search.vue')
     },
     // end: 测试用, 可删除
 

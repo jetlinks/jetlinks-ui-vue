@@ -20,7 +20,7 @@ export default defineConfig(({ mode}) => {
       resolve: {
           alias: {
               '@': path.resolve(__dirname, 'src'),
-              'styles': path.resolve(__dirname, 'src/style'),
+              'style': path.resolve(__dirname, 'src/style'),
               'layouts': path.resolve(__dirname, 'src/layouts'),
               'components': path.resolve(__dirname, 'src/components'),
               'store': path.resolve(__dirname, 'src/store'),
@@ -92,8 +92,8 @@ export default defineConfig(({ mode}) => {
           preprocessorOptions: {
               less: {
                   modifyVars: {
+                      hack: `true; @import (reference) "${path.resolve('src/style/variable.less')}";`,
                       ...Config.theme,
-                      hack: `true; @import (reference) "${path.resolve('src/style/variable.less')}";`
                   },
                   javascriptEnabled: true,
               }

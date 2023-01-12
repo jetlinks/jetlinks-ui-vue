@@ -46,6 +46,8 @@ declare module '@vue/runtime-core' {
     PermissionButton: typeof import('./src/components/PermissionButton/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SearchItem: typeof import('./src/components/Search/Item.vue')['default']
+    SearchSearch: typeof import('./src/components/Search/Search.vue')['default']
     Table: typeof import('./src/components/Table/index.vue')['default']
     TitleComponent: typeof import('./src/components/TitleComponent/index.vue')['default']
     ValueItem: typeof import('./src/components/ValueItem/index.vue')['default']
