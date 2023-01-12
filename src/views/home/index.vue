@@ -6,8 +6,7 @@
             <!-- <InitHome /> -->
             <!-- <DeviceHome /> -->
             <!-- <DevOpsHome /> -->
-            <!-- <ComprehensiveHome /> -->
-            <ApiPage />
+            <ComprehensiveHome />
         </div>
     </div>
 </template>
@@ -17,7 +16,6 @@ import InitHome from './components/InitHome/index.vue';
 import DeviceHome from './components/DeviceHome/index.vue';
 import DevOpsHome from './components/DevOpsHome/index.vue';
 import ComprehensiveHome from './components/ComprehensiveHome/index.vue';
-import ApiPage from '@/views/system/apiPage/index.vue'
 
 </script>
 
