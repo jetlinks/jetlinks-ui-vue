@@ -5,6 +5,7 @@
             <div class="input">
                 <InputCard :value="selectApi.method" />
                 <a-input :value="selectApi?.url" disabled />
+                <span class="send">发送</span>
             </div>
         </div>
     </div>
@@ -36,6 +37,14 @@ const { selectApi } = toRefs(props);
 
         .input {
             display: flex;
+
+            .send {
+                width: 65px;
+                padding: 4px 15px;
+                font-size: 14px;
+                color: #fff;
+                background-color: #1890ff;
+            }
         }
     }
 }

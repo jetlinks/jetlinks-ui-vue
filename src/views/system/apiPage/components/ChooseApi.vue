@@ -43,9 +43,9 @@ const columns = [
     },
 ];
 const rowSelection: TableProps['rowSelection'] = {
-    // onChange: (selectedRowKeys, selectedRows) => {
-    //     console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-    // },
+    onChange: (selectedRowKeys, selectedRows) => {
+        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+    },
 };
 
 const jump = (row:object) => {

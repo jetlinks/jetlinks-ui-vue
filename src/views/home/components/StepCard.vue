@@ -25,6 +25,10 @@
                 :open-number="openAccess"
                 @confirm="againJumpPage"
             />
+            <FuncTestDialog
+                :open-number="openFunc"
+                @confirm="againJumpPage"
+            />
         </div>
     </a-card>
 </template>
@@ -35,6 +39,7 @@ import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 
 import AccessMethodDialog from './dialogs/AccessMethodDialog.vue';
+import FuncTestDialog from './dialogs/FuncTestDialog.vue';
 
 import { recommendList } from '../index';
 

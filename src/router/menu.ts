@@ -87,6 +87,11 @@ export default [
         path: '/link/accessConfig/detail/add',
         component: () => import('@/views/link/AccessConfig/Detail/index.vue')
     },
+    // system 系统管理
+    {
+        path:'/system/api',
+        components: ()=>import('@/views/system/apiPage/index')
+    },
     // 初始化
     {
       path: '/init-home',

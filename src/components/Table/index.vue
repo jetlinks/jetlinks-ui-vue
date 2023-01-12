@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div class="jtable-content">
-                <div class="jtable-alert" v-if="rowSelection.selectedRowKeys && rowSelection.selectedRowKeys.length">
+                <div class="jtable-alert" v-if="rowSelection && rowSelection.selectedRowKeys && rowSelection.selectedRowKeys.length">
                     <a-alert :message="'已选择' + rowSelection.selectedRowKeys.length + '项'" type="info" :afterClose="handleAlertClose">
                         <template #closeText>
                             <a>取消选择</a>
