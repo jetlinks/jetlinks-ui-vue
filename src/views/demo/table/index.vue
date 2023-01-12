@@ -38,14 +38,14 @@
                 <a-button type="primary">新增</a-button>
             </template>
             <template #card="slotProps">
-                <CardBox :value="slotProps" @click="handleClick" :actions="actions" v-bind="slotProps" :active="_selectedRowKeys.includes(slotProps.id)">
+                <CardBox :value="slotProps" @click="handleClick" :actions="slotProps.actions" v-bind="slotProps.row" :active="_selectedRowKeys.includes(slotProps.row.id)">
                     <template #img>
                         <slot name="img">
                             <img :src="getImage('/device-product.png')" />
                         </slot>
                     </template>
                     <template #content>
-                         <h3>{{slotProps.name}}</h3>
+                         <h3>{{slotProps.row.name}}</h3>
                          <a-row>
                             <a-col :span="12">
                                 <div class="card-item-content-text">
@@ -68,11 +68,11 @@
             </template>
             <template #action="slotProps">
                 <a-space :size="16">
-                    <a-tooltip v-for="i in actions" :key="i.key" v-bind="i.tooltip">
+                    <a-tooltip v-for="i in slotProps.actions" :key="i.key" v-bind="i.tooltip">
                         <a-popconfirm v-if="i.popConfirm" v-bind="i.popConfirm">
                             <a-button style="padding: 0" type="link"><AIcon :type="i.icon" /></a-button>
                         </a-popconfirm>
-                        <a-button style="padding: 0" type="link" v-else @click="i.onClick && i.onClick(slotProps)">
+                        <a-button style="padding: 0" type="link" v-else @click="i.onClick && i.onClick(slotProps.row)">
                             <AIcon :type="i.icon" />
                         </a-button>
                     </a-tooltip>

@@ -9,7 +9,6 @@
                     />
                 </div>
                 <div class="right">
-                    <div class="lang" data-lang=""></div>
                     <div class="content">
                         <div class="top">
                             <div class="header">
@@ -109,17 +108,13 @@
                                         </a-button>
                                     </a-form-item>
                                 </a-form>
-                                <div style="margin-top: 20px">
-                                    <a-divider plain style="height: 12px">
-                                        <div
-                                            style="color: #807676d9, font-size: 12px"
-                                        >
+                                <div class="other">
+                                    <a-divider plain>
+                                        <div class="other-text">
                                             其他方式登录
                                         </div>
                                     </a-divider>
-                                    <div
-                                        style="position: relative, bottom: 10px; text-align: center"
-                                    >
+                                    <div class="other-button">
                                         <a-button
                                             v-for="(item, index) in bindings"
                                             :key="index"
@@ -312,8 +307,6 @@ screenRotation(screenWidth.value, screenHeight.value);
 </script>
 
 <style scoped lang="less">
-@import 'ant-design-vue/es/style/themes/default.less';
-
 .container {
     display: flex;
     height: 100vh;
@@ -336,22 +329,12 @@ screenRotation(screenWidth.value, screenHeight.value);
             background: #fff;
         }
 
-        .lang {
-            width: 100%;
-            height: 40px;
-            line-height: 44px;
-            text-align: right;
-
-            :global(.ant-dropdown-trigger) {
-                margin-right: 24px;
-            }
-        }
-
         .content {
             display: flex;
             flex-direction: row-reverse;
             justify-content: center;
             padding: 0 0 15% 0;
+            margin-top: 20%;
 
             .top {
                 width: 100%;
@@ -404,17 +387,6 @@ screenRotation(screenWidth.value, screenHeight.value);
                         max-width: 328px;
                     }
 
-                    // ::v-deep {
-                    //     .@{ant-prefix}-tabs-nav-list {
-                    //         margin: auto;
-                    //         font-size: 16px;
-                    //     }
-
-                    //     // .ant-formily-item-size-large .ant-formily-item-help {
-                    //     //     text-align: left;
-                    //     // }
-                    // }
-
                     .icon {
                         margin-left: 16px;
                         color: rgba(0, 0, 0, 0.2);
@@ -429,12 +401,17 @@ screenRotation(screenWidth.value, screenHeight.value);
                     }
 
                     .other {
-                        margin-top: 24px;
-                        line-height: 22px;
-                        text-align: left;
+                        margin-top: 20px;
 
-                        .register {
-                            float: right;
+                        .other-text {
+                            color: #807676d9;
+                            font-size: 12px;
+                        }
+
+                        .other-button {
+                            position: relative;
+                            bottom: 10px;
+                            text-align: center;
                         }
                     }
 
