@@ -44,6 +44,26 @@ export default [
         path: '/form',
         component: () => import('@/views/demo/Form.vue')
     },
+    {
+        path: '/search',
+        component: () => import('@/views/demo/Search.vue')
+    },
+    {
+        path: '/notice/Config',
+        component: () => import('@/views/notice/Config/index.vue')
+    },
+    {
+        path: '/notice/Config/detail/:id',
+        component: () => import('@/views/notice/Config/Detail/index.vue')
+    },
+    {
+        path: '/notice/Template',
+        component: () => import('@/views/notice/Template/index.vue')
+    },
+    {
+        path: '/notice/Template/detail/:id',
+        component: () => import('@/views/notice/Template/Detail/index.vue')
+    },
     // end: 测试用, 可删除
 
     // link 运维管理
@@ -69,7 +89,7 @@ export default [
     },
     // 初始化
     {
-      path: '/init-home',
-      component: () => import('@/views/init-home/index.vue')
-  },
+        path: '/init-home',
+        component: () => import('@/views/init-home/index.vue')
+    },
 ]

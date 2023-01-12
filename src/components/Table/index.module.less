@@ -1,0 +1,52 @@
+.jtable-body {
+    width: 100%;
+    padding: 0 24px 24px;
+    background-color: white;
+    .jtable-body-header {
+        padding: 16px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .jtable-body-header-right {
+            display: flex;
+            gap: 8px;
+            .jtable-setting-item {
+                color: rgba(0, 0, 0, 0.75);
+                font-size: 16px;
+                cursor: pointer;
+
+                &:hover {
+                    color: @primary-color-hover;
+                }
+
+                &.active {
+                    color: @primary-color-active;
+                }
+            }
+        }
+    }
+    .jtable-content {
+        .jtable-alert {
+            margin-bottom: 16px;
+        }
+        .jtable-card {
+            .jtable-card-items {
+                display: grid;
+                grid-gap: 26px;
+                .jtable-card-item {
+                    display: flex;
+                }
+            }
+        }
+    }
+    .jtable-pagination {
+        margin-top: 20px;
+        display: flex;
+        justify-content: flex-end;
+        :global {
+            .ant-pagination-item {
+                display: none !important;
+            }
+        } 
+    }
+}   
