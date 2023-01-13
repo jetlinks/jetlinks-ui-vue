@@ -15,7 +15,7 @@ const filterPath = [
 
 router.beforeEach((to, from, next) => {
     const token = LocalStore.get(TOKEN_KEY)
-
+    // TODO 切换路由取消请求
     if (token || filterPath.includes(to.path)) {
         next()
     } else {
