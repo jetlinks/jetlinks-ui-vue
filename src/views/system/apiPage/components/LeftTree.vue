@@ -32,13 +32,14 @@ const getTreeData = () => {
         Promise.all(allPromise).then((values) => {
             values.forEach((item: any, i) => {
                 tree[i].children = combData(item?.paths);
+                tree[i].schemas = item.components.schemas
             });
             treeData.value = tree;
         });
     });
 };
 const clickSelectItem: TreeProps['onSelect'] = (key, node: any) => {
-    emits('select', node.node.dataRef);
+    emits('select', node.node.dataRef, node.node?.parent.node.schemas);
 };
 
 onMounted(() => {

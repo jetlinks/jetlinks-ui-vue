@@ -3,7 +3,7 @@
     <a-modal
         v-model:visible="visible"
         title="选择产品"
-        style="width: 700px"
+        style="width: 1000px"
         @ok="handleOk"
         :getContainer="getContainer"
         :maskClosable="false"
@@ -11,34 +11,31 @@
         <div class="search">
             <a-select
                 v-model:value="form.key"
-                style="width: 100%"
+                style="width: 100px;margin-right: 20px;"
                 :options="productList"
             />
             <a-select
                 v-model:value="form.relation"
-                style="width: 100%"
+                style="width: 100px;margin-right: 20px;"
                 :options="productList"
             />
-            <a-input v-model:value="form.keyValue" allow-clear />
+            <a-input v-model:value="form.keyValue" allow-clear style="width: 230px;margin-right: 50px;" />
 
-            <a-button type="primary" @click="clickSearch">
+            <a-button type="primary" @click="clickSearch" style="margin-right: 10px;">
                 <template #icon><SearchOutlined /></template>
                 搜索
             </a-button>
-            <a-button type="primary" @click="clickReset">
+            <a-button @click="clickReset">
                 <template #icon><reload-outlined /></template>
                 重置
             </a-button>
         </div>
-        <JTable :columns="columns"> 
-            
-        </JTable>
+        <JTable :columns="columns" model="TABLE"> </JTable>
 
         <template #footer>
-            <a-button key="back" @click="visible = false">取消</a-button>
-            <a-button key="submit" type="primary" @click="handleOk"
-                >确认</a-button
-            >
+            <a-button key="back" @click="visible = false
+            ">取消</a-button>
+            <a-button key="submit" type="primary" @click="handleOk">确认</a-button>
         </template>
     </a-modal>
 </template>
@@ -65,10 +62,10 @@ const handleOk = () => {
 watch(
     () => props.openNumber,
     () => {
+        visible.value = true;
         clickReset();
         getOptions();
         clickSearch();
-        visible.value = true;
     },
 );
 
@@ -122,4 +119,11 @@ const selectItem: deviceInfo | {} = {};
 const getList = () => {};
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="less" scoped>
+.func-test-dialog-container {
+    .search {
+        display: flex;
+    }
+}
+
+</style>
