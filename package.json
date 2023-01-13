@@ -15,6 +15,7 @@
   "dependencies": {
     "@vitejs/plugin-vue-jsx": "^3.0.0",
     "@vuemap/vue-amap": "^1.1.20",
+    "@vueuse/core": "^9.10.0",
     "ant-design-vue": "^3.2.15",
     "axios": "^1.2.1",
     "echarts": "^5.4.1",

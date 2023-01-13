@@ -5,8 +5,16 @@
                 <div class="left">
                     <img
                         style="width: 100%; height: 100%"
-                        :src="getImage('/login.png')"
+                        :src="basis.backgroud || getImage('/login.png')"
                     />
+                    <a
+                        href="https://beian.miit.gov.cn/#/Integrated/index"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="records"
+                    >
+                        备案：渝ICP备19017719号-1
+                    </a>
                 </div>
                 <div class="right">
                     <div class="content">
@@ -16,11 +24,13 @@
                                 <img
                                     alt="logo"
                                     class="logo"
-                                    :src="getImage('/logo.png')"
+                                    :src="basis.logo || getImage('/logo.png')"
                                 />
                                 <!-- </link> -->
                             </div>
-                            <div class="desc">物联网平台</div>
+                            <div class="desc">
+                                {{ basis.title || SystemConst.SYSTEM_NAME }}
+                            </div>
                             <div class="main">
                                 <a-form
                                     layout="vertical"
@@ -168,11 +178,13 @@ import {
     getInitSet,
     systemVersion,
     bindInfo,
+    settingDetail,
 } from '@/api/login';
 import Cookies from 'js-cookie';
 import { useUserInfo } from '@/store/userInfo';
 import { LocalStore } from '@/utils/comm';
 import { BASE_API_PATH, TOKEN_KEY, Version_Code } from '@/utils/variable';
+import { SystemConst } from '@/utils/consts';
 
 const store = useUserInfo();
 const router = useRouter();
@@ -200,6 +212,7 @@ const codeConfig = ref(false);
 
 const loading = ref(false);
 const bindings = ref<any[]>();
+const basis = ref<any>({});
 
 const defaultImg = getImage('/apply/provider1.png');
 const iconMap = new Map();
@@ -222,6 +235,15 @@ const onFinish = async () => {
                 username: form.username,
             });
             LocalStore.set(TOKEN_KEY, res?.result.token);
+            // if (res.result.username === 'admin') {
+            //     const resp: any = await getInitSet();
+            //     if (resp.status === 200 && !resp.result.length) {
+            //         window.location.href = '/#/init-home';
+            //         return;
+            //     }
+            // }
+            // window.location.href = '/';
+
             const resp: any = await getInitSet();
             if (resp.success) {
                 router.push('/demo');
@@ -257,6 +279,7 @@ const getCookie = () => {
 };
 
 const getOpen = () => {
+    LocalStore.removeAll();
     systemVersion().then((res: any) => {
         if (res.success && res.result) {
             LocalStore.set(Version_Code, res.result.edition);
@@ -266,6 +289,18 @@ const getOpen = () => {
                         bindings.value = res.result;
                     }
                 });
+            }
+        }
+    });
+    settingDetail('front').then((res) => {
+        if (res.status === 200) {
+            const ico: any = document.querySelector('link[rel="icon"]');
+            ico.href = res.result.ico;
+            basis.value = res.result;
+            if (res.result.title) {
+                document.title = res.result.title;
+            } else {
+                document.title = '';
             }
         }
     });
@@ -316,6 +351,14 @@ screenRotation(screenWidth.value, screenHeight.value);
     .left {
         width: 73%;
         height: 100%;
+
+        .records {
+            position: absolute;
+            top: 96%;
+            left: 35%;
+            color: rgba(0, 0, 0, 0.35);
+            font-size: 14px;
+        }
     }
 
     .right {

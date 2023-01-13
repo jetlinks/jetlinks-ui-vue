@@ -1,3 +1,5 @@
+import { TOKEN_KEY } from '@/utils/variable'
+
 /**
  * 静态图片资源处理
  * @param path {String} 路径
@@ -29,4 +31,8 @@ export const LocalStore = {
     removeAll() {
         localStorage.clear()
     }
+}
+
+export const getToken = () => {
+    return LocalStore.get(TOKEN_KEY)
 }
