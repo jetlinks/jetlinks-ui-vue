@@ -1,4 +1,5 @@
-interface IHeaders {
+export interface IHeaders {
+    id?: number;
     key: string;
     value: string;
 }
@@ -34,4 +35,8 @@ export type ConfigFormData = {
     name: string;
     provider: string;
     type: string;
+    id?: string;
+    maxRetryTimes?: number;
+    creatorId?: string;
+    createTime?: number;
 };
