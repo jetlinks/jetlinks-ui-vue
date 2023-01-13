@@ -28,24 +28,16 @@
 
 <script setup lang="ts">
 import { message } from 'ant-design-vue';
-
-type configItem = {
-    auth: boolean;
-    link: string;
-    english: string;
-    label: string;
-    params?: object;
-    image: string;
-};
+import { bootConfig } from "../index";
 
 const router = useRouter();
 const props = defineProps({
-    cardData: Array<configItem>,
+    cardData: Array<bootConfig>,
     cardTitle: String,
 });
 const { cardData, cardTitle } = toRefs(props);
 
-const jumpPage = (row: configItem): void => {
+const jumpPage = (row: bootConfig): void => {
     if (row.auth && row.link) {
         router.push(`${row.link}${objToParams(row.params || {})}`);
     } else {

@@ -8,43 +8,20 @@
         :getContainer="getContainer"
         :maskClosable="false"
     >
-        <div class="search">
-            <a-select
-                v-model:value="form.key"
-                style="width: 100px;margin-right: 20px;"
-                :options="productList"
-            />
-            <a-select
-                v-model:value="form.relation"
-                style="width: 100px;margin-right: 20px;"
-                :options="productList"
-            />
-            <a-input v-model:value="form.keyValue" allow-clear style="width: 230px;margin-right: 50px;" />
-
-            <a-button type="primary" @click="clickSearch" style="margin-right: 10px;">
-                <template #icon><SearchOutlined /></template>
-                搜索
-            </a-button>
-            <a-button @click="clickReset">
-                <template #icon><reload-outlined /></template>
-                重置
-            </a-button>
-        </div>
+        <Search />
         <JTable :columns="columns" model="TABLE"> </JTable>
 
         <template #footer>
-            <a-button key="back" @click="visible = false
-            ">取消</a-button>
-            <a-button key="submit" type="primary" @click="handleOk">确认</a-button>
+            <a-button key="back" @click="visible = false">取消</a-button>
+            <a-button key="submit" type="primary" @click="handleOk"
+                >确认</a-button
+            >
         </template>
     </a-modal>
 </template>
 
 <script setup lang="ts">
 import { ComponentInternalInstance } from 'vue';
-import { SearchOutlined, ReloadOutlined } from '@ant-design/icons-vue';
-
-import { productItem, deviceInfo } from '../../index';
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const emits = defineEmits(['confirm']);
@@ -64,7 +41,6 @@ watch(
     () => {
         visible.value = true;
         clickReset();
-        getOptions();
         clickSearch();
     },
 );
@@ -75,10 +51,7 @@ const form = ref({
     relation: '',
     keyValue: '',
 });
-const productList = ref<[productItem] | []>([]);
-const getOptions = () => {
-    productList.value = [];
-};
+
 const clickSearch = () => {};
 const clickReset = () => {
     Object.entries(form.value).forEach(([prop]) => {
@@ -114,9 +87,6 @@ const columns = [
         key: 'status',
     },
 ];
-const tableData = ref<deviceInfo[]>([]);
-const selectItem: deviceInfo | {} = {};
-const getList = () => {};
 </script>
 
 <style lang="less" scoped>
@@ -125,5 +95,4 @@ const getList = () => {};
         display: flex;
     }
 }
-
 </style>
