@@ -189,7 +189,8 @@
                                         class="config-right-item-context"
                                         v-if="config.document"
                                     >
-                                        {{ config.document }}
+                                        <Markdown :source="config.document" />
+
                                     </div>
                                 </div>
                                 <div
@@ -314,6 +315,8 @@ import {
 import AccessCard from './AccessCard/index.vue';
 import { message, Form } from 'ant-design-vue';
 import type { FormInstance } from 'ant-design-vue';
+import Markdown from 'vue3-markdown-it';
+
 
 //测试数据1
 const resultList1 = [

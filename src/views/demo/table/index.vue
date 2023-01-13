@@ -10,7 +10,7 @@
             @cancelSelect="cancelSelect"
         >
             <template #headerTitle>
-                <a-button type="primary">新增</a-button>
+                <a-button type="primary" @click="add">新增</a-button>
             </template>
             <template #card="slotProps">
                 <CardBox 
@@ -37,7 +37,7 @@
                             </a-col>
                         </a-row>
                     </template>
-                    <!-- <template #actions="item">
+                    <template #actions="item">
                         <a-popconfirm  v-if="item.popConfirm" v-bind="item.popConfirm">
                             <a-button :disabled="item.disabled">
                                 <DeleteOutlined v-if="item.key === 'delete'" />
@@ -56,7 +56,7 @@
                                 </template>
                             </a-button>
                         </template>
-                    </template> -->
+                    </template>
                 </CardBox>
             </template>
             <template #id="slotProps">
@@ -83,8 +83,10 @@ import server from "@/utils/request";
 import type { ActionsType } from '@/components/Table/index.vue'
 import { getImage } from '@/utils/comm';
 import { DeleteOutlined } from '@ant-design/icons-vue'
+import { message } from "ant-design-vue";
 
 const request = (data: any) => server.post(`/device-product/_query`, data)
+// const request = (data: any) => server.post(`/device/category/_tree`, {paging: false})
 
 const columns = [
     {
@@ -152,26 +154,26 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             tooltip: {
                 title: '导入'
             },
+            disabled: true,
             icon: 'icon-xiazai'
         },
         {
             key: 'delete',
-            // disabled: true,
             text: "删除",
-            disabled: !!data?.state,
             tooltip: {
                 title: !!data?.state ? '正常的产品不能删除' : '删除'
             },
-            // popConfirm: {
-            //     title: '确认删除?'
-            // },
-
+            popConfirm: {
+                title: '确认删除?'
+            },
             icon: 'icon-huishouzhan'
         }
     ]
 }
 
-const p = h('p', 'hi')
+const add = () => {
+    message.warn('123')
+}
 
 </script>
 

@@ -11,16 +11,21 @@ enum ModelEnum {
     CARD = 'CARD',
 }
 
+enum TypeEnum {
+    TREE = 'TREE',
+    PAGE = 'PAGE',
+}
+
 type RequestData = {
     code: string;
     result: {
-        data: Record<string, any>[] | undefined;
+        data?: Record<string, any>[] | undefined;
         pageIndex: number;
         pageSize: number;
         total: number;
     };
     status: number;
-} & Record<string, any>;
+} | Record<string, any>;
 
 export interface ActionsType {
     key: string;
@@ -39,16 +44,10 @@ export interface JColumnProps extends ColumnProps{
 }
 
 export interface JTableProps extends TableProps{
-    request?: (params: Record<string, any> & {
-        pageSize: number;
-        pageIndex: number;
-    }) => Promise<Partial<RequestData>>;
+    request?: (params?: Record<string, any>) => Promise<Partial<RequestData>>;
     cardBodyClass?: string;
     columns: JColumnProps[];
-    params?: Record<string, any> & {
-        pageSize: number;
-        pageIndex: number;
-    };
+    params?: Record<string, any>;
     model?: keyof typeof ModelEnum | undefined; // 显示table还是card
     // actions?: ActionsType[];
     noPagination?: boolean;
@@ -64,6 +63,8 @@ export interface JTableProps extends TableProps{
      */
      gridColumns?: number[];
      alertRender?: boolean;
+     type?: keyof typeof TypeEnum;
+     defaultParams?: Record<string, any>;
 }
 
 const JTable = defineComponent<JTableProps>({
@@ -96,10 +97,6 @@ const JTable = defineComponent<JTableProps>({
             type: [String, undefined],
             default: undefined
         },
-        // actions: {
-        //     type: Array as PropType<ActionsType[]>,
-        //     default: () => []
-        // },
         noPagination: {
             type: Boolean,
             default: false
@@ -127,6 +124,19 @@ const JTable = defineComponent<JTableProps>({
         alertRender: {
             type: Boolean,
             default: true
+        },
+        type: {
+            type: String,
+            default: 'PAGE'
+        },
+        defaultParams: {
+            type: Object,
+            default: () => {
+                return {
+                    pageIndex: 0,
+                    pageSize: 12
+                }
+            }
         }
     } as any,
     setup(props: JTableProps ,{ slots, emit }){
@@ -162,25 +172,30 @@ const JTable = defineComponent<JTableProps>({
         const handleSearch = async (_params?: Record<string, any>) => {
             loading.value = true
             if(props.request) {
-            const resp = await props.request({
-                    pageSize: 12,
-                    pageIndex: 1,
+                const resp = await props.request({
+                    ...props.defaultParams,
                     ..._params
                 })
                 if(resp.status === 200){
-                    // 判断如果是最后一页且最后一页为空，就跳转到前一页
-                    if(resp.result?.data?.length === 0 && resp.result.total && resp.result.pageSize && resp.result.pageIndex) {
-                        handleSearch({
-                            ..._params,
-                            pageSize: pageSize.value,
-                            pageIndex: pageIndex.value - 1,
-                        })
+                    if(props.type === 'PAGE'){
+                        // 判断如果是最后一页且最后一页为空，就跳转到前一页
+                        if(resp.result.total && resp.result.pageSize && resp.result.pageIndex && resp.result?.data?.length === 0) {
+                            handleSearch({
+                                ..._params,
+                                pageSize: pageSize.value,
+                                pageIndex: pageIndex.value > 0 ?  pageIndex.value - 1 : 0,
+                            })
+                        } else {
+                            _dataSource.value = resp.result?.data || []
+                            pageIndex.value = resp.result?.pageIndex || 0
+                            pageSize.value = resp.result?.pageSize || 6
+                            total.value = resp.result?.total || 0
+                        }
                     } else {
-                        _dataSource.value = resp.result?.data || []
-                        pageIndex.value = resp.result?.pageIndex || 0
-                        pageSize.value = resp.result?.pageSize || 6
-                        total.value = resp.result?.total || 0
+                        _dataSource.value = resp?.result || []
                     }
+                } else {
+                    _dataSource.value  = []
                 }
             } else {
                 _dataSource.value = props?.dataSource || []
@@ -282,7 +297,7 @@ const JTable = defineComponent<JTableProps>({
                 </div>
                 {/* 分页 */}
                 {
-                    _dataSource.value.length && !props.noPagination &&
+                    (!!_dataSource.value.length) && !props.noPagination && props.type === 'PAGE' &&
                     <div class={styles['jtable-pagination']}>
                         <Pagination 
                             size="small" 
@@ -292,14 +307,16 @@ const JTable = defineComponent<JTableProps>({
                             current={pageIndex.value}
                             pageSize={pageSize.value}
                             pageSizeOptions={['12', '24', '48', '60', '100']}
-                            showTotal={(total, range) => {
-                                return `第 ${range[0]} - ${range[1]} 条/总共 ${total} 条`
+                            showTotal={(num) => {
+                                const minSize = pageIndex.value * pageSize.value + 1;
+                                const MaxSize = (pageIndex.value + 1) * pageSize.value;
+                                return `第 ${minSize} - ${MaxSize > num ? num : MaxSize} 条/总共 ${num} 条`;
                             }}
                             onChange={(page, size) => {
                                 handleSearch({
                                     ...props.params,
                                     pageSize: size,
-                                    pageIndex: pageSize.value === size ? page : 1,
+                                    pageIndex: pageSize.value === size ? page : 0
                                 })
                             }}
                         />
