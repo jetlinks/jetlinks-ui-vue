@@ -297,7 +297,7 @@ const JTable = defineComponent<JTableProps>({
                 </div>
                 {/* 分页 */}
                 {
-                    (!!_dataSource.value.length) && !props.noPagination &&
+                    (!!_dataSource.value.length) && !props.noPagination && props.type === 'PAGE' &&
                     <div class={styles['jtable-pagination']}>
                         <Pagination 
                             size="small" 
