@@ -79,8 +79,8 @@ const handleDelete = (id: number) => {
 const handleAdd = () => {
     dataSource.value.push({
         id: dataSource.value.length,
-        key: `key ${dataSource.value.length + 1}`,
-        value: `value ${dataSource.value.length + 1}`,
+        key: '',
+        value: '',
     });
 };
 </script>
