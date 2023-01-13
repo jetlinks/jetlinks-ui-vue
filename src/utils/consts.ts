@@ -45,5 +45,5 @@ export const SystemConst = {
   GET_METADATA: 'get_metadata',
   REFRESH_DEVICE: 'refresh_device',
   AMAP_KEY: 'amap_key',
-  Version_Code: 'version_code',
+  VERSION_CODE: 'version_code',
 }
