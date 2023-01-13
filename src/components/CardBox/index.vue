@@ -54,8 +54,8 @@
                         delete: item.key === 'delete',
                     }"
                 >
-                <!-- <slot name="actions" v-bind="item"></slot> -->
-                <a-popconfirm  v-if="item.popConfirm" v-bind="item.popConfirm">
+                <slot name="actions" v-bind="item"></slot>
+                <!-- <a-popconfirm  v-if="item.popConfirm" v-bind="item.popConfirm">
                     <a-button :disabled="item.disabled">
                         <DeleteOutlined v-if="item.key === 'delete'" />
                         <template v-else>
@@ -72,7 +72,7 @@
                             <span>{{ item.text }}</span>
                         </template>
                     </a-button>
-                </template>
+                </template> -->
                 </div>
             </div>
         </slot>
@@ -284,13 +284,14 @@ const handleClick = () => {
             display: flex;
             flex-grow: 1;
 
-            & > span,
-            button {
-                width: 100% !important;
-                border-radius: 0 !important;
+            & > :deep(span, button) {
+                width: 100%;
+                border-radius: 0;
             }
 
-            button {
+            :deep(button) {
+                width: 100%;
+                border-radius: 0;
                 background: #f6f6f6;
                 border: 1px solid #e6e6e6;
                 color: #2f54eb;
@@ -322,7 +323,7 @@ const handleClick = () => {
                 flex-basis: 60px;
                 flex-grow: 0;
 
-                button {
+                :deep(button) {
                     background: @error-color-deprecated-bg;
                     border: 1px solid @error-color-outline;
 
@@ -348,7 +349,7 @@ const handleClick = () => {
                 }
             }
 
-            button[disabled] {
+            :deep(button[disabled]) {
                 background: @disabled-bg;
                 border-color: @disabled-color;
 
