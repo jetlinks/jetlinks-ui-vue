@@ -6,7 +6,7 @@ export interface modalState  {
   port: string; // 本地端口
   publicHost: string; // 公网地址
   publicPort: number | null; // 公网端口
-  rules: Record<string, Rule[]>;
+  
 }
 
 /**基本信息表单 */
@@ -21,17 +21,26 @@ export interface formState  {
 }
 
 /**
- * logo上传表单
+ * 图片上传表单
  */
 export interface logoState  {
   logoValue: string;
   logoLoading: boolean;
+  backLoading: boolean;
+  iconLoading: boolean;
   inLogo: boolean;
   inIcon: boolean;
   inBackground: boolean;
   iconValue: string;
   backValue: string;
+  backSize: number;
+  logoSize: number;
+  imageTypes:Array<string>;
+  iconTypes: Array<string>,
+  beforeLogoUpload:(file: UploadProps['beforeUpload']) => void
   handleChangeLogo:(info: UploadChangeParam ) => void
   beforeBackUpload:(file: UploadProps['beforeUpload']) => void
   changeBackUpload:(info: UploadChangeParam ) => void
+  beforeIconUpload:(file: UploadProps['beforeUpload']) => void
+  changeIconUpload:(info: UploadChangeParam ) => void
 }

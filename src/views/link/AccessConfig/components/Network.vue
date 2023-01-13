@@ -35,18 +35,34 @@
                                         : descriptionList[provider.id],
                                 }"
                             >
-                                <div slot="other" class="other">
-                                    <a-tooltip placement="topLeft">
-                                        <div
-                                            slot="title"
-                                            v-if="
-                                                (item.addresses || []).length >
-                                                1
-                                            "
-                                        >
+                                <template #other>
+                                    <div class="other">
+                                        <a-tooltip placement="topLeft">
                                             <div
-                                                v-for="i in item.addresses ||
-                                                []"
+                                                v-if="
+                                                    (item.addresses || [])
+                                                        .length > 1
+                                                "
+                                            >
+                                                <div
+                                                    v-for="i in item.addresses ||
+                                                    []"
+                                                    :key="i.address"
+                                                    class="item"
+                                                >
+                                                    <a-badge
+                                                        :color="
+                                                            i.health === -1
+                                                                ? 'red'
+                                                                : 'green'
+                                                        "
+                                                    />{{ i.address }}
+                                                </div>
+                                            </div>
+                                            <div
+                                                v-for="i in (
+                                                    item.addresses || []
+                                                ).slice(0, 1)"
                                                 :key="i.address"
                                                 class="item"
                                             >
@@ -56,34 +72,19 @@
                                                             ? 'red'
                                                             : 'green'
                                                     "
-                                                />{{ i.address }}
+                                                    :text="i.address"
+                                                />
+                                                <span
+                                                    v-if="
+                                                        (item.addresses || [])
+                                                            .length > 1
+                                                    "
+                                                    >...</span
+                                                >
                                             </div>
-                                        </div>
-                                        <div
-                                            v-for="i in (
-                                                item.addresses || []
-                                            ).slice(0, 1)"
-                                            :key="i.address"
-                                            class="item"
-                                        >
-                                            <a-badge
-                                                :color="
-                                                    i.health === -1
-                                                        ? 'red'
-                                                        : 'green'
-                                                "
-                                                :text="i.address"
-                                            />
-                                            <span
-                                                v-if="
-                                                    (item.addresses || [])
-                                                        .length > 1
-                                                "
-                                                >...</span
-                                            >
-                                        </div>
-                                    </a-tooltip>
-                                </div>
+                                        </a-tooltip>
+                                    </div>
+                                </template>
                             </access-card>
                         </a-col>
                     </a-row>
@@ -130,37 +131,31 @@
                         <a-col :span="12">
                             <title-component data="基本信息" />
                             <div>
-                                <a-form :form="form" layout="vertical">
-                                    <a-form-item label="名称">
+                                <a-form
+                                    ref="formRef"
+                                    :model="form"
+                                    layout="vertical"
+                                >
+                                    <a-form-item
+                                        label="名称"
+                                        v-bind="validateInfos.name"
+                                    >
                                         <a-input
+                                            v-model:value="form.name"
                                             allowClear
                                             placeholder="请输入名称"
-                                            v-decorator="[
-                                                'name',
-                                                {
-                                                    initialValue: data.name,
-                                                    rules: [
-                                                        {
-                                                            required: true,
-                                                            message:
-                                                                '请输入名称!',
-                                                        },
-                                                    ],
-                                                },
-                                            ]"
                                         />
                                     </a-form-item>
-                                    <a-form-item label="说明">
+                                    <a-form-item
+                                        label="说明"
+                                        v-bind="validateInfos.description"
+                                    >
                                         <a-textarea
                                             placeholder="请输入说明"
                                             :rows="4"
-                                            v-decorator="[
-                                                'description',
-                                                {
-                                                    initialValue:
-                                                        data.description,
-                                                },
-                                            ]"
+                                            v-model:value="form.description"
+                                            show-count
+                                            :maxlength="200"
                                         />
                                     </a-form-item>
                                 </a-form>
@@ -194,7 +189,8 @@
                                         class="config-right-item-context"
                                         v-if="config.document"
                                     >
-                                        {{ config.document }}
+                                        <Markdown :source="config.document" />
+
                                     </div>
                                 </div>
                                 <div
@@ -259,7 +255,7 @@
                                         :scroll="{ y: 300 }"
                                     >
                                         <template
-                                            slot="stream"
+                                            #stream
                                             slot-scope="text, record"
                                         >
                                             <span
@@ -292,7 +288,7 @@
             >
                 下一步
             </a-button>
-            <a-button v-if="current === 2" type="primary" @click="save">
+            <a-button v-if="current === 2" type="primary" @click="saveData">
                 保存
             </a-button>
             <a-button v-if="current > 0" style="margin-left: 8px" @click="prev">
@@ -317,8 +313,63 @@ import {
     ProtocolMapping,
 } from '../Detail/data';
 import AccessCard from './AccessCard/index.vue';
-import TitleComponent from '@/components/TitleComponent/index.vue';
 import { message, Form } from 'ant-design-vue';
+import type { FormInstance } from 'ant-design-vue';
+import Markdown from 'vue3-markdown-it';
+
+
+//测试数据1
+const resultList1 = [
+    {
+        id: '1610466717670780928',
+        name: '官方协议',
+    },
+    {
+        id: '1610205217785524224',
+        name: 'demo协议',
+    },
+    {
+        id: '1610204985806958592',
+        name: '水压协议',
+    },
+    {
+        id: '1605459961693745152',
+        name: '测试设备诊断日志显示',
+    },
+    {
+        id: '1582302200020783104',
+        name: 'demo',
+    },
+    {
+        id: '1581839391887794176',
+        name: '海康闸机协议',
+    },
+    {
+        id: '1567062365030637568',
+        name: '协议20220906160914',
+    },
+    {
+        id: '1561650927208628224',
+        name: 'local',
+    },
+];
+
+//测试数据2
+// const result2 = {
+//     id: 'UDP',
+//     name: 'UDP',
+//     features: [],
+//     routes: [],
+//     metadata: '',
+// };
+const result2 = {
+"id": "MQTT",
+"name": "MQTT",
+"features": [],
+"routes": [],
+"document": "# MQTT认证说明\r\nCONNECT报文:\r\n```text\r\nclientId: 设备ID\r\nusername: secureId+\"|\"+timestamp\r\npassword: md5(secureId+\"|\"+timestamp+\"|\"+secureKey)\r\n ```\r\n\r\n说明: secureId以及secureKey在创建设备产品或设备实例时进行配置. \r\ntimestamp为当前系统时间戳(毫秒),与系统时间不能相差5分钟.\r\nmd5为32位,不区分大小写.",
+"metadata": "{\"functions\":[],\"name\":\"test\",\"description\":\"测试用\",\"id\":\"test\",\"properties\":[{\"valueType\":{\"round\":\"HALF_UP\",\"type\":\"double\"},\"name\":\"温度\",\"id\":\"t\"},{\"valueType\":{\"round\":\"HALF_UP\",\"type\":\"int\"},\"name\":\"状态\",\"id\":\"state\"}],\"events\":[],\"tags\":[]}"
+}
 
 function generateUUID() {
     var d = new Date().getTime();
@@ -349,7 +400,8 @@ const props = defineProps({
     },
 });
 
-
+const formRef = ref<FormInstance>();
+const useForm = Form.useForm;
 
 const current = ref(0);
 const stepCurrent = ref(0);
@@ -362,13 +414,21 @@ const procotolCurrent = ref('');
 let config = ref({});
 let columnsMQTT = ref([]);
 const form = reactive({
-    name: 'access',
+    name: '',
     description: '',
 });
 
+const { resetFields, validate, validateInfos } = useForm(
+    form,
+    reactive({
+        name: [
+            { required: true, message: '请输入证书名称', trigger: 'blur' },
+            { max: 64, message: '最多可输入64个字符' },
+        ],
+    }),
+);
+
 const queryNetworkList = async (id: string, params: object, data = {}) => {
-  console.log('queryNetworkList',NetworkTypeMapping.get(id), data, params);
-  
     const resp = await getNetworkList(NetworkTypeMapping.get(id), data, params);
     if (resp.status === 200) {
         networkList.value = resp.result;
@@ -377,15 +437,19 @@ const queryNetworkList = async (id: string, params: object, data = {}) => {
 
 // const  queryProcotolList=async(id:string, params:object) =>{
 const queryProcotolList = async (id: string, params = {}) => {
-    const resp = await getProtocolList(ProtocolMapping.get(id), {
-        ...params,
-        'sorts[0].name': 'createTime',
-        'sorts[0].order': 'desc',
-    });
-    if (resp.status === 200) {
-        procotolList.value = resp.result;
-        allProcotolList.value = resp.result;
-    }
+    // const resp = await getProtocolList(ProtocolMapping.get(id), {
+    //     ...params,
+    //     'sorts[0].name': 'createTime',
+    //     'sorts[0].order': 'desc',
+    // });
+    // if (resp.status === 200) {
+    //     procotolList.value = resp.result;
+    //     allProcotolList.value = resp.result;
+    // }
+
+    //使用测试数据1
+    procotolList.value = resultList1;
+    allProcotolList.value = resultList1;
 };
 
 const addNetwork = () => {
@@ -424,21 +488,6 @@ const checkedChange = (id: string) => {
 };
 
 const networkSearch = (value: string) => {
-  console.log('networkSearch',
-        props.provider.id,
-        {
-            include: networkCurrent.value || '',
-        },
-        {
-            terms: [
-                {
-                    column: 'name$LIKE',
-                    value: `%${value}%`,
-                },
-            ],
-        },
-    );
-  
     queryNetworkList(
         props.provider.id,
         {
@@ -475,31 +524,28 @@ const procotolSearch = (value: string) => {
 };
 
 const saveData = () => {
-    form.validateFields(async (err, values) => {
-        if (!err) {
+    validate()
+        .then(async (values) => {
             let resp = undefined;
+            let params = {
+                ...props.data,
+                ...values,
+                protocol: procotolCurrent.value,
+                channel: 'network', // 网络组件
+                channelId: networkCurrent.value,
+            };
             if (props.data && props.data.id) {
-                resp = await update({
-                    ...props.data,
-                    name: values.name,
-                    description: values.description,
-                    protocol: procotolCurrent.value,
-                    channel: 'network', // 网络组件
-                    channelId: networkCurrent.value,
-                });
+                resp = await update(params);
             } else {
-                resp = await save({
-                    name: values.name,
-                    description: values.description,
+                params = {
+                    ...params,
                     provider: props.provider.id,
-                    protocol: procotolCurrent.value,
                     transport:
                         props.provider?.id === 'child-device'
                             ? 'Gateway'
                             : ProtocolMapping.get(props.provider.id),
-                    channel: 'network', // 网络组件
-                    channelId: networkCurrent.value,
-                });
+                };
+                resp = await save(params);
             }
             if (resp.status === 200) {
                 message.success('操作成功！');
@@ -511,88 +557,139 @@ const saveData = () => {
                     // this.$store.dispatch('jumpPathByKey', { key: MenuKeys['Link/AccessConfig'] })
                 }
             }
-        }
-    });
+        })
+        .catch((err) => {});
 };
+
 const next = async () => {
     if (current.value === 0) {
         if (!networkCurrent.value) {
             message.error('请选择网络组件！');
         } else {
             queryProcotolList(props.provider.id);
-            current.value -= current.value;
+            current.value = current.value + 1;
         }
     } else if (current.value === 1) {
         if (!procotolCurrent.value) {
             message.error('请选择消息协议！');
         } else {
-            const resp =
-                props.provider.channel !== 'child-device'
-                    ? await getConfigView(
-                          procotolCurrent.value,
-                          ProtocolMapping.get(props.provider.id),
-                      )
-                    : await getChildConfigView(procotolCurrent.value);
-            if (resp.status === 200) {
-                config.value = resp.result;
-                current.value += current.value;
-                columnsMQTT = [
-                    {
-                        title: '分组',
-                        dataIndex: 'group',
-                        key: 'group',
-                        ellipsis: true,
-                        align: 'center',
-                        width: 100,
-                        customRender: (value, row, index) => {
-                            const obj = {
-                                children: value,
-                                attrs: {},
-                            };
-                            const list = (config && config.routes) || [];
-                            const arr = list.filter((res) => {
-                                return res.group == row.group;
-                            });
-                            if (
-                                index == 0 ||
-                                list[index - 1].group !== row.group
-                            ) {
-                                obj.attrs.rowSpan = arr.length;
-                            } else {
-                                obj.attrs.rowSpan = 0;
-                            }
-                            return obj;
-                        },
+            //使用测试数据2
+            config.value = result2;
+            current.value = current.value + 1;
+            columnsMQTT = [
+                {
+                    title: '分组',
+                    dataIndex: 'group',
+                    key: 'group',
+                    ellipsis: true,
+                    align: 'center',
+                    width: 100,
+                    customRender: (value, row, index) => {
+                        const obj = {
+                            children: value,
+                            attrs: {},
+                        };
+                        const list = (config && config.routes) || [];
+                        const arr = list.filter((res) => {
+                            return res.group == row.group;
+                        });
+                        if (index == 0 || list[index - 1].group !== row.group) {
+                            obj.attrs.rowSpan = arr.length;
+                        } else {
+                            obj.attrs.rowSpan = 0;
+                        }
+                        return obj;
                     },
-                    {
-                        title: 'topic',
-                        dataIndex: 'topic',
-                        key: 'topic',
-                        ellipsis: true,
-                    },
-                    {
-                        title: '上下行',
-                        dataIndex: 'stream',
-                        key: 'stream',
-                        ellipsis: true,
-                        align: 'center',
-                        width: 100,
-                        scopedSlots: { customRender: 'stream' },
-                    },
-                    {
-                        title: '说明',
-                        dataIndex: 'description',
-                        key: 'description',
-                        ellipsis: true,
-                    },
-                ];
-            }
+                },
+                {
+                    title: 'topic',
+                    dataIndex: 'topic',
+                    key: 'topic',
+                    ellipsis: true,
+                },
+                {
+                    title: '上下行',
+                    dataIndex: 'stream',
+                    key: 'stream',
+                    ellipsis: true,
+                    align: 'center',
+                    width: 100,
+                    scopedSlots: { customRender: 'stream' },
+                },
+                {
+                    title: '说明',
+                    dataIndex: 'description',
+                    key: 'description',
+                    ellipsis: true,
+                },
+            ];
+
+            // const resp =
+            //     props.provider.channel !== 'child-device'
+            //         ? await getConfigView(
+            //               procotolCurrent.value,
+            //               ProtocolMapping.get(props.provider.id),
+            //           )
+            //         : await getChildConfigView(procotolCurrent.value);
+            // if (resp.status === 200) {
+            //     config.value = resp.result;
+            //     current.value = current.value + 1;
+            //     columnsMQTT = [
+            //         {
+            //             title: '分组',
+            //             dataIndex: 'group',
+            //             key: 'group',
+            //             ellipsis: true,
+            //             align: 'center',
+            //             width: 100,
+            //             customRender: (value, row, index) => {
+            //                 const obj = {
+            //                     children: value,
+            //                     attrs: {},
+            //                 };
+            //                 const list = (config && config.routes) || [];
+            //                 const arr = list.filter((res) => {
+            //                     return res.group == row.group;
+            //                 });
+            //                 if (
+            //                     index == 0 ||
+            //                     list[index - 1].group !== row.group
+            //                 ) {
+            //                     obj.attrs.rowSpan = arr.length;
+            //                 } else {
+            //                     obj.attrs.rowSpan = 0;
+            //                 }
+            //                 return obj;
+            //             },
+            //         },
+            //         {
+            //             title: 'topic',
+            //             dataIndex: 'topic',
+            //             key: 'topic',
+            //             ellipsis: true,
+            //         },
+            //         {
+            //             title: '上下行',
+            //             dataIndex: 'stream',
+            //             key: 'stream',
+            //             ellipsis: true,
+            //             align: 'center',
+            //             width: 100,
+            //             scopedSlots: { customRender: 'stream' },
+            //         },
+            //         {
+            //             title: '说明',
+            //             dataIndex: 'description',
+            //             key: 'description',
+            //             ellipsis: true,
+            //         },
+            //     ];
+            // }
         }
     }
 };
 const prev = () => {
-    const currentValue = current.value;
-    current.value -= currentValue;
+    current.value = current.value - 1;
 };
 
 onMounted(() => {
@@ -601,10 +698,6 @@ onMounted(() => {
             procotolCurrent.value = props.data.protocol;
             current.value = 0;
             networkCurrent.value = props.data.channelId;
-            console.log(11111111,props.provider.id, {
-                include: networkCurrent.value,
-            });
-            
             queryNetworkList(props.provider.id, {
                 include: networkCurrent.value,
             });
@@ -618,18 +711,12 @@ onMounted(() => {
     } else {
         if (props.provider?.id) {
             if (props.provider.channel !== 'child-device') {
-                console.log(3333333, props.provider.id, {
-                    include: '',
-                });
-
                 queryNetworkList(props.provider.id, {
                     include: '',
                 });
                 steps.value = ['网络组件', '消息协议', '完成'];
                 current.value = 0;
             } else {
-                console.log(444444,props.provider.id);
-
                 steps.value = ['消息协议', '完成'];
                 current.value = 1;
                 queryProcotolList(props.provider.id);
@@ -638,25 +725,20 @@ onMounted(() => {
     }
 });
 
-// watch(
-//     () => props.modelValue,
-//     (v) => {
-//         keystoreBase64.value = v;
-//     },
-//     {
-//         deep: true,
-//         immediate: true,
-//     },
-// );
-// watch: {
-//     current(val) {
-//       if (this.provider.channel !== 'child-device') {
-//         this.stepCurrent = val
-//       } else {
-//         this.stepCurrent = val - 1
-//       }
-//     },
-//   },
+watch(
+    current,
+    (v) => {
+        if (props.provider.channel !== 'child-device') {
+            stepCurrent.value = v;
+        } else {
+            stepCurrent.value = v - 1;
+        }
+    },
+    {
+        deep: true,
+        immediate: true,
+    },
+);
 </script>
 
 <style lang="less" scoped>

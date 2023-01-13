@@ -9,7 +9,8 @@
             </div>
             <div v-else>
                 <div v-if="!id"><a @click="goBack">返回</a></div>
-                <AccessNetwork :provider="provider" :data="data" />
+                <AccessNetwork v-if="showType==='network'" :provider="provider" :data="data" />
+                <Media v-if="showType==='media'" :provider="provider" :data="data" />
             </div>
         </a-card>
     </a-spin>
@@ -17,10 +18,11 @@
 
 <script lang="ts" setup name="AccessConfigDetail">
 import { getImage } from '@/utils/comm';
-import TitleComponent from '@/components/TitleComponent/index.vue';
 import AccessNetwork from '../components/Network.vue';
 import Provider from '../components/Provider/index.vue';
 import { getProviders, detail } from '@/api/link/accessConfig';
+import Media from '../components/Media/index.vue';
+
 
 // const router = useRouter();
 const route = useRoute();
@@ -32,10 +34,14 @@ const type = ref(false);
 const loading = ref(true);
 const provider = ref({});
 const data = ref({});
+const showType = ref('')
 
-const goProviders = (param: object) => {
+const goProviders = (param: object) => {  
+    showType.value = param.type
     provider.value = param;
     type.value = false;
+    console.log(1123,showType.value,param);
+    
 };
 
 const goBack = () => {
@@ -46,10 +52,69 @@ const goBack = () => {
 const queryProviders = async () => {
     const resp = await getProviders();
     if (resp.status === 200) {
-        dataSource.value = resp.result.filter(
-            (item) =>
-                item.channel === 'network' || item.channel === 'child-device',
-        );
+        const media: any[] = [];
+        const network: any[] = [];
+        const cloud: any[] = [];
+        const channel: any[] = [];
+        const edge: any[] = [];
+        resp.result.map((item) => {
+            if (item.id === 'fixed-media' || item.id === 'gb28181-2016') {
+                item.type='media'
+                media.push(item);
+            } else if (item.id === 'OneNet' || item.id === 'Ctwing') {
+                item.type='cloud'
+                cloud.push(item);
+            } else if (item.id === 'modbus-tcp' || item.id === 'opc-ua') {
+                item.type='channel'
+                channel.push(item);
+            } else if (
+                item.id === 'official-edge-gateway' ||
+                item.id === 'edge-child-device'
+            ) {
+                item.type='edge'
+                edge.push(item);
+            } else {
+                item.type='network'
+                network.push(item);
+            }
+        });
+        const list = [];
+        if (network.length) {
+            list.push({
+                // type: 'network',
+                list: [...network],
+                title: '自定义设备接入',
+            });
+        }
+        if (media.length) {
+            list.push({
+                // type: 'media',
+                list: [...media],
+                title: '视频类设备接入',
+            });
+        }
+        if (cloud.length) {
+            list.push({
+                // type: 'cloud',
+                list: [...cloud],
+                title: '云平台接入',
+            });
+        }
+        if (channel.length) {
+            list.push({
+                // type: 'channel',
+                list: [...channel],
+                title: '通道类设备接入',
+            });
+        }
+        if (edge.length) {
+            list.push({
+                // type: 'edge',
+                list: [...edge],
+                title: '官方接入',
+            });
+        }
+        dataSource.value = list
     }
 };
 

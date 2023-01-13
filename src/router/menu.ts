@@ -87,9 +87,19 @@ export default [
         path: '/link/accessConfig/detail/add',
         component: () => import('@/views/link/AccessConfig/Detail/index.vue')
     },
+    // system 系统管理
+    {
+        path:'/system/api',
+        components: ()=>import('@/views/system/apiPage/index')
+    },
     // 初始化
     {
-        path: '/init-home',
-        component: () => import('@/views/init-home/index.vue')
+      path: '/init-home',
+      component: () => import('@/views/init-home/index.vue')
+    },
+    // 物联卡 iot-card
+    {
+      path: '/iot-card/home',
+      component: () => import('@/views/iot-card/Home/index.vue')
     },
 ]

@@ -15,12 +15,12 @@
                     class="api-details"
                     v-show="selectedApi.url && tableData.length > 0"
                 >
-                    <a-button @click="selectedApi = initSelectedApi"
+                    <a-button @click="selectedApi = initSelectedApi" style="margin-bottom: 24px;"
                         >返回</a-button
                     >
                     <a-tabs v-model:activeKey="activeKey" type="card">
                         <a-tab-pane key="does" tab="文档">
-                            <ApiDoes :select-api="selectedApi" />
+                            <ApiDoes :select-api="selectedApi" :schemas="schemas" />
                         </a-tab-pane>
                         <a-tab-pane key="test" tab="调试">
                             <ApiTest :select-api="selectedApi" />
@@ -40,7 +40,8 @@ import ApiDoes from './components/ApiDoes.vue';
 import ApiTest from './components/ApiTest.vue';
 
 const tableData = ref([]);
-const treeSelect = (node: treeNodeTpye) => {
+const treeSelect = (node: treeNodeTpye, nodeSchemas:object = {}) => {
+    schemas.value = nodeSchemas
     if (!node.apiList) return;
     const apiList: apiObjType[] = node.apiList as apiObjType[];
     const table: any = [];
@@ -61,10 +62,14 @@ const treeSelect = (node: treeNodeTpye) => {
 };
 
 const activeKey = ref('does');
-const initSelectedApi = {
+const schemas = ref({});
+const initSelectedApi:apiDetailsType = {
     url: '',
     method: '',
     summary: '',
+    parameters: [],
+    responses: {},
+    requestBody: {}
 };
 const selectedApi = ref<apiDetailsType>(initSelectedApi);
 
