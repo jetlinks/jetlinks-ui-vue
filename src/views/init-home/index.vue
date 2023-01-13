@@ -109,16 +109,44 @@
                                                                 class="upload-image-border-logo"
                                                             >
                                                                 <a-upload
+                                                                    name="file"
+                                                                    :action="
+                                                                        action
+                                                                    "
+                                                                    :headers="
+                                                                        headers
+                                                                    "
                                                                     :showUploadList="
                                                                         false
                                                                     "
+                                                                    :beforeUpload="
+                                                                        beforeLogoUpload
+                                                                    "
                                                                     @change="
                                                                         handleChangeLogo
+                                                                    "
+                                                                    :accept="
+                                                                        imageTypes &&
+                                                                        imageTypes.length
+                                                                            ? imageTypes.toString()
+                                                                            : ''
                                                                     "
                                                                 >
                                                                     <div
                                                                         class="upload-image-content-logo"
                                                                     >
+                                                                        <div
+                                                                            class="loading-logo"
+                                                                            v-if="
+                                                                                logoLoading
+                                                                            "
+                                                                        >
+                                                                            <LoadingOutlined
+                                                                                style="
+                                                                                    font-size: 28px;
+                                                                                "
+                                                                            />
+                                                                        </div>
                                                                         <div
                                                                             class="upload-image"
                                                                             v-if="
@@ -166,7 +194,6 @@
                                                                 </a-upload>
                                                                 <div
                                                                     v-if="
-                                                                        logoValue &&
                                                                         logoLoading
                                                                     "
                                                                 >
@@ -223,10 +250,45 @@
                                                             <div
                                                                 class="upload-image-border-logo"
                                                             >
-                                                                <a-upload>
+                                                                <a-upload
+                                                                    name="file"
+                                                                    :action="
+                                                                        action
+                                                                    "
+                                                                    :headers="
+                                                                        headers
+                                                                    "
+                                                                    :showUploadList="
+                                                                        false
+                                                                    "
+                                                                    :beforeUpload="
+                                                                        beforeIconUpload
+                                                                    "
+                                                                    @change="
+                                                                        changeIconUpload
+                                                                    "
+                                                                    :accept="
+                                                                        iconTypes &&
+                                                                        iconTypes.length
+                                                                            ? iconTypes.toString()
+                                                                            : ''
+                                                                    "
+                                                                >
                                                                     <div
                                                                         class="upload-image-content-logo"
                                                                     >
+                                                                        <div
+                                                                            v-if="
+                                                                                iconLoading
+                                                                            "
+                                                                            class="loading-icon"
+                                                                        >
+                                                                            <LoadingOutlined
+                                                                                style="
+                                                                                    font-size: 28px;
+                                                                                "
+                                                                            />
+                                                                        </div>
                                                                         <div
                                                                             class="upload-image-icon"
                                                                             v-if="
@@ -249,20 +311,7 @@
                                                                         <div
                                                                             v-else
                                                                         >
-                                                                            <div
-                                                                                v-if="
-                                                                                    logoLoading
-                                                                                "
-                                                                            >
-                                                                                <LoadingOutlined
-                                                                                    style="
-                                                                                        font-size: 28px;
-                                                                                    "
-                                                                                />
-                                                                            </div>
-                                                                            <div
-                                                                                v-else
-                                                                            >
+                                                                            <div>
                                                                                 <PlusOutlined
                                                                                     style="
                                                                                         font-size: 28px;
@@ -298,16 +347,40 @@
                                                         class="upload-image-border-back"
                                                     >
                                                         <a-upload
-                                                            @beforeUpload="
+                                                            name="file"
+                                                            :action="action"
+                                                            :headers="headers"
+                                                            :beforeUpload="
                                                                 beforeBackUpload
+                                                            "
+                                                            :showUploadList="
+                                                                false
                                                             "
                                                             @change="
                                                                 changeBackUpload
+                                                            "
+                                                            :accept="
+                                                                imageTypes &&
+                                                                imageTypes.length
+                                                                    ? imageTypes.toString()
+                                                                    : ''
                                                             "
                                                         >
                                                             <div
                                                                 class="upload-image-content-back"
                                                             >
+                                                                <div
+                                                                    v-if="
+                                                                        backLoading
+                                                                    "
+                                                                    class="loading-back"
+                                                                >
+                                                                    <LoadingOutlined
+                                                                        style="
+                                                                            font-size: 28px;
+                                                                        "
+                                                                    />
+                                                                </div>
                                                                 <div
                                                                     class="upload-image"
                                                                     v-if="
@@ -328,18 +401,7 @@
                                                                     点击修改
                                                                 </div>
                                                                 <div v-else>
-                                                                    <div
-                                                                        v-if="
-                                                                            logoLoading
-                                                                        "
-                                                                    >
-                                                                        <LoadingOutlined
-                                                                            style="
-                                                                                font-size: 28px;
-                                                                            "
-                                                                        />
-                                                                    </div>
-                                                                    <div v-else>
+                                                                    <div>
                                                                         <PlusOutlined
                                                                             style="
                                                                                 font-size: 28px;
@@ -349,6 +411,11 @@
                                                                 </div>
                                                             </div>
                                                         </a-upload>
+                                                        <!-- <div v-if="logoValue">
+                                                          <div v-if="logoLoading">
+                                                            <div class="upload-loading-mask"></div>
+                                                          </div>
+                                                        </div> -->
                                                     </div>
                                                 </div>
                                                 <div class="upload-tips">
@@ -499,7 +566,7 @@
                                     width="52vw"
                                     :maskClosable="false"
                                     @cancel="cancel"
-                                    @ok="handleOk"
+                                    @ok="saveCurrentData"
                                     okText="确定"
                                     cancelText="取消"
                                     class="modal-style"
@@ -516,10 +583,10 @@
                                     </div>
                                     <div style="margin-top: 20px">
                                         <a-form
-                                            :model="ModalForm"
-                                            :validate-messages="message"
+                                            layout="vertical"
+                                            :model="modalForm"
                                             ref="formRef"
-                                            :rules="rules"
+                                            :rules="rulesModle"
                                         >
                                             <a-row :span="24" :gutter="24">
                                                 <a-col :span="12">
@@ -543,7 +610,7 @@
                                                         </template>
                                                         <a-input
                                                             v-model:value="
-                                                                ModalForm.host
+                                                                modalForm.host
                                                             "
                                                             :disabled="true"
                                                         />
@@ -570,7 +637,7 @@
                                                         </template>
                                                         <a-input
                                                             v-model:value="
-                                                                ModalForm.publicHost
+                                                                modalForm.publicHost
                                                             "
                                                         >
                                                         </a-input>
@@ -597,9 +664,23 @@
                                                         </template>
                                                         <a-select
                                                             v-model:value="
-                                                                ModalForm.port
+                                                                modalForm.port
                                                             "
-                                                        ></a-select>
+                                                        >
+                                                            <a-select-option
+                                                                v-for="item in optionPorts"
+                                                                :key="item"
+                                                                :value="
+                                                                    item.value
+                                                                "
+                                                                :label="
+                                                                    item.label
+                                                                "
+                                                                >{{
+                                                                    item.label
+                                                                }}</a-select-option
+                                                            >
+                                                        </a-select>
                                                     </a-form-item>
                                                     <a-form-item
                                                         name="publicPort"
@@ -623,7 +704,7 @@
                                                         </template>
                                                         <a-input-number
                                                             v-model:value="
-                                                                ModalForm.publicPort
+                                                                modalForm.publicPort
                                                             "
                                                             style="width: 100%"
                                                         />
@@ -640,6 +721,7 @@
                         type="primary"
                         class="btn-style"
                         @click="submitData"
+                        :loading="isSucessBasic || isSucessInit || isSucessRole"
                         >确定</a-button
                     >
                 </div>
@@ -654,19 +736,38 @@ import {
     ExclamationCircleOutlined,
     LoadingOutlined,
 } from '@ant-design/icons-vue';
-import { ROLEKEYS, RoleData } from './data/RoleData';
+import RoleMenuData, { ROLEKEYS, RoleData } from './data/RoleData';
 import type { Rule } from 'ant-design-vue/es/form';
 import type {
     FormInstance,
     UploadChangeParam,
     UploadProps,
+    Form,
 } from 'ant-design-vue';
 import { modalState, formState, logoState } from './data/interface';
 import BaseMenu from './data/baseMenu';
-import { getSystemPermission, save } from '@/api/initHome';
+import {
+    getSystemPermission,
+    save,
+    addRole,
+    getRoleMenu,
+    updateRoleMenu,
+    getResourcesCurrent,
+    saveNetwork,
+    saveProtocol,
+    getProtocol,
+    saveAccessConfig,
+    saveProduct,
+    saveDevice,
+    changeDeploy,
+    deployDevice,
+} from '@/api/initHome';
+import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
+import { LocalStore } from '@/utils/comm';
+import { message } from 'ant-design-vue';
 const formRef = ref();
 const menuRef = ref();
-const formBasicRef = ref<FormInstance>();
+const formBasicRef = ref();
 /**
  * 表单数据
  */
@@ -710,7 +811,7 @@ const validateUrl = async (_rule: Rule, value: string) => {
         return Promise.reject('请输入公网地址');
     } else {
         var reg = new RegExp(
-            /^(((?!(127\\.0\\.0\\.1)|(localhost)|(10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|(172\\.((1[6-9])|(2\\d)|(3[01]))\\.\\d{1,3}\\.\\d{1,3})|(192\\.168\\.\\d{1,3}\\.\\d{1,3})).)*)(?:(?:\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.){3}(?:\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])$/,
+            /^(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}$/,
         );
         if (!reg.test(value)) {
             return Promise.reject('请输入正确的公网地址');
@@ -731,44 +832,44 @@ const validateNumber = async (_rule: Rule, value: string) => {
         return Promise.resolve();
     }
 };
+
 /**
  * 初始化弹窗表单数据
  */
-const ModalForm = reactive<modalState>({
+const modalForm = reactive<modalState>({
     host: '0.0.0.0',
     port: '',
     publicHost: '',
     publicPort: null,
-    rules: {
-        host: [
-            {
-                required: true,
-                message: '请选择本地地址',
-            },
-        ],
-        port: [
-            {
-                required: true,
-                message: '请选择本地端口',
-            },
-        ],
-        publicHost: [
-            {
-                required: true,
-                validator: validateUrl,
-                trigger: 'change',
-            },
-        ],
-        publicPort: [
-            {
-                required: true,
-                validator: validateNumber,
-                trigger: 'change',
-            },
-        ],
-    },
 });
-const { rules } = toRefs(ModalForm);
+const rulesModle = ref({
+    host: [
+        {
+            required: true,
+            message: '请选择本地地址',
+        },
+    ],
+    port: [
+        {
+            required: true,
+            message: '请选择本地端口',
+        },
+    ],
+    publicHost: [
+        {
+            required: true,
+            validator: validateUrl,
+            trigger: 'change',
+        },
+    ],
+    publicPort: [
+        {
+            required: true,
+            validator: validateNumber,
+            trigger: 'change',
+        },
+    ],
+});
 
 /**
  * 默认打开第一个初始菜单
@@ -777,6 +878,8 @@ const activeKey = ref<string>('1');
 const spinning = ref<boolean>(false);
 const visible = ref<boolean>(false);
 const flag = ref<boolean>(false);
+const action = ref<string>(`${BASE_API_PATH}/file/static`);
+const headers = ref({ [TOKEN_KEY]: LocalStore.get(TOKEN_KEY) });
 /**
  * 角色勾选数据
  */
@@ -798,13 +901,6 @@ const showModal = () => {
 };
 
 /**
- * 提交初始数据表单
- */
-const handleOk = async () => {
-    const valid = await formRef.value.validate();
-};
-
-/**
  * 表单取消事件
  */
 const cancel = () => {
@@ -817,13 +913,34 @@ const cancel = () => {
 const logoData = reactive<logoState>({
     logoValue: '/public/logo.png',
     logoLoading: false,
+    backLoading: false,
+    iconLoading: false,
     inLogo: false,
     inIcon: false,
     inBackground: false,
+    backSize: 4,
+    logoSize: 1,
     iconValue: '/public/favicon.ico',
     backValue: '/public/images/login.png',
+    imageTypes: ['image/jpeg', 'image/png'],
+    iconTypes: ['image/x-icon'],
     /**
-     * 图片上传改变事件
+     * logo格式校验
+     */
+    beforeLogoUpload: (file) => {
+        const isType = logoData.imageTypes.includes(file.type);
+        if (!isType) {
+            message.error(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`);
+            return false;
+        }
+        const isSize = file.size / 1024 / 1024 < 4;
+        if (!isSize) {
+            message.error(`图片大小必须小于${4}M`);
+        }
+        return isType && isSize;
+    },
+    /*
+     * logo上传改变事件
      */
     handleChangeLogo: (info) => {
         if (info.file.status === 'uploading') {
@@ -838,33 +955,216 @@ const logoData = reactive<logoState>({
     /**
      * 背景图片上传之前
      */
-    beforeBackUpload: (file) => {},
+    beforeBackUpload: (file) => {
+        const isType = logoData.imageTypes.includes(file.type);
+        if (!isType) {
+            message.error(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`);
+            return false;
+        }
+        const isSize = file.size / 1024 / 1024 < 4;
+        if (!isSize) {
+            message.error(`图片大小必须小于${4}M`);
+        }
+        return isType && isSize;
+    },
     /**
      * 背景图片发生改变
      */
-    changeBackUpload: (info) => {},
+    changeBackUpload: (info) => {
+        if (info.file.status === 'uploading') {
+            logoData.backLoading = true;
+        }
+        if (info.file.status === 'done') {
+            info.file.url = info.file.response?.result;
+            logoData.backLoading = false;
+            logoData.backValue = info.file.response?.result;
+        }
+    },
+    /**
+     * 上传之前
+     */
+    beforeIconUpload: (file) => {
+        const isType = logoData.iconTypes.includes(file.type);
+        if (!isType) {
+            message.error(`请上传ico格式的图片`);
+            return false;
+        }
+        const isSize = file.size / 1024 / 1024 < 1;
+        if (!isSize) {
+            message.error(`图片大小必须小于${1}M`);
+        }
+        return isType && isSize;
+    },
+    /**
+     * 图标发生改变
+     */
+    changeIconUpload: (info) => {
+        if (info.file.status === 'uploading') {
+            logoData.iconLoading = true;
+        }
+        if (info.file.status === 'done') {
+            info.file.url = info.file.response?.result;
+            logoData.iconLoading = true;
+            logoData.iconValue = info.file.response?.result;
+        }
+    },
 });
 
 const {
     logoValue,
     logoLoading,
+    iconLoading,
+    backLoading,
     inLogo,
     iconValue,
     inIcon,
     inBackground,
     backValue,
     handleChangeLogo,
+    beforeBackUpload,
+    changeBackUpload,
+    beforeLogoUpload,
+    beforeIconUpload,
+    changeIconUpload,
+    imageTypes,
+    iconTypes,
 } = toRefs(logoData);
 /**
  * 提交基础表单
  */
 const basicData = reactive({
+    isSucessBasic: false,
     /**
      * 提交基础表单数据
      */
-    saveBasicInfo: async () => {},
+    saveBasicInfo: async () => {
+        // return new Promise(async (resolve) => {
+        const vaild = await formBasicRef.value.validate();
+        console.log(vaild, 'vaild ');
+        if (vaild) {
+            const item = [
+                {
+                    scope: 'front',
+                    properties: {
+                        ...form,
+                        apikey: '',
+                        'base-path': '',
+                    },
+                },
+                {
+                    scope: 'amap',
+                    properties: {
+                        api: form.apikey,
+                    },
+                },
+                {
+                    scope: 'paths',
+                    properties: {
+                        'base-path': form.basePath,
+                    },
+                },
+            ];
+            const res = await save(item);
+            if (res.status === 200) {
+                const ico: any = document.querySelector('link[rel="icon"]');
+                if (ico !== null) {
+                    ico.href = form.icon;
+                }
+            } else {
+                basicData.isSucessBasic = true;
+            }
+        } else {
+            basicData.isSucessBasic = true;
+        }
+        // });
+    },
 });
 
+/**
+ * 提交角色数据
+ */
+const roleData = reactive({
+    isSucessRole: false,
+    /**
+     * 根据菜单找角色
+     */
+    findMenuByRole: (menu: any[], code: string): any => {
+        let _item = null;
+        menu.some((item) => {
+            if (item.code === code) {
+                _item = item;
+                return true;
+            }
+
+            if (item.children) {
+                const childrenItem = roleData.findMenuByRole(
+                    item.children,
+                    code,
+                );
+                if (childrenItem) {
+                    _item = childrenItem;
+                    return true;
+                }
+                return false;
+            }
+
+            return null;
+        });
+        return _item;
+    },
+    /**
+     * 保存角色
+     */
+    addRoleData: async () => {
+        return new Promise((resolve) => {
+            if (!keys.value.length) {
+                return resolve(true);
+            }
+            let Count = 0;
+            keys.value.forEach(async (item, index) => {
+                const _itemData = RoleData[item];
+                // 添加该角色
+                const res = await addRole(_itemData);
+                if (res.status === 200) {
+                    const menuTree = await getRoleMenu(res.result.id);
+                    if (menuTree.status === 200) {
+                        const _roleData = (RoleMenuData[item] as []).filter(
+                            (roleItem: any) => {
+                                const _menu = roleData.findMenuByRole(
+                                    menuTree.result,
+                                    roleItem.code,
+                                );
+                                if (_menu) {
+                                    roleItem.id = _menu.id;
+                                    roleItem.parentId = _menu.parentId;
+                                    roleItem.createTime = _menu.createTime;
+                                    return true;
+                                }
+                                return false;
+                            },
+                        );
+                        //更新权限
+                        const roleRes = await updateRoleMenu(res.result.id, {
+                            menus: _roleData,
+                        });
+                        if (roleRes.status === 200) {
+                            Count += 1;
+                        }
+                        if (index === keys.value.length - 1) {
+                            resolve(Count === keys.value.length);
+                        }
+                    } else if (index === keys.value.length - 1) {
+                        resolve(Count === keys.value.length);
+                    }
+                } else if (index === keys.value.length - 1) {
+                    resolve(Count === keys.value.length);
+                    roleData.isSucessRole = true;
+                }
+            });
+        });
+    },
+});
+const { isSucessRole } = toRefs(roleData);
 /**
  * 获取菜单数据
  */
@@ -882,7 +1182,6 @@ const menuDatas = reactive({
             );
             const _count = menuDatas.menuCount(newTree);
             menuDatas.count = _count;
-            console.log(menuDatas.count, 'menuDatas.count');
         }
     },
     /**
@@ -918,16 +1217,118 @@ const menuDatas = reactive({
         }, 0);
     },
 });
-
 const { count } = toRefs(menuDatas);
+/**
+ * 提交初始化数据
+ */
+const initialization = reactive({
+    isSucessInit: false,
+    optionPorts: [],
+    /**
+     * 查询端口数据
+     */
+    getCurrentPort: async () => {
+        const resp = await getResourcesCurrent();
+        const current = resp?.result;
+        const _host =
+            current.find((item: any) => item.host === '0.0.0.0')?.ports[
+                'TCP'
+            ] || [];
+        initialization.optionPorts = _host?.map((p: any) => ({
+            label: p,
+            value: p,
+        }));
+    },
+    /**
+     * 提交初始数据表单
+     */
+
+    saveCurrentData: async () => {
+        // return new Promise(async (resolve) => {
+        const valid = await formRef.value.validate();
+        console.log(valid, 'valid');
+        // if (valid) {
+        //     try {
+        //         // 新增网络组件
+        //         const network = await saveNetwork({
+        //             type: 'MQTT_SERVER',
+        //             shareCluster: true,
+        //             name: 'MQTT网络组件',
+        //             configuration: {
+        //                 host: '0.0.0.0',
+        //                 secure: false,
+        //                 port: modalForm.port,
+        //                 publicHost: modalForm.publicHost,
+        //                 publicPort: modalForm.publicPort,
+        //             },
+        //         });
+        //         // 保存协议
+        //         const protocol = await saveProtocol();
+        //         let protocolItem: any = undefined;
+        //         if (protocol.status === 200) {
+        //             const proid = await getProtocol();
+        //             if (proid.status === 200) {
+        //                 protocolItem = (proid?.result || []).find(
+        //                     (it: any) => it.name === 'JetLinks官方协议',
+        //                 );
+        //             }
+        //         }
+        //         // 新增设备接入网关
+        //         const accessConfig = await saveAccessConfig({
+        //             name: 'MQTT类型设备接入网关',
+        //             provider: 'mqtt-server-gateway',
+        //             protocol: protocolItem?.id,
+        //             transport: 'MQTT',
+        //             channel: 'network',
+        //             channelId: network?.result?.id,
+        //         });
+        //         // 新增产品
+        //         const product = await saveProduct({
+        //             name: 'MQTT产品',
+        //             messageProtocol: protocolItem?.id,
+        //             protocolName: protocolItem?.name,
+        //             transportProtocol: 'MQTT',
+        //             deviceType: 'device',
+        //             accessId: accessConfig.result?.id,
+        //             accessName: accessConfig.result?.name,
+        //             accessProvider: 'mqtt-server-gateway',
+        //         });
+        //         // 新增设备
+        //         const device = await saveDevice({
+        //             name: 'MQTT设备',
+        //             productId: product?.result?.id,
+        //             productName: product?.result?.name,
+        //         });
+        //         if (device.status === 200) {
+        //             changeDeploy(product.result.id);
+        //             deployDevice(device.result.id);
+        //         }
+
+        //         flag.value = true;
+        //         visible.value = false;
+        //     } catch (e) {
+        //         initialization.isSucessInit = true;
+        //         // resolve(false);
+        //     }
+        // }
+        initialization.isSucessInit = true;
+    },
+});
+const { optionPorts, saveCurrentData, isSucessInit } = toRefs(initialization);
+
 /**
  * 初始化
  */
 menuDatas.getSystemPermissionData();
+initialization.getCurrentPort();
 /**
  * 提交所有数据
  */
-const submit = () => {};
+const submitData = () => {
+    initialization.saveCurrentData();
+    roleData.addRoleData();
+    basicData.saveBasicInfo();
+};
 </script>
 <style scoped lang="less">
 .page-container {
@@ -1073,6 +1474,13 @@ const submit = () => {};
                             padding: 8px;
                             background-color: rgba(0, 0, 0, 0.06);
                             cursor: pointer;
+                            .loading-logo {
+                                position: absolute;
+                                top: 50%;
+                            }
+                            .loading-icon {
+                                position: absolute;
+                            }
                             .upload-image {
                                 width: 100%;
                                 height: 100%;
@@ -1132,6 +1540,9 @@ const submit = () => {};
                             padding: 8px;
                             background-color: rgba(0, 0, 0, 0.06);
                             cursor: pointer;
+                            .loading-back {
+                                position: absolute;
+                            }
                             .upload-image {
                                 width: 100%;
                                 height: 100%;

@@ -50,11 +50,20 @@ export interface JTableProps extends TableProps{
         pageIndex: number;
     };
     model?: keyof typeof ModelEnum | undefined; // 显示table还是card
-    actions?: ActionsType[];
+    // actions?: ActionsType[];
     noPagination?: boolean;
     rowSelection?: TableProps['rowSelection'];
     cardProps?:  Record<string, any>;
     dataSource?:  Record<string, any>[];
+    gridColumn: number;
+    /**
+     * 用于不同分辨率
+     * gridColumns[0] 1366 ~ 1440 分辨率；
+     * gridColumns[1] 1440 ~  1600 分辨率；
+     * gridColumns[2] > 1600 分辨率；
+     */
+     gridColumns?: number[];
+     alertRender?: boolean;
 }
 
 const JTable = defineComponent<JTableProps>({
@@ -87,10 +96,10 @@ const JTable = defineComponent<JTableProps>({
             type: [String, undefined],
             default: undefined
         },
-        actions: {
-            type: Array as PropType<ActionsType[]>,
-            default: () => []
-        },
+        // actions: {
+        //     type: Array as PropType<ActionsType[]>,
+        //     default: () => []
+        // },
         noPagination: {
             type: Boolean,
             default: false
@@ -106,12 +115,24 @@ const JTable = defineComponent<JTableProps>({
         dataSource: {
             type: Array,
             default: () => []
+        },
+        gridColumns: {
+            type: Array as PropType<Number[]>,
+            default: [2, 3, 4]
+        },
+        gridColumn: {
+            type: Number,
+            default: 4
+        },
+        alertRender: {
+            type: Boolean,
+            default: true
         }
     } as any,
     setup(props: JTableProps ,{ slots, emit }){
         const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE
         const _model = ref<keyof typeof ModelEnum>(props.model ? props.model : ModelEnum.CARD); // 模式切换
-        const column = ref<number>(4);
+        const column = ref<number>(props.gridColumn || 4);
         const _dataSource = ref<Record<string, any>[]>([])
         const pageIndex = ref<number>(0)
         const pageSize = ref<number>(6)
@@ -119,9 +140,20 @@ const JTable = defineComponent<JTableProps>({
         const _columns = ref<JColumnProps[]>(props?.columns || [])
         const loading = ref<boolean>(true)
 
-        // alert关闭，取消选择
-        const handleAlertClose = () => {
-            emit('cancelSelect')
+        /**
+         * 监听宽度，计算显示卡片个数
+         */
+        const windowChange = () => {
+            if (window.innerWidth <= 1440) {
+                const _column = props.gridColumn && props.gridColumn < 2 ? props.gridColumn : 2;
+                column.value = props.gridColumns ? props.gridColumns[0] : _column
+            } else if (window.innerWidth > 1440 && window.innerWidth <= 1600) {
+                const _column = props.gridColumn && props.gridColumn < 3 ? props.gridColumn : 3;
+                column.value = props.gridColumns ? props.gridColumns[1] : _column
+            } else if (window.innerWidth > 1600) {
+                const _column = props.gridColumn && props.gridColumn < 4 ? props.gridColumn : 4;
+                column.value = props.gridColumns ? props.gridColumns[2] : _column
+            }
         }
 
         /**
@@ -153,12 +185,21 @@ const JTable = defineComponent<JTableProps>({
             } else {
                 _dataSource.value = props?.dataSource || []
             }
-            
             loading.value = false
         }
 
         watchEffect(() => {
             handleSearch(props.params)
+        })
+
+        onMounted(() => {
+            window.onresize = () => {
+                windowChange()
+            }
+        })
+
+        onUnmounted(() => {
+            window.onresize = null
         })
         
         return () => <Spin spinning={loading.value}>
@@ -184,12 +225,14 @@ const JTable = defineComponent<JTableProps>({
                 {/* content */}
                 <div class={styles['jtable-content']}>
                     {
-                        props?.rowSelection && props?.rowSelection?.selectedRowKeys && props.rowSelection.selectedRowKeys?.length ?
+                        props.alertRender && props?.rowSelection && props?.rowSelection?.selectedRowKeys && props.rowSelection.selectedRowKeys?.length ?
                         <div class={styles['jtable-alert']}>
                             <Alert
                                 message={'已选择' + props?.rowSelection?.selectedRowKeys?.length + '项'}
                                 type="info"
-                                onClose={handleAlertClose}
+                                onClose={() => {
+                                    emit('cancelSelect')
+                                }}
                                 closeText={<a>取消选择</a>}
                              />
                         </div> : null
@@ -205,8 +248,10 @@ const JTable = defineComponent<JTableProps>({
                                 >
                                     {
                                         _dataSource.value.map(item => slots.card ? 
-                                            <div class={[styles['jtable-card-item'], props.cardBodyClass]}>{slots.card({row: item, actions: props?.actions || []})}</div>
-                                            : null)
+                                            <div class={[styles['jtable-card-item'], props.cardBodyClass]}>
+                                                {slots.card(item)}
+                                            </div> : null
+                                        )
                                     }
                                 </div> : 
                                 <div><Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /></div>
@@ -225,7 +270,7 @@ const JTable = defineComponent<JTableProps>({
                                         const {column, record} = dt;
                                         if((column?.key || column?.dataIndex) && column?.scopedSlots && (slots?.[column?.dataIndex] || slots?.[column?.key])) {
                                             const _key = column?.key || column?.dataIndex
-                                            return slots?.[_key]!({row: record, actions: props.actions})
+                                            return slots?.[_key]!(record)
                                         } else {
                                             return record?.[column?.dataIndex] || ''
                                         }
