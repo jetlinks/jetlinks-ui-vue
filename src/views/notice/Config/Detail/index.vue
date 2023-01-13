@@ -267,14 +267,16 @@
                         </a-form-item>
                     </a-form>
                 </a-col>
-                <a-col :span="12" :push="2"></a-col>
+                <a-col :span="12" :push="2">
+                    <Doc />
+                </a-col>
             </a-row>
         </a-card>
     </div>
 </template>
 
 <script setup lang="ts">
-import { getImage, LocalStore } from '@/utils/comm';
+import { getImage } from '@/utils/comm';
 import { Form } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
 import { ConfigFormData } from '../types';
@@ -285,8 +287,8 @@ import {
 } from '@/views/notice/const';
 import regionList from './regionId';
 import EditTable from './components/EditTable.vue';
-
 import configApi from '@/api/notice/config';
+import Doc from './doc/index';
 
 const router = useRouter();
 const route = useRoute();
