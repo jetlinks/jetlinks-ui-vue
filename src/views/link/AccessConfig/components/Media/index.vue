@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div v-if="channel==='fixed-media'" class="card-last">
+        <div v-if="channel === 'fixed-media'" class="card-last">
             <a-row :gutter="[24, 24]">
                 <a-col :span="12">
                     <title-component data="基本信息" />
@@ -18,7 +18,7 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入证书名称',
+                                        message: '请输入名称',
                                         trigger: 'blur',
                                     },
                                     { max: 64, message: '最多可输入64个字符' },
@@ -68,13 +68,16 @@
                 </a-col>
             </a-row>
         </div>
-        <div v-else>123</div>
+        <div v-else>
+            <GB28181 :data="props.data" :provider="props.provider"></GB28181>
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup name="AccessMedia">
 import { message, Form } from 'ant-design-vue';
 import type { FormInstance } from 'ant-design-vue';
+import GB28181 from './GB28181.vue';
 
 interface FormState {
     name: string;
@@ -102,7 +105,6 @@ const formState = reactive<FormState>({
 const onFinish = (values: any) => {
     console.log('Success:', values);
 };
-
 </script>
 
 <style lang="less" scoped>
