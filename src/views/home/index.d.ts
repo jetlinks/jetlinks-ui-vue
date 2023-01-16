@@ -8,11 +8,6 @@ export interface recommendList {
     auth: boolean;
     dialogTag?: 'accessMethod' | 'funcTest';
 }
-// 产品列表里的每项
-export interface productItem {
-    label: string;
-    value: string
-}
 
 export interface deviceInfo {
     deviceId: string,
@@ -20,4 +15,13 @@ export interface deviceInfo {
     productName: string,
     createTime: string,
     status: boolean
+}
+
+export interface bootConfig {
+    english: string,
+    label: string,
+    link: string,
+    auth: boolean,
+    image?:string,
+    params?: object,
 }

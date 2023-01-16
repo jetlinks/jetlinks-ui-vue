@@ -126,7 +126,12 @@
                 </div>
             </div>
             <div class="steps-box" v-else>
-                <div class="card-last">
+                <div
+                    class="card-last"
+                    :style="`max-height:${
+                        clientHeight > 900 ? 750 : clientHeight * 0.7
+                    }px`"
+                >
                     <a-row :gutter="[24, 24]">
                         <a-col :span="12">
                             <title-component data="基本信息" />
@@ -190,7 +195,6 @@
                                         v-if="config.document"
                                     >
                                         <Markdown :source="config.document" />
-
                                     </div>
                                 </div>
                                 <div
@@ -255,22 +259,32 @@
                                         :scroll="{ y: 300 }"
                                     >
                                         <template
-                                            #stream
-                                            slot-scope="text, record"
+                                            #bodyCell="{ column, text, record }"
                                         >
-                                            <span
+                                            <template
                                                 v-if="
-                                                    record.upstream &&
-                                                    record.downstream
+                                                    column.dataIndex ===
+                                                    'stream'
                                                 "
-                                                >上行、下行</span
                                             >
-                                            <span v-else-if="record.upstream"
-                                                >上行</span
-                                            >
-                                            <span v-else-if="record.downstream"
-                                                >下行</span
-                                            >
+                                                <span
+                                                    v-if="
+                                                        record.upstream &&
+                                                        record.downstream
+                                                    "
+                                                    >上行、下行</span
+                                                >
+                                                <span
+                                                    v-else-if="record.upstream"
+                                                    >上行</span
+                                                >
+                                                <span
+                                                    v-else-if="
+                                                        record.downstream
+                                                    "
+                                                    >下行</span
+                                                >
+                                            </template>
                                         </template>
                                     </a-table>
                                 </div>
@@ -314,9 +328,8 @@ import {
 } from '../Detail/data';
 import AccessCard from './AccessCard/index.vue';
 import { message, Form } from 'ant-design-vue';
-import type { FormInstance } from 'ant-design-vue';
+import type { FormInstance, TableColumnType } from 'ant-design-vue';
 import Markdown from 'vue3-markdown-it';
-
 
 //测试数据1
 const resultList1 = [
@@ -363,13 +376,158 @@ const resultList1 = [
 //     metadata: '',
 // };
 const result2 = {
-"id": "MQTT",
-"name": "MQTT",
-"features": [],
-"routes": [],
-"document": "# MQTT认证说明\r\nCONNECT报文:\r\n```text\r\nclientId: 设备ID\r\nusername: secureId+\"|\"+timestamp\r\npassword: md5(secureId+\"|\"+timestamp+\"|\"+secureKey)\r\n ```\r\n\r\n说明: secureId以及secureKey在创建设备产品或设备实例时进行配置. \r\ntimestamp为当前系统时间戳(毫秒),与系统时间不能相差5分钟.\r\nmd5为32位,不区分大小写.",
-"metadata": "{\"functions\":[],\"name\":\"test\",\"description\":\"测试用\",\"id\":\"test\",\"properties\":[{\"valueType\":{\"round\":\"HALF_UP\",\"type\":\"double\"},\"name\":\"温度\",\"id\":\"t\"},{\"valueType\":{\"round\":\"HALF_UP\",\"type\":\"int\"},\"name\":\"状态\",\"id\":\"state\"}],\"events\":[],\"tags\":[]}"
-}
+    id: 'MQTT',
+    name: 'MQTT',
+    features: [
+        {
+            id: 'supportFirmware',
+            name: '支持固件升级',
+        },
+    ],
+    routes: [
+        {
+            topic: '/{productId:产品ID}/{deviceId:设备ID}/properties/report',
+            upstream: true,
+            downstream: false,
+            qos: 0,
+            group: '属性上报',
+            description: '上报物模型属性数据',
+            example: '{"properties":{"属性ID":"属性值"}}',
+            address: '/{productId:产品ID}/{deviceId:设备ID}/properties/report',
+        },
+        {
+            topic: '/{productId:产品ID}/{deviceId:设备ID}/properties/read',
+            upstream: false,
+            downstream: true,
+            qos: 0,
+            group: '读取属性',
+            description: '平台下发读取物模型属性数据指令',
+            example:
+                '{"messageId":"消息ID,回复时需要一致.","properties":["属性ID"]}',
+            address: '/{productId:产品ID}/{deviceId:设备ID}/properties/read',
+        },
+        {
+            topic: '/{productId:产品ID}/{deviceId:设备ID}/properties/read/reply',
+            upstream: true,
+            downstream: false,
+            qos: 0,
+            group: '读取属性',
+            description: '对平台下发的读取属性指令进行响应',
+            example:
+                '{"messageId":"消息ID,与读取指令中的ID一致.","properties":{"属性ID":"属性值"}}',
+            address:
+                '/{productId:产品ID}/{deviceId:设备ID}/properties/read/reply',
+        },
+        {
+            topic: '/{productId:产品ID}/{deviceId:设备ID}/properties/write',
+            upstream: false,
+            downstream: true,
+            qos: 0,
+            group: '修改属性',
+            description: '平台下发修改物模型属性数据指令',
+            example:
+                '{"messageId":"消息ID,回复时需要一致.","properties":{"属性ID":"属性值"}}',
+            address: '/{productId:产品ID}/{deviceId:设备ID}/properties/write',
+        },
+        {
+            topic: '/{productId:产品ID}/{deviceId:设备ID}/properties/write/reply',
+            upstream: true,
+            downstream: false,
+            qos: 0,
+            group: '修改属性',
+            description: '对平台下发的修改属性指令进行响应',
+            example:
+                '{"messageId":"消息ID,与修改指令中的ID一致.","properties":{"属性ID":"属性值"}}',
+            address:
+                '/{productId:产品ID}/{deviceId:设备ID}/properties/write/reply',
+        },
+        {
+            topic: '/{productId:产品ID}/{deviceId:设备ID}/event/{eventId:事件ID}',
+            upstream: true,
+            downstream: false,
+            qos: 0,
+            group: '事件上报',
+            description: '上报物模型事件数据',
+            example: '{"data":{"key":"value"}}',
+            address:
+                '/{productId:产品ID}/{deviceId:设备ID}/event/{eventId:事件ID}',
+        },
+        {
+            topic: '/{productId:产品ID}/{deviceId:设备ID}/function/invoke',
+            upstream: false,
+            downstream: true,
+            qos: 0,
+            group: '调用功能',
+            description: '平台下发功能调用指令',
+            example:
+                '{"messageId":"消息ID,回复时需要一致.","functionId":"功能标识","inputs":[{"name":"参数名","value":"参数值"}]}',
+            address: '/{productId:产品ID}/{deviceId:设备ID}/function/invoke',
+        },
+        {
+            topic: '/{productId:产品ID}/{deviceId:设备ID}/function/invoke/reply',
+            upstream: true,
+            downstream: false,
+            qos: 0,
+            group: '调用功能',
+            description: '设备响应平台下发的功能调用指令',
+            example:
+                '{"messageId":"消息ID,与下发指令中的messageId一致.","output":"输出结果,格式与物模型中定义的类型一致"',
+            address:
+                '/{productId:产品ID}/{deviceId:设备ID}/function/invoke/reply',
+        },
+        {
+            topic: '/{productId:产品ID}/{deviceId:设备ID}/child/{childDeviceId:子设备ID}/{#:子设备相应操作的topic}',
+            upstream: true,
+            downstream: true,
+            qos: 0,
+            group: '子设备消息',
+            description: '网关上报或者平台下发子设备消息',
+            address:
+                '/{productId:产品ID}/{deviceId:设备ID}/child/{childDeviceId:子设备ID}/{#:子设备相应操作的topic}',
+        },
+        {
+            topic: '/{productId:产品ID}/{deviceId:设备ID}/child-reply/{childDeviceId:子设备ID}/{#:子设备相应操作的topic}',
+            upstream: true,
+            downstream: true,
+            qos: 0,
+            group: '子设备消息',
+            description: '网关回复平台下发给子设备的指令结果',
+            address:
+                '/{productId:产品ID}/{deviceId:设备ID}/child-reply/{childDeviceId:子设备ID}/{#:子设备相应操作的topic}',
+        },
+        {
+            topic: '/{productId:产品ID}/{deviceId:设备ID}/tags',
+            upstream: true,
+            downstream: false,
+            qos: 0,
+            group: '更新标签',
+            description: '更新标签数据',
+            example: '{"tags":{"key","value"}}',
+            address: '/{productId:产品ID}/{deviceId:设备ID}/tags',
+        },
+        {
+            topic: '/{productId:产品ID}/{deviceId:设备ID}/online',
+            upstream: true,
+            downstream: false,
+            qos: 0,
+            group: '状态管理',
+            description: '设备上线',
+            address: '/{productId:产品ID}/{deviceId:设备ID}/online',
+        },
+        {
+            topic: '/{productId:产品ID}/{deviceId:设备ID}/offline',
+            upstream: true,
+            downstream: false,
+            qos: 0,
+            group: '状态管理',
+            description: '设备离线',
+            address: '/{productId:产品ID}/{deviceId:设备ID}/offline',
+        },
+    ],
+    document:
+        '### 认证说明\r\n\r\nCONNECT报文:\r\n```text\r\nclientId: 设备ID\r\nusername: secureId+"|"+timestamp\r\npassword: md5(secureId+"|"+timestamp+"|"+secureKey)\r\n ```\r\n\r\n说明: secureId以及secureKey在创建设备产品或设备实例时进行配置. \r\ntimestamp为当前时间戳(毫秒),与服务器时间不能相差5分钟.\r\nmd5为32位,不区分大小写.',
+    metadata: '',
+};
 
 function generateUUID() {
     var d = new Date().getTime();
@@ -400,6 +558,8 @@ const props = defineProps({
     },
 });
 
+const clientHeight = document.body.clientHeight;
+
 const formRef = ref<FormInstance>();
 const useForm = Form.useForm;
 
@@ -412,7 +572,7 @@ const allProcotolList = ref([]);
 const networkCurrent = ref('');
 const procotolCurrent = ref('');
 let config = ref({});
-let columnsMQTT = ref([]);
+let columnsMQTT = ref(<TableColumnType>[]);
 const form = reactive({
     name: '',
     description: '',
@@ -576,7 +736,7 @@ const next = async () => {
             //使用测试数据2
             config.value = result2;
             current.value = current.value + 1;
-            columnsMQTT = [
+            columnsMQTT.value = [
                 {
                     title: '分组',
                     dataIndex: 'group',
@@ -584,20 +744,24 @@ const next = async () => {
                     ellipsis: true,
                     align: 'center',
                     width: 100,
-                    customRender: (value, row, index) => {
+                    customCell: (record: object, rowIndex: number) => {
                         const obj = {
-                            children: value,
-                            attrs: {},
+                            children: record,
+                            rowSpan: 0,
                         };
-                        const list = (config && config.routes) || [];
-                        const arr = list.filter((res) => {
-                            return res.group == row.group;
-                        });
-                        if (index == 0 || list[index - 1].group !== row.group) {
-                            obj.attrs.rowSpan = arr.length;
-                        } else {
-                            obj.attrs.rowSpan = 0;
-                        }
+                        const list =
+                            (config.value && config.value.routes) || [];
+
+                        const arr = list.filter(
+                            (res: object) => res.group == record.group,
+                        );
+
+                        if (
+                            rowIndex == 0 ||
+                            list[rowIndex - 1].group !== record.group
+                        )
+                            obj.rowSpan = arr.length;
+
                         return obj;
                     },
                 },
@@ -605,6 +769,7 @@ const next = async () => {
                     title: 'topic',
                     dataIndex: 'topic',
                     key: 'topic',
+                    align: 'center',
                     ellipsis: true,
                 },
                 {
@@ -614,7 +779,6 @@ const next = async () => {
                     ellipsis: true,
                     align: 'center',
                     width: 100,
-                    scopedSlots: { customRender: 'stream' },
                 },
                 {
                     title: '说明',
@@ -755,7 +919,6 @@ watch(
     }
     .card-last {
         padding-right: 5px;
-        max-height: 580px;
         overflow-y: auto;
         overflow-x: hidden;
     }
