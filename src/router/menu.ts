@@ -89,9 +89,14 @@ export default [
     },
     // system 系统管理
     {
-        path:'/system/api',
-        components: ()=>import('@/views/system/apiPage/index')
+        path:'/system/Basis',
+        component: ()=>import('@/views/system/Basis/index.vue')
     },
+    {
+        path:'/system/api',
+        component: ()=>import('@/views/system/apiPage/index.vue')
+    },
+
     // 初始化
     {
       path: '/init-home',

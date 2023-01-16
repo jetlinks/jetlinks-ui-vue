@@ -6,11 +6,11 @@ import { recommendList, bootConfig } from "../index";
 // 权限控制
 const hasPermission = usePermissionStore().hasPermission;
 const productPermission = (action: string) =>
-    hasPermission(`device/Product:${action}"`);
+    hasPermission(`device/Product:${action}`);
 const devicePermission = (action: string) =>
-    hasPermission(`device/Instance:${action}"`);
+    hasPermission(`device/Instance:${action}`);
 const rulePermission = (action: string) =>
-    hasPermission(`rule-engine/Instance:${action}"`);
+    hasPermission(`rule-engine/Instance:${action}`);
 
 
 // 物联网引导-数据
