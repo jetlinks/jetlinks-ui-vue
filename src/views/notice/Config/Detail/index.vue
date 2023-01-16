@@ -268,7 +268,7 @@
                     </a-form>
                 </a-col>
                 <a-col :span="12" :push="2">
-                    <Doc />
+                    <Doc :docData="formData" />
                 </a-col>
             </a-row>
         </a-card>
@@ -320,6 +320,7 @@ const formData = ref<ConfigFormData>({
     provider: 'dingTalkMessage',
     type: 'dingTalk',
 });
+
 // 根据通知方式展示对应的字段
 watch(
     () => formData.value.type,
@@ -408,9 +409,9 @@ watch(
 
 const getDetail = async () => {
     const res = await configApi.detail(route.params.id as string);
-    console.log('res: ', res);
+    // console.log('res: ', res);
     formData.value = res.result;
-    console.log('formData.value: ', formData.value);
+    // console.log('formData.value: ', formData.value);
 };
 getDetail();
 
