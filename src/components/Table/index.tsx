@@ -75,6 +75,7 @@ const JTable = defineComponent<JTableProps>({
     ],
     emits: [
         'modelChange', // 切换卡片和表格
+        'reload' // 刷新数据
     ],
     props: {
         request: {
@@ -139,7 +140,7 @@ const JTable = defineComponent<JTableProps>({
             }
         }
     } as any,
-    setup(props: JTableProps ,{ slots, emit }){
+    setup(props: JTableProps ,{ slots, emit, expose }){
         const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE
         const _model = ref<keyof typeof ModelEnum>(props.model ? props.model : ModelEnum.CARD); // 模式切换
         const column = ref<number>(props.gridColumn || 4);
@@ -216,6 +217,23 @@ const JTable = defineComponent<JTableProps>({
         onUnmounted(() => {
             window.onresize = null
         })
+
+        /**
+         * 刷新数据
+         * @param _params 
+         */
+        const reload = (_params?: Record<string, any>) => {
+            handleSearch({
+                ..._params,
+                pageSize: 12,
+                pageIndex: 0
+            })
+        }
+
+        /**
+         * 导出方法
+         */
+         expose({ reload })
         
         return () => <Spin spinning={loading.value}>
                 <div class={styles["jtable-body"]}>

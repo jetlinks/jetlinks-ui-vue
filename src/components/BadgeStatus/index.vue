@@ -6,8 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import { StatusColorEnum } from '@/utils/consts.ts';
-
+// import { StatusColorEnum } from '@/utils/consts.ts';
 const props = defineProps({
     text: {
         type: String,
@@ -15,10 +14,10 @@ const props = defineProps({
     status: {
         type: String || Number,
         default: 'default',
-        validator: (value) => {
-            // 这个值必须匹配下列字符串中的一个
-            return Object.keys(StatusColorEnum).includes(value);
-        },
+        // validator: (value) => {
+        //     // 这个值必须匹配下列字符串中的一个
+        //     return Object.keys(StatusColorEnum).includes(value);
+        // },
     },
     /**
      * 自定义status值颜色
