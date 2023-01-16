@@ -54,7 +54,7 @@
     <div v-else class='JSearch-content simple big'>
       <div class='JSearch-items'>
         <div class='left'>
-          <SearchItem :expand='false' :index='1' />
+          <SearchItem :expand='false' :index='1' :columns='searchItems' />
         </div>
       </div>
       <div class='JSearch-footer'>

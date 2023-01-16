@@ -3,7 +3,7 @@
     <Search
       :columns='columns'
     />
-    <Search type='simple' />
+    <Search type='simple' :columns='columns' />
   </div>
 </template>
 
@@ -17,18 +17,57 @@ const columns = [
     search: {
       rename: 'deviceId',
       type: 'select',
+      options: [
+        {
+          label: '测试1',
+          value: 'test1'
+        },
+        {
+          label: '测试2',
+          value: 'test2'
+        },
+        {
+          label: '测试3',
+          value: 'test3'
+        },
+      ],
       handValue: (v) => {
         return '123'
       }
     }
   },
   {
+    title: '序号',
+    dataIndex: 'sortIndex',
+    key: 'sortIndex',
+    scopedSlots: true,
+    search: {
+      type: 'number',
+    }
+  },
+  {
     title: 'ID',
     dataIndex: 'id',
     key: 'id',
-    scopedSlots: true,
     search: {
       type: 'string',
+    }
+  },
+  {
+    title: '时间',
+    dataIndex: 'date',
+    key: 'date',
+    search: {
+      type: 'date',
+    }
+  },
+  {
+    title: '时间2',
+    dataIndex: 'date2',
+    key: 'date2',
+    search: {
+      type: 'time',
+      defaultTermType: 'lt'
     }
   },
   {
