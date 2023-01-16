@@ -123,4 +123,72 @@ export const CONFIG_FIELD_MAP = {
         url: undefined,
         headers: [],
     },
+};
+
+// 模板
+export const TEMPLATE_FIELD_MAP = {
+    dingTalk: {
+        dingTalkMessage: {
+            agentId: '',
+            message: '',
+        },
+        dingTalkRobotWebHook: {
+            message: '',
+            messageType: '',
+            markdown: {
+                text: '',
+                title: '',
+            },
+            link: {
+                title: '',
+                picUrl: '',
+                messageUrl: '',
+                text: '',
+            },
+        }
+    },
+    weixin: {
+        corpMessage: {
+            agentId: '',
+            message: '',
+            toParty: '',
+            toUser: '',
+            toTag: '',
+        },
+        officialMessage: {},
+    },
+    email: {
+        embedded: {
+            subject: '',
+            sendTo: [],
+            attachments: [],
+            message: '',
+            text: '',
+        }
+    },
+    voice: {
+        aliyun: {
+            templateType: '',
+            templateCode: '',
+            ttsCode: '',
+            message: '',
+            playTimes: undefined,
+            calledShowNumbers: '',
+            calledNumber: '',
+        }
+    },
+    sms: {
+        aliyunSms: {
+            code: '',
+            message: '',
+            phoneNumber: '',
+            signName: '',
+        }
+    },
+    webhook: {
+        http: {
+            contextAsBody: false,
+            body: ''
+        }
+    },
 }; 
