@@ -97,12 +97,6 @@ import { message, Form } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 import CertificateFile from './CertificateFile.vue';
 import type { UploadChangeParam } from 'ant-design-vue';
-import { LocalStore } from '@/utils/comm';
-import {
-    BASE_API_PATH,
-    TOKEN_KEY,
-    NETWORK_CERTIFICATE_UPLOAD,
-} from '@/utils/variable';
 import { save } from '@/api/link/certificate';
 
 const router = useRouter();

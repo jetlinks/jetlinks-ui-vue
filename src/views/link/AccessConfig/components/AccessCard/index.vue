@@ -16,13 +16,13 @@
             }}</a-tooltip>
         </div>
         <div class="checked-icon">
-            <div><a-icon type="check" /></div>
+            <div><CheckOutlined /></div>
         </div>
     </a-card>
 </template>
 
 <script lang="ts" setup name="AccessCard">
-
+import { CheckOutlined } from '@ant-design/icons-vue';
 
 const emit = defineEmits(['checkedChange']);
 
@@ -36,13 +36,10 @@ const props = defineProps({
         default: () => {},
     },
 });
-console.log(1112,props);
 
-const checkedChange=(id:string)=>{
-  emit('checkedChange', id);
-}
-
-
+const checkedChange = (id: string) => {
+    emit('checkedChange', id);
+};
 </script>
 
 <style lang="less" scoped>
