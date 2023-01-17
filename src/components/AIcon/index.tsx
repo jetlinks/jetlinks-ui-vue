@@ -21,7 +21,11 @@ const iconKeys = [
     'StopOutlined',
     'CheckOutlined',
     'CloseOutlined',
-    'DownOutlined'
+    'DownOutlined',
+    'ImportOutlined',
+    'ExportOutlined',
+    'SyncOutlined',
+    'ExclamationCircleOutlined'
 ]
 
 const Icon = (props: {type: string}) => {

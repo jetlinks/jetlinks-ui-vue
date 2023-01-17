@@ -1,5 +1,16 @@
 <template>
-    <JTable ref="instanceRef" :columns="columns" :request="query" :defaultParams="{sorts: [{name: 'createTime', order: 'desc'}]}" :params="{pageIndex: 0, pageSize: 12}">
+    <JTable 
+        ref="instanceRef" 
+        :columns="columns" 
+        :request="query" 
+        :defaultParams="{sorts: [{name: 'createTime', order: 'desc'}]}" 
+        :rowSelection="{
+            selectedRowKeys: _selectedRowKeys,
+            onChange: onSelectChange
+        }"
+        @cancelSelect="cancelSelect"
+        :params="params"
+    >
         <template #headerTitle>
             <a-space>
                 <a-button type="primary" @click="handleAdd">新增</a-button>
@@ -8,13 +19,33 @@
                     <template #overlay>
                     <a-menu>
                         <a-menu-item>
-                            <a href="javascript:;">1st menu item</a>
+                            <a-button @click="exportVisible = true"><AIcon type="ExportOutlined" />批量导出设备</a-button>
                         </a-menu-item>
                         <a-menu-item>
-                            <a href="javascript:;">2nd menu item</a>
+                            <a-button @click="importVisible = true"><AIcon type="ImportOutlined" />批量导入设备</a-button>
                         </a-menu-item>
                         <a-menu-item>
-                            <a href="javascript:;">3rd menu item</a>
+                            <a-popconfirm @confirm="activeAllDevice" title="确认激活全部设备？">
+                                <a-button type="primary" ghost><AIcon type="CheckCircleOutlined" />激活全部设备</a-button>
+                            </a-popconfirm>
+                        </a-menu-item>
+                        <a-menu-item>
+                            <a-button @click="syncDeviceStatus" type="primary"><AIcon type="SyncOutlined" />同步设备状态</a-button>
+                        </a-menu-item>
+                        <a-menu-item v-if="_selectedRowKeys.length">
+                            <a-popconfirm @confirm="delSelectedDevice" title="已启用的设备无法删除，确认删除选中的禁用状态设备？">
+                                <a-button type="primary" danger><AIcon type="DeleteOutlined" />删除选中设备</a-button>
+                            </a-popconfirm>
+                        </a-menu-item>
+                        <a-menu-item v-if="_selectedRowKeys.length" title="确认激活选中设备?">
+                            <a-popconfirm @confirm="activeSelectedDevice" >
+                                <a-button type="primary"><AIcon type="CheckOutlined" />激活选中设备</a-button>
+                            </a-popconfirm>
+                        </a-menu-item>
+                        <a-menu-item v-if="_selectedRowKeys.length">
+                            <a-popconfirm @confirm="disabledSelectedDevice" title="确认禁用选中设备?">
+                                <a-button type="primary" danger><AIcon type="StopOutlined" />禁用选中设备</a-button>
+                            </a-popconfirm>
                         </a-menu-item>
                     </a-menu>
                     </template>
@@ -24,9 +55,10 @@
         <template #card="slotProps">
             <CardBox
                 :value="slotProps"
-                @click="handleView"
+                @click="handleClick"
                 :actions="getActions(slotProps, 'card')"
                 v-bind="slotProps"
+                :active="_selectedRowKeys.includes(slotProps.id)"
                 :status="slotProps.state.value"
                 :statusText="slotProps.state.text"
                 :statusNames="{
@@ -41,7 +73,7 @@
                     </slot>
                 </template>
                 <template #content>
-                    <h3>{{ slotProps.name }}</h3>
+                    <h3 @click="handleView(slotProps.id)">{{ slotProps.name }}</h3>
                     <a-row>
                         <a-col :span="12">
                             <div class="card-item-content-text">设备类型</div>
@@ -116,15 +148,30 @@
             </a-space>
         </template>
     </JTable>
+    <Import v-if="importVisible" @close="importVisible = false" />
+    <Export v-if="exportVisible" @close="exportVisible = false" :data="params" />
+    <Process v-if="operationVisible" @close="operationVisible = false" :api="api" :type="type" />
 </template>
 
 <script setup lang="ts">
-import { query, _delete, _deploy, _undeploy } from '@/api/device/instance'
+import { query, _delete, _deploy, _undeploy, batchUndeployDevice, batchDeployDevice, batchDeleteDevice } from '@/api/device/instance'
 import type { ActionsType } from '@/components/Table/index.vue'
-import { getImage } from '@/utils/comm';
+import { getImage, LocalStore } from '@/utils/comm';
 import { message } from "ant-design-vue";
+import Import from './Import/index.vue'
+import Export from './Export/index.vue'
+import Process from './Process/index.vue'
+import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 
 const instanceRef = ref<Record<string, any>>({});
+const params = ref<Record<string, any>>({pageIndex: 0, pageSize: 12})
+const _selectedRowKeys = ref<string[]>([])
+const importVisible = ref<boolean>(false)
+const exportVisible = ref<boolean>(false)
+const current = ref<Record<string, any>>({})
+const operationVisible = ref<boolean>(false)
+const api = ref<string>('')
+const type = ref<string>('')
 
 const statusMap = new Map();
 statusMap.set('online', 'processing');
@@ -173,12 +220,45 @@ const columns = [
     }   
 ]
 
+const paramsFormat = (config: any, _terms: any, name?: string) => {
+    if (config?.terms && Array.isArray(config.terms) && config?.terms.length > 0) {
+      (config?.terms || []).map((item: any, index: number) => {
+        if (item?.type) {
+          _terms[`${name ? `${name}.` : ''}terms[${index}].type`] = item.type;
+        }
+        paramsFormat(item, _terms, `${name ? `${name}.` : ''}terms[${index}]`);
+      });
+    } else if (!config?.terms && Object.keys(config).length > 0) {
+      Object.keys(config).forEach((key) => {
+        if (config[key]) {
+          _terms[`${name ? `${name}.` : ''}${key}`] = config[key];
+        }
+      });
+    }
+  }
+
+const handleParams = (config: any) => {
+    const _terms: any = {};
+    paramsFormat(config, _terms);
+    const url = new URLSearchParams();
+    Object.keys(_terms).forEach((key) => {
+      url.append(key, _terms[key]);
+    });
+    return url.toString();
+  }
+
+/**
+ * 新增
+ */
 const handleAdd = () => {
-    message.warn('123')
+    message.warn('新增')
 }
 
+/**
+ * 查看
+ */
 const handleView = (dt: any) => {
-    
+    // message.warn('查看')
 }
 
 const getActions = (data: Partial<Record<string, any>>, type: 'card' | 'table'): ActionsType[] => {
@@ -257,4 +337,61 @@ const getActions = (data: Partial<Record<string, any>>, type: 'card' | 'table'):
     return actions
 }
 
+const onSelectChange = (keys: string[]) => {
+    _selectedRowKeys.value = [...keys]
+}
+
+const cancelSelect = () => {
+    _selectedRowKeys.value = []
+}
+
+const handleClick = (dt: any) => {
+    if(_selectedRowKeys.value.includes(dt.id)) {
+        const _index = _selectedRowKeys.value.findIndex(i => i === dt.id)
+        _selectedRowKeys.value.splice(_index, 1)
+    } else {
+        _selectedRowKeys.value = [..._selectedRowKeys.value, dt.id]
+    }
+}
+
+const activeAllDevice = () => {
+    type.value = 'active'
+    const activeAPI = `/${BASE_API_PATH}/device-instance/deploy?:X_Access_Token=${LocalStore.get(TOKEN_KEY)}&${handleParams(params)}`;
+    api.value = activeAPI
+    operationVisible.value = true
+}
+
+const syncDeviceStatus = () => {
+    type.value = 'sync'
+    const syncAPI = `/${BASE_API_PATH}/device-instance/state/_sync?:X_Access_Token=${LocalStore.get(TOKEN_KEY)}&${handleParams(params)}`;
+    api.value = syncAPI
+    operationVisible.value = true
+}
+
+const delSelectedDevice = async () => {
+    const resp = await batchDeleteDevice(_selectedRowKeys.value)
+    if(resp.status === 200){
+        message.success('操作成功！')
+        _selectedRowKeys.value = []
+        instanceRef.value?.reload()
+    }
+}
+
+const activeSelectedDevice = async () => {
+    const resp = await batchDeployDevice(_selectedRowKeys.value)
+    if(resp.status === 200){
+        message.success('操作成功！')
+        _selectedRowKeys.value = []
+        instanceRef.value?.reload()
+    }
+}
+
+const disabledSelectedDevice = async () => {
+    const resp = await batchUndeployDevice(_selectedRowKeys.value)
+    if(resp.status === 200){
+        message.success('操作成功！')
+        _selectedRowKeys.value = []
+        instanceRef.value?.reload()
+    }
+}
 </script>

@@ -51,4 +51,25 @@ export const _deploy = (id: string) => server.post(`/device-instance/${id}/deplo
  * @param data 
  * @returns 
  */
- export const _undeploy = (id: string) => server.post(`/device-instance/${id}/undeploy`)
+export const _undeploy = (id: string) => server.post(`/device-instance/${id}/undeploy`)
+
+/**
+ * 批量激活设备
+ * @param data 设备id数组
+ * @returns 
+ */
+export const batchDeployDevice = (data: string[]) => server.put(`/device-instance/batch/_deploy`, data)
+
+/**
+ * 批量注销设备
+ * @param data 设备id数组
+ * @returns 
+ */
+export const batchUndeployDevice = (data: string[]) => server.put(`/device-instance/batch/_unDeploy`, data)
+
+/**
+ * 批量删除
+ * @param data 设备id数组
+ * @returns 
+ */
+export const batchDeleteDevice = (data: string[]) => server.put(`/device-instance/batch/_delete`, data)
