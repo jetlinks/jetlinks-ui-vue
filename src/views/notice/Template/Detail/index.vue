@@ -259,10 +259,11 @@
                                 </a-select>
                             </a-form-item>
                             <a-form-item label="附件信息">
-                                <!-- <a-input
-                                    v-model:value="formData.template.attachments"
-                                    placeholder="请上传文件或输入文件名称"
-                                /> -->
+                                <Attachments
+                                    v-model:attachments="
+                                        formData.template.attachments
+                                    "
+                                />
                             </a-form-item>
                         </template>
                         <!-- 语音 -->
@@ -461,6 +462,7 @@ import {
 import templateApi from '@/api/notice/template';
 import Doc from './doc/index';
 import MonacoEditor from '@/components/MonacoEditor/index.vue';
+import Attachments from './components/Attachments.vue'
 
 const router = useRouter();
 const route = useRoute();
