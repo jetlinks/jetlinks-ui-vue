@@ -23,24 +23,10 @@
       </div>
       <div :class='["JSearch-footer", expand ? "expand" : ""]'>
         <div class='JSearch-footer--btns'>
-          <a-dropdown-button type="primary" @click='searchSubmit'>
-            搜索
-            <template #overlay>
-              <a-menu v-if='!!historyList.length'>
-                <a-menu-item>
-
-                </a-menu-item>
-              </a-menu>
-              <a-empty v-else />
-            </template>
-            <template #icon><SearchOutlined /></template>
-          </a-dropdown-button>
-          <a-button>
-            <template #icon><PoweroffOutlined /></template>
-            保存
-          </a-button>
+          <History :target='target' @click='searchSubmit' @itemClick='historyItemClick' />
+          <SaveHistory :terms='terms' :target='target'/>
           <a-button @click='reset'>
-            <template #icon><PoweroffOutlined /></template>
+            <template #icon><RedoOutlined /></template>
             重置
           </a-button>
         </div>
@@ -64,7 +50,7 @@
             搜索
           </a-button>
           <a-button @click='reset'>
-            <template #icon><PoweroffOutlined /></template>
+            <template #icon><RedoOutlined /></template>
             重置
           </a-button>
         </div>
@@ -77,10 +63,12 @@
 import SearchItem from './Item.vue'
 import { typeOptions } from './util'
 import { useElementSize, useUrlSearchParams } from '@vueuse/core'
-import { cloneDeep, isFunction, set } from 'lodash-es'
-import { SearchOutlined, DownOutlined } from '@ant-design/icons-vue';
+import { cloneDeep, isFunction, isString, set } from 'lodash-es'
+import { SearchOutlined, DownOutlined, RedoOutlined } from '@ant-design/icons-vue';
 import { PropType } from 'vue'
 import { JColumnsProps } from 'components/Table/types'
+import SaveHistory from './SaveHistory.vue'
+import History from './History.vue'
 import type { SearchItemData, SearchProps, Terms } from './types'
 
 type UrlParam = {
@@ -177,16 +165,18 @@ const addUrlParams = () => {
  * @param v
  */
 const handleLikeValue = (v: string) => {
-  let _v = v
-  return _v.split('').reduce((pre: string, next: string) => {
-    let _next = next
-    if (next === '\\') {
-      _next = '\\\\'
-    } else if (next === '%') {
-      _next = '\\%'
-    }
-    return pre + _next
-  }, '')
+  if (isString(v)) {
+    return v.split('').reduce((pre: string, next: string) => {
+      let _next = next
+      if (next === '\\') {
+        _next = '\\\\'
+      } else if (next === '%') {
+        _next = '\\%'
+      }
+      return pre + _next
+    }, '')
+  }
+  return v
 }
 
 /**
@@ -207,7 +197,7 @@ const handleParamsFormat = () => {
           }
 
           if (_item.handleValue && isFunction(_item.handleValue)) {
-            iItem.value = _item.handleValue(iItem.value, iItem)
+            iItem.value = _item.handleValue(iItem.value)
           }
 
           if (['like','nlike'].includes(iItem.termType) && !!iItem.value) {
@@ -226,7 +216,9 @@ const handleParamsFormat = () => {
  */
 const searchSubmit = () => {
   emit('search', handleParamsFormat())
-  addUrlParams()
+  if (props.type === 'advanced') {
+    addUrlParams()
+  }
 }
 
 /**
@@ -235,8 +227,10 @@ const searchSubmit = () => {
 const reset = () => {
   terms.terms = []
   expand.value = false
-  urlParams.q = null
-  urlParams.target = null
+  if (props.type === 'advanced') {
+    urlParams.q = null
+    urlParams.target = null
+  }
 }
 
 watch(width, (value) => {
@@ -249,6 +243,18 @@ watch(width, (value) => {
   }
 })
 
+const historyItemClick = (content: string) => {
+  try {
+    terms.terms = JSON.parse(content)?.terms || []
+    if (terms.terms.length === 2) {
+      expand.value = true
+    }
+    addUrlParams()
+  } catch (e) {
+    console.warn(`Search组件中handleUrlParams处理JSON时异常：【${e}】`)
+  }
+}
+
 /**
  * 处理URL中的查询参数
  * @param _params
@@ -258,7 +264,6 @@ const handleUrlParams = (_params: UrlParam) => {
   if (_params.target === props.target && _params.q) {
     try {
       terms.terms = JSON.parse(_params.q)?.terms || []
-      console.log(terms)
       if (terms.terms.length === 2) {
         expand.value = true
       }
@@ -372,4 +377,5 @@ handleItems()
     }
   }
 }
+
 </style>
