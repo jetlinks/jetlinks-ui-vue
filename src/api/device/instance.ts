@@ -1,4 +1,5 @@
 import server from '@/utils/request'
+import { BASE_API_PATH } from '@/utils/variable'
 import { DeviceInstance } from '@/views/device/instance/typings'
 
 /**
@@ -73,3 +74,28 @@ export const batchUndeployDevice = (data: string[]) => server.put(`/device-insta
  * @returns 
  */
 export const batchDeleteDevice = (data: string[]) => server.put(`/device-instance/batch/_delete`, data)
+
+/**
+ * 下载设备模板
+ * @param productId 产品id
+ * @param type 文件类型
+ * @returns 
+ */
+ export const deviceTemplateDownload = (productId: string, type: string) => `${BASE_API_PATH}/device-instance/${productId}/template.${type}`
+
+ /**
+  * 设备导入
+  * @param productId 产品id
+  * @param type 文件类型
+  * @returns 
+  */
+ export const deviceImport = (productId: string, fileUrl: string, autoDeploy: boolean) => `${BASE_API_PATH}/device-instance/${productId}/import?fileUrl=${fileUrl}&autoDeploy=${autoDeploy}&:X_Access_Token=${LocalStore.get(TOKEN_KEY)}`
+ 
+ /**
+  * 设备导出
+  * @param productId 产品id
+  * @param type 文件类型
+  * @returns 
+  */
+  export const deviceExport = (productId: string, type: string) => `${BASE_API_PATH}/device-instance${!!productId ? '/' + productId : ''}/export.${type}`
+ 

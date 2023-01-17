@@ -73,7 +73,7 @@
                     </slot>
                 </template>
                 <template #content>
-                    <h3 @click="handleView(slotProps.id)">{{ slotProps.name }}</h3>
+                    <h3 class="card-item-content-title" @click.stop="handleView(slotProps.id)">{{ slotProps.name }}</h3>
                     <a-row>
                         <a-col :span="12">
                             <div class="card-item-content-text">设备类型</div>
@@ -151,6 +151,7 @@
     <Import v-if="importVisible" @close="importVisible = false" />
     <Export v-if="exportVisible" @close="exportVisible = false" :data="params" />
     <Process v-if="operationVisible" @close="operationVisible = false" :api="api" :type="type" />
+    <Save v-if="visible" :data="current" />
 </template>
 
 <script setup lang="ts">
@@ -161,13 +162,15 @@ import { message } from "ant-design-vue";
 import Import from './Import/index.vue'
 import Export from './Export/index.vue'
 import Process from './Process/index.vue'
+import Save from './Save/index.vue'
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 
 const instanceRef = ref<Record<string, any>>({});
-const params = ref<Record<string, any>>({pageIndex: 0, pageSize: 12})
+const params = ref<Record<string, any>>({})
 const _selectedRowKeys = ref<string[]>([])
 const importVisible = ref<boolean>(false)
 const exportVisible = ref<boolean>(false)
+const visible = ref<boolean>(false)
 const current = ref<Record<string, any>>({})
 const operationVisible = ref<boolean>(false)
 const api = ref<string>('')
@@ -220,9 +223,9 @@ const columns = [
     }   
 ]
 
-const paramsFormat = (config: any, _terms: any, name?: string) => {
+const paramsFormat = (config: Record<string, any>, _terms: Record<string, any>, name?: string) => {
     if (config?.terms && Array.isArray(config.terms) && config?.terms.length > 0) {
-      (config?.terms || []).map((item: any, index: number) => {
+      (config?.terms || []).map((item: Record<string, any>, index: number) => {
         if (item?.type) {
           _terms[`${name ? `${name}.` : ''}terms[${index}].type`] = item.type;
         }
@@ -237,28 +240,33 @@ const paramsFormat = (config: any, _terms: any, name?: string) => {
     }
   }
 
-const handleParams = (config: any) => {
-    const _terms: any = {};
+const handleParams = (config: Record<string, any>) => {
+    const _terms: Record<string, any> = {};
     paramsFormat(config, _terms);
-    const url = new URLSearchParams();
-    Object.keys(_terms).forEach((key) => {
-      url.append(key, _terms[key]);
-    });
-    return url.toString();
+    if(Object.keys(_terms._value).length && Object.keys(_terms).length) {
+        const url = new URLSearchParams();
+        Object.keys(_terms).forEach((key) => {
+            url.append(key, _terms[key]);
+        });
+        return url.toString();
+    } else {
+        return ''
+    }
   }
 
 /**
  * 新增
  */
 const handleAdd = () => {
-    message.warn('新增')
+    visible.value = true
+    current.value = {}
 }
 
 /**
  * 查看
  */
-const handleView = (dt: any) => {
-    // message.warn('查看')
+const handleView = (id: string) => {
+    message.warn(id + '暂未开发')
 }
 
 const getActions = (data: Partial<Record<string, any>>, type: 'card' | 'table'): ActionsType[] => {
@@ -272,7 +280,7 @@ const getActions = (data: Partial<Record<string, any>>, type: 'card' | 'table'):
             },
             icon: 'EyeOutlined',
             onClick: () => {
-                handleView(data)
+                handleView(data.id)
             }
         },
         {
@@ -283,7 +291,8 @@ const getActions = (data: Partial<Record<string, any>>, type: 'card' | 'table'):
             },
             icon: 'EditOutlined',
             onClick: () => {
-                message.warn('edit')
+                visible.value = true
+                current.value = data
             }
         },
         {
@@ -356,14 +365,14 @@ const handleClick = (dt: any) => {
 
 const activeAllDevice = () => {
     type.value = 'active'
-    const activeAPI = `/${BASE_API_PATH}/device-instance/deploy?:X_Access_Token=${LocalStore.get(TOKEN_KEY)}&${handleParams(params)}`;
+    const activeAPI = `${BASE_API_PATH}/device-instance/deploy?:X_Access_Token=${LocalStore.get(TOKEN_KEY)}&${handleParams(params)}`;
     api.value = activeAPI
     operationVisible.value = true
 }
 
 const syncDeviceStatus = () => {
     type.value = 'sync'
-    const syncAPI = `/${BASE_API_PATH}/device-instance/state/_sync?:X_Access_Token=${LocalStore.get(TOKEN_KEY)}&${handleParams(params)}`;
+    const syncAPI = `${BASE_API_PATH}/device-instance/state/_sync?:X_Access_Token=${LocalStore.get(TOKEN_KEY)}&${handleParams(params)}`;
     api.value = syncAPI
     operationVisible.value = true
 }

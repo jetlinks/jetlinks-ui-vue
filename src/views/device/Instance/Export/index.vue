@@ -29,6 +29,7 @@ import { queryNoPagingPost } from '@/api/device/product'
 import { downloadFile } from '@/utils/utils'
 import encodeQuery from '@/utils/encodeQuery'
 import { BASE_API_PATH } from '@/utils/variable'
+import { deviceExport } from '@/api/device/instance'
 
 const emit = defineEmits(['close'])
 const props = defineProps({
@@ -58,15 +59,8 @@ watch(
 
 const handleOk = () => {
     const params = encodeQuery(props.data);
-    if(modelRef.product){
-        downloadFile(
-        `${BASE_API_PATH}/device/instance/${modelRef.product}/export.${modelRef.fileType}`,
-        params
-      );
-    } else {
-        downloadFile(`${BASE_API_PATH}/device/instance/export.${modelRef.fileType}`, params);
-    }
-     emit('close')
+    downloadFile(deviceExport(modelRef.product || "", modelRef.fileType),params);
+    emit('close')
 }
 
 const handleCancel = () => {
