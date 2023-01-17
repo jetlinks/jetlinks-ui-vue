@@ -6,7 +6,7 @@
         <div class="steps-content">
             <div class="steps-box" v-if="current === 0">
                 <div class="alert">
-                    <a-icon type="info-circle" style="margin-right: 10px" />
+                    <question-circle-outlined />
                     选择与设备通信的网络组件
                 </div>
                 <div class="search">
@@ -93,7 +93,7 @@
             </div>
             <div class="steps-box" v-else-if="current === 1">
                 <div class="alert">
-                    <a-icon type="info-circle" style="margin-right: 10px" />
+                    <question-circle-outlined />
                     使用选择的消息协议，对网络组件通信数据进行编解码、认证等操作
                 </div>
                 <div class="search">
@@ -330,7 +330,7 @@ import AccessCard from './AccessCard/index.vue';
 import { message, Form } from 'ant-design-vue';
 import type { FormInstance, TableColumnType } from 'ant-design-vue';
 import Markdown from 'vue3-markdown-it';
-
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 //测试数据1
 const resultList1 = [
     {
@@ -582,7 +582,7 @@ const { resetFields, validate, validateInfos } = useForm(
     form,
     reactive({
         name: [
-            { required: true, message: '请输入证书名称', trigger: 'blur' },
+            { required: true, message: '请输入名称', trigger: 'blur' },
             { max: 64, message: '最多可输入64个字符' },
         ],
     }),

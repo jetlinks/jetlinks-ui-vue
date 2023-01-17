@@ -108,7 +108,6 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
-
     statusText: {
         type: String,
         default: '正常',
