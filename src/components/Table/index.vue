@@ -41,7 +41,7 @@
                     </div>
                 </div>
                 <div v-else>
-                    <a-table rowKey="id" :rowSelection="rowSelection" :columns="[..._columns]" :dataSource="_dataSource" :pagination="false" :scroll="{ x: 1366 }">
+                    <a-table rowKey="id" :rowSelection="rowSelection" :columns="[..._columns]" :dataSource="_dataSource" :pagination="false">
                         <template #bodyCell="{ column, record }">
                             <!-- <template v-if="column.key === 'action'">
                                 <a-space>

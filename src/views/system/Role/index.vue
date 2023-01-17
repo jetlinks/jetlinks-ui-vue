@@ -3,7 +3,7 @@
         <Search :columns="query.columns" />
 
         <JTable
-            :ref="tableRef"
+            ref="tableRef"
             :columns="table.columns"
             :request="getRoleList_api"
             model="TABLE"
@@ -43,6 +43,10 @@
                 </a-space>
             </template>
         </JTable>
+
+        <div class="dialogs">
+            <AddDialog :open="dialog.openAdd" />
+        </div>
     </a-card>
 </template>
 
@@ -52,8 +56,11 @@ import {
     DeleteOutlined,
     PlusOutlined,
 } from '@ant-design/icons-vue';
-import { getRoleList_api } from '@/api/system/role';
+import AddDialog from './components/AddDialog.vue';
+import { getRoleList_api, delRole_api } from '@/api/system/role';
+import { message } from 'ant-design-vue';
 
+const router = useRouter()
 // 筛选
 const query = reactive({
     columns: [
@@ -88,7 +95,7 @@ const query = reactive({
     params: {},
 });
 // 表格
-const tableRef = ref();
+const tableRef = ref<Record<string, any>>({});
 const table = reactive({
     columns: [
         {
@@ -114,11 +121,25 @@ const table = reactive({
         },
     ],
     tableData: [],
-    clickAdd: () => {},
-    clickDel: (row: any) => {},
-    clickEdit: (row: any) => {},
+    clickAdd: () => {
+        dialog.openAdd += 1;
+    },
+    clickDel: (row: any) => {
+        delRole_api(row.id).then((resp:any)=>{
+            if(resp.status === 200){
+                tableRef.value?.reload()
+                message.success('操作成功!')
+            }
+        })
+    },
+    clickEdit: (row: any) => {
+        router.push(`/system/Role/detail/${row.id}`)
+    },
 });
-
+// 弹窗相关
+const dialog = reactive({
+    openAdd: 0,
+});
 </script>
 
 <style lang="less" scoped></style>
