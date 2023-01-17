@@ -222,6 +222,7 @@ const handleItemOptions = (option?: any[] | Function) => {
 
 const columnChange = (value: string, isChange: boolean) => {
   const item = columnOptionMap.get(value)
+  optionLoading.value = false
   // 设置value为undefined
   termsModel.column = value
   termsModel.termType = item.defaultTermType || getTermType(item.type)

@@ -173,6 +173,23 @@ const addUrlParams = () => {
 }
 
 /**
+ * 处理termType为like，nlike的值
+ * @param v
+ */
+const handleLikeValue = (v: string) => {
+  let _v = v
+  return _v.split('').reduce((pre: string, next: string) => {
+    let _next = next
+    if (next === '\\') {
+      _next = '\\\\'
+    } else if (next === '%') {
+      _next = '\\%'
+    }
+    return pre + _next
+  }, '')
+}
+
+/**
  * 处理为外部使用
  */
 const handleParamsFormat = () => {
@@ -181,7 +198,8 @@ const handleParamsFormat = () => {
   return {
     terms: cloneParams.terms.map(item => {
       if (item.terms) {
-        item.terms = item.terms.filter(iItem => iItem && iItem.value).map(iItem => {
+        item.terms = item.terms.filter(iItem => iItem && iItem.value)
+          .map(iItem => {
           // 处理handleValue和rename
           const _item = columnOptionMap.get(iItem.column)
           if (_item.rename) {
@@ -190,6 +208,10 @@ const handleParamsFormat = () => {
 
           if (_item.handleValue && isFunction(_item.handleValue)) {
             iItem.value = _item.handleValue(iItem.value, iItem)
+          }
+
+          if (['like','nlike'].includes(iItem.termType) && !!iItem.value) {
+            iItem.value = `%${handleLikeValue(iItem.value)}%`
           }
           return iItem
         })

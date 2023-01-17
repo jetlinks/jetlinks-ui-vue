@@ -1,4 +1,5 @@
 import { TOKEN_KEY } from '@/utils/variable'
+import { Terms } from 'components/Search/types'
 
 /**
  * 静态图片资源处理
