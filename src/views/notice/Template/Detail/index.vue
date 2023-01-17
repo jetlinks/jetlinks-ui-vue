@@ -31,12 +31,33 @@
                         <a-form-item
                             label="类型"
                             v-bind="validateInfos.provider"
-                            v-if="formData.type !== 'email'"
+                            v-if="
+                                formData.type !== 'email' &&
+                                formData.type !== 'webhook'
+                            "
                         >
                             <RadioCard
                                 :options="msgType"
                                 v-model="formData.provider"
                             />
+                        </a-form-item>
+                        <a-form-item
+                            label="绑定配置"
+                            v-bind="validateInfos.configId"
+                            v-if="formData.type !== 'email'"
+                        >
+                            <a-select
+                                v-model:value="formData.configId"
+                                placeholder="请选择绑定配置"
+                            >
+                                <a-select-option
+                                    v-for="(item, index) in ROBOT_MSG_TYPE"
+                                    :key="index"
+                                    :value="item.value"
+                                >
+                                    {{ item.label }}
+                                </a-select-option>
+                            </a-select>
                         </a-form-item>
                         <!-- 钉钉 -->
                         <template v-if="formData.type === 'dingTalk'">
@@ -44,27 +65,12 @@
                                 v-if="formData.provider === 'dingTalkMessage'"
                             >
                                 <a-form-item
-                                    label="AppKey"
-                                    v-bind="
-                                        validateInfos['configuration.appKey']
-                                    "
+                                    label="AgentId"
+                                    v-bind="validateInfos['template.agentId']"
                                 >
                                     <a-input
                                         v-model:value="
-                                            formData.configuration.appKey
-                                        "
-                                        placeholder="请输入AppKey"
-                                    />
-                                </a-form-item>
-                                <a-form-item
-                                    label="AppSecret"
-                                    v-bind="
-                                        validateInfos['configuration.appSecret']
-                                    "
-                                >
-                                    <a-input
-                                        v-model:value="
-                                            formData.configuration.appSecret
+                                            formData.template.agentId
                                         "
                                         placeholder="请输入AppSecret"
                                     />
@@ -76,155 +82,340 @@
                                 "
                             >
                                 <a-form-item
-                                    label="webHook"
-                                    v-bind="validateInfos['configuration.url']"
+                                    label="消息类型"
+                                    v-bind="
+                                        validateInfos['template.messageType']
+                                    "
                                 >
-                                    <a-input
+                                    <a-select
                                         v-model:value="
-                                            formData.configuration.url
+                                            formData.template.messageType
                                         "
-                                        placeholder="请输入webHook"
-                                    />
+                                        placeholder="请选择消息类型"
+                                    >
+                                        <a-select-option
+                                            v-for="(
+                                                item, index
+                                            ) in ROBOT_MSG_TYPE"
+                                            :key="index"
+                                            :value="item.value"
+                                        >
+                                            {{ item.label }}
+                                        </a-select-option>
+                                    </a-select>
                                 </a-form-item>
+                                <template
+                                    v-if="
+                                        formData.template.messageType ===
+                                        'markdown'
+                                    "
+                                >
+                                    <a-form-item
+                                        label="标题"
+                                        v-bind="
+                                            validateInfos[
+                                                'template.markdown.title'
+                                            ]
+                                        "
+                                    >
+                                        <!-- <a-input
+                                            v-model:value="
+                                                formData.template.markdown
+                                                    ?.title
+                                            "
+                                            placeholder="请输入标题"
+                                        /> -->
+                                    </a-form-item>
+                                </template>
+                                <!-- <template
+                                    v-if="
+                                        formData.template.messageType === 'link'
+                                    "
+                                >
+                                    <a-form-item
+                                        label="标题"
+                                        v-bind="
+                                            validateInfos['template.link.title']
+                                        "
+                                    >
+                                        <a-input
+                                            v-model:value="
+                                                formData.template.link?.title
+                                            "
+                                            placeholder="请输入标题"
+                                        />
+                                    </a-form-item>
+                                    <a-form-item label="图片链接">
+                                        <a-input
+                                            v-model:value="
+                                                formData.template.link?.picUrl
+                                            "
+                                            placeholder="请输入图片链接"
+                                        />
+                                    </a-form-item>
+                                    <a-form-item label="内容链接">
+                                        <a-input
+                                            v-model:value="
+                                                formData.template.link
+                                                    ?.messageUrl
+                                            "
+                                            placeholder="请输入内容链接"
+                                        />
+                                    </a-form-item>
+                                </template> -->
                             </template>
                         </template>
                         <!-- 微信 -->
                         <template v-if="formData.type === 'weixin'">
                             <a-form-item
-                                label="corpId"
-                                v-bind="validateInfos['configuration.corpId']"
+                                label="AgentId"
+                                v-bind="validateInfos['template.agentId']"
                             >
                                 <a-input
-                                    v-model:value="
-                                        formData.configuration.corpId
-                                    "
-                                    placeholder="请输入corpId"
+                                    v-model:value="formData.template.agentId"
+                                    placeholder="请输入agentId"
                                 />
                             </a-form-item>
-                            <a-form-item
-                                label="corpSecret"
-                                v-bind="
-                                    validateInfos['configuration.corpSecret']
-                                "
-                            >
-                                <a-input
-                                    v-model:value="
-                                        formData.configuration.corpSecret
-                                    "
-                                    placeholder="请输入corpSecret"
-                                />
+                            <a-row :gutter="10">
+                                <a-col :span="12">
+                                    <a-form-item label="收信人">
+                                        <a-select
+                                            v-model:value="
+                                                formData.template.toUser
+                                            "
+                                            placeholder="请选择收信人"
+                                        >
+                                            <a-select-option
+                                                v-for="(
+                                                    item, index
+                                                ) in ROBOT_MSG_TYPE"
+                                                :key="index"
+                                                :value="item.value"
+                                            >
+                                                {{ item.label }}
+                                            </a-select-option>
+                                        </a-select>
+                                    </a-form-item>
+                                </a-col>
+                                <a-col :span="12">
+                                    <a-form-item label="收信部门">
+                                        <a-select
+                                            v-model:value="
+                                                formData.template.toParty
+                                            "
+                                            placeholder="请选择收信部门"
+                                        >
+                                            <a-select-option
+                                                v-for="(
+                                                    item, index
+                                                ) in ROBOT_MSG_TYPE"
+                                                :key="index"
+                                                :value="item.value"
+                                            >
+                                                {{ item.label }}
+                                            </a-select-option>
+                                        </a-select>
+                                    </a-form-item>
+                                </a-col>
+                            </a-row>
+                            <a-form-item label="标签推送">
+                                <a-select
+                                    v-model:value="formData.template.toTag"
+                                    placeholder="请选择标签推送"
+                                >
+                                    <a-select-option
+                                        v-for="(item, index) in ROBOT_MSG_TYPE"
+                                        :key="index"
+                                        :value="item.value"
+                                    >
+                                        {{ item.label }}
+                                    </a-select-option>
+                                </a-select>
                             </a-form-item>
                         </template>
                         <!-- 邮件 -->
                         <template v-if="formData.type === 'email'">
                             <a-form-item
-                                label="服务器地址"
-                                v-bind="validateInfos['configuration.host']"
+                                label="标题"
+                                v-bind="validateInfos['template.subject']"
                             >
-                                <a-space>
-                                    <a-input
-                                        v-model:value="
-                                            formData.configuration.host
-                                        "
-                                        placeholder="请输入服务器地址"
-                                    />
-                                    <a-input-number
-                                        v-model:value="
-                                            formData.configuration.port
-                                        "
-                                    />
-                                    <a-checkbox
-                                        v-model:value="
-                                            formData.configuration.ssl
-                                        "
+                                <a-input
+                                    v-model:value="formData.template.subject"
+                                    placeholder="请输入标题"
+                                />
+                            </a-form-item>
+                            <a-form-item label="收件人">
+                                <a-select
+                                    v-model:value="formData.template.sendTo"
+                                    placeholder="请选择收件人"
+                                >
+                                    <a-select-option
+                                        v-for="(item, index) in ROBOT_MSG_TYPE"
+                                        :key="index"
+                                        :value="item.value"
                                     >
-                                        开启SSL
-                                    </a-checkbox>
-                                </a-space>
+                                        {{ item.label }}
+                                    </a-select-option>
+                                </a-select>
                             </a-form-item>
-                            <a-form-item
-                                label="发件人"
-                                v-bind="validateInfos['configuration.sender']"
-                            >
-                                <a-input
-                                    v-model:value="
-                                        formData.configuration.sender
+                            <a-form-item label="附件信息">
+                                <Attachments
+                                    v-model:attachments="
+                                        formData.template.attachments
                                     "
-                                    placeholder="请输入发件人"
-                                />
-                            </a-form-item>
-                            <a-form-item
-                                label="用户名"
-                                v-bind="validateInfos['configuration.username']"
-                            >
-                                <a-input
-                                    v-model:value="
-                                        formData.configuration.username
-                                    "
-                                    placeholder="请输入用户名"
-                                />
-                            </a-form-item>
-                            <a-form-item
-                                label="密码"
-                                v-bind="validateInfos['configuration.password']"
-                            >
-                                <a-input
-                                    v-model:value="
-                                        formData.configuration.password
-                                    "
-                                    placeholder="请输入密码"
                                 />
                             </a-form-item>
                         </template>
-                        <!-- 语音/短信 -->
-                        <template
-                            v-if="
-                                formData.type === 'voice' ||
-                                formData.type === 'sms'
-                            "
-                        >
+                        <!-- 语音 -->
+                        <template v-if="formData.type === 'voice'">
                             <a-form-item
-                                label="AccessKeyId"
-                                v-bind="
-                                    validateInfos['configuration.accessKeyId']
-                                "
+                                label="类型"
+                                v-bind="validateInfos['template.templateType']"
                             >
+                                <a-select
+                                    v-model:value="
+                                        formData.template.templateType
+                                    "
+                                    placeholder="请选择类型"
+                                >
+                                    <a-select-option
+                                        v-for="(item, index) in VOICE_TYPE"
+                                        :key="index"
+                                        :value="item.value"
+                                    >
+                                        {{ item.label }}
+                                    </a-select-option>
+                                </a-select>
+                            </a-form-item>
+                            <a-row :gutter="10">
+                                <a-col :span="12">
+                                    <a-form-item
+                                        label="模板ID"
+                                        v-bind="
+                                            validateInfos[
+                                                'template.templateCode'
+                                            ]
+                                        "
+                                    >
+                                        <a-input
+                                            v-model:value="
+                                                formData.template.templateCode
+                                            "
+                                            placeholder="请输入模板ID"
+                                        />
+                                    </a-form-item>
+                                </a-col>
+                                <a-col :span="12">
+                                    <a-form-item label="被叫号码">
+                                        <a-input
+                                            v-model:value="
+                                                formData.template.calledNumber
+                                            "
+                                            placeholder="请输入被叫号码"
+                                        />
+                                    </a-form-item>
+                                </a-col>
+                            </a-row>
+                            <a-form-item label="被叫显号">
                                 <a-input
                                     v-model:value="
-                                        formData.configuration.accessKeyId
+                                        formData.template.calledShowNumbers
                                     "
-                                    placeholder="请输入AccessKeyId"
+                                    placeholder="请输入被叫显号"
+                                />
+                            </a-form-item>
+                            <a-form-item label="播放次数">
+                                <a-input
+                                    v-model:value="formData.template.playTimes"
+                                    placeholder="请输入播放次数"
                                 />
                             </a-form-item>
                             <a-form-item
-                                label="Secret"
-                                v-bind="validateInfos['configuration.secret']"
+                                label="模板内容"
+                                v-if="formData.template.templateType === 'tts'"
+                            >
+                                <a-textarea
+                                    v-model:value="formData.template.ttsCode"
+                                    show-count
+                                    :rows="5"
+                                    placeholder="内容中的变量将用于阿里云语音验证码"
+                                />
+                            </a-form-item>
+                        </template>
+                        <!-- 短信 -->
+                        <template v-if="formData.type === 'sms'">
+                            <a-row :gutter="10">
+                                <a-col :span="12">
+                                    <a-form-item
+                                        label="模板"
+                                        v-bind="validateInfos['template.code']"
+                                    >
+                                        <a-select
+                                            v-model:value="
+                                                formData.template.code
+                                            "
+                                            placeholder="请选择模板"
+                                        >
+                                            <a-select-option
+                                                v-for="(
+                                                    item, index
+                                                ) in ROBOT_MSG_TYPE"
+                                                :key="index"
+                                                :value="item.value"
+                                            >
+                                                {{ item.label }}
+                                            </a-select-option>
+                                        </a-select>
+                                    </a-form-item>
+                                </a-col>
+                                <a-col :span="12">
+                                    <a-form-item label="收信人">
+                                        <a-input
+                                            v-model:value="
+                                                formData.template.phoneNumber
+                                            "
+                                            placeholder="请输入收信人"
+                                        />
+                                    </a-form-item>
+                                </a-col>
+                            </a-row>
+                            <a-form-item
+                                label="签名"
+                                v-bind="validateInfos['template.signName']"
                             >
                                 <a-input
-                                    v-model:value="
-                                        formData.configuration.secret
-                                    "
-                                    placeholder="Secret"
+                                    v-model:value="formData.template.signName"
+                                    placeholder="请输入签名"
                                 />
                             </a-form-item>
                         </template>
                         <!-- webhook -->
                         <template v-if="formData.type === 'webhook'">
-                            <a-form-item
-                                label="Webhook"
-                                v-bind="validateInfos['configuration.url']"
-                            >
-                                <a-input
-                                    v-model:value="formData.configuration.url"
-                                    placeholder="请输入Webhook"
-                                />
-                            </a-form-item>
-                            <a-form-item label="请求头">
-                                <!-- <EditTable
-                                    v-model:headers="
-                                        formData.configuration.headers
+                            <a-form-item label="请求体">
+                                <a-radio-group
+                                    v-model:value="
+                                        formData.template.contextAsBody
                                     "
-                                /> -->
+                                    style="margin-bottom: 20px"
+                                >
+                                    <a-radio :value="true">默认</a-radio>
+                                    <a-radio :value="false">自定义</a-radio>
+                                </a-radio-group>
+                                <a-textarea
+                                    v-model:value="formData.template.body"
+                                    placeholder="请求体中的数据来自于发送通知时指定的所有变量"
+                                    v-if="formData.template.contextAsBody"
+                                    disabled
+                                    :rows="5"
+                                />
+                                <div v-else style="height: 400px">
+                                    <MonacoEditor
+                                        theme="vs"
+                                        v-model:modelValue="
+                                            formData.template.body
+                                        "
+                                    />
+                                </div>
                             </a-form-item>
                         </template>
                         <a-form-item label="说明">
@@ -263,12 +454,15 @@ import { message } from 'ant-design-vue';
 import { TemplateFormData } from '../types';
 import {
     NOTICE_METHOD,
-    CONFIG_FIELD_MAP,
+    TEMPLATE_FIELD_MAP,
     MSG_TYPE,
+    ROBOT_MSG_TYPE,
+    VOICE_TYPE,
 } from '@/views/notice/const';
-// import EditTable from './components/EditTable.vue';
-import configApi from '@/api/notice/config';
+import templateApi from '@/api/notice/template';
 import Doc from './doc/index';
+import MonacoEditor from '@/components/MonacoEditor/index.vue';
+import Attachments from './components/Attachments.vue'
 
 const router = useRouter();
 const route = useRoute();
@@ -290,29 +484,33 @@ const msgType = ref([
 
 // 表单数据
 const formData = ref<TemplateFormData>({
-    description: '',
+    template: {},
     name: '',
-    provider: '',
-    type: NOTICE_METHOD[2].value,
-    template: {
-        subject: '',
-        sendTo: [],
-        attachments: [],
-        message: '',
-        text: '',
-    },
+    type: 'email',
+    provider: 'embedded',
+    description: '',
+    variableDefinitions: [],
 });
 
 // 根据通知方式展示对应的字段
 watch(
     () => formData.value.type,
     (val) => {
-        formData.value.configuration = CONFIG_FIELD_MAP[val];
+        // formData.value.template = TEMPLATE_FIELD_MAP[val];
         msgType.value = MSG_TYPE[val];
 
         formData.value.provider = msgType.value[0].value;
+        console.log('formData.value.template: ', formData.value.template);
     },
 );
+
+computed(() => {
+    console.log('formData.value.type: ', formData.value.type);
+    Object.assign(
+        formData.value.template,
+        TEMPLATE_FIELD_MAP[formData.value.type][formData.value.provider],
+    );
+});
 
 // 验证规则
 const formRules = ref({
@@ -322,58 +520,23 @@ const formRules = ref({
         { max: 64, message: '最多可输入64个字符' },
     ],
     provider: [{ required: true, message: '请选择类型' }],
+    configId: [{ required: true, message: '请选择绑定配置' }],
     // 钉钉
-    'configuration.appKey': [
-        { required: true, message: '请输入AppKey' },
-        { max: 64, message: '最多可输入64个字符' },
-    ],
-    'configuration.appSecret': [
-        { required: true, message: '请输入AppSecret' },
-        { max: 64, message: '最多可输入64个字符' },
-    ],
-    // 'configuration.url': [{ required: true, message: '请输入WebHook' }],
+    'template.agentId': [{ required: true, message: '请输入agentId' }],
+    'template.messageType': [{ required: true, message: '请选择消息类型' }],
+    'template.markdown.title': [{ required: true, message: '请输入标题' }],
+    // 'template.url': [{ required: true, message: '请输入WebHook' }],
     // 微信
-    'configuration.corpId': [
-        { required: true, message: '请输入corpId' },
-        { max: 64, message: '最多可输入64个字符' },
-    ],
-    'configuration.corpSecret': [
-        { required: true, message: '请输入corpSecret' },
-        { max: 64, message: '最多可输入64个字符' },
-    ],
-    // 阿里云语音/短信
-    'configuration.regionId': [
-        { required: true, message: '请输入RegionId' },
-        { max: 64, message: '最多可输入64个字符' },
-    ],
-    'configuration.accessKeyId': [
-        { required: true, message: '请输入AccessKeyId' },
-        { max: 64, message: '最多可输入64个字符' },
-    ],
-    'configuration.secret': [
-        { required: true, message: '请输入Secret' },
-        { max: 64, message: '最多可输入64个字符' },
-    ],
+    // 'template.agentId': [{ required: true, message: '请输入agentId' }],
     // 邮件
-    'configuration.host': [{ required: true, message: '请输入服务器地址' }],
-    'configuration.sender': [{ required: true, message: '请输入发件人' }],
-    'configuration.username': [
-        { required: true, message: '请输入用户名' },
-        { max: 64, message: '最多可输入64个字符' },
-    ],
-    'configuration.password': [
-        { required: true, message: '请输入密码' },
-        { max: 64, message: '最多可输入64个字符' },
-    ],
+    'template.subject': [{ required: true, message: '请输入标题' }],
+    // 阿里云语音
+    'template.templateType': [{ required: true, message: '请选择类型' }],
+    'template.templateCode': [{ required: true, message: '请输入模板ID' }],
+    // 短信
+    'template.code': [{ required: true, message: '请选择模板' }],
+    'template.signName': [{ required: true, message: '请输入签名' }],
     // webhook
-    'configuration.url': [
-        { required: true, message: '请输入Webhook' },
-        {
-            pattern:
-                /^(((ht|f)tps?):\/\/)?([^!@#$%^&*?.\s-]([^!@#$%^&*?.\s]{0,63}[^!@#$%^&*?.\s])?\.)+[a-z]{2,6}\/?/,
-            message: 'Webhook需要是一个合法的URL',
-        },
-    ],
     description: [{ max: 200, message: '最多可输入200个字符' }],
 });
 
@@ -390,12 +553,12 @@ watch(
 );
 
 const getDetail = async () => {
-    const res = await configApi.detail(route.params.id as string);
+    const res = await templateApi.detail(route.params.id as string);
     // console.log('res: ', res);
     formData.value = res.result;
     // console.log('formData.value: ', formData.value);
 };
-getDetail();
+// getDetail();
 
 /**
  * 表单提交
@@ -404,19 +567,19 @@ const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
     validate()
         .then(async () => {
-            // console.log('formData.value: ', formData.value);
+            console.log('formData.value: ', formData.value);
             btnLoading.value = true;
-            let res;
-            if (!formData.value.id) {
-                res = await configApi.save(formData.value);
-            } else {
-                res = await configApi.update(formData.value);
-            }
-            // console.log('res: ', res);
-            if (res?.success) {
-                message.success('保存成功');
-                router.back();
-            }
+            // let res;
+            // if (!formData.value.id) {
+            //     res = await templateApi.save(formData.value);
+            // } else {
+            //     res = await templateApi.update(formData.value);
+            // }
+            // // console.log('res: ', res);
+            // if (res?.success) {
+            //     message.success('保存成功');
+            //     router.back();
+            // }
             btnLoading.value = false;
         })
         .catch((err) => {
