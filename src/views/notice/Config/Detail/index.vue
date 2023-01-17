@@ -313,7 +313,6 @@ const formData = ref<ConfigFormData>({
     configuration: {
         appKey: '',
         appSecret: '',
-        url: '',
     },
     description: '',
     name: '',
@@ -325,11 +324,18 @@ const formData = ref<ConfigFormData>({
 watch(
     () => formData.value.type,
     (val) => {
-        formData.value.configuration = CONFIG_FIELD_MAP[val];
+        // formData.value.configuration = Object.values<any>(CONFIG_FIELD_MAP[val])[0];
         msgType.value = MSG_TYPE[val];
 
         formData.value.provider = msgType.value[0].value;
     },
+);
+
+computed(() =>
+    Object.assign(
+        formData.value.configuration,
+        CONFIG_FIELD_MAP[formData.value.type][formData.value.provider],
+    ),
 );
 
 // 验证规则
