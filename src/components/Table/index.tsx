@@ -204,9 +204,13 @@ const JTable = defineComponent<JTableProps>({
             loading.value = false
         }
 
-        watchEffect(() => {
-            handleSearch(props.params)
-        })
+        watch(
+            () => props.params, 
+            (newValue) => {
+                handleSearch(newValue)
+            }, 
+            {deep: true, immediate: true}
+        )
 
         onMounted(() => {
             window.onresize = () => {
@@ -266,7 +270,7 @@ const JTable = defineComponent<JTableProps>({
                                 onClose={() => {
                                     emit('cancelSelect')
                                 }}
-                                closeText={<a>取消选择</a>}
+                                closeText={<a-button type="link">取消选择</a-button>}
                              />
                         </div> : null
                     }
