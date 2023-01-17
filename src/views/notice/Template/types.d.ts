@@ -16,14 +16,6 @@ interface IVariableDefinitions {
 }
 
 export type TemplateFormData = {
-    name: string;
-    type: string;
-    provider: string;
-    description: string;
-    id?: string;
-    creatorId?: string;
-    createTime?: number;
-    configId?: string;
     template: {
         // 钉钉消息
         agentId?: string;
@@ -41,7 +33,7 @@ export type TemplateFormData = {
             text: string;
         };
         // 微信
-        agentId?: string;
+        // agentId?: string;
         // message?: string;
         toParty?: string;
         toUser?: string;
@@ -69,6 +61,13 @@ export type TemplateFormData = {
         contextAsBody?: boolean;
         body?: string;
     };
+    name: string;
+    type: string;
+    provider: string;
+    description: string;
     variableDefinitions: IVariableDefinitions[];
-
+    id?: string;
+    creatorId?: string;
+    createTime?: number;
+    configId?: string;
 };
