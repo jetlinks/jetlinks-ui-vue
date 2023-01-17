@@ -142,7 +142,7 @@ const emit = defineEmits<Emit>()
 const termsModel = reactive<SearchItemData>({
   type: 'or',
   value: '',
-  termType: 'eq',
+  termType: 'like',
   column: ''
 })
 
@@ -166,6 +166,7 @@ const getTermType = (type?: ItemType) => {
   switch (type) {
     case 'select':
     case 'treeSelect':
+    case 'number':
       return 'eq'
     case 'date':
     case 'time':
@@ -221,6 +222,7 @@ const handleItemOptions = (option?: any[] | Function) => {
 
 const columnChange = (value: string, isChange: boolean) => {
   const item = columnOptionMap.get(value)
+  optionLoading.value = false
   // 设置value为undefined
   termsModel.column = value
   termsModel.termType = item.defaultTermType || getTermType(item.type)
