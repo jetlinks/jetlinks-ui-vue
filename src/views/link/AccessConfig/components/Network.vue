@@ -295,11 +295,7 @@
             </div>
         </div>
         <div class="steps-action">
-            <a-button
-                v-if="[0, 1].includes(current)"
-                type="primary"
-                @click="next"
-            >
+            <a-button v-if="[0, 1].includes(current)" @click="next">
                 下一步
             </a-button>
             <a-button v-if="current === 2" type="primary" @click="saveData">
@@ -588,8 +584,12 @@ const { resetFields, validate, validateInfos } = useForm(
     }),
 );
 
-const queryNetworkList = async (id: string, params: object, data = {}) => {
-    const resp = await getNetworkList(NetworkTypeMapping.get(id), data, params);
+const queryNetworkList = async (id: string, include: string, data = {}) => {
+    const resp = await getNetworkList(
+        NetworkTypeMapping.get(id),
+        include,
+        data,
+    );
     if (resp.status === 200) {
         networkList.value = resp.result;
     }
@@ -623,9 +623,7 @@ const addNetwork = () => {
     tab.onTabSaveSuccess = (value) => {
         if (value.success) {
             networkCurrent.value = value.result.id;
-            queryNetworkList(props.provider?.id, {
-                include: networkCurrent.value || '',
-            });
+            queryNetworkList(props.provider?.id, networkCurrent.value || '');
         }
     };
 };
@@ -648,20 +646,14 @@ const checkedChange = (id: string) => {
 };
 
 const networkSearch = (value: string) => {
-    queryNetworkList(
-        props.provider.id,
-        {
-            include: networkCurrent.value || '',
-        },
-        {
-            terms: [
-                {
-                    column: 'name$LIKE',
-                    value: `%${value}%`,
-                },
-            ],
-        },
-    );
+    queryNetworkList(props.provider.id, networkCurrent.value || '', {
+        terms: [
+            {
+                column: 'name$LIKE',
+                value: `%${value}%`,
+            },
+        ],
+    });
 };
 const procotolChange = (id: string) => {
     if (!props.data.id) {
@@ -862,9 +854,7 @@ onMounted(() => {
             procotolCurrent.value = props.data.protocol;
             current.value = 0;
             networkCurrent.value = props.data.channelId;
-            queryNetworkList(props.provider.id, {
-                include: networkCurrent.value,
-            });
+            queryNetworkList(props.provider.id, networkCurrent.value);
             procotolCurrent.value = props.data.protocol;
             steps.value = ['网络组件', '消息协议', '完成'];
         } else {
@@ -875,9 +865,7 @@ onMounted(() => {
     } else {
         if (props.provider?.id) {
             if (props.provider.channel !== 'child-device') {
-                queryNetworkList(props.provider.id, {
-                    include: '',
-                });
+                queryNetworkList(props.provider.id, '');
                 steps.value = ['网络组件', '消息协议', '完成'];
                 current.value = 0;
             } else {
