@@ -101,7 +101,10 @@ export default [
         path:'/system/api',
         component: ()=>import('@/views/system/apiPage/index.vue')
     },
-
+    {
+        path:'/system/Role',
+        component: ()=>import('@/views/system/Role/index.vue')
+    },
     // 初始化
     {
       path: '/init-home',
