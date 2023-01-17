@@ -93,36 +93,52 @@ export const MSG_TYPE = {
 // 配置
 export const CONFIG_FIELD_MAP = {
     dingTalk: {
-        appKey: undefined,
-        appSecret: undefined,
-        url: undefined,
+        dingTalkMessage: {
+            appKey: '',
+            appSecret: '',
+        },
+        dingTalkRobotWebHook: {
+            url: '',
+        }
     },
     weixin: {
-        corpId: undefined,
-        corpSecret: undefined,
+        corpMessage: {
+            corpId: '',
+            corpSecret: '',
+        },
+        // officialMessage: {},
     },
     email: {
-        host: undefined,
-        port: 25,
-        ssl: false,
-        sender: undefined,
-        username: undefined,
-        password: undefined,
+        embedded: {
+            host: '',
+            port: 25,
+            ssl: false,
+            sender: '',
+            username: '',
+            password: '',
+        }
     },
     voice: {
-        regionId: undefined,
-        accessKeyId: undefined,
-        secret: undefined,
+        aliyun: {
+            regionId: '',
+            accessKeyId: '',
+            secret: '',
+        }
     },
     sms: {
-        regionId: undefined,
-        accessKeyId: undefined,
-        secret: undefined,
+        aliyunSms: {
+            regionId: '',
+            accessKeyId: '',
+            secret: '',
+        }
     },
     webhook: {
-        url: undefined,
-        headers: [],
+        http: {
+            url: undefined,
+            headers: [],
+        }
     },
+
 };
 
 // 模板
