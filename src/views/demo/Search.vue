@@ -2,7 +2,7 @@
   <div class='search'>
     <Search
       :columns='columns'
-      target='device'
+      target='device-instance-search'
       @search='search'
     />
     <Search

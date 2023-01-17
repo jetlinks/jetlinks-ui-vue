@@ -37,9 +37,11 @@ export interface SortItem {
   value?: any
 }
 
-export interface Params {
-  sorts: SortItem[]
-  terms: Terms['terms']
+export interface SearchHistoryList {
+  content?: string
+  name: string
+  id: string
+  key: string
 }
 
 export interface SearchProps extends SearchBaseProps, SearchItemProps {

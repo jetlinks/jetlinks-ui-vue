@@ -45,7 +45,7 @@
             <template #addonAfter>
                 <a-upload
                     name="file"
-                    :action="action"
+                    :action="FILE_UPLOAD"
                     :headers="headers"
                     :showUploadList="false"
                     @change="handleFileChange"
@@ -89,6 +89,7 @@ import GeoComponent from '@/components/GeoComponent/index.vue';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { LocalStore } from '@/utils/comm';
 import { ItemData, ITypes } from './types';
+import { FILE_UPLOAD } from '@/api/comm';
 
 type Emits = {
     (e: 'update:modelValue', data: string | number | boolean): void;
@@ -161,7 +162,6 @@ const handleItemModalSubmit = () => {
 };
 
 // 文件上传
-const action = ref<string>(`${BASE_API_PATH}/file/static`);
 const headers = ref({ [TOKEN_KEY]: LocalStore.get(TOKEN_KEY) });
 const handleFileChange = (info: UploadChangeParam<UploadFile<any>>) => {
     if (info.file.status === 'done') {

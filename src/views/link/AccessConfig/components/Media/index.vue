@@ -78,11 +78,14 @@
 import { message, Form } from 'ant-design-vue';
 import type { FormInstance } from 'ant-design-vue';
 import GB28181 from './GB28181.vue';
+import { update, save } from '@/api/link/accessConfig';
 
 interface FormState {
     name: string;
     description: string;
 }
+const route = useRoute();
+const id = route.query.id;
 
 const props = defineProps({
     provider: {
@@ -96,14 +99,32 @@ const props = defineProps({
 });
 
 const channel = ref(props.provider.channel);
-console.log(211, channel.value, props);
 
 const formState = reactive<FormState>({
     name: '',
     description: '',
 });
-const onFinish = (values: any) => {
-    console.log('Success:', values);
+const onFinish = async (values: any) => {
+    const params = {
+        ...values,
+        provider: 'fixed-media',
+        transport: 'URL',
+        channel: 'fixed-media',
+    };
+    const resp = !!id ? await update({ ...params, id }) : await save(params);
+    if (resp.status === 200) {
+        message.success('操作成功！');
+        // if (params.get('save')) {
+        // if ((window as any).onTabSaveSuccess) {
+        //   if (resp.result) {
+        //     (window as any).onTabSaveSuccess(resp.result);
+        //     setTimeout(() => window.close(), 300);
+        //   }
+        // }
+        //   } else {
+        history.back();
+        //   }
+    }
 };
 </script>
 
