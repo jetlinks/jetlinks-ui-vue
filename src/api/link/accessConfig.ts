@@ -6,11 +6,11 @@ export const detail = (id: string) => server.get(`/gateway/device/${id}`);
 
 export const getNetworkList = (
     networkType: string,
+    include: string,
     data: Object,
-    params: Object,
 ) =>
     server.get(
-        `/network/config/${networkType}/_alive?include=${params.include}`,
+        `/network/config/${networkType}/_alive?include=${include}`,
         data,
     );
 

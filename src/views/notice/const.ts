@@ -33,7 +33,7 @@ export const NOTICE_METHOD: INoticeMethod[] = [
     },
 ];
 
-// 消息类型
+// 类型
 export const MSG_TYPE = {
     dingTalk: [
         {
@@ -93,36 +93,52 @@ export const MSG_TYPE = {
 // 配置
 export const CONFIG_FIELD_MAP = {
     dingTalk: {
-        appKey: undefined,
-        appSecret: undefined,
-        url: undefined,
+        dingTalkMessage: {
+            appKey: '',
+            appSecret: '',
+        },
+        dingTalkRobotWebHook: {
+            url: '',
+        }
     },
     weixin: {
-        corpId: undefined,
-        corpSecret: undefined,
+        corpMessage: {
+            corpId: '',
+            corpSecret: '',
+        },
+        // officialMessage: {},
     },
     email: {
-        host: undefined,
-        port: 25,
-        ssl: false,
-        sender: undefined,
-        username: undefined,
-        password: undefined,
+        embedded: {
+            host: '',
+            port: 25,
+            ssl: false,
+            sender: '',
+            username: '',
+            password: '',
+        }
     },
     voice: {
-        regionId: undefined,
-        accessKeyId: undefined,
-        secret: undefined,
+        aliyun: {
+            regionId: '',
+            accessKeyId: '',
+            secret: '',
+        }
     },
     sms: {
-        regionId: undefined,
-        accessKeyId: undefined,
-        secret: undefined,
+        aliyunSms: {
+            regionId: '',
+            accessKeyId: '',
+            secret: '',
+        }
     },
     webhook: {
-        url: undefined,
-        headers: [],
+        http: {
+            url: undefined,
+            headers: [],
+        }
     },
+
 };
 
 // 模板
@@ -187,8 +203,20 @@ export const TEMPLATE_FIELD_MAP = {
     },
     webhook: {
         http: {
-            contextAsBody: false,
+            contextAsBody: true,
             body: ''
         }
     },
-}; 
+};
+
+// 钉钉机器人-消息类型
+export const ROBOT_MSG_TYPE = [
+    { label: 'markdown', value: 'markdown' },
+    { label: 'text', value: 'text' },
+    { label: 'link', value: 'link' },
+]
+// 语音通知类型
+export const VOICE_TYPE = [
+    { label: '语音通知', value: 'voice' },
+    { label: '语音验证码', value: 'tts' },
+]

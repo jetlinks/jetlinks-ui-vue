@@ -174,8 +174,14 @@ const JTable = defineComponent<JTableProps>({
             loading.value = true
             if(props.request) {
                 const resp = await props.request({
+                    pageIndex: 0, 
+                    pageSize: 12,
                     ...props.defaultParams,
-                    ..._params
+                    ..._params,
+                    terms: [
+                        ...(props.defaultParams?.terms || []),
+                        ...(_params?.terms || [])
+                    ]
                 })
                 if(resp.status === 200){
                     if(props.type === 'PAGE'){

@@ -12,10 +12,10 @@
                 <div>
                     <a-form
                         :model="formState"
+                        ref="formRef1"
                         name="basic"
                         autocomplete="off"
                         layout="vertical"
-                        @finish="onFinish"
                     >
                         <a-row :gutter="[24, 24]">
                             <a-col :span="12">
@@ -25,7 +25,11 @@
                                     :rules="[
                                         {
                                             required: true,
-                                            message: '请输入SIP 域!',
+                                            message: '请输入SIP 域',
+                                        },
+                                        {
+                                            max: 64,
+                                            message: '最大可输入64个字符',
                                         },
                                     ]"
                                 >
@@ -42,7 +46,11 @@
                                     :rules="[
                                         {
                                             required: true,
-                                            message: '请输入SIP ID!',
+                                            message: '请输入SIP ID',
+                                        },
+                                        {
+                                            max: 64,
+                                            message: '最大可输入64个字符',
                                         },
                                     ]"
                                 >
@@ -59,7 +67,7 @@
                             :rules="[
                                 {
                                     required: true,
-                                    message: '请选择集群!',
+                                    message: '请选择集群',
                                 },
                             ]"
                         >
@@ -88,65 +96,104 @@
                                 <a-radio :value="false">独立配置</a-radio>
                             </a-radio-group>
                         </a-form-item>
-                        <div v-if="formState.shareCluster">
+                        <div v-if="formState.shareCluster" class="form-item1">
                             <a-row :gutter="[24, 24]">
-                                <a-col :span="12">
+                                <a-col :span="6">
                                     <a-form-item
                                         label="SIP 地址"
-                                        name="sip"
+                                        :name="['hostPort', 'host']"
                                         :rules="[
                                             {
                                                 required: true,
-                                                message: '请选择端口!',
+                                                message: '请选择SIP地址',
                                             },
                                         ]"
                                     >
-                                        <a-input-group compact>
-                                            <a-select
-                                                v-model:value="formState.sip1"
-                                                style="width: 50%"
-                                                :disabled="true"
+                                        <a-select
+                                            v-model:value="
+                                                formState.hostPort.host
+                                            "
+                                            style="width: 105%"
+                                            :disabled="true"
+                                            show-search
+                                            :filter-option="filterOption"
+                                        >
+                                            <a-select-option value="0.0.0.0"
+                                                >0.0.0.0</a-select-option
                                             >
-                                                <a-select-option value="0.0.0.0"
-                                                    >0.0.0.0</a-select-option
-                                                >
-                                            </a-select>
-                                            <a-select
-                                                v-model:value="formState.sip"
-                                                :options="sipList"
-                                                style="width: 50%"
-                                                placeholder="请选择端口"
-                                            />
-                                        </a-input-group>
+                                        </a-select>
                                     </a-form-item>
                                 </a-col>
-                                <a-col :span="12">
+                                <a-col :span="6">
                                     <a-form-item
-                                        label="公网 Host"
-                                        name="public"
+                                        :name="['hostPort', 'port']"
                                         :rules="[
                                             {
                                                 required: true,
-                                                message: '请选择端口!',
+                                                message: '请选择端口',
                                             },
                                         ]"
                                     >
-                                        <a-input-group compact>
-                                            <a-input
-                                                style="width: 50%"
-                                                v-model:value="
-                                                    formState.public1
-                                                "
-                                                placeholder="请输入IP地址"
-                                            />
-                                            <a-input-number
-                                                style="width: 50%"
-                                                placeholder="请输入端口"
-                                                v-model:value="formState.public"
-                                                :min="1"
-                                                :max="65535"
-                                            />
-                                        </a-input-group>
+                                        <div class="form-label"></div>
+
+                                        <a-select
+                                            v-model:value="
+                                                formState.hostPort.port
+                                            "
+                                            :options="sipList"
+                                            placeholder="请选择端口"
+                                            allowClear
+                                            show-search
+                                            :filter-option="filterOption"
+                                        />
+                                    </a-form-item>
+                                </a-col>
+                                <a-col :span="6">
+                                    <a-form-item
+                                        label="公网 Host"
+                                        :name="['hostPort', 'publicHost']"
+                                        :rules="[
+                                            {
+                                                required: true,
+                                                message: '请输入IP地址',
+                                            },
+                                            {
+                                                pattern:
+                                                    /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/,
+                                                message: '请输入正确的IP地址',
+                                            },
+                                        ]"
+                                    >
+                                        <a-input
+                                            style="width: 105%"
+                                            v-model:value="
+                                                formState.hostPort.publicHost
+                                            "
+                                            placeholder="请输入IP地址"
+                                        />
+                                    </a-form-item>
+                                </a-col>
+                                <a-col :span="6">
+                                    <a-form-item
+                                        :name="['hostPort', 'publicPort']"
+                                        :rules="[
+                                            {
+                                                required: true,
+                                                message: '输入端口',
+                                            },
+                                        ]"
+                                    >
+                                        <div class="form-label"></div>
+
+                                        <a-input-number
+                                            style="width: 100%"
+                                            placeholder="请输入端口"
+                                            v-model:value="
+                                                formState.hostPort.publicPort
+                                            "
+                                            :min="1"
+                                            :max="65535"
+                                        />
                                     </a-form-item>
                                 </a-col>
                             </a-row>
@@ -158,50 +205,56 @@
                             layout="vertical"
                             name="dynamic_form_nest_item"
                             :model="dynamicValidateForm"
-                            @finish="onFinish2"
                         >
                             <div
                                 v-for="(
-                                    user, index
-                                ) in dynamicValidateForm.users"
-                                :key="user.id"
+                                    cluster, index
+                                ) in dynamicValidateForm.cluster"
+                                :key="cluster.id"
                             >
                                 <a-collapse v-model:activeKey="activeKey">
                                     <a-collapse-panel
-                                        :key="user.id"
+                                        :key="cluster.id"
                                         :header="`#${index + 1}.节点`"
                                     >
-                                        
                                         <template #extra>
                                             <delete-outlined
-                                                @click="removeUser(user)"
+                                                @click="removeCluster(cluster)"
                                             />
                                         </template>
                                         <a-row :gutter="[24, 24]">
                                             <a-col :span="8">
                                                 <a-form-item
-                                                    label="节点名称"
                                                     :name="[
-                                                        'users',
+                                                        'cluster',
                                                         index,
-                                                        'first',
+                                                        'clusterNodeId',
                                                     ]"
                                                 >
+                                                    <div class="form-label">
+                                                        节点名称
+                                                    </div>
                                                     <a-select
                                                         v-model:value="
-                                                            user.first
+                                                            cluster.clusterNodeId
                                                         "
                                                         :options="clustersList"
+                                                        placeholder="请选择节点名称"
+                                                        allowClear
+                                                        show-search
+                                                        :filter-option="
+                                                            filterOption
+                                                        "
                                                     >
                                                     </a-select>
                                                 </a-form-item>
                                             </a-col>
-                                            <a-col :span="7">
+                                            <a-col :span="4">
                                                 <a-form-item
                                                     :name="[
-                                                        'users',
+                                                        'cluster',
                                                         index,
-                                                        'last',
+                                                        'host',
                                                     ]"
                                                     :rules="{
                                                         required: true,
@@ -209,13 +262,10 @@
                                                             '请选择SIP 地址',
                                                     }"
                                                 >
-                                                    <div>
+                                                    <div class="form-label">
                                                         SIP 地址
                                                         <span
-                                                            style="
-                                                                color: red;
-                                                                margin: 0 4px 0 -2px;
-                                                            "
+                                                            class="form-label-required"
                                                             >*</span
                                                         >
                                                         <a-tooltip>
@@ -227,46 +277,84 @@
                                                             <question-circle-outlined />
                                                         </a-tooltip>
                                                     </div>
-                                                    <a-input-group compact>
-                                                        <a-select
-                                                            v-model:value="
-                                                                user.last
-                                                            "
-                                                            style="width: 50%"
-                                                            :options="sipList"
-                                                        >
-                                                        </a-select>
-                                                        <a-select
-                                                            v-model:value="
-                                                                user.last1
-                                                            "
-                                                            :options="sipList"
-                                                            style="width: 50%"
-                                                            placeholder="请选择端口"
-                                                        />
-                                                    </a-input-group>
+
+                                                    <a-select
+                                                        v-model:value="
+                                                            cluster.host
+                                                        "
+                                                        :options="sipListOption"
+                                                        placeholder="请选择IP地址"
+                                                        allowClear
+                                                        show-search
+                                                        :filter-option="
+                                                            filterOption
+                                                        "
+                                                        style="width: 110%"
+                                                        @change="
+                                                            handleChangeForm2Sip(
+                                                                index,
+                                                            )
+                                                        "
+                                                    >
+                                                    </a-select>
                                                 </a-form-item>
                                             </a-col>
-                                            <a-col :span="8">
+                                            <a-col :span="4">
                                                 <a-form-item
                                                     :name="[
-                                                        'users',
+                                                        'cluster',
                                                         index,
-                                                        'last2',
+                                                        'port',
                                                     ]"
                                                     :rules="{
                                                         required: true,
-                                                        message:
-                                                            '请输入公网 Host',
+                                                        message: '请选择端口',
                                                     }"
                                                 >
-                                                    <div>
+                                                    <div
+                                                        class="form-label"
+                                                    ></div>
+                                                    <a-select
+                                                        v-model:value="
+                                                            cluster.port
+                                                        "
+                                                        :options="
+                                                            sipListIndex[index]
+                                                        "
+                                                        placeholder="请选择端口"
+                                                        allowClear
+                                                        show-search
+                                                        :filter-option="
+                                                            filterOption
+                                                        "
+                                                    />
+                                                </a-form-item>
+                                            </a-col>
+                                            <a-col :span="4">
+                                                <a-form-item
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'publicHost',
+                                                    ]"
+                                                    :rules="[
+                                                        {
+                                                            required: true,
+                                                            message:
+                                                                '请输入公网 Host',
+                                                        },
+                                                        {
+                                                            pattern:
+                                                                /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/,
+                                                            message:
+                                                                '请输入正确的IP地址',
+                                                        },
+                                                    ]"
+                                                >
+                                                    <div class="form-label">
                                                         公网 Host
                                                         <span
-                                                            style="
-                                                                color: red;
-                                                                margin: 0 4px 0 -2px;
-                                                            "
+                                                            class="form-label-required"
                                                             >*</span
                                                         >
                                                         <a-tooltip>
@@ -278,24 +366,44 @@
                                                             <question-circle-outlined />
                                                         </a-tooltip>
                                                     </div>
-                                                    <a-input-group compact>
-                                                        <a-input
-                                                            style="width: 50%"
-                                                            v-model:value="
-                                                                user.last2
-                                                            "
-                                                            placeholder="请输入IP地址"
-                                                        />
-                                                        <a-input-number
-                                                            style="width: 50%"
-                                                            placeholder="请输入端口"
-                                                            v-model:value="
-                                                                user.last3
-                                                            "
-                                                            :min="1"
-                                                            :max="65535"
-                                                        />
-                                                    </a-input-group>
+                                                    <a-input
+                                                        style="width: 110%"
+                                                        v-model:value="
+                                                            cluster.publicHost
+                                                        "
+                                                        placeholder="请输入IP地址"
+                                                        allowClear
+                                                    />
+                                                </a-form-item>
+                                            </a-col>
+                                            <a-col :span="4">
+                                                <a-form-item
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'publicPort',
+                                                    ]"
+                                                    :rules="[
+                                                        {
+                                                            required: true,
+                                                            message:
+                                                                '请输入端口',
+                                                        },
+                                                    ]"
+                                                >
+                                                    <div
+                                                        class="form-label"
+                                                    ></div>
+
+                                                    <a-input-number
+                                                        style="width: 100%"
+                                                        placeholder="请输入端口"
+                                                        v-model:value="
+                                                            cluster.publicPort
+                                                        "
+                                                        :min="1"
+                                                        :max="65535"
+                                                    />
                                                 </a-form-item>
                                             </a-col>
                                         </a-row>
@@ -307,16 +415,11 @@
                                     style="margin-top: 10px"
                                     type="dashed"
                                     block
-                                    @click="addUser"
+                                    @click="addCluster"
                                 >
                                     <PlusOutlined />
                                     新增
                                 </a-button>
-                            </a-form-item>
-                            <a-form-item>
-                                <a-button type="primary" html-type="submit"
-                                    >Submit</a-button
-                                >
                             </a-form-item>
                         </a-form>
                     </div>
@@ -333,11 +436,7 @@
                         <a-col :span="12">
                             <title-component data="基本信息" />
                             <div>
-                                <a-form
-                                    ref="formRef"
-                                    :model="form"
-                                    layout="vertical"
-                                >
+                                <a-form :model="form" layout="vertical">
                                     <a-form-item
                                         label="名称"
                                         v-bind="validateInfos.name"
@@ -380,110 +479,13 @@
                                     <div class="config-right-item-title">
                                         消息协议
                                     </div>
-                                    <div class="config-right-item-context">
+                                    <div>
                                         {{
-                                            procotolList.find(
-                                                (i) => i.id === procotolCurrent,
-                                            ).name
+                                            provider?.id === 'fixed-media'
+                                                ? 'URL'
+                                                : 'SIP'
                                         }}
                                     </div>
-                                    <div
-                                        class="config-right-item-context"
-                                        v-if="config.document"
-                                    >
-                                        <Markdown :source="config.document" />
-                                    </div>
-                                </div>
-                                <div
-                                    class="config-right-item"
-                                    v-if="
-                                        networkList.find(
-                                            (i) => i.id === networkCurrent,
-                                        ) &&
-                                        (
-                                            networkList.find(
-                                                (i) => i.id === networkCurrent,
-                                            ).addresses || []
-                                        ).length > 0
-                                    "
-                                >
-                                    <div class="config-right-item-title">
-                                        网络组件
-                                    </div>
-                                    <div
-                                        v-for="i in (networkList.find(
-                                            (i) => i.id === networkCurrent,
-                                        ) &&
-                                            networkList.find(
-                                                (i) => i.id === networkCurrent,
-                                            ).addresses) ||
-                                        []"
-                                        :key="i.address"
-                                    >
-                                        <a-badge
-                                            :color="
-                                                i.health === -1
-                                                    ? 'red'
-                                                    : 'green'
-                                            "
-                                            :text="i.address"
-                                        />
-                                    </div>
-                                </div>
-                                <div
-                                    class="config-right-item"
-                                    v-if="
-                                        config.routes &&
-                                        config.routes.length > 0
-                                    "
-                                >
-                                    <div class="config-right-item-title">
-                                        {{
-                                            data.provider ===
-                                                'mqtt-server-gateway' ||
-                                            data.provider ===
-                                                'mqtt-client-gateway'
-                                                ? 'topic'
-                                                : 'URL信息'
-                                        }}
-                                    </div>
-                                    <a-table
-                                        :pagination="false"
-                                        :rowKey="generateUUID()"
-                                        :data-source="config.routes || []"
-                                        bordered
-                                        :columns="columnsMQTT"
-                                        :scroll="{ y: 300 }"
-                                    >
-                                        <template
-                                            #bodyCell="{ column, text, record }"
-                                        >
-                                            <template
-                                                v-if="
-                                                    column.dataIndex ===
-                                                    'stream'
-                                                "
-                                            >
-                                                <span
-                                                    v-if="
-                                                        record.upstream &&
-                                                        record.downstream
-                                                    "
-                                                    >上行、下行</span
-                                                >
-                                                <span
-                                                    v-else-if="record.upstream"
-                                                    >上行</span
-                                                >
-                                                <span
-                                                    v-else-if="
-                                                        record.downstream
-                                                    "
-                                                    >下行</span
-                                                >
-                                            </template>
-                                        </template>
-                                    </a-table>
                                 </div>
                             </div>
                         </a-col>
@@ -492,14 +494,10 @@
             </div>
         </div>
         <div class="steps-action">
-            <a-button
-                v-if="[0, 1].includes(current)"
-                type="primary"
-                @click="next"
-            >
+            <a-button v-if="[0].includes(current)" @click="next">
                 下一步
             </a-button>
-            <a-button v-if="current === 2" type="primary" @click="saveData">
+            <a-button v-if="current === 1" type="primary" @click="saveData">
                 保存
             </a-button>
             <a-button v-if="current > 0" style="margin-left: 8px" @click="prev">
@@ -512,47 +510,29 @@
 <script lang="ts" setup name="AccessNetwork">
 import { message, Form } from 'ant-design-vue';
 import type { FormInstance } from 'ant-design-vue';
-import Markdown from 'vue3-markdown-it';
-import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 import { getResourcesCurrent, getClusters } from '@/api/link/accessConfig';
-
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons-vue';
+import { update, save } from '@/api/link/accessConfig';
 
-interface User {
-    first: string;
-    last1: string;
-    last: string;
-    last2: string;
-    last3: string;
+interface Form2 {
+    clusterNodeId: string;
+    port: string;
+    host: string;
+    publicPort: string;
+    publicHost: string;
     id: number;
 }
-
-const activeKey = ref([]);
-
-const formRef2 = ref<FormInstance>();
-const dynamicValidateForm = reactive<{ users: User[] }>({
-    users: [],
-});
-const removeUser = (item: User) => {
-    let index = dynamicValidateForm.users.indexOf(item);
-    if (index !== -1) {
-        dynamicValidateForm.users.splice(index, 1);
-    }
-};
-const addUser = () => {
-    dynamicValidateForm.users.push({
-        first: '',
-        last1: '',
-        last: '',
-        last2: '',
-        last3: '',
-        id: Date.now(),
-    });
-};
-const onFinish2 = (values) => {
-    console.log('Received values of form:', values);
-    console.log('dynamicValidateForm.users:', dynamicValidateForm.users);
-};
+interface FormState {
+    domain: string;
+    sipId: string;
+    shareCluster: boolean;
+    hostPort: {
+        port: string;
+        host: string;
+        publicPort: string;
+        publicHost: string;
+    };
+}
 
 const props = defineProps({
     provider: {
@@ -565,9 +545,14 @@ const props = defineProps({
     },
 });
 
+const route = useRoute();
+const id = route.query.id;
+
+const activeKey: any = ref([]);
 const clientHeight = document.body.clientHeight;
 
-const formRef = ref<FormInstance>();
+const formRef1 = ref<FormInstance>();
+const formRef2 = ref<FormInstance>();
 const useForm = Form.useForm;
 
 const current = ref(0);
@@ -577,9 +562,69 @@ const form = reactive({
     name: '',
     description: '',
 });
-
+const formState = reactive<FormState>({
+    domain: '',
+    sipId: '',
+    shareCluster: true,
+    hostPort: {
+        port: '',
+        host: '0.0.0.0',
+        publicPort: '',
+        publicHost: '',
+    },
+});
+let params = {
+    configuration: {},
+};
+let sipListConst: any = [];
+const sipListOption = ref([]);
 const sipList = ref([]);
+const sipListIndex: any = ref([]);
 const clustersList = ref([]);
+
+const dynamicValidateForm = reactive<{ cluster: Form2[] }>({
+    cluster: [],
+});
+
+const removeCluster = (item: Form2) => {
+    let index = dynamicValidateForm.cluster.indexOf(item);
+    if (index !== -1) {
+        dynamicValidateForm.cluster.splice(index, 1);
+    }
+};
+
+const addCluster = () => {
+    const id = Date.now();
+    dynamicValidateForm.cluster.push({
+        clusterNodeId: '',
+        port: '',
+        host: '',
+        publicPort: '',
+        publicHost: '',
+        id,
+    });
+    activeKey.value = [...activeKey.value, id.toString()];
+};
+
+const filterOption = (input: string, option: any) => {
+    return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+};
+
+const handleChangeForm2Sip = (index: number) => {
+    dynamicValidateForm.cluster[index].port = '';
+    const value = dynamicValidateForm.cluster[index].host;
+    sipListIndex.value[index] = sipListConst
+        .find((i: any) => i.host === value)
+        ?.portList.map((i: any) => {
+            return {
+                value: JSON.stringify({
+                    host: value,
+                    port: i.port,
+                }),
+                label: `${i.transports.join('/')} (${i.port})`,
+            };
+        });
+};
 
 const { resetFields, validate, validateInfos } = useForm(
     form,
@@ -592,61 +637,81 @@ const { resetFields, validate, validateInfos } = useForm(
 );
 
 const saveData = () => {
-    validate()
-        .then(async (values) => {
-            console.log(333, values);
-        })
-        .catch((err) => {});
+    validate().then(async (values) => {
+        params = {
+            ...params,
+            ...values,
+            provider: 'gb28181-2016',
+            transport: 'SIP',
+            channel: 'gb28181',
+        };
+        const resp = !!id
+            ? await update({ ...params, id })
+            : await save(params);
+        if (resp.status === 200) {
+            message.success('操作成功！');
+            // if (params.get('save')) {
+            // if ((window as any).onTabSaveSuccess) {
+            //   if (resp.result) {
+            //     (window as any).onTabSaveSuccess(resp.result);
+            //     setTimeout(() => window.close(), 300);
+            //   }
+            // }
+            //   } else {
+            history.back();
+            //   }
+        }
+    });
 };
 
 const next = async () => {
-    console.log(22, current.value);
+    let data1: any = await formRef1.value?.validate();
+    if (data1.hostPort?.port) {
+        const port = JSON.parse(data1.hostPort.port).port;
+        data1.hostPort.port = port;
+    }
+    if (!data1?.shareCluster) {
+        let data2 = await formRef2.value?.validate();
+        if (data2 && data2?.cluster) {
+            data2.cluster.forEach((i: any) => {
+                i.enabled = true;
+                i.port = JSON.parse(i.port).port;
+            });
+            data1 = {
+                ...data1,
+                ...data2,
+            };
+        }
+    }
+    current.value = current.value + 1;
+    params.configuration = data1;
 };
 const prev = () => {
     current.value = current.value - 1;
 };
 
-interface FormState {
-    domain: string;
-    sipId: string;
-    shareCluster: boolean;
-    sip1: string;
-    sip: string;
-    public1: string;
-    public: string;
-}
-const formState = reactive<FormState>({
-    domain: '',
-    sipId: '',
-    shareCluster: true,
-    sip1: '0.0.0.0',
-    sip: '',
-    public1: '',
-    public: '',
-});
-const onFinish = (values: any) => {
-    console.log('Success:', values);
-};
-
 onMounted(() => {
     getResourcesCurrent().then((resp) => {
         if (resp.status === 200) {
-            const data: any = resp.result.find((i) => i.host === '0.0.0.0');
-            const list = data.portList.map((i) => {
-                const label = `${i.transports.join('/')} (${i.port})`;
-                const value = {
-                    host: '0.0.0.0',
-                    port: i.port,
-                };
-                return {
-                    value: JSON.stringify(value),
-                    label,
-                };
-            });
-            sipList.value = list;
+            sipListConst = resp.result;
+            sipListOption.value = sipListConst.map((i) => ({
+                value: i.host,
+                label: i.host,
+            }));
+
+            sipList.value = sipListConst
+                .find((i) => i.host === '0.0.0.0')
+                ?.portList.map((i) => {
+                    return {
+                        value: JSON.stringify({
+                            host: '0.0.0.0',
+                            port: i.port,
+                        }),
+                        label: `${i.transports.join('/')} (${i.port})`,
+                    };
+                });
         }
     });
-    console.log(1);
 
     getClusters().then((resp) => {
         if (resp.status === 200) {
@@ -662,11 +727,7 @@ onMounted(() => {
 watch(
     current,
     (v) => {
-        // if (props.provider.channel !== 'child-device') {
-        //     stepCurrent.value = v;
-        // } else {
-        //     stepCurrent.value = v - 1;
-        // }
+        stepCurrent.value = v;
     },
     {
         deep: true,
@@ -743,6 +804,19 @@ watch(
             margin: 5px 0;
             color: rgba(0, 0, 0, 0.8);
         }
+    }
+}
+
+.form-item1 {
+    background-color: #f6f6f6;
+    padding: 10px;
+}
+.form-label {
+    height: 30px;
+    padding-bottom: 8px;
+    .form-label-required {
+        color: red;
+        margin: 0 4px 0 -2px;
     }
 }
 </style>
