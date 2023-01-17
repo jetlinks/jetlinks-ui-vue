@@ -31,7 +31,7 @@
               v-model:value='formData.data[item.name]'
               :options='item.options'
             />
-            <a-inputnumber
+            <a-input-number
               v-else-if='item.component === componentType.inputNumber'
               v-bind='item.componentProps'
               v-model:value='formData.data[item.name]'

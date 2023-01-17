@@ -32,6 +32,7 @@ self.MonacoEnvironment = {
 
 const props = defineProps({
     modelValue: [String, Number],
+    theme: { type: String, default: 'vs-dark' },
 });
 
 const emit = defineEmits(['update:modelValue']);
@@ -48,7 +49,7 @@ onMounted(() => {
         tabSize: 2,
         automaticLayout: true,
         scrollBeyondLastLine: false,
-        theme: 'vs-dark', // 主题色: vs(默认高亮), vs-dark(黑色), hc-black(高亮黑色)
+        theme: props.theme, // 主题色: vs(默认高亮), vs-dark(黑色), hc-black(高亮黑色)
     });
 
     instance.onDidChangeModelContent(() => {

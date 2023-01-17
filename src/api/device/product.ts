@@ -37,3 +37,9 @@ export const getCodecs = () => server.get<{id: string, name: string}>('/device/p
  * @returns 
  */
 export const detail = (id: string) => server.get<ProductItem>(`/device-product/${id}`)
+
+/**
+ * 产品分类
+ * @param data
+ */
+export const category = (data: any) => server.post('/device/category/_tree', data)
