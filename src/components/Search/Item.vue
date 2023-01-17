@@ -142,7 +142,7 @@ const emit = defineEmits<Emit>()
 const termsModel = reactive<SearchItemData>({
   type: 'or',
   value: '',
-  termType: 'eq',
+  termType: 'like',
   column: ''
 })
 
@@ -166,6 +166,7 @@ const getTermType = (type?: ItemType) => {
   switch (type) {
     case 'select':
     case 'treeSelect':
+    case 'number':
       return 'eq'
     case 'date':
     case 'time':
