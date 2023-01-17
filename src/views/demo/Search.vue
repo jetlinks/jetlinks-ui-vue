@@ -2,12 +2,21 @@
   <div class='search'>
     <Search
       :columns='columns'
+      target='device'
+      @search='search'
     />
-    <Search type='simple' :columns='columns' />
+    <Search
+      type='simple'
+      :columns='columns'
+      target='product'
+      @search='search'
+    />
   </div>
 </template>
 
 <script setup name='demoSearch'>
+
+import { category } from '../../api/device/product'
 
 const columns = [
   {
@@ -31,7 +40,7 @@ const columns = [
           value: 'test3'
         },
       ],
-      handValue: (v) => {
+      handleValue: (v) => {
         return '123'
       }
     }
@@ -77,9 +86,13 @@ const columns = [
     search: {
       first: true,
       type: 'treeSelect',
-      // options: async () => {
-      //   return await
-      // }
+      options: async () => {
+        return new Promise((res) => {
+          category().then(resp => {
+            res(resp.result)
+          })
+        })
+      }
     }
   },
   {
@@ -90,6 +103,9 @@ const columns = [
     scopedSlots: true,
   }
 ]
+const search = (params) => {
+  console.log(params)
+}
 </script>
 
 <style scoped>

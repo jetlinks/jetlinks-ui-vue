@@ -6,6 +6,7 @@
         :options='typeOptions'
         v-model:value='termsModel.type'
         style='width: 100%;'
+        @change='valueChange'
       />
       <span v-else>
         {{
@@ -17,75 +18,86 @@
       class='JSearch-item--column'
       :options='columnOptions'
       v-model:value='termsModel.column'
+      @change='columnChange'
     />
     <a-select
       class='JSearch-item--termType'
-      :options='termTypeOptions'
+      :options='termTypeOptions.option'
       v-model:value='termsModel.termType'
+      @change='termTypeChange'
     />
     <div class='JSearch-item--value'>
       <a-input
         v-if='component === componentType.input'
         v-model:value='termsModel.value'
         style='width: 100%'
-        @change='(v) => valueChange(v)'
+        @change='valueChange'
       />
       <a-select
         v-else-if='component === componentType.select'
+        showSearch
+        :loading='optionLoading'
         v-model:value='termsModel.value'
         :options='options'
         style='width: 100%'
-        @change='(v) => valueChange(v)'
+        :filterOption='(v, option) => filterTreeSelectNode(v, option, "label")'
+        @change='valueChange'
       />
       <a-input-number
         v-else-if='component === componentType.inputNumber'
         v-model:value='termsModel.value'
         style='width: 100%'
-        @change='(v) => valueChange(v)'
+        @change='valueChange'
       />
       <a-input-password
         v-else-if='component === componentType.password'
         v-model:value='termsModel.value'
         style='width: 100%'
-        @change='(v) => valueChange(v)'
+        @change='valueChange'
       />
       <a-switch
         v-else-if='component === componentType.switch'
         v-model:checked='termsModel.value'
         style='width: 100%'
-        @change='(v) => valueChange(v)'
+        @change='valueChange'
       />
       <a-radio-group
         v-else-if='component === componentType.radio'
         v-model:value='termsModel.value'
         style='width: 100%'
-        @change='(v) => valueChange(v)'
+        @change='valueChange'
       />
       <a-checkbox-group
         v-else-if='component === componentType.checkbox'
         v-model:value='termsModel.value'
         :options='options'
         style='width: 100%'
-        @change='(v) => valueChange(v)'
+        @change='valueChange'
       />
       <a-time-picker
         v-else-if='component === componentType.time'
+        valueFormat='HH:mm:ss'
         v-model:value='termsModel.value'
         style='width: 100%'
-        @change='(v) => valueChange(v)'
+        @change='valueChange'
       />
       <a-date-picker
         v-else-if='component === componentType.date'
+        showTime
         v-model:value='termsModel.value'
+        valueFormat='YYYY-MM-DD HH:mm:ss'
         style='width: 100%'
-        @change='(v) => valueChange(v)'
+        @change='valueChange'
       />
       <a-tree-select
         v-else-if='component === componentType.treeSelect'
+        showSearch
         v-model:value='termsModel.value'
         :tree-data='options'
         style='width: 100%'
-        @change='(v) => valueChange(v)'
+        :fieldNames='{ label: "name", value: "id" }'
+        @change='valueChange'
+        :filterTreeNode='(v, option) => filterSelectNode(v, option)'
       />
     </div>
   </div>
@@ -95,20 +107,19 @@
 import { componentType } from 'components/Form'
 import { typeOptions, termType } from './util'
 import { PropType } from 'vue'
-import type { SearchItemProps, SearchItemData, SearchProps } from './types'
-import { cloneDeep, isArray, isFunction } from 'lodash-es'
-
-type ItemDataProps = Omit<SearchItemData, 'title'>
+import type { SearchItemData, SearchProps, Terms } from './types'
+import { cloneDeep, get, isArray, isFunction } from 'lodash-es'
+import { filterTreeSelectNode, filterSelectNode } from '@/utils/comm'
 
 type ItemType = SearchProps['type']
 
 interface Emit {
-  (e: 'change', data: ItemDataProps): void
+  (e: 'change', data: SearchItemData): void
 }
 
 const props = defineProps({
   columns: {
-    type: Array as PropType<SearchItemProps[]>,
+    type: Array as PropType<SearchProps[]>,
     default: () => [],
     required: true
   },
@@ -119,12 +130,16 @@ const props = defineProps({
   expand: {
     type: Boolean,
     default: false
+  },
+  termsItem: {
+    type: Object as PropType<Terms>,
+    default: {}
   }
 })
 
 const emit = defineEmits<Emit>()
 
-const termsModel = reactive<ItemDataProps>({
+const termsModel = reactive<SearchItemData>({
   type: 'or',
   value: '',
   termType: 'eq',
@@ -138,21 +153,34 @@ const options = ref<any[]>([])
 const columnOptions = ref<({ label: string, value: string})[]>([])
 const columnOptionMap = new Map()
 
-const termTypeOptions = reactive(termType)
+const termTypeOptions = reactive({option: termType})
 
+const optionLoading = ref(false)
+
+/**
+ * 根据类型切换默termType值
+ * @param type
+ */
 const getTermType = (type?: ItemType) => {
+  termTypeOptions.option = termType
   switch (type) {
     case 'select':
     case 'treeSelect':
       return 'eq'
     case 'date':
     case 'time':
+      // 时间只有大于或小于两个值
+      termTypeOptions.option = termType.filter(item => ['gt','lt'].includes(item.value))
       return 'gt'
     default:
         return 'like'
   }
 }
 
+/**
+ * 根据类型返回组件
+ * @param type
+ */
 const getComponent = (type?: ItemType) => {
   switch (type) {
     case 'select':
@@ -181,9 +209,33 @@ const handleItemOptions = (option?: any[] | Function) => {
   if (isArray(option)) {
     options.value = option
   } else if (isFunction(option)) {
+    optionLoading.value = true
     option().then((res: any[]) => {
+      optionLoading.value = false
       options.value = res
+    }).catch((_: any) => {
+      optionLoading.value = false
     })
+  }
+}
+
+const columnChange = (value: string, isChange: boolean) => {
+  const item = columnOptionMap.get(value)
+  // 设置value为undefined
+  termsModel.column = value
+  termsModel.termType = item.defaultTermType || getTermType(item.type)
+
+  getComponent(item.type) // 处理Item的组件类型
+
+  // 处理options 以及 request
+  if ('options' in item) {
+    handleItemOptions(item.options)
+  }
+
+  termsModel.value = undefined
+
+  if (isChange) {
+    valueChange()
   }
 }
 
@@ -192,23 +244,6 @@ const handleItem = () => {
   columnOptions.value = []
   if (!props.columns.length) return
 
-  // 获取第一个值
-  const sortColumn = cloneDeep(props.columns)
-  sortColumn?.sort((a, b) => a.sortIndex! - b.sortIndex!)
-
-  const _index = props.index > sortColumn.length ? sortColumn.length - 1 : props.index
-  const _itemColumn = sortColumn[_index - 1]
-
-  termsModel.column = _itemColumn.column
-  termsModel.termType = _itemColumn.defaultTermType || getTermType(_itemColumn.type)
-
-  getComponent(_itemColumn.type) // 处理Item的组件类型
-
-  // 处理options 以及 request
-  if ('options' in _itemColumn) {
-    handleItemOptions(_itemColumn.options)
-  }
-
   columnOptions.value = props.columns.map(item => { // 对columns进行Map处理以及值处理
     columnOptionMap.set(item.column, item)
     return {
@@ -216,9 +251,23 @@ const handleItem = () => {
       value: item.column
     }
   })
+
+  // 获取第一个值
+  const sortColumn = cloneDeep(props.columns)
+  sortColumn?.sort((a, b) => a.sortIndex! - b.sortIndex!)
+
+  const _index = props.index > sortColumn.length ? sortColumn.length - 1 : props.index
+  const _itemColumn = sortColumn[_index - 1]
+
+  columnChange(_itemColumn.column, false)
 }
 
-const valueChange = (value: any) => {
+const termTypeChange = () => {
+  valueChange()
+}
+
+const valueChange = () => {
+
   emit('change', {
     type: termsModel.type,
     value: termsModel.value,
@@ -228,6 +277,27 @@ const valueChange = (value: any) => {
 }
 
 handleItem()
+
+watch( props.termsItem, (newValue) => {
+
+  const path = props.index < 4 ? [0, 'terms', props.index - 1] : [1, 'terms', props.index - 4]
+  const itemData: SearchItemData = get(newValue.terms, path)
+  if (itemData) {
+    termsModel.type = itemData.type
+    termsModel.column = itemData.column
+    termsModel.termType = itemData.termType
+    termsModel.value = itemData.value
+    const item = columnOptionMap.get(itemData.column)
+    getComponent(item.type) // 处理Item的组件类型
+
+    // 处理options 以及 request
+    if ('options' in item) {
+      handleItemOptions(item.options)
+    }
+  } else {
+    handleItem()
+  }
+}, { immediate: true, deep: true })
 
 </script>
 
