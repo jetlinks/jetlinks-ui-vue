@@ -539,10 +539,6 @@ const props = defineProps({
         type: Object,
         default: () => {},
     },
-    data: {
-        type: Object,
-        default: () => {},
-    },
 });
 
 const route = useRoute();

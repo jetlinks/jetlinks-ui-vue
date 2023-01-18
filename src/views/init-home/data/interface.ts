@@ -17,7 +17,6 @@ export interface formState  {
   basePath: string; // 系统后台访问的URL
   logo: string; // 系统logo
   icon: string; // 浏览器页签
-  rulesFrom: Record<string, Rule[]>;
 }
 
 /**
