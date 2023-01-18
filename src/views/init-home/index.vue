@@ -18,15 +18,15 @@
                                 </template>
                                 <a-form
                                     layout="vertical"
-                                    ref="formBasicRef"
-                                    :rules="rulesFrom"
                                     :model="form"
+                                    ref="formBasicRef"
                                 >
                                     <a-row :span="24" :gutter="24">
                                         <a-col :span="10">
                                             <a-form-item
                                                 label="系统名称"
                                                 name="title"
+                                                v-bind="validateInfos.title"
                                             >
                                                 <a-input
                                                     v-model:value="form.title"
@@ -37,6 +37,9 @@
                                             <a-form-item
                                                 label="主题色"
                                                 name="headerTheme"
+                                                v-bind="
+                                                    validateInfos.headerTheme
+                                                "
                                             >
                                                 <a-select
                                                     v-model:value="
@@ -74,7 +77,10 @@
                                                     placeholder="请输入高德API Key"
                                                 />
                                             </a-form-item>
-                                            <a-form-item>
+                                            <a-form-item
+                                                name="basePath"
+                                                v-bind="validateInfos.basePath"
+                                            >
                                                 <template #label>
                                                     <span>base-path</span>
                                                     <a-tooltip
@@ -721,7 +727,11 @@
                         type="primary"
                         class="btn-style"
                         @click="submitData"
-                        :loading="isSucessBasic || isSucessInit || isSucessRole"
+                        :loading="
+                            isSucessBasic === 2 ||
+                            isSucessInit === 2 ||
+                            isSucessRole === 2
+                        "
                         >确定</a-button
                     >
                 </div>
@@ -742,7 +752,6 @@ import type {
     FormInstance,
     UploadChangeParam,
     UploadProps,
-    Form,
 } from 'ant-design-vue';
 import { modalState, formState, logoState } from './data/interface';
 import BaseMenu from './data/baseMenu';
@@ -761,48 +770,56 @@ import {
     saveDevice,
     changeDeploy,
     deployDevice,
+    saveInit,
 } from '@/api/initHome';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { LocalStore } from '@/utils/comm';
 import { message } from 'ant-design-vue';
+import { Form } from 'ant-design-vue';
+import { ValidateErrorEntity } from 'ant-design-vue/es/form/interface';
 const formRef = ref();
 const menuRef = ref();
 const formBasicRef = ref();
+const useForm = Form.useForm;
 /**
  * 表单数据
  */
-const form = reactive<formState>({
+const form = ref<formState>({
     title: '',
     headerTheme: 'light',
     apikey: '',
     basePath: `${window.location.origin}/api`,
     logo: '',
     icon: '',
-    rulesFrom: {
-        title: [
-            {
-                required: true,
-                message: '请选择本地地址',
-                trigger: 'blur',
-            },
-        ],
-        headerTheme: [
-            {
-                required: true,
-                message: '请选择主题色',
-                trigger: 'blur',
-            },
-        ],
-        basePath: [
-            {
-                required: true,
-                message: '请输入base-path',
-                trigger: 'blur',
-            },
-        ],
-    },
 });
-const { rulesFrom } = toRefs(form);
+
+const rulesFrom = ref({
+    title: [
+        {
+            required: true,
+            message: '请输入系统名称',
+            trigger: 'blur',
+        },
+    ],
+    headerTheme: [
+        {
+            required: true,
+            message: '请选择主题色',
+            trigger: 'blur',
+        },
+    ],
+    basePath: [
+        {
+            required: true,
+            message: '请输入base-path',
+            trigger: 'blur',
+        },
+    ],
+});
+const { resetFields, validate, validateInfos } = useForm(
+    form.value,
+    rulesFrom.value,
+);
 /**
  * 校验官网地址
  */
@@ -871,6 +888,10 @@ const rulesModle = ref({
     ],
 });
 
+// const { resetFields, validate, validateInfos } = useForm(
+//     modalForm.value,
+//     rulesModle.value,
+// );
 /**
  * 默认打开第一个初始菜单
  */
@@ -928,7 +949,7 @@ const logoData = reactive<logoState>({
      * logo格式校验
      */
     beforeLogoUpload: (file) => {
-        const isType = logoData.imageTypes.includes(file.type);
+        const isType: any = logoData.imageTypes.includes(file.type);
         if (!isType) {
             message.error(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`);
             return false;
@@ -1033,58 +1054,58 @@ const {
  * 提交基础表单
  */
 const basicData = reactive({
-    isSucessBasic: false,
+    isSucessBasic: 0,
     /**
      * 提交基础表单数据
      */
     saveBasicInfo: async () => {
-        // return new Promise(async (resolve) => {
-        const vaild = await formBasicRef.value.validate();
-        console.log(vaild, 'vaild ');
-        if (vaild) {
-            const item = [
-                {
-                    scope: 'front',
-                    properties: {
-                        ...form,
-                        apikey: '',
-                        'base-path': '',
+        validate()
+            .then(async () => {
+                const item = [
+                    {
+                        scope: 'front',
+                        properties: {
+                            ...form,
+                            apikey: '',
+                            'base-path': '',
+                        },
                     },
-                },
-                {
-                    scope: 'amap',
-                    properties: {
-                        api: form.apikey,
+                    {
+                        scope: 'amap',
+                        properties: {
+                            api: form.apikey,
+                        },
                     },
-                },
-                {
-                    scope: 'paths',
-                    properties: {
-                        'base-path': form.basePath,
+                    {
+                        scope: 'paths',
+                        properties: {
+                            'base-path': form.basePath,
+                        },
                     },
-                },
-            ];
-            const res = await save(item);
-            if (res.status === 200) {
-                const ico: any = document.querySelector('link[rel="icon"]');
-                if (ico !== null) {
-                    ico.href = form.icon;
+                ];
+                const res = await save(item);
+                if (res.status === 200) {
+                    const ico: any = document.querySelector('link[rel="icon"]');
+                    if (ico !== null) {
+                        ico.href = form.icon;
+                    }
+                    basicData.isSucessBasic = 3;
+                } else {
+                    basicData.isSucessBasic = 2;
                 }
-            } else {
-                basicData.isSucessBasic = true;
-            }
-        } else {
-            basicData.isSucessBasic = true;
-        }
-        // });
+            })
+            .catch((error: ValidateErrorEntity<formState>) => {
+                basicData.isSucessBasic = 2;
+            });
     },
 });
+const { isSucessBasic } = toRefs(basicData);
 
 /**
  * 提交角色数据
  */
 const roleData = reactive({
-    isSucessRole: false,
+    isSucessRole: 0,
     /**
      * 根据菜单找角色
      */
@@ -1158,7 +1179,7 @@ const roleData = reactive({
                     }
                 } else if (index === keys.value.length - 1) {
                     resolve(Count === keys.value.length);
-                    roleData.isSucessRole = true;
+                    roleData.isSucessRole = 2;
                 }
             });
         });
@@ -1222,7 +1243,7 @@ const { count } = toRefs(menuDatas);
  * 提交初始化数据
  */
 const initialization = reactive({
-    isSucessInit: false,
+    isSucessInit: 0,
     optionPorts: [],
     /**
      * 查询端口数据
@@ -1244,74 +1265,74 @@ const initialization = reactive({
      */
 
     saveCurrentData: async () => {
-        // return new Promise(async (resolve) => {
-        const valid = await formRef.value.validate();
-        console.log(valid, 'valid');
-        // if (valid) {
-        //     try {
-        //         // 新增网络组件
-        //         const network = await saveNetwork({
-        //             type: 'MQTT_SERVER',
-        //             shareCluster: true,
-        //             name: 'MQTT网络组件',
-        //             configuration: {
-        //                 host: '0.0.0.0',
-        //                 secure: false,
-        //                 port: modalForm.port,
-        //                 publicHost: modalForm.publicHost,
-        //                 publicPort: modalForm.publicPort,
-        //             },
-        //         });
-        //         // 保存协议
-        //         const protocol = await saveProtocol();
-        //         let protocolItem: any = undefined;
-        //         if (protocol.status === 200) {
-        //             const proid = await getProtocol();
-        //             if (proid.status === 200) {
-        //                 protocolItem = (proid?.result || []).find(
-        //                     (it: any) => it.name === 'JetLinks官方协议',
-        //                 );
-        //             }
-        //         }
-        //         // 新增设备接入网关
-        //         const accessConfig = await saveAccessConfig({
-        //             name: 'MQTT类型设备接入网关',
-        //             provider: 'mqtt-server-gateway',
-        //             protocol: protocolItem?.id,
-        //             transport: 'MQTT',
-        //             channel: 'network',
-        //             channelId: network?.result?.id,
-        //         });
-        //         // 新增产品
-        //         const product = await saveProduct({
-        //             name: 'MQTT产品',
-        //             messageProtocol: protocolItem?.id,
-        //             protocolName: protocolItem?.name,
-        //             transportProtocol: 'MQTT',
-        //             deviceType: 'device',
-        //             accessId: accessConfig.result?.id,
-        //             accessName: accessConfig.result?.name,
-        //             accessProvider: 'mqtt-server-gateway',
-        //         });
-        //         // 新增设备
-        //         const device = await saveDevice({
-        //             name: 'MQTT设备',
-        //             productId: product?.result?.id,
-        //             productName: product?.result?.name,
-        //         });
-        //         if (device.status === 200) {
-        //             changeDeploy(product.result.id);
-        //             deployDevice(device.result.id);
-        //         }
-
-        //         flag.value = true;
-        //         visible.value = false;
-        //     } catch (e) {
-        //         initialization.isSucessInit = true;
-        //         // resolve(false);
-        //     }
-        // }
-        initialization.isSucessInit = true;
+        formRef.value
+            .validate()
+            .then(async () => {
+                try {
+                    // 新增网络组件
+                    const network = await saveNetwork({
+                        type: 'MQTT_SERVER',
+                        shareCluster: true,
+                        name: 'MQTT网络组件',
+                        configuration: {
+                            host: '0.0.0.0',
+                            secure: false,
+                            port: modalForm.port,
+                            publicHost: modalForm.publicHost,
+                            publicPort: modalForm.publicPort,
+                        },
+                    });
+                    // 保存协议
+                    const protocol = await saveProtocol();
+                    let protocolItem: any = undefined;
+                    if (protocol.status === 200) {
+                        const proid = await getProtocol();
+                        if (proid.status === 200) {
+                            protocolItem = (proid?.result || []).find(
+                                (it: any) => it.name === 'JetLinks官方协议',
+                            );
+                        }
+                    }
+                    // 新增设备接入网关
+                    const accessConfig = await saveAccessConfig({
+                        name: 'MQTT类型设备接入网关',
+                        provider: 'mqtt-server-gateway',
+                        protocol: protocolItem?.id,
+                        transport: 'MQTT',
+                        channel: 'network',
+                        channelId: network?.result?.id,
+                    });
+                    // 新增产品
+                    const product = await saveProduct({
+                        name: 'MQTT产品',
+                        messageProtocol: protocolItem?.id,
+                        protocolName: protocolItem?.name,
+                        transportProtocol: 'MQTT',
+                        deviceType: 'device',
+                        accessId: accessConfig.result?.id,
+                        accessName: accessConfig.result?.name,
+                        accessProvider: 'mqtt-server-gateway',
+                    });
+                    // 新增设备
+                    const device = await saveDevice({
+                        name: 'MQTT设备',
+                        productId: product?.result?.id,
+                        productName: product?.result?.name,
+                    });
+                    if (device.status === 200) {
+                        await changeDeploy(product.result.id);
+                        await deployDevice(device.result.id);
+                    }
+                    flag.value = true;
+                    visible.value = false;
+                    initialization.isSucessInit = 3;
+                } catch (e) {
+                    initialization.isSucessInit = 2;
+                }
+            })
+            .catch((error: ValidateErrorEntity<modalState>) => {
+                initialization.isSucessInit = 2;
+            });
     },
 });
 const { optionPorts, saveCurrentData, isSucessInit } = toRefs(initialization);
@@ -1322,12 +1343,32 @@ const { optionPorts, saveCurrentData, isSucessInit } = toRefs(initialization);
 menuDatas.getSystemPermissionData();
 initialization.getCurrentPort();
 /**
+ * 跳转首页
+ */
+const jump = () => {
+    window.location.href = '/';
+};
+/**
  * 提交所有数据
  */
-const submitData = () => {
-    initialization.saveCurrentData();
-    roleData.addRoleData();
+const submitData = async () => {
+    if (keys.value.length > 0) {
+        roleData.addRoleData();
+    }
     basicData.saveBasicInfo();
+    // 当前数据是否成功提交
+    if (
+        basicData.isSucessBasic === 3 &&
+        roleData.isSucessRole === 3 &&
+        initialization.isSucessInit === 3
+    ) {
+        message.success('保存成功');
+        // 记录初始化数据，跳转首页
+        const res = await saveInit();
+        if (res.status === 200) {
+            jump();
+        }
+    }
 };
 </script>
 <style scoped lang="less">
