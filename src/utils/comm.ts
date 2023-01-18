@@ -1,3 +1,6 @@
+import { TOKEN_KEY } from '@/utils/variable'
+import { Terms } from 'components/Search/types'
+
 /**
  * 静态图片资源处理
  * @param path {String} 路径
@@ -29,4 +32,28 @@ export const LocalStore = {
     removeAll() {
         localStorage.clear()
     }
+}
+
+export const getToken = () => {
+    return LocalStore.get(TOKEN_KEY)
+}
+
+/**
+ * TreeSelect过滤
+ * @param value 过滤值
+ * @param treeNode
+ * @param key
+ */
+export const filterTreeSelectNode = (value: string, treeNode: any, key: string = 'name'): boolean => {
+    return treeNode[key]?.includes(value)
+}
+
+/**
+ * Select过滤
+ * @param value 过滤值
+ * @param option
+ * @param key
+ */
+export const filterSelectNode = (value: string, option: any, key: string = 'label'): boolean => {
+    return option[key]?.includes(value)
 }

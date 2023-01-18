@@ -15,9 +15,11 @@
   "dependencies": {
     "@vitejs/plugin-vue-jsx": "^3.0.0",
     "@vuemap/vue-amap": "^1.1.20",
+    "@vueuse/core": "^9.10.0",
     "ant-design-vue": "^3.2.15",
     "axios": "^1.2.1",
     "echarts": "^5.4.1",
+    "event-source-polyfill": "^1.0.31",
     "jetlinks-store": "^0.0.3",
     "js-cookie": "^3.0.1",
     "less": "^4.1.3",

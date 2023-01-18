@@ -13,3 +13,5 @@ export const postInitSet = (data) => server.post(`/user/settings/init`, data)
 export const systemVersion = () => server.get(`/system/version`)
 
 export const bindInfo = () => server.get(`/application/sso/_all`)
+
+export const settingDetail = (scopes) => server.get(`/system/config/${scopes}`)

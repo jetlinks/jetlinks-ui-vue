@@ -66,6 +66,11 @@ export default [
     },
     // end: 测试用, 可删除
 
+    // 设备管理
+    {
+        path: '/device/Instance',
+        component: () => import('@/views/device/Instance/index.vue')
+    },
     // link 运维管理
     {
         path: '/link/log',
@@ -89,8 +94,20 @@ export default [
     },
     // system 系统管理
     {
+        path:'/system/Basis',
+        component: ()=>import('@/views/system/Basis/index.vue')
+    },
+    {
         path:'/system/api',
-        components: ()=>import('@/views/system/apiPage/index')
+        component: ()=>import('@/views/system/apiPage/index.vue')
+    },
+    {
+        path:'/system/Role',
+        component: ()=>import('@/views/system/Role/index.vue')
+    },
+    {
+        path:'/system/Role/detail/:id',
+        component: ()=>import('@/views/system/Role/Detail/index.vue')
     },
     // 初始化
     {
@@ -101,5 +118,14 @@ export default [
     {
       path: '/iot-card/home',
       component: () => import('@/views/iot-card/Home/index.vue')
+    },
+    // 北向输出
+    {
+        path: '/northbound/DuerOS',
+        component: () => import('@/views/northbound/DuerOS/index.vue')
+    },
+    {
+        path: '/northbound/AliCloud',
+        component: () => import('@/views/northbound/AliCloud/index.vue')
     },
 ]

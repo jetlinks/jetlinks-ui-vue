@@ -259,6 +259,7 @@
                             <a-button
                                 type="primary"
                                 @click="handleSubmit"
+                                :loading="btnLoading"
                                 style="width: 100%"
                             >
                                 保存
@@ -266,14 +267,16 @@
                         </a-form-item>
                     </a-form>
                 </a-col>
-                <a-col :span="12" :push="2"></a-col>
+                <a-col :span="12" :push="2">
+                    <Doc :docData="formData" />
+                </a-col>
             </a-row>
         </a-card>
     </div>
 </template>
 
 <script setup lang="ts">
-import { getImage, LocalStore } from '@/utils/comm';
+import { getImage } from '@/utils/comm';
 import { Form } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
 import { ConfigFormData } from '../types';
@@ -283,8 +286,12 @@ import {
     MSG_TYPE,
 } from '@/views/notice/const';
 import regionList from './regionId';
-import EditTable from './components/EditTable.vue'
+import EditTable from './components/EditTable.vue';
+import configApi from '@/api/notice/config';
+import Doc from './doc/index';
 
+const router = useRouter();
+const route = useRoute();
 const useForm = Form.useForm;
 
 // 消息类型
@@ -306,23 +313,29 @@ const formData = ref<ConfigFormData>({
     configuration: {
         appKey: '',
         appSecret: '',
-        url: '',
     },
     description: '',
     name: '',
     provider: 'dingTalkMessage',
-    type: NOTICE_METHOD[0].value,
+    type: 'dingTalk',
 });
 
 // 根据通知方式展示对应的字段
 watch(
     () => formData.value.type,
     (val) => {
-        formData.value.configuration = CONFIG_FIELD_MAP[val];
+        // formData.value.configuration = Object.values<any>(CONFIG_FIELD_MAP[val])[0];
         msgType.value = MSG_TYPE[val];
 
         formData.value.provider = msgType.value[0].value;
     },
+);
+
+computed(() =>
+    Object.assign(
+        formData.value.configuration,
+        CONFIG_FIELD_MAP[formData.value.type][formData.value.provider],
+    ),
 );
 
 // 验证规则
@@ -383,25 +396,56 @@ const formRules = ref({
             pattern:
                 /^(((ht|f)tps?):\/\/)?([^!@#$%^&*?.\s-]([^!@#$%^&*?.\s]{0,63}[^!@#$%^&*?.\s])?\.)+[a-z]{2,6}\/?/,
             message: 'Webhook需要是一个合法的URL',
-            trigger: 'blur',
         },
     ],
     description: [{ max: 200, message: '最多可输入200个字符' }],
 });
 
-const { resetFields, validate, validateInfos } = useForm(
+const { resetFields, validate, validateInfos, clearValidate } = useForm(
     formData.value,
     formRules.value,
 );
-console.log('validateInfos: ', validateInfos);
+watch(
+    () => formData.value.type,
+    () => {
+        clearValidate();
+    },
+    { deep: true },
+);
+
+const getDetail = async () => {
+    const res = await configApi.detail(route.params.id as string);
+    // console.log('res: ', res);
+    formData.value = res.result;
+    // console.log('formData.value: ', formData.value);
+};
+getDetail();
 
 /**
  * 表单提交
  */
+const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
     validate()
-        .then(async () => {})
-        .catch((err) => {});
+        .then(async () => {
+            // console.log('formData.value: ', formData.value);
+            btnLoading.value = true;
+            let res;
+            if (!formData.value.id) {
+                res = await configApi.save(formData.value);
+            } else {
+                res = await configApi.update(formData.value);
+            }
+            // console.log('res: ', res);
+            if (res?.success) {
+                message.success('保存成功');
+                router.back();
+            }
+            btnLoading.value = false;
+        })
+        .catch((err) => {
+            console.log('err: ', err);
+        });
 };
 </script>
 

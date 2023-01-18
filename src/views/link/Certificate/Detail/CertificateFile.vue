@@ -10,7 +10,7 @@
             <a-upload
                 accept=".pem"
                 listType="text"
-                :action="`${BASE_API_PATH}${NETWORK_CERTIFICATE_UPLOAD}`"
+                :action="NETWORK_CERTIFICATE_UPLOAD"
                 :headers="{
                     [TOKEN_KEY]: LocalStore.get(TOKEN_KEY),
                 }"
@@ -31,11 +31,8 @@ import { UploadOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import type { UploadChangeParam } from 'ant-design-vue';
 import { LocalStore } from '@/utils/comm';
-import {
-    BASE_API_PATH,
-    TOKEN_KEY,
-    NETWORK_CERTIFICATE_UPLOAD,
-} from '@/utils/variable';
+import { TOKEN_KEY } from '@/utils/variable';
+import { NETWORK_CERTIFICATE_UPLOAD } from '@/api/link/certificate';
 import type { UploadProps } from 'ant-design-vue';
 
 const emit = defineEmits(['update:modelValue', 'change']);
