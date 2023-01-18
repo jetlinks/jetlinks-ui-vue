@@ -9,8 +9,13 @@
             </div>
             <div v-else>
                 <div v-if="!id"><a @click="goBack">返回</a></div>
-                <AccessNetwork v-if="showType==='network'" :provider="provider" :data="data" />
-                <Media v-if="showType==='media'" :provider="provider" :data="data" />
+                <AccessNetwork
+                    v-if="showType === 'network'"
+                    :provider="provider"
+                    :data="data"
+                />
+                <Media v-if="showType === 'media'" :provider="provider" />
+                <Channel v-if="showType === 'channel'" :provider="provider" />
             </div>
         </a-card>
     </a-spin>
@@ -22,7 +27,7 @@ import AccessNetwork from '../components/Network.vue';
 import Provider from '../components/Provider/index.vue';
 import { getProviders, detail } from '@/api/link/accessConfig';
 import Media from '../components/Media/index.vue';
-
+import Channel from '../components/Channel/index.vue';
 
 // const router = useRouter();
 const route = useRoute();
@@ -34,14 +39,13 @@ const type = ref(false);
 const loading = ref(true);
 const provider = ref({});
 const data = ref({});
-const showType = ref('')
+const showType = ref('');
 
-const goProviders = (param: object) => {  
-    showType.value = param.type
+const goProviders = (param: object) => {
+    showType.value = param.type;
     provider.value = param;
     type.value = false;
-    console.log(1123,showType.value,param);
-    
+    console.log(1123, showType.value, param);
 };
 
 const goBack = () => {
@@ -59,22 +63,22 @@ const queryProviders = async () => {
         const edge: any[] = [];
         resp.result.map((item) => {
             if (item.id === 'fixed-media' || item.id === 'gb28181-2016') {
-                item.type='media'
+                item.type = 'media';
                 media.push(item);
             } else if (item.id === 'OneNet' || item.id === 'Ctwing') {
-                item.type='cloud'
+                item.type = 'cloud';
                 cloud.push(item);
             } else if (item.id === 'modbus-tcp' || item.id === 'opc-ua') {
-                item.type='channel'
+                item.type = 'channel';
                 channel.push(item);
             } else if (
                 item.id === 'official-edge-gateway' ||
                 item.id === 'edge-child-device'
             ) {
-                item.type='edge'
+                item.type = 'edge';
                 edge.push(item);
             } else {
-                item.type='network'
+                item.type = 'network';
                 network.push(item);
             }
         });
@@ -114,7 +118,7 @@ const queryProviders = async () => {
                 title: '官方接入',
             });
         }
-        dataSource.value = list
+        dataSource.value = list;
     }
 };
 

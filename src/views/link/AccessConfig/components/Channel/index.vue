@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div v-if="channel === 'fixed-media'" class="card-last">
+        <div v-if="type === 'channel'" class="card-last">
             <a-row :gutter="[24, 24]">
                 <a-col :span="12">
                     <title-component data="基本信息" />
@@ -49,30 +49,35 @@
                 <a-col :span="12">
                     <div class="config-right">
                         <div class="config-right-item">
-                            <div class="config-right-item-title">接入方式</div>
+                            <title-component data="配置概览" />
                             <div class="config-right-item-context">
-                                {{ provider.name }}
+                                接入方式：{{ provider.name }}
                             </div>
                             <div class="config-right-item-context">
                                 {{ provider.description }}
                             </div>
+                            <div class="config-right-item-context">
+                                消息协议：{{ provider.id }}
+                            </div>
                         </div>
                         <div class="config-right-item">
-                            <div class="config-right-item-title">消息协议</div>
+                            <title-component data="设备接入指引" />
                             <div class="config-right-item-context">
-                                {{
-                                    provider.id === 'fixed-media'
-                                        ? 'URL'
-                                        : 'SIP'
-                                }}
+                                1、配置{{ provider.name }}通道
+                            </div>
+                            <div class="config-right-item-context">
+                                2、创建{{ provider.name }}设备接入网关
+                            </div>
+                            <div class="config-right-item-context">
+                                3、创建产品，并选中接入方式为{{ provider.name }}
+                            </div>
+                            <div class="config-right-item-context">
+                                4、添加设备，单独为每一个设备进行数据点绑定
                             </div>
                         </div>
                     </div>
                 </a-col>
             </a-row>
-        </div>
-        <div v-else-if="channel === 'gb28181'">
-            <GB28181 :provider="props.provider"></GB28181>
         </div>
     </div>
 </template>
@@ -80,7 +85,6 @@
 <script lang="ts" setup name="AccessMedia">
 import { message, Form } from 'ant-design-vue';
 import type { FormInstance } from 'ant-design-vue';
-import GB28181 from './GB28181.vue';
 import { update, save } from '@/api/link/accessConfig';
 
 interface FormState {
@@ -97,18 +101,20 @@ const props = defineProps({
     },
 });
 
-const channel = ref(props.provider.channel);
+const type = ref(props.provider.type);
 
 const formState = reactive<FormState>({
     name: '',
     description: '',
 });
 const onFinish = async (values: any) => {
+    const providerId = props.provider.id;
     const params = {
         ...values,
-        provider: 'fixed-media',
-        transport: 'URL',
-        channel: 'fixed-media',
+        provider: providerId,
+        protocol: providerId,
+        transport: providerId === 'modbus-tcp' ? 'MODBUS_TCP' : 'OPC_UA',
+        channel: providerId === 'modbus-tcp' ? 'modbus' : 'opc-ua',
     };
     const resp = !!id ? await update({ ...params, id }) : await save(params);
     if (resp.status === 200) {
