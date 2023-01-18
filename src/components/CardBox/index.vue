@@ -228,6 +228,10 @@ const handleClick = () => {
                     transform: skewX(-45deg);
                 }
             }
+
+            :deep(.card-item-content-title) {
+                cursor: pointer;
+            }
         }
 
         .card-mask {

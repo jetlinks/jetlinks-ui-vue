@@ -57,7 +57,7 @@
       </div>
     </div>
   </div>
-</template>
+</template> 
 
 <script setup lang='ts' name='Search'>
 import SearchItem from './Item.vue'
