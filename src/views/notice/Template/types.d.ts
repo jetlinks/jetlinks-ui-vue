@@ -7,7 +7,7 @@ export interface IHeaders {
 interface IAttachments {
     location: string;
     name: string;
-    id?: number;
+    id?: string;
 }
 interface IVariableDefinitions {
     id: string;
