@@ -637,7 +637,7 @@ const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
     validate()
         .then(async () => {
-            console.log('formData.value: ', formData.value);
+            // console.log('formData.value: ', formData.value);
             btnLoading.value = true;
             let res;
             if (!formData.value.id) {
@@ -650,10 +650,10 @@ const handleSubmit = () => {
                 message.success('保存成功');
                 router.back();
             }
-            btnLoading.value = false;
         })
         .catch((err) => {
             console.log('err: ', err);
+            btnLoading.value = false;
         });
 };
 
