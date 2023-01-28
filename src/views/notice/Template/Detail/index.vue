@@ -39,6 +39,7 @@
                             <RadioCard
                                 :options="msgType"
                                 v-model="formData.provider"
+                                @change="getConfigList"
                             />
                         </a-form-item>
                         <a-form-item
@@ -51,11 +52,11 @@
                                 placeholder="请选择绑定配置"
                             >
                                 <a-select-option
-                                    v-for="(item, index) in ROBOT_MSG_TYPE"
+                                    v-for="(item, index) in configList"
                                     :key="index"
-                                    :value="item.value"
+                                    :value="item.id"
                                 >
-                                    {{ item.label }}
+                                    {{ item.name }}
                                 </a-select-option>
                             </a-select>
                         </a-form-item>
@@ -120,8 +121,7 @@
                                     >
                                         <!-- <a-input
                                             v-model:value="
-                                                formData.template.markdown
-                                                    ?.title
+                                                formData.template.markdown?.title
                                             "
                                             placeholder="请输入标题"
                                         /> -->
@@ -246,17 +246,11 @@
                             </a-form-item>
                             <a-form-item label="收件人">
                                 <a-select
+                                    mode="tags"
+                                    :options="[]"
                                     v-model:value="formData.template.sendTo"
                                     placeholder="请选择收件人"
-                                >
-                                    <a-select-option
-                                        v-for="(item, index) in ROBOT_MSG_TYPE"
-                                        :key="index"
-                                        :value="item.value"
-                                    >
-                                        {{ item.label }}
-                                    </a-select-option>
-                                </a-select>
+                                />
                             </a-form-item>
                             <a-form-item label="附件信息">
                                 <Attachments
@@ -418,6 +412,34 @@
                                 </div>
                             </a-form-item>
                         </template>
+                        <a-form-item
+                            label="模版内容"
+                            v-if="
+                                formData.type !== 'sms' &&
+                                formData.type !== 'webhook'
+                            "
+                        >
+                            <a-textarea
+                                v-model:value="formData.template.message"
+                                :maxlength="200"
+                                :rows="5"
+                                placeholder="变量格式:${name};
+    示例:尊敬的${name},${time}有设备触发告警,请注意处理"
+                            />
+                        </a-form-item>
+                        <a-form-item
+                            label="变量列表"
+                            v-if="
+                                formData.variableDefinitions &&
+                                formData.variableDefinitions.length
+                            "
+                        >
+                            <VariableDefinitions
+                                v-model:variableDefinitions="
+                                    formData.variableDefinitions
+                                "
+                            />
+                        </a-form-item>
                         <a-form-item label="说明">
                             <a-textarea
                                 v-model:value="formData.description"
@@ -463,6 +485,7 @@ import templateApi from '@/api/notice/template';
 import Doc from './doc/index';
 import MonacoEditor from '@/components/MonacoEditor/index.vue';
 import Attachments from './components/Attachments.vue';
+import VariableDefinitions from './components/VariableDefinitions.vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -500,12 +523,14 @@ watch(
         msgType.value = MSG_TYPE[val];
 
         formData.value.provider = msgType.value[0].value;
-        console.log('formData.value.template: ', formData.value.template);
+        // console.log('formData.value.template: ', formData.value.template);
+
+        getConfigList();
     },
 );
 
 computed(() => {
-    console.log('formData.value.type: ', formData.value.type);
+    // console.log('formData.value.type: ', formData.value.type);
     Object.assign(
         formData.value.template,
         TEMPLATE_FIELD_MAP[formData.value.type][formData.value.provider],
@@ -547,11 +572,42 @@ const { resetFields, validate, validateInfos, clearValidate } = useForm(
 watch(
     () => formData.value.type,
     () => {
+        formData.value.variableDefinitions = [];
         clearValidate();
     },
     { deep: true },
 );
 
+watch(
+    () => formData.value.template.message,
+    (val) => {
+        if (!val) return;
+        // 已经存在的变量
+        const oldKey = formData.value.variableDefinitions?.map((m) => m.id);
+        // 正则提取${}里面的值
+        const pattern = /(?<=\$\{).*?(?=\})/g;
+        const titleList = val.match(pattern)?.filter((f) => f);
+        const newKey = [...new Set(titleList)];
+        const result = newKey?.map((m) =>
+            oldKey.includes(m)
+                ? formData.value.variableDefinitions.find(
+                      (item) => item.id === m,
+                  )
+                : {
+                      id: m,
+                      name: '',
+                      type: 'string',
+                      format: '%s',
+                  },
+        );
+        formData.value.variableDefinitions = result;
+    },
+    { deep: true },
+);
+
+/**
+ * 获取详情
+ */
 const getDetail = async () => {
     const res = await templateApi.detail(route.params.id as string);
     // console.log('res: ', res);
@@ -561,37 +617,51 @@ const getDetail = async () => {
 // getDetail();
 
 /**
+ * 获取绑定配置
+ */
+const configList = ref();
+const getConfigList = async () => {
+    const terms = [
+        { column: 'type$IN', value: formData.value.type },
+        { column: 'provider', value: formData.value.provider },
+    ];
+    const { result } = await templateApi.getConfig({ terms });
+    configList.value = result;
+};
+getConfigList();
+
+/**
  * 表单提交
  */
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
     validate()
         .then(async () => {
-            console.log('formData.value: ', formData.value);
+            // console.log('formData.value: ', formData.value);
             btnLoading.value = true;
-            // let res;
-            // if (!formData.value.id) {
-            //     res = await templateApi.save(formData.value);
-            // } else {
-            //     res = await templateApi.update(formData.value);
-            // }
-            // // console.log('res: ', res);
-            // if (res?.success) {
-            //     message.success('保存成功');
-            //     router.back();
-            // }
-            btnLoading.value = false;
+            let res;
+            if (!formData.value.id) {
+                res = await templateApi.save(formData.value);
+            } else {
+                res = await templateApi.update(formData.value);
+            }
+            // console.log('res: ', res);
+            if (res?.success) {
+                message.success('保存成功');
+                router.back();
+            }
         })
         .catch((err) => {
             console.log('err: ', err);
+            btnLoading.value = false;
         });
 };
 
 // test
 watch(
-    () => formData.value.template,
+    () => formData.value,
     (val) => {
-        console.log('formData.value.template: ', val);
+        console.log('formData.value: ', val);
     },
     { deep: true },
 );
