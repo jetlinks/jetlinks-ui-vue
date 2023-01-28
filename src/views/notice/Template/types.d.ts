@@ -72,3 +72,23 @@ export type TemplateFormData = {
     createTime?: number;
     configId?: string;
 };
+
+// 绑定配置类型
+export type config = {
+    host: string;
+    password: string;
+    port: number;
+    sender: string;
+    ssl: boolean;
+    username: string;
+}
+export type BindConfig = {
+    configuration: config;
+    createTime: number
+    creatorId: string;
+    id: string;
+    maxRetryTimes: number;
+    name: string;
+    provider: string;
+    type: string
+}

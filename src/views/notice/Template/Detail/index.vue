@@ -39,6 +39,7 @@
                             <RadioCard
                                 :options="msgType"
                                 v-model="formData.provider"
+                                @change="getConfigList"
                             />
                         </a-form-item>
                         <a-form-item
@@ -51,11 +52,11 @@
                                 placeholder="请选择绑定配置"
                             >
                                 <a-select-option
-                                    v-for="(item, index) in ROBOT_MSG_TYPE"
+                                    v-for="(item, index) in configList"
                                     :key="index"
-                                    :value="item.value"
+                                    :value="item.id"
                                 >
-                                    {{ item.label }}
+                                    {{ item.name }}
                                 </a-select-option>
                             </a-select>
                         </a-form-item>
@@ -246,17 +247,11 @@
                             </a-form-item>
                             <a-form-item label="收件人">
                                 <a-select
+                                    mode="tags"
+                                    :options="[]"
                                     v-model:value="formData.template.sendTo"
                                     placeholder="请选择收件人"
-                                >
-                                    <a-select-option
-                                        v-for="(item, index) in ROBOT_MSG_TYPE"
-                                        :key="index"
-                                        :value="item.value"
-                                    >
-                                        {{ item.label }}
-                                    </a-select-option>
-                                </a-select>
+                                />
                             </a-form-item>
                             <a-form-item label="附件信息">
                                 <Attachments
@@ -488,6 +483,7 @@ import {
     VOICE_TYPE,
 } from '@/views/notice/const';
 import templateApi from '@/api/notice/template';
+import configApi from '@/api/notice/config';
 import Doc from './doc/index';
 import MonacoEditor from '@/components/MonacoEditor/index.vue';
 import Attachments from './components/Attachments.vue';
@@ -529,7 +525,9 @@ watch(
         msgType.value = MSG_TYPE[val];
 
         formData.value.provider = msgType.value[0].value;
-        console.log('formData.value.template: ', formData.value.template);
+        // console.log('formData.value.template: ', formData.value.template);
+
+        getConfigList();
     },
 );
 
@@ -576,7 +574,7 @@ const { resetFields, validate, validateInfos, clearValidate } = useForm(
 watch(
     () => formData.value.type,
     () => {
-        formData.value.variableDefinitions = []
+        formData.value.variableDefinitions = [];
         clearValidate();
     },
     { deep: true },
@@ -609,6 +607,9 @@ watch(
     { deep: true },
 );
 
+/**
+ * 获取详情
+ */
 const getDetail = async () => {
     const res = await templateApi.detail(route.params.id as string);
     // console.log('res: ', res);
@@ -616,6 +617,20 @@ const getDetail = async () => {
     // console.log('formData.value: ', formData.value);
 };
 // getDetail();
+
+/**
+ * 获取绑定配置
+ */
+const configList = ref();
+const getConfigList = async () => {
+    const terms = [
+        { column: 'type$IN', value: formData.value.type },
+        { column: 'provider', value: formData.value.provider },
+    ];
+    const { result } = await configApi.listNoPage({ terms });
+    configList.value = result;
+};
+getConfigList();
 
 /**
  * 表单提交
@@ -626,17 +641,17 @@ const handleSubmit = () => {
         .then(async () => {
             console.log('formData.value: ', formData.value);
             btnLoading.value = true;
-            // let res;
-            // if (!formData.value.id) {
-            //     res = await templateApi.save(formData.value);
-            // } else {
-            //     res = await templateApi.update(formData.value);
-            // }
-            // // console.log('res: ', res);
-            // if (res?.success) {
-            //     message.success('保存成功');
-            //     router.back();
-            // }
+            let res;
+            if (!formData.value.id) {
+                res = await templateApi.save(formData.value);
+            } else {
+                res = await templateApi.update(formData.value);
+            }
+            // console.log('res: ', res);
+            if (res?.success) {
+                message.success('保存成功');
+                router.back();
+            }
             btnLoading.value = false;
         })
         .catch((err) => {
