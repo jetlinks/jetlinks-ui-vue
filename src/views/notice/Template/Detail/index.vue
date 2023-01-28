@@ -121,8 +121,7 @@
                                     >
                                         <!-- <a-input
                                             v-model:value="
-                                                formData.template.markdown
-                                                    ?.title
+                                                formData.template.markdown?.title
                                             "
                                             placeholder="请输入标题"
                                         /> -->
@@ -483,7 +482,6 @@ import {
     VOICE_TYPE,
 } from '@/views/notice/const';
 import templateApi from '@/api/notice/template';
-import configApi from '@/api/notice/config';
 import Doc from './doc/index';
 import MonacoEditor from '@/components/MonacoEditor/index.vue';
 import Attachments from './components/Attachments.vue';
@@ -627,7 +625,7 @@ const getConfigList = async () => {
         { column: 'type$IN', value: formData.value.type },
         { column: 'provider', value: formData.value.provider },
     ];
-    const { result } = await configApi.listNoPage({ terms });
+    const { result } = await templateApi.getConfig({ terms });
     configList.value = result;
 };
 getConfigList();

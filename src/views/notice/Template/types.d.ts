@@ -16,6 +16,17 @@ interface IVariableDefinitions {
     format: string;
 }
 
+interface IMarkDown {
+    text: string;
+    title: string;
+}
+interface ILink {
+    title: string;
+    picUrl: string;
+    messageUrl: string;
+    text: string;
+}
+
 export type TemplateFormData = {
     template: {
         // 钉钉消息
@@ -23,16 +34,8 @@ export type TemplateFormData = {
         message?: string;
         // 钉钉机器人
         messageType?: string;
-        markdown?: {
-            text: string;
-            title: string;
-        };
-        link?: {
-            title: string;
-            picUrl: string;
-            messageUrl: string;
-            text: string;
-        };
+        markdown?: IMarkDown;
+        link?: ILink;
         // 微信
         // agentId?: string;
         // message?: string;
