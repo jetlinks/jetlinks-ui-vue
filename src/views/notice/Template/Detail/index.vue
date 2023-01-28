@@ -534,7 +534,7 @@ watch(
 );
 
 computed(() => {
-    console.log('formData.value.type: ', formData.value.type);
+    // console.log('formData.value.type: ', formData.value.type);
     Object.assign(
         formData.value.template,
         TEMPLATE_FIELD_MAP[formData.value.type][formData.value.provider],
@@ -576,6 +576,7 @@ const { resetFields, validate, validateInfos, clearValidate } = useForm(
 watch(
     () => formData.value.type,
     () => {
+        formData.value.variableDefinitions = []
         clearValidate();
     },
     { deep: true },

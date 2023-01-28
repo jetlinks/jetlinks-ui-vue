@@ -113,14 +113,12 @@ const dataSource = computed({
 watch(
     () => dataSource.value,
     (val) => {
-        console.log('dataSource.value : ', val);
-        emit('update:variableDefinitions', val)
+        emit('update:variableDefinitions', val);
     },
     { deep: true },
 );
 
 const handleTypeChange = (record: IVariable) => {
-    console.log('record.type: ', record.type);
     switch (record.type) {
         case 'string':
             record.format = '%s';
