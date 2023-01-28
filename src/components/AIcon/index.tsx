@@ -26,7 +26,8 @@ const iconKeys = [
     'ExportOutlined',
     'SyncOutlined',
     'ExclamationCircleOutlined',
-    'UploadOutlined'
+    'UploadOutlined',
+    'QuestionCircleOutlined'
 ]
 
 const Icon = (props: {type: string}) => {

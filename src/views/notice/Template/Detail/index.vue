@@ -418,6 +418,34 @@
                                 </div>
                             </a-form-item>
                         </template>
+                        <a-form-item
+                            label="模版内容"
+                            v-if="
+                                formData.type !== 'sms' &&
+                                formData.type !== 'webhook'
+                            "
+                        >
+                            <a-textarea
+                                v-model:value="formData.template.message"
+                                :maxlength="200"
+                                :rows="5"
+                                placeholder="变量格式:${name};
+    示例:尊敬的${name},${time}有设备触发告警,请注意处理"
+                            />
+                        </a-form-item>
+                        <a-form-item
+                            label="变量列表"
+                            v-if="
+                                formData.variableDefinitions &&
+                                formData.variableDefinitions.length
+                            "
+                        >
+                            <VariableDefinitions
+                                v-model:variableDefinitions="
+                                    formData.variableDefinitions
+                                "
+                            />
+                        </a-form-item>
                         <a-form-item label="说明">
                             <a-textarea
                                 v-model:value="formData.description"
@@ -463,6 +491,7 @@ import templateApi from '@/api/notice/template';
 import Doc from './doc/index';
 import MonacoEditor from '@/components/MonacoEditor/index.vue';
 import Attachments from './components/Attachments.vue';
+import VariableDefinitions from './components/VariableDefinitions.vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -552,6 +581,33 @@ watch(
     { deep: true },
 );
 
+watch(
+    () => formData.value.template.message,
+    (val) => {
+        if (!val) return;
+        // 已经存在的变量
+        const oldKey = formData.value.variableDefinitions?.map((m) => m.id);
+        // 正则提取${}里面的值
+        const pattern = /(?<=\$\{).*?(?=\})/g;
+        const titleList = val.match(pattern)?.filter((f) => f);
+        const newKey = [...new Set(titleList)];
+        const result = newKey?.map((m) =>
+            oldKey.includes(m)
+                ? formData.value.variableDefinitions.find(
+                      (item) => item.id === m,
+                  )
+                : {
+                      id: m,
+                      name: '',
+                      type: 'string',
+                      format: '%s',
+                  },
+        );
+        formData.value.variableDefinitions = result;
+    },
+    { deep: true },
+);
+
 const getDetail = async () => {
     const res = await templateApi.detail(route.params.id as string);
     // console.log('res: ', res);
@@ -589,9 +645,9 @@ const handleSubmit = () => {
 
 // test
 watch(
-    () => formData.value.template,
+    () => formData.value,
     (val) => {
-        console.log('formData.value.template: ', val);
+        console.log('formData.value: ', val);
     },
     { deep: true },
 );
