@@ -109,6 +109,10 @@ export default [
         path:'/system/Role/detail/:id',
         component: ()=>import('@/views/system/Role/Detail/index.vue')
     },
+    {
+        path:'/system/Permission',
+        component: ()=>import('@/views/system/Permission/index.vue')
+    },
     // 初始化
     {
       path: '/init-home',

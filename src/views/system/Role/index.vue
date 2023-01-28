@@ -45,7 +45,7 @@
         </JTable>
 
         <div class="dialogs">
-            <AddDialog :open="dialog.openAdd" />
+            <AddDialog ref="addDialogRef" />
         </div>
     </a-card>
 </template>
@@ -59,8 +59,8 @@ import {
 import AddDialog from './components/AddDialog.vue';
 import { getRoleList_api, delRole_api } from '@/api/system/role';
 import { message } from 'ant-design-vue';
-
-const router = useRouter()
+const addDialogRef = ref(); // 新增弹窗实例
+const router = useRouter();
 // 筛选
 const query = reactive({
     columns: [
@@ -122,24 +122,21 @@ const table = reactive({
     ],
     tableData: [],
     clickAdd: () => {
-        dialog.openAdd += 1;
+        addDialogRef.value.openDialog(true, {})
     },
     clickDel: (row: any) => {
-        delRole_api(row.id).then((resp:any)=>{
-            if(resp.status === 200){
-                tableRef.value?.reload()
-                message.success('操作成功!')
+        delRole_api(row.id).then((resp: any) => {
+            if (resp.status === 200) {
+                tableRef.value?.reload();
+                message.success('操作成功!');
             }
-        })
+        });
     },
     clickEdit: (row: any) => {
-        router.push(`/system/Role/detail/${row.id}`)
+        router.push(`/system/Role/detail/${row.id}`);
     },
 });
-// 弹窗相关
-const dialog = reactive({
-    openAdd: 0,
-});
+
 </script>
 
 <style lang="less" scoped></style>
