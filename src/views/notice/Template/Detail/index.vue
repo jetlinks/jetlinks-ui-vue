@@ -462,7 +462,7 @@ import {
 import templateApi from '@/api/notice/template';
 import Doc from './doc/index';
 import MonacoEditor from '@/components/MonacoEditor/index.vue';
-import Attachments from './components/Attachments.vue'
+import Attachments from './components/Attachments.vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -586,6 +586,16 @@ const handleSubmit = () => {
             console.log('err: ', err);
         });
 };
+
+// test
+watch(
+    () => formData.value.template,
+    (val) => {
+        console.log('formData.value.template: ', val);
+    },
+    { deep: true },
+);
+// test
 </script>
 
 <style lang="less" scoped>
