@@ -109,6 +109,10 @@ export default [
         path:'/system/Role/detail/:id',
         component: ()=>import('@/views/system/Role/Detail/index.vue')
     },
+    {
+        path:'/system/Permission',
+        component: ()=>import('@/views/system/Permission/index.vue')
+    },
     // 初始化
     {
       path: '/init-home',
@@ -116,8 +120,12 @@ export default [
     },
     // 物联卡 iot-card
     {
-      path: '/iot-card/home',
+      path: '/iot-card/Home',
       component: () => import('@/views/iot-card/Home/index.vue')
+    },
+    {
+      path: '/iot-card/Dashboard',
+      component: () => import('@/views/iot-card/Dashboard/index.vue')
     },
     // 北向输出
     {

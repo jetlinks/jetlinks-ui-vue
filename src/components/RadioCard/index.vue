@@ -25,6 +25,7 @@ interface IOption {
 
 type Emits = {
     (e: 'update:modelValue', data: string): void;
+    (e: 'change') :void
 };
 const emit = defineEmits<Emits>();
 
@@ -41,7 +42,10 @@ const props = defineProps({
 
 const myValue = computed({
     get: () => props.modelValue,
-    set: (val) => emit('update:modelValue', val),
+    set: (val) => {
+        emit('update:modelValue', val)
+        emit('change')
+    },
 });
 </script>
 
