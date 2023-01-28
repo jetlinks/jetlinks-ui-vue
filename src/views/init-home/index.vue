@@ -117,7 +117,7 @@
                                                                 <a-upload
                                                                     name="file"
                                                                     :action="
-                                                                        action
+                                                                        FILE_UPLOAD
                                                                     "
                                                                     :headers="
                                                                         headers
@@ -259,7 +259,7 @@
                                                                 <a-upload
                                                                     name="file"
                                                                     :action="
-                                                                        action
+                                                                        FILE_UPLOAD
                                                                     "
                                                                     :headers="
                                                                         headers
@@ -354,7 +354,9 @@
                                                     >
                                                         <a-upload
                                                             name="file"
-                                                            :action="action"
+                                                            :action="
+                                                                FILE_UPLOAD
+                                                            "
                                                             :headers="headers"
                                                             :beforeUpload="
                                                                 beforeBackUpload
@@ -773,6 +775,7 @@ import {
     saveInit,
 } from '@/api/initHome';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
+import { FILE_UPLOAD } from '@/api/comm';
 import { LocalStore } from '@/utils/comm';
 import { message } from 'ant-design-vue';
 import { Form } from 'ant-design-vue';
@@ -899,7 +902,7 @@ const activeKey = ref<string>('1');
 const spinning = ref<boolean>(false);
 const visible = ref<boolean>(false);
 const flag = ref<boolean>(false);
-const action = ref<string>(`${BASE_API_PATH}/file/static`);
+// const action = ref<string>(`${BASE_API_PATH}/file/static`);
 const headers = ref({ [TOKEN_KEY]: LocalStore.get(TOKEN_KEY) });
 /**
  * 角色勾选数据

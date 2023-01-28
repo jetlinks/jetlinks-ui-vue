@@ -128,4 +128,10 @@ export default [
         path: '/northbound/AliCloud',
         component: () => import('@/views/northbound/AliCloud/index.vue')
     },
+
+    // 产品分类 
+    {
+      path: '/iot/device/Category',
+        component: () => import('@/views/device/Category/index.vue')
+    }
 ]
