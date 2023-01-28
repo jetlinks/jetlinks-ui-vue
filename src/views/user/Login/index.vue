@@ -83,19 +83,20 @@
                                         ]"
                                     >
                                         <a-input
-                                            class="login-code-input"
                                             v-model:value="form.verifyCode"
                                             autocomplete="off"
                                             :maxlength="64"
                                             placeholder="请输入验证码"
-                                        ></a-input>
-                                        <div class="login-code">
-                                            <img
-                                                :src="codeUrl"
-                                                @click="getCode()"
-                                                class="login-code-img"
-                                            />
-                                        </div>
+                                        >
+                                            <template #addonAfter>
+                                                <div>
+                                                    <img
+                                                        :src="codeUrl"
+                                                        @click="getCode()"
+                                                    />
+                                                </div>
+                                            </template>
+                                        </a-input>
                                     </a-form-item>
                                     <a-form-item
                                         name="remember"
@@ -103,7 +104,14 @@
                                     >
                                         <a-checkbox
                                             v-model:checked="form.remember"
-                                            >记住密码</a-checkbox
+                                            @change="
+                                                () =>
+                                                    (form.expires =
+                                                        form.remember
+                                                            ? -1
+                                                            : 3600000)
+                                            "
+                                            >记住我</a-checkbox
                                         >
                                     </a-form-item>
                                     <a-form-item>
@@ -180,7 +188,6 @@ import {
     bindInfo,
     settingDetail,
 } from '@/api/login';
-import Cookies from 'js-cookie';
 import { useUserInfo } from '@/store/userInfo';
 import { LocalStore } from '@/utils/comm';
 import { BASE_API_PATH, TOKEN_KEY, Version_Code } from '@/utils/variable';
@@ -220,34 +227,24 @@ iconMap.set('dingtalk-ent-app', getImage('/bind/dingtalk.png'));
 iconMap.set('wechat-webapp', getImage('/bind/wechat-webapp.png'));
 
 const onFinish = async () => {
-    form.remember
-        ? Cookies.set('user', encodeURIComponent(JSON.stringify(form)), {
-              expires: 7,
-          })
-        : Cookies.remove('user');
-    Cookies.set('username', form.username, { expires: 30 });
     try {
         loading.value = true;
         const res: any = await authLogin(form);
+        loading.value = false;
         if (res.success) {
             store.$patch({
                 ...res.result,
                 username: form.username,
             });
             LocalStore.set(TOKEN_KEY, res?.result.token);
-            // if (res.result.username === 'admin') {
-            //     const resp: any = await getInitSet();
-            //     if (resp.status === 200 && !resp.result.length) {
-            //         window.location.href = '/#/init-home';
-            //         return;
-            //     }
-            // }
-            // window.location.href = '/';
-
-            const resp: any = await getInitSet();
-            if (resp.success) {
-                router.push('/demo');
+            if (res.result.username === 'admin') {
+                const resp: any = await getInitSet();
+                if (resp.status === 200 && !resp.result.length) {
+                    window.location.href = '/#/init-home';
+                    return;
+                }
             }
+            window.location.href = '/';
         }
     } catch (error) {
         form.verifyCode = '';
@@ -269,14 +266,6 @@ const getCode = async () => {
     }
 };
 
-const getCookie = () => {
-    // form.username = Cookies.get('username');
-    if (!Cookies.get('user')) return;
-    const user = JSON.parse(decodeURIComponent(Cookies.get('user')));
-    form.username = user.username;
-    form.password = user.password;
-    form.remember = user.remember || false;
-};
 
 const getOpen = () => {
     LocalStore.removeAll();
@@ -292,7 +281,7 @@ const getOpen = () => {
             }
         }
     });
-    settingDetail('front').then((res) => {
+    settingDetail('front').then((res: any) => {
         if (res.status === 200) {
             const ico: any = document.querySelector('link[rel="icon"]');
             ico.href = res.result.ico;
@@ -337,7 +326,6 @@ watch(
 
 getOpen();
 getCode();
-getCookie();
 screenRotation(screenWidth.value, screenHeight.value);
 </script>
 
@@ -470,23 +458,9 @@ screenRotation(screenWidth.value, screenHeight.value);
                     }
 
                     .verifyCode {
-                        .login-code-input {
-                            width: 70%;
-                            float: left;
-                        }
-                        .login-code {
-                            width: 30%;
-                            height: 32px;
-                            float: left;
-                            background-color: #e4e6e7;
-                            img {
-                                cursor: pointer;
-                                vertical-align: middle;
-                            }
-                            .login-code-img {
-                                width: 100%;
-                                height: 100%;
-                            }
+                        img {
+                            cursor: pointer;
+                            // vertical-align: middle;
                         }
                     }
                 }
