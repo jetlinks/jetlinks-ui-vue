@@ -92,6 +92,10 @@ const handleChange = (info: UploadChangeParam, id: string | undefined) => {
         const targetFileIdx = fileList.value.findIndex((f) => f.id === id);
         fileList.value[targetFileIdx].name = info.file.name;
         fileList.value[targetFileIdx].location = info.file.response?.result;
+        emit(
+            'update:attachments',
+            fileList.value.map(({ name, location }) => ({ name, location })),
+        );
     }
 };
 
@@ -103,10 +107,6 @@ const handleDelete = (id: string | undefined) => {
     const idx = fileList.value.findIndex((f) => f.id === id);
 
     fileList.value.splice(idx, 1);
-    emit(
-        'update:attachments',
-        fileList.value.map(({ name, location }) => ({ name, location })),
-    );
 };
 
 /**
@@ -118,11 +118,6 @@ const handleAdd = () => {
         name: '',
         location: '',
     });
-
-    emit(
-        'update:attachments',
-        fileList.value.map(({ name, location }) => ({ name, location })),
-    );
 };
 
 /**
