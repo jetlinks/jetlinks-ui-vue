@@ -21,7 +21,7 @@ export default {
     // 微信获取标签推送
     getTags: (id: string) => get(`/notifier/wechat/corp/${id}/tags`),
     // 语音/短信获取阿里云模板
-    getAliTemplate: (id: string) => get(`/notifier/sms/aliyun/${id}/templates`),
+    getAliTemplate: (id: any) => get(`/notifier/sms/aliyun/${id}/templates`),
     // 短信获取签名
-    getSigns: (id: string) => get(`/notifier/sms/aliyun/${id}/signs`)
+    getSigns: (id: any) => get(`/notifier/sms/aliyun/${id}/signs`)
 }

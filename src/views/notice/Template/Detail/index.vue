@@ -50,6 +50,7 @@
                             <a-select
                                 v-model:value="formData.configId"
                                 placeholder="请选择绑定配置"
+                                @change="handleConfigChange"
                             >
                                 <a-select-option
                                     v-for="(item, index) in configList"
@@ -325,11 +326,11 @@
                                 />
                             </a-form-item>
                             <a-form-item
-                                label="模板内容"
+                                label="模版内容"
                                 v-if="formData.template.templateType === 'tts'"
                             >
                                 <a-textarea
-                                    v-model:value="formData.template.ttsCode"
+                                    v-model:value="formData.template.message"
                                     show-count
                                     :rows="5"
                                     placeholder="内容中的变量将用于阿里云语音验证码"
@@ -353,11 +354,11 @@
                                             <a-select-option
                                                 v-for="(
                                                     item, index
-                                                ) in ROBOT_MSG_TYPE"
+                                                ) in templateList"
                                                 :key="index"
-                                                :value="item.value"
+                                                :value="item.templateCode"
                                             >
-                                                {{ item.label }}
+                                                {{ item.templateName }}
                                             </a-select-option>
                                         </a-select>
                                     </a-form-item>
@@ -377,10 +378,18 @@
                                 label="签名"
                                 v-bind="validateInfos['template.signName']"
                             >
-                                <a-input
+                                <a-select
                                     v-model:value="formData.template.signName"
-                                    placeholder="请输入签名"
-                                />
+                                    placeholder="请选择签名"
+                                >
+                                    <a-select-option
+                                        v-for="(item, index) in signsList"
+                                        :key="index"
+                                        :value="item.signName"
+                                    >
+                                        {{ item.signName }}
+                                    </a-select-option>
+                                </a-select>
                             </a-form-item>
                         </template>
                         <!-- webhook -->
@@ -416,7 +425,8 @@
                             label="模版内容"
                             v-if="
                                 formData.type !== 'sms' &&
-                                formData.type !== 'webhook'
+                                formData.type !== 'webhook' &&
+                                formData.type !== 'voice'
                             "
                         >
                             <a-textarea
@@ -631,6 +641,36 @@ const getConfigList = async () => {
 getConfigList();
 
 /**
+ * 配置选择改变
+ */
+const handleConfigChange = () => {
+    getTemplateList();
+    getSignsList();
+};
+
+/**
+ * 获取阿里模板
+ */
+const templateList = ref();
+const getTemplateList = async () => {
+    const { result } = await templateApi.getAliTemplate(
+        formData.value.configId,
+    );
+    templateList.value = result;
+};
+getTemplateList();
+
+/**
+ * 获取签名
+ */
+const signsList = ref();
+const getSignsList = async () => {
+    const { result } = await templateApi.getSigns(formData.value.configId);
+    signsList.value = result;
+};
+getSignsList();
+
+/**
  * 表单提交
  */
 const btnLoading = ref<boolean>(false);
@@ -638,6 +678,8 @@ const handleSubmit = () => {
     validate()
         .then(async () => {
             // console.log('formData.value: ', formData.value);
+            formData.value.template.ttsCode =
+                formData.value.template.templateCode;
             btnLoading.value = true;
             let res;
             if (!formData.value.id) {
