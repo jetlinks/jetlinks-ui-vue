@@ -1,6 +1,7 @@
 import moment from "moment";
 import { LocalStore } from "./comm";
 import { TOKEN_KEY } from "./variable";
+import {SystemConst} from './consts';
 
 /**
  * 把数据下载成JSON
@@ -53,3 +54,5 @@ export const downloadObject = (record: Record<string, any>, fileName: string, fo
   formElement.submit();
   document.body.removeChild(formElement);
 };
+// 是否不是community版本
+export const isNoCommunity = !(localStorage.getItem(SystemConst.VERSION_CODE) === 'community');

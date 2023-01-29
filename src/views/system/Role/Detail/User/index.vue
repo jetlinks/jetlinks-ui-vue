@@ -7,7 +7,12 @@
             :columns="table.columns"
             :request="getUserByRole_api"
             model="TABLE"
-            :params="query.params"
+            :defaultParams="query.params"
+            :rowSelection="{
+                selectedRowKeys: table._selectedRowKeys,
+                onChange: table.onSelectChange,
+            }"
+            @cancelSelect="table.cancelSelect"
         >
             <template #headerTitle>
                 <a-button type="primary" @click="table.clickAdd"
@@ -16,7 +21,21 @@
             </template>
 
             <template #action="slotProps">
-                <a-space :size="16"> </a-space>
+                <a-space :size="16">
+                    <a-popconfirm
+                        title="确认解绑"
+                        ok-text="确定"
+                        cancel-text="取消"
+                        @confirm="table.clickUnBind(slotProps)"
+                    >
+                        <a-tooltip>
+                            <template #title>解绑</template>
+                            <a-button style="padding: 0" type="link">
+                                <disconnect-outlined />
+                            </a-button>
+                        </a-tooltip>
+                    </a-popconfirm>
+                </a-space>
             </template>
         </JTable>
 
@@ -27,11 +46,15 @@
 </template>
 
 <script setup lang="ts" name="RoleUser">
+import { PlusOutlined, DisconnectOutlined } from '@ant-design/icons-vue';
 import AddUserDialog from '../components/AddUserDialog.vue';
-import { getUserByRole_api } from '@/api/system/role';
+import { getUserByRole_api, unbindUser_api } from '@/api/system/role';
+import { message } from 'ant-design-vue';
+import userType from './index';
 
-const route = useRoute()
-const query = reactive({
+const route = useRoute();
+const roleId = route.params.id as string;
+const query = reactive<userType.queryType>({
     columns: [
         {
             title: '姓名',
@@ -69,7 +92,7 @@ const query = reactive({
 });
 
 const tableRef = ref<Record<string, any>>({});
-const table = reactive({
+const table = reactive<userType.tableType>({
     columns: [
         {
             title: '姓名',
@@ -99,12 +122,35 @@ const table = reactive({
         },
     ],
     tableData: [],
+    // 点击打开新增弹窗
     clickAdd: () => {
         dialog.openAdd += 1;
     },
-    refresh: ()=>{
-        tableRef.value.reload()
-    }
+    // 点击解绑
+    clickUnBind: (row: any) => {
+        table.unbind([row.id]);
+    },
+    // 批量解绑
+    unbind: (ids: string[] = []) => {
+        unbindUser_api(roleId, ids).then((resp) => {
+            if (resp.status === 200) {
+                message.success('操作成功');
+                table.refresh();
+            }
+        });
+    },
+    // 刷新表格
+    refresh: () => {
+        tableRef.value.reload();
+    },
+    // 多选
+    _selectedRowKeys: [] as string[],
+    onSelectChange: (keys: string[]) => {
+        table._selectedRowKeys = [...keys];
+    },
+    cancelSelect: () => {
+        table._selectedRowKeys = [];
+    },
 });
 
 // 弹窗相关
