@@ -84,8 +84,8 @@ export const deviceStepDetails: recommendList[] = [
             '对添加的测试设备进行功能调试，验证能否连接到平台，设备功能是否配置正确。',
         iconUrl: '/images/home/bottom-2.png',
         linkUrl: '/iot/device/Instance/detail',
-        auth: devicePermission('update'),
-        // auth: true,
+        // auth: devicePermission('update'),
+        auth: true,
         dialogTag: 'funcTest',
     },
     {
