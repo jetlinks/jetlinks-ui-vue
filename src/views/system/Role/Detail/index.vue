@@ -1,6 +1,5 @@
 <template>
     <div class="details-container">
-        {{ route.params.id }}
         <a-tabs v-model:activeKey="activeKey">
             <a-tab-pane key="1" tab="权限分配"><Permiss /></a-tab-pane>
             <a-tab-pane key="2" tab="用户管理"><User /></a-tab-pane>
