@@ -21,7 +21,7 @@ export const HeaderView = defineComponent({
   inheritAttrs: false,
   props: headerViewProps,
   setup(props) {
-    const { headerHeight, navTheme, onCollapse } = toRefs(props);
+    const { headerHeight, onCollapse } = toRefs(props);
 
     const context = useRouteContext();
 
@@ -30,22 +30,35 @@ export const HeaderView = defineComponent({
     );
 
     return () => (
-      <Layout.Header
-        style={{
-          padding: 0,
-          height: `${headerHeight.value}px`,
-          lineHeight: `${headerHeight.value}px`,
-          width: `100%`,
-          zIndex: 19,
-          position: 'fixed',
-        }}
-      >
-        <Header
-          {...props}
-          onCollapse={onCollapse.value}
-          menuData={clearMenuData.value}
+      <>
+        <Layout.Header
+          style={{
+            padding: 0,
+            height: `${headerHeight.value}px`,
+            lineHeight: `${headerHeight.value}px`,
+            width: `100%`,
+
+          }}
         />
-      </Layout.Header>
+        <Layout.Header
+          style={{
+            padding: 0,
+            height: `${headerHeight.value}px`,
+            lineHeight: `${headerHeight.value}px`,
+            width: `100%`,
+            zIndex: 19,
+            position: 'fixed',
+            top: 0,
+            right: 0
+          }}
+        >
+          <Header
+            {...props}
+            onCollapse={onCollapse.value}
+            menuData={clearMenuData.value}
+          />
+        </Layout.Header>
+      </>
     )
 }
 })

@@ -4,7 +4,7 @@ import {
   unref,
   defineComponent,
   toRefs,
-  provide,
+  provide
 } from 'vue'
 
 import type { DefineComponent, ExtractPropTypes, PropType, CSSProperties, Plugin, App } from 'vue'
@@ -25,7 +25,7 @@ import type {
   MenuHeaderRender,
   MenuItemRender,
   RightContentRender,
-  SubMenuItemRender,
+  SubMenuItemRender
 } from './typings'
 import SiderMenuWrapper, { siderMenuProps } from 'components/Layout/components/SiderMenu/SiderMenu'
 import { getSlot } from '@/utils/comm'
@@ -54,6 +54,10 @@ export const basicLayoutProps = {
     default: () => {
       return null
     }
+  },
+  pure: {
+    type: Boolean,
+    default: () => false
   }
 }
 
@@ -94,11 +98,6 @@ export default defineComponent({
     const onMenuClick = (args: any) => {
       emit('menuClick', args)
     }
-
-    const genLayoutStyle = reactive<CSSProperties>({
-      position: 'relative'
-    })
-
     const headerRender = (
       p: BasicLayoutProps & {
         hasSiderMenu: boolean;
@@ -108,10 +107,10 @@ export default defineComponent({
       matchMenuKeys?: string[]
     ): CustomRender | null => {
       if (p.headerRender === false) {
-        return null;
+        return null
       }
-      return <HeaderView {...p} />;
-    };
+      return <HeaderView {...p} />
+    }
 
     const breadcrumb = computed<BreadcrumbProps>(() => ({
       ...props.breadcrumb,
@@ -119,9 +118,7 @@ export default defineComponent({
     }))
 
     const flatMenuData = computed(
-      () =>
-        (props.selectedKeys && getMenuFirstChildren(props.menuData, props.selectedKeys[0])) || []
-    )
+      () => (props.selectedKeys && getMenuFirstChildren(props.menuData, props.selectedKeys[0])) || [])
 
     const routeContext = reactive<RouteContextProps>({
       ...(pick(toRefs(props), [
@@ -140,6 +137,7 @@ export default defineComponent({
 
     return () => {
       const {
+        pure,
         onCollapse: propsOnCollapse,
         onOpenKeys: propsOnOpenKeys,
         onSelect: propsOnSelect,
@@ -148,16 +146,13 @@ export default defineComponent({
       } = props
 
       const collapsedButtonRender = getSlot<CollapsedButtonRender>(slots, props, 'collapsedButtonRender')
-      const headerContentRender = getSlot<HeaderContentRender>(slots, props, 'headerContentRender')
       const rightContentRender = getSlot<RightContentRender>(slots, props, 'rightContentRender')
       const customHeaderRender = getSlot<HeaderRender>(slots, props, 'headerRender')
-      const footerRender = getSlot<FooterRender>(slots, props, 'footerRender')
 
       // menu
       const menuHeaderRender = getSlot<MenuHeaderRender>(slots, props, 'menuHeaderRender')
       const menuExtraRender = getSlot<MenuExtraRender>(slots, props, 'menuExtraRender')
       const menuContentRender = getSlot<MenuContentRender>(slots, props, 'menuContentRender')
-      const menuFooterRender = getSlot<MenuFooterRender>(slots, props, 'menuFooterRender')
       const menuItemRender = getSlot<MenuItemRender>(slots, props, 'menuItemRender')
       const subMenuItemRender = getSlot<SubMenuItemRender>(slots, props, 'subMenuItemRender')
 
@@ -178,39 +173,49 @@ export default defineComponent({
             menuExtraRender,
             menuContentRender,
             headerRender: customHeaderRender,
-            theme: props.navTheme,
+            theme: props.navTheme
           },
           []
         )
       )
 
       return (
-        <div class={'pro-layout'}>
-          <Layout
-            style={{
-              minHeight: '100vh',
-            }}
-          >
-            {headerDom.value}
-              <SiderMenuWrapper
-                {...restProps}
-                theme={props.navTheme}
-                menuHeaderRender={menuHeaderRender}
-                menuExtraRender={menuExtraRender}
-                menuContentRender={menuContentRender}
-                menuItemRender={menuItemRender}
-                subMenuItemRender={subMenuItemRender}
-                collapsedButtonRender={collapsedButtonRender}
-                onCollapse={onCollapse}
-                onSelect={onSelect}
-                onOpenKeys={onOpenKeys}
-                onMenuClick={onMenuClick}
-              />
-            <Layout>
-              {slots.default?.()}
-            </Layout>
-          </Layout>
-        </div>
+        <>
+          {
+            pure ? (
+              slots.default?.()
+            ) : (
+              <Layout
+                class={'pro-layout'}
+                style={{
+                  minHeight: '100vh'
+                }}
+              >
+                <SiderMenuWrapper
+                  {...restProps}
+                  theme={props.navTheme}
+                  menuHeaderRender={menuHeaderRender}
+                  menuExtraRender={menuExtraRender}
+                  menuContentRender={menuContentRender}
+                  menuItemRender={menuItemRender}
+                  subMenuItemRender={subMenuItemRender}
+                  collapsedButtonRender={collapsedButtonRender}
+                  onCollapse={onCollapse}
+                  onSelect={onSelect}
+                  onOpenKeys={onOpenKeys}
+                  onMenuClick={onMenuClick}
+                />
+
+                <Layout>
+                  {headerDom.value}
+                  <Layout>
+                    {slots.default?.()}
+                  </Layout>
+                </Layout>
+              </Layout>
+            )
+          }
+        </>
       )
     }
   }

@@ -14,6 +14,9 @@ import { baseMenuProps } from 'components/Layout/components/SiderMenu/BaseMenu'
 import AIcon from '@/components/AIcon'
 import { useRouteContext } from 'components/Layout/RouteContext'
 import BaseMenu from './BaseMenu'
+import './SiderMenu.less'
+import { computed } from 'vue'
+import { omit } from 'lodash-es'
 
 export type PrivateSiderMenuProps = {
   matchMenuKeys?: string[];
@@ -85,7 +88,6 @@ export const defaultRenderCollapsedButton = (collapsed?: boolean): CustomRender 
 const SiderMenu: FunctionalComponent<SiderMenuProps> = (props, { slots, emit}) => {
   const {
     collapsed,
-    siderWidth,
     collapsedWidth = 48,
     menuExtraRender = false,
     menuContentRender = false,
@@ -97,15 +99,17 @@ const SiderMenu: FunctionalComponent<SiderMenuProps> = (props, { slots, emit}) =
 
   const extraDom = menuExtraRender && menuExtraRender(props);
 
-  const handleSelect = () => {
-
+  const handleSelect = ($event: string[]) => {
+    if (props.onSelect) {
+      props.onSelect([context.selectedKeys[0], ...$event]);
+    }
   }
 
   const defaultMenuDom = (
     <BaseMenu
       theme={props.theme as 'dark' | 'light'}
       mode="inline"
-      menuData={context.menuData}
+      menuData={context.flatMenuData}
       collapsed={props.collapsed}
       openKeys={context.openKeys}
       selectedKeys={context.selectedKeys}
@@ -122,8 +126,25 @@ const SiderMenu: FunctionalComponent<SiderMenuProps> = (props, { slots, emit}) =
     />
   )
 
+  const Style = computed(() => {
+    return {
+      overflow: 'hidden',
+      height: '100vh',
+      zIndex: 18,
+      paddingTop: `${props.headerHeight}px`,
+      flex: `0 0 ${sSideWidth.value}px`,
+      minWidth: `${sSideWidth.value}px`,
+      maxWidth: `${sSideWidth.value}px`,
+      width: `${sSideWidth.value}px`,
+      transition: 'background-color 0.3s ease 0s, min-width 0.3s ease 0s, max-width 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) 0s'
+    }
+  })
+
   return (
     <>
+      <div
+        style={Style.value}
+      ></div>
       <Sider
         collapsible
         trigger={null}
@@ -132,12 +153,10 @@ const SiderMenu: FunctionalComponent<SiderMenuProps> = (props, { slots, emit}) =
           props.onCollapse?.(collapse);
         }}
         collapsedWidth={collapsedWidth}
-        style={{
-          overflow: 'hidden',
-          height: '100vh',
-        }}
-        width={siderWidth}
+        style={omit(Style.value, ['transition'])}
+        width={sSideWidth.value}
         theme={props.theme as 'dark' | 'light'}
+        class={'pro-layout-sider'}
       >
         <div style="flex: 1; overflow: hidden auto;">
           {(menuContentRender && menuContentRender(props, defaultMenuDom)) || defaultMenuDom}

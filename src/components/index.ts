@@ -9,6 +9,7 @@ import Search from './Search'
 import NormalUpload from './NormalUpload/index.vue'
 import FileFormat from './FileFormat/index.vue'
 import JUpload from './JUpload/index.vue'
+import { BasicLayoutPage, BlankLayoutPage } from './Layout'
 
 export default  {
     install(app: App) {
@@ -22,5 +23,7 @@ export default  {
             .component('NormalUpload', NormalUpload)
             .component('FileFormat', FileFormat)
             .component('JUpload', JUpload)
+            .component('BasicLayoutPage', BasicLayoutPage)
+            .component('BlankLayoutPage', BlankLayoutPage)
     }
 }

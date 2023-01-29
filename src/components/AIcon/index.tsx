@@ -30,7 +30,8 @@ const iconKeys = [
     'PlusCircleOutlined',
     'MenuUnfoldOutlined',
     'MenuFoldOutlined',
-    'QuestionCircleOutlined'
+    'QuestionCircleOutlined',
+    'InfoCircleOutlined'
 ]
 
 const Icon = (props: {type: string}) => {

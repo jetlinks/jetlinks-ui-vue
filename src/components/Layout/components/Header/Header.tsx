@@ -8,6 +8,9 @@ import { defaultSettingProps } from 'components/Layout/defaultSetting'
 import PropTypes from 'ant-design-vue/es/_util/vue-types'
 import { CustomRender, MenuDataItem, ProProps, RightContentRender, WithFalse } from 'components/Layout/typings'
 import './index.less'
+import { omit } from 'lodash-es'
+import { RouteRecordRaw } from 'vue-router'
+import { clearMenuItem } from 'components/Layout/utils'
 
 export const headerProps = {
   ...defaultSettingProps,
@@ -66,48 +69,60 @@ export default defineComponent({
 
     const context = useRouteContext();
 
+    const noChildrenMenuData = (menuData || []).map((item) => ({
+      ...item,
+      children: undefined,
+    })) as RouteRecordRaw[];
+
+    const clearMenuData = clearMenuItem(noChildrenMenuData);
+
     return () => (
-      <div class={`header-content ${navTheme}`}>
-        <div class={`header-main ${contentWidth === 'Fixed' ? 'wide' : ''}`}>
-          <div class={'header-main-left'} onClick={onMenuHeaderClick}>
-            <div class={'header-logo'}>
-              <a>
-                {defaultRenderLogo(logo, logoStyle)}
-                <h1 title={title}>{ title }</h1>
-              </a>
+      <>
+        <div
+          class={`header-content ${navTheme}`}
+        >
+          <div class={`header-main ${contentWidth === 'Fixed' ? 'wide' : ''}`}>
+            <div class={'header-main-left'} onClick={onMenuHeaderClick}>
+              <div class={'header-logo'}>
+                <a>
+                  {defaultRenderLogo(logo, logoStyle)}
+                  <h1 title={title}>{ title }</h1>
+                </a>
+              </div>
             </div>
-          </div>
-          <div style={{ flex: 1 }} class={'header-menu'}>
-            <BaseMenu
-              theme={props.navTheme === 'realDark' ? 'dark' : props.navTheme}
-              menuData={menuData}
-              menuItemRender={props.menuItemRender}
-              subMenuItemRender={props.subMenuItemRender}
-              openKeys={context.openKeys}
-              selectedKeys={context.selectedKeys}
-              {...{
-                'onUpdate:openKeys': ($event: string[]) => onOpenKeys && onOpenKeys($event),
-                'onUpdate:selectedKeys': ($event: string[]) => onSelect && onSelect($event),
-              }}
-            />
-          </div>
-          <div class={'header-right'} style={{ minWidth: rightSize.value }}>
-            <div>
-              <ResizeObserver
-                onResize={({ width }: { width: number}) => {
-                  rightSize.value = width
+            <div style={{ flex: 1 }} class={'header-menu'}>
+              <BaseMenu
+                theme={props.navTheme === 'realDark' ? 'dark' : props.navTheme}
+                menuData={clearMenuData}
+                mode={'horizontal'}
+                menuItemRender={props.menuItemRender}
+                subMenuItemRender={props.subMenuItemRender}
+                openKeys={context.openKeys}
+                selectedKeys={context.selectedKeys}
+                {...{
+                  'onUpdate:openKeys': ($event: string[]) => onOpenKeys && onOpenKeys($event),
+                  'onUpdate:selectedKeys': ($event: string[]) => onSelect && onSelect($event),
                 }}
-              >
-                {
-                  rightContentRender && typeof rightContentRender === 'function' ? (
-                    <div>{rightContentRender({...props})}</div>
-                  ) : rightContentRender
-                }
-              </ResizeObserver>
+              />
+            </div>
+            <div class={'header-right'} style={{ minWidth: rightSize.value }}>
+              <div>
+                <ResizeObserver
+                  onResize={({ width }: { width: number}) => {
+                    rightSize.value = width
+                  }}
+                >
+                  {
+                    rightContentRender && typeof rightContentRender === 'function' ? (
+                      <div>{rightContentRender({...props})}</div>
+                    ) : rightContentRender
+                  }
+                </ResizeObserver>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </>
     )
   }
 })

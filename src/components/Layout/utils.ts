@@ -9,7 +9,7 @@ export function clearMenuItem(menusData: RouteRecord[] | RouteRecordRaw[]): Rout
   return menusData
     .map((item: RouteRecord | RouteRecordRaw) => {
       const finalItem = { ...item };
-      if (!finalItem.name || finalItem.meta?.hideInMenu) {
+      if (finalItem.meta?.hideInMenu) {
         return null;
       }
 
@@ -17,7 +17,7 @@ export function clearMenuItem(menusData: RouteRecord[] | RouteRecordRaw[]): Rout
         if (
           !finalItem.meta?.hideChildInMenu &&
           finalItem.children.some(
-            (child: RouteRecord | RouteRecordRaw) => child && child.name && !child.meta?.hideInMenu
+            (child: RouteRecord | RouteRecordRaw) => child && !child.meta?.hideInMenu
           )
         ) {
           return {

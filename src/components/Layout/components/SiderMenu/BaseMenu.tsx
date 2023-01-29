@@ -122,7 +122,9 @@ class MenuUtil {
           title={defaultTitle}
           key={item.path}
           icon={<LazyIcon icon={item.meta?.icon} />}
-        />
+        >
+          {this.getNavMenuItems(item.children)}
+        </Menu.SubMenu>
       )
     }
 
@@ -144,7 +146,7 @@ class MenuUtil {
     const target = (meta.target || null) as string | null;
     const hasUrl = isUrl(item.path);
     const CustomTag: any = (target && 'a') || this.RouterLink;
-    const props = { to: { name: item.name, ...item.meta } };
+    const props = { to: { path: item.path, ...item.meta } };
     const attrs = hasUrl || target ? { ...item.meta, href: item.path, target } : {};
 
     const icon = (item.meta?.icon && <LazyIcon icon={item.meta.icon} />) || undefined;
@@ -191,13 +193,14 @@ export default defineComponent({
       }
       emit('update:selectedKeys', args.selectedKeys);
     };
+
     const handleClick: MenuClickEventHandler = (args: MenuInfo) => {
       emit('click', args);
     };
 
     return () => (
       <Menu
-        {...props.menuProps}
+        {...props}
         key='Menu'
         inlineIndent={16}
         theme={props.theme as 'dark' | 'light'}
