@@ -1,6 +1,6 @@
 <template>
     <div class="permission-container">
-        <Search :columns="query.columns" />
+        <Search :columns="query.columns" @search="query.search" />
 
         <JTable
             ref="tableRef"
@@ -73,7 +73,7 @@
         </JTable>
 
         <div class="dialogs">
-            <EditDialog ref="editDialogRef" />
+            <EditDialog ref="editDialogRef" @refresh="table.refresh" />
         </div>
     </div>
 </template>
@@ -89,7 +89,7 @@ import {
     StopOutlined,
     PlayCircleOutlined,
 } from '@ant-design/icons-vue';
-import { getPermission_api, editPermission_api } from '@/api/system/permission';
+import { getPermission_api, editPermission_api, delPermission_api } from '@/api/system/permission';
 
 const editDialogRef = ref(); // 新增弹窗实例
 const tableRef = ref<Record<string, any>>({}); // 表格实例
@@ -138,6 +138,9 @@ const query = reactive({
         },
     ],
     params: {},
+    search: (params:object)=>{
+        query.params = params
+    }
 });
 
 // 表格
@@ -181,12 +184,12 @@ const table = reactive({
         });
     },
     clickDel: (row: any) => {
-        // delRole_api(row.id).then((resp: any) => {
-        //     if (resp.status === 200) {
-        //         tableRef.value?.reload();
-        //         message.success('操作成功!');
-        //     }
-        // });
+        delPermission_api(row.id).then((resp: any) => {
+            if (resp.status === 200) {
+                tableRef.value?.reload();
+                message.success('操作成功!');
+            }
+        });
     },
     refresh: () => {
         tableRef.value.reload();

@@ -9,7 +9,10 @@
         <a-form ref="formRef" :model="form.data" layout="vertical">
             <a-form-item
                 name="id"
-                :rules="[{ required: true, message: '请输入标识' }]"
+                :rules="[
+                    { required: true, message: '请输入标识(ID)' },
+                    { validator: form.rules.idCheck, trigger: 'blur' },
+                ]"
                 class="question-item"
             >
                 <template #label>
@@ -62,6 +65,7 @@
                 </template>
                 <template v-else-if="column.key === 'act'">
                     <a-button
+                        class="delete-btn"
                         style="padding: 0"
                         type="link"
                         @click="table.clickRemove(index)"
@@ -71,17 +75,17 @@
                 </template>
             </template>
         </a-table>
-        <div class="pager">
+        <div class="pager" v-show="pager.total > pager.pageSize">
+            <a-select v-model:value="pager.current" style="width: 60px">
+                <a-select-option v-for="(val, i) in pageArr" :value="i + 1">{{
+                    i + 1
+                }}</a-select-option>
+            </a-select>
             <a-pagination
                 v-model:current="pager.current"
                 :page-size="pager.pageSize"
                 :total="pager.total"
             />
-            <a-select v-model:value="pager.current" style="width: 60px">
-                <a-select-option v-for="(val,i) in pageArr" :value="i + 1">{{
-                    i + 1
-                }}</a-select-option>
-            </a-select>
         </div>
 
         <a-button type="dashed" style="width: 100%" @click="table.clickAdd">
@@ -105,27 +109,40 @@
 import { FormInstance, message } from 'ant-design-vue';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons-vue';
 import { QuestionCircleOutlined } from '@ant-design/icons-vue';
+import { Rule } from 'ant-design-vue/es/form';
+
+import {
+    checkId_api,
+    editPermission_api,
+    addPermission_api,
+} from '@/api/system/permission';
 
 const defaultAction = [
     { action: 'query', name: '查询', describe: '查询' },
     { action: 'save', name: '保存', describe: '保存' },
     { action: 'delete', name: '删除', describe: '删除' },
 ];
+const emits = defineEmits(['refresh']);
 // 弹窗相关
 const dialog = reactive({
     title: '',
     visible: false,
     handleOk: () => {
-        formRef.value?.validate().then(() => console.log('success'));
+        formRef.value?.validate().then(() => {
+            form.submit();
+        });
     },
     // 控制弹窗的打开与关闭
     changeVisible: (status: boolean, defaultForm: any = {}) => {
-        form.data = { name: '', description: '', ...defaultForm };
         dialog.title = defaultForm.id ? '编辑' : '新增';
+        form.data = { name: '', ...defaultForm };
         table.data = defaultForm.id ? defaultForm.actions : [...defaultAction];
         pager.total = table.data.length;
         pager.current = 1;
         dialog.visible = status;
+        nextTick(() => {
+            formRef.value?.clearValidate();
+        });
     },
 });
 // 表单相关
@@ -136,6 +153,46 @@ const form = reactive({
         name: '',
         id: '',
     },
+    rules: {
+        // 校验标识是否可用
+        idCheck: (_rule: Rule, id: string, cb: Function) => {
+            if (!id) return cb('请输入标识(ID)');
+            if (dialog.title === '编辑') return cb();
+            checkId_api({ id })
+                .then((resp: any) => {
+                    if (resp.status === 200 && !resp.result.passed)
+                        cb(resp.result.reason);
+                    else cb();
+                })
+                .catch(() => cb('验证失败'));
+
+            // return new Promise((resolve) => {
+            //     checkId_api({ id })
+            //         .then((resp: any) => {
+            //             if (resp.status === 200 && !resp.result.passed)
+            //                 resolve(resp.result.reason);
+            //             else resolve('');
+            //         })
+            //         .catch(() => resolve('验证失败'));
+            // });
+        },
+    },
+    submit: () => {
+        const params = {
+            ...form.data,
+            actions: table.data.filter((item: any) => item.action && item.name),
+        };
+        const api =
+            dialog.title === '编辑' ? editPermission_api : addPermission_api;
+
+        api(params).then((resp) => {
+            if (resp.status === 200) {
+                message.error('操作成功');
+                emits('refresh');
+                dialog.visible = false;
+            }
+        });
+    },
 });
 
 const table = reactive({
@@ -144,21 +201,26 @@ const table = reactive({
             title: '-',
             dataIndex: 'index',
             key: 'index',
+            width:80,
+            align:'center'
         },
         {
             title: '操作类型',
             dataIndex: 'action',
             key: 'action',
+            width: 220
         },
         {
             title: '名称',
             dataIndex: 'name',
             key: 'name',
+            width: 220
         },
         {
             title: '说明',
             dataIndex: 'describe',
             key: 'describe',
+            width: 220
         },
         {
             title: '操作',
@@ -227,6 +289,31 @@ defineExpose({
                 font-size: 14px;
                 font-family: SimSun, sans-serif;
                 line-height: 1;
+            }
+        }
+    }
+
+    .ant-table {
+        color: #ff4d4f;
+
+        .ant-table-tbody {
+            color: #ff4d4f;
+        }
+    }
+    .delete-btn {
+        color: #000000d9;
+        &:hover{
+            color: #415ed1;
+        }
+    }
+    .pager {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 12px;
+        .ant-pagination {
+            margin-left: 8px;
+            :deep(.ant-pagination-item) {
+                display: none;
             }
         }
     }
