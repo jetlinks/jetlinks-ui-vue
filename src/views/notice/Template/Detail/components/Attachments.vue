@@ -1,4 +1,4 @@
-<!-- webhook请求头可编辑表格 -->
+<!-- 附件信息 -->
 <template>
     <div class="attachment-wrapper">
         <div
@@ -15,13 +15,16 @@
                             [TOKEN_KEY]: LocalStore.get(TOKEN_KEY),
                         }"
                         :showUploadList="false"
-                        @change="handleChange"
+                        @change="(e) => handleChange(e, item.id)"
                     >
                         <upload-outlined />
                     </a-upload>
                 </template>
             </a-input>
-            <delete-outlined @click="handleDelete" style="cursor: pointer" />
+            <delete-outlined
+                @click="handleDelete(item.id)"
+                style="cursor: pointer"
+            />
         </div>
 
         <a-button
@@ -62,35 +65,65 @@ const props = defineProps({
     },
 });
 
-const handleChange = (info: UploadChangeParam) => {
-    if (info.file.status === 'done') {
-        const result = info.file.response?.result;
-        console.log('result: ', result);
-    }
-};
+// const fileList = computed({
+//     get: () => props.attachments.map((m) => ({ id: fileId(), ...m })),
+//     set: (val) =>
+//         emit(
+//             'update:attachments',
+//             val.map(({ name, location }) => ({ name, location })),
+//         ),
+// });
 
 const fileList = ref<IAttachments[]>([]);
+
 watch(
     () => props.attachments,
     (val) => {
-        fileList.value = val;
+        fileList.value = val.map((m) => ({
+            id: fileId(),
+            ...m,
+        }));
     },
     { deep: true },
 );
 
-const handleDelete = (id: number) => {
-    const idx = fileList.value.findIndex((f) => f.id === id);
-    fileList.value.splice(idx, 1);
-    emit('update:attachments', fileList.value);
+const handleChange = (info: UploadChangeParam, id: string | undefined) => {
+    if (info.file.status === 'done') {
+        const targetFileIdx = fileList.value.findIndex((f) => f.id === id);
+        fileList.value[targetFileIdx].name = info.file.name;
+        fileList.value[targetFileIdx].location = info.file.response?.result;
+        emit(
+            'update:attachments',
+            fileList.value.map(({ name, location }) => ({ name, location })),
+        );
+    }
 };
+
+/**
+ * 删除附件
+ * @param id
+ */
+const handleDelete = (id: string | undefined) => {
+    const idx = fileList.value.findIndex((f) => f.id === id);
+
+    fileList.value.splice(idx, 1);
+};
+
+/**
+ * 添加附件
+ */
 const handleAdd = () => {
     fileList.value.push({
-        id: fileList.value.length,
+        id: fileId(),
         name: '',
         location: '',
     });
-    emit('update:attachments', fileList.value);
 };
+
+/**
+ * 附件标识
+ */
+const fileId = () => String(new Date().getTime() + Math.random() * 9);
 </script>
 
 <style lang="less" scoped>

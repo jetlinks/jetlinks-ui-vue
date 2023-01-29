@@ -26,7 +26,18 @@ const iconKeys = [
     'ExportOutlined',
     'SyncOutlined',
     'ExclamationCircleOutlined',
-    'UploadOutlined'
+    'UploadOutlined',
+    'PlusCircleOutlined',
+    'QuestionCircleOutlined',
+    'DisconnectOutlined',
+    'LinkOutlined',
+    'PoweroffOutlined',
+    'SwapOutlined',
+    'BugOutlined',
+    'BarsOutlined',
+    'ArrowDownOutlined',
+    'SmallDashOutlined',
+    'TeamOutlined',
 ]
 
 const Icon = (props: {type: string}) => {

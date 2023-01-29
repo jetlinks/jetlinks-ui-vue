@@ -16,6 +16,12 @@
                 />
                 <Media v-if="showType === 'media'" :provider="provider" />
                 <Channel v-if="showType === 'channel'" :provider="provider" />
+                <Edge v-if="showType === 'edge'" :provider="provider" />
+                <Cloud
+                    v-if="showType === 'cloud'"
+                    :provider="provider"
+                    :data="data"
+                />
             </div>
         </a-card>
     </a-spin>
@@ -28,6 +34,8 @@ import Provider from '../components/Provider/index.vue';
 import { getProviders, detail } from '@/api/link/accessConfig';
 import Media from '../components/Media/index.vue';
 import Channel from '../components/Channel/index.vue';
+import Edge from '../components/Edge/index.vue';
+import Cloud from '../components/Cloud/index.vue';
 
 // const router = useRouter();
 const route = useRoute();
