@@ -14,6 +14,7 @@ interface IVariableDefinitions {
     name: string;
     type: string;
     format: string;
+    value?: string;
 }
 
 interface IMarkDown {

@@ -32,7 +32,12 @@ const iconKeys = [
     'DisconnectOutlined',
     'LinkOutlined',
     'PoweroffOutlined',
-    'SwapOutlined'
+    'SwapOutlined',
+    'BugOutlined',
+    'BarsOutlined',
+    'ArrowDownOutlined',
+    'SmallDashOutlined',
+    'TeamOutlined',
 ]
 
 const Icon = (props: {type: string}) => {
