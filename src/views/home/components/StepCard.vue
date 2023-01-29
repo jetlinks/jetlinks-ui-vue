@@ -21,11 +21,11 @@
         </div>
 
         <div class="dialogs">
-            <AccessMethodDialog
+            <ProductChooseDialog
                 :open-number="openAccess"
                 @confirm="againJumpPage"
             />
-            <FuncTestDialog
+            <DeviceChooseDialog
                 :open-number="openFunc"
                 @confirm="againJumpPage"
             />
@@ -38,8 +38,8 @@ import { PropType } from 'vue';
 import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 
-import AccessMethodDialog from './dialogs/AccessMethodDialog.vue';
-import FuncTestDialog from './dialogs/FuncTestDialog.vue';
+import ProductChooseDialog from './dialogs/ProductChooseDialog.vue';
+import DeviceChooseDialog from './dialogs/DeviceChooseDialog.vue';
 
 import { recommendList } from '../index';
 
@@ -73,9 +73,8 @@ const jumpPage = (row: recommendList) => {
     }
 };
 // 弹窗返回后的二次跳转
-const againJumpPage = (paramsSource: object) => {
-    const params = { ...(selectRow.params || {}), ...paramsSource };
-    router.push(`${selectRow.linkUrl}${objToParams(params || {})}`);
+const againJumpPage = (params: string) => {
+    router.push(`${selectRow.linkUrl}/${params}`);
 };
 
 const objToParams = (source: object): string => {
