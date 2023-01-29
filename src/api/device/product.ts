@@ -43,3 +43,10 @@ export const detail = (id: string) => server.get<ProductItem>(`/device-product/$
  * @param data
  */
 export const category = (data: any) => server.post('/device/category/_tree', data)
+
+/**
+ * 保存产品
+ * @param data 产品信息
+ * @returns 
+ */
+export const saveProductMetadata = (data: Record<string, unknown>) => server.patch('/device-product', data)

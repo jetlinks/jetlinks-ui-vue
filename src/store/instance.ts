@@ -1,4 +1,4 @@
-import { DeviceInstance, InstanceModel } from "@/views/device/instance/typings";
+import { DeviceInstance, InstanceModel } from "@/views/device/Instance/typings"
 import { defineStore } from "pinia";
 
 export const useInstanceStore = defineStore({
@@ -7,6 +7,7 @@ export const useInstanceStore = defineStore({
   actions: {
     setCurrent(current: Partial<DeviceInstance>) {
       this.current = current
+      this.detail = current
     }
   }
 })
