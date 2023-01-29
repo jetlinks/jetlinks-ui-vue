@@ -458,7 +458,7 @@
 import { getImage } from '@/utils/comm';
 import { Form } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
-import { TemplateFormData } from '../types';
+import { IVariableDefinitions, TemplateFormData } from '../types';
 import {
     NOTICE_METHOD,
     TEMPLATE_FIELD_MAP,
@@ -588,7 +588,7 @@ watch(
                       format: '%s',
                   },
         );
-        formData.value.variableDefinitions = result;
+        formData.value.variableDefinitions = result as IVariableDefinitions[];
     },
     { deep: true },
 );
