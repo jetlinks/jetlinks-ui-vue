@@ -82,10 +82,11 @@
     </div>
 </template>
 
-<script lang="ts" setup name="AccessMedia">
+<script lang="ts" setup name="AccessChannel">
 import { message, Form } from 'ant-design-vue';
 import type { FormInstance } from 'ant-design-vue';
 import { update, save } from '@/api/link/accessConfig';
+import { ProtocolMapping } from '../../Detail/data';
 
 interface FormState {
     name: string;
@@ -113,7 +114,7 @@ const onFinish = async (values: any) => {
         ...values,
         provider: providerId,
         protocol: providerId,
-        transport: providerId === 'modbus-tcp' ? 'MODBUS_TCP' : 'OPC_UA',
+        transport: ProtocolMapping.get(providerId),
         channel: providerId === 'modbus-tcp' ? 'modbus' : 'opc-ua',
     };
     const resp = !!id ? await update({ ...params, id }) : await save(params);
@@ -145,8 +146,8 @@ const onFinish = async (values: any) => {
 }
 .config-right {
     padding: 20px;
-    color: rgba(0, 0, 0, 0.8);
-    background: rgba(0, 0, 0, 0.04);
+    // color: rgba(0, 0, 0, 0.8);
+    // background: rgba(0, 0, 0, 0.04);
 
     .config-right-item {
         margin-bottom: 10px;
