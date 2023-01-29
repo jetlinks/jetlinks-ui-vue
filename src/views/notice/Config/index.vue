@@ -152,6 +152,8 @@
         </a-card>
 
         <Debug v-model:visible="debugVis" :data="currentConfig" />
+        <Log v-model:visible="logVis" :data="currentConfig" />
+        <SyncUser v-model:visible="syncVis" :data="currentConfig" />
     </div>
 </template>
 
@@ -236,6 +238,7 @@ const columns = [
 const handleSearch = (e: any) => {
     console.log('handleSearch:', e);
     params.value = e;
+    console.log('params.value: ', params.value);
 };
 
 /**
