@@ -1,4 +1,5 @@
 import { patch, post, get, remove } from '@/utils/request'
+import { TemplateFormData } from '@/views/notice/Template/types'
 
 export default {
     // 列表
@@ -10,8 +11,8 @@ export default {
     // 修改
     update: (data: any) => patch(`/notifier/config`, data),
     del: (id: string) => remove(`/notifier/config/${id}`),
-    getTemplate: (data: any, id: string) => post(`/notifier/template/${id}/_query`, data),
-    getTemplateDetail: (id: string) => get(`/notifier/template/${id}/detail`),
+    getTemplate: (data: any, id: string) => post<TemplateFormData[]>(`/notifier/template/${id}/_query`, data),
+    getTemplateDetail: (id: string) => get<TemplateFormData>(`/notifier/template/${id}/detail`),
     debug: (data: any, configId: string, templateId: string) => post(`/notifier/${configId}/${templateId}/_send`, data),
     getHistory: (data: any, id: string) => post(`/notify/history/config/${id}/_query`, data),
     // 获取所有平台用户
