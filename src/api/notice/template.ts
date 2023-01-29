@@ -16,10 +16,10 @@ export default {
     debug: (data: any, configId: string, templateId: string) => post(`/notifier/${configId}/${templateId}/_send`, data),
     getHistory: (data: any, id: string) => post(`/notify/history/template/${id}/_query`, data),
     // 钉钉/微信, 根据配置获取部门和用户
-    getDept: (type: string, id: string) => get(`/notifier/${type}/corp/${id}/departments`),
-    getUser: (type: string, id: string) => get(`/notifier/${type}/corp/${id}/users`),
+    getDept: (type: string, id: string) => get<any>(`/notifier/${type}/corp/${id}/departments`),
+    getUser: (type: string, id: string) => get<any>(`/notifier/${type}/corp/${id}/users`),
     // 微信获取标签推送
-    getTags: (id: string) => get(`/notifier/wechat/corp/${id}/tags`),
+    getTags: (id: string) => get<any>(`/notifier/wechat/corp/${id}/tags`),
     // 语音/短信获取阿里云模板
     getAliTemplate: (id: any) => get(`/notifier/sms/aliyun/${id}/templates`),
     // 短信获取签名

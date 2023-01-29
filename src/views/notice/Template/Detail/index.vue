@@ -180,58 +180,33 @@
                             <a-row :gutter="10">
                                 <a-col :span="12">
                                     <a-form-item label="收信人">
-                                        <a-select
-                                            v-model:value="
+                                        <ToUser
+                                            v-model:to-user="
                                                 formData.template.toUser
                                             "
-                                            placeholder="请选择收信人"
-                                        >
-                                            <a-select-option
-                                                v-for="(
-                                                    item, index
-                                                ) in ROBOT_MSG_TYPE"
-                                                :key="index"
-                                                :value="item.value"
-                                            >
-                                                {{ item.label }}
-                                            </a-select-option>
-                                        </a-select>
+                                            :type="formData.type"
+                                            :config-id="formData.configId"
+                                        />
                                     </a-form-item>
                                 </a-col>
                                 <a-col :span="12">
                                     <a-form-item label="收信部门">
-                                        <a-select
-                                            v-model:value="
+                                        <ToOrg
+                                            v-model:to-user="
                                                 formData.template.toParty
                                             "
-                                            placeholder="请选择收信部门"
-                                        >
-                                            <a-select-option
-                                                v-for="(
-                                                    item, index
-                                                ) in ROBOT_MSG_TYPE"
-                                                :key="index"
-                                                :value="item.value"
-                                            >
-                                                {{ item.label }}
-                                            </a-select-option>
-                                        </a-select>
+                                            :type="formData.type"
+                                            :config-id="formData.configId"
+                                        />
                                     </a-form-item>
                                 </a-col>
                             </a-row>
                             <a-form-item label="标签推送">
-                                <a-select
-                                    v-model:value="formData.template.toTag"
-                                    placeholder="请选择标签推送"
-                                >
-                                    <a-select-option
-                                        v-for="(item, index) in ROBOT_MSG_TYPE"
-                                        :key="index"
-                                        :value="item.value"
-                                    >
-                                        {{ item.label }}
-                                    </a-select-option>
-                                </a-select>
+                                <ToTag
+                                    v-model:to-user="formData.template.toTag"
+                                    :type="formData.type"
+                                    :config-id="formData.configId"
+                                />
                             </a-form-item>
                         </template>
                         <!-- 邮件 -->
@@ -496,6 +471,9 @@ import Doc from './doc/index';
 import MonacoEditor from '@/components/MonacoEditor/index.vue';
 import Attachments from './components/Attachments.vue';
 import VariableDefinitions from './components/VariableDefinitions.vue';
+import ToUser from './components/ToUser.vue';
+import ToOrg from './components/ToOrg.vue';
+import ToTag from './components/ToTag.vue';
 
 const router = useRouter();
 const route = useRoute();
