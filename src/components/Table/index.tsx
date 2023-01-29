@@ -54,7 +54,7 @@ export interface JTableProps extends TableProps{
     rowSelection?: TableProps['rowSelection'];
     cardProps?:  Record<string, any>;
     dataSource?:  Record<string, any>[];
-    gridColumn: number;
+    gridColumn?: number;
     /**
      * 用于不同分辨率
      * gridColumns[0] 1366 ~ 1440 分辨率；
