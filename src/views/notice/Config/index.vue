@@ -150,6 +150,8 @@
                 </template>
             </JTable>
         </a-card>
+
+        <Debug v-model:visible="debugVis" :data="currentConfig" />
     </div>
 </template>
 
@@ -158,13 +160,12 @@ import configApi from '@/api/notice/config';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage, LocalStore } from '@/utils/comm';
 import { message } from 'ant-design-vue';
-// import Import from './Import/index.vue';
-// import Export from './Export/index.vue';
-// import Process from './Process/index.vue';
-// import Save from './Save/index.vue';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 
 import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
+import SyncUser from './SyncUser/index.vue'
+import Debug from './Debug/index.vue'
+import Log from './Log/index.vue'
 
 let providerList: any = [];
 Object.keys(MSG_TYPE).forEach((key) => {
@@ -274,6 +275,10 @@ const handleView = (id: string) => {
     message.warn(id + '暂未开发');
 };
 
+const syncVis = ref(false);
+const debugVis = ref(false);
+const logVis = ref(false);
+const currentConfig = ref<Partial<Record<string, any>>>();
 const getActions = (
     data: Partial<Record<string, any>>,
     type: 'card' | 'table',
@@ -301,7 +306,8 @@ const getActions = (
             },
             icon: 'BugOutlined',
             onClick: () => {
-                // debugVis.value = true;
+                debugVis.value = true;
+                currentConfig.value = data;
             },
         },
         {
@@ -312,7 +318,8 @@ const getActions = (
             },
             icon: 'BarsOutlined',
             onClick: () => {
-                // debugVis.value = true;
+                logVis.value = true;
+                currentConfig.value = data;
             },
         },
         {
