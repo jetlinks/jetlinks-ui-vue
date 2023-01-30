@@ -65,3 +65,36 @@ export const sync = () => server.get(`/network/card/state/_sync`);
  * @param data
  */
 export const removeCards = (data: any) => server.post(`/network/card/batch/_delete`, data);
+
+/**
+ * 解绑设备
+ * @param cardId
+ */
+export const unbind = (cardId: string) => server.get(`/network/card/${cardId}/_unbind`);
+
+/**
+ * 分页查询未绑定设备列表
+ * @param data
+*/
+export const queryUnbounded = (data: any) => server.post(`/network/card/unbounded/device/_query`, data);
+
+/**
+ * 绑定设备
+ * @param cardId
+ * @param deviceId 选择的设备id
+ */
+export const bind = (cardId: string | any, deviceId: string) => server.get(`/network/card/${cardId}/${deviceId}/_bind`);
+
+/**
+ * 导入物联卡实例
+ * @param configId 对接平台id
+ * @param params
+ */
+export const _import = (configId: any, params: any) => server.get(`/network/card/${configId}/_import`, params);
+
+/**
+ * 根据id批量导出
+ * @param format 类型 xlsx、csv
+ * @param params
+ */
+export const _export = (format: string, data: any) => server.post(`/network/card/download.${format}/_query`, data, 'blob');
