@@ -1,7 +1,7 @@
 <!--产品分类 -->
 <template>
     <a-card class="product-category">
-        <Search :columns="query.columns" target="category" />
+        <Search :columns="query.columns" target="category" @search="search" />
         <JTable
             ref="tableRef"
             :columns="table.columns"
@@ -57,7 +57,7 @@
             :title="title"
             :isAdd="isAdd"
             :isChild="isChild"
-            @refresh="() => modifyRef.value?.reload()"
+            @refresh="refresh"
         />
     </a-card>
 </template>
@@ -73,34 +73,41 @@ const dataSource = ref([]);
 const currentForm = ref({});
 const title = ref('');
 const isAdd = ref(0);
-const isChild = ref(false);
+const isChild = ref(0);
 // 筛选
 const query = reactive({
     columns: [
         {
             title: '名称',
             dataIndex: 'name',
-            ellipsis: true,
+            key: 'name',
+            search: {
+                type: 'string',
+            },
         },
         {
             title: '排序',
             dataIndex: 'sortIndex',
-            valueType: 'digit',
-            sorter: true,
+            key: 'sortIndex',
+            search: {
+                type: 'number',
+            },
+            scopedSlots: true,
         },
         {
             title: '描述',
             key: 'description',
-            ellipsis: true,
             dataIndex: 'description',
-            filters: true,
-            onFilter: true,
+            search: {
+                type: 'string',
+            },
         },
         {
             title: '操作',
-            valueType: 'option',
-            width: 200,
+            key: 'action',
             fixed: 'right',
+            width: 250,
+            scopedSlots: true,
         },
     ],
     params: {
@@ -150,8 +157,12 @@ const getActions = (
             onClick: () => {
                 title.value = '新增子分类';
                 isAdd.value = 0;
-                isChild.value = true;
                 currentForm.value = {};
+                if (data.children && data.children.length > 0) {
+                    isChild.value = 1;
+                } else {
+                    isChild.value = 2;
+                }
                 nextTick(() => {
                     modifyRef.value.show(data);
                 });
@@ -187,6 +198,7 @@ const table = reactive({
             title: '排序',
             dataIndex: 'sortIndex',
             key: 'sortIndex',
+            scopedSlots: true,
         },
         {
             title: '说明',
@@ -207,13 +219,19 @@ const table = reactive({
     add: async () => {
         title.value = '新增分类';
         isAdd.value = 0;
-        isChild.value = false;
+        isChild.value = 3;
         nextTick(() => {
             modifyRef.value.show(currentForm.value);
         });
     },
+    /**
+     * 刷新表格数据
+     */
+    refresh: () => {
+        tableRef.value?.reload();
+    },
 });
-const { add, columns } = toRefs(table);
+const { add, columns, refresh } = toRefs(table);
 /**
  * 初始化
  */

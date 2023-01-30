@@ -114,6 +114,6 @@ const form = reactive({
   model: {}
 })
 </script>
-<style lang="scss" scoped>
+<style lang="less" scoped>
 
 </style>

@@ -8,8 +8,8 @@
       </p>
     </div>
     <a-form layout="vertical" v-model="formModel">
-      <a-form-item label="导入方式" v-bind="validateInfos.type">
-        <a-select v-if="type === 'product'" v-model:value="formModel.type">
+      <a-form-item v-if="type === 'product'" label="导入方式" v-bind="validateInfos.type">
+        <a-select v-model:value="formModel.type">
           <a-select-option value="copy">拷贝产品</a-select-option>
           <a-select-option value="import">导入物模型</a-select-option>
         </a-select>
@@ -32,11 +32,19 @@
         </a-select>
       </a-form-item>
       <a-form-item label="文件上传" v-bind="validateInfos.upload" v-if="formModel.metadataType === 'file'">
-        <a-upload v-model:file-list="formModel.upload" name="files" :before-upload="beforeUpload" accept=".json"
-          :show-upload-list="false"></a-upload>
+        <a-input v-model:value="formModel.upload">
+          <template #addonAfter>
+            <label for="uploadFile"><upload-outlined/></label>
+          </template>
+        </a-input>
+        <a-upload v-model:file-list="fileList" name="files" :before-upload="beforeUpload" accept=".json"
+          :show-upload-list="false" :action="FILE_UPLOAD" @change="fileChange" :headers="{ 'X-Access-Token': token }">
+          <button id="uploadFile" style="display: none;"></button>
+        </a-upload>
       </a-form-item>
       <a-form-item label="物模型" v-bind="validateInfos.import" v-if="formModel.metadataType === 'script'">
         <!-- TODO代码编辑器 -->
+        <a-textarea v-model:value="formModel.import"></a-textarea>
       </a-form-item>
     </a-form>
   </a-modal>
@@ -46,13 +54,17 @@ import { useForm } from 'ant-design-vue/es/form';
 import { saveMetadata } from '@/api/device/instance'
 import { queryNoPagingPost, convertMetadata, modify } from '@/api/device/product'
 import type { DefaultOptionType } from 'ant-design-vue/es/select';
-import { UploadProps } from 'ant-design-vue/es';
+import type { UploadProps, UploadFile, UploadChangeParam } from 'ant-design-vue/es';
 import type { DeviceMetadata, ProductItem } from '@/views/device/Product/typings'
 import { message } from 'ant-design-vue/es';
 import { Store } from 'jetlinks-store';
 import { SystemConst } from '@/utils/consts';
 import { useInstanceStore } from '@/store/instance'
 import { useProductStore } from '@/store/product';
+import { UploadOutlined } from '@ant-design/icons-vue';
+import { FILE_UPLOAD } from '@/api/comm';
+import { LocalStore } from '@/utils/comm';
+import { TOKEN_KEY } from '@/utils/variable';
 
 const route = useRoute()
 const instanceStore = useInstanceStore()
@@ -79,6 +91,7 @@ const _visible = computed({
 })
 
 const close = () => {
+  console.log(1)
   emits('update:visible', false);
 }
 
@@ -132,6 +145,8 @@ const onSubmit = () => {
 
   })
 }
+const fileList = ref<UploadFile[]>([])
+const token = ref(LocalStore.get(TOKEN_KEY));
 
 const productList = ref<DefaultOptionType[]>([])
 
@@ -156,6 +171,11 @@ const beforeUpload: UploadProps['beforeUpload'] = file => {
   reader.onload = (json) => {
     formModel.import = json.target?.result;
   };
+}
+const fileChange = (info: UploadChangeParam) => {
+  if (info.file.status === 'done') {
+    console.log(info)
+  }
 }
 
 const operateLimits = (mdata: DeviceMetadata) => {
@@ -257,7 +277,7 @@ const handleImport = async () => {
 
 // const showProduct = computed(() => formModel.type === 'copy')
 </script>
-<style scoped lang="scss">
+<style scoped lang="less">
 .import-content {
   background: rgb(236, 237, 238);
 

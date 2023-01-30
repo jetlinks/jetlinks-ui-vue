@@ -18,10 +18,6 @@ import './SiderMenu.less'
 import { computed } from 'vue'
 import { omit } from 'lodash-es'
 
-export type PrivateSiderMenuProps = {
-  matchMenuKeys?: string[];
-}
-
 const { Sider } = Layout
 
 export const defaultRenderLogo = (logo?: CustomRender, logoStyle?: CSSProperties): CustomRender => {
@@ -89,7 +85,6 @@ const SiderMenu: FunctionalComponent<SiderMenuProps> = (props, { slots, emit}) =
   const {
     collapsed,
     collapsedWidth = 48,
-    menuExtraRender = false,
     menuContentRender = false,
     collapsedButtonRender = defaultRenderCollapsedButton,
   } = props;
@@ -97,7 +92,6 @@ const SiderMenu: FunctionalComponent<SiderMenuProps> = (props, { slots, emit}) =
   const context = useRouteContext();
   const sSideWidth = computed(() => (props.collapsed ? props.collapsedWidth : props.siderWidth));
 
-  const extraDom = menuExtraRender && menuExtraRender(props);
 
   const handleSelect = ($event: string[]) => {
     if (props.onSelect) {

@@ -1,6 +1,6 @@
 <template>
   <div class='device-detail-metadata' style="position: relative;">
-    <div class="tips" style="width: 40%">
+    <div class="tips">
       <a-tooltip :title="instanceStore.detail?.independentMetadata && type === 'device'
       ? '该设备已脱离产品物模型，修改产品物模型对该设备无影响'
       : '设备会默认继承产品的物模型，修改设备物模型后将脱离产品物模型'">
@@ -14,16 +14,20 @@
         </div>
       </a-tooltip>
     </div>
-    <a-tabs class="metadataNav" destroyInactiveTabPane>
+    <a-tabs class="metadataNav" destroyInactiveTabPane type="card">
       <template #rightExtra>
         <a-space>
-          <PermissionButton v-if="type === 'device'" :hasPermission="`${permission}:update`"
-            :popConfirm="{ title: '确认重置？', onConfirm: resetMetadata, }" :tooltip="{ title: '重置后将使用产品的物模型配置' }"
-            key="reload">
+          <PermissionButton v-if="type === 'device' && instanceStore.detail?.independentMetadata"
+            :hasPermission="`${permission}:update`" :popConfirm="{ title: '确认重置？', onConfirm: resetMetadata, }"
+            :tooltip="{ title: '重置后将使用产品的物模型配置' }" key="reload">
             重置操作
           </PermissionButton>
-          <PermissionButton :isPermission="`${permission}:update`" @click="visible = true">快速导入</PermissionButton>
-          <PermissionButton :isPermission="`${permission}:update`" @click="cat = true">物模型TSL</PermissionButton>
+          <PermissionButton
+            :uhasPermission="`${permission}:update`"
+            @click="visible = true">快速导入</PermissionButton>
+          <PermissionButton 
+            :uhasPermission="`${permission}:update`" 
+            @click="cat = true">物模型TSL</PermissionButton>
         </a-space>
       </template>
 
@@ -40,11 +44,13 @@
         <BaseMetadata target={props.type} type="tags" :permission="permission" />
       </a-tab-pane>
     </a-tabs>
-    <Import :visible="visible" :type="type" @close="visible = false" />
-    <Cat :visible="cat" @close="cat = false" :type="type" />
+    {{ visible }}
+    <Import v-model:visible="visible" :type="type" @close="visible = false" />
+    <Cat v-model:visible="cat" @close="cat = false" :type="type" />
   </div>
 </template>
 <script setup lang="ts" name="Metadata">
+import { InfoCircleOutlined } from '@ant-design/icons-vue';
 import PermissionButton from '@/components/PermissionButton/index.vue'
 import { deleteMetadata } from '@/api/device/instance.js'
 import { message } from 'ant-design-vue'
@@ -80,21 +86,20 @@ const resetMetadata = async () => {
   }
 }
 </script>
-<style scoped lang="scss">
+<style scoped lang="less">
 .device-detail-metadata {
   .tips {
+    width: calc(100% - 670px);
     position: absolute;
     top: 12px;
     z-index: 1;
-    margin-left: 330px;
+    margin-left: 380px;
     font-weight: 100;
   }
 
   .metadataNav {
-    :global {
-      .ant-card-body {
-        padding: 0;
-      }
+    :deep(.ant-card-body) {
+      padding: 0;
     }
   }
 }

@@ -1,7 +1,5 @@
 import type { Slots } from 'vue'
 import { TOKEN_KEY } from '@/utils/variable'
-import { Terms } from 'components/Search/types'
-import { urlReg } from '@/utils/regular'
 
 /**
  * 静态图片资源处理
@@ -38,6 +36,10 @@ export const LocalStore = {
 
 export const getToken = () => {
   return LocalStore.get(TOKEN_KEY)
+}
+
+export const cleanToken = () => {
+  LocalStore.remove(TOKEN_KEY)
 }
 
 /**
