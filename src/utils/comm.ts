@@ -1,5 +1,5 @@
+import type { Slots } from 'vue'
 import { TOKEN_KEY } from '@/utils/variable'
-import { Terms } from 'components/Search/types'
 
 /**
  * 静态图片资源处理
@@ -10,32 +10,36 @@ export const getImage = (path: string) => {
 }
 
 export const LocalStore = {
-    set(key: string, data: any) {
-        localStorage.setItem(key, typeof data === 'string' ? data : JSON.stringify(data))
-    },
-    get(key: string) {
-        const dataStr = localStorage.getItem(key)
-        try {
-            if (dataStr) {
-                const data = JSON.parse(dataStr)
-                return data && typeof data === 'object' ? data : dataStr
-            } else {
-                return dataStr
-            }
-        } catch (e) {
-            return dataStr
-        }
-    },
-    remove(key: string) {
-        localStorage.removeItem(key)
-    },
-    removeAll() {
-        localStorage.clear()
+  set(key: string, data: any) {
+    localStorage.setItem(key, typeof data === 'string' ? data : JSON.stringify(data))
+  },
+  get(key: string) {
+    const dataStr = localStorage.getItem(key)
+    try {
+      if (dataStr) {
+        const data = JSON.parse(dataStr)
+        return data && typeof data === 'object' ? data : dataStr
+      } else {
+        return dataStr
+      }
+    } catch (e) {
+      return dataStr
     }
+  },
+  remove(key: string) {
+    localStorage.removeItem(key)
+  },
+  removeAll() {
+    localStorage.clear()
+  }
 }
 
 export const getToken = () => {
-    return LocalStore.get(TOKEN_KEY)
+  return LocalStore.get(TOKEN_KEY)
+}
+
+export const cleanToken = () => {
+  LocalStore.remove(TOKEN_KEY)
 }
 
 /**
@@ -45,7 +49,7 @@ export const getToken = () => {
  * @param key
  */
 export const filterTreeSelectNode = (value: string, treeNode: any, key: string = 'name'): boolean => {
-    return treeNode[key]?.includes(value)
+  return treeNode[key]?.includes(value)
 }
 
 /**
@@ -55,13 +59,28 @@ export const filterTreeSelectNode = (value: string, treeNode: any, key: string =
  * @param key
  */
 export const filterSelectNode = (value: string, option: any, key: string = 'label'): boolean => {
-    return option[key]?.includes(value)
+  return option[key]?.includes(value)
+}
+
+export function getSlot<T>(slots: Slots, props: Record<string, unknown>, prop = 'default'): T | false {
+  if (props[prop] === false) {
+    // force not render
+    return false
+  }
+  return (props[prop] || slots[prop]) as T
+}
+
+export function getSlotVNode<T>(slots: Slots, props: Record<string, unknown>, prop = 'default'): T | false {
+  if (props[prop] === false) {
+    return false;
+  }
+  return (props[prop] || slots[prop]?.()) as T;
 }
 
 /**
  * 时间转换为'2022-01-02 14:03:05'
  * @param date 时间对象
- * @returns 
+ * @returns
  */
 export const dateFormat = (dateSouce:any):string|Error => {
     let date = null
@@ -82,5 +101,5 @@ export const dateFormat = (dateSouce:any):string|Error => {
     minutes = (minutes < 10) ? '0' + minutes : minutes;
     seconds = (seconds < 10) ? '0' + seconds : seconds;
     return year + "-" + month + "-" + day
-        + " " + hour + ":" + minutes + ":" + seconds;
+      + " " + hour + ":" + minutes + ":" + seconds;
 }

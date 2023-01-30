@@ -1,0 +1,23 @@
+.page-container {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .page-container-grid-content {
+    padding: 24px;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    > div, .page-container-children-content, .page-container-full-height {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .children-full-height {
+      > :nth-child(1) {
+        min-height: 100%;
+      }
+    }
+  }
+}

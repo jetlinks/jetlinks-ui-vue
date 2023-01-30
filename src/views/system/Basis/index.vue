@@ -1,4 +1,5 @@
 <template>
+  <page-container>
     <a-card class="basis-container">
         <a-form
             layout="vertical"
@@ -277,6 +278,7 @@
             >保存</a-button
         >
     </a-card>
+  </page-container>
 </template>
 
 <script setup lang="ts" name="Basis">
@@ -289,6 +291,7 @@ import { LocalStore } from '@/utils/comm';
 
 import { save_api, getDetails_api } from '@/api/system/basis';
 import { usePermissionStore } from '@/store/permission';
+import PageContainer from 'components/Layout/components/PageContainer'
 
 const action = ref<string>(`${BASE_API_PATH}/file/static`);
 const headers = ref({ [TOKEN_KEY]: LocalStore.get(TOKEN_KEY) });

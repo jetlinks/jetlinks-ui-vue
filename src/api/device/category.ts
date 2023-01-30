@@ -16,7 +16,7 @@ export const queryTree = (params?: Record<string, any>) => server.post<CategoryI
  /**
   * 根据Id修改
   */
- export const updateTree = (data: any, id:string) => server.put(`/device/category/${id}`, data)
+ export const updateTree = (id:string,data: any,) => server.put(`/device/category/${id}`, data)
 
  /**
   * 根据Id删除数据
