@@ -3,7 +3,7 @@
         <a-card style="margin-bottom: 20px">
             <Search
                 :columns="columns"
-                target="notice-config"
+                target="search"
                 @search="handleSearch"
             />
         </a-card>
