@@ -5,7 +5,12 @@
     v-model:collapsed="state.collapsed"
     v-model:selectedKeys="state.selectedKeys"
     :pure='state.pure'
+    :breadcrumb='{ routes: breadcrumb }'
   >
+    <template #breadcrumbRender='slotProps'>
+      <a v-if='slotProps.route.index !== 0'>{{slotProps.route.breadcrumbName}}</a>
+      <span v-else>{{slotProps.route.breadcrumbName}}</span>
+    </template>
     <router-view v-slot='{ Component}'>
       <component :is='Component' />
     </router-view>
@@ -25,6 +30,7 @@ type StateType = {
 }
 
 const router = useRouter()
+const route = useRoute()
 
 const menu = useMenuStore()
 
@@ -43,6 +49,16 @@ const state = reactive<StateType>({
   selectedKeys: [],
 });
 
+const breadcrumb = computed(() =>
+  router.currentRoute.value.matched.concat().map((item, index) => {
+    return {
+      index,
+      path: item.path,
+      breadcrumbName: item.meta.title || ''
+    }
+  })
+)
+
 watchEffect(() => {
   if (router.currentRoute) {
     const matched = router.currentRoute.value.matched.concat()
@@ -51,6 +67,14 @@ watchEffect(() => {
     console.log(state.selectedKeys)
   }
   // TODO 获取当前路由中参数，用于控制pure
+})
+
+watchEffect(() => {
+  if (route.query && 'layout' in route.query && route.query.layout === 'false') {
+    state.pure = true
+  } else {
+    state.pure = false
+  }
 })
 
 </script>

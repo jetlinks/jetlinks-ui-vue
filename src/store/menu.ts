@@ -52,13 +52,13 @@ export const useMenuStore = defineStore({
         const resp = await queryOwnThree({ paging: false, terms: params })
         if (resp.success) {
           const menus = filterAsnycRouter(resp.result)
-          // menus.push({
-          //   path: '/',
-          //   redirect: menus[0]?.path,
-          //   meta: {
-          //     hideInMenu: true
-          //   }
-          // })
+          menus.push({
+            path: '/',
+            redirect: menus[0]?.path,
+            meta: {
+              hideInMenu: true
+            }
+          })
           this.menus = menus
           res(menus)
         }
