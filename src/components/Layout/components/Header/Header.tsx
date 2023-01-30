@@ -8,7 +8,6 @@ import { defaultSettingProps } from 'components/Layout/defaultSetting'
 import PropTypes from 'ant-design-vue/es/_util/vue-types'
 import { CustomRender, MenuDataItem, ProProps, RightContentRender, WithFalse } from 'components/Layout/typings'
 import './index.less'
-import { omit } from 'lodash-es'
 import { RouteRecordRaw } from 'vue-router'
 import { clearMenuItem } from 'components/Layout/utils'
 
