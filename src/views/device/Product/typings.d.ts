@@ -177,3 +177,15 @@ type ObserverMetadata = {
   subscribe: (data: any) => void;
   next: (data: any) => void;
 };
+
+// 部门
+export type DepartmentItem = {
+  id: string;
+  name: string;
+  path: string;
+  sortIndex: number;
+  level: number;
+  code: string;
+  parentId: string;
+  children: DepartmentItem[];
+};
