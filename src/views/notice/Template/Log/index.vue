@@ -10,7 +10,7 @@
         <JTable
             ref="instanceRef"
             :columns="columns"
-            :request="(e:any) => configApi.getHistory(e, data.id)"
+            :request="(e:any) => templateApi.getHistory(e, data.id)"
             :defaultParams="{
                 sorts: [{ name: 'notifyTime', order: 'desc' }],
                 terms: [{ column: 'notifyType$IN', value: data.type }],
@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import configApi from '@/api/notice/config';
+import templateApi from '@/api/notice/template';
 import { PropType } from 'vue';
 import moment from 'moment';
 import { Modal } from 'ant-design-vue';

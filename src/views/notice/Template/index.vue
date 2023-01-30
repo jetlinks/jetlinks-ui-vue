@@ -179,7 +179,7 @@ const params = ref<Record<string, any>>({});
 
 const columns = [
     {
-        title: '配置名称',
+        title: '模板名称',
         dataIndex: 'name',
         key: 'name',
         search: {
@@ -234,9 +234,9 @@ const columns = [
  * @param params
  */
 const handleSearch = (e: any) => {
-    console.log('handleSearch:', e);
+    // console.log('handleSearch:', e);
     params.value = e;
-    console.log('params.value: ', params.value);
+    // console.log('params.value: ', params.value);
 };
 
 /**
@@ -340,6 +340,17 @@ const getActions = (
         },
         {
             key: 'debug',
+            text: '导出',
+            tooltip: {
+                title: '导出',
+            },
+            icon: 'ArrowDownOutlined',
+            onClick: () => {
+                downloadObject(data, `通知配置`);
+            },
+        },
+        {
+            key: 'debug',
             text: '通知记录',
             tooltip: {
                 title: '通知记录',
@@ -348,17 +359,6 @@ const getActions = (
             onClick: () => {
                 logVis.value = true;
                 currentConfig.value = data;
-            },
-        },
-        {
-            key: 'debug',
-            text: '导出',
-            tooltip: {
-                title: '导出',
-            },
-            icon: 'ArrowDownOutlined',
-            onClick: () => {
-                downloadObject(data, `通知配置`);
             },
         },
         {
