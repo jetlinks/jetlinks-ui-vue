@@ -71,6 +71,10 @@ export default [
         path: '/device/Instance',
         component: () => import('@/views/device/Instance/index.vue')
     },
+    {
+        path: '/device/Instance/detail/:id',
+        component: () => import('@/views/device/Instance/detail.vue')
+    },
     // link 运维管理
     {
         path: '/link/log',
