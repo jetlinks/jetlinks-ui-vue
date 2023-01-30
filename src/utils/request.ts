@@ -118,6 +118,7 @@ const errorHandler = (error: any) => {
         const status = error.response.status
         if (status === 403) {
             Notification.error({
+                key: '403',
                 message: 'Forbidden',
                 description: (data.message + '').substr(0, 90)
             })
@@ -129,22 +130,25 @@ const errorHandler = (error: any) => {
             }, 0)
         } else if (status === 500) {
             Notification.error({
+                key: '500',
                 message: 'Server Side Error',
                 description: (data.message + '').substr(0, 90)
             })
         } else if (status === 400) {
             Notification.error({
+                key: '400',
                 message: 'Request Error',
                 description: (data.message + '').substr(0, 90)
             })
         } else if (status === 401) {
             Notification.error({
+                key: '401',
                 message: 'Unauthorized',
                 description: 'Authorization verification failed'
             })
             setTimeout(() => {
                 router.replace({
-                    name: 'login'
+                    path: LoginPath
                 })
             }, 0)
         }
