@@ -53,7 +53,7 @@ const productList = ref<[productItem] | []>([]);
 
 const getContainer = () => proxy?.$refs.modal as HTMLElement;
 const getOptions = () => {
-    getProductList_api().then((resp) => {
+    getProductList_api().then((resp:any) => {
         productList.value = resp.result
             .filter((i: any) => !i?.accessId)
             .map((item: { name: any; id: any }) => ({
@@ -63,7 +63,7 @@ const getOptions = () => {
     });
 };
 const handleOk = () => {
-    emits('confirm', form.value);
+    emits('confirm', form.value.productId);
     visible.value = false;
 };
 const filterOption = (input: string, option: any) => {

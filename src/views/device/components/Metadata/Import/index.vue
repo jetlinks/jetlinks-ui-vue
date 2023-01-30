@@ -47,14 +47,16 @@ import { saveMetadata } from '@/api/device/instance'
 import { queryNoPagingPost, convertMetadata, modify } from '@/api/device/product'
 import type { DefaultOptionType } from 'ant-design-vue/es/select';
 import { UploadProps } from 'ant-design-vue/es';
-import type { DeviceMetadata } from '@/views/device/Product/typings'
+import type { DeviceMetadata, ProductItem } from '@/views/device/Product/typings'
 import { message } from 'ant-design-vue/es';
 import { Store } from 'jetlinks-store';
 import { SystemConst } from '@/utils/consts';
 import { useInstanceStore } from '@/store/instance'
+import { useProductStore } from '@/store/product';
 
 const route = useRoute()
 const instanceStore = useInstanceStore()
+const productStore = useProductStore()
 
 interface Props {
   visible: boolean,
@@ -191,8 +193,10 @@ const handleImport = async () => {
         const { id } = route.params || {}
         if (props?.type === 'device') {
           await saveMetadata(id as string, metadata)
+          instanceStore.setCurrent(JSON.parse(metadata || '{}'))
         } else {
           await modify(id as string, { metadata: metadata })
+          productStore.setCurrent(JSON.parse(metadata || '{}'))
         }
         loading.value = false
         // MetadataAction.insert(JSON.parse(metadata || '{}'));
@@ -231,10 +235,12 @@ const handleImport = async () => {
           if (props?.type === 'device') {
             const metadata: DeviceMetadata = JSON.parse(paramsDevice || '{}')
             // MetadataAction.insert(metadata);
+            instanceStore.setCurrent(metadata)
             message.success('导入成功')
           } else {
-            const metadata: DeviceMetadata = JSON.parse(params?.metadata || '{}')
+            const metadata: ProductItem = JSON.parse(params?.metadata || '{}')
             // MetadataAction.insert(metadata);
+            productStore.setCurrent(metadata)
             message.success('导入成功')
           }
         }

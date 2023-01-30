@@ -1,171 +1,172 @@
 <template>
     <div class="page-container">
-        <a-card style="margin-bottom: 20px">
-            <Search
-                :columns="columns"
-                target="notice-config"
-                @search="handleSearch"
-            />
-        </a-card>
-        <a-card>
-            <JTable
-                ref="instanceRef"
-                :columns="columns"
-                :request="configApi.list"
-                :defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
-                :params="params"
-            >
-                <template #headerTitle>
-                    <a-space>
-                        <a-button type="primary" @click="handleAdd">
-                            新增
-                        </a-button>
-                        <a-upload
-                            name="file"
-                            accept="json"
-                            :showUploadList="false"
-                            :before-upload="beforeUpload"
-                        >
-                            <a-button>导入</a-button>
-                        </a-upload>
-                        <a-button @click="handleExport">导出</a-button>
-                    </a-space>
-                </template>
-                <template #card="slotProps">
-                    <CardBox
-                        :showStatus="false"
-                        :value="slotProps"
-                        :actions="getActions(slotProps, 'card')"
-                        v-bind="slotProps"
+        <Search
+            :columns="columns"
+            target="notice-config"
+            @search="handleSearch"
+        />
+        <JTable
+            ref="configRef"
+            :columns="columns"
+            :request="ConfigApi.list"
+            :defaultParams="{
+                sorts: [{ name: 'createTime', order: 'desc' }],
+            }"
+            :params="params"
+        >
+            <template #headerTitle>
+                <a-space>
+                    <a-button type="primary" @click="handleAdd">
+                        新增
+                    </a-button>
+                    <a-upload
+                        name="file"
+                        accept="json"
+                        :showUploadList="false"
+                        :before-upload="beforeUpload"
                     >
-                        <template #img>
-                            <slot name="img">
-                                <img
-                                    :src="
-                                        getLogo(
-                                            slotProps.type,
-                                            slotProps.provider,
-                                        )
-                                    "
-                                />
-                            </slot>
-                        </template>
-                        <template #content>
-                            <h3 class="card-item-content-title">
-                                {{ slotProps.name }}
-                            </h3>
-                            <a-row>
-                                <a-col :span="12">
-                                    <div class="card-item-content-text">
-                                        通知方式
-                                    </div>
-                                    <div>
-                                        {{ getMethodTxt(slotProps.type) }}
-                                    </div>
-                                </a-col>
-                                <a-col :span="12">
-                                    <div class="card-item-content-text">
-                                        说明
-                                    </div>
-                                    <div>{{ slotProps.description }}</div>
-                                </a-col>
-                            </a-row>
-                        </template>
-                        <template #actions="item">
-                            <a-tooltip
-                                v-bind="item.tooltip"
-                                :title="item.disabled && item.tooltip.title"
-                            >
-                                <a-popconfirm
-                                    v-if="item.popConfirm"
-                                    v-bind="item.popConfirm"
-                                    :disabled="item.disabled"
-                                >
-                                    <a-button :disabled="item.disabled">
-                                        <AIcon
-                                            type="DeleteOutlined"
-                                            v-if="item.key === 'delete'"
-                                        />
-                                        <template v-else>
-                                            <AIcon :type="item.icon" />
-                                            <span>{{ item.text }}</span>
-                                        </template>
-                                    </a-button>
-                                </a-popconfirm>
-                                <template v-else>
-                                    <a-button
-                                        :disabled="item.disabled"
-                                        @click="item.onClick"
-                                    >
-                                        <AIcon
-                                            type="DeleteOutlined"
-                                            v-if="item.key === 'delete'"
-                                        />
-                                        <template v-else>
-                                            <AIcon :type="item.icon" />
-                                            <span>{{ item.text }}</span>
-                                        </template>
-                                    </a-button>
-                                </template>
-                            </a-tooltip>
-                        </template>
-                    </CardBox>
-                </template>
-                <template #action="slotProps">
-                    <a-space :size="16">
+                        <a-button>导入</a-button>
+                    </a-upload>
+                    <a-popconfirm
+                        title="确认导出当前页数据？"
+                        ok-text="确定"
+                        cancel-text="取消"
+                        @confirm="handleExport"
+                    >
+                        <a-button>导出</a-button>
+                    </a-popconfirm>
+                </a-space>
+            </template>
+            <template #card="slotProps">
+                <CardBox
+                    :showStatus="false"
+                    :value="slotProps"
+                    :actions="getActions(slotProps, 'card')"
+                    v-bind="slotProps"
+                >
+                    <template #img>
+                        <slot name="img">
+                            <img
+                                :src="
+                                    getLogo(slotProps.type, slotProps.provider)
+                                "
+                            />
+                        </slot>
+                    </template>
+                    <template #content>
+                        <h3 class="card-item-content-title">
+                            {{ slotProps.name }}
+                        </h3>
+                        <a-row>
+                            <a-col :span="12">
+                                <div class="card-item-content-text">
+                                    通知方式
+                                </div>
+                                <div>
+                                    {{ getMethodTxt(slotProps.type) }}
+                                </div>
+                            </a-col>
+                            <a-col :span="12">
+                                <div class="card-item-content-text">说明</div>
+                                <div>{{ slotProps.description }}</div>
+                            </a-col>
+                        </a-row>
+                    </template>
+                    <template #actions="item">
                         <a-tooltip
-                            v-for="i in getActions(slotProps, 'table')"
-                            :key="i.key"
-                            v-bind="i.tooltip"
+                            v-bind="item.tooltip"
+                            :title="item.disabled && item.tooltip.title"
                         >
                             <a-popconfirm
-                                v-if="i.popConfirm"
-                                v-bind="i.popConfirm"
-                                :disabled="i.disabled"
+                                v-if="item.popConfirm"
+                                v-bind="item.popConfirm"
+                                :disabled="item.disabled"
                             >
-                                <a-button
-                                    :disabled="i.disabled"
-                                    style="padding: 0"
-                                    type="link"
-                                    ><AIcon :type="i.icon"
-                                /></a-button>
+                                <a-button :disabled="item.disabled">
+                                    <AIcon
+                                        type="DeleteOutlined"
+                                        v-if="item.key === 'delete'"
+                                    />
+                                    <template v-else>
+                                        <AIcon :type="item.icon" />
+                                        <span>{{ item.text }}</span>
+                                    </template>
+                                </a-button>
                             </a-popconfirm>
+                            <template v-else>
+                                <a-button
+                                    :disabled="item.disabled"
+                                    @click="item.onClick"
+                                >
+                                    <AIcon
+                                        type="DeleteOutlined"
+                                        v-if="item.key === 'delete'"
+                                    />
+                                    <template v-else>
+                                        <AIcon :type="item.icon" />
+                                        <span>{{ item.text }}</span>
+                                    </template>
+                                </a-button>
+                            </template>
+                        </a-tooltip>
+                    </template>
+                </CardBox>
+            </template>
+            <template #action="slotProps">
+                <a-space :size="16">
+                    <a-tooltip
+                        v-for="i in getActions(slotProps, 'table')"
+                        :key="i.key"
+                        v-bind="i.tooltip"
+                    >
+                        <a-popconfirm
+                            v-if="i.popConfirm"
+                            v-bind="i.popConfirm"
+                            :disabled="i.disabled"
+                        >
                             <a-button
+                                :disabled="i.disabled"
                                 style="padding: 0"
                                 type="link"
-                                v-else
-                                @click="i.onClick && i.onClick(slotProps)"
-                            >
-                                <a-button
-                                    :disabled="i.disabled"
-                                    style="padding: 0"
-                                    type="link"
-                                    ><AIcon :type="i.icon"
-                                /></a-button>
-                            </a-button>
-                        </a-tooltip>
-                    </a-space>
-                </template>
-            </JTable>
-        </a-card>
+                                ><AIcon :type="i.icon"
+                            /></a-button>
+                        </a-popconfirm>
+                        <a-button
+                            style="padding: 0"
+                            type="link"
+                            v-else
+                            @click="i.onClick && i.onClick(slotProps)"
+                        >
+                            <a-button
+                                :disabled="i.disabled"
+                                style="padding: 0"
+                                type="link"
+                                ><AIcon :type="i.icon"
+                            /></a-button>
+                        </a-button>
+                    </a-tooltip>
+                </a-space>
+            </template>
+        </JTable>
 
         <Debug v-model:visible="debugVis" :data="currentConfig" />
+        <Log v-model:visible="logVis" :data="currentConfig" />
+        <SyncUser v-model:visible="syncVis" :data="currentConfig" />
     </div>
 </template>
 
 <script setup lang="ts">
-import configApi from '@/api/notice/config';
+import ConfigApi from '@/api/notice/config';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage, LocalStore } from '@/utils/comm';
 import { message } from 'ant-design-vue';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 
 import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
-import SyncUser from './SyncUser/index.vue'
-import Debug from './Debug/index.vue'
-import Log from './Log/index.vue'
+import SyncUser from './SyncUser/index.vue';
+import Debug from './Debug/index.vue';
+import Log from './Log/index.vue';
+import { downloadObject } from '@/utils/utils';
 
 let providerList: any = [];
 Object.keys(MSG_TYPE).forEach((key) => {
@@ -174,7 +175,7 @@ Object.keys(MSG_TYPE).forEach((key) => {
 
 const router = useRouter();
 
-const instanceRef = ref<Record<string, any>>({});
+const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 
 const columns = [
@@ -236,6 +237,7 @@ const columns = [
 const handleSearch = (e: any) => {
     console.log('handleSearch:', e);
     params.value = e;
+    console.log('params.value: ', params.value);
 };
 
 /**
@@ -261,12 +263,39 @@ const handleAdd = () => {
 /**
  * 导入
  */
-const beforeUpload = () => {};
+const beforeUpload = (file: any) => {
+    console.log('file: ', file);
+    const reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = async (result) => {
+        const text = result.target?.result;
+        console.log('text: ', text);
+        if (!file.type.includes('json')) {
+            message.error('请上传json格式文件');
+            return false;
+        }
+        try {
+            const data = JSON.parse(text || '{}');
+            const { success } = await ConfigApi.update(data);
+            if (success) {
+                message.success('操作成功');
+                configRef.value.reload();
+            }
+            return true;
+        } catch {
+            // message.error('请上传json格式文件');
+        }
+        return true;
+    };
+    return false;
+};
 
 /**
  * 导出
  */
-const handleExport = () => {};
+const handleExport = () => {
+    downloadObject(configRef.value.dataSource, `通知配置`);
+};
 
 /**
  * 查看
@@ -330,26 +359,19 @@ const getActions = (
             },
             icon: 'ArrowDownOutlined',
             onClick: () => {
-                // debugVis.value = true;
+                downloadObject(data, `通知配置`);
             },
         },
         {
             key: 'delete',
             text: '删除',
-            // disabled: data.state.value !== 'notActive',
-            // tooltip: {
-            //     title:
-            //         data.state.value !== 'notActive'
-            //             ? '已启用的设备不能删除'
-            //             : '删除',
-            // },
             popConfirm: {
                 title: '确认删除?',
                 onConfirm: async () => {
-                    const resp = await configApi.del(data.id);
+                    const resp = await ConfigApi.del(data.id);
                     if (resp.status === 200) {
                         message.success('操作成功！');
-                        // instanceRef.value?.reload();
+                        configRef.value?.reload();
                     } else {
                         message.error('操作失败！');
                     }
@@ -358,8 +380,6 @@ const getActions = (
             icon: 'DeleteOutlined',
         },
     ];
-    if (type === 'card')
-        return actions.filter((i: ActionsType) => i.key !== 'view');
     return actions;
 };
 </script>
