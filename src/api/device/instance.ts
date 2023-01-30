@@ -1,6 +1,7 @@
+import { LocalStore } from '@/utils/comm'
 import server from '@/utils/request'
-import { BASE_API_PATH } from '@/utils/variable'
-import { DeviceInstance } from '@/views/device/instance/typings'
+import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable'
+import { DeviceInstance } from '@/views/device/Instance/typings'
 
 /**
  * 删除设备物模型
@@ -97,5 +98,5 @@ export const batchDeleteDevice = (data: string[]) => server.put(`/device-instanc
   * @param type 文件类型
   * @returns 
   */
-  export const deviceExport = (productId: string, type: string) => `${BASE_API_PATH}/device-instance${!!productId ? '/' + productId : ''}/export.${type}`
+export const deviceExport = (productId: string, type: string) => `${BASE_API_PATH}/device-instance${!!productId ? '/' + productId : ''}/export.${type}`
  

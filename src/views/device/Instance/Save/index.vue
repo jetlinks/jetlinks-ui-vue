@@ -4,8 +4,8 @@
             <a-form :layout="'vertical'">
                 <a-row type="flex">
                     <a-col flex="180px">
-                        <a-form-item required>
-                            <JUpload />
+                        <a-form-item required name="photoUrl">
+                            <JUpload v-model:value="modelRef.photoUrl" />
                         </a-form-item>
                     </a-col>
                     <a-col flex="auto">
@@ -32,6 +32,7 @@
 
 <script lang="ts" setup>
 import { queryNoPagingPost } from '@/api/device/product'
+import { getImage } from '@/utils/comm';
 import { Form } from 'ant-design-vue';
 
 const emit = defineEmits(['close', 'save'])
@@ -49,7 +50,7 @@ const modelRef = reactive({
     id: '',
     name: '',
     describe: '',
-    photoUrl: ''
+    photoUrl: getImage('/device/instance/device-card.png')
 });
 
 watch(

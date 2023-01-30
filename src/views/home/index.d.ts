@@ -8,7 +8,11 @@ export interface recommendList {
     auth: boolean;
     dialogTag?: 'accessMethod' | 'funcTest';
 }
-
+// 产品列表里的每项
+export interface productItem {
+    label: string;
+    value: string
+}
 export interface deviceInfo {
     deviceId: string,
     deviceName: string,

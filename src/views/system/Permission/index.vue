@@ -1,6 +1,6 @@
 <template>
     <div class="permission-container">
-        <Search :columns="query.columns" />
+        <Search :columns="query.columns" @search="query.search" />
 
         <JTable
             ref="tableRef"
@@ -11,9 +11,40 @@
             :defaultParams="{ sorts: [{ name: 'id', order: 'asc' }] }"
         >
             <template #headerTitle>
-                <a-button type="primary" @click="table.openDialog(undefined)"
+                <a-button
+                    type="primary"
+                    @click="table.openDialog(undefined)"
+                    style="margin-right: 10px"
                     ><plus-outlined />新增</a-button
                 >
+                <a-dropdown trigger="hover">
+                    <a-button>批量操作</a-button>
+                    <template #overlay>
+                        <a-menu>
+                            <a-menu-item>
+                                <a-upload
+                                    name="file"
+                                    action="#"
+                                    accept=".json"
+                                    :showUploadList="false"
+                                    :before-upload="table.clickImport"
+                                >
+                                    <a-button>导入</a-button>
+                                </a-upload>
+                            </a-menu-item>
+                            <a-menu-item>
+                                <a-popconfirm
+                                    title="确认导出？"
+                                    ok-text="确定"
+                                    cancel-text="取消"
+                                    @confirm="table.clickExport"
+                                >
+                                    <a-button>导出</a-button>
+                                </a-popconfirm>
+                            </a-menu-item>
+                        </a-menu>
+                    </template>
+                </a-dropdown>
             </template>
             <template #status="slotProps">
                 <StatusLabel :status-value="slotProps.status" />
@@ -51,18 +82,27 @@
                     </a-popconfirm>
 
                     <a-popconfirm
-                        title="确定要删除吗？"
+                        title="确认删除"
                         ok-text="确定"
                         cancel-text="取消"
                         @confirm="table.clickDel(slotProps)"
                         :disabled="slotProps.status"
                     >
                         <a-tooltip>
-                            <template #title>删除</template>
+                            <template #title>{{
+                                systemPermission('delete')
+                                    ? slotProps.status
+                                        ? '请先禁用，再删除'
+                                        : '删除'
+                                    : '暂无权限，请联系管理员'
+                            }}</template>
                             <a-button
                                 style="padding: 0"
                                 type="link"
-                                :disabled="slotProps.status"
+                                :disabled="
+                                    !systemPermission('delete') ||
+                                    slotProps.status
+                                "
                             >
                                 <delete-outlined />
                             </a-button>
@@ -73,7 +113,7 @@
         </JTable>
 
         <div class="dialogs">
-            <EditDialog ref="editDialogRef" />
+            <EditDialog ref="editDialogRef" @refresh="table.refresh" />
         </div>
     </div>
 </template>
@@ -89,11 +129,22 @@ import {
     StopOutlined,
     PlayCircleOutlined,
 } from '@ant-design/icons-vue';
-import { getPermission_api, editPermission_api } from '@/api/system/permission';
+import {
+    getPermission_api,
+    editPermission_api,
+    delPermission_api,
+    exportPermission_api,
+} from '@/api/system/permission';
+import { downloadObject } from '@/utils/utils';
+import { usePermissionStore } from '@/store/permission';
 
 const editDialogRef = ref(); // 新增弹窗实例
 const tableRef = ref<Record<string, any>>({}); // 表格实例
 
+// 按钮权限控制
+const hasPermission = usePermissionStore().hasPermission;
+const systemPermission = (code: string) =>
+    hasPermission('system/Permission:${code}');
 // 筛选
 const query = reactive({
     columns: [
@@ -138,6 +189,9 @@ const query = reactive({
         },
     ],
     params: {},
+    search: (params: object) => {
+        query.params = params;
+    },
 });
 
 // 表格
@@ -167,10 +221,55 @@ const table = reactive({
         },
     ],
     tableData: [],
+    // 打开编辑弹窗
     openDialog: (row: object | undefined = {}) => {
-        editDialogRef.value.openDialog(true, row);
+        let permissionCode = '';
+        if (Object.keys(row).length < 1) permissionCode = 'add';
+        else permissionCode = 'update';
+        if (systemPermission(permissionCode))
+            editDialogRef.value.openDialog(true, row);
+        else message.warn('暂无权限，请联系管理员');
     },
+    // 导入数据
+    clickImport: (file: File) => {
+        if (file.type === 'application/json') {
+            const reader = new FileReader();
+            reader.readAsText(file);
+            reader.onload = (result: any) => {
+                try {
+                    const data = JSON.parse(result.target.result);
+                    editPermission_api(data).then((resp) => {
+                        if (resp.status === 200) {
+                            message.success('导入成功');
+                            table.refresh();
+                        }
+                    });
+                } catch (error) {
+                    message.error('导入失败，请重试！');
+                }
+            };
+        } else message.error('请上传json格式');
+        return false;
+    },
+    // 导出数据
+    clickExport: () => {
+        const params = {
+            paging: false,
+            ...query.params,
+        };
+        exportPermission_api(params).then((resp) => {
+            if (resp.status === 200) {
+                downloadObject(resp.result as any, '权限数据');
+                message.success('导出成功');
+            } else {
+                message.error('导出错误');
+            }
+        });
+    },
+    // 修改状态
     changeStatus: (row: any) => {
+        if (!systemPermission('action'))
+            return message.warn('暂无权限，请联系管理员');
         const params = {
             ...row,
             status: row.status ? 0 : 1,
@@ -180,14 +279,16 @@ const table = reactive({
             tableRef.value.reload();
         });
     },
+    // 删除
     clickDel: (row: any) => {
-        // delRole_api(row.id).then((resp: any) => {
-        //     if (resp.status === 200) {
-        //         tableRef.value?.reload();
-        //         message.success('操作成功!');
-        //     }
-        // });
+        delPermission_api(row.id).then((resp: any) => {
+            if (resp.status === 200) {
+                tableRef.value?.reload();
+                message.success('操作成功!');
+            }
+        });
     },
+    // 刷新列表
     refresh: () => {
         tableRef.value.reload();
     },

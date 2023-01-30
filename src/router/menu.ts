@@ -127,6 +127,10 @@ export default [
       path: '/iot-card/Dashboard',
       component: () => import('@/views/iot-card/Dashboard/index.vue')
     },
+    {
+      path: '/iot-card/CardManagement',
+      component: () => import('@/views/iot-card/CardManagement/index.vue')
+    },
     // 北向输出
     {
         path: '/northbound/DuerOS',

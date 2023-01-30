@@ -1,70 +1,213 @@
 <template>
-    <a-upload
-        v-model:file-list="fileList"
-        name="avatar"
-        list-type="picture-card"
-        class="avatar-uploader"
-        :show-upload-list="false"
-        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-        :before-upload="beforeUpload"
-        @change="handleChange"
-    >
-        <img v-if="imageUrl" :src="imageUrl" alt="avatar" />
-        <div v-else>
-            <loading-outlined v-if="loading"></loading-outlined>
-            <plus-outlined v-else></plus-outlined>
-            <div class="ant-upload-text">Upload</div>
+    <div class="upload-image-warp">
+        <div class="upload-image-border">
+            <a-upload
+                name="file"
+                list-type="picture-card"
+                class="avatar-uploader"
+                :show-upload-list="false"
+                :before-upload="beforeUpload"
+                @change="handleChange"
+                :action="FILE_UPLOAD"
+                :headers="{
+                    'X-Access-Token': LocalStore.get(TOKEN_KEY)
+                }"
+                v-bind="props"
+            >
+                <div class="upload-image-content" :style="props.style">
+                    <template v-if="myValue">
+                        <!-- <div class="upload-image"
+                        :style="{
+                            backgroundSize: props.backgroundSize,
+                            backgroundImage: `url(${imageUrl})`
+                        }"
+                        ></div> -->
+                        <img :src="myValue" class="upload-image" />
+                        <div class="upload-image-mask">点击修改</div>
+                    </template>
+                    <template v-else>
+                        <AIcon type="LoadingOutlined" v-if="loading" style="font-size: 20px" />
+                        <AIcon v-else type="PlusOutlined" style="font-size: 20px" />
+                    </template>
+                </div>
+            </a-upload>
+            <div class="upload-loading-mask" v-if="props.disabled"></div>
+            <div class="upload-loading-mask" v-if="myValue && loading">
+                <AIcon type="LoadingOutlined" style="font-size: 20px" />
+            </div>
         </div>
-    </a-upload>
+    </div>
 </template>
 
 <script lang="ts" setup>
 import { message, UploadChangeParam, UploadProps } from 'ant-design-vue';
+import { FILE_UPLOAD } from '@/api/comm'
+import { TOKEN_KEY  } from '@/utils/variable';
+import { LocalStore } from '@/utils/comm';
+import { CSSProperties } from 'vue';
+
+type Emits = {
+    (e: 'update:modelValue', data: string): void;
+};
+interface JUploadProps extends UploadProps {
+    modelValue: string;
+    disabled?: boolean;
+    types?: string[];
+    errorMessage?: string;
+    size?: number;
+    style?: CSSProperties;
+    backgroundSize?: string;
+}
+
+const emit = defineEmits<Emits>();
+
+const props: JUploadProps = defineProps({
+    modelValue: {
+        type: String,
+        default: ''
+    },
+    disabled: {
+        type: Boolean,
+        default: false
+    },
+})
+
+const loading = ref<boolean>(false)
+const imageUrl = ref<string>(props?.modelValue || '')
+const imageTypes = props.types ? props.types : ['image/jpeg', 'image/png'];
+
+const myValue = computed({
+    get: () => {
+        return props.modelValue;
+    },
+    set: (val: any) => {
+        imageUrl.value = val;
+        emit('update:modelValue', val);
+    },
+});
 
 const handleChange = (info: UploadChangeParam) => {
-    //   if (info.file.status === 'uploading') {
-    //     loading.value = true;
-    //     return;
-    //   }
-    //   if (info.file.status === 'done') {
-    //     // Get this url from response in real world.
-    //     getBase64(info.file.originFileObj, (base64Url: string) => {
-    //       imageUrl.value = base64Url;
-    //       loading.value = false;
-    //     });
-    //   }
-    //   if (info.file.status === 'error') {
-    //     loading.value = false;
-    //     message.error('upload error');
-    //   }
+      if (info.file.status === 'uploading') {
+        loading.value = true;
+      }
+      if (info.file.status === 'done') {
+        myValue.value = info.file.response?.result
+        loading.value = false;
+        emit('update:modelValue', imageUrl.value)
+      }
+      if (info.file.status === 'error') {
+        loading.value = false;
+        message.error('上传失败');
+      }
 };
 
 const beforeUpload = (file: UploadProps['fileList'][number]) => {
-    //   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-    //   if (!isJpgOrPng) {
-    //     message.error('You can only upload JPG file!');
-    //   }
-    //   const isLt2M = file.size / 1024 / 1024 < 2;
-    //   if (!isLt2M) {
-    //     message.error('Image must smaller than 2MB!');
-    //   }
-    //   return isJpgOrPng && isLt2M;
+      const isType = imageTypes.includes(file.type);
+      if (!isType) {
+      if (props.errorMessage) {
+        message.error(props.errorMessage);
+      } else {
+        message.error(`请上传正确格式的图片`);
+      }
+      return false;
+    }
+    const isSize = file.size / 1024 / 1024 < (props.size || 4);
+    if (!isSize) {
+      message.error(`图片大小必须小于${props.size || 4}M`);
+    }
+    return isType && isSize;
 };
 </script>
 
 <style lang="less" scoped>
-.avatar-uploader {
-    width: 160px;
-    height: 160px;
-    padding: 8px;
-    background-color: rgba(0,0,0,.06);
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    :deep(.ant-upload.ant-upload-select-picture-card) {
+@border: 1px dashed @border-color-base;
+@mask-color: rgba(#000, 0.35);
+@with: 150px;
+@height: 150px;
+
+.flex-center() {
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-image-warp {
+  display: flex;
+  justify-content: flex-start;
+
+  .upload-image-border {
+    position: relative;
+    width: @with;
+    height: @height;
+    overflow: hidden;
+    //border-radius: 50%;
+    // border: @border;
+    transition: all 0.3s;
+
+    &:hover {
+      border-color: @primary-color-hover;
+    }
+
+    :deep(.ant-upload-picture-card-wrapper) {
         width: 100%;
         height: 100%;
     }
+    :deep(.ant-upload) {
+        width: 100%;
+        height: 100%;
+    }
+
+    .upload-image-content {
+      .flex-center();
+
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(#000, 0.06);
+      cursor: pointer;
+      padding: 8px;
+
+      .upload-image-mask {
+        .flex-center();
+
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: none;
+        width: 100%;
+        height: 100%;
+        color: #fff;
+        font-size: 16px;
+        background-color: @mask-color;
+      }
+
+      .upload-image {
+        width: 100%;
+        height: 100%;
+        //border-radius: 50%;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+      }
+
+      &:hover .upload-image-mask {
+        display: flex;
+      }
+    }
+  }
+
+  .upload-loading-mask {
+    .flex-center();
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    color: #fff;
+    background-color: @mask-color;
+  }
 }
 </style>

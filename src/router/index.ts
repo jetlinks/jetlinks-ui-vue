@@ -1,11 +1,12 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router'
 import menus, { LoginPath } from './menu'
-import { LocalStore } from "@/utils/comm";
-import { TOKEN_KEY } from "@/utils/variable";
+import { getToken } from '@/utils/comm'
+import { useUserInfo } from '@/store/userInfo'
+import { useSystem } from '@/store/system'
 
 const router = createRouter({
-    history: createWebHashHistory(),
-    routes: menus
+  history: createWebHashHistory(),
+  routes: menus
 })
 
 const filterPath = [
@@ -14,17 +15,45 @@ const filterPath = [
 ]
 
 router.beforeEach((to, from, next) => {
-    const token = LocalStore.get(TOKEN_KEY)
-    // TODO 切换路由取消请求
-    if (token || filterPath.includes(to.path)) {
-        next()
-    } else {
-        if (to.path === LoginPath) {
-            next()
+  // TODO 切换路由取消请求
+  const isFilterPath = filterPath.includes(to.path)
+  if (isFilterPath) {
+    next()
+  } else {
+    const token = getToken()
+    if (token) {
+      if (to.path === LoginPath) {
+        next({ path: '/' })
+      } else {
+        const userInfo = useUserInfo()
+        const system = useSystem()
+        if (!userInfo.$state.userInfos.username) {
+          userInfo.getUserInfo()
+          system.getSystemVersion().then((menuData: any[]) => {
+            menuData.forEach(r => {
+              router.addRoute('main', r)
+            })
+            const redirect = decodeURIComponent((from.query.redirect as string) || to.path)
+            if(to.path === redirect) {
+              next({ ...to, replace: true })
+            } else {
+              next({ path: redirect })
+            }
+          })
+
         } else {
-            next({ path: LoginPath })
+          next()
         }
+      }
+
+    } else {
+      if (to.path === LoginPath) {
+        next()
+      } else {
+        next({ path: LoginPath })
+      }
     }
+  }
 })
 
 export default router

@@ -109,7 +109,7 @@ const props = defineProps({
     // 组件类型
     itemType: {
         type: String,
-        default: () => 'geoPoint',
+        default: () => 'string',
     },
     // 下拉选择框下拉数据
     options: {

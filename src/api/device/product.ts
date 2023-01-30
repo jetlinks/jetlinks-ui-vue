@@ -109,4 +109,9 @@ export const deleteProduct = (id: string) => server.patch(`/device-product/${id}
  * @param id 产品ID
  */
  export const queryProductId = (id: string) => server.post(`/device-product/${id}/exists`)
- 
+/**
+ * 保存产品
+ * @param data 产品信息
+ * @returns 
+ */
+export const saveProductMetadata = (data: Record<string, unknown>) => server.patch('/device-product', data)
