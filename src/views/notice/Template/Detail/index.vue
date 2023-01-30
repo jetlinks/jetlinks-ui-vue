@@ -39,6 +39,7 @@
                             <RadioCard
                                 :options="msgType"
                                 v-model="formData.provider"
+                                @change="getConfigList"
                             />
                         </a-form-item>
                         <a-form-item
@@ -49,13 +50,14 @@
                             <a-select
                                 v-model:value="formData.configId"
                                 placeholder="请选择绑定配置"
+                                @change="handleConfigChange"
                             >
                                 <a-select-option
-                                    v-for="(item, index) in ROBOT_MSG_TYPE"
+                                    v-for="(item, index) in configList"
                                     :key="index"
-                                    :value="item.value"
+                                    :value="item.id"
                                 >
-                                    {{ item.label }}
+                                    {{ item.name }}
                                 </a-select-option>
                             </a-select>
                         </a-form-item>
@@ -120,8 +122,7 @@
                                     >
                                         <!-- <a-input
                                             v-model:value="
-                                                formData.template.markdown
-                                                    ?.title
+                                                formData.template.markdown?.title
                                             "
                                             placeholder="请输入标题"
                                         /> -->
@@ -179,58 +180,33 @@
                             <a-row :gutter="10">
                                 <a-col :span="12">
                                     <a-form-item label="收信人">
-                                        <a-select
-                                            v-model:value="
+                                        <ToUser
+                                            v-model:to-user="
                                                 formData.template.toUser
                                             "
-                                            placeholder="请选择收信人"
-                                        >
-                                            <a-select-option
-                                                v-for="(
-                                                    item, index
-                                                ) in ROBOT_MSG_TYPE"
-                                                :key="index"
-                                                :value="item.value"
-                                            >
-                                                {{ item.label }}
-                                            </a-select-option>
-                                        </a-select>
+                                            :type="formData.type"
+                                            :config-id="formData.configId"
+                                        />
                                     </a-form-item>
                                 </a-col>
                                 <a-col :span="12">
                                     <a-form-item label="收信部门">
-                                        <a-select
-                                            v-model:value="
+                                        <ToOrg
+                                            v-model:to-user="
                                                 formData.template.toParty
                                             "
-                                            placeholder="请选择收信部门"
-                                        >
-                                            <a-select-option
-                                                v-for="(
-                                                    item, index
-                                                ) in ROBOT_MSG_TYPE"
-                                                :key="index"
-                                                :value="item.value"
-                                            >
-                                                {{ item.label }}
-                                            </a-select-option>
-                                        </a-select>
+                                            :type="formData.type"
+                                            :config-id="formData.configId"
+                                        />
                                     </a-form-item>
                                 </a-col>
                             </a-row>
                             <a-form-item label="标签推送">
-                                <a-select
-                                    v-model:value="formData.template.toTag"
-                                    placeholder="请选择标签推送"
-                                >
-                                    <a-select-option
-                                        v-for="(item, index) in ROBOT_MSG_TYPE"
-                                        :key="index"
-                                        :value="item.value"
-                                    >
-                                        {{ item.label }}
-                                    </a-select-option>
-                                </a-select>
+                                <ToTag
+                                    v-model:to-user="formData.template.toTag"
+                                    :type="formData.type"
+                                    :config-id="formData.configId"
+                                />
                             </a-form-item>
                         </template>
                         <!-- 邮件 -->
@@ -246,17 +222,11 @@
                             </a-form-item>
                             <a-form-item label="收件人">
                                 <a-select
+                                    mode="tags"
+                                    :options="[]"
                                     v-model:value="formData.template.sendTo"
                                     placeholder="请选择收件人"
-                                >
-                                    <a-select-option
-                                        v-for="(item, index) in ROBOT_MSG_TYPE"
-                                        :key="index"
-                                        :value="item.value"
-                                    >
-                                        {{ item.label }}
-                                    </a-select-option>
-                                </a-select>
+                                />
                             </a-form-item>
                             <a-form-item label="附件信息">
                                 <Attachments
@@ -331,11 +301,11 @@
                                 />
                             </a-form-item>
                             <a-form-item
-                                label="模板内容"
+                                label="模版内容"
                                 v-if="formData.template.templateType === 'tts'"
                             >
                                 <a-textarea
-                                    v-model:value="formData.template.ttsCode"
+                                    v-model:value="formData.template.message"
                                     show-count
                                     :rows="5"
                                     placeholder="内容中的变量将用于阿里云语音验证码"
@@ -359,11 +329,11 @@
                                             <a-select-option
                                                 v-for="(
                                                     item, index
-                                                ) in ROBOT_MSG_TYPE"
+                                                ) in templateList"
                                                 :key="index"
-                                                :value="item.value"
+                                                :value="item.templateCode"
                                             >
-                                                {{ item.label }}
+                                                {{ item.templateName }}
                                             </a-select-option>
                                         </a-select>
                                     </a-form-item>
@@ -383,10 +353,18 @@
                                 label="签名"
                                 v-bind="validateInfos['template.signName']"
                             >
-                                <a-input
+                                <a-select
                                     v-model:value="formData.template.signName"
-                                    placeholder="请输入签名"
-                                />
+                                    placeholder="请选择签名"
+                                >
+                                    <a-select-option
+                                        v-for="(item, index) in signsList"
+                                        :key="index"
+                                        :value="item.signName"
+                                    >
+                                        {{ item.signName }}
+                                    </a-select-option>
+                                </a-select>
                             </a-form-item>
                         </template>
                         <!-- webhook -->
@@ -418,6 +396,35 @@
                                 </div>
                             </a-form-item>
                         </template>
+                        <a-form-item
+                            label="模版内容"
+                            v-if="
+                                formData.type !== 'sms' &&
+                                formData.type !== 'webhook' &&
+                                formData.type !== 'voice'
+                            "
+                        >
+                            <a-textarea
+                                v-model:value="formData.template.message"
+                                :maxlength="200"
+                                :rows="5"
+                                placeholder="变量格式:${name};
+    示例:尊敬的${name},${time}有设备触发告警,请注意处理"
+                            />
+                        </a-form-item>
+                        <a-form-item
+                            label="变量列表"
+                            v-if="
+                                formData.variableDefinitions &&
+                                formData.variableDefinitions.length
+                            "
+                        >
+                            <VariableDefinitions
+                                v-model:variableDefinitions="
+                                    formData.variableDefinitions
+                                "
+                            />
+                        </a-form-item>
                         <a-form-item label="说明">
                             <a-textarea
                                 v-model:value="formData.description"
@@ -451,7 +458,7 @@
 import { getImage } from '@/utils/comm';
 import { Form } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
-import { TemplateFormData } from '../types';
+import { IVariableDefinitions, TemplateFormData } from '../types';
 import {
     NOTICE_METHOD,
     TEMPLATE_FIELD_MAP,
@@ -462,7 +469,11 @@ import {
 import templateApi from '@/api/notice/template';
 import Doc from './doc/index';
 import MonacoEditor from '@/components/MonacoEditor/index.vue';
-import Attachments from './components/Attachments.vue'
+import Attachments from './components/Attachments.vue';
+import VariableDefinitions from './components/VariableDefinitions.vue';
+import ToUser from './components/ToUser.vue';
+import ToOrg from './components/ToOrg.vue';
+import ToTag from './components/ToTag.vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -500,12 +511,14 @@ watch(
         msgType.value = MSG_TYPE[val];
 
         formData.value.provider = msgType.value[0].value;
-        console.log('formData.value.template: ', formData.value.template);
+        // console.log('formData.value.template: ', formData.value.template);
+
+        getConfigList();
     },
 );
 
 computed(() => {
-    console.log('formData.value.type: ', formData.value.type);
+    // console.log('formData.value.type: ', formData.value.type);
     Object.assign(
         formData.value.template,
         TEMPLATE_FIELD_MAP[formData.value.type][formData.value.provider],
@@ -547,11 +560,42 @@ const { resetFields, validate, validateInfos, clearValidate } = useForm(
 watch(
     () => formData.value.type,
     () => {
+        formData.value.variableDefinitions = [];
         clearValidate();
     },
     { deep: true },
 );
 
+watch(
+    () => formData.value.template.message,
+    (val) => {
+        if (!val) return;
+        // 已经存在的变量
+        const oldKey = formData.value.variableDefinitions?.map((m) => m.id);
+        // 正则提取${}里面的值
+        const pattern = /(?<=\$\{).*?(?=\})/g;
+        const titleList = val.match(pattern)?.filter((f) => f);
+        const newKey = [...new Set(titleList)];
+        const result = newKey?.map((m) =>
+            oldKey.includes(m)
+                ? formData.value.variableDefinitions.find(
+                      (item) => item.id === m,
+                  )
+                : {
+                      id: m,
+                      name: '',
+                      type: 'string',
+                      format: '%s',
+                  },
+        );
+        formData.value.variableDefinitions = result as IVariableDefinitions[];
+    },
+    { deep: true },
+);
+
+/**
+ * 获取详情
+ */
 const getDetail = async () => {
     const res = await templateApi.detail(route.params.id as string);
     // console.log('res: ', res);
@@ -561,31 +605,87 @@ const getDetail = async () => {
 // getDetail();
 
 /**
+ * 获取绑定配置
+ */
+const configList = ref();
+const getConfigList = async () => {
+    const terms = [
+        { column: 'type$IN', value: formData.value.type },
+        { column: 'provider', value: formData.value.provider },
+    ];
+    const { result } = await templateApi.getConfig({ terms });
+    configList.value = result;
+};
+getConfigList();
+
+/**
+ * 配置选择改变
+ */
+const handleConfigChange = () => {
+    getTemplateList();
+    getSignsList();
+};
+
+/**
+ * 获取阿里模板
+ */
+const templateList = ref();
+const getTemplateList = async () => {
+    const { result } = await templateApi.getAliTemplate(
+        formData.value.configId,
+    );
+    templateList.value = result;
+};
+getTemplateList();
+
+/**
+ * 获取签名
+ */
+const signsList = ref();
+const getSignsList = async () => {
+    const { result } = await templateApi.getSigns(formData.value.configId);
+    signsList.value = result;
+};
+getSignsList();
+
+/**
  * 表单提交
  */
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
     validate()
         .then(async () => {
-            console.log('formData.value: ', formData.value);
+            // console.log('formData.value: ', formData.value);
+            formData.value.template.ttsCode =
+                formData.value.template.templateCode;
             btnLoading.value = true;
-            // let res;
-            // if (!formData.value.id) {
-            //     res = await templateApi.save(formData.value);
-            // } else {
-            //     res = await templateApi.update(formData.value);
-            // }
-            // // console.log('res: ', res);
-            // if (res?.success) {
-            //     message.success('保存成功');
-            //     router.back();
-            // }
-            btnLoading.value = false;
+            let res;
+            if (!formData.value.id) {
+                res = await templateApi.save(formData.value);
+            } else {
+                res = await templateApi.update(formData.value);
+            }
+            // console.log('res: ', res);
+            if (res?.success) {
+                message.success('保存成功');
+                router.back();
+            }
         })
         .catch((err) => {
             console.log('err: ', err);
+            btnLoading.value = false;
         });
 };
+
+// test
+watch(
+    () => formData.value,
+    (val) => {
+        console.log('formData.value: ', val);
+    },
+    { deep: true },
+);
+// test
 </script>
 
 <style lang="less" scoped>

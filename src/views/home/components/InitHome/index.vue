@@ -7,37 +7,47 @@
                 <a-col
                     :span="8"
                     class="select-item"
-                    :class="{ selected: selectId === '1' }"
-                    @click="selectId = '1'"
+                    :class="{ selected: selectValue === 'device' }"
+                    @click="selectValue = 'device'"
                 >
                     <img src="/images/home/device.png" alt="" />
                 </a-col>
                 <a-col
                     :span="8"
                     class="select-item"
-                    :class="{ selected: selectId === '2' }"
-                    @click="selectId = '2'"
+                    :class="{ selected: selectValue === 'ops' }"
+                    @click="selectValue = 'ops'"
                 >
                     <img src="/images/home/ops.png" alt="" />
                 </a-col>
                 <a-col
                     :span="8"
                     class="select-item"
-                    :class="{ selected: selectId === '3' }"
-                    @click="selectId = '3'"
+                    :class="{ selected: selectValue === 'comprehensive' }"
+                    @click="selectValue = 'comprehensive'"
                 >
                     <img src="/images/home/comprehensive.png" alt="" />
                 </a-col>
             </a-row>
-            <a-button type="primary" class="btn" @click="confirm">确定</a-button>
+            <a-button type="primary" class="btn" @click="confirm"
+                >确定</a-button
+            >
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-const selectId = ref('1');
+import { setView_api } from '@/api/home';
 
-const confirm = ()=>{}
+const emits = defineEmits(['refresh']);
+const selectValue = ref('device');
+
+const confirm = () => {
+    setView_api({
+        name: 'view',
+        content: selectValue.value,
+    }).then(() => emits('refresh'));
+};
 </script>
 
 <style lang="less" scoped>

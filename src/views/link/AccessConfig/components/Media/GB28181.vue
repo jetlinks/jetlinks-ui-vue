@@ -6,7 +6,7 @@
         <div class="steps-content">
             <div class="steps-box" v-if="current === 0">
                 <div class="alert">
-                    <question-circle-outlined />
+                    <info-circle-outlined />
                     配置设备信令参数
                 </div>
                 <div>
@@ -511,7 +511,12 @@
 import { message, Form } from 'ant-design-vue';
 import type { FormInstance } from 'ant-design-vue';
 import { getResourcesCurrent, getClusters } from '@/api/link/accessConfig';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons-vue';
+import {
+    DeleteOutlined,
+    PlusOutlined,
+    QuestionCircleOutlined,
+    InfoCircleOutlined,
+} from '@ant-design/icons-vue';
 import { update, save } from '@/api/link/accessConfig';
 
 interface Form2 {

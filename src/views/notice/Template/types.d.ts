@@ -7,13 +7,25 @@ export interface IHeaders {
 interface IAttachments {
     location: string;
     name: string;
-    id?: number;
+    id?: string;
 }
 interface IVariableDefinitions {
     id: string;
     name: string;
     type: string;
     format: string;
+    value?: string;
+}
+
+interface IMarkDown {
+    text: string;
+    title: string;
+}
+interface ILink {
+    title: string;
+    picUrl: string;
+    messageUrl: string;
+    text: string;
 }
 
 export type TemplateFormData = {
@@ -23,16 +35,8 @@ export type TemplateFormData = {
         message?: string;
         // 钉钉机器人
         messageType?: string;
-        markdown?: {
-            text: string;
-            title: string;
-        };
-        link?: {
-            title: string;
-            picUrl: string;
-            messageUrl: string;
-            text: string;
-        };
+        markdown?: IMarkDown;
+        link?: ILink;
         // 微信
         // agentId?: string;
         // message?: string;
@@ -72,3 +76,23 @@ export type TemplateFormData = {
     createTime?: number;
     configId?: string;
 };
+
+// 绑定配置类型
+export type config = {
+    host: string;
+    password: string;
+    port: number;
+    sender: string;
+    ssl: boolean;
+    username: string;
+}
+export type BindConfig = {
+    configuration: config;
+    createTime: number
+    creatorId: string;
+    id: string;
+    maxRetryTimes: number;
+    name: string;
+    provider: string;
+    type: string
+}
