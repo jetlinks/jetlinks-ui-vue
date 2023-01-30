@@ -141,5 +141,10 @@ export default [
     {
       path: '/iot/device/Category',
         component: () => import('@/views/device/Category/index.vue')
-    }
+    } ,
+    // 产品
+     {
+      path: '/iot/device/Product',
+      component: () => import('@/views/device/Product/index.vue')
+     }
 ]
