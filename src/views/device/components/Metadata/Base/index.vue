@@ -96,5 +96,5 @@ const operateLimits = (action: 'add' | 'updata', types: MetadataType) => {
   );
 };
 </script>
-<style scoped lang="scss">
+<style scoped lang="less">
 </style>

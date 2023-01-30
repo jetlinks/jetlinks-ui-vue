@@ -140,7 +140,7 @@ watchEffect(() => {
   }
 })
 </script>
-<style scoped lang="scss">
+<style scoped lang="less">
 .cat-content {
   background: #F6F6F6;
 
