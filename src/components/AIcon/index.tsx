@@ -27,6 +27,7 @@ const iconKeys = [
     'SyncOutlined',
     'ExclamationCircleOutlined',
     'UploadOutlined',
+    'LoadingOutlined',
     'PlusCircleOutlined',
     'QuestionCircleOutlined',
     'DisconnectOutlined',
