@@ -7,21 +7,16 @@ import {
   provide
 } from 'vue'
 
-import type { DefineComponent, ExtractPropTypes, PropType, CSSProperties, Plugin, App } from 'vue'
+import type { ExtractPropTypes, PropType, CSSProperties} from 'vue'
 import { Layout } from 'ant-design-vue'
-import useConfigInject from 'ant-design-vue/es/_util/hooks/useConfigInject'
-import { defaultSettingProps, defaultSettings } from './defaultSetting'
-import type { PureSettings } from './defaultSetting'
+import { defaultSettingProps } from './defaultSetting'
 import type { BreadcrumbProps, RouteContextProps } from './RouteContext'
 import type {
   BreadcrumbRender,
   CollapsedButtonRender, CustomRender,
-  FooterRender,
-  HeaderContentRender,
   HeaderRender,
   MenuContentRender,
   MenuExtraRender,
-  MenuFooterRender,
   MenuHeaderRender,
   MenuItemRender,
   RightContentRender,

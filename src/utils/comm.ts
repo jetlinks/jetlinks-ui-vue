@@ -1,7 +1,5 @@
 import type { Slots } from 'vue'
 import { TOKEN_KEY } from '@/utils/variable'
-import { Terms } from 'components/Search/types'
-import { urlReg } from '@/utils/regular'
 
 /**
  * 静态图片资源处理

@@ -1,13 +1,8 @@
-import type { ExtractPropTypes, PropType } from 'vue'
-import PropTypes from 'ant-design-vue/es/_util/vue-types';
-import type { MenuDataItem, WithFalse, ProProps, CustomRender, RightContentRender } from '../../typings'
-import { siderMenuProps } from '../SiderMenu/SiderMenu'
-import { defaultSettingProps } from 'components/Layout/defaultSetting'
+import type { ExtractPropTypes } from 'vue'
 import Header, { headerProps } from './Header'
 import { useRouteContext } from 'components/Layout/RouteContext'
 import type { RouteRecordRaw } from 'vue-router'
 import { clearMenuItem } from 'components/Layout/utils'
-import DefaultSetting from '../../../../../config/config'
 import { Layout } from 'ant-design-vue'
 
 export const headerViewProps = {
