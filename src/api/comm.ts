@@ -23,3 +23,8 @@ export const getSearchHistory = (target:string) => server.get<SearchHistoryList[
  * @param target
  */
 export const deleteSearchHistory = (target:string, id:string) => server.remove<SearchHistoryList[]>(`/user/settings/${target}/${id}`)
+
+/**
+ * 获取当前系统版本
+ */
+export const systemVersion = () => server.get<{edition?: string}>('/system/version')

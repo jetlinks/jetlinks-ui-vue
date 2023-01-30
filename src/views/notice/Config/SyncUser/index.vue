@@ -1,13 +1,441 @@
 <template>
-    <div class="page-container">
-        
+    <div>
+        <a-modal
+            v-model:visible="_vis"
+            title="同步用户"
+            :footer="null"
+            @cancel="_vis = false"
+            width="80%"
+        >
+            <a-row :gutter="10">
+                <a-col :span="4">
+                    <a-input
+                        v-model:value="deptName"
+                        @keyup.enter="getDepartment"
+                        allowClear
+                        placeholder="请输入部门名称"
+                        style="margin-bottom: 8px"
+                    >
+                        <template #addonAfter>
+                            <AIcon
+                                type="SearchOutlined"
+                                style="cursor: pointer"
+                                @click="getDepartment"
+                            />
+                        </template>
+                    </a-input>
+                    <a-tree
+                        :tree-data="deptTreeData"
+                        :fieldNames="{ title: 'name', key: 'id' }"
+                        :selectedKeys="[deptId]"
+                        @select="onTreeSelect"
+                    >
+                    </a-tree>
+                    <a-empty v-if="!deptTreeData.length" />
+                </a-col>
+                <a-col :span="20">
+                    <JTable
+                        ref="tableRef"
+                        :columns="columns"
+                        :dataSource="dataSource"
+                        :loading="tableLoading"
+                        model="table"
+                    >
+                        <template #headerTitle>
+                            <a-button type="primary" @click="handleAutoBind">
+                                自动绑定
+                            </a-button>
+                        </template>
+                        <template #status="slotProps">
+                            <a-space>
+                                <a-badge
+                                    :status="slotProps.status.value"
+                                    :text="slotProps.status.text"
+                                ></a-badge>
+                            </a-space>
+                        </template>
+                        <template #action="slotProps">
+                            <a-space :size="16">
+                                <a-tooltip
+                                    v-for="i in getActions(slotProps, 'table')"
+                                    :key="i.key"
+                                    v-bind="i.tooltip"
+                                >
+                                    <a-popconfirm
+                                        v-if="i.popConfirm"
+                                        v-bind="i.popConfirm"
+                                        :disabled="i.disabled"
+                                    >
+                                        <a-button
+                                            :disabled="i.disabled"
+                                            style="padding: 0"
+                                            type="link"
+                                            ><AIcon :type="i.icon"
+                                        /></a-button>
+                                    </a-popconfirm>
+                                    <a-button
+                                        style="padding: 0"
+                                        type="link"
+                                        v-else
+                                        @click="
+                                            i.onClick && i.onClick(slotProps)
+                                        "
+                                    >
+                                        <a-button
+                                            :disabled="i.disabled"
+                                            style="padding: 0"
+                                            type="link"
+                                            ><AIcon :type="i.icon"
+                                        /></a-button>
+                                    </a-button>
+                                </a-tooltip>
+                            </a-space>
+                        </template>
+                    </JTable>
+                </a-col>
+            </a-row>
+        </a-modal>
+
+        <!-- 绑定用户 -->
+        <a-modal
+            v-model:visible="bindVis"
+            title="绑定用户"
+            :maskClosable="false"
+            :confirm-loading="confirmLoading"
+            @cancel="handleCancel"
+            @ok="handleBindSubmit"
+        >
+            <a-form layout="vertical">
+                <a-form-item label="用户" v-bind="validateInfos.userId">
+                    <a-select
+                        v-model:value="formData.userId"
+                        :options="allUserList"
+                        allowClear
+                        show-search
+                        option-filter-prop="children"
+                        :filter-option="filterOption"
+                        placeholder="请选择用户"
+                    />
+                </a-form-item>
+            </a-form>
+        </a-modal>
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="SyncUser">
+import configApi from '@/api/notice/config';
+import { PropType } from 'vue';
+import moment from 'moment';
+import { Modal, message } from 'ant-design-vue';
+import type { ActionsType } from '@/components/Table/index.vue';
+import { Form } from 'ant-design-vue';
 
+const useForm = Form.useForm;
 
+type Emits = {
+    (e: 'update:visible', data: boolean): void;
+};
+const emit = defineEmits<Emits>();
+
+const props = defineProps({
+    visible: { type: Boolean, default: false },
+    data: {
+        type: Object as PropType<Partial<Record<string, any>>>,
+        default: () => ({}),
+    },
+});
+
+const _vis = computed({
+    get: () => props.visible,
+    set: (val) => emit('update:visible', val),
+});
+
+watch(
+    () => _vis.value,
+    (val) => {
+        if (val) {
+            getDepartment();
+        }
+    },
+);
+
+// 左侧部门
+const deptTreeData = ref([]);
+const deptName = ref('');
+const deptId = ref('');
+
+/**
+ * 获取部门
+ */
+const getDepartment = async () => {
+    let res = null;
+    if (props.data.type === 'dingTalk') {
+        res = await configApi.dingTalkDept(props.data.id);
+    } else if (props.data.type === 'weixin') {
+        res = await configApi.weChatDept(props.data.id);
+    }
+    let _result = res?.result;
+    if (deptName.value) {
+        _result = res?.result?.filter(
+            (f: any) => f.name.indexOf(deptName.value) > -1,
+        );
+    }
+
+    // deptTreeData.value = arrayToTree(_result, _result[0]?.parentId);
+    deptTreeData.value = _result;
+    deptId.value = _result[0]?.id;
+};
+
+/**
+ * 扁平数据转树形结构
+ */
+// const arrayToTree = (arr: any, pid: string | number) => {
+//     return arr
+//         .filter((item: any) => item.parentId === pid)
+//         .map((item: any) => ({
+//             ...item,
+//             children: arrayToTree(arr, item.id),
+//         }));
+// };
+
+/**
+ * 部门点击
+ */
+const onTreeSelect = (keys: any) => {
+    deptId.value = keys[0];
+};
+
+// 右侧表格
+
+const columns = [
+    {
+        title: '钉钉用户名',
+        dataIndex: 'thirdPartyUserName',
+        key: 'thirdPartyUserName',
+    },
+    {
+        title: '用户',
+        dataIndex: 'userName',
+        key: 'userName',
+        scopedSlots: true,
+    },
+    {
+        title: '绑定状态',
+        dataIndex: 'status',
+        key: 'status',
+        scopedSlots: true,
+    },
+    {
+        title: '操作',
+        key: 'action',
+        scopedSlots: true,
+    },
+];
+const getActions = (
+    data: Partial<Record<string, any>>,
+    type: 'card' | 'table',
+): ActionsType[] => {
+    if (!data) return [];
+    const actions = [
+        {
+            key: 'bind',
+            text: '绑定',
+            tooltip: {
+                title: '绑定',
+            },
+            icon: 'EditOutlined',
+            onClick: () => {
+                handleBind(data);
+            },
+        },
+        {
+            key: 'unbind',
+            text: '解绑',
+            icon: 'DisconnectOutlined',
+            popConfirm: {
+                title: '确认解绑?',
+                onConfirm: async () => {
+                    configApi
+                        .unBindUser({ bindingId: data.bindId }, data.bindId)
+                        .then(() => {
+                            message.success('操作成功');
+                            getTableData();
+                        });
+                },
+            },
+        },
+    ];
+    if (data.status.value === 'success') return actions;
+    return actions.filter((i: ActionsType) => i.key !== 'unbind');
+};
+
+/**
+ * 自动绑定
+ */
+const handleAutoBind = () => {
+    configApi.dingTalkBindUser([], props.data.id).then(() => {
+        message.success('操作成功');
+        getTableData();
+    });
+};
+
+/**
+ * 获取钉钉部门用户
+ */
+const getDeptUsers = async () => {
+    let res = null;
+    if (props.data.type === 'dingTalk') {
+        res = await configApi.getDingTalkUsers(props.data.id, deptId.value);
+    } else if (props.data.type === 'weixin') {
+        res = await configApi.getWeChatUsers(props.data.id, deptId.value);
+    }
+    return res?.result;
+};
+/**
+ * 获取已经绑定的用户
+ */
+const getBindUsers = async () => {
+    let res = null;
+    if (props.data.type === 'dingTalk') {
+        res = await configApi.getDingTalkBindUsers(props.data.id);
+    } else if (props.data.type === 'weixin') {
+        res = await configApi.getWeChatBindUsers(props.data.id);
+    }
+    return res?.result;
+};
+/**
+ * 获取所有用户
+ */
+const allUserList = ref([]);
+const getAllUsers = async () => {
+    const { result } = await configApi.getPlatformUsers();
+    allUserList.value = result.map((m: any) => ({
+        label: m.name,
+        value: m.id,
+    }));
+    return result;
+};
+
+/**
+ * 处理列表数据
+ */
+const dataSource = ref<any>([]);
+const tableLoading = ref(false);
+const getTableData = () => {
+    tableLoading.value = true;
+    Promise.all<any>([getDeptUsers(), getBindUsers(), getAllUsers()]).then(
+        (res) => {
+            dataSource.value = [];
+            const [deptUsers, bindUsers, allUsers] = res;
+            (deptUsers || []).forEach((item: any) => {
+                // 绑定的用户
+                const bindUser = bindUsers.find(
+                    (f: any) => f.thirdPartyUserId === item.id,
+                );
+                // 平台用户
+                const allUser = allUsers.find(
+                    (f: any) => f.id === bindUser?.userId,
+                );
+                dataSource.value.push({
+                    thirdPartyUserId: item.id,
+                    thirdPartyUserName: item.name,
+                    userId: bindUser?.userId,
+                    userName: allUser
+                        ? `${allUser.name}(${allUser.username})`
+                        : '',
+                    status: {
+                        text: bindUser?.providerName ? '已绑定' : '未绑定',
+                        value: bindUser?.providerName ? 'success' : 'error',
+                    },
+                    bindId: bindUser?.id,
+                });
+            });
+            console.log('dataSource.value: ', dataSource.value);
+        },
+    );
+    tableLoading.value = false;
+};
+
+watch(
+    () => deptId.value,
+    () => {
+        getTableData();
+    },
+    { immediate: true },
+);
+
+/**
+ * 绑定用户
+ */
+const bindVis = ref(false);
+const confirmLoading = ref(false);
+const formData = ref({ userId: '' });
+const formRules = ref({
+    userId: [{ required: true, message: '请选择用户', trigger: 'change' }],
+});
+
+const { resetFields, validate, validateInfos, clearValidate } = useForm(
+    formData.value,
+    formRules.value,
+);
+
+const handleBind = (row: any) => {
+    bindVis.value = true;
+    formData.value = row;
+    getAllUsers();
+};
+
+/**
+ * 绑定用户, 用户下拉筛选
+ */
+const filterOption = (input: string, option: any) => {
+    return (
+        option.componentOptions.children[0].text
+            .toLowerCase()
+            .indexOf(input.toLowerCase()) >= 0
+    );
+};
+
+/**
+ * 绑定提交
+ */
+const handleBindSubmit = () => {
+    validate().then(async () => {
+        const params = {
+            // providerName: formData.value.thirdPartyUserName,
+            // thirdPartyUserId: formData.value.thirdPartyUserId,
+            userId: formData.value.userId,
+        };
+        confirmLoading.value = true;
+        if (props.data.type === 'dingTalk') {
+            configApi
+                .dingTalkBindUser([params], props.data.id)
+                .then(() => {
+                    message.success('操作成功');
+                    bindVis.value = false;
+                    getTableData();
+                })
+                .finally(() => {
+                    confirmLoading.value = false;
+                });
+        } else if (props.data.type === 'weixin') {
+            configApi
+                .weChatBindUser([params], props.data.id)
+                .then(() => {
+                    message.success('操作成功');
+                    bindVis.value = false;
+                    getTableData();
+                })
+                .finally(() => {
+                    confirmLoading.value = false;
+                });
+        }
+    });
+};
+const handleCancel = () => {
+    bindVis.value = false;
+    resetFields()
+};
 </script>
 
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>

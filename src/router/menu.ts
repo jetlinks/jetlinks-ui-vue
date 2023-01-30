@@ -113,6 +113,14 @@ export default [
         path:'/system/Permission',
         component: ()=>import('@/views/system/Permission/index.vue')
     },
+    {
+        path:'/system/Menu',
+        component: ()=>import('@/views/system/Menu/index.vue')
+    },
+    {
+        path:'/system/Menu/detail/:id',
+        component: ()=>import('@/views/system/Menu/Detail/index.vue')
+    },
     // 初始化
     {
       path: '/init-home',
@@ -145,5 +153,10 @@ export default [
     {
       path: '/iot/device/Category',
         component: () => import('@/views/device/Category/index.vue')
-    }
+    } ,
+    // 产品
+     {
+      path: '/iot/device/Product',
+      component: () => import('@/views/device/Product/index.vue')
+     }
 ]

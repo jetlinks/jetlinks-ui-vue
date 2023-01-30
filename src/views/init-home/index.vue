@@ -801,7 +801,7 @@ const rulesFrom = ref({
         {
             required: true,
             message: '请输入系统名称',
-            trigger: 'blur',
+            trigger: 'change',
         },
     ],
     headerTheme: [

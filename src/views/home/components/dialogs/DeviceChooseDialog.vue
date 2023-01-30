@@ -22,7 +22,9 @@
             }"
         >
             <template #modifyTime="slotProps">
-                <span>{{ dateFormat(slotProps.modifyTime) }}</span>
+                <span>{{
+                    moment(slotProps.modifyTime).format('HHHH-MM-DD HH:mm:ss')
+                }}</span>
             </template>
             <template #state="slotProps">
                 <StatusLabel
@@ -46,8 +48,8 @@ import StatusLabel from '../StatusLabel.vue';
 
 import { ComponentInternalInstance } from 'vue';
 import { getDeviceList_api } from '@/api/home';
-import { dateFormat } from '@/utils/comm';
 import { message } from 'ant-design-vue';
+import moment from 'moment';
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const emits = defineEmits(['confirm']);
