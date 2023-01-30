@@ -9,14 +9,13 @@
         :confirmLoading="btnLoading"
     >
         <a-form layout="vertical">
-            <a-form-item label="通知模版" v-bind="validateInfos.templateId">
+            <a-form-item label="通知配置" v-bind="validateInfos.configId">
                 <a-select
-                    v-model:value="formData.templateId"
-                    placeholder="请选择通知模版"
-                    @change="getTemplateDetail"
+                    v-model:value="formData.configId"
+                    placeholder="请选择通知配置"
                 >
                     <a-select-option
-                        v-for="(item, index) in templateList"
+                        v-for="(item, index) in configList"
                         :key="index"
                         :value="item.id"
                     >
@@ -63,10 +62,11 @@
 <script setup lang="ts">
 import { Form } from 'ant-design-vue';
 import { PropType } from 'vue';
-import ConfigApi from '@/api/notice/config';
+import TemplateApi from '@/api/notice/template';
 import {
     TemplateFormData,
     IVariableDefinitions,
+    BindConfig,
 } from '@/views/notice/Template/types';
 import { message } from 'ant-design-vue';
 
@@ -93,22 +93,25 @@ const _vis = computed({
 /**
  * 获取通知模板
  */
-const templateList = ref<TemplateFormData[]>([]);
-const getTemplateList = async () => {
+const configList = ref<BindConfig[]>([]);
+const getConfigList = async () => {
     const params = {
         terms: [
             { column: 'type', value: props.data.type },
             { column: 'provider', value: props.data.provider },
         ],
     };
-    const { result } = await ConfigApi.getTemplate(params, props.data.id);
-    templateList.value = result;
+    const { result } = await TemplateApi.getConfig(params);
+    configList.value = result;
 };
 
 watch(
     () => _vis.value,
     (val) => {
-        if (val) getTemplateList();
+        if (val) {
+            getConfigList();
+            getTemplateDetail();
+        }
     },
 );
 
@@ -117,9 +120,7 @@ watch(
  */
 const templateDetailTable = ref<IVariableDefinitions[]>();
 const getTemplateDetail = async () => {
-    const { result } = await ConfigApi.getTemplateDetail(
-        formData.value.templateId,
-    );
+    const { result } = await TemplateApi.getTemplateDetail(props.data.id);
     templateDetailTable.value = result.variableDefinitions.map((m: any) => ({
         ...m,
         value: undefined,
@@ -147,13 +148,13 @@ const columns = [
 
 // 表单数据
 const formData = ref({
-    templateId: '',
+    configId: '',
     variableDefinitions: '',
 });
 
 // 验证规则
 const formRules = ref({
-    templateId: [{ required: true, message: '请选择通知模板' }],
+    configId: [{ required: true, message: '请选择通知模板' }],
     variableDefinitions: [{ required: false, message: '该字段是必填字段' }],
 });
 
@@ -175,7 +176,7 @@ const handleOk = () => {
             });
             // console.log('params: ', params);
             btnLoading.value = true;
-            ConfigApi.debug(params, props.data.id, formData.value.templateId)
+            TemplateApi.debug(params, formData.value.configId, props.data.id)
                 .then((res) => {
                     if (res.success) {
                         message.success('操作成功');

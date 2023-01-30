@@ -8,7 +8,7 @@
         <JTable
             ref="configRef"
             :columns="columns"
-            :request="ConfigApi.list"
+            :request="TemplateApi.list"
             :defaultParams="{
                 sorts: [{ name: 'createTime', order: 'desc' }],
             }"
@@ -155,7 +155,7 @@
 </template>
 
 <script setup lang="ts">
-import ConfigApi from '@/api/notice/config';
+import TemplateApi from '@/api/notice/template';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage, LocalStore } from '@/utils/comm';
 import { message } from 'ant-design-vue';
@@ -275,7 +275,7 @@ const beforeUpload = (file: any) => {
         }
         try {
             const data = JSON.parse(text || '{}');
-            const { success } = await ConfigApi.update(data);
+            const { success } = await TemplateApi.update(data);
             if (success) {
                 message.success('操作成功');
                 configRef.value.reload();
@@ -367,7 +367,7 @@ const getActions = (
             popConfirm: {
                 title: '确认删除?',
                 onConfirm: async () => {
-                    const resp = await ConfigApi.del(data.id);
+                    const resp = await TemplateApi.del(data.id);
                     if (resp.status === 200) {
                         message.success('操作成功！');
                         configRef.value?.reload();
