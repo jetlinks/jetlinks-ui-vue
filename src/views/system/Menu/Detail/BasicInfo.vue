@@ -98,21 +98,37 @@
         <a-card>
             <h3>权限配置</h3>
             <a-form :model="form.data" class="basic-form permiss-form">
-                <a-form-item label="数据权限控制" name="accessSupport" required>
-                    
+                <a-form-item name="accessSupport" required>
+                    <template #label>
+                        <span style="margin-right: 3px">数据权限控制</span>
+                        <a-tooltip title="此菜单页面数据所对应的资产类型">
+                            <question-circle-outlined
+                                class="img-style"
+                                style="color: #a6a6a6"
+                            />
+                        </a-tooltip>
+                    </template>
                     <a-radio-group
                         v-model:value="form.data.accessSupport"
                         name="radioGroup"
                     >
                         <a-radio value="unsupported">不支持</a-radio>
                         <a-radio value="support">支持</a-radio>
-                        <a-radio value="indirect">间接控制</a-radio>
+                        <a-radio value="indirect">
+                            <span style="margin-right: 3px">间接控制</span>
+                            <a-tooltip
+                                title="此菜单内的数据基于其他菜单的数据权限控制"
+                            >
+                                <question-circle-filled class="img-style" />
+                            </a-tooltip>
+                        </a-radio>
                     </a-radio-group>
 
                     <a-form-item
                         name="assetType"
                         v-if="form.data.accessSupport === 'support'"
                         :rules="[{ required: true, message: '请选择资产类型' }]"
+                        style="margin-top: 24px; margin-bottom: 0"
                     >
                         <a-select
                             v-model:value="form.data.assetType"
@@ -131,6 +147,7 @@
                         name="indirectMenus"
                         v-if="form.data.accessSupport === 'indirect'"
                         :rules="[{ required: true, message: '请选择关联菜单' }]"
+                        style="margin-top: 24px; margin-bottom: 0"
                     >
                         <a-tree-select
                             v-model:value="form.data.indirectMenus"
@@ -161,6 +178,7 @@
                         v-model:value="form.data.permissions"
                         style="width: 300px"
                         allowClear
+                        placeholder="请输入权限名称"
                     />
                 </a-form-item>
             </a-form>
@@ -171,19 +189,29 @@
 </template>
 
 <script setup lang="ts">
-import { PlusOutlined } from '@ant-design/icons-vue';
+import {
+    PlusOutlined,
+    QuestionCircleFilled,
+    QuestionCircleOutlined,
+} from '@ant-design/icons-vue';
+import {
+    getMenuTree_api,
+    getAssetsType_api,
+    getMenuDetail_api,
+} from '@/api/system/menu';
+import { exportPermission_api } from '@/api/system/permission';
 
 const route = useRoute();
 const routeParams = {
-    id: route.params.id === ':id' ? '' : route.params.id,
+    id: route.params.id === ':id' ? '' : (route.params.id as string),
     ...route.query,
+    url: route.query.basePath,
 };
 
 const form = reactive({
     data: {
         name: '',
         code: '',
-        url: '',
         sortIndex: '',
         icon: '',
         describe: '',
@@ -194,10 +222,29 @@ const form = reactive({
         ...routeParams,
     } as formType,
 
-    treeData: [],
-    assetsType: [] as assetType[],
-});
+    treeData: [], // 关联菜单
+    assetsType: [] as assetType[], // 资产类型
+    premissonList: [], // 权限列表
 
+    init: () => {
+        // 获取菜单详情
+        routeParams.id &&
+            getMenuDetail_api(routeParams.id).then((resp) => {
+                console.log('菜单详情', resp);
+            });
+        // 获取权限列表
+        // exportPermission_api()
+        // 获取关联菜单
+        getMenuTree_api({ paging: false }).then((resp) => {
+            console.log('关联菜单', resp);
+        });
+        // 获取资产类型
+        getAssetsType_api().then((resp:any) => {
+            form.assetsType = resp.result.map((item:any)=>({label:item.name,value:item.id}))
+        });
+    },
+});
+form.init();
 const clickSave = () => {};
 
 type formType = {
@@ -250,6 +297,9 @@ type assetType = {
                 display: block;
                 :deep(.ant-form-item-label) {
                     overflow: inherit;
+                    .img-style {
+                        cursor: help;
+                    }
                     label::after {
                         display: none;
                     }
