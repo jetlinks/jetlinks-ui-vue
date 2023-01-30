@@ -103,6 +103,113 @@
                     </a-dropdown>
                 </a-space>
             </template>
+            <template #card="slotProps">
+                <CardBox
+                    :value="slotProps"
+                    @click="handleClick"
+                    :actions="getActions(slotProps, 'card')"
+                    v-bind="slotProps"
+                    :active="_selectedRowKeys.includes(slotProps.id)"
+                    :status="slotProps.cardStateType.value"
+                    :statusText="slotProps.cardStateType.text"
+                    :statusNames="{
+                        using: 'success',
+                        toBeActivated: 'default',
+                        deactivate: 'error',
+                    }"
+                >
+                    <template #img>
+                        <slot name="img">
+                            <img :src="getImage('/iot-card/iot-card-bg.png')" />
+                        </slot>
+                    </template>
+                    <template #content>
+                        <h3
+                            class="card-item-content-title"
+                            @click.stop="handleView(slotProps.id)"
+                        >
+                            {{ slotProps.id }}
+                        </h3>
+                        <a-row>
+                            <a-col :span="8">
+                                <div class="card-item-content-text">
+                                    平台对接
+                                </div>
+                                <div>{{ slotProps.platformConfigName }}</div>
+                            </a-col>
+                            <a-col :span="6">
+                                <div class="card-item-content-text">类型</div>
+                                <div>{{ slotProps.cardType.text }}</div>
+                            </a-col>
+                            <a-col :span="6">
+                                <div class="card-item-content-text">提醒</div>
+                                <!-- <div>{{ slotProps.cardType.text }}</div> -->
+                            </a-col>
+                        </a-row>
+                        <a-divider style="margin: 12px 0" />
+                        <div v-if="slotProps.usedFlow === 0">
+                            <span class="flow-text">
+                                {{ slotProps.totalFlow }}
+                            </span>
+                            <span class="card-item-content-text"> M 使用流量</span>
+                        </div>
+                        <div v-else>
+                            <div class="progress-text">
+                                <div>{{ slotProps.totalFlow - slotProps.usedFlow }} %</div>
+                                <div class="card-item-content-text">
+                                    总共 {{ slotProps.totalFlow }} M
+                                </div>
+                            </div>
+                            <a-progress
+                                :strokeColor="'#ADC6FF'"
+                                :showInfo="false"
+                                :percent="slotProps.totalFlow - slotProps.usedFlow"
+                            />
+                        </div>
+                    </template>
+                    <template #actions="item">
+                        <a-tooltip
+                            v-bind="item.tooltip"
+                            :title="item.disabled && item.tooltip.title"
+                        >
+                            <a-popconfirm
+                                v-if="item.popConfirm"
+                                v-bind="item.popConfirm"
+                                :disabled="item.disabled"
+                            >
+                                <a-button :disabled="item.disabled">
+                                    <AIcon
+                                        type="DeleteOutlined"
+                                        v-if="item.key === 'delete'"
+                                    />
+                                    <template v-else>
+                                        <AIcon :type="item.icon" />
+                                        <span>{{ item.text }}</span>
+                                    </template>
+                                </a-button>
+                            </a-popconfirm>
+                            <template v-else>
+                                <a-button
+                                    :disabled="item.disabled"
+                                    @click="item.onClick"
+                                >
+                                    <AIcon
+                                        type="DeleteOutlined"
+                                        v-if="item.key === 'delete'"
+                                    />
+                                    <template v-else>
+                                        <AIcon :type="item.icon" />
+                                        <span>{{ item.text }}</span>
+                                    </template>
+                                </a-button>
+                            </template>
+                        </a-tooltip>
+                    </template>
+                </CardBox>
+            </template>
+            <template #deviceId="slotProps">
+                {{ slotProps.deviceName }}
+            </template>
             <template #totalFlow="slotProps">
                 <div>
                     {{
@@ -157,7 +264,7 @@
             <template #action="slotProps">
                 <a-space :size="16">
                     <a-tooltip
-                        v-for="i in getActions(slotProps)"
+                        v-for="i in getActions(slotProps, 'table')"
                         :key="i.key"
                         v-bind="i.tooltip"
                     >
@@ -186,6 +293,20 @@
                 </a-space>
             </template>
         </JTable>
+        <!-- 批量导入 -->
+        <Import v-if="importVisible" @close="importVisible = false" />
+        <!-- 批量导出 -->
+        <Export
+            v-if="exportVisible"
+            @close="exportVisible = false"
+            :data="_selectedRowKeys"
+        />
+        <!-- 绑定设备 -->
+        <BindDevice
+            v-if="bindDeviceVisible"
+            :cardId="cardId"
+            @change="bindDevice"
+        />
     </div>
 </template>
 
@@ -204,16 +325,25 @@ import {
     resumptionBatch,
     sync,
     removeCards,
+    unbind,
 } from '@/api/iot-card/cardManagement';
 import { message } from 'ant-design-vue';
+import type { CardManagement } from './typing';
+import { getImage } from '@/utils/comm';
+import BindDevice from './BindDevice.vue';
+import Import from './Import.vue';
+import Export from './Export.vue';
 
 const cardManageRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const _selectedRowKeys = ref<string[]>([]);
 const _selectedRow = ref<any[]>([]);
+const bindDeviceVisible = ref<boolean>(false);
 const visible = ref<boolean>(false);
 const exportVisible = ref<boolean>(false);
 const importVisible = ref<boolean>(false);
+const cardId = ref<any>();
+const current = ref<Partial<CardManagement>>({});
 
 const columns = [
     {
@@ -239,9 +369,10 @@ const columns = [
     },
     {
         title: '绑定设备',
-        dataIndex: 'deviceName',
-        key: 'deviceName',
+        dataIndex: 'deviceId',
+        key: 'deviceId',
         ellipsis: true,
+        scopedSlots: true,
         width: 200,
     },
     {
@@ -360,7 +491,10 @@ const columns = [
     },
 ];
 
-const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
+const getActions = (
+    data: Partial<Record<string, any>>,
+    type: 'card' | 'table',
+): ActionsType[] => {
     if (!data) return [];
     return [
         {
@@ -386,6 +520,25 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                 title: data.deviceId ? '解绑设备' : '绑定设备',
             },
             icon: data.deviceId ? 'DisconnectOutlined' : 'LinkOutlined',
+            popConfirm: data.deviceId
+                ? {
+                      title: '确认解绑设备？',
+                      onConfirm: async () => {
+                          unbind(data.id).then((resp: any) => {
+                              if (resp.status === 200) {
+                                  message.success('操作成功');
+                                  cardManageRef.value?.reload();
+                              }
+                          });
+                      },
+                  }
+                : undefined,
+            onClick: () => {
+                if (!data.deviceId) {
+                    bindDeviceVisible.value = true;
+                    cardId.value = data.id;
+                }
+            },
         },
         {
             key: 'activation',
@@ -479,10 +632,37 @@ const cancelSelect = () => {
     _selectedRowKeys.value = [];
 };
 
+const handleClick = (dt: any) => {
+    if (_selectedRowKeys.value.includes(dt.id)) {
+        const _index = _selectedRowKeys.value.findIndex((i) => i === dt.id);
+        _selectedRowKeys.value.splice(_index, 1);
+    } else {
+        _selectedRowKeys.value = [..._selectedRowKeys.value, dt.id];
+    }
+};
+
+/**
+ * 查看
+ */
+const handleView = (id: string) => {
+    message.warn(id + '暂未开发');
+};
+
 /**
  * 新增
  */
 const handleAdd = () => {};
+
+/**
+ * 绑定设备关闭窗口
+ */
+const bindDevice = (val: boolean) => {
+    bindDeviceVisible.value = false;
+    cardId.value = '';
+    if (val) {
+        cardManageRef.value?.reload();
+    }
+};
 
 /**
  * 批量激活
@@ -565,7 +745,25 @@ const handelRemove = async () => {
 </script>
 
 <style scoped lang="less">
-.search {
-    width: calc(100% - 330px);
+.page-container {
+    .search {
+        width: calc(100% - 330px);
+    }
+    .flow-text {
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    .progress-text {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    :deep(.ant-progress-inner) {
+        border-radius: 0px;
+    }
+    :deep(.ant-progress-bg) {
+        border-radius: 0px;
+    }
 }
 </style>
