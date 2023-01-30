@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import menus, { LoginPath } from './menu'
-import { getToken } from '@/utils/comm'
+import { cleanToken, getToken } from '@/utils/comm'
 import { useUserInfo } from '@/store/userInfo'
 import { useSystem } from '@/store/system'
 
@@ -27,20 +27,25 @@ router.beforeEach((to, from, next) => {
       } else {
         const userInfo = useUserInfo()
         const system = useSystem()
-        if (!userInfo.$state.userInfos.username) {
-          userInfo.getUserInfo()
-          system.getSystemVersion().then((menuData: any[]) => {
-            menuData.forEach(r => {
-              router.addRoute('main', r)
-            })
-            const redirect = decodeURIComponent((from.query.redirect as string) || to.path)
-            if(to.path === redirect) {
-              next({ ...to, replace: true })
-            } else {
-              next({ path: redirect })
-            }
-          })
 
+        if (!userInfo.userInfos.username) {
+          userInfo.getUserInfo().then(() => {
+            system.getSystemVersion().then((menuData: any[]) => {
+              menuData.forEach(r => {
+                router.addRoute('main', r)
+              })
+              const redirect = decodeURIComponent((from.query.redirect as string) || to.path)
+              if(to.path === redirect) {
+                next({ ...to, replace: true })
+              } else {
+                next({ path: redirect })
+              }
+            })
+          }).catch(() => {
+            console.log('userInfo', userInfo)
+            cleanToken()
+            next({ path: LoginPath })
+          })
         } else {
           next()
         }

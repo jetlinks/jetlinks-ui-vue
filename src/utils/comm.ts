@@ -38,6 +38,10 @@ export const getToken = () => {
   return LocalStore.get(TOKEN_KEY)
 }
 
+export const cleanToken = () => {
+  LocalStore.remove(TOKEN_KEY)
+}
+
 /**
  * TreeSelect过滤
  * @param value 过滤值
