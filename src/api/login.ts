@@ -47,3 +47,8 @@ export const bindInfo = () => server.get(`/application/sso/_all`)
  * @returns 
  */
 export const settingDetail = (scopes: string) => server.get(`/system/config/${scopes}`)
+
+/**
+ * 获取当前登录用户信息
+ */
+export const userDetail = () => server.get<any>('/user/detail')

@@ -1,3 +1,5 @@
+import { isObject } from 'lodash-es'
+
 export default function encodeQuery(params: any) {
   if (!params) return {};
   const queryParam = {
@@ -15,7 +17,7 @@ export default function encodeQuery(params: any) {
             terms[k] === '' ||
             terms[k] === undefined ||
             terms[k].length === 0 ||
-            terms[k] === {} ||
+            (isObject(terms[k]) && Object.keys(terms[k]).length === 0) ||
             terms[k] === null
           )
         ) {

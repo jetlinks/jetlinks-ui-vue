@@ -22,7 +22,7 @@
       "store/*": ["./src/store/*"],
       "style/*": ["./src/style/*"],
     },
-    "types": ["ant-design-vue/typings/global"],
+    "types": ["ant-design-vue/typings/global", "vite/client"],
     "suppressImplicitAnyIndexErrors": true
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],

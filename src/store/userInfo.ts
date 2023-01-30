@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { authLogin } from '@/api/login';
+import { authLogin, userDetail } from '@/api/login';
 import { LocalStore } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 
@@ -38,5 +38,17 @@ export const useUserInfo = defineStore('userInfo', {
                     });
             });
         },
+        getUserInfo() {
+            return new Promise((res, rej) => {
+                userDetail().then(resp => {
+                    if (resp.success) {
+                        res(true)
+                        this.userInfos = resp.result
+                    } else {
+                        rej()
+                    }
+                }).catch(() => rej())
+            })
+        }
     },
 });
