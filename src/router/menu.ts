@@ -68,8 +68,12 @@ export default [
 
     // 设备管理
     {
-        path: '/device/Instance',
+        path: '/device/instance',
         component: () => import('@/views/device/Instance/index.vue')
+    },
+    {
+        path: '/device/instance/detail/:id',
+        component: () => import('@/views/device/Instance/Detail/index.vue')
     },
     // link 运维管理
     {

@@ -15,14 +15,14 @@
                 v-bind="props"
             >
                 <div class="upload-image-content" :style="props.style">
-                    <template v-if="myValue">
+                    <template v-if="imageUrl">
                         <!-- <div class="upload-image"
                         :style="{
                             backgroundSize: props.backgroundSize,
                             backgroundImage: `url(${imageUrl})`
                         }"
                         ></div> -->
-                        <img :src="myValue" class="upload-image" />
+                        <img :src="imageUrl" class="upload-image" />
                         <div class="upload-image-mask">点击修改</div>
                     </template>
                     <template v-else>
@@ -32,7 +32,7 @@
                 </div>
             </a-upload>
             <div class="upload-loading-mask" v-if="props.disabled"></div>
-            <div class="upload-loading-mask" v-if="myValue && loading">
+            <div class="upload-loading-mask" v-if="imageUrl && loading">
                 <AIcon type="LoadingOutlined" style="font-size: 20px" />
             </div>
         </div>
@@ -56,7 +56,6 @@ interface JUploadProps extends UploadProps {
     errorMessage?: string;
     size?: number;
     style?: CSSProperties;
-    backgroundSize?: string;
 }
 
 const emit = defineEmits<Emits>();
@@ -76,24 +75,23 @@ const loading = ref<boolean>(false)
 const imageUrl = ref<string>(props?.modelValue || '')
 const imageTypes = props.types ? props.types : ['image/jpeg', 'image/png'];
 
-const myValue = computed({
-    get: () => {
-        return props.modelValue;
-    },
-    set: (val: any) => {
-        imageUrl.value = val;
-        emit('update:modelValue', val);
-    },
-});
+watch(() => props.modelValue,
+(newValue)=> {
+  console.log(newValue)
+  imageUrl.value = newValue
+}, {
+  deep: true,
+  immediate: true
+})
 
 const handleChange = (info: UploadChangeParam) => {
       if (info.file.status === 'uploading') {
         loading.value = true;
       }
       if (info.file.status === 'done') {
-        myValue.value = info.file.response?.result
+        imageUrl.value = info.file.response?.result
         loading.value = false;
-        emit('update:modelValue', imageUrl.value)
+        emit('update:modelValue', info.file.response?.result)
       }
       if (info.file.status === 'error') {
         loading.value = false;

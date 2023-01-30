@@ -151,7 +151,7 @@
     <Import v-if="importVisible" @close="importVisible = false" />
     <Export v-if="exportVisible" @close="exportVisible = false" :data="params" />
     <Process v-if="operationVisible" @close="operationVisible = false" :api="api" :type="type" />
-    <Save v-if="visible" :data="current" />
+    <Save v-if="visible" :data="current" @close="visible = false" @save="saveBtn" />
 </template>
 
 <script setup lang="ts">
@@ -165,6 +165,7 @@ import Process from './Process/index.vue'
 import Save from './Save/index.vue'
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 
+const router = useRouter();
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({})
 const _selectedRowKeys = ref<string[]>([])
@@ -266,7 +267,7 @@ const handleAdd = () => {
  * 查看
  */
 const handleView = (id: string) => {
-    message.warn(id + '暂未开发')
+    router.push('/device/instance/detail/' + id)
 }
 
 const getActions = (data: Partial<Record<string, any>>, type: 'card' | 'table'): ActionsType[] => {
@@ -402,5 +403,10 @@ const disabledSelectedDevice = async () => {
         _selectedRowKeys.value = []
         instanceRef.value?.reload()
     }
+}
+
+const saveBtn = () => {
+    visible.value = false
+    instanceRef.value?.reload()
 }
 </script>
