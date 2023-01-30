@@ -363,6 +363,18 @@ const getActions = (
             },
         },
         {
+            key: 'sync',
+            text: '同步用户',
+            tooltip: {
+                title: '同步用户',
+            },
+            icon: 'TeamOutlined',
+            onClick: () => {
+                syncVis.value = true;
+                currentConfig.value = data;
+            },
+        },
+        {
             key: 'delete',
             text: '删除',
             popConfirm: {
@@ -380,7 +392,9 @@ const getActions = (
             icon: 'DeleteOutlined',
         },
     ];
-    return actions;
+    if (data.provider === 'dingTalkMessage' || data.provider === 'corpMessage')
+        return actions;
+    return actions.filter((i: ActionsType) => i.key !== 'sync');
 };
 </script>
 <style lang="less" scoped>

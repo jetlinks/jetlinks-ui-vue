@@ -42,7 +42,8 @@ const iconKeys = [
     'MenuUnfoldOutlined',
     'MenuFoldOutlined',
     'QuestionCircleOutlined',
-    'InfoCircleOutlined'
+    'InfoCircleOutlined',
+    'SearchOutlined',
 ]
 
 const Icon = (props: {type: string}) => {
