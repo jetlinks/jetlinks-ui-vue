@@ -39,6 +39,7 @@ const iconKeys = [
     'ArrowDownOutlined',
     'SmallDashOutlined',
     'TeamOutlined',
+    'SearchOutlined',
 ]
 
 const Icon = (props: {type: string}) => {
