@@ -495,12 +495,19 @@ const msgType = ref([
 
 // 表单数据
 const formData = ref<TemplateFormData>({
-    template: {},
+    template: {
+        subject: '',
+        sendTo: [],
+        attachments: [],
+        message: '',
+        text: '',
+    },
     name: '',
     type: 'email',
     provider: 'embedded',
     description: '',
     variableDefinitions: [],
+    configId: '',
 });
 
 // 根据通知方式展示对应的字段
@@ -513,17 +520,30 @@ watch(
         formData.value.provider = msgType.value[0].value;
         // console.log('formData.value.template: ', formData.value.template);
 
+        formData.value.template =
+            TEMPLATE_FIELD_MAP[val][formData.value.provider];
+
         getConfigList();
+        clearValid();
     },
 );
 
-computed(() => {
-    // console.log('formData.value.type: ', formData.value.type);
-    Object.assign(
-        formData.value.template,
-        TEMPLATE_FIELD_MAP[formData.value.type][formData.value.provider],
-    );
-});
+watch(
+    () => formData.value.provider,
+    (val) => {
+        formData.value.template = TEMPLATE_FIELD_MAP[formData.value.type][val];
+
+        clearValid();
+    },
+);
+
+// computed(() => {
+//     // console.log('formData.value.type: ', formData.value.type);
+//     Object.assign(
+//         formData.value.template,
+//         TEMPLATE_FIELD_MAP[formData.value.type][formData.value.provider],
+//     );
+// });
 
 // 验证规则
 const formRules = ref({
@@ -557,14 +577,6 @@ const { resetFields, validate, validateInfos, clearValidate } = useForm(
     formData.value,
     formRules.value,
 );
-watch(
-    () => formData.value.type,
-    () => {
-        formData.value.variableDefinitions = [];
-        clearValidate();
-    },
-    { deep: true },
-);
 
 watch(
     () => formData.value.template.message,
@@ -592,6 +604,13 @@ watch(
     },
     { deep: true },
 );
+
+const clearValid = () => {
+    setTimeout(() => {
+        formData.value.variableDefinitions = [];
+        clearValidate();
+    }, 200);
+};
 
 /**
  * 获取详情
@@ -653,6 +672,7 @@ getSignsList();
  */
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
+    if (formData.value.type === 'email') delete formData.value.configId
     validate()
         .then(async () => {
             // console.log('formData.value: ', formData.value);
@@ -673,6 +693,8 @@ const handleSubmit = () => {
         })
         .catch((err) => {
             console.log('err: ', err);
+        })
+        .finally(() => {
             btnLoading.value = false;
         });
 };
