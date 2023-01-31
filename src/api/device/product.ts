@@ -108,7 +108,7 @@ export const deleteProduct = (id: string) => server.patch(`/device-product/${id}
  * 检测产品Id唯一性
  * @param id 产品ID
  */
- export const queryProductId = (id: string) => server.post(`/device-product/${id}/exists`)
+ export const queryProductId = (id: string) => server.get(`/device-product/${id}/exists`)
 /**
  * 保存产品
  * @param data 产品信息

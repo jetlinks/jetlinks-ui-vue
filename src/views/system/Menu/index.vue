@@ -208,7 +208,8 @@ const table = reactive({
         };
         const resp: any = await getMenuTree_api(params);
         const lastItem = resp.result[resp.result.length - 1];
-        table.total == lastItem ? lastItem.sortIndex + 1 : 1;
+        table.total = lastItem ? lastItem.sortIndex + 1 : 1;
+        
         return {
             code: resp.message,
             result: {
@@ -225,7 +226,7 @@ const table = reactive({
         router.push(
             `/system/Menu/detail/${row.id || ':id'}?pid=${
                 row.pid || ''
-            }&basePath=${row.basePath || ''}&sortIndex=${table.total + 1}`,
+            }&basePath=${row.basePath || ''}&sortIndex=${table.total}`,
         );
     },
     // 删除

@@ -98,3 +98,27 @@ export const _import = (configId: any, params: any) => server.get(`/network/card
  * @param params
  */
 export const _export = (format: string, data: any) => server.post(`/network/card/download.${format}/_query`, data, 'blob');
+
+/**
+ * 验证iccid
+ * @param id
+ */
+export const validateId = (id: string) => server.get(`/network/card/id/_validate?id=${id}`);
+
+/**
+ * 新增物联卡
+ * @param data
+ */
+export const add = (data: any) => server.patch(`/network/card`, data);
+
+/**
+ * 编辑物联卡
+ * @param data
+ */
+export const edit = (data: any) => server.put(`/network/card/${data.id}`, data);
+
+/**
+ * 根据id查看详情
+ * @param id
+ */
+export const queryDetail = (id: any) => server.get(`/network/card/${id}`);

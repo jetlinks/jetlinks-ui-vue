@@ -2,7 +2,7 @@
     <div class="basic-info-container">
         <a-card>
             <h3>基本信息</h3>
-            <a-form :model="form.data" class="basic-form">
+            <a-form ref="basicFormRef" :model="form.data" class="basic-form">
                 <div class="row" style="display: flex">
                     <a-form-item
                         label="菜单图标"
@@ -16,13 +16,20 @@
                         style="flex: 0 0 186px"
                     >
                         <div class="icon-upload has-icon" v-if="form.data.icon">
-                            <svg aria-hidden="true">
-                                <use :xlinkHref="`#${form.data.icon}`" />
-                            </svg>
-                            <span class="mark">点击修改</span>
+                            <AIcon
+                                :type="form.data.icon"
+                                style="font-size: 90px"
+                            />
+                            <span class="mark" @click="dialog.openDialog"
+                                >点击修改</span
+                            >
                         </div>
 
-                        <div v-else class="icon-upload no-icon">
+                        <div
+                            v-else
+                            @click="dialog.openDialog"
+                            class="icon-upload no-icon"
+                        >
                             <span>
                                 <plus-outlined style="font-size: 30px" />
                                 <p>点击选择图标</p>
@@ -97,7 +104,11 @@
         </a-card>
         <a-card>
             <h3>权限配置</h3>
-            <a-form :model="form.data" class="basic-form permiss-form">
+            <a-form
+                ref="permissFormRef"
+                :model="form.data"
+                class="basic-form permiss-form"
+            >
                 <a-form-item name="accessSupport" required>
                     <template #label>
                         <span style="margin-right: 3px">数据权限控制</span>
@@ -174,17 +185,19 @@
                     </a-form-item>
                 </a-form-item>
                 <a-form-item label="权限">
-                    <a-input
-                        v-model:value="form.data.permissions"
-                        style="width: 300px"
-                        allowClear
-                        placeholder="请输入权限名称"
-                    />
+                    <PermissChoose v-model:value="form.data.permissions" />
                 </a-form-item>
             </a-form>
 
-            <a-button type="primary" @click="clickSave">保存</a-button>
+            <a-button type="primary" @click="clickSave" v-loading="saveLoading"
+                >保存</a-button
+            >
         </a-card>
+
+        <!-- 弹窗 -->
+        <div class="dialogs">
+            <ChooseIconDialog ref="ChooseIconRef" @confirm="dialog.confirm" />
+        </div>
     </div>
 </template>
 
@@ -194,20 +207,28 @@ import {
     QuestionCircleFilled,
     QuestionCircleOutlined,
 } from '@ant-design/icons-vue';
+import { FormInstance, message } from 'ant-design-vue';
+import ChooseIconDialog from '../components/ChooseIconDialog.vue';
+import PermissChoose from '../components/PermissChoose.vue';
+
 import {
     getMenuTree_api,
     getAssetsType_api,
-    getMenuDetail_api,
+    getMenuInfo_api,
+    saveMenuInfo_api,
+    addMenuInfo_api,
 } from '@/api/system/menu';
-import { exportPermission_api } from '@/api/system/permission';
 
 const route = useRoute();
+const router = useRouter();
 const routeParams = {
-    id: route.params.id === ':id' ? '' : (route.params.id as string),
+    id: route.params.id === ':id' ? undefined : (route.params.id as string),
     ...route.query,
     url: route.query.basePath,
 };
 
+const basicFormRef = ref<FormInstance>();
+const permissFormRef = ref<FormInstance>();
 const form = reactive({
     data: {
         name: '',
@@ -215,8 +236,8 @@ const form = reactive({
         sortIndex: '',
         icon: '',
         describe: '',
-        permissions: '',
-        accessSupport: '',
+        permissions: [],
+        accessSupport: 'unsupported',
         assetType: undefined,
         indirectMenus: [],
         ...routeParams,
@@ -229,23 +250,63 @@ const form = reactive({
     init: () => {
         // 获取菜单详情
         routeParams.id &&
-            getMenuDetail_api(routeParams.id).then((resp) => {
+            getMenuInfo_api(routeParams.id).then((resp) => {
                 console.log('菜单详情', resp);
             });
-        // 获取权限列表
-        // exportPermission_api()
         // 获取关联菜单
         getMenuTree_api({ paging: false }).then((resp) => {
             console.log('关联菜单', resp);
         });
         // 获取资产类型
-        getAssetsType_api().then((resp:any) => {
-            form.assetsType = resp.result.map((item:any)=>({label:item.name,value:item.id}))
+        getAssetsType_api().then((resp: any) => {
+            form.assetsType = resp.result.map((item: any) => ({
+                label: item.name,
+                value: item.id,
+            }));
         });
     },
 });
 form.init();
-const clickSave = () => {};
+
+const ChooseIconRef = ref<any>(null);
+const dialog = {
+    openDialog: () => {
+        ChooseIconRef.value && ChooseIconRef.value.openDialog();
+    },
+    confirm: (typeStr: string) => {
+        form.data.icon = typeStr || form.data.icon;
+    },
+};
+const saveLoading = ref<boolean>(false);
+const clickSave = () => {
+    if (!basicFormRef || !permissFormRef) return;
+    Promise.all([
+        basicFormRef.value?.validate(),
+        permissFormRef.value?.validate(),
+    ])
+        .then(() => {
+            const api = routeParams.id ? saveMenuInfo_api : addMenuInfo_api;
+            saveLoading.value = true;
+            api(form.data)
+                .then((resp: any) => {
+                    if (resp.status === 200) {
+                        message.success('操作成功！');
+                        // 新增后刷新页面，编辑则不需要
+                        if (!routeParams.id) {
+                            router.push(
+                                `/system/Menu/detail/${resp.result.id}`,
+                            );
+                            routeParams.id = resp.result.id;
+                            form.init();
+                        }
+                    } else {
+                        message.error('操作失败！');
+                    }
+                })
+                .finally(() => (saveLoading.value = false));
+        })
+        .catch((err) => {});
+};
 
 type formType = {
     name: string;
@@ -253,7 +314,7 @@ type formType = {
     url: string;
     sortIndex: string;
     icon: string;
-    permissions: string;
+    permissions: any[];
     describe: string;
     accessSupport: string;
     assetType: string | undefined;
@@ -321,6 +382,25 @@ type assetType = {
                         }
                     }
                     .has-icon {
+                        position: relative;
+                        text-align: center;
+
+                        .mark {
+                            position: absolute;
+                            left: 0;
+                            top: 0;
+                            display: none;
+                            background-color: rgba(0, 0, 0, 0.35);
+                            color: #fff;
+                            width: 100%;
+                            height: 100%;
+                            font-size: 16px;
+                            align-items: center;
+                            justify-content: center;
+                        }
+                        &:hover .mark {
+                            display: flex;
+                        }
                     }
                     .no-icon {
                         background-color: rgba(0, 0, 0, 0.06);

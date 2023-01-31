@@ -148,7 +148,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
 }
 
 const add = () => {
-    message.warn('123')
+    // router.push(`/northbound/DuerOS/detail/:id`)
 }
 
 </script>
