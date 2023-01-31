@@ -3,6 +3,8 @@ import menus, { LoginPath } from './menu'
 import { cleanToken, getToken } from '@/utils/comm'
 import { useUserInfo } from '@/store/userInfo'
 import { useSystem } from '@/store/system'
+import NotFindPage from '@/views/404.vue'
+import { useMenuStore } from 'store/menu'
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -27,22 +29,23 @@ router.beforeEach((to, from, next) => {
       } else {
         const userInfo = useUserInfo()
         const system = useSystem()
+        const menu = useMenuStore()
 
-        if (!userInfo.userInfos.username) {
+        if (!menu.menuData.length) {
           userInfo.getUserInfo().then(() => {
             system.getSystemVersion().then((menuData: any[]) => {
               menuData.forEach(r => {
-                router.addRoute('main', r)
+                router.addRoute('base', r)
               })
-              const redirect = decodeURIComponent((from.query.redirect as string) || to.path)
-              if(to.path === redirect) {
-                next({ ...to, replace: true })
-              } else {
-                next({ path: redirect })
-              }
+
+              router.addRoute('base',{
+                path: '/:pathMatch(.*)*',
+                component: () => NotFindPage
+              })
+              console.log(to)
+              next({ ...to, replace: true })
             })
           }).catch(() => {
-            console.log('userInfo', userInfo)
             cleanToken()
             next({ path: LoginPath })
           })

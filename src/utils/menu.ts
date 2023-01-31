@@ -1,4 +1,4 @@
-const pagesComponent = import.meta.glob('../views/system/**/*.vue', { eager: true });
+const pagesComponent = import.meta.glob('../views/**/*.vue', { eager: true });
 import { BlankLayoutPage, BasicLayoutPage } from 'components/Layout'
 
 type ExtraRouteItem = {
@@ -61,13 +61,11 @@ const extraRouteObj = {
 const resolveComponent = (name: any) => {
   // TODO 暂时用system进行测试
   const importPage = pagesComponent[`../views/${name}/index.vue`];
-  // if (!importPage) {
-  //   throw new Error(`Unknown page ${name}. Is it located under Pages with a .vue extension?`);
-  // }
-
+  if (!importPage) {
+    console.warn(`Unknown page ${name}. Is it located under Pages with a .vue extension?`)
+  }
   //@ts-ignore
-  return !importPage ? BlankLayoutPage :  importPage.default
-  // return importPage.default
+  return !!importPage ? importPage.default : BlankLayoutPage
 }
 
 const findChildrenRoute = (code: string, url: string): ExtraRouteItem[] => {
@@ -85,7 +83,7 @@ const findChildrenRoute = (code: string, url: string): ExtraRouteItem[] => {
 
 export function filterAsnycRouter(asyncRouterMap: any, parentCode = '', level = 1) {
   return asyncRouterMap.map((route: any) => {
-
+    console.log(route.name, route)
     route.path = `${route.url}`
     route.meta = {
       icon: route.icon,
@@ -93,11 +91,11 @@ export function filterAsnycRouter(asyncRouterMap: any, parentCode = '', level = 
     }
 
     // 查看是否有隐藏子路由
-    route.children = route.children && route.children.length ? [...route.children, ...findChildrenRoute(route.code, route.url)] : findChildrenRoute(route.code, route.url)
+    const extraChildren = findChildrenRoute(route.code, route.url)
+    route.children = route.children && route.children.length ? [...route.children, ...extraChildren] : extraChildren
 
     // TODO 查看是否具有详情页
     // route.children = [...route.children, ]
-
     if (route.children && route.children.length) {
       route.component = () => level === 1 ? BasicLayoutPage : BlankLayoutPage
       route.children = filterAsnycRouter(route.children, `${parentCode}/${route.code}`, level + 1)
@@ -105,7 +103,7 @@ export function filterAsnycRouter(asyncRouterMap: any, parentCode = '', level = 
     } else {
       route.component = resolveComponent(route.code);
     }
-    console.log(route.code, route)
+
     return route
   })
 }

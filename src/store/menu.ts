@@ -6,6 +6,7 @@ export const useMenuStore = defineStore({
   id: 'menu',
   state: () => ({
     menus: {},
+    menuData: [],
     menusKey: []
   }),
   getters:  {
@@ -59,7 +60,7 @@ export const useMenuStore = defineStore({
               hideInMenu: true
             }
           })
-          this.menus = menus
+          this.menuData = menus
           res(menus)
         }
       })
