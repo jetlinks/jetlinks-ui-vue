@@ -16,9 +16,10 @@
         </p>
       </div>
       <a-tabs @change="handleConvertMetadata">
-        <a-tab-pane v-for="item in codecs" :tab-key="item.id" :key="item.id">
+        <a-tab-pane v-for="item in codecs" :key="item.id" :tab="item.name">
           <div class="cat-panel">
             <!-- TODO 代码编辑器 -->
+            {{ value }}
           </div>
         </a-tab-pane>
       </a-tabs>
@@ -120,25 +121,29 @@ watch(
   { immediate: true }
 )
 
-watchEffect(() => {
-  if (props.visible) {
-    loading.value = true
-    const { id } = route.params
-    if (props.type === 'device') {
-      detail(id as string).then((resp) => {
-        loading.value = false
-        instanceStore.setCurrent(resp.result)
-        value.value = resp.result.metadata
-      });
-    } else {
-      productDetail(id as string).then((resp) => {
-        loading.value = false
-        // productStore.setCurrent(resp.result)
-        value.value = resp.result.metadata
-      });
+watch(
+  [props.visible, props.type],
+  () => {
+    if (props.visible) {
+      loading.value = true
+      const { id } = route.params
+      if (props.type === 'device') {
+        detail(id as string).then((resp) => {
+          loading.value = false
+          instanceStore.setCurrent(resp.result)
+          value.value = resp.result.metadata
+        });
+      } else {
+        productDetail(id as string).then((resp) => {
+          loading.value = false
+          // productStore.setCurrent(resp.result)
+          value.value = resp.result.metadata
+        });
+      }
     }
-  }
-})
+  },
+  { immediate: true }
+)
 </script>
 <style scoped lang="less">
 .cat-content {
