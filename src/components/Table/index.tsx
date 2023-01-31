@@ -333,7 +333,7 @@ const JTable = defineComponent<JTableProps>({
                             total={total.value}
                             showQuickJumper={false}
                             showSizeChanger={true}
-                            current={pageIndex.value}
+                            current={pageIndex.value + 1}
                             pageSize={pageSize.value}
                             pageSizeOptions={['12', '24', '48', '60', '100']}
                             showTotal={(num) => {
@@ -345,7 +345,7 @@ const JTable = defineComponent<JTableProps>({
                                 handleSearch({
                                     ...props.params,
                                     pageSize: size,
-                                    pageIndex: pageSize.value === size ? page : 0
+                                    pageIndex: pageSize.value === size ? (page ? page - 1 : 0) : 0
                                 })
                             }}
                         />
