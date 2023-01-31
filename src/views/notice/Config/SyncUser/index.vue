@@ -1,103 +1,125 @@
 <template>
-    <a-modal
-        v-model:visible="_vis"
-        title="同步用户"
-        :footer="null"
-        @cancel="_vis = false"
-        width="80%"
-    >
-        <a-row :gutter="10">
-            <a-col :span="4">
-                <a-input
-                    v-model:value="deptName"
-                    @keyup.enter="getDepartment"
-                    allowClear
-                    placeholder="请输入部门名称"
-                    style="margin-bottom: 8px"
-                >
-                    <template #addonAfter>
-                        <AIcon
-                            type="SearchOutlined"
-                            style="cursor: pointer"
-                            @click="getDepartment"
-                        />
-                    </template>
-                </a-input>
-                <a-tree
-                    :tree-data="deptTreeData"
-                    :fieldNames="{ title: 'name', key: 'id' }"
-                    :selectedKeys="[deptId]"
-                    @select="onTreeSelect"
-                >
-                </a-tree>
-                <a-empty v-if="!deptTreeData.length" />
-            </a-col>
-            <a-col :span="20">
-                <JTable
-                    ref="tableRef"
-                    :columns="columns"
-                    :dataSource="dataSource"
-                    :loading="tableLoading"
-                    model="table"
-                >
-                    <template #headerTitle>
-                        <a-button type="primary" @click="handleAutoBind">
-                            自动绑定
-                        </a-button>
-                    </template>
-                    <template #status="slotProps">
-                        <a-space>
-                            <a-badge
-                                :status="slotProps.status.value"
-                                :text="slotProps.status.text"
-                            ></a-badge>
+    <div>
+        <a-modal
+            v-model:visible="_vis"
+            title="同步用户"
+            :footer="null"
+            @cancel="_vis = false"
+            width="80%"
+        >
+            <a-row :gutter="10">
+                <a-col :span="4">
+                    <a-input
+                        v-model:value="deptName"
+                        @keyup.enter="getDepartment"
+                        allowClear
+                        placeholder="请输入部门名称"
+                        style="margin-bottom: 8px"
+                    >
+                        <template #addonAfter>
                             <AIcon
-                                v-if="slotProps.status.value === 'error'"
-                                type="ExclamationCircleOutlined"
-                                style="color: #1d39c4; cursor: pointer"
-                                @click="handleError(slotProps.errorStack)"
+                                type="SearchOutlined"
+                                style="cursor: pointer"
+                                @click="getDepartment"
                             />
-                        </a-space>
-                    </template>
-                    <template #action="slotProps">
-                        <a-space :size="16">
-                            <a-tooltip
-                                v-for="i in getActions(slotProps, 'table')"
-                                :key="i.key"
-                                v-bind="i.tooltip"
-                            >
-                                <a-popconfirm
-                                    v-if="i.popConfirm"
-                                    v-bind="i.popConfirm"
-                                    :disabled="i.disabled"
+                        </template>
+                    </a-input>
+                    <a-tree
+                        :tree-data="deptTreeData"
+                        :fieldNames="{ title: 'name', key: 'id' }"
+                        :selectedKeys="[deptId]"
+                        @select="onTreeSelect"
+                    >
+                    </a-tree>
+                    <a-empty v-if="!deptTreeData.length" />
+                </a-col>
+                <a-col :span="20">
+                    <JTable
+                        ref="tableRef"
+                        :columns="columns"
+                        :dataSource="dataSource"
+                        :loading="tableLoading"
+                        model="table"
+                    >
+                        <template #headerTitle>
+                            <a-button type="primary" @click="handleAutoBind">
+                                自动绑定
+                            </a-button>
+                        </template>
+                        <template #status="slotProps">
+                            <a-space>
+                                <a-badge
+                                    :status="slotProps.status.value"
+                                    :text="slotProps.status.text"
+                                ></a-badge>
+                            </a-space>
+                        </template>
+                        <template #action="slotProps">
+                            <a-space :size="16">
+                                <a-tooltip
+                                    v-for="i in getActions(slotProps, 'table')"
+                                    :key="i.key"
+                                    v-bind="i.tooltip"
                                 >
-                                    <a-button
+                                    <a-popconfirm
+                                        v-if="i.popConfirm"
+                                        v-bind="i.popConfirm"
                                         :disabled="i.disabled"
+                                    >
+                                        <a-button
+                                            :disabled="i.disabled"
+                                            style="padding: 0"
+                                            type="link"
+                                            ><AIcon :type="i.icon"
+                                        /></a-button>
+                                    </a-popconfirm>
+                                    <a-button
                                         style="padding: 0"
                                         type="link"
-                                        ><AIcon :type="i.icon"
-                                    /></a-button>
-                                </a-popconfirm>
-                                <a-button
-                                    style="padding: 0"
-                                    type="link"
-                                    v-else
-                                    @click="i.onClick && i.onClick(slotProps)"
-                                >
-                                    <a-button
-                                        :disabled="i.disabled"
-                                        style="padding: 0"
-                                        type="link"
-                                        ><AIcon :type="i.icon"
-                                    /></a-button>
-                                </a-button>
-                            </a-tooltip>
-                        </a-space>
-                    </template>
-                </JTable>
-            </a-col>
-        </a-row>
-    </a-modal>
+                                        v-else
+                                        @click="
+                                            i.onClick && i.onClick(slotProps)
+                                        "
+                                    >
+                                        <a-button
+                                            :disabled="i.disabled"
+                                            style="padding: 0"
+                                            type="link"
+                                            ><AIcon :type="i.icon"
+                                        /></a-button>
+                                    </a-button>
+                                </a-tooltip>
+                            </a-space>
+                        </template>
+                    </JTable>
+                </a-col>
+            </a-row>
+        </a-modal>
+
+        <!-- 绑定用户 -->
+        <a-modal
+            v-model:visible="bindVis"
+            title="绑定用户"
+            :maskClosable="false"
+            :confirm-loading="confirmLoading"
+            @cancel="handleCancel"
+            @ok="handleBindSubmit"
+        >
+            <a-form layout="vertical">
+                <a-form-item label="用户" v-bind="validateInfos.userId">
+                    <a-select
+                        v-model:value="formData.userId"
+                        :options="allUserList"
+                        allowClear
+                        show-search
+                        option-filter-prop="children"
+                        :filter-option="filterOption"
+                        placeholder="请选择用户"
+                    />
+                </a-form-item>
+            </a-form>
+        </a-modal>
+    </div>
 </template>
 
 <script setup lang="ts" name="SyncUser">
@@ -106,6 +128,9 @@ import { PropType } from 'vue';
 import moment from 'moment';
 import { Modal, message } from 'ant-design-vue';
 import type { ActionsType } from '@/components/Table/index.vue';
+import { Form } from 'ant-design-vue';
+
+const useForm = Form.useForm;
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
@@ -220,8 +245,7 @@ const getActions = (
             },
             icon: 'EditOutlined',
             onClick: () => {
-                // visible.value = true;
-                // current.value = data;
+                handleBind(data);
             },
         },
         {
@@ -344,7 +368,17 @@ watch(
  * 绑定用户
  */
 const bindVis = ref(false);
-const formData = ref({});
+const confirmLoading = ref(false);
+const formData = ref({ userId: '' });
+const formRules = ref({
+    userId: [{ required: true, message: '请选择用户', trigger: 'change' }],
+});
+
+const { resetFields, validate, validateInfos, clearValidate } = useForm(
+    formData.value,
+    formRules.value,
+);
+
 const handleBind = (row: any) => {
     bindVis.value = true;
     formData.value = row;
@@ -352,22 +386,55 @@ const handleBind = (row: any) => {
 };
 
 /**
- * 查看错误信息
+ * 绑定用户, 用户下拉筛选
  */
-const handleError = (e: any) => {
-    Modal.info({
-        title: '错误信息',
-        content: JSON.stringify(e),
+const filterOption = (input: string, option: any) => {
+    return (
+        option.componentOptions.children[0].text
+            .toLowerCase()
+            .indexOf(input.toLowerCase()) >= 0
+    );
+};
+
+/**
+ * 绑定提交
+ */
+const handleBindSubmit = () => {
+    validate().then(async () => {
+        const params = {
+            // providerName: formData.value.thirdPartyUserName,
+            // thirdPartyUserId: formData.value.thirdPartyUserId,
+            userId: formData.value.userId,
+        };
+        confirmLoading.value = true;
+        if (props.data.type === 'dingTalk') {
+            configApi
+                .dingTalkBindUser([params], props.data.id)
+                .then(() => {
+                    message.success('操作成功');
+                    bindVis.value = false;
+                    getTableData();
+                })
+                .finally(() => {
+                    confirmLoading.value = false;
+                });
+        } else if (props.data.type === 'weixin') {
+            configApi
+                .weChatBindUser([params], props.data.id)
+                .then(() => {
+                    message.success('操作成功');
+                    bindVis.value = false;
+                    getTableData();
+                })
+                .finally(() => {
+                    confirmLoading.value = false;
+                });
+        }
     });
 };
-/**
- * 查看详情
- */
-const handleDetail = (e: any) => {
-    Modal.info({
-        title: '详情信息',
-        content: JSON.stringify(e),
-    });
+const handleCancel = () => {
+    bindVis.value = false;
+    resetFields()
 };
 </script>
 

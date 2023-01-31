@@ -68,8 +68,14 @@ export default [
 
     // 设备管理
     {
-        path: '/device/Instance',
+        path: '/device/instance',
         component: () => import('@/views/device/Instance/index.vue')
+    },
+    {
+        // path: '/device/Instance/detail/:id',
+        // component: () => import('@/views/device/Instance/detail.vue')
+        path: '/device/instance/detail/:id',
+        component: () => import('@/views/device/Instance/Detail/index.vue')
     },
     // link 运维管理
     {
@@ -81,7 +87,7 @@ export default [
         component: () => import('@/views/link/Certificate/index.vue')
     },
     {
-        path: '/link/certificate/detail/add',
+        path: '/link/certificate/detail/:type/:id',
         component: () => import('@/views/link/Certificate/Detail/index.vue')
     },
     {
@@ -112,6 +118,14 @@ export default [
     {
         path:'/system/Permission',
         component: ()=>import('@/views/system/Permission/index.vue')
+    },
+    {
+        path:'/system/Menu',
+        component: ()=>import('@/views/system/Menu/index.vue')
+    },
+    {
+        path:'/system/Menu/detail/:id',
+        component: ()=>import('@/views/system/Menu/Detail/index.vue')
     },
     // 初始化
     {

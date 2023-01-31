@@ -195,6 +195,7 @@ const PageContainer = defineComponent({
       const extra = getSlotVNode<DefaultPropRender>(slots, props, 'extra');
       const extraContent = getSlotVNode<DefaultPropRender>(slots, props, 'extraContent');
       const subTitle = getSlotVNode<DefaultPropRender>(slots, props, 'subTitle');
+      const title = getSlotVNode<DefaultPropRender>(slots, props, 'title');
 
       // @ts-ignore
       return (
@@ -202,6 +203,7 @@ const PageContainer = defineComponent({
           {...props}
           prefixCls={undefined}
           ghost={ghost.value}
+          title={title}
           subTitle={subTitle}
           content={headerContent}
           // tags={tags}
