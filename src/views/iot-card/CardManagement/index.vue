@@ -351,6 +351,8 @@ import Import from './Import.vue';
 import Export from './Export.vue';
 import Save from './Save.vue';
 
+const router = useRouter();
+
 const cardManageRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const _selectedRowKeys = ref<string[]>([]);
@@ -535,6 +537,14 @@ const getActions = (
                 title: '查看',
             },
             icon: 'EyeOutlined',
+            onClick: () => {
+                router.push({
+                    path: '/iot-card/CardManagement/Detail',
+                    query: {
+                        id: data.id,
+                    },
+                });
+            },
         },
         {
             key: 'bindDevice',
