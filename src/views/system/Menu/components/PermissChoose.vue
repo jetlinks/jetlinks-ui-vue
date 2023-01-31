@@ -5,43 +5,207 @@
             style="width: 300px"
             allowClear
             placeholder="请输入权限名称"
+            @input="search.search"
         />
 
-
-
+        <div class="permission-table">
+            <a-row :gutter="24" class="table-head">
+                <a-col :span="props.firstWidth">权限名称</a-col
+                ><a-col :span="24 - props.firstWidth">权限操作</a-col>
+            </a-row>
+            <div class="table-body" :style="{ 'max-height': props.maxHeight }">
+                <a-row
+                    :gutter="24"
+                    class="row"
+                    v-for="rowItem in permission.list"
+                >
+                    <a-col :span="props.firstWidth" class="item-name">
+                        <a-checkbox
+                            v-model:checked="rowItem.checkAll"
+                            :indeterminate="rowItem.indeterminate"
+                            @change="() => permission.selectAllOpions(rowItem)"
+                        >
+                            {{ rowItem.name }}
+                        </a-checkbox>
+                    </a-col>
+                    <a-col :span="24 - props.firstWidth">
+                        <a-checkbox-group
+                            v-model:value="rowItem.checkedList"
+                            :options="rowItem.options"
+                            @change="((checkValue:string[])=>permission.selectOption(rowItem, checkValue))"
+                        />
+                    </a-col>
+                </a-row>
+            </div>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { exportPermission_api } from '@/api/system/permission';
 
-const props = defineProps({
-    value: Array,
-});
+const props = defineProps<{
+    value: any[];
+    firstWidth: number;
+    maxHeight: string;
+}>();
+const emits = defineEmits(['update:value']);
 const searchValue = ref<string>('');
 
+const search = reactive({
+    value: '',
+    searchTimer: null as null | number,
+    search: () => {
+        if (search.searchTimer) {
+            clearTimeout(search.searchTimer);
+        }
+        search.searchTimer = setTimeout(() => {
+            nextTick(() => permission.getList());
+            search.searchTimer = null;
+        }, 1000);
+    },
+});
 const permission = reactive({
     list: [] as permissionType[],
     // 获取权限列表
     getList: () => {
-        
-        exportPermission_api({ paging: false }).then((resp) => {
-            permission.list = resp.result as permissionType[]
+        const params: paramsType = {
+            paging: false,
+        };
+        if (search.value) {
+            params.terms = [
+                { column: 'name$like', value: `%${search.value}%` },
+            ];
+        }
+        exportPermission_api(params).then((resp) => {
+            permission.list = permission.makeList(
+                props.value,
+                resp.result as any[],
+            );
         });
+    },
+    // 全选/取消全选
+    selectAllOpions: (row: permissionType) => {
+        const newValue = props.value.filter(
+            (item) => item.permission !== row.id,
+        );
+        row = toRaw(row);
+        if (row.checkAll) {
+            row.checkedList = row.options.map((item) => item.value);
+
+            newValue.push({
+                permission: row.id,
+                actions: row.checkedList,
+            });
+        } else {
+            row.checkedList = [];
+        }
+        emits('update:value', newValue);
+    },
+    // 单选
+    selectOption: (row: permissionType, newValue: string[]) => {
+        const newProp = props.value.filter(
+            (item) => item.permission !== row.id,
+        );
+
+        if (newValue.length === row.options.length) {
+            row.checkAll = true;
+            row.indeterminate = false;
+            newProp.push({
+                permission: row.id,
+                actions: newValue,
+            });
+        } else if (newValue.length > 0) {
+            row.checkAll = false;
+            row.indeterminate = true;
+            newProp.push({
+                permission: row.id,
+                actions: newValue,
+            });
+        }
+
+        emits('update:value', newProp);
+    },
+    makeList: (checkedValue: any[], sourceList: any[]): permissionType[] => {
+        console.log(checkedValue);
+        
+        const result = sourceList.map((item) => {
+            const checked = checkedValue.find(
+                (checkedItem) => checkedItem.permission === item.id,
+            );
+            const options = item.actions.map((actionItem: any) => ({
+                label: actionItem.name,
+                value: actionItem.action,
+            }));
+            console.log(item, checked);
+
+            return {
+                id: item.id,
+                name: item.name,
+                checkedList: (checked && checked.actions) || [],
+                checkAll:
+                    (checked &&
+                        item.actions &&
+                        checked?.actions.length === item.actions.length) ||
+                    false,
+                indeterminate:
+                    (checked &&
+                        item.actions &&
+                        checked.actions.length < item.actions.length) ||
+                    false,
+                options,
+            };
+        }) as permissionType[];
+
+        return result;
     },
 });
 
-permission.getList()
-
-
-
+permission.getList();
 
 type permissionType = {
     id: string;
     name: string;
-    actions: object[]
-}
-
+    checkedList: string[];
+    checkAll: boolean;
+    indeterminate: boolean;
+    options: any[];
+};
+type paramsType = {
+    paging: boolean;
+    terms?: object[];
+};
 </script>
 
-<style scoped></style>
+<style lang="less" scoped>
+.permission-choose-container {
+    .permission-table {
+        margin-top: 12px;
+        font-size: 14px;
+        border: 1px solid #d9d9d9;
+        color: rgba(0, 0, 0, 0.85);
+        .table-head {
+            padding: 12px;
+            background-color: #d9d9d9;
+            margin: 0 !important;
+        }
+        .table-body {
+            overflow: auto;
+            .row {
+                margin: 0 !important;
+
+                border-bottom: 1px solid #d9d9d9;
+
+                > div {
+                    padding: 8px 12px;
+                }
+                .item-name {
+                    display: flex;
+                    align-items: center;
+                    border-right: 1px solid #d9d9d9;
+                }
+            }
+        }
+    }
+}
+</style>

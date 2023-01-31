@@ -170,22 +170,18 @@
                             placeholder="请选择关联菜单"
                             multiple
                             show-search
-                            tree-default-expand-all
                             :tree-data="form.treeData"
+                            :field-names="{
+                                children: 'children',
+                                label: 'name',
+                                value: 'id',
+                            }"
                         >
-                            <template #title="{ value: val, title }">
-                                <b
-                                    v-if="val === 'parent 1-1'"
-                                    style="color: #08c"
-                                    >{{ val }}</b
-                                >
-                                <template v-else>{{ title }}</template>
-                            </template>
                         </a-tree-select>
                     </a-form-item>
                 </a-form-item>
                 <a-form-item label="权限">
-                    <PermissChoose v-model:value="form.data.permissions" />
+                    <PermissChoose :first-width="3" max-height="350px" v-model:value="form.data.permissions" />
                 </a-form-item>
             </a-form>
 
@@ -245,17 +241,16 @@ const form = reactive({
 
     treeData: [], // 关联菜单
     assetsType: [] as assetType[], // 资产类型
-    premissonList: [], // 权限列表
 
     init: () => {
         // 获取菜单详情
         routeParams.id &&
             getMenuInfo_api(routeParams.id).then((resp) => {
-                console.log('菜单详情', resp);
+                form.data = resp.result as formType
             });
         // 获取关联菜单
-        getMenuTree_api({ paging: false }).then((resp) => {
-            console.log('关联菜单', resp);
+        getMenuTree_api({ paging: false }).then((resp: any) => {
+            form.treeData = resp.result;
         });
         // 获取资产类型
         getAssetsType_api().then((resp: any) => {
