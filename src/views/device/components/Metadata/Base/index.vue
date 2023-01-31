@@ -1,5 +1,5 @@
 <template>
-  <JTable :loading="loading" :data-source="data" size="small" :columns="columns" row-key="id">
+  <JTable :loading="loading" :data-source="data" size="small" :columns="columns" row-key="id" model="TABLE">
     <template #headerTitle>
       <a-input-search v-model:value="searchValue" placeholder="请输入名称" @search="handleSearch"></a-input-search>
       <PermissionButton :has-permission="permission" key="add" @click="handleAddClick"
@@ -11,11 +11,24 @@
         </template>
         新增
       </PermissionButton>
-      <Edit
-        v-if="metadataStore.model.edit"
-        :type="target"
-        :tabs="type"
-      ></Edit>
+      <Edit v-if="metadataStore.model.edit" :type="target" :tabs="type"></Edit>
+    </template>
+    <template #level="slotProps">
+      {{ levelMap[slotProps.expands?.level] || '-' }}
+    </template>
+    <template #async="slotProps">
+      {{ slotProps.async ? '是' : '否' }}
+    </template>
+    <template #valueType="slotProps">
+      {{ slotProps.valueType?.type }}
+    </template>
+    <template #source="slotProps">
+      {{ sourceMap[slotProps.expands?.source] }}
+    </template>
+    <template #type="slotProps">
+      <a-tag v-for="item in (slotProps.expands?.type || [])" :key="item">
+        {{ expandsType[item] }}
+      </a-tag>
     </template>
   </JTable>
 </template>
@@ -42,6 +55,21 @@ const productStore = useProductStore()
 const loading = ref(false)
 const data = ref<MetadataItem[]>([])
 const { type, target = 'product' } = props
+const levelMap = ref({
+  ordinary: '普通',
+  warn: '警告',
+  urgent: '紧急',
+})
+const sourceMap = ref({
+  device: '设备',
+  manual: '手动',
+  rule: '规则',
+});
+const expandsType = ref({
+  read: '读',
+  write: '写',
+  report: '上报',
+});
 const actions: JColumnProps[] = [
   {
     title: '操作',
@@ -97,4 +125,5 @@ const operateLimits = (action: 'add' | 'updata', types: MetadataType) => {
 };
 </script>
 <style scoped lang="less">
+
 </style>

@@ -32,16 +32,16 @@
       </template>
 
       <a-tab-pane tab="属性定义" key="properties">
-        <BaseMetadata target={props.type} type="properties" :permission="permission" />
+        <BaseMetadata :target="type" type="properties" :permission="permission" />
       </a-tab-pane>
       <a-tab-pane tab="功能定义" key="functions">
-        <BaseMetadata target={props.type} type="functions" :permission="permission" />
+        <BaseMetadata :target="type" type="functions" :permission="permission" />
       </a-tab-pane>
       <a-tab-pane tab="事件定义" key="events">
-        <BaseMetadata target={props.type} type="events" :permission="permission" />
+        <BaseMetadata :target="type" type="events" :permission="permission" />
       </a-tab-pane>
       <a-tab-pane tab="标签定义" key="tags">
-        <BaseMetadata target={props.type} type="tags" :permission="permission" />
+        <BaseMetadata :target="type" type="tags" :permission="permission" />
       </a-tab-pane>
     </a-tabs>
     <Import v-model:visible="visible" :type="type" @close="visible = false" />
@@ -58,6 +58,7 @@ import { SystemConst } from '@/utils/consts'
 import { useInstanceStore } from '@/store/instance'
 import Import from './Import/index.vue'
 import Cat from './Cat/index.vue'
+import BaseMetadata from './Base/index.vue'
 
 const route = useRoute()
 const instanceStore = useInstanceStore()
