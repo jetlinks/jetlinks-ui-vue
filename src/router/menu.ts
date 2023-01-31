@@ -95,7 +95,7 @@ export default [
         component: () => import('@/views/link/AccessConfig/index.vue')
     },
     {
-        path: '/link/accessConfig/detail/add',
+        path: '/link/accessConfig/detail/:type/:id',
         component: () => import('@/views/link/AccessConfig/Detail/index.vue')
     },
     // system 系统管理

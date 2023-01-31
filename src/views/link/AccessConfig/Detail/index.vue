@@ -1,7 +1,7 @@
 <template>
     <a-spin :spinning="loading">
         <a-card :bordered="false">
-            <div v-if="type">
+            <div v-if="type && modeType === 'add'">
                 <Provider
                     @onClick="goProviders"
                     :dataSource="dataSource"
@@ -14,9 +14,21 @@
                     :provider="provider"
                     :data="data"
                 />
-                <Media v-if="showType === 'media'" :provider="provider" />
-                <Channel v-if="showType === 'channel'" :provider="provider" />
-                <Edge v-if="showType === 'edge'" :provider="provider" />
+                <Media
+                    v-if="showType === 'media'"
+                    :provider="provider"
+                    :data="data"
+                />
+                <Channel
+                    v-if="showType === 'channel'"
+                    :provider="provider"
+                    :data="data"
+                />
+                <Edge
+                    v-if="showType === 'edge'"
+                    :provider="provider"
+                    :data="data"
+                />
                 <Cloud
                     v-if="showType === 'cloud'"
                     :provider="provider"
@@ -37,10 +49,10 @@ import Channel from '../components/Channel/index.vue';
 import Edge from '../components/Edge/index.vue';
 import Cloud from '../components/Cloud/index.vue';
 
-// const router = useRouter();
 const route = useRoute();
 
-const id = route.query.id;
+const modeType = route.params.type as string;
+const id = route.params.id as string;
 
 const dataSource = ref([]);
 const type = ref(false);
@@ -53,7 +65,6 @@ const goProviders = (param: object) => {
     showType.value = param.type;
     provider.value = param;
     type.value = false;
-    console.log(1123, showType.value, param);
 };
 
 const goBack = () => {
@@ -61,80 +72,77 @@ const goBack = () => {
     type.value = true;
 };
 
+const getTypeList = (result: any[]) => {
+    const list = [];
+    const media: any[] = [];
+    const network: any[] = [];
+    const cloud: any[] = [];
+    const channel: any[] = [];
+    const edge: any[] = [];
+    result.map((item) => {
+        if (item.id === 'fixed-media' || item.id === 'gb28181-2016') {
+            item.type = 'media';
+            media.push(item);
+        } else if (item.id === 'OneNet' || item.id === 'Ctwing') {
+            item.type = 'cloud';
+            cloud.push(item);
+        } else if (item.id === 'modbus-tcp' || item.id === 'opc-ua') {
+            item.type = 'channel';
+            channel.push(item);
+        } else if (
+            item.id === 'official-edge-gateway' ||
+            item.id === 'edge-child-device'
+        ) {
+            item.type = 'edge';
+            edge.push(item);
+        } else {
+            item.type = 'network';
+            network.push(item);
+        }
+    });
+
+    network.length &&
+        list.push({
+            list: [...network],
+            title: '自定义设备接入',
+        });
+    media.length &&
+        list.push({
+            list: [...media],
+            title: '视频类设备接入',
+        });
+    cloud.length &&
+        list.push({
+            list: [...cloud],
+            title: '云平台接入',
+        });
+    channel.length &&
+        list.push({
+            list: [...channel],
+            title: '通道类设备接入',
+        });
+    edge.length &&
+        list.push({
+            list: [...edge],
+            title: '官方接入',
+        });
+
+    return list;
+};
+
 const queryProviders = async () => {
     const resp = await getProviders();
     if (resp.status === 200) {
-        const media: any[] = [];
-        const network: any[] = [];
-        const cloud: any[] = [];
-        const channel: any[] = [];
-        const edge: any[] = [];
-        resp.result.map((item) => {
-            if (item.id === 'fixed-media' || item.id === 'gb28181-2016') {
-                item.type = 'media';
-                media.push(item);
-            } else if (item.id === 'OneNet' || item.id === 'Ctwing') {
-                item.type = 'cloud';
-                cloud.push(item);
-            } else if (item.id === 'modbus-tcp' || item.id === 'opc-ua') {
-                item.type = 'channel';
-                channel.push(item);
-            } else if (
-                item.id === 'official-edge-gateway' ||
-                item.id === 'edge-child-device'
-            ) {
-                item.type = 'edge';
-                edge.push(item);
-            } else {
-                item.type = 'network';
-                network.push(item);
-            }
-        });
-        const list = [];
-        if (network.length) {
-            list.push({
-                // type: 'network',
-                list: [...network],
-                title: '自定义设备接入',
-            });
-        }
-        if (media.length) {
-            list.push({
-                // type: 'media',
-                list: [...media],
-                title: '视频类设备接入',
-            });
-        }
-        if (cloud.length) {
-            list.push({
-                // type: 'cloud',
-                list: [...cloud],
-                title: '云平台接入',
-            });
-        }
-        if (channel.length) {
-            list.push({
-                // type: 'channel',
-                list: [...channel],
-                title: '通道类设备接入',
-            });
-        }
-        if (edge.length) {
-            list.push({
-                // type: 'edge',
-                list: [...edge],
-                title: '官方接入',
-            });
-        }
-        dataSource.value = list;
+        dataSource.value = getTypeList(resp.result);
     }
 };
 
 const getProvidersData = async () => {
-    if (id) {
+    if (id && modeType !== 'add') {
         getProviders().then((response) => {
             if (response.status === 200) {
-                dataSource.value = response.result.filter(
+                const list = getTypeList(response.result);
+                dataSource.value = list.filter(
                     (item) =>
                         item.channel === 'network' ||
                         item.channel === 'child-device',
@@ -144,15 +152,21 @@ const getProvidersData = async () => {
                         const dt = response.result.find(
                             (item) => item?.id === resp.result.provider,
                         );
+
+                        response.result.forEach((item) => {
+                            if (item.id === resp.result.provider) {
+                                resp.result.type = item.type;
+                                showType.value = item.type;
+                            }
+                        });
+
                         provider.value = dt;
                         data.value = resp.result;
                         type.value = false;
                     }
                 });
-                loading.value = false;
-            } else {
-                loading.value = false;
             }
+            loading.value = false;
         });
     } else {
         type.value = true;
