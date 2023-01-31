@@ -4,8 +4,12 @@
             <div style="font-size: 16px; font-weight: 700">配置</div>
             <a-space>
                <a-button type="link" @click="visible = true"><AIcon type="EditOutlined" />编辑</a-button>
-               <a-button type="link" v-if="instanceStore.detail.current?.value !== 'notActive'"><AIcon type="CheckOutlined" />应用配置<a-tooltip title="修改配置后需重新应用后才能生效。"><AIcon type="QuestionCircleOutlined" /></a-tooltip></a-button>
-               <a-button type="link" v-if="instanceStore.detail.aloneConfiguration"><AIcon type="SyncOutlined" />恢复默认<a-tooltip title="该设备单独编辑过配置信息，点击此将恢复成默认的配置信息，请谨慎操作。"><AIcon type="QuestionCircleOutlined" /></a-tooltip></a-button>
+               <a-popconfirm title="确认重新应用该配置？" @confirm="deployBtn">
+                    <a-button type="link" v-if="instanceStore.detail.current?.value !== 'notActive'"><AIcon type="CheckOutlined" />应用配置<a-tooltip title="修改配置后需重新应用后才能生效。"><AIcon type="QuestionCircleOutlined" /></a-tooltip></a-button>
+               </a-popconfirm>
+               <a-popconfirm title="确认恢复默认配置？" @confirm="resetBtn">
+                    <a-button type="link" v-if="instanceStore.detail.aloneConfiguration"><AIcon type="SyncOutlined" />恢复默认<a-tooltip title="该设备单独编辑过配置信息，点击此将恢复成默认的配置信息，请谨慎操作。"><AIcon type="QuestionCircleOutlined" /></a-tooltip></a-button>
+               </a-popconfirm>
             </a-space>
         </div>
         <a-descriptions bordered size="small" v-for="i in config" :key="i.name">
@@ -28,7 +32,8 @@
 <script lang="ts" setup>
 import { useInstanceStore } from "@/store/instance"
 import { ConfigMetadata } from "@/views/device/Product/typings"
-import { getConfigMetadata } from '@/api/device/instance'
+import { getConfigMetadata, _deploy, configurationReset } from '@/api/device/instance'
+import { message } from "ant-design-vue"
 
 const instanceStore = useInstanceStore()
 const visible = ref<boolean>(false)
@@ -36,11 +41,11 @@ const config = ref<ConfigMetadata[]>([])
 
 watchEffect(() => {
     if(instanceStore.current.id){
-        // getConfigMetadata(instanceStore.current.id).then(resp => {
-        //     if(resp.status === 200){
-        //         config.value = resp?.result as ConfigMetadata[]
-        //     }
-        // })
+        getConfigMetadata(instanceStore.current.id).then(resp => {
+            if(resp.status === 200){
+                config.value = resp?.result as ConfigMetadata[]
+            }
+        })
     }
 })
 
@@ -53,5 +58,24 @@ const isExit = (property: string) => {
         instanceStore.current?.cachedConfiguration[property]
     );
   }
+  
+const deployBtn = async () => {
+    if(instanceStore.current.id){
+        const resp = await _deploy(instanceStore.current.id)
+        if (resp.status === 200) {
+            message.success('操作成功')
+            instanceStore.refresh(instanceStore.current.id)
+        }
+    }
+}
 
+const resetBtn = async () => {
+    if(instanceStore.current.id){
+        const resp = await configurationReset(instanceStore.current.id)
+        if (resp.status === 200) {
+            message.success('恢复默认配置成功')
+            instanceStore.refresh(instanceStore.current.id)
+        }
+    }
+}
 </script>

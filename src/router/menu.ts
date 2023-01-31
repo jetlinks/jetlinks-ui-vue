@@ -145,6 +145,14 @@ export default [
       path: '/iot-card/CardManagement',
       component: () => import('@/views/iot-card/CardManagement/index.vue')
     },
+    {
+      path: '/iot-card/CardManagement/Detail',
+      component: () => import('@/views/iot-card/CardManagement/Detail/index.vue')
+    },
+    {
+      path: '/iot-card/Recharge',
+      component: () => import('@/views/iot-card/Recharge/index.vue')
+    },
     // 北向输出
     {
         path: '/northbound/DuerOS',

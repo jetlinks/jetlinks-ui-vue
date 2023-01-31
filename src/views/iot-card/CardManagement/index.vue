@@ -151,11 +151,18 @@
                             <span class="flow-text">
                                 {{ slotProps.totalFlow }}
                             </span>
-                            <span class="card-item-content-text"> M 使用流量</span>
+                            <span class="card-item-content-text">
+                                M 使用流量</span
+                            >
                         </div>
                         <div v-else>
                             <div class="progress-text">
-                                <div>{{ slotProps.totalFlow - slotProps.usedFlow }} %</div>
+                                <div>
+                                    {{
+                                        slotProps.totalFlow - slotProps.usedFlow
+                                    }}
+                                    %
+                                </div>
                                 <div class="card-item-content-text">
                                     总共 {{ slotProps.totalFlow }} M
                                 </div>
@@ -163,7 +170,9 @@
                             <a-progress
                                 :strokeColor="'#ADC6FF'"
                                 :showInfo="false"
-                                :percent="slotProps.totalFlow - slotProps.usedFlow"
+                                :percent="
+                                    slotProps.totalFlow - slotProps.usedFlow
+                                "
                             />
                         </div>
                     </template>
@@ -307,6 +316,13 @@
             :cardId="cardId"
             @change="bindDevice"
         />
+        <!-- 新增、编辑 -->
+        <Save
+            v-if="visible"
+            :type="saveType"
+            :data="current"
+            @change="saveChange"
+        />
     </div>
 </template>
 
@@ -333,6 +349,9 @@ import { getImage } from '@/utils/comm';
 import BindDevice from './BindDevice.vue';
 import Import from './Import.vue';
 import Export from './Export.vue';
+import Save from './Save.vue';
+
+const router = useRouter();
 
 const cardManageRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -344,6 +363,7 @@ const exportVisible = ref<boolean>(false);
 const importVisible = ref<boolean>(false);
 const cardId = ref<any>();
 const current = ref<Partial<CardManagement>>({});
+const saveType = ref<string>('');
 
 const columns = [
     {
@@ -504,6 +524,11 @@ const getActions = (
                 title: '编辑',
             },
             icon: 'EditOutlined',
+            onClick: () => {
+                visible.value = true;
+                current.value = data;
+                saveType.value = 'edit';
+            },
         },
         {
             key: 'view',
@@ -512,6 +537,14 @@ const getActions = (
                 title: '查看',
             },
             icon: 'EyeOutlined',
+            onClick: () => {
+                router.push({
+                    path: '/iot-card/CardManagement/Detail',
+                    query: {
+                        id: data.id,
+                    },
+                });
+            },
         },
         {
             key: 'bindDevice',
@@ -651,10 +684,27 @@ const handleView = (id: string) => {
 /**
  * 新增
  */
-const handleAdd = () => {};
+const handleAdd = () => {
+    visible.value = true;
+    current.value = {};
+    saveType.value = 'add';
+};
+
+/**
+ * 新增、编辑关闭弹窗
+ * @param val 加载表格
+ */
+const saveChange = (val: any) => {
+    visible.value = false;
+    current.value = {};
+    if (val) {
+        cardManageRef.value?.reload();
+    }
+};
 
 /**
  * 绑定设备关闭窗口
+ * @param val
  */
 const bindDevice = (val: boolean) => {
     bindDeviceVisible.value = false;

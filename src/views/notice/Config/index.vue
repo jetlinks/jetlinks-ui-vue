@@ -77,20 +77,35 @@
                             v-bind="item.tooltip"
                             :title="item.disabled && item.tooltip.title"
                         >
+                            <a-dropdown
+                                placement="bottomRight"
+                                v-if="item.key === 'others'"
+                            >
+                                <a-button>
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item.text }}</span>
+                                </a-button>
+                                <template #overlay>
+                                    <a-menu>
+                                        <a-menu-item
+                                            v-for="(o, i) in item.children"
+                                            :key="i"
+                                        >
+                                            <a-button type="link" @click="o.onClick">
+                                                <AIcon :type="o.icon" />
+                                                <span>{{ o.text }}</span>
+                                            </a-button>
+                                        </a-menu-item>
+                                    </a-menu>
+                                </template>
+                            </a-dropdown>
                             <a-popconfirm
-                                v-if="item.popConfirm"
+                                v-else-if="item.key === 'delete'"
                                 v-bind="item.popConfirm"
                                 :disabled="item.disabled"
                             >
                                 <a-button :disabled="item.disabled">
-                                    <AIcon
-                                        type="DeleteOutlined"
-                                        v-if="item.key === 'delete'"
-                                    />
-                                    <template v-else>
-                                        <AIcon :type="item.icon" />
-                                        <span>{{ item.text }}</span>
-                                    </template>
+                                    <AIcon type="DeleteOutlined" />
                                 </a-button>
                             </a-popconfirm>
                             <template v-else>
@@ -98,14 +113,8 @@
                                     :disabled="item.disabled"
                                     @click="item.onClick"
                                 >
-                                    <AIcon
-                                        type="DeleteOutlined"
-                                        v-if="item.key === 'delete'"
-                                    />
-                                    <template v-else>
-                                        <AIcon :type="item.icon" />
-                                        <span>{{ item.text }}</span>
-                                    </template>
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item.text }}</span>
                                 </a-button>
                             </template>
                         </a-tooltip>
@@ -351,29 +360,35 @@ const getActions = (
                 currentConfig.value = data;
             },
         },
-        {
-            key: 'debug',
-            text: '导出',
-            tooltip: {
-                title: '导出',
-            },
-            icon: 'ArrowDownOutlined',
-            onClick: () => {
-                downloadObject(data, `通知配置`);
-            },
-        },
-        {
-            key: 'sync',
-            text: '同步用户',
-            tooltip: {
-                title: '同步用户',
-            },
-            icon: 'TeamOutlined',
-            onClick: () => {
-                syncVis.value = true;
-                currentConfig.value = data;
-            },
-        },
+        // {
+        //     key: 'others',
+        //     text: '其他',
+        //     children: [
+        //         {
+        //             key: 'debug',
+        //             text: '导出',
+        //             tooltip: {
+        //                 title: '导出',
+        //             },
+        //             icon: 'ArrowDownOutlined',
+        //             onClick: () => {
+        //                 downloadObject(data, `通知配置`);
+        //             },
+        //         },
+        //         {
+        //             key: 'sync',
+        //             text: '同步用户',
+        //             tooltip: {
+        //                 title: '同步用户',
+        //             },
+        //             icon: 'TeamOutlined',
+        //             onClick: () => {
+        //                 syncVis.value = true;
+        //                 currentConfig.value = data;
+        //             },
+        //         },
+        //     ],
+        // },
         {
             key: 'delete',
             text: '删除',
@@ -392,9 +407,55 @@ const getActions = (
             icon: 'DeleteOutlined',
         },
     ];
-    if (data.provider === 'dingTalkMessage' || data.provider === 'corpMessage')
+
+    const others: ActionsType = {
+        key: 'others',
+        text: '其他',
+        icon: 'EllipsisOutlined',
+        children: [
+            {
+                key: 'debug',
+                text: '导出',
+                tooltip: {
+                    title: '导出',
+                },
+                icon: 'ArrowDownOutlined',
+                onClick: () => {
+                    downloadObject(data, `通知配置`);
+                },
+            },
+            {
+                key: 'sync',
+                text: '同步用户',
+                tooltip: {
+                    title: '同步用户',
+                },
+                icon: 'TeamOutlined',
+                onClick: () => {
+                    syncVis.value = true;
+                    currentConfig.value = data;
+                },
+            },
+        ],
+    };
+
+    if (type === 'card') {
+        if (
+            data.provider !== 'dingTalkMessage' &&
+            data.provider !== 'corpMessage'
+        )
+            others.children.splice(1, 1);
+        actions.splice(actions.length - 1, 0, others);
         return actions;
-    return actions.filter((i: ActionsType) => i.key !== 'sync');
+    } else {
+        if (
+            data.provider !== 'dingTalkMessage' &&
+            data.provider !== 'corpMessage'
+        )
+            others.children.splice(1, 1);
+        actions.splice(actions.length - 1, 0, ...others.children);
+        return actions;
+    }
 };
 </script>
 <style lang="less" scoped>
