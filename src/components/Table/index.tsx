@@ -37,6 +37,7 @@ export interface ActionsType {
     tooltip?: TooltipProps;
     popConfirm?: PopconfirmProps;
     icon?: string;
+    children?: ActionsType[];
 }
 
 export interface JColumnProps extends ColumnProps{
