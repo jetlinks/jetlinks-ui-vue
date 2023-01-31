@@ -311,31 +311,42 @@ const msgType = ref([
 // 表单数据
 const formData = ref<ConfigFormData>({
     configuration: {
-        appKey: '',
-        appSecret: '',
+        host: '',
+        port: 25,
+        ssl: false,
+        sender: '',
+        username: '',
+        password: '',
     },
     description: '',
     name: '',
-    provider: 'dingTalkMessage',
-    type: 'dingTalk',
+    provider: 'embedded',
+    type: 'email',
 });
 
 // 根据通知方式展示对应的字段
 watch(
     () => formData.value.type,
     (val) => {
-        // formData.value.configuration = Object.values<any>(CONFIG_FIELD_MAP[val])[0];
         msgType.value = MSG_TYPE[val];
 
         formData.value.provider = msgType.value[0].value;
+
+        formData.value.configuration =
+            CONFIG_FIELD_MAP[val][formData.value.provider];
+
+        clearValid();
     },
 );
 
-computed(() =>
-    Object.assign(
-        formData.value.configuration,
-        CONFIG_FIELD_MAP[formData.value.type][formData.value.provider],
-    ),
+watch(
+    () => formData.value.provider,
+    (val) => {
+        formData.value.configuration =
+            CONFIG_FIELD_MAP[formData.value.type][val];
+
+        clearValid();
+    },
 );
 
 // 验证规则
@@ -405,15 +416,15 @@ const { resetFields, validate, validateInfos, clearValidate } = useForm(
     formData.value,
     formRules.value,
 );
-watch(
-    () => formData.value.type,
-    () => {
+
+const clearValid = () => {
+    setTimeout(() => {
         clearValidate();
-    },
-    { deep: true },
-);
+    }, 200);
+};
 
 const getDetail = async () => {
+    if (route.params.id === ':id') return;
     const res = await configApi.detail(route.params.id as string);
     // console.log('res: ', res);
     formData.value = res.result;
@@ -441,10 +452,12 @@ const handleSubmit = () => {
                 message.success('保存成功');
                 router.back();
             }
-            btnLoading.value = false;
         })
         .catch((err) => {
             console.log('err: ', err);
+        })
+        .finally(() => {
+            btnLoading.value = false;
         });
 };
 </script>
