@@ -36,7 +36,7 @@
           <template #addonAfter>
             <a-upload v-model:file-list="fileList" :before-upload="beforeUpload" accept=".json"
               :show-upload-list="false" :action="FILE_UPLOAD" @change="fileChange"
-              :headers="{ 'X-Access-Token': token }">
+              :headers="{ 'X-Access-Token':  getToken()}">
               <upload-outlined class="upload-button"/>
               <!-- <button id="uploadFile" style="display: none;"></button> -->
             </a-upload>
@@ -45,7 +45,7 @@
       </a-form-item>
       <a-form-item label="物模型" v-bind="validateInfos.import" v-if="formModel.metadataType === 'script'">
         <!-- TODO代码编辑器 -->
-        <a-textarea v-model:value="formModel.import"></a-textarea>
+        <MonacoEditor v-model="formModel.import" theme="vs" style="height: 300px"></MonacoEditor>
       </a-form-item>
     </a-form>
   </a-modal>
@@ -64,8 +64,8 @@ import { useInstanceStore } from '@/store/instance'
 import { useProductStore } from '@/store/product';
 import { UploadOutlined, ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { FILE_UPLOAD } from '@/api/comm';
-import { LocalStore } from '@/utils/comm';
-import { TOKEN_KEY } from '@/utils/variable';
+import { LocalStore, getToken } from '@/utils/comm';
+import MonacoEditor from '@/components/MonacoEditor/index.vue'
 
 const route = useRoute()
 const instanceStore = useInstanceStore()
@@ -147,7 +147,6 @@ const onSubmit = () => {
   })
 }
 const fileList = ref<UploadFile[]>([])
-const token = ref(LocalStore.get(TOKEN_KEY));
 
 const productList = ref<DefaultOptionType[]>([])
 
