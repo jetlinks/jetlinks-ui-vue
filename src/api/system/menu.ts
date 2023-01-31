@@ -10,4 +10,8 @@ export const queryOwnThree = (data: any) => server.post<any>('/menu/user-own/tre
 // 获取资产类型
 export const getAssetsType_api = () => server.get(`/asset/types`);
 // 获取菜单详情
-export const getMenuDetail_api = (id:string) => server.get(`/menu/${id}`);
+export const getMenuInfo_api = (id:string) => server.get(`/menu/${id}`);
+// 编辑菜单信息
+export const saveMenuInfo_api = (data: object) => server.patch(`/menu`, data);
+// 新增菜单信息
+export const addMenuInfo_api = (data: object) => server.post(`/menu`, data);
