@@ -37,12 +37,12 @@ router.beforeEach((to, from, next) => {
               menuData.forEach(r => {
                 router.addRoute('base', r)
               })
-
               router.addRoute('base',{
-                path: '/:pathMatch(.*)*',
+                path: '/:pathMatch(.*)',
+                name: 'error',
                 component: () => NotFindPage
               })
-              console.log(to)
+
               next({ ...to, replace: true })
             })
           }).catch(() => {

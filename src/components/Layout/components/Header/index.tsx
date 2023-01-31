@@ -32,7 +32,7 @@ export const HeaderView = defineComponent({
             height: `${headerHeight.value}px`,
             lineHeight: `${headerHeight.value}px`,
             width: `100%`,
-
+            background: 'transparent'
           }}
         />
         <Layout.Header

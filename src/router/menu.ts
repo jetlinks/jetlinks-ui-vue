@@ -18,7 +18,7 @@ export default [
     //   path: '/initsetting',
     //   component: () => import('@/view/Login/initSet.vue')
     // }
-
+    { path: '/*', redirect: '/'},
     // start: 测试用, 可删除
     {
         path: '/login',

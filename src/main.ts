@@ -8,7 +8,7 @@ import 'ant-design-vue/es/notification/style/css';
 
 const app = createApp(App)
 
-app.use(router)
-  .use(store)
+app.use(store)
+  .use(router)
   .use(components)
   .mount('#app')
