@@ -1,4 +1,5 @@
 <template>
+    <Search :columns="columns" target="device-instance" />
     <JTable
         ref="instanceRef"
         :columns="columns"
@@ -101,8 +102,8 @@
                 :actions="getActions(slotProps, 'card')"
                 v-bind="slotProps"
                 :active="_selectedRowKeys.includes(slotProps.id)"
-                :status="slotProps.state.value"
-                :statusText="slotProps.state.text"
+                :status="slotProps.state?.value"
+                :statusText="slotProps.state?.text"
                 :statusNames="{
                     online: 'success',
                     offline: 'error',
@@ -126,7 +127,7 @@
                     <a-row>
                         <a-col :span="12">
                             <div class="card-item-content-text">设备类型</div>
-                            <div>{{ slotProps.deviceType.text }}</div>
+                            <div>{{ slotProps.deviceType?.text }}</div>
                         </a-col>
                         <a-col :span="12">
                             <div class="card-item-content-text">产品名称</div>
@@ -151,7 +152,7 @@
                                 />
                                 <template v-else>
                                     <AIcon :type="item.icon" />
-                                    <span>{{ item.text }}</span>
+                                    <span>{{ item?.text }}</span>
                                 </template>
                             </a-button>
                         </a-popconfirm>
@@ -166,7 +167,7 @@
                                 />
                                 <template v-else>
                                     <AIcon :type="item.icon" />
-                                    <span>{{ item.text }}</span>
+                                    <span>{{ item?.text }}</span>
                                 </template>
                             </a-button>
                         </template>
@@ -176,8 +177,8 @@
         </template>
         <template #state="slotProps">
             <a-badge
-                :text="slotProps.state === 1 ? ' 正常' : '禁用'"
-                :status="statusMap.get(slotProps.state)"
+                :text="slotProps.state?.text"
+                :status="statusMap.get(slotProps.state?.value)"
             />
         </template>
         <template #action="slotProps">
@@ -228,7 +229,7 @@
         :api="api"
         :type="type"
     />
-    <Save v-if="visible" :data="current" />
+    <Save v-if="visible" :data="current" @close="visible = false" @save="saveBtn" />
 </template>
 
 <script setup lang="ts">
@@ -263,8 +264,10 @@ const api = ref<string>('');
 const type = ref<string>('');
 
 const statusMap = new Map();
-statusMap.set(1, 'processing');
-statusMap.set(0, 'error');
+statusMap.set('online', 'processing');
+statusMap.set('offline', 'error');
+statusMap.set('notActive', 'warning');
+
 const columns = [
     {
         title: 'ID',
@@ -399,9 +402,9 @@ const getActions = (
         },
         {
             key: 'action',
-            text: data.state.value !== 'notActive' ? '禁用' : '启用',
+            text: data.state?.value !== 'notActive' ? '禁用' : '启用',
             tooltip: {
-                title: data.state.value !== 'notActive' ? '禁用' : '启用',
+                title: data.state?.value !== 'notActive' ? '禁用' : '启用',
             },
             icon:
                 data.state.value !== 'notActive'
@@ -430,7 +433,7 @@ const getActions = (
         {
             key: 'delete',
             text: '删除',
-            disabled: data.state.value !== 'notActive',
+            disabled: data.state?.value !== 'notActive',
             tooltip: {
                 title:
                     data.state.value !== 'notActive'
