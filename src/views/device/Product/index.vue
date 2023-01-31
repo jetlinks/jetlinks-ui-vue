@@ -107,7 +107,7 @@
             </template>
         </JTable>
         <!-- 新增、编辑 -->
-        <Save ref="saveRef" />
+        <Save ref="saveRef" :isAdd="isAdd" :title="title" />
     </a-card>
 </template>
 
@@ -140,6 +140,8 @@ import Save from './Save/index.vue';
 /**
  * 表格数据
  */
+const isAdd = ref<number>(0);
+const title = ref<string>('');
 const statusMap = new Map();
 statusMap.set(1, 'success');
 statusMap.set(0, 'error');
@@ -187,6 +189,7 @@ const columns = [
 ];
 
 const _selectedRowKeys = ref<string[]>([]);
+const currentForm = ref({});
 
 const onSelectChange = (keys: string[]) => {
     _selectedRowKeys.value = [...keys];
@@ -205,11 +208,14 @@ const handleClick = (dt: any) => {
     }
 };
 
-const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
+const getActions = (
+    data: Partial<Record<string, any>>,
+    type: 'card' | 'table',
+): ActionsType[] => {
     if (!data) {
         return [];
     }
-    return [
+    const actions = [
         {
             key: 'view',
             text: '查看',
@@ -217,6 +223,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                 title: '查看',
             },
             icon: 'EyeOutlined',
+            onClick: () => {},
         },
         {
             key: 'edit',
@@ -226,6 +233,13 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
 
             icon: 'EditOutlined',
+            onClick: () => {
+                title.value = '编辑';
+                isAdd.value = 2;
+                nextTick(() => {
+                    saveRef.value.show(data);
+                });
+            },
         },
         {
             key: 'download',
@@ -283,10 +297,13 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             icon: 'DeleteOutlined',
         },
     ];
+    return actions;
 };
 
 const add = () => {
-    saveRef.value.show();
+    isAdd.value = 1;
+    title.value = '新增';
+    saveRef.value.show(currentForm.value);
 };
 
 // 筛选
