@@ -120,3 +120,50 @@ export const update = (data: Partial<DeviceInstance>) => data.id ? server.patch(
  * @returns 
  */
 export const getConfigMetadata = (id: string) => server.get(`/device-instance/${id}/config-metadata`)
+
+/**
+ * 断开连接
+ * @param id 设备id
+ * @returns 
+ */
+export const _disconnect = (id: string) => server.post(`/device-instance/${id}/disconnect`)
+
+/**
+ * 查询用户列表
+ * @returns 
+ */
+export const queryUserListNoPaging = () => server.post(`/user/_query/no-paging`, {
+  paging: false,
+  sorts: [{name: 'name', order: "asc"}]
+})
+
+/**
+ * 保存设备关系
+ * @param id 设备id
+ * @param data 
+ * @returns 
+ */
+export const saveRelations = (id: string, data: Record<string, any>) => server.patch(`/device/instance/${id}/relations`, data)
+
+/**
+ * 修改标签
+ * @param id 设备id
+ * @param data 
+ * @returns 
+ */
+export const saveTags = (id: string, data: Record<string, any>) => server.patch(`/device/instance/${id}/tag`, data)
+
+/**
+ * 删除标签
+ * @param deviceId 设备id
+ * @param id 标签id
+ * @returns 
+ */
+export const delTags = (deviceId: string, id: string) => server.remove(`/device/instance/${deviceId}/tag/${id}`)
+
+/**
+ * 恢复默认配置
+ * @param deviceId 设备id
+ * @returns 
+ */
+export const configurationReset = (deviceId: string) => server.put(`/device-instance/${deviceId}/configuration/_reset`)
