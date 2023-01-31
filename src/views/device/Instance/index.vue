@@ -1,4 +1,5 @@
 <template>
+    <Search :columns="columns" target="device-instance" />
     <JTable
         ref="instanceRef"
         :columns="columns"

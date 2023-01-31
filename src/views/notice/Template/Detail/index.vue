@@ -120,15 +120,15 @@
                                             ]
                                         "
                                     >
-                                        <!-- <a-input
+                                        <a-input
                                             v-model:value="
-                                                formData.template.markdown?.title
+                                                formData.template.markdown.title
                                             "
                                             placeholder="请输入标题"
-                                        /> -->
+                                        />
                                     </a-form-item>
                                 </template>
-                                <!-- <template
+                                <template
                                     v-if="
                                         formData.template.messageType === 'link'
                                     "
@@ -141,7 +141,7 @@
                                     >
                                         <a-input
                                             v-model:value="
-                                                formData.template.link?.title
+                                                formData.template.link.title
                                             "
                                             placeholder="请输入标题"
                                         />
@@ -149,21 +149,40 @@
                                     <a-form-item label="图片链接">
                                         <a-input
                                             v-model:value="
-                                                formData.template.link?.picUrl
+                                                formData.template.link.picUrl
                                             "
                                             placeholder="请输入图片链接"
-                                        />
+                                        >
+                                            <template #addonAfter>
+                                                <a-upload
+                                                    name="file"
+                                                    :action="FILE_UPLOAD"
+                                                    :headers="{
+                                                        [TOKEN_KEY]:
+                                                            LocalStore.get(
+                                                                TOKEN_KEY,
+                                                            ),
+                                                    }"
+                                                    :showUploadList="false"
+                                                    @change="
+                                                        (e) => handleChange(e)
+                                                    "
+                                                >
+                                                    <AIcon type="UploadOutlined" />
+                                                </a-upload>
+                                            </template>
+                                        </a-input>
                                     </a-form-item>
                                     <a-form-item label="内容链接">
                                         <a-input
                                             v-model:value="
                                                 formData.template.link
-                                                    ?.messageUrl
+                                                    .messageUrl
                                             "
                                             placeholder="请输入内容链接"
                                         />
                                     </a-form-item>
-                                </template> -->
+                                </template>
                             </template>
                         </template>
                         <!-- 微信 -->
@@ -456,7 +475,7 @@
 
 <script setup lang="ts">
 import { getImage } from '@/utils/comm';
-import { Form } from 'ant-design-vue';
+import { Form, UploadChangeParam } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
 import { IVariableDefinitions, TemplateFormData } from '../types';
 import {
@@ -474,6 +493,10 @@ import VariableDefinitions from './components/VariableDefinitions.vue';
 import ToUser from './components/ToUser.vue';
 import ToOrg from './components/ToOrg.vue';
 import ToTag from './components/ToTag.vue';
+
+import { FILE_UPLOAD } from '@/api/comm';
+import { LocalStore } from '@/utils/comm';
+import { TOKEN_KEY } from '@/utils/variable';
 
 const router = useRouter();
 const route = useRoute();
@@ -536,14 +559,6 @@ watch(
         clearValid();
     },
 );
-
-// computed(() => {
-//     // console.log('formData.value.type: ', formData.value.type);
-//     Object.assign(
-//         formData.value.template,
-//         TEMPLATE_FIELD_MAP[formData.value.type][formData.value.provider],
-//     );
-// });
 
 // 验证规则
 const formRules = ref({
@@ -638,6 +653,15 @@ const getConfigList = async () => {
 getConfigList();
 
 /**
+ * link消息类型 图片链接
+ */
+ const handleChange = (info: UploadChangeParam) => {
+    if (info.file.status === 'done') {
+        formData.value.template.link.picUrl = info.file.response?.result;
+    }
+};
+
+/**
  * 配置选择改变
  */
 const handleConfigChange = () => {
@@ -672,10 +696,12 @@ getSignsList();
  */
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
-    if (formData.value.type === 'email') delete formData.value.configId
+    if (formData.value.type === 'email') delete formData.value.configId;
+    if (formData.value.template.messageType === 'markdown') delete formData.value.template.link
+    if (formData.value.template.messageType === 'link') delete formData.value.template.markdown
+    // console.log('formData.value: ', formData.value);
     validate()
         .then(async () => {
-            // console.log('formData.value: ', formData.value);
             formData.value.template.ttsCode =
                 formData.value.template.templateCode;
             btnLoading.value = true;
@@ -700,13 +726,13 @@ const handleSubmit = () => {
 };
 
 // test
-watch(
-    () => formData.value,
-    (val) => {
-        console.log('formData.value: ', val);
-    },
-    { deep: true },
-);
+// watch(
+//     () => formData.value,
+//     (val) => {
+//         console.log('formData.value: ', val);
+//     },
+//     { deep: true },
+// );
 // test
 </script>
 

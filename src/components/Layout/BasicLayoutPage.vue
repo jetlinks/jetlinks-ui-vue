@@ -21,6 +21,7 @@
 import { ProLayout } from '@/components/Layout'
 import DefaultSetting from '../../../config/config'
 import { useMenuStore } from '@/store/menu'
+import { clearMenuItem } from 'components/Layout/utils'
 
 type StateType = {
   collapsed: boolean
@@ -39,7 +40,7 @@ const layoutConf = reactive({
   siderWidth: DefaultSetting.layout.siderWidth,
   logo: DefaultSetting.layout.logo,
   title: DefaultSetting.layout.title,
-  menuData: menu.menus,
+  menuData: clearMenuItem(menu.siderMenus),
 });
 
 const state = reactive<StateType>({

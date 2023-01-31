@@ -1,7 +1,7 @@
 import server from '@/utils/request';
 
 // 更新全部菜单
-export const updateMenus = (data: any) => server.path(`/menu/iot/_all`, data)
+export const updateMenus = (data: any) => server.patch(`/menu/iot/_all`, data)
 // 添加角色
 export const addRole = (data: any) => server.post(`/role`, data)
 
