@@ -151,6 +151,10 @@ export default [
         component: () => import('@/views/northbound/DuerOS/index.vue')
     },
     {
+        path: '/northbound/DuerOS/detail/:id',
+        component: () => import('@/views/northbound/DuerOS/Save/index.vue')
+    },
+    {
         path: '/northbound/AliCloud',
         component: () => import('@/views/northbound/AliCloud/index.vue')
     },
