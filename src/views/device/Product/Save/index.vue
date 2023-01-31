@@ -13,7 +13,7 @@
         width="650px"
     >
         <div style="margin-top: 10px">
-            <a-form :layout="'vertical'">
+            <a-form :layout="'vertical'" :model="form" :rules="rules">
                 <a-row type="flex">
                     <a-col flex="180px">
                         <a-form-item>
@@ -83,7 +83,7 @@
                         </a-form-item>
                     </a-col>
                     <a-col flex="auto">
-                        <a-form-item>
+                        <a-form-item name="id">
                             <template #label>
                                 <span>ID</span>
                                 <a-tooltip
@@ -96,27 +96,31 @@
                                 </a-tooltip>
                             </template>
                             <a-input
-                                v-model:value="modelRef.id"
+                                v-model:value="form.id"
                                 placeholder="请输入ID"
                             />
                         </a-form-item>
-                        <a-form-item label="名称">
+                        <a-form-item label="名称" name="name">
                             <a-input
-                                v-model:value="modelRef.name"
+                                v-model:value="form.name"
                                 placeholder="请输入名称"
                             />
                         </a-form-item>
                     </a-col>
                 </a-row>
-                <a-form-item label="产品分类">
+                <a-form-item label="产品分类" name="classifiedId">
                     <a-tree-select
                         showSearch
-                        v-model:value="modelRef.productId"
+                        v-model:value="form.productId"
                         placeholder="请选择产品分类"
+                        :tree-data="treeList"
                     >
+                        <template #title="{ value: val, title }">
+                            <template>{{ val }}</template>
+                        </template>
                     </a-tree-select>
                 </a-form-item>
-                <a-form-item label="设备类型">
+                <a-form-item label="设备类型" name="deviceType">
                     <a-row :span="24" :gutter="20">
                         <a-col
                             :span="8"
@@ -181,9 +185,9 @@
                         </a-col>
                     </a-row>
                 </a-form-item>
-                <a-form-item label="说明">
+                <a-form-item label="说明" name="describe">
                     <a-textarea
-                        v-model:value="modelRef.describe"
+                        v-model:value="form.describe"
                         placeholder="请输入说明"
                     />
                 </a-form-item>
@@ -193,12 +197,15 @@
 </template>
 
 <script lang="ts" setup>
-import { queryTree } from '@/api/device/category';
+import { category } from '@/api/device/product';
 import { Form } from 'ant-design-vue';
 import { getImage } from '@/utils/comm.ts';
 import { message } from 'ant-design-vue';
 import ChooseCard from '../ChooseCard/index.vue';
 import { FILE_UPLOAD } from '@/api/comm';
+import { isInput } from '@/utils/regular';
+import type { Rule } from 'ant-design-vue/es/form';
+import { queryProductId } from '@/api/device/product';
 
 const emit = defineEmits(['close', 'save']);
 const props = defineProps({
@@ -240,7 +247,7 @@ const deviceList = ref([
     },
 ]);
 
-const modelRef = reactive({
+const form = reactive({
     id: '',
     name: '',
     classifiedId: '',
@@ -249,15 +256,63 @@ const modelRef = reactive({
     describe: '',
     photoUrl: '',
 });
+/**
+ * 校验id
+ */
+const validateInput = async (_rule: Rule, value: string) => {
+    if (value) {
+        if (!isInput(value)) {
+            return Promise.reject('请输入英文或者数字或者-或者_');
+        } else {
+            const res = await queryProductId(value);
+            if (res.status === 200) {
+                if (res.result) {
+                    return Promise.reject('该ID已存在');
+                }
+            }
+        }
+        return Promise.resolve();
+    }
+};
+/**
+ * 校验是否选择设备类型
+ */
+const validateDeviceType = async (_rule: Rule, value: string) => {
+    if (photoValue.value.length === 0) {
+        return Promise.resolve('请选择设备类型');
+    }
+};
+const rules = reactive({
+    id: [
+        { message: '请输入名称', validator: validateInput, trigger: 'change' },
+    ],
+    name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+    deviceType: [
+        {
+            required: true,
+            message: '请选择设备类型',
+            trigger: 'blur',
+            validator: validateDeviceType,
+        },
+    ],
+});
 
+/**
+ * 查询产品分类
+ */
+const queryProductTree = async () => {
+    category({
+        paging: false,
+    }).then((resp) => {
+        if (resp.status === 200) {
+            treeList.value = resp.result;
+        }
+    });
+};
 watch(
     () => props.isAdd,
     () => {
-        queryTree({ paging: false }).then((resp) => {
-            if (resp.status === 200) {
-                treeList.value = resp.result;
-            }
-        });
+        queryProductTree();
     },
     { immediate: true, deep: true },
 );
@@ -306,9 +361,13 @@ const handleChange = (info: any) => {
     if (info.file.status === 'done') {
         info.file.url = info.file.response?.result;
         logoLoading.value = false;
-        logoLoading.value = info.file.response?.result;
+        photoValue.value = info.file.response?.result;
     }
 };
+/**
+ * 初始化
+ */
+queryProductTree();
 defineExpose({
     show: show,
 });
