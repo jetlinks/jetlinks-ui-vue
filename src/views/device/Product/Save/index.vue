@@ -11,12 +11,21 @@
         cancelText="取消"
         v-bind="layout"
         width="650px"
+        :confirmLoading="loading"
     >
         <div style="margin-top: 10px">
-            <a-form :layout="'vertical'" :model="form" :rules="rules">
+            <a-form
+                :layout="'vertical'"
+                :model="form"
+                :rules="rules"
+                ref="formRef"
+            >
                 <a-row type="flex">
                     <a-col flex="180px">
-                        <a-form-item>
+                        <a-form-item name="photoUrl">
+                            <JUpload v-model="form.photoUrl" />
+                        </a-form-item>
+                        <!-- <a-form-item>
                             <div class="upload-image-warp-logo">
                                 <div class="upload-image-border-logo">
                                     <a-upload
@@ -80,7 +89,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </a-form-item>
+                        </a-form-item> -->
                     </a-col>
                     <a-col flex="auto">
                         <a-form-item name="id">
@@ -89,15 +98,16 @@
                                 <a-tooltip
                                     title="若不填写，系统将自动生成唯一ID"
                                 >
-                                    <img
-                                        class="img-style"
-                                        :src="getImage('/init-home/mark.png')"
+                                    <AIcon
+                                        type="QuestionCircleOutlined"
+                                        style="margin-left: 2px"
                                     />
                                 </a-tooltip>
                             </template>
                             <a-input
                                 v-model:value="form.id"
                                 placeholder="请输入ID"
+                                :disabled="disabled"
                             />
                         </a-form-item>
                         <a-form-item label="名称" name="name">
@@ -111,79 +121,69 @@
                 <a-form-item label="产品分类" name="classifiedId">
                     <a-tree-select
                         showSearch
-                        v-model:value="form.productId"
+                        v-model:value="form.classifiedId"
                         placeholder="请选择产品分类"
                         :tree-data="treeList"
+                        @change="valueChange"
+                        :fieldNames="{ label: 'name', value: 'id' }"
+                        :filterTreeNode="
+                            (v, option) => filterSelectNode(v, option)
+                        "
                     >
-                        <template #title="{ value: val, title }">
-                            <template>{{ val }}</template>
-                        </template>
+                        <template> </template>
                     </a-tree-select>
                 </a-form-item>
                 <a-form-item label="设备类型" name="deviceType">
-                    <a-row :span="24" :gutter="20">
-                        <a-col
-                            :span="8"
-                            v-for="item in deviceList"
-                            :key="item.value"
-                        >
-                            <ChooseCard
-                                :value="item"
-                                v-bind="item"
-                                @click="handleClick"
-                                :active="_selectedRowKeys.includes(item.value)"
+                    <a-radio-group
+                        v-model:value="form.deviceType"
+                        style="width: 100%"
+                        @change="changeValue"
+                    >
+                        <a-row :span="24" :gutter="10">
+                            <a-col
+                                :span="8"
+                                v-for="item in deviceList"
+                                :key="item.value"
                             >
-                                <template #img>
-                                    <slot name="img">
-                                        <img
-                                            v-if="item.value === 'device'"
-                                            :src="
-                                                getImage('/device-type-1.png')
-                                            "
-                                        />
-                                        <img
-                                            v-if="
-                                                item.value === 'childrenDevice'
-                                            "
-                                            :src="
-                                                getImage('/device-type-2.png')
-                                            "
-                                        />
-                                        <img
-                                            v-if="item.value === 'gateway'"
-                                            :src="
-                                                getImage(
-                                                    '/device/device-type-3.png',
-                                                )
-                                            "
-                                        />
-                                    </slot>
-                                </template>
-                                <template #content>
-                                    <span
-                                        class="card-style"
-                                        :style="
-                                            _selectedRowKeys.includes(
-                                                item.value,
-                                            )
-                                                ? 'color: #10239e'
-                                                : ''
-                                        "
-                                        >{{
-                                            item.value === 'device'
-                                                ? '直连设备'
-                                                : item.value ===
-                                                  'childrenDevice'
-                                                ? '网关子设备'
-                                                : item.value === 'gateway'
-                                                ? '网关设备'
-                                                : ''
-                                        }}</span
+                                <div class="button-style">
+                                    <a-radio-button
+                                        :value="item.value"
+                                        style="height: 100%; width: 100%"
+                                        :disabled="disabled"
                                     >
-                                </template>
-                            </ChooseCard>
-                        </a-col>
-                    </a-row>
+                                        <div class="card-content">
+                                            <a-row :gutter="20">
+                                                <a-col :span="10">
+                                                    <!-- 图片 -->
+                                                    <div class="img-style">
+                                                        <img :src="item.logo" />
+                                                    </div>
+                                                </a-col>
+                                                <a-col :span="14">
+                                                    <span class="card-style">
+                                                        {{ item.label }}
+                                                    </span>
+                                                </a-col>
+                                            </a-row>
+
+                                            <!-- 勾选 -->
+                                            <div
+                                                v-if="
+                                                    form.deviceType ===
+                                                    item.value
+                                                "
+                                                class="checked-icon"
+                                            >
+                                                <div>
+                                                    <CheckOutlined />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a-radio-button>
+                                </div>
+                            </a-col>
+                        </a-row>
+                    </a-radio-group>
                 </a-form-item>
                 <a-form-item label="说明" name="describe">
                     <a-textarea
@@ -202,10 +202,16 @@ import { Form } from 'ant-design-vue';
 import { getImage } from '@/utils/comm.ts';
 import { message } from 'ant-design-vue';
 import ChooseCard from '../ChooseCard/index.vue';
+import { filterTreeSelectNode, filterSelectNode } from '@/utils/comm';
 import { FILE_UPLOAD } from '@/api/comm';
 import { isInput } from '@/utils/regular';
 import type { Rule } from 'ant-design-vue/es/form';
 import { queryProductId } from '@/api/device/product';
+import {
+    SearchOutlined,
+    CheckOutlined,
+    DeleteOutlined,
+} from '@ant-design/icons-vue';
 
 const emit = defineEmits(['close', 'save']);
 const props = defineProps({
@@ -218,9 +224,12 @@ const props = defineProps({
         default: 0,
     },
 });
+const loading = ref<boolean>(false);
 const treeList = ref<Record<string, any>[]>([]);
-const visible = ref(false);
-const logoLoading = ref(false);
+const visible = ref<boolean>(false);
+const logoLoading = ref<boolean>(false);
+const formRef = ref();
+const disabled = ref<boolean>(false);
 const useForm = Form.useForm;
 const _selectedRowKeys = ref([]);
 const photoValue = ref('/images/device-product.png');
@@ -236,14 +245,17 @@ const deviceList = ref([
     {
         label: '直连设备',
         value: 'device',
+        logo: getImage('/device-type-1.png'),
     },
     {
         label: '网关子设备',
         value: 'childrenDevice',
+        logo: getImage('/device-type-2.png'),
     },
     {
         label: '网关设备',
         value: 'gateway',
+        logo: getImage('/device/device-type-3.png'),
     },
 ]);
 
@@ -254,7 +266,7 @@ const form = reactive({
     classifiedName: '',
     deviceType: '',
     describe: '',
-    photoUrl: '',
+    photoUrl: getImage('/device/instance/device-card.png'),
 });
 /**
  * 校验id
@@ -265,12 +277,13 @@ const validateInput = async (_rule: Rule, value: string) => {
             return Promise.reject('请输入英文或者数字或者-或者_');
         } else {
             const res = await queryProductId(value);
-            if (res.status === 200) {
-                if (res.result) {
-                    return Promise.reject('该ID已存在');
-                }
+            if (res.status === 200 && res.result) {
+                return Promise.reject('ID重复');
+            } else {
+                return Promise.resolve();
             }
         }
+    } else {
         return Promise.resolve();
     }
 };
@@ -278,25 +291,27 @@ const validateInput = async (_rule: Rule, value: string) => {
  * 校验是否选择设备类型
  */
 const validateDeviceType = async (_rule: Rule, value: string) => {
-    if (photoValue.value.length === 0) {
-        return Promise.resolve('请选择设备类型');
+    if (!value) {
+        return Promise.reject('请选择设备类型');
+    } else {
+        return Promise.resolve();
     }
 };
 const rules = reactive({
-    id: [
-        { message: '请输入名称', validator: validateInput, trigger: 'change' },
-    ],
+    id: [{ validator: validateInput, trigger: 'blur' }],
     name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
     deviceType: [
         {
             required: true,
-            message: '请选择设备类型',
-            trigger: 'blur',
             validator: validateDeviceType,
+            trigger: 'blur',
         },
     ],
 });
 
+const valueChange = (value: string, label: string) => {
+    form.classifiedName = label[0];
+};
 /**
  * 查询产品分类
  */
@@ -312,14 +327,33 @@ const queryProductTree = async () => {
 watch(
     () => props.isAdd,
     () => {
-        queryProductTree();
+        // queryProductTree();
     },
     { immediate: true, deep: true },
 );
 /**
  * 显示弹窗
  */
-const show = () => {
+const show = (data: any) => {
+    console.log(props.isAdd, '11111');
+    if (props.isAdd === 2) {
+        // form.name = data.name;
+        // form.classifiedId = data.classifiedId;
+        // form.classifiedName = data.classifiedName;
+        // form.photoUrl = data.photoUrl || photoValue.value;
+        // form.deviceType = data.deviceType.value;
+        // form.describe = form.describe;
+        // form.id = data.id;
+        // disabled.value = true;
+    } else {
+        // form.name = '';
+        // form.classifiedId = '';
+        // form.classifiedName = '';
+        // form.photoUrl = photoValue.value;
+        // form.deviceType = '';
+        // form.describe = '';
+        // form.id = '';
+    }
     visible.value = true;
 };
 
@@ -329,11 +363,18 @@ const show = () => {
 const close = () => {
     visible.value = false;
 };
+const { resetFields, validate, validateInfos, clearValidate } = useForm(
+    form,
+    rules,
+);
 /**
- * 卡片点击事件
+ * 提交表单数据
  */
-const handleClick = (dt: any) => {
-    _selectedRowKeys.value = dt;
+const submitData = () => {
+    formRef.value
+        .validate()
+        .then(async () => {})
+        .catch((err: any) => {});
 };
 /**
  * 文件上传之前
@@ -367,7 +408,7 @@ const handleChange = (info: any) => {
 /**
  * 初始化
  */
-queryProductTree();
+// queryProductTree();
 defineExpose({
     show: show,
 });
@@ -375,7 +416,7 @@ defineExpose({
 <style scoped lang="less">
 .card-style {
     position: relative;
-    top: 8px;
+    top: 19px;
 }
 .upload-image-warp-logo {
     display: flex;
@@ -441,5 +482,38 @@ defineExpose({
             }
         }
     }
+}
+.button-style {
+    background-color: #fff;
+    height: 66px;
+    .card-content {
+        width: 100%;
+        .img-style {
+            position: relative;
+            top: 16px;
+        }
+        .checked-icon {
+            position: absolute;
+            right: -22px;
+            bottom: -22px;
+            z-index: 2;
+            width: 44px;
+            height: 44px;
+            color: #2f54eb;
+            // background-color: #2f54eb;
+            transform: rotate(-45deg);
+
+            > div {
+                position: relative;
+                height: 100%;
+                transform: rotate(45deg);
+                background-color: transparent;
+            }
+        }
+    }
+    // &:hover {
+    //     color: #2f54eb;
+    //     border: 1px solid #2f54eb;
+    // }
 }
 </style>
