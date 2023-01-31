@@ -1,13 +1,9 @@
 <template>
-    <div class="container">
-        <div class="header"></div>
-        <div class="left"></div>
-        <div class="content iot-home-container" v-loading="loading">
-            <InitHome v-if="currentView === 'init'" @refresh="setCurrentView" />
-            <DeviceHome v-else-if="currentView === 'device'" />
-            <DevOpsHome v-else-if="currentView === 'ops'" />
-            <ComprehensiveHome v-else-if="currentView === 'comprehensive'" />
-        </div>
+    <div class="iot-home-container" v-loading="loading">
+        <InitHome v-if="currentView === 'init'" @refresh="setCurrentView" />
+        <DeviceHome v-else-if="currentView === 'device'" />
+        <DevOpsHome v-else-if="currentView === 'ops'" />
+        <ComprehensiveHome v-else-if="currentView === 'comprehensive'" />
     </div>
 </template>
 
@@ -49,31 +45,12 @@ if (isNoCommunity) {
             isApiUser ? router.push('/system/api') : setCurrentView();
         }
     });
-}else setCurrentView()
+} else setCurrentView();
 </script>
 
 <style lang="less" scoped>
-.container {
+.iot-home-container {
     background: #f0f2f5;
-    width: 100vw;
-    min-height: 100vh;
-    display: flex;
-    flex-wrap: wrap;
-    .header {
-        height: 48px;
-        background: #7e1c1c;
-        width: 100vw;
-    }
-    .left {
-        background: #352d85;
-        width: 210px;
-        min-height: calc(100vh - 48px);
-    }
-    .content {
-        margin: 24px;
-        width: calc(100vw - 280px);
-        overflow: hidden;
-        min-height: calc(100vh - 96px);
-    }
+    overflow: hidden;
 }
 </style>
