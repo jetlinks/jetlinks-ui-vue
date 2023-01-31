@@ -87,7 +87,7 @@ export default [
         component: () => import('@/views/link/Certificate/index.vue')
     },
     {
-        path: '/link/certificate/detail/add',
+        path: '/link/certificate/detail/:type/:id',
         component: () => import('@/views/link/Certificate/Detail/index.vue')
     },
     {
