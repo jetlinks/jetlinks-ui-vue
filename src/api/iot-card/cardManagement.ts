@@ -122,3 +122,15 @@ export const edit = (data: any) => server.put(`/network/card/${data.id}`, data);
  * @param id
  */
 export const queryDetail = (id: any) => server.get(`/network/card/${id}`);
+
+/**
+ * 查询物联卡充值缴费日志
+ * @param data
+ */
+export const queryRechargeList = (data: any) => server.post(`/network/card/recharge/_log`, data)
+
+/**
+ * 充值
+ * @param data
+ */
+export const recharge = (data: any) => server.post(`/network/card/_recharge`, data)

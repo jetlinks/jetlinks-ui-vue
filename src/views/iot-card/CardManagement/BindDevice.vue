@@ -19,6 +19,7 @@
                 ref="bindDeviceRef"
                 :columns="columns"
                 :request="queryUnbounded"
+                model="TABLE"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
