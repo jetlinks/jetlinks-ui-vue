@@ -99,4 +99,24 @@ export const batchDeleteDevice = (data: string[]) => server.put(`/device-instanc
   * @returns 
   */
 export const deviceExport = (productId: string, type: string) => `${BASE_API_PATH}/device-instance${!!productId ? '/' + productId : ''}/export.${type}`
- 
+
+/**
+ * 验证设备ID是否重复
+ * @param id 设备id
+ * @returns 
+ */
+export const isExists = (id: string) => server.get(`/device-instance/${id}/exists`)
+
+/**
+ * 修改设备信息
+ * @param data 设备信息
+ * @returns 
+ */
+export const update = (data: Partial<DeviceInstance>) => data.id ? server.patch(`/device-instance`, data) : server.post(`/device-instance`, data)
+
+/**
+ * 获取配置信息
+ * @param id 设备id
+ * @returns 
+ */
+export const getConfigMetadata = (id: string) => server.get(`/device-instance/${id}/config-metadata`)

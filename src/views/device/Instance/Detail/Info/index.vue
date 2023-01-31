@@ -1,0 +1,45 @@
+<template>
+    <a-card>
+        <a-descriptions bordered>
+            <template #title>
+                设备信息
+                <a-button type="link" @click="visible = true"><AIcon type="EditOutlined" />编辑</a-button>
+            </template>
+            <a-descriptions-item label="设备ID">{{ instanceStore.current.id }}</a-descriptions-item>
+            <a-descriptions-item label="产品名称">{{ instanceStore.current.productName }}</a-descriptions-item>
+            <a-descriptions-item label="产品分类">{{ instanceStore.current.classifiedName }}</a-descriptions-item>
+            <a-descriptions-item label="设备类型">{{ instanceStore.current.deviceType?.text }}</a-descriptions-item>
+            <a-descriptions-item label="固件版本">{{ instanceStore.current.firmwareInfo?.version }}</a-descriptions-item>
+            <a-descriptions-item label="连接协议">{{ instanceStore.current.protocolName }}</a-descriptions-item>
+            <a-descriptions-item label="消息协议">{{ instanceStore.current.transport }}</a-descriptions-item>
+            <a-descriptions-item label="创建时间">{{ instanceStore.current.createTime ? moment(instanceStore.current.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</a-descriptions-item>
+            <a-descriptions-item label="注册时间">{{ instanceStore.current.registerTime ? moment(instanceStore.current.registerTime).format('YYYY-MM-DD HH:mm:ss') : ''}}</a-descriptions-item>
+            <a-descriptions-item label="最后上线时间">{{ instanceStore.current.onlineTime ? moment(instanceStore.current.onlineTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</a-descriptions-item>
+            <a-descriptions-item label="父设备" v-if="instanceStore.current.deviceType?.value === 'childrenDevice'">{{ instanceStore.current.parentId }}</a-descriptions-item>
+            <a-descriptions-item label="说明">{{ instanceStore.current.description }}</a-descriptions-item>
+        </a-descriptions>
+        <Config />
+        <Tags v-if="instanceStore.current?.tags && instanceStore.current?.tags.length > 0 " />
+        <Relation v-if="instanceStore.current?.relations && instanceStore.current?.relations.length > 0" />
+        <Save v-if="visible" :data="instanceStore.current" @close="visible = false" @save="saveBtn" />
+    </a-card>
+</template>
+
+<script lang="ts" setup>
+import { useInstanceStore } from '@/store/instance'
+import Save from '../../Save/index.vue'
+import Config from './components/Config/index.vue'
+import Tags from './components/Tags/index.vue'
+import Relation from './components/Relation/index.vue'
+import moment from 'moment'
+
+const visible = ref<boolean>(false)
+const instanceStore = useInstanceStore()
+
+const saveBtn = () => {
+    if(instanceStore.current?.id){
+        instanceStore.refresh(instanceStore.current?.id)
+    }
+    visible.value = false
+}
+</script>

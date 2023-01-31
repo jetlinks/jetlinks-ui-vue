@@ -232,6 +232,17 @@ const handleClick = () => {
             :deep(.card-item-content-title) {
                 cursor: pointer;
             }
+
+            :deep(.card-item-heard-name) {
+                font-weight: 700;
+                font-size: 16px;
+                margin-bottom: 12px;
+            }
+
+            :deep(.card-item-content-text) {
+                color: rgba(0, 0, 0, 0.75);
+                font-size: 12px;
+            }
         }
 
         .card-mask {

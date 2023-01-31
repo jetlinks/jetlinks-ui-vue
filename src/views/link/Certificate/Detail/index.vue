@@ -60,6 +60,7 @@
 
                     <a-form-item>
                         <a-button
+                            v-if="type !== 'view'"
                             class="form-submit"
                             html-type="submit"
                             type="primary"
@@ -97,16 +98,20 @@ import { message, Form } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 import CertificateFile from './CertificateFile.vue';
 import type { UploadChangeParam } from 'ant-design-vue';
-import { save } from '@/api/link/certificate';
+import { save, update, queryDetail } from '@/api/link/certificate';
+import { FormDataType, TypeObjType } from '../type';
 
 const router = useRouter();
+const route = useRoute();
+const type = route.params.type as string;
+const id = route.params.id as string;
 
 const useForm = Form.useForm;
 
 const fileLoading = ref(false);
 const loading = ref(false);
 
-const formData = reactive({
+const formData = ref<FormDataType>({
     type: 'common',
     name: '',
     configs: {
@@ -137,9 +142,10 @@ const { resetFields, validate, validateInfos } = useForm(
 const onSubmit = () => {
     validate()
         .then(async (res) => {
-            const params = toRaw(formData);
+            const params = toRaw(formData.value);
             loading.value = true;
-            const response = await save(params);
+            const response =
+                type === 'edit' ? await update(params) : await save(params);
             if (response.status === 200) {
                 message.success('操作成功');
                 router.push('/link/certificate');
@@ -156,10 +162,28 @@ const handleChange = (info: UploadChangeParam) => {
     if (info.file.status === 'done') {
         message.success('上传成功！');
         const result = info.file.response?.result;
-        formData.configs.cert = result;
+        formData.value.configs.cert = result;
         fileLoading.value = false;
     }
 };
+
+const detail = async (id: string) => {
+    if (type !== 'add') {
+        loading.value = true;
+        const res = await queryDetail(id);
+        if (res.success) {
+            const result = res.result as FormDataType;
+            const type = result.type.value as TypeObjType;
+            formData.value = {
+                ...result,
+                type,
+            };
+        }
+        loading.value = false;
+    }
+};
+
+detail(id);
 </script>
 
 <style lang="less" scoped>

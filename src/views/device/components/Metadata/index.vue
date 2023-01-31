@@ -44,7 +44,6 @@
         <BaseMetadata target={props.type} type="tags" :permission="permission" />
       </a-tab-pane>
     </a-tabs>
-    {{ visible }}
     <Import v-model:visible="visible" :type="type" @close="visible = false" />
     <Cat v-model:visible="cat" @close="cat = false" :type="type" />
   </div>

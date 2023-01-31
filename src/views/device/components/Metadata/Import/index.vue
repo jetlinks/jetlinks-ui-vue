@@ -34,13 +34,14 @@
       <a-form-item label="文件上传" v-bind="validateInfos.upload" v-if="formModel.metadataType === 'file'">
         <a-input v-model:value="formModel.upload">
           <template #addonAfter>
-            <label for="uploadFile"><upload-outlined/></label>
+            <a-upload v-model:file-list="fileList" :before-upload="beforeUpload" accept=".json"
+              :show-upload-list="false" :action="FILE_UPLOAD" @change="fileChange"
+              :headers="{ 'X-Access-Token': token }">
+              <upload-outlined class="upload-button"/>
+              <!-- <button id="uploadFile" style="display: none;"></button> -->
+            </a-upload>
           </template>
         </a-input>
-        <a-upload v-model:file-list="fileList" name="files" :before-upload="beforeUpload" accept=".json"
-          :show-upload-list="false" :action="FILE_UPLOAD" @change="fileChange" :headers="{ 'X-Access-Token': token }">
-          <button id="uploadFile" style="display: none;"></button>
-        </a-upload>
       </a-form-item>
       <a-form-item label="物模型" v-bind="validateInfos.import" v-if="formModel.metadataType === 'script'">
         <!-- TODO代码编辑器 -->
@@ -61,7 +62,7 @@ import { Store } from 'jetlinks-store';
 import { SystemConst } from '@/utils/consts';
 import { useInstanceStore } from '@/store/instance'
 import { useProductStore } from '@/store/product';
-import { UploadOutlined } from '@ant-design/icons-vue';
+import { UploadOutlined, ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { FILE_UPLOAD } from '@/api/comm';
 import { LocalStore } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
@@ -175,6 +176,10 @@ const beforeUpload: UploadProps['beforeUpload'] = file => {
 const fileChange = (info: UploadChangeParam) => {
   if (info.file.status === 'done') {
     console.log(info)
+    const { response } = info.file
+    if (response.status === 200) {
+      formModel.upload = response.result
+    }
   }
 }
 
@@ -284,5 +289,11 @@ const handleImport = async () => {
   .import-tip {
     padding: 10px;
   }
+}
+.upload-button {
+  width: 37px;
+  height: 30px; 
+  line-height: 30px;
+  margin: 0 -11px;
 }
 </style>
