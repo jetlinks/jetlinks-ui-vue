@@ -116,3 +116,9 @@ export const add = (data: any) => server.patch(`/network/card`, data);
  * @param data
  */
 export const edit = (data: any) => server.put(`/network/card/${data.id}`, data);
+
+/**
+ * 根据id查看详情
+ * @param id
+ */
+export const queryDetail = (id: any) => server.get(`/network/card/${id}`);
