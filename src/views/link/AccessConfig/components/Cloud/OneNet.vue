@@ -292,7 +292,7 @@
                     <title-component data="基本信息" />
                     <div>
                         <a-form
-                            :model="form"
+                            :model="formData"
                             name="basic"
                             autocomplete="off"
                             layout="vertical"
@@ -312,26 +312,18 @@
                             >
                                 <a-input
                                     placeholder="请输入名称"
-                                    v-model:value="form.name"
+                                    v-model:value="formData.name"
                                 />
                             </a-form-item>
                             <a-form-item label="说明" name="description">
                                 <a-textarea
                                     placeholder="请输入说明"
                                     :rows="4"
-                                    v-model:value="form.description"
+                                    v-model:value="formData.description"
                                     show-count
                                     :maxlength="200"
                                 />
                             </a-form-item>
-                            <!-- <a-form-item>
-                                <a-button
-                                    v-if="current !== 1"
-                                    type="primary"
-                                    html-type="submit"
-                                    >保存</a-button
-                                >
-                            </a-form-item> -->
                         </a-form>
                     </div>
                 </a-col>
@@ -378,16 +370,20 @@
             <a-button
                 v-if="[0, 1].includes(current)"
                 type="primary"
+                style="margin-right: 8px"
                 @click="next"
             >
                 下一步
             </a-button>
-            <a-button v-if="current === 2" type="primary" @click="saveData">
+            <a-button
+                style="margin-right: 8px"
+                v-if="current === 2 && modeType !== 'view'"
+                type="primary"
+                @click="saveData"
+            >
                 保存
             </a-button>
-            <a-button v-if="current > 0" style="margin-left: 8px" @click="prev">
-                上一步
-            </a-button>
+            <a-button v-if="current > 0" @click="prev"> 上一步 </a-button>
         </div>
     </div>
 </template>
@@ -483,7 +479,8 @@ interface Form {
     description: string;
 }
 const route = useRoute();
-const id = route.query.id;
+const modeType = route.params.type as string;
+const id = route.params.id as string;
 
 const props = defineProps({
     provider: {
@@ -500,14 +497,14 @@ const channel = ref(props.provider.channel);
 const formRef1 = ref<FormInstance>();
 const formRef2 = ref<FormInstance>();
 
-const formState = reactive<FormState>({
+const formState = ref<FormState>({
     apiAddress: 'https://api.heclouds.com/',
     apiKey: '',
     validateToken: '',
     aesKey: '',
     description: '',
 });
-const form = reactive<Form>({
+const formData = ref<Form>({
     name: '',
     description: '',
 });
@@ -520,9 +517,7 @@ const allProcotolList = ref([]);
 const procotolCurrent = ref('');
 
 const procotolChange = (id: string) => {
-    if (!props.data?.id) {
-        procotolCurrent.value = id;
-    }
+    procotolCurrent.value = id;
 };
 
 const procotolSearch = (value: string) => {
@@ -544,7 +539,7 @@ const saveData = async () => {
     const params = {
         ...data,
         configuration: {
-            ...formState,
+            ...formState.value,
             protocol: procotolCurrent.value,
         },
         protocol: procotolCurrent.value,
@@ -552,7 +547,7 @@ const saveData = async () => {
         transport: 'HTTP_SERVER',
     };
     const resp =
-        props.data && props.data.id
+        !!id && modeType !== 'add'
             ? await update({
                   ...props.data,
                   ...params,
@@ -618,6 +613,17 @@ const next = async () => {
 const prev = () => {
     current.value = current.value - 1;
 };
+
+onMounted(() => {
+    if (modeType !== 'add') {
+        formState.value = props.data.configuration;
+        procotolCurrent.value = props.data.protocol;
+        formData.value = {
+            name: props.data.name,
+            description: props.data.description,
+        };
+    }
+});
 
 watch(
     current,

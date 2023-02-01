@@ -436,17 +436,18 @@
                         <a-col :span="12">
                             <title-component data="基本信息" />
                             <div>
-                                <a-form :model="form" layout="vertical">
+                                <a-form :model="formData" layout="vertical">
                                     <a-form-item
                                         label="名称"
                                         v-bind="validateInfos.name"
                                     >
                                         <a-input
-                                            v-model:value="form.name"
+                                            v-model:value="formData.name"
                                             allowClear
                                             placeholder="请输入名称"
                                         />
                                     </a-form-item>
+
                                     <a-form-item
                                         label="说明"
                                         v-bind="validateInfos.description"
@@ -454,7 +455,7 @@
                                         <a-textarea
                                             placeholder="请输入说明"
                                             :rows="4"
-                                            v-model:value="form.description"
+                                            v-model:value="formData.description"
                                             show-count
                                             :maxlength="200"
                                         />
@@ -494,15 +495,22 @@
             </div>
         </div>
         <div class="steps-action">
-            <a-button v-if="[0].includes(current)" @click="next">
+            <a-button
+                v-if="[0].includes(current)"
+                style="margin-right: 8px"
+                @click="next"
+            >
                 下一步
             </a-button>
-            <a-button v-if="current === 1" type="primary" @click="saveData">
+            <a-button
+                v-if="current === 1 && modeType !== 'view'"
+                type="primary"
+                style="margin-right: 8px"
+                @click="saveData"
+            >
                 保存
             </a-button>
-            <a-button v-if="current > 0" style="margin-left: 8px" @click="prev">
-                上一步
-            </a-button>
+            <a-button v-if="current > 0" @click="prev"> 上一步 </a-button>
         </div>
     </div>
 </template>
@@ -544,10 +552,15 @@ const props = defineProps({
         type: Object,
         default: () => {},
     },
+    data: {
+        type: Object,
+        default: () => {},
+    },
 });
 
 const route = useRoute();
-const id = route.query.id;
+const modeType = route.params.type as string;
+const id = route.params.id as string;
 
 const activeKey: any = ref([]);
 const clientHeight = document.body.clientHeight;
@@ -559,11 +572,11 @@ const useForm = Form.useForm;
 const current = ref(0);
 const stepCurrent = ref(0);
 const steps = ref(['信令配置', '完成']);
-const form = reactive({
+const formData = ref({
     name: '',
     description: '',
 });
-const formState = reactive<FormState>({
+let formState = ref<FormState>({
     domain: '',
     sipId: '',
     shareCluster: true,
@@ -574,6 +587,7 @@ const formState = reactive<FormState>({
         publicHost: '',
     },
 });
+
 let params = {
     configuration: {},
 };
@@ -628,12 +642,13 @@ const handleChangeForm2Sip = (index: number) => {
 };
 
 const { resetFields, validate, validateInfos } = useForm(
-    form,
+    formData,
     reactive({
         name: [
             { required: true, message: '请输入名称', trigger: 'blur' },
             { max: 64, message: '最多可输入64个字符' },
         ],
+        description: [{ max: 200, message: '最多可输入200个字符' }],
     }),
 );
 
@@ -646,9 +661,11 @@ const saveData = () => {
             transport: 'SIP',
             channel: 'gb28181',
         };
-        const resp = !!id
-            ? await update({ ...params, id })
-            : await save(params);
+
+        const resp =
+            !!id && modeType !== 'add'
+                ? await update({ ...params, id })
+                : await save(params);
         if (resp.status === 200) {
             message.success('操作成功！');
             // if (params.get('save')) {
@@ -723,6 +740,14 @@ onMounted(() => {
             clustersList.value = list;
         }
     });
+
+    if (modeType !== 'add') {
+        formState.value = props.data.configuration;
+        formData.value = {
+            name: props.data.name,
+            description: props.data?.description || '',
+        };
+    }
 });
 
 watch(

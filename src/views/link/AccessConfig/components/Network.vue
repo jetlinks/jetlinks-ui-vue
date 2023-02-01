@@ -138,7 +138,7 @@
                             <div>
                                 <a-form
                                     ref="formRef"
-                                    :model="form"
+                                    :model="formData"
                                     layout="vertical"
                                 >
                                     <a-form-item
@@ -146,7 +146,7 @@
                                         v-bind="validateInfos.name"
                                     >
                                         <a-input
-                                            v-model:value="form.name"
+                                            v-model:value="formData.name"
                                             allowClear
                                             placeholder="请输入名称"
                                         />
@@ -158,7 +158,7 @@
                                         <a-textarea
                                             placeholder="请输入说明"
                                             :rows="4"
-                                            v-model:value="form.description"
+                                            v-model:value="formData.description"
                                             show-count
                                             :maxlength="200"
                                         />
@@ -295,13 +295,26 @@
             </div>
         </div>
         <div class="steps-action">
-            <a-button v-if="[0, 1].includes(current)" @click="next">
+            <a-button
+                v-if="[0, 1].includes(current)"
+                type="primary"
+                style="margin-right: 8px"
+                @click="next"
+            >
                 下一步
             </a-button>
-            <a-button v-if="current === 2" type="primary" @click="saveData">
+            <a-button
+                v-if="current === 2 && modeType !== 'view'"
+                type="primary"
+                style="margin-right: 8px"
+                @click="saveData"
+            >
                 保存
             </a-button>
-            <a-button v-if="current > 0" style="margin-left: 8px" @click="prev">
+            <a-button
+                v-if="type === 'child-device' ? current > 1 : current > 0"
+                @click="prev"
+            >
                 上一步
             </a-button>
         </div>
@@ -524,7 +537,204 @@ const result2 = {
         '### 认证说明\r\n\r\nCONNECT报文:\r\n```text\r\nclientId: 设备ID\r\nusername: secureId+"|"+timestamp\r\npassword: md5(secureId+"|"+timestamp+"|"+secureKey)\r\n ```\r\n\r\n说明: secureId以及secureKey在创建设备产品或设备实例时进行配置. \r\ntimestamp为当前时间戳(毫秒),与服务器时间不能相差5分钟.\r\nmd5为32位,不区分大小写.',
     metadata: '',
 };
-
+//测试数据
+const networkData = {
+    COAP_SERVER: [
+        {
+            id: '1620352949679960064',
+            name: '前端测试1',
+            description: '前端测试1',
+            addresses: [
+                {
+                    address: 'coap://111.0.0:88',
+                    health: 1,
+                    ok: true,
+                    bad: false,
+                    disabled: false,
+                },
+            ],
+        },
+        {
+            id: '1613071630619607040',
+            name: '1',
+            addresses: [
+                {
+                    address: 'coap://120.77.179.54:9000',
+                    health: 1,
+                    ok: true,
+                    bad: false,
+                    disabled: false,
+                },
+            ],
+        },
+    ],
+    UDP: [
+        {
+            id: '1590553821093437440',
+            name: '194',
+            addresses: [
+                {
+                    address: 'udp://139.217.130.194:1883',
+                    health: 1,
+                    ok: true,
+                    bad: false,
+                    disabled: false,
+                },
+            ],
+        },
+        {
+            id: '1585831257204301824',
+            name: '测试隐藏集群',
+            description: '111',
+            addresses: [
+                {
+                    address: 'udp://127.0.0.1:8080',
+                    health: 1,
+                    ok: true,
+                    bad: false,
+                    disabled: false,
+                },
+            ],
+        },
+        {
+            id: '1584825665263149056',
+            name: '1',
+            addresses: [
+                {
+                    address: 'udp://120.77.179.54:9000',
+                    health: 1,
+                    ok: true,
+                    bad: false,
+                    disabled: false,
+                },
+            ],
+        },
+        {
+            id: '1551761481741672448',
+            name: '0726UDP',
+            description: '测试',
+            addresses: [
+                {
+                    address: 'udp://120.77.179.54:8088',
+                    health: 1,
+                    ok: true,
+                    bad: false,
+                    disabled: false,
+                },
+            ],
+        },
+    ],
+    TCP_SERVER: [
+        {
+            id: '1603206069979918336',
+            name: '测试A',
+            addresses: [
+                {
+                    address: 'tcp://120.77.179.54:8106',
+                    health: -1,
+                    ok: false,
+                    bad: false,
+                    disabled: true,
+                },
+            ],
+        },
+        {
+            id: '1603206069979918330',
+            name: '测试AA',
+            addresses: [
+                {
+                    address: 'tcp://120.77.179.54:8106',
+                    health: -1,
+                    ok: false,
+                    bad: false,
+                    disabled: true,
+                },
+            ],
+        },
+    ],
+    MQTT_SERVER: [
+        {
+            id: '1585192878304051200',
+            name: 'MQTT网络组件',
+            addresses: [
+                {
+                    address: 'mqtt://120.77.179.54:8101',
+                    health: 1,
+                    ok: true,
+                    bad: false,
+                    disabled: false,
+                },
+            ],
+        },
+        {
+            id: '1583268266806009856',
+            name: '我的第一个MQTT服务组件',
+            description: '',
+            addresses: [
+                {
+                    address: 'mqtt://120.77.179.54:8100',
+                    health: 1,
+                    ok: true,
+                    bad: false,
+                    disabled: false,
+                },
+            ],
+        },
+        {
+            id: '1570335308902912000',
+            name: '0915MQTT网络组件_勿动',
+            description: '测试，勿动！',
+            addresses: [
+                {
+                    address: 'mqtt://120.77.179.54:8083',
+                    health: 1,
+                    ok: true,
+                    bad: false,
+                    disabled: false,
+                },
+            ],
+        },
+        {
+            id: '1567062350140858368',
+            name: '网络组件20220906160907',
+            addresses: [
+                {
+                    address: 'mqtt://120.77.179.54:8083',
+                    health: 1,
+                    ok: true,
+                    bad: false,
+                    disabled: false,
+                },
+            ],
+        },
+        {
+            id: '1556563257890742272',
+            name: 'MQTT网络组件',
+            addresses: [
+                {
+                    address: 'mqtt://0.0.0.0:8104',
+                    health: 1,
+                    ok: true,
+                    bad: false,
+                    disabled: false,
+                },
+            ],
+        },
+        {
+            id: '1534774770408108032',
+            name: 'MQTT',
+            addresses: [
+                {
+                    address: 'mqtt://120.77.179.54:8088',
+                    health: 1,
+                    ok: true,
+                    bad: false,
+                    disabled: false,
+                },
+            ],
+        },
+    ],
+};
 function generateUUID() {
     var d = new Date().getTime();
     if (
@@ -555,6 +765,10 @@ const props = defineProps({
 });
 
 const clientHeight = document.body.clientHeight;
+const type = props.provider.channel;
+const route = useRoute();
+const modeType = route.params.type as string;
+const id = route.params.id as string;
 
 const formRef = ref<FormInstance>();
 const useForm = Form.useForm;
@@ -569,29 +783,40 @@ const networkCurrent = ref('');
 const procotolCurrent = ref('');
 let config = ref({});
 let columnsMQTT = ref(<TableColumnType>[]);
-const form = reactive({
+const formData = ref({
     name: '',
     description: '',
 });
 
 const { resetFields, validate, validateInfos } = useForm(
-    form,
+    formData,
     reactive({
         name: [
             { required: true, message: '请输入名称', trigger: 'blur' },
             { max: 64, message: '最多可输入64个字符' },
         ],
+        description: [{ max: 200, message: '最多可输入200个字符' }],
     }),
 );
 
 const queryNetworkList = async (id: string, include: string, data = {}) => {
+    if (NetworkTypeMapping.get(id) === 'MQTT_SERVER') {
+        //使用测试数据
+        networkList.value = networkData[NetworkTypeMapping.get(id)];
+        // return;
+    }
     const resp = await getNetworkList(
         NetworkTypeMapping.get(id),
         include,
         data,
     );
     if (resp.status === 200) {
-        networkList.value = resp.result;
+        //使用测试数据
+        // networkList.value = resp.result;
+        networkList.value =
+            resp.result.length === 0
+                ? networkData[NetworkTypeMapping.get(id)]
+                : resp.result;
     }
 };
 
@@ -686,7 +911,7 @@ const saveData = () => {
                 channel: 'network', // 网络组件
                 channelId: networkCurrent.value,
             };
-            if (props.data && props.data.id) {
+            if (!!id && modeType !== 'add') {
                 resp = await update(params);
             } else {
                 params = {
@@ -702,12 +927,13 @@ const saveData = () => {
             if (resp.status === 200) {
                 message.success('操作成功！');
                 // 回到列表页面
-                if (window.onTabSaveSuccess) {
-                    window.onTabSaveSuccess(resp);
-                    setTimeout(() => window.close(), 300);
-                } else {
-                    // this.$store.dispatch('jumpPathByKey', { key: MenuKeys['Link/AccessConfig'] })
-                }
+                // if (window.onTabSaveSuccess) {
+                //     window.onTabSaveSuccess(resp);
+                //     setTimeout(() => window.close(), 300);
+                // } else {
+                //     // this.$store.dispatch('jumpPathByKey', { key: MenuKeys['Link/AccessConfig'] })
+                // }
+                history.back();
             }
         })
         .catch((err) => {});
@@ -781,7 +1007,7 @@ const next = async () => {
             ];
 
             // const resp =
-            //     props.provider.channel !== 'child-device'
+            //     type !== 'child-device'
             //         ? await getConfigView(
             //               procotolCurrent.value,
             //               ProtocolMapping.get(props.provider.id),
@@ -864,7 +1090,7 @@ onMounted(() => {
         }
     } else {
         if (props.provider?.id) {
-            if (props.provider.channel !== 'child-device') {
+            if (type !== 'child-device') {
                 queryNetworkList(props.provider.id, '');
                 steps.value = ['网络组件', '消息协议', '完成'];
                 current.value = 0;
@@ -877,14 +1103,20 @@ onMounted(() => {
     }
 });
 
+onMounted(() => {
+    if (modeType !== 'add') {
+        procotolCurrent.value = props.data.protocol;
+        formData.value = {
+            name: props.data.name,
+            description: props.data.description,
+        };
+    }
+});
+
 watch(
     current,
     (v) => {
-        if (props.provider.channel !== 'child-device') {
-            stepCurrent.value = v;
-        } else {
-            stepCurrent.value = v - 1;
-        }
+        stepCurrent.value = type === 'child-device' ? v - 1 : v;
     },
     {
         deep: true,

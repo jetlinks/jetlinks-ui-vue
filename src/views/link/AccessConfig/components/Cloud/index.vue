@@ -17,9 +17,6 @@
 import Ctwing from './Ctwing.vue';
 import OneNet from './OneNet.vue';
 
-const route = useRoute();
-const id = route.query.id;
-
 const props = defineProps({
     provider: {
         type: Object,
