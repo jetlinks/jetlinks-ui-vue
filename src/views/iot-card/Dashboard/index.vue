@@ -1,6 +1,6 @@
 <!-- 物联卡-仪表盘 -->
 <template>
-    <div class="page-container">
+    <page-container class="container">
         <a-card>
             <a-row :gutter="20" :style="{ marginBottom: '20px' }">
                 <a-col :span="24"><Guide title="数据统计" /></a-col>
@@ -104,7 +104,7 @@
                 </a-col>
             </a-row>
         </a-card>
-    </div>
+    </page-container>
 </template>
 
 <script setup lang="ts">
@@ -229,7 +229,7 @@ const dTime = [
 getTopRang(dTime[0], dTime[1]);
 </script>
 <style scoped lang="less">
-.page-container {
+.container {
     .data-statistics-item {
         height: 140px;
         background: #fcfcfc;

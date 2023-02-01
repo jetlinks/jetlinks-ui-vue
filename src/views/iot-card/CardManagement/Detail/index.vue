@@ -1,6 +1,6 @@
 <!-- 物联卡查看 -->
 <template>
-    <div class="page-container">
+    <page-container>
         <!-- 新增、编辑 -->
         <Save
             v-if="visible"
@@ -117,7 +117,7 @@
                 </a-row>
             </a-col>
         </a-row>
-    </div>
+    </page-container>
 </template>
 
 <script setup lang="ts">
@@ -138,7 +138,7 @@ const detail = ref<any>({});
 const flowData = ref<any[]>([]);
 
 const getDetail = () => {
-    queryDetail(route.query.id).then((resp: any) => {
+    queryDetail(route.params.id).then((resp: any) => {
         if (resp.status === 200) {
             detail.value = resp.result;
         }
