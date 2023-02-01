@@ -4,13 +4,13 @@
             ref="tableRef"
             :columns="table.columns"
             model="TABLE"
-            :dataSource="table.data"
+            :dataSource="table.tableData"
         >
             <template #headerTitle>
                 <a-button
                     type="primary"
                     style="margin-right: 10px"
-                    @click="() => dialog.openDialog()"
+                    @click="() => dialog.openDialog('新增')"
                     ><plus-outlined />新增</a-button
                 >
             </template>
@@ -21,7 +21,7 @@
                         <a-button
                             style="padding: 0"
                             type="link"
-                            @click="() => dialog.openDialog(slotProps)"
+                            @click="() => dialog.openDialog('编辑', slotProps)"
                         >
                             <edit-outlined />
                         </a-button>
@@ -31,7 +31,7 @@
                         <a-button
                             style="padding: 0"
                             type="link"
-                            @click="() => dialog.openDialog(slotProps)"
+                            @click="() => dialog.openDialog('查看', slotProps)"
                         >
                             <edit-outlined />
                         </a-button>
@@ -81,8 +81,8 @@ const routeParams = {
 const dialogRef = ref<any>(null);
 const dialog = {
     // 打开弹窗
-    openDialog: (row?: object) => {
-        dialogRef.value && dialogRef.value.openDialog(row);
+    openDialog: (mode: string, row?: object) => {
+        dialogRef.value && dialogRef.value.openDialog(mode, row);
     },
     confirm: () => {},
 };
@@ -114,11 +114,11 @@ const table = reactive({
             width: 240,
         },
     ],
-    data: [] as tableDataItem[],
+    tableData: [] as tableDataItem[],
     getList: () => {
         routeParams.id &&
             getMenuInfo_api(routeParams.id).then((resp: any) => {
-                table.data = resp.result.buttons as tableDataItem[];
+                table.tableData = resp.result.buttons as tableDataItem[];
             });
     },
 });

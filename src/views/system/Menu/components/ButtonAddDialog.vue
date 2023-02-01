@@ -1,7 +1,7 @@
 <template>
     <a-modal
         v-model:visible="dialog.visible"
-        title="新增"
+        :title="form.mode"
         width="660px"
         @ok="dialog.handleOk"
     >
@@ -14,7 +14,10 @@
                     { max: 64, message: '最多可输入64个字符' },
                 ]"
             >
-                <a-input v-model:value="form.data.id" />
+                <a-input
+                    v-model:value="form.data.id"
+                    :disabled="form.mode !== '新增'"
+                />
             </a-form-item>
             <a-form-item
                 label="名称"
@@ -24,13 +27,20 @@
                     { max: 64, message: '最多可输入64个字符' },
                 ]"
             >
-                <a-input v-model:value="form.data.name" />
+                <a-input
+                    v-model:value="form.data.name"
+                    :disabled="form.mode === '查看'"
+                />
             </a-form-item>
-            <a-form-item label="权限">
+            <a-form-item
+                label="权限"
+                :rules="[{ required: true, message: '请选择权限', validator: form.checkPermission, }]"
+            >
                 <PermissChoose
                     :first-width="8"
                     max-height="350px"
                     v-model:value="form.data.permissions"
+                    :disabled="form.mode === '查看'"
                 />
             </a-form-item>
             <a-form-item label="说明" name="describe">
@@ -38,6 +48,7 @@
                     v-model:value="form.data.describe"
                     :rows="4"
                     placeholder="请输入说明"
+                    :disabled="form.mode === '查看'"
                 />
             </a-form-item>
         </a-form>
@@ -45,6 +56,7 @@
 </template>
 
 <script setup lang="ts">
+import { Rule } from 'ant-design-vue/es/form';
 import PermissChoose from '../components/PermissChoose.vue';
 
 const emits = defineEmits(['confirm']);
@@ -53,9 +65,10 @@ const dialog = reactive({
     handleOk: () => {
         dialog.changeVisible();
     },
-    changeVisible: (formValue?: formType, show?: boolean) => {
-        dialog.visible = show === undefined ? !dialog.visible : show;
+    changeVisible: (mode?: string, formValue?: formType) => {
+        dialog.visible = !dialog.visible;
         form.data = formValue || { ...initForm };
+        form.mode = mode || '';
         console.log(1111111111, form.data);
     },
 });
@@ -67,6 +80,11 @@ const initForm = {
 } as formType;
 const form = reactive({
     data: { ...initForm },
+    mode: '',
+    checkPermission:async (_rule: Rule, value: string[])=>{
+        if(!value || value.length < 1) return Promise.reject('请选择权限')
+        return Promise.resolve()
+    }
 });
 
 // 将打开弹窗的操作暴露给父组件

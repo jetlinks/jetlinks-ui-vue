@@ -6,6 +6,7 @@
             allowClear
             placeholder="请输入权限名称"
             @input="search.search"
+            :disabled="props.disabled"
         />
 
         <div class="permission-table">
@@ -24,6 +25,7 @@
                             v-model:checked="rowItem.checkAll"
                             :indeterminate="rowItem.indeterminate"
                             @change="() => permission.selectAllOpions(rowItem)"
+                            :disabled="props.disabled"
                         >
                             {{ rowItem.name }}
                         </a-checkbox>
@@ -33,6 +35,7 @@
                             v-model:value="rowItem.checkedList"
                             :options="rowItem.options"
                             @change="((checkValue:string[])=>permission.selectOption(rowItem, checkValue))"
+                            :disabled="props.disabled"
                         />
                     </a-col>
                 </a-row>
@@ -48,6 +51,7 @@ const props = defineProps<{
     value: any[];
     firstWidth: number;
     maxHeight: string;
+    disabled: boolean;
 }>();
 const emits = defineEmits(['update:value']);
 const searchValue = ref<string>('');
@@ -128,7 +132,7 @@ const permission = reactive({
     },
     makeList: (checkedValue: any[], sourceList: any[]): permissionType[] => {
         console.log(checkedValue);
-        
+
         const result = sourceList.map((item) => {
             const checked = checkedValue.find(
                 (checkedItem) => checkedItem.permission === item.id,

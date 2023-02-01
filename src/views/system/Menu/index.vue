@@ -8,6 +8,7 @@
             :request="table.getList"
             model="TABLE"
             :params="query.params"
+
         >
             <template #headerTitle>
                 <a-button
@@ -252,4 +253,9 @@ const table = reactive({
 });
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.menu-container {
+    padding: 24px;
+}
+
+</style>
