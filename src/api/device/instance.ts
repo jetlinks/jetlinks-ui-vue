@@ -115,6 +115,14 @@ export const isExists = (id: string) => server.get(`/device-instance/${id}/exist
 export const update = (data: Partial<DeviceInstance>) => data.id ? server.patch(`/device-instance`, data) : server.post(`/device-instance`, data)
 
 /**
+ * 修改设备信息
+ * @param id 设备id
+ * @param data 设备信息
+ * @returns 
+ */
+export const modify = (id: string, data: Partial<DeviceInstance>) => server.put(`/device-instance/${id}`, data)
+
+/**
  * 获取配置信息
  * @param id 设备id
  * @returns 
