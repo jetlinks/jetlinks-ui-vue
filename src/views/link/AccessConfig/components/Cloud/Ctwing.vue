@@ -283,7 +283,7 @@
                 下一步
             </a-button>
             <a-button
-                v-if="current === 2 && modeType !== 'view'"
+                v-if="current === 2 && view === 'false'"
                 type="primary"
                 style="margin-right: 8px"
                 @click="saveData"
@@ -383,7 +383,7 @@ interface Form {
     description: string;
 }
 const route = useRoute();
-const modeType = route.params.type as string;
+const view = route.query.view as string;
 const id = route.params.id as string;
 
 const props = defineProps({
@@ -450,13 +450,13 @@ const saveData = async () => {
         transport: 'HTTP_SERVER',
     };
     const resp =
-        !!id && modeType !== 'add'
-            ? await update({
+        id === ':id'
+            ? await save(params)
+            : await update({
                   ...props.data,
                   ...params,
-              })
-            : await save(params);
-
+                  id,
+              });
     if (resp.status === 200) {
         message.success('操作成功！');
         // 回到列表页面
@@ -489,7 +489,7 @@ const queryProcotolList = async (id: string, params = {}) => {
 
 const addProcotol = () => {
     // const url = this.$store.state.permission.routes['Link/Protocol']
-    const url = '/demo';
+    const url = '/iot/link/protocol';
     const tab = window.open(
         `${window.location.origin + window.location.pathname}#${url}?save=true`,
     );
@@ -518,7 +518,7 @@ const prev = () => {
     current.value = current.value - 1;
 };
 onMounted(() => {
-    if (modeType !== 'add') {
+    if (id !== ':id') {
         formState.value = props.data.configuration;
         procotolCurrent.value = props.data.protocol;
         formData.value = {

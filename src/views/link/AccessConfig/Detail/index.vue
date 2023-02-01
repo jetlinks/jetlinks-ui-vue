@@ -1,42 +1,44 @@
 <template>
-    <a-spin :spinning="loading">
-        <a-card :bordered="false">
-            <div v-if="type && modeType === 'add'">
-                <Provider
-                    @onClick="goProviders"
-                    :dataSource="dataSource"
-                ></Provider>
-            </div>
-            <div v-else>
-                <div v-if="!id"><a @click="goBack">返回</a></div>
-                <AccessNetwork
-                    v-if="showType === 'network'"
-                    :provider="provider"
-                    :data="data"
-                />
-                <Media
-                    v-if="showType === 'media'"
-                    :provider="provider"
-                    :data="data"
-                />
-                <Channel
-                    v-if="showType === 'channel'"
-                    :provider="provider"
-                    :data="data"
-                />
-                <Edge
-                    v-if="showType === 'edge'"
-                    :provider="provider"
-                    :data="data"
-                />
-                <Cloud
-                    v-if="showType === 'cloud'"
-                    :provider="provider"
-                    :data="data"
-                />
-            </div>
-        </a-card>
-    </a-spin>
+    <page-container>
+        <a-spin :spinning="loading">
+            <a-card :bordered="false">
+                <div v-if="type && id === ':id'">
+                    <Provider
+                        @onClick="goProviders"
+                        :dataSource="dataSource"
+                    ></Provider>
+                </div>
+                <div v-else>
+                    <div v-if="!id"><a @click="goBack">返回</a></div>
+                    <AccessNetwork
+                        v-if="showType === 'network'"
+                        :provider="provider"
+                        :data="data"
+                    />
+                    <Media
+                        v-if="showType === 'media'"
+                        :provider="provider"
+                        :data="data"
+                    />
+                    <Channel
+                        v-if="showType === 'channel'"
+                        :provider="provider"
+                        :data="data"
+                    />
+                    <Edge
+                        v-if="showType === 'edge'"
+                        :provider="provider"
+                        :data="data"
+                    />
+                    <Cloud
+                        v-if="showType === 'cloud'"
+                        :provider="provider"
+                        :data="data"
+                    />
+                </div>
+            </a-card>
+        </a-spin>
+    </page-container>
 </template>
 
 <script lang="ts" setup name="AccessConfigDetail">
@@ -51,7 +53,7 @@ import Cloud from '../components/Cloud/index.vue';
 
 const route = useRoute();
 
-const modeType = route.params.type as string;
+const view = route.query.view as string;
 const id = route.params.id as string;
 
 const dataSource = ref([]);
@@ -138,7 +140,7 @@ const queryProviders = async () => {
 };
 
 const getProvidersData = async () => {
-    if (id && modeType !== 'add') {
+    if (id !== ':id') {
         getProviders().then((response) => {
             if (response.status === 200) {
                 const list = getTypeList(response.result);

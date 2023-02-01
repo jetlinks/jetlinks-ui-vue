@@ -1,9 +1,8 @@
 <template>
-    <div class="page-container">
-        <a-card style="margin-bottom: 20px">
+    <page-container>
+        <div>
             <Search :columns="columns" target="search" @search="handleSearch" />
-        </a-card>
-        <a-card>
+
             <JTable
                 ref="tableRef"
                 model="CARD"
@@ -187,8 +186,8 @@
                     />
                 </template>
             </JTable>
-        </a-card>
-    </div>
+        </div>
+    </page-container>
 </template>
 <script lang="ts" setup name="AccessConfigPage">
 import type { ActionsType } from '@/components/Table/index.vue';
@@ -345,13 +344,25 @@ const getProvidersList = async () => {
 getProvidersList();
 
 const handlAdd = () => {
-    router.push('/link/accessConfig/detail/add/new');
+    // router.push('/link/accessConfig/detail/add/new');
+    router.push({
+        path: `/iot/link/accessConfig/detail/:id`,
+        query: { view: false },
+    });
 };
 const handlEdit = (id: string) => {
-    router.push(`/link/accessConfig/detail/edit/${id}`);
+    // router.push(`/link/accessConfig/detail/edit/${id}`);
+    router.push({
+        path: `/iot/link/accessConfig/detail/${id}`,
+        query: { view: false },
+    });
 };
 const handlEye = (id: string) => {
-    router.push(`/link/accessConfig/detail/view/${id}`);
+    // router.push(`/link/accessConfig/detail/view/${id}`);
+    router.push({
+        path: `/iot/link/accessConfig/detail/${id}`,
+        query: { view: true },
+    });
 };
 
 /**
@@ -375,10 +386,6 @@ const handleSearch = (e: any) => {
 // }
 </script>
 <style lang="less" scoped>
-.page-container {
-    background: #f0f2f5;
-    padding: 24px;
-}
 .tableCardDisabled {
     width: 100%;
     background: url('/images/access-config-diaabled.png') no-repeat;
