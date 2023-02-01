@@ -115,3 +115,10 @@ export const deleteProduct = (id: string) => server.patch(`/device-product/${id}
  * @returns 
  */
 export const saveProductMetadata = (data: Record<string, unknown>) => server.patch('/device-product', data)
+
+/**
+ * 获取设备数量
+ * @param data 查询条件
+ * @returns
+ */
+export const getDeviceNumber = (params:any) => server.get('/device-instance/_count', params)
