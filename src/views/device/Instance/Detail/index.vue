@@ -32,7 +32,7 @@
             </div>
         </template>
         <template #extra>
-            <img @click="handleRefresh" :src="getImage('/device/instance/button.png')" style="margin-right: 20px; cursor: pointer;" />
+            <img @click="handleRefresh" :src="getImage('/device/button.png')" style="margin-right: 20px; cursor: pointer;" />
         </template>
         <component :is="tabs[instanceStore.tabActiveKey]" />
     </page-container>
@@ -41,6 +41,7 @@
 <script lang="ts" setup>
 import { useInstanceStore } from '@/store/instance';
 import Info from './Info/index.vue';
+import Running from './Running/index.vue'
 import Metadata from '../../components/Metadata/index.vue';
 import { _deploy, _disconnect } from '@/api/device/instance'
 import { message } from 'ant-design-vue';
@@ -60,6 +61,10 @@ const list = [
         tab: '实例信息'
     },
     {
+        key: 'Running',
+        tab: '运行状态'
+    },
+    {
         key: 'Metadata',
         tab: '物模型'
     }
@@ -67,7 +72,8 @@ const list = [
 
 const tabs = {
   Info,
-  Metadata
+  Metadata,
+  Running
 }
 
 watch(
