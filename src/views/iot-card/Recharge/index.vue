@@ -70,6 +70,7 @@
         </JTable>
         <!-- 充值 -->
         <Save v-if="visible" @change="saveChange" />
+        <Detail v-if="detailVisible" :data="current" @close="close" />
     </div>
 </template>
 
@@ -78,10 +79,13 @@ import moment from 'moment';
 import type { ActionsType } from '@/components/Table';
 import { queryRechargeList } from '@/api/iot-card/cardManagement';
 import Save from './Save.vue';
+import Detail from './Detail.vue';
 
 const rechargeRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const visible = ref<boolean>(false);
+const detailVisible = ref<boolean>(false);
+const current = ref<Record<string, any>>({});
 
 const columns = [
     {
@@ -139,7 +143,10 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                 title: '查看',
             },
             icon: 'EyeOutlined',
-            onClick: () => {},
+            onClick: () => {
+              detailVisible.value = true;
+              current.value = data;
+            },
         },
     ];
 };
@@ -158,6 +165,13 @@ const saveChange = (val: any) => {
     if (val) {
         rechargeRef.value?.reload();
     }
+};
+
+/**
+ * 查看详情弹窗关闭
+ */
+const close = () => {
+    detailVisible.value = false;
 };
 </script>
 
