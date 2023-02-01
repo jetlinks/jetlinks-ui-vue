@@ -1,6 +1,6 @@
 <template>
     <div style="margin-top: 20px" v-if="config.length">
-        <div style="display: flex;">
+        <div style="display: flex; margin-bottom: 20px; align-items: center;">
             <div style="font-size: 16px; font-weight: 700">配置</div>
             <a-space>
                <a-button type="link" @click="visible = true"><AIcon type="EditOutlined" />编辑</a-button>
@@ -13,11 +13,11 @@
             </a-space>
         </div>
         <a-descriptions bordered size="small" v-for="i in config" :key="i.name">
-            <template #title><h4>{{i.name}}</h4></template>
+            <template #title><h4 style="font-size: 15px">{{i.name}}</h4></template>
             <a-descriptions-item v-for="item in i.properties" :key="item.property">
                 <template #label>
+                    <span style="margin-right: 5px">{{item.name}}</span>
                     <a-tooltip v-if="item.description" :title="item.description"><AIcon type="QuestionCircleOutlined" /></a-tooltip>
-                    <span>{{item.name}}</span>
                 </template>
                 <span v-if="item.type.type === 'password' && instanceStore.current?.configuration?.[item.property]?.length > 0">******</span>
                 <span v-else>
@@ -26,6 +26,7 @@
                 </span>
             </a-descriptions-item>
         </a-descriptions>
+        <Save v-if="visible" @save="saveBtn" @close="visible = false" :config="config" />
     </div>
 </template>
 
@@ -34,6 +35,7 @@ import { useInstanceStore } from "@/store/instance"
 import { ConfigMetadata } from "@/views/device/Product/typings"
 import { getConfigMetadata, _deploy, configurationReset } from '@/api/device/instance'
 import { message } from "ant-design-vue"
+import Save from './Save.vue'
 
 const instanceStore = useInstanceStore()
 const visible = ref<boolean>(false)
@@ -76,6 +78,13 @@ const resetBtn = async () => {
             message.success('恢复默认配置成功')
             instanceStore.refresh(instanceStore.current.id)
         }
+    }
+}
+
+const saveBtn = () => {
+    visible.value = false
+    if(instanceStore.current.id){
+        instanceStore.refresh(instanceStore.current.id)
     }
 }
 </script>

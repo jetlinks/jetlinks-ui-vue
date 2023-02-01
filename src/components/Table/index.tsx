@@ -40,11 +40,11 @@ export interface ActionsType {
     children?: ActionsType[];
 }
 
-export interface JColumnProps extends ColumnProps{
+export interface JColumnProps extends ColumnProps {
     scopedSlots?: boolean; // 是否为插槽 true: 是 false: 否
 }
 
-export interface JTableProps extends TableProps{
+export interface JTableProps extends TableProps {
     request?: (params?: Record<string, any>) => Promise<Partial<RequestData>>;
     cardBodyClass?: string;
     columns: JColumnProps[];
@@ -53,8 +53,8 @@ export interface JTableProps extends TableProps{
     // actions?: ActionsType[];
     noPagination?: boolean;
     rowSelection?: TableProps['rowSelection'];
-    cardProps?:  Record<string, any>;
-    dataSource?:  Record<string, any>[];
+    cardProps?: Record<string, any>;
+    dataSource?: Record<string, any>[];
     gridColumn?: number;
     /**
      * 用于不同分辨率
@@ -62,10 +62,11 @@ export interface JTableProps extends TableProps{
      * gridColumns[1] 1440 ~  1600 分辨率；
      * gridColumns[2] > 1600 分辨率；
      */
-     gridColumns?: number[];
-     alertRender?: boolean;
-     type?: keyof typeof TypeEnum;
-     defaultParams?: Record<string, any>;
+    gridColumns?: number[];
+    alertRender?: boolean;
+    type?: keyof typeof TypeEnum;
+    defaultParams?: Record<string, any>;
+    bodyStyle?: Record<string, any>;
 }
 
 const JTable = defineComponent<JTableProps>({
@@ -88,13 +89,17 @@ const JTable = defineComponent<JTableProps>({
             type: String,
             default: ''
         },
+        bodyStyle: {
+            type: Object,
+            default: {}
+        },
         columns: {
             type: Array,
             default: () => []
         },
         params: {
             type: Object,
-            default: () => {}
+            default: () => { }
         },
         model: {
             type: [String, undefined],
@@ -142,7 +147,7 @@ const JTable = defineComponent<JTableProps>({
             }
         }
     } as any,
-    setup(props: JTableProps ,{ slots, emit, expose }){
+    setup(props: JTableProps, { slots, emit, expose }) {
         const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE
         const _model = ref<keyof typeof ModelEnum>(props.model ? props.model : ModelEnum.CARD); // 模式切换
         const column = ref<number>(props.gridColumn || 4);
@@ -174,9 +179,9 @@ const JTable = defineComponent<JTableProps>({
          */
         const handleSearch = async (_params?: Record<string, any>) => {
             loading.value = true
-            if(props.request) {
+            if (props.request) {
                 const resp = await props.request({
-                    pageIndex: 0, 
+                    pageIndex: 0,
                     pageSize: 12,
                     ...props.defaultParams,
                     ..._params,
@@ -185,14 +190,14 @@ const JTable = defineComponent<JTableProps>({
                         ...(_params?.terms || [])
                     ]
                 })
-                if(resp.status === 200){
-                    if(props.type === 'PAGE'){
+                if (resp.status === 200) {
+                    if (props.type === 'PAGE') {
                         // 判断如果是最后一页且最后一页为空，就跳转到前一页
-                        if(resp.result.total && resp.result.pageSize && resp.result.pageIndex && resp.result?.data?.length === 0) {
+                        if (resp.result.total && resp.result.pageSize && resp.result.pageIndex && resp.result?.data?.length === 0) {
                             handleSearch({
                                 ..._params,
                                 pageSize: pageSize.value,
-                                pageIndex: pageIndex.value > 0 ?  pageIndex.value - 1 : 0,
+                                pageIndex: pageIndex.value > 0 ? pageIndex.value - 1 : 0,
                             })
                         } else {
                             _dataSource.value = resp.result?.data || []
@@ -204,31 +209,30 @@ const JTable = defineComponent<JTableProps>({
                         _dataSource.value = resp?.result || []
                     }
                 } else {
-                    _dataSource.value  = []
+                    _dataSource.value = []
                 }
             } else {
-                console.log(props?.dataSource)
                 _dataSource.value = props?.dataSource || []
             }
             loading.value = false
         }
 
         watch(
-            () => props.params, 
+            () => props.params,
             (newValue) => {
                 handleSearch(newValue)
-            }, 
-            {deep: true, immediate: true}
+            },
+            { deep: true, immediate: true }
         )
 
         watch(
-            () => props.dataSource, 
-            (newValue) => {
-                if(props.dataSource){
+            () => props.dataSource,
+            () => {
+                if (props.dataSource && !props.request) {
                     handleSearch(props.params)
                 }
-            }, 
-            {deep: true, immediate: true}
+            },
+            { deep: true, immediate: true }
         )
 
         onMounted(() => {
@@ -239,6 +243,10 @@ const JTable = defineComponent<JTableProps>({
 
         onUnmounted(() => {
             window.onresize = null
+        })
+
+        watchEffect(() => {
+            // console.log(props.bodyStyle)
         })
 
         /**
@@ -256,10 +264,10 @@ const JTable = defineComponent<JTableProps>({
         /**
          * 导出方法
          */
-         expose({ reload })
-        
+        expose({ reload })
+
         return () => <Spin spinning={loading.value}>
-                <div class={styles["jtable-body"]}>
+            <div class={styles["jtable-body"]} style={{ ...props.bodyStyle }}>
                 <div class={styles["jtable-body-header"]}>
                     <div class={styles["jtable-body-header-left"]}>
                         {/* 顶部左边插槽 */}
@@ -278,7 +286,7 @@ const JTable = defineComponent<JTableProps>({
                                 <div class={[styles["jtable-setting-item"], ModelEnum.TABLE === _model.value ? styles['active'] : '']} onClick={() => {
                                     _model.value = ModelEnum.TABLE
                                 }}>
-                                    <UnorderedListOutlined  />
+                                    <UnorderedListOutlined />
                                 </div>
                             </div>
                         }
@@ -288,66 +296,66 @@ const JTable = defineComponent<JTableProps>({
                 <div class={styles['jtable-content']}>
                     {
                         props.alertRender && props?.rowSelection && props?.rowSelection?.selectedRowKeys && props.rowSelection.selectedRowKeys?.length ?
-                        <div class={styles['jtable-alert']}>
-                            <Alert
-                                message={'已选择' + props?.rowSelection?.selectedRowKeys?.length + '项'}
-                                type="info"
-                                onClose={() => {
-                                    emit('cancelSelect')
-                                }}
-                                closeText={<a-button type="link">取消选择</a-button>}
-                             />
-                        </div> : null
+                            <div class={styles['jtable-alert']}>
+                                <Alert
+                                    message={'已选择' + props?.rowSelection?.selectedRowKeys?.length + '项'}
+                                    type="info"
+                                    onClose={() => {
+                                        emit('cancelSelect')
+                                    }}
+                                    closeText={<a-button type="link">取消选择</a-button>}
+                                />
+                            </div> : null
                     }
                     {
                         _model.value === ModelEnum.CARD ?
-                        <div class={styles['jtable-card']}>
-                            {
-                                _dataSource.value.length ? 
-                                <div 
-                                    class={styles['jtable-card-items']}
-                                    style={{gridTemplateColumns: `repeat(${column.value}, 1fr)`}}
-                                >
-                                    {
-                                        _dataSource.value.map(item => slots.card ? 
-                                            <div class={[styles['jtable-card-item'], props.cardBodyClass]}>
-                                                {slots.card(item)}
-                                            </div> : null
-                                        )
-                                    }
-                                </div> : 
-                                <div><Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /></div>
-                            }
-                        </div> :
-                        <div>
-                            <Table
-                                dataSource={_dataSource.value}
-                                columns={_columns.value}
-                                pagination={false}
-                                rowKey="id"
-                                rowSelection={props.rowSelection}
-                                scroll={{x: 1366}}
-                                v-slots={{
-                                    bodyCell: (dt: Record<string, any>) => {
-                                        const {column, record} = dt;
-                                        if((column?.key || column?.dataIndex) && column?.scopedSlots && (slots?.[column?.dataIndex] || slots?.[column?.key])) {
-                                            const _key = column?.key || column?.dataIndex
-                                            return slots?.[_key]!(record)
-                                        } else {
-                                            return record?.[column?.dataIndex] || ''
+                            <div class={styles['jtable-card']}>
+                                {
+                                    _dataSource.value.length ?
+                                        <div
+                                            class={styles['jtable-card-items']}
+                                            style={{ gridTemplateColumns: `repeat(${column.value}, 1fr)` }}
+                                        >
+                                            {
+                                                _dataSource.value.map(item => slots.card ?
+                                                    <div class={[styles['jtable-card-item'], props.cardBodyClass]}>
+                                                        {slots.card(item)}
+                                                    </div> : null
+                                                )
+                                            }
+                                        </div> :
+                                        <div><Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /></div>
+                                }
+                            </div> :
+                            <div>
+                                <Table
+                                    dataSource={_dataSource.value}
+                                    columns={_columns.value}
+                                    pagination={false}
+                                    rowKey="id"
+                                    rowSelection={props.rowSelection}
+                                    scroll={{ x: 1366 }}
+                                    v-slots={{
+                                        bodyCell: (dt: Record<string, any>) => {
+                                            const { column, record } = dt;
+                                            if ((column?.key || column?.dataIndex) && column?.scopedSlots && (slots?.[column?.dataIndex] || slots?.[column?.key])) {
+                                                const _key = column?.key || column?.dataIndex
+                                                return slots?.[_key]!(record)
+                                            } else {
+                                                return record?.[column?.dataIndex] || ''
+                                            }
                                         }
-                                    }
-                                }}
-                             />
-                        </div>
+                                    }}
+                                />
+                            </div>
                     }
                 </div>
                 {/* 分页 */}
                 {
                     (!!_dataSource.value.length) && !props.noPagination && props.type === 'PAGE' &&
                     <div class={styles['jtable-pagination']}>
-                        <Pagination 
-                            size="small" 
+                        <Pagination
+                            size="small"
                             total={total.value}
                             showQuickJumper={false}
                             showSizeChanger={true}
