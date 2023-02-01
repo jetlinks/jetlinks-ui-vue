@@ -385,7 +385,7 @@ const handleAdd = () => {
  * 查看
  */
 const handleView = (id: string) => {
-    router.push('/device/instance/detail/' + id);
+    router.push('/iot/device/instance/detail/' + id);
 };
 
 const getActions = (

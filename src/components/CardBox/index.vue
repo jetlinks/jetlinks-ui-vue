@@ -2,22 +2,21 @@
     <div class="card">
         <div
             class="card-warp"
-            :class="{ active: active ? 'active' : ''}"
+            :class="{ active: active ? 'active' : '' }"
             @click="handleClick"
         >
             <div class="card-content">
-                <a-row>
-                    <a-col :span="6">
-                        <!-- 图片 -->
-                        <div class="card-item-avatar">
-                            <slot name="img"> </slot>
-                        </div>
-                    </a-col>
-                    <a-col :span="18">
-                        <!-- 内容 -->
+                <div style="display: flex">
+                    <!-- 图片 -->
+                    <div class="card-item-avatar">
+                        <slot name="img"> </slot>
+                    </div>
+
+                    <!-- 内容 -->
+                    <div class="card-item-body">
                         <slot name="content"></slot>
-                    </a-col>
-                </a-row>
+                    </div>
+                </div>
 
                 <!-- 勾选 -->
                 <div v-if="active" class="checked-icon">
@@ -199,6 +198,13 @@ const handleClick = () => {
 
             .card-item-avatar {
                 margin-right: 16px;
+            }
+
+            .card-item-body {
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+                width: 0;
             }
 
             .card-state {

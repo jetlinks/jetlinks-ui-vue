@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <page-container>
         <JTable 
             :columns="columns"
             :request="request"
@@ -69,7 +69,7 @@
                 </a-space>
             </template>
         </JTable>
-    </div>
+    </page-container>
 </template>
 
 <script setup lang="ts">
