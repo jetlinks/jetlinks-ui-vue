@@ -15,3 +15,5 @@ export const getMenuInfo_api = (id:string) => server.get(`/menu/${id}`);
 export const saveMenuInfo_api = (data: object) => server.patch(`/menu`, data);
 // 新增菜单信息
 export const addMenuInfo_api = (data: object) => server.post(`/menu`, data);
+// 删除菜单信息
+export const delMenuInfo_api = (id: string) => server.remove(`/menu/${id}`);
