@@ -8,7 +8,7 @@
                 />
             </a-col>
             <a-col :span="10">
-                <DeviceCountCard />
+                <BasicCountCard />
             </a-col>
             <a-col :span="24" style="margin: 20px 0">
                 <PlatformPicCard />
@@ -26,9 +26,9 @@
 
 <script setup lang="ts">
 import BootCard from '@/views/home/components/BootCard.vue';
-import DeviceCountCard from '@/views/home/components/DeviceCountCard.vue';
 import PlatformPicCard from '@/views/home/components/PlatformPicCard.vue';
 import StepCard from '@/views/home/components/StepCard.vue';
+import BasicCountCard from '@/views/media/Home/components/BasicCountCard.vue';
 
 import { usePermissionStore } from '@/store/permission';
 import type { bootConfig, recommendList } from '@/views/home/index';
