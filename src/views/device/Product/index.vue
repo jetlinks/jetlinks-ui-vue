@@ -41,27 +41,42 @@
                         </a-row>
                     </template>
                     <template #actions="item">
-                        <a-popconfirm
-                            v-if="item.popConfirm"
-                            v-bind="item.popConfirm"
+                        <a-tooltip
+                            v-bind="item.tooltip"
+                            :title="item.disabled && item.tooltip.title"
                         >
-                            <a-button :disabled="item.disabled">
-                                <DeleteOutlined v-if="item.key === 'delete'" />
-                                <template v-else>
-                                    <AIcon :type="item.icon" />
-                                    <span>{{ item.text }}</span>
-                                </template>
-                            </a-button>
-                        </a-popconfirm>
-                        <template v-else>
-                            <a-button :disabled="item.disabled">
-                                <DeleteOutlined v-if="item.key === 'delete'" />
-                                <template v-else>
-                                    <AIcon :type="item.icon" />
-                                    <span>{{ item.text }}</span>
-                                </template>
-                            </a-button>
-                        </template>
+                            <a-popconfirm
+                                v-if="item.popConfirm"
+                                v-bind="item.popConfirm"
+                                :disabled="item.disabled"
+                            >
+                                <a-button :disabled="item.disabled">
+                                    <AIcon
+                                        type="DeleteOutlined"
+                                        v-if="item.key === 'delete'"
+                                    />
+                                    <template v-else>
+                                        <AIcon :type="item.icon" />
+                                        <span>{{ item?.text }}</span>
+                                    </template>
+                                </a-button>
+                            </a-popconfirm>
+                            <template v-else>
+                                <a-button
+                                    :disabled="item.disabled"
+                                    @click="item.onClick"
+                                >
+                                    <AIcon
+                                        type="DeleteOutlined"
+                                        v-if="item.key === 'delete'"
+                                    />
+                                    <template v-else>
+                                        <AIcon :type="item.icon" />
+                                        <span>{{ item?.text }}</span>
+                                    </template>
+                                </a-button>
+                            </template>
+                        </a-tooltip>
                     </template>
                 </CardBox>
             </template>
@@ -303,7 +318,9 @@ const getActions = (
 const add = () => {
     isAdd.value = 1;
     title.value = '新增';
-    saveRef.value.show(currentForm.value);
+    nextTick(() => {
+        saveRef.value.show(currentForm.value);
+    });
 };
 
 // 筛选
