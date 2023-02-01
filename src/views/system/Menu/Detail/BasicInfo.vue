@@ -181,11 +181,18 @@
                     </a-form-item>
                 </a-form-item>
                 <a-form-item label="权限">
-                    <PermissChoose :first-width="3" max-height="350px" v-model:value="form.data.permissions" />
+                    <PermissChoose
+                        :first-width="3"
+                        max-height="350px"
+                        v-model:value="form.data.permissions"
+                    />
                 </a-form-item>
             </a-form>
 
-            <a-button type="primary" @click="clickSave" v-loading="saveLoading"
+            <a-button
+                type="primary"
+                @click="form.clickSave"
+                v-loading="form.saveLoading"
                 >保存</a-button
             >
         </a-card>
@@ -215,14 +222,17 @@ import {
     addMenuInfo_api,
 } from '@/api/system/menu';
 
+// 路由
 const route = useRoute();
 const router = useRouter();
 const routeParams = {
     id: route.params.id === ':id' ? undefined : (route.params.id as string),
     ...route.query,
     url: route.query.basePath,
+    parentId: route.query.pid,
 };
 
+// 表单
 const basicFormRef = ref<FormInstance>();
 const permissFormRef = ref<FormInstance>();
 const form = reactive({
@@ -238,15 +248,18 @@ const form = reactive({
         indirectMenus: [],
         ...routeParams,
     } as formType,
-
     treeData: [], // 关联菜单
     assetsType: [] as assetType[], // 资产类型
+    saveLoading: false,
 
     init: () => {
         // 获取菜单详情
         routeParams.id &&
-            getMenuInfo_api(routeParams.id).then((resp) => {
-                form.data = resp.result as formType
+            getMenuInfo_api(routeParams.id).then((resp: any) => {
+                form.data = {
+                    ...(resp.result as formType),
+                    accessSupport: resp.result.accessSupport.value,
+                };
             });
         // 获取关联菜单
         getMenuTree_api({ paging: false }).then((resp: any) => {
@@ -260,9 +273,52 @@ const form = reactive({
             }));
         });
     },
+    clickSave: () => {
+        if (!basicFormRef || !permissFormRef) return;
+        Promise.all([
+            basicFormRef.value?.validate(),
+            permissFormRef.value?.validate(),
+        ])
+            .then(() => {
+                const api = routeParams.id ? saveMenuInfo_api : addMenuInfo_api;
+                form.saveLoading = true;
+                const accessSupportValue = form.data.accessSupport;
+                const params = {
+                    ...form.data,
+                    accessSupport: {
+                        value: accessSupportValue,
+                        label:
+                            accessSupportValue === 'unsupported'
+                                ? '不支持'
+                                : accessSupportValue === 'support'
+                                ? '支持'
+                                : '间接控制',
+                    },
+                };
+                api(params)
+                    .then((resp: any) => {
+                        if (resp.status === 200) {
+                            message.success('操作成功！');
+                            // 新增后刷新页面，编辑则不需要
+                            if (!routeParams.id) {
+                                router.push(
+                                    `/system/Menu/detail/${resp.result.id}`,
+                                );
+                                routeParams.id = resp.result.id;
+                                form.init();
+                            }
+                        } else {
+                            message.error('操作失败！');
+                        }
+                    })
+                    .finally(() => (form.saveLoading = false));
+            })
+            .catch((err) => {});
+    },
 });
 form.init();
 
+// 弹窗
 const ChooseIconRef = ref<any>(null);
 const dialog = {
     openDialog: () => {
@@ -271,36 +327,6 @@ const dialog = {
     confirm: (typeStr: string) => {
         form.data.icon = typeStr || form.data.icon;
     },
-};
-const saveLoading = ref<boolean>(false);
-const clickSave = () => {
-    if (!basicFormRef || !permissFormRef) return;
-    Promise.all([
-        basicFormRef.value?.validate(),
-        permissFormRef.value?.validate(),
-    ])
-        .then(() => {
-            const api = routeParams.id ? saveMenuInfo_api : addMenuInfo_api;
-            saveLoading.value = true;
-            api(form.data)
-                .then((resp: any) => {
-                    if (resp.status === 200) {
-                        message.success('操作成功！');
-                        // 新增后刷新页面，编辑则不需要
-                        if (!routeParams.id) {
-                            router.push(
-                                `/system/Menu/detail/${resp.result.id}`,
-                            );
-                            routeParams.id = resp.result.id;
-                            form.init();
-                        }
-                    } else {
-                        message.error('操作失败！');
-                    }
-                })
-                .finally(() => (saveLoading.value = false));
-        })
-        .catch((err) => {});
 };
 
 type formType = {
@@ -314,6 +340,7 @@ type formType = {
     accessSupport: string;
     assetType: string | undefined;
     indirectMenus: any[];
+    parentId?: string;
 };
 
 type assetType = {
