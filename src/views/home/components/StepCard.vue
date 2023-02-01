@@ -117,11 +117,14 @@ const objToParams = (source: object): string => {
     }
 
     .box-list {
-        grid-template-columns: repeat(5, 1fr);
-        display: grid;
-        grid-column-gap: 66px;
+        // grid-template-columns: repeat(5, 1fr);
+        // display: grid;
+        // grid-column-gap: 66px;
+        display: flex;
+        gap: 66px;
 
         .list-item {
+            flex: 1;
             position: relative;
             .box-top {
                 position: relative;

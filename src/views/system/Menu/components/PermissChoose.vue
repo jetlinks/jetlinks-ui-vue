@@ -6,6 +6,7 @@
             allowClear
             placeholder="请输入权限名称"
             @input="search.search"
+            :disabled="props.disabled"
         />
 
         <div class="permission-table">
@@ -24,6 +25,7 @@
                             v-model:checked="rowItem.checkAll"
                             :indeterminate="rowItem.indeterminate"
                             @change="() => permission.selectAllOpions(rowItem)"
+                            :disabled="props.disabled"
                         >
                             {{ rowItem.name }}
                         </a-checkbox>
@@ -33,6 +35,7 @@
                             v-model:value="rowItem.checkedList"
                             :options="rowItem.options"
                             @change="((checkValue:string[])=>permission.selectOption(rowItem, checkValue))"
+                            :disabled="props.disabled"
                         />
                     </a-col>
                 </a-row>
@@ -43,11 +46,13 @@
 
 <script setup lang="ts">
 import { exportPermission_api } from '@/api/system/permission';
-
+import { Form } from 'ant-design-vue';
+Form.useInjectFormItemContext()
 const props = defineProps<{
     value: any[];
     firstWidth: number;
     maxHeight: string;
+    disabled?: boolean;
 }>();
 const emits = defineEmits(['update:value']);
 const searchValue = ref<string>('');
@@ -127,18 +132,14 @@ const permission = reactive({
         emits('update:value', newProp);
     },
     makeList: (checkedValue: any[], sourceList: any[]): permissionType[] => {
-        console.log(checkedValue);
-        
         const result = sourceList.map((item) => {
-            const checked = checkedValue.find(
+            const checked = checkedValue?.find(
                 (checkedItem) => checkedItem.permission === item.id,
             );
             const options = item.actions.map((actionItem: any) => ({
                 label: actionItem.name,
                 value: actionItem.action,
             }));
-            console.log(item, checked);
-
             return {
                 id: item.id,
                 name: item.name,
@@ -146,7 +147,7 @@ const permission = reactive({
                 checkAll:
                     (checked &&
                         item.actions &&
-                        checked?.actions.length === item.actions.length) ||
+                        checked.actions.length === item.actions.length) ||
                     false,
                 indeterminate:
                     (checked &&
@@ -179,6 +180,9 @@ type paramsType = {
 
 <style lang="less" scoped>
 .permission-choose-container {
+    .ant-input-affix-wrapper {
+        border-color: #d9d9d9 !important;
+    }
     .permission-table {
         margin-top: 12px;
         font-size: 14px;

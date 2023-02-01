@@ -1,11 +1,15 @@
 <template>
     <a-modal
         v-model:visible="dialog.visible"
-        title="新增"
+        :title="form.mode"
         width="660px"
         @ok="dialog.handleOk"
+        :maskClosable="false"
+        cancelText="取消"
+        okText="确定"
+        :confirmLoading="dialog.loading"
     >
-        <a-form :model="form.data" class="basic-form">
+        <a-form :model="form.data" class="basic-form" ref="formRef">
             <a-form-item
                 label="编码"
                 name="id"
@@ -14,7 +18,10 @@
                     { max: 64, message: '最多可输入64个字符' },
                 ]"
             >
-                <a-input v-model:value="form.data.id" />
+                <a-input
+                    v-model:value="form.data.id"
+                    :disabled="form.mode !== '新增'"
+                />
             </a-form-item>
             <a-form-item
                 label="名称"
@@ -24,20 +31,43 @@
                     { max: 64, message: '最多可输入64个字符' },
                 ]"
             >
-                <a-input v-model:value="form.data.name" />
-            </a-form-item>
-            <a-form-item label="权限">
-                <PermissChoose
-                    :first-width="8"
-                    max-height="350px"
-                    v-model:value="form.data.permissions"
+                <a-input
+                    v-model:value="form.data.name"
+                    :disabled="form.mode === '查看'"
                 />
+            </a-form-item>
+            <a-form-item
+                label="权限"
+                name="permissions"
+                :rules="[
+                    {
+                        required: true,
+                        message: '请选择权限',
+                        validator: form.checkPermission,
+                    },
+                ]"
+            >
+                <!-- <a-form-item-rest>
+                    <PermissChoose
+                        :first-width="8"
+                        max-height="350px"
+                        v-model:value="form.data.permissions"
+                        :disabled="form.mode === '查看'"
+                    />
+                </a-form-item-rest> -->
+                <PermissChoose
+                        :first-width="8"
+                        max-height="350px"
+                        v-model:value="form.data.permissions"
+                        :disabled="form.mode === '查看'"
+                    />
             </a-form-item>
             <a-form-item label="说明" name="describe">
                 <a-textarea
                     v-model:value="form.data.describe"
                     :rows="4"
                     placeholder="请输入说明"
+                    :disabled="form.mode === '查看'"
                 />
             </a-form-item>
         </a-form>
@@ -45,18 +75,56 @@
 </template>
 
 <script setup lang="ts">
+import { FormInstance, message } from 'ant-design-vue';
+import { Rule } from 'ant-design-vue/es/form';
 import PermissChoose from '../components/PermissChoose.vue';
+import { saveMenuInfo_api } from '@/api/system/menu';
 
+const props = defineProps<{
+    menuInfo: {
+        buttons: formType[];
+        id: string;
+    };
+}>();
 const emits = defineEmits(['confirm']);
 const dialog = reactive({
     visible: false,
+    loading: false,
     handleOk: () => {
-        dialog.changeVisible();
+        props.menuInfo.id && formRef.value &&
+            formRef.value
+                .validate()
+                .then(() => {
+                    const buttons = toRaw(props.menuInfo.buttons);
+                    const button = buttons.find(
+                        (item) => item.id === form.data.id,
+                    );
+                    if (button) {
+                        Object.entries(form.data).forEach(([key, value]) => {
+                            button[key] = value;
+                        });
+                    } else buttons.push({ ...form.data });
+                    const params = {
+                        ...props.menuInfo,
+                        buttons,
+                    };
+                    dialog.loading = true;
+                    saveMenuInfo_api(params)
+                        .then((resp) => {
+                            dialog.changeVisible();
+                            message.success('操作成功')
+                            emits('confirm');
+                        })
+                        .finally(() => (dialog.loading = false));
+                })
+                .catch(() => {});
     },
-    changeVisible: (formValue?: formType, show?: boolean) => {
-        dialog.visible = show === undefined ? !dialog.visible : show;
-        form.data = formValue || { ...initForm };
-        console.log(1111111111, form.data);
+    changeVisible: (mode?: string, formValue?: formType) => {
+        dialog.visible = !dialog.visible;
+        form.data = { ...initForm, ...formValue };
+        form.mode = mode || '';
+
+        formRef.value && formRef.value.clearValidate();
     },
 });
 const initForm = {
@@ -65,8 +133,14 @@ const initForm = {
     permissions: [],
     describe: '',
 } as formType;
+const formRef = ref<FormInstance>();
 const form = reactive({
     data: { ...initForm },
+    mode: '',
+    checkPermission: async (_rule: Rule, value: string[]) => {
+        if (!value || value.length < 1) return Promise.reject('请选择权限');
+        return Promise.resolve();
+    },
 });
 
 // 将打开弹窗的操作暴露给父组件

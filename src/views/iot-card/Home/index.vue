@@ -1,6 +1,6 @@
 <!-- 物联卡-首页 -->
 <template>
-  <div class="page-container">
+  <page-container>
     <a-row :gutter="24">
       <a-col :span="14">
         <div class="home-guide">
@@ -79,7 +79,7 @@
         </div>
       </a-col>
     </a-row>
-  </div>
+  </page-container>
 </template>
 
 <script setup lang="ts">

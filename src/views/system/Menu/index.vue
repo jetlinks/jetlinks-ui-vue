@@ -16,7 +16,7 @@
                     style="margin-right: 10px"
                     ><plus-outlined />新增</a-button
                 >
-                <a-button>菜单实例</a-button>
+                <a-button @click="router.push('/system/Menu/Setting')">菜单实例</a-button>
             </template>
             <template #createTime="slotProps">
                 {{ moment(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss') }}
@@ -30,7 +30,7 @@
                             type="link"
                             @click="table.toDetails(slotProps)"
                         >
-                        <search-outlined />
+                            <search-outlined />
                         </a-button>
                     </a-tooltip>
                     <a-tooltip>
@@ -38,9 +38,9 @@
                         <a-button
                             style="padding: 0"
                             type="link"
-                            @click="table.toDetails(slotProps)"
+                            @click="table.addChildren(slotProps)"
                         >
-                        <plus-circle-outlined />
+                            <plus-circle-outlined />
                         </a-button>
                     </a-tooltip>
 
@@ -49,7 +49,6 @@
                         ok-text="确定"
                         cancel-text="取消"
                         @confirm="table.clickDel(slotProps)"
-                        :disabled="slotProps.status"
                     >
                         <a-tooltip>
                             <template #title>删除</template>
@@ -65,13 +64,14 @@
 </template>
 
 <script setup lang="ts">
-import { getMenuTree_api } from '@/api/system/menu';
+import { getMenuTree_api, delMenuInfo_api } from '@/api/system/menu';
 import {
     SearchOutlined,
     DeleteOutlined,
     PlusOutlined,
-    PlusCircleOutlined
+    PlusCircleOutlined,
 } from '@ant-design/icons-vue';
+import { message } from 'ant-design-vue';
 import moment from 'moment';
 
 const router = useRouter();
@@ -216,7 +216,7 @@ const table = reactive({
         const resp: any = await getMenuTree_api(params);
         const lastItem = resp.result[resp.result.length - 1];
         table.total = lastItem ? lastItem.sortIndex + 1 : 1;
-        
+
         return {
             code: resp.message,
             result: {
@@ -228,22 +228,32 @@ const table = reactive({
             status: resp.status,
         };
     },
+    addChildren: (row: any) => {
+        console.log(row);
+        router.push(
+            `/system/Menu/detail/:id?pid=${row.id}&basePath=${
+                row.url || ''
+            }&sortIndex=${row.children.length + 1}`,
+        );
+    },
     // 跳转至详情页
     toDetails: (row: any) => {
         router.push(
             `/system/Menu/detail/${row.id || ':id'}?pid=${
                 row.pid || ''
-            }&basePath=${row.basePath || ''}&sortIndex=${table.total}`,
+            }&basePath=${row.url|| ''}&sortIndex=${table.total}`,
         );
     },
     // 删除
     clickDel: (row: any) => {
-        // delPermission_api(row.id).then((resp: any) => {
-        //     if (resp.status === 200) {
-        //         tableRef.value?.reload();
-        //         message.success('操作成功!');
-        //     }
-        // });
+        console.log(row.id);
+        
+        delMenuInfo_api(row.id).then((resp: any) => {
+            if (resp.status === 200) {
+                tableRef.value?.reload();
+                message.success('操作成功!');
+            }
+        });
     },
     // 刷新列表
     refresh: () => {
@@ -252,4 +262,8 @@ const table = reactive({
 });
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.menu-container {
+    padding: 24px;
+}
+</style>
