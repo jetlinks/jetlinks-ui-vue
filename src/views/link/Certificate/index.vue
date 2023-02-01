@@ -1,13 +1,7 @@
 <template>
-    <div class="page-container">
-        <a-card style="margin-bottom: 20px">
-            <Search
-                :columns="columns"
-                target="search"
-                @search="handleSearch"
-            />
-        </a-card>
-        <a-card>
+    <page-container>
+        <div>
+            <Search :columns="columns" target="search" @search="handleSearch" />
             <JTable
                 ref="tableRef"
                 model="TABLE"
@@ -61,8 +55,8 @@
                     </a-space>
                 </template>
             </JTable>
-        </a-card>
-    </div>
+        </div>
+    </page-container>
 </template>
 <script lang="ts" setup name="CertificatePage">
 import type { ActionsType } from '@/components/Table/index.vue';
@@ -158,15 +152,24 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
 };
 
 const handlAdd = () => {
-    router.push('/link/certificate/detail/add/new');
+    router.push({
+        path: `/iot/link/certificate/detail/:id`,
+        query: { view: false },
+    });
 };
 
 const handlEye = (id: string) => {
-    router.push(`/link/certificate/detail/view/${id}`);
+    router.push({
+        path: `/iot/link/certificate/detail/${id}`,
+        query: { view: true },
+    });
 };
 
 const handlEdit = (id: string) => {
-    router.push(`/link/certificate/detail/edit/${id}`);
+    router.push({
+        path: `/iot/link/certificate/detail/${id}`,
+        query: { view: false },
+    });
 };
 
 const handlDelete = async (id: string) => {
@@ -182,15 +185,8 @@ const handlDelete = async (id: string) => {
  * @param params
  */
 const handleSearch = (e: any) => {
-    console.log(1211, e);
-
     params.value = e;
 };
 </script>
 
-<style lang="less" scoped>
-.page-container {
-    background: #f0f2f5;
-    padding: 24px;
-}
-</style>
+<style lang="less" scoped></style>

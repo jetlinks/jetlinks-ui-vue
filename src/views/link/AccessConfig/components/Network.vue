@@ -1,5 +1,5 @@
 <template>
-    <div style="margin-top: 10px">
+    <div>
         <a-steps :current="stepCurrent">
             <a-step v-for="item in steps" :key="item" :title="item" />
         </a-steps>
@@ -304,7 +304,7 @@
                 下一步
             </a-button>
             <a-button
-                v-if="current === 2 && modeType !== 'view'"
+                v-if="current === 2 && view === 'false'"
                 type="primary"
                 style="margin-right: 8px"
                 @click="saveData"
@@ -767,7 +767,7 @@ const props = defineProps({
 const clientHeight = document.body.clientHeight;
 const type = props.provider.channel;
 const route = useRoute();
-const modeType = route.params.type as string;
+const view = route.query.view as string;
 const id = route.params.id as string;
 
 const formRef = ref<FormInstance>();
@@ -839,7 +839,7 @@ const queryProcotolList = async (id: string, params = {}) => {
 
 const addNetwork = () => {
     // const url = this.$store.state.permission.routes['Link/Type/Detail']
-    const url = '/demo';
+    const url = '/iot/link/type/detail/:id';
     const tab = window.open(
         `${window.location.origin + window.location.pathname}#${url}?type=${
             NetworkTypeMapping.get(props.provider?.id) || ''
@@ -854,7 +854,7 @@ const addNetwork = () => {
 };
 const addProcotol = () => {
     // const url = this.$store.state.permission.routes['Link/Protocol']
-    const url = '/demo';
+    const url = '/iot/link/protocol';
     const tab = window.open(
         `${window.location.origin + window.location.pathname}#${url}?save=true`,
     );
@@ -903,27 +903,25 @@ const procotolSearch = (value: string) => {
 const saveData = () => {
     validate()
         .then(async (values) => {
-            let resp = undefined;
-            let params = {
+            const params = {
                 ...props.data,
                 ...values,
                 protocol: procotolCurrent.value,
                 channel: 'network', // 网络组件
                 channelId: networkCurrent.value,
             };
-            if (!!id && modeType !== 'add') {
-                resp = await update(params);
-            } else {
-                params = {
-                    ...params,
-                    provider: props.provider.id,
-                    transport:
-                        props.provider?.id === 'child-device'
-                            ? 'Gateway'
-                            : ProtocolMapping.get(props.provider.id),
-                };
-                resp = await save(params);
-            }
+            const resp =
+                id === ':id'
+                    ? await save(params)
+                    : await update({
+                          ...params,
+                          id,
+                          provider: props.provider.id,
+                          transport:
+                              props.provider?.id === 'child-device'
+                                  ? 'Gateway'
+                                  : ProtocolMapping.get(props.provider.id),
+                      });
             if (resp.status === 200) {
                 message.success('操作成功！');
                 // 回到列表页面
@@ -1104,7 +1102,7 @@ onMounted(() => {
 });
 
 onMounted(() => {
-    if (modeType !== 'add') {
+    if (id !== ':id') {
         procotolCurrent.value = props.data.protocol;
         formData.value = {
             name: props.data.name,
