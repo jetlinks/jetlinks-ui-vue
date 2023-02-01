@@ -1,5 +1,5 @@
 import { patch, post, get, remove } from '@/utils/request'
-import { TemplateFormData } from '@/views/notice/Template/types'
+import type { TemplateFormData } from '@/views/notice/Template/types'
 
 export default {
     // 列表

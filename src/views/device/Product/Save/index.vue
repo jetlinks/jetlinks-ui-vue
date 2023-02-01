@@ -194,6 +194,7 @@
             </a-form>
         </div>
     </a-modal>
+    <DialogTips ref="dialogRef" />
 </template>
 
 <script lang="ts" setup>
@@ -201,7 +202,7 @@ import { category } from '@/api/device/product';
 import { Form } from 'ant-design-vue';
 import { getImage } from '@/utils/comm.ts';
 import { message } from 'ant-design-vue';
-import ChooseCard from '../ChooseCard/index.vue';
+import DialogTips from '../DialogTips/index.vue';
 import { filterTreeSelectNode, filterSelectNode } from '@/utils/comm';
 import { FILE_UPLOAD } from '@/api/comm';
 import { isInput } from '@/utils/regular';
@@ -225,6 +226,7 @@ const props = defineProps({
     },
 });
 const loading = ref<boolean>(false);
+const dialogRef = ref();
 const treeList = ref<Record<string, any>[]>([]);
 const visible = ref<boolean>(false);
 const logoLoading = ref<boolean>(false);
@@ -335,26 +337,27 @@ watch(
  * 显示弹窗
  */
 const show = (data: any) => {
-    console.log(props.isAdd, '11111');
     if (props.isAdd === 2) {
-        // form.name = data.name;
-        // form.classifiedId = data.classifiedId;
-        // form.classifiedName = data.classifiedName;
-        // form.photoUrl = data.photoUrl || photoValue.value;
-        // form.deviceType = data.deviceType.value;
-        // form.describe = form.describe;
-        // form.id = data.id;
-        // disabled.value = true;
-    } else {
-        // form.name = '';
-        // form.classifiedId = '';
-        // form.classifiedName = '';
-        // form.photoUrl = photoValue.value;
-        // form.deviceType = '';
-        // form.describe = '';
-        // form.id = '';
+        form.name = data.name;
+        form.classifiedId = data.classifiedId;
+        form.classifiedName = data.classifiedName;
+        form.photoUrl = data.photoUrl || photoValue.value;
+        form.deviceType = data.deviceType.value;
+        form.describe = form.describe;
+        form.id = data.id;
+        disabled.value = true;
+    } else if (props.isAdd === 1) {
+        form.name = '';
+        form.classifiedId = '';
+        form.classifiedName = '';
+        form.photoUrl = getImage('/device/instance/device-card.png');
+        form.deviceType = '';
+        form.describe = '';
+        form.id = '';
+        disabled.value = false;
+        dialogRef.value.show();
     }
-    visible.value = true;
+    // visible.value = true;
 };
 
 /**
@@ -375,35 +378,6 @@ const submitData = () => {
         .validate()
         .then(async () => {})
         .catch((err: any) => {});
-};
-/**
- * 文件上传之前
- */
-const beforeUpload = (file: any) => {
-    const isType: any = imageTypes.includes(file.type);
-    if (!isType) {
-        message.error(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`);
-        return false;
-    }
-    const isSize = file.size / 1024 / 1024 < 4;
-    if (!isSize) {
-        message.error(`图片大小必须小于${4}M`);
-    }
-    return isType && isSize;
-};
-
-/**
- * 文件改变事件
- */
-const handleChange = (info: any) => {
-    if (info.file.status === 'uploading') {
-        logoLoading.value = true;
-    }
-    if (info.file.status === 'done') {
-        info.file.url = info.file.response?.result;
-        logoLoading.value = false;
-        photoValue.value = info.file.response?.result;
-    }
 };
 /**
  * 初始化

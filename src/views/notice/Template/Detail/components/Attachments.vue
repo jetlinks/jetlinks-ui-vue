@@ -47,7 +47,7 @@ import {
     UploadOutlined,
 } from '@ant-design/icons-vue';
 import { PropType } from 'vue';
-import { IAttachments } from '../../types';
+import type { IAttachments } from '../../types';
 import { FILE_UPLOAD } from '@/api/comm';
 import { LocalStore } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';

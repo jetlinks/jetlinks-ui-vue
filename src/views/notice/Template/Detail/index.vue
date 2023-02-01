@@ -477,7 +477,7 @@
 import { getImage } from '@/utils/comm';
 import { Form, UploadChangeParam } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
-import { IVariableDefinitions, TemplateFormData } from '../types';
+import type { IVariableDefinitions, TemplateFormData } from '../types';
 import {
     NOTICE_METHOD,
     TEMPLATE_FIELD_MAP,

@@ -63,7 +63,7 @@
 import { Form } from 'ant-design-vue';
 import { PropType } from 'vue';
 import TemplateApi from '@/api/notice/template';
-import {
+import type {
     TemplateFormData,
     IVariableDefinitions,
     BindConfig,

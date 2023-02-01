@@ -279,7 +279,7 @@
 import { getImage } from '@/utils/comm';
 import { Form } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
-import { ConfigFormData } from '../types';
+import type { ConfigFormData } from '../types';
 import {
     NOTICE_METHOD,
     CONFIG_FIELD_MAP,
