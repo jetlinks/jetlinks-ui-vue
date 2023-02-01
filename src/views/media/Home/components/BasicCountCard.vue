@@ -13,12 +13,12 @@
             <div class="box-item">
                 <div class="label">设备数量</div>
                 <div class="value">{{ deviceCount }}</div>
-                <img src="/images/home/top-2.png" alt="" />
+                <img :src="getImage('/home/top-1.png')" alt="" />
             </div>
             <div class="box-item">
                 <div class="label">通道数量</div>
                 <div class="value">{{ channelCount }}</div>
-                <img src="/images/home/top-1.png" alt="" />
+                <img :src="getImage('/home/top-2.png')" alt="" />
             </div>
         </div>
     </a-card>
@@ -26,6 +26,7 @@
 
 <script setup lang="ts">
 import homeApi from '@/api/media/home';
+import { getImage } from '@/utils/comm';
 
 const channelCount = ref(0);
 const deviceCount = ref(0);
