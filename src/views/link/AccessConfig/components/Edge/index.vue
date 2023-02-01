@@ -140,7 +140,7 @@
                             </a-form-item>
                             <a-form-item>
                                 <a-button
-                                    v-if="current !== 1"
+                                    v-if="current !== 1 && modeType !== 'view'"
                                     type="primary"
                                     html-type="submit"
                                     >保存</a-button
@@ -171,15 +171,22 @@
             v-if="channel !== 'edge-child-device'"
             :class="current !== 1 ? 'steps-action' : 'steps-action-save'"
         >
-            <a-button v-if="[0].includes(current)" @click="next">
+            <a-button
+                v-if="[0].includes(current)"
+                style="margin-right: 8px"
+                @click="next"
+            >
                 下一步
             </a-button>
-            <a-button v-if="current === 1" type="primary" @click="saveData">
+            <a-button
+                v-if="current === 1 && modeType !== 'view'"
+                type="primary"
+                style="margin-right: 8px"
+                @click="saveData"
+            >
                 保存
             </a-button>
-            <a-button v-if="current > 0" style="margin-left: 8px" @click="prev">
-                上一步
-            </a-button>
+            <a-button v-if="current > 0" @click="prev"> 上一步 </a-button>
         </div>
     </div>
 </template>
@@ -290,19 +297,25 @@ interface FormState {
     description: string;
 }
 const route = useRoute();
-const id = route.query.id;
+const modeType = route.params.type as string;
+const id = route.params.id as string;
 
 const props = defineProps({
     provider: {
         type: Object,
         default: () => {},
     },
+    data: {
+        type: Object,
+        default: () => {},
+    },
 });
 
-const type = ref(props.provider.type);
+const type = props.provider.type;
+
 const channel = ref(props.provider.channel);
 
-const formState = reactive<FormState>({
+const formState = ref<FormState>({
     name: '',
     description: '',
 });
@@ -324,9 +337,10 @@ const onFinish = async (values: any) => {
         transport: ProtocolMapping.get(providerId),
     };
     if (networkCurrent.value) params.channelId = networkCurrent.value;
-    console.log(1112, networkCurrent.value, params);
-
-    const resp = !!id ? await update({ ...params, id }) : await save(params);
+    const resp =
+        !!id && modeType !== 'add'
+            ? await update({ ...params, id })
+            : await save(params);
     if (resp.status === 200) {
         message.success('操作成功！');
         // if (params.get('save')) {
@@ -406,6 +420,13 @@ const prev = () => {
 onMounted(() => {
     if (props.provider.id === 'official-edge-gateway') {
         queryNetworkList(props.provider.id, '');
+    }
+    if (modeType !== 'add') {
+        formState.value = {
+            name: props.data.name,
+            description: props.data?.description || '',
+        };
+        networkCurrent.value = props.data.channelId;
     }
 }),
     watch(
