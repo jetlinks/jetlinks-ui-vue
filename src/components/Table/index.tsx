@@ -207,6 +207,7 @@ const JTable = defineComponent<JTableProps>({
                     _dataSource.value  = []
                 }
             } else {
+                console.log(props?.dataSource)
                 _dataSource.value = props?.dataSource || []
             }
             loading.value = false
@@ -216,6 +217,16 @@ const JTable = defineComponent<JTableProps>({
             () => props.params, 
             (newValue) => {
                 handleSearch(newValue)
+            }, 
+            {deep: true, immediate: true}
+        )
+
+        watch(
+            () => props.dataSource, 
+            (newValue) => {
+                if(props.dataSource){
+                    handleSearch(props.params)
+                }
             }, 
             {deep: true, immediate: true}
         )
