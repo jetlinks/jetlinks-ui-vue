@@ -47,6 +47,7 @@
                     <template #img>
                         <slot name="img">
                             <img
+                                style="width: 80px; height: 80px"
                                 :src="
                                     getLogo(slotProps.type, slotProps.provider)
                                 "
