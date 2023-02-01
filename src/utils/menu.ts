@@ -220,7 +220,8 @@ export function filterAsnycRouter(asyncRouterMap: any, parentCode = '', level = 
         route.component = resolveComponent(route.code) || BlankLayoutPage;
       }
     } else {
-      route.component = resolveComponent(route.code) || BlankLayoutPage;
+      console.log(route.code)
+      route.component = route.component || resolveComponent(route.code) || BlankLayoutPage;
     }
     delete route.name
     return route
