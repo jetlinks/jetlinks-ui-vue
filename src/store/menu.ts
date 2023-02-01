@@ -1,11 +1,14 @@
 import { defineStore } from "pinia";
 import { queryOwnThree } from '@/api/system/menu'
 import { filterAsnycRouter } from '@/utils/menu'
+import { cloneDeep } from 'lodash-es'
 
 export const useMenuStore = defineStore({
   id: 'menu',
   state: () => ({
     menus: {},
+    menuData: [],
+    siderMenus: [],
     menusKey: []
   }),
   getters:  {
@@ -51,7 +54,8 @@ export const useMenuStore = defineStore({
         ];
         const resp = await queryOwnThree({ paging: false, terms: params })
         if (resp.success) {
-          const menus = filterAsnycRouter(resp.result)
+          const silderMenus = filterAsnycRouter(cloneDeep(resp.result))
+          const menus = filterAsnycRouter(cloneDeep(resp.result))
           menus.push({
             path: '/',
             redirect: menus[0]?.path,
@@ -59,7 +63,9 @@ export const useMenuStore = defineStore({
               hideInMenu: true
             }
           })
-          this.menus = menus
+          this.menuData = menus
+          this.siderMenus = silderMenus
+          console.log('silderMenus', silderMenus)
           res(menus)
         }
       })

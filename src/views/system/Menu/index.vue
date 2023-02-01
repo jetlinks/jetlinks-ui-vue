@@ -19,7 +19,7 @@
                 <a-button>菜单实例</a-button>
             </template>
             <template #createTime="slotProps">
-                {{ slotProps.createTime }}
+                {{ moment(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss') }}
             </template>
             <template #action="slotProps">
                 <a-space :size="16">
@@ -30,7 +30,7 @@
                             type="link"
                             @click="table.toDetails(slotProps)"
                         >
-                            <edit-outlined />
+                        <search-outlined />
                         </a-button>
                     </a-tooltip>
                     <a-tooltip>
@@ -40,7 +40,7 @@
                             type="link"
                             @click="table.toDetails(slotProps)"
                         >
-                            <edit-outlined />
+                        <plus-circle-outlined />
                         </a-button>
                     </a-tooltip>
 
@@ -66,6 +66,13 @@
 
 <script setup lang="ts">
 import { getMenuTree_api } from '@/api/system/menu';
+import {
+    SearchOutlined,
+    DeleteOutlined,
+    PlusOutlined,
+    PlusCircleOutlined
+} from '@ant-design/icons-vue';
+import moment from 'moment';
 
 const router = useRouter();
 

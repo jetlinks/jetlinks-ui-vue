@@ -19,7 +19,7 @@
         <a-tab-pane v-for="item in codecs" :key="item.id" :tab="item.name">
           <div class="cat-panel">
             <!-- TODO 代码编辑器 -->
-            {{ value }}
+            <MonacoEditor v-model="value" theme="vs" style="height: 100%"></MonacoEditor>
           </div>
         </a-tab-pane>
       </a-tabs>

@@ -231,6 +231,13 @@ const handleClick = () => {
 
             :deep(.card-item-content-title) {
                 cursor: pointer;
+                font-size: 16px;
+                font-weight: 700;
+                color: @primary-color;
+                width: calc(100% - 100px);
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
             }
 
             :deep(.card-item-heard-name) {

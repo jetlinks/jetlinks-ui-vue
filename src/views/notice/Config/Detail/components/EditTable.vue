@@ -36,7 +36,7 @@
 <script setup lang="ts">
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import { PropType } from 'vue';
-import { IHeaders } from '../../types';
+import type { IHeaders } from '../../types';
 
 type Emits = {
     (e: 'update:headers', data: IHeaders[]): void;

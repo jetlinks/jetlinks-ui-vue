@@ -256,7 +256,7 @@ const getMethodTxt = (type: string) => {
  * 新增
  */
 const handleAdd = () => {
-    router.push(`/notice/Template/detail/:id`);
+    router.push(`/iot/notice/Template/detail/:id`);
 };
 
 /**
@@ -323,7 +323,7 @@ const getActions = (
             onClick: () => {
                 // visible.value = true;
                 // current.value = data;
-                router.push(`/notice/Template/detail/${data.id}`);
+                router.push(`/iot/notice/Template/detail/${data.id}`);
             },
         },
         {

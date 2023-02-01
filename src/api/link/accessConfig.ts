@@ -36,7 +36,7 @@ export const undeploy = (id: string) =>
 export const deploy = (id: string) =>
     server.post(`/gateway/device/${id}/_startup`);
 
-export const del = (id: string) => server.remove(`/gateway/device/${id}`);
+export const remove = (id: string) => server.remove(`/gateway/device/${id}`);
 
 export const getResourcesCurrent = () =>
     server.get(`/network/resources/alive/_current`);

@@ -60,7 +60,7 @@
 
                     <a-form-item>
                         <a-button
-                            v-if="type !== 'view'"
+                            v-if="modeType !== 'view'"
                             class="form-submit"
                             html-type="submit"
                             type="primary"
@@ -103,7 +103,7 @@ import { FormDataType, TypeObjType } from '../type';
 
 const router = useRouter();
 const route = useRoute();
-const type = route.params.type as string;
+const modeType = route.params.type as string;
 const id = route.params.id as string;
 
 const useForm = Form.useForm;
@@ -145,7 +145,7 @@ const onSubmit = () => {
             const params = toRaw(formData.value);
             loading.value = true;
             const response =
-                type === 'edit' ? await update(params) : await save(params);
+                modeType === 'edit' ? await update(params) : await save(params);
             if (response.status === 200) {
                 message.success('操作成功');
                 router.push('/link/certificate');
@@ -168,7 +168,7 @@ const handleChange = (info: UploadChangeParam) => {
 };
 
 const detail = async (id: string) => {
-    if (type !== 'add') {
+    if (modeType !== 'add') {
         loading.value = true;
         const res = await queryDetail(id);
         if (res.success) {

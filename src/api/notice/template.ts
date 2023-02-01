@@ -1,5 +1,5 @@
 import { patch, post, get, remove } from '@/utils/request'
-import { BindConfig } from '@/views/notice/Template/types'
+import type { BindConfig } from '@/views/notice/Template/types'
 
 export default {
     // 列表

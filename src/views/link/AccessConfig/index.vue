@@ -44,8 +44,13 @@
                         </template>
                         <template #content>
                             <div class="card-item-content">
-                                <h3 class="card-item-content-title">
-                                    <a href="">{{ slotProps.name }}</a>
+                                <h3
+                                    @click="handlEye(slotProps.id)"
+                                    class="card-item-content-title"
+                                >
+                                    <a class="card-item-content-title-a">{{
+                                        slotProps.name
+                                    }}</a>
                                 </h3>
                                 <a-row class="card-item-content-box">
                                     <a-col
@@ -110,19 +115,23 @@
                                             <a-tooltip>
                                                 <template #title>
                                                     {{
-                                                        providersList.find(
-                                                            (item) =>
-                                                                item.id ===
-                                                                slotProps.provider,
-                                                        )?.description
-                                                    }}</template
-                                                >
+                                                        slotProps.description
+                                                            ? slotProps.description
+                                                            : providersList.find(
+                                                                  (item) =>
+                                                                      item.id ===
+                                                                      slotProps.provider,
+                                                              )?.description
+                                                    }}
+                                                </template>
                                                 {{
-                                                    providersList.find(
-                                                        (item) =>
-                                                            item.id ===
-                                                            slotProps.provider,
-                                                    )?.description
+                                                    slotProps.description
+                                                        ? slotProps.description
+                                                        : providersList.find(
+                                                              (item) =>
+                                                                  item.id ===
+                                                                  slotProps.provider,
+                                                          )?.description
                                                 }}
                                             </a-tooltip>
                                         </div>
@@ -184,7 +193,13 @@
 <script lang="ts" setup name="AccessConfigPage">
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage } from '@/utils/comm';
-import { list, getProviders } from '@/api/link/accessConfig';
+import {
+    list,
+    getProviders,
+    remove,
+    undeploy,
+    deploy,
+} from '@/api/link/accessConfig';
 import { message } from 'ant-design-vue';
 
 const tableRef = ref<Record<string, any>>({});
@@ -261,9 +276,8 @@ const columns = [
 ];
 
 const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
-    if (!data) {
-        return [];
-    }
+    if (!data) return [];
+    const state = data.state.value;
     return [
         {
             key: 'edit',
@@ -277,14 +291,46 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
         },
         {
+            key: 'action',
+            text: state === 'enabled' ? '禁用' : '启用',
+            tooltip: {
+                title: state === 'enabled' ? '禁用' : '启用',
+            },
+            icon: state === 'enabled' ? 'StopOutlined' : 'CheckCircleOutlined',
+            popConfirm: {
+                title: `确认${state === 'enabled' ? '禁用' : '启用'}?`,
+                onConfirm: async () => {
+                    let res =
+                        state === 'enabled'
+                            ? await undeploy(data.id)
+                            : await deploy(data.id);
+
+                    if (res.success) {
+                        message.success('操作成功');
+                        tableRef.value?.reload();
+                    } else {
+                        message.error('操作失败！');
+                    }
+                },
+            },
+        },
+        {
             key: 'delete',
             text: '删除',
+            disabled: state === 'enabled',
+            tooltip: {
+                title: state === 'enabled' ? '已启用的设备不能删除' : '删除',
+            },
             popConfirm: {
                 title: '确认删除?',
-                okText: ' 确定',
-                cancelText: '取消',
                 onConfirm: async () => {
-                    handlDelete(data.id);
+                    const res = await remove(data.id);
+                    if (res.success) {
+                        message.success('操作成功');
+                        tableRef.value.reload();
+                    } else {
+                        message.error('操作失败！');
+                    }
                 },
             },
             icon: 'DeleteOutlined',
@@ -299,21 +345,13 @@ const getProvidersList = async () => {
 getProvidersList();
 
 const handlAdd = () => {
-    router.push('/link/accessConfig/detail/add');
-
-    // router.push('/link/certificate/detail/add/new');
+    router.push('/link/accessConfig/detail/add/new');
 };
-
 const handlEdit = (id: string) => {
-    router.push(`/link/certificate/detail/edit/${id}`);
+    router.push(`/link/accessConfig/detail/edit/${id}`);
 };
-
-const handlDelete = async (id: string) => {
-    const res = await remove(id);
-    if (res.success) {
-        message.success('操作成功');
-        tableRef.value.reload();
-    }
+const handlEye = (id: string) => {
+    router.push(`/link/accessConfig/detail/view/${id}`);
 };
 
 /**
@@ -356,6 +394,14 @@ const handleSearch = (e: any) => {
 .card-item-content {
     min-height: 100px;
 
+    .card-item-content-title-a {
+        // color: #000 !important;
+        font-weight: 700;
+        font-size: 18px;
+        overflow: hidden; //超出的文本隐藏
+        text-overflow: ellipsis; //溢出用省略号显示
+        white-space: nowrap; //溢出不换行
+    }
     .card-item-content-box {
         min-height: 50px;
     }

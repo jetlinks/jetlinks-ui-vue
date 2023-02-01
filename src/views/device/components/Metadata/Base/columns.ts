@@ -33,7 +33,7 @@ const BaseColumns: JColumnProps[] = [
 const EventColumns: JColumnProps[] = BaseColumns.concat([
   {
     title: '事件级别',
-    dataIndex: 'expands',
+    dataIndex: 'level',
     scopedSlots: true,
   },
 ]);
@@ -59,12 +59,12 @@ const PropertyColumns: JColumnProps[] = BaseColumns.concat([
   },
   {
     title: '属性来源',
-    dataIndex: 'expands',
+    dataIndex: 'source',
     scopedSlots: true,
   },
   {
     title: '读写类型',
-    dataIndex: 'expands',
+    dataIndex: 'type',
     scopedSlots: true,
   },
 ]);
@@ -77,7 +77,7 @@ const TagColumns: JColumnProps[] = BaseColumns.concat([
   },
   {
     title: '读写类型',
-    dataIndex: 'expands',
+    dataIndex: 'type',
     scopedSlots: true,
   },
 ]);

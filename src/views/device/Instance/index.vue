@@ -1,221 +1,234 @@
 <template>
-    <JTable
-        ref="instanceRef"
-        :columns="columns"
-        :request="query"
-        :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }"
-        :rowSelection="{
-            selectedRowKeys: _selectedRowKeys,
-            onChange: onSelectChange,
-        }"
-        @cancelSelect="cancelSelect"
-        :params="params"
-    >
-        <template #headerTitle>
-            <a-space>
-                <a-button type="primary" @click="handleAdd">新增</a-button>
-                <a-dropdown>
-                    <a-button>批量操作 <AIcon type="DownOutlined" /></a-button>
-                    <template #overlay>
-                        <a-menu>
-                            <a-menu-item>
-                                <a-button @click="exportVisible = true"
-                                    ><AIcon
-                                        type="ExportOutlined"
-                                    />批量导出设备</a-button
-                                >
-                            </a-menu-item>
-                            <a-menu-item>
-                                <a-button @click="importVisible = true"
-                                    ><AIcon
-                                        type="ImportOutlined"
-                                    />批量导入设备</a-button
-                                >
-                            </a-menu-item>
-                            <a-menu-item>
-                                <a-popconfirm
-                                    @confirm="activeAllDevice"
-                                    title="确认激活全部设备？"
-                                >
-                                    <a-button type="primary" ghost
+    <page-container>
+        <Search :columns="columns" target="device-instance" />
+        <JTable
+            ref="instanceRef"
+            :columns="columns"
+            :request="query"
+            :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }"
+            :rowSelection="{
+                selectedRowKeys: _selectedRowKeys,
+                onChange: onSelectChange,
+            }"
+            @cancelSelect="cancelSelect"
+            :params="params"
+        >
+            <template #headerTitle>
+                <a-space>
+                    <a-button type="primary" @click="handleAdd">新增</a-button>
+                    <a-dropdown>
+                        <a-button
+                            >批量操作 <AIcon type="DownOutlined"
+                        /></a-button>
+                        <template #overlay>
+                            <a-menu>
+                                <a-menu-item>
+                                    <a-button @click="exportVisible = true"
                                         ><AIcon
-                                            type="CheckCircleOutlined"
-                                        />激活全部设备</a-button
+                                            type="ExportOutlined"
+                                        />批量导出设备</a-button
                                     >
-                                </a-popconfirm>
-                            </a-menu-item>
-                            <a-menu-item>
-                                <a-button
-                                    @click="syncDeviceStatus"
-                                    type="primary"
-                                    ><AIcon
-                                        type="SyncOutlined"
-                                    />同步设备状态</a-button
-                                >
-                            </a-menu-item>
-                            <a-menu-item v-if="_selectedRowKeys.length">
-                                <a-popconfirm
-                                    @confirm="delSelectedDevice"
-                                    title="已启用的设备无法删除，确认删除选中的禁用状态设备？"
-                                >
-                                    <a-button type="primary" danger
+                                </a-menu-item>
+                                <a-menu-item>
+                                    <a-button @click="importVisible = true"
                                         ><AIcon
-                                            type="DeleteOutlined"
-                                        />删除选中设备</a-button
+                                            type="ImportOutlined"
+                                        />批量导入设备</a-button
                                     >
-                                </a-popconfirm>
-                            </a-menu-item>
-                            <a-menu-item
-                                v-if="_selectedRowKeys.length"
-                                title="确认激活选中设备?"
-                            >
-                                <a-popconfirm @confirm="activeSelectedDevice">
-                                    <a-button type="primary"
+                                </a-menu-item>
+                                <a-menu-item>
+                                    <a-popconfirm
+                                        @confirm="activeAllDevice"
+                                        title="确认激活全部设备？"
+                                    >
+                                        <a-button type="primary" ghost
+                                            ><AIcon
+                                                type="CheckCircleOutlined"
+                                            />激活全部设备</a-button
+                                        >
+                                    </a-popconfirm>
+                                </a-menu-item>
+                                <a-menu-item>
+                                    <a-button
+                                        @click="syncDeviceStatus"
+                                        type="primary"
                                         ><AIcon
-                                            type="CheckOutlined"
-                                        />激活选中设备</a-button
+                                            type="SyncOutlined"
+                                        />同步设备状态</a-button
                                     >
-                                </a-popconfirm>
-                            </a-menu-item>
-                            <a-menu-item v-if="_selectedRowKeys.length">
-                                <a-popconfirm
-                                    @confirm="disabledSelectedDevice"
-                                    title="确认禁用选中设备?"
+                                </a-menu-item>
+                                <a-menu-item v-if="_selectedRowKeys.length">
+                                    <a-popconfirm
+                                        @confirm="delSelectedDevice"
+                                        title="已启用的设备无法删除，确认删除选中的禁用状态设备？"
+                                    >
+                                        <a-button type="primary" danger
+                                            ><AIcon
+                                                type="DeleteOutlined"
+                                            />删除选中设备</a-button
+                                        >
+                                    </a-popconfirm>
+                                </a-menu-item>
+                                <a-menu-item
+                                    v-if="_selectedRowKeys.length"
+                                    title="确认激活选中设备?"
                                 >
-                                    <a-button type="primary" danger
-                                        ><AIcon
-                                            type="StopOutlined"
-                                        />禁用选中设备</a-button
+                                    <a-popconfirm
+                                        @confirm="activeSelectedDevice"
                                     >
-                                </a-popconfirm>
-                            </a-menu-item>
-                        </a-menu>
+                                        <a-button type="primary"
+                                            ><AIcon
+                                                type="CheckOutlined"
+                                            />激活选中设备</a-button
+                                        >
+                                    </a-popconfirm>
+                                </a-menu-item>
+                                <a-menu-item v-if="_selectedRowKeys.length">
+                                    <a-popconfirm
+                                        @confirm="disabledSelectedDevice"
+                                        title="确认禁用选中设备?"
+                                    >
+                                        <a-button type="primary" danger
+                                            ><AIcon
+                                                type="StopOutlined"
+                                            />禁用选中设备</a-button
+                                        >
+                                    </a-popconfirm>
+                                </a-menu-item>
+                            </a-menu>
+                        </template>
+                    </a-dropdown>
+                </a-space>
+            </template>
+            <template #card="slotProps">
+                <CardBox
+                    :value="slotProps"
+                    @click="handleClick"
+                    :actions="getActions(slotProps, 'card')"
+                    v-bind="slotProps"
+                    :active="_selectedRowKeys.includes(slotProps.id)"
+                    :status="slotProps.state?.value"
+                    :statusText="slotProps.state?.text"
+                    :statusNames="{
+                        online: 'success',
+                        offline: 'error',
+                        notActive: 'warning',
+                    }"
+                >
+                    <template #img>
+                        <slot name="img">
+                            <img
+                                :src="
+                                    getImage('/device/instance/device-card.png')
+                                "
+                            />
+                        </slot>
                     </template>
-                </a-dropdown>
-            </a-space>
-        </template>
-        <template #card="slotProps">
-            <CardBox
-                :value="slotProps"
-                @click="handleClick"
-                :actions="getActions(slotProps, 'card')"
-                v-bind="slotProps"
-                :active="_selectedRowKeys.includes(slotProps.id)"
-                :status="slotProps.state?.value"
-                :statusText="slotProps.state?.text"
-                :statusNames="{
-                    online: 'success',
-                    offline: 'error',
-                    notActive: 'warning',
-                }"
-            >
-                <template #img>
-                    <slot name="img">
-                        <img
-                            :src="getImage('/device/instance/device-card.png')"
-                        />
-                    </slot>
-                </template>
-                <template #content>
-                    <h3
-                        class="card-item-content-title"
-                        @click.stop="handleView(slotProps.id)"
-                    >
-                        {{ slotProps.name }}
-                    </h3>
-                    <a-row>
-                        <a-col :span="12">
-                            <div class="card-item-content-text">设备类型</div>
-                            <div>{{ slotProps.deviceType?.text }}</div>
-                        </a-col>
-                        <a-col :span="12">
-                            <div class="card-item-content-text">产品名称</div>
-                            <div>{{ slotProps.productName }}</div>
-                        </a-col>
-                    </a-row>
-                </template>
-                <template #actions="item">
+                    <template #content>
+                        <h3
+                            class="card-item-content-title"
+                            @click.stop="handleView(slotProps.id)"
+                        >
+                            {{ slotProps.name }}
+                        </h3>
+                        <a-row>
+                            <a-col :span="12">
+                                <div class="card-item-content-text">
+                                    设备类型
+                                </div>
+                                <div>{{ slotProps.deviceType?.text }}</div>
+                            </a-col>
+                            <a-col :span="12">
+                                <div class="card-item-content-text">
+                                    产品名称
+                                </div>
+                                <div>{{ slotProps.productName }}</div>
+                            </a-col>
+                        </a-row>
+                    </template>
+                    <template #actions="item">
+                        <a-tooltip
+                            v-bind="item.tooltip"
+                            :title="item.disabled && item.tooltip.title"
+                        >
+                            <a-popconfirm
+                                v-if="item.popConfirm"
+                                v-bind="item.popConfirm"
+                                :disabled="item.disabled"
+                            >
+                                <a-button :disabled="item.disabled">
+                                    <AIcon
+                                        type="DeleteOutlined"
+                                        v-if="item.key === 'delete'"
+                                    />
+                                    <template v-else>
+                                        <AIcon :type="item.icon" />
+                                        <span>{{ item?.text }}</span>
+                                    </template>
+                                </a-button>
+                            </a-popconfirm>
+                            <template v-else>
+                                <a-button
+                                    :disabled="item.disabled"
+                                    @click="item.onClick"
+                                >
+                                    <AIcon
+                                        type="DeleteOutlined"
+                                        v-if="item.key === 'delete'"
+                                    />
+                                    <template v-else>
+                                        <AIcon :type="item.icon" />
+                                        <span>{{ item?.text }}</span>
+                                    </template>
+                                </a-button>
+                            </template>
+                        </a-tooltip>
+                    </template>
+                </CardBox>
+            </template>
+            <template #state="slotProps">
+                <a-badge
+                    :text="slotProps.state?.text"
+                    :status="statusMap.get(slotProps.state?.value)"
+                />
+            </template>
+            <template #action="slotProps">
+                <a-space :size="16">
                     <a-tooltip
-                        v-bind="item.tooltip"
-                        :title="item.disabled && item.tooltip.title"
+                        v-for="i in getActions(slotProps, 'table')"
+                        :key="i.key"
+                        v-bind="i.tooltip"
                     >
                         <a-popconfirm
-                            v-if="item.popConfirm"
-                            v-bind="item.popConfirm"
-                            :disabled="item.disabled"
+                            v-if="i.popConfirm"
+                            v-bind="i.popConfirm"
+                            :disabled="i.disabled"
                         >
-                            <a-button :disabled="item.disabled">
-                                <AIcon
-                                    type="DeleteOutlined"
-                                    v-if="item.key === 'delete'"
-                                />
-                                <template v-else>
-                                    <AIcon :type="item.icon" />
-                                    <span>{{ item?.text }}</span>
-                                </template>
-                            </a-button>
-                        </a-popconfirm>
-                        <template v-else>
                             <a-button
-                                :disabled="item.disabled"
-                                @click="item.onClick"
-                            >
-                                <AIcon
-                                    type="DeleteOutlined"
-                                    v-if="item.key === 'delete'"
-                                />
-                                <template v-else>
-                                    <AIcon :type="item.icon" />
-                                    <span>{{ item?.text }}</span>
-                                </template>
-                            </a-button>
-                        </template>
+                                :disabled="i.disabled"
+                                style="padding: 0"
+                                type="link"
+                                ><AIcon :type="i.icon"
+                            /></a-button>
+                        </a-popconfirm>
+                        <a-button
+                            style="padding: 0"
+                            type="link"
+                            v-else
+                            @click="i.onClick && i.onClick(slotProps)"
+                        >
+                            <a-button
+                                :disabled="i.disabled"
+                                style="padding: 0"
+                                type="link"
+                                ><AIcon :type="i.icon"
+                            /></a-button>
+                        </a-button>
                     </a-tooltip>
-                </template>
-            </CardBox>
-        </template>
-        <template #state="slotProps">
-            <a-badge
-                :text="slotProps.state?.text"
-                :status="statusMap.get(slotProps.state?.value)"
-            />
-        </template>
-        <template #action="slotProps">
-            <a-space :size="16">
-                <a-tooltip
-                    v-for="i in getActions(slotProps, 'table')"
-                    :key="i.key"
-                    v-bind="i.tooltip"
-                >
-                    <a-popconfirm
-                        v-if="i.popConfirm"
-                        v-bind="i.popConfirm"
-                        :disabled="i.disabled"
-                    >
-                        <a-button
-                            :disabled="i.disabled"
-                            style="padding: 0"
-                            type="link"
-                            ><AIcon :type="i.icon"
-                        /></a-button>
-                    </a-popconfirm>
-                    <a-button
-                        style="padding: 0"
-                        type="link"
-                        v-else
-                        @click="i.onClick && i.onClick(slotProps)"
-                    >
-                        <a-button
-                            :disabled="i.disabled"
-                            style="padding: 0"
-                            type="link"
-                            ><AIcon :type="i.icon"
-                        /></a-button>
-                    </a-button>
-                </a-tooltip>
-            </a-space>
-        </template>
-    </JTable>
+                </a-space>
+            </template>
+        </JTable>
+    </page-container>
     <Import v-if="importVisible" @close="importVisible = false" />
     <Export
         v-if="exportVisible"
@@ -228,7 +241,12 @@
         :api="api"
         :type="type"
     />
-    <Save v-if="visible" :data="current" @close="visible = false" @save="saveBtn" />
+    <Save
+        v-if="visible"
+        :data="current"
+        @close="visible = false"
+        @save="saveBtn"
+    />
 </template>
 
 <script setup lang="ts">
@@ -367,8 +385,8 @@ const handleAdd = () => {
  * 查看
  */
 const handleView = (id: string) => {
-    router.push('/device/instance/detail/' + id)
-}
+    router.push('/device/instance/detail/' + id);
+};
 
 const getActions = (
     data: Partial<Record<string, any>>,
@@ -519,10 +537,10 @@ const disabledSelectedDevice = async () => {
         _selectedRowKeys.value = [];
         instanceRef.value?.reload();
     }
-}
+};
 
 const saveBtn = () => {
-    visible.value = false
-    instanceRef.value?.reload()
-}
+    visible.value = false;
+    instanceRef.value?.reload();
+};
 </script>

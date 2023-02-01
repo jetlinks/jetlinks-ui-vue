@@ -1,11 +1,99 @@
-const pagesComponent = import.meta.glob('../views/system/**/*.vue', { eager: true });
+const pagesComponent = import.meta.glob('../views/**/*.vue', { eager: true });
 import { BlankLayoutPage, BasicLayoutPage } from 'components/Layout'
 
-type ExtraRouteItem = {
-  code: string
-  name: string
-  url?: string
-}
+/**
+ * 权限信息
+ */
+export type PermissionInfo = {
+  permission: string;
+  actions: string[];
+};
+
+/**
+ * 按钮信息
+ */
+export type MenuButtonInfo = {
+  id: string;
+  name: string;
+  permissions: PermissionInfo;
+  createTime: number;
+  describe?: string;
+  options: Record<string, any>;
+};
+
+
+export type MenuItem = {
+  id: string;
+  /**
+   * 名称
+   */
+  name: string;
+  /**
+   * 编码
+   */
+  code: string;
+  /**
+   * 所属应用
+   */
+  application: string;
+  /**
+   * 描述
+   */
+  describe: string;
+  /**
+   * url，路由
+   */
+  url: string;
+  /**
+   * 图标
+   */
+  icon: string;
+  /**
+   * 状态, 0为禁用，1为启用
+   */
+  status: number;
+  /**
+   * 绑定权限信息
+   */
+  permissions: PermissionInfo[];
+  /**
+   * 按钮定义信息
+   */
+  buttons: MenuButtonInfo[];
+  /**
+   * 其他配置信息
+   */
+  options: Record<string, any>;
+  /**
+   * 父级ID
+   */
+  parentId: string;
+  /**
+   * 树结构路径
+   */
+  path: string;
+  /**
+   * 排序序号
+   */
+  sortIndex: number;
+  /**
+   * 树层级
+   */
+  level: number;
+  createTime: number;
+  redirect?: string;
+  children?: MenuItem[];
+  accessSupport?: { text: string; value: string };
+  appId?: string; //应用id
+  isShow?: boolean;
+  meta?: {
+    title?: string
+    icon?: string
+    [key: string]: any
+  },
+  component?: any
+};
+
 // 额外子级路由
 const extraRouteObj = {
   'media/Cascade': {
@@ -59,53 +147,83 @@ const extraRouteObj = {
 
 
 const resolveComponent = (name: any) => {
-  // TODO 暂时用system进行测试
   const importPage = pagesComponent[`../views/${name}/index.vue`];
-  // if (!importPage) {
-  //   throw new Error(`Unknown page ${name}. Is it located under Pages with a .vue extension?`);
-  // }
-
+  if (!importPage) {
+    console.warn(`Unknown page ${name}. Is it located under Pages with a .vue extension?`)
+  }
   //@ts-ignore
-  return !importPage ? BlankLayoutPage :  importPage.default
-  // return importPage.default
+  return !!importPage ? importPage.default : undefined
 }
 
-const findChildrenRoute = (code: string, url: string): ExtraRouteItem[] => {
+const findChildrenRoute = (code: string, url: string): MenuItem[] => {
   if (extraRouteObj[code]) {
-    return extraRouteObj[code].children.map((route: ExtraRouteItem) => {
+    return extraRouteObj[code].children.map((route: MenuItem) => {
       return {
         url: `${url}/${route.code}`,
         code: route.code,
-        name: route.name
+        name: route.name,
+        isShow: false
       }
     })
   }
   return []
 }
 
+const findDetailRouteItem = (code: string, url: string): Partial<MenuItem> | null => {
+  const detailComponent = resolveComponent(`${code}/Detail`)
+  if (detailComponent) {
+    return {
+      url: `${url}/Detail/:id`,
+      component: detailComponent,
+      name: '详情信息',
+      isShow: false
+    }
+  }
+  return null
+}
+
+const findDetailRoutes = (routes: any[]): any[] => {
+  const newRoutes: any[] = []
+  routes.forEach((route: any) => {
+    newRoutes.push(route)
+    const detail = findDetailRouteItem(route.code, route.url)
+    if (detail) {
+      newRoutes.push(detail)
+    }
+  })
+  return newRoutes
+}
+
 export function filterAsnycRouter(asyncRouterMap: any, parentCode = '', level = 1) {
+
   return asyncRouterMap.map((route: any) => {
 
     route.path = `${route.url}`
     route.meta = {
       icon: route.icon,
-      title: route.name
+      title: route.name,
+      hideInMenu: route.isShow === false
     }
 
     // 查看是否有隐藏子路由
-    route.children = route.children && route.children.length ? [...route.children, ...findChildrenRoute(route.code, route.url)] : findChildrenRoute(route.code, route.url)
-
-    // TODO 查看是否具有详情页
-    // route.children = [...route.children, ]
-
+    const extraChildren = findChildrenRoute(route.code, route.url)
+    route.children = route.children && route.children.length ? [...route.children, ...extraChildren] : extraChildren
+    route.children = findDetailRoutes(route.children)
     if (route.children && route.children.length) {
-      route.component = () => level === 1 ? BasicLayoutPage : BlankLayoutPage
+      // TODO 查看是否具有详情页
       route.children = filterAsnycRouter(route.children, `${parentCode}/${route.code}`, level + 1)
-      route.redirect = route.children[0].url
+      const showChildren = route.children.some((r: any) => !r.meta.hideInMenu)
+      if (showChildren) {
+        route.component = () => level === 1 ? BasicLayoutPage : BlankLayoutPage
+        route.redirect = route.children[0].url
+      } else {
+        route.component = resolveComponent(route.code) || BlankLayoutPage;
+      }
     } else {
-      route.component = resolveComponent(route.code);
+      console.log(route.code)
+      route.component = route.component || resolveComponent(route.code) || BlankLayoutPage;
     }
-    console.log(route.code, route)
+    delete route.name
     return route
   })
 }

@@ -286,6 +286,7 @@ handleItems()
 .JSearch-warp {
   padding: 24px;
   background-color: #fff;
+  margin-bottom: 24px;
   
   .JSearch-content {
     display: flex;

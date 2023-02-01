@@ -91,7 +91,10 @@
                                             v-for="(o, i) in item.children"
                                             :key="i"
                                         >
-                                            <a-button type="link" @click="o.onClick">
+                                            <a-button
+                                                type="link"
+                                                @click="o.onClick"
+                                            >
                                                 <AIcon :type="o.icon" />
                                                 <span>{{ o.text }}</span>
                                             </a-button>
@@ -167,9 +170,8 @@
 <script setup lang="ts">
 import ConfigApi from '@/api/notice/config';
 import type { ActionsType } from '@/components/Table/index.vue';
-import { getImage, LocalStore } from '@/utils/comm';
+
 import { message } from 'ant-design-vue';
-import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 
 import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
 import SyncUser from './SyncUser/index.vue';
@@ -266,7 +268,7 @@ const getMethodTxt = (type: string) => {
  * 新增
  */
 const handleAdd = () => {
-    router.push(`/notice/Config/detail/:id`);
+    router.push(`/iot/notice/Config/detail/:id`);
 };
 
 /**
@@ -306,13 +308,6 @@ const handleExport = () => {
     downloadObject(configRef.value.dataSource, `通知配置`);
 };
 
-/**
- * 查看
- */
-const handleView = (id: string) => {
-    message.warn(id + '暂未开发');
-};
-
 const syncVis = ref(false);
 const debugVis = ref(false);
 const logVis = ref(false);
@@ -333,7 +328,7 @@ const getActions = (
             onClick: () => {
                 // visible.value = true;
                 // current.value = data;
-                router.push(`/notice/Config/detail/${data.id}`);
+                router.push(`/iot/notice/Config/detail/${data.id}`);
             },
         },
         {
@@ -360,35 +355,6 @@ const getActions = (
                 currentConfig.value = data;
             },
         },
-        // {
-        //     key: 'others',
-        //     text: '其他',
-        //     children: [
-        //         {
-        //             key: 'debug',
-        //             text: '导出',
-        //             tooltip: {
-        //                 title: '导出',
-        //             },
-        //             icon: 'ArrowDownOutlined',
-        //             onClick: () => {
-        //                 downloadObject(data, `通知配置`);
-        //             },
-        //         },
-        //         {
-        //             key: 'sync',
-        //             text: '同步用户',
-        //             tooltip: {
-        //                 title: '同步用户',
-        //             },
-        //             icon: 'TeamOutlined',
-        //             onClick: () => {
-        //                 syncVis.value = true;
-        //                 currentConfig.value = data;
-        //             },
-        //         },
-        //     ],
-        // },
         {
             key: 'delete',
             text: '删除',

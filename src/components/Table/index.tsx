@@ -73,6 +73,7 @@ const JTable = defineComponent<JTableProps>({
     slots: [
         'headerTitle', // 顶部左边插槽
         'card', // 卡片内容
+        'rightExtraRender'
     ],
     emits: [
         'modelChange', // 切换卡片和表格
@@ -254,16 +255,22 @@ const JTable = defineComponent<JTableProps>({
                         {slots.headerTitle && slots.headerTitle()}
                     </div>
                     <div class={styles["jtable-body-header-right"]}>
-                        <div class={[styles["jtable-setting-item"], ModelEnum.CARD === _model.value ? styles['active'] : '']} onClick={() => {
-                            _model.value = ModelEnum.CARD
-                        }}>
-                            <AppstoreOutlined />
-                        </div>
-                        <div class={[styles["jtable-setting-item"], ModelEnum.TABLE === _model.value ? styles['active'] : '']} onClick={() => {
-                            _model.value = ModelEnum.TABLE
-                        }}>
-                            <UnorderedListOutlined  />
-                        </div>
+                        {/* 顶部右边插槽 */}
+                        {slots.rightExtraRender && slots.rightExtraRender()}
+                        {
+                            !props.model && <div class={styles["jtable-body-header-right-button"]}>
+                                <div class={[styles["jtable-setting-item"], ModelEnum.CARD === _model.value ? styles['active'] : '']} onClick={() => {
+                                    _model.value = ModelEnum.CARD
+                                }}>
+                                    <AppstoreOutlined />
+                                </div>
+                                <div class={[styles["jtable-setting-item"], ModelEnum.TABLE === _model.value ? styles['active'] : '']} onClick={() => {
+                                    _model.value = ModelEnum.TABLE
+                                }}>
+                                    <UnorderedListOutlined  />
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
                 {/* content */}
