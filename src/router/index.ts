@@ -31,7 +31,7 @@ router.beforeEach((to, from, next) => {
         const system = useSystem()
         const menu = useMenuStore()
 
-        if (!menu.menuData.length) {
+        if (!menu.siderMenus.length) {
           userInfo.getUserInfo().then(() => {
             system.getSystemVersion().then((menuData: any[]) => {
               menuData.forEach(r => {
