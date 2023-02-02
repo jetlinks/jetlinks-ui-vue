@@ -4,6 +4,8 @@
         :maskClosable="false"
         :visible="true"
         title="导出"
+        okText="确定"
+        cancelText="取消"
         @ok="handleOk"
         @cancel="handleCancel"
     >
