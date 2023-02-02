@@ -1,21 +1,45 @@
 <!-- 单选卡片 -->
 <template>
-    <div class="m-radio">
+    <div
+        :class="[
+            layout === 'horizontal' ? 'm-radio-checked' : 'm-radio',
+            disabled ? 'disabled' : '',
+        ]"
+    >
         <div
-            class="m-radio-item"
-            :class="{ active: myValue === item.value }"
+            :class="[
+                layout === 'horizontal'
+                    ? 'm-radio-checked-item'
+                    : 'm-radio-item',
+                { active: myValue === item.value },
+                checkStyle && myValue === item.value ? 'checked' : '',
+                disabled && myValue === item.value
+                    ? 'active-checked-disabled'
+                    : '',
+            ]"
             v-for="(item, index) in options"
             :key="index"
             @click="myValue = item.value"
         >
             <img class="img" :src="item.logo" alt="" />
             <span>{{ item.label }}</span>
+            <div
+                :class="[
+                    'checked-icon',
+                    disabled && myValue === item.value
+                        ? 'checked-icon-disabled'
+                        : '',
+                ]"
+            >
+                <div><CheckOutlined /></div>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { PropType } from 'vue';
+import { CheckOutlined } from '@ant-design/icons-vue';
 
 interface IOption {
     label: string;
@@ -25,7 +49,7 @@ interface IOption {
 
 type Emits = {
     (e: 'update:modelValue', data: string): void;
-    (e: 'change') :void
+    (e: 'change'): void;
 };
 const emit = defineEmits<Emits>();
 
@@ -38,21 +62,104 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    layout: {
+        type: String,
+        default: 'vertical', //'horizontal'|'vertical' 水平|垂直
+    },
+    checkStyle: {
+        type: Boolean,
+        default: false, //是否有小勾样式
+    },
+    disabled: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const myValue = computed({
     get: () => props.modelValue,
     set: (val) => {
-        emit('update:modelValue', val)
-        emit('change')
+        if (!props.disabled) {
+            emit('update:modelValue', val);
+            emit('change');
+        }
     },
 });
 </script>
 
 <style lang="less" scoped>
+.m-radio-checked {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    &-item {
+        width: 49%;
+        height: 70px;
+        padding: 10px 15px;
+        margin-bottom: 12px;
+        border: 1px solid #d9d9d9;
+        border-radius: 2px;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        cursor: pointer;
+        .img {
+            width: 32px;
+            height: 32px;
+        }
+        &.active {
+            color: #1d39c4;
+            border-color: #1d39c4;
+        }
+    }
+}
+.checked-icon {
+    position: absolute;
+    right: -1px;
+    bottom: -1px;
+    z-index: 2;
+    display: none;
+    width: 18px;
+    height: 18px;
+    color: #fff;
+    border: #2f54eb 18px solid;
+    border-left-color: transparent;
+    border-top-color: transparent;
+
+    > div {
+        font-size: 12px;
+    }
+}
+.checked {
+    position: relative;
+    color: #2f54eb;
+    border-color: #2f54eb;
+
+    .checked-icon {
+        display: block;
+    }
+}
+
+.disabled {
+    color: rgba(0, 0, 0, 0.25) !important;
+    cursor: not-allowed;
+}
+.active-checked-disabled {
+    color: rgba(0, 0, 0, 0.25) !important;
+    border: 1px #d9d9d9 solid !important;
+}
+.checked-icon-disabled {
+    color: rgba(0, 0, 0, 0.25) !important;
+    border-color: #e6e6e6 !important;
+    border-left-color: transparent !important;
+    border-top-color: transparent !important;
+}
+
 .m-radio {
     display: flex;
     &-item {
+        width: 140px;
+        height: 140px;
         padding: 10px 15px;
         margin-right: 15px;
         border: 1px solid #d9d9d9;
