@@ -1,6 +1,6 @@
 <!-- 物联卡管理 -->
 <template>
-    <page-container class="container">
+    <page-container>
         <Search
             :columns="columns"
             target="iot-card-management-search"
@@ -124,10 +124,7 @@
                         </slot>
                     </template>
                     <template #content>
-                        <h3
-                            class="card-item-content-title"
-                            @click.stop="handleView(slotProps.id)"
-                        >
+                        <h3 class="card-item-content-title">
                             {{ slotProps.id }}
                         </h3>
                         <a-row>
@@ -553,6 +550,8 @@ const getActions = (
             popConfirm: data.deviceId
                 ? {
                       title: '确认解绑设备？',
+                      okText: '确定',
+                      cancelText: '取消',
                       onConfirm: async () => {
                           unbind(data.id).then((resp: any) => {
                               if (resp.status === 200) {
@@ -599,6 +598,8 @@ const getActions = (
                         : data.cardStateType?.value === 'deactivate'
                         ? '确认复机？'
                         : '确认停用?',
+                okText: '确定',
+                cancelText: '取消',
                 onConfirm: async () => {
                     if (data.cardStateType?.value === 'toBeActivated') {
                         changeDeploy(data.id).then((resp) => {
@@ -633,6 +634,8 @@ const getActions = (
             },
             popConfirm: {
                 title: '确认删除?',
+                okText: '确定',
+                cancelText: '取消',
                 onConfirm: async () => {
                     const resp: any = await del(data.id);
                     if (resp.status === 200) {
@@ -648,9 +651,8 @@ const getActions = (
     ];
 };
 
-const handleSearch = (params: any) => {
-    console.log(params);
-    params.value = params;
+const handleSearch = (e: any) => {
+    params.value = e;
 };
 
 const onSelectChange = (keys: string[], rows: []) => {
@@ -669,13 +671,6 @@ const handleClick = (dt: any) => {
     } else {
         _selectedRowKeys.value = [..._selectedRowKeys.value, dt.id];
     }
-};
-
-/**
- * 查看
- */
-const handleView = (id: string) => {
-    message.warn(id + '暂未开发');
 };
 
 /**
@@ -792,25 +787,19 @@ const handelRemove = async () => {
 </script>
 
 <style scoped lang="less">
-.container {
-    .search {
-        width: calc(100% - 330px);
-    }
-    .flow-text {
-        font-size: 20px;
-        font-weight: 600;
-    }
-
-    .progress-text {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    :deep(.ant-progress-inner) {
-        border-radius: 0px;
-    }
-    :deep(.ant-progress-bg) {
-        border-radius: 0px;
-    }
+.flow-text {
+    font-size: 20px;
+    font-weight: 600;
+}
+.progress-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+:deep(.ant-progress-inner) {
+    border-radius: 0px;
+}
+:deep(.ant-progress-bg) {
+    border-radius: 0px;
 }
 </style>

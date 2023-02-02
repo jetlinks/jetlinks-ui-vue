@@ -151,9 +151,8 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
     ];
 };
 
-const handleSearch = (params: any) => {
-    console.log(params);
-    params.value = params;
+const handleSearch = (e: any) => {
+    params.value = e;
 };
 
 /**
