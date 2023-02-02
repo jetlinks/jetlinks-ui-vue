@@ -34,7 +34,7 @@
         <template #extra>
             <img @click="handleRefresh" :src="getImage('/device/button.png')" style="margin-right: 20px; cursor: pointer;" />
         </template>
-        <component :is="tabs[instanceStore.tabActiveKey]" />
+        <component :is="tabs[instanceStore.tabActiveKey]" v-bind="{ type: 'device' }" />
     </page-container>
 </template>
 

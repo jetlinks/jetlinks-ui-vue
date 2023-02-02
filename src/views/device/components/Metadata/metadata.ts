@@ -59,3 +59,25 @@ export const asyncUpdateMetadata = (
       return saveMetadata(data.id, JSON.parse(data.metadata || '{}'));
   }
 };
+
+/**
+ * 删除物模型数据
+ * @param type 物模型类型
+ * @param item 删除的数据
+ * @param data 设备/产品数据
+ * @param onEvent 回调
+ */
+export const removeMetadata = (
+  type: MetadataType,
+  item: MetadataItem[],
+  data: ProductItem | DeviceInstance,
+  onEvent?: (type: 'remove', item: MetadataItem) => void,
+): ProductItem | DeviceInstance => {
+  const metadata = JSON.parse(data.metadata || '{}') as DeviceMetadata;
+  const config = (metadata[type] || []) as MetadataItem[];
+  // @ts-ignore
+  metadata[type] = config.filter((i) => !item.map((r) => r.id).includes(i.id));
+  onEvent?.('remove', item);
+  data.metadata = JSON.stringify(metadata);
+  return data;
+};

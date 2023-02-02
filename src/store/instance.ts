@@ -5,12 +5,12 @@ import { detail } from '@/api/device/instance'
 export const useInstanceStore = defineStore({
   id: 'device',
   state: () => ({
-    current: {} as Partial<DeviceInstance>,
-    detail: {} as Partial<DeviceInstance>,
+    current: {} as DeviceInstance,
+    detail: {} as DeviceInstance,
     tabActiveKey: 'Info'
   }),
   actions: {
-    setCurrent(current: Partial<DeviceInstance>) {
+    setCurrent(current: DeviceInstance) {
       this.current = current
       this.detail = current
     },

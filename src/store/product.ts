@@ -5,8 +5,8 @@ import { detail} from '@/api/device/product'
 export const useProductStore = defineStore({
   id: 'product',
   state: () => ({
-    current: {} as ProductItem | undefined,
-    detail: {} as ProductItem | undefined,
+    current: {} as ProductItem,
+    detail: {} as ProductItem,
     tabActiveKey: 'Info'
   }),
   actions: {

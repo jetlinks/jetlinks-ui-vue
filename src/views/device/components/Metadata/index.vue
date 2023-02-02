@@ -1,52 +1,50 @@
 <template>
-  <div class='device-detail-metadata' style="position: relative;">
-    <div class="tips">
-      <a-tooltip :title="instanceStore.detail?.independentMetadata && type === 'device'
-      ? '该设备已脱离产品物模型，修改产品物模型对该设备无影响'
-      : '设备会默认继承产品的物模型，修改设备物模型后将脱离产品物模型'">
-        <div class="ellipsis">
-          <info-circle-outlined style="margin-right: 3px" />
-          {{
-            instanceStore.detail?.independentMetadata && type === 'device'
-              ? '该设备已脱离产品物模型，修改产品物模型对该设备无影响'
-              : '设备会默认继承产品的物模型，修改设备物模型后将脱离产品物模型'
-          }}
-        </div>
-      </a-tooltip>
-    </div>
-    <a-tabs class="metadataNav" destroyInactiveTabPane type="card">
-      <template #rightExtra>
-        <a-space>
-          <PermissionButton v-if="type === 'device' && instanceStore.detail?.independentMetadata"
-            :hasPermission="`${permission}:update`" :popConfirm="{ title: '确认重置？', onConfirm: resetMetadata, }"
-            :tooltip="{ title: '重置后将使用产品的物模型配置' }" key="reload">
-            重置操作
-          </PermissionButton>
-          <PermissionButton
-            :uhasPermission="`${permission}:update`"
-            @click="visible = true">快速导入</PermissionButton>
-          <PermissionButton 
-            :uhasPermission="`${permission}:update`" 
-            @click="cat = true">物模型TSL</PermissionButton>
-        </a-space>
-      </template>
+  <a-card>
+    <div class='device-detail-metadata' style="position: relative;">
+      <div class="tips">
+        <a-tooltip :title="instanceStore.detail?.independentMetadata && type === 'device'
+        ? '该设备已脱离产品物模型，修改产品物模型对该设备无影响'
+        : '设备会默认继承产品的物模型，修改设备物模型后将脱离产品物模型'">
+          <div class="ellipsis">
+            <info-circle-outlined style="margin-right: 3px" />
+            {{
+              instanceStore.detail?.independentMetadata && type === 'device'
+                ? '该设备已脱离产品物模型，修改产品物模型对该设备无影响'
+                : '设备会默认继承产品的物模型，修改设备物模型后将脱离产品物模型'
+            }}
+          </div>
+        </a-tooltip>
+      </div>
+      <a-tabs class="metadataNav" destroyInactiveTabPane type="card">
+        <template #rightExtra>
+          <a-space>
+            <PermissionButton v-if="type === 'device' && instanceStore.detail?.independentMetadata"
+              :hasPermission="`${permission}:update`" :popConfirm="{ title: '确认重置？', onConfirm: resetMetadata, }"
+              :tooltip="{ title: '重置后将使用产品的物模型配置' }" key="reload">
+              重置操作
+            </PermissionButton>
+            <PermissionButton :uhasPermission="`${permission}:update`" @click="visible = true">快速导入</PermissionButton>
+            <PermissionButton :uhasPermission="`${permission}:update`" @click="cat = true">物模型TSL</PermissionButton>
+          </a-space>
+        </template>
 
-      <a-tab-pane tab="属性定义" key="properties">
-        <BaseMetadata :target="type" type="properties" :permission="permission" />
-      </a-tab-pane>
-      <a-tab-pane tab="功能定义" key="functions">
-        <BaseMetadata :target="type" type="functions" :permission="permission" />
-      </a-tab-pane>
-      <a-tab-pane tab="事件定义" key="events">
-        <BaseMetadata :target="type" type="events" :permission="permission" />
-      </a-tab-pane>
-      <a-tab-pane tab="标签定义" key="tags">
-        <BaseMetadata :target="type" type="tags" :permission="permission" />
-      </a-tab-pane>
-    </a-tabs>
-    <Import v-model:visible="visible" :type="type" @close="visible = false" />
-    <Cat v-model:visible="cat" @close="cat = false" :type="type" />
-  </div>
+        <a-tab-pane tab="属性定义" key="properties">
+          <BaseMetadata :target="type" type="properties" :permission="permission" />
+        </a-tab-pane>
+        <a-tab-pane tab="功能定义" key="functions">
+          <BaseMetadata :target="type" type="functions" :permission="permission" />
+        </a-tab-pane>
+        <a-tab-pane tab="事件定义" key="events">
+          <BaseMetadata :target="type" type="events" :permission="permission" />
+        </a-tab-pane>
+        <a-tab-pane tab="标签定义" key="tags">
+          <BaseMetadata :target="type" type="tags" :permission="permission" />
+        </a-tab-pane>
+      </a-tabs>
+      <Import v-model:visible="visible" :type="type" @close="visible = false" />
+      <Cat v-model:visible="cat" @close="cat = false" :type="type" />
+    </div>
+  </a-card>
 </template>
 <script setup lang="ts" name="Metadata">
 import { InfoCircleOutlined } from '@ant-design/icons-vue';

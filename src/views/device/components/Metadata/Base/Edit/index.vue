@@ -18,6 +18,7 @@ import { updateMetadata, asyncUpdateMetadata } from '../../metadata'
 import { Store } from 'jetlinks-store';
 import { SystemConst } from '@/utils/consts';
 import { detail } from '@/api/device/instance';
+import { DeviceInstance } from '@/views/device/Instance/typings';
 
 interface Props {
   type: 'product' | 'device';
@@ -50,7 +51,8 @@ const save = reactive({
     save.loading = true
     addFormRef.value?.validateFields().then(async (formValue) => {
       const type = metadataStore.model.type
-      const _metadata = JSON.parse((props.type === 'device' ? instanceStore.detail.metadata : productStore.current?.metadata) || '{}')
+      const _detail: ProductItem | DeviceInstance = props.type === 'device' ? instanceStore.detail : productStore.current
+      const _metadata = JSON.parse(_detail?.metadata || '{}')
       const list = _metadata[type] as any[]
       if (formValue.id) {
         if (metadataStore.model.action === 'add' && list.some(item => item.id === formValue.id)) {
@@ -70,7 +72,7 @@ const save = reactive({
           productStore.setCurrent(detail)
         }
       }
-      const _data = updateMetadata(type, [formValue], _metadata, updateStore)
+      const _data = updateMetadata(type, [formValue], _detail, updateStore)
       const result = await asyncUpdateMetadata(props.type, _data)
       if (result.status === 200) {
         if ((window as any).onTabSaveSuccess) {
