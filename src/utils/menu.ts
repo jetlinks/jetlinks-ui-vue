@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash-es'
+import NotFindPage from '@/views/404.vue'
 import { BlankLayoutPage, BasicLayoutPage } from 'components/Layout'
 const pagesComponent = import.meta.glob('../views/**/*.vue', { eager: true });
 
@@ -176,6 +177,7 @@ const findDetailRouteItem = (code: string, url: string): Partial<MenuItem> | nul
   if (detailComponent) {
     return {
       url: `${url}/Detail/:id`,
+      code: `${code}/Detail`,
       component: detailComponent,
       name: '详情信息',
       isShow: false
@@ -228,14 +230,16 @@ export function filterAsnycRouter(asyncRouterMap: any, parentCode = '', level = 
       } else {
         const myComponent = resolveComponent(route.code)
         _route.component = myComponent ? myComponent : BlankLayoutPage;
-        if (myComponent) {
+        if (!!myComponent) {
           _route.component = myComponent;
           _route.children.map((r: any) => menusData.push(r))
           delete _route.children
+        } else {
+          _route.component = BlankLayoutPage
         }
       }
     } else {
-      _route.component = _route.component || resolveComponent(route.code) || BlankLayoutPage;
+      _route.component = route.component || resolveComponent(route.code) || BlankLayoutPage;
     }
     menusData.push(_route)
     silderMenus.push(silder)
