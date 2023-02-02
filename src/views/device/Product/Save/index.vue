@@ -207,7 +207,7 @@ import { filterTreeSelectNode, filterSelectNode } from '@/utils/comm';
 import { FILE_UPLOAD } from '@/api/comm';
 import { isInput } from '@/utils/regular';
 import type { Rule } from 'ant-design-vue/es/form';
-import { queryProductId } from '@/api/device/product';
+import { queryProductId, addProduct, editProduct } from '@/api/device/product';
 import {
     SearchOutlined,
     CheckOutlined,
@@ -278,11 +278,13 @@ const validateInput = async (_rule: Rule, value: string) => {
         if (!isInput(value)) {
             return Promise.reject('请输入英文或者数字或者-或者_');
         } else {
-            const res = await queryProductId(value);
-            if (res.status === 200 && res.result) {
-                return Promise.reject('ID重复');
-            } else {
-                return Promise.resolve();
+            if (props.isAdd === 1) {
+                const res = await queryProductId(value);
+                if (res.status === 200 && res.result) {
+                    return Promise.reject('ID重复');
+                } else {
+                    return Promise.resolve();
+                }
             }
         }
     } else {
@@ -355,9 +357,8 @@ const show = (data: any) => {
         form.describe = '';
         form.id = '';
         disabled.value = false;
-        dialogRef.value.show();
     }
-    // visible.value = true;
+    visible.value = true;
 };
 
 /**
@@ -376,13 +377,34 @@ const { resetFields, validate, validateInfos, clearValidate } = useForm(
 const submitData = () => {
     formRef.value
         .validate()
-        .then(async () => {})
+        .then(async () => {
+            // 新增
+            if (props.isAdd === 1) {
+                const res = await addProduct(form);
+                if (res.status === 200) {
+                    message.success('保存成功！');
+                    visible.value = false;
+                    dialogRef.value.show(form.id);
+                } else {
+                    message.error('操作失败');
+                }
+            } else if (props.isAdd === 2) {
+                // 编辑
+                const res = await editProduct(form);
+                if (res.status === 200) {
+                    message.success('保存成功！');
+                    visible.value = false;
+                } else {
+                    message.error('操作失败');
+                }
+            }
+        })
         .catch((err: any) => {});
 };
 /**
  * 初始化
  */
-// queryProductTree();
+queryProductTree();
 defineExpose({
     show: show,
 });

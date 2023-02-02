@@ -30,7 +30,12 @@
                         </slot>
                     </template>
                     <template #content>
-                        <h3>{{ slotProps.name }}</h3>
+                        <h3
+                            @click.stop="handleView(slotProps.id)"
+                            style="font-weight: 600"
+                        >
+                            {{ slotProps.name }}
+                        </h3>
                         <a-row>
                             <a-col :span="12">
                                 <div class="card-item-content-text">
@@ -49,6 +54,8 @@
                                 v-if="item.popConfirm"
                                 v-bind="item.popConfirm"
                                 :disabled="item.disabled"
+                                okText="确定"
+                                cancelText="取消"
                             >
                                 <a-button :disabled="item.disabled">
                                     <AIcon
@@ -96,7 +103,12 @@
                         :key="i.key"
                         v-bind="i.tooltip"
                     >
-                        <a-popconfirm v-if="i.popConfirm" v-bind="i.popConfirm">
+                        <a-popconfirm
+                            v-if="i.popConfirm"
+                            v-bind="i.popConfirm"
+                            okText="确定"
+                            cancelText="取消"
+                        >
                             <a-button
                                 :disabled="i.disabled"
                                 style="padding: 0"
@@ -155,6 +167,7 @@ import Save from './Save/index.vue';
 /**
  * 表格数据
  */
+const router = useRouter();
 const isAdd = ref<number>(0);
 const title = ref<string>('');
 const statusMap = new Map();
@@ -238,7 +251,9 @@ const getActions = (
                 title: '查看',
             },
             icon: 'EyeOutlined',
-            onClick: () => {},
+            onClick: () => {
+                handleView(data.id);
+            },
         },
         {
             key: 'edit',
@@ -295,7 +310,7 @@ const getActions = (
             text: '删除',
             disabled: data.state !== 0,
             tooltip: {
-                title: data.state !== 0 ? '已启用的设备不能删除' : '删除',
+                title: data.state !== 0 ? '已启用的产品不能删除' : '删除',
             },
             popConfirm: {
                 title: '确认删除?',
@@ -312,15 +327,26 @@ const getActions = (
             icon: 'DeleteOutlined',
         },
     ];
+    if (type === 'card')
+        return actions.filter((i: ActionsType) => i.key !== 'view');
     return actions;
 };
 
+/**
+ * 新增
+ */
 const add = () => {
     isAdd.value = 1;
     title.value = '新增';
     nextTick(() => {
         saveRef.value.show(currentForm.value);
     });
+};
+/**
+ * 查看
+ */
+const handleView = (id: string) => {
+    router.push('/iot/device/product/detail/' + id);
 };
 
 // 筛选

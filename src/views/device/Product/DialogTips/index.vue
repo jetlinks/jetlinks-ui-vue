@@ -22,8 +22,8 @@
                 <div class="product-title">产品创建成功</div>
             </div>
             <div style="display: flex">
-                <div class="product-id">产品ID: 12333</div>
-                <div class="product-btn" @click="jump">查看详情</div>
+                <div class="product-id">产品ID: {{ idValue.value }}</div>
+                <div class="product-btn" @click="showDetail">查看详情</div>
             </div>
             <div>接下来推荐操作:</div>
             <div class="product-main">1、配置产品接入方式</div>
@@ -47,8 +47,12 @@
 </template>
 <script lang="ts" setup name="DialogTips">
 import { getImage } from '@/utils/comm.ts';
+import { useProductStore } from '@/store/product';
 import { CheckCircleOutlined } from '@ant-design/icons-vue';
 const visible = ref<boolean>(false);
+const productStore = useProductStore();
+const router = useRouter();
+const idValue = ref({});
 /**
  * 弹窗关闭
  */
@@ -58,13 +62,22 @@ const cancel = () => {
 /**
  * 显示弹窗
  */
-const show = () => {
+const show = (id: string) => {
     visible.value = true;
+    idValue.value = id;
+};
+/**
+ * 查看详情
+ */
+const showDetail = () => {
+    jump(idValue.value);
 };
 /**
  * 跳转页面
  */
-const jump = () => {};
+const jump = (id: string) => {
+    router.push('/iot/device/product/detail/' + id);
+};
 defineExpose({
     show: show,
 });
