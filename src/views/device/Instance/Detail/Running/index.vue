@@ -111,7 +111,6 @@ const tabChange = (key: string) => {
     display: flex;
     .property-box-left {
         width: 200px;
-        margin-right: 20px;
     }
     .property-box-right {
         flex: 1;

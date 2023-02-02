@@ -3,7 +3,7 @@
     <JTable
         ref="eventsRef"
         :columns="columns"
-        :dataSource="dataSource"
+        :request="_getEventList"
         model="TABLE"
         :bodyStyle="{padding: '0 24px'}"
     >
@@ -16,16 +16,24 @@
             </a-button>
         </template>
     </JTable>
+    <a-button type="link" @click="detail(slotProps)">
+        <AIcon type="SearchOutlined" />
+    </a-button>
 </template>
 
 <script lang="ts" setup>
 import moment from 'moment'
+import { getEventList } from '@/api/device/instance'
+import { useInstanceStore } from '@/store/instance'
+import { Modal } from 'ant-design-vue'
+
 const events = defineProps({
     data: {
         type: Object,
         default: () => {}
     }
 })
+const instanceStore = useInstanceStore()
 
 const columns = ref<Record<string, any>>([
     {
@@ -41,8 +49,9 @@ const columns = ref<Record<string, any>>([
         scopedSlots: true,
     }
 ])
+const params = ref<Record<string, any>>({})
 
-const dataSource = ref<Record<string, any>[]>([])
+const _getEventList = () => getEventList(instanceStore.current.id || '', events.data.id || '', params.value)
 
 watchEffect(() => {
     if(events.data?.valueType?.type === 'object'){
@@ -50,8 +59,7 @@ watchEffect(() => {
             columns.value.splice(0, 0, {
               key: i.id,
               title: i.name,
-              dataIndex: `${i.id}_format`,
-            //   renderText: (text) => (typeof text === 'object' ? JSON.stringify(text) : text),
+              dataIndex: `${i.id}_format`
             })
         })
     } else {
@@ -63,6 +71,13 @@ watchEffect(() => {
 })
 
 const detail = () => {
-
+    Modal.info({
+        title: () => '详情',
+        width: 850,
+        content: () => h('div', {}, [
+          h('p', '暂未开发'),
+        ]),
+        okText: '关闭'
+      });
 }
 </script>

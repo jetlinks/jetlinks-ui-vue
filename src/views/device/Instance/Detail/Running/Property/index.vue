@@ -1,19 +1,20 @@
 <template>
     <JTable
-        ref="metadataRef"
         :columns="columns"
         :dataSource="dataSource"
-        :bodyStyle="{padding: 0}"
+        :bodyStyle="{padding: '0 0 0 20px'}"
     >
         <template #headerTitle>
             <a-input-search
                 placeholder="请输入名称"
                 style="width: 300px; margin-bottom: 10px"
                 @search="onSearch"
+                v-model:value="value"
+                :allowClear="true"
             />
         </template>
         <template #card="slotProps">
-            <PropertyCard :data="slotProps" />
+            <PropertyCard :data="slotProps" :actions="getActions(slotProps)" />
         </template>
         <template #value="slotProps">
             <ValueRender :data="slotProps" />
@@ -28,41 +29,45 @@
                     :key="i.key"
                     v-bind="i.tooltip"
                 >
-                    <a-popconfirm
-                        v-if="i.popConfirm"
-                        v-bind="i.popConfirm"
-                        :disabled="i.disabled"
-                    >
-                        <a-button
-                            :disabled="i.disabled"
-                            style="padding: 0"
-                            type="link"
-                            ><AIcon :type="i.icon"
-                        /></a-button>
-                    </a-popconfirm>
                     <a-button
                         style="padding: 0"
                         type="link"
-                        v-else
+                        :disabled="i.disabled"
                         @click="i.onClick && i.onClick(slotProps)"
                     >
-                        <a-button
-                            :disabled="i.disabled"
-                            style="padding: 0"
-                            type="link"
-                            ><AIcon :type="i.icon"
-                        /></a-button>
+                        <AIcon :type="i.icon" />
                     </a-button>
                 </a-tooltip>
             </a-space>
         </template>
+        <template #paginationRender>
+            <a-pagination
+                size="small"
+                :total="total"
+                :showQuickJumper="false"
+                :showSizeChanger="true"
+                :current="pageIndex + 1"
+                :pageSize="pageSize"
+                :pageSizeOptions="['8', '12', '24', '60', '100']"
+                :show-total="(num) => `第 ${pageIndex * pageSize + 1} - ${(pageIndex + 1) * pageSize > num ? num : (pageIndex + 1) * pageSize} 条/总共 ${num} 条`"
+                @change="pageChange"
+            />
+        </template>
     </JTable>
+    <Save v-if="editVisible" @close="editVisible = false" :data="currentInfo" />
+    <Indicators v-if="indicatorVisible" @close="indicatorVisible = false" :data="currentInfo" />
 </template>
 
 <script lang="ts" setup>
+import _ from "lodash"
 import { PropertyData } from "../../../typings"
 import PropertyCard from './PropertyCard.vue'
 import ValueRender from './ValueRender.vue'
+import Save from './Save.vue'
+import Indicators from './Indicators.vue'
+import { getProperty } from '@/api/device/instance'
+import { useInstanceStore } from "@/store/instance"
+import { message } from "ant-design-vue"
 
 const columns = [
     {
@@ -96,8 +101,17 @@ const _data = defineProps({
         default: () => []
     }
 })
-
+const value = ref<string>('')
 const dataSource = ref<PropertyData[]>([])
+const _dataSource = ref<PropertyData[]>([])
+const pageIndex = ref<number>(0)
+const pageSize = ref<number>(8)
+const total = ref<number>(0)
+const editVisible = ref<boolean>(false) // 编辑
+const detailVisible = ref<boolean>(false) // 详情
+const currentInfo = ref<Record<string, any>>({})
+const instanceStore = useInstanceStore()
+const indicatorVisible = ref<boolean>(false) // 指标
 
 const getActions = (data: Partial<Record<string, any>>) => {
     const arr = []
@@ -109,7 +123,8 @@ const getActions = (data: Partial<Record<string, any>>) => {
             },
             icon: 'EditOutlined',
             onClick: () => {
-                
+                editVisible.value = true
+                currentInfo.value = data
             },
         })
     }
@@ -123,7 +138,8 @@ const getActions = (data: Partial<Record<string, any>>) => {
             },
             icon: 'ClockCircleOutlined',
             onClick: () => {
-                
+                indicatorVisible.value = true
+                currentInfo.value = data
             },
         })
     }
@@ -134,8 +150,13 @@ const getActions = (data: Partial<Record<string, any>>) => {
                 title: '获取最新属性值',
             },
             icon: 'SyncOutlined',
-            onClick: () => {
-                
+            onClick: async () => {
+                if(instanceStore.current.id && data.id){
+                    const resp = await getProperty(instanceStore.current.id, data.id)
+                    if(resp.status === 200){
+                        message.success('操作成功！')
+                    }
+                }
             },
         })
     }
@@ -147,17 +168,53 @@ const getActions = (data: Partial<Record<string, any>>) => {
         },
         icon: 'BarsOutlined',
         onClick: () => {
-            
+            detailVisible.value = true
+            currentInfo.value = data
         },
     })
     return arr
 }
 
-watchEffect(() => {
-    dataSource.value = _data.data as PropertyData[]
+const query = (page: number, size: number, value: string) => {
+    pageIndex.value = page || 0
+    pageSize.value = size || 8
+    const _from = pageIndex.value * pageSize.value
+    const _to = (pageIndex.value + 1) * pageSize.value
+    const arr = _.cloneDeep(_dataSource.value)
+    if(value){
+        const li = arr.filter((i: any) => {
+            return i?.name.indexOf(value) !== -1;
+        })
+        dataSource.value = li.slice(_from, _to)
+        total.value = li.length
+    } else {
+        dataSource.value = arr.slice(_from, _to)
+        total.value = arr.length
+    }
+}
+
+const pageChange = (page: number, size: number) => {
+    if(size === pageSize.value) {
+        query(page - 1, size, value.value)
+    } else {
+        query(0, size, value.value)
+    }
+}
+
+watch(() => _data.data,
+    (newVal) => {
+        if(newVal.length) {
+            _dataSource.value = newVal as PropertyData[]
+             query(0, 8, value.value)
+        }
+}, {
+    deep: true,
+    immediate: true
 })
 
-const onSearch = () => {};
+const onSearch = () => {
+    query(0, 8, value.value)
+};
 
 </script>
 

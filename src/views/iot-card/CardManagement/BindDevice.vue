@@ -5,6 +5,8 @@
         width="1100px"
         :visible="true"
         title="选择设备"
+        okText="确定"
+        cancelText="取消"
         @ok="handleOk"
         @cancel="handleCancel"
         :confirmLoading="btnLoading"
@@ -12,8 +14,9 @@
         <div style="margin-top: 10px">
             <Search
                 :columns="columns"
-                target="iot-card-management-search"
+                target="iot-card-bind-device"
                 @search="handleSearch"
+                type="simple"
             />
             <JTable
                 ref="bindDeviceRef"
@@ -121,9 +124,8 @@ const columns = [
     },
 ];
 
-const handleSearch = (params: any) => {
-    console.log(params);
-    params.value = params;
+const handleSearch = (e: any) => {
+    params.value = e;
 };
 
 const onSelectChange = (record: any) => {

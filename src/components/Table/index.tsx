@@ -74,7 +74,8 @@ const JTable = defineComponent<JTableProps>({
     slots: [
         'headerTitle', // 顶部左边插槽
         'card', // 卡片内容
-        'rightExtraRender'
+        'rightExtraRender',
+        'paginationRender' // 分页
     ],
     emits: [
         'modelChange', // 切换卡片和表格
@@ -354,27 +355,31 @@ const JTable = defineComponent<JTableProps>({
                 {
                     (!!_dataSource.value.length) && !props.noPagination && props.type === 'PAGE' &&
                     <div class={styles['jtable-pagination']}>
-                        <Pagination
-                            size="small"
-                            total={total.value}
-                            showQuickJumper={false}
-                            showSizeChanger={true}
-                            current={pageIndex.value + 1}
-                            pageSize={pageSize.value}
-                            pageSizeOptions={['12', '24', '48', '60', '100']}
-                            showTotal={(num) => {
-                                const minSize = pageIndex.value * pageSize.value + 1;
-                                const MaxSize = (pageIndex.value + 1) * pageSize.value;
-                                return `第 ${minSize} - ${MaxSize > num ? num : MaxSize} 条/总共 ${num} 条`;
-                            }}
-                            onChange={(page, size) => {
-                                handleSearch({
-                                    ...props.params,
-                                    pageSize: size,
-                                    pageIndex: pageSize.value === size ? (page ? page - 1 : 0) : 0
-                                })
-                            }}
-                        />
+                        {
+                            slots?.paginationRender ? 
+                            slots.paginationRender() : 
+                            <Pagination
+                                size="small"
+                                total={total.value}
+                                showQuickJumper={false}
+                                showSizeChanger={true}
+                                current={pageIndex.value + 1}
+                                pageSize={pageSize.value}
+                                pageSizeOptions={['12', '24', '48', '60', '100']}
+                                showTotal={(num) => {
+                                    const minSize = pageIndex.value * pageSize.value + 1;
+                                    const MaxSize = (pageIndex.value + 1) * pageSize.value;
+                                    return `第 ${minSize} - ${MaxSize > num ? num : MaxSize} 条/总共 ${num} 条`;
+                                }}
+                                onChange={(page, size) => {
+                                    handleSearch({
+                                        ...props.params,
+                                        pageSize: size,
+                                        pageIndex: pageSize.value === size ? (page ? page - 1 : 0) : 0
+                                    })
+                                }}
+                            />
+                        }
                     </div>
                 }
             </div>

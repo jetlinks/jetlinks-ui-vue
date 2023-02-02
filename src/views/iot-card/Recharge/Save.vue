@@ -4,6 +4,8 @@
         width="600px"
         :visible="true"
         title="充值"
+        okText="确定"
+        cancelText="取消"
         @ok="handleOk"
         @cancel="handleCancel"
         :confirmLoading="btnLoading"

@@ -34,24 +34,49 @@
                     :value="aggPlayingTotal"
                 />
             </a-col>
+            <a-col :span="24">
+                <Card title="播放数量(人次)" :chartData="chartData" />
+            </a-col>
         </a-row>
     </div>
 </template>
 
 <script setup lang="ts">
-import TopCard from '@/views/media/DashBoard/components/TopCard.vue'
+import TopCard from '@/views/media/DashBoard/components/TopCard.vue';
+import Card from '@/views/media/DashBoard/components/Card.vue';
 import { getImage } from '@/utils/comm';
 import homeApi from '@/api/media/home';
 import dashboardApi from '@/api/media/dashboard';
 import type { Footer } from '@/views/media/DashBoard/typings';
+import encodeQuery from '@/utils/encodeQuery';
+import { timestampFormat } from '@/utils/utils';
 
 // 设备
 const deviceFooter = ref<Footer[]>([]);
 const deviceTotal = ref(0);
 const getDeviceData = () => {
-    homeApi.deviceCount().then((res) => {
+    homeApi.deviceCount({}).then((res) => {
         deviceTotal.value = res.result;
     });
+
+    homeApi
+        .deviceCount(encodeQuery({ terms: { state: 'online' } }))
+        .then((res) => {
+            deviceFooter.value[0] = {
+                title: '在线',
+                value: res.result,
+                status: 'success',
+            };
+        });
+    homeApi
+        .deviceCount(encodeQuery({ terms: { state: 'offline' } }))
+        .then((res) => {
+            deviceFooter.value[1] = {
+                title: '离线',
+                value: res.result,
+                status: 'error',
+            };
+        });
 };
 getDeviceData();
 
@@ -59,9 +84,27 @@ getDeviceData();
 const channelFooter = ref<Footer[]>([]);
 const channelTotal = ref(0);
 const getChannelData = () => {
-    homeApi.channelCount().then((res) => {
+    homeApi.channelCount({}).then((res) => {
         channelTotal.value = res.result;
     });
+    homeApi
+        .channelCount({ terms: [{ column: 'status', value: 'online' }] })
+        .then((res) => {
+            channelFooter.value[0] = {
+                title: '在线',
+                value: res.result,
+                status: 'success',
+            };
+        });
+    homeApi
+        .channelCount({ terms: [{ column: 'status$not', value: 'online' }] })
+        .then((res) => {
+            channelFooter.value[1] = {
+                title: '离线',
+                value: res.result,
+                status: 'error',
+            };
+        });
 };
 getChannelData();
 
@@ -71,6 +114,10 @@ const aggTotal = ref(0);
 const getAggData = () => {
     dashboardApi.agg().then((res) => {
         aggTotal.value = res.result.total;
+        aggFooter.value.push({
+            title: '总时长',
+            value: timestampFormat(res.result.duration),
+        });
     });
 };
 getAggData();
@@ -81,9 +128,32 @@ const aggPlayingTotal = ref(0);
 const getAggPlayingData = () => {
     dashboardApi.aggPlaying().then((res) => {
         aggTotal.value = res.result.playingTotal;
+        aggPlayingFooter.value.push({
+            title: '播放人数',
+            value: res.result.playerTotal,
+        });
     });
 };
 getAggPlayingData();
+
+/**
+ * 获取播放数量(人次)
+ */
+const chartData = ref([]);
+const getPlayCount = async () => {
+    const params = {};
+    dashboardApi.getPlayCount(params).then((res) => {
+        let result: any = [];
+        res.result.forEach((item: any) => {
+            result = [...result, ...item.data];
+        });
+        chartData.value = result.map((m: any) => ({
+            x: m.timeString,
+            value: m.value,
+        }));
+    });
+};
+getPlayCount();
 </script>
 
 <style lang="less" scoped>

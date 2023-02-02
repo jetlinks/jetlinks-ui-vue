@@ -175,3 +175,45 @@ export const delTags = (deviceId: string, id: string) => server.remove(`/device/
  * @returns 
  */
 export const configurationReset = (deviceId: string) => server.put(`/device-instance/${deviceId}/configuration/_reset`)
+
+/**
+ * 查询事件详情列表
+ * @param deviceId 设备id
+ * @param eventId 事件id
+ * @param data 
+ * @returns 
+ */
+export const getEventList = (deviceId: string, eventId: string, data: Record<string, any>) => server.post(`/device-instance/${deviceId}/event/${eventId}?format=true`, data)
+
+/**
+ * 设置属性至设备
+ * @param deviceId 设备id
+ * @param data 
+ * @returns 
+ */
+export const setProperty = (deviceId: string, data: Record<string, any>) => server.put(`/device-instance/${deviceId}/property`, data)
+
+/**
+ * 获取最新属性值
+ * @param deviceId 设备id
+ * @param type 属性id
+ * @returns 
+ */
+export const getProperty = (deviceId: string, type: string) => server.get(`/device/standard/${deviceId}/property/${type}`)
+
+/**
+ * 查询设备的物模型指标
+ * @param deviceId 设备id
+ * @param propertyId 属性id
+ * @returns 
+ */
+export const queryMetric = (deviceId: string, propertyId: string) => server.get(`/device-instance/${deviceId}/metric/property/${propertyId}`)
+
+/**
+ * 保存设备的物模型指标
+ * @param deviceId 设备id
+ * @param propertyId 属性id
+ * @param data 
+ * @returns 
+ */
+export const saveMetric = (deviceId: string, propertyId: string, data: Record<string, any>) => server.patch(`/device-instance/${deviceId}/metric/property/${propertyId}`, data)
