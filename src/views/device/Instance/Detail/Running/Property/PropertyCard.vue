@@ -5,33 +5,20 @@
                 <div class="header">
                     <div class="title">{{ _props.data.name }}</div>
                     <div class="extra">
-                        <a-space>
-                            <a-tooltip title="设置属性至设备" v-if="data.expands?.type?.includes('write')">
-                                <AIcon
-                                    type="EditOutlined"
-                                    style="font-size: 12px"
-                                />
-                            </a-tooltip>
-                            <a-tooltip title="指标" v-if="(data.expands?.metrics || []).length > 0 &&
-            ['int', 'long', 'float', 'double', 'string', 'boolean', 'date'].includes(
-              data.valueType?.type || '',
-            )">
-                                <AIcon
-                                    type="ClockCircleOutlined"
-                                    style="font-size: 12px"
-                                />
-                            </a-tooltip>
-                            <a-tooltip title="获取最新属性值" v-if="data.expands?.type?.includes('read')">
-                                <AIcon
-                                    type="SyncOutlined"
-                                    style="font-size: 12px"
-                                />
-                            </a-tooltip>
-                            <a-tooltip title="详情">
-                                <AIcon
-                                    type="BarsOutlined"
-                                    style="font-size: 12px"
-                                />
+                        <a-space :size="16">
+                            <a-tooltip
+                                v-for="i in actions"
+                                :key="i.key"
+                                v-bind="i.tooltip"
+                            >
+                                <a-button
+                                    style="padding: 0; margin: 0"
+                                    type="link"
+                                    :disabled="i.disabled"
+                                    @click="i.onClick && i.onClick(data)"
+                                >
+                                    <AIcon :type="i.icon" style="color: #323130; font-size: 12px" />
+                                </a-button>
                             </a-tooltip>
                         </a-space>
                     </div>
@@ -54,6 +41,10 @@ const _props = defineProps({
     data: {
         type: Object,
         default: () => {},
+    },
+    actions: {
+        type: Array,
+        default: () => []
     },
 });
 const loading = ref<boolean>(true);
