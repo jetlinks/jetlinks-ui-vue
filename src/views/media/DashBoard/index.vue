@@ -34,12 +34,16 @@
                     :value="aggPlayingTotal"
                 />
             </a-col>
+            <a-col :span="24">
+                <Card title="播放数量(人次)" :chartData="chartData" />
+            </a-col>
         </a-row>
     </div>
 </template>
 
 <script setup lang="ts">
 import TopCard from '@/views/media/DashBoard/components/TopCard.vue';
+import Card from '@/views/media/DashBoard/components/Card.vue';
 import { getImage } from '@/utils/comm';
 import homeApi from '@/api/media/home';
 import dashboardApi from '@/api/media/dashboard';
@@ -131,6 +135,25 @@ const getAggPlayingData = () => {
     });
 };
 getAggPlayingData();
+
+/**
+ * 获取播放数量(人次)
+ */
+const chartData = ref([]);
+const getPlayCount = async () => {
+    const params = {};
+    dashboardApi.getPlayCount(params).then((res) => {
+        let result: any = [];
+        res.result.forEach((item: any) => {
+            result = [...result, ...item.data];
+        });
+        chartData.value = result.map((m: any) => ({
+            x: m.timeString,
+            value: m.value,
+        }));
+    });
+};
+getPlayCount();
 </script>
 
 <style lang="less" scoped>
