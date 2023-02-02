@@ -503,7 +503,7 @@
                 下一步
             </a-button>
             <a-button
-                v-if="current === 1 && modeType !== 'view'"
+                v-if="current === 1 && view === 'false'"
                 type="primary"
                 style="margin-right: 8px"
                 @click="saveData"
@@ -559,7 +559,7 @@ const props = defineProps({
 });
 
 const route = useRoute();
-const modeType = route.params.type as string;
+const view = route.query.view as string;
 const id = route.params.id as string;
 
 const activeKey: any = ref([]);
@@ -663,9 +663,7 @@ const saveData = () => {
         };
 
         const resp =
-            !!id && modeType !== 'add'
-                ? await update({ ...params, id })
-                : await save(params);
+            id === ':id' ? await save(params) : await update({ ...params, id });
         if (resp.status === 200) {
             message.success('操作成功！');
             // if (params.get('save')) {
@@ -741,7 +739,7 @@ onMounted(() => {
         }
     });
 
-    if (modeType !== 'add') {
+    if (id !== ':id') {
         formState.value = props.data.configuration;
         formData.value = {
             name: props.data.name,

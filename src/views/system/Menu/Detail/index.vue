@@ -17,6 +17,11 @@ const activeKey = ref('basic');
 
 <style lang="less" scoped>
 .menu-detail-container {
+    :deep(.ant-tabs-nav) {
+        background-color: #fff;
+        padding-left: 24px;
+        margin-bottom: 0;
+    }
     .ant-tabs-tabpane {
         background-color: #f0f2f5;
         padding: 24px;

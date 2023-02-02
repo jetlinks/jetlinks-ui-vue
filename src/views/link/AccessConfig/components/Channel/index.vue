@@ -40,7 +40,7 @@
                             </a-form-item>
                             <a-form-item>
                                 <a-button
-                                    v-if="modeType !== 'view'"
+                                    v-if="view === 'false'"
                                     type="primary"
                                     html-type="submit"
                                     >保存</a-button
@@ -96,7 +96,7 @@ interface FormState {
     description: string;
 }
 const route = useRoute();
-const modeType = route.params.type as string;
+const view = route.query.view as string;
 const id = route.params.id as string;
 
 const props = defineProps({
@@ -126,9 +126,7 @@ const onFinish = async (values: any) => {
         channel: providerId === 'modbus-tcp' ? 'modbus' : 'opc-ua',
     };
     const resp =
-        !!id && modeType !== 'add'
-            ? await update({ ...params, id })
-            : await save(params);
+        id === ':id' ? await save(params) : await update({ ...params, id });
     if (resp.status === 200) {
         message.success('操作成功！');
         // if (params.get('save')) {
@@ -145,7 +143,7 @@ const onFinish = async (values: any) => {
 };
 
 onMounted(() => {
-    if (modeType !== 'add') {
+    if (id === ':id') {
         formState.value = {
             name: props.data.name,
             description: props.data?.description || '',

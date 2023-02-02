@@ -1,9 +1,9 @@
 <!-- 充值管理 -->
 <template>
-    <div class="page-container">
+    <page-container>
         <Search
             :columns="columns"
-            target="iot-card-management-search"
+            target="recharge-search"
             @search="handleSearch"
         />
         <JTable
@@ -71,7 +71,7 @@
         <!-- 充值 -->
         <Save v-if="visible" @change="saveChange" />
         <Detail v-if="detailVisible" :data="current" @close="close" />
-    </div>
+    </page-container>
 </template>
 
 <script setup lang="ts">

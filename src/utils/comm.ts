@@ -76,3 +76,23 @@ export function getSlotVNode<T>(slots: Slots, props: Record<string, unknown>, pr
   }
   return (props[prop] || slots[prop]?.()) as T;
 }
+
+
+/**
+ * 修改Select参数column的值
+ * @param e // 查询参数 e
+ * @param column {Object} {需要修改的值: 修改后的值}
+ * {
+        username: 'context.username',
+    }
+ */
+export const modifySearchColumnValue = (e: any, column: object) => {
+  e.terms.forEach((item: any) => {
+      item.terms.forEach((t: any) => {
+          if (column[t.column]) {
+              t.column = column[t.column];
+          }
+      });
+  });
+  return e;
+};

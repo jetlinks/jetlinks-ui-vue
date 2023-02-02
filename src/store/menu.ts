@@ -54,19 +54,17 @@ export const useMenuStore = defineStore({
         ];
         const resp = await queryOwnThree({ paging: false, terms: params })
         if (resp.success) {
-          const silderMenus = filterAsnycRouter(cloneDeep(resp.result))
-          const menus = filterAsnycRouter(cloneDeep(resp.result))
-          menus.push({
+          const { menusData, silderMenus } = filterAsnycRouter(resp.result)
+          menusData.push({
             path: '/',
-            redirect: menus[0]?.path,
+            redirect: menusData[0]?.path,
             meta: {
               hideInMenu: true
             }
           })
-          this.menuData = menus
           this.siderMenus = silderMenus
           console.log('silderMenus', silderMenus)
-          res(menus)
+          res(menusData)
         }
       })
     }

@@ -1,5 +1,7 @@
-const pagesComponent = import.meta.glob('../views/**/*.vue', { eager: true });
+import { cloneDeep } from 'lodash-es'
+import NotFindPage from '@/views/404.vue'
 import { BlankLayoutPage, BasicLayoutPage } from 'components/Layout'
+const pagesComponent = import.meta.glob('../views/**/*.vue', { eager: true });
 
 /**
  * 权限信息
@@ -155,18 +157,19 @@ const resolveComponent = (name: any) => {
   return !!importPage ? importPage.default : undefined
 }
 
-const findChildrenRoute = (code: string, url: string): MenuItem[] => {
+const findChildrenRoute = (code: string, url: string, routes: any[] = []): MenuItem[] => {
   if (extraRouteObj[code]) {
-    return extraRouteObj[code].children.map((route: MenuItem) => {
+    const extraRoutes = extraRouteObj[code].children.map((route: MenuItem) => {
       return {
         url: `${url}/${route.code}`,
-        code: route.code,
+        code: `${code}/${route.code}`,
         name: route.name,
         isShow: false
       }
     })
+    return [...routes, ...extraRoutes]
   }
-  return []
+  return routes
 }
 
 const findDetailRouteItem = (code: string, url: string): Partial<MenuItem> | null => {
@@ -174,6 +177,7 @@ const findDetailRouteItem = (code: string, url: string): Partial<MenuItem> | nul
   if (detailComponent) {
     return {
       url: `${url}/Detail/:id`,
+      code: `${code}/Detail`,
       component: detailComponent,
       name: '详情信息',
       isShow: false
@@ -194,36 +198,54 @@ const findDetailRoutes = (routes: any[]): any[] => {
   return newRoutes
 }
 
-export function filterAsnycRouter(asyncRouterMap: any, parentCode = '', level = 1) {
-
-  return asyncRouterMap.map((route: any) => {
-
-    route.path = `${route.url}`
-    route.meta = {
-      icon: route.icon,
-      title: route.name,
-      hideInMenu: route.isShow === false
+export function filterAsnycRouter(asyncRouterMap: any, parentCode = '', level = 1): { menusData: any, silderMenus: any } {
+  const _asyncRouterMap = cloneDeep(asyncRouterMap)
+  const menusData: any[] = []
+  const silderMenus: any[] = []
+  _asyncRouterMap.forEach((route: any) => {
+    const _route: any = {
+      path: `${route.url}`,
+      meta: {
+        icon: route.icon,
+        title: route.name,
+        hideInMenu: route.isShow === false,
+        buttons: route.buttons || []
+      }
     }
 
+    const silder = {..._route}
+
     // 查看是否有隐藏子路由
-    const extraChildren = findChildrenRoute(route.code, route.url)
-    route.children = route.children && route.children.length ? [...route.children, ...extraChildren] : extraChildren
+    route.children = findChildrenRoute(route.code, route.url, route.children)
     route.children = findDetailRoutes(route.children)
     if (route.children && route.children.length) {
       // TODO 查看是否具有详情页
-      route.children = filterAsnycRouter(route.children, `${parentCode}/${route.code}`, level + 1)
-      const showChildren = route.children.some((r: any) => !r.meta.hideInMenu)
+      const { menusData: _menusData, silderMenus: _silderMenus } = filterAsnycRouter(route.children, `${parentCode}/${route.code}`, level + 1)
+      _route.children = _menusData
+      silder.children = _silderMenus
+      const showChildren = _route.children.some((r: any) => !r.meta.hideInMenu)
       if (showChildren) {
-        route.component = () => level === 1 ? BasicLayoutPage : BlankLayoutPage
-        route.redirect = route.children[0].url
+        _route.component = () => level === 1 ? BasicLayoutPage : BlankLayoutPage
+        _route.redirect = route.children[0].url
       } else {
-        route.component = resolveComponent(route.code) || BlankLayoutPage;
+        const myComponent = resolveComponent(route.code)
+        _route.component = myComponent ? myComponent : BlankLayoutPage;
+        if (!!myComponent) {
+          _route.component = myComponent;
+          _route.children.map((r: any) => menusData.push(r))
+          delete _route.children
+        } else {
+          _route.component = BlankLayoutPage
+        }
       }
     } else {
-      console.log(route.code)
-      route.component = route.component || resolveComponent(route.code) || BlankLayoutPage;
+      _route.component = route.component || resolveComponent(route.code) || BlankLayoutPage;
     }
-    delete route.name
-    return route
+    menusData.push(_route)
+    silderMenus.push(silder)
   })
+  return {
+    menusData,
+    silderMenus
+  }
 }

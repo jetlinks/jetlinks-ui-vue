@@ -1,22 +1,27 @@
 <template>
-  <div class='search'>
-    <Search
-      :columns='columns'
-      target='device-instance-search'
-      @search='search'
-    />
-    <Search
-      type='simple'
-      :columns='columns'
-      target='product'
-      @search='search'
-    />
-  </div>
+  <BasicLayoutPage
+
+  >
+    <div class='search'>
+      <Search
+        :columns='columns'
+        target='device-instance-search'
+        @search='search'
+      />
+      <Search
+        type='simple'
+        :columns='columns'
+        target='product'
+        @search='search'
+      />
+    </div>
+  </BasicLayoutPage>
 </template>
 
 <script setup name='demoSearch'>
 
 import { category } from '../../api/device/product'
+import BasicLayoutPage from '@/components/Layout/BasicLayoutPage.vue'
 
 const columns = [
   {

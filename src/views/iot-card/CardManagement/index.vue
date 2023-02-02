@@ -1,6 +1,6 @@
 <!-- 物联卡管理 -->
 <template>
-    <div class="page-container">
+    <page-container class="container">
         <Search
             :columns="columns"
             target="iot-card-management-search"
@@ -323,7 +323,7 @@
             :data="current"
             @change="saveChange"
         />
-    </div>
+    </page-container>
 </template>
 
 <script setup lang="ts">
@@ -539,10 +539,7 @@ const getActions = (
             icon: 'EyeOutlined',
             onClick: () => {
                 router.push({
-                    path: '/iot-card/CardManagement/Detail',
-                    query: {
-                        id: data.id,
-                    },
+                    path: `/iot-card/CardManagement/detail/${data.id}`,
                 });
             },
         },
@@ -795,7 +792,7 @@ const handelRemove = async () => {
 </script>
 
 <style scoped lang="less">
-.page-container {
+.container {
     .search {
         width: calc(100% - 330px);
     }

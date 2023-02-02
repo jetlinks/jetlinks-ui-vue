@@ -140,7 +140,7 @@
                             </a-form-item>
                             <a-form-item>
                                 <a-button
-                                    v-if="current !== 1 && modeType !== 'view'"
+                                    v-if="current !== 1 && view === 'false'"
                                     type="primary"
                                     html-type="submit"
                                     >保存</a-button
@@ -179,7 +179,7 @@
                 下一步
             </a-button>
             <a-button
-                v-if="current === 1 && modeType !== 'view'"
+                v-if="current === 1 && view === 'false'"
                 type="primary"
                 style="margin-right: 8px"
                 @click="saveData"
@@ -297,7 +297,7 @@ interface FormState {
     description: string;
 }
 const route = useRoute();
-const modeType = route.params.type as string;
+const view = route.query.view as string;
 const id = route.params.id as string;
 
 const props = defineProps({
@@ -338,9 +338,7 @@ const onFinish = async (values: any) => {
     };
     if (networkCurrent.value) params.channelId = networkCurrent.value;
     const resp =
-        !!id && modeType !== 'add'
-            ? await update({ ...params, id })
-            : await save(params);
+        id === ':id' ? await save(params) : await update({ ...params, id });
     if (resp.status === 200) {
         message.success('操作成功！');
         // if (params.get('save')) {
@@ -392,7 +390,7 @@ const saveData = async () => {
 
 const addNetwork = () => {
     // const url = this.$store.state.permission.routes['Link/Type/Detail']
-    const url = '/demo';
+    const url = '/iot/link/type/detail/:id';
     const tab = window.open(
         `${window.location.origin + window.location.pathname}#${url}?type=${
             NetworkTypeMapping.get(props.provider?.id) || ''
@@ -421,7 +419,7 @@ onMounted(() => {
     if (props.provider.id === 'official-edge-gateway') {
         queryNetworkList(props.provider.id, '');
     }
-    if (modeType !== 'add') {
+    if (id !== ':id') {
         formState.value = {
             name: props.data.name,
             description: props.data?.description || '',
