@@ -162,7 +162,7 @@ const findChildrenRoute = (code: string, url: string, routes: any[] = []): MenuI
     const extraRoutes = extraRouteObj[code].children.map((route: MenuItem) => {
       return {
         url: `${url}/${route.code}`,
-        code: route.code,
+        code: `${code}/${route.code}`,
         name: route.name,
         isShow: false
       }
