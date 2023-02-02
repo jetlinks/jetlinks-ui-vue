@@ -26,7 +26,7 @@
                     >
                         <template #img>
                             <slot name="img">
-                                <img :src="getImage('/device-access.png')" />
+                                <img :src="getImage('/protocol.png')" />
                             </slot>
                         </template>
                         <template #content>
@@ -232,7 +232,7 @@ const getActions = (
             },
             icon: 'EditOutlined',
             onClick: () => {
-                handlEdit(data.id);
+                handlEdit(data);
             },
         },
         {
@@ -241,15 +241,13 @@ const getActions = (
             popConfirm: {
                 title: '确认删除?',
                 onConfirm: async () => {
-                    console.log(11, data.id);
-
-                    // const res = await remove(data.id);
-                    // if (res.success) {
-                    //     message.success('操作成功');
-                    //     tableRef.value.reload();
-                    // } else {
-                    //     message.error('操作失败！');
-                    // }
+                    const res = await remove(data.id);
+                    if (res.success) {
+                        message.success('操作成功');
+                        tableRef.value.reload();
+                    } else {
+                        message.error('操作失败！');
+                    }
                 },
             },
             icon: 'DeleteOutlined',
@@ -259,16 +257,11 @@ const getActions = (
 };
 
 const handlAdd = () => {
-    console.log(11);
+    current.value = {};
     visible.value = true;
 };
-const handlEdit = (id: string) => {
-    // router.push(`/link/accessConfig/detail/edit/${id}`);
-    // router.push({
-    //     path: `/iot/link/accessConfig/detail/${id}`,
-    //     query: { view: false },
-    // });
-    console.log(id);
+const handlEdit = (data: object) => {
+    current.value = data;
     visible.value = true;
 };
 
