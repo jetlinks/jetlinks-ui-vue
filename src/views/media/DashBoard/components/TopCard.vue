@@ -19,7 +19,8 @@
         </div>
         <div class="top-card-footer">
             <template v-for="(item, index) in footer" :key="index">
-                <a-badge :text="item.title" :status="item.status" />
+                <span v-if="!item.status">{{ item.title }}</span>
+                <a-badge v-else :text="item.title" :status="item.status" />
                 <div class="footer-item-value">{{ item.value }}</div>
             </template>
         </div>
