@@ -229,7 +229,6 @@ const table = reactive({
         };
     },
     addChildren: (row: any) => {
-        console.log(row);
         router.push(
             `/system/Menu/detail/:id?pid=${row.id}&basePath=${
                 row.url || ''
