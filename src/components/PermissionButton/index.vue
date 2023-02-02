@@ -4,14 +4,14 @@
       <a-popconfirm v-bind="popConfirm" :disabled="!isPermission || props.disabled">
         <a-tooltip v-if="tooltip" v-bind="tooltip">
           <slot v-if="noButton"></slot>
-          <a-button v-else v-bind="buttonProps" :disabled="_isPermission" @click="handleClick">
+          <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" @click="handleClick">
             <slot></slot>
             <template #icon>
               <slot name="icon"></slot>
             </template>
           </a-button>
         </a-tooltip>
-        <a-button v-else v-bind="buttonProps" :disabled="_isPermission" @click="handleClick">
+        <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" @click="handleClick">
           <slot></slot>
           <template #icon>
             <slot name="icon"></slot>
@@ -22,7 +22,7 @@
     <template v-else-if="tooltip">
       <a-tooltip v-bind="tooltip">
         <slot v-if="noButton"></slot>
-        <a-button v-else v-bind="buttonProps" :disabled="_isPermission" @click="handleClick">
+        <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" @click="handleClick">
           <slot></slot>
           <template #icon>
             <slot name="icon"></slot>
@@ -32,7 +32,7 @@
     </template>
     <template v-else>
       <slot v-if="noButton"></slot>
-      <a-button v-else v-bind="buttonProps" :disabled="_isPermission" @click="handleClick">
+      <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" @click="handleClick">
         <slot></slot>
         <template #icon>
           <slot name="icon"></slot>
@@ -42,7 +42,7 @@
   </template>
   <a-tooltip v-else title="没有权限">
     <slot v-if="noButton"></slot>
-    <a-button v-else v-bind="buttonProps" :disabled="_isPermission" @click="handleClick">
+    <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" @click="handleClick">
       <slot></slot>
       <template #icon>
         <slot name="icon"></slot>
@@ -51,7 +51,9 @@
   </a-tooltip>
 </template>
 <script setup lang="ts" name="PermissionButton">
-import type { ButtonProps, TooltipProps, PopconfirmProps } from 'ant-design-vue'
+import { PropType } from 'vue'
+import { TooltipProps, PopconfirmProps } from 'ant-design-vue/es'
+import { buttonProps } from 'ant-design-vue/es/button/button'
 import { usePermissionStore } from '@/store/permission';
 
 interface PermissionButtonEmits {
@@ -60,16 +62,33 @@ interface PermissionButtonEmits {
 
 const emits = defineEmits<PermissionButtonEmits>()
 
-interface PermissionButtonProps extends ButtonProps {
-  tooltip?: TooltipProps;
-  popConfirm?: PopconfirmProps;
-  hasPermission?: string | Array<string>;
-  noButton?: boolean;
-}
-const props = withDefaults(defineProps<PermissionButtonProps>(), {
-  noButton: false
+// interface PermissionButtonProps extends ButtonProps {
+//   tooltip?: TooltipProps;
+//   popConfirm?: PopconfirmProps;
+//   hasPermission?: string | Array<string>;
+//   noButton?: boolean;
+// }
+// const props = withDefaults(defineProps<PermissionButtonProps>(), {
+//   noButton: false,
+// })
+const props = defineProps({
+  noButton: {
+    type: Boolean,
+    default: () => false
+  },
+  tooltip: {
+    type: Object as PropType<TooltipProps>,
+  },
+  popConfirm: {
+    type: Object as PropType<PopconfirmProps>,
+  },
+  hasPermission: {
+    type: String || Array,
+  },
+  ...buttonProps()
 })
-const { tooltip, popConfirm, hasPermission, noButton, ...buttonProps } = props;
+
+const { tooltip, popConfirm, hasPermission, noButton, ..._buttonProps } = props;
 
 const permissionStore = usePermissionStore()
 
@@ -82,7 +101,7 @@ const isPermission = computed(() => {
 const _isPermission = computed(() =>
   'hasPermission' in props && isPermission.value
     ? 'disabled' in buttonProps
-      ? buttonProps.disabled
+      ? buttonProps.disabled as boolean
       : false
     : true
 )
