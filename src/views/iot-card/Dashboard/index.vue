@@ -1,109 +1,145 @@
 <!-- 物联卡-仪表盘 -->
 <template>
-    <page-container class="container">
-        <a-card>
-            <a-row :gutter="20" :style="{ marginBottom: '20px' }">
-                <a-col :span="24"><Guide title="数据统计" /></a-col>
-                <a-col :span="8">
-                    <div class="data-statistics-item">
-                        <div class="info" style="width: 100%">
-                            <div class="label">昨日流量消耗</div>
-                            <a-tooltip placement="bottomLeft">
-                                <template #title>
-                                    <span>{{ dayTotal }} M</span>
-                                </template>
-                                <div class="value">
-                                    {{ dayTotal }}
-                                    <span class="unit">M</span>
-                                </div>
-                            </a-tooltip>
+    <page-container>
+        <div class="card-dashboard-container">
+            <a-card style="margin-bottom: 24px">
+                <a-row :gutter="24">
+                    <a-col :span="24"><Guide title="数据统计" /></a-col>
+                    <a-col :span="8">
+                        <div class="data-statistics-item">
+                            <div class="info" style="width: 100%">
+                                <div class="label">昨日流量消耗</div>
+                                <a-tooltip placement="bottomLeft">
+                                    <template #title>
+                                        <span>{{ dayTotal }} M</span>
+                                    </template>
+                                    <div class="value">
+                                        {{ dayTotal }}
+                                        <span class="unit">M</span>
+                                    </div>
+                                </a-tooltip>
+                            </div>
+                            <LineChart
+                                color="#FBA500"
+                                :chartData="dayOptions"
+                            />
                         </div>
-                        <LineChart color="#FBA500" :chartData="dayOptions" />
-                    </div>
-                </a-col>
-                <a-col :span="8">
-                    <div class="data-statistics-item">
-                        <div class="info" style="width: 100%">
-                            <div class="label">当月流量消耗</div>
-                            <a-tooltip placement="bottomLeft">
-                                <template #title>
-                                    <span>{{ monthTotal }} M</span>
-                                </template>
-                                <div class="value">
-                                    {{ monthTotal }}
-                                    <span class="unit">M</span>
-                                </div>
-                            </a-tooltip>
+                    </a-col>
+                    <a-col :span="8">
+                        <div class="data-statistics-item">
+                            <div class="info" style="width: 100%">
+                                <div class="label">当月流量消耗</div>
+                                <a-tooltip placement="bottomLeft">
+                                    <template #title>
+                                        <span>{{ monthTotal }} M</span>
+                                    </template>
+                                    <div class="value">
+                                        {{ monthTotal }}
+                                        <span class="unit">M</span>
+                                    </div>
+                                </a-tooltip>
+                            </div>
+                            <LineChart :chartData="monthOptions" />
                         </div>
-                        <LineChart :chartData="monthOptions" />
-                    </div>
-                </a-col>
-                <a-col :span="8">
-                    <div class="data-statistics-item">
-                        <div class="info" style="width: 100%">
-                            <div class="label">本年流量消耗</div>
-                            <a-tooltip placement="bottomLeft">
-                                <template #title>
-                                    <span>{{ yearTotal }} M</span>
-                                </template>
-                                <div class="value">
-                                    {{ yearTotal }}
-                                    <span class="unit">M</span>
-                                </div>
-                            </a-tooltip>
+                    </a-col>
+                    <a-col :span="8">
+                        <div class="data-statistics-item">
+                            <div class="info" style="width: 100%">
+                                <div class="label">本年流量消耗</div>
+                                <a-tooltip placement="bottomLeft">
+                                    <template #title>
+                                        <span>{{ yearTotal }} M</span>
+                                    </template>
+                                    <div class="value">
+                                        {{ yearTotal }}
+                                        <span class="unit">M</span>
+                                    </div>
+                                </a-tooltip>
+                            </div>
+                            <LineChart
+                                color="#58E1D3"
+                                :chartData="yearOptions"
+                            />
                         </div>
-                        <LineChart color="#58E1D3" :chartData="yearOptions" />
-                    </div>
-                </a-col>
-            </a-row>
-            <a-row :gutter="20">
+                    </a-col>
+                </a-row>
+            </a-card>
+            <a-row :gutter="24">
                 <a-col :span="16">
-                    <Guide title="流量统计">
-                        <template #extra></template>
-                    </Guide>
-                    <LineChart
-                        :showX="true"
-                        :showY="true"
-                        style="min-height: 450px"
-                        :chartData="yearOptions"
-                    />
+                    <div class="static-card">
+                        <Guide title="流量统计">
+                            <template #extra>
+                                <TimeSelect
+                                    :type="'week'"
+                                    :quickBtnList="quickBtnList"
+                                    @change="getEcharts"
+                                />
+                            </template>
+                        </Guide>
+                        <LineChart
+                            v-if="flowData.length !== 0"
+                            :showX="true"
+                            :showY="true"
+                            style="min-height: 490px"
+                            :chartData="flowData"
+                        />
+                        <div class="empty-body" v-else>
+                            <a-empty :image="Empty.PRESENTED_IMAGE_SIMPLE" />
+                        </div>
+                    </div>
                 </a-col>
                 <a-col :span="8">
-                    <Guide title="流量使用TOP10">
-                        <template #extra></template>
-                    </Guide>
-                    <div class="rankingList" style="height: 400px">
+                    <div class="static-card">
+                        <Guide title="流量使用TOP10">
+                            <template #extra>
+                                <TimeSelect
+                                    :quickBtn="false"
+                                    :type="'week'"
+                                    @change="getTopRang"
+                            /></template>
+                        </Guide>
                         <div
-                            v-for="(item, index) in topList"
-                            :key="item.cardNum"
-                            class="rankItem"
+                            v-if="topList.length !== 0"
+                            class="rankingList"
+                            style="min-height: 490px"
                         >
                             <div
-                                class="number"
-                                :class="`number-item-${index + 1}`"
+                                v-for="(item, index) in topList"
+                                :key="item.cardNum"
+                                class="rankItem"
                             >
-                                {{ index + 1 }}
+                                <div
+                                    class="number"
+                                    :class="`number-item-${index + 1}`"
+                                >
+                                    {{ index + 1 }}
+                                </div>
+                                <div class="cardNum">{{ item.cardNum }}</div>
+                                <div class="progress">
+                                    <a-progress
+                                        :strokeColor="'#ADC6FF'"
+                                        :trailColor="'#E0E4E8'"
+                                        :strokeLinecap="'butt'"
+                                        :showInfo="false"
+                                        :percent="
+                                            Math.ceil(
+                                                (item.value / topTotal) * 100,
+                                            )
+                                        "
+                                    ></a-progress>
+                                </div>
+                                <div class="total">
+                                    {{ item?.value?.toFixed(2) }} M
+                                </div>
                             </div>
-                            <div class="cardNum">{{ item.cardNum }}</div>
-                            <div class="progress">
-                                <a-progress
-                                    :strokeColor="'#ADC6FF'"
-                                    :trailColor="'#E0E4E8'"
-                                    :strokeLinecap="'butt'"
-                                    :showInfo="false"
-                                    :percent="
-                                        Math.ceil((item.value / topTotal) * 100)
-                                    "
-                                ></a-progress>
-                            </div>
-                            <div class="total">
-                                {{ item?.value?.toFixed(2) }} M
-                            </div>
+                        </div>
+                        <div class="empty-body" v-else>
+                            <a-empty :image="Empty.PRESENTED_IMAGE_SIMPLE" />
                         </div>
                     </div>
                 </a-col>
             </a-row>
-        </a-card>
+        </div>
     </page-container>
 </template>
 
@@ -112,6 +148,8 @@ import Guide from '../components/Guide.vue';
 import LineChart from '../components/LineChart.vue';
 import moment from 'moment';
 import { queryFlow } from '@/api/iot-card/home';
+import TimeSelect from '@/views/iot-card/components/TimeSelect.vue';
+import { Empty } from 'ant-design-vue';
 
 const dayTotal = ref(0);
 const monthTotal = ref(0);
@@ -123,6 +161,13 @@ const yearOptions = ref<any[]>([]);
 const flowData = ref<any[]>([]);
 const topList = ref<any[]>([]);
 const topTotal = ref(0);
+
+const quickBtnList = [
+    { label: '昨日', value: 'yesterday' },
+    { label: '近一周', value: 'week' },
+    { label: '近一月', value: 'month' },
+    { label: '近一年', value: 'year' },
+];
 
 const getData = (
     start: number,
@@ -189,12 +234,11 @@ const getDataTotal = () => {
  * @param data
  */
 const getEcharts = (data: any) => {
-    console.log(data);
-    let startTime = data.time.start;
-    let endTime = data.time.end;
-    if (data.time.type === 'week' || data.time.type === 'month') {
-        startTime = moment(data.time.start).startOf('days').valueOf();
-        endTime = moment(data.time.end).startOf('days').valueOf();
+    let startTime = data.start;
+    let endTime = data.end;
+    if (data.type === 'week' || data.type === 'month') {
+        startTime = moment(data.start).startOf('days').valueOf();
+        endTime = moment(data.end).startOf('days').valueOf();
     }
     getData(startTime, endTime).then((resp) => {
         flowData.value = resp.sortArray;
@@ -206,8 +250,10 @@ const getEcharts = (data: any) => {
  * @param star 开始时间
  * @param end 结束时间
  */
-const getTopRang = (star: number, end: number) => {
-    queryFlow(star, end, { orderBy: 'usage' }).then((resp: any) => {
+const getTopRang = (data: any) => {
+    let startTime = data.start;
+    let endTime = data.end;
+    queryFlow(startTime, endTime, { orderBy: 'usage' }).then((resp: any) => {
         if (resp.status === 200) {
             const arr = resp.result
                 .slice(0, 10)
@@ -219,17 +265,9 @@ const getTopRang = (star: number, end: number) => {
 };
 
 getDataTotal();
-
-// getEcharts(data);
-
-const dTime = [
-    moment().subtract(6, 'days').startOf('day').valueOf(),
-    moment().endOf('day').valueOf(),
-];
-getTopRang(dTime[0], dTime[1]);
 </script>
 <style scoped lang="less">
-.container {
+.card-dashboard-container {
     .data-statistics-item {
         height: 140px;
         background: #fcfcfc;
@@ -258,6 +296,21 @@ getTopRang(dTime[0], dTime[1]);
                 }
             }
         }
+    }
+
+    .static-card {
+        background-color: #fff;
+        padding: 24px;
+    }
+
+    .empty-body {
+        height: 490px;
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        justify-content: center;
+        width: 100%;
+        // height: 100%;
     }
 
     .rankingList {

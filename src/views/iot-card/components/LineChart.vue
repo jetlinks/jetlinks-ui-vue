@@ -39,7 +39,7 @@ const createChart = () => {
 
         const options = {
             grid: {
-                left: '7%',
+                left: '5%',
                 right: '5%',
                 top: '5%',
                 bottom: '5%',

@@ -1,6 +1,9 @@
 <template>
     <div class="home-title">
-        <div>{{ title }}</div>
+        <div v-if="title">{{ title }}</div>
+        <div v-else>
+            <slot name="title"></slot>
+        </div>
         <div class="extra-text">
             <slot name="extra"></slot>
         </div>
@@ -10,7 +13,7 @@
 
 <script setup lang="ts" name="Guide">
 interface guideProps {
-    title: string;
+    title?: string;
     english?: string;
 }
 
