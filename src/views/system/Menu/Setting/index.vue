@@ -22,7 +22,12 @@
                             </a-tooltip>
                         </div>
                         <div class="title-func">
-                            <a-button type="primary" ghost>一键拷贝</a-button>
+                            <a-button
+                                type="primary"
+                                @click="dialogShow = true"
+                                ghost
+                                >一键拷贝</a-button
+                            >
                         </div>
                     </div>
                     <div class="content">
@@ -37,11 +42,11 @@
                         </a-input>
                         <a-tree
                             autoExpandParent
-                            draggable
                             :tree-data="transfer.data.leftTreeData"
+                            draggable
                         >
                             <template #title="row">
-                                <span>{{ row.name }}</span>
+                                <div>{{ row.name }}</div>
                             </template>
                         </a-tree>
                     </div>
@@ -77,8 +82,7 @@
                             draggable
                             autoExpandParent
                             :tree-data="transfer.data.rightTreeData"
-                            @drop="transfer.onDrop"
-                            @dragenter="transfer.onDragEnter"
+                            @drop="transfer.onRightDrop"
                         >
                             <template #title="row">
                                 <div
@@ -110,6 +114,18 @@
                     </div>
                 </div>
             </div>
+
+            <div class="dialogs">
+                <a-modal
+                    v-model:visible="dialogShow"
+                    title="一键拷贝"
+                    @ok="transfer.copy"
+                    cancelText="取消"
+                    okText="确认"
+                >
+                    <p>源数据将会覆盖当前的系统菜单数据，确定要一键拷贝吗？</p>
+                </a-modal>
+            </div>
         </a-card>
     </div>
 </template>
@@ -124,14 +140,14 @@ import {
 
 import { getMenuTree_api } from '@/api/system/menu';
 import { getSystemPermission as getSystemPermission_api } from '@/api/initHome';
-import { filterMenu } from './utils';
+import { filterMenu, getKeys, loop } from './utils';
 import BaseTreeData from './baseMenu';
 import type {
-    AntTreeNodeDragEnterEvent,
     AntTreeNodeDropEvent,
     TreeDataItem,
     TreeProps,
 } from 'ant-design-vue/es/tree';
+
 const transfer = {
     data: reactive({
         // 左侧树
@@ -142,8 +158,19 @@ const transfer = {
         rightSearchValue: '',
         rightTreeData: [] as any[],
     }),
+    leftSourceData: [] as any[],
+    rightSourceData: [] as any[],
 
     init: () => {
+        // 源菜单
+        const sourceMenu = getSystemPermission_api().then((resp: any) => {
+            const newTree = filterMenu(
+                resp.result.map((item: any) => JSON.parse(item).id),
+                BaseTreeData,
+            );
+            transfer.leftSourceData = [...newTree];
+            transfer.data.leftTreeData = newTree;
+        });
         const params = {
             paging: false,
             terms: [
@@ -165,35 +192,33 @@ const transfer = {
             ],
         };
         // 系统菜单
-        getMenuTree_api(params).then((resp: any) => {
+        const systemMenu = getMenuTree_api(params).then((resp: any) => {
             transfer.data.rightTreeData = resp.result;
-            transfer.data.rightTreeData[2].disabled = true;
+            transfer.rightSourceData = [...resp.result];
         });
-        // 源菜单
-        getSystemPermission_api().then((resp: any) => {
-            const newTree = filterMenu(
-                resp.result.map((item: any) => JSON.parse(item).id),
-                BaseTreeData,
-            );
-            transfer.data.leftTreeData = newTree;
-        });
+        // 当两个菜单的源数据都获取到之后，对左侧菜单进行更新，更新每项是否需要禁用
+        Promise.all([sourceMenu, systemMenu]).then(() => transfer.updateTree());
+    },
+    copy: () => {
+        transfer.data.rightTreeData = [...toRaw(transfer.data.leftTreeData)];
+        dialogShow.value = false;
     },
     removeItem: (row: any) => {
-        transfer.loop(
+        loop(
             transfer.data.rightTreeData,
             row.id,
             (item: TreeDataItem, index: number, arr: TreeProps['treeData']) => {
                 arr?.splice(index, 1);
             },
         );
+        transfer.updateTree();
     },
-    onDrop: (info: AntTreeNodeDropEvent) => {
+    onRightDrop: (info: AntTreeNodeDropEvent) => {
         const dropKey = info.node.id;
         const dragKey = info.dragNode.id;
         const dropPos = (info.node.pos && info.node.pos.split('-')) || [];
         const dropPosition =
             info.dropPosition - Number(dropPos[dropPos.length - 1]);
-        const loop = transfer.loop;
         const data = [...transfer.data.rightTreeData];
         let dragObj: TreeDataItem = { key: '' };
         loop(
@@ -245,23 +270,13 @@ const transfer = {
         }
         transfer.data.rightTreeData = data;
     },
-    onDragEnter: (info: AntTreeNodeDragEnterEvent) => {
-        // console.log('onDragEnter', info);
-    },
-
-    // 树辅助函数
-    loop: (data: TreeProps['treeData'], id: string | number, callback: any) => {
-        data?.forEach((item, index) => {
-            if (item.id === id) {
-                return callback(item, index, data);
-            }
-            if (item.children) {
-                return transfer.loop(item.children, id, callback);
-            }
-        });
+    updateTree: () => {
+        console.log(getKeys(transfer.data.rightTreeData));
     },
 };
 transfer.init();
+
+const dialogShow = ref<boolean>(false);
 </script>
 
 <style lang="less" scoped>
