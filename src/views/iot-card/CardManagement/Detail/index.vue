@@ -13,21 +13,24 @@
                 <a-card>
                     <a-descriptions size="small" :column="3" bordered>
                         <template #title>
-                            <span key="1">基本信息</span>
-                            <a-button
-                                key="2"
-                                type="link"
-                                @click="
-                                    () => {
-                                        visible = true;
-                                        current = detail;
-                                        saveType = 'edit';
-                                    }
-                                "
-                            >
-                                <AIcon type="EditOutlined"></AIcon>
-                                编辑
-                            </a-button>
+                            <Guide>
+                                <template #title>
+                                    <span>基本信息</span>
+                                    <a-button
+                                        type="link"
+                                        @click="
+                                            () => {
+                                                visible = true;
+                                                current = detail;
+                                                saveType = 'edit';
+                                            }
+                                        "
+                                    >
+                                        <AIcon type="EditOutlined"></AIcon>
+                                        编辑
+                                    </a-button>
+                                </template>
+                            </Guide>
                         </template>
 
                         <a-descriptions-item label="卡号">{{
@@ -91,27 +94,82 @@
             </a-col>
             <a-col :span="24">
                 <!-- 流量统计 -->
-                <a-row :gutter="40">
+                <a-row :gutter="24">
                     <a-col :span="16">
                         <div class="card">
                             <Guide title="流量统计">
-                                <template #extra></template>
+                                <template #extra>
+                                    <TimeSelect
+                                        :type="'week'"
+                                        :quickBtnList="quickBtnList"
+                                        @change="getEcharts"
+                                    />
+                                </template>
                             </Guide>
                             <LineChart
                                 :showX="true"
                                 :showY="true"
-                                style="min-height: 450px"
+                                style="min-height: 490px"
                                 :chartData="flowData"
                             />
                         </div>
                     </a-col>
                     <a-col :span="8">
                         <div class="card">
-                            <a-row :gutter="20">
-                                <a-col :span="24">
-                                    <Guide title="数据统计" />
-                                </a-col>
-                            </a-row>
+                            <Guide title="数据统计" />
+                            <div class="static-info" style="min-height: 490px">
+                                <div class="data-statistics-item">
+                                    <div class="info" style="width: 100%">
+                                        <div class="label">昨日流量消耗</div>
+                                        <a-tooltip placement="bottomLeft">
+                                            <template #title>
+                                                <span>{{ dayTotal }} M</span>
+                                            </template>
+                                            <div class="value">
+                                                {{ dayTotal }}
+                                                <span class="unit">M</span>
+                                            </div>
+                                        </a-tooltip>
+                                    </div>
+                                    <LineChart
+                                        color="#FBA500"
+                                        :chartData="dayOptions"
+                                    />
+                                </div>
+                                <div class="data-statistics-item">
+                                    <div class="info" style="width: 100%">
+                                        <div class="label">当月流量消耗</div>
+                                        <a-tooltip placement="bottomLeft">
+                                            <template #title>
+                                                <span>{{ monthTotal }} M</span>
+                                            </template>
+                                            <div class="value">
+                                                {{ monthTotal }}
+                                                <span class="unit">M</span>
+                                            </div>
+                                        </a-tooltip>
+                                    </div>
+                                    <LineChart :chartData="monthOptions" />
+                                </div>
+                                <div class="data-statistics-item">
+                                    <div class="info" style="width: 100%">
+                                        <div class="label">本年流量消耗</div>
+                                        <a-tooltip placement="bottomLeft">
+                                            <template #title>
+                                                <span>{{ yearTotal }} M</span>
+                                            </template>
+                                            <div class="value">
+                                                {{ yearTotal }}
+                                                <span class="unit">M</span>
+                                            </div>
+                                        </a-tooltip>
+                                    </div>
+                                    <LineChart
+                                        color="#58E1D3"
+                                        :chartData="yearOptions"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </a-col>
                 </a-row>
@@ -127,6 +185,8 @@ import { queryDetail } from '@/api/iot-card/cardManagement';
 import Save from '../Save.vue';
 import Guide from '@/views/iot-card/components/Guide.vue';
 import LineChart from '@/views/iot-card/components/LineChart.vue';
+import { queryFlow } from '@/api/iot-card/home';
+import TimeSelect from '@/views/iot-card/components/TimeSelect.vue';
 
 const route = useRoute();
 
@@ -136,6 +196,19 @@ const saveType = ref<string>('');
 const detail = ref<any>({});
 
 const flowData = ref<any[]>([]);
+const dayTotal = ref(0);
+const monthTotal = ref(0);
+const yearTotal = ref(0);
+const dayOptions = ref<any[]>([]);
+const monthOptions = ref<any[]>([]);
+const yearOptions = ref<any[]>([]);
+
+const quickBtnList = [
+    { label: '昨日', value: 'yesterday' },
+    { label: '近一周', value: 'week' },
+    { label: '近一月', value: 'month' },
+    { label: '近一年', value: 'year' },
+];
 
 const getDetail = () => {
     queryDetail(route.params.id).then((resp: any) => {
@@ -157,11 +230,123 @@ const saveChange = (val: any) => {
     }
 };
 
+const getData = (
+    start: number,
+    end: number,
+): Promise<{ sortArray: any[]; data: any[] }> => {
+    return new Promise((resolve) => {
+        queryFlow(start, end, {
+            orderBy: 'date',
+        }).then((resp: any) => {
+            if (resp.status === 200) {
+                const sortArray = resp.result.sort(
+                    (a: any, b: any) =>
+                        new Date(a.date).getTime() - new Date(b.date).getTime(),
+                );
+                resolve({
+                    sortArray,
+                    data: sortArray.map(
+                        (item: any) => item.value && item.value.toFixed(2),
+                    ),
+                });
+            }
+        });
+    });
+};
+
+/**
+ * 查询今日、当月、本年数据
+ */
+const getDataTotal = () => {
+    const dTime = [
+        moment(new Date()).startOf('day').valueOf(),
+        moment(new Date()).endOf('day').valueOf(),
+    ];
+    const mTime = [
+        moment().startOf('month').valueOf(),
+        moment().endOf('month').valueOf(),
+    ];
+    const yTime = [
+        moment().startOf('year').valueOf(),
+        moment().endOf('year').valueOf(),
+    ];
+    getData(dTime[0], dTime[1]).then((resp) => {
+        dayTotal.value = resp.data
+            .reduce((r, n) => r + Number(n), 0)
+            .toFixed(2);
+        dayOptions.value = resp.sortArray;
+    });
+    getData(mTime[0], mTime[1]).then((resp) => {
+        monthTotal.value = resp.data
+            .reduce((r, n) => r + Number(n), 0)
+            .toFixed(2);
+        monthOptions.value = resp.sortArray;
+    });
+    getData(yTime[0], yTime[1]).then((resp) => {
+        yearTotal.value = resp.data
+            .reduce((r, n) => r + Number(n), 0)
+            .toFixed(2);
+        yearOptions.value = resp.sortArray;
+    });
+};
+
+/**
+ * 流量统计
+ * @param data
+ */
+const getEcharts = (data: any) => {
+    let startTime = data.start;
+    let endTime = data.end;
+    if (data.type === 'week' || data.type === 'month') {
+        startTime = moment(data.start).startOf('days').valueOf();
+        endTime = moment(data.end).startOf('days').valueOf();
+    }
+    getData(startTime, endTime).then((resp) => {
+        flowData.value = resp.sortArray;
+    });
+};
+
 getDetail();
+getDataTotal();
 </script>
 <style scoped lang="less">
 .card {
     padding: 24px;
     background-color: #fff;
+}
+
+.static-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    .data-statistics-item {
+        height: 140px;
+        background: #fcfcfc;
+        border: 1px solid #e0e4e8;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+
+        .info {
+            // width: 180px;
+            width: 28%;
+            .label {
+                font-size: 14px;
+                color: rgba(0, 0, 0, 0.64);
+            }
+            .value {
+                font-size: 32px;
+                font-weight: bold;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                .unit {
+                    font-size: 20px;
+                    font-weight: normal;
+                }
+            }
+        }
+    }
 }
 </style>
