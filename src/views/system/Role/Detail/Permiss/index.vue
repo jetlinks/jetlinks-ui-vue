@@ -26,7 +26,7 @@
 
         <a-card>
             <h5>权限分配</h5>
-            <PermissTree />
+            <PermissTree v-model:select-items="form.menus" />
 
             <a-button
                 type="primary"
@@ -39,12 +39,17 @@
 </template>
 
 <script setup lang="ts" name="RolePermiss">
-import { FormInstance } from 'ant-design-vue';
+import { FormInstance, message } from 'ant-design-vue';
 import PermissTree from '../components/PermissTree.vue';
 
-import { getRoleDetails_api } from '@/api/system/role';
+import {
+    getRoleDetails_api,
+    updateRole_api,
+    updatePrimissTree_api,
+} from '@/api/system/role';
 
 const route = useRoute();
+const router = useRouter();
 const roleId = route.params.id as string;
 
 // 表单相关
@@ -55,6 +60,7 @@ const form = reactive({
         name: '',
         description: '',
     },
+    menus: [],
     getForm: () => {
         getRoleDetails_api(roleId).then((resp) => {
             if (resp.status) {
@@ -62,7 +68,15 @@ const form = reactive({
             }
         });
     },
-    clickSave: () => {},
+    clickSave: () => {
+        const updateRole = updateRole_api(form.data);
+        const updateTree = updatePrimissTree_api(roleId, { menu: form.menus });
+
+        Promise.all([updateRole, updateTree]).then((resp) => {
+            message.success('操作成功');
+            router.push('/system/Role');
+        });
+    },
 });
 
 form.getForm();
