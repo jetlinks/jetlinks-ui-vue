@@ -17,6 +17,7 @@
             }"
             @cancelSelect="cancelSelect"
             :params="params"
+            :gridColumn="3"
         >
             <template #headerTitle>
                 <a-space>

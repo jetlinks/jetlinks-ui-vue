@@ -12,6 +12,7 @@
             :request="queryList"
             :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }"
             :params="params"
+            :gridColumn="3"
         >
             <template #headerTitle>
                 <a-space>
