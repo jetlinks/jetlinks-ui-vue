@@ -217,3 +217,28 @@ export const queryMetric = (deviceId: string, propertyId: string) => server.get(
  * @returns 
  */
 export const saveMetric = (deviceId: string, propertyId: string, data: Record<string, any>) => server.patch(`/device-instance/${deviceId}/metric/property/${propertyId}`, data)
+
+/**
+ * 解绑子设备
+ * @param deviceId 设备id
+ * @param childrenId 子设备id
+ * @param data 
+ * @returns 
+ */
+export const unbindDevice = (deviceId: string, childrenId: string, data: Record<string, any>) => server.post(`/device/gateway/${deviceId}/unbind/${childrenId}`, data)
+
+/**
+ * 批量解绑子设备
+ * @param deviceId 设备id
+ * @param data 
+ * @returns 
+ */
+export const unbindBatchDevice = (deviceId: string, data: Record<string, any>) => server.post(`/device/gateway/${deviceId}/unbind`, data)
+
+/**
+ * 子设备绑定
+ * @param deviceId 设备id
+ * @param data 
+ * @returns 
+ */
+export const bindDevice = (deviceId: string, data: Record<string, any>) => server.post(`/device/gateway/${deviceId}/bind`, data)

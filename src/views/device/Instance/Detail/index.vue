@@ -43,6 +43,7 @@ import { useInstanceStore } from '@/store/instance';
 import Info from './Info/index.vue';
 import Running from './Running/index.vue'
 import Metadata from '../../components/Metadata/index.vue';
+import ChildDevice from './ChildDevice/index.vue';
 import { _deploy, _disconnect } from '@/api/device/instance'
 import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
@@ -67,13 +68,18 @@ const list = [
     {
         key: 'Metadata',
         tab: '物模型'
+    },
+    {
+        key: 'ChildDevice',
+        tab: '子设备'
     }
 ]
 
 const tabs = {
   Info,
   Metadata,
-  Running
+  Running,
+  ChildDevice,
 }
 
 watch(
