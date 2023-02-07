@@ -1,7 +1,19 @@
 <template>
     <a-card class="device-product">
-        <Search :columns="query.columns" target="category" />
-        <JTable :columns="columns" :request="queryProductList" ref="tableRef">
+        <Search
+            :columns="query.columns"
+            target="product-manage"
+            @search="handleSearch"
+        />
+        <JTable
+            :columns="columns"
+            :request="queryProductList"
+            ref="tableRef"
+            :defaultParams="{
+                sorts: [{ name: 'createTime', order: 'desc' }],
+            }"
+            :params="params"
+        >
             <template #headerTitle>
                 <a-button type="primary" @click="add"
                     ><plus-outlined />新增</a-button
@@ -134,7 +146,7 @@
             </template>
         </JTable>
         <!-- 新增、编辑 -->
-        <Save ref="saveRef" :isAdd="isAdd" :title="title" />
+        <Save ref="saveRef" :isAdd="isAdd" :title="title" @success="refresh" />
     </a-card>
 </template>
 
@@ -167,9 +179,11 @@ import Save from './Save/index.vue';
 /**
  * 表格数据
  */
+
 const router = useRouter();
 const isAdd = ref<number>(0);
 const title = ref<string>('');
+const params = <Record<string, any>>{};
 const statusMap = new Map();
 statusMap.set(1, 'success');
 statusMap.set(0, 'error');
@@ -349,6 +363,12 @@ const handleView = (id: string) => {
     router.push('/iot/device/product/detail/' + id);
 };
 
+/**
+ * 刷新数据
+ */
+const refresh = () => {
+    tableRef.value?.reload();
+};
 // 筛选
 const listData = ref([]);
 const typeList = ref([]);
@@ -548,6 +568,10 @@ const query = reactive({
     ],
 });
 const saveRef = ref();
+const handleSearch = (e: any) => {
+    params.value = e;
+    console.log(params.value, 'params.value');
+};
 </script>
 
 <style lang="less" scoped>

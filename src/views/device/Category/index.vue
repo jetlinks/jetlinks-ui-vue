@@ -1,13 +1,28 @@
 <!--产品分类 -->
 <template>
     <a-card class="product-category">
-        <Search :columns="query.columns" target="category" @search="search" />
+        <Search
+            :columns="query.columns"
+            target="category"
+            @search="handleSearch"
+        />
         <JTable
             ref="tableRef"
             :columns="table.columns"
-            :request="queryTree"
-            model="TABLE"
+            :dataSource="dataSource"
+            model="table"
+            :defaultParams="{
+                paging: false,
+                sorts: [
+                    { name: 'sortIndex', order: 'asc' },
+                    {
+                        name: 'createTime',
+                        order: 'desc',
+                    },
+                ],
+            }"
             :params="query.params"
+            :loading="tableLoading"
         >
             <template #headerTitle>
                 <a-button type="primary" @click="add"
@@ -69,11 +84,12 @@ import type { TableColumnType, TableProps } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
 const tableRef = ref<Record<string, any>>({});
 const modifyRef = ref();
-const dataSource = ref([]);
+const dataSource = ref<any>([]);
 const currentForm = ref({});
 const title = ref('');
 const isAdd = ref(0);
 const isChild = ref(0);
+const tableLoading = ref(false);
 // 筛选
 const query = reactive({
     columns: [
@@ -121,7 +137,27 @@ const query = reactive({
         ],
     },
 });
-
+/**
+ * 查询树形列表
+ */
+const getTableData = async () => {
+    tableLoading.value = true;
+    const res = await queryTree(query.params);
+    if (res.status === 200) {
+        dataSource.value = res.result;
+    }
+};
+getTableData();
+/**
+ * 搜索
+ */
+const handleSearch = (e: any) => {
+    query.params = {
+        ...query.params,
+        ...e,
+    };
+    getTableData();
+};
 /**
  * 操作栏按钮
  */
@@ -179,7 +215,7 @@ const getActions = (
                     const resp = await deleteTree(data.id);
                     if (resp.status === 200) {
                         message.success('操作成功！');
-                        tableRef.value?.reload();
+                        getTableData();
                     } else {
                         message.error('操作失败！');
                     }
@@ -228,7 +264,7 @@ const table = reactive({
      * 刷新表格数据
      */
     refresh: () => {
-        tableRef.value?.reload();
+        getTableData();
     },
 });
 const { add, columns, refresh } = toRefs(table);
@@ -236,4 +272,10 @@ const { add, columns, refresh } = toRefs(table);
  * 初始化
  */
 </script>
-<style scoped lang="less"></style>
+<style scoped lang="less">
+:deep(._jtable-body_1eyxz_1 ._jtable-pagination_1eyxz_43) {
+    margin-top: 20px;
+    display: none;
+    justify-content: flex-end;
+}
+</style>

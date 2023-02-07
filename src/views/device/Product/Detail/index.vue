@@ -43,9 +43,11 @@
             </div>
             <div style="padding-top: 10px">
                 <a-descriptions size="small" :column="4">
-                    <a-descriptions-item label="设备数量"
-                        >1</a-descriptions-item
-                    >
+                    <a-descriptions-item label="设备数量">{{
+                        productStore.current?.count
+                            ? productStore.current?.count
+                            : 0
+                    }}</a-descriptions-item>
                 </a-descriptions>
             </div>
         </template>
@@ -63,7 +65,10 @@
                 >
             </a-popconfirm>
         </template>
-        <component :is="tabs[productStore.tabActiveKey]" />
+        <component
+            :is="tabs[productStore.tabActiveKey]"
+            :class="productStore.tabActiveKey === 'Metadata' ? 'metedata' : ''"
+        />
     </page-container>
 </template>
 
@@ -72,8 +77,14 @@ import { useProductStore } from '@/store/product';
 import Info from './BasicInfo/indev.vue';
 import Device from './DeviceAccess/index.vue';
 import Metadata from '../../../device/components/Metadata/index.vue';
+import DataAnalysis from './DataAnalysis/index.vue';
 // import Metadata from '../../../components/Metadata/index.vue';
-import { _deploy, _undeploy, getDeviceNumber } from '@/api/device/product';
+import {
+    _deploy,
+    _undeploy,
+    getDeviceNumber,
+    getProtocolDetail,
+} from '@/api/device/product';
 import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 import encodeQuery from '@/utils/encodeQuery';
@@ -93,7 +104,7 @@ const searchParams = ref({
     type: 'and',
 });
 
-const list = [
+const list = ref([
     {
         key: 'Info',
         tab: '配置信息',
@@ -106,7 +117,7 @@ const list = [
         key: 'Device',
         tab: '设备接入',
     },
-];
+]);
 
 const tabs = {
     Info,
@@ -160,16 +171,39 @@ const handleUndeploy = async () => {
 /**
  * 查询设备数量
  */
-const getNunmber = async () => {
-    // const params = new URLSearchParams();
-    // params.append('q', JSON.stringify(searchParams.value));
-    // params.append('target', 'device-instance');
-    // console.log(params, ' params');
-    // const res = await getDeviceNumber(
-    //     encodeQuery({ terms: { productId: params?.id } }),
-    // );
+// const getNunmber = async () => {
+// const params = new URLSearchParams();
+// params.append('q', JSON.stringify(searchParams.value));
+// params.append('target', 'device-instance');
+// console.log(params, ' params');
+// const res = await getDeviceNumber(
+//     encodeQuery({ terms: { productId: params?.id } }),
+// );
+// };
+// getNunmber();
+
+/**
+ * 是否显示数据解析模块
+ */
+const getProtocol = async () => {
+    if (productStore.current?.messageProtocol) {
+        const res = await getProtocolDetail(
+            productStore.current?.messageProtocol,
+        );
+        if (res.status === 200) {
+            const paring = res.result?.transports[0]?.features?.find(
+                (item: any) => item.id === 'transparentCodec',
+            );
+            if (paring) {
+                list.value.push({
+                    key: 'DataAnalysis',
+                    tab: '数据解析',
+                });
+            }
+        }
+    }
 };
-getNunmber();
+getProtocol();
 </script>
 <style scoped lang="less">
 .ant-switch-loading,

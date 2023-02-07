@@ -1,6 +1,6 @@
 <!-- 配置信息 -->
 <template>
-    <a-card>
+    <a-card style="min-height: 100%">
         <a-descriptions bordered>
             <template #title>
                 <div style="display: flex">
@@ -56,7 +56,6 @@ const productStore = useProductStore();
 const saveRef = ref();
 const isAdd = ref(2);
 const title = ref('编辑');
-// console.log(productStore.current.deviceType.text, ' productStore');
 /**
  * 编辑配置信息
  */

@@ -214,7 +214,7 @@ import {
     DeleteOutlined,
 } from '@ant-design/icons-vue';
 
-const emit = defineEmits(['close', 'save']);
+const emit = defineEmits(['success']);
 const props = defineProps({
     title: {
         type: String,
@@ -262,12 +262,12 @@ const deviceList = ref([
 ]);
 
 const form = reactive({
-    id: '',
+    id: undefined,
     name: '',
     classifiedId: '',
     classifiedName: '',
     deviceType: '',
-    describe: '',
+    describe: undefined,
     photoUrl: getImage('/device/instance/device-card.png'),
 });
 /**
@@ -354,8 +354,8 @@ const show = (data: any) => {
         form.classifiedName = '';
         form.photoUrl = getImage('/device/instance/device-card.png');
         form.deviceType = '';
-        form.describe = '';
-        form.id = '';
+        form.describe = undefined;
+        form.id = undefined;
         disabled.value = false;
     }
     visible.value = true;
@@ -380,10 +380,14 @@ const submitData = () => {
         .then(async () => {
             // 新增
             if (props.isAdd === 1) {
+                if (form.id === '') {
+                    form.id = undefined;
+                }
                 const res = await addProduct(form);
                 if (res.status === 200) {
                     message.success('保存成功！');
                     visible.value = false;
+                    emit('success');
                     dialogRef.value.show(form.id);
                 } else {
                     message.error('操作失败');
@@ -393,6 +397,7 @@ const submitData = () => {
                 const res = await editProduct(form);
                 if (res.status === 200) {
                     message.success('保存成功！');
+                    emit('success');
                     visible.value = false;
                 } else {
                     message.error('操作失败');

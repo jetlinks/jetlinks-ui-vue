@@ -102,7 +102,7 @@ export const editProduct = (data: any) => server.patch('/device-product', data)
  * 删除产品
  * @param id 产品ID
  */
-export const deleteProduct = (id: string) => server.patch(`/device-product/${id}`)
+export const deleteProduct = (id: string) => server.remove(`/device-product/${id}`)
 
 /**
  * 检测产品Id唯一性
@@ -122,3 +122,47 @@ export const saveProductMetadata = (data: Record<string, unknown>) => server.pat
  * @returns
  */
 export const getDeviceNumber = (params:any) => server.get('/device-instance/_count', params)
+
+/**
+ * 获取协议详情
+ *  @param id 协议ID
+ */
+export const getProtocolDetail = (id:string) => server.post(`/protocol/${id}/detail`, id)
+
+/**
+ * 查询设备列表
+ */
+export const queryList = (data: any) => server.post(`/gateway/device/detail/_query`, data)
+
+/**
+ * 查询协议数据
+ */
+export const getConfigView = (id: string, transport: string) => server.get(`/protocol/${id}/transport/${transport}`)
+
+/**
+ * 获取配置数据
+ */
+export const getConfigMetadata = (id: string) => server.get(`/device/product/${id}/config-metadata`)
+/**
+ * 引导页是否需要提示
+ */
+export const productGuide = () => server.get(`/user/settings/product/guide`)
+/**
+ * 保存引导页修改值
+ */
+export const productGuideSave = (data: any) => server.patch('/user/settings/product/guide', data)
+
+/**
+ * 存储策略
+ */
+export const getStoragList = () => server.get('/device/product/storage/policies')
+
+/**
+ * 保存设备(设备接入)
+ */
+export const saveDevice = (data:any) => server.post('/device-product',data)
+
+/**
+ * 更新选择设备(设备接入)
+ */
+export const updateDevice = (data:any) => server.patch('/device-product',data)
