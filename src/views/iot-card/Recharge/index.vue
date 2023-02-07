@@ -115,6 +115,7 @@ const columns = [
         title: '支付URL',
         dataIndex: 'url',
         key: 'url',
+        ellipsis: true,
     },
     {
         title: '订单时间',

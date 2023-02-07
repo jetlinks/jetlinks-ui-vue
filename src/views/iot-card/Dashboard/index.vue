@@ -70,6 +70,7 @@
                         <Guide title="流量统计">
                             <template #extra>
                                 <TimeSelect
+                                    key="flow-static"
                                     :type="'week'"
                                     :quickBtnList="quickBtnList"
                                     @change="getEcharts"
@@ -93,6 +94,7 @@
                         <Guide title="流量使用TOP10">
                             <template #extra>
                                 <TimeSelect
+                                    key="flow-top10"
                                     :quickBtn="false"
                                     :type="'week'"
                                     @change="getTopRang"

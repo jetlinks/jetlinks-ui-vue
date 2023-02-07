@@ -15,4 +15,19 @@ const route = useRoute();
 const activeKey = ref('1');
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.details-container {
+    
+
+
+    :deep(.ant-tabs-nav-wrap) {
+        background-color: #fff;
+        padding: 24px 0 0 24px;
+    }
+
+    .role-permiss-container {
+        padding: 24px;
+    }
+}
+
+</style>

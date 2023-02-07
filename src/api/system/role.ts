@@ -6,10 +6,14 @@ export const getRoleList_api = (data: any): Promise<any> => server.post(`/role/_
 export const delRole_api = (id: string): Promise<any> => server.remove(`/role/${id}`);
 // 保存角色
 export const saveRole_api = (data: any): Promise<any> => server.post(`/role`, data);
+// 更新角色信息
+export const updateRole_api = (data: any): Promise<any> => server.patch(`/role`, data);
 // 获取角色详细信息
 export const getRoleDetails_api = (id: string): Promise<any> => server.get(`/role/${id}`);
 // 获取角色对应的权限树
 export const getPrimissTree_api = (id: string): Promise<any> => server.get(`/menu/role/${id}/_grant/tree`);
+// 更新角色对应的权限树
+export const updatePrimissTree_api = (id: string, data:object): Promise<any> => server.put(`/menu/role/${id}/_grant`,data);
 
 
 // 获取用户列表
