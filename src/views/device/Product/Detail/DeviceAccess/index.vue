@@ -891,17 +891,17 @@ const getData = async () => {
                     metadata.value =
                         (resp?.result[0] as ConfigMetadata[]) || [];
                     const res: any = await productGuide();
-                    // if (res.result && res.result?.content === 'skip') {
-                    //     return;
-                    // } else {
-                    // if (resp.result && resp.result.length > 0) {
-                    //     driver1.defineSteps(steps1);
-                    //     driver1.start();
-                    // } else {
-                    driver.defineSteps(steps);
-                    driver.start();
-                    //     // }
-                    // }
+                    if (res.result && res.result?.content === 'skip') {
+                        return;
+                    } else {
+                        if (resp.result && resp.result.length > 0) {
+                            driver1.defineSteps(steps1);
+                            driver1.start();
+                        } else {
+                            driver.defineSteps(steps);
+                            driver.start();
+                        }
+                    }
                 },
             );
         }

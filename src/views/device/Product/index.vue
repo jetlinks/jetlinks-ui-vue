@@ -570,7 +570,6 @@ const query = reactive({
 const saveRef = ref();
 const handleSearch = (e: any) => {
     params.value = e;
-    console.log(params.value, 'params.value');
 };
 </script>
 
