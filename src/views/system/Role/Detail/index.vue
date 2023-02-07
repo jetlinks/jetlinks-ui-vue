@@ -25,7 +25,7 @@ const activeKey = ref('1');
         padding: 24px 0 0 24px;
     }
 
-    .role-permiss-container {
+    :deep(.ant-tabs-content-holder) {
         padding: 24px;
     }
 }
