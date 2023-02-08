@@ -7,7 +7,7 @@
                     <a-col :span="24"><Guide title="数据统计" /></a-col>
                     <a-col :span="8">
                         <div class="data-statistics-item">
-                            <div class="info" style="width: 100%">
+                            <div class="flow-info" style="width: 100%">
                                 <div class="label">昨日流量消耗</div>
                                 <a-tooltip placement="bottomLeft">
                                     <template #title>
@@ -27,7 +27,7 @@
                     </a-col>
                     <a-col :span="8">
                         <div class="data-statistics-item">
-                            <div class="info" style="width: 100%">
+                            <div class="flow-info" style="width: 100%">
                                 <div class="label">当月流量消耗</div>
                                 <a-tooltip placement="bottomLeft">
                                     <template #title>
@@ -44,7 +44,7 @@
                     </a-col>
                     <a-col :span="8">
                         <div class="data-statistics-item">
-                            <div class="info" style="width: 100%">
+                            <div class="flow-info" style="width: 100%">
                                 <div class="label">本年流量消耗</div>
                                 <a-tooltip placement="bottomLeft">
                                     <template #title>
@@ -279,7 +279,7 @@ getDataTotal();
         align-items: center;
         padding: 20px;
 
-        .info {
+        .flow-info {
             // width: 180px;
             width: 28%;
             .label {

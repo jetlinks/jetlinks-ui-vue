@@ -119,7 +119,7 @@
                             <Guide title="数据统计" />
                             <div class="static-info" style="min-height: 490px">
                                 <div class="data-statistics-item">
-                                    <div class="info" style="width: 100%">
+                                    <div class="flow-info" style="width: 100%">
                                         <div class="label">昨日流量消耗</div>
                                         <a-tooltip placement="bottomLeft">
                                             <template #title>
@@ -137,7 +137,7 @@
                                     />
                                 </div>
                                 <div class="data-statistics-item">
-                                    <div class="info" style="width: 100%">
+                                    <div class="flow-info" style="width: 100%">
                                         <div class="label">当月流量消耗</div>
                                         <a-tooltip placement="bottomLeft">
                                             <template #title>
@@ -152,7 +152,7 @@
                                     <LineChart :chartData="monthOptions" />
                                 </div>
                                 <div class="data-statistics-item">
-                                    <div class="info" style="width: 100%">
+                                    <div class="flow-info" style="width: 100%">
                                         <div class="label">本年流量消耗</div>
                                         <a-tooltip placement="bottomLeft">
                                             <template #title>
@@ -328,7 +328,7 @@ getDataTotal();
         align-items: center;
         padding: 20px;
 
-        .info {
+        .flow-info {
             // width: 180px;
             width: 28%;
             .label {
