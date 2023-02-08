@@ -487,6 +487,7 @@ defineExpose({
 .button-style {
     background-color: #fff;
     height: 66px;
+    overflow: hidden;
     .card-content {
         width: 100%;
         .img-style {
@@ -498,23 +499,35 @@ defineExpose({
             right: -22px;
             bottom: -22px;
             z-index: 2;
+
             width: 44px;
             height: 44px;
-            color: #2f54eb;
-            // background-color: #2f54eb;
+            color: #fff;
+            background-color: @primary-color-active;
             transform: rotate(-45deg);
 
             > div {
                 position: relative;
                 height: 100%;
                 transform: rotate(45deg);
-                background-color: transparent;
+
+                > span {
+                    position: absolute;
+                    top: 6px;
+                    left: 6px;
+                    font-size: 12px;
+                }
+            }
+        }
+        &.checked {
+            position: relative;
+            color: @primary-color-active;
+            border-color: @primary-color-active;
+
+            > .checked-icon {
+                display: block;
             }
         }
     }
-    // &:hover {
-    //     color: #2f54eb;
-    //     border: 1px solid #2f54eb;
-    // }
 }
 </style>

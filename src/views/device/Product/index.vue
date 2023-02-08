@@ -15,9 +15,19 @@
             :params="params"
         >
             <template #headerTitle>
-                <a-button type="primary" @click="add"
-                    ><plus-outlined />新增</a-button
-                >
+                <a-space>
+                    <a-button type="primary" @click="add"
+                        ><plus-outlined />新增</a-button
+                    >
+                    <a-upload
+                        name="file"
+                        accept=".json"
+                        :showUploadList="false"
+                        :before-upload="beforeUpload"
+                    >
+                        <a-button>导入</a-button>
+                    </a-upload>
+                </a-space>
             </template>
             <template #deviceType="slotProps">
                 <div>{{ slotProps.deviceType.text }}</div>
@@ -172,8 +182,10 @@ import {
     addProduct,
     editProduct,
     queryProductId,
+    updateDevice,
 } from '@/api/device/product';
-import { isNoCommunity } from '@/utils/utils';
+import { isNoCommunity, downloadObject } from '@/utils/utils';
+import { omit } from 'lodash-es';
 import { typeOptions } from '@/components/Search/util';
 import Save from './Save/index.vue';
 /**
@@ -293,6 +305,17 @@ const getActions = (
             },
 
             icon: 'icon-xiazai',
+            onClick: () => {
+                const extra = omit(data, [
+                    'transportProtocol',
+                    'protocolName',
+                    'accessId',
+                    'accessName',
+                    'accessProvider',
+                    'messageProtocol',
+                ]);
+                downloadObject(extra, '产品');
+            },
         },
         {
             key: 'action',
@@ -355,6 +378,42 @@ const add = () => {
     nextTick(() => {
         saveRef.value.show(currentForm.value);
     });
+};
+
+/**
+ * 导入
+ */
+const beforeUpload = (file: any) => {
+    const reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = async (result) => {
+        const text = result.target?.result;
+        console.log('text: ', text);
+        if (!file.type.includes('json')) {
+            message.error('请上传json格式文件');
+            return false;
+        }
+        try {
+            const data = JSON.parse(text || '{}');
+            // 设置导入的产品状态为未发布
+            data.state = 0;
+            if (Array.isArray(data)) {
+                message.error('请上传json格式文件');
+                return false;
+            }
+            delete data.state;
+            const res = await updateDevice(data);
+            if (res.status === 200) {
+                message.success('操作成功');
+                tableRef.value?.reload();
+            }
+            return true;
+        } catch {
+            message.error('请上传json格式文件');
+        }
+        return true;
+    };
+    return false;
 };
 /**
  * 查看
