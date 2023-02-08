@@ -91,6 +91,7 @@ const permission = reactive({
     },
     // 全选/取消全选
     selectAllOpions: (row: permissionType) => {
+        row.indeterminate = false
         const newValue = props.value.filter(
             (item) => item.permission !== row.id,
         );

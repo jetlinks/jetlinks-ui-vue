@@ -5,8 +5,9 @@
             :data-source="tableData"
             :pagination="false"
             :rowKey="'id'"
+            :scroll="{ y: '500px' }"
         >
-            <!-- 自定义表头 -->
+            <!-- 表头 -->
             <template #headerCell="{ column }">
                 <div v-if="column.key === 'menu'">
                     <a-checkbox
@@ -18,9 +19,16 @@
                 </div>
                 <div v-else-if="column.key === 'data'">
                     <span style="">数据权限</span>
+                    <a-tooltip>
+                        <template #title
+                            >勾选任意数据权限均能看到自己创建的数据权限</template
+                        >
+                        <question-circle-outlined />
+                    </a-tooltip>
                     <a-checkbox
                         v-model:checked="bulkShow"
                         @change="bulkValue = ''"
+                        style="margin-left: 10px"
                         >批量设置</a-checkbox
                     >
                     <a-select
@@ -30,19 +38,20 @@
                         style="width: 200px"
                         :options="bulkOptions"
                         @change="bulkChange"
+                        placeholder="请选择"
                     ></a-select>
                 </div>
                 <div v-else>
                     <span>{{ column.title }}</span>
                 </div>
             </template>
-            <!-- 自定义表格内容 -->
+            <!-- 表格内容 -->
             <template #bodyCell="{ column, record }">
                 <div v-if="column.key === 'menu'">
                     <a-checkbox
                         v-model:checked="record.granted"
                         :indeterminate="record.indeterminate"
-                        @change="menuChange(record)"
+                        @change="menuChange(record, true)"
                         >{{ record.name }}</a-checkbox
                     >
                 </div>
@@ -85,6 +94,7 @@
 </template>
 
 <script setup lang="ts">
+import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 import { cloneDeep } from 'lodash-es';
 import { getPrimissTree_api } from '@/api/system/role';
 
@@ -162,31 +172,44 @@ const flatTableData: tableItemType[] = []; // 表格数据的扁平化版本--�
 
 const init = () => {
     getAllPermiss();
-    watch(tableData, () => {
-        const selected = cloneDeep(flatTableData).filter((item) => (item.granted || item.indeterminate) && !item.parentId);
-        selected.forEach((item) => {
-            if (
-                item.accessSupport &&
-                item.accessSupport.value === 'support' &&
-                item.selectAccesses
-            ) {
-                item.selectAccesses = bulkValue.value;
-                item.assetAccesses?.forEach((asset) => {
-                    if (asset.supportId === item.selectAccesses) {
-                        asset.granted = true;
-                    } else {
-                        asset.granted = false;
-                    }
-                });
-                delete item.selectAccesses;
-            }
-            delete item.indeterminate
-        });
-        emits(
-            'update:selectItems',
-            selected,
-        );
-    });
+    // 监听权限的修改情况，产生修改后反馈给父组件
+    watch(
+        tableData,
+        () => {
+            // 深克隆表格数据的扁平版  因为会做一些改动 该改动只用于反馈给父组件，本组件无需变化
+            const selected = cloneDeep(flatTableData).filter(
+                (item) =>
+                    (item.granted && item.parentId) ||
+                    (item.indeterminate && item.buttons),
+            );
+
+            selected.forEach((item) => {
+                /**
+                 * 如果该项支持设置数据权限，则对其进行数据权限的映射，结束后删除用于映射的源属性，
+                 * 同时清除用于半全选状态的标记
+                 */
+                if (
+                    item.accessSupport &&
+                    item.accessSupport.value === 'support' &&
+                    item.selectAccesses
+                ) {
+                    // item.selectAccesses = bulkValue.value;
+                    item.assetAccesses?.forEach((asset) => {
+                        if (asset.supportId === item.selectAccesses) {
+                            asset.granted = true;
+                        } else {
+                            asset.granted = false;
+                        }
+                    });
+                    delete item.selectAccesses;
+                }
+                delete item.indeterminate;
+                item.granted = true;
+            });
+            emits('update:selectItems', selected);
+        },
+        { deep: true },
+    );
 };
 init();
 
@@ -218,6 +241,7 @@ function menuChange(
     row: tableItemType,
     setButtonBool: boolean = true,
 ): undefined {
+    // 判断是否需要对子菜单及操作权限进行选择
     if (setButtonBool) {
         if (row.buttons && row.buttons.length > 0)
             row.buttons.forEach((button) => {
@@ -225,34 +249,32 @@ function menuChange(
             });
         row.children && setChildrenChecked(row.children, row.granted);
     }
-
-    // 改变上层节点的状态
-    const selectList = flatTableData.filter((item) => item.granted); // 第一列选中的项
+    // 更新选中状态
+    if (row.buttons && row.buttons.length > 0) setStatus(row, 'buttons');
+    else setStatus(row, 'children');
+    // 更新数据权限
+    if (row.selectAccesses !== undefined) {
+        if (!row.granted) {
+            row.selectAccesses = '';
+        } else if (row.selectAccesses === '') {
+            row.selectAccesses = 'creator';
+        }
+    }
+    // 更新上层节点的状态
     if (row.parentId) {
         // 找到对应的父节点  判断该父节点的选中状态为 全选中/部分选中/未选中
         const parent = flatTableData.find(
             (item) => item.id === row.parentId,
         ) as tableItemType;
-        const selectLen = parent.children?.filter((item) => item.granted)
-            .length as number; // 父节点的已选中子节点的数量
-
-        if (selectLen === parent.children?.length) {
-            parent.granted = true;
-            parent.indeterminate = false;
-        } else if (selectLen > 0) {
-            parent.granted = false;
-            parent.indeterminate = true;
-        } else {
-            parent.granted = false;
-            parent.indeterminate = false;
-        }
-
+        setStatus(parent, 'children');
+        // 若该父节点不是根节点  重复此操作以此来确定该父节点的父节点状态
         if (parent.parentId) {
             return menuChange(parent, false);
         }
     }
 
     // 改变头部节点状态
+    const selectList = flatTableData.filter((item) => item.granted); // 第一列选中的项
     if (selectList.length === flatTableData.length) {
         selectedAll.value = true;
         indeterminate.value = false;
@@ -270,20 +292,7 @@ function menuChange(
  * @param row 触发的项
  */
 function actionChange(row: tableItemType) {
-    const selectLen = row.buttons?.filter((item) => item.granted)
-        .length as number;
-
-    if (selectLen === row.buttons?.length) {
-        row.granted = true;
-        row.indeterminate = false;
-    } else if (selectLen > 0) {
-        row.granted = false;
-        row.indeterminate = true;
-    } else {
-        row.granted = false;
-        row.indeterminate = false;
-    }
-
+    setStatus(row, 'buttons');
     menuChange(row, false);
 }
 
@@ -293,12 +302,15 @@ function actionChange(row: tableItemType) {
  */
 function treeToSimple(treeData: tableItemType[]) {
     treeData.forEach((item) => {
+        // 数据权限回填
         if (item.accessSupport && item.accessSupport.value === 'support') {
             const select =
                 item.assetAccesses?.find((assetItem) => assetItem.granted) ||
                 {};
             item.selectAccesses = select.supportId || '';
         }
+        if (item.buttons && item.buttons.length > 0) setStatus(item, 'buttons');
+        else setStatus(item, 'children');
         flatTableData.push(item);
         item.children && treeToSimple(item.children);
     });
@@ -312,6 +324,7 @@ function setChildrenChecked(childrens: tableItemType[], value: boolean) {
     if (childrens.length < 1) return;
     childrens.forEach((item) => {
         item.granted = value;
+        item.indeterminate = false;
         if (item.buttons && item.buttons.length > 0)
             item.buttons.forEach((button) => {
                 button.granted = value;
@@ -319,11 +332,49 @@ function setChildrenChecked(childrens: tableItemType[], value: boolean) {
         item.children && setChildrenChecked(item.children, value);
     });
 }
+/**
+ * 根据taget的prop属性，判断对应的全选状态，头部全选不适用
+ * @param target 目标对象
+ * @param prop 目标属性
+ */
+function setStatus(
+    target: tableItemType,
+    prop: 'children' | 'buttons' = 'children',
+) {
+    const childrens = target[prop] as any[];
 
+    if (childrens && childrens instanceof Array) {
+        // 如果子选项有半全选，则当前节点直接为半全选
+        const indeterminateLen = childrens.filter(
+            (childrens: buttonItemType | tableItemType) =>
+                childrens?.indeterminate,
+        ).length;
+        if (indeterminateLen > 0) {
+            target.granted = false;
+            target.indeterminate = true;
+            return;
+        }
+
+        const selectLen = childrens.filter(
+            (children: buttonItemType | tableItemType) => children.granted,
+        ).length;
+        if (selectLen === childrens.length) {
+            target.granted = true;
+            target.indeterminate = false;
+        } else if (selectLen > 0) {
+            target.granted = false;
+            target.indeterminate = true;
+        } else {
+            target.granted = false;
+            target.indeterminate = false;
+        }
+    }
+}
 type buttonItemType = {
     supportId: string;
     name: string;
     granted: boolean;
+    indeterminate?: boolean;
 };
 type tableItemType = {
     id: string;

@@ -61,6 +61,8 @@ import { getRoleList_api, delRole_api } from '@/api/system/role';
 import { message } from 'ant-design-vue';
 const addDialogRef = ref(); // 新增弹窗实例
 const router = useRouter();
+const route = useRoute();
+
 // 筛选
 const query = reactive({
     columns: [
@@ -122,7 +124,7 @@ const table = reactive({
     ],
     tableData: [],
     clickAdd: () => {
-        addDialogRef.value.openDialog(true, {})
+        addDialogRef.value.openDialog(true, {});
     },
     clickDel: (row: any) => {
         delRole_api(row.id).then((resp: any) => {
@@ -136,7 +138,9 @@ const table = reactive({
         router.push(`/system/Role/detail/${row.id}`);
     },
 });
-
+nextTick(() => {
+    route.query.save && table.clickAdd();
+});
 </script>
 
 <style lang="less" scoped></style>
