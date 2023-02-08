@@ -196,7 +196,7 @@ const form = reactive({
 });
 
 const table = reactive({
-    columns: [
+    columns: <any>[
         {
             title: '-',
             dataIndex: 'index',
