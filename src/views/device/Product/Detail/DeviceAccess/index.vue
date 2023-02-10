@@ -57,9 +57,11 @@
                         <div>
                             {{ access?.protocolDetail?.name }}
                         </div>
-                        <div v-if="config?.document" style="height: 120px">
-                            <!-- 显示md文件内容 -->
-                        </div>
+                        <!-- 显示md文件内容 -->
+                        <div
+                            v-if="config?.document"
+                            v-html="config?.document"
+                        ></div>
                     </div>
                     <div class="item-style">
                         <Title data="连接信息"></Title>
@@ -371,6 +373,14 @@ import { isNoCommunity } from '@/utils/utils';
 const productStore = useProductStore();
 import Driver from 'driver.js';
 import 'driver.js/dist/driver.min.css';
+import { marked } from 'marked';
+const render = new marked.Renderer();
+marked.setOptions({
+    renderer: render,
+    gfm: true,
+    pedantic: false,
+    snaitize: false,
+});
 const simpleImage = ref(Empty.PRESENTED_IMAGE_SIMPLE);
 const visible = ref<boolean>(false);
 const listData = ref<string[]>([]);
@@ -975,12 +985,10 @@ watchEffect(() => {
 });
 </script>
 <style lang="less" scoped>
-:deep(
-        ._jtable-body_1eyxz_1
-            ._jtable-body-header_1eyxz_6
-            ._jtable-body-header-right_1eyxz_12
-            ._jtable-body-header-right-button_1eyxz_17
-    ) {
+:deep(._jtable-body_1eyxz_1
+        ._jtable-body-header_1eyxz_6
+        ._jtable-body-header-right_1eyxz_12
+        ._jtable-body-header-right-button_1eyxz_17) {
     display: none;
     margin-left: 10px;
     gap: 8px;
