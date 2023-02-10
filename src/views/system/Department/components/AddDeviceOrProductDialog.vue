@@ -1,6 +1,27 @@
 <template>
-    <div class="product-container">
+    <a-modal
+        class="add-device-or-product-dialog-container"
+        title="绑定"
+        width="1440px"
+        @ok="dialog.handleOk"
+        cancelText="取消"
+        okText="确定"
+        v-model:visible="dialog.visible.value"
+    >
+        <a-row>
+            <exclamation-circle-outlined /> 只能分配有“共享”权限的资产数据
+        </a-row>
+
+        <a-row>
+            <span>批量配置</span>
+            <a-switch v-model:checked="bulkBool" />
+        </a-row>
+        <a-row v-show="bulkBool">
+            <a-checkbox-group v-model:value="bulkList" :options="options" />
+        </a-row>
+
         <Search :columns="query.columns" @search="query.search" />
+
         <JTable
             ref="tableRef"
             :request="table.requestFun"
@@ -12,38 +33,6 @@
             }"
             @cancelSelect="table.cancelSelect"
         >
-            <template #headerTitle>
-                <a-space>
-                    <a-button type="primary" @click="table.clickAdd">
-                        <plus-outlined />资产分配
-                    </a-button>
-                    <a-dropdown trigger="hover">
-                        <a-button>批量操作</a-button>
-                        <template #overlay>
-                            <a-menu>
-                                <a-menu-item>
-                                    <a-popconfirm
-                                        title="是否批量解除绑定"
-                                        ok-text="确定"
-                                        cancel-text="取消"
-                                        @confirm="table.clickUnBind()"
-                                    >
-                                        <a-button>
-                                            <DisconnectOutlined /> 批量解绑
-                                        </a-button>
-                                    </a-popconfirm>
-                                </a-menu-item>
-                                <a-menu-item>
-                                    <a-button @click="table.clickEdit()">
-                                        <EditOutlined /> 批量编辑
-                                    </a-button>
-                                </a-menu-item>
-                            </a-menu>
-                        </template>
-                    </a-dropdown>
-                </a-space>
-            </template>
-
             <template #card="slotProps">
                 <CardBox
                     :value="slotProps"
@@ -92,7 +81,6 @@
                                     class="card-item-content-value"
                                 >
                                     {{
-                                        table.permissionList.value.length &&
                                         table.getPermissLabel(
                                             slotProps.permission,
                                         )
@@ -101,59 +89,49 @@
                             </a-col>
                         </a-row>
                     </template>
-                    <template #actions>
-                        <a-button
-                            @click="table.clickEdit(slotProps)"
-                            style="margin-right: 10px"
-                        >
-                            <AIcon type="EditOutlined" />
-                        </a-button>
-                        <a-popconfirm
-                            title="是否解除绑定"
-                            ok-text="确定"
-                            cancel-text="取消"
-                            @confirm="table.clickUnBind"
-                            ><a-button>
-                                <AIcon type="DisconnectOutlined" />
-                            </a-button>
-                        </a-popconfirm>
-                    </template>
                 </CardBox>
             </template>
         </JTable>
-
-        <div class="dialogs">
-            <AddDeviceOrProductDialog
-                ref="addDialogRef"
-                :parent-id="props.parentId"
-                :all-permission="table.permissionList.value"
-                asset-type="product"
-            />
-            <EditPermissionDialog ref="editDialogRef" :parent-id="props.parentId" />
-        </div>
-    </div>
+    </a-modal>
 </template>
 
-<script setup lang="ts" name="product">
-import {
-    PlusOutlined,
-    EditOutlined,
-    DisconnectOutlined,
-} from '@ant-design/icons-vue';
-import AddDeviceOrProductDialog from '../components/AddDeviceOrProductDialog.vue';
-import EditPermissionDialog from '../components/EditPermissionDialog.vue';
+<script setup lang="ts">
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { getImage } from '@/utils/comm';
 import {
     getDeviceOrProductList_api,
     getPermission_api,
-    getPermissionDict_api,
 } from '@/api/system/department';
-
-import {dictType} from '../typing.d.ts'
-
 const props = defineProps<{
-    parentId:string
+    parentId: string;
+    allPermission: dictType;
+    assetType: 'product' | 'device';
 }>();
+// 弹窗相关
+const dialog = {
+    visible: ref<boolean>(false),
+    handleOk: () => {
+        // formRef.value?.validate().then(() => {
+        //     form.submit();
+        // });
+        dialog.changeVisible();
+    },
+    // 控制弹窗的打开与关闭
+    changeVisible: () => {
+        dialog.visible.value = !dialog.visible.value;
+    },
+};
+
+const bulkBool = ref<boolean>(true);
+const bulkList = ref<string[]>(['read']);
+const options = computed(() =>
+    props.allPermission.map((item) => ({
+        label: item.name,
+        value: item.id,
+        disabled: item.id === 'read',
+    })),
+);
+
 const query = {
     columns: [
         {
@@ -206,34 +184,13 @@ const query = {
         query.params.value = params;
     },
 };
-
-const tableRef = ref();
 const table = {
     _selectedRowKeys: ref<string[]>([]),
     selectedRows: [] as any[],
-    permissionList: ref<dictType>([]),
 
-    init: () => {
-        table.getPermissionDict();
-        watch(
-            () => props.parentId,
-            () => {
-                nextTick(() => {
-                    tableRef.value.reload();
-                });
-            },
-        );
-    },
-
-    // 获取权限数据字典
-    getPermissionDict: () => {
-        getPermissionDict_api().then((resp: any) => {
-            table.permissionList.value = resp.result;
-        });
-    },
     // 获取权限名称
     getPermissLabel: (values: string[]) => {
-        const permissionList = table.permissionList.value;
+        const permissionList = props.allPermission;
         if (permissionList.length < 1 || values.length < 1) return '';
         const result = values.map(
             (key) => permissionList.find((item) => item.id === key)?.name,
@@ -261,7 +218,7 @@ const table = {
     // 获取并整理数据
     getData: (params: object, parentId: string) =>
         new Promise((resolve) => {
-            getDeviceOrProductList_api(params).then((resp) => {
+            getDeviceOrProductList_api(params).then((resp: any) => {
                 type resultType = {
                     data: any[];
                     total: number;
@@ -274,7 +231,13 @@ const table = {
                 getPermission_api(ids, parentId).then((perResp: any) => {
                     const permissionObj = {};
                     perResp.result.forEach((item: any) => {
-                        permissionObj[item.assetId] = item.grantedPermissions;
+                        permissionObj[item.assetId] =
+                            props.allPermission.filter((permission) =>
+                                item.allPermissions.includes(
+                                    (permissionId: string) =>
+                                        permissionId === permission.id,
+                                ),
+                            );
                     });
                     data.forEach(
                         (item) => (item.permission = permissionObj[item.id]),
@@ -298,27 +261,36 @@ const table = {
         table._selectedRowKeys.value = [];
         table.selectedRows = [];
         if (props.parentId) {
+            const terms = [
+                {
+                    terms: [
+                        {
+                            column: 'id',
+                            termType: 'dim-assets$not',
+                            value: {
+                                assetType: props.assetType,
+                                targets: [
+                                    {
+                                        type: 'org',
+                                        id: props.parentId,
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            ];
+            if (oParams.terms && oParams.terms.length > 0)
+                terms.unshift({ terms: oParams.terms });
             const params = {
                 ...oParams,
                 sorts: [{ name: 'createTime', order: 'desc' }],
-                terms: [
-                    ...oParams.terms,
-                    {
-                        column: 'id',
-                        termType: 'dim-assets',
-                        value: {
-                            assetType: 'product',
-                            targets: [
-                                {
-                                    type: 'org',
-                                    id: props.parentId,
-                                },
-                            ],
-                        },
-                    },
-                ],
+                terms,
             };
+
             const resp: any = await table.getData(params, props.parentId);
+            console.log(resp.result);
+
             return {
                 code: resp.status,
                 result: resp.result,
@@ -337,70 +309,19 @@ const table = {
             };
         }
     },
-    clickAdd: () => {
-        addDialogRef.value && addDialogRef.value.openDialog();
-    },
-    clickEdit: (row?: any) => {
-        const ids = row ? row.id : [...table._selectedRowKeys.value];
-        if (row || table.selectedRows.length === 1) {
-            const permissionList =
-                row?.permission || table.selectedRows[0].permission;
-            return (
-                editDialogRef.value &&
-                editDialogRef.value.openDialog(ids, permissionList)
-            );
-        } else if (table.selectedRows.length === 0) return;
-        const permissionList = table.selectedRows.map(
-            (item) => item.permission,
-        );
-        const mixPermissionList = table.getMixed(permissionList);
-
-        editDialogRef.value &&
-            editDialogRef.value.openDialog(ids, mixPermissionList);
-    },
-    clickUnBind: (row?: any) => {},
-
-    /**
-     * 获取多个数组的交集
-     * @param permissionList
-     */
-    getMixed: (permissionList: string[][]) => {
-        if (permissionList.length === 1) return permissionList[0];
-        const obj = {};
-        const result: string[] = [];
-        permissionList.forEach((items) => {
-            items.forEach((item) => {
-                if (obj[item]) obj[item]++;
-                else obj[item] = 1;
-                if (obj[item] === permissionList.length) result.push(item);
-            });
-        });
-        return result;
-    },
 };
 
-const addDialogRef = ref();
-const editDialogRef = ref();
-
-table.init();
-
+// 将打开弹窗的操作暴露给父组件
+defineExpose({
+    openDialog: dialog.changeVisible,
+});
 </script>
 
 <style lang="less" scoped>
-.product-container {
-    .card {
-        .card-warp {
-            &.active {
-                .card-item-content-value {
-                    color: #2f54eb;
-                }
-            }
-        }
-        .card-tools {
-            .ant-btn {
-                color: #252525;
-            }
-        }
+.add-device-or-product-dialog-container {
+    .ant-spin-nested-loading {
+        height: calc(100vh - 440px);
+        overflow-y: auto;
     }
 }
 </style>
