@@ -2,7 +2,7 @@
     <div class="department-container">
         <a-card class="department-content">
             <div class="left">
-                <LeftTree @change="id=>departmentId = id" />
+                <LeftTree @change="(id) => (departmentId = id)" />
             </div>
             <div class="right">
                 <a-tabs v-model:activeKey="activeKey">
@@ -10,7 +10,7 @@
                         <Product :parentId="departmentId" />
                     </a-tab-pane>
                     <a-tab-pane key="device" tab="设备">
-                        <Device />
+                        <Device :parentId="departmentId" />
                     </a-tab-pane>
                     <a-tab-pane key="user" tab="用户">
                         <User />
@@ -29,7 +29,7 @@ import User from './user/index.vue';
 
 const activeKey = ref<'product' | 'device' | 'user'>('product');
 
-const departmentId = ref<string>('')
+const departmentId = ref<string>('');
 </script>
 
 <style lang="less" scoped>
@@ -44,9 +44,11 @@ const departmentId = ref<string>('')
             }
             .right {
                 flex: 1 1 auto;
+                .ant-tabs-nav {
+                    padding-left: 24px;
+                }
             }
         }
     }
 }
-
 </style>

@@ -112,7 +112,7 @@
                             title="是否解除绑定"
                             ok-text="确定"
                             cancel-text="取消"
-                            @confirm="table.clickUnBind"
+                            @confirm="table.clickUnBind(slotProps)"
                             ><a-button>
                                 <AIcon type="DisconnectOutlined" />
                             </a-button>
@@ -128,8 +128,15 @@
                 :parent-id="props.parentId"
                 :all-permission="table.permissionList.value"
                 asset-type="product"
+                @confirm="table.refresh"
             />
-            <EditPermissionDialog ref="editDialogRef" :parent-id="props.parentId" />
+            <EditPermissionDialog
+                ref="editDialogRef"
+                :parent-id="props.parentId"
+                :all-permission="table.permissionList.value"
+                asset-type="product"
+                @confirm="table.refresh"
+            />
         </div>
     </div>
 </template>
@@ -147,12 +154,15 @@ import {
     getDeviceOrProductList_api,
     getPermission_api,
     getPermissionDict_api,
+    unBindDeviceOrProduct_api,
 } from '@/api/system/department';
+import { intersection } from 'lodash-es';
 
-import {dictType} from '../typing.d.ts'
+import { dictType } from '../typing.d.ts';
+import { message } from 'ant-design-vue';
 
 const props = defineProps<{
-    parentId:string
+    parentId: string;
 }>();
 const query = {
     columns: [
@@ -218,9 +228,7 @@ const table = {
         watch(
             () => props.parentId,
             () => {
-                nextTick(() => {
-                    tableRef.value.reload();
-                });
+                table.refresh();
             },
         );
     },
@@ -271,7 +279,7 @@ const table = {
                 const { pageIndex, pageSize, total, data } =
                     resp.result as resultType;
                 const ids = data.map((item) => item.id);
-                getPermission_api(ids, parentId).then((perResp: any) => {
+                getPermission_api('product', ids, parentId).then((perResp: any) => {
                     const permissionObj = {};
                     perResp.result.forEach((item: any) => {
                         permissionObj[item.assetId] = item.grantedPermissions;
@@ -341,7 +349,7 @@ const table = {
         addDialogRef.value && addDialogRef.value.openDialog();
     },
     clickEdit: (row?: any) => {
-        const ids = row ? row.id : [...table._selectedRowKeys.value];
+        const ids = row ? [row.id] : [...table._selectedRowKeys.value];
         if (row || table.selectedRows.length === 1) {
             const permissionList =
                 row?.permission || table.selectedRows[0].permission;
@@ -353,29 +361,31 @@ const table = {
         const permissionList = table.selectedRows.map(
             (item) => item.permission,
         );
-        const mixPermissionList = table.getMixed(permissionList);
+        const mixPermissionList = intersection(...permissionList);
 
         editDialogRef.value &&
             editDialogRef.value.openDialog(ids, mixPermissionList);
     },
-    clickUnBind: (row?: any) => {},
-
-    /**
-     * 获取多个数组的交集
-     * @param permissionList
-     */
-    getMixed: (permissionList: string[][]) => {
-        if (permissionList.length === 1) return permissionList[0];
-        const obj = {};
-        const result: string[] = [];
-        permissionList.forEach((items) => {
-            items.forEach((item) => {
-                if (obj[item]) obj[item]++;
-                else obj[item] = 1;
-                if (obj[item] === permissionList.length) result.push(item);
-            });
+    clickUnBind: (row?: any) => {
+        const ids = row ? [row.id] : [...table._selectedRowKeys.value];
+        if (ids.length < 1) return message.warning('请勾选需要解绑的数据');
+        const params = [
+            {
+                targetType: 'org',
+                targetId: props.parentId,
+                assetType: 'product',
+                assetIdList: ids,
+            },
+        ];
+        unBindDeviceOrProduct_api('product', params).then(() => {
+            message.success('操作成功');
+            table.refresh();
         });
-        return result;
+    },
+    refresh: () => {
+        nextTick(() => {
+            tableRef.value.reload();
+        });
     },
 };
 
@@ -383,7 +393,6 @@ const addDialogRef = ref();
 const editDialogRef = ref();
 
 table.init();
-
 </script>
 
 <style lang="less" scoped>
