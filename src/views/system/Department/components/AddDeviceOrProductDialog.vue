@@ -4,21 +4,29 @@
         title="绑定"
         width="1440px"
         @ok="dialog.handleOk"
+        :confirmLoading="dialog.loading.value"
         cancelText="取消"
         okText="确定"
         v-model:visible="dialog.visible.value"
+        destroyOnClose
     >
-        <a-row>
-            <exclamation-circle-outlined /> 只能分配有“共享”权限的资产数据
-        </a-row>
+        <h5 class="row">
+            <exclamation-circle-outlined style="margin-right: 6px" />
+            只能分配有“共享”权限的资产数据
+        </h5>
 
-        <a-row>
-            <span>批量配置</span>
-            <a-switch v-model:checked="bulkBool" />
-        </a-row>
-        <a-row v-show="bulkBool">
+        <div class="row">
+            <span style="margin-right: 8px">批量配置</span>
+            <a-switch
+                v-model:checked="bulkBool"
+                checked-children="开"
+                un-checked-children="关"
+                style="width: 56px"
+            />
+        </div>
+        <div v-show="bulkBool">
             <a-checkbox-group v-model:value="bulkList" :options="options" />
-        </a-row>
+        </div>
 
         <Search :columns="query.columns" @search="query.search" />
 
@@ -79,12 +87,14 @@
                                 <div
                                     style="cursor: pointer"
                                     class="card-item-content-value"
+                                    @click="(e) => e.stopPropagation()"
                                 >
-                                    {{
-                                        table.getPermissLabel(
-                                            slotProps.permission,
-                                        )
-                                    }}
+                                    <a-checkbox-group
+                                        v-model:value="
+                                            slotProps.selectPermissions
+                                        "
+                                        :options="slotProps.permissionList"
+                                    />
                                 </div>
                             </a-col>
                         </a-row>
@@ -98,10 +108,15 @@
 <script setup lang="ts">
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { getImage } from '@/utils/comm';
+import { uniq, intersection } from 'lodash-es';
 import {
-    getDeviceOrProductList_api,
+    getDeviceOrProductList_api,getDeviceList_api,
     getPermission_api,
+    bindDeviceOrProductList_api,
 } from '@/api/system/department';
+import { message } from 'ant-design-vue';
+
+const emits = defineEmits(['confirm']);
 const props = defineProps<{
     parentId: string;
     allPermission: dictType;
@@ -110,11 +125,31 @@ const props = defineProps<{
 // 弹窗相关
 const dialog = {
     visible: ref<boolean>(false),
+    loading: ref<boolean>(false),
     handleOk: () => {
-        // formRef.value?.validate().then(() => {
-        //     form.submit();
-        // });
-        dialog.changeVisible();
+        if (table.selectedRows.length < 1) {
+            return message.warning('请先勾选数据');
+        }
+
+        const params = table.selectedRows.map((item: any) => ({
+            targetType: 'org',
+            targetId: props.parentId,
+            assetType: props.assetType,
+            assetIdList: [item.id],
+            permission: item.selectPermissions,
+        }));
+
+        // console.log(params);
+        dialog.loading.value = true;
+        bindDeviceOrProductList_api(props.assetType, params)
+            .then(() => {
+                message.success('操作成功');
+                emits('confirm');
+                dialog.changeVisible();
+            })
+            .finally(() => {
+                dialog.loading.value = false;
+            });
     },
     // 控制弹窗的打开与关闭
     changeVisible: () => {
@@ -184,24 +219,77 @@ const query = {
         query.params.value = params;
     },
 };
-const table = {
-    _selectedRowKeys: ref<string[]>([]),
-    selectedRows: [] as any[],
+const table: any = {
+    _selectedRowKeys: ref<string[]>([]), // 选中项的id
+    backRowKeys: [] as string[], // 旧选中项的id
+    selectedRows: [] as any[], // 选中项
+    tableData: [] as any[], // 列表的浅拷贝
 
-    // 获取权限名称
-    getPermissLabel: (values: string[]) => {
-        const permissionList = props.allPermission;
-        if (permissionList.length < 1 || values.length < 1) return '';
-        const result = values.map(
-            (key) => permissionList.find((item) => item.id === key)?.name,
+    init: () => {
+        watch(
+            [bulkBool, bulkList, () => table._selectedRowKeys],
+            (n) => {
+                const nValue = n[2].value;
+                const oValue = table.backRowKeys;
+
+                table.selectedRows.forEach((item: any) => {
+                    // 启用批量设置
+                    if (bulkBool.value) {
+                        // 将已勾选的权限和批量设置的权限进行合并，并与自己可选的权限进行比对，取交集作为当前选中的权限
+                        let newPermission = uniq([
+                            ...item.selectPermissions,
+                            ...bulkList.value,
+                        ]);
+                        const allPermissions = item.permissionList.map(
+                            (item: any) => item.value,
+                        );
+                        newPermission = intersection(
+                            newPermission,
+                            allPermissions,
+                        );
+                        item.selectPermissions = newPermission;
+                        // 禁用单独勾选
+                        item.permissionList.forEach((permission: any) => {
+                            permission.disabled = true;
+                        });
+                    } else {
+                        // 取消批量设置
+                        // 放开自己权限的勾选限制，查看为必选
+                        item.permissionList.forEach((permission: any) => {
+                            permission.disabled = permission.value === 'read';
+                        });
+                    }
+                });
+                // 取消勾选时触发
+                if (nValue && nValue.length < oValue.length) {
+                    // 拿到取消选中的项的id
+                    const removedKeys = oValue.filter(
+                        (key: string) => !nValue.includes(key),
+                    );
+                    // 将取消勾选的项的权限重置
+                    removedKeys.forEach((removedKey: string) => {
+                        const removedItem = table.tableData.find(
+                            (item: any) => item.id === removedKey,
+                        );
+                        removedItem.permissionList.forEach(
+                            (permission: any) => (permission.disabled = true),
+                        );
+                        removedItem.selectPermissions = ['read'];
+                    });
+                }
+            },
+            { deep: true },
         );
-        return result.join(',');
     },
     // 选中
     onSelectChange: (row: any) => {
+        // 若该项的可选权限中没有分享权限，则不支持任何操作
+        if (!row.permissionList.find((item: any) => item.value === 'share'))
+            return;
         const selectedRowKeys = table._selectedRowKeys.value;
         const index = selectedRowKeys.indexOf(row.id);
 
+        table.backRowKeys = [...selectedRowKeys];
         if (index === -1) {
             selectedRowKeys.push(row.id);
             table.selectedRows.push(row);
@@ -212,13 +300,15 @@ const table = {
     },
     // 取消全选
     cancelSelect: () => {
+        table.backRowKeys = [...table._selectedRowKeys.value];
         table._selectedRowKeys.value = [];
         table.selectedRows = [];
     },
     // 获取并整理数据
     getData: (params: object, parentId: string) =>
         new Promise((resolve) => {
-            getDeviceOrProductList_api(params).then((resp: any) => {
+            const api = props.assetType === 'product' ? getDeviceOrProductList_api: getDeviceList_api;
+            api(params).then((resp: any) => {
                 type resultType = {
                     data: any[];
                     total: number;
@@ -228,20 +318,23 @@ const table = {
                 const { pageIndex, pageSize, total, data } =
                     resp.result as resultType;
                 const ids = data.map((item) => item.id);
-                getPermission_api(ids, parentId).then((perResp: any) => {
+                getPermission_api(props.assetType,ids, parentId).then((perResp: any) => {
                     const permissionObj = {};
                     perResp.result.forEach((item: any) => {
-                        permissionObj[item.assetId] =
-                            props.allPermission.filter((permission) =>
-                                item.allPermissions.includes(
-                                    (permissionId: string) =>
-                                        permissionId === permission.id,
-                                ),
-                            );
+                        permissionObj[item.assetId] = props.allPermission
+                            .filter((permission) =>
+                                item.allPermissions.includes(permission.id),
+                            )
+                            .map((item) => ({
+                                label: item.name,
+                                value: item.id,
+                                disabled: true,
+                            }));
                     });
-                    data.forEach(
-                        (item) => (item.permission = permissionObj[item.id]),
-                    );
+                    data.forEach((item) => {
+                        item.permissionList = permissionObj[item.id];
+                        item.selectPermissions = ['read'];
+                    });
 
                     resolve({
                         code: 200,
@@ -289,8 +382,7 @@ const table = {
             };
 
             const resp: any = await table.getData(params, props.parentId);
-            console.log(resp.result);
-
+            table.tableData = resp.result.data;
             return {
                 code: resp.status,
                 result: resp.result,
@@ -310,6 +402,7 @@ const table = {
         }
     },
 };
+table.init();
 
 // 将打开弹窗的操作暴露给父组件
 defineExpose({
@@ -320,8 +413,16 @@ defineExpose({
 <style lang="less" scoped>
 .add-device-or-product-dialog-container {
     .ant-spin-nested-loading {
-        height: calc(100vh - 440px);
+        height: calc(100vh - 400px);
         overflow-y: auto;
+    }
+    h5 {
+        padding: 12px;
+        background-color: #f6f6f6;
+        font-size: 14px;
+    }
+    .row {
+        margin-bottom: 12px;
     }
 }
 </style>
