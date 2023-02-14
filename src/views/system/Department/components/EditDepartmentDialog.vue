@@ -117,8 +117,8 @@ const form = reactive({
         form.loading = true;
         const api = form.data.id ? updateDepartment_api : addDepartment_api;
         api(form.data)
-            .then(() => {
-                emits('refresh');
+            .then((resp:any) => {
+                emits('refresh',resp.result.id);
                 dialog.changeVisible(false);
             })
             .finally(() => (form.loading = false));

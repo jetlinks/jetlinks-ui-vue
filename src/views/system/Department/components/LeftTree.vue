@@ -10,7 +10,7 @@
                 <search-outlined />
             </template>
         </a-input>
-        <a-button type="primary" @click="openDialog" class="add-btn">
+        <a-button type="primary" @click="openDialog()" class="add-btn">
             新增
         </a-button>
         <a-tree
@@ -21,7 +21,7 @@
         >
             <template #title="{ name, data }">
                 <span>{{ name }}</span>
-                <span class="func-btns">
+                <span class="func-btns" @click="(e) => e.stopPropagation()">
                     <a-tooltip>
                         <template #title>编辑</template>
                         <a-button style="padding: 0" type="link">
@@ -65,7 +65,7 @@
         <EditDepartmentDialog
             :tree-data="sourceTree"
             ref="editDialogRef"
-            @refresh="getTree"
+            @refresh="refresh"
         />
     </div>
 </template>
@@ -84,18 +84,14 @@ import {
 } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 
+const save = useRoute().query.save;
 const emits = defineEmits(['change']);
-const searchValue = ref('');// 搜索内容
+const searchValue = ref(''); // 搜索内容
 const loading = ref<boolean>(false); // 数据加载状态
 const sourceTree = ref<any[]>([]); // 源数据
 const treeMap = new Map(); // 数据的map版本
 const treeData = ref<any[]>([]); // 展示的数据
 const selectedKeys = ref<string[]>([]); // 当前选中的项
-
-getTree();
-watch(selectedKeys, (n) => {
-    emits('change', n[0]);
-});
 
 function getTree() {
     loading.value = true;
@@ -119,7 +115,7 @@ function getTree() {
         .finally(() => {
             loading.value = false;
         });
-};
+}
 const search = debounce(() => {
     const key = searchValue.value;
     const treeArray = new Map();
@@ -167,14 +163,30 @@ function delDepartment(id: string) {
         getTree();
     });
 }
-
+function refresh(id: string) {
+    // @ts-ignore
+    window?.onSaveSuccess && window.onSaveSuccess('department', id);
+    window.close();
+    getTree();
+}
 
 // 弹窗
 const editDialogRef = ref(); // 新增弹窗实例
 const openDialog = (row: any = {}) => {
     editDialogRef.value.openDialog(true, row);
 };
-
+init();
+function init() {
+    getTree();
+    watch(selectedKeys, (n) => {
+        emits('change', n[0]);
+    });
+    if (save) {
+        nextTick(() => {
+            openDialog();
+        });
+    }
+}
 </script>
 
 <style lang="less" scoped>
