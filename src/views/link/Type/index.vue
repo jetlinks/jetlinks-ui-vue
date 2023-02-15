@@ -357,36 +357,32 @@ const getActions = (
 };
 
 const handlAdd = () => {
-    // router.push({
-    //     path: `/iot/link/certificate/detail/:id`,
-    //     query: { view: false },
-    // });
+    router.push({
+        path: `/iot/link/type/detail/:id`,
+        query: { view: false },
+    });
 };
 
 const handlEye = (id: string) => {
-    console.log(111, id);
-
-    // router.push({
-    //     path: `/iot/link/certificate/detail/${id}`,
-    //     query: { view: true },
-    // });
+    router.push({
+        path: `/iot/link/type/detail/${id}`,
+        query: { view: true },
+    });
 };
 
 const handlEdit = (id: string) => {
-    console.log(111, id);
-
-    // router.push({
-    //     path: `/iot/link/certificate/detail/${id}`,
-    //     query: { view: false },
-    // });
+    router.push({
+        path: `/iot/link/type/detail/${id}`,
+        query: { view: false },
+    });
 };
 
 const handlDelete = async (id: string) => {
-    // const res = await remove(id);
-    // if (res.success) {
-    //     message.success('操作成功');
-    //     tableRef.value.reload();
-    // }
+    const res = await remove(id);
+    if (res.success) {
+        message.success('操作成功');
+        tableRef.value.reload();
+    }
 };
 
 const getDetails = (slotProps: Partial<Record<string, any>>) => {
