@@ -24,10 +24,12 @@
                         :footer="onlineFooter"
                         :value="onlineToday"
                     >
-                        <BarChart
+                        <!-- <BarChart
                             :chartXData="barChartXData"
                             :chartYData="barChartYData"
-                        ></BarChart> </TopCard
+                        ></BarChart>  -->
+                        <Charts :options="onlineOptions"></Charts>
+                    </TopCard
                 ></a-col>
                 <a-col :span="6"
                     ><TopCard
@@ -35,10 +37,7 @@
                         :footer="messageFooter"
                         :value="dayMessage"
                     >
-                        <LineChart
-                            :chartXData="lineChartXData"
-                            :chartYData="lineChartYData"
-                        ></LineChart> </TopCard
+                        <Charts :options="TodayDevOptions"></Charts> </TopCard
                 ></a-col>
             </a-row>
             <a-row :span="24">
@@ -55,7 +54,7 @@
                             </template>
                         </Guide>
                         <div class="message-chart">
-                            <MessageChart :x="messageChartXData" :y="messageChartYData" :maxY="messageMaxChartYData"></MessageChart>
+                           <Charts :options="devMegOptions"></Charts>
                         </div>
                     </div>
                 </a-col>
@@ -74,11 +73,9 @@
     </page-container>
 </template>
 <script lang="ts" setup>
-import BarChart from './components/BarChart.vue';
-import LineChart from './components/LineChart.vue';
 import TimeSelect from './components/TimeSelect.vue';
+import Charts from './components/Charts.vue'
 import Guide from './components/Guide.vue';
-import MessageChart from './components/messageChart.vue';
 import {
     productCount,
     deviceCount,
@@ -130,13 +127,12 @@ let messageFooter = ref<Footer[]>([
         value: 0,
     },
 ]);
-let lineChartYData = ref<any[]>([]);
-let lineChartXData = ref<any[]>([]);
-let barChartXData = ref<any[]>([]);
-let barChartYData = ref<any[]>([]);
 let messageChartXData = ref<any[]>([]);
 let messageChartYData = ref<any[]>([]);
 let messageMaxChartYData = ref<number>();
+let onlineOptions = ref<any>({});
+let TodayDevOptions = ref<any>({});
+let devMegOptions = ref<any>({});
 const quickBtnList = [
     { label: '昨日', value: 'yesterday' },
     { label: '近一周', value: 'week' },
@@ -215,13 +211,165 @@ const getOnline = () => {
             const x = res.result
                 .map((item: any) => item.data.timeString)
                 .reverse();
-            barChartXData.value = x;
             const y = res.result.map((item: any) => item.data.value);
-            barChartYData.value = y;
+            const onlineYdata = y;
+            onlineYdata.reverse()
+            setOnlineChartOpition(x,onlineYdata);
             deviceFooter.value[0].value = y?.[1];
         }
     });
 };
+const setOnlineChartOpition = (x:Array<any>,y:Array<number>):void=>{
+    onlineOptions.value = {
+            xAxis: {
+                type: 'category',
+                data: x,
+                show: false,
+            },
+            yAxis: {
+                type: 'value',
+                show: false,
+            },
+            grid: {
+                top: '5%',
+                bottom: 0,
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow',
+                },
+            },
+            series: [
+                {
+                    name: '在线数',
+                    data: y,
+                    type: 'bar',
+                    showBackground: true,
+                    itemStyle: {
+                        color: '#D3ADF7',
+                    },
+                },
+            ],
+        };
+}
+const setTodayDevChartOption = (x:Array<any>,y:Array<number>):void =>{
+    TodayDevOptions = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow',
+                },
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                show: false,
+                data:x
+            },
+            yAxis: {
+                type: 'value',
+                show: false,
+            },
+            grid: {
+                top: '2%',
+                bottom: 0,
+            },
+            series: [
+                {
+                    name: '消息量',
+                    data: y,
+                    type: 'line',
+                    smooth: true, // 是否平滑曲线
+                    symbolSize: 0, // 拐点大小
+                    color: '#F29B55',
+                    areaStyle: {
+                        color: {
+                            type: 'linear',
+                            x: 0,
+                            y: 0,
+                            x2: 0,
+                            y2: 1,
+                            colorStops: [
+                                {
+                                    offset: 0,
+                                    color: '#FBBB87', // 100% 处的颜色
+                                },
+                                {
+                                    offset: 1,
+                                    color: '#FFFFFF', //   0% 处的颜色
+                                },
+                            ],
+                            global: false, // 缺省为 false
+                        },
+                    },
+                },
+            ],
+        };
+}
+const setDevMesChartOption = (x:Array<any>,y:Array<number>,maxY:number):void =>{
+    devMegOptions.value = {
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: x,
+        },
+        yAxis: {
+          type: 'value',
+        },
+        tooltip: {
+          trigger: 'axis',
+          formatter: '{b0}<br />{a0}: {c0}',
+          // formatter: '{b0}<br />{a0}: {c0}<br />{a1}: {c1}%'
+        },
+        grid: {
+          top: '2%',
+          bottom: '5%',
+          left: maxY > 100000 ? '90px' : '50px',
+          right: '50px',
+        },
+        series: [
+          {
+            name: '消息量',
+            data: y,
+            type: 'bar',
+            // type: 'line',
+            // smooth: true,
+            color: '#597EF7',
+            barWidth: '30%',
+            // areaStyle: {
+            //   color: {
+            //     type: 'linear',
+            //     x: 0,
+            //     y: 0,
+            //     x2: 0,
+            //     y2: 1,
+            //     colorStops: [
+            //       {
+            //         offset: 0,
+            //         color: '#685DEB', // 100% 处的颜色
+            //       },
+            //       {
+            //         offset: 1,
+            //         color: '#FFFFFF', //   0% 处的颜色
+            //       },
+            //     ],
+            //     global: false, // 缺省为 false
+            //   },
+            // },
+          },
+          {
+            name: '占比',
+            data: y,
+            // data: percentageY,
+            type: 'line',
+            smooth: true,
+            symbolSize: 0, // 拐点大小
+            color: '#96ECE3',
+          },
+        ],
+      }
+}
 getOnline();
 //今日设备消息量
 const getDevice = () => {
@@ -279,8 +427,7 @@ const getDevice = () => {
             );
             const x = today.map((item: any) => item.data.timeString).reverse();
             const y = today.map((item: any) => item.data.value).reverse();
-            lineChartXData.value = x;
-            lineChartYData.value = y;
+            setTodayDevChartOption(x,y);
         }
     });
 };
@@ -322,15 +469,16 @@ const getEcharts = (data: any) => {
         },
     ]).then((res:any) => {
         if (res.status === 200) {
-            messageChartXData.value = res.result
+            const x = res.result
                 .map((item: any) =>
                     _time === '1h'
                         ? `${item.data.timeString}时`
                         : item.data.timeString,
                 )
                 .reverse();
-            messageChartYData.value = res.result.map((item: any) => item.data.value).reverse();
-            messageMaxChartYData.value = Math.max.apply(null, messageChartYData.value.length ? messageChartYData.value : [0]);
+            const y = res.result.map((item: any) => item.data.value).reverse();
+            const maxY = Math.max.apply(null, messageChartYData.value.length ? messageChartYData.value : [0]);
+            setDevMesChartOption(x,y,maxY);
         }
     });
 };

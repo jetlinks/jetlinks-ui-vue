@@ -1,163 +1,170 @@
 <template>
-    <a-card class="device-product">
-        <Search
-            :columns="query.columns"
-            target="product-manage"
-            @search="handleSearch"
-        />
-        <JTable
-            :columns="columns"
-            :request="queryProductList"
-            ref="tableRef"
-            :defaultParams="{
-                sorts: [{ name: 'createTime', order: 'desc' }],
-            }"
-            :params="params"
-        >
-            <template #headerTitle>
-                <a-space>
-                    <a-button type="primary" @click="add"
-                        ><plus-outlined />新增</a-button
-                    >
-                    <a-upload
-                        name="file"
-                        accept=".json"
-                        :showUploadList="false"
-                        :before-upload="beforeUpload"
-                    >
-                        <a-button>导入</a-button>
-                    </a-upload>
-                </a-space>
-            </template>
-            <template #deviceType="slotProps">
-                <div>{{ slotProps.deviceType.text }}</div>
-            </template>
-            <template #card="slotProps">
-                <CardBox
-                    :value="slotProps"
-                    @click="handleClick"
-                    :actions="getActions(slotProps, 'card')"
-                    v-bind="slotProps"
-                    :active="_selectedRowKeys.includes(slotProps.id)"
-                    :status="slotProps.state"
-                    :statusText="slotProps.state === 1 ? '正常' : '禁用'"
-                    :statusNames="{
-                        1: 'success',
-                        0: 'error',
-                    }"
-                >
-                    <template #img>
-                        <slot name="img">
-                            <img :src="getImage('/device-product.png')" />
-                        </slot>
-                    </template>
-                    <template #content>
-                        <h3
-                            @click.stop="handleView(slotProps.id)"
-                            style="font-weight: 600"
+    <page-container>
+        <a-card class="device-product">
+            <Search
+                :columns="query.columns"
+                target="product-manage"
+                @search="handleSearch"
+            />
+            <JTable
+                :columns="columns"
+                :request="queryProductList"
+                ref="tableRef"
+                :defaultParams="{
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                }"
+                :params="params"
+            >
+                <template #headerTitle>
+                    <a-space>
+                        <a-button type="primary" @click="add"
+                            ><plus-outlined />新增</a-button
                         >
-                            {{ slotProps.name }}
-                        </h3>
-                        <a-row>
-                            <a-col :span="12">
-                                <div class="card-item-content-text">
-                                    设备类型
-                                </div>
-                                <div>直连设备</div>
-                            </a-col>
-                        </a-row>
-                    </template>
-                    <template #actions="item">
+                        <a-upload
+                            name="file"
+                            accept=".json"
+                            :showUploadList="false"
+                            :before-upload="beforeUpload"
+                        >
+                            <a-button>导入</a-button>
+                        </a-upload>
+                    </a-space>
+                </template>
+                <template #deviceType="slotProps">
+                    <div>{{ slotProps.deviceType.text }}</div>
+                </template>
+                <template #card="slotProps">
+                    <CardBox
+                        :value="slotProps"
+                        @click="handleClick"
+                        :actions="getActions(slotProps, 'card')"
+                        v-bind="slotProps"
+                        :active="_selectedRowKeys.includes(slotProps.id)"
+                        :status="slotProps.state"
+                        :statusText="slotProps.state === 1 ? '正常' : '禁用'"
+                        :statusNames="{
+                            1: 'success',
+                            0: 'error',
+                        }"
+                    >
+                        <template #img>
+                            <slot name="img">
+                                <img :src="getImage('/device-product.png')" />
+                            </slot>
+                        </template>
+                        <template #content>
+                            <h3
+                                @click.stop="handleView(slotProps.id)"
+                                style="font-weight: 600"
+                            >
+                                {{ slotProps.name }}
+                            </h3>
+                            <a-row>
+                                <a-col :span="12">
+                                    <div class="card-item-content-text">
+                                        设备类型
+                                    </div>
+                                    <div>直连设备</div>
+                                </a-col>
+                            </a-row>
+                        </template>
+                        <template #actions="item">
+                            <a-tooltip
+                                v-bind="item.tooltip"
+                                :title="item.disabled && item.tooltip.title"
+                            >
+                                <a-popconfirm
+                                    v-if="item.popConfirm"
+                                    v-bind="item.popConfirm"
+                                    :disabled="item.disabled"
+                                    okText="确定"
+                                    cancelText="取消"
+                                >
+                                    <a-button :disabled="item.disabled">
+                                        <AIcon
+                                            type="DeleteOutlined"
+                                            v-if="item.key === 'delete'"
+                                        />
+                                        <template v-else>
+                                            <AIcon :type="item.icon" />
+                                            <span>{{ item?.text }}</span>
+                                        </template>
+                                    </a-button>
+                                </a-popconfirm>
+                                <template v-else>
+                                    <a-button
+                                        :disabled="item.disabled"
+                                        @click="item.onClick"
+                                    >
+                                        <AIcon
+                                            type="DeleteOutlined"
+                                            v-if="item.key === 'delete'"
+                                        />
+                                        <template v-else>
+                                            <AIcon :type="item.icon" />
+                                            <span>{{ item?.text }}</span>
+                                        </template>
+                                    </a-button>
+                                </template>
+                            </a-tooltip>
+                        </template>
+                    </CardBox>
+                </template>
+                <template #state="slotProps">
+                    <a-badge
+                        :text="slotProps.state === 1 ? '正常' : '禁用'"
+                        :status="statusMap.get(slotProps.state)"
+                    />
+                </template>
+                <template #id="slotProps">
+                    <a>{{ slotProps.id }}</a>
+                </template>
+                <template #action="slotProps">
+                    <a-space :size="16">
                         <a-tooltip
-                            v-bind="item.tooltip"
-                            :title="item.disabled && item.tooltip.title"
+                            v-for="i in getActions(slotProps)"
+                            :key="i.key"
+                            v-bind="i.tooltip"
                         >
                             <a-popconfirm
-                                v-if="item.popConfirm"
-                                v-bind="item.popConfirm"
-                                :disabled="item.disabled"
+                                v-if="i.popConfirm"
+                                v-bind="i.popConfirm"
                                 okText="确定"
                                 cancelText="取消"
                             >
-                                <a-button :disabled="item.disabled">
-                                    <AIcon
-                                        type="DeleteOutlined"
-                                        v-if="item.key === 'delete'"
-                                    />
-                                    <template v-else>
-                                        <AIcon :type="item.icon" />
-                                        <span>{{ item?.text }}</span>
-                                    </template>
-                                </a-button>
-                            </a-popconfirm>
-                            <template v-else>
                                 <a-button
-                                    :disabled="item.disabled"
-                                    @click="item.onClick"
-                                >
-                                    <AIcon
-                                        type="DeleteOutlined"
-                                        v-if="item.key === 'delete'"
-                                    />
-                                    <template v-else>
-                                        <AIcon :type="item.icon" />
-                                        <span>{{ item?.text }}</span>
-                                    </template>
-                                </a-button>
-                            </template>
+                                    :disabled="i.disabled"
+                                    style="padding: 0"
+                                    type="link"
+                                    ><AIcon :type="i.icon"
+                                /></a-button>
+                            </a-popconfirm>
+                            <a-button
+                                style="padding: 0"
+                                type="link"
+                                v-else
+                                @click="i.onClick && i.onClick(slotProps)"
+                            >
+                                <a-button
+                                    :disabled="i.disabled"
+                                    style="padding: 0"
+                                    type="link"
+                                    ><AIcon :type="i.icon"
+                                /></a-button>
+                            </a-button>
                         </a-tooltip>
-                    </template>
-                </CardBox>
-            </template>
-            <template #state="slotProps">
-                <a-badge
-                    :text="slotProps.state === 1 ? '正常' : '禁用'"
-                    :status="statusMap.get(slotProps.state)"
-                />
-            </template>
-            <template #id="slotProps">
-                <a>{{ slotProps.id }}</a>
-            </template>
-            <template #action="slotProps">
-                <a-space :size="16">
-                    <a-tooltip
-                        v-for="i in getActions(slotProps)"
-                        :key="i.key"
-                        v-bind="i.tooltip"
-                    >
-                        <a-popconfirm
-                            v-if="i.popConfirm"
-                            v-bind="i.popConfirm"
-                            okText="确定"
-                            cancelText="取消"
-                        >
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-popconfirm>
-                        <a-button
-                            style="padding: 0"
-                            type="link"
-                            v-else
-                            @click="i.onClick && i.onClick(slotProps)"
-                        >
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-button>
-                    </a-tooltip>
-                </a-space>
-            </template>
-        </JTable>
-        <!-- 新增、编辑 -->
-        <Save ref="saveRef" :isAdd="isAdd" :title="title" @success="refresh" />
-    </a-card>
+                    </a-space>
+                </template>
+            </JTable>
+            <!-- 新增、编辑 -->
+            <Save
+                ref="saveRef"
+                :isAdd="isAdd"
+                :title="title"
+                @success="refresh"
+            />
+        </a-card>
+    </page-container>
 </template>
 
 <script setup lang="ts">
@@ -195,7 +202,7 @@ import Save from './Save/index.vue';
 const router = useRouter();
 const isAdd = ref<number>(0);
 const title = ref<string>('');
-const params = <Record<string, any>>{};
+const params = ref<Record<string, any>>({});
 const statusMap = new Map();
 statusMap.set(1, 'success');
 statusMap.set(0, 'error');
