@@ -265,7 +265,7 @@
     </page-container>
 </template>
 
-<script lang="ts" setup name="CertificateDetail">
+<script lang="ts" setup name="StreamDetail">
 import { message, Form } from 'ant-design-vue';
 import { queryProviders, queryDetail, save, update } from '@/api/media/stream';
 import type { FormInstance } from 'ant-design-vue';
