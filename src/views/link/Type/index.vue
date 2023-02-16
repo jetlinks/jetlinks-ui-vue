@@ -6,7 +6,8 @@
             <JTable
                 ref="tableRef"
                 :columns="columns"
-                :request="list"
+                :gridColumn="3"
+                :request="query"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
@@ -19,38 +20,42 @@
                 </template>
                 <template #card="slotProps">
                     <CardBox
-                        :showStatus="false"
+                        :showStatus="true"
                         :value="slotProps"
                         :actions="getActions(slotProps, 'card')"
                         v-bind="slotProps"
+                        :class="
+                            slotProps.state.value === 'disabled'
+                                ? 'tableCardDisabled'
+                                : 'tableCardEnabled'
+                        "
+                        :status="slotProps.state.value"
+                        :statusText="slotProps.state.text"
+                        :statusNames="{
+                            enabled: 'success',
+                            disabled: 'error',
+                        }"
                     >
                         <template #img>
                             <slot name="img">
-                                <img :src="getImage('/protocol.png')" />
+                                <img :src="getImage('/network.png')" />
                             </slot>
                         </template>
                         <template #content>
                             <div class="card-item-content">
-                                <h3 class="card-item-content-title card-item-content-title-a">
+                                <!-- <a
+                                    @click="handlEye(slotProps.id)"
+                                    class="card-item-content-title-a"
+                                >
+                                    {{ slotProps.name }}
+                                </a> -->
+                                <h3
+                                    @click="handlEye(slotProps.id)"
+                                    class="card-item-content-title card-item-content-title-a"
+                                >
                                     {{ slotProps.name }}
                                 </h3>
                                 <a-row class="card-item-content-box">
-                                    <a-col
-                                        :span="12"
-                                        class="card-item-content-text"
-                                    >
-                                        <div class="card-item-content-text">
-                                            ID
-                                        </div>
-                                        <div class="card-item-content-text">
-                                            <a-tooltip>
-                                                <template #title>{{
-                                                    slotProps.id
-                                                }}</template>
-                                                {{ slotProps.id }}
-                                            </a-tooltip>
-                                        </div>
-                                    </a-col>
                                     <a-col :span="12">
                                         <div class="card-item-content-text">
                                             类型
@@ -61,6 +66,21 @@
                                                     slotProps.type
                                                 }}</template>
                                                 {{ slotProps.type }}
+                                            </a-tooltip>
+                                        </div>
+                                    </a-col>
+                                    <a-col :span="12">
+                                        <div class="card-item-content-text">
+                                            详情
+                                        </div>
+                                        <div class="card-item-content-text">
+                                            <a-tooltip>
+                                                <template #title>{{
+                                                    getDetails(slotProps)
+                                                }}</template>
+                                                <span class="details-text">{{
+                                                    getDetails(slotProps)
+                                                }}</span>
                                             </a-tooltip>
                                         </div>
                                     </a-col>
@@ -142,41 +162,52 @@
                         </a-tooltip>
                     </a-space>
                 </template>
+                <template #state="slotProps">
+                    <a-badge
+                        :text="slotProps.state.text"
+                        :status="statusMap.get(slotProps.state.value)"
+                    />
+                </template>
+                <template #shareCluster="slotProps">
+                    {{
+                        slotProps.shareCluster === true
+                            ? '共享配置'
+                            : '独立配置'
+                    }}
+                </template>
+                <template #type="slotProps">
+                    {{ slotProps.typeObject.name }}
+                </template>
+                <template #details="slotProps">
+                    {{ getDetails(slotProps) }}
+                </template>
             </JTable>
         </div>
-        <Save v-if="visible" :data="current" @change="saveChange" />
     </page-container>
 </template>
-<script lang="ts" setup name="AccessConfigPage">
+<script lang="ts" setup name="TypePage">
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage } from '@/utils/comm';
-import { list, remove } from '@/api/link/protocol';
+import { supports, query, remove, start, shutdown } from '@/api/link/type';
 import { message } from 'ant-design-vue';
-import Save from './Save/index.vue';
 
 const tableRef = ref<Record<string, any>>({});
 const router = useRouter();
 const params = ref<Record<string, any>>({});
+const options = ref([]);
 
-const visible = ref(false);
-const current = ref({});
+const statusMap = new Map();
+statusMap.set('enabled', 'success');
+statusMap.set('disabled', 'error');
 
 const columns = [
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-        search: {
-            type: 'string',
-        },
-        width: 200,
-        fixed: 'left',
-        // scopedSlots: true,
-    },
     {
         title: '名称',
         dataIndex: 'name',
         key: 'name',
+        ellipsis: true,
+        width: 250,
+        fixed: 'left',
         search: {
             type: 'string',
         },
@@ -185,28 +216,55 @@ const columns = [
         title: '类型',
         dataIndex: 'type',
         key: 'type',
+        ellipsis: true,
+        width: 150,
+        search: {
+            type: 'select',
+            options: options,
+        },
+        scopedSlots: true,
+    },
+    {
+        title: '集群',
+        dataIndex: 'shareCluster',
+        key: 'shareCluster',
+        width: 120,
+        ellipsis: true,
+        scopedSlots: true,
         search: {
             type: 'select',
             options: [
-                {
-                    label: 'jar',
-                    value: 'jar',
-                },
-                {
-                    label: 'local',
-                    value: 'local',
-                },
+                { label: '共享配置', value: true },
+                { label: '独立配置', value: false },
             ],
         },
+    },
+    {
+        title: '详情',
+        dataIndex: 'details',
+        key: 'details',
+        ellipsis: true,
         scopedSlots: true,
+    },
+    {
+        title: '状态',
+        dataIndex: 'state',
+        key: 'state',
+        width: 100,
+        ellipsis: true,
+        scopedSlots: true,
+        search: {
+            type: 'select',
+            options: [
+                { label: '正常', value: 'enabled' },
+                { label: '禁用', value: 'disabled' },
+            ],
+        },
     },
     {
         title: '说明',
         dataIndex: 'description',
         key: 'description',
-        search: {
-            type: 'string',
-        },
         ellipsis: true,
     },
     {
@@ -223,7 +281,19 @@ const getActions = (
     type: 'card' | 'table',
 ): ActionsType[] => {
     if (!data) return [];
+    const state = data.state.value;
     const actions = [
+        {
+            key: 'eye',
+            text: '查看',
+            tooltip: {
+                title: '查看',
+            },
+            icon: 'EyeOutlined',
+            onClick: async () => {
+                handlEye(data.id);
+            },
+        },
         {
             key: 'edit',
             text: '编辑',
@@ -232,12 +302,40 @@ const getActions = (
             },
             icon: 'EditOutlined',
             onClick: () => {
-                handlEdit(data);
+                handlEdit(data.id);
+            },
+        },
+        {
+            key: 'action',
+            text: state === 'enabled' ? '禁用' : '启用',
+            tooltip: {
+                title: state === 'enabled' ? '禁用' : '启用',
+            },
+            icon: state === 'enabled' ? 'StopOutlined' : 'CheckCircleOutlined',
+            popConfirm: {
+                title: `确认${state === 'enabled' ? '禁用' : '启用'}?`,
+                onConfirm: async () => {
+                    let res =
+                        state === 'enabled'
+                            ? await shutdown(data.id)
+                            : await start(data.id);
+                    if (res.success) {
+                        message.success('操作成功');
+                        tableRef.value?.reload();
+                    } else {
+                        message.error('操作失败！');
+                    }
+                },
             },
         },
         {
             key: 'delete',
             text: '删除',
+            disabled: state === 'enabled',
+            tooltip: {
+                title:
+                    state === 'enabled' ? '请先禁用该组件，再删除。' : '删除',
+            },
             popConfirm: {
                 title: '确认删除?',
                 onConfirm: async () => {
@@ -253,26 +351,65 @@ const getActions = (
             icon: 'DeleteOutlined',
         },
     ];
-    return actions;
+    return type === 'table'
+        ? actions
+        : actions.filter((item) => item.key !== 'eye');
 };
 
 const handlAdd = () => {
-    current.value = {};
-    visible.value = true;
-};
-const handlEdit = (data: object) => {
-    current.value = data;
-    visible.value = true;
+    router.push({
+        path: `/iot/link/type/detail/:id`,
+        query: { view: false },
+    });
 };
 
-const saveChange = (value: object) => {
-    visible.value = false;
-    current.value = {};
-    if (value) {
+const handlEye = (id: string) => {
+    router.push({
+        path: `/iot/link/type/detail/${id}`,
+        query: { view: true },
+    });
+};
+
+const handlEdit = (id: string) => {
+    router.push({
+        path: `/iot/link/type/detail/${id}`,
+        query: { view: false },
+    });
+};
+
+const handlDelete = async (id: string) => {
+    const res = await remove(id);
+    if (res.success) {
         message.success('操作成功');
         tableRef.value.reload();
     }
 };
+
+const getDetails = (slotProps: Partial<Record<string, any>>) => {
+    const { typeObject, shareCluster, configuration, cluster } = slotProps;
+    const headers =
+        typeObject.name.replace(/[^a-zA-Z]/g, '').toLowerCase() + '://';
+    const content = !!shareCluster
+        ? (configuration.publicHost || configuration.remoteHost) +
+          ':' +
+          (configuration.publicPort || configuration.remotePort)
+        : (cluster[0].configuration.publicHost ||
+              cluster[0].configuration.remoteHost) +
+          ':' +
+          (cluster[0].configuration.publicPort ||
+              cluster[0].configuration.remotePort);
+
+    return headers + content;
+};
+
+const getSupports = async () => {
+    const res = await supports();
+    options.value = res.result.map((item) => ({
+        value: item.id,
+        label: item.name,
+    }));
+};
+getSupports();
 
 /**
  * 搜索
@@ -299,7 +436,7 @@ const handleSearch = (e: any) => {
     min-height: 100px;
 
     .card-item-content-title-a {
-        color: #000 !important;
+        // color: #000 !important;
         font-weight: 700;
         font-size: 16px;
         overflow: hidden; //超出的文本隐藏
@@ -316,5 +453,9 @@ const handleSearch = (e: any) => {
         text-overflow: ellipsis; //溢出用省略号显示
         white-space: nowrap; //溢出不换行
     }
+}
+.details-text {
+    font-weight: 700;
+    font-size: 14px;
 }
 </style>

@@ -45,12 +45,12 @@
                         </template>
                         <template #content>
                             <div class="card-item-content">
-                                <a
+                                <h3
                                     @click="handlEye(slotProps.id)"
-                                    class="card-item-content-title-a"
+                                    class="card-item-content-title card-item-content-title-a"
                                 >
                                     {{ slotProps.name }}
-                                </a>
+                                </h3>
                                 <a-row class="card-item-content-box">
                                     <a-col
                                         :span="8"
@@ -149,7 +149,7 @@
         </div>
     </page-container>
 </template>
-<script lang="ts" setup name="AccessConfigPage">
+<script lang="ts" setup name="StreamPage">
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage } from '@/utils/comm';
 import { query, remove, disable, enalbe } from '@/api/media/stream';
@@ -300,7 +300,7 @@ const handleSearch = (e: any) => {
     .card-item-content-title-a {
         // color: #000 !important;
         font-weight: 700;
-        font-size: 18px;
+        font-size: 16px;
         overflow: hidden; //超出的文本隐藏
         text-overflow: ellipsis; //溢出用省略号显示
         white-space: nowrap; //溢出不换行

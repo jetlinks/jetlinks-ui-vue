@@ -45,11 +45,9 @@
                             <div class="card-item-content">
                                 <h3
                                     @click="handlEye(slotProps.id)"
-                                    class="card-item-content-title"
+                                    class="card-item-content-title card-item-content-title-a"
                                 >
-                                    <a class="card-item-content-title-a">{{
-                                        slotProps.name
-                                    }}</a>
+                                    {{ slotProps.name }}
                                 </h3>
                                 <a-row class="card-item-content-box">
                                     <a-col
@@ -402,9 +400,9 @@ const handleSearch = (e: any) => {
     min-height: 100px;
 
     .card-item-content-title-a {
-        // color: #000 !important;
+        color: #1890ff !important;
         font-weight: 700;
-        font-size: 18px;
+        font-size: 16px;
         overflow: hidden; //超出的文本隐藏
         text-overflow: ellipsis; //溢出用省略号显示
         white-space: nowrap; //溢出不换行
