@@ -11,12 +11,19 @@
             :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }"
         >
             <template #headerTitle>
-                <a-button
+                <!-- <a-button
                     type="primary"
                     @click="table.openDialog('add')"
                     style="margin-right: 10px"
                     ><AIcon type="PlusOutlined" />新增</a-button
+                > -->
+                <PermissionButton
+                    :uhasPermission="`${permission}:add`"
+                    type="primary"
+                    @click="table.openDialog('add')"
                 >
+                    <AIcon type="PlusOutlined" />新增
+                </PermissionButton>
             </template>
             <template #type="slotProps">
                 {{ slotProps.type.name }}
@@ -33,7 +40,7 @@
             </template>
             <template #action="slotProps">
                 <a-space :size="16">
-                    <a-tooltip>
+                    <!-- <a-tooltip>
                         <template #title>编辑</template>
                         <a-button
                             style="padding: 0"
@@ -42,9 +49,8 @@
                         >
                             <AIcon type="EditOutlined" />
                         </a-button>
-                    </a-tooltip>
-
-                    <a-popconfirm
+                    </a-tooltip> -->
+                    <!-- <a-popconfirm
                         :title="`确定${slotProps.status ? '禁用' : '启用'}吗？`"
                         ok-text="确定"
                         cancel-text="取消"
@@ -59,8 +65,8 @@
                                 <play-circle-outlined v-else />
                             </a-button>
                         </a-tooltip>
-                    </a-popconfirm>
-                    <a-tooltip>
+                    </a-popconfirm> -->
+                    <!-- <a-tooltip>
                         <template #title>重置密码</template>
                         <a-button
                             style="padding: 0"
@@ -69,8 +75,8 @@
                         >
                             <AIcon type="icon-zhongzhimima" />
                         </a-button>
-                    </a-tooltip>
-                    <a-popconfirm
+                    </a-tooltip> -->
+                    <!-- <a-popconfirm
                         title="确认删除"
                         ok-text="确定"
                         cancel-text="取消"
@@ -89,7 +95,60 @@
                                 <AIcon type="DeleteOutlined" />
                             </a-button>
                         </a-tooltip>
-                    </a-popconfirm>
+                    </a-popconfirm> -->
+
+                    <PermissionButton
+                        :uhasPermission="`${permission}:update`"
+                        type="link"
+                        :tooltip="{
+                            title: '编辑',
+                        }"
+                        @click="table.openDialog('edit')"
+                    >
+                        <AIcon type="EditOutlined" />
+                    </PermissionButton>
+                    <PermissionButton
+                        :uhasPermission="`${permission}:action`"
+                        type="link"
+                        :tooltip="{
+                            title: `${slotProps.status ? '禁用' : '启用'}`,
+                        }"
+                        :popConfirm="{
+                            title: `确定${
+                                slotProps.status ? '禁用' : '启用'
+                            }吗？`,
+                            onConfirm: () => table.changeStatus(slotProps),
+                        }"
+                    >
+                        <stop-outlined v-if="slotProps.status" />
+                        <play-circle-outlined v-else />
+                    </PermissionButton>
+                    <PermissionButton
+                        :uhasPermission="`${permission}:update`"
+                        type="link"
+                        :tooltip="{
+                            title: '重置密码',
+                        }"
+                        @click="table.openDialog('reset', slotProps)"
+                    >
+                        <AIcon type="icon-zhongzhimima" />
+                    </PermissionButton>
+                    <PermissionButton
+                        type="link"
+                        :uhasPermission="`${permission}:delete`"
+                        :tooltip="{
+                            title: slotProps.status
+                                ? '请先禁用，再删除'
+                                : '删除',
+                        }"
+                        :popConfirm="{
+                            title: `确认删除`,
+                            onConfirm: () => table.clickDel(slotProps),
+                        }"
+                        :disabled="slotProps.status"
+                    > 
+                        <AIcon type="DeleteOutlined" />
+                    </PermissionButton>
                 </a-space>
             </template>
         </JTable>
@@ -101,6 +160,7 @@
 </template>
 
 <script setup lang="ts" name="UserMange">
+import PermissionButton from '@/components/PermissionButton/index.vue';
 import EditUserDialog from './components/EditUserDialog.vue';
 import {
     getUserType_api,
@@ -110,6 +170,9 @@ import {
 } from '@/api/system/user';
 import { StopOutlined, PlayCircleOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
+
+const permission = 'system/User';
+
 const query = {
     columns: [
         {
@@ -292,5 +355,15 @@ type modalType = '' | 'add' | 'edit' | 'reset';
 <style lang="less" scoped>
 .user-container {
     padding: 24px;
+
+    :deep(.ant-table-tbody) {
+        .ant-table-cell {
+            .ant-space-item {
+                .ant-btn-link {
+                    padding: 0;
+                }
+            }
+        }
+    }
 }
 </style>

@@ -55,8 +55,9 @@ const openDeviceBind = () => {
                 flex-basis: 300px;
             }
             .right {
-                flex: 1 1 auto;
-                .ant-tabs-nav {
+                width: calc(100% - 300px);
+
+                .ant-tabs-nav-wrap {
                     padding-left: 24px;
                 }
             }

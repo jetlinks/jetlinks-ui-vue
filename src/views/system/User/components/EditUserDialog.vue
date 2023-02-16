@@ -100,6 +100,7 @@
                     </a-form-item>
                 </a-col>
             </a-row>
+            <!-- 还差页面权限 -->
             <a-row :gutter="24" v-if="form.IsShow('add', 'edit')">
                 <a-col :span="12">
                     <a-form-item name="roleIdList" label="角色" class="flex">
@@ -110,11 +111,14 @@
                             placeholder="请选择角色"
                             :options="form.roleOptions"
                         ></a-select>
-                        <span
-                            class="add-item"
+                        
+                        <PermissionButton
+                            :uhasPermission="`${rolePermission}:update`"
                             @click="form.clickAddItem('roleIdList', 'Role')"
-                            ><AIcon type="PlusOutlined"
-                        /></span>
+                            class="add-item"
+                        >
+                            <AIcon type="PlusOutlined" />
+                        </PermissionButton>
                     </a-form-item>
                 </a-col>
                 <a-col :span="12">
@@ -132,13 +136,13 @@
                                 {{ name }}
                             </template>
                         </a-tree-select>
-                        <span
+                        <PermissionButton
+                            :uhasPermission="`${deptPermission}:update`"
+                            @click="form.clickAddItem('roleIdList', 'Role')"
                             class="add-item"
-                            @click="
-                                form.clickAddItem('orgIdList', 'Department')
-                            "
-                            ><AIcon type="PlusOutlined"
-                        /></span>
+                        >
+                            <AIcon type="PlusOutlined" />
+                        </PermissionButton>
                     </a-form-item>
                 </a-col>
             </a-row>
@@ -186,7 +190,8 @@
 </template>
 
 <script setup lang="ts">
-import { FormInstance, message, TreeProps } from 'ant-design-vue';
+import PermissionButton from '@/components/PermissionButton/index.vue';
+import { FormInstance, message } from 'ant-design-vue';
 // import Progress from './Progress.vue';
 import {
     validateField_api,
@@ -200,6 +205,9 @@ import {
 import { Rule } from 'ant-design-vue/es/form';
 import { DefaultOptionType } from 'ant-design-vue/es/vc-tree-select/TreeSelect';
 import { AxiosResponse } from 'axios';
+
+const deptPermission = 'system/Department';
+const rolePermission = 'system/Role';
 
 const emits = defineEmits(['confirm']);
 // 弹窗相关
@@ -339,7 +347,7 @@ const form = reactive({
                 return;
         }
         console.log(params);
-        
+
         api(params).then(() => {
             message.success('操作成功');
             cb && cb();
@@ -407,7 +415,7 @@ type optionType = {
                 .ant-select {
                     flex: 1;
                 }
-                .add-item {
+                .ant-btn {
                     width: 32px;
                     height: 32px;
                     border: 1px solid #1d39c4;

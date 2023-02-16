@@ -15,23 +15,24 @@
             model="TABLE"
         >
             <template #headerTitle>
-                <a-button
+                <PermissionButton
                     type="primary"
+                    :uhasPermission="`${permission}:bind-user`"
                     @click="table.openDialog"
-                    style="margin-right: 10px"
+                    style="margin-right: 15px;"
                 >
                     <AIcon type="PlusOutlined" />绑定用户
-                </a-button>
-                <a-popconfirm
-                    title="是否解除绑定"
-                    ok-text="确定"
-                    cancel-text="取消"
-                    @confirm="table.unBind()"
+                </PermissionButton>
+                <div style="display: inline-block;width: 12px;height: 1px;"></div>
+                <PermissionButton
+                    :uhasPermission="`${permission}:bind`"
+                    :popConfirm="{
+                        title: `是否解除绑定`,
+                        onConfirm: () => table.unBind(),
+                    }"
                 >
-                    <a-button
-                        ><AIcon type="DisconnectOutlined" />批量解绑</a-button
-                    >
-                </a-popconfirm>
+                    <AIcon type="DisconnectOutlined" />批量解绑
+                </PermissionButton>
             </template>
             <template #status="slotProps">
                 <BadgeStatus
@@ -45,16 +46,16 @@
             </template>
             <template #action="slotProps">
                 <a-space :size="16">
-                    <a-popconfirm
-                        title="是否解除绑定"
-                        ok-text="确定"
-                        cancel-text="取消"
-                        @confirm="table.unBind(slotProps)"
+                    <PermissionButton
+                        type="link"
+                        :uhasPermission="`${permission}:bind`"
+                        :popConfirm="{
+                            title: `是否解除绑定`,
+                            onConfirm: () => table.unBind(slotProps),
+                        }"
                     >
-                        <a-button style="padding: 0" type="link">
-                            <AIcon type="DisconnectOutlined" />
-                        </a-button>
-                    </a-popconfirm>
+                        <AIcon type="DisconnectOutlined" />
+                    </PermissionButton>
                 </a-space>
             </template>
         </JTable>
@@ -70,9 +71,12 @@
 </template>
 
 <script setup lang="ts" name="user">
+import PermissionButton from '@/components/PermissionButton/index.vue';
 import AddBindUserDialog from './components/addBindUserDialog.vue';
 import { getBindUserList_api, unBindUser_api } from '@/api/system/department';
 import { message } from 'ant-design-vue';
+
+const permission = 'system/Department';
 
 const addDialogRef = ref();
 

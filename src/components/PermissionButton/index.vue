@@ -1,7 +1,7 @@
 <template>
   <template v-if="isPermission">
     <template v-if="popConfirm">
-      <a-popconfirm v-bind="popConfirm" @confirm="conform" :disabled="!isPermission || props.disabled">
+      <a-popconfirm v-bind="popConfirm" :disabled="!isPermission || props.disabled">
         <a-tooltip v-if="tooltip" v-bind="tooltip">
           <slot v-if="noButton"></slot>
           <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" >
@@ -106,9 +106,9 @@ const _isPermission = computed(() =>
     : true
 )
 
-const conform = (e: MouseEvent) => {
-  props.popConfirm?.onConfirm?.(e)
-}
+// const conform = (e: MouseEvent) => {
+//   props.popConfirm?.onConfirm?.(e)
+// }
 </script>
 <style scoped lang="less">
 
