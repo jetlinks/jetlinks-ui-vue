@@ -1,6 +1,6 @@
 <template>
     <page-container>
-        <a-card>
+        <div>
             <Search :columns="query.columns" target="device-instance" @search="handleSearch"></Search>
             <JTable
                 :columns="columns"
@@ -147,7 +147,7 @@
                 :title="title"
                 @success="refresh"
             />
-        </a-card>
+        </div>
     </page-container>
 </template>
 
@@ -209,8 +209,8 @@ const columns = [
     },
     {
         title: '说明',
-        dataIndex: 'describe',
-        key: 'describe',
+        dataIndex: 'description',
+        key: 'description',
     },
     {
         title: '操作',

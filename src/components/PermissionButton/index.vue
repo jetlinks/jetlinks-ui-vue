@@ -4,14 +4,14 @@
       <a-popconfirm v-bind="popConfirm" @confirm="conform" :disabled="!isPermission || props.disabled">
         <a-tooltip v-if="tooltip" v-bind="tooltip">
           <slot v-if="noButton"></slot>
-          <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" @click="handleClick">
+          <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" >
             <slot></slot>
             <template #icon>
               <slot name="icon"></slot>
             </template>
           </a-button>
         </a-tooltip>
-        <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" @click="handleClick">
+        <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" >
           <slot></slot>
           <template #icon>
             <slot name="icon"></slot>
@@ -22,7 +22,7 @@
     <template v-else-if="tooltip">
       <a-tooltip v-bind="tooltip">
         <slot v-if="noButton"></slot>
-        <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" @click="handleClick">
+        <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" >
           <slot></slot>
           <template #icon>
             <slot name="icon"></slot>
@@ -32,7 +32,7 @@
     </template>
     <template v-else>
       <slot v-if="noButton"></slot>
-      <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" @click="handleClick">
+      <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" >
         <slot></slot>
         <template #icon>
           <slot name="icon"></slot>
@@ -42,7 +42,7 @@
   </template>
   <a-tooltip v-else title="没有权限">
     <slot v-if="noButton"></slot>
-    <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" @click="handleClick">
+    <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" >
       <slot></slot>
       <template #icon>
         <slot name="icon"></slot>
@@ -56,11 +56,11 @@ import { TooltipProps, PopconfirmProps } from 'ant-design-vue/es'
 import { buttonProps } from 'ant-design-vue/es/button/button'
 import { usePermissionStore } from '@/store/permission';
 
-interface PermissionButtonEmits {
-  (e: 'click', data: MouseEvent): void;
-}
+// interface PermissionButtonEmits {
+//   (e: 'click', data: MouseEvent): void;
+// }
 
-const emits = defineEmits<PermissionButtonEmits>()
+// const emits = defineEmits<PermissionButtonEmits>()
 
 // interface PermissionButtonProps extends ButtonProps {
 //   tooltip?: TooltipProps;
@@ -100,14 +100,11 @@ const isPermission = computed(() => {
 })
 const _isPermission = computed(() =>
   'hasPermission' in props && isPermission.value
-    ? 'disabled' in buttonProps
-      ? buttonProps.disabled as boolean
+    ? 'disabled' in _buttonProps
+      ? _buttonProps.disabled as boolean
       : false
     : true
 )
-const handleClick = (e: MouseEvent) => {
-  emits('click', e)
-}
 
 const conform = (e: MouseEvent) => {
   props.popConfirm?.onConfirm?.(e)
