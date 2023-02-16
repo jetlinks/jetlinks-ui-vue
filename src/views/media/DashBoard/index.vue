@@ -34,8 +34,12 @@
                     :value="aggPlayingTotal"
                 />
             </a-col>
-            <a-col :span="24">
-                <Card title="播放数量(人次)" :chartData="chartData" />
+            <a-col :span="24" class="dash-board-bottom">
+                <Card
+                    title="播放数量(人次)"
+                    :chartData="chartData"
+                    @change="getPlayCount"
+                />
             </a-col>
         </a-row>
     </div>
@@ -50,6 +54,7 @@ import dashboardApi from '@/api/media/dashboard';
 import type { Footer } from '@/views/media/DashBoard/typings';
 import encodeQuery from '@/utils/encodeQuery';
 import { timestampFormat } from '@/utils/utils';
+import moment from 'moment';
 
 // 设备
 const deviceFooter = ref<Footer[]>([]);
@@ -114,10 +119,12 @@ const aggTotal = ref(0);
 const getAggData = () => {
     dashboardApi.agg().then((res) => {
         aggTotal.value = res.result.total;
-        aggFooter.value.push({
-            title: '总时长',
-            value: timestampFormat(res.result.duration),
-        });
+        aggFooter.value = [
+            {
+                title: '总时长',
+                value: timestampFormat(res.result.duration),
+            },
+        ];
     });
 };
 getAggData();
@@ -128,10 +135,12 @@ const aggPlayingTotal = ref(0);
 const getAggPlayingData = () => {
     dashboardApi.aggPlaying().then((res) => {
         aggTotal.value = res.result.playingTotal;
-        aggPlayingFooter.value.push({
-            title: '播放人数',
-            value: res.result.playerTotal,
-        });
+        aggPlayingFooter.value = [
+            {
+                title: '播放人数',
+                value: res.result.playerTotal,
+            },
+        ];
     });
 };
 getAggPlayingData();
@@ -140,24 +149,61 @@ getAggPlayingData();
  * 获取播放数量(人次)
  */
 const chartData = ref([]);
-const getPlayCount = async () => {
-    const params = {};
-    dashboardApi.getPlayCount(params).then((res) => {
-        let result: any = [];
-        res.result.forEach((item: any) => {
-            result = [...result, ...item.data];
+const getPlayCount = async (params: any) => {
+    let _time = '1h';
+    let _limit = 12;
+    const dt = params.time.end - params.time.start;
+    const hour = 60 * 60 * 1000;
+    const day = hour * 24;
+    const month = day * 30;
+    const year = 365 * day;
+    if (dt <= day) {
+        _limit = Math.abs(Math.ceil(dt / hour));
+    } else if (dt > day && dt < year) {
+        _limit = Math.abs(Math.ceil(dt / day));
+        _time = '1d';
+    } else if (dt >= year) {
+        _limit = Math.abs(Math.floor(dt / month));
+        _time = '1M';
+    }
+    dashboardApi
+        .getPlayCount([
+            {
+                dashboard: 'media_stream',
+                object: 'play_count',
+                measurement: 'quantity',
+                dimension: 'agg',
+                group: 'playCount',
+                params: {
+                    time: _time,
+                    from: moment(Number(params.time.start)).format(
+                        'YYYY-MM-DD HH:mm:ss',
+                    ),
+                    to: moment(Number(params.time.end)).format(
+                        'YYYY-MM-DD HH:mm:ss',
+                    ),
+                    limit: _limit,
+                },
+            },
+        ])
+        .then((res) => {
+            let result: any = [];
+            res.result.forEach((item: any) => {
+                result = [...result, ...item.data];
+            });
+            chartData.value = result.map((m: any) => ({
+                x: m.timeString,
+                value: m.value,
+            }));
         });
-        chartData.value = result.map((m: any) => ({
-            x: m.timeString,
-            value: m.value,
-        }));
-    });
 };
-getPlayCount();
 </script>
 
 <style lang="less" scoped>
 .page-container {
     padding: 24px;
+    .dash-board-bottom {
+        margin-top: 24px;
+    }
 }
 </style>

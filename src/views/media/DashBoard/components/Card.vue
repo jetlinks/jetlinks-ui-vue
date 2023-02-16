@@ -1,5 +1,5 @@
 <template>
-    <div class="page-container">
+    <div class="wrapper">
         <div class="card-header">
             <div class="title">{{ title }}</div>
             <div class="tools">
@@ -13,18 +13,28 @@
                         <a-radio-button value="month">近一月</a-radio-button>
                         <a-radio-button value="year">近一年</a-radio-button>
                     </a-radio-group>
-                    <a-range-picker v-model:value="dateRange" />
+                    <a-range-picker
+                        format="YYYY-MM-DD HH:mm:ss"
+                        valueFormat="x"
+                        v-model:value="dateRange"
+                    />
                 </a-space>
             </div>
         </div>
-        <div class="chart" ref="chartRef"></div>
+        <div v-if="chartData.length" class="chart" ref="chartRef"></div>
+        <a-empty v-else class="no-data" description="暂无数据"></a-empty>
     </div>
 </template>
 
 <script setup lang="ts">
 import * as echarts from 'echarts';
+import moment from 'moment';
 
 // const { proxy } = <any>getCurrentInstance();
+type Emits = {
+    (e: 'change', data: any): void;
+};
+const emits = defineEmits<Emits>();
 
 const props = defineProps({
     title: { type: String, default: '' },
@@ -34,7 +44,10 @@ const props = defineProps({
 
 // 统计时间维度
 const dimension = ref('week');
-const dateRange = ref<any>([]);
+const dateRange = ref<any>([
+    moment().subtract(1, 'week').format('x'),
+    moment().format('x'),
+]);
 
 /**
  * 绘制图表
@@ -92,6 +105,7 @@ const createChart = () => {
                 },
             ],
         };
+
         myChart.setOption(options);
         window.addEventListener('resize', function () {
             myChart.resize();
@@ -101,24 +115,73 @@ const createChart = () => {
 
 watch(
     () => props.chartData,
-    () => createChart(),
+    (val) => {
+        console.log('createChart', val);
+
+        createChart();
+    },
+    { deep: true },
+);
+watch(
+    () => dateRange.value,
+    (val) => {
+        emits('change', {
+            time: {
+                start: val[0],
+                end: val[1],
+            },
+        });
+    },
     { immediate: true, deep: true },
+);
+watch(
+    () => dimension.value,
+    (val) => {
+        if (val === 'today') {
+            dateRange[0] = moment().startOf('day').format('x');
+        }
+        if (val === 'week') {
+            dateRange[0] = moment().subtract(1, 'week').format('x');
+        }
+        if (val === 'month') {
+            dateRange[0] = moment().subtract(1, 'month').format('x');
+        }
+        if (val === 'year') {
+            dateRange[0] = moment().subtract(1, 'year').format('x');
+        }
+        dateRange[1] = moment().format('x');
+        emits('change', {
+            time: {
+                start: dateRange[0],
+                end: dateRange[1],
+            },
+        });
+    },
 );
 </script>
 
 <style scoped lang="less">
-.page-container {
+.wrapper {
+    padding: 24px;
+    background-color: #fff;
     .card-header {
         display: flex;
         justify-content: space-between;
+        margin-bottom: 24px;
         .title {
             font-weight: 700;
             font-size: 16px;
         }
     }
-    .chart {
+    .chart,
+    .no-data {
         width: 100%;
-        height: 100%;
+        min-height: calc(100vh - 430px);
+    }
+    .no-data {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 }
 </style>
