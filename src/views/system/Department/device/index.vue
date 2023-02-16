@@ -125,6 +125,7 @@
         <div class="dialogs">
             <AddDeviceOrProductDialog
                 ref="addDialogRef"
+                :query-columns="query.columns"
                 :parent-id="props.parentId"
                 :all-permission="table.permissionList.value"
                 asset-type="device"
@@ -155,14 +156,17 @@ import {
     getPermission_api,
     getPermissionDict_api,
     unBindDeviceOrProduct_api,
+    getDeviceProduct_api,
 } from '@/api/system/department';
 import { intersection } from 'lodash-es';
 
 import { dictType } from '../typing.d.ts';
 import { message } from 'ant-design-vue';
 
+const emits = defineEmits(['update:bindBool']);
 const props = defineProps<{
     parentId: string;
+    bindBool: boolean;
 }>();
 const query = {
     columns: [
@@ -184,6 +188,41 @@ const query = {
             fixed: 'left',
             search: {
                 type: 'string',
+            },
+        },
+        {
+            title: '所属产品',
+            dataIndex: 'productId$product-info',
+            key: 'productId$product-info',
+            ellipsis: true,
+            fixed: 'left',
+            search: {
+                type: 'select',
+                options: () =>
+                    new Promise((resolve) => {
+                        const params = {
+                            paging: false,
+                            'sorts[0].name': 'createTime',
+                            'sorts[0].order': 'desc',
+                        };
+                        getDeviceProduct_api(params).then((resp: any) => {
+                            const result = resp.result.map((item: any) => ({
+                                label: item.name,
+                                value: item.id,
+                            }));
+                            resolve(result);
+                        });
+                    }),
+            },
+        },
+        {
+            title: '注册时间',
+            dataIndex: 'registryTime',
+            key: 'registryTime',
+            ellipsis: true,
+            fixed: 'left',
+            search: {
+                type: 'date',
             },
         },
         {
@@ -279,26 +318,30 @@ const table = {
                 const { pageIndex, pageSize, total, data } =
                     resp.result as resultType;
                 const ids = data.map((item) => item.id);
-                getPermission_api('device',ids, parentId).then((perResp: any) => {
-                    const permissionObj = {};
-                    perResp.result.forEach((item: any) => {
-                        permissionObj[item.assetId] = item.grantedPermissions;
-                    });
-                    data.forEach(
-                        (item) => (item.permission = permissionObj[item.id]),
-                    );
+                getPermission_api('device', ids, parentId).then(
+                    (perResp: any) => {
+                        const permissionObj = {};
+                        perResp.result.forEach((item: any) => {
+                            permissionObj[item.assetId] =
+                                item.grantedPermissions;
+                        });
+                        data.forEach(
+                            (item) =>
+                                (item.permission = permissionObj[item.id]),
+                        );
 
-                    resolve({
-                        code: 200,
-                        result: {
-                            data: data,
-                            pageIndex,
-                            pageSize,
-                            total,
-                        },
-                        status: 200,
-                    });
-                });
+                        resolve({
+                            code: 200,
+                            result: {
+                                data: data,
+                                pageIndex,
+                                pageSize,
+                                total,
+                            },
+                            status: 200,
+                        });
+                    },
+                );
             });
         }),
     // 整理参数并获取数据
@@ -393,6 +436,10 @@ const addDialogRef = ref();
 const editDialogRef = ref();
 
 table.init();
+nextTick(() => {
+    props.bindBool && table.clickAdd();
+    emits('update:bindBool', false);
+});
 </script>
 
 <style lang="less" scoped>

@@ -7,13 +7,19 @@
             <div class="right">
                 <a-tabs v-model:activeKey="activeKey">
                     <a-tab-pane key="product" tab="产品">
-                        <Product :parentId="departmentId" />
+                        <Product
+                            :parentId="departmentId"
+                            @open-device-bind="openDeviceBind"
+                        />
                     </a-tab-pane>
                     <a-tab-pane key="device" tab="设备">
-                        <Device :parentId="departmentId" />
+                        <Device
+                            :parentId="departmentId"
+                            v-model:bindBool="bindBool"
+                        />
                     </a-tab-pane>
                     <a-tab-pane key="user" tab="用户">
-                        <User />
+                        <User :parentId="departmentId" />
                     </a-tab-pane>
                 </a-tabs>
             </div>
@@ -30,6 +36,12 @@ import User from './user/index.vue';
 const activeKey = ref<'product' | 'device' | 'user'>('product');
 
 const departmentId = ref<string>('');
+
+const bindBool = ref<boolean>(false);
+const openDeviceBind = () => {
+    bindBool.value = true;
+    activeKey.value = 'device';
+};
 </script>
 
 <style lang="less" scoped>

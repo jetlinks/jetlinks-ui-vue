@@ -28,7 +28,7 @@
             <a-checkbox-group v-model:value="bulkList" :options="options" />
         </div>
 
-        <Search :columns="query.columns" @search="query.search" />
+        <Search :columns="props.queryColumns" @search="query.search" />
 
         <JTable
             ref="tableRef"
@@ -118,6 +118,7 @@ import { message } from 'ant-design-vue';
 
 const emits = defineEmits(['confirm']);
 const props = defineProps<{
+    queryColumns: any[];
     parentId: string;
     allPermission: dictType;
     assetType: 'product' | 'device';
@@ -139,7 +140,6 @@ const dialog = {
             permission: item.selectPermissions,
         }));
 
-        // console.log(params);
         dialog.loading.value = true;
         bindDeviceOrProductList_api(props.assetType, params)
             .then(() => {
@@ -334,6 +334,14 @@ const table: any = {
                     data.forEach((item) => {
                         item.permissionList = permissionObj[item.id];
                         item.selectPermissions = ['read'];
+
+                        // 产品的状态进行转换处理
+                        if(props.assetType === 'product') {
+                            item.state = {
+                                value: item.state === 1 ? 'online': item.state === 0 ? 'offline': '',
+                                text: item.state === 1 ? '正常': item.state === 0 ? '禁用': ''
+                            }
+                        }
                     });
 
                     resolve({

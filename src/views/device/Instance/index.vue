@@ -281,7 +281,7 @@ const api = ref<string>('');
 const type = ref<string>('');
 
 const statusMap = new Map();
-statusMap.set('online', 'processing');
+statusMap.set('online', 'success');
 statusMap.set('offline', 'error');
 statusMap.set('notActive', 'warning');
 
