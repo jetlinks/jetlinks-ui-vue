@@ -100,6 +100,7 @@
                     </a-form-item>
                 </a-col>
             </a-row>
+            <!-- 还差页面权限 -->
             <a-row :gutter="24" v-if="form.IsShow('add', 'edit')">
                 <a-col :span="12">
                     <a-form-item name="roleIdList" label="角色" class="flex">
@@ -110,6 +111,7 @@
                             placeholder="请选择角色"
                             :options="form.roleOptions"
                         ></a-select>
+                        
                         <PermissionButton
                             :uhasPermission="`${rolePermission}:update`"
                             @click="form.clickAddItem('roleIdList', 'Role')"

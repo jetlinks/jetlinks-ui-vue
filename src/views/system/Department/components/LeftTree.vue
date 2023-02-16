@@ -10,9 +10,17 @@
                 <search-outlined />
             </template>
         </a-input>
-        <a-button type="primary" @click="openDialog()" class="add-btn">
-            新增
-        </a-button>
+        <div class="add-btn">
+            <PermissionButton
+                type="primary"
+                class="add-btn"
+                :uhasPermission="`${permission}:add`"
+                @click="openDialog()"
+            >
+                新增
+            </PermissionButton>
+        </div>
+
         <a-tree
             :tree-data="treeData"
             v-model:selected-keys="selectedKeys"
@@ -22,13 +30,13 @@
             <template #title="{ name, data }">
                 <span>{{ name }}</span>
                 <span class="func-btns" @click="(e) => e.stopPropagation()">
-                    <a-tooltip>
+                    <!-- <a-tooltip>
                         <template #title>编辑</template>
                         <a-button style="padding: 0" type="link">
                             <edit-outlined @click="openDialog(data)" />
                         </a-button>
-                    </a-tooltip>
-                    <a-tooltip>
+                    </a-tooltip> -->
+                    <!-- <a-tooltip>
                         <template #title>新增子组织</template>
                         <a-button style="padding: 0" type="link">
                             <plus-circle-outlined
@@ -42,9 +50,9 @@
                                 "
                             />
                         </a-button>
-                    </a-tooltip>
+                    </a-tooltip> -->
 
-                    <a-popconfirm
+                    <!-- <a-popconfirm
                         title="确认删除"
                         ok-text="确定"
                         cancel-text="取消"
@@ -56,7 +64,45 @@
                                 <delete-outlined />
                             </a-button>
                         </a-tooltip>
-                    </a-popconfirm>
+                    </a-popconfirm> -->
+
+                    <PermissionButton
+                        :uhasPermission="`${permission}:update`"
+                        type="link"
+                        :tooltip="{
+                            title: '新增子组织',
+                        }"
+                        @click="openDialog(data)"
+                    >
+                        <AIcon type="EditOutlined" />
+                    </PermissionButton>
+                    <PermissionButton
+                        :uhasPermission="`${permission}:add`"
+                        type="link"
+                        :tooltip="{
+                            title: '新增子组织',
+                        }"
+                        @click="
+                            openDialog({
+                                ...data,
+                                id: '',
+                                parentId: data.id,
+                            })
+                        "
+                    >
+                        <AIcon type="PlusCircleOutlined" />
+                    </PermissionButton>
+                    <PermissionButton
+                        type="link"
+                        :uhasPermission="`${permission}:delete`"
+                        :tooltip="{ title: '删除' }"
+                        :popConfirm="{
+                            title: `确定要删除吗`,
+                            onConfirm: () => delDepartment(data.id),
+                        }"
+                    >
+                        <AIcon type="DeleteOutlined" />
+                    </PermissionButton>
                 </span>
             </template>
         </a-tree>
@@ -71,18 +117,16 @@
 </template>
 
 <script setup lang="ts">
+import PermissionButton from '@/components/PermissionButton/index.vue';
 import { getTreeData_api, delDepartment_api } from '@/api/system/department';
 import { debounce, cloneDeep, omit } from 'lodash-es';
 import { ArrayToTree } from '@/utils/utils';
 import EditDepartmentDialog from './EditDepartmentDialog.vue';
 
-import {
-    SearchOutlined,
-    EditOutlined,
-    PlusCircleOutlined,
-    DeleteOutlined,
-} from '@ant-design/icons-vue';
+import { SearchOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
+
+const permission = 'system/Department';
 
 const save = useRoute().query.save;
 const emits = defineEmits(['change']);
@@ -195,7 +239,10 @@ function init() {
 
     .add-btn {
         margin: 24px 0;
-        width: 100%;
+
+        :deep(.ant-btn-primary) {
+            width: 100%;
+        }
     }
 
     :deep(.ant-tree-treenode) {
@@ -210,8 +257,9 @@ function init() {
                 .func-btns {
                     display: none;
                     font-size: 14px;
-                    .ant-btn {
-                        height: 22px;
+                    .ant-btn-link {
+                        padding: 0 4px;
+                        height: 24px;
                     }
                 }
                 &:hover {

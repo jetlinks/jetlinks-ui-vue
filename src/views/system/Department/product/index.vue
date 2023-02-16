@@ -14,29 +14,38 @@
         >
             <template #headerTitle>
                 <a-space>
-                    <a-button type="primary" @click="table.clickAdd">
-                        <plus-outlined />资产分配
-                    </a-button>
+                    <PermissionButton
+                        :uhasPermission="`${permission}:assert`"
+                        type="primary"
+                        @click="table.clickAdd"
+                    >
+                        <AIcon type="PlusOutlined" />资产分配
+                    </PermissionButton>
                     <a-dropdown trigger="hover">
                         <a-button>批量操作</a-button>
                         <template #overlay>
                             <a-menu>
                                 <a-menu-item>
-                                    <a-popconfirm
-                                        title="是否批量解除绑定"
-                                        ok-text="确定"
-                                        cancel-text="取消"
-                                        @confirm="table.clickUnBind()"
+                                    <PermissionButton
+                                        :uhasPermission="`${permission}:bind`"
+                                        :popConfirm="{
+                                            title: `是否批量解除绑定`,
+                                            onConfirm: () =>
+                                                table.clickUnBind(),
+                                        }"
                                     >
-                                        <a-button>
-                                            <DisconnectOutlined /> 批量解绑
-                                        </a-button>
-                                    </a-popconfirm>
+                                        <AIcon
+                                            type="DisconnectOutlined"
+                                        />批量解绑
+                                    </PermissionButton>
                                 </a-menu-item>
                                 <a-menu-item>
-                                    <a-button @click="table.clickEdit()">
-                                        <EditOutlined /> 批量编辑
-                                    </a-button>
+                                    <PermissionButton
+                                        :uhasPermission="`${permission}:assert`"
+                                        @click="()=>table.clickEdit()"
+                                    >
+                                        <AIcon type="EditOutlined" />批量编辑
+                                    </PermissionButton>
                                 </a-menu-item>
                             </a-menu>
                         </template>
@@ -102,21 +111,22 @@
                         </a-row>
                     </template>
                     <template #actions>
-                        <a-button
-                            @click="table.clickEdit(slotProps)"
-                            style="margin-right: 10px"
+                        <PermissionButton
+                            :uhasPermission="`${permission}:assert`"
+                            @click="() => table.clickEdit(slotProps)"
                         >
                             <AIcon type="EditOutlined" />
-                        </a-button>
-                        <a-popconfirm
-                            title="是否解除绑定"
-                            ok-text="确定"
-                            cancel-text="取消"
-                            @confirm="table.clickUnBind(slotProps)"
-                            ><a-button>
-                                <AIcon type="DisconnectOutlined" />
-                            </a-button>
-                        </a-popconfirm>
+                        </PermissionButton>
+
+                        <PermissionButton
+                            :uhasPermission="`${permission}:bind`"
+                            :popConfirm="{
+                                title: `是否解除绑定`,
+                                onConfirm: () => table.clickUnBind(slotProps),
+                            }"
+                        >
+                            <AIcon type="DisconnectOutlined" />
+                        </PermissionButton>
                     </template>
                 </CardBox>
             </template>
@@ -138,17 +148,17 @@
                 asset-type="product"
                 @confirm="table.refresh"
             />
-            <NextDialog ref="nextDialogRef" @confirm="emits('openDeviceBind')" />
+            <NextDialog
+                ref="nextDialogRef"
+                @confirm="emits('openDeviceBind')"
+            />
         </div>
     </div>
 </template>
 
 <script setup lang="ts" name="product">
-import {
-    PlusOutlined,
-    EditOutlined,
-    DisconnectOutlined,
-} from '@ant-design/icons-vue';
+import PermissionButton from '@/components/PermissionButton/index.vue';
+
 import AddDeviceOrProductDialog from '../components/AddDeviceOrProductDialog.vue';
 import EditPermissionDialog from '../components/EditPermissionDialog.vue';
 import NextDialog from '../components/NextDialog.vue';
@@ -164,7 +174,9 @@ import { intersection } from 'lodash-es';
 import { dictType } from '../typing.d.ts';
 import { message } from 'ant-design-vue';
 
-const emits = defineEmits(['openDeviceBind'])
+const permission = 'system/Department';
+
+const emits = defineEmits(['openDeviceBind']);
 const props = defineProps<{
     parentId: string;
 }>();
@@ -363,6 +375,8 @@ const table = {
         }
     },
     clickAdd: () => {
+        console.log(222)
+        console.log(addDialogRef.value)
         addDialogRef.value && addDialogRef.value.openDialog();
     },
     clickEdit: (row?: any) => {
@@ -405,10 +419,10 @@ const table = {
             tableRef.value.reload();
         });
     },
-    addConfirm: ()=>{
-        table.refresh()
-        nextDialogRef.value && nextDialogRef.value.openDialog()
-    }
+    addConfirm: () => {
+        table.refresh();
+        nextDialogRef.value && nextDialogRef.value.openDialog();
+    },
 };
 
 const addDialogRef = ref();
@@ -428,7 +442,7 @@ table.init();
             }
         }
         .card-tools {
-            .ant-btn {
+            span {
                 color: #252525;
             }
         }
