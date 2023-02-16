@@ -134,6 +134,7 @@ import DeviceApi from '@/api/media/device';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
+import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
 
 const providerType = {
     'gb28181-2016': 'GB/T28181',
@@ -169,10 +170,7 @@ const columns = [
         scopedSlots: true,
         search: {
             type: 'select',
-            options: [
-                { label: '固定地址', value: 'fixed-media' },
-                { label: 'GB/T28181', value: 'gb28181-2016' },
-            ],
+            options: PROVIDER_OPTIONS,
             handleValue: (v: any) => {
                 return '123';
             },
