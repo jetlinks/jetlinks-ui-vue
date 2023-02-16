@@ -13,7 +13,7 @@ import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker';
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
 
 self.MonacoEnvironment = {
-    getWorker(workerId, label) {
+    getWorker(_, label) {
         if (label === 'json') {
             return new jsonWorker();
         }
@@ -23,7 +23,7 @@ self.MonacoEnvironment = {
         if (label === 'html') {
             return new htmlWorker();
         }
-        if (label === 'ts') {
+        if (['typescript', 'javascript'].includes(label)) {
             return new tsWorker();
         }
         return new editorWorker();
@@ -33,6 +33,7 @@ self.MonacoEnvironment = {
 const props = defineProps({
     modelValue: [String, Number],
     theme: { type: String, default: 'vs-dark' },
+    language: { type: String, default: 'json' },
 });
 
 const emit = defineEmits(['update:modelValue']);
@@ -42,10 +43,10 @@ const dom = ref();
 let instance;
 
 onMounted(() => {
-    const jsonModel = monaco.editor.createModel(props.modelValue, 'json');
+    const _model = monaco.editor.createModel(props.modelValue, props.language);
 
     instance = monaco.editor.create(dom.value, {
-        model: jsonModel,
+        model: _model,
         tabSize: 2,
         automaticLayout: true,
         scrollBeyondLastLine: false,
