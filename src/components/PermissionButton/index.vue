@@ -100,8 +100,8 @@ const isPermission = computed(() => {
 })
 const _isPermission = computed(() =>
   'hasPermission' in props && isPermission.value
-    ? 'disabled' in buttonProps
-      ? buttonProps.disabled as boolean
+    ? 'disabled' in _buttonProps
+      ? _buttonProps.disabled as boolean
       : false
     : true
 )
