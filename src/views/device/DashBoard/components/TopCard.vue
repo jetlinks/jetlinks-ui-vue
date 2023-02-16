@@ -72,7 +72,7 @@ const props = defineProps({
         }
         .content-right {
             width: 0;
-            height: 100%;
+            height: 123px;
             display: flex;
             flex-grow: .7;
             align-items: flex-end;

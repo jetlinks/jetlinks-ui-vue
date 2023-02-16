@@ -16,9 +16,6 @@
             </a-button>
         </template>
     </JTable>
-    <a-button type="link" @click="detail(slotProps)">
-        <AIcon type="SearchOutlined" />
-    </a-button>
 </template>
 
 <script lang="ts" setup>
