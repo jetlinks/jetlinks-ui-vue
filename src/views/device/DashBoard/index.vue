@@ -40,7 +40,7 @@
                         <Charts :options="TodayDevOptions"></Charts> </TopCard
                 ></a-col>
             </a-row>
-            <a-row :span="24">
+            <a-row :gutter="24">
                 <a-col :span="24">
                     <div class="message-card">
                         <Guide title="设备消息">
@@ -452,6 +452,7 @@ const getEcharts = (data: any) => {
         _time = '1M';
         format = 'yyyy年-M月';
     }
+    
     dashboard([
         {
             dashboard: 'device',
