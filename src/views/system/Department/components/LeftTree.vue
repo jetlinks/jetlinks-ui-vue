@@ -165,7 +165,7 @@ function delDepartment(id: string) {
 }
 function refresh(id: string) {
     // @ts-ignore
-    window?.onSaveSuccess && window.onSaveSuccess('department', id);
+    window?.onSaveSuccess && window.onSaveSuccess(id);
     window.close();
     getTree();
 }

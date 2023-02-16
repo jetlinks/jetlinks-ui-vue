@@ -45,6 +45,7 @@
 import { FormInstance, message } from 'ant-design-vue';
 import { saveRole_api } from '@/api/system/role';
 const router = useRouter();
+const route = useRoute();
 // 弹窗相关
 const dialog = reactive({
     visible: false,
@@ -56,12 +57,17 @@ const dialog = reactive({
                 if (resp.status === 200) {
                     message.success('操作成功');
                     dialog.visible = false;
-                    router.push(`/system/Role/detail/${resp.result.id}`);
+
+                    if (route.query.save) {
+                        // @ts-ignore
+                        window?.onSaveSuccess && window.onSaveSuccess(resp.result.id);
+                        window.close();
+                    } else router.push(`/system/Role/detail/${resp.result.id}`);
                 }
             });
     },
     // 控制弹窗的打开与关闭
-    changeVisible: (status: boolean, defaultForm: object={}) => {
+    changeVisible: (status: boolean, defaultForm: object = {}) => {
         dialog.visible = status;
         form.data = { name: '', description: '', ...defaultForm };
     },
@@ -76,12 +82,10 @@ const form = reactive({
     },
 });
 
-
-
 // 将打开弹窗的操作暴露给父组件
 defineExpose({
-    openDialog: dialog.changeVisible
-})
+    openDialog: dialog.changeVisible,
+});
 </script>
 
 <style scoped></style>
