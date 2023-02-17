@@ -1,0 +1,67 @@
+<template>
+  <a-popover :visible="visible" placement="left">
+    <template #title>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="width: 150px;">配置元素</div>
+        <close-outlined @click="visible = false" />
+      </div>
+    </template>
+    <template #content>
+      <div style="max-width: 400px;">
+        <a-form layout="vertical" :model="_value">
+          <value-type-form v-model:value="_value" :name="[]" isSub key="sub"></value-type-form>
+          <a-form-item label="说明" name="description" :rules="[
+            { max: 200, message: '最多可输入200个字符' },
+          ]">
+            <a-textarea v-model:value="_value.description" size="small"></a-textarea>
+          </a-form-item>
+        </a-form>
+      </div>
+    </template>
+    <a-button type="dashed" block @click="visible = true">
+      配置元素<edit-outlined class="item-icon" />
+    </a-button>
+  </a-popover>
+
+</template>
+<script setup lang="ts" name="ArrayParam">
+import ValueTypeForm from '@/views/device/components/Metadata/Base/Edit/ValueTypeForm.vue';
+import { EditOutlined, CloseOutlined } from '@ant-design/icons-vue';
+import { PropType } from 'vue';
+
+type ValueType = Record<any, any>;
+
+const props = defineProps({
+  value: {
+    type: Object as PropType<ValueType>,
+    default: () => ({ extends: {} })
+  },
+  name: {
+    type: Array as PropType<string[]>,
+    required: true
+  }
+})
+interface Emits {
+  (e: 'update:value', data: ValueType): void;
+}
+const emit = defineEmits<Emits>()
+
+const _value = computed({
+  get: () => props.value,
+  set: val => {
+    emit('update:value', val)
+  }
+})
+
+const visible = ref(false)
+
+onMounted(() => {
+  emit('update:value', { extends: {}, ...props.value })
+})
+</script>
+<style lang="less" scoped>
+.item-icon {
+  color: rgb(136, 136, 136);
+  font-size: 12px;
+}
+</style>

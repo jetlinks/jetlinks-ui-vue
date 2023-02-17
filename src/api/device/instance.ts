@@ -2,6 +2,7 @@ import { LocalStore } from '@/utils/comm'
 import server from '@/utils/request'
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable'
 import { DeviceInstance } from '@/views/device/Instance/typings'
+import { UnitType } from '@/views/device/Product/typings';
 
 /**
  * 删除设备物模型
@@ -242,3 +243,9 @@ export const unbindBatchDevice = (deviceId: string, data: Record<string, any>) =
  * @returns 
  */
 export const bindDevice = (deviceId: string, data: Record<string, any>) => server.post(`/device/gateway/${deviceId}/bind`, data)
+
+/**
+ * 获取单位列表
+ * @returns 单位列表
+ */
+export const getUnit = () => server.get<UnitType[]>(`/protocol/units`)
