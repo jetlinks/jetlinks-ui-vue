@@ -127,10 +127,15 @@ const funcChange = (val: string) => {
 const saveBtn = () => new Promise((resolve) => {
     formRef.value.validate()
     .then(() => {
-        resolve(toRaw(modelRef))
+        const _arr = toRaw(modelRef).value?.message?.inputs || []
+        if(_arr.length && !_arr.every((_a: any) => _a.value)){
+            resolve(false)
+        } else {
+            resolve(toRaw(modelRef))
+        }
     })
     .catch((err: any) => {
-        resolve(false)
+        resolve(err)
     });
 })
 

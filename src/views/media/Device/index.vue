@@ -135,11 +135,7 @@ import type { ActionsType } from '@/components/Table/index.vue';
 import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
-
-const providerType = {
-    'gb28181-2016': 'GB/T28181',
-    'fixed-media': '固定地址',
-};
+import { providerType } from './const';
 
 const router = useRouter();
 

@@ -1,6 +1,10 @@
 <template>
     <page-container>
-        <Search :columns="columns" target="northbound-dueros" :params="params" />
+        <Search
+            :columns="columns"
+            target="northbound-dueros"
+            @search="handleSearch"
+        />
         <JTable
             ref="instanceRef"
             :columns="columns"
@@ -22,16 +26,12 @@
                     :statusText="slotProps.state?.text"
                     :statusNames="{
                         enabled: 'success',
-                        disabled: 'error'
+                        disabled: 'error',
                     }"
                 >
                     <template #img>
                         <slot name="img">
-                            <img
-                                :src="
-                                    getImage('/cloud/dueros.png')
-                                "
-                            />
+                            <img :src="getImage('/cloud/dueros.png')" />
                         </slot>
                     </template>
                     <template #content>
@@ -43,9 +43,7 @@
                         </h3>
                         <a-row>
                             <a-col :span="12">
-                                <div class="card-item-content-text">
-                                    产品
-                                </div>
+                                <div class="card-item-content-text">产品</div>
                                 <div>{{ slotProps?.productName }}</div>
                             </a-col>
                             <a-col :span="12">
@@ -103,7 +101,7 @@
                 />
             </template>
             <template #applianceType="slotProps">
-                {{slotProps.applianceType.text}}
+                {{ slotProps.applianceType.text }}
             </template>
             <template #action="slotProps">
                 <a-space :size="16">
@@ -145,12 +143,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-    query,
-    _undeploy,
-    _deploy,
-    _delete
-} from '@/api/northbound/dueros';
+import { query, _undeploy, _deploy, _delete, queryProductList, queryTypes } from '@/api/northbound/dueros';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage } from '@/utils/comm';
 import { message } from 'ant-design-vue';
@@ -169,17 +162,48 @@ const columns = [
         title: '名称',
         dataIndex: 'name',
         key: 'name',
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '产品名称',
         dataIndex: 'productName',
         key: 'productName',
+        search: {
+            type: 'select',
+            options: () =>
+                new Promise((resolve) => {
+                    queryProductList().then((resp: any) => {
+                        resolve(
+                            resp.result.map((item: any) => ({
+                                label: item.name,
+                                value: item.id,
+                            })),
+                        );
+                    });
+                }),
+        },
     },
     {
         title: '设备类型',
         dataIndex: 'applianceType',
         key: 'applianceType',
         scopedSlots: true,
+        search: {
+            type: 'select',
+            options: () =>
+                new Promise((resolve) => {
+                    queryTypes().then((resp: any) => {
+                        resolve(
+                            resp.result.map((item: any) => ({
+                                label: item.name,
+                                value: item.id,
+                            })),
+                        );
+                    });
+                }),
+        },
     },
     {
         title: '说明',
@@ -191,6 +215,13 @@ const columns = [
         dataIndex: 'state',
         key: 'state',
         scopedSlots: true,
+        search: {
+            type: 'select',
+            options: [
+                { label: '正常', value: 'enabled' },
+                { label: '禁用', value: 'disabled' },
+            ],
+        },
     },
     {
         title: '操作',
@@ -216,8 +247,8 @@ const handleView = (id: string) => {
     router.push({
         path: '/iot/northbound/DuerOS/detail/' + id,
         query: {
-            type: 'view'
-        }
+            type: 'view',
+        },
     });
 };
 
@@ -249,8 +280,8 @@ const getActions = (
                 router.push({
                     path: '/iot/northbound/DuerOS/detail/' + data.id,
                     query: {
-                        type: 'edit'
-                    }
+                        type: 'edit',
+                    },
                 });
             },
         },
@@ -312,5 +343,9 @@ const getActions = (
     if (type === 'card')
         return actions.filter((i: ActionsType) => i.key !== 'view');
     return actions;
+};
+
+const handleSearch = (_params: any) => {
+    params.value = _params;
 };
 </script>

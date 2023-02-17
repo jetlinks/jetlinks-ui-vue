@@ -1,10 +1,10 @@
 <template>
-  <a-drawer :mask-closable="false" width="25vw" visible :title="`新增${typeMapping[metadataStore.model.type]}`"
+  <a-drawer :mask-closable="false" width="25vw" visible :title="`${title}-${typeMapping[metadataStore.model.type]}`"
     @close="close" destroy-on-close :z-index="1000" placement="right">
     <template #extra>
       <a-button :loading="save.loading" type="primary" @click="save.saveMetadata">保存</a-button>
     </template>
-    <a-form ref="addFormRef" :model="form.model"></a-form>
+    <PropertyForm v-if="metadataStore.model.type === 'properties'"></PropertyForm>
   </a-drawer>
 </template>
 <script lang="ts" setup name="Edit">
@@ -19,6 +19,7 @@ import { Store } from 'jetlinks-store';
 import { SystemConst } from '@/utils/consts';
 import { detail } from '@/api/device/instance';
 import { DeviceInstance } from '@/views/device/Instance/typings';
+import PropertyForm from './PropertyForm.vue';
 
 interface Props {
   type: 'product' | 'device';
@@ -40,6 +41,8 @@ const close = () => {
   metadataStore.set('edit', false)
   metadataStore.set('item', {})
 }
+
+const title = computed(() => metadataStore.model.action === 'add' ? '新增' : '修改')
 
 const addFormRef = ref<FormInstance>()
 /**
@@ -113,7 +116,7 @@ const save = reactive({
 })
 
 const form = reactive({
-  model: {}
+  model: {} as Record<string, any>
 })
 </script>
 <style lang="less" scoped>

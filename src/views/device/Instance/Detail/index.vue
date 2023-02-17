@@ -44,6 +44,7 @@ import Info from './Info/index.vue';
 import Running from './Running/index.vue'
 import Metadata from '../../components/Metadata/index.vue';
 import ChildDevice from './ChildDevice/index.vue';
+import Diagnose from './Diagnose/index.vue'
 import { _deploy, _disconnect } from '@/api/device/instance'
 import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
@@ -52,7 +53,7 @@ const route = useRoute();
 const instanceStore = useInstanceStore()
 
 const statusMap = new Map();
-statusMap.set('online', 'processing');
+statusMap.set('online', 'success');
 statusMap.set('offline', 'error');
 statusMap.set('notActive', 'warning');
 
@@ -72,7 +73,11 @@ const list = [
     {
         key: 'ChildDevice',
         tab: '子设备'
-    }
+    },
+    {
+        key: 'Diagnose',
+        tab: '设备诊断'
+    },
 ]
 
 const tabs = {
@@ -80,6 +85,7 @@ const tabs = {
   Metadata,
   Running,
   ChildDevice,
+  Diagnose
 }
 
 watch(
