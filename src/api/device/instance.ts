@@ -2,6 +2,7 @@ import { LocalStore } from '@/utils/comm'
 import server from '@/utils/request'
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable'
 import { DeviceInstance } from '@/views/device/Instance/typings'
+import { UnitType } from '@/views/device/Product/typings';
 
 /**
  * 删除设备物模型
@@ -308,4 +309,8 @@ export const startGateway = (id: string) => server.post(`/gateway/device/${id}/_
 export const getGatewayDetail = (id: string) => server.get(`/gateway/device/${id}`)
 
 
-
+/*
+ * 获取单位列表
+ * @returns 单位列表
+ */
+export const getUnit = () => server.get<UnitType[]>(`/protocol/units`)

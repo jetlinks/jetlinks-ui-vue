@@ -1,3 +1,5 @@
+import { MetadataItem } from "../Product/typings";
+
 export type DeviceInstance = {
   id: string;
   name: string;
