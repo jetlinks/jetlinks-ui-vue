@@ -242,3 +242,70 @@ export const unbindBatchDevice = (deviceId: string, data: Record<string, any>) =
  * @returns 
  */
 export const bindDevice = (deviceId: string, data: Record<string, any>) => server.post(`/device/gateway/${deviceId}/bind`, data)
+
+/**
+ * 设备接入网关状态
+ * @param id 设备接入网关id
+ * @returns 
+ */
+export const queryGatewayState = (id: string) => server.get(`/gateway/device/${id}/detail`)
+
+/**
+ * 网络组件状态
+ * @param id 网络组件id
+ * @returns 
+ */
+export const queryNetworkState = (id: string) => server.get(`/network/config/${id}`)
+
+/**
+ * 产品状态
+ * @param id 产品id
+ * @returns 
+ */
+export const queryProductState = (id: string) => server.get(`/device/product/${id}`)
+
+/**
+ * 产品配置
+ * @param id 产品id
+ * @returns 
+ */
+export const queryProductConfig = (id: string) => server.get(`/device/product/${id}/config-metadata`)
+
+/**
+ * 设备配置
+ * @param id 设备id
+ * @returns 
+ */
+export const queryDeviceConfig = (id: string) => server.get(`/device-instance/${id}/config-metadata`)
+
+/**
+ * 查询协议
+ * @param type 
+ * @param transport 
+ * @returns 
+ */
+export const queryProtocolDetail = (type: string, transport: string) => server.get(`/protocol/${type}/transport/${transport}`)
+
+/**
+ * 网络组件启用
+ * @param id 网络组件ID
+ * @returns 
+ */
+export const startNetwork = (id: string) => server.post(`/network/config/${id}/_start`)
+
+/**
+ * 启用网关
+ * @param id 网关id
+ * @returns 
+ */
+export const startGateway = (id: string) => server.post(`/gateway/device/${id}/_startup`)
+
+/**
+ * 网关详情
+ * @param id 网关id
+ * @returns 
+ */
+export const getGatewayDetail = (id: string) => server.get(`/gateway/device/${id}`)
+
+
+
