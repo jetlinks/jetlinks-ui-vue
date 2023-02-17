@@ -2,7 +2,7 @@
     <page-container>
         <a-card>
             <div class="steps-box">
-                <!-- <a-form
+                <a-form
                     :model="formState"
                     ref="formRef1"
                     name="basic"
@@ -858,108 +858,14 @@
                                 /> </a-form-item
                         ></a-col>
                     </a-row>
-                </a-form> -->
-                <div class="form-item2">
-                    <!-- <div v-if="!formState.shareCluster" class="form-item2"> -->
+                </a-form>
+                <div v-if="!formState.shareCluster" class="form-item2">
                     <a-form
                         ref="formRef2"
                         layout="vertical"
                         name="dynamic_form_nest_item"
                         :model="dynamicValidateForm"
                     >
-                        <a-row :gutter="[24, 24]">
-                            <a-col :span="12">
-                                <a-form-item
-                                    label="名称"
-                                    name="name"
-                                    :rules="[
-                                        {
-                                            required: true,
-                                            message: '请输入名称',
-                                        },
-                                        {
-                                            max: 64,
-                                            message: '最大可输入64个字符',
-                                        },
-                                    ]"
-                                >
-                                    <a-input
-                                        v-model:value="dynamicValidateForm.name"
-                                        placeholder="请输入名称"
-                                    />
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="12">
-                                <a-form-item
-                                    label="类型"
-                                    name="type"
-                                    :rules="[
-                                        {
-                                            required: true,
-                                            message: '请选择类型',
-                                        },
-                                    ]"
-                                >
-                                    <a-select
-                                        v-model:value="dynamicValidateForm.type"
-                                        :options="typeOption"
-                                        placeholder="请选择类型"
-                                        allowClear
-                                        show-search
-                                        :filter-option="filterOption"
-                                    />
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="24">
-                                <a-form-item
-                                    name="shareCluster"
-                                    :rules="[
-                                        {
-                                            required: true,
-                                            message: '请选择集群',
-                                        },
-                                    ]"
-                                >
-                                    <div class="form-label">
-                                        集群
-                                        <span class="form-label-required"
-                                            >*</span
-                                        >
-                                        <a-tooltip>
-                                            <template #title>
-                                                <p>
-                                                    共享配置:集群下所有节点共用同一配置
-                                                </p>
-                                                <p>
-                                                    独立配置:集群下不同节点使用不同配置
-                                                </p>
-                                            </template>
-                                            <question-circle-outlined />
-                                        </a-tooltip>
-                                    </div>
-
-                                    <a-radio-group
-                                        v-model:value="
-                                            dynamicValidateForm.shareCluster
-                                        "
-                                        button-style="solid"
-                                        @change="
-                                            changeShareCluster(
-                                                dynamicValidateForm.shareCluster,
-                                            )
-                                        "
-                                    >
-                                        <a-radio-button :value="true"
-                                            >共享配置</a-radio-button
-                                        >
-                                        <a-radio-button :value="false"
-                                            >独立配置</a-radio-button
-                                        >
-                                    </a-radio-group>
-                                </a-form-item></a-col
-                            >
-                        </a-row>
-
                         <div
                             v-for="(
                                 cluster, index
@@ -971,7 +877,7 @@
                                     :key="cluster.id"
                                     :header="`#${index + 1}.节点`"
                                 >
-                                    <template #extra v-if="!shareCluster">
+                                    <template #extra>
                                         <delete-outlined
                                             @click="removeCluster(cluster)"
                                         />
@@ -1010,7 +916,7 @@
                                             v-if="
                                                 isVisible(
                                                     'host',
-                                                    dynamicValidateForm.type,
+                                                    formState.type,
                                                 )
                                             "
                                         >
@@ -1068,7 +974,7 @@
                                             v-if="
                                                 isVisible(
                                                     'port',
-                                                    dynamicValidateForm.type,
+                                                    formState.type,
                                                 )
                                             "
                                         >
@@ -1121,7 +1027,7 @@
                                             v-if="
                                                 isVisible(
                                                     'publicHost',
-                                                    dynamicValidateForm.type,
+                                                    formState.type,
                                                 )
                                             "
                                         >
@@ -1177,7 +1083,7 @@
                                             v-if="
                                                 isVisible(
                                                     'publicPort',
-                                                    dynamicValidateForm.type,
+                                                    formState.type,
                                                 )
                                             "
                                         >
@@ -1236,7 +1142,7 @@
                                             v-if="
                                                 isVisible(
                                                     'remoteHost',
-                                                    dynamicValidateForm.type,
+                                                    formState.type,
                                                 )
                                             "
                                         >
@@ -1266,6 +1172,7 @@
                                                 <a-input
                                                     v-model:value="
                                                         cluster.configuration
+                                                            .configuration
                                                             .remoteHost
                                                     "
                                                     placeholder="请输入远程地址"
@@ -1277,7 +1184,7 @@
                                             v-if="
                                                 isVisible(
                                                     'remotePort',
-                                                    dynamicValidateForm.type,
+                                                    formState.type,
                                                 )
                                             "
                                         >
@@ -1319,7 +1226,7 @@
                                             v-if="
                                                 isVisible(
                                                     'clientId',
-                                                    dynamicValidateForm.type,
+                                                    formState.type,
                                                 )
                                             "
                                         >
@@ -1358,7 +1265,7 @@
                                             v-if="
                                                 isVisible(
                                                     'username',
-                                                    dynamicValidateForm.type,
+                                                    formState.type,
                                                 )
                                             "
                                         >
@@ -1396,7 +1303,7 @@
                                             v-if="
                                                 isVisible(
                                                     'password',
-                                                    dynamicValidateForm.type,
+                                                    formState.type,
                                                 )
                                             "
                                         >
@@ -1434,7 +1341,7 @@
                                             v-if="
                                                 isVisible(
                                                     'topicPrefix',
-                                                    dynamicValidateForm.type,
+                                                    formState.type,
                                                 )
                                             "
                                         >
@@ -1482,7 +1389,7 @@
                                             v-if="
                                                 isVisible(
                                                     'maxMessageSize',
-                                                    dynamicValidateForm.type,
+                                                    formState.type,
                                                 )
                                             "
                                         >
@@ -1532,7 +1439,7 @@
                                             :span="
                                                 isVisible(
                                                     'secureSpan12',
-                                                    dynamicValidateForm.type,
+                                                    formState.type,
                                                 )
                                                     ? '12'
                                                     : '24'
@@ -1542,7 +1449,7 @@
                                                 :label="
                                                     isVisible(
                                                         'secure',
-                                                        dynamicValidateForm.type,
+                                                        formState.type,
                                                     )
                                                         ? '开启TLS'
                                                         : '开启DTLS'
@@ -1647,7 +1554,7 @@
                                             v-if="
                                                 isVisible(
                                                     'parserType',
-                                                    dynamicValidateForm.type,
+                                                    formState.type,
                                                 )
                                             "
                                         >
@@ -1995,7 +1902,7 @@
                             </a-collapse>
                         </div>
 
-                        <a-form-item v-if="!shareCluster">
+                        <a-form-item>
                             <a-button
                                 style="margin-top: 10px"
                                 type="dashed"
@@ -2006,13 +1913,14 @@
                                 新增
                             </a-button>
                         </a-form-item>
-                        <a-row :gutter="[24, 0]">
+                        <a-row
+                            :gutter="[24, 24]"
+                            v-if="!formState.shareCluster"
+                        >
                             <a-col :span="24">
                                 <a-form-item label="说明" name="description">
                                     <a-textarea
-                                        v-model:value="
-                                            dynamicValidateForm.description
-                                        "
+                                        v-model:value="formState.description"
                                         show-count
                                         :maxlength="200"
                                         :rows="4"
@@ -2074,7 +1982,6 @@ import {
 import {
     FormStates,
     FormStates2,
-    DefaultFormStates,
     VisibleData,
     ParserTypeOptions,
     isVisible,
@@ -2108,7 +2015,7 @@ const route = useRoute();
 const view = route.query.view as string;
 const id = route.params.id as string;
 
-const activeKey: any = ref([1]);
+const activeKey: any = ref([]);
 const clientHeight = document.body.clientHeight;
 
 const formRef1 = ref<FormInstance>();
@@ -2134,14 +2041,11 @@ const sipListIndex: any = ref([]);
 const clustersList = ref([]);
 const typeOption = ref([]);
 
-let dynamicValidateForm = reactive({ ...DefaultFormStates });
-// const dynamicValidateForm = reactive<{ cluster: Form2[] }>({
-//     ...FormStates,
-//     cluster: [{ ...FormStates2, id: 1 }],
-// });
-console.log(221, dynamicValidateForm);
+const dynamicValidateForm = reactive<{ cluster: Form2[] }>({
+    cluster: [],
+});
 
-const removeCluster = (item) => {
+const removeCluster = (item: Form2) => {
     let index = dynamicValidateForm.cluster.indexOf(item);
     if (index !== -1) {
         dynamicValidateForm.cluster.splice(index, 1);
@@ -2156,6 +2060,14 @@ const addCluster = () => {
     });
     activeKey.value = [...activeKey.value, id.toString()];
 };
+// const addCluster = () => {
+//     const id = Date.now();
+//     dynamicValidateForm.cluster.push({
+//         ...FormStates2,
+//         id,
+//     });
+//     activeKey.value = [...activeKey.value, id.toString()];
+// };
 
 const filterOption = (input: string, option: any) => {
     return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
@@ -2279,18 +2191,12 @@ onMounted(() => {
 
     if (id !== ':id') {
         formState.value = props.data.configuration;
-        // formData.value = {
-        //     name: props.data.name,
-        //     description: props.data?.description || '',
-        // };
+        formData.value = {
+            name: props.data.name,
+            description: props.data?.description || '',
+        };
     }
 });
-
-const shareCluster = ref(true);
-const changeShareCluster = (value: boolean) => {
-    shareCluster.value = value;
-    dynamicValidateForm.cluster = [{ ...FormStates2, id: 1 }];
-};
 </script>
 
 <style lang="less" scoped>
