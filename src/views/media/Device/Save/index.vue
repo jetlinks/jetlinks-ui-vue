@@ -13,82 +13,18 @@
                                 layout="horizontal"
                                 :options="PROVIDER_OPTIONS"
                                 :checkStyle="true"
-                                :disabled="!!formData.id"
+                                :disabled="!!route.query.id"
                                 v-model="formData.channel"
                             />
                         </a-form-item>
                         <a-row :gutter="24">
                             <a-col :span="8">
-                                <!-- <div class="upload-image-warp-logo">
-                                    <div class="upload-image-border-logo">
-                                        <a-upload
-                                            name="file"
-                                            :action="FILE_UPLOAD"
-                                            :headers="{
-                                                [TOKEN_KEY]:
-                                                    LocalStore.get(TOKEN_KEY),
-                                            }"
-                                            :showUploadList="false"
-                                            accept="image/jpeg', 'image/png"
-                                        >
-                                            <div
-                                                class="upload-image-content-logo"
-                                            >
-                                                <div
-                                                    class="loading-logo"
-                                                    v-if="form.logoLoading"
-                                                >
-                                                    <LoadingOutlined
-                                                        style="font-size: 28px"
-                                                    />
-                                                </div>
-                                                <div
-                                                    class="upload-image"
-                                                    style="height: 100%"
-                                                    v-if="formValue.logo"
-                                                    :style="
-                                                        formValue.logo
-                                                            ? `background-image: url(${formValue.logo});`
-                                                            : ''
-                                                    "
-                                                ></div>
-                                                <div
-                                                    v-if="formValue.logo"
-                                                    class="upload-image-mask"
-                                                >
-                                                    点击修改
-                                                </div>
-                                                <div v-else>
-                                                    <div
-                                                        v-if="form.logoLoading"
-                                                    >
-                                                        <LoadingOutlined
-                                                            style="
-                                                                font-size: 28px;
-                                                            "
-                                                        />
-                                                    </div>
-                                                    <div v-else>
-                                                        <PlusOutlined
-                                                            style="
-                                                                font-size: 28px;
-                                                            "
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </a-upload>
-                                        <div v-if="form.logoLoading">
-                                            <div class="upload-loading-mask">
-                                                <LoadingOutlined
-                                                    style="font-size: 28px"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> -->
+                                <JUpload
+                                    v-model:modelValue="formData.photoUrl"
+                                    :bgImage="formData.photoUrl"
+                                />
                             </a-col>
-                            <a-col :span="12">
+                            <a-col :span="16">
                                 <a-form-item
                                     label="ID"
                                     v-bind="validateInfos.id"
@@ -96,6 +32,7 @@
                                     <a-input
                                         v-model:value="formData.id"
                                         placeholder="请输入"
+                                        :disabled="!!route.query.id"
                                     />
                                 </a-form-item>
                                 <a-form-item
@@ -113,31 +50,78 @@
                             label="所属产品"
                             v-bind="validateInfos.productId"
                         >
-                            <div>
-                                <a-select
-                                    v-model:value="formData.productId"
-                                    placeholder="请选择所属产品"
-                                >
-                                    <!-- <a-select-option
-                                    v-for="(item, index) in NOTICE_METHOD"
-                                    :key="index"
-                                    :value="item.value"
-                                >
-                                    {{ item.label }}
-                                </a-select-option> -->
-                                </a-select>
-                                <AIcon type="PlusCircleOutlined" />
-                            </div>
+                            <a-row :gutter="[0, 10]">
+                                <a-col :span="22">
+                                    <a-select
+                                        v-model:value="formData.productId"
+                                        placeholder="请选择所属产品"
+                                        :disabled="!!route.query.id"
+                                    >
+                                        <a-select-option
+                                            v-for="(item, index) in productList"
+                                            :key="index"
+                                            :value="item.id"
+                                        >
+                                            {{ item.name }}
+                                        </a-select-option>
+                                    </a-select>
+                                </a-col>
+                                <a-col :span="2">
+                                    <a-button
+                                        type="link"
+                                        @click="saveProductVis = true"
+                                    >
+                                        <AIcon type="PlusOutlined" />
+                                    </a-button>
+                                </a-col>
+                            </a-row>
                         </a-form-item>
                         <a-form-item
                             label="接入密码"
                             v-bind="validateInfos['others.access_pwd']"
+                            v-if="formData.channel === 'gb28181-2016'"
                         >
                             <a-input-password
                                 v-model:value="formData.others.access_pwd"
                                 placeholder="请输入接入密码"
                             />
                         </a-form-item>
+                        <template v-if="!!route.query.id">
+                            <a-form-item
+                                label="流传输模式"
+                                v-bind="validateInfos.streamMode"
+                            >
+                                <a-radio-group
+                                    button-style="solid"
+                                    v-model:value="formData.streamMode"
+                                >
+                                    <a-radio-button value="UDP">
+                                        UDP
+                                    </a-radio-button>
+                                    <a-radio-button value="TCP_PASSIVE">
+                                        TCP被动
+                                    </a-radio-button>
+                                </a-radio-group>
+                            </a-form-item>
+                            <a-form-item label="设备厂商">
+                                <a-input
+                                    v-model:value="formData.manufacturer"
+                                    placeholder="请输入设备厂商"
+                                />
+                            </a-form-item>
+                            <a-form-item label="设备型号">
+                                <a-input
+                                    v-model:value="formData.model"
+                                    placeholder="请输入设备型号"
+                                />
+                            </a-form-item>
+                            <a-form-item label="固件版本">
+                                <a-input
+                                    v-model:value="formData.firmware"
+                                    placeholder="请输入固件版本"
+                                />
+                            </a-form-item>
+                        </template>
 
                         <a-form-item label="说明">
                             <a-textarea
@@ -250,6 +234,13 @@
                 </a-col>
             </a-row>
         </a-card>
+
+        <SaveProduct
+            v-model:visible="saveProductVis"
+            v-model:productId="formData.productId"
+            :channel="formData.channel"
+            @close="getProductList"
+        />
     </div>
 </template>
 
@@ -258,12 +249,11 @@ import { getImage } from '@/utils/comm';
 import { Form } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
 
-import templateApi from '@/api/notice/template';
+import DeviceApi from '@/api/media/device';
 
-import { FILE_UPLOAD } from '@/api/comm';
-import { LocalStore } from '@/utils/comm';
-import { TOKEN_KEY } from '@/utils/variable';
 import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
+import type { ProductType } from '@/views/media/Device/typings';
+import SaveProduct from './SaveProduct.vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -274,18 +264,26 @@ const formData = ref({
     id: '',
     name: '',
     channel: 'gb28181-2016',
-    photoUrl: '',
+    photoUrl: getImage('/device-media.png'),
     productId: '',
     others: {
         access_pwd: '',
     },
     description: '',
+    // 编辑字段
+    streamMode: 'UDP',
+    manufacturer: '',
+    model: '',
+    firmware: '',
 });
 
 // 验证规则
 const formRules = ref({
     id: [
-        { required: true, message: '请输入ID' },
+        {
+            required: true,
+            message: '请输入ID',
+        },
         { max: 64, message: '最多输入64个字符' },
         {
             pattern: /^[a-zA-Z0-9_\-]+$/,
@@ -300,7 +298,19 @@ const formRules = ref({
     channel: [{ required: true, message: '请选择接入方式' }],
     'others.access_pwd': [{ required: true, message: '请输入接入密码' }],
     description: [{ max: 200, message: '最多可输入200个字符' }],
+    streamMode: [{ required: true, message: '请选择流传输模式' }],
 });
+
+watch(
+    () => formData.value.channel,
+    (val) => {
+        formRules.value['id'][0].required = val === 'gb28181-2016';
+        formRules.value['others.access_pwd'][0].required =
+            val === 'gb28181-2016';
+        validate();
+        getProductList();
+    },
+);
 
 const { resetFields, validate, validateInfos, clearValidate } = useForm(
     formData.value,
@@ -309,36 +319,64 @@ const { resetFields, validate, validateInfos, clearValidate } = useForm(
 
 const clearValid = () => {
     setTimeout(() => {
-        formData.value.variableDefinitions = [];
         clearValidate();
     }, 200);
 };
 
 /**
+ * 获取所属产品
+ */
+const productList = ref<ProductType[]>([]);
+const getProductList = async () => {
+    // console.log('formData.productId: ', formData.value.productId);
+    const params = {
+        paging: false,
+        sorts: [{ name: 'createTime', order: 'desc' }],
+        terms: [
+            { column: 'accessProvider', value: formData.value.channel },
+            { column: 'state', value: 1 },
+        ],
+    };
+    const { result } = await DeviceApi.queryProductList(params);
+    productList.value = result;
+};
+getProductList();
+
+/**
+ * 新增产品
+ */
+const saveProductVis = ref(false);
+
+/**
  * 获取详情
  */
 const getDetail = async () => {
-    const res = await templateApi.detail(route.params.id as string);
+    const res = await DeviceApi.detail(route.query.id as string);
     // console.log('res: ', res);
     formData.value = res.result;
-    // console.log('formData.value: ', formData.value);
+    formData.value.channel = res.result.provider;
+    console.log('formData.value: ', formData.value);
+    // validate();
 };
-// getDetail();
+
+onMounted(() => {
+    getDetail();
+});
 
 /**
  * 表单提交
  */
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
-    // console.log('formData.value: ', formData.value);
+    console.log('formData.value: ', formData.value);
     validate()
         .then(async () => {
             btnLoading.value = true;
             let res;
-            if (!formData.value.id) {
-                res = await templateApi.save(formData.value);
+            if (!route.query.id) {
+                res = await DeviceApi.save(formData.value);
             } else {
-                res = await templateApi.update(formData.value);
+                res = await DeviceApi.update(formData.value);
             }
             // console.log('res: ', res);
             if (res?.success) {
@@ -360,70 +398,5 @@ const handleSubmit = () => {
 .page-container {
     background: #f0f2f5;
     padding: 24px;
-    .upload-image-warp-logo {
-        display: flex;
-        justify-content: flex-start;
-        .upload-image-border-logo {
-            position: relative;
-            overflow: hidden;
-            border: 1px dashed #d9d9d9;
-            transition: all 0.3s;
-            width: 160px;
-            height: 150px;
-            &:hover {
-                border: 1px dashed #1890ff;
-                display: flex;
-            }
-            .upload-image-content-logo {
-                align-items: center;
-                justify-content: center;
-                position: relative;
-                display: flex;
-                flex-direction: column;
-                width: 160px;
-                height: 150px;
-                padding: 8px;
-                background-color: rgba(0, 0, 0, 0.06);
-                cursor: pointer;
-                .loading-logo {
-                    position: absolute;
-                    top: 50%;
-                }
-                .loading-icon {
-                    position: absolute;
-                }
-                .upload-image {
-                    width: 100%;
-                    height: 100%;
-                    background-repeat: no-repeat;
-                    background-position: 50%;
-                    background-size: cover;
-                }
-                .upload-image-icon {
-                    width: 100%;
-                    height: 100%;
-                    background-repeat: no-repeat;
-                    background-position: 50%;
-                    background-size: inherit;
-                }
-                .upload-image-mask {
-                    align-items: center;
-                    justify-content: center;
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    display: none;
-                    width: 100%;
-                    height: 100%;
-                    color: #fff;
-                    font-size: 16px;
-                    background-color: rgba(0, 0, 0, 0.35);
-                }
-                &:hover .upload-image-mask {
-                    display: flex;
-                }
-            }
-        }
-    }
 }
 </style>
