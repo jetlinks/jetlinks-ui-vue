@@ -10,36 +10,38 @@
             :params="query.params"
         >
             <template #headerTitle>
-                <a-button type="primary" @click="table.clickAdd"
-                    ><plus-outlined />新增</a-button
+                <PermissionButton
+                    type="primary"
+                    :uhasPermission="`${permission}:add`"
+                    @click="table.clickAdd"
                 >
+                    <AIcon type="PlusOutlined" />新增
+                </PermissionButton>
             </template>
 
             <template #action="slotProps">
                 <a-space :size="16">
-                    <a-tooltip>
-                        <template #title>编辑</template>
-                        <a-button
-                            style="padding: 0"
-                            type="link"
-                            @click="table.clickEdit(slotProps)"
-                        >
-                            <edit-outlined />
-                        </a-button>
-                    </a-tooltip>
-                    <a-popconfirm
-                        title="确定要删除吗？"
-                        ok-text="确定"
-                        cancel-text="取消"
-                        @confirm="table.clickDel(slotProps)"
+                    <PermissionButton
+                        :uhasPermission="`${permission}:update`"
+                        type="link"
+                        :tooltip="{
+                            title: '编辑',
+                        }"
+                        @click="table.clickEdit(slotProps)"
                     >
-                        <a-tooltip>
-                            <template #title>删除</template>
-                            <a-button style="padding: 0" type="link">
-                                <delete-outlined />
-                            </a-button>
-                        </a-tooltip>
-                    </a-popconfirm>
+                        <AIcon type="EditOutlined" />
+                    </PermissionButton>
+                    <PermissionButton
+                        type="link"
+                        :uhasPermission="`${permission}:delete`"
+                        :tooltip="{ title: '删除' }"
+                        :popConfirm="{
+                            title: `确定要删除吗`,
+                            onConfirm: () => table.clickDel(slotProps),
+                        }"
+                    >
+                        <AIcon type="DeleteOutlined" />
+                    </PermissionButton>
                 </a-space>
             </template>
         </JTable>
@@ -51,14 +53,13 @@
 </template>
 
 <script setup lang="ts" name="Role">
-import {
-    EditOutlined,
-    DeleteOutlined,
-    PlusOutlined,
-} from '@ant-design/icons-vue';
+import PermissionButton from '@/components/PermissionButton/index.vue';
 import AddDialog from './components/AddDialog.vue';
 import { getRoleList_api, delRole_api } from '@/api/system/role';
 import { message } from 'ant-design-vue';
+
+const permission = 'system/Role';
+
 const addDialogRef = ref(); // 新增弹窗实例
 const router = useRouter();
 const route = useRoute();
@@ -143,4 +144,14 @@ nextTick(() => {
 });
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.role-container {
+
+    :deep(.ant-table-cell) {
+        .ant-btn-link {
+            padding: 0;
+        }
+    }
+}
+
+</style>

@@ -14,29 +14,38 @@
         >
             <template #headerTitle>
                 <a-space>
-                    <a-button type="primary" @click="table.clickAdd">
-                        <plus-outlined />资产分配
-                    </a-button>
+                    <PermissionButton
+                        :uhasPermission="`${permission}:assert`"
+                        type="primary"
+                        @click="table.clickAdd"
+                    >
+                        <AIcon type="PlusOutlined" />资产分配
+                    </PermissionButton>
                     <a-dropdown trigger="hover">
                         <a-button>批量操作</a-button>
                         <template #overlay>
                             <a-menu>
                                 <a-menu-item>
-                                    <a-popconfirm
-                                        title="是否批量解除绑定"
-                                        ok-text="确定"
-                                        cancel-text="取消"
-                                        @confirm="table.clickUnBind()"
+                                    <PermissionButton
+                                        :uhasPermission="`${permission}:bind`"
+                                        :popConfirm="{
+                                            title: `是否批量解除绑定`,
+                                            onConfirm: () =>
+                                                table.clickUnBind(),
+                                        }"
                                     >
-                                        <a-button>
-                                            <DisconnectOutlined /> 批量解绑
-                                        </a-button>
-                                    </a-popconfirm>
+                                        <AIcon
+                                            type="DisconnectOutlined"
+                                        />批量解绑
+                                    </PermissionButton>
                                 </a-menu-item>
                                 <a-menu-item>
-                                    <a-button @click="table.clickEdit()">
-                                        <EditOutlined /> 批量编辑
-                                    </a-button>
+                                    <PermissionButton
+                                        :uhasPermission="`${permission}:assert`"
+                                        @click="()=>table.clickEdit()"
+                                    >
+                                        <AIcon type="EditOutlined" />批量编辑
+                                    </PermissionButton>
                                 </a-menu-item>
                             </a-menu>
                         </template>
@@ -102,21 +111,22 @@
                         </a-row>
                     </template>
                     <template #actions>
-                        <a-button
-                            @click="table.clickEdit(slotProps)"
-                            style="margin-right: 10px"
+                        <PermissionButton
+                            :uhasPermission="`${permission}:assert`"
+                            @click="() => table.clickEdit(slotProps)"
                         >
                             <AIcon type="EditOutlined" />
-                        </a-button>
-                        <a-popconfirm
-                            title="是否解除绑定"
-                            ok-text="确定"
-                            cancel-text="取消"
-                            @confirm="table.clickUnBind(slotProps)"
-                            ><a-button>
-                                <AIcon type="DisconnectOutlined" />
-                            </a-button>
-                        </a-popconfirm>
+                        </PermissionButton>
+
+                        <PermissionButton
+                            :uhasPermission="`${permission}:bind`"
+                            :popConfirm="{
+                                title: `是否解除绑定`,
+                                onConfirm: () => table.clickUnBind(slotProps),
+                            }"
+                        >
+                            <AIcon type="DisconnectOutlined" />
+                        </PermissionButton>
                     </template>
                 </CardBox>
             </template>
@@ -125,10 +135,11 @@
         <div class="dialogs">
             <AddDeviceOrProductDialog
                 ref="addDialogRef"
+                :query-columns="query.columns"
                 :parent-id="props.parentId"
                 :all-permission="table.permissionList.value"
                 asset-type="product"
-                @confirm="table.refresh"
+                @confirm="table.addConfirm"
             />
             <EditPermissionDialog
                 ref="editDialogRef"
@@ -137,18 +148,20 @@
                 asset-type="product"
                 @confirm="table.refresh"
             />
+            <NextDialog
+                ref="nextDialogRef"
+                @confirm="emits('openDeviceBind')"
+            />
         </div>
     </div>
 </template>
 
 <script setup lang="ts" name="product">
-import {
-    PlusOutlined,
-    EditOutlined,
-    DisconnectOutlined,
-} from '@ant-design/icons-vue';
+import PermissionButton from '@/components/PermissionButton/index.vue';
+
 import AddDeviceOrProductDialog from '../components/AddDeviceOrProductDialog.vue';
 import EditPermissionDialog from '../components/EditPermissionDialog.vue';
+import NextDialog from '../components/NextDialog.vue';
 import { getImage } from '@/utils/comm';
 import {
     getDeviceOrProductList_api,
@@ -161,6 +174,9 @@ import { intersection } from 'lodash-es';
 import { dictType } from '../typing.d.ts';
 import { message } from 'ant-design-vue';
 
+const permission = 'system/Department';
+
+const emits = defineEmits(['openDeviceBind']);
 const props = defineProps<{
     parentId: string;
 }>();
@@ -196,16 +212,12 @@ const query = {
                 type: 'select',
                 options: [
                     {
-                        label: '在线',
-                        value: 'online',
-                    },
-                    {
-                        label: '离线',
-                        value: 'offline',
+                        label: '正常',
+                        value: 1,
                     },
                     {
                         label: '禁用',
-                        value: 'notActive',
+                        value: 0,
                     },
                 ],
             },
@@ -279,26 +291,43 @@ const table = {
                 const { pageIndex, pageSize, total, data } =
                     resp.result as resultType;
                 const ids = data.map((item) => item.id);
-                getPermission_api('product', ids, parentId).then((perResp: any) => {
-                    const permissionObj = {};
-                    perResp.result.forEach((item: any) => {
-                        permissionObj[item.assetId] = item.grantedPermissions;
-                    });
-                    data.forEach(
-                        (item) => (item.permission = permissionObj[item.id]),
-                    );
+                getPermission_api('product', ids, parentId).then(
+                    (perResp: any) => {
+                        const permissionObj = {};
+                        perResp.result.forEach((item: any) => {
+                            permissionObj[item.assetId] =
+                                item.grantedPermissions;
+                        });
+                        data.forEach((item) => {
+                            item.permission = permissionObj[item.id];
+                            item.state = {
+                                value:
+                                    item.state === 1
+                                        ? 'online'
+                                        : item.state === 0
+                                        ? 'offline'
+                                        : '',
+                                text:
+                                    item.state === 1
+                                        ? '正常'
+                                        : item.state === 0
+                                        ? '禁用'
+                                        : '',
+                            };
+                        });
 
-                    resolve({
-                        code: 200,
-                        result: {
-                            data: data,
-                            pageIndex,
-                            pageSize,
-                            total,
-                        },
-                        status: 200,
-                    });
-                });
+                        resolve({
+                            code: 200,
+                            result: {
+                                data: data,
+                                pageIndex,
+                                pageSize,
+                                total,
+                            },
+                            status: 200,
+                        });
+                    },
+                );
             });
         }),
     // 整理参数并获取数据
@@ -346,10 +375,13 @@ const table = {
         }
     },
     clickAdd: () => {
+        console.log(222)
+        console.log(addDialogRef.value)
         addDialogRef.value && addDialogRef.value.openDialog();
     },
     clickEdit: (row?: any) => {
         const ids = row ? [row.id] : [...table._selectedRowKeys.value];
+
         if (row || table.selectedRows.length === 1) {
             const permissionList =
                 row?.permission || table.selectedRows[0].permission;
@@ -387,11 +419,15 @@ const table = {
             tableRef.value.reload();
         });
     },
+    addConfirm: () => {
+        table.refresh();
+        nextDialogRef.value && nextDialogRef.value.openDialog();
+    },
 };
 
 const addDialogRef = ref();
 const editDialogRef = ref();
-
+const nextDialogRef = ref();
 table.init();
 </script>
 
@@ -406,7 +442,7 @@ table.init();
             }
         }
         .card-tools {
-            .ant-btn {
+            span {
                 color: #252525;
             }
         }

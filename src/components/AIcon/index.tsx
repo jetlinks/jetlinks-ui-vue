@@ -45,7 +45,10 @@ const iconKeys = [
     'InfoCircleOutlined',
     'SearchOutlined',
     'EllipsisOutlined',
-    'ClockCircleOutlined'
+    'ClockCircleOutlined',
+    'PartitionOutlined',
+    'ShareAltOutlined',
+    'playCircleOutlined',
 ]
 
 const Icon = (props: {type: string}) => {

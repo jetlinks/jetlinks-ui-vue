@@ -36,10 +36,10 @@ onMounted(() => {
 });
 
 const getData = () => {
-    homeApi.deviceCount().then((resp) => {
+    homeApi.deviceCount({}).then((resp) => {
         deviceCount.value = resp.result;
     });
-    homeApi.channelCount().then((resp) => {
+    homeApi.channelCount({}).then((resp) => {
         channelCount.value = resp.result;
     });
 };

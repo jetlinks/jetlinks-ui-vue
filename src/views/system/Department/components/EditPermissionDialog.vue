@@ -46,7 +46,6 @@ const dialog = {
     },
     // 控制弹窗的打开与关闭
     changeVisible: (ids: string[], permissionList: string[]) => {
-        console.log(ids, permissionList);
         form.permission = [...permissionList];
         form.assetIdList = ids;
         options.value = setOptions(permissionList);

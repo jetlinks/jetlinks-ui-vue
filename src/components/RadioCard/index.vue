@@ -21,7 +21,7 @@
             :key="index"
             @click="myValue = item.value"
         >
-            <img class="img" :src="item.logo" alt="" />
+            <img v-if="item.logo" class="img" :src="item.logo" alt="" />
             <span>{{ item.label }}</span>
             <div
                 :class="[
