@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { dictType, optionsType } from '../typing.d.ts';
+import type { dictType, optionsType } from '../typing';
 import { updatePermission_api } from '@/api/system/department';
 import { message } from 'ant-design-vue';
 

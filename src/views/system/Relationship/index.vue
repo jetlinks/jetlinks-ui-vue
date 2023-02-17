@@ -7,7 +7,7 @@
             :columns="table.columns"
             :request="getRelationshipList_api"
             model="TABLE"
-            :params="query.params"
+            :params="query.params.value"
             :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }"
         >
             <template #headerTitle>
@@ -122,9 +122,9 @@ const query = {
             },
         },
     ],
-    params: {},
+    params: ref({}),
     search: (params: object) => {
-        query.params = params;
+        query.params.value = params;
     },
 };
 
