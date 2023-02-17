@@ -8,49 +8,43 @@
             noPagination
         >
             <template #headerTitle>
-                <a-button
+                <PermissionButton
                     type="primary"
-                    style="margin-right: 10px"
-                    @click="() => dialog.openDialog('新增')"
-                    ><plus-outlined />新增</a-button
+                    :uhasPermission="`${permission}:update`"
+                    @click="dialog.openDialog('新增')"
                 >
+                    <AIcon type="PlusOutlined" />新增
+                </PermissionButton>
             </template>
             <template #action="slotProps">
                 <a-space :size="16">
-                    <a-tooltip>
-                        <template #title>编辑</template>
-                        <a-button
-                            style="padding: 0"
-                            type="link"
-                            @click="() => dialog.openDialog('编辑', slotProps)"
-                        >
-                            <edit-outlined />
-                        </a-button>
-                    </a-tooltip>
-                    <a-tooltip>
-                        <template #title>查看</template>
-                        <a-button
-                            style="padding: 0"
-                            type="link"
-                            @click="() => dialog.openDialog('查看', slotProps)"
-                        >
-                            <search-outlined />
-                        </a-button>
-                    </a-tooltip>
-
-                    <a-popconfirm
-                        title="确认删除"
-                        ok-text="确定"
-                        cancel-text="取消"
-                        @confirm="table.clickDel(slotProps)"
+                    <PermissionButton
+                        type="link"
+                        :uhasPermission="`${permission}:update`"
+                        :tooltip="{ title: '编辑' }"
+                        @click="dialog.openDialog('编辑', slotProps)"
                     >
-                        <a-tooltip>
-                            <template #title>删除</template>
-                            <a-button style="padding: 0" type="link">
-                                <delete-outlined />
-                            </a-button>
-                        </a-tooltip>
-                    </a-popconfirm>
+                        <AIcon type="EditOutlined" />
+                    </PermissionButton>
+                    <PermissionButton
+                        type="link"
+                        :uhasPermission="true"
+                        :tooltip="{ title: '查看' }"
+                        @click="dialog.openDialog('查看', slotProps)"
+                    >
+                        <AIcon type="SearchOutlined" />
+                    </PermissionButton>
+                    <PermissionButton
+                        type="link"
+                        :uhasPermission="`${permission}:update`"
+                        :tooltip="{ title: '删除' }"
+                        :popConfirm="{
+                            title: `确认删除`,
+                            onConfirm: () => table.clickDel(slotProps),
+                        }"
+                    >
+                        <AIcon type="DeleteOutlined" />
+                    </PermissionButton>
                 </a-space>
             </template>
         </JTable>
@@ -66,17 +60,14 @@
 </template>
 
 <script setup lang="ts">
-import {
-    EditOutlined,
-    SearchOutlined,
-    DeleteOutlined,
-    PlusOutlined,
-} from '@ant-design/icons-vue';
+import PermissionButton from '@/components/PermissionButton/index.vue';
+
 import ButtonAddDialog from '../components/ButtonAddDialog.vue';
 
 import { getMenuInfo_api, saveMenuInfo_api } from '@/api/system/menu';
 import { message } from 'ant-design-vue';
 
+const permission = 'system/Menu';
 // 路由
 const route = useRoute();
 const routeParams = {

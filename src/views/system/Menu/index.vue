@@ -10,13 +10,24 @@
             :params="query.params"
         >
             <template #headerTitle>
-                <a-button
+                <PermissionButton
                     type="primary"
+                    :uhasPermission="`${permission}:add`"
                     @click="table.toDetails({})"
-                    style="margin-right: 10px"
-                    ><plus-outlined />新增</a-button
                 >
-                <a-button @click="router.push('/system/Menu/Setting')">菜单实例</a-button>
+                    <AIcon type="PlusOutlined" />新增
+                </PermissionButton>
+                <a-button
+                    style="margin-left: 12px"
+                    @click="router.push('/system/Menu/Setting')"
+                    >菜单配置</a-button
+                >
+                <!-- <PermissionButton
+                    :uhasPermission="true"
+                    @click="router.push('/system/Menu/Setting')"
+                >
+                    菜单配置
+                </PermissionButton> -->
             </template>
             <template #createTime="slotProps">
                 {{ moment(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss') }}
@@ -33,30 +44,26 @@
                             <search-outlined />
                         </a-button>
                     </a-tooltip>
-                    <a-tooltip>
-                        <template #title>新增子菜单</template>
-                        <a-button
-                            style="padding: 0"
-                            type="link"
-                            @click="table.addChildren(slotProps)"
-                        >
-                            <plus-circle-outlined />
-                        </a-button>
-                    </a-tooltip>
 
-                    <a-popconfirm
-                        title="是否删除该菜单"
-                        ok-text="确定"
-                        cancel-text="取消"
-                        @confirm="table.clickDel(slotProps)"
+                    <PermissionButton
+                        type="link"
+                        :uhasPermission="`${permission}:add`"
+                        :tooltip="{ title: '新增子菜单' }"
+                        @click="table.addChildren(slotProps)"
                     >
-                        <a-tooltip>
-                            <template #title>删除</template>
-                            <a-button style="padding: 0" type="link">
-                                <delete-outlined />
-                            </a-button>
-                        </a-tooltip>
-                    </a-popconfirm>
+                        <AIcon type="PlusCircleOutlined" />
+                    </PermissionButton>
+                    <PermissionButton
+                        type="link"
+                        :uhasPermission="`${permission}:delete`"
+                        :tooltip="{ title: '删除' }"
+                        :popConfirm="{
+                            title: `是否删除该菜单`,
+                            onConfirm: () => table.clickDel(slotProps),
+                        }"
+                    >
+                        <AIcon type="DeleteOutlined" />
+                    </PermissionButton>
                 </a-space>
             </template>
         </JTable>
@@ -64,15 +71,14 @@
 </template>
 
 <script setup lang="ts">
+import PermissionButton from '@/components/PermissionButton/index.vue';
+
 import { getMenuTree_api, delMenuInfo_api } from '@/api/system/menu';
-import {
-    SearchOutlined,
-    DeleteOutlined,
-    PlusOutlined,
-    PlusCircleOutlined,
-} from '@ant-design/icons-vue';
+import { SearchOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import moment from 'moment';
+
+const permission = 'system/Menu';
 
 const router = useRouter();
 
@@ -240,13 +246,13 @@ const table = reactive({
         router.push(
             `/system/Menu/detail/${row.id || ':id'}?pid=${
                 row.pid || ''
-            }&basePath=${row.url|| ''}&sortIndex=${table.total}`,
+            }&basePath=${row.url || ''}&sortIndex=${table.total}`,
         );
     },
     // 删除
     clickDel: (row: any) => {
         console.log(row.id);
-        
+
         delMenuInfo_api(row.id).then((resp: any) => {
             if (resp.status === 200) {
                 tableRef.value?.reload();
@@ -264,5 +270,11 @@ const table = reactive({
 <style lang="less" scoped>
 .menu-container {
     padding: 24px;
+
+    :deep(.ant-table-cell) {
+        .ant-btn-link {
+            padding: 0;
+        }
+    }
 }
 </style>
