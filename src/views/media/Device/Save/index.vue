@@ -369,7 +369,8 @@ onMounted(() => {
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
     console.log('formData.value: ', formData.value);
-    validate()
+    const form = useForm(formData.value, formRules.value);
+    form.validate()
         .then(async () => {
             btnLoading.value = true;
             let res;
