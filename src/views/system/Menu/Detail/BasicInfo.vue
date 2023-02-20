@@ -185,16 +185,18 @@
                         :first-width="3"
                         max-height="350px"
                         v-model:value="form.data.permissions"
+                        :key="form.data.id || ''"
                     />
                 </a-form-item>
             </a-form>
 
-            <a-button
+            <PermissionButton
                 type="primary"
+                :uhasPermission="`${permission}:update`"
                 @click="form.clickSave"
-                v-loading="form.saveLoading"
-                >保存</a-button
             >
+                保存
+            </PermissionButton>
         </a-card>
 
         <!-- 弹窗 -->
@@ -205,6 +207,7 @@
 </template>
 
 <script setup lang="ts">
+import PermissionButton from '@/components/PermissionButton/index.vue';
 import {
     PlusOutlined,
     QuestionCircleFilled,
@@ -222,6 +225,7 @@ import {
     addMenuInfo_api,
 } from '@/api/system/menu';
 
+const permission = 'system/Menu';
 // 路由
 const route = useRoute();
 const router = useRouter();
@@ -330,6 +334,7 @@ const dialog = {
 };
 
 type formType = {
+    id?: string;
     name: string;
     code: string;
     url: string;

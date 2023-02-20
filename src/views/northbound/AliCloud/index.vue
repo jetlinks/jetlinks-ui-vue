@@ -1,6 +1,6 @@
 <template>
     <page-container>
-        <Search :columns="columns" target="northbound-dueros" :params="params" />
+        <Search :columns="columns" target="northbound-dueros" @search="handleSearch" />
         <JTable
             ref="instanceRef"
             :columns="columns"
@@ -166,11 +166,17 @@ const columns = [
         title: '名称',
         dataIndex: 'name',
         key: 'name',
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '网桥产品',
         dataIndex: 'bridgeProductName',
         key: 'bridgeProductName',
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '说明',
@@ -182,6 +188,13 @@ const columns = [
         dataIndex: 'state',
         key: 'state',
         scopedSlots: true,
+        search: {
+            type: 'select',
+            options: [
+                { label: '正常', value: 'enabled' },
+                { label: '禁用', value: 'disabled' }
+            ],
+        },
     },
     {
         title: '操作',
@@ -303,4 +316,8 @@ const getActions = (
         return actions.filter((i: ActionsType) => i.key !== 'view');
     return actions;
 };
+
+const handleSearch = (_params: any) => {
+    params.value = _params
+}
 </script>

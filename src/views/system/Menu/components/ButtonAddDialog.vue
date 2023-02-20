@@ -56,11 +56,12 @@
                     />
                 </a-form-item-rest> -->
                 <PermissChoose
-                        :first-width="8"
-                        max-height="350px"
-                        v-model:value="form.data.permissions"
-                        :disabled="form.mode === '查看'"
-                    />
+                    :first-width="8"
+                    max-height="350px"
+                    v-model:value="form.data.permissions"
+                    :disabled="form.mode === '查看'"
+                    :key="form.data.id || ''"
+                />
             </a-form-item>
             <a-form-item label="说明" name="describe">
                 <a-textarea
@@ -91,7 +92,8 @@ const dialog = reactive({
     visible: false,
     loading: false,
     handleOk: () => {
-        props.menuInfo.id && formRef.value &&
+        props.menuInfo.id &&
+            formRef.value &&
             formRef.value
                 .validate()
                 .then(() => {
@@ -112,7 +114,7 @@ const dialog = reactive({
                     saveMenuInfo_api(params)
                         .then((resp) => {
                             dialog.changeVisible();
-                            message.success('操作成功')
+                            message.success('操作成功');
                             emits('confirm');
                         })
                         .finally(() => (dialog.loading = false));

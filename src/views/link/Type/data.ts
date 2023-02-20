@@ -1,7 +1,7 @@
-const configuration = {
+export const Configuration = {
     parserType: undefined,
     port: undefined,
-    host: '0.0.0.0',
+    host: undefined,
     publicPort: '',
     publicHost: '',
     remoteHost: '',
@@ -11,7 +11,7 @@ const configuration = {
     password: '',
     topicPrefix: '',
     maxMessageSize: '',
-    certId: '',
+    certId: undefined,
     privateKeyAlias: '',
     clientId: '',
     parserConfiguration: {
@@ -29,24 +29,21 @@ export const FormStates = {
     name: '',
     type: 'UDP',
     shareCluster: true,
-    // configuration,
     description: '',
 };
 
 export const FormStates2 = {
     serverId: undefined,
-    configuration,
+    configuration: Configuration,
 };
 
-
-
-// export const DefaultCluster = {
-
-// }
-export const DefaultFormStates = {
-    ...FormStates,
-    cluster: [{ ...FormStates2, id: 1 }],
-};
+export const TCPList = [
+    'TCP_SERVER',
+    'WEB_SOCKET_SERVER',
+    'HTTP_SERVER',
+    'MQTT_SERVER',
+];
+export const UDPList = ['UDP', 'COAP_SERVER'];
 
 const VisibleMost = [
     'COAP_SERVER',
@@ -63,6 +60,7 @@ export const VisibleData = {
     host: VisibleMost,
     publicPort: VisibleMost,
     publicHost: VisibleMost,
+    serverId: ['MQTT_CLIENT'],
     remoteHost: ['MQTT_CLIENT'],
     remotePort: ['MQTT_CLIENT'],
     secure: ['TCP_SERVER', 'UDP', 'COAP_SERVER'],
@@ -113,4 +111,194 @@ export const Validator = {
         /[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\.?/,
     ),
     regOnlyNumber: new RegExp(/^\d+$/),
+};
+
+export const Rules = {
+    name: [
+        {
+            required: true,
+            message: '请输入名称',
+        },
+        {
+            max: 64,
+            message: '最大可输入64个字符',
+        },
+    ],
+    type: [
+        {
+            required: true,
+            message: '请选择类型',
+        },
+    ],
+    shareCluster: [
+        {
+            required: true,
+            message: '请选择集群',
+        },
+    ],
+    host: [
+        {
+            required: true,
+            message: '请选择本地地址',
+        },
+    ],
+    port: [
+        {
+            required: true,
+            message: '请选择本地端口',
+        },
+    ],
+    publicHost: [
+        {
+            required: true,
+            message: '请输入公网地址',
+        },
+        {
+            pattern: Validator.regIp || Validator.regDomain,
+            message: '请输入IP或者域名',
+        },
+    ],
+    publicPort: [
+        {
+            required: true,
+            message: '请输入公网端口',
+        },
+        {
+            pattern: Validator.regOnlyNumber,
+            message: '请输入1-65535之间的正整数',
+        },
+    ],
+    remoteHost: [
+        {
+            required: true,
+            message: '请输入远程地址',
+        },
+        {
+            pattern: Validator.regIp || Validator.regDomain,
+            message: '请输入IP或者域名',
+        },
+    ],
+    remotePort: [
+        {
+            required: true,
+            message: '输入远程端口',
+        },
+        {
+            pattern: Validator.regOnlyNumber,
+            message: '请输入1-65535之间的正整数',
+        },
+    ],
+    clientId: [
+        {
+            required: true,
+            message: '请输入ClientId',
+        },
+        {
+            max: 64,
+            message: '最大可输入64个字符',
+        },
+    ],
+    username: [
+        {
+            required: true,
+            message: '请输入用户名',
+        },
+        {
+            max: 64,
+            message: '最大可输入64个字符',
+        },
+    ],
+    password: [
+        {
+            required: true,
+            message: '请输入密码',
+        },
+        {
+            max: 64,
+            message: '最大可输入64个字符',
+        },
+    ],
+    topicPrefix: [
+        {
+            max: 64,
+            message: '最大可输入64个字符',
+        },
+    ],
+    maxMessageSize: [
+        {
+            max: 64,
+            message: '最大可输入64个字符',
+        },
+    ],
+    secure: [
+        {
+            required: true,
+        },
+    ],
+    certId: [
+        {
+            required: true,
+            message: '请选择证书',
+        },
+    ],
+    privateKeyAlias: [
+        {
+            required: true,
+            message: '请输入私钥别名',
+        },
+        {
+            max: 64,
+            message: '最大可输入64个字符',
+        },
+    ],
+    parserType: [
+        {
+            required: true,
+            message: '请选择粘拆包规则',
+        },
+    ],
+    delimited: [
+        {
+            required: true,
+            message: '请输入分隔符',
+        },
+        {
+            max: 64,
+            message: '最大可输入64个字符',
+        },
+    ],
+    lang: [
+        {
+            required: true,
+            message: '请选择脚本语言',
+        },
+        {
+            max: 64,
+            message: '最大可输入64个字符',
+        },
+    ],
+    script: [
+        {
+            required: true,
+            message: '请输入脚本',
+        },
+    ],
+    size: [
+        {
+            required: true,
+            message: '请输入长度值',
+        },
+    ],
+    length: [
+        {
+            required: true,
+            message: '请选择长度',
+        },
+    ],
+    offset: [
+        {
+            pattern: Validator.regOnlyNumber,
+            message: '请输入0-65535之间的正整数',
+        },
+    ],
 };

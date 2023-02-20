@@ -47,8 +47,10 @@
 <script setup lang="ts">
 import { exportPermission_api } from '@/api/system/permission';
 import { Form } from 'ant-design-vue';
-Form.useInjectFormItemContext()
+Form.useInjectFormItemContext();
+
 const props = defineProps<{
+    key: string;
     value: any[];
     firstWidth: number;
     maxHeight: string;
@@ -58,7 +60,6 @@ const emits = defineEmits(['update:value']);
 const searchValue = ref<string>('');
 
 const search = reactive({
-    value: '',
     searchTimer: null as null | number,
     search: () => {
         if (search.searchTimer) {
@@ -72,17 +73,34 @@ const search = reactive({
 });
 const permission = reactive({
     list: [] as permissionType[],
+    sourceList: [] as any[],
+
+    init: () => {
+        permission.getList();
+        watch(
+            () => props.key,
+            () => {
+                nextTick(() => {
+                    permission.list = permission.makeList(
+                        props.value,
+                        permission.sourceList,
+                    );
+                });
+            },
+        );
+    },
     // 获取权限列表
     getList: () => {
         const params: paramsType = {
             paging: false,
         };
-        if (search.value) {
+        if (searchValue.value) {
             params.terms = [
-                { column: 'name$like', value: `%${search.value}%` },
+                { column: 'name$like', value: `%${searchValue.value}%` },
             ];
         }
         exportPermission_api(params).then((resp) => {
+            permission.sourceList = [...(resp.result as any[])];
             permission.list = permission.makeList(
                 props.value,
                 resp.result as any[],
@@ -91,7 +109,7 @@ const permission = reactive({
     },
     // 全选/取消全选
     selectAllOpions: (row: permissionType) => {
-        row.indeterminate = false
+        row.indeterminate = false;
         const newValue = props.value.filter(
             (item) => item.permission !== row.id,
         );
@@ -162,8 +180,8 @@ const permission = reactive({
         return result;
     },
 });
+permission.init();
 
-permission.getList();
 
 type permissionType = {
     id: string;
