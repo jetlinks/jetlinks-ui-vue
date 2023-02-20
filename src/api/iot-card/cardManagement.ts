@@ -97,7 +97,7 @@ export const _import = (configId: any, params: any) => server.get(`/network/card
  * @param format 类型 xlsx、csv
  * @param params
  */
-export const _export = (format: string, data: any) => server.post(`/network/card/download.${format}/_query`, data, 'blob');
+export const _export = (format: string, data: any) => server.post(`/network/card/download.${format}/_query`, data, { responseType: 'blob' });
 
 /**
  * 验证iccid

@@ -29,10 +29,10 @@
                 }}</a-button>
             </a-descriptions-item>
             <a-descriptions-item label="创建时间">{{
-                productStore.current.createTime
+                moment(productStore.current.createTime).format('YYYY-MM-DD HH:mm:ss')
             }}</a-descriptions-item>
             <a-descriptions-item label="更新时间">{{
-                productStore.current.modifyTime
+                moment(productStore.current.modifyTime).format('YYYY-MM-DD HH:mm:ss')
             }}</a-descriptions-item>
 
             <a-descriptions-item label="说明" :span="3">
@@ -47,6 +47,7 @@
 <script lang="ts" setup>
 import { useProductStore } from '@/store/product';
 import Save from '../../Save/index.vue';
+import moment from 'moment';
 import {
     EditOutlined,
     DeleteOutlined,
