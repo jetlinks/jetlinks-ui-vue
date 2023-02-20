@@ -34,9 +34,9 @@
                     >
                         <a-select
                             v-model:value="form.data.typeId"
-                            style="width: 120px"
                             :options="form.typeOptions"
                             placeholder="请选择类型"
+                            :disabled="!!form.data.id"
                         />
                     </a-form-item>
                 </a-col>
@@ -83,7 +83,7 @@
                     </a-form-item>
                 </a-col>
             </a-row>
-            <a-row :gutter="24">
+            <a-row :gutter="24" v-show="form.data.typeId">
                 <a-col :span="12">
                     <a-form-item
                         :name="['shareConfig', 'username']"
@@ -179,28 +179,42 @@
 </template>
 
 <script setup lang="ts">
-import { getDataTypeDict_api } from '@/api/system/dataSource';
+import {
+    getDataTypeDict_api,
+    saveDataSource_api,
+} from '@/api/system/dataSource';
+import { FormInstance, message } from 'ant-design-vue';
 import type { dictItemType, optionItemType, sourceItemType } from '../typing';
+
+const emits = defineEmits(['confirm']);
 
 // 弹窗相关
 const dialog = {
     title: '',
     loading: ref<boolean>(false),
     visible: ref<boolean>(false),
-    handleOk: () => {},
+    handleOk: () => {
+        formRef.value?.validate().then(() => {
+            form.submit();
+        });
+    },
     // 打开弹窗
-    changeVisible: (row: sourceItemType) => {
+    openDialog: (row: sourceItemType) => {
         if (row.id) dialog.title = '编辑数据源';
         else dialog.title = '新增数据源';
         form.data = { ...row };
-        dialog.visible.value = true;
+        nextTick(() => {
+            formRef.value?.clearValidate();
+            dialog.visible.value = true;
+        });
     },
 };
 // 将打开弹窗的操作暴露给父组件
 defineExpose({
-    openDialog: dialog.changeVisible,
+    openDialog: dialog.openDialog,
 });
 
+const formRef = ref<FormInstance>();
 const form = reactive({
     data: {
         shareConfig: {},
@@ -217,8 +231,16 @@ const form = reactive({
             }));
         });
     },
+    submit: () => {
+        dialog.loading.value = true;
+        saveDataSource_api(form.data)
+            .then(() => {
+                message.success('操作成功');
+                emits('confirm');
+                dialog.visible.value = false;
+            })
+            .finally(() => (dialog.loading.value = false));
+    },
 });
 form.getTypeOption();
 </script>
-
-<style scoped></style>

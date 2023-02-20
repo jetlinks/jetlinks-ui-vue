@@ -1,6 +1,7 @@
 export type dictItemType = {
     id: string,
-    name: string
+    name: string,
+    children?:dictItemType
 }
 export type optionItemType = {
     label: string,
