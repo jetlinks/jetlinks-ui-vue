@@ -45,8 +45,9 @@ const handleOk = () => {
     console.log(props.data);
     _export(type.value, props.data).then((res: any) => {
         if (res) {
-            const blob = new Blob([res.data], { type: type.value });
+            const blob = new Blob([res], { type: type.value });
             const url = URL.createObjectURL(blob);
+            console.log(url);
             downloadFileByUrl(
                 url,
                 `物联卡管理-${moment(new Date()).format(

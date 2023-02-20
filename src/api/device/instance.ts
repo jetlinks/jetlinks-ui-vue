@@ -340,3 +340,11 @@ export const readProperties = (deviceId: string, data: any) => server.post(`/dev
  */
 export const settingProperties = (deviceId: string, data: any) => server.put(`/device/instance/${deviceId}/property`, data)
 
+/**
+ * 设备功能-执行
+ * @param id 设备id
+ * @param action 
+ * @param data 
+ * @returns 
+ */
+ export const execute = (id: string, action: string, data: any) => server.post(`/device/invoked/${id}/function/${action}`, data)
