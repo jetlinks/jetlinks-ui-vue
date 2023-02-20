@@ -45,6 +45,7 @@ import Running from './Running/index.vue'
 import Metadata from '../../components/Metadata/index.vue';
 import ChildDevice from './ChildDevice/index.vue';
 import Diagnose from './Diagnose/index.vue'
+import Function from './Function/index.vue'
 import { _deploy, _disconnect } from '@/api/device/instance'
 import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
@@ -71,6 +72,10 @@ const list = [
         tab: '物模型'
     },
     {
+        key: 'Function',
+        tab: '设备功能'
+    },
+    {
         key: 'ChildDevice',
         tab: '子设备'
     },
@@ -85,7 +90,8 @@ const tabs = {
   Metadata,
   Running,
   ChildDevice,
-  Diagnose
+  Diagnose,
+  Function
 }
 
 watch(
