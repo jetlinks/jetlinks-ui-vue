@@ -355,8 +355,6 @@ const getDetail = async () => {
     // console.log('res: ', res);
     formData.value = res.result;
     formData.value.channel = res.result.provider;
-    console.log('formData.value: ', formData.value);
-    // validate();
 };
 
 onMounted(() => {
@@ -368,7 +366,6 @@ onMounted(() => {
  */
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
-    console.log('formData.value: ', formData.value);
     const form = useForm(formData.value, formRules.value);
     form.validate()
         .then(async () => {
@@ -379,7 +376,6 @@ const handleSubmit = () => {
             } else {
                 res = await DeviceApi.update(formData.value);
             }
-            // console.log('res: ', res);
             if (res?.success) {
                 message.success('保存成功');
                 router.back();
