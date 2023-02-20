@@ -1,6 +1,10 @@
 <template>
     <page-container>
-        <Search :columns="columns" target="device-instance" />
+        <Search
+            :columns="columns"
+            target="device-instance"
+            @search="handleSearch"
+        />
         <JTable
             ref="instanceRef"
             :columns="columns"
@@ -267,6 +271,13 @@ import Export from './Export/index.vue';
 import Process from './Process/index.vue';
 import Save from './Save/index.vue';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
+import {
+    getProviders,
+    queryGatewayList,
+    queryNoPagingPost,
+    queryOrgThree,
+} from '@/api/device/product';
+import { queryTree } from '@/api/device/category';
 
 const router = useRouter();
 const instanceRef = ref<Record<string, any>>({});
@@ -290,33 +301,172 @@ const columns = [
         title: 'ID',
         dataIndex: 'id',
         key: 'id',
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '设备名称',
         dataIndex: 'name',
         key: 'name',
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '产品名称',
         dataIndex: 'productName',
         key: 'productName',
+        search: {
+            type: 'select',
+            options: () =>
+                new Promise((resolve) => {
+                    queryNoPagingPost({ paging: false }).then((resp: any) => {
+                        resolve(
+                            resp.result.map((item: any) => ({
+                                label: item.name,
+                                value: item.id,
+                            })),
+                        );
+                    });
+                }),
+        },
     },
     {
         title: '创建时间',
         dataIndex: 'createTime',
         key: 'createTime',
         scopedSlots: true,
+        search: {
+            type: 'date',
+        },
     },
     {
         title: '状态',
         dataIndex: 'state',
         key: 'state',
         scopedSlots: true,
+        search: {
+            type: 'select',
+            options: [
+                { label: '禁用', value: 'notActive' },
+                { label: '离线', value: 'offline' },
+                { label: '在线', value: 'online' },
+            ],
+        },
+    },
+    {
+        key: 'classifiedId',
+        dataIndex: 'classifiedId',
+        title: '产品分类',
+        hideInTable: true,
+        search: {
+            type: 'treeSelect',
+            options: () =>
+                new Promise((resolve) => {
+                    queryTree({ paging: false }).then((resp: any) => {
+                        resolve(resp.result);
+                    });
+                }),
+        },
+    },
+    {
+        key: 'accessProvider',
+        title: '网关类型',
+        dataIndex: 'accessProvider',
+        valueType: 'select',
+        hideInTable: true,
+        search: {
+            type: 'select',
+            options: () =>
+                new Promise((resolve) => {
+                    getProviders().then((resp: any) => {
+                        resolve(
+                            resp.result.map((item: any) => ({
+                                label: item.name,
+                                value: `accessProvider is ${item.id}`,
+                            })),
+                        );
+                    });
+                }),
+        },
+    },
+    {
+        key: 'productId$product-info',
+        dataIndex: 'productId$product-info',
+        title: '接入方式',
+        hideInTable: true,
+        search: {
+            type: 'select',
+            options: () =>
+                new Promise((resolve) => {
+                    queryGatewayList({}).then((resp: any) => {
+                        resolve(
+                            resp.result.map((item: any) => ({
+                                label: item.name,
+                                value: `accessId is ${item.id}`,
+                            })),
+                        );
+                    });
+                }),
+        },
+    },
+    {
+        dataIndex: 'deviceType',
+        title: '设备类型',
+        valueType: 'select',
+        hideInTable: true,
+        search: {
+            type: 'select',
+            options: [
+                { label: '直连设备', value: 'device' },
+                { label: '网关子设备', value: 'childrenDevice' },
+                { label: '网关设备', value: 'gateway' },
+            ],
+        },
+    },
+    {
+        dataIndex: 'id$dim-assets',
+        title: '所属组织',
+        hideInTable: true,
+        search: {
+            type: 'treeSelect',
+            options: () =>
+                new Promise((resolve) => {
+                    queryOrgThree({}).then((resp: any) => {
+                        const formatValue = (list: any[]) => {
+                            const _list: any[] = [];
+                            list.forEach((item) => {
+                                if (item.children) {
+                                    item.children = formatValue(item.children);
+                                }
+                                _list.push({
+                                    ...item,
+                                    id: JSON.stringify({
+                                        assetType: 'device',
+                                        targets: [
+                                            {
+                                                type: 'org',
+                                                id: item.id,
+                                            },
+                                        ],
+                                    }),
+                                });
+                            });
+                            return _list;
+                        };
+                        resolve(formatValue(resp.result));
+                    });
+                }),
+        },
     },
     {
         title: '说明',
         dataIndex: 'describe',
         key: 'describe',
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '操作',
@@ -542,5 +692,10 @@ const disabledSelectedDevice = async () => {
 const saveBtn = () => {
     visible.value = false;
     instanceRef.value?.reload();
+};
+
+const handleSearch = (_params: any) => {
+    console.log(_params);
+    params.value = _params;
 };
 </script>

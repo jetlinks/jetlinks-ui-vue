@@ -1,10 +1,11 @@
 import { UnorderedListOutlined, AppstoreOutlined } from '@ant-design/icons-vue'
 import styles from './index.module.less'
 import { Pagination, Table, Empty, Spin, Alert } from 'ant-design-vue'
-import type { TableProps, ColumnProps } from 'ant-design-vue/es/table'
+import type { TableProps } from 'ant-design-vue/es/table'
 import type { TooltipProps } from 'ant-design-vue/es/tooltip'
 import type { PopconfirmProps } from 'ant-design-vue/es/popconfirm'
 import { CSSProperties, PropType } from 'vue';
+import type { JColumnsProps } from './types'
 
 enum ModelEnum {
     TABLE = 'TABLE',
@@ -40,14 +41,10 @@ export interface ActionsType {
     children?: ActionsType[];
 }
 
-export interface JColumnProps extends ColumnProps {
-    scopedSlots?: boolean; // 是否为插槽 true: 是 false: 否
-}
-
 export interface JTableProps extends TableProps {
     request?: (params?: Record<string, any>) => Promise<Partial<RequestData>>;
     cardBodyClass?: string;
-    columns: JColumnProps[];
+    columns: JColumnsProps[];
     params?: Record<string, any>;
     model?: keyof typeof ModelEnum | undefined; // 显示table还是card
     // actions?: ActionsType[];
@@ -156,8 +153,9 @@ const JTable = defineComponent<JTableProps>({
         const pageIndex = ref<number>(0)
         const pageSize = ref<number>(6)
         const total = ref<number>(0)
-        const _columns = ref<JColumnProps[]>(props?.columns || [])
         const loading = ref<boolean>(true)
+
+        const _columns = computed(() => props.columns.filter(i => !(i?.hideInTable)))
 
         /**
          * 监听宽度，计算显示卡片个数

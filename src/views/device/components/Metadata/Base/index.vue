@@ -2,8 +2,10 @@
   <JTable :loading="loading" :data-source="data" size="small" :columns="columns" row-key="id" model="TABLE">
     <template #headerTitle>
       <a-input-search v-model:value="searchValue" placeholder="请输入名称" @search="handleSearch"></a-input-search>
+    </template>
+    <template #rightExtraRender>
       <PermissionButton type="primary" :uhas-permission="`${permission}:update`" key="add" @click="handleAddClick"
-        :udisabled="operateLimits('add', type)" :tooltip="{
+        :disabled="operateLimits('add', type)" :tooltip="{
           title: operateLimits('add', type) ? '当前的存储方式不支持新增' : '新增',
         }">
         <template #icon>
@@ -31,20 +33,20 @@
       </a-tag>
     </template>
     <template #action="slotProps">
-      <PermissionButton :has-permission="`${permission}:update`" type="link" key="edit" style="padding: 0"
-        :disabled="operateLimits('updata', type)" @click="handleEditClick(slotProps)" :tooltip="{
+      <PermissionButton :uhas-permission="`${permission}:update`" type="link" key="edit" style="padding: 0"
+        :udisabled="operateLimits('updata', type)" @click="handleEditClick(slotProps)" :tooltip="{
           title: operateLimits('updata', type) ? '当前的存储方式不支持编辑' : '编辑',
         }">
         <EditOutlined />
-      </PermissionButton>,
-      <PermissionButton :has-permission="`${permission}:delete`" type="link" key="delete" style="padding: 0"
+      </PermissionButton>
+      <PermissionButton :uhas-permission="`${permission}:delete`" type="link" key="delete" style="padding: 0"
         :pop-confirm="{
           title: '确认删除？', onConfirm: async () => {
             await removeItem(slotProps);
           },
         }" :tooltip="{
-  title: '删除',
-}">
+          title: '删除',
+        }">
         <DeleteOutlined />
       </PermissionButton>
     </template>
@@ -58,12 +60,13 @@ import { useInstanceStore } from '@/store/instance'
 import { useProductStore } from '@/store/product'
 import { useMetadataStore } from '@/store/metadata'
 import PermissionButton from '@/components/PermissionButton/index.vue'
-import { PlusOutlined } from '@ant-design/icons-vue'
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue/es'
 import { SystemConst } from '@/utils/consts'
 import { Store } from 'jetlinks-store'
 import { asyncUpdateMetadata, removeMetadata } from '../metadata'
 import { detail } from '@/api/device/instance'
+import Edit from './Edit/index.vue'
 // import { detail } from '@/api/device/instance'
 // import { detail as productDetail } from '@/api/device/product'
 interface Props {

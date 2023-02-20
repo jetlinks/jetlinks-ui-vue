@@ -1,9 +1,9 @@
-type dictType = {
+export type dictType = {
     id: string;
     name: string;
 }[];
 
-type optionsType = {
+export type optionsType = {
     label: string,
     value: string;
     disabled?:boolean

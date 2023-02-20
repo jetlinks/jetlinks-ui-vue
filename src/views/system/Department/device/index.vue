@@ -167,7 +167,7 @@ import {
 } from '@/api/system/department';
 import { intersection } from 'lodash-es';
 
-import { dictType } from '../typing.d.ts';
+import type { dictType } from '../typing';
 import { message } from 'ant-design-vue';
 
 const permission = 'system/Department';
