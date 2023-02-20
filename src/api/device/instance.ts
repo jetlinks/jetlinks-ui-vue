@@ -314,3 +314,12 @@ export const getGatewayDetail = (id: string) => server.get(`/gateway/device/${id
  * @returns 单位列表
  */
 export const getUnit = () => server.get<UnitType[]>(`/protocol/units`)
+
+/**
+ * 设备功能-执行
+ * @param id 设备id
+ * @param action 
+ * @param data 
+ * @returns 
+ */
+ export const execute = (id: string, action: string, data: any) => server.post(`/device/invoked/${id}/function/${action}`, data)
