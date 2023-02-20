@@ -196,6 +196,7 @@ const handleExecute = async (func: any) => {
     if (!success) return;
     message.success('操作成功');
     func.executeResult = result instanceof Array ? result[0] : result;
+    proxy?.$forceUpdate();
 };
 /**
  * 清空
