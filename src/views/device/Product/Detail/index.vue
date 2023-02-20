@@ -129,6 +129,7 @@ watch(
     () => route.params.id,
     (newId) => {
         if (newId) {
+            console.log(newId);
             productStore.tabActiveKey = 'Info';
             productStore.refresh(newId as string);
         }
