@@ -314,3 +314,29 @@ export const getGatewayDetail = (id: string) => server.get(`/gateway/device/${id
  * @returns 单位列表
  */
 export const getUnit = () => server.get<UnitType[]>(`/protocol/units`)
+
+/**
+ * 执行功能
+ * @param deviceId 设备id
+ * @param functionId 功能id
+ * @param data 
+ * @returns 
+ */
+export const executeFunctions = (deviceId: string, functionId: string, data: any) => server.post(`/device/invoked/${deviceId}/function/${functionId}`, data)
+
+/**
+ * 读取属性
+ * @param deviceId 设备id
+ * @param data 
+ * @returns 
+ */
+export const readProperties = (deviceId: string, data: any) => server.post(`/device/instance/${deviceId}/properties/_read`, data)
+
+/**
+ * 设置属性
+ * @param deviceId 设备id
+ * @param data 
+ * @returns 
+ */
+export const settingProperties = (deviceId: string, data: any) => server.put(`/device/instance/${deviceId}/property`, data)
+

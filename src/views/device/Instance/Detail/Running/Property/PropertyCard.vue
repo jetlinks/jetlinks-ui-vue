@@ -1,6 +1,6 @@
 <template>
     <a-card :hoverable="true" class="card-box">
-        <a-spin :spinning="loading">
+        <!-- <a-spin :spinning="loading"> -->
             <div class="card-container">
                 <div class="header">
                     <div class="title">{{ _props.data.name }}</div>
@@ -24,14 +24,14 @@
                     </div>
                 </div>
                 <div class="value">
-                    <ValueRender :data="data" />
+                    <ValueRender :data="data" :value="_props.data" />
                 </div>
                 <div class="bottom">
                     <div style="color: rgba(0, 0, 0, .65); font-size: 12px">更新时间</div>
-                    <div class="time-value">{{data?.time || '--'}}</div>
+                    <div class="time-value">{{_props?.data?.timeString || '--'}}</div>
                 </div>
             </div>
-        </a-spin>
+        <!-- </a-spin> -->
     </a-card>
 </template>
 
@@ -47,13 +47,14 @@ const _props = defineProps({
         default: () => []
     },
 });
-const loading = ref<boolean>(true);
+// const loading = ref<boolean>(true);
 
-watchEffect(() => {
-    if (_props.data.name) {
-        loading.value = false;
-    }
-});
+// watchEffect(() => {
+//     if (_props.data) {
+//         console.log(_props.data)
+//         loading.value = false;
+//     }
+// });
 </script>
 
 <style lang="less" scoped>

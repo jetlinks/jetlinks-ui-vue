@@ -43,7 +43,7 @@
     "@commitlint/config-conventional": "^17.4.0",
     "@types/lodash-es": "^4.17.6",
     "@types/moment": "^2.13.0",
-    "@types/node": "^18.11.17",
+    "@types/node": "^18.14.0",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vuemap/unplugin-resolver": "^1.0.4",
     "autoprefixer": "^10.4.13",
