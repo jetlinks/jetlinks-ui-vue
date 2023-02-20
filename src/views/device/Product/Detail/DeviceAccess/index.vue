@@ -60,7 +60,7 @@
                         <!-- 显示md文件内容 -->
                         <div
                             v-if="config?.document"
-                            v-html="config?.document"
+                            v-html="markdownToHtml"
                         ></div>
                     </div>
                     <div class="item-style">
@@ -385,10 +385,11 @@ const simpleImage = ref(Empty.PRESENTED_IMAGE_SIMPLE);
 const visible = ref<boolean>(false);
 const listData = ref<string[]>([]);
 const access = ref({});
-const config = ref({});
+const config = ref<any>({});
 const metadata = ref<ConfigMetadata[]>([]);
 const dataSource = ref<string[]>([]);
 const storageList = ref<any[]>([]);
+const markdownToHtml = shallowRef('');
 const current = ref({
     id: productStore.current?.accessId,
     name: productStore.current?.accessName,
@@ -805,6 +806,9 @@ const getConfigDetail = async (
         (resp) => {
             if (resp.status === 200) {
                 config.value = resp.result;
+                if (config.value?.document) {
+                    markdownToHtml.value = marked(config.value.document);
+                }
             }
         },
     );
