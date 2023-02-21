@@ -16,7 +16,8 @@ export interface formState  {
   apikey: string; // 高德 API key
   basePath: string; // 系统后台访问的URL
   logo: string; // 系统logo
-  icon: string; // 浏览器页签
+  ico: string; // 浏览器页签
+  background:string; //登录背景
 }
 
 /**

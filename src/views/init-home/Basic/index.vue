@@ -83,15 +83,15 @@
                                             </div>
                                             <div
                                                 class="upload-image"
-                                                v-if="logoValue"
+                                                v-if="form.logo"
                                                 :style="
-                                                    logoValue
-                                                        ? `background-image: url(${logoValue});`
+                                                    form.logo
+                                                        ? `background-image: url(${form.logo});`
                                                         : ''
                                                 "
                                             ></div>
                                             <div
-                                                v-if="logoValue"
+                                                v-if="form.logo"
                                                 class="upload-image-mask"
                                             >
                                                 点击修改
@@ -162,15 +162,15 @@
                                             </div>
                                             <div
                                                 class="upload-image-icon"
-                                                v-if="iconValue"
+                                                v-if="form.ico"
                                                 :style="
-                                                    iconValue
-                                                        ? `background-image: url(${iconValue});`
+                                                    form.ico
+                                                        ? `background-image: url(${form.ico});`
                                                         : ''
                                                 "
                                             ></div>
                                             <div
-                                                v-if="iconValue"
+                                                v-if="form.ico"
                                                 class="upload-image-mask"
                                             >
                                                 点击修改
@@ -221,15 +221,15 @@
                                     </div>
                                     <div
                                         class="upload-image"
-                                        v-if="backValue"
+                                        v-if="form.background"
                                         :style="
-                                            backValue
-                                                ? `background-image: url(${backValue});`
+                                            form.background
+                                                ? `background-image: url(${form.background});`
                                                 : ''
                                         "
                                     ></div>
                                     <div
-                                        v-if="backValue"
+                                        v-if="form.background"
                                         class="upload-image-mask"
                                     >
                                         点击修改
@@ -256,6 +256,7 @@
 import { modalState, formState, logoState } from '../data/interface';
 import { getImage } from '@/utils/comm.ts';
 import { Form } from 'ant-design-vue';
+import { FILE_UPLOAD } from '@/api/comm';
 import {
     getSystemPermission,
     save,
@@ -275,18 +276,18 @@ import {
 } from '@/api/initHome';
 import { ValidateErrorEntity } from 'ant-design-vue/es/form/interface';
 import { message } from 'ant-design-vue';
+import { LocalStore } from '@/utils/comm';
+import { TOKEN_KEY } from '@/utils/variable';
 const formRef = ref();
 const menuRef = ref();
 const formBasicRef = ref();
 const useForm = Form.useForm;
-const iconValue = ref('/public/favicon.ico');
-const backValue = ref('/public/images/login.png');
-const logoValue = ref('/public/logo.png');
 const logoLoading = ref(false);
 const backLoading = ref(false);
 const iconLoading = ref(false);
 const imageTypes = ref(['image/jpeg', 'image/png']);
 const iconTypes = ref(['image/x-icon']);
+const headers = ref({ 'X-Access-Token': LocalStore.get(TOKEN_KEY) });
 /**
  * 表单数据
  */
@@ -295,17 +296,11 @@ const form = ref<formState>({
     headerTheme: 'light',
     apikey: '',
     basePath: `${window.location.origin}/api`,
-    logo: '',
-    icon: '',
+    logo: getImage('/logo.png'),
+    ico: getImage('/favicon.ico'),
+    background:getImage('/login.png')
 });
 const rulesFrom = ref({
-    title: [
-        {
-            required: true,
-            message: '请输入系统名称',
-            trigger: 'change',
-        },
-    ],
     headerTheme: [
         {
             required: true,
@@ -328,14 +323,15 @@ const { resetFields, validate, validateInfos } = useForm(
 /**
  * 提交数据
  */
-const saveBasicInfo = async () => {
+const saveBasicInfo = () =>{
+    return new Promise( async (resolve) => {
     validate()
         .then(async () => {
             const item = [
                 {
                     scope: 'front',
                     properties: {
-                        ...form,
+                        ...form.value,
                         apikey: '',
                         'base-path': '',
                     },
@@ -343,32 +339,32 @@ const saveBasicInfo = async () => {
                 {
                     scope: 'amap',
                     properties: {
-                        api: form.apikey,
+                        api: form.value.apikey,
                     },
                 },
                 {
                     scope: 'paths',
                     properties: {
-                        'base-path': form.basePath,
+                        'base-path': form.value.basePath,
                     },
                 },
             ];
             const res = await save(item);
             if (res.status === 200) {
+                resolve(true);
                 const ico: any = document.querySelector('link[rel="icon"]');
                 if (ico !== null) {
-                    ico.href = form.icon;
+                    ico.href = form.value.ico;
                 }
+            }else {
+                resolve(false);
             }
-            //     basicData.isSucessBasic = 3;
-            // } else {
-            //     basicData.isSucessBasic = 2;
-            // }
         })
         .catch((error: ValidateErrorEntity<formState>) => {
-            // basicData.isSucessBasic = 2;
+            resolve(false);
         });
-};
+})
+}
 /**
  * logo格式校验
  */
@@ -395,14 +391,41 @@ const handleChangeLogo = (info: any) => {
     if (info.file.status === 'done') {
         info.file.url = info.file.response?.result;
         logoLoading.value = false;
-        logoValue.value = info.file.response?.result;
+        form.value.logo = info.file.response?.result;
     }
 };
-
+/**
+ * 浏览器页签上传之前
+ */
+const beforeIconUpload = (file:any) => {
+    const isType = iconTypes.value.includes(file.type);
+    if(!isType){
+        message.error('请上传ico格式的图片');
+        return false;
+    }
+    const isSize = file.size / 1024 / 1024 < 1;
+    if(!isSize){
+        message.error('支持1M以内的图片');
+    }
+    return isType && isSize;
+}
+/**
+ * 浏览器页签发生改变
+ */
+ const changeIconUpload = (info: any) => {
+    if (info.file.status === 'uploading') {
+        iconLoading.value = true;
+    }
+    if (info.file.status === 'done') {
+        info.file.url = info.file.response?.result;
+        iconLoading.value = false;
+        form.value.ico = info.file.response?.result;
+    }
+}
 /**
  * 背景图片上传之前
  */
-const beforeBackUpload = (file: any) => {
+ const beforeBackUpload = (file: any) => {
     const isType = imageTypes.value.includes(file.type);
     if (!isType) {
         message.error(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`);
@@ -424,7 +447,7 @@ const changeBackUpload = (info: any) => {
     if (info.file.status === 'done') {
         info.file.url = info.file.response?.result;
         backLoading.value = false;
-        backValue.value = info.file.response?.result;
+        form.value.background = info.file.response?.result;
     }
 };
 defineExpose({
