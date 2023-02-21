@@ -28,10 +28,10 @@
                     model="TABLE"
                 >
                     <template #required="slotProps">
-                        <span>{{ Boolean(slotProps.row.required) + '' }}</span>
+                        <span>{{ Boolean(slotProps.required) + '' }}</span>
                     </template>
                     <template #type="slotProps">
-                        <span>{{ slotProps.row.schema.type }}</span>
+                        <span>{{ slotProps.schema.type }}</span>
                     </template>
                 </JTable>
             </div>
@@ -68,11 +68,14 @@
                 >
                 </JTable>
             </div>
+
+            <!-- <CodeEditor v-model:model-value="111" /> -->
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import CodeEditor from '@/components/MonacoEditor/index.vue'
 import type { apiDetailsType } from '../typing';
 import InputCard from './InputCard.vue';
 import { PropType } from 'vue';
@@ -92,6 +95,7 @@ const { selectApi } = toRefs(props);
 type tableCardType = {
     columns: object[];
     tableData: object[];
+    codeText?: string;
     activeKey?: any;
     getData?: any;
 };
@@ -190,6 +194,7 @@ const respParamsCard = reactive<tableCardType>({
         },
     ],
     tableData: [],
+    codeText: '',
     getData: (code: string) => {
         type schemaObjType = {
             paramsName: string;
@@ -203,6 +208,7 @@ const respParamsCard = reactive<tableCardType>({
         )?.schema;
         const schemas = toRaw(props.schemas);
         function findData(schemaName: string) {
+            
             if (!schemaName || !schemas[schemaName]) {
                 return [];
             }
@@ -224,15 +230,17 @@ const respParamsCard = reactive<tableCardType>({
                     schemaObj.children = findData(paramsType);
                 result.push(schemaObj);
             });
-            console.log(result);
 
             return result;
         }
-
+        console.log(Object.entries(schemas[schemaName].properties));
+        
         respParamsCard.tableData = findData(schemaName);
-        // console.log(respParamsCard.tableData);
     },
 });
+
+
+
 
 const getContent = (data: any) => {
     if (data && data.content) {
