@@ -66,6 +66,7 @@
                                     `/system/DataSource/Management?id=${slotProps.id}`,
                                 )
                         "
+                        :disabled="slotProps?.typeId === 'rabbitmq' || !table.getRowStatus(slotProps)"
                     >
                         <AIcon type="icon-ziyuankuguanli" />
                     </PermissionButton>
@@ -131,10 +132,11 @@ import {
     getDataSourceList_api,
     getDataTypeDict_api,
     changeStatus_api,
+    delDataSource_api
 } from '@/api/system/dataSource';
 import { message } from 'ant-design-vue';
 
-const permission = 'system/Relationship';
+const permission = 'system/DataSource';
 
 const router = useRouter();
 
@@ -226,6 +228,7 @@ const table = {
             title: '说明',
             dataIndex: 'description',
             key: 'description',
+            ellipsis: true,
         },
         {
             title: '状态',
@@ -240,6 +243,7 @@ const table = {
             key: 'action',
             scopedSlots: true,
             width: '200px',
+            fixed:'right'
         },
     ],
 
@@ -265,16 +269,16 @@ const table = {
     },
     // 打开编辑弹窗
     openDialog: (row: sourceItemType | {}) => {
-        editDialogRef.value.openDialog({shareConfig:{},...row});
+        editDialogRef.value.openDialog({ shareConfig: {}, ...row });
     },
     // 删除
     clickDel: (row: sourceItemType) => {
-        // delRelation_api(row.id).then((resp: any) => {
-        //     if (resp.status === 200) {
-        //         tableRef.value?.reload();
-        //         message.success('操作成功!');
-        //     }
-        // });
+        delDataSource_api(row.id as string).then((resp: any) => {
+            if (resp.status === 200) {
+                tableRef.value?.reload();
+                message.success('操作成功!');
+            }
+        });
     },
     clickChangeStatus: (row: sourceItemType) => {
         const status = row.state.value === 'enabled' ? '_disable' : '_enable';
