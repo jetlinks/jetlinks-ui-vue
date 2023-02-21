@@ -1,6 +1,6 @@
 <template>
     <div class="value">
-        {{value}}
+        {{value?.value || '--'}}
     </div>
 </template>
 
@@ -13,8 +13,8 @@ const _data = defineProps({
         default: () => {},
     },
     value: {
-        type: [Object, String, Number],
-        default: '--'
+        type: Object,
+        default: () => {}
     },
     type: {
         type: String,
@@ -40,6 +40,7 @@ imgMap.set('obj', getImage('/running/obj.png'));
 const imgList = ['.jpg', '.png', '.swf', '.tiff'];
 const videoList = ['.m3u8', '.flv', '.mp4', '.rmvb', '.mvb'];
 const fileList = ['.txt', '.doc', '.xls', '.pdf', '.ppt', '.docx', '.xlsx', '.pptx'];
+
 </script>
 
 <style lang="less" scoped>

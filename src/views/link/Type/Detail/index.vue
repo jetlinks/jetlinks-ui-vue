@@ -130,19 +130,31 @@
                                                     >
                                                         <div class="form-label">
                                                             节点名称
+                                                            <span
+                                                                class="form-label-required"
+                                                                >*</span
+                                                            >
                                                         </div>
                                                         <a-select
                                                             v-model:value="
                                                                 cluster.serverId
                                                             "
                                                             :options="
-                                                                clustersList
+                                                                clustersListIndex[
+                                                                    index
+                                                                ]
                                                             "
                                                             placeholder="请选择节点名称"
                                                             allowClear
                                                             show-search
                                                             :filter-option="
                                                                 filterOption
+                                                            "
+                                                            @change="
+                                                                changeServerId(
+                                                                    cluster.serverId,
+                                                                    index,
+                                                                )
                                                             "
                                                         >
                                                         </a-select>
@@ -191,7 +203,9 @@
                                                                     .host
                                                             "
                                                             :options="
-                                                                sipListOption
+                                                                hostOptionsIndex[
+                                                                    index
+                                                                ]
                                                             "
                                                             placeholder="请选择本地地址"
                                                             allowClear
@@ -203,7 +217,11 @@
                                                                 filterOption
                                                             "
                                                             @change="
-                                                                handleChangeForm2Sip(
+                                                                changeHost(
+                                                                    cluster.serverId,
+                                                                    cluster
+                                                                        .configuration
+                                                                        .host,
                                                                     index,
                                                                 )
                                                             "
@@ -253,7 +271,9 @@
                                                                     .port
                                                             "
                                                             :options="
-                                                                portOptions
+                                                                portOptionsIndex[
+                                                                    index
+                                                                ]
                                                             "
                                                             placeholder="请选择本地端口"
                                                             allowClear
@@ -683,7 +703,9 @@
                                                                     .configuration
                                                                     .certId
                                                             "
-                                                            :options="sipList"
+                                                            :options="
+                                                                certIdOptions
+                                                            "
                                                             placeholder="请选择证书"
                                                             allowClear
                                                             show-search
@@ -1111,6 +1133,7 @@ import {
     resourcesCurrent,
     resourceClusters,
     supports,
+    certificates,
 } from '@/api/link/type';
 import {
     FormStates,
@@ -1149,10 +1172,13 @@ let sipListConst: any = [];
 const sipListOption = ref([]);
 const sipList = ref([]);
 const sipListIndex: any = ref([]);
-const clustersList = ref([]);
+const hostOptionsIndex: any = ref([]);
+const clustersListIndex: any = ref([]);
+let clustersListConst: any = [];
 const typeOptions = ref([]);
-const portOptions = ref([]);
+const portOptionsIndex: any = ref([]);
 let portOptionsConst: any = [];
+const certIdOptions = ref([]);
 
 // <{ cluster: Form2[] }>
 
@@ -1187,22 +1213,6 @@ const filterPortOption = (input: string, option: any) => {
     return JSON.stringify(option.label).indexOf(input) >= 0;
 };
 
-const handleChangeForm2Sip = (index: number) => {
-    dynamicValidateForm.cluster[index].configuration.port = undefined;
-    const value = dynamicValidateForm.cluster[index].configuration.host;
-    sipListIndex.value[index] = sipListConst
-        .find((i: any) => i.host === value)
-        ?.portList.map((i: any) => {
-            return {
-                value: JSON.stringify({
-                    host: value,
-                    port: i.port,
-                }),
-                label: `${i.transports.join('/')} (${i.port})`,
-            };
-        });
-};
-
 const saveData = async () => {
     let data2 = await formRef2.value?.validate();
 };
@@ -1213,20 +1223,21 @@ const next = async () => {
 
 const getSupports = async () => {
     const res = await supports();
-
     typeOptions.value = res.result.map((item) => ({
         label: item.name,
         value: item.id,
     }));
-
-    // supports().then((resp) =>
-    //   resp.result?.map((item: any) => ({
-    //     label: item.name,
-    //     value: item.id,
-    //   })),
-    // );
 };
 getSupports();
+
+const getCertificates = async () => {
+    const resp = await certificates();
+    certIdOptions.value = resp.result.map((i) => ({
+        value: i.id,
+        label: i.name,
+    }));
+};
+getCertificates();
 
 const filterConfigByType = (data, type: string) => {
     let _temp = type;
@@ -1249,51 +1260,38 @@ const filterConfigByType = (data, type: string) => {
 // const getResourceById = async (id, type) =>
 //   Service.getResourcesClustersById(id).then((resp) => filterConfigByType(resp.result, type))
 
+const getPortOptions = (portOptions: object, index = 0) => {
+    const type = formData.value.type;
+    const host = dynamicValidateForm.cluster[index].configuration.host;
+    const _port = filterConfigByType(cloneDeep(portOptions), type);
+    const _host = _port.find((item) => item.host === host);
+    portOptionsIndex.value[index] = _host?.ports?.map((p) => ({
+        label: p,
+        value: p,
+    }));
+};
+
 onMounted(() => {
     resourcesCurrent().then((resp) => {
         if (resp.status === 200) {
             portOptionsConst = resp.result;
             Store.set('configRef', resp.result);
-            const type = formData.value.type;
-            const host = dynamicValidateForm.cluster[0].configuration.host;
-
-            const _port = filterConfigByType(resp.result, type);
-            const _host = _port.find((item) => item.host === host);
-
-            portOptions.value = _host?.ports?.map((p) => ({
-                label: p,
-                value: p,
-            }));
-
-            // sipListConst = resp.result;
-            // sipListOption.value = sipListConst.map((i) => ({
-            //     value: i.host,
-            //     label: i.host,
-            // }));
-
-            // sipList.value = sipListConst
-            //     .find((i) => i.host === '0.0.0.0')
-            //     ?.portList.map((i) => {
-            //         return {
-            //             value: JSON.stringify({
-            //                 host: '0.0.0.0',
-            //                 port: i.port,
-            //             }),
-            //             label: `${i.transports.join('/')} (${i.port})`,
-            //         };
-            //     });
+            getPortOptions(portOptionsConst);
         }
     });
 
-    getClusters().then((resp) => {
-        if (resp.status === 200) {
-            const list = resp.result.map((i) => ({
-                value: i.id,
-                label: i.name,
-            }));
-            clustersList.value = list;
-        }
-    });
+    // getClusters().then((resp) => {
+    //     if (resp.status === 200) {
+    //         console.log(2222, resp.result);
+
+    //         const list = resp.result.map((i) => ({
+    //             value: i.id,
+    //             label: i.name,
+    //         }));
+    //         clustersListConst = list;
+    //         clustersListIndex.value[0] = list;
+    //     }
+    // });
 
     if (id !== ':id') {
         // formData.value = props.data.configuration;
@@ -1309,21 +1307,96 @@ const shareCluster = ref(true);
 const changeShareCluster = (value: boolean) => {
     shareCluster.value = value;
     activeKey.value = ['1'];
-    console.log(1112, shareCluster.value);
-
     dynamicValidateForm.cluster = [{ ...cloneDeep(FormStates2), id: '1' }];
 };
 
 const changeType = (value: string) => {
     dynamicValidateForm.cluster = [{ ...cloneDeep(FormStates2), id: '1' }];
+    if (value !== 'MQTT_CLIENT') {
+        const { configuration } = dynamicValidateForm.cluster[0];
+        if (value) configuration.host = '0.0.0.0';
+    }
+};
+
+const updateClustersListIndex = () => {
+    const filters = dynamicValidateForm.cluster?.map((item) => item.serverId);
+    const newConfigRef = Store.get('configRef')?.filter(
+        (item) => !filters.includes(item.clusterNodeId),
+    );
+    console.log(112,filters,newConfigRef);
+    
+    dynamicValidateForm.cluster.forEach((item, index) => {
+        if (!item.serverId) {
+            clustersListIndex.value[index] = newConfigRef?.map((i) => ({
+                value: i.clusterNodeId,
+                lable: i.clusterNodeId,
+            }));
+        }
+    });
+};
+
+const changeServerId = (value: string | undefined, index: number) => {
+    const { configuration } = dynamicValidateForm.cluster[index];
+    configuration.host = undefined;
+    configuration.port = undefined;
+    const checked = cloneDeep(portOptionsConst).find(
+        (i) => i.clusterNodeId === value,
+    );
+
+    hostOptionsIndex.value[index] = checked
+        ? [
+              {
+                  value: checked.host,
+                  lable: checked.host,
+              },
+          ]
+        : [];
+    updateClustersListIndex();
+};
+const changeHost = (
+    serverId: string | undefined,
+    value: string | undefined,
+    index: number,
+) => {
+    const { configuration } = dynamicValidateForm.cluster[index];
+    configuration.port = undefined;
+    const checked = cloneDeep(portOptionsConst).find(
+        (i) => i.clusterNodeId === serverId && i.host === value,
+    );
+    checked && getPortOptions([checked], index);
 };
 
 watch(
     () => formData.value.shareCluster,
-
     (value) => {
         const { configuration } = dynamicValidateForm.cluster[0];
         if (value) configuration.host = '0.0.0.0';
+    },
+    { deep: true, immediate: true },
+);
+// watch(
+//     () => dynamicValidateForm.cluster[0].configuration.host,
+//     () => {
+//         if (shareCluster.value) {
+//             getPortOptions(portOptionsConst);
+//         }
+//     },
+//     { deep: true, immediate: true },
+// );
+watch(
+    () => shareCluster.value,
+    (value) => {
+        formData.value.shareCluster = value;
+        if (!value) {
+            portOptionsIndex.value[0] = [];
+        }
+    },
+    { deep: true, immediate: true },
+);
+watch(
+    () => dynamicValidateForm.cluster.length,
+    () => {
+        updateClustersListIndex();
     },
     { deep: true, immediate: true },
 );
