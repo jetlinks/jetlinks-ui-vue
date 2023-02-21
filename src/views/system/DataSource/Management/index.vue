@@ -6,9 +6,11 @@
                 placeholder="请输入"
                 style="margin-bottom: 24px"
             />
+            <!-- 使用v-if用于解决异步加载数据后不展开的问题 -->
             <a-tree
+                v-if="leftData.treeData.length > 0"
                 showLine
-                autoExpandParent
+                defaultExpandAll
                 :tree-data="leftData.treeData"
                 v-model:selectedKeys="leftData.selectedKeys"
                 @select="leftData.onSelect"
@@ -16,11 +18,11 @@
                 <template #title="{ dataRef }">
                     <div
                         v-if="dataRef.root"
-                        style="
+                        :style="`
                             justify-content: space-between;
                             display: flex;
                             align-items: center;
-                        "
+                            `"
                     >
                         <span>
                             {{ dataRef.title }}
@@ -49,24 +51,34 @@
                 model="TABLE"
                 :dataSource="table.data"
             >
-                <template #previousName="slotProps">
+                <template #name="slotProps">
                     <a-input
-                        :disabled="slotProps.scale === 0"
-                        v-model:value="slotProps.previousName"
+                        :disabled="slotProps.scale !== undefined"
+                        v-model:value="slotProps.name"
                         placeholder="请输入名称"
+                        :maxlength="64"
                     />
                 </template>
                 <template #type="slotProps">
                     <a-input
                         v-model:value="slotProps.type"
                         placeholder="请输入类型"
+                        :maxlength="64"
                     />
                 </template>
                 <template #length="slotProps">
-                    <a-input-number v-model:value="slotProps.length" />
+                    <a-input-number
+                        v-model:value="slotProps.length"
+                        :min="0"
+                        :max="99999"
+                    />
                 </template>
                 <template #precision="slotProps">
-                    <a-input-number v-model:value="slotProps.precision" />
+                    <a-input-number
+                        v-model:value="slotProps.precision"
+                        :min="0"
+                        :max="99999"
+                    />
                 </template>
                 <template #notnull="slotProps">
                     <a-radio-group
@@ -98,9 +110,9 @@
                     </PermissionButton>
                 </template>
             </JTable>
-            <a-botton class="add-row" @click="table.addRow"
-                ><AIcon type="PlusOutlined" /> 新增行</a-botton
-            >
+            <a-botton class="add-row" @click="table.addRow">
+                <AIcon type="PlusOutlined" /> 新增行
+            </a-botton>
         </div>
     </a-card>
     <div class="dialogs">
@@ -155,7 +167,7 @@ import {
 } from '@/api/system/dataSource';
 import { FormInstance, message } from 'ant-design-vue';
 import { DataNode } from 'ant-design-vue/lib/tree';
-import { dictItemType, sourceItemType } from '../typing';
+import type { dbColumnType, dictItemType, sourceItemType } from '../typing';
 
 const id = useRoute().query.id as string;
 
@@ -235,8 +247,8 @@ const table = reactive({
     columns: [
         {
             title: '列名',
-            dataIndex: 'previousName',
-            key: 'previousName',
+            dataIndex: 'name',
+            key: 'name',
             scopedSlots: true,
         },
         {
@@ -276,7 +288,7 @@ const table = reactive({
             scopedSlots: true,
         },
     ],
-    data: [] as any,
+    data: [] as dbColumnType[],
 
     getTabelData: (key: string) => {
         rdbTables_api(id, key).then((resp: any) => {
@@ -284,11 +296,15 @@ const table = reactive({
         });
     },
     addRow: () => {
-        table.data.push({
+        const initData: dbColumnType = {
             precision: 0,
             length: 0,
             notnull: false,
-        });
+            type: '',
+            comment: '',
+            name: '',
+        };
+        table.data.push(initData);
     },
     clickSave: () => {
         const params = {
@@ -302,23 +318,24 @@ const table = reactive({
     clickDel: (row: any) => {},
 });
 
-const addFormRef = ref<FormInstance >();
+const addFormRef = ref<FormInstance>();
 const dialog = reactive({
     visible: false,
     form: {
         name: '',
     },
     handleOk: () => {
-        addFormRef.value && addFormRef.value.validate().then(()=>{
-            const name = dialog.form.name
-            leftData.sourceTree.unshift({
-                id:name,
-                name
-            })
-            leftData.oldKey = name;
-            leftData.selectedKeys = [name]
-            table.data = []
-        })
+        addFormRef.value &&
+            addFormRef.value.validate().then(() => {
+                const name = dialog.form.name;
+                leftData.sourceTree.unshift({
+                    id: name,
+                    name,
+                });
+                leftData.oldKey = name;
+                leftData.selectedKeys = [name];
+                table.data = [];
+            });
     },
 });
 

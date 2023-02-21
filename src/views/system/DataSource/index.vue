@@ -136,7 +136,7 @@ import {
 } from '@/api/system/dataSource';
 import { message } from 'ant-design-vue';
 
-const permission = 'system/Relationship';
+const permission = 'system/DataSource';
 
 const router = useRouter();
 
