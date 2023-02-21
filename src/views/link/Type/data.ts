@@ -10,7 +10,7 @@ export const Configuration = {
     username: '',
     password: '',
     topicPrefix: '',
-    maxMessageSize: '',
+    maxMessageSize: 8192,
     certId: undefined,
     privateKeyAlias: '',
     clientId: '',
@@ -76,7 +76,6 @@ export const VisibleData = {
     length: ['LENGTH_FIELD'],
     offset: ['LENGTH_FIELD'],
     little: ['LENGTH_FIELD'],
-    secureSpan12: ['MQTT_CLIENT', 'MQTT_SERVER'],
 };
 
 export const ParserTypeOptions = [
@@ -226,8 +225,8 @@ export const Rules = {
     ],
     maxMessageSize: [
         {
-            max: 64,
-            message: '最大可输入64个字符',
+            required: true,
+            message: '请输入最大消息长度',
         },
     ],
     secure: [

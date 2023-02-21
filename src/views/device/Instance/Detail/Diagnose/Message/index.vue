@@ -24,7 +24,7 @@
         <a-col :span="8">
             <div class="right-log">
                 <TitleComponent data="日志" />
-                <div :style="{ marginTop: 10 }">
+                <div :style="{ marginTop: '10px' }">
                     <template v-if="logList.length">
                         <Log v-for="item in logList" :data="item" :key="item.key" />
                     </template>
@@ -60,6 +60,10 @@ const messageArr = computed(() => {
     const arr = Object.keys(message) || []
     return arr.map(i => { return {...message[i], key: i}})
 })
+
+const subscribeLog = () => {
+
+}
 
 
 </script>

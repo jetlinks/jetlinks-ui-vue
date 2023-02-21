@@ -28,3 +28,10 @@ export const deleteSearchHistory = (target:string, id:string) => server.remove<S
  * 获取当前系统版本
  */
 export const systemVersion = () => server.get<{edition?: string}>('/system/version')
+
+/**
+ * 聚合查询
+ * @param data 
+ * @returns 
+ */
+export const queryDashboard = (data: Record<string, any>) => server.post(`/dashboard/_multi`, data)

@@ -30,3 +30,9 @@ export const allResources = () => server.get(`/network/resources/alive/_all`);
 
 export const certificates = () =>
     server.get(`/network/certificate/_query/no-paging?paging=false`);
+
+export const save = (data: Object) => server.post(`/network/config`, data);
+
+export const update = (data: Object) => server.patch(`/network/config`, data);
+
+export const detail = (id: string) => server.get(`/network/config/${id}`);

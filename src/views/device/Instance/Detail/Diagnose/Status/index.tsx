@@ -10,6 +10,7 @@ import { _deploy as _deployProduct } from "@/api/device/product"
 import _ from "lodash"
 import DiagnosticAdvice from './DiagnosticAdvice'
 import ManualInspection from './ManualInspection'
+import { deployDevice } from "@/api/initHome"
 
 type TypeProps = 'network' | 'child-device' | 'media' | 'cloud' | 'channel'
 
@@ -29,9 +30,9 @@ const Status = defineComponent({
         const status = ref<'loading' | 'finish'>('loading')
 
         const device = ref(instanceStore.current)
-        const gateway = ref<Partial<Record<string, any>>>() // 网关信息
-        const parent = ref<Partial<Record<string, any>>>() // 父设备
-        const product = ref<Partial<Record<string, any>>>() // 产品
+        const gateway = ref<Partial<Record<string, any>>>({}) // 网关信息
+        const parent = ref<Partial<Record<string, any>>>({}) // 父设备
+        const product = ref<Partial<Record<string, any>>>({}) // 产品
 
         const artificialVisible = ref<boolean>(false)
         const artificialData = ref<Partial<Record<string, any>>>()
@@ -1332,7 +1333,7 @@ const Status = defineComponent({
                         unref(device)?.accessProvider &&
                         gatewayList.includes(unref(device).accessProvider as string)
                     ) {
-                        const response = await queryProtocolDetail(unref(device).protocol, 'MQTT');
+                        const response: any = await queryProtocolDetail(unref(device).protocol, 'MQTT');
                         if (response.status === 200) {
                             if ((response.result?.routes || []).length > 0) {
                                 item.push(
@@ -1521,9 +1522,103 @@ const Status = defineComponent({
                 <TitleComponent data="连接详情" />
                 <Space>
                     {
-                        status.value === 'finish' && unref(device).state?.value !== 'online' && <Button type="primary">一键修复</Button>
+                        status.value === 'finish' && unref(device).state?.value !== 'online' && <Button type="primary" onClick={async () => {
+                            let flag: boolean = true;
+                            if (
+                                Object.keys(unref(gateway)).length > 0 &&
+                                unref(gateway)?.state?.value !== 'enabled'
+                            ) {
+                                const resp = await startGateway(unref(device).accessId || '');
+                                if (resp.status === 200) {
+                                    list.value = modifyArrayList(list.value, {
+                                        key: 'gateway',
+                                        name: '设备接入网关',
+                                        desc: '诊断设备接入网关状态是否正常，禁用状态将导致连接失败',
+                                        status: 'success',
+                                        text: '正常',
+                                        info: null,
+                                    });
+                                } else {
+                                    flag = false;
+                                }
+                            }
+                            if (unref(product)?.state !== 1) {
+                                const resp = await _deployProduct(unref(device).productId || '');
+                                if (resp.status === 200) {
+                                    list.value = modifyArrayList(list.value, {
+                                        key: 'product',
+                                        name: '产品状态',
+                                        desc: '诊断产品状态是否正常，禁用状态将导致设备连接失败',
+                                        status: 'success',
+                                        text: '正常',
+                                        info: null,
+                                    });
+                                } else {
+                                    flag = false;
+                                }
+                            }
+                            if (unref(device)?.state?.value === 'notActive') {
+                                const resp = await deployDevice(unref(device)?.id || '');
+                                if (resp.status === 200) {
+                                    unref(device).state = { value: 'offline', text: '离线' };
+                                    list.value = modifyArrayList(list.value, {
+                                        key: 'device',
+                                        name: '设备状态',
+                                        desc: '诊断设备状态是否正常，禁用状态将导致设备连接失败',
+                                        status: 'success',
+                                        text: '正常',
+                                        info: null,
+                                    });
+                                } else {
+                                    flag = false;
+                                }
+                            }
+                            if (props.providerType === 'network' || props.providerType === 'child-device') {
+                                const address = unref(gateway)?.channelInfo?.addresses || [];
+                                const _label = address.some((i: any) => i.health === -1);
+                                const __label = address.every((i: any) => i.health === 1);
+                                const health = _label ? -1 : __label ? 1 : 0;
+                                if (health === -1 && unref(gateway)?.channelId) {
+                                    const res = await startNetwork(unref(gateway)?.channelId);
+                                    if (res.status === 200) {
+                                        list.value = modifyArrayList(list.value, {
+                                            key: 'network',
+                                            name: '网络组件',
+                                            desc: '诊断网络组件配置是否正确，配置错误将导致设备连接失败',
+                                            status: 'success',
+                                            text: '正常',
+                                            info: null,
+                                        });
+                                    } else {
+                                        flag = false;
+                                    }
+                                }
+                            }
+                            if (props.providerType === 'child-device' && unref(device)?.parentId) {
+                                if (unref(parent)?.state?.value === 'notActive') {
+                                    const resp = await deployDevice(unref(device)?.parentId || '');
+                                    if (resp.status === 200) {
+                                        list.value = modifyArrayList(list.value, {
+                                            key: 'parent-device',
+                                            name: '网关父设备',
+                                            desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
+                                            status: 'success',
+                                            text: '正常',
+                                            info: null,
+                                        });
+                                    } else {
+                                        flag = false;
+                                    }
+                                }
+                            }
+                            if (flag) {
+                                message.success('操作成功！');
+                            }
+                        }}>一键修复</Button>
                     }
-                    <Button>重新诊断</Button>
+                    <Button onClick={() => {
+                        handleSearch()
+                    }}>重新诊断</Button>
                 </Space>
             </div>
             <div class={styles["statusContent"]}>
