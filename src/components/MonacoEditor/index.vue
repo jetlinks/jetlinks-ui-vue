@@ -59,6 +59,20 @@ onMounted(() => {
         emit('update:modelValue', value);
     });
 });
+
+/**
+ * 代码格式化
+ */
+const editorFormat = () => {
+    if (!instance) return;
+    instance.getAction('editor.action.formatDocument')?.run();
+};
+
+watchEffect(() => {
+    setTimeout(() => {
+        editorFormat();
+    }, 300);
+});
 </script>
 
 <style lang="less" scoped>

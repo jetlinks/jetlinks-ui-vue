@@ -20,7 +20,7 @@ const ManualInspection = defineComponent({
                     <>
                         <div style={{ flex: 1 }}>
                             <div class={styles.alert}>
-                                <span style={{ marginRight: 10 }}><AIcon type="InfoCircleOutlined" /></span>
+                                <span style={{ marginRight: '10px' }}><AIcon type="InfoCircleOutlined" /></span>
                                 请检查配置项是否填写正确，若您确定该项无需诊断可
                                 <Button type="link" style="padding: 0"
                                     onClick={() => {
@@ -30,7 +30,7 @@ const ManualInspection = defineComponent({
                                     忽略
                                 </Button>
                             </div>
-                            <div style={{ marginTop: 10 }}>
+                            <div style={{ marginTop: '10px' }}>
                                 <Descriptions title={data?.data?.name} layout="vertical" bordered>
                                     {(data?.data?.properties || []).map((item: any) => (
                                         <Descriptions.Item
@@ -45,7 +45,7 @@ const ManualInspection = defineComponent({
                         </div>
                         {data?.data?.description ? (
                             <div
-                                style={{ width: '50%', border: '1px solid #f0f0f0', padding: 10, borderLeft: 'none' }}
+                                style={{ width: '50%', border: '1px solid #f0f0f0', padding: '10px', borderLeft: 'none' }}
                             >
                                 <h4>诊断项说明</h4>
                                 <p>{data?.data?.description}</p>
@@ -60,7 +60,7 @@ const ManualInspection = defineComponent({
                     <>
                         <div style={{ flex: 1 }}>
                             <div class={styles.alert}>
-                                <span style={{ marginRight: 10 }}><AIcon type="InfoCircleOutlined" /></span>
+                                <span style={{ marginRight: '10px' }}><AIcon type="InfoCircleOutlined" /></span>
                                 请检查配置项是否填写正确，若您确定该项无需诊断可
                                 <Button type="link" style="padding: 0"
                                     onClick={() => {
@@ -70,7 +70,7 @@ const ManualInspection = defineComponent({
                                     忽略
                                 </Button>
                             </div>
-                            <div style={{ marginTop: 10 }}>
+                            <div style={{ marginTop: '10px' }}>
                                 <Descriptions title={data?.data?.name} layout="vertical" bordered>
                                     {data.configuration?.provider === 'OneNet' ? (
                                         <>
@@ -105,7 +105,7 @@ const ManualInspection = defineComponent({
                         </div>
                         {data?.configuration?.configuration?.description ? (
                             <div
-                                style={{ width: '50%', border: '1px solid #f0f0f0', padding: 10, borderLeft: 'none' }}
+                                style={{ width: '50%', border: '1px solid #f0f0f0', padding: '10px', borderLeft: 'none' }}
                             >
                                 <h4>诊断项说明</h4>
                                 <p>{data?.configuration?.configuration?.description}</p>
@@ -120,7 +120,7 @@ const ManualInspection = defineComponent({
                     <>
                         <div style={{ flex: 1 }}>
                             <div class={styles.alert}>
-                                <span style={{ marginRight: 10 }}><AIcon type="InfoCircleOutlined" /></span>
+                                <span style={{ marginRight: '10px' }}><AIcon type="InfoCircleOutlined" /></span>
                                 请检查配置项是否填写正确，若您确定该项无需诊断可
                                 <Button type="link" style="padding: 0"
                                     onClick={() => {
@@ -130,7 +130,7 @@ const ManualInspection = defineComponent({
                                     忽略
                                 </Button>
                             </div>
-                            <div style={{ marginTop: 10 }}>
+                            <div style={{ marginTop: '10px' }}>
                                 <Descriptions title={data?.data?.name} layout="vertical" bordered>
                                     {data?.configuration?.configuration?.shareCluster ? (
                                         <>
@@ -180,9 +180,9 @@ const ManualInspection = defineComponent({
                                 </Descriptions>
                             </div>
                         </div>
-                        {data?.configuration?.configuration.description ? (
+                        {data?.configuration?.description ? (
                             <div
-                                style={{ width: '50%', border: '1px solid #f0f0f0', padding: 10, borderLeft: 'none' }}
+                                style={{ width: '50%', border: '1px solid #f0f0f0', padding: '10px', borderLeft: 'none' }}
                             >
                                 <h4>诊断项说明</h4>
                                 <p>{data?.configuration?.description}</p>

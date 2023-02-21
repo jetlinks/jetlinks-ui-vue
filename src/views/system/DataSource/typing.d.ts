@@ -1,6 +1,7 @@
 export type dictItemType = {
     id: string,
-    name: string
+    name: string,
+    children?: dictItemType
 }
 export type optionItemType = {
     label: string,
@@ -11,14 +12,26 @@ export type sourceItemType = {
     name: string,
     state: { text: string, value: "enabled" | 'disabled' },
     typeId: string,
-    shareConfig:{
-        url:string,
-        adminUrl:string,
-        addresses:string,
-        username:string,
-        password:string,
-        virtualHost:string,
-        schema:string
+    shareConfig: {
+        url: string,
+        adminUrl: string,
+        addresses: string,
+        username: string,
+        password: string,
+        virtualHost: string,
+        schema: string
     }
     description: string
+}
+
+// 数据库字段
+export type dbColumnType = {
+    previousName?: string,
+    type: String,
+    length: number,
+    precision: number,
+    notnull: boolean,
+    comment: string,
+    name: string,
+    scale?:number
 }
