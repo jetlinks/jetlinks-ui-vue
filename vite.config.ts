@@ -10,6 +10,7 @@ import {VueAmapResolver} from '@vuemap/unplugin-resolver'
 import VueSetupExtend from 'vite-plugin-vue-setup-extend'
 import { createStyleImportPlugin, AndDesignVueResolve } from 'vite-plugin-style-import'
 import * as path from 'path'
+import monacoEditorPlugin from 'vite-plugin-monaco-editor';
 
 
 // https://vitejs.dev/config/
@@ -47,7 +48,9 @@ export default defineConfig(({ mode}) => {
           },
       },
       plugins: [
+
           vue(),
+          monacoEditorPlugin({}),
           vueJsx(),
           Components({
               resolvers: [AntDesignVueResolver({ importStyle: 'less' }), VueAmapResolver()],

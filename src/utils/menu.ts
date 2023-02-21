@@ -1,7 +1,6 @@
 import { cloneDeep } from 'lodash-es'
-import NotFindPage from '@/views/404.vue'
 import { BlankLayoutPage, BasicLayoutPage } from 'components/Layout'
-const pagesComponent = import.meta.glob('../views/**/*.vue', { eager: true });
+const pagesComponent = import.meta.glob('../views/**/index.vue', { eager: true });
 
 /**
  * 权限信息
@@ -205,11 +204,12 @@ export function filterAsnycRouter(asyncRouterMap: any, parentCode = '', level = 
   _asyncRouterMap.forEach((route: any) => {
     const _route: any = {
       path: `${route.url}`,
+      name: route.code,
       meta: {
         icon: route.icon,
         title: route.name,
         hideInMenu: route.isShow === false,
-        buttons: route.buttons || []
+        buttons: route.buttons?.map((b: any) => b.id) || []
       }
     }
 
