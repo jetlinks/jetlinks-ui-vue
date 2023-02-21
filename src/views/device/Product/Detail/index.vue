@@ -2,7 +2,7 @@
     <page-container
         :tabList="list"
         @back="onBack"
-        :tabActiveKey="productStore.active"
+        :tabActiveKey="productStore.tabActiveKey"
         @tabChange="onTabChange"
     >
         <template #title>
@@ -129,6 +129,7 @@ watch(
     () => route.params.id,
     (newId) => {
         if (newId) {
+            console.log(newId);
             productStore.tabActiveKey = 'Info';
             productStore.refresh(newId as string);
         }

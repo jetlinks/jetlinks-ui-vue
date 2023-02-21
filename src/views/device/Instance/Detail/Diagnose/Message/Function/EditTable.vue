@@ -72,18 +72,9 @@ const columns = [
     },
 ];
 
-// const dataSource = ref<Record<any, any>[]>(_props.modelValue || []);
-
 const dataSource = computed({
     get: () => {
-        return _props.modelValue || {
-            messageType: undefined,
-            message: {
-                properties: undefined,
-                functionId: undefined,
-                inputs: []
-            }
-        }
+        return _props.modelValue || []
     },
     set: (val: any) => {
         _emit('update:modelValue', val);
