@@ -12,6 +12,7 @@
                             <a-select
                                 v-model:value="formData.type"
                                 placeholder="请选择通知方式"
+                                :disabled="!!formData.id"
                             >
                                 <a-select-option
                                     v-for="(item, index) in NOTICE_METHOD"
@@ -700,7 +701,8 @@ const handleSubmit = () => {
     if (formData.value.template.messageType === 'markdown') delete formData.value.template.link
     if (formData.value.template.messageType === 'link') delete formData.value.template.markdown
     // console.log('formData.value: ', formData.value);
-    validate()
+    const form = useForm(formData.value, formRules.value);
+    form.validate()
         .then(async () => {
             formData.value.template.ttsCode =
                 formData.value.template.templateCode;

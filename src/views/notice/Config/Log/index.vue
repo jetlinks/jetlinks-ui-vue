@@ -94,7 +94,7 @@ const columns = [
         search: {
             type: 'date',
             handleValue: (v: any) => {
-                return '123';
+                return v;
             },
         },
     },
@@ -110,7 +110,7 @@ const columns = [
                 { label: '失败', value: 'error' },
             ],
             handleValue: (v: any) => {
-                return '123';
+                return v;
             },
         },
     },
@@ -139,7 +139,16 @@ const handleSearch = (e: any) => {
 const handleError = (e: any) => {
     Modal.info({
         title: '错误信息',
-        content: JSON.stringify(e),
+        content: h(
+            'p',
+            {
+                style: {
+                    maxHeight: '300px',
+                    overflowY: 'auto',
+                },
+            },
+            JSON.stringify(e),
+        ),
     });
 };
 /**
@@ -148,7 +157,16 @@ const handleError = (e: any) => {
 const handleDetail = (e: any) => {
     Modal.info({
         title: '详情信息',
-        content: JSON.stringify(e),
+        content: h(
+            'p',
+            {
+                style: {
+                    maxHeight: '300px',
+                    overflowY: 'auto',
+                },
+            },
+            JSON.stringify(e),
+        ),
     });
 };
 </script>

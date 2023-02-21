@@ -209,7 +209,7 @@ const columns = [
             type: 'select',
             options: NOTICE_METHOD,
             handleValue: (v: any) => {
-                return '123';
+                return v;
             },
         },
     },
@@ -222,7 +222,7 @@ const columns = [
             type: 'select',
             options: providerList,
             handleValue: (v: any) => {
-                return '123';
+                return v;
             },
         },
     },

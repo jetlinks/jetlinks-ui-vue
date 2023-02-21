@@ -12,6 +12,7 @@
                             <a-select
                                 v-model:value="formData.type"
                                 placeholder="请选择通知方式"
+                                :disabled="!!formData.id"
                             >
                                 <a-select-option
                                     v-for="(item, index) in NOTICE_METHOD"
@@ -437,7 +438,8 @@ getDetail();
  */
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
-    validate()
+    const form = useForm(formData.value, formRules.value);
+    form.validate()
         .then(async () => {
             // console.log('formData.value: ', formData.value);
             btnLoading.value = true;
