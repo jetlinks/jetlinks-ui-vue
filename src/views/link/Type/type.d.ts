@@ -10,7 +10,7 @@ export interface ConfigurationType {
     username: string;
     password: string;
     topicPrefix: string;
-    maxMessageSize: string;
+    maxMessageSize: string | number;
     certId: string | undefined;
     privateKeyAlias: string;
     clientId: string;
@@ -21,7 +21,7 @@ export interface ConfigurationType {
         size: string;
         length: string;
         offset: string;
-        little: string | boolean;
+        little: string | boolean | undefined;
     };
 }
 

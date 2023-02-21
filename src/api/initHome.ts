@@ -31,7 +31,7 @@ export const getSystemPermission = () =>server.get(`/system/resources/permission
 export const saveNetwork = (data: any) => server.post(`/network/config`, data)
 
 // 保存协议
-export const saveProtocol = () => server.post(`/protocol/default-protocol/_save`,)
+export const saveProtocol = () => server.post(`/protocol/default-protocol/_save`)
 
 // 新增设备接入网关
 export const saveAccessConfig = (data: any) => server.post(`/gateway/device`, data)
