@@ -227,12 +227,13 @@ export function filterAsnycRouter(asyncRouterMap: any, parentCode = '', level = 
       _route.children = _menusData
       silder.children = _silderMenus
       const showChildren = _route.children.some((r: any) => !r.meta.hideInMenu)
-      if (showChildren) {
+
+      if (showChildren && _route.children.length) {
         _route.component = level === 1 ? BasicLayoutPage : BlankLayoutPage
         _route.redirect = route.children[0].url
       } else {
         const myComponent = resolveComponent(route.code)
-        _route.component = myComponent ? myComponent : BlankLayoutPage;
+        // _route.component = myComponent ? myComponent : BlankLayoutPage;
         if (!!myComponent) {
           _route.component = myComponent;
           _route.children.map((r: any) => menusData.push(r))
