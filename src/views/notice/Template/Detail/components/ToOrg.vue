@@ -5,6 +5,7 @@
         placeholder="请选择收信部门"
         style="width: 100%"
         :allowClear="true"
+        v-model:value="_value"
     />
 </template>
 
@@ -17,12 +18,19 @@ type Emits = {
 const emit = defineEmits<Emits>();
 
 const props = defineProps({
+    toParty: { type: String, default: '' },
     type: { type: String, default: '' },
     configId: { type: String, default: '' },
 });
 
+const _value = computed({
+    get: () => props.toParty,
+    set: (val: string) => emit('update:toParty', val),
+});
+
 const options = ref([]);
 const queryData = async () => {
+    if (!props.configId) return;
     const { result } = await templateApi.getDept(props.type, props.configId);
     options.value = result.map((item: any) => ({
         label: item.name,

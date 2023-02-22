@@ -34,8 +34,8 @@
                 </div>
             </div>
             <div>
-                <Message v-if="activeKey === 'message'" />
-                <Status v-else :providerType="providerType" @countChange="countChange" @percentChange="percentChange" @stateChange="stateChange" />
+                <Message v-show="activeKey === 'message'" />
+                <Status v-show="activeKey !== 'message'" :providerType="providerType" @countChange="countChange" @percentChange="percentChange" @stateChange="stateChange" />
             </div>
         </div>
     </a-card>
@@ -70,6 +70,7 @@ const percent = ref<number>(0)
 const activeKey = ref<'status' | 'message'>('status')
 const providerType = ref()
 
+provide('topState', topState) 
 
 const onTabChange = (key: 'status' | 'message') => {
     if(topState.value === 'success'){

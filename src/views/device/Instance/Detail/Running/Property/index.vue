@@ -22,6 +22,7 @@
             </template>
             <template #value="slotProps">
                 <ValueRender
+                    type="table"
                     :data="slotProps"
                     :value="propertyValue[slotProps?.id]"
                 />
@@ -332,6 +333,10 @@ watch(
 const onSearch = () => {
     query(0, 8, value.value);
 };
+
+onUnmounted(() => {
+    subRef.value && subRef.value?.unsubscribe()
+})
 </script>
 
 <style scoped lang="less">

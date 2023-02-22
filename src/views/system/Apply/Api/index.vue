@@ -1,6 +1,5 @@
 <template>
     <a-card class="api-page-container">
-        apply/api
         <a-row :gutter="24">
             <a-col :span="5">
                 <LeftTree @select="treeSelect" />
@@ -14,17 +13,23 @@
 
                 <div
                     class="api-details"
-                    v-show="selectedApi.url && tableData.length > 0"
+                    v-if="selectedApi.url && tableData.length > 0"
                 >
-                    <a-button @click="selectedApi = initSelectedApi" style="margin-bottom: 24px;"
+                    <a-button
+                        @click="selectedApi = initSelectedApi"
+                        style="margin-bottom: 24px"
                         >返回</a-button
                     >
                     <a-tabs v-model:activeKey="activeKey" type="card">
                         <a-tab-pane key="does" tab="文档">
-                            <ApiDoes :select-api="selectedApi" :schemas="schemas" />
+                            <ApiDoes
+                                :select-api="selectedApi"
+                                :schemas="schemas"
+                                v-model:params-table="paramsTable"
+                            />
                         </a-tab-pane>
                         <a-tab-pane key="test" tab="调试">
-                            <ApiTest :select-api="selectedApi" />
+                            <ApiTest :select-api="selectedApi" :params-table="paramsTable" />
                         </a-tab-pane>
                     </a-tabs>
                 </div>
@@ -41,8 +46,8 @@ import ApiDoes from './components/ApiDoes.vue';
 import ApiTest from './components/ApiTest.vue';
 
 const tableData = ref([]);
-const treeSelect = (node: treeNodeTpye, nodeSchemas:object = {}) => {
-    schemas.value = nodeSchemas
+const treeSelect = (node: treeNodeTpye, nodeSchemas: object = {}) => {
+    schemas.value = nodeSchemas;
     if (!node.apiList) return;
     const apiList: apiObjType[] = node.apiList as apiObjType[];
     const table: any = [];
@@ -62,23 +67,29 @@ const treeSelect = (node: treeNodeTpye, nodeSchemas:object = {}) => {
     tableData.value = table;
 };
 
-const activeKey = ref('does');
+const activeKey = ref<'does' | 'test'>('does');
 const schemas = ref({});
-const initSelectedApi:apiDetailsType = {
+const paramsTable = ref([])
+const initSelectedApi: apiDetailsType = {
     url: '',
     method: '',
     summary: '',
     parameters: [],
     responses: {},
-    requestBody: {}
+    requestBody: {},
 };
 const selectedApi = ref<apiDetailsType>(initSelectedApi);
 
-watch(tableData, () => (selectedApi.value = initSelectedApi));
+watch(tableData, () => {
+    activeKey.value = 'does';
+    selectedApi.value = initSelectedApi;
+});
 </script>
 
 <style scoped>
 .api-page-container {
+    padding: 24px;
     height: 100%;
+    background-color: transparent;
 }
 </style>

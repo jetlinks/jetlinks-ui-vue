@@ -1,5 +1,5 @@
 <template>
-    <div class="page-container">
+    <page-container>
         <a-row :gutter="24">
             <a-col :span="14">
                 <BootCard
@@ -21,7 +21,7 @@
                 />
             </a-col>
         </a-row>
-    </div>
+    </page-container>
 </template>
 
 <script setup lang="ts">
@@ -96,9 +96,3 @@ const deviceStepDetails: recommendList[] = [
     },
 ];
 </script>
-
-<style lang="less" scoped>
-.page-container {
-    padding: 24px;
-}
-</style>

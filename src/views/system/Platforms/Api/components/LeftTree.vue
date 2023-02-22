@@ -1,0 +1,100 @@
+<template>
+    <a-tree
+        :tree-data="treeData"
+        @select="clickSelectItem"
+        showLine
+        class="left-tree-container"
+    >
+        <template #title="{ name }">
+            {{ name }}
+        </template>
+    </a-tree>
+</template>
+
+<script setup lang="ts">
+import { TreeProps } from 'ant-design-vue';
+
+import { getTreeOne_api, getTreeTwo_api } from '@/api/system/apiPage';
+import type { modeType, treeNodeTpye } from '../typing';
+
+const emits = defineEmits(['select']);
+const props = defineProps<{
+    mode:modeType
+}>()
+
+const treeData = ref<TreeProps['treeData']>([]);
+
+const getTreeData = () => {
+    let tree: treeNodeTpye[] = [];
+    getTreeOne_api().then((resp: any) => {
+        tree = resp.urls.map((item: any) => ({
+            ...item,
+            key: item.url,
+        }));
+        const allPromise = tree.map((item) => getTreeTwo_api(item.name));
+        Promise.all(allPromise).then((values) => {
+            values.forEach((item: any, i) => {
+                tree[i].children = combData(item?.paths);
+                tree[i].schemas = item.components.schemas
+            });
+            treeData.value = tree;
+        });
+    });
+};
+const clickSelectItem: TreeProps['onSelect'] = (key, node: any) => {
+    if(!node.node.parent) return
+    emits('select', node.node.dataRef, node.node?.parent.node.schemas);
+};
+
+onMounted(() => {
+    getTreeData();
+});
+
+const combData = (dataSource: object) => {
+    const apiList: treeNodeTpye[] = [];
+    const keys = Object.keys(dataSource);
+
+    keys.forEach((key) => {
+        const method = Object.keys(dataSource[key] || {})[0];
+        const name = dataSource[key][method].tags[0];
+        let apiObj: treeNodeTpye | undefined = apiList.find(
+            (item) => item.name === name,
+        );
+        if (apiObj) {
+            apiObj.apiList?.push({
+                url: key,
+                method: dataSource[key],
+            });
+        } else {
+            apiObj = {
+                name,
+                key: name,
+                apiList: [
+                    {
+                        url: key,
+                        method: dataSource[key],
+                    },
+                ],
+            };
+            apiList.push(apiObj);
+        }
+    });
+
+    return apiList;
+};
+</script>
+
+<style lang="less">
+.left-tree-container {
+    border-right: 1px solid #e9e9e9;
+    height: calc(100vh - 150px);
+    overflow-y: auto;
+    .ant-tree-list {
+        .ant-tree-list-holder-inner {
+            .ant-tree-switcher-noop {
+                display: none !important;
+            }
+        }
+    }
+}
+</style>

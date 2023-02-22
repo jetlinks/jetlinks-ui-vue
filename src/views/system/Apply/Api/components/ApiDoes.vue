@@ -28,10 +28,10 @@
                     model="TABLE"
                 >
                     <template #required="slotProps">
-                        <span>{{ Boolean(slotProps.row.required) + '' }}</span>
+                        <span>{{ Boolean(slotProps.required) + '' }}</span>
                     </template>
                     <template #type="slotProps">
-                        <span>{{ slotProps.row.schema.type }}</span>
+                        <span>{{ slotProps.schema.type }}</span>
                     </template>
                 </JTable>
             </div>
@@ -68,15 +68,23 @@
                 >
                 </JTable>
             </div>
+
+            <MonacoEditor
+                v-model:modelValue="codeText"
+                style="height: 300px; width: 100%"
+                theme="vs"
+            />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import MonacoEditor from '@/components/MonacoEditor/index.vue';
 import type { apiDetailsType } from '../typing';
 import InputCard from './InputCard.vue';
 import { PropType } from 'vue';
 
+const emit = defineEmits(['update:paramsTable'])
 const props = defineProps({
     selectApi: {
         type: Object as PropType<apiDetailsType>,
@@ -92,6 +100,7 @@ const { selectApi } = toRefs(props);
 type tableCardType = {
     columns: object[];
     tableData: object[];
+    codeText?: any;
     activeKey?: any;
     getData?: any;
 };
@@ -190,11 +199,12 @@ const respParamsCard = reactive<tableCardType>({
         },
     ],
     tableData: [],
+    codeText: '',
     getData: (code: string) => {
         type schemaObjType = {
             paramsName: string;
             paramsType: string;
-            desc: string;
+            desc?: string;
             children?: schemaObjType[];
         };
 
@@ -202,13 +212,21 @@ const respParamsCard = reactive<tableCardType>({
             (item: any) => item.code === code,
         )?.schema;
         const schemas = toRaw(props.schemas);
+        const basicType = ['string', 'integer', 'boolean'];
+
+        const tableData = findData(schemaName);
+        const codeText = getCodeText(tableData, 3);
+
+        emit('update:paramsTable', tableData)
+        respParamsCard.tableData = tableData;
+        respParamsCard.codeText = JSON.stringify(codeText);
+
         function findData(schemaName: string) {
             if (!schemaName || !schemas[schemaName]) {
                 return [];
             }
             const result: schemaObjType[] = [];
             const schema = schemas[schemaName];
-            const basicType = ['string', 'integer', 'boolean'];
             Object.entries(schema.properties).forEach((item: [string, any]) => {
                 const paramsType =
                     item[1].type ||
@@ -224,15 +242,61 @@ const respParamsCard = reactive<tableCardType>({
                     schemaObj.children = findData(paramsType);
                 result.push(schemaObj);
             });
-            console.log(result);
 
             return result;
         }
+        function getCodeText(arr: schemaObjType[], level: number): object {
+            const result = {};
 
-        respParamsCard.tableData = findData(schemaName);
-        // console.log(respParamsCard.tableData);
+            arr.forEach((item) => {
+                switch (item.paramsType) {
+                    case 'string':
+                        result[item.paramsName] = '';
+                        break;
+                    case 'integer':
+                        result[item.paramsName] = 0;
+                        break;
+                    case 'boolean':
+                        result[item.paramsName] = true;
+                        break;
+                    case 'array':
+                        result[item.paramsName] = [];
+                        break;
+                    case 'object':
+                        result[item.paramsName] = {};
+                        break;
+                    default: {
+                        const properties = schemas[item.paramsType]
+                            .properties as object;
+                        const newArr = Object.entries(properties).map(
+                            (item: [string, any]) => ({
+                                paramsName: item[0],
+                                paramsType: level
+                                    ? (item[1].$ref &&
+                                          item[1].$ref.split('/').pop()) ||
+                                      (item[1].items &&
+                                          item[1].items.$ref
+                                              .split('/')
+                                              .pop()) ||
+                                      item[1].type ||
+                                      ''
+                                    : item[1].type,
+                            }),
+                        );
+                        result[item.paramsName] = getCodeText(
+                            newArr,
+                            level - 1,
+                        );
+                    }
+                }
+            });
+
+            return result;
+        }
     },
 });
+
+const { codeText } = toRefs(requestCard);
 
 const getContent = (data: any) => {
     if (data && data.content) {
