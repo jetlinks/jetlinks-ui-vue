@@ -13,7 +13,7 @@
                                 v-model:value="formData.type"
                                 placeholder="请选择通知方式"
                                 :disabled="!!formData.id"
-                                @change="resetPublicFiles"
+                                @change="handleTypeChange"
                             >
                                 <a-select-option
                                     v-for="(item, index) in NOTICE_METHOD"
@@ -818,17 +818,19 @@ const resetPublicFiles = () => {
 watch(
     () => formData.value.type,
     (val) => {
-        // formData.value.template = TEMPLATE_FIELD_MAP[val];
         msgType.value = MSG_TYPE[val];
-
-        formData.value.provider = msgType.value[0].value;
+        formData.value.provider =
+            route.params.id !== ':id'
+                ? formData.value.provider
+                : msgType.value[0].value;
+        // formData.value.provider = formData.value.provider || msgType.value[0].value;
         // console.log('formData.value.template: ', formData.value.template);
 
-        formData.value.template =
-            TEMPLATE_FIELD_MAP[val][formData.value.provider];
+        // formData.value.template =
+        //     TEMPLATE_FIELD_MAP[val][formData.value.provider];
 
         if (val !== 'email') getConfigList();
-        clearValid();
+        // clearValid();
         // console.log('formData.value: ', formData.value);
 
         if (val === 'sms') {
@@ -838,14 +840,14 @@ watch(
     },
 );
 
-watch(
-    () => formData.value.provider,
-    (val) => {
-        formData.value.template = TEMPLATE_FIELD_MAP[formData.value.type][val];
+// watch(
+//     () => formData.value.provider,
+//     (val) => {
+//         formData.value.template = TEMPLATE_FIELD_MAP[formData.value.type][val];
 
-        clearValid();
-    },
-);
+//         clearValid();
+//     },
+// );
 
 // 验证规则
 const formRules = ref({
@@ -908,12 +910,12 @@ watch(
     { deep: true },
 );
 
-const clearValid = () => {
-    setTimeout(() => {
-        formData.value.variableDefinitions = [];
-        clearValidate();
-    }, 200);
-};
+// const clearValid = () => {
+//     setTimeout(() => {
+//         formData.value.variableDefinitions = [];
+//         clearValidate();
+//     }, 200);
+// };
 
 /**
  * 获取详情
@@ -942,9 +944,22 @@ const getConfigList = async () => {
 };
 
 /**
+ * 通知方式改变
+ */
+const handleTypeChange = () => {
+    setTimeout(() => {
+        formData.value.template =
+            TEMPLATE_FIELD_MAP[formData.value.type][formData.value.provider];
+        resetPublicFiles();
+    }, 0);
+};
+
+/**
  * 通知类型改变
  */
 const handleProviderChange = () => {
+    formData.value.template =
+        TEMPLATE_FIELD_MAP[formData.value.type][formData.value.provider];
     getConfigList();
     resetPublicFiles();
 };
