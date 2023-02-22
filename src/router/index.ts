@@ -14,55 +14,45 @@ const router = createRouter({
   }
 })
 
-const filterPath = [
-  '/form',
-  '/search'
-]
-
 router.beforeEach((to, from, next) => {
   // TODO 切换路由取消请求
-  const isFilterPath = filterPath.includes(to.path)
-  if (isFilterPath) {
-    next()
-  } else {
-    const token = getToken()
-    if (token) {
-      if (to.path === LoginPath) {
-        next({ path: '/' })
-      } else {
-        const userInfo = useUserInfo()
-        const system = useSystem()
-        const menu = useMenuStore()
-
-        if (!menu.siderMenus.length) {
-          userInfo.getUserInfo().then(() => {
-            system.getSystemVersion().then((menuData: any[]) => {
-              menuData.forEach(r => {
-                router.addRoute('base', r)
-              })
-              // router.addRoute('base',{
-              //   path: '/:pathMatch(.*)',
-              //   name: 'error',
-              //   component: () => NotFindPage
-              // })
-
-              next({ ...to, replace: true })
-            })
-          }).catch(() => {
-            cleanToken()
-            next({ path: LoginPath })
-          })
-        } else {
-          next()
-        }
-      }
-
+  const token = getToken()
+  if (token) {
+    if (to.path === LoginPath) {
+      next({ path: '/' })
     } else {
-      if (to.path === LoginPath) {
-        next()
+      const userInfo = useUserInfo()
+      const system = useSystem()
+      const menu = useMenuStore()
+
+      if (!menu.siderMenus.length) {
+        userInfo.getUserInfo().then(() => {
+          system.getSystemVersion().then((menuData: any[]) => {
+            menuData.forEach(r => {
+              router.addRoute('base', r)
+            })
+            router.addRoute('base',{
+              path: '/:pathMatch(.*)',
+              name: 'error',
+              component: () => NotFindPage
+            })
+
+            next({ ...to, replace: true })
+          })
+        }).catch(() => {
+          cleanToken()
+          next({ path: LoginPath })
+        })
       } else {
-        next({ path: LoginPath })
+        next()
       }
+    }
+
+  } else {
+    if (to.path === LoginPath) {
+      next()
+    } else {
+      next({ path: LoginPath })
     }
   }
 })

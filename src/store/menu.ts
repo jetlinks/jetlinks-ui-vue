@@ -114,7 +114,7 @@ export const useMenuStore = defineStore({
             }
           })
           this.siderMenus = silderMenus
-          console.log('silderMenus', silderMenus)
+          console.log('menusData', menusData)
           res(menusData)
         }
       })
