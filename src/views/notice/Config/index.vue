@@ -1,5 +1,5 @@
 <template>
-    <div class="page-container">
+    <page-container>
         <Search
             :columns="columns"
             target="notice-config"
@@ -166,7 +166,7 @@
         <Debug v-model:visible="debugVis" :data="currentConfig" />
         <Log v-model:visible="logVis" :data="currentConfig" />
         <SyncUser v-model:visible="syncVis" :data="currentConfig" />
-    </div>
+    </page-container>
 </template>
 
 <script setup lang="ts">
@@ -426,9 +426,3 @@ const getActions = (
     }
 };
 </script>
-<style lang="less" scoped>
-.page-container {
-    background: #f0f2f5;
-    padding: 24px;
-}
-</style>

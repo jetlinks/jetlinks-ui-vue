@@ -1,6 +1,6 @@
 <!-- 通知模板详情 -->
 <template>
-    <div class="page-container">
+    <page-container>
         <a-card>
             <a-row>
                 <a-col :span="10">
@@ -169,7 +169,9 @@
                                                         (e) => handleChange(e)
                                                     "
                                                 >
-                                                    <AIcon type="UploadOutlined" />
+                                                    <AIcon
+                                                        type="UploadOutlined"
+                                                    />
                                                 </a-upload>
                                             </template>
                                         </a-input>
@@ -201,7 +203,7 @@
                                 <a-col :span="12">
                                     <a-form-item label="收信人">
                                         <ToUser
-                                            v-model:to-user="
+                                            v-model:toUser="
                                                 formData.template.toUser
                                             "
                                             :type="formData.type"
@@ -212,7 +214,7 @@
                                 <a-col :span="12">
                                     <a-form-item label="收信部门">
                                         <ToOrg
-                                            v-model:to-user="
+                                            v-model:toParty="
                                                 formData.template.toParty
                                             "
                                             :type="formData.type"
@@ -223,7 +225,7 @@
                             </a-row>
                             <a-form-item label="标签推送">
                                 <ToTag
-                                    v-model:to-user="formData.template.toTag"
+                                    v-model:toTag="formData.template.toTag"
                                     :type="formData.type"
                                     :config-id="formData.configId"
                                 />
@@ -471,7 +473,7 @@
                 </a-col>
             </a-row>
         </a-card>
-    </div>
+    </page-container>
 </template>
 
 <script setup lang="ts">
@@ -633,11 +635,15 @@ const clearValid = () => {
  */
 const getDetail = async () => {
     const res = await templateApi.detail(route.params.id as string);
-    // console.log('res: ', res);
-    formData.value = res.result;
+    // formData.value = res.result;
+    Object.assign(formData.value, res.result);
     // console.log('formData.value: ', formData.value);
+
+    if (formData.value.type === 'sms') {
+        getTemplateList();
+        getSignsList();
+    }
 };
-// getDetail();
 
 /**
  * 获取绑定配置
@@ -656,7 +662,7 @@ getConfigList();
 /**
  * link消息类型 图片链接
  */
- const handleChange = (info: UploadChangeParam) => {
+const handleChange = (info: UploadChangeParam) => {
     if (info.file.status === 'done') {
         formData.value.template.link.picUrl = info.file.response?.result;
     }
@@ -680,7 +686,6 @@ const getTemplateList = async () => {
     );
     templateList.value = result;
 };
-getTemplateList();
 
 /**
  * 获取签名
@@ -690,7 +695,10 @@ const getSignsList = async () => {
     const { result } = await templateApi.getSigns(formData.value.configId);
     signsList.value = result;
 };
-getSignsList();
+
+onMounted(() => {
+    if (route.params.id) getDetail();
+});
 
 /**
  * 表单提交
@@ -698,11 +706,12 @@ getSignsList();
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
     if (formData.value.type === 'email') delete formData.value.configId;
-    if (formData.value.template.messageType === 'markdown') delete formData.value.template.link
-    if (formData.value.template.messageType === 'link') delete formData.value.template.markdown
+    if (formData.value.template.messageType === 'markdown')
+        delete formData.value.template.link;
+    if (formData.value.template.messageType === 'link')
+        delete formData.value.template.markdown;
     // console.log('formData.value: ', formData.value);
-    const form = useForm(formData.value, formRules.value);
-    form.validate()
+    validate()
         .then(async () => {
             formData.value.template.ttsCode =
                 formData.value.template.templateCode;
@@ -737,10 +746,3 @@ const handleSubmit = () => {
 // );
 // test
 </script>
-
-<style lang="less" scoped>
-.page-container {
-    background: #f0f2f5;
-    padding: 24px;
-}
-</style>
