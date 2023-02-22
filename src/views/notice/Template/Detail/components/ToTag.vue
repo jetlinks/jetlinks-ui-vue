@@ -30,6 +30,7 @@ const _value = computed({
 
 const options = ref([]);
 const queryData = async () => {
+    if (!props.configId) return;
     const { result } = await templateApi.getTags(props.configId);
     options.value = result.map((item: any) => ({
         label: item.name,

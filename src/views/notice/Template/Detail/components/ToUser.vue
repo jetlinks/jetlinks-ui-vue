@@ -30,6 +30,7 @@ const _value = computed({
 
 const options = ref([]);
 const queryData = async () => {
+    if (!props.configId) return;
     const { result } = await templateApi.getUser(props.type, props.configId);
     options.value = result.map((item: any) => ({
         label: item.name,
