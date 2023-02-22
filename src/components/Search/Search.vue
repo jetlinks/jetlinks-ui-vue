@@ -4,9 +4,9 @@
     <div v-if='props.type === "advanced"' :class='["JSearch-content senior", expand ? "senior-expand" : "", screenSize ? "big" : "small"]'>
       <div :class='["JSearch-items", expand ? "items-expand" : "", layout]'>
         <div class='left'>
-          <SearchItem :expand='expand' :index='1' :columns='searchItems' @change='(v) => itemValueChange(v, 1)' :termsItem='terms'/>
-          <SearchItem v-if='expand' :expand='expand' :index='2' :columns='searchItems' @change='(v) => itemValueChange(v, 2)' :termsItem='terms'/>
-          <SearchItem v-if='expand' :expand='expand' :index='3' :columns='searchItems' @change='(v) => itemValueChange(v, 3)' :termsItem='terms'/>
+          <SearchItem :expand='expand' :index='1' :columns='searchItems' @change='(v) => itemValueChange(v, 1)' :termsItem='terms' :reset='resetNumber'/>
+          <SearchItem v-if='expand' :expand='expand' :index='2' :columns='searchItems' @change='(v) => itemValueChange(v, 2)' :termsItem='terms' :reset='resetNumber'/>
+          <SearchItem v-if='expand' :expand='expand' :index='3' :columns='searchItems' @change='(v) => itemValueChange(v, 3)' :termsItem='terms' :reset='resetNumber'/>
         </div>
         <div class='center' v-if='expand'>
           <a-select
@@ -16,9 +16,9 @@
           />
         </div>
         <div class='right' v-if='expand'>
-          <SearchItem :expand='expand' :index='4' :columns='searchItems' @change='(v) => itemValueChange(v, 4)' :termsItem='terms'/>
-          <SearchItem :expand='expand' :index='5' :columns='searchItems' @change='(v) => itemValueChange(v, 5)' :termsItem='terms'/>
-          <SearchItem :expand='expand' :index='6' :columns='searchItems' @change='(v) => itemValueChange(v, 6)' :termsItem='terms'/>
+          <SearchItem :expand='expand' :index='4' :columns='searchItems' @change='(v) => itemValueChange(v, 4)' :termsItem='terms' :reset='resetNumber'/>
+          <SearchItem :expand='expand' :index='5' :columns='searchItems' @change='(v) => itemValueChange(v, 5)' :termsItem='terms' :reset='resetNumber'/>
+          <SearchItem :expand='expand' :index='6' :columns='searchItems' @change='(v) => itemValueChange(v, 6)' :termsItem='terms' :reset='resetNumber'/>
         </div>
       </div>
       <div :class='["JSearch-footer", expand ? "expand" : ""]'>
@@ -40,7 +40,7 @@
     <div v-else class='JSearch-content simple big'>
       <div class='JSearch-items'>
         <div class='left'>
-          <SearchItem :expand='false' :index='1' :columns='searchItems' @change='(v) => itemValueChange(v, 1)' :termsItem='terms'/>
+          <SearchItem :expand='false' :index='1' :columns='searchItems' @change='(v) => itemValueChange(v, 1)' :termsItem='terms' :reset='resetNumber'/>
         </div>
       </div>
       <div class='JSearch-footer'>
@@ -114,8 +114,10 @@ const historyList = ref([])
 const layout = ref('horizontal')
 // 当前组件宽度 true 大于1000
 const screenSize = ref(true)
+const resetNumber = ref(1)
 
 const searchItems = ref<SearchProps[]>([])
+
 // 当前查询条件
 const terms = reactive<Terms>({ terms: [] })
 
@@ -232,6 +234,7 @@ const reset = () => {
     urlParams.q = null
     urlParams.target = null
   }
+  resetNumber.value += 1
   emit('search', terms)
 }
 

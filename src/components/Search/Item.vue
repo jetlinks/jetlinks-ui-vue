@@ -141,6 +141,10 @@ const props = defineProps({
   termsItem: {
     type: Object as PropType<Terms>,
     default: {}
+  },
+  reset: {
+    type: Number,
+    default: 1
   }
 })
 
@@ -309,6 +313,10 @@ handleItem()
 
 nextTick(() => {
   handleQuery(urlParams)
+})
+
+watch(() => props.reset, () => {
+  handleItem()
 })
 
 </script>
