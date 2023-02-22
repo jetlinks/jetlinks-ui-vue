@@ -178,7 +178,7 @@ const findDetailRouteItem = (code: string, url: string): Partial<MenuItem> | nul
   const detailComponent = resolveComponent(`${code}/Detail`)
   if (detailComponent) {
     return {
-      url: `${url}/Detail/:id`,
+      url: `${url}/detail/:id`,
       code: `${code}/Detail`,
       component: detailComponent,
       name: '详情信息',

@@ -36,54 +36,52 @@ type MenuStateType = {
   siderMenus: MenuItem[]
 }
 
-// export const useMenusStore = defineStore('menu', () => {
-//   const state = reactive<MenuStateType>({
-//     menus: {},
-//     siderMenus: []
-//   })
-//
-//   const hasPermission = (code: string | string[]) => {
-//     if (!code || !(code as string[]).length) {
-//       console.warn(`function hasPermission: 没有传入${code}`)
-//       return false
-//     }
-//
-//   }
-//
-//   const queryMenuTree = (): Promise<any[]> => {
-//
-//   }
-//
-//   return {
-//     state,
-//     hasPermission,
-//     queryMenuTree
-//   }
-// })
 
 export const useMenuStore = defineStore({
   id: 'menu',
-  state: () => ({
+  state: (): MenuStateType => ({
     menus: {},
     siderMenus: []
   }),
   getters: {
     hasPermission(state) {
-      return (menuCode: string | string[]) => {
-        if (!menuCode) {
+      return (code: string | string[]) => {
+        if (!code) {
           return true
         }
         if (!!Object.keys(state.menus).length) {
-          if (typeof menuCode === 'string') {
-            return !!this.menus[menuCode].buttons
+          let codes: string[] = []
+
+          if (typeof code === 'string') {
+            codes.push(code)
+          } else {
+            codes = code
           }
-          return menuCode.some(code => !!this.menus[code])
+
+          return codes.some(_c => {
+            const menu_code = _c.split(':')
+            if (menu_code.length > 1) {
+              return !!this.menus[menu_code[0]]?.buttons?.includes(menu_code[1])
+            }
+            return false
+          })
         }
         return false
       }
     }
   },
   actions: {
+    hasMenu(code: string) {
+      return this.menus[code]?.path
+    },
+    jumpPage(code: string, params: Record<string, any>, query: Record<string, any>) {
+      const path = this.menus[code]?.path
+      if (path) {
+        router.push({
+          path, params, query
+        })
+      }
+    },
     queryMenuTree(isCommunity = false): Promise<any[]> {
       return new Promise(async (res) => {
         //过滤非集成的菜单
@@ -94,11 +92,11 @@ export const useMenuStore = defineStore({
           const handleMenuItem = (menu: any) => {
             if (isArray(menu)) {
               menu.forEach(menuItem => {
-                this.menus[menuItem.code] = {
+                this.menus[menuItem.name] = {
                   path: menuItem.path,
-                  buttons: menuItem.buttons
+                  buttons: menuItem.meta.buttons
                 }
-                if (menuItem.children && menuItem.length) {
+                if (menuItem.children && menuItem.children.length) {
                   handleMenuItem(menuItem.children)
                 }
               })

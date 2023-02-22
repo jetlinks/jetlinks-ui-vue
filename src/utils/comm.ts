@@ -96,29 +96,3 @@ export const modifySearchColumnValue = (e: any, column: object) => {
   });
   return e;
 };
-
-// /**
-//  * 根据code返回对应的菜单path
-//  * @param code 菜单code
-//  */
-// export const getMenu = (code: string): string | undefined => {
-//   const menuStore = useMenuStore()
-//   return menuStore.menus[code]?.path
-// }
-//
-// /**
-//  * 根据菜单code跳转对应路由
-//  * @param code 菜单code
-//  * @param params 路由params参数
-//  * @param query 路由query参数
-//  */
-// export const jumpPath = (code: string, params?: any, query?: any) => {
-//   const path = getMenu(code)
-//   if (path) {
-//     router.push({
-//       path, params, query
-//     })
-//   } else {
-//     console.warn(`menus中没有${code}`)
-//   }
-// }
