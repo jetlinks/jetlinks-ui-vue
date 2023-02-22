@@ -27,6 +27,9 @@
 <script setup lang="ts">
 import homeApi from '@/api/media/home';
 import { getImage } from '@/utils/comm';
+import { useMenuStore } from 'store/menu';
+
+const menuStory = useMenuStore();
 
 const channelCount = ref(0);
 const deviceCount = ref(0);
@@ -44,9 +47,10 @@ const getData = () => {
     });
 };
 
-const router = useRouter();
 const jumpPage = () => {
-    router.push('/media/dashboard');
+    menuStory.jumpPage('media/DashBoard', {
+        id: ':id',
+    });
 };
 </script>
 

@@ -137,7 +137,9 @@ import { getImage } from '@/utils/comm';
 import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
 import { providerType } from './const';
 
-const router = useRouter();
+import { useMenuStore } from 'store/menu';
+
+const menuStory = useMenuStore();
 
 const listRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -240,7 +242,9 @@ const handleSearch = (e: any) => {
  * 新增
  */
 const handleAdd = () => {
-    router.push(`/media/device/Save`);
+    menuStory.jumpPage('media/Device/Save', {
+        id: ':id',
+    });
 };
 
 const getActions = (
@@ -257,7 +261,9 @@ const getActions = (
             },
             icon: 'EditOutlined',
             onClick: () => {
-                router.push(`/media/device/Save?id=${data.id}`);
+                menuStory.jumpPage('media/Device/Save', {
+                    id: data.id,
+                });
             },
         },
         {
@@ -268,9 +274,13 @@ const getActions = (
             },
             icon: 'PartitionOutlined',
             onClick: () => {
-                router.push(
-                    `/media/device/Channel?id=${data.id}&type=${data.provider}`,
-                );
+                // router.push(
+                //     `/media/device/Channel?id=${data.id}&type=${data.provider}`,
+                // );
+                menuStory.jumpPage('media/Device/Channel', {
+                    id: data.id,
+                    type: data.provider,
+                });
             },
         },
         {

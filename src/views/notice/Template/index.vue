@@ -167,13 +167,14 @@ import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
 import Debug from './Debug/index.vue';
 import Log from './Log/index.vue';
 import { downloadObject } from '@/utils/utils';
+import { useMenuStore } from 'store/menu';
+
+const menuStory = useMenuStore();
 
 let providerList: any = [];
 Object.keys(MSG_TYPE).forEach((key) => {
     providerList = [...providerList, ...MSG_TYPE[key]];
 });
-
-const router = useRouter();
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -257,7 +258,9 @@ const getMethodTxt = (type: string) => {
  * 新增
  */
 const handleAdd = () => {
-    router.push(`/iot/notice/Template/detail/:id`);
+    menuStory.jumpPage('notice/Template/Detail', {
+        id: ':id',
+    });
 };
 
 /**
@@ -324,7 +327,9 @@ const getActions = (
             onClick: () => {
                 // visible.value = true;
                 // current.value = data;
-                router.push(`/iot/notice/Template/detail/${data.id}`);
+                menuStory.jumpPage('notice/Template/Detail', {
+                    id: data.id,
+                });
             },
         },
         {
