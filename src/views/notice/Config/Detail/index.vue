@@ -1,6 +1,6 @@
 <!-- 通知配置详情 -->
 <template>
-    <div class="page-container">
+    <page-container>
         <a-card>
             <a-row>
                 <a-col :span="10">
@@ -273,7 +273,7 @@
                 </a-col>
             </a-row>
         </a-card>
-    </div>
+    </page-container>
 </template>
 
 <script setup lang="ts">
@@ -438,8 +438,9 @@ getDetail();
  */
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
-    const form = useForm(formData.value, formRules.value);
-    form.validate()
+    // const form = useForm(formData.value, formRules.value);
+    // form.
+    validate()
         .then(async () => {
             // console.log('formData.value: ', formData.value);
             btnLoading.value = true;
@@ -463,10 +464,3 @@ const handleSubmit = () => {
         });
 };
 </script>
-
-<style lang="less" scoped>
-.page-container {
-    background: #f0f2f5;
-    padding: 24px;
-}
-</style>

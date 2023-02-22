@@ -1,6 +1,6 @@
 <!-- 通知模板详情 -->
 <template>
-    <div class="page-container">
+    <page-container>
         <a-card>
             <a-row>
                 <a-col :span="10">
@@ -169,7 +169,9 @@
                                                         (e) => handleChange(e)
                                                     "
                                                 >
-                                                    <AIcon type="UploadOutlined" />
+                                                    <AIcon
+                                                        type="UploadOutlined"
+                                                    />
                                                 </a-upload>
                                             </template>
                                         </a-input>
@@ -471,7 +473,7 @@
                 </a-col>
             </a-row>
         </a-card>
-    </div>
+    </page-container>
 </template>
 
 <script setup lang="ts">
@@ -656,7 +658,7 @@ getConfigList();
 /**
  * link消息类型 图片链接
  */
- const handleChange = (info: UploadChangeParam) => {
+const handleChange = (info: UploadChangeParam) => {
     if (info.file.status === 'done') {
         formData.value.template.link.picUrl = info.file.response?.result;
     }
@@ -698,11 +700,14 @@ getSignsList();
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
     if (formData.value.type === 'email') delete formData.value.configId;
-    if (formData.value.template.messageType === 'markdown') delete formData.value.template.link
-    if (formData.value.template.messageType === 'link') delete formData.value.template.markdown
+    if (formData.value.template.messageType === 'markdown')
+        delete formData.value.template.link;
+    if (formData.value.template.messageType === 'link')
+        delete formData.value.template.markdown;
     // console.log('formData.value: ', formData.value);
-    const form = useForm(formData.value, formRules.value);
-    form.validate()
+    // const form = useForm(formData.value, formRules.value);
+    // form.
+    validate()
         .then(async () => {
             formData.value.template.ttsCode =
                 formData.value.template.templateCode;
@@ -737,10 +742,3 @@ const handleSubmit = () => {
 // );
 // test
 </script>
-
-<style lang="less" scoped>
-.page-container {
-    background: #f0f2f5;
-    padding: 24px;
-}
-</style>

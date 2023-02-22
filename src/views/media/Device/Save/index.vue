@@ -1,6 +1,6 @@
 <!-- 通知模板详情 -->
 <template>
-    <div class="page-container">
+    <page-container>
         <a-card>
             <a-row :gutter="24">
                 <a-col :span="12">
@@ -241,7 +241,7 @@
             :channel="formData.channel"
             @close="getProductList"
         />
-    </div>
+    </page-container>
 </template>
 
 <script setup lang="ts">
@@ -392,8 +392,4 @@ const handleSubmit = () => {
 
 <style lang="less" scoped>
 @import './index.less';
-.page-container {
-    background: #f0f2f5;
-    padding: 24px;
-}
 </style>

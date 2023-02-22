@@ -1,5 +1,5 @@
 <template>
-    <div class="page-container">
+    <page-container>
         <Search
             :columns="columns"
             target="notice-config"
@@ -126,7 +126,7 @@
                 </a-space>
             </template>
         </JTable>
-    </div>
+    </page-container>
 </template>
 
 <script setup lang="ts">
@@ -320,9 +320,3 @@ const getActions = (
     return actions;
 };
 </script>
-<style lang="less" scoped>
-.page-container {
-    background: #f0f2f5;
-    padding: 24px;
-}
-</style>
