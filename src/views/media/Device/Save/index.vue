@@ -1,6 +1,6 @@
 <!-- 通知模板详情 -->
 <template>
-    <div class="page-container">
+    <page-container>
         <a-card>
             <a-row :gutter="24">
                 <a-col :span="12">
@@ -241,7 +241,7 @@
             :channel="formData.channel"
             @close="getProductList"
         />
-    </div>
+    </page-container>
 </template>
 
 <script setup lang="ts">
@@ -353,7 +353,8 @@ const saveProductVis = ref(false);
 const getDetail = async () => {
     const res = await DeviceApi.detail(route.query.id as string);
     // console.log('res: ', res);
-    formData.value = res.result;
+    // formData.value = res.result;
+    Object.assign(formData.value, res.result);
     formData.value.channel = res.result.provider;
 };
 
@@ -366,8 +367,7 @@ onMounted(() => {
  */
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
-    const form = useForm(formData.value, formRules.value);
-    form.validate()
+    validate()
         .then(async () => {
             btnLoading.value = true;
             let res;
@@ -392,8 +392,4 @@ const handleSubmit = () => {
 
 <style lang="less" scoped>
 @import './index.less';
-.page-container {
-    background: #f0f2f5;
-    padding: 24px;
-}
 </style>

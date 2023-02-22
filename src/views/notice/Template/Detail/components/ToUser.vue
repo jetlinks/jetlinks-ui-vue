@@ -5,6 +5,7 @@
         placeholder="请选择收信人"
         style="width: 100%"
         :allowClear="true"
+        v-model:value="_value"
     />
 </template>
 
@@ -17,8 +18,14 @@ type Emits = {
 const emit = defineEmits<Emits>();
 
 const props = defineProps({
+    toUser: { type: String, default: '' },
     type: { type: String, default: '' },
     configId: { type: String, default: '' },
+});
+
+const _value = computed({
+    get: () => props.toUser,
+    set: (val: string) => emit('update:toUser', val),
 });
 
 const options = ref([]);

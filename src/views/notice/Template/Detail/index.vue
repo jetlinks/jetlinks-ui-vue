@@ -1,6 +1,6 @@
 <!-- 通知模板详情 -->
 <template>
-    <div class="page-container">
+    <page-container>
         <a-card>
             <a-row>
                 <a-col :span="10">
@@ -13,6 +13,7 @@
                                 v-model:value="formData.type"
                                 placeholder="请选择通知方式"
                                 :disabled="!!formData.id"
+                                @change="resetPublicFiles"
                             >
                                 <a-select-option
                                     v-for="(item, index) in NOTICE_METHOD"
@@ -40,14 +41,26 @@
                             <RadioCard
                                 :options="msgType"
                                 v-model="formData.provider"
-                                @change="getConfigList"
+                                @change="handleProviderChange"
                             />
                         </a-form-item>
                         <a-form-item
-                            label="绑定配置"
                             v-bind="validateInfos.configId"
                             v-if="formData.type !== 'email'"
                         >
+                            <template #label>
+                                <span>
+                                    绑定配置
+                                    <a-tooltip
+                                        title="使用固定的通知配置来发送此通知模版"
+                                    >
+                                        <AIcon
+                                            type="QuestionCircleOutlined"
+                                            style="margin-left: 2px"
+                                        />
+                                    </a-tooltip>
+                                </span>
+                            </template>
                             <a-select
                                 v-model:value="formData.configId"
                                 placeholder="请选择绑定配置"
@@ -68,9 +81,19 @@
                                 v-if="formData.provider === 'dingTalkMessage'"
                             >
                                 <a-form-item
-                                    label="AgentId"
                                     v-bind="validateInfos['template.agentId']"
                                 >
+                                    <template #label>
+                                        <span>
+                                            AgentID
+                                            <a-tooltip title="应用唯一标识">
+                                                <AIcon
+                                                    type="QuestionCircleOutlined"
+                                                    style="margin-left: 2px"
+                                                />
+                                            </a-tooltip>
+                                        </span>
+                                    </template>
                                     <a-input
                                         v-model:value="
                                             formData.template.agentId
@@ -78,6 +101,45 @@
                                         placeholder="请输入AppSecret"
                                     />
                                 </a-form-item>
+                                <a-row :gutter="10">
+                                    <a-col :span="12">
+                                        <a-form-item label="收信部门">
+                                            <ToOrg
+                                                v-model:toParty="
+                                                    formData.template.toParty
+                                                "
+                                                :type="formData.type"
+                                                :config-id="formData.configId"
+                                            />
+                                        </a-form-item>
+                                    </a-col>
+                                    <a-col :span="12">
+                                        <a-form-item>
+                                            <template #label>
+                                                <span>
+                                                    收信人
+                                                    <a-tooltip
+                                                        title="如果不填写该字段，将在使用此模板发送通知时进行指定"
+                                                    >
+                                                        <AIcon
+                                                            type="QuestionCircleOutlined"
+                                                            style="
+                                                                margin-left: 2px;
+                                                            "
+                                                        />
+                                                    </a-tooltip>
+                                                </span>
+                                            </template>
+                                            <ToUser
+                                                v-model:toUser="
+                                                    formData.template.toUser
+                                                "
+                                                :type="formData.type"
+                                                :config-id="formData.configId"
+                                            />
+                                        </a-form-item>
+                                    </a-col>
+                                </a-row>
                             </template>
                             <template
                                 v-if="
@@ -166,10 +228,13 @@
                                                     }"
                                                     :showUploadList="false"
                                                     @change="
-                                                        (e) => handleChange(e)
+                                                        (e) =>
+                                                            handleLinkChange(e)
                                                     "
                                                 >
-                                                    <AIcon type="UploadOutlined" />
+                                                    <AIcon
+                                                        type="UploadOutlined"
+                                                    />
                                                 </a-upload>
                                             </template>
                                         </a-input>
@@ -189,9 +254,19 @@
                         <!-- 微信 -->
                         <template v-if="formData.type === 'weixin'">
                             <a-form-item
-                                label="AgentId"
                                 v-bind="validateInfos['template.agentId']"
                             >
+                                <template #label>
+                                    <span>
+                                        AgentId
+                                        <a-tooltip title="应用唯一标识">
+                                            <AIcon
+                                                type="QuestionCircleOutlined"
+                                                style="margin-left: 2px"
+                                            />
+                                        </a-tooltip>
+                                    </span>
+                                </template>
                                 <a-input
                                     v-model:value="formData.template.agentId"
                                     placeholder="请输入agentId"
@@ -199,9 +274,22 @@
                             </a-form-item>
                             <a-row :gutter="10">
                                 <a-col :span="12">
-                                    <a-form-item label="收信人">
+                                    <a-form-item>
+                                        <template #label>
+                                            <span>
+                                                收信人
+                                                <a-tooltip
+                                                    title="如果不填写该字段,将在使用此模版发送通知时进行指定。"
+                                                >
+                                                    <AIcon
+                                                        type="QuestionCircleOutlined"
+                                                        style="margin-left: 2px"
+                                                    />
+                                                </a-tooltip>
+                                            </span>
+                                        </template>
                                         <ToUser
-                                            v-model:to-user="
+                                            v-model:toUser="
                                                 formData.template.toUser
                                             "
                                             :type="formData.type"
@@ -212,7 +300,7 @@
                                 <a-col :span="12">
                                     <a-form-item label="收信部门">
                                         <ToOrg
-                                            v-model:to-user="
+                                            v-model:toParty="
                                                 formData.template.toParty
                                             "
                                             :type="formData.type"
@@ -221,9 +309,22 @@
                                     </a-form-item>
                                 </a-col>
                             </a-row>
-                            <a-form-item label="标签推送">
+                            <a-form-item>
+                                <template #label>
+                                    <span>
+                                        标签推送
+                                        <a-tooltip
+                                            title="本企业微信的标签ID列表,最多支持100个,如果不填写该字段,将在使用此模版发送通知时进行指定"
+                                        >
+                                            <AIcon
+                                                type="QuestionCircleOutlined"
+                                                style="margin-left: 2px"
+                                            />
+                                        </a-tooltip>
+                                    </span>
+                                </template>
                                 <ToTag
-                                    v-model:to-user="formData.template.toTag"
+                                    v-model:toTag="formData.template.toTag"
                                     :type="formData.type"
                                     :config-id="formData.configId"
                                 />
@@ -232,15 +333,38 @@
                         <!-- 邮件 -->
                         <template v-if="formData.type === 'email'">
                             <a-form-item
-                                label="标题"
                                 v-bind="validateInfos['template.subject']"
                             >
+                                <template #label>
+                                    <span>
+                                        标题
+                                        <a-tooltip title="邮件标题">
+                                            <AIcon
+                                                type="QuestionCircleOutlined"
+                                                style="margin-left: 2px"
+                                            />
+                                        </a-tooltip>
+                                    </span>
+                                </template>
                                 <a-input
                                     v-model:value="formData.template.subject"
                                     placeholder="请输入标题"
                                 />
                             </a-form-item>
-                            <a-form-item label="收件人">
+                            <a-form-item>
+                                <template #label>
+                                    <span>
+                                        收件人
+                                        <a-tooltip
+                                            title="多个收件人用换行分隔 最大支持1000个号码"
+                                        >
+                                            <AIcon
+                                                type="QuestionCircleOutlined"
+                                                style="margin-left: 2px"
+                                            />
+                                        </a-tooltip>
+                                    </span>
+                                </template>
                                 <a-select
                                     mode="tags"
                                     :options="[]"
@@ -248,7 +372,20 @@
                                     placeholder="请选择收件人"
                                 />
                             </a-form-item>
-                            <a-form-item label="附件信息">
+                            <a-form-item>
+                                <template #label>
+                                    <span>
+                                        附件信息
+                                        <a-tooltip
+                                            title="附件只输入文件名称将在发送邮件时进行文件上传"
+                                        >
+                                            <AIcon
+                                                type="QuestionCircleOutlined"
+                                                style="margin-left: 2px"
+                                            />
+                                        </a-tooltip>
+                                    </span>
+                                </template>
                                 <Attachments
                                     v-model:attachments="
                                         formData.template.attachments
@@ -259,9 +396,21 @@
                         <!-- 语音 -->
                         <template v-if="formData.type === 'voice'">
                             <a-form-item
-                                label="类型"
                                 v-bind="validateInfos['template.templateType']"
                             >
+                                <template #label>
+                                    <span>
+                                        类型
+                                        <a-tooltip
+                                            title="语音验证码类型可配置变量，并且只支持数字和英文字母"
+                                        >
+                                            <AIcon
+                                                type="QuestionCircleOutlined"
+                                                style="margin-left: 2px"
+                                            />
+                                        </a-tooltip>
+                                    </span>
+                                </template>
                                 <a-select
                                     v-model:value="
                                         formData.template.templateType
@@ -280,13 +429,25 @@
                             <a-row :gutter="10">
                                 <a-col :span="12">
                                     <a-form-item
-                                        label="模板ID"
                                         v-bind="
                                             validateInfos[
                                                 'template.templateCode'
                                             ]
                                         "
                                     >
+                                        <template #label>
+                                            <span>
+                                                模板ID
+                                                <a-tooltip
+                                                    title="阿里云内部分配的唯一ID标识"
+                                                >
+                                                    <AIcon
+                                                        type="QuestionCircleOutlined"
+                                                        style="margin-left: 2px"
+                                                    />
+                                                </a-tooltip>
+                                            </span>
+                                        </template>
                                         <a-input
                                             v-model:value="
                                                 formData.template.templateCode
@@ -296,7 +457,20 @@
                                     </a-form-item>
                                 </a-col>
                                 <a-col :span="12">
-                                    <a-form-item label="被叫号码">
+                                    <a-form-item>
+                                        <template #label>
+                                            <span>
+                                                被叫号码
+                                                <a-tooltip
+                                                    title="仅支持中国大陆号码"
+                                                >
+                                                    <AIcon
+                                                        type="QuestionCircleOutlined"
+                                                        style="margin-left: 2px"
+                                                    />
+                                                </a-tooltip>
+                                            </span>
+                                        </template>
                                         <a-input
                                             v-model:value="
                                                 formData.template.calledNumber
@@ -306,7 +480,20 @@
                                     </a-form-item>
                                 </a-col>
                             </a-row>
-                            <a-form-item label="被叫显号">
+                            <a-form-item>
+                                <template #label>
+                                    <span>
+                                        被叫显号
+                                        <a-tooltip
+                                            title="必须是已购买的号码,用于呼叫号码显示"
+                                        >
+                                            <AIcon
+                                                type="QuestionCircleOutlined"
+                                                style="margin-left: 2px"
+                                            />
+                                        </a-tooltip>
+                                    </span>
+                                </template>
                                 <a-input
                                     v-model:value="
                                         formData.template.calledShowNumbers
@@ -314,16 +501,39 @@
                                     placeholder="请输入被叫显号"
                                 />
                             </a-form-item>
-                            <a-form-item label="播放次数">
+                            <a-form-item>
+                                <template #label>
+                                    <span>
+                                        播放次数
+                                        <a-tooltip title="语音文件的播放次数">
+                                            <AIcon
+                                                type="QuestionCircleOutlined"
+                                                style="margin-left: 2px"
+                                            />
+                                        </a-tooltip>
+                                    </span>
+                                </template>
                                 <a-input
                                     v-model:value="formData.template.playTimes"
                                     placeholder="请输入播放次数"
                                 />
                             </a-form-item>
                             <a-form-item
-                                label="模版内容"
                                 v-if="formData.template.templateType === 'tts'"
                             >
+                                <template #label>
+                                    <span>
+                                        模版内容
+                                        <a-tooltip
+                                            title="语音验证码内容输入框，用于渲染验语音证码变量。"
+                                        >
+                                            <AIcon
+                                                type="QuestionCircleOutlined"
+                                                style="margin-left: 2px"
+                                            />
+                                        </a-tooltip>
+                                    </span>
+                                </template>
                                 <a-textarea
                                     v-model:value="formData.template.message"
                                     show-count
@@ -337,14 +547,27 @@
                             <a-row :gutter="10">
                                 <a-col :span="12">
                                     <a-form-item
-                                        label="模板"
                                         v-bind="validateInfos['template.code']"
                                     >
+                                        <template #label>
+                                            <span>
+                                                模板
+                                                <a-tooltip
+                                                    title="阿里云短信平台自定义的模版名称"
+                                                >
+                                                    <AIcon
+                                                        type="QuestionCircleOutlined"
+                                                        style="margin-left: 2px"
+                                                    />
+                                                </a-tooltip>
+                                            </span>
+                                        </template>
                                         <a-select
                                             v-model:value="
                                                 formData.template.code
                                             "
                                             placeholder="请选择模板"
+                                            @change="handleTemplateChange"
                                         >
                                             <a-select-option
                                                 v-for="(
@@ -359,7 +582,20 @@
                                     </a-form-item>
                                 </a-col>
                                 <a-col :span="12">
-                                    <a-form-item label="收信人">
+                                    <a-form-item>
+                                        <template #label>
+                                            <span>
+                                                收信人
+                                                <a-tooltip
+                                                    title="仅支持中国大陆号码"
+                                                >
+                                                    <AIcon
+                                                        type="QuestionCircleOutlined"
+                                                        style="margin-left: 2px"
+                                                    />
+                                                </a-tooltip>
+                                            </span>
+                                        </template>
                                         <a-input
                                             v-model:value="
                                                 formData.template.phoneNumber
@@ -370,9 +606,21 @@
                                 </a-col>
                             </a-row>
                             <a-form-item
-                                label="签名"
                                 v-bind="validateInfos['template.signName']"
                             >
+                                <template #label>
+                                    <span>
+                                        签名
+                                        <a-tooltip
+                                            title="用于短信内容签名信息显示"
+                                        >
+                                            <AIcon
+                                                type="QuestionCircleOutlined"
+                                                style="margin-left: 2px"
+                                            />
+                                        </a-tooltip>
+                                    </span>
+                                </template>
                                 <a-select
                                     v-model:value="formData.template.signName"
                                     placeholder="请选择签名"
@@ -417,17 +665,28 @@
                             </a-form-item>
                         </template>
                         <a-form-item
-                            label="模版内容"
                             v-if="
-                                formData.type !== 'sms' &&
                                 formData.type !== 'webhook' &&
                                 formData.type !== 'voice'
                             "
+                            v-bind="validateInfos['template.message']"
                         >
+                            <template #label>
+                                <span>
+                                    模版内容
+                                    <a-tooltip title="发送的内容，支持录入变量">
+                                        <AIcon
+                                            type="QuestionCircleOutlined"
+                                            style="margin-left: 2px"
+                                        />
+                                    </a-tooltip>
+                                </span>
+                            </template>
                             <a-textarea
                                 v-model:value="formData.template.message"
                                 :maxlength="200"
                                 :rows="5"
+                                :disabled="formData.type === 'sms'"
                                 placeholder="变量格式:${name};
     示例:尊敬的${name},${time}有设备触发告警,请注意处理"
                             />
@@ -471,7 +730,7 @@
                 </a-col>
             </a-row>
         </a-card>
-    </div>
+    </page-container>
 </template>
 
 <script setup lang="ts">
@@ -534,6 +793,27 @@ const formData = ref<TemplateFormData>({
     configId: '',
 });
 
+/**
+ * 重置公用字段值
+ */
+const resetPublicFiles = () => {
+    formData.value.template.message = '';
+    formData.value.configId = undefined;
+
+    if (
+        formData.value.type === 'dingTalk' ||
+        formData.value.type === 'weixin'
+    ) {
+        formData.value.template.toTag = undefined;
+        formData.value.template.toUser = undefined;
+    }
+    if (formData.value.type === 'weixin')
+        formData.value.template.toParty = undefined;
+    if (formData.value.type === 'email')
+        formData.value.template.toParty = undefined;
+    // formData.value.description = '';
+};
+
 // 根据通知方式展示对应的字段
 watch(
     () => formData.value.type,
@@ -547,8 +827,14 @@ watch(
         formData.value.template =
             TEMPLATE_FIELD_MAP[val][formData.value.provider];
 
-        getConfigList();
+        if (val !== 'email') getConfigList();
         clearValid();
+        // console.log('formData.value: ', formData.value);
+
+        if (val === 'sms') {
+            getTemplateList();
+            getSignsList();
+        }
     },
 );
 
@@ -587,6 +873,7 @@ const formRules = ref({
     'template.signName': [{ required: true, message: '请输入签名' }],
     // webhook
     description: [{ max: 200, message: '最多可输入200个字符' }],
+    'template.message': [{ required: true, message: '请输入' }],
 });
 
 const { resetFields, validate, validateInfos, clearValidate } = useForm(
@@ -632,12 +919,14 @@ const clearValid = () => {
  * 获取详情
  */
 const getDetail = async () => {
-    const res = await templateApi.detail(route.params.id as string);
-    // console.log('res: ', res);
-    formData.value = res.result;
-    // console.log('formData.value: ', formData.value);
+    if (route.params.id !== ':id') {
+        const res = await templateApi.detail(route.params.id as string);
+        // formData.value = res.result;
+        Object.assign(formData.value, res.result);
+        // console.log('formData.value: ', formData.value);
+    }
 };
-// getDetail();
+getDetail();
 
 /**
  * 获取绑定配置
@@ -651,12 +940,19 @@ const getConfigList = async () => {
     const { result } = await templateApi.getConfig({ terms });
     configList.value = result;
 };
-getConfigList();
+
+/**
+ * 通知类型改变
+ */
+const handleProviderChange = () => {
+    getConfigList();
+    resetPublicFiles();
+};
 
 /**
  * link消息类型 图片链接
  */
- const handleChange = (info: UploadChangeParam) => {
+const handleLinkChange = (info: UploadChangeParam) => {
     if (info.file.status === 'done') {
         formData.value.template.link.picUrl = info.file.response?.result;
     }
@@ -675,22 +971,29 @@ const handleConfigChange = () => {
  */
 const templateList = ref();
 const getTemplateList = async () => {
-    const { result } = await templateApi.getAliTemplate(
-        formData.value.configId,
-    );
+    const id = formData.value.configId || undefined;
+    const { result } = await templateApi.getAliTemplate(id);
     templateList.value = result;
 };
-getTemplateList();
+
+/**
+ * 短信模板改变
+ */
+const handleTemplateChange = () => {
+    formData.value.template.message = templateList.value.find(
+        (f: any) => formData.value.template.code === f.templateCode,
+    )?.templateContent;
+};
 
 /**
  * 获取签名
  */
 const signsList = ref();
 const getSignsList = async () => {
-    const { result } = await templateApi.getSigns(formData.value.configId);
+    const id = formData.value.configId || undefined;
+    const { result } = await templateApi.getSigns(id);
     signsList.value = result;
 };
-getSignsList();
 
 /**
  * 表单提交
@@ -698,11 +1001,12 @@ getSignsList();
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
     if (formData.value.type === 'email') delete formData.value.configId;
-    if (formData.value.template.messageType === 'markdown') delete formData.value.template.link
-    if (formData.value.template.messageType === 'link') delete formData.value.template.markdown
+    if (formData.value.template.messageType === 'markdown')
+        delete formData.value.template.link;
+    if (formData.value.template.messageType === 'link')
+        delete formData.value.template.markdown;
     // console.log('formData.value: ', formData.value);
-    const form = useForm(formData.value, formRules.value);
-    form.validate()
+    validate()
         .then(async () => {
             formData.value.template.ttsCode =
                 formData.value.template.templateCode;
@@ -737,10 +1041,3 @@ const handleSubmit = () => {
 // );
 // test
 </script>
-
-<style lang="less" scoped>
-.page-container {
-    background: #f0f2f5;
-    padding: 24px;
-}
-</style>

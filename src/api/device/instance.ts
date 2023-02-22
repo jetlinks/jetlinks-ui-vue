@@ -83,22 +83,22 @@ export const batchDeleteDevice = (data: string[]) => server.put(`/device-instanc
  * @param type 文件类型
  * @returns 
  */
- export const deviceTemplateDownload = (productId: string, type: string) => `${BASE_API_PATH}/device-instance/${productId}/template.${type}`
+export const deviceTemplateDownload = (productId: string, type: string) => `${BASE_API_PATH}/device-instance/${productId}/template.${type}`
 
- /**
-  * 设备导入
-  * @param productId 产品id
-  * @param type 文件类型
-  * @returns 
-  */
- export const deviceImport = (productId: string, fileUrl: string, autoDeploy: boolean) => `${BASE_API_PATH}/device-instance/${productId}/import?fileUrl=${fileUrl}&autoDeploy=${autoDeploy}&:X_Access_Token=${LocalStore.get(TOKEN_KEY)}`
- 
- /**
-  * 设备导出
-  * @param productId 产品id
-  * @param type 文件类型
-  * @returns 
-  */
+/**
+ * 设备导入
+ * @param productId 产品id
+ * @param type 文件类型
+ * @returns 
+ */
+export const deviceImport = (productId: string, fileUrl: string, autoDeploy: boolean) => `${BASE_API_PATH}/device-instance/${productId}/import?fileUrl=${fileUrl}&autoDeploy=${autoDeploy}&:X_Access_Token=${LocalStore.get(TOKEN_KEY)}`
+
+/**
+ * 设备导出
+ * @param productId 产品id
+ * @param type 文件类型
+ * @returns 
+ */
 export const deviceExport = (productId: string, type: string) => `${BASE_API_PATH}/device-instance${!!productId ? '/' + productId : ''}/export.${type}`
 
 /**
@@ -143,7 +143,7 @@ export const _disconnect = (id: string) => server.post(`/device-instance/${id}/d
  */
 export const queryUserListNoPaging = () => server.post(`/user/_query/no-paging`, {
   paging: false,
-  sorts: [{name: 'name', order: "asc"}]
+  sorts: [{ name: 'name', order: "asc" }]
 })
 
 /**
@@ -347,4 +347,59 @@ export const settingProperties = (deviceId: string, data: any) => server.put(`/d
  * @param data 
  * @returns 
  */
- export const execute = (id: string, action: string, data: any) => server.post(`/device/invoked/${id}/function/${action}`, data)
+export const execute = (id: string, action: string, data: any) => server.post(`/device/invoked/${id}/function/${action}`, data)
+
+/**
+ * 查询通道列表不分页
+ * @param data 
+ * @returns 
+ */
+export const queryChannelNoPaging = (data: any) => server.post(`data-collect/channel/_query/no-paging`, data)
+
+/**
+ * 查询采集器列表不分页
+ * @param data 
+ * @returns 
+ */
+export const queryCollectorNoPaging = (data: any) => server.post(`/data-collect/collector/_query/no-paging`, data)
+
+/**
+ * 查询点位列表不分页
+ * @param data 
+ * @returns 
+ */
+export const queryPointNoPaging = (data: any) => server.post(`/data-collect/point/_query/no-paging`, data)
+
+/**
+ * 查询映射列表
+ * @param thingType 
+ * @param thingId 
+ * @param params 
+ * @returns 
+ */
+export const queryMapping = (thingType: string, thingId: any, params?: any) => server.get(`/things/collector/${thingType}/${thingId}/_query`, params)
+
+/**
+ * 删除映射
+ * @param thingType 
+ * @param thingId 
+ * @param data 
+ * @returns 
+ */
+export const removeMapping = (thingType: string, thingId: any, data?: any) => server.post(`/things/collector/${thingType}/${thingId}/_delete`, data)
+
+/**
+ * 映射树
+ * @param data 
+ * @returns 
+ */
+export const treeMapping = (data?: any) => server.post(`/data-collect/channel/_all/tree`, data)
+
+/**
+ * 保存映射
+ * @param thingId 
+ * @param provider 
+ * @param data 
+ * @returns 
+ */
+export const saveMapping = (thingId: any, provider: string, data?: any) => server.patch(`/things/collector/device/${thingId}/${provider}`, data)

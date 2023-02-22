@@ -1,6 +1,6 @@
 <!-- 通知配置详情 -->
 <template>
-    <div class="page-container">
+    <page-container>
         <a-card>
             <a-row>
                 <a-col :span="10">
@@ -273,7 +273,7 @@
                 </a-col>
             </a-row>
         </a-card>
-    </div>
+    </page-container>
 </template>
 
 <script setup lang="ts">
@@ -427,8 +427,8 @@ const clearValid = () => {
 const getDetail = async () => {
     if (route.params.id === ':id') return;
     const res = await configApi.detail(route.params.id as string);
-    // console.log('res: ', res);
-    formData.value = res.result;
+    // formData.value = res.result;
+    Object.assign(formData.value, res.result);
     // console.log('formData.value: ', formData.value);
 };
 getDetail();
@@ -438,8 +438,7 @@ getDetail();
  */
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
-    const form = useForm(formData.value, formRules.value);
-    form.validate()
+    validate()
         .then(async () => {
             // console.log('formData.value: ', formData.value);
             btnLoading.value = true;
@@ -463,10 +462,3 @@ const handleSubmit = () => {
         });
 };
 </script>
-
-<style lang="less" scoped>
-.page-container {
-    background: #f0f2f5;
-    padding: 24px;
-}
-</style>

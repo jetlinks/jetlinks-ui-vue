@@ -1,5 +1,5 @@
 <template>
-    <div class="page-container">
+    <page-container>
         <a-row :gutter="24">
             <a-col :span="6">
                 <TopCard
@@ -42,7 +42,7 @@
                 />
             </a-col>
         </a-row>
-    </div>
+    </page-container>
 </template>
 
 <script setup lang="ts">
@@ -200,10 +200,7 @@ const getPlayCount = async (params: any) => {
 </script>
 
 <style lang="less" scoped>
-.page-container {
-    padding: 24px;
-    .dash-board-bottom {
-        margin-top: 24px;
-    }
+.dash-board-bottom {
+    margin-top: 24px;
 }
 </style>

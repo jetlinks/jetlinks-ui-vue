@@ -67,7 +67,7 @@
                             message: '请输入值',
                         }"
                     >
-                        <a-input v-model:value="propertyValue" />
+                        <a-input v-model:value="modelRef.propertyValue" />
                     </a-form-item>
                 </a-col>
                 <a-col :span="6" v-if="modelRef.type === 'INVOKE_FUNCTION'">
