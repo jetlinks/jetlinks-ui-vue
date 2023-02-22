@@ -791,6 +791,27 @@ const formData = ref<TemplateFormData>({
     configId: '',
 });
 
+/**
+ * 重置公用字段值
+ */
+const resetPublicFiles = () => {
+    formData.value.template.message = '';
+    formData.value.configId = undefined;
+
+    if (
+        formData.value.type === 'dingTalk' ||
+        formData.value.type === 'weixin'
+    ) {
+        formData.value.template.toTag = undefined;
+        formData.value.template.toUser = undefined;
+    }
+    if (formData.value.type === 'weixin')
+        formData.value.template.toParty = undefined;
+    if (formData.value.type === 'email')
+        formData.value.template.toParty = undefined;
+    // formData.value.description = '';
+};
+
 // 根据通知方式展示对应的字段
 watch(
     () => formData.value.type,
@@ -806,6 +827,7 @@ watch(
 
         if (val !== 'email') getConfigList();
         clearValid();
+        resetPublicFiles();
 
         if (val === 'sms') {
             getTemplateList();
@@ -820,6 +842,7 @@ watch(
         formData.value.template = TEMPLATE_FIELD_MAP[formData.value.type][val];
 
         clearValid();
+        resetPublicFiles();
     },
 );
 
