@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash-es'
 import { BlankLayoutPage, BasicLayoutPage } from 'components/Layout'
-const pagesComponent = import.meta.glob('../views/**/index.vue', { eager: true });
+const pagesComponent = import.meta.glob('../views/**/*.vue');
 
 /**
  * 权限信息
@@ -151,9 +151,12 @@ const resolveComponent = (name: any) => {
   const importPage = pagesComponent[`../views/${name}/index.vue`];
   if (!importPage) {
     console.warn(`Unknown page ${name}. Is it located under Pages with a .vue extension?`)
+    return undefined
+  } else {
+    const res = () => importPage()
+    return res
   }
   //@ts-ignore
-  return !!importPage ? importPage.default : undefined
 }
 
 const findChildrenRoute = (code: string, url: string, routes: any[] = []): MenuItem[] => {
@@ -225,7 +228,7 @@ export function filterAsnycRouter(asyncRouterMap: any, parentCode = '', level = 
       silder.children = _silderMenus
       const showChildren = _route.children.some((r: any) => !r.meta.hideInMenu)
       if (showChildren) {
-        _route.component = () => level === 1 ? BasicLayoutPage : BlankLayoutPage
+        _route.component = level === 1 ? BasicLayoutPage : BlankLayoutPage
         _route.redirect = route.children[0].url
       } else {
         const myComponent = resolveComponent(route.code)
@@ -239,7 +242,7 @@ export function filterAsnycRouter(asyncRouterMap: any, parentCode = '', level = 
         }
       }
     } else {
-      _route.component = route.component || resolveComponent(route.code) || BlankLayoutPage;
+      _route.component = route.component || resolveComponent(route.code) || BlankLayoutPage
     }
     menusData.push(_route)
     silderMenus.push(silder)

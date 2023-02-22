@@ -8,7 +8,10 @@ import { useMenuStore } from 'store/menu'
 
 const router = createRouter({
   history: createWebHashHistory(),
-  routes: menus
+  routes: menus,
+  scrollBehavior(to, form, savedPosition) {
+    return savedPosition || { top: 0 }
+  }
 })
 
 const filterPath = [
@@ -37,11 +40,11 @@ router.beforeEach((to, from, next) => {
               menuData.forEach(r => {
                 router.addRoute('base', r)
               })
-              router.addRoute('base',{
-                path: '/:pathMatch(.*)',
-                name: 'error',
-                component: () => NotFindPage
-              })
+              // router.addRoute('base',{
+              //   path: '/:pathMatch(.*)',
+              //   name: 'error',
+              //   component: () => NotFindPage
+              // })
 
               next({ ...to, replace: true })
             })
