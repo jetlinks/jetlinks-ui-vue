@@ -153,6 +153,7 @@ import { getImage } from '@/utils/comm';
 import { list, remove } from '@/api/link/protocol';
 import { message } from 'ant-design-vue';
 import Save from './Save/index.vue';
+import _ from 'lodash';
 
 const tableRef = ref<Record<string, any>>({});
 const router = useRouter();
@@ -261,7 +262,7 @@ const handlAdd = () => {
     visible.value = true;
 };
 const handlEdit = (data: object) => {
-    current.value = data;
+    current.value = _.cloneDeep(data);
     visible.value = true;
 };
 

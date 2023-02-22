@@ -1,7 +1,6 @@
 import { cloneDeep } from 'lodash-es'
-import NotFindPage from '@/views/404.vue'
 import { BlankLayoutPage, BasicLayoutPage } from 'components/Layout'
-const pagesComponent = import.meta.glob('../views/**/*.vue', { eager: true });
+const pagesComponent = import.meta.glob('../views/**/*.vue');
 
 /**
  * 权限信息
@@ -152,9 +151,12 @@ const resolveComponent = (name: any) => {
   const importPage = pagesComponent[`../views/${name}/index.vue`];
   if (!importPage) {
     console.warn(`Unknown page ${name}. Is it located under Pages with a .vue extension?`)
+    return undefined
+  } else {
+    const res = () => importPage()
+    return res
   }
   //@ts-ignore
-  return !!importPage ? importPage.default : undefined
 }
 
 const findChildrenRoute = (code: string, url: string, routes: any[] = []): MenuItem[] => {
@@ -176,7 +178,7 @@ const findDetailRouteItem = (code: string, url: string): Partial<MenuItem> | nul
   const detailComponent = resolveComponent(`${code}/Detail`)
   if (detailComponent) {
     return {
-      url: `${url}/Detail/:id`,
+      url: `${url}/detail/:id`,
       code: `${code}/Detail`,
       component: detailComponent,
       name: '详情信息',
@@ -205,11 +207,12 @@ export function filterAsnycRouter(asyncRouterMap: any, parentCode = '', level = 
   _asyncRouterMap.forEach((route: any) => {
     const _route: any = {
       path: `${route.url}`,
+      name: route.code,
       meta: {
         icon: route.icon,
         title: route.name,
         hideInMenu: route.isShow === false,
-        buttons: route.buttons || []
+        buttons: route.buttons?.map((b: any) => b.id) || []
       }
     }
 
@@ -224,12 +227,13 @@ export function filterAsnycRouter(asyncRouterMap: any, parentCode = '', level = 
       _route.children = _menusData
       silder.children = _silderMenus
       const showChildren = _route.children.some((r: any) => !r.meta.hideInMenu)
-      if (showChildren) {
-        _route.component = () => level === 1 ? BasicLayoutPage : BlankLayoutPage
+
+      if (showChildren && _route.children.length) {
+        _route.component = level === 1 ? BasicLayoutPage : BlankLayoutPage
         _route.redirect = route.children[0].url
       } else {
         const myComponent = resolveComponent(route.code)
-        _route.component = myComponent ? myComponent : BlankLayoutPage;
+        // _route.component = myComponent ? myComponent : BlankLayoutPage;
         if (!!myComponent) {
           _route.component = myComponent;
           _route.children.map((r: any) => menusData.push(r))
@@ -239,7 +243,7 @@ export function filterAsnycRouter(asyncRouterMap: any, parentCode = '', level = 
         }
       }
     } else {
-      _route.component = route.component || resolveComponent(route.code) || BlankLayoutPage;
+      _route.component = route.component || resolveComponent(route.code) || BlankLayoutPage
     }
     menusData.push(_route)
     silderMenus.push(silder)

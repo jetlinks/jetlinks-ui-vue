@@ -11,3 +11,4 @@ declare module '*.bmp';
 declare module '*.js';
 declare module '*.ts';
 declare module 'js-cookie';
+declare module 'jetlinks-ui-components';

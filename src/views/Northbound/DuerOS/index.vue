@@ -147,11 +147,13 @@ import { query, _undeploy, _deploy, _delete, queryProductList, queryTypes } from
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage } from '@/utils/comm';
 import { message } from 'ant-design-vue';
+import { useMenuStore } from 'store/menu'
 
 const router = useRouter();
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const current = ref<Record<string, any>>({});
+const menuStory = useMenuStore()
 
 const statusMap = new Map();
 statusMap.set('enabled', 'success');
@@ -236,20 +238,14 @@ const columns = [
  * 新增
  */
 const handleAdd = () => {
-    router.push('/iot/northbound/DuerOS/detail/:id');
+  menuStory.jumpPage('Northbound/DuerOS/Detail', { id: ':id'})
 };
 
 /**
  * 查看
  */
 const handleView = (id: string) => {
-    // router.push('/iot/northbound/DuerOS/detail/' + id);
-    router.push({
-        path: '/iot/northbound/DuerOS/detail/' + id,
-        query: {
-            type: 'view',
-        },
-    });
+  menuStory.jumpPage('Northbound/DuerOS/Detail', { id }, { type: 'view' })
 };
 
 const getActions = (
@@ -277,12 +273,7 @@ const getActions = (
             },
             icon: 'EditOutlined',
             onClick: () => {
-                router.push({
-                    path: '/iot/northbound/DuerOS/detail/' + data.id,
-                    query: {
-                        type: 'edit',
-                    },
-                });
+              menuStory.jumpPage('Northbound/DuerOS/Detail', { id: data.id }, { type: 'edit' })
             },
         },
         {
