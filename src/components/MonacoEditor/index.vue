@@ -73,6 +73,27 @@ watchEffect(() => {
         editorFormat();
     }, 300);
 });
+
+const insert = (val) => {
+    if (!instance) return
+    const position = instance.getPosition();
+    instance.executeEdits(instance.getValue(), [
+        {
+            range: new monaco.Range(
+                position?.lineNumber,
+                position?.column,
+                position?.lineNumber,
+                position?.column,
+            ),
+            text: val,
+        },
+    ]);
+}
+
+defineExpose({
+    editorFormat,
+    insert,
+})
 </script>
 
 <style lang="less" scoped>

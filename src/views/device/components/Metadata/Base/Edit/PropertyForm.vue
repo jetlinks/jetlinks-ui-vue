@@ -16,12 +16,10 @@
     ]">
       <a-input v-model:value="form.model.name" size="small"></a-input>
     </a-form-item>
-    <ValueTypeForm :name="['valueType']" v-model:value="form.model.valueType" key="property"></ValueTypeForm>
-    <a-form-item label="读写类型" :name="['expands', 'type']" :rules="[
-      { required: true, message: '请选择读写类型' },
-    ]">
-      <a-select v-model:value="form.model.expands.type" :options="form.expandsType" mode="multiple" size="small"></a-select>
-    </a-form-item>
+    <value-type-form :name="['valueType']" v-model:value="form.model.valueType" key="property"></value-type-form>
+
+    <expands-form :name="['expands']" v-model:value="form.model.expands" :type="type" :id="form.model.id"></expands-form>
+
     <a-form-item label="说明" name="description" :rules="[
       { max: 200, message: '最多可输入200个字符' },
     ]">
@@ -30,7 +28,17 @@
   </a-form>
 </template>
 <script setup lang="ts" name="PropertyForm">
+import { PropType } from 'vue';
+import ExpandsForm from './ExpandsForm.vue';
 import ValueTypeForm from './ValueTypeForm.vue'
+
+const props = defineProps({
+  type: {
+    type: String as PropType<'product' | 'device'>,
+    required: true,
+    default: 'product'
+  }
+})
 
 const form = reactive({
   model: {
@@ -39,20 +47,6 @@ const form = reactive({
     },
     expands: {}
   } as any,
-  expandsType: [
-    {
-      label: '读',
-      value: 'read',
-    },
-    {
-      label: '写',
-      value: 'write',
-    },
-    {
-      label: '上报',
-      value: 'report',
-    },
-  ]
 })
 
 </script>

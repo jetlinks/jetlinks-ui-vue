@@ -55,7 +55,7 @@
 <script setup lang="ts" name="BaseMetadata">
 import type { MetadataItem, MetadataType } from '@/views/device/Product/typings'
 import MetadataMapping from './columns'
-import JTable, { JColumnProps } from '@/components/Table'
+import JTable from '@/components/Table'
 import { useInstanceStore } from '@/store/instance'
 import { useProductStore } from '@/store/product'
 import { useMetadataStore } from '@/store/metadata'
@@ -97,7 +97,7 @@ const expandsType = ref({
   write: '写',
   report: '上报',
 });
-const actions: JColumnProps[] = [
+const actions = [
   {
     title: '操作',
     align: 'left',
