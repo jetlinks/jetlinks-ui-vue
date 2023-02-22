@@ -27,6 +27,10 @@ export default [
         path: '/search',
         component: () => import('@/views/demo/Search.vue')
     },
+    {
+        path: '/system/Api',
+        component: () => import('@/views/system/Apply/Api/index.vue')
+    },
 
     // end: 测试用, 可删除
 

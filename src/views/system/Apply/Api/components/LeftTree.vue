@@ -39,6 +39,7 @@ const getTreeData = () => {
     });
 };
 const clickSelectItem: TreeProps['onSelect'] = (key, node: any) => {
+    if(!node.node.parent) return
     emits('select', node.node.dataRef, node.node?.parent.node.schemas);
 };
 

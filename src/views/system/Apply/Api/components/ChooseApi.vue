@@ -10,8 +10,8 @@
             <template #url="slotProps">
                 <span
                     style="color: #1d39c4; cursor: pointer"
-                    @click="jump(slotProps.row)"
-                    >{{ slotProps.row.url }}</span
+                    @click="jump(slotProps)"
+                    >{{  slotProps.url}}</span
                 >
             </template>
         </JTable>
@@ -48,8 +48,9 @@ const rowSelection: TableProps['rowSelection'] = {
     },
 };
 
-const jump = (row:object) => {
+const jump = (row:any) => {
     emits('update:clickApi',row)
+    
 };
 </script>
 
