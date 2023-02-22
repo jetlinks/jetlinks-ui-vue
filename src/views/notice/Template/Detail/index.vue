@@ -203,7 +203,7 @@
                                 <a-col :span="12">
                                     <a-form-item label="收信人">
                                         <ToUser
-                                            v-model:to-user="
+                                            v-model:toUser="
                                                 formData.template.toUser
                                             "
                                             :type="formData.type"
@@ -214,7 +214,7 @@
                                 <a-col :span="12">
                                     <a-form-item label="收信部门">
                                         <ToOrg
-                                            v-model:to-user="
+                                            v-model:toParty="
                                                 formData.template.toParty
                                             "
                                             :type="formData.type"
@@ -225,7 +225,7 @@
                             </a-row>
                             <a-form-item label="标签推送">
                                 <ToTag
-                                    v-model:to-user="formData.template.toTag"
+                                    v-model:toTag="formData.template.toTag"
                                     :type="formData.type"
                                     :config-id="formData.configId"
                                 />
@@ -638,6 +638,11 @@ const getDetail = async () => {
     // formData.value = res.result;
     Object.assign(formData.value, res.result);
     // console.log('formData.value: ', formData.value);
+
+    if (formData.value.type === 'sms') {
+        getTemplateList();
+        getSignsList();
+    }
 };
 
 /**
@@ -693,10 +698,6 @@ const getSignsList = async () => {
 
 onMounted(() => {
     if (route.params.id) getDetail();
-    if (formData.value.type === 'sms') {
-        getTemplateList();
-        getSignsList();
-    }
 });
 
 /**

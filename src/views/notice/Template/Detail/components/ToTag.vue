@@ -5,6 +5,7 @@
         placeholder="请选择标签推送，多个标签用,号分隔"
         style="width: 100%"
         :allowClear="true"
+        v-model:value="_value"
     />
 </template>
 
@@ -17,8 +18,14 @@ type Emits = {
 const emit = defineEmits<Emits>();
 
 const props = defineProps({
+    toTag: { type: String, default: '' },
     type: { type: String, default: '' },
     configId: { type: String, default: '' },
+});
+
+const _value = computed({
+    get: () => props.toTag,
+    set: (val: string) => emit('update:toTag', val),
 });
 
 const options = ref([]);
