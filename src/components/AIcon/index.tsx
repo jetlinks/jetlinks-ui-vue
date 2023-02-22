@@ -49,6 +49,7 @@ const iconKeys = [
     'PartitionOutlined',
     'ShareAltOutlined',
     'playCircleOutlined',
+    'RightOutlined'
 ]
 
 const Icon = (props: {type: string}) => {
