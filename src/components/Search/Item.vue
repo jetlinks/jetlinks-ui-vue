@@ -110,12 +110,19 @@ import { PropType } from 'vue'
 import type { SearchItemData, SearchProps, Terms } from './types'
 import { cloneDeep, get, isArray, isFunction } from 'lodash-es'
 import { filterTreeSelectNode, filterSelectNode } from '@/utils/comm'
+import { useUrlSearchParams } from '@vueuse/core'
 
 type ItemType = SearchProps['type']
 
 interface Emit {
   (e: 'change', data: SearchItemData): void
 }
+type UrlParam = {
+  q: string | null
+  target: string | null
+}
+
+const urlParams = useUrlSearchParams<UrlParam>('hash')
 
 const props = defineProps({
   columns: {
@@ -278,28 +285,31 @@ const valueChange = () => {
   })
 }
 
+const handleQuery = (_params: UrlParam) => {
+  if (_params.q) {
+    const path = props.index < 4 ? [0, 'terms', props.index - 1] : [1, 'terms', props.index - 4]
+    const itemData: SearchItemData = get(props.termsItem.terms, path)
+    if (itemData) {
+      termsModel.type = itemData.type
+      termsModel.column = itemData.column
+      termsModel.termType = itemData.termType
+      termsModel.value = itemData.value
+      const item = columnOptionMap.get(itemData.column)
+      getComponent(item.type) // 处理Item的组件类型
+
+      // 处理options 以及 request
+      if ('options' in item) {
+        handleItemOptions(item.options)
+      }
+    }
+  }
+}
+
 handleItem()
 
-watch( props.termsItem, (newValue) => {
-
-  const path = props.index < 4 ? [0, 'terms', props.index - 1] : [1, 'terms', props.index - 4]
-  const itemData: SearchItemData = get(newValue.terms, path)
-  if (itemData) {
-    termsModel.type = itemData.type
-    termsModel.column = itemData.column
-    termsModel.termType = itemData.termType
-    termsModel.value = itemData.value
-    const item = columnOptionMap.get(itemData.column)
-    getComponent(item.type) // 处理Item的组件类型
-
-    // 处理options 以及 request
-    if ('options' in item) {
-      handleItemOptions(item.options)
-    }
-  } else {
-    handleItem()
-  }
-}, { immediate: true, deep: true })
+nextTick(() => {
+  handleQuery(urlParams)
+})
 
 </script>
 

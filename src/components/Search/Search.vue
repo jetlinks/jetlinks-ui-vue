@@ -134,7 +134,8 @@ const searchParams = reactive({
 const handleItems = () => {
   searchItems.value = []
   columnOptionMap.clear()
-  props.columns!.forEach((item, index) => {
+  const cloneColumns = cloneDeep(props.columns)
+  cloneColumns!.forEach((item, index) => {
     if (item.search && Object.keys(item.search).length) {
       columnOptionMap.set(item.dataIndex, item.search)
       searchItems.value.push({
@@ -231,6 +232,7 @@ const reset = () => {
     urlParams.q = null
     urlParams.target = null
   }
+  emit('search', terms)
 }
 
 watch(width, (value) => {
