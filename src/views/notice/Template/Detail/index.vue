@@ -806,6 +806,7 @@ const resetPublicFiles = () => {
     ) {
         formData.value.template.toTag = undefined;
         formData.value.template.toUser = undefined;
+        formData.value.template.agentId = undefined;
     }
     if (formData.value.type === 'weixin')
         formData.value.template.toParty = undefined;
@@ -960,6 +961,7 @@ const handleTypeChange = () => {
 const handleProviderChange = () => {
     formData.value.template =
         TEMPLATE_FIELD_MAP[formData.value.type][formData.value.provider];
+    console.log('formData.value.template: ', formData.value.template);
     getConfigList();
     resetPublicFiles();
 };
