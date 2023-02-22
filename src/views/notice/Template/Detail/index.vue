@@ -13,6 +13,7 @@
                                 v-model:value="formData.type"
                                 placeholder="请选择通知方式"
                                 :disabled="!!formData.id"
+                                @change="resetPublicFiles"
                             >
                                 <a-select-option
                                     v-for="(item, index) in NOTICE_METHOD"
@@ -40,7 +41,7 @@
                             <RadioCard
                                 :options="msgType"
                                 v-model="formData.provider"
-                                @change="getConfigList"
+                                @change="handleProviderChange"
                             />
                         </a-form-item>
                         <a-form-item
@@ -227,7 +228,8 @@
                                                     }"
                                                     :showUploadList="false"
                                                     @change="
-                                                        (e) => handleChange(e)
+                                                        (e) =>
+                                                            handleLinkChange(e)
                                                     "
                                                 >
                                                     <AIcon
@@ -827,7 +829,7 @@ watch(
 
         if (val !== 'email') getConfigList();
         clearValid();
-        resetPublicFiles();
+        // console.log('formData.value: ', formData.value);
 
         if (val === 'sms') {
             getTemplateList();
@@ -842,7 +844,6 @@ watch(
         formData.value.template = TEMPLATE_FIELD_MAP[formData.value.type][val];
 
         clearValid();
-        resetPublicFiles();
     },
 );
 
@@ -941,9 +942,17 @@ const getConfigList = async () => {
 };
 
 /**
+ * 通知类型改变
+ */
+const handleProviderChange = () => {
+    getConfigList();
+    resetPublicFiles();
+};
+
+/**
  * link消息类型 图片链接
  */
-const handleChange = (info: UploadChangeParam) => {
+const handleLinkChange = (info: UploadChangeParam) => {
     if (info.file.status === 'done') {
         formData.value.template.link.picUrl = info.file.response?.result;
     }
