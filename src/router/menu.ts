@@ -29,7 +29,7 @@ export default [
     },
     {
         path: '/system/Api',
-        component: () => import('@/views/system/Apply/Api/index.vue')
+        component: () => import('@/views/system/Platforms/index.vue')
     },
 
     // end: 测试用, 可删除
