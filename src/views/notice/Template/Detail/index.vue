@@ -635,8 +635,8 @@ const clearValid = () => {
  */
 const getDetail = async () => {
     const res = await templateApi.detail(route.params.id as string);
-    // console.log('res: ', res);
-    formData.value = res.result;
+    // formData.value = res.result;
+    Object.assign(formData.value, res.result);
     // console.log('formData.value: ', formData.value);
 };
 // getDetail();
@@ -705,8 +705,6 @@ const handleSubmit = () => {
     if (formData.value.template.messageType === 'link')
         delete formData.value.template.markdown;
     // console.log('formData.value: ', formData.value);
-    // const form = useForm(formData.value, formRules.value);
-    // form.
     validate()
         .then(async () => {
             formData.value.template.ttsCode =

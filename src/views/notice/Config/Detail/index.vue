@@ -427,8 +427,8 @@ const clearValid = () => {
 const getDetail = async () => {
     if (route.params.id === ':id') return;
     const res = await configApi.detail(route.params.id as string);
-    // console.log('res: ', res);
-    formData.value = res.result;
+    // formData.value = res.result;
+    Object.assign(formData.value, res.result);
     // console.log('formData.value: ', formData.value);
 };
 getDetail();
@@ -438,8 +438,6 @@ getDetail();
  */
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
-    // const form = useForm(formData.value, formRules.value);
-    // form.
     validate()
         .then(async () => {
             // console.log('formData.value: ', formData.value);

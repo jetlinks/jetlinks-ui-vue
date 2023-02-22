@@ -353,7 +353,8 @@ const saveProductVis = ref(false);
 const getDetail = async () => {
     const res = await DeviceApi.detail(route.query.id as string);
     // console.log('res: ', res);
-    formData.value = res.result;
+    // formData.value = res.result;
+    Object.assign(formData.value, res.result);
     formData.value.channel = res.result.provider;
 };
 
@@ -366,8 +367,7 @@ onMounted(() => {
  */
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
-    const form = useForm(formData.value, formRules.value);
-    form.validate()
+    validate()
         .then(async () => {
             btnLoading.value = true;
             let res;
