@@ -74,12 +74,20 @@ export const useMenuStore = defineStore({
     hasMenu(code: string) {
       return this.menus[code]?.path
     },
-    jumpPage(code: string, params: Record<string, any>, query: Record<string, any>) {
-      const path = this.menus[code]?.path
+    /**
+     * 路由跳转
+     * @param name 菜单code
+     * @param params 路由参数
+     * @param query 路由参数
+     */
+    jumpPage(name: string, params?: Record<string, any>, query?: Record<string, any>) {
+      const path = this.hasMenu(name)
       if (path) {
         router.push({
-          path, params, query
+          name, params, query
         })
+      } else {
+        console.warn(`没有找到对应的页面: ${name}`)
       }
     },
     queryMenuTree(isCommunity = false): Promise<any[]> {
