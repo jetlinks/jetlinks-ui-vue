@@ -639,7 +639,6 @@ const getDetail = async () => {
     Object.assign(formData.value, res.result);
     // console.log('formData.value: ', formData.value);
 };
-// getDetail();
 
 /**
  * 获取绑定配置
@@ -682,7 +681,6 @@ const getTemplateList = async () => {
     );
     templateList.value = result;
 };
-getTemplateList();
 
 /**
  * 获取签名
@@ -692,7 +690,14 @@ const getSignsList = async () => {
     const { result } = await templateApi.getSigns(formData.value.configId);
     signsList.value = result;
 };
-getSignsList();
+
+onMounted(() => {
+    if (route.params.id) getDetail();
+    if (formData.value.type === 'sms') {
+        getTemplateList();
+        getSignsList();
+    }
+});
 
 /**
  * 表单提交
