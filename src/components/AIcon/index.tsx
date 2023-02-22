@@ -49,6 +49,8 @@ const iconKeys = [
     'PartitionOutlined',
     'ShareAltOutlined',
     'playCircleOutlined',
+    'FileTextOutlined',
+    'UploadOutlined'
 ]
 
 const Icon = (props: {type: string}) => {
