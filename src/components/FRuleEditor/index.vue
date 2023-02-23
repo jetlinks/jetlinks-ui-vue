@@ -1,7 +1,7 @@
 <template>
   <Editor key="simple" @change="change" v-model:value="_value" :id="id" />
-  {{ ruleEditorStore.state.model }}
-  <Advance v-if="ruleEditorStore.state.model === 'advance'" :model="ruleEditorStore.state.model"
+  {{ _value }}
+  <Advance v-if="ruleEditorStore.state.model === 'advance'" v-model:value="_value" :model="ruleEditorStore.state.model"
     :virtualRule="virtualRule" :id="id" @change="change" />
 </template>
 <script setup lang="ts" name="FRuleEditor">

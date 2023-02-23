@@ -166,3 +166,13 @@ export const saveDevice = (data:any) => server.post('/device-product',data)
  * 更新选择设备(设备接入)
  */
 export const updateDevice = (data:any) => server.patch('/device-product',data)
+
+/**
+ * 获取操作符
+ */
+export const getOperator = () => server.get<OperatorItem>('/property-calculate-rule/description')
+
+/**
+ * 获取聚合函数列表
+ */
+export const getStreamingAggType = () => server.get<Record<string, string>[]>('/dictionary/streaming-agg-type/items')
