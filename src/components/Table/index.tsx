@@ -1,11 +1,12 @@
 import { UnorderedListOutlined, AppstoreOutlined } from '@ant-design/icons-vue'
 import styles from './index.module.less'
-import { Pagination, Table, Empty, Spin, Alert } from 'ant-design-vue'
+import { Pagination, Table, Spin, Alert } from 'ant-design-vue'
 import type { TableProps } from 'ant-design-vue/es/table'
 import type { TooltipProps } from 'ant-design-vue/es/tooltip'
 import type { PopconfirmProps } from 'ant-design-vue/es/popconfirm'
 import { CSSProperties, PropType } from 'vue';
 import type { JColumnsProps } from './types'
+import JEmpty from '@/components/Empty/index.vue'
 
 enum ModelEnum {
     TABLE = 'TABLE',
@@ -146,7 +147,6 @@ const JTable = defineComponent<JTableProps>({
         }
     } as any,
     setup(props: JTableProps, { slots, emit, expose }) {
-        const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE
         const _model = ref<keyof typeof ModelEnum>(props.model ? props.model : ModelEnum.CARD); // 模式切换
         const column = ref<number>(props.gridColumn || 4);
         const _dataSource = ref<Record<string, any>[]>([])
@@ -323,7 +323,7 @@ const JTable = defineComponent<JTableProps>({
                                                 )
                                             }
                                         </div> :
-                                        <div><Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /></div>
+                                        <div><JEmpty style="margin: 10% 0" /></div>
                                 }
                             </div> :
                             <div>
@@ -343,7 +343,8 @@ const JTable = defineComponent<JTableProps>({
                                             } else {
                                                 return record?.[column?.dataIndex] || ''
                                             }
-                                        }
+                                        },
+                                        emptyText: () => <JEmpty style="margin: 10% 0" />
                                     }}
                                 />
                             </div>
