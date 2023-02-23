@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { queryOwnThree } from '@/api/system/menu'
 import { filterAsnycRouter, MenuItem } from '@/utils/menu'
 import { isArray } from 'lodash-es'
+import { usePermissionStore } from './permission'
 import router from '@/router'
 
 const defaultOwnParams = [
@@ -45,26 +46,15 @@ export const useMenuStore = defineStore({
   }),
   getters: {
     hasPermission(state) {
-      return (code: string | string[]) => {
-        if (!code) {
+      return (menuCode: string | string[]) => {
+        if (!menuCode) {
           return true
         }
         if (!!Object.keys(state.menus).length) {
-          let codes: string[] = []
-
-          if (typeof code === 'string') {
-            codes.push(code)
-          } else {
-            codes = code
+          if (typeof menuCode === 'string') {
+            return !!this.menus[menuCode]
           }
-
-          return codes.some(_c => {
-            const menu_code = _c.split(':')
-            if (menu_code.length > 1) {
-              return !!this.menus[menu_code[0]]?.buttons?.includes(menu_code[1])
-            }
-            return false
-          })
+          return menuCode.some(code => !!this.menus[code])
         }
         return false
       }
@@ -95,6 +85,8 @@ export const useMenuStore = defineStore({
         //过滤非集成的菜单
         const resp = await queryOwnThree({ paging: false, terms: defaultOwnParams })
         if (resp.success) {
+          const permission = usePermissionStore()
+          permission.permissions = {}
           const { menusData, silderMenus } = filterAsnycRouter(resp.result)
           this.menus = {}
           const handleMenuItem = (menu: any) => {
@@ -104,6 +96,7 @@ export const useMenuStore = defineStore({
                   path: menuItem.path,
                   buttons: menuItem.meta.buttons
                 }
+                permission.permissions[menuItem.name] = menuItem.meta.buttons
                 if (menuItem.children && menuItem.children.length) {
                   handleMenuItem(menuItem.children)
                 }
