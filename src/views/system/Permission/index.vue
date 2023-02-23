@@ -1,120 +1,127 @@
 <template>
-    <div class="permission-container">
-        <Search :columns="query.columns" @search="query.search" />
+    <page-container>
+        <div class="permission-container">
+            <Search :columns="query.columns" @search="query.search" />
 
-        <JTable
-            ref="tableRef"
-            :columns="table.columns"
-            :request="getPermission_api"
-            model="TABLE"
-            :params="query.params"
-            :defaultParams="{ sorts: [{ name: 'id', order: 'asc' }] }"
-        >
-            <template #headerTitle>
-                <PermissionButton
-                    type="primary"
-                    :uhasPermission="`${permission}:add`"
-                    @click="table.openDialog(undefined)"
-                >
-                    <AIcon type="PlusOutlined" />新增
-                </PermissionButton>
-                <a-dropdown trigger="hover">
-                    <a-button>批量操作</a-button>
-                    <template #overlay>
-                        <a-menu>
-                            <a-menu-item>
-                                <a-upload
-                                    name="file"
-                                    action="#"
-                                    accept=".json"
-                                    :showUploadList="false"
-                                    :before-upload="table.clickImport"
-                                    :disabled="
-                                        !hasPermission(`${permission}:import`)
-                                    "
-                                >
-                                    <PermissionButton
-                                        :hasPermission="`${permission}:import`"
+            <JTable
+                ref="tableRef"
+                :columns="table.columns"
+                :request="getPermission_api"
+                model="TABLE"
+                :params="query.params"
+                :defaultParams="{ sorts: [{ name: 'id', order: 'asc' }] }"
+            >
+                <template #headerTitle>
+                    <PermissionButton
+                        type="primary"
+                        :uhasPermission="`${permission}:add`"
+                        @click="table.openDialog(undefined)"
+                    >
+                        <AIcon type="PlusOutlined" />新增
+                    </PermissionButton>
+                    <a-dropdown trigger="hover">
+                        <a-button>批量操作</a-button>
+                        <template #overlay>
+                            <a-menu>
+                                <a-menu-item>
+                                    <a-upload
+                                        name="file"
+                                        action="#"
+                                        accept=".json"
+                                        :showUploadList="false"
+                                        :before-upload="table.clickImport"
+                                        :disabled="
+                                            !hasPermission(
+                                                `${permission}:import`,
+                                            )
+                                        "
                                     >
-                                        导入
+                                        <PermissionButton
+                                            :hasPermission="`${permission}:import`"
+                                        >
+                                            导入
+                                        </PermissionButton>
+                                    </a-upload>
+                                </a-menu-item>
+                                <a-menu-item>
+                                    <PermissionButton
+                                        :uhasPermission="`${permission}:export`"
+                                        :popConfirm="{
+                                            title: `确认导出？`,
+                                            onConfirm: () =>
+                                                table.clickExport(),
+                                        }"
+                                    >
+                                        导出
                                     </PermissionButton>
-                                </a-upload>
-                            </a-menu-item>
-                            <a-menu-item>
-                                <PermissionButton
-                                    :uhasPermission="`${permission}:export`"
-                                    :popConfirm="{
-                                        title: `确认导出？`,
-                                        onConfirm: () => table.clickExport(),
-                                    }"
-                                >
-                                    导出
-                                </PermissionButton>
-                            </a-menu-item>
-                        </a-menu>
-                    </template>
-                </a-dropdown>
-            </template>
-            <template #status="slotProps">
-                <StatusLabel :status-value="slotProps.status" />
-            </template>
-            <template #action="slotProps">
-                <a-space :size="16">
-                    <PermissionButton
-                        :uhasPermission="`${permission}:update`"
-                        type="link"
-                        :tooltip="{
-                            title: '编辑',
-                        }"
-                        @click="table.openDialog(slotProps)"
-                    >
-                        <AIcon type="EditOutlined" />
-                    </PermissionButton>
+                                </a-menu-item>
+                            </a-menu>
+                        </template>
+                    </a-dropdown>
+                </template>
+                <template #status="slotProps">
+                    <StatusLabel :status-value="slotProps.status" />
+                </template>
+                <template #action="slotProps">
+                    <a-space :size="16">
+                        <PermissionButton
+                            :uhasPermission="`${permission}:update`"
+                            type="link"
+                            :tooltip="{
+                                title: '编辑',
+                            }"
+                            @click="table.openDialog(slotProps)"
+                        >
+                            <AIcon type="EditOutlined" />
+                        </PermissionButton>
 
-                    <PermissionButton
-                        :uhasPermission="`${permission}:action`"
-                        type="link"
-                        :popConfirm="{
-                            title: `确定要${
-                                slotProps.status ? '禁用' : '启用'
-                            }吗？`,
-                            onConfirm: () => table.changeStatus(slotProps),
-                        }"
-                        :tooltip="{ title: slotProps.status ? '禁用' : '启用' }"
-                    >
-                        <AIcon
-                            :type="
-                                slotProps.status
-                                    ? 'StopOutlined'
-                                    : 'PlayCircleOutlined '
-                            "
-                        />
-                    </PermissionButton>
+                        <PermissionButton
+                            :uhasPermission="`${permission}:action`"
+                            type="link"
+                            :popConfirm="{
+                                title: `确定要${
+                                    slotProps.status ? '禁用' : '启用'
+                                }吗？`,
+                                onConfirm: () => table.changeStatus(slotProps),
+                            }"
+                            :tooltip="{
+                                title: slotProps.status ? '禁用' : '启用',
+                            }"
+                        >
+                            <AIcon
+                                :type="
+                                    slotProps.status
+                                        ? 'StopOutlined'
+                                        : 'PlayCircleOutlined '
+                                "
+                            />
+                        </PermissionButton>
 
-                    <PermissionButton
-                        :uhasPermission="`${permission}:delete`"
-                        type="link"
-                        :tooltip="{
-                            title: slotProps.status
-                                ? '请先禁用，再删除'
-                                : '删除',
-                        }"
-                        :popConfirm="{
-                            title: `确认删除`,
-                            onConfirm: () => table.clickDel(slotProps),
-                        }"
-                        :disabled="slotProps.status"
-                    >
-                        <AIcon type="DeleteOutlined" />
-                    </PermissionButton>
-                </a-space>
-            </template>
-        </JTable>
+                        <PermissionButton
+                            :uhasPermission="`${permission}:delete`"
+                            type="link"
+                            :tooltip="{
+                                title: slotProps.status
+                                    ? '请先禁用，再删除'
+                                    : '删除',
+                            }"
+                            :popConfirm="{
+                                title: `确认删除`,
+                                onConfirm: () => table.clickDel(slotProps),
+                            }"
+                            :disabled="slotProps.status"
+                        >
+                            <AIcon type="DeleteOutlined" />
+                        </PermissionButton>
+                    </a-space>
+                </template>
+            </JTable>
 
-        <div class="dialogs">
-            <EditDialog ref="editDialogRef" @refresh="table.refresh" />
+            <div class="dialogs">
+                <EditDialog ref="editDialogRef" @refresh="table.refresh" />
+            </div>
         </div>
-    </div>
+    </page-container>
 </template>
 
 <script setup lang="ts">
@@ -281,7 +288,6 @@ const table = reactive({
 
 <style lang="less" scoped>
 .permission-container {
-    padding: 24px;
 
     .ant-dropdown-trigger {
         margin-left: 12px;

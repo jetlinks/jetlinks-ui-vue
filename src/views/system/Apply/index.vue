@@ -1,13 +1,8 @@
 <template>
-    <div>
-        应用管理
-    </div>
+    <page-container> 应用管理
+         </page-container>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts"></script>
 
-</script>
-
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -1,73 +1,79 @@
 <template>
-    <div class="menu-container">
-        <Search :columns="query.columns" @search="query.search" />
+    <page-container>
+        <div class="menu-container">
+            <Search :columns="query.columns" @search="query.search" />
 
-        <JTable
-            ref="tableRef"
-            :columns="table.columns"
-            :request="table.getList"
-            model="TABLE"
-            :params="query.params"
-        >
-            <template #headerTitle>
-                <PermissionButton
-                    type="primary"
-                    :uhasPermission="`${permission}:add`"
-                    @click="table.toDetails({})"
-                >
-                    <AIcon type="PlusOutlined" />新增
-                </PermissionButton>
-                <a-button
-                    style="margin-left: 12px"
-                    @click="router.push('/system/Menu/Setting')"
-                    >菜单配置</a-button
-                >
-                <!-- <PermissionButton
-                    :uhasPermission="true"
-                    @click="router.push('/system/Menu/Setting')"
-                >
-                    菜单配置
-                </PermissionButton> -->
-            </template>
-            <template #createTime="slotProps">
-                {{ moment(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss') }}
-            </template>
-            <template #action="slotProps">
-                <a-space :size="16">
-                    <a-tooltip>
-                        <template #title>查看</template>
-                        <a-button
-                            style="padding: 0"
-                            type="link"
-                            @click="table.toDetails(slotProps)"
-                        >
-                            <search-outlined />
-                        </a-button>
-                    </a-tooltip>
-
+            <JTable
+                ref="tableRef"
+                :columns="table.columns"
+                :request="table.getList"
+                model="TABLE"
+                :params="query.params"
+            >
+                <template #headerTitle>
                     <PermissionButton
-                        type="link"
+                        type="primary"
                         :uhasPermission="`${permission}:add`"
-                        :tooltip="{ title: '新增子菜单' }"
-                        @click="table.addChildren(slotProps)"
+                        @click="table.toDetails({})"
                     >
-                        <AIcon type="PlusCircleOutlined" />
+                        <AIcon type="PlusOutlined" />新增
                     </PermissionButton>
-                    <PermissionButton
-                        type="link"
-                        :uhasPermission="`${permission}:delete`"
-                        :tooltip="{ title: '删除' }"
-                        :popConfirm="{
-                            title: `是否删除该菜单`,
-                            onConfirm: () => table.clickDel(slotProps),
-                        }"
+                    <a-button
+                        style="margin-left: 12px"
+                        @click="router.push('/system/Menu/Setting')"
+                        >菜单配置</a-button
                     >
-                        <AIcon type="DeleteOutlined" />
-                    </PermissionButton>
-                </a-space>
-            </template>
-        </JTable>
-    </div>
+                    <!-- <PermissionButton
+                        :uhasPermission="true"
+                        @click="router.push('/system/Menu/Setting')"
+                    >
+                        菜单配置
+                    </PermissionButton> -->
+                </template>
+                <template #createTime="slotProps">
+                    {{
+                        moment(slotProps.createTime).format(
+                            'YYYY-MM-DD HH:mm:ss',
+                        )
+                    }}
+                </template>
+                <template #action="slotProps">
+                    <a-space :size="16">
+                        <a-tooltip>
+                            <template #title>查看</template>
+                            <a-button
+                                style="padding: 0"
+                                type="link"
+                                @click="table.toDetails(slotProps)"
+                            >
+                                <search-outlined />
+                            </a-button>
+                        </a-tooltip>
+
+                        <PermissionButton
+                            type="link"
+                            :uhasPermission="`${permission}:add`"
+                            :tooltip="{ title: '新增子菜单' }"
+                            @click="table.addChildren(slotProps)"
+                        >
+                            <AIcon type="PlusCircleOutlined" />
+                        </PermissionButton>
+                        <PermissionButton
+                            type="link"
+                            :uhasPermission="`${permission}:delete`"
+                            :tooltip="{ title: '删除' }"
+                            :popConfirm="{
+                                title: `是否删除该菜单`,
+                                onConfirm: () => table.clickDel(slotProps),
+                            }"
+                        >
+                            <AIcon type="DeleteOutlined" />
+                        </PermissionButton>
+                    </a-space>
+                </template>
+            </JTable>
+        </div>
+    </page-container>
 </template>
 
 <script setup lang="ts">
@@ -269,8 +275,6 @@ const table = reactive({
 
 <style lang="less" scoped>
 .menu-container {
-    padding: 24px;
-
     :deep(.ant-table-cell) {
         .ant-btn-link {
             padding: 0;
