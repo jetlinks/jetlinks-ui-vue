@@ -1,5 +1,5 @@
 <template>
-  <div class='JSearch-warp' ref='searchRef'>
+  <div :class="['JSearch-warp', props.class]" ref='searchRef'>
     <!--  高级模式  -->
     <div v-if='props.type === "advanced"' :class='["JSearch-content senior", expand ? "senior-expand" : "", screenSize ? "big" : "small"]'>
       <div :class='["JSearch-items", expand ? "items-expand" : "", layout]'>
@@ -94,6 +94,10 @@ const props = defineProps({
     type: String,
     default: '',
     required: true
+  },
+  class: {
+    type: String,
+    default: ''
   }
 })
 
@@ -375,10 +379,10 @@ handleItems()
 
     &.simple {
       .JSearch-items {
-        flex-grow: 4;
+        flex-grow: 1;
       }
       .JSearch-footer {
-        flex-grow: 3;
+        flex-grow: 0;
       }
     }
   }
