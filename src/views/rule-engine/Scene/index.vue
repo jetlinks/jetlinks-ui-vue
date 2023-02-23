@@ -5,13 +5,24 @@
     />
     <j-table
       :columns='columns'
-    />
+    >
+      <template #headerTitle>
+        <a-space>
+          <a-button type="primary" @click="visible = true">新增</a-button>
+        </a-space>
+      </template>
+    </j-table>
+    <SaveModal v-if='visible' @close='visible = false'/>
   </page-container>
 </template>
 
 <script setup lang='ts'>
-
+import SaveModal from './Save/save.vue'
 import type { SceneItem } from './typings'
+import { useMenuStore } from 'store/menu'
+
+const menuStory = useMenuStore()
+const visible = ref<boolean>(false)
 
 const columns = [
   {
@@ -52,6 +63,24 @@ const columns = [
     }
   }
 ]
+
+/**
+ * 编辑
+ * @param id
+ * @param triggerType 触发类型
+ */
+const handleEdit = (id: string, triggerType: string) => {
+  menuStory.jumpPage('Scene/Save', { }, { triggerType: triggerType, id, type: 'edit' })
+}
+
+/**
+ * 查看
+ * @param id
+ * @param triggerType 触发类型
+ */
+const handleView = (id: string, triggerType: string) => {
+  menuStory.jumpPage('Scene/Save', { }, { triggerType: triggerType, id, type: 'view' })
+};
 </script>
 
 <style scoped>
