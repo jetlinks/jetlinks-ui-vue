@@ -90,6 +90,11 @@ const insert = (val) => {
     ]);
 }
 
+watch(() => props.value,
+    (val) => {
+        instance.setValue(val)
+    })
+
 defineExpose({
     editorFormat,
     insert,
