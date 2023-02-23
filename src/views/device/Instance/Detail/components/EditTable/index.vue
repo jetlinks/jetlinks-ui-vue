@@ -1,5 +1,5 @@
 <template>
-    <a-spin :spinning="loading">
+    <a-spin :spinning="loading" v-if="metadata.properties.length">
         <a-card>
             <template #extra>
                 <a-space>
@@ -85,6 +85,7 @@
                             <a-tooltip title="解绑">
                                 <a-popconfirm
                                     title="确认解绑"
+                                    :disabled="!record.id"
                                     @confirm="unbind(record.id)"
                                 >
                                     <a-button type="link" :disabled="!record.id"
@@ -106,6 +107,9 @@
             :metaData="modelRef.dataSource"
         />
     </a-spin>
+    <a-card v-else>
+        <JEmpty description='暂无数据，请配置物模型' style="margin: 10% 0" />
+    </a-card>
 </template>
 
 <script lang="ts" setup>
