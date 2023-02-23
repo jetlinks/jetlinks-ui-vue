@@ -3,6 +3,7 @@
     :columns="columns"
     type='simple'
     @search="handleSearch"
+    class='search'
   />
   <j-table
     :columns='columns'
@@ -226,6 +227,8 @@ const handleClick = (detail: any) => {
 
 </script>
 
-<style scoped>
-
+<style scoped lang='less'>
+.search {
+  margin-bottom: 0;
+}
 </style>
