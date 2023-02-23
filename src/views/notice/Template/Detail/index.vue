@@ -801,7 +801,7 @@ const resetPublicFiles = () => {
     formData.value.configId = undefined;
 
     if (
-        formData.value.type === 'dingTalk' ||
+        formData.value.provider === 'dingTalkMessage' ||
         formData.value.type === 'weixin'
     ) {
         formData.value.template.toTag = undefined;
@@ -961,7 +961,6 @@ const handleTypeChange = () => {
 const handleProviderChange = () => {
     formData.value.template =
         TEMPLATE_FIELD_MAP[formData.value.type][formData.value.provider];
-    console.log('formData.value.template: ', formData.value.template);
     getConfigList();
     resetPublicFiles();
 };
@@ -1023,29 +1022,32 @@ const handleSubmit = () => {
     if (formData.value.template.messageType === 'link')
         delete formData.value.template.markdown;
     // console.log('formData.value: ', formData.value);
-    validate()
-        .then(async () => {
-            formData.value.template.ttsCode =
-                formData.value.template.templateCode;
-            btnLoading.value = true;
-            let res;
-            if (!formData.value.id) {
-                res = await templateApi.save(formData.value);
-            } else {
-                res = await templateApi.update(formData.value);
-            }
-            // console.log('res: ', res);
-            if (res?.success) {
-                message.success('保存成功');
-                router.back();
-            }
-        })
-        .catch((err) => {
-            console.log('err: ', err);
-        })
-        .finally(() => {
-            btnLoading.value = false;
-        });
+    // 提交必填验证无法通过, 实际已有值, 问题未知, 暂时解决方法: 延迟验证
+    setTimeout(() => {
+        validate()
+            .then(async () => {
+                formData.value.template.ttsCode =
+                    formData.value.template.templateCode;
+                btnLoading.value = true;
+                let res;
+                if (!formData.value.id) {
+                    res = await templateApi.save(formData.value);
+                } else {
+                    res = await templateApi.update(formData.value);
+                }
+                // console.log('res: ', res);
+                if (res?.success) {
+                    message.success('保存成功');
+                    router.back();
+                }
+            })
+            .catch((err) => {
+                console.log('err: ', err);
+            })
+            .finally(() => {
+                btnLoading.value = false;
+            });
+    }, 200);
 };
 
 // test

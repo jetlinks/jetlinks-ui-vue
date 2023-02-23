@@ -329,8 +329,6 @@ const getActions = (
             },
             icon: 'EditOutlined',
             onClick: () => {
-                // visible.value = true;
-                // current.value = data;
                 menuStory.jumpPage('notice/Config/Detail', {
                     id: data.id,
                 });
