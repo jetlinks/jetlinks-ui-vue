@@ -145,9 +145,9 @@ import { getImage } from '@/utils/comm';
 import type { ActionsType } from '@/components/Table';
 import { message } from 'ant-design-vue';
 import { queryList, update, del } from '@/api/iot-card/platform';
-
+import { useMenuStore } from 'store/menu'
+const menuStory = useMenuStore()
 const router = useRouter()
-
 const platformRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 
@@ -225,7 +225,8 @@ const getActions = (
             },
             icon: 'EditOutlined',
             onClick: () => {
-              router.push(`/iot-card/Platform/detail/${data.id}`);
+            //   router.push(`/iot-card/Platform/detail/${data.id}`);
+            menuStory.jumpPage('iot-card/Platform/Detail',{id:data.id});
             },
         },
         {
@@ -298,7 +299,7 @@ const handleSearch = (e: any) => {
  * 新增
  */
 const handleAdd = () => {
-  router.push(`/iot-card/Platform/detail/:id`)
+  menuStory.jumpPage('iot-card/Platform/Detail',{id:'add'})
 };
 </script>
 

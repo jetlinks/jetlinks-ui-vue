@@ -1,5 +1,5 @@
 <template>
-    <a-spin :spinning="loading">
+    <a-spin :spinning="loading" v-if="metadata.properties.length">
         <a-card>
             <template #extra>
                 <a-space>
@@ -53,6 +53,7 @@
                                     v-model="record[column.dataIndex]"
                                     :id="record.channelId"
                                     type="COLLECTOR"
+                                    :edgeId="instanceStore.current.parentId"
                                 />
                             </a-form-item>
                         </template>
@@ -70,6 +71,7 @@
                                     v-model="record[column.dataIndex]"
                                     :id="record.collectorId"
                                     type="POINT"
+                                    :edgeId="instanceStore.current.parentId"
                                 />
                             </a-form-item>
                         </template>
@@ -85,6 +87,7 @@
                             <a-tooltip title="解绑">
                                 <a-popconfirm
                                     title="确认解绑"
+                                    :disabled="!record.id"
                                     @confirm="unbind(record.id)"
                                 >
                                     <a-button type="link" :disabled="!record.id"
@@ -97,27 +100,30 @@
                 </a-table>
             </a-form>
         </a-card>
-        <!-- <PatchMapping
+        <PatchMapping
             :deviceId="instanceStore.current.id"
             v-if="visible"
             @close="visible = false"
             @save="onPatchBind"
-            :type="provider"
             :metaData="modelRef.dataSource"
-        /> -->
+            :edgeId="instanceStore.current.parentId"
+        />
     </a-spin>
+    <a-card v-else>
+        <JEmpty description='暂无数据，请配置物模型' style="margin: 10% 0" />
+    </a-card>
 </template>
 
 <script lang="ts" setup>
 import { useInstanceStore } from '@/store/instance';
 import {
-    queryMapping,
-    saveMapping,
-    removeMapping,
-    queryChannelNoPaging,
+    getEdgeMap,
+    saveEdgeMap,
+    removeEdgeMap,
+    edgeChannel,
 } from '@/api/device/instance';
-import MSelect from '../components/MSelect.vue';
-// import PatchMapping from '../components/PatchMapping.vue';
+import MSelect from './MSelect.vue';
+import PatchMapping from './PatchMapping.vue';
 import { message } from 'ant-design-vue/es';
 
 const columns = [
@@ -162,13 +168,6 @@ const filterOption = (input: string, option: any) => {
     return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
 
-const props = defineProps({
-    provider: {
-        type: String,
-        default: 'MODBUS_TCP',
-    },
-});
-
 const instanceStore = useInstanceStore();
 const metadata = JSON.parse(instanceStore.current?.metadata || '{}');
 const loading = ref<boolean>(false);
@@ -182,25 +181,15 @@ const formRef = ref();
 const visible = ref<boolean>(false);
 
 const getChannel = async () => {
-    const resp: any = await queryChannelNoPaging({
-        paging: false,
-        terms: [
-            {
-                terms: [
-                    {
-                        column: 'provider',
-                        value: props.provider,
-                    },
-                ],
-            },
-        ],
-    });
-    if (resp.status === 200) {
-        channelList.value = resp.result?.map((item: any) => ({
-            label: item.name,
-            value: item.id,
-            provider: item.provider,
-        }));
+    if (instanceStore.current?.parentId) {
+        const resp: any = await edgeChannel(instanceStore.current.parentId);
+        if (resp.status === 200) {
+            channelList.value = resp.result?.[0]?.map((item: any) => ({
+                label: item.name,
+                value: item.id,
+                provider: item.provider,
+            }));
+        }
     }
 };
 
@@ -214,12 +203,15 @@ const handleSearch = async () => {
         name: item.name,
     }));
     if (_metadata && _metadata.length) {
-        const resp: any = await queryMapping(
-            'device',
-            instanceStore.current.id,
-        );
+        const resp: any = await getEdgeMap(instanceStore.current?.parentId || '', {
+            deviceId: instanceStore.current.id,
+            query: {},
+        }).catch(() => {
+            modelRef.dataSource = _metadata;
+            loading.value = false;
+        })
         if (resp.status === 200) {
-            const array = resp.result.reduce((x: any, y: any) => {
+            const array = resp.result?.[0].reduce((x: any, y: any) => {
                 const metadataId = _metadata.find(
                     (item: any) => item.metadataId === y.metadataId,
                 );
@@ -238,9 +230,10 @@ const handleSearch = async () => {
 
 const unbind = async (id: string) => {
     if (id) {
-        const resp = await removeMapping('device', instanceStore.current.id, [
-            id,
-        ]);
+        const resp = await removeEdgeMap(instanceStore.current?.parentId || '', {
+            deviceId: instanceStore.current.id,
+            idList: [id],
+        });
         if (resp.status === 200) {
             message.success('操作成功！');
             handleSearch();
@@ -265,11 +258,12 @@ const onSave = () => {
                 (i: any) => i.channelId,
             );
             if (arr && arr.length !== 0) {
-                const resp = await saveMapping(
-                    instanceStore.current.id,
-                    props.provider,
-                    arr,
-                );
+                const submitData = {
+                    deviceId: instanceStore.current.id,
+                    provider: (arr[0] as any)?.provider,
+                    requestList: arr,
+                };
+                const resp = await saveEdgeMap(instanceStore.current.parentId || '', submitData);
                 if (resp.status === 200) {
                     message.success('操作成功！');
                     handleSearch();

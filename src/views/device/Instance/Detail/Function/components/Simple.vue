@@ -14,60 +14,79 @@
             >
                 <a-row :gutter="30">
                     <a-col :span="15">
-                        <a-table
-                            :columns="columns"
-                            :data-source="func.table"
-                            :pagination="false"
-                            rowKey="id"
-                        >
-                            <template #bodyCell="{ column, text, record }">
-                                <template v-if="column.dataIndex === 'type'">
-                                    <span>{{ record.type }}</span>
-                                    <a-tooltip v-if="record.type === 'object'">
-                                        <template slot="title">
-                                            请按照json格式输入
-                                        </template>
+                        <a-form :ref="`${func.id}Ref`" :model="func">
+                            <a-table
+                                :columns="columns"
+                                :data-source="func.table"
+                                :pagination="false"
+                                rowKey="id"
+                            >
+                                <template #bodyCell="{ column, record, index }">
+                                    <template
+                                        v-if="column.dataIndex === 'type'"
+                                    >
+                                        <span>{{ record.type }}</span>
+                                        <a-tooltip
+                                            v-if="record.type === 'object'"
+                                        >
+                                            <template slot="title">
+                                                请按照json格式输入
+                                            </template>
 
-                                        <AIcon
-                                            type="QuestionCircleOutlined"
-                                            :style="{
-                                                marginLeft: '5px',
-                                                cursor: 'help',
+                                            <AIcon
+                                                type="QuestionCircleOutlined"
+                                                :style="{
+                                                    marginLeft: '5px',
+                                                    cursor: 'help',
+                                                }"
+                                            />
+                                        </a-tooltip>
+                                    </template>
+                                    <template
+                                        v-if="column.dataIndex === 'value'"
+                                    >
+                                        <a-form-item
+                                            :name="['table', index, 'value']"
+                                            :rules="{
+                                                required: true,
+                                                message: '',
                                             }"
-                                        />
-                                    </a-tooltip>
+                                            has-feedback
+                                        >
+                                            <ValueItem
+                                                :ref="`valueItemRef${record.id}`"
+                                                v-model:modelValue="
+                                                    record.value
+                                                "
+                                                :itemType="record.type"
+                                                :options="
+                                                    record.type === 'enum'
+                                                        ? (
+                                                              record?.options
+                                                                  ?.elements || []
+                                                          ).map((item:any) => ({
+                                                                  label: item.text,
+                                                                  value: item.value,
+                                                              }))
+                                                        : record.type === 'boolean'
+                                                        ? [
+                                                              {
+                                                                  label: '是',
+                                                                  value: true,
+                                                              },
+                                                              {
+                                                                  label: '否',
+                                                                  value: false,
+                                                              },
+                                                          ]
+                                                        : undefined
+                                                "
+                                            />
+                                        </a-form-item>
+                                    </template>
                                 </template>
-                                <template v-if="column.dataIndex === 'value'">
-                                    <ValueItem
-                                        :ref="`valueItemRef${record.id}`"
-                                        v-model:modelValue="record.value"
-                                        :itemType="record.type"
-                                        :options="
-                                            record.type === 'enum'
-                                                ? (
-                                                      record?.options
-                                                          ?.elements || []
-                                                  ).map((item:any) => ({
-                                                          label: item.text,
-                                                          value: item.value,
-                                                      }))
-                                                : record.type === 'boolean'
-                                                ? [
-                                                      {
-                                                          label: '是',
-                                                          value: true,
-                                                      },
-                                                      {
-                                                          label: '否',
-                                                          value: false,
-                                                      },
-                                                  ]
-                                                : undefined
-                                        "
-                                    />
-                                </template>
-                            </template>
-                        </a-table>
+                            </a-table>
+                        </a-form>
                         <div class="editor-btn">
                             <a-space>
                                 <a-button
@@ -180,36 +199,46 @@ const newFunctions = computed(() => {
  * 执行
  */
 const handleExecute = async (func: any) => {
-    const obj = {};
-    func.table.forEach((item: any) => {
-        if (item.type === 'object') {
-            obj[item.id] = JSON.parse(item.value);
-        } else {
-            obj[item.id] = item.value;
-        }
-    });
-    const { success, result } = await execute(
-        route.params.id as string,
-        func.id,
-        obj,
-    );
-    if (!success) return;
-    message.success('操作成功');
-    func.executeResult = result instanceof Array ? result[0] : result;
-    proxy?.$forceUpdate();
+    proxy?.$refs[`${func.id}Ref`][0]
+        .validate()
+        .then(async () => {
+            const obj = {};
+            func.table.forEach((item: any) => {
+                if (item.type === 'object') {
+                    obj[item.id] = JSON.parse(item.value);
+                } else {
+                    obj[item.id] = item.value;
+                }
+            });
+            const { success, result } = await execute(
+                route.params.id as string,
+                func.id,
+                obj,
+            );
+            if (!success) return;
+            message.success('操作成功');
+            func.executeResult = result instanceof Array ? result[0] : result;
+            proxy?.$forceUpdate();
+        })
+        .catch((err: any) => {
+            console.log('err: ', err);
+        });
 };
 /**
  * 清空
  */
 const handleClear = (func: any) => {
-    func.table.forEach((item: any) => {
-        item.value = undefined;
-        proxy.$refs[`valueItemRef${item.id}`][0].myValue = undefined;
-    });
+    proxy?.$refs[`${func.id}Ref`][0].resetFields();
 };
 </script>
 
 <style lang="less" scoped>
+:deep(.ant-table-cell .ant-form-item) {
+    margin-bottom: 0;
+}
+:deep(.ant-form-item-with-help .ant-form-item-explain) {
+    min-height: 0;
+}
 .wrapper {
     .tips {
         margin-bottom: 10px;
