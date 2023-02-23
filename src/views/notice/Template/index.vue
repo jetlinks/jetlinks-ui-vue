@@ -51,6 +51,7 @@
                                 :src="
                                     getLogo(slotProps.type, slotProps.provider)
                                 "
+                                class="logo"
                             />
                         </slot>
                     </template>
@@ -388,3 +389,10 @@ const getActions = (
     return actions;
 };
 </script>
+
+<style lang="less" scoped>
+.logo {
+    width: 88px;
+    height: 88px;
+}
+</style>
