@@ -703,10 +703,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@npmcli/arborist@*", "@npmcli/arborist@^6.2.2":
-  version "6.2.2"
-  resolved "https://registry.jetlinks.cn/@npmcli%2farborist/-/arborist-6.2.2.tgz#3ea668e7d368376a8477bd7bc3389bf634603b5b"
-  integrity sha512-cjK9CuA1cEovr4E1ljdgYU1UBdKJb4KvvULAEYOM1/qU0Que2X4DKyjIDBEy8MSWRY6PyaQ8oLGhwYIh8gUEEA==
+"@npmcli/arborist@*", "@npmcli/arborist@^6.2.3":
+  version "6.2.3"
+  resolved "https://registry.jetlinks.cn/@npmcli%2farborist/-/arborist-6.2.3.tgz#31f8aed2588341864d3811151d929c01308f8e71"
+  integrity sha512-lpGOC2ilSJXcc2zfW9QtukcCTcMbl3fVI0z4wvFB2AFIl0C+Q6Wv7ccrpdrQa8rvJ1ZVuc6qkX7HVTyKlzGqKA==
   dependencies:
     "@isaacs/string-locale-compare" "^1.1.0"
     "@npmcli/fs" "^3.1.0"
@@ -3894,11 +3894,11 @@ libnpmaccess@*:
     npm-registry-fetch "^14.0.3"
 
 libnpmdiff@*:
-  version "5.0.10"
-  resolved "https://registry.jetlinks.cn/libnpmdiff/-/libnpmdiff-5.0.10.tgz#1813cc63b0370fdd41187ca0ce39df655536d648"
-  integrity sha512-FZdlnoPkj8w4RM3j5eLYhYzf5q416Tpl2aO3fc77gJ9ZeJFS8cVQAR6gK5+pSAaiRJGSlef4/em0uKBOTQjXXA==
+  version "5.0.11"
+  resolved "https://registry.jetlinks.cn/libnpmdiff/-/libnpmdiff-5.0.11.tgz#a8d3b9ff61e55f5cb377efc4ef06c7987236f5a1"
+  integrity sha512-oF+BCE8LwfSZaUkmIEKmfX4WmvE6puZhYKnRayynHrh6f1qMRqoutqIXlPS6wCF8IRV6sgAhXYOsBUYC6PTPCA==
   dependencies:
-    "@npmcli/arborist" "^6.2.2"
+    "@npmcli/arborist" "^6.2.3"
     "@npmcli/disparity-colors" "^3.0.0"
     "@npmcli/installed-package-contents" "^2.0.0"
     binary-extensions "^2.2.0"
@@ -3909,11 +3909,11 @@ libnpmdiff@*:
     tar "^6.1.13"
 
 libnpmexec@*:
-  version "5.0.10"
-  resolved "https://registry.jetlinks.cn/libnpmexec/-/libnpmexec-5.0.10.tgz#281585adbf22935400f3c0456f88add4c69e4e74"
-  integrity sha512-m7Hqi2xXbzIjVbb+4PbOwkBvHLgG0tnQwCvzW7iTA8pL6FsnKSWfgTpWLiDLoPGCdO2q0D766ikvdknziomKzg==
+  version "5.0.11"
+  resolved "https://registry.jetlinks.cn/libnpmexec/-/libnpmexec-5.0.11.tgz#ac579b6ac1bd20c0ea191386129ba5cc5051ef61"
+  integrity sha512-4Ec55gMBgGiJmaFjSVNc8s9iu6xBuqGJubtrWrK+5uCHbSoQd8Fng/cLE63hyZQTwyj0LTvHn0j/UEr0bTPTvw==
   dependencies:
-    "@npmcli/arborist" "^6.2.2"
+    "@npmcli/arborist" "^6.2.3"
     "@npmcli/run-script" "^6.0.0"
     chalk "^4.1.0"
     ci-info "^3.7.1"
@@ -3927,11 +3927,11 @@ libnpmexec@*:
     walk-up-path "^1.0.0"
 
 libnpmfund@*:
-  version "4.0.10"
-  resolved "https://registry.jetlinks.cn/libnpmfund/-/libnpmfund-4.0.10.tgz#b6228e4fcf91ed2064d59c4f7af701c1313d10e0"
-  integrity sha512-fPR3Y01Mditp/FNT4BUsilHCHgvzZRwxpQBbaUYBRG0lxBdO+AT8pHta9SmCSLwUn60bwmw2SDBxDv6bMWUi5Q==
+  version "4.0.11"
+  resolved "https://registry.jetlinks.cn/libnpmfund/-/libnpmfund-4.0.11.tgz#201aa162af6062387b3e505a732e0de101e2846e"
+  integrity sha512-tDJqNcTAEQURma4UXBVIpyw1CrL5RPla0rnx5dBK2jt+zPa6i62RwcYLNa9vHUYdGBoN993fZtl77ddEFj72xQ==
   dependencies:
-    "@npmcli/arborist" "^6.2.2"
+    "@npmcli/arborist" "^6.2.3"
 
 libnpmhook@*:
   version "9.0.3"
@@ -3950,11 +3950,11 @@ libnpmorg@*:
     npm-registry-fetch "^14.0.3"
 
 libnpmpack@*:
-  version "5.0.10"
-  resolved "https://registry.jetlinks.cn/libnpmpack/-/libnpmpack-5.0.10.tgz#9c84139f80d34068ffc66d09313931fb6e9c4554"
-  integrity sha512-yCkyi+XS7WS0XXXdCnt+/b6zEdXqhanIvS6sw8yzZ5lHElJruggDodZRBQR9HYewa1xeq5Lr11eOpEODenEpjA==
+  version "5.0.11"
+  resolved "https://registry.jetlinks.cn/libnpmpack/-/libnpmpack-5.0.11.tgz#b054a62e0c553b5685b02266a4a5036d9828ebdf"
+  integrity sha512-Ke2URk4d96SkxTEEUdW7TOWb0DLFrDWAdBEc1SPF/JrhebhS3/Rm1kazWOZ6JhK6PQBIsVPGmBq5MwboAtSR4w==
   dependencies:
-    "@npmcli/arborist" "^6.2.2"
+    "@npmcli/arborist" "^6.2.3"
     "@npmcli/run-script" "^6.0.0"
     npm-package-arg "^10.1.0"
     pacote "^15.0.8"
