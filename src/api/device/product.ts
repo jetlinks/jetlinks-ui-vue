@@ -59,7 +59,16 @@ export const category = (data: any) => server.post('/device/category/_tree', dat
   * 获取接入方式
   * @param data 查询条件
   */
- export const queryGatewayList = (data: any) => server.post('/gateway/device/_query/no-paging', data)
+ const defaultGatewayData = {
+  paging: false,
+  sorts: [
+   {
+    name: 'createTime',
+    order: 'desc',
+   },
+  ],
+ }
+ export const queryGatewayList = (data: any = defaultGatewayData) => server.post('/gateway/device/_query/no-paging', data)
 
  /**
   * 查询产品列表(分页)

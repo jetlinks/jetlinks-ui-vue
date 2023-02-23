@@ -51,7 +51,9 @@ const iconKeys = [
     'playCircleOutlined',
     'RightOutlined',
     'FileTextOutlined',
-    'UploadOutlined'
+    'UploadOutlined',
+    'LikeOutlined',
+    'ArrowLeftOutlined'
 ]
 
 const Icon = (props: {type: string}) => {

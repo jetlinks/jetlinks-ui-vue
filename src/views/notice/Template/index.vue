@@ -114,6 +114,14 @@
                     </template>
                 </CardBox>
             </template>
+            <template #bodyCell="{ column, text, record }">
+                <span v-if="column.dataIndex === 'type'">
+                    {{ getMethodTxt(record.type) }}
+                </span>
+                <span v-if="column.dataIndex === 'provider'">
+                    {{ getProviderTxt(record.type, record.provider) }}
+                </span>
+            </template>
             <template #action="slotProps">
                 <a-space :size="16">
                     <a-tooltip
@@ -159,9 +167,9 @@
 <script setup lang="ts">
 import TemplateApi from '@/api/notice/template';
 import type { ActionsType } from '@/components/Table/index.vue';
-import { getImage, LocalStore } from '@/utils/comm';
+// import { getImage, LocalStore } from '@/utils/comm';
 import { message } from 'ant-design-vue';
-import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
+// import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 
 import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
 
@@ -254,6 +262,14 @@ const getLogo = (type: string, provider: string) => {
 const getMethodTxt = (type: string) => {
     return NOTICE_METHOD.find((f) => f.value === type)?.label;
 };
+/**
+ * 根据类型展示对应文案
+ * @param type
+ * @param provider
+ */
+const getProviderTxt = (type: string, provider: string) => {
+    return MSG_TYPE[type].find((f: any) => f.value === provider)?.label;
+};
 
 /**
  * 新增
@@ -301,13 +317,6 @@ const handleExport = () => {
     downloadObject(configRef.value.dataSource, `通知配置`);
 };
 
-/**
- * 查看
- */
-const handleView = (id: string) => {
-    message.warn(id + '暂未开发');
-};
-
 const syncVis = ref(false);
 const debugVis = ref(false);
 const logVis = ref(false);
@@ -326,8 +335,6 @@ const getActions = (
             },
             icon: 'EditOutlined',
             onClick: () => {
-                // visible.value = true;
-                // current.value = data;
                 menuStory.jumpPage('notice/Template/Detail', {
                     id: data.id,
                 });

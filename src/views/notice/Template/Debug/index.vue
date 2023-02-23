@@ -8,8 +8,12 @@
         @cancel="handleCancel"
         :confirmLoading="btnLoading"
     >
-        <a-form layout="vertical">
-            <a-form-item label="通知配置" v-bind="validateInfos.configId">
+        <a-form ref="formRef" layout="vertical" :model="formData">
+            <a-form-item
+                label="通知配置"
+                name="configId"
+                :rules="{ required: true, message: '该字段为必填字段' }"
+            >
                 <a-select
                     v-model:value="formData.configId"
                     placeholder="请选择通知配置"
@@ -25,32 +29,56 @@
             </a-form-item>
             <a-form-item
                 label="变量"
-                v-bind="validateInfos.variableDefinitions"
-                v-if="templateDetailTable && templateDetailTable.length"
+                v-if="
+                    formData.templateDetailTable &&
+                    formData.templateDetailTable.length
+                "
             >
                 <a-table
-                    ref="myTable"
-                    class="debug-table"
+                    row-key="id"
                     :columns="columns"
-                    :data-source="templateDetailTable"
+                    :data-source="formData.templateDetailTable"
                     :pagination="false"
-                    :rowKey="
-                        (record, index) => {
-                            return record.id;
-                        }
-                    "
+                    bordered
                 >
-                    <template #bodyCell="{ column, text, record }">
+                    <template #bodyCell="{ column, record, index }">
                         <template
                             v-if="['id', 'name'].includes(column.dataIndex)"
                         >
                             <span>{{ record[column.dataIndex] }}</span>
                         </template>
                         <template v-else>
-                            <ValueItem
-                                v-model:modelValue="record.value"
-                                :itemType="record.type"
-                            />
+                            <a-form-item
+                                :name="['templateDetailTable', index, 'value']"
+                                :rules="{
+                                    required: record.required,
+                                    message: '该字段为必填字段',
+                                }"
+                            >
+                                <ToUser
+                                    v-if="record.type === 'user'"
+                                    v-model:toUser="record.value"
+                                    :type="data.type"
+                                    :config-id="formData.configId"
+                                />
+                                <ToOrg
+                                    v-else-if="record.type === 'org'"
+                                    :type="data.type"
+                                    :config-id="formData.configId"
+                                    v-model:toParty="record.value"
+                                />
+                                <ToTag
+                                    v-else-if="record.type === 'tag'"
+                                    :type="data.type"
+                                    :config-id="formData.configId"
+                                    v-model:toTag="record.value"
+                                />
+                                <ValueItem
+                                    v-else
+                                    v-model:modelValue="record.value"
+                                    :itemType="record.type"
+                                />
+                            </a-form-item>
                         </template>
                     </template>
                 </a-table>
@@ -60,7 +88,6 @@
 </template>
 
 <script setup lang="ts">
-import { Form } from 'ant-design-vue';
 import { PropType } from 'vue';
 import TemplateApi from '@/api/notice/template';
 import type {
@@ -70,7 +97,9 @@ import type {
 } from '@/views/notice/Template/types';
 import { message } from 'ant-design-vue';
 
-const useForm = Form.useForm;
+import ToUser from '../Detail/components/ToUser.vue';
+import ToOrg from '../Detail/components/ToOrg.vue';
+import ToTag from '../Detail/components/ToTag.vue';
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
@@ -103,6 +132,8 @@ const getConfigList = async () => {
     };
     const { result } = await TemplateApi.getConfig(params);
     configList.value = result;
+    // 设置默认配置
+    if (configList.value.length) formData.value.configId = props.data.configId;
 };
 
 watch(
@@ -118,13 +149,15 @@ watch(
 /**
  * 获取模板详情
  */
-const templateDetailTable = ref<IVariableDefinitions[]>();
 const getTemplateDetail = async () => {
     const { result } = await TemplateApi.getTemplateDetail(props.data.id);
-    templateDetailTable.value = result.variableDefinitions.map((m: any) => ({
-        ...m,
-        value: undefined,
-    }));
+    formData.value.templateDetailTable = result.variableDefinitions.map(
+        (m: any) => ({
+            ...m,
+            type: m.expands ? m.expands.businessType : m.type,
+            value: undefined,
+        }),
+    );
 };
 
 const columns = [
@@ -147,31 +180,27 @@ const columns = [
 ];
 
 // 表单数据
-const formData = ref({
+const formData = ref<{
+    configId: string;
+    variableDefinitions: string;
+    templateDetailTable: IVariableDefinitions[];
+}>({
     configId: '',
     variableDefinitions: '',
+    templateDetailTable: [],
 });
-
-// 验证规则
-const formRules = ref({
-    configId: [{ required: true, message: '请选择通知模板' }],
-    variableDefinitions: [{ required: false, message: '该字段是必填字段' }],
-});
-
-const { resetFields, validate, validateInfos, clearValidate } = useForm(
-    formData.value,
-    formRules.value,
-);
 
 /**
  * 提交
  */
+const formRef = ref();
 const btnLoading = ref(false);
 const handleOk = () => {
-    validate()
+    formRef.value
+        .validate()
         .then(async () => {
             const params = {};
-            templateDetailTable.value?.forEach((item) => {
+            formData.value.templateDetailTable?.forEach((item) => {
                 params[item.id] = item.value;
             });
             // console.log('params: ', params);
@@ -187,16 +216,20 @@ const handleOk = () => {
                     btnLoading.value = false;
                 });
         })
-        .catch((err) => {
+        .catch((err: any) => {
             console.log('err: ', err);
         });
 };
 
 const handleCancel = () => {
     _vis.value = false;
-    templateDetailTable.value = [];
-    resetFields();
+    formRef.value.resetFields();
+    formData.value.templateDetailTable = [];
 };
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+:deep(.ant-table-cell .ant-form-item) {
+    margin-bottom: 0;
+}
+</style>

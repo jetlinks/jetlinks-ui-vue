@@ -1,21 +1,25 @@
 <template>
-  <div class="title">
+  <div class="title" :style='style'>
     <div class="title-before"></div>
     <span>{{ data }}</span>
     <slot name="extra"></slot>
   </div>
 </template>
 
-<script>
-export default {
-  name: "TitleComponent",
-  props: {
-    data: {
-        type: String,
-        default: ""
-    }
+<script setup lang='ts' name='TitleComponent'>
+import type { CSSProperties, PropType } from 'vue'
+
+const props = defineProps({
+  data: {
+    type: String,
+    default: ""
   },
-};
+  style: {
+    type: Object as PropType<CSSProperties>,
+    default: () => ({})
+  }
+})
+
 </script>
 
 <style lang="less" scoped>

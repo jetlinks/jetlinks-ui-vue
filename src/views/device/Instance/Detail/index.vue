@@ -8,7 +8,8 @@
         <template #title>
             <div>
                 <div style="display: flex; align-items: center">
-                    <div>{{ instanceStore.current.name }}</div>
+                    <AIcon type="ArrowLeftOutlined" @click="onBack" />
+                    <div style="margin-left: 20px">{{ instanceStore.current.name }}</div>
                     <a-divider type="vertical" />
                     <a-space>
                         <a-badge
@@ -19,25 +20,35 @@
                                 )
                             "
                         />
-                        <a-popconfirm
-                            title="确认启用设备"
-                            @confirm="handleAction"
+                        <PermissionButton
                             v-if="
                                 instanceStore.current.state?.value ===
                                 'notActive'
                             "
+                            type="link"
+                            style="margin-top: -5px; padding: 0 20px"
+                            :popConfirm="{
+                                title: '确认启用设备',
+                                onConfirm: handleAction,
+                            }"
+                            hasPermission="device/Instance:action"
                         >
-                            <a-button type="link">启用设备</a-button>
-                        </a-popconfirm>
-                        <a-popconfirm
-                            title="确认断开连接"
-                            @confirm="handleDisconnect"
+                            启用设备
+                        </PermissionButton>
+                        <PermissionButton
                             v-if="
                                 instanceStore.current.state?.value === 'online'
                             "
+                            type="link"
+                            style="margin-top: -5px; padding: 0 20px"
+                            :popConfirm="{
+                                title: '确认断开连接？',
+                                onConfirm: handleDisconnect,
+                            }"
+                            hasPermission="device/Instance:action"
                         >
-                            <a-button type="link">断开连接</a-button>
-                        </a-popconfirm>
+                            断开连接
+                        </PermissionButton>
                         <a-tooltip
                             v-if="
                                 instanceStore.current?.accessProvider ===
@@ -66,14 +77,14 @@
                             instanceStore.current.id
                         }}</a-descriptions-item>
                         <a-descriptions-item label="所属产品">
-                            <a-button
-                                style="margin-top: -5px; padding: 0"
+                            <PermissionButton
                                 type="link"
+                                style="margin-top: -5px; padding: 0"
                                 @click="jumpProduct"
-                                >{{
-                                    instanceStore.current.productName
-                                }}</a-button
+                                hasPermission="device/Product:view"
                             >
+                                {{ instanceStore.current.productName }}
+                            </PermissionButton>
                         </a-descriptions-item>
                     </a-descriptions>
                 </div>
@@ -109,6 +120,9 @@ import { _deploy, _disconnect } from '@/api/device/instance';
 import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 import { getWebSocket } from '@/utils/websocket';
+import { useMenuStore } from '@/store/menu';
+
+const menuStory = useMenuStore();
 
 const route = useRoute();
 const instanceStore = useInstanceStore();
@@ -180,7 +194,9 @@ watch(
     { immediate: true, deep: true },
 );
 
-const onBack = () => {};
+const onBack = () => {
+    menuStory.jumpPage('device/Instance');
+};
 
 const onTabChange = (e: string) => {
     instanceStore.tabActiveKey = e;
@@ -214,12 +230,18 @@ const handleRefresh = async () => {
 };
 
 const jumpProduct = () => {
-    message.warn('暂未开发');
+    menuStory.jumpPage('device/Product/Detail', {
+        id: instanceStore.current.productId,
+    });
 };
 
 watchEffect(() => {
     const keys = list.value.map((i) => i.key);
-    if (instanceStore.current.protocol && !(['modbus-tcp', 'opc-ua'].includes(instanceStore.current.protocol)) && !keys.includes('Diagnose')) {
+    if (
+        instanceStore.current.protocol &&
+        !['modbus-tcp', 'opc-ua'].includes(instanceStore.current.protocol) &&
+        !keys.includes('Diagnose')
+    ) {
         list.value.push({
             key: 'Diagnose',
             tab: '设备诊断',
