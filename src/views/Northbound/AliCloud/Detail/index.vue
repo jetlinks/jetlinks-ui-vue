@@ -226,11 +226,11 @@
                                         :key="index"
                                         :header="
                                             item.productKey
-                                                ? aliyunProductList.find(
+                                                ? (aliyunProductList.find(
                                                       (i) =>
                                                           i.productKey ===
                                                           item.productKey,
-                                                  )?.productName
+                                                  )?.productName || `产品映射${index + 1}`)
                                                 : `产品映射${index + 1}`
                                         "
                                     >
@@ -356,12 +356,14 @@
                         </a-row>
                     </a-form>
                     <div v-if="type === 'edit'">
-                        <a-button
-                            :loading="loading"
+                        <PermissionButton
                             type="primary"
+                            :loading="loading"
                             @click="saveBtn"
-                            >保存</a-button
+                            :hasPermission="['Northbound/AliCloud:add', 'Northbound/AliCloud:update']"
                         >
+                            保存
+                        </PermissionButton>
                     </div>
                 </a-col>
                 <a-col :span="8">
@@ -497,11 +499,11 @@ const saveBtn = () => {
         .then(async (data: any) => {
             const product = (aliyunProductList.value || []).find(
                 (item: any) =>
-                    item?.bridgeProductKey === data?.bridgeProductKey,
+                    item?.productKey === data?.bridgeProductKey,
             );
             data.bridgeProductName = product?.productName || '';
             loading.value = true;
-            const resp = await savePatch(toRaw(modelRef));
+            const resp = await savePatch({...toRaw(modelRef), ...data});
             loading.value = false;
             if (resp.status === 200) {
                 message.success('操作成功！');

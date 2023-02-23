@@ -43,7 +43,11 @@
                                     ]"
                                 >
                                     <a-select
-                                        :disabled="type !== 'edit' && modelRef.id && modelRef.id !== ':id'"
+                                        :disabled="
+                                            type !== 'edit' &&
+                                            modelRef.id &&
+                                            modelRef.id !== ':id'
+                                        "
                                         placeholder="请选择产品"
                                         v-model:value="modelRef.id"
                                         show-search
@@ -410,12 +414,14 @@
                         </a-row>
                     </a-form>
                     <div v-if="type === 'edit'">
-                        <a-button
-                            :loading="loading"
+                        <PermissionButton
                             type="primary"
+                            :loading="loading"
                             @click="saveBtn"
-                            >保存</a-button
+                            :hasPermission="['Northbound/DuerOS:add', 'Northbound/DuerOS:update']"
                         >
+                            保存
+                        </PermissionButton>
                     </div>
                 </a-col>
                 <a-col :span="8">
@@ -616,8 +622,8 @@ const getTypesActions = (val: string) => {
 const saveBtn = async () => {
     const tasks: any[] = [];
     for (let i = 0; i < command.value.length; i++) {
-        const res = await (command.value[i] as any)?.saveBtn()
-        if(!res || (res?.errorFields && res.errorFields.length)) {
+        const res = await (command.value[i] as any)?.saveBtn();
+        if (!res || (res?.errorFields && res.errorFields.length)) {
             actionActiveKey.value.push(String(i));
             tasks.push(false);
         } else {
@@ -629,7 +635,7 @@ const saveBtn = async () => {
         .then(async (data: any) => {
             if (tasks.every((item) => item) && data) {
                 loading.value = true;
-                const resp = await savePatch(toRaw(modelRef));
+                const resp = await savePatch(data);
                 loading.value = false;
                 if (resp.status === 200) {
                     message.success('操作成功！');
@@ -642,10 +648,16 @@ const saveBtn = async () => {
             const _arr = err.errorFields.map((item: any) => item.name);
             _arr.map((item: string | any[]) => {
                 if (item.length >= 3) {
-                    if(item[0] === 'propertyMappings' && !propertyActiveKey.value.includes(item[1])){
+                    if (
+                        item[0] === 'propertyMappings' &&
+                        !propertyActiveKey.value.includes(item[1])
+                    ) {
                         propertyActiveKey.value.push(item[1]);
                     }
-                    if(item[0] === 'actionMappings' && !actionActiveKey.value.includes(item[1])){
+                    if (
+                        item[0] === 'actionMappings' &&
+                        !actionActiveKey.value.includes(item[1])
+                    ) {
                         actionActiveKey.value.push(item[1]);
                     }
                 }
