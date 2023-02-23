@@ -403,3 +403,59 @@ export const treeMapping = (data?: any) => server.post(`/data-collect/channel/_a
  * @returns 
  */
 export const saveMapping = (thingId: any, provider: string, data?: any) => server.patch(`/things/collector/device/${thingId}/${provider}`, data)
+
+/**
+ * 查询边缘网关通道
+ * @param deviceId 
+ * @param data 
+ * @returns 
+ */
+export const edgeChannel = (deviceId: string, data?: any) => server.post(`/edge/operations/${deviceId}/data-collector-channel-list/invoke`, data)
+
+/**
+ * 查询边缘网关采集器
+ * @param deviceId 
+ * @param data 
+ * @returns 
+ */
+export const edgeCollector = (deviceId: string, data?: any) => server.post(`/edge/operations/${deviceId}/data-collector-list/invoke`, data)
+
+/**
+ * 查询边缘网关点位
+ * @param deviceId 
+ * @param data 
+ * @returns 
+ */
+export const edgePoint = (deviceId: string, data?: any) => server.post(`/edge/operations/${deviceId}/data-collector-point-list/invoke`, data)
+
+/**
+ * 
+ * @param deviceId 
+ * @param data 
+ * @returns 
+ */
+export const getEdgeMap = (deviceId: string, data?: any) => server.post(`/edge/operations/${deviceId}/device-collector-list/invoke`, data)
+
+/**
+ * 
+ * @param deviceId 
+ * @param data 
+ * @returns 
+ */
+export const removeEdgeMap = (deviceId: string, data?: any) => server.post(`/edge/operations/${deviceId}/device-collector-delete/invoke`, data)
+
+/**
+ * 
+ * @param deviceId 
+ * @param data 
+ * @returns 
+ */
+export const treeEdgeMap = (deviceId: string, data?: any) => server.post(`/edge/operations/${deviceId}/data-collector-channel-tree/invoke`, data)
+
+/**
+ * 
+ * @param deviceId 
+ * @param data 
+ * @returns 
+ */
+export const saveEdgeMap = (deviceId: string, data?: any) => server.post(`/edge/operations/${deviceId}/device-collector-save/invoke`, data)
