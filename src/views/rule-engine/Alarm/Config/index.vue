@@ -1,10 +1,14 @@
 <template>
-    <page-container :tabList="list" @tabChange="onTabChange">
-        <div v-if="true">
+    <page-container :tabList="list" @tabChange="onTabChange" :tabActiveKey="tab">
+        <div v-if="tab=='config'">
             <a-row :gutter="24">
                 <a-col :span="14">
                     <div class="alarm-level">
-                        <a-card :headStyle="{ borderBottom: 'none' }" :bodyStyle="{paddingTop:0}">
+                        <a-card
+                            :headStyle="{ borderBottom: 'none', padding: 0 }"
+                            :bodyStyle="{ padding: 0 }"
+                            :bordered="false"
+                        >
                             <template #title>
                                 <div class="alarmLevelTitle">告警级别配置</div>
                             </template>
@@ -23,21 +27,44 @@
                                     <span>{{ `级别${i + 1}` }}</span>
                                 </div>
                                 <div>
-                                    <a-input type="text" v-model:value="item.title" :maxlength=64></a-input>
+                                    <a-input
+                                        type="text"
+                                        v-model:value="item.title"
+                                        :maxlength="64"
+                                    ></a-input>
                                 </div>
                             </div>
                         </a-card>
+                        <a-button
+                            type="primary"
+                            size="middle"
+                            @click="handleSaveLevel"
+                            >保存</a-button
+                        >
                     </div>
                 </a-col>
-                <a-col :span="10">123</a-col>
+                <a-col :span="10">
+                    <div class="description">
+                        <h1>功能说明</h1>
+                        <div>
+                            1、告警级别用于描述告警的严重程度，请根据业务管理方式进行自定义。
+                        </div>
+                        <div>2、告警级别将会在告警配置中被引用。</div>
+                        <div>3、最多可配置5个级别。</div>
+                    </div>
+                </a-col>
             </a-row>
         </div>
+        <Io v-else></Io>
     </page-container>
 </template>
 
 <script lang="ts" setup>
 import { getImage } from '@/utils/comm';
-import { queryLevel } from '@/api/rule-engine/config';
+import { queryLevel, saveLevel } from '@/api/rule-engine/config';
+import { LevelItem } from './typing';
+import { message } from 'ant-design-vue/es';
+import Io from './Io/index.vue'
 const list = ref([
     {
         key: 'config',
@@ -48,11 +75,8 @@ const list = ref([
         tab: '数据流转',
     },
 ]);
-interface levelsObj {
-    level: number;
-    title?: string;
-}
-let levels = ref<levelsObj[]>([]);
+let levels = ref<LevelItem[]>([]);
+let tab = ref<'io'|'config'|string>('config');
 const getAlarmLevel = () => {
     queryLevel().then((res: any) => {
         if (res.status == 200) {
@@ -61,11 +85,22 @@ const getAlarmLevel = () => {
     });
 };
 getAlarmLevel();
-const onTabChange = (e: string) => {};
+const handleSaveLevel = async () => {
+    saveLevel(levels.value).then((res) => {
+        if (res.status === 200) {
+            message.success('操作成功');
+        }
+    });
+};
+const onTabChange = (e: string) => {
+    tab.value = e;
+};
 </script>
 <style lang="less" scoped>
 .alarm-level {
     padding: 24px;
+    background-color: white;
+    height: 700px;
 }
 .alarmLevelTitle {
     position: relative;
@@ -87,5 +122,19 @@ const onTabChange = (e: string) => {};
 }
 .alarmInputItem {
     margin-bottom: 22px;
+}
+.description {
+    height: 700px;
+    height: 100%;
+    padding: 24px;
+    overflow-y: auto;
+    color: rgba(#000, 0.8);
+    font-size: 14px;
+    background-color: #fff;
+    h1 {
+    margin: 16px 0;
+    color: rgba(#000, 0.85);
+    font-weight: bold;
+    font-size: 14px;}
 }
 </style>

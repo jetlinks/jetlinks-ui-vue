@@ -24,7 +24,7 @@
                     </div>
                 </div>
                 <div class="value">
-                    <ValueRender :data="data" :value="_props.data" />
+                    <ValueRender :data="data" :value="_props.data" type="card" />
                 </div>
                 <div class="bottom">
                     <div style="color: rgba(0, 0, 0, .65); font-size: 12px">更新时间</div>

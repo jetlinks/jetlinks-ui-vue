@@ -184,11 +184,11 @@ export const TEMPLATE_FIELD_MAP = {
     },
     voice: {
         aliyun: {
-            templateType: '',
+            templateType: 'tts',
             templateCode: '',
             ttsCode: '',
             message: '',
-            playTimes: undefined,
+            playTimes: 1,
             calledShowNumbers: '',
             calledNumber: '',
         }

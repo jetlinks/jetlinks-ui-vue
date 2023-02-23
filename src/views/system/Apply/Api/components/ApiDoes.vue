@@ -84,6 +84,7 @@ import type { apiDetailsType } from '../typing';
 import InputCard from './InputCard.vue';
 import { PropType } from 'vue';
 
+const emit = defineEmits(['update:paramsTable'])
 const props = defineProps({
     selectApi: {
         type: Object as PropType<apiDetailsType>,
@@ -216,6 +217,7 @@ const respParamsCard = reactive<tableCardType>({
         const tableData = findData(schemaName);
         const codeText = getCodeText(tableData, 3);
 
+        emit('update:paramsTable', tableData)
         respParamsCard.tableData = tableData;
         respParamsCard.codeText = JSON.stringify(codeText);
 

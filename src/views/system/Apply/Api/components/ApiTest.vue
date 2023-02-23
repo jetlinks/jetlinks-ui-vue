@@ -12,16 +12,16 @@
         <div class="api-card">
             <h5>请求参数</h5>
             <div class="content">
-                <VueJsoneditor
+                <!-- <VueJsoneditor
                     height="400"
                     mode="tree"
                     v-model:text="requestBody.paramsText"
-                />
-                <!-- <MonacoEditor
+                /> -->
+                <MonacoEditor
                     v-model:modelValue="requestBody.paramsText"
                     style="height: 300px; width: 100%"
                     theme="vs"
-                /> -->
+                />
             </div>
         </div>
         <div class="api-card">
@@ -47,21 +47,34 @@ import VueJsoneditor from 'vue3-ts-jsoneditor';
 import MonacoEditor from '@/components/MonacoEditor/index.vue';
 import type { apiDetailsType } from '../typing';
 import InputCard from './InputCard.vue';
-import { PropType } from 'vue';
 
-const props = defineProps({
-    selectApi: {
-        type: Object as PropType<apiDetailsType>,
-        required: true,
-    },
-});
+const props = defineProps<{
+    selectApi: apiDetailsType;
+    paramsTable: any[];
+}>();
 
 const requestBody = reactive({
-    paramsTable: [],
+    paramsTable: [] as requestObj[],
     paramsText: '',
 });
 
 const responsesContent = ref('{"a":123}');
+
+watch(
+    () => props.paramsTable,
+    (n) => {
+        const table = n?.map((item: any) => ({
+            paramsName: item.paramsName,
+            value: '',
+        }));
+        requestBody.paramsTable = table;
+    },
+);
+
+type requestObj = {
+    paramsName: string;
+    value: string;
+};
 </script>
 
 <style lang="less" scoped>
