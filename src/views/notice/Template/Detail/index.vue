@@ -157,6 +157,7 @@
                                             formData.template.messageType
                                         "
                                         placeholder="请选择消息类型"
+                                        @change="handleMessageTypeChange"
                                     >
                                         <a-select-option
                                             v-for="(
@@ -819,6 +820,7 @@ const resetPublicFiles = () => {
     if (formData.value.type === 'email')
         formData.value.template.toParty = undefined;
     // formData.value.description = '';
+    formData.value.variableDefinitions = [];
 };
 
 // 根据通知方式展示对应的字段
@@ -911,39 +913,97 @@ const { resetFields, validate, validateInfos, clearValidate } = useForm(
     formRules.value,
 );
 
+// 钉钉机器人markdown标题变量提取
 watch(
-    () => formData.value.template.message,
+    () => formData.value.template.markdown?.title,
     (val) => {
         if (!val) return;
-        // 已经存在的变量
-        const oldKey = formData.value.variableDefinitions?.map((m) => m.id);
-        // 正则提取${}里面的值
-        const pattern = /(?<=\$\{).*?(?=\})/g;
-        const titleList = val.match(pattern)?.filter((f) => f);
-        const newKey = [...new Set(titleList)];
-        const result = newKey?.map((m) =>
-            oldKey.includes(m)
-                ? formData.value.variableDefinitions.find(
-                      (item) => item.id === m,
-                  )
-                : {
-                      id: m,
-                      name: '',
-                      type: 'string',
-                      format: '%s',
-                  },
-        );
-        formData.value.variableDefinitions = result as IVariableDefinitions[];
+        variableReg(val);
+    },
+    { deep: true },
+);
+// 钉钉机器人link标题变量提取
+watch(
+    () => formData.value.template.link?.title,
+    (val) => {
+        if (!val) return;
+        variableReg(val);
+    },
+    { deep: true },
+);
+// 邮件标题变量提取
+watch(
+    () => formData.value.template.subject,
+    (val) => {
+        if (!val) return;
+        variableReg(val);
     },
     { deep: true },
 );
 
-// const clearValid = () => {
-//     setTimeout(() => {
-//         formData.value.variableDefinitions = [];
-//         clearValidate();
-//     }, 200);
-// };
+// 模板内容变量提取
+watch(
+    () => formData.value.template.message,
+    (val) => {
+        if (!val) return;
+        variableReg(val);
+    },
+    { deep: true },
+);
+// webhook请求体变量提取
+watch(
+    () => formData.value.template.body,
+    (val) => {
+        if (!val) return;
+        variableReg(val);
+    },
+    { deep: true },
+);
+
+/**
+ * 根据字段输入内容, 提取变量
+ * @param value
+ */
+const variableReg = (value: string) => {
+    // 已经存在的变量
+    const oldKey = formData.value.variableDefinitions?.map((m) => m.id);
+    // 正则提取${}里面的值
+    const pattern = /(?<=\$\{).*?(?=\})/g;
+    const titleList = value.match(pattern)?.filter((f) => f);
+    const newKey = [...new Set(titleList)];
+    const result = newKey?.map((m) =>
+        oldKey.includes(m)
+            ? formData.value.variableDefinitions.find((item) => item.id === m)
+            : {
+                  id: m,
+                  name: '',
+                  type: 'string',
+                  format: '%s',
+              },
+    );
+    formData.value.variableDefinitions = [
+        ...new Set([
+            ...formData.value.variableDefinitions,
+            ...(result as IVariableDefinitions[]),
+        ]),
+    ];
+};
+
+/**
+ * 钉钉机器人 消息类型选择改变
+ */
+const handleMessageTypeChange = () => {
+    formData.value.variableDefinitions = [];
+    formData.value.template.message = '';
+    if (formData.value.template.link) {
+        formData.value.template.link.title = '';
+        formData.value.template.link.picUrl = '';
+        formData.value.template.link.messageUrl = '';
+    }
+    if (formData.value.template.markdown) {
+        formData.value.template.markdown.title = '';
+    }
+};
 
 /**
  * 获取详情
