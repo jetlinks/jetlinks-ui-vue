@@ -1,6 +1,5 @@
 <template>
     <page-container>
-        <a-card class="device-product">
             <Search
                 :columns="query.columns"
                 target="product-manage"
@@ -163,7 +162,6 @@
                 :title="title"
                 @success="refresh"
             />
-        </a-card>
     </page-container>
 </template>
 
