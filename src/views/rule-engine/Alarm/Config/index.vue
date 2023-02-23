@@ -76,7 +76,7 @@ const list = ref([
     },
 ]);
 let levels = ref<LevelItem[]>([]);
-let tab = ref<'io'|'config'|string>('io');
+let tab = ref<'io'|'config'|string>('config');
 const getAlarmLevel = () => {
     queryLevel().then((res: any) => {
         if (res.status == 200) {
