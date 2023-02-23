@@ -480,7 +480,11 @@
                                     </a-form-item>
                                 </a-col>
                             </a-row>
-                            <a-form-item>
+                            <a-form-item
+                                v-bind="
+                                    validateInfos['template.calledShowNumbers']
+                                "
+                            >
                                 <template #label>
                                     <span>
                                         被叫显号
@@ -757,6 +761,8 @@ import ToTag from './components/ToTag.vue';
 import { FILE_UPLOAD } from '@/api/comm';
 import { LocalStore } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
+import { phoneRegEx } from '@/utils/validate';
+import type { Rule } from 'ant-design-vue/es/form';
 
 const router = useRouter();
 const route = useRoute();
@@ -862,7 +868,14 @@ const formRules = ref({
     // 钉钉
     'template.agentId': [{ required: true, message: '请输入agentId' }],
     'template.messageType': [{ required: true, message: '请选择消息类型' }],
-    'template.markdown.title': [{ required: true, message: '请输入标题' }],
+    'template.markdown.title': [
+        { required: true, message: '请输入标题' },
+        { max: 64, message: '最多可输入64个字符' },
+    ],
+    'template.link.title': [
+        { required: true, message: '请输入标题' },
+        { max: 64, message: '最多可输入64个字符' },
+    ],
     // 'template.url': [{ required: true, message: '请输入WebHook' }],
     // 微信
     // 'template.agentId': [{ required: true, message: '请输入agentId' }],
@@ -876,7 +889,21 @@ const formRules = ref({
     'template.signName': [{ required: true, message: '请输入签名' }],
     // webhook
     description: [{ max: 200, message: '最多可输入200个字符' }],
-    'template.message': [{ required: true, message: '请输入' }],
+    'template.message': [
+        { required: true, message: '请输入' },
+        { max: 500, message: '最多可输入500个字符' },
+    ],
+    'template.calledShowNumbers': [
+        {
+            trigger: 'blur',
+            validator(_rule: Rule, value: string) {
+                if (!phoneRegEx(value)) {
+                    return Promise.reject('请输入有效号码');
+                }
+                return Promise.resolve();
+            },
+        },
+    ],
 });
 
 const { resetFields, validate, validateInfos, clearValidate } = useForm(
