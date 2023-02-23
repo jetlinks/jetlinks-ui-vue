@@ -348,9 +348,9 @@ import BindDevice from './BindDevice.vue';
 import Import from './Import.vue';
 import Export from './Export.vue';
 import Save from './Save.vue';
-
+import { useMenuStore } from 'store/menu'
 const router = useRouter();
-
+const menuStory = useMenuStore()
 const cardManageRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const _selectedRowKeys = ref<string[]>([]);
@@ -536,9 +536,10 @@ const getActions = (
             },
             icon: 'EyeOutlined',
             onClick: () => {
-                router.push({
-                    path: `/iot-card/CardManagement/detail/${data.id}`,
-                });
+                // router.push({
+                //     path: `/iot-card/CardManagement/detail/${data.id}`,
+                // });
+                menuStory.jumpPage('iot-card/CardManagement/Detail',{id:data.id})
             },
         },
         {

@@ -13,6 +13,7 @@
                                 v-model:value="formData.type"
                                 placeholder="请选择通知方式"
                                 :disabled="!!formData.id"
+                                @change="handleTypeChange"
                             >
                                 <a-select-option
                                     v-for="(item, index) in NOTICE_METHOD"
@@ -37,6 +38,7 @@
                             <RadioCard
                                 :options="msgType"
                                 v-model="formData.provider"
+                                @change="handleProviderChange"
                             />
                         </a-form-item>
                         <!-- 钉钉 -->
@@ -256,12 +258,11 @@
                                 placeholder="请输入说明"
                             />
                         </a-form-item>
-                        <a-form-item :wrapper-col="{ offset: 0, span: 3 }">
+                        <a-form-item>
                             <a-button
                                 type="primary"
                                 @click="handleSubmit"
                                 :loading="btnLoading"
-                                style="width: 100%"
                             >
                                 保存
                             </a-button>
@@ -331,22 +332,24 @@ watch(
     (val) => {
         msgType.value = MSG_TYPE[val];
 
-        formData.value.provider = msgType.value[0].value;
+        formData.value.provider =
+            formData.value.provider !== ':id'
+                ? formData.value.provider
+                : msgType.value[0].value;
 
-        formData.value.configuration =
-            CONFIG_FIELD_MAP[val][formData.value.provider];
+        // formData.value.configuration =
+        //     CONFIG_FIELD_MAP[val][formData.value.provider];
 
-        clearValid();
+        // clearValid();
     },
 );
 
 watch(
     () => formData.value.provider,
     (val) => {
-        formData.value.configuration =
-            CONFIG_FIELD_MAP[formData.value.type][val];
-
-        clearValid();
+        // formData.value.configuration =
+        //     CONFIG_FIELD_MAP[formData.value.type][val];
+        // clearValid();
     },
 );
 
@@ -429,9 +432,30 @@ const getDetail = async () => {
     const res = await configApi.detail(route.params.id as string);
     // formData.value = res.result;
     Object.assign(formData.value, res.result);
+    // console.log('res.result: ', res.result);
     // console.log('formData.value: ', formData.value);
 };
 getDetail();
+
+/**
+ * 通知方式改变
+ */
+const handleTypeChange = () => {
+    setTimeout(() => {
+        formData.value.configuration =
+            CONFIG_FIELD_MAP[formData.value.type][formData.value.provider];
+        // resetPublicFiles();
+    }, 0);
+};
+
+/**
+ * 通知类型改变
+ */
+const handleProviderChange = () => {
+    formData.value.configuration =
+        CONFIG_FIELD_MAP[formData.value.type][formData.value.provider];
+    // resetPublicFiles();
+};
 
 /**
  * 表单提交

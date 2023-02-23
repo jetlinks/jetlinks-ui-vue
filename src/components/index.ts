@@ -10,6 +10,8 @@ import NormalUpload from './NormalUpload/index.vue'
 import FileFormat from './FileFormat/index.vue'
 import JUpload from './JUpload/index.vue'
 import { BasicLayoutPage, BlankLayoutPage, PageContainer } from './Layout'
+import Ellipsis from './Ellipsis/index.vue'
+import JEmpty from './Empty/index.vue'
 
 export default  {
     install(app: App) {
@@ -26,5 +28,7 @@ export default  {
             .component('BasicLayoutPage', BasicLayoutPage)
             .component('BlankLayoutPage', BlankLayoutPage)
             .component('PageContainer', PageContainer)
+            .component('Ellipsis', Ellipsis)
+            .component('JEmpty', JEmpty)
     }
 }
