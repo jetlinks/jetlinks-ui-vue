@@ -11,8 +11,8 @@ export default {
     // 修改
     update: (data: any) => patch(`/notifier/template`, data),
     del: (id: any) => remove(`/notifier/template/${id}`),
-    getConfig: (data: any) => post<BindConfig>(`/notifier/config/_query/no-paging?paging=false`, data),
-    getTemplateDetail: (id: string) => get(`/notifier/template/${id}/detail`),
+    getConfig: (data: any) => post<BindConfig[]>(`/notifier/config/_query/no-paging?paging=false`, data),
+    getTemplateDetail: (id: string) => get<any>(`/notifier/template/${id}/detail`),
     debug: (data: any, configId: string, templateId: string) => post(`/notifier/${configId}/${templateId}/_send`, data),
     getHistory: (data: any, id: string) => post(`/notify/history/template/${id}/_query`, data),
     // 钉钉/微信, 根据配置获取部门和用户
