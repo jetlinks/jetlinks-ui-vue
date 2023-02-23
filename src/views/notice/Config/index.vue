@@ -48,10 +48,10 @@
                     <template #img>
                         <slot name="img">
                             <img
-                                style="width: 80px; height: 80px"
                                 :src="
                                     getLogo(slotProps.type, slotProps.provider)
                                 "
+                                class="logo"
                             />
                         </slot>
                     </template>
@@ -429,3 +429,9 @@ const getActions = (
     }
 };
 </script>
+<style lang="less" scoped>
+.logo {
+    width: 88px;
+    height: 88px;
+}
+</style>
