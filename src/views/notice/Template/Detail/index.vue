@@ -718,12 +718,11 @@
                                 placeholder="请输入说明"
                             />
                         </a-form-item>
-                        <a-form-item :wrapper-col="{ offset: 0, span: 3 }">
+                        <a-form-item>
                             <a-button
                                 type="primary"
                                 @click="handleSubmit"
                                 :loading="btnLoading"
-                                style="width: 100%"
                             >
                                 保存
                             </a-button>

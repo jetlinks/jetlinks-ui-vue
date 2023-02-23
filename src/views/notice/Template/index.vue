@@ -114,6 +114,14 @@
                     </template>
                 </CardBox>
             </template>
+            <template #bodyCell="{ column, text, record }">
+                <span v-if="column.dataIndex === 'type'">
+                    {{ getMethodTxt(record.type) }}
+                </span>
+                <span v-if="column.dataIndex === 'provider'">
+                    {{ getProviderTxt(record.type, record.provider) }}
+                </span>
+            </template>
             <template #action="slotProps">
                 <a-space :size="16">
                     <a-tooltip
@@ -253,6 +261,14 @@ const getLogo = (type: string, provider: string) => {
  */
 const getMethodTxt = (type: string) => {
     return NOTICE_METHOD.find((f) => f.value === type)?.label;
+};
+/**
+ * 根据类型展示对应文案
+ * @param type
+ * @param provider
+ */
+const getProviderTxt = (type: string, provider: string) => {
+    return MSG_TYPE[type].find((f: any) => f.value === provider)?.label;
 };
 
 /**
