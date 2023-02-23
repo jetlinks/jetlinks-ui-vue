@@ -235,7 +235,7 @@ const reset = () => {
     urlParams.target = null
   }
   resetNumber.value += 1
-  emit('search', terms)
+  emit('search', { terms: []})
 }
 
 watch(width, (value) => {
