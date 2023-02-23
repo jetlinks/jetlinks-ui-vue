@@ -109,7 +109,7 @@ interface GuideItemProps {
     index?: number;
     auth: boolean;
 }
-
+const menuStory = useMenuStore();
 const menuHasPermission = useMenuStore().hasPermission;
 const btnHasPermission = usePermissionStore().hasPermission;
 
@@ -134,14 +134,16 @@ const guideList = [
         name: '平台对接',
         english: 'STEP1',
         auth: paltformPermission,
-        url: platformUrl,
+        // url: platformUrl,
+        url: 'iot-card/Platform/Detail',
     },
     {
         key: 'SCREEN',
         name: '物联卡管理',
         english: 'STEP2',
         auth: !!cardPermission,
-        url: cardUrl,
+        // url: cardUrl,
+        url: 'iot-card/CardManagement',
         param: { save: true },
     },
     {
@@ -149,7 +151,8 @@ const guideList = [
         name: '操作记录',
         english: 'STEP3',
         auth: !!recordUrl,
-        url: recordUrl,
+        // url: recordUrl,
+        url: 'iot-card/Record',
     },
 ];
 
@@ -177,19 +180,25 @@ const pieChartData = ref<any[]>([
 ]);
 
 const jumpPage = (data: GuideItemProps) => {
-    if (data.url && data.auth) {
-        router.push({ path: `${data.url}`, ...data.param });
+    // if (data.url && data.auth) {
+    //     router.push({ path: `${data.url}`, ...data.param });
+    // } else {
+    //     message.warning('暂无权限，请联系管理员');
+    // }
+    if (data.key === 'EQUIPMENT') {
+        menuStory.jumpPage(data.url, { id: 'add' });
     } else {
-        message.warning('暂无权限，请联系管理员');
+        menuStory.jumpPage(data.url);
     }
 };
 
 const jumpDashboard = () => {
-    if (dashBoardUrl) {
-        router.push(`${dashBoardUrl}`);
-    } else {
-        message.warning('暂无权限，请联系管理员');
-    }
+    // if (dashBoardUrl) {
+    //     router.push(`${dashBoardUrl}`);
+    // } else {
+    //     message.warning('暂无权限，请联系管理员');
+    // }
+    menuStory.jumpPage('iot-card/Dashboard');
 };
 
 /**
