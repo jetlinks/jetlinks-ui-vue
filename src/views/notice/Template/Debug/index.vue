@@ -51,11 +51,30 @@
                             <a-form-item
                                 :name="['templateDetailTable', index, 'value']"
                                 :rules="{
-                                    required: true,
+                                    required: record.required,
                                     message: '该字段为必填字段',
                                 }"
                             >
+                                <ToUser
+                                    v-if="record.type === 'user'"
+                                    v-model:toUser="record.value"
+                                    :type="data.type"
+                                    :config-id="formData.configId"
+                                />
+                                <ToOrg
+                                    v-else-if="record.type === 'org'"
+                                    :type="data.type"
+                                    :config-id="formData.configId"
+                                    v-model:toParty="record.value"
+                                />
+                                <ToTag
+                                    v-else-if="record.type === 'tag'"
+                                    :type="data.type"
+                                    :config-id="formData.configId"
+                                    v-model:toTag="record.value"
+                                />
                                 <ValueItem
+                                    v-else
                                     v-model:modelValue="record.value"
                                     :itemType="record.type"
                                 />
@@ -78,6 +97,9 @@ import type {
 } from '@/views/notice/Template/types';
 import { message } from 'ant-design-vue';
 
+import ToUser from '../Detail/components/ToUser.vue';
+import ToOrg from '../Detail/components/ToOrg.vue';
+import ToTag from '../Detail/components/ToTag.vue';
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
@@ -110,7 +132,8 @@ const getConfigList = async () => {
     };
     const { result } = await TemplateApi.getConfig(params);
     configList.value = result;
-    formData.value.configId = result[0]?.id;
+    // 设置默认配置
+    if (configList.value.length) formData.value.configId = props.data.configId;
 };
 
 watch(
@@ -131,6 +154,7 @@ const getTemplateDetail = async () => {
     formData.value.templateDetailTable = result.variableDefinitions.map(
         (m: any) => ({
             ...m,
+            type: m.expands ? m.expands.businessType : m.type,
             value: undefined,
         }),
     );
