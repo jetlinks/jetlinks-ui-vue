@@ -154,6 +154,7 @@ const JTable = defineComponent<JTableProps>({
         const pageSize = ref<number>(6)
         const total = ref<number>(0)
         const loading = ref<boolean>(true)
+        const loading1 = ref<boolean>(true)
 
         const _columns = computed(() => props.columns.filter(i => !(i?.hideInTable)))
 
@@ -244,10 +245,6 @@ const JTable = defineComponent<JTableProps>({
             window.onresize = null
         })
 
-        watchEffect(() => {
-            // console.log(props.bodyStyle)
-        })
-
         /**
          * 刷新数据
          * @param _params 
@@ -292,92 +289,94 @@ const JTable = defineComponent<JTableProps>({
                     </div>
                 </div>
                 {/* content */}
-                <div class={styles['jtable-content']}>
-                    {
-                        props.alertRender && props?.rowSelection && props?.rowSelection?.selectedRowKeys && props.rowSelection.selectedRowKeys?.length ?
-                            <div class={styles['jtable-alert']}>
-                                <Alert
-                                    message={'已选择' + props?.rowSelection?.selectedRowKeys?.length + '项'}
-                                    type="info"
-                                    onClose={() => {
-                                        emit('cancelSelect')
-                                    }}
-                                    closeText={<a-button type="link">取消选择</a-button>}
-                                />
-                            </div> : null
-                    }
-                    {
-                        _model.value === ModelEnum.CARD ?
-                            <div class={styles['jtable-card']}>
-                                {
-                                    _dataSource.value.length ?
-                                        <div
-                                            class={styles['jtable-card-items']}
-                                            style={{ gridTemplateColumns: `repeat(${column.value}, 1fr)` }}
-                                        >
-                                            {
-                                                _dataSource.value.map(item => slots.card ?
-                                                    <div class={[styles['jtable-card-item'], props.cardBodyClass]}>
-                                                        {slots.card(item)}
-                                                    </div> : null
-                                                )
-                                            }
-                                        </div> :
-                                        <div><JEmpty style="margin: 10% 0" /></div>
-                                }
-                            </div> :
-                            <div>
-                                <Table
-                                    dataSource={_dataSource.value}
-                                    columns={_columns.value}
-                                    pagination={false}
-                                    rowKey="id"
-                                    rowSelection={props.rowSelection}
-                                    scroll={{ x: 1366 }}
-                                    v-slots={{
-                                        bodyCell: (dt: Record<string, any>) => {
-                                            const { column, record } = dt;
-                                            if ((column?.key || column?.dataIndex) && column?.scopedSlots && (slots?.[column?.dataIndex] || slots?.[column?.key])) {
-                                                const _key = column?.key || column?.dataIndex
-                                                return slots?.[_key]!(record)
-                                            } else {
-                                                return record?.[column?.dataIndex] || ''
-                                            }
-                                        },
-                                        emptyText: () => <JEmpty style="margin: 10% 0" />
-                                    }}
-                                />
-                            </div>
-                    }
-                </div>
+                {
+                    !loading.value ? <div class={styles['jtable-content']}>
+                        {
+                            props.alertRender && props?.rowSelection && props?.rowSelection?.selectedRowKeys && props.rowSelection.selectedRowKeys?.length ?
+                                <div class={styles['jtable-alert']}>
+                                    <Alert
+                                        message={'已选择' + props?.rowSelection?.selectedRowKeys?.length + '项'}
+                                        type="info"
+                                        onClose={() => {
+                                            emit('cancelSelect')
+                                        }}
+                                        closeText={<a-button type="link">取消选择</a-button>}
+                                    />
+                                </div> : null
+                        }
+                        {
+                            _model.value === ModelEnum.CARD ?
+                                <div class={styles['jtable-card']}>
+                                    {
+                                        _dataSource.value.length ?
+                                            <div
+                                                class={styles['jtable-card-items']}
+                                                style={{ gridTemplateColumns: `repeat(${column.value}, 1fr)` }}
+                                            >
+                                                {
+                                                    _dataSource.value.map(item => slots.card ?
+                                                        <div class={[styles['jtable-card-item'], props.cardBodyClass]}>
+                                                            {slots.card(item)}
+                                                        </div> : null
+                                                    )
+                                                }
+                                            </div> :
+                                            <div><JEmpty style="margin: 10% 0" /></div>
+                                    }
+                                </div> :
+                                <div>
+                                    <Table
+                                        dataSource={_dataSource.value}
+                                        columns={_columns.value}
+                                        pagination={false}
+                                        rowKey="id"
+                                        rowSelection={props.rowSelection}
+                                        scroll={{ x: 1366 }}
+                                        v-slots={{
+                                            bodyCell: (dt: Record<string, any>) => {
+                                                const { column, record } = dt;
+                                                if ((column?.key || column?.dataIndex) && column?.scopedSlots && (slots?.[column?.dataIndex] || slots?.[column?.key])) {
+                                                    const _key = column?.key || column?.dataIndex
+                                                    return slots?.[_key]!(record)
+                                                } else {
+                                                    return record?.[column?.dataIndex] || ''
+                                                }
+                                            },
+                                            emptyText: () => <JEmpty style="margin: 10% 0" />
+                                        }}
+                                    />
+                                </div>
+                        }
+                    </div> : <div style="width: 100%; height: 400px"></div>
+                }
                 {/* 分页 */}
                 {
                     (!!_dataSource.value.length) && !props.noPagination && props.type === 'PAGE' &&
                     <div class={styles['jtable-pagination']}>
                         {
-                            slots?.paginationRender ? 
-                            slots.paginationRender() : 
-                            <Pagination
-                                size="small"
-                                total={total.value}
-                                showQuickJumper={false}
-                                showSizeChanger={true}
-                                current={pageIndex.value + 1}
-                                pageSize={pageSize.value}
-                                pageSizeOptions={['12', '24', '48', '60', '100']}
-                                showTotal={(num) => {
-                                    const minSize = pageIndex.value * pageSize.value + 1;
-                                    const MaxSize = (pageIndex.value + 1) * pageSize.value;
-                                    return `第 ${minSize} - ${MaxSize > num ? num : MaxSize} 条/总共 ${num} 条`;
-                                }}
-                                onChange={(page, size) => {
-                                    handleSearch({
-                                        ...props.params,
-                                        pageSize: size,
-                                        pageIndex: pageSize.value === size ? (page ? page - 1 : 0) : 0
-                                    })
-                                }}
-                            />
+                            slots?.paginationRender ?
+                                slots.paginationRender() :
+                                <Pagination
+                                    size="small"
+                                    total={total.value}
+                                    showQuickJumper={false}
+                                    showSizeChanger={true}
+                                    current={pageIndex.value + 1}
+                                    pageSize={pageSize.value}
+                                    pageSizeOptions={['12', '24', '48', '60', '100']}
+                                    showTotal={(num) => {
+                                        const minSize = pageIndex.value * pageSize.value + 1;
+                                        const MaxSize = (pageIndex.value + 1) * pageSize.value;
+                                        return `第 ${minSize} - ${MaxSize > num ? num : MaxSize} 条/总共 ${num} 条`;
+                                    }}
+                                    onChange={(page, size) => {
+                                        handleSearch({
+                                            ...props.params,
+                                            pageSize: size,
+                                            pageIndex: pageSize.value === size ? (page ? page - 1 : 0) : 0
+                                        })
+                                    }}
+                                />
                         }
                     </div>
                 }
