@@ -206,10 +206,12 @@ import { Store } from 'jetlinks-store';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
+import { useMenuStore } from '@/store/menu';
 const params = ref<Record<string, any>>({});
 let isAdd = ref<number>(0);
 let title = ref<string>('');
 const tableRef = ref<Record<string, any>>({});
+const menuStory = useMenuStore();
 const columns = [
     {
         title: '名称',
@@ -421,6 +423,9 @@ const getActions = (
         return actions.filter((i: ActionsType) => i.key !== 'view');
     return actions;
 };
+const add = () =>{
+    // menuStory.jumpPage()
+}
 </script>
 <style lang="less" scoped>
 .content-des-title {
