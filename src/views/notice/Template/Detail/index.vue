@@ -106,7 +106,8 @@
                                         <a-form-item label="收信部门">
                                             <ToOrg
                                                 v-model:toParty="
-                                                    formData.template.toParty
+                                                    formData.template
+                                                        .departmentIdList
                                                 "
                                                 :type="formData.type"
                                                 :config-id="formData.configId"
@@ -132,7 +133,7 @@
                                             </template>
                                             <ToUser
                                                 v-model:toUser="
-                                                    formData.template.toUser
+                                                    formData.template.userIdList
                                                 "
                                                 :type="formData.type"
                                                 :config-id="formData.configId"
@@ -800,25 +801,56 @@ const formData = ref<TemplateFormData>({
 });
 
 /**
- * 重置公用字段值
+ * 重置字段值
  */
 const resetPublicFiles = () => {
-    if (
-        formData.value.provider === 'dingTalkMessage' ||
-        formData.value.type === 'weixin'
-    ) {
-        formData.value.template.toTag = undefined;
-        formData.value.template.toUser = undefined;
-        formData.value.template.agentId = undefined;
+    switch (formData.value.provider) {
+        case 'dingTalkMessage':
+            formData.value.template.agentId = '';
+            formData.value.template.message = '';
+            formData.value.template.departmentIdList = '';
+            formData.value.template.userIdList = '';
+            break;
+        case 'dingTalkRobotWebHook':
+            formData.value.template.message = '';
+            formData.value.template.messageType = 'markdown';
+            formData.value.template.markdown = { text: '', title: '' };
+            break;
+        case 'corpMessage':
+            formData.value.template.agentId = '';
+            formData.value.template.message = '';
+            formData.value.template.toParty = '';
+            formData.value.template.toUser = '';
+            formData.value.template.toTag = '';
+            break;
+        case 'embedded':
+            formData.value.template.subject = '';
+            formData.value.template.message = '';
+            formData.value.template.text = '';
+            formData.value.template.sendTo = [];
+            formData.value.template.attachments = [];
+            break;
+        case 'aliyun':
+            formData.value.template.templateType = 'tts';
+            formData.value.template.templateCode = '';
+            formData.value.template.ttsCode = '';
+            formData.value.template.message = '';
+            formData.value.template.playTimes = 1;
+            formData.value.template.calledShowNumbers = '';
+            formData.value.template.calledNumber = '';
+            break;
+        case 'aliyunSms':
+            formData.value.template.code = '';
+            formData.value.template.message = '';
+            formData.value.template.phoneNumber = '';
+            formData.value.template.signName = '';
+            break;
+        case 'http':
+            formData.value.template.contextAsBody = true;
+            formData.value.template.body = '';
+            break;
     }
-    if (formData.value.type === 'weixin')
-        formData.value.template.toParty = undefined;
-    if (formData.value.type === 'email')
-        formData.value.template.toParty = undefined;
-    // formData.value.description = '';
 
-    formData.value.template.messageType = 'markdown';
-    formData.value.template.message = '';
     formData.value.configId = undefined;
     formData.value.variableDefinitions = [];
     handleMessageTypeChange();
@@ -833,15 +865,8 @@ watch(
             route.params.id !== ':id'
                 ? formData.value.provider
                 : msgType.value[0].value;
-        // formData.value.provider = formData.value.provider || msgType.value[0].value;
-        // console.log('formData.value.template: ', formData.value.template);
-
-        // formData.value.template =
-        //     TEMPLATE_FIELD_MAP[val][formData.value.provider];
 
         if (val !== 'email') getConfigList();
-        // clearValid();
-        // console.log('formData.value: ', formData.value);
 
         if (val === 'sms') {
             getTemplateList();
@@ -849,15 +874,6 @@ watch(
         }
     },
 );
-
-// watch(
-//     () => formData.value.provider,
-//     (val) => {
-//         formData.value.template = TEMPLATE_FIELD_MAP[formData.value.type][val];
-
-//         clearValid();
-//     },
-// );
 
 // 验证规则
 const formRules = ref({
@@ -1069,6 +1085,7 @@ const handleTypeChange = () => {
     setTimeout(() => {
         formData.value.template =
             TEMPLATE_FIELD_MAP[formData.value.type][formData.value.provider];
+        // console.log('formData.value.template: ', formData.value.template);
         resetPublicFiles();
     }, 0);
 };
@@ -1146,8 +1163,9 @@ const handleSubmit = () => {
     setTimeout(() => {
         validate()
             .then(async () => {
-                formData.value.template.ttsCode =
-                    formData.value.template.templateCode;
+                if (formData.value.provider === 'ttsCode')
+                    formData.value.template.ttsCode =
+                        formData.value.template.templateCode;
                 btnLoading.value = true;
                 let res;
                 if (!formData.value.id) {

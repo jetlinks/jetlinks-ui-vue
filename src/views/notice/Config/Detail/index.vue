@@ -336,22 +336,8 @@ watch(
             route.params.id !== ':id'
                 ? formData.value.provider
                 : msgType.value[0].value;
-
-        // formData.value.configuration =
-        //     CONFIG_FIELD_MAP[val][formData.value.provider];
-
-        // clearValid();
     },
 );
-
-// watch(
-//     () => formData.value.provider,
-//     (val) => {
-//         // formData.value.configuration =
-//         //     CONFIG_FIELD_MAP[formData.value.type][val];
-//         // clearValid();
-//     },
-// );
 
 // 验证规则
 const formRules = ref({
@@ -421,12 +407,6 @@ const { resetFields, validate, validateInfos, clearValidate } = useForm(
     formRules.value,
 );
 
-const clearValid = () => {
-    setTimeout(() => {
-        clearValidate();
-    }, 200);
-};
-
 const getDetail = async () => {
     if (route.params.id === ':id') return;
     const res = await configApi.detail(route.params.id as string);
@@ -444,7 +424,7 @@ const handleTypeChange = () => {
     setTimeout(() => {
         formData.value.configuration =
             CONFIG_FIELD_MAP[formData.value.type][formData.value.provider];
-        // resetPublicFiles();
+        resetPublicFiles();
     }, 0);
 };
 
@@ -454,7 +434,48 @@ const handleTypeChange = () => {
 const handleProviderChange = () => {
     formData.value.configuration =
         CONFIG_FIELD_MAP[formData.value.type][formData.value.provider];
-    // resetPublicFiles();
+    resetPublicFiles();
+};
+
+/**
+ * 重置字段值
+ */
+const resetPublicFiles = () => {
+    switch (formData.value.provider) {
+        case 'dingTalkMessage':
+            formData.value.configuration.appKey = '';
+            formData.value.configuration.appSecret = '';
+            break;
+        case 'dingTalkRobotWebHook':
+            formData.value.configuration.url = '';
+            break;
+        case 'corpMessage':
+            formData.value.configuration.corpId = '';
+            formData.value.configuration.corpSecret = '';
+            break;
+        case 'embedded':
+            formData.value.configuration.host = '';
+            formData.value.configuration.port = 25;
+            formData.value.configuration.ssl = false;
+            formData.value.configuration.sender = '';
+            formData.value.configuration.username = '';
+            formData.value.configuration.password = '';
+            break;
+        case 'aliyun':
+            formData.value.configuration.regionId = '';
+            formData.value.configuration.accessKeyId = '';
+            formData.value.configuration.secret = '';
+            break;
+        case 'aliyunSms':
+            formData.value.configuration.regionId = '';
+            formData.value.configuration.accessKeyId = '';
+            formData.value.configuration.secret = '';
+            break;
+        case 'http':
+            formData.value.configuration.url = undefined;
+            formData.value.configuration.headers = [];
+            break;
+    }
 };
 
 /**

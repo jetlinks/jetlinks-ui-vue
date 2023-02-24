@@ -36,6 +36,8 @@ export type TemplateFormData = {
         // 钉钉消息
         agentId?: string;
         message?: string;
+        departmentIdList?: string;
+        userIdList?: string;
         // 钉钉机器人
         messageType?: string;
         markdown?: IMarkDown;
