@@ -260,7 +260,7 @@ const JTable = defineComponent<JTableProps>({
         /**
          * 导出方法
          */
-        expose({ reload })
+        expose({ reload, _dataSource })
 
         return () => <Spin spinning={loading.value}>
             <div class={styles["jtable-body"]} style={{ ...props.bodyStyle }}>
