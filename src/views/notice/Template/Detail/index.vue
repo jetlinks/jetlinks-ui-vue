@@ -803,9 +803,6 @@ const formData = ref<TemplateFormData>({
  * 重置公用字段值
  */
 const resetPublicFiles = () => {
-    formData.value.template.message = '';
-    formData.value.configId = undefined;
-
     if (
         formData.value.provider === 'dingTalkMessage' ||
         formData.value.type === 'weixin'
@@ -819,7 +816,12 @@ const resetPublicFiles = () => {
     if (formData.value.type === 'email')
         formData.value.template.toParty = undefined;
     // formData.value.description = '';
+
+    formData.value.template.messageType = 'markdown';
+    formData.value.template.message = '';
+    formData.value.configId = undefined;
     formData.value.variableDefinitions = [];
+    handleMessageTypeChange();
 };
 
 // 根据通知方式展示对应的字段
@@ -992,16 +994,30 @@ const variableReg = (value: string) => {
  * 钉钉机器人 消息类型选择改变
  */
 const handleMessageTypeChange = () => {
+    delete formData.value.template.markdown;
+    delete formData.value.template.link;
+    delete formData.value.template.text;
+    if (formData.value.template.messageType === 'link') {
+        formData.value.template.link = {
+            title: '',
+            picUrl: '',
+            messageUrl: '',
+            text: formData.value.template.message as string,
+        };
+    }
+    if (formData.value.template.messageType === 'markdown') {
+        formData.value.template.markdown = {
+            title: '',
+            text: formData.value.template.message as string,
+        };
+    }
+    if (formData.value.template.messageType === 'text') {
+        formData.value.template.text = {
+            content: formData.value.template.message as string,
+        };
+    }
     formData.value.variableDefinitions = [];
     formData.value.template.message = '';
-    if (formData.value.template.link) {
-        formData.value.template.link.title = '';
-        formData.value.template.link.picUrl = '';
-        formData.value.template.link.messageUrl = '';
-    }
-    if (formData.value.template.markdown) {
-        formData.value.template.markdown.title = '';
-    }
 };
 
 /**
@@ -1047,6 +1063,8 @@ const handleTypeChange = () => {
 const handleProviderChange = () => {
     formData.value.template =
         TEMPLATE_FIELD_MAP[formData.value.type][formData.value.provider];
+    // console.log('formData.value: ', formData.value);
+    // console.log('formData.value.template: ', formData.value.template);
     getConfigList();
     resetPublicFiles();
 };

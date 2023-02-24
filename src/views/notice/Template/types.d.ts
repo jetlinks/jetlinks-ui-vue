@@ -27,6 +27,9 @@ interface ILink {
     messageUrl: string;
     text: string;
 }
+interface IText {
+    content: string;
+}
 
 export type TemplateFormData = {
     template: {
@@ -37,6 +40,7 @@ export type TemplateFormData = {
         messageType?: string;
         markdown?: IMarkDown;
         link?: ILink;
+        text?: IText;
         // 微信
         // agentId?: string;
         // message?: string;
