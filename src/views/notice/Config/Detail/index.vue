@@ -333,7 +333,7 @@ watch(
         msgType.value = MSG_TYPE[val];
 
         formData.value.provider =
-            formData.value.provider !== ':id'
+            route.params.id !== ':id'
                 ? formData.value.provider
                 : msgType.value[0].value;
 
@@ -344,14 +344,14 @@ watch(
     },
 );
 
-watch(
-    () => formData.value.provider,
-    (val) => {
-        // formData.value.configuration =
-        //     CONFIG_FIELD_MAP[formData.value.type][val];
-        // clearValid();
-    },
-);
+// watch(
+//     () => formData.value.provider,
+//     (val) => {
+//         // formData.value.configuration =
+//         //     CONFIG_FIELD_MAP[formData.value.type][val];
+//         // clearValid();
+//     },
+// );
 
 // 验证规则
 const formRules = ref({
