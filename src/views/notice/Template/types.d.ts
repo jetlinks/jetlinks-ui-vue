@@ -27,16 +27,22 @@ interface ILink {
     messageUrl: string;
     text: string;
 }
+interface IText {
+    content: string;
+}
 
 export type TemplateFormData = {
     template: {
         // 钉钉消息
         agentId?: string;
         message?: string;
+        departmentIdList?: string;
+        userIdList?: string;
         // 钉钉机器人
         messageType?: string;
         markdown?: IMarkDown;
         link?: ILink;
+        text?: IText;
         // 微信
         // agentId?: string;
         // message?: string;

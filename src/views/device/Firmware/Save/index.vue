@@ -183,7 +183,6 @@
 <script lang="ts" setup>
 import { message, Form } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
-import type { UploadChangeParam } from 'ant-design-vue';
 import FileUpload from './FileUpload.vue';
 import { save, update, queryProduct } from '@/api/device/firmware';
 import type { FormInstance } from 'ant-design-vue';
@@ -260,7 +259,7 @@ const { resetFields, validate, validateInfos } = useForm(
             { required: true, message: '请输入版本号' },
             { max: 64, message: '最多可输入64个字符', trigger: 'change' },
         ],
-        versionOrder: [{ required: true, message: '请输入版本号' }],
+        versionOrder: [{ required: true, message: '请输入版本序号' }],
         signMethod: [{ required: true, message: '请选择签名方式' }],
         sign: [
             { required: true, message: '请输入签名' },

@@ -29,7 +29,7 @@
                         <a-button>导入</a-button>
                     </a-upload>
                     <a-popconfirm
-                        title="确认导出当前页数据？"
+                        title="确认导出？"
                         ok-text="确定"
                         cancel-text="取消"
                         @confirm="handleExport"
@@ -113,6 +113,14 @@
                         </a-tooltip>
                     </template>
                 </CardBox>
+            </template>
+            <template #bodyCell="{ column, text, record }">
+                <span v-if="column.dataIndex === 'type'">
+                    {{ getMethodTxt(record.type) }}
+                </span>
+                <span v-if="column.dataIndex === 'provider'">
+                    {{ getProviderTxt(record.type, record.provider) }}
+                </span>
             </template>
             <template #action="slotProps">
                 <a-space :size="16">
@@ -254,6 +262,14 @@ const getLogo = (type: string, provider: string) => {
 const getMethodTxt = (type: string) => {
     return NOTICE_METHOD.find((f) => f.value === type)?.label;
 };
+/**
+ * 根据类型展示对应文案
+ * @param type
+ * @param provider
+ */
+const getProviderTxt = (type: string, provider: string) => {
+    return MSG_TYPE[type].find((f: any) => f.value === provider)?.label;
+};
 
 /**
  * 新增
@@ -298,7 +314,7 @@ const beforeUpload = (file: any) => {
  * 导出
  */
 const handleExport = () => {
-    downloadObject(configRef.value.dataSource, `通知配置`);
+    downloadObject(configRef.value._dataSource, `通知配置`);
 };
 
 const syncVis = ref(false);

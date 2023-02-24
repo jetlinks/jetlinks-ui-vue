@@ -1,55 +1,57 @@
 <template>
-    <a-card class="role-container">
-        <Search :columns="query.columns" />
+    <page-container>
+        <a-card class="role-container">
+            <Search :columns="query.columns" />
 
-        <JTable
-            ref="tableRef"
-            :columns="table.columns"
-            :request="getRoleList_api"
-            model="TABLE"
-            :params="query.params"
-        >
-            <template #headerTitle>
-                <PermissionButton
-                    type="primary"
-                    :uhasPermission="`${permission}:add`"
-                    @click="table.clickAdd"
-                >
-                    <AIcon type="PlusOutlined" />新增
-                </PermissionButton>
-            </template>
-
-            <template #action="slotProps">
-                <a-space :size="16">
+            <JTable
+                ref="tableRef"
+                :columns="table.columns"
+                :request="getRoleList_api"
+                model="TABLE"
+                :params="query.params"
+            >
+                <template #headerTitle>
                     <PermissionButton
-                        :uhasPermission="`${permission}:update`"
-                        type="link"
-                        :tooltip="{
-                            title: '编辑',
-                        }"
-                        @click="table.clickEdit(slotProps)"
+                        type="primary"
+                        :uhasPermission="`${permission}:add`"
+                        @click="table.clickAdd"
                     >
-                        <AIcon type="EditOutlined" />
+                        <AIcon type="PlusOutlined" />新增
                     </PermissionButton>
-                    <PermissionButton
-                        type="link"
-                        :uhasPermission="`${permission}:delete`"
-                        :tooltip="{ title: '删除' }"
-                        :popConfirm="{
-                            title: `确定要删除吗`,
-                            onConfirm: () => table.clickDel(slotProps),
-                        }"
-                    >
-                        <AIcon type="DeleteOutlined" />
-                    </PermissionButton>
-                </a-space>
-            </template>
-        </JTable>
+                </template>
 
-        <div class="dialogs">
-            <AddDialog ref="addDialogRef" />
-        </div>
-    </a-card>
+                <template #action="slotProps">
+                    <a-space :size="16">
+                        <PermissionButton
+                            :uhasPermission="`${permission}:update`"
+                            type="link"
+                            :tooltip="{
+                                title: '编辑',
+                            }"
+                            @click="table.clickEdit(slotProps)"
+                        >
+                            <AIcon type="EditOutlined" />
+                        </PermissionButton>
+                        <PermissionButton
+                            type="link"
+                            :uhasPermission="`${permission}:delete`"
+                            :tooltip="{ title: '删除' }"
+                            :popConfirm="{
+                                title: `确定要删除吗`,
+                                onConfirm: () => table.clickDel(slotProps),
+                            }"
+                        >
+                            <AIcon type="DeleteOutlined" />
+                        </PermissionButton>
+                    </a-space>
+                </template>
+            </JTable>
+
+            <div class="dialogs">
+                <AddDialog ref="addDialogRef" />
+            </div>
+        </a-card>
+    </page-container>
 </template>
 
 <script setup lang="ts" name="Role">
@@ -146,12 +148,10 @@ nextTick(() => {
 
 <style lang="less" scoped>
 .role-container {
-
     :deep(.ant-table-cell) {
         .ant-btn-link {
             padding: 0;
         }
     }
 }
-
 </style>

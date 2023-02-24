@@ -1,124 +1,134 @@
 <template>
-    <div class="data-source-container">
-        <Search :columns="query.columns" @search="query.search" />
+    <page-container>
+        <div class="data-source-container">
+            <Search :columns="query.columns" @search="query.search" />
 
-        <JTable
-            ref="tableRef"
-            :columns="table.columns"
-            :request="getDataSourceList_api"
-            model="TABLE"
-            :params="query.params.value"
-            :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }"
-        >
-            <template #headerTitle>
-                <PermissionButton
-                    type="primary"
-                    :uhasPermission="`${permission}:add`"
-                    @click="table.openDialog({})"
-                >
-                    <AIcon type="PlusOutlined" />新增
-                </PermissionButton>
-            </template>
-            <template #state="slotProps">
-                <BadgeStatus
-                    :status="slotProps.state?.value"
-                    :text="slotProps.state?.text"
-                    :statusNames="{
-                        enabled: 'success',
-                        disabled: 'error',
-                    }"
-                >
-                </BadgeStatus>
-            </template>
-            <template #typeId="slotProps">
-                {{
-                    (table.typeOptions.value.length &&
-                        table.getTypeLabel(slotProps.typeId)) ||
-                    ''
-                }}
-            </template>
-            <template #action="slotProps">
-                <a-space :size="16">
+            <JTable
+                ref="tableRef"
+                :columns="table.columns"
+                :request="getDataSourceList_api"
+                model="TABLE"
+                :params="query.params.value"
+                :defaultParams="{
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                }"
+            >
+                <template #headerTitle>
                     <PermissionButton
-                        :uhasPermission="`${permission}:update`"
-                        type="link"
-                        :tooltip="{
-                            title: '编辑',
-                        }"
-                        @click="table.openDialog(slotProps)"
+                        type="primary"
+                        :uhasPermission="`${permission}:add`"
+                        @click="table.openDialog({})"
                     >
-                        <AIcon type="EditOutlined" />
+                        <AIcon type="PlusOutlined" />新增
                     </PermissionButton>
-                    <PermissionButton
-                        :uhasPermission="`${permission}:manage`"
-                        type="link"
-                        :tooltip="{
-                            title:
-                                slotProps?.typeId === 'rabbitmq'
-                                    ? '暂不支持管理功能'
-                                    : table.getRowStatus(slotProps)
-                                    ? '管理'
-                                    : '请先启用数据源',
-                        }"
-                        @click="
-                            () =>
-                                router.push(
-                                    `/system/DataSource/Management?id=${slotProps.id}`,
-                                )
-                        "
-                        :disabled="slotProps?.typeId === 'rabbitmq' || !table.getRowStatus(slotProps)"
-                    >
-                        <AIcon type="icon-ziyuankuguanli" />
-                    </PermissionButton>
-                    <PermissionButton
-                        :uhasPermission="`${permission}:action`"
-                        type="link"
-                        :popConfirm="{
-                            title: `确定要${
-                                table.getRowStatus(slotProps) ? '禁用' : '启用'
-                            }吗？`,
-                            onConfirm: () => table.clickChangeStatus(slotProps),
-                        }"
-                        :tooltip="{
-                            title: table.getRowStatus(slotProps)
-                                ? '禁用'
-                                : '启用',
+                </template>
+                <template #state="slotProps">
+                    <BadgeStatus
+                        :status="slotProps.state?.value"
+                        :text="slotProps.state?.text"
+                        :statusNames="{
+                            enabled: 'success',
+                            disabled: 'error',
                         }"
                     >
-                        <AIcon
-                            :type="
-                                table.getRowStatus(slotProps)
-                                    ? 'StopOutlined'
-                                    : 'PlayCircleOutlined'
+                    </BadgeStatus>
+                </template>
+                <template #typeId="slotProps">
+                    {{
+                        (table.typeOptions.value.length &&
+                            table.getTypeLabel(slotProps.typeId)) ||
+                        ''
+                    }}
+                </template>
+                <template #action="slotProps">
+                    <a-space :size="16">
+                        <PermissionButton
+                            :uhasPermission="`${permission}:update`"
+                            type="link"
+                            :tooltip="{
+                                title: '编辑',
+                            }"
+                            @click="table.openDialog(slotProps)"
+                        >
+                            <AIcon type="EditOutlined" />
+                        </PermissionButton>
+                        <PermissionButton
+                            :uhasPermission="`${permission}:manage`"
+                            type="link"
+                            :tooltip="{
+                                title:
+                                    slotProps?.typeId === 'rabbitmq'
+                                        ? '暂不支持管理功能'
+                                        : table.getRowStatus(slotProps)
+                                        ? '管理'
+                                        : '请先启用数据源',
+                            }"
+                            @click="
+                                () =>
+                                    router.push(
+                                        `/system/DataSource/Management?id=${slotProps.id}`,
+                                    )
                             "
-                        />
-                        <!-- <AIcon type="PlayCircleOutlined" /> -->
-                    </PermissionButton>
+                            :disabled="
+                                slotProps?.typeId === 'rabbitmq' ||
+                                !table.getRowStatus(slotProps)
+                            "
+                        >
+                            <AIcon type="icon-ziyuankuguanli" />
+                        </PermissionButton>
+                        <PermissionButton
+                            :uhasPermission="`${permission}:action`"
+                            type="link"
+                            :popConfirm="{
+                                title: `确定要${
+                                    table.getRowStatus(slotProps)
+                                        ? '禁用'
+                                        : '启用'
+                                }吗？`,
+                                onConfirm: () =>
+                                    table.clickChangeStatus(slotProps),
+                            }"
+                            :tooltip="{
+                                title: table.getRowStatus(slotProps)
+                                    ? '禁用'
+                                    : '启用',
+                            }"
+                        >
+                            <AIcon
+                                :type="
+                                    table.getRowStatus(slotProps)
+                                        ? 'StopOutlined'
+                                        : 'PlayCircleOutlined'
+                                "
+                            />
+                            <!-- <AIcon type="PlayCircleOutlined" /> -->
+                        </PermissionButton>
 
-                    <PermissionButton
-                        :uhasPermission="`${permission}:delete`"
-                        type="link"
-                        :tooltip="{
-                            title: table.getRowStatus(slotProps)
-                                ? '请先禁用，再删除'
-                                : '删除',
-                        }"
-                        :popConfirm="{
-                            title: `确认删除`,
-                            onConfirm: () => table.clickDel(slotProps),
-                        }"
-                        :disabled="table.getRowStatus(slotProps)"
-                    >
-                        <AIcon type="DeleteOutlined" />
-                    </PermissionButton>
-                </a-space>
-            </template>
-        </JTable>
+                        <PermissionButton
+                            :uhasPermission="`${permission}:delete`"
+                            type="link"
+                            :tooltip="{
+                                title: table.getRowStatus(slotProps)
+                                    ? '请先禁用，再删除'
+                                    : '删除',
+                            }"
+                            :popConfirm="{
+                                title: `确认删除`,
+                                onConfirm: () => table.clickDel(slotProps),
+                            }"
+                            :disabled="table.getRowStatus(slotProps)"
+                        >
+                            <AIcon type="DeleteOutlined" />
+                        </PermissionButton>
+                    </a-space>
+                </template>
+            </JTable>
 
-        <div class="dialogs">
-            <EditDialog ref="editDialogRef" @confirm="table.refresh" />
+            <div class="dialogs">
+                <EditDialog ref="editDialogRef" @confirm="table.refresh" />
+            </div>
         </div>
-    </div>
+    </page-container>
 </template>
 
 <script setup lang="ts" name="DataSource">
@@ -132,7 +142,7 @@ import {
     getDataSourceList_api,
     getDataTypeDict_api,
     changeStatus_api,
-    delDataSource_api
+    delDataSource_api,
 } from '@/api/system/dataSource';
 import { message } from 'ant-design-vue';
 
@@ -243,7 +253,7 @@ const table = {
             key: 'action',
             scopedSlots: true,
             width: '200px',
-            fixed:'right'
+            fixed: 'right',
         },
     ],
 
@@ -298,7 +308,6 @@ table.getTypeOption();
 
 <style lang="less" scoped>
 .data-source-container {
-    padding: 24px;
     :deep(.ant-table-cell) {
         .ant-btn-link {
             padding: 0;

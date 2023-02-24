@@ -1,169 +1,180 @@
 <template>
     <page-container>
-        <a-card class="device-product">
-            <Search
-                :columns="query.columns"
-                target="product-manage"
-                @search="handleSearch"
-            />
-            <JTable
-                :columns="columns"
-                :request="queryProductList"
-                ref="tableRef"
-                :defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
-                :params="params"
-            >
-                <template #headerTitle>
-                    <a-space>
-                        <a-button type="primary" @click="add"
-                            ><plus-outlined />新增</a-button
-                        >
-                        <a-upload
-                            name="file"
-                            accept=".json"
-                            :showUploadList="false"
-                            :before-upload="beforeUpload"
-                        >
-                            <a-button>导入</a-button>
-                        </a-upload>
-                    </a-space>
-                </template>
-                <template #deviceType="slotProps">
-                    <div>{{ slotProps.deviceType.text }}</div>
-                </template>
-                <template #card="slotProps">
-                    <CardBox
-                        :value="slotProps"
-                        @click="handleClick"
-                        :actions="getActions(slotProps, 'card')"
-                        v-bind="slotProps"
-                        :active="_selectedRowKeys.includes(slotProps.id)"
-                        :status="slotProps.state"
-                        :statusText="slotProps.state === 1 ? '正常' : '禁用'"
-                        :statusNames="{
-                            1: 'success',
-                            0: 'error',
-                        }"
+        <Search
+            :columns="query.columns"
+            target="product-manage"
+            @search="handleSearch"
+        />
+        <JTable
+            :columns="columns"
+            :request="queryProductList"
+            ref="tableRef"
+            :defaultParams="{
+                sorts: [{ name: 'createTime', order: 'desc' }],
+            }"
+            :params="params"
+        >
+            <template #headerTitle>
+                <a-space>
+                    <a-button type="primary" @click="add"
+                        ><plus-outlined />新增</a-button
                     >
-                        <template #img>
-                            <slot name="img">
-                                <img :src="getImage('/device-product.png')" />
-                            </slot>
-                        </template>
-                        <template #content>
-                            <h3
+                    <a-upload
+                        name="file"
+                        accept=".json"
+                        :showUploadList="false"
+                        :before-upload="beforeUpload"
+                    >
+                        <a-button>导入</a-button>
+                    </a-upload>
+                </a-space>
+            </template>
+            <template #deviceType="slotProps">
+                <div>{{ slotProps.deviceType.text }}</div>
+            </template>
+            <template #card="slotProps">
+                <CardBox
+                    :value="slotProps"
+                    @click="handleClick"
+                    :actions="getActions(slotProps, 'card')"
+                    v-bind="slotProps"
+                    :active="_selectedRowKeys.includes(slotProps.id)"
+                    :status="slotProps.state"
+                    :statusText="slotProps.state === 1 ? '正常' : '禁用'"
+                    :statusNames="{
+                        1: 'success',
+                        0: 'error',
+                    }"
+                >
+                    <template #img>
+                        <slot name="img">
+                            <img
+                                :src="
+                                    slotProps.photoUrl ||
+                                    getImage('/device-product.png')
+                                "
+                                class="productImg"
+                            />
+                        </slot>
+                    </template>
+                    <template #content>
+                        <Ellipsis
+                            ><span
                                 @click.stop="handleView(slotProps.id)"
-                                style="font-weight: 600"
+                                style="font-weight: 600; font-size: 16px"
                             >
                                 {{ slotProps.name }}
-                            </h3>
-                            <a-row>
-                                <a-col :span="12">
-                                    <div class="card-item-content-text">
-                                        设备类型
-                                    </div>
-                                    <div>直连设备</div>
-                                </a-col>
-                            </a-row>
-                        </template>
-                        <template #actions="item">
-                            <a-tooltip
-                                v-bind="item.tooltip"
-                                :title="item.disabled && item.tooltip.title"
-                            >
-                                <a-popconfirm
-                                    v-if="item.popConfirm"
-                                    v-bind="item.popConfirm"
-                                    :disabled="item.disabled"
-                                    okText="确定"
-                                    cancelText="取消"
+                            </span></Ellipsis
+                        >
+                        <a-row>
+                            <a-col :span="12">
+                                <div class="card-item-content-text">
+                                    设备类型
+                                </div>
+                                <div>{{ slotProps?.deviceType?.text }}</div>
+                            </a-col>
+                            <a-col :span="12">
+                                <div class="card-item-content-text">
+                                    接入方式
+                                </div>
+                                <Ellipsis
+                                    ><div>
+                                        {{ slotProps?.accessName }}
+                                    </div></Ellipsis
                                 >
-                                    <a-button :disabled="item.disabled">
-                                        <AIcon
-                                            type="DeleteOutlined"
-                                            v-if="item.key === 'delete'"
-                                        />
-                                        <template v-else>
-                                            <AIcon :type="item.icon" />
-                                            <span>{{ item?.text }}</span>
-                                        </template>
-                                    </a-button>
-                                </a-popconfirm>
-                                <template v-else>
-                                    <a-button
-                                        :disabled="item.disabled"
-                                        @click="item.onClick"
-                                    >
-                                        <AIcon
-                                            type="DeleteOutlined"
-                                            v-if="item.key === 'delete'"
-                                        />
-                                        <template v-else>
-                                            <AIcon :type="item.icon" />
-                                            <span>{{ item?.text }}</span>
-                                        </template>
-                                    </a-button>
-                                </template>
-                            </a-tooltip>
-                        </template>
-                    </CardBox>
-                </template>
-                <template #state="slotProps">
-                    <a-badge
-                        :text="slotProps.state === 1 ? '正常' : '禁用'"
-                        :status="statusMap.get(slotProps.state)"
-                    />
-                </template>
-                <template #id="slotProps">
-                    <a>{{ slotProps.id }}</a>
-                </template>
-                <template #action="slotProps">
-                    <a-space :size="16">
+                            </a-col>
+                        </a-row>
+                    </template>
+                    <template #actions="item">
                         <a-tooltip
-                            v-for="i in getActions(slotProps)"
-                            :key="i.key"
-                            v-bind="i.tooltip"
+                            v-bind="item.tooltip"
+                            :title="item.disabled && item.tooltip.title"
                         >
                             <a-popconfirm
-                                v-if="i.popConfirm"
-                                v-bind="i.popConfirm"
+                                v-if="item.popConfirm"
+                                v-bind="item.popConfirm"
+                                :disabled="item.disabled"
                                 okText="确定"
                                 cancelText="取消"
                             >
-                                <a-button
-                                    :disabled="i.disabled"
-                                    style="padding: 0"
-                                    type="link"
-                                    ><AIcon :type="i.icon"
-                                /></a-button>
+                                <a-button :disabled="item.disabled">
+                                    <AIcon
+                                        type="DeleteOutlined"
+                                        v-if="item.key === 'delete'"
+                                    />
+                                    <template v-else>
+                                        <AIcon :type="item.icon" />
+                                        <span>{{ item?.text }}</span>
+                                    </template>
+                                </a-button>
                             </a-popconfirm>
+                            <template v-else>
+                                <a-button
+                                    :disabled="item.disabled"
+                                    @click="item.onClick"
+                                >
+                                    <AIcon
+                                        type="DeleteOutlined"
+                                        v-if="item.key === 'delete'"
+                                    />
+                                    <template v-else>
+                                        <AIcon :type="item.icon" />
+                                        <span>{{ item?.text }}</span>
+                                    </template>
+                                </a-button>
+                            </template>
+                        </a-tooltip>
+                    </template>
+                </CardBox>
+            </template>
+            <template #state="slotProps">
+                <a-badge
+                    :text="slotProps.state === 1 ? '正常' : '禁用'"
+                    :status="statusMap.get(slotProps.state)"
+                />
+            </template>
+            <template #id="slotProps">
+                <a>{{ slotProps.id }}</a>
+            </template>
+            <template #action="slotProps">
+                <a-space :size="16">
+                    <a-tooltip
+                        v-for="i in getActions(slotProps)"
+                        :key="i.key"
+                        v-bind="i.tooltip"
+                    >
+                        <a-popconfirm
+                            v-if="i.popConfirm"
+                            v-bind="i.popConfirm"
+                            okText="确定"
+                            cancelText="取消"
+                        >
                             <a-button
+                                :disabled="i.disabled"
                                 style="padding: 0"
                                 type="link"
-                                v-else
-                                @click="i.onClick && i.onClick(slotProps)"
-                            >
-                                <a-button
-                                    :disabled="i.disabled"
-                                    style="padding: 0"
-                                    type="link"
-                                    ><AIcon :type="i.icon"
-                                /></a-button>
-                            </a-button>
-                        </a-tooltip>
-                    </a-space>
-                </template>
-            </JTable>
-            <!-- 新增、编辑 -->
-            <Save
-                ref="saveRef"
-                :isAdd="isAdd"
-                :title="title"
-                @success="refresh"
-            />
-        </a-card>
+                                ><AIcon :type="i.icon"
+                            /></a-button>
+                        </a-popconfirm>
+                        <a-button
+                            style="padding: 0"
+                            type="link"
+                            v-else
+                            @click="i.onClick && i.onClick(slotProps)"
+                        >
+                            <a-button
+                                :disabled="i.disabled"
+                                style="padding: 0"
+                                type="link"
+                                ><AIcon :type="i.icon"
+                            /></a-button>
+                        </a-button>
+                    </a-tooltip>
+                </a-space>
+            </template>
+        </JTable>
+        <!-- 新增、编辑 -->
+        <Save ref="saveRef" :isAdd="isAdd" :title="title" @success="refresh" />
     </page-container>
 </template>
 
@@ -195,11 +206,11 @@ import { isNoCommunity, downloadObject } from '@/utils/utils';
 import { omit } from 'lodash-es';
 import { typeOptions } from '@/components/Search/util';
 import Save from './Save/index.vue';
-import { useMenuStore } from 'store/menu'
+import { useMenuStore } from 'store/menu';
 /**
  * 表格数据
  */
- const menuStory = useMenuStore()
+const menuStory = useMenuStore();
 const router = useRouter();
 const isAdd = ref<number>(0);
 const title = ref<string>('');
@@ -427,7 +438,7 @@ const beforeUpload = (file: any) => {
  * 查看
  */
 const handleView = (id: string) => {
-    menuStory.jumpPage('device/Product/Detail',{id})
+    menuStory.jumpPage('device/Product/Detail', { id });
 };
 
 /**
@@ -644,5 +655,14 @@ const handleSearch = (e: any) => {
 .box {
     padding: 20px;
     background: #f0f2f5;
+}
+.productImg {
+    width: 88px;
+    height: 88px;
+}
+.productName {
+    white-space: nowrap; /*强制在同一行内显示所有文本，直到文本结束或者遭遇br标签对象才换行。*/
+    overflow: hidden; /*超出部分隐藏*/
+    text-overflow: ellipsis; /*隐藏部分以省略号代替*/
 }
 </style>

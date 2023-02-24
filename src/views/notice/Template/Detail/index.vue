@@ -106,7 +106,8 @@
                                         <a-form-item label="收信部门">
                                             <ToOrg
                                                 v-model:toParty="
-                                                    formData.template.toParty
+                                                    formData.template
+                                                        .departmentIdList
                                                 "
                                                 :type="formData.type"
                                                 :config-id="formData.configId"
@@ -132,7 +133,7 @@
                                             </template>
                                             <ToUser
                                                 v-model:toUser="
-                                                    formData.template.toUser
+                                                    formData.template.userIdList
                                                 "
                                                 :type="formData.type"
                                                 :config-id="formData.configId"
@@ -157,6 +158,7 @@
                                             formData.template.messageType
                                         "
                                         placeholder="请选择消息类型"
+                                        @change="handleMessageTypeChange"
                                     >
                                         <a-select-option
                                             v-for="(
@@ -480,7 +482,11 @@
                                     </a-form-item>
                                 </a-col>
                             </a-row>
-                            <a-form-item>
+                            <a-form-item
+                                v-bind="
+                                    validateInfos['template.calledShowNumbers']
+                                "
+                            >
                                 <template #label>
                                     <span>
                                         被叫显号
@@ -713,12 +719,11 @@
                                 placeholder="请输入说明"
                             />
                         </a-form-item>
-                        <a-form-item :wrapper-col="{ offset: 0, span: 3 }">
+                        <a-form-item>
                             <a-button
                                 type="primary"
                                 @click="handleSubmit"
                                 :loading="btnLoading"
-                                style="width: 100%"
                             >
                                 保存
                             </a-button>
@@ -757,6 +762,8 @@ import ToTag from './components/ToTag.vue';
 import { FILE_UPLOAD } from '@/api/comm';
 import { LocalStore } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
+import { phoneRegEx } from '@/utils/validate';
+import type { Rule } from 'ant-design-vue/es/form';
 
 const router = useRouter();
 const route = useRoute();
@@ -794,25 +801,59 @@ const formData = ref<TemplateFormData>({
 });
 
 /**
- * 重置公用字段值
+ * 重置字段值
  */
 const resetPublicFiles = () => {
-    formData.value.template.message = '';
-    formData.value.configId = undefined;
-
-    if (
-        formData.value.provider === 'dingTalkMessage' ||
-        formData.value.type === 'weixin'
-    ) {
-        formData.value.template.toTag = undefined;
-        formData.value.template.toUser = undefined;
-        formData.value.template.agentId = undefined;
+    switch (formData.value.provider) {
+        case 'dingTalkMessage':
+            formData.value.template.agentId = '';
+            formData.value.template.message = '';
+            formData.value.template.departmentIdList = '';
+            formData.value.template.userIdList = '';
+            break;
+        case 'dingTalkRobotWebHook':
+            formData.value.template.message = '';
+            formData.value.template.messageType = 'markdown';
+            formData.value.template.markdown = { text: '', title: '' };
+            break;
+        case 'corpMessage':
+            formData.value.template.agentId = '';
+            formData.value.template.message = '';
+            formData.value.template.toParty = '';
+            formData.value.template.toUser = '';
+            formData.value.template.toTag = '';
+            break;
+        case 'embedded':
+            formData.value.template.subject = '';
+            formData.value.template.message = '';
+            formData.value.template.text = '';
+            formData.value.template.sendTo = [];
+            formData.value.template.attachments = [];
+            break;
+        case 'aliyun':
+            formData.value.template.templateType = 'tts';
+            formData.value.template.templateCode = '';
+            formData.value.template.ttsCode = '';
+            formData.value.template.message = '';
+            formData.value.template.playTimes = 1;
+            formData.value.template.calledShowNumbers = '';
+            formData.value.template.calledNumber = '';
+            break;
+        case 'aliyunSms':
+            formData.value.template.code = '';
+            formData.value.template.message = '';
+            formData.value.template.phoneNumber = '';
+            formData.value.template.signName = '';
+            break;
+        case 'http':
+            formData.value.template.contextAsBody = true;
+            formData.value.template.body = '';
+            break;
     }
-    if (formData.value.type === 'weixin')
-        formData.value.template.toParty = undefined;
-    if (formData.value.type === 'email')
-        formData.value.template.toParty = undefined;
-    // formData.value.description = '';
+
+    formData.value.configId = undefined;
+    formData.value.variableDefinitions = [];
+    handleMessageTypeChange();
 };
 
 // 根据通知方式展示对应的字段
@@ -824,15 +865,8 @@ watch(
             route.params.id !== ':id'
                 ? formData.value.provider
                 : msgType.value[0].value;
-        // formData.value.provider = formData.value.provider || msgType.value[0].value;
-        // console.log('formData.value.template: ', formData.value.template);
-
-        // formData.value.template =
-        //     TEMPLATE_FIELD_MAP[val][formData.value.provider];
 
         if (val !== 'email') getConfigList();
-        // clearValid();
-        // console.log('formData.value: ', formData.value);
 
         if (val === 'sms') {
             getTemplateList();
@@ -840,15 +874,6 @@ watch(
         }
     },
 );
-
-// watch(
-//     () => formData.value.provider,
-//     (val) => {
-//         formData.value.template = TEMPLATE_FIELD_MAP[formData.value.type][val];
-
-//         clearValid();
-//     },
-// );
 
 // 验证规则
 const formRules = ref({
@@ -862,7 +887,14 @@ const formRules = ref({
     // 钉钉
     'template.agentId': [{ required: true, message: '请输入agentId' }],
     'template.messageType': [{ required: true, message: '请选择消息类型' }],
-    'template.markdown.title': [{ required: true, message: '请输入标题' }],
+    'template.markdown.title': [
+        { required: true, message: '请输入标题' },
+        { max: 64, message: '最多可输入64个字符' },
+    ],
+    'template.link.title': [
+        { required: true, message: '请输入标题' },
+        { max: 64, message: '最多可输入64个字符' },
+    ],
     // 'template.url': [{ required: true, message: '请输入WebHook' }],
     // 微信
     // 'template.agentId': [{ required: true, message: '请输入agentId' }],
@@ -876,7 +908,21 @@ const formRules = ref({
     'template.signName': [{ required: true, message: '请输入签名' }],
     // webhook
     description: [{ max: 200, message: '最多可输入200个字符' }],
-    'template.message': [{ required: true, message: '请输入' }],
+    'template.message': [
+        { required: true, message: '请输入' },
+        { max: 500, message: '最多可输入500个字符' },
+    ],
+    'template.calledShowNumbers': [
+        {
+            trigger: 'blur',
+            validator(_rule: Rule, value: string) {
+                if (!phoneRegEx(value)) {
+                    return Promise.reject('请输入有效号码');
+                }
+                return Promise.resolve();
+            },
+        },
+    ],
 });
 
 const { resetFields, validate, validateInfos, clearValidate } = useForm(
@@ -884,39 +930,127 @@ const { resetFields, validate, validateInfos, clearValidate } = useForm(
     formRules.value,
 );
 
+// 钉钉机器人markdown标题变量提取
 watch(
-    () => formData.value.template.message,
+    () => formData.value.template.markdown?.title,
     (val) => {
         if (!val) return;
-        // 已经存在的变量
-        const oldKey = formData.value.variableDefinitions?.map((m) => m.id);
-        // 正则提取${}里面的值
-        const pattern = /(?<=\$\{).*?(?=\})/g;
-        const titleList = val.match(pattern)?.filter((f) => f);
-        const newKey = [...new Set(titleList)];
-        const result = newKey?.map((m) =>
-            oldKey.includes(m)
-                ? formData.value.variableDefinitions.find(
-                      (item) => item.id === m,
-                  )
-                : {
-                      id: m,
-                      name: '',
-                      type: 'string',
-                      format: '%s',
-                  },
-        );
-        formData.value.variableDefinitions = result as IVariableDefinitions[];
+        variableReg();
+    },
+    { deep: true },
+);
+// 钉钉机器人link标题变量提取
+watch(
+    () => formData.value.template.link?.title,
+    (val) => {
+        if (!val) return;
+        variableReg();
+    },
+    { deep: true },
+);
+// 邮件标题变量提取
+watch(
+    () => formData.value.template.subject,
+    (val) => {
+        if (!val) return;
+        variableReg();
     },
     { deep: true },
 );
 
-// const clearValid = () => {
-//     setTimeout(() => {
-//         formData.value.variableDefinitions = [];
-//         clearValidate();
-//     }, 200);
-// };
+// 模板内容变量提取
+watch(
+    () => formData.value.template.message,
+    (val) => {
+        if (!val) return;
+        variableReg();
+    },
+    { deep: true },
+);
+// webhook请求体变量提取
+watch(
+    () => formData.value.template.body,
+    (val) => {
+        if (!val) return;
+        variableReg();
+    },
+    { deep: true },
+);
+
+/**
+ * 将需要提取变量的字段值拼接为一个字符串, 用于统一提取变量
+ */
+const spliceStr = () => {
+    let variableFieldsStr = formData.value.template.message;
+    if (formData.value.provider === 'dingTalkRobotWebHook') {
+        if (formData.value.template.messageType === 'markdown')
+            variableFieldsStr += formData.value.template.markdown
+                ?.title as string;
+        if (formData.value.template.messageType === 'link')
+            variableFieldsStr += formData.value.template.link?.title as string;
+    }
+    if (formData.value.provider === 'embedded')
+        variableFieldsStr += formData.value.template.subject as string;
+    if (formData.value.provider === 'http')
+        variableFieldsStr += formData.value.template.body as string;
+    // console.log('variableFieldsStr: ', variableFieldsStr);
+    return variableFieldsStr || '';
+};
+
+/**
+ * 根据字段输入内容, 提取变量
+ * @param value
+ */
+const variableReg = () => {
+    const _val = spliceStr();
+    // 已经存在的变量
+    const oldKey = formData.value.variableDefinitions?.map((m) => m.id);
+    // 正则提取${}里面的值
+    const pattern = /(?<=\$\{).*?(?=\})/g;
+    const titleList = _val.match(pattern)?.filter((f) => f);
+    const newKey = [...new Set(titleList)];
+    const result = newKey?.map((m) =>
+        oldKey.includes(m)
+            ? formData.value.variableDefinitions.find((item) => item.id === m)
+            : {
+                  id: m,
+                  name: '',
+                  type: 'string',
+                  format: '%s',
+              },
+    );
+    formData.value.variableDefinitions = result as IVariableDefinitions[];
+};
+
+/**
+ * 钉钉机器人 消息类型选择改变
+ */
+const handleMessageTypeChange = () => {
+    delete formData.value.template.markdown;
+    delete formData.value.template.link;
+    delete formData.value.template.text;
+    if (formData.value.template.messageType === 'link') {
+        formData.value.template.link = {
+            title: '',
+            picUrl: '',
+            messageUrl: '',
+            text: formData.value.template.message as string,
+        };
+    }
+    if (formData.value.template.messageType === 'markdown') {
+        formData.value.template.markdown = {
+            title: '',
+            text: formData.value.template.message as string,
+        };
+    }
+    if (formData.value.template.messageType === 'text') {
+        formData.value.template.text = {
+            content: formData.value.template.message as string,
+        };
+    }
+    formData.value.variableDefinitions = [];
+    formData.value.template.message = '';
+};
 
 /**
  * 获取详情
@@ -951,6 +1085,7 @@ const handleTypeChange = () => {
     setTimeout(() => {
         formData.value.template =
             TEMPLATE_FIELD_MAP[formData.value.type][formData.value.provider];
+        // console.log('formData.value.template: ', formData.value.template);
         resetPublicFiles();
     }, 0);
 };
@@ -961,6 +1096,8 @@ const handleTypeChange = () => {
 const handleProviderChange = () => {
     formData.value.template =
         TEMPLATE_FIELD_MAP[formData.value.type][formData.value.provider];
+    // console.log('formData.value: ', formData.value);
+    // console.log('formData.value.template: ', formData.value.template);
     getConfigList();
     resetPublicFiles();
 };
@@ -1026,8 +1163,9 @@ const handleSubmit = () => {
     setTimeout(() => {
         validate()
             .then(async () => {
-                formData.value.template.ttsCode =
-                    formData.value.template.templateCode;
+                if (formData.value.provider === 'ttsCode')
+                    formData.value.template.ttsCode =
+                        formData.value.template.templateCode;
                 btnLoading.value = true;
                 let res;
                 if (!formData.value.id) {

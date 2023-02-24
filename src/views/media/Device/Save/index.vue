@@ -51,7 +51,7 @@
                             v-bind="validateInfos.productId"
                         >
                             <a-row :gutter="[0, 10]">
-                                <a-col :span="22">
+                                <a-col :span="!!route.query.id ? 24 : 22">
                                     <a-select
                                         v-model:value="formData.productId"
                                         placeholder="请选择所属产品"
@@ -66,7 +66,7 @@
                                         </a-select-option>
                                     </a-select>
                                 </a-col>
-                                <a-col :span="2">
+                                <a-col :span="2" v-if="!route.query.id">
                                     <a-button
                                         type="link"
                                         @click="saveProductVis = true"
@@ -132,12 +132,11 @@
                                 placeholder="请输入说明"
                             />
                         </a-form-item>
-                        <a-form-item :wrapper-col="{ offset: 0, span: 3 }">
+                        <a-form-item>
                             <a-button
                                 type="primary"
                                 @click="handleSubmit"
                                 :loading="btnLoading"
-                                style="width: 100%"
                             >
                                 保存
                             </a-button>
@@ -356,6 +355,8 @@ const getDetail = async () => {
     // formData.value = res.result;
     Object.assign(formData.value, res.result);
     formData.value.channel = res.result.provider;
+
+    console.log('formData.value: ', formData.value);
 };
 
 onMounted(() => {
@@ -367,6 +368,7 @@ onMounted(() => {
  */
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
+    // console.log('formData.value: ', formData.value);
     validate()
         .then(async () => {
             btnLoading.value = true;

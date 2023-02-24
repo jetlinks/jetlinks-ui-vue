@@ -140,7 +140,6 @@
                     :value="slotProps"
                     @click="handleClick"
                     :actions="getActions(slotProps, 'card')"
-                    v-bind="slotProps"
                     :active="_selectedRowKeys.includes(slotProps.id)"
                     :status="slotProps.state?.value"
                     :statusText="slotProps.state?.text"
@@ -151,22 +150,17 @@
                     }"
                 >
                     <template #img>
-                        <slot name="img">
-                            <img
-                                :src="
-                                    getImage('/device/instance/device-card.png')
-                                "
-                            />
-                        </slot>
+                        <img
+                            :src="getImage('/device/instance/device-card.png')"
+                        />
                     </template>
                     <template #content>
-                        <h3
-                            class="card-item-content-title"
-                            @click.stop="handleView(slotProps.id)"
-                        >
-                            {{ slotProps.name }}
-                        </h3>
-                        <a-row>
+                        <Ellipsis style="width: calc(100% - 100px)">
+                            <span style="font-size: 16px; font-weight: 600"  @click.stop="handleView(slotProps.id)">
+                                {{ slotProps.name }}
+                            </span>
+                        </Ellipsis>
+                        <a-row style="margin-top: 20px">
                             <a-col :span="12">
                                 <div class="card-item-content-text">
                                     设备类型
@@ -177,7 +171,9 @@
                                 <div class="card-item-content-text">
                                     产品名称
                                 </div>
-                                <div>{{ slotProps.productName }}</div>
+                                <Ellipsis style="width: 100%">
+                                    {{ slotProps.productName }}
+                                </Ellipsis>
                             </a-col>
                         </a-row>
                     </template>
@@ -292,7 +288,7 @@ const operationVisible = ref<boolean>(false);
 const api = ref<string>('');
 const type = ref<string>('');
 
-const menuStory = useMenuStore()
+const menuStory = useMenuStore();
 
 const statusMap = new Map();
 statusMap.set('online', 'success');
@@ -538,7 +534,7 @@ const handleAdd = () => {
  * 查看
  */
 const handleView = (id: string) => {
-    menuStory.jumpPage('device/Instance/Detail', {id})
+    menuStory.jumpPage('device/Instance/Detail', { id });
 };
 
 const getActions = (

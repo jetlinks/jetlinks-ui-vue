@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <page-container>
         <Api mode="api" />
-    </div>
+    </page-container>
 </template>
 
 <script setup lang="ts" name="Platforms">

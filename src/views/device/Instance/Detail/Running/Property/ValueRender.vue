@@ -1,7 +1,7 @@
 <template>
     <div class="value">
         <div v-if="value?.formatValue !== 0 && !value?.formatValue" :class="valueClass">--</div>
-        <div v-else-if="data?.valueType?.type === 'file'">
+        <div v-else-if="_data.data?.valueType?.type === 'file'">
           <template v-if="data?.valueType?.fileType === 'base64'">
             <div :class="valueClass" v-if="!!getType(value?.formatValue)">
               <img :src="imgMap.get(_type)" @error="onError" />
@@ -36,10 +36,10 @@
             </template>
           </template>
         </div>
-        <div v-else-if="data?.valueType?.type === 'object'" @click="getDetail('obj')" :class="valueClass">
+        <div v-else-if="_data.data?.valueType?.type === 'object'" @click="getDetail('obj')" :class="valueClass">
           <img :src="imgMap.get('obj')" />
         </div>
-        <div v-else-if="data?.valueType?.type === 'geoPoint' || data?.valueType?.type === 'array'" :class="valueClass">
+        <div v-else-if="_data.data?.valueType?.type === 'geoPoint' || _data.data?.valueType?.type === 'array'" :class="valueClass">
           {{JSON.stringify(value?.formatValue)}}
         </div>
         <div v-else :class="valueClass">
@@ -53,6 +53,7 @@
 import { getImage } from "@/utils/comm";
 import { message } from "ant-design-vue";
 import ValueDetail from './ValueDetail.vue'
+import {getType, imgMap, imgList, videoList, fileList} from './index'
 
 const _data = defineProps({
     data: {
@@ -73,47 +74,12 @@ const valueClass = computed(() => {
   return _data.type === 'card' ? 'cardValue' : 'otherValue'
 })
 
-const imgMap = new Map<any, any>();
-imgMap.set('txt', getImage('/running/txt.png'));
-imgMap.set('doc', getImage('/running/doc.png'));
-imgMap.set('xls', getImage('/running/xls.png'));
-imgMap.set('ppt', getImage('/running/ppt.png'));
-imgMap.set('docx', getImage('/running/docx.png'));
-imgMap.set('xlsx', getImage('/running/xlsx.png'));
-imgMap.set('pptx', getImage('/running/pptx.png'));
-imgMap.set('pdf', getImage('/running/pdf.png'));
-imgMap.set('img', getImage('/running/img.png'));
-imgMap.set('error', getImage('/running/error.png'));
-imgMap.set('video', getImage('/running/video.png'));
-imgMap.set('other', getImage('/running/other.png'));
-imgMap.set('obj', getImage('/running/obj.png'));
-
-const imgList = ['.jpg', '.png', '.swf', '.tiff'];
-const videoList = ['.m3u8', '.flv', '.mp4', '.rmvb', '.mvb'];
-const fileList = ['.txt', '.doc', '.xls', '.pdf', '.ppt', '.docx', '.xlsx', '.pptx'];
-
 const isHttps = document.location.protocol === 'https:';
 
 const _types = ref<string>('')
 const visible = ref<boolean>(false)
 const temp = ref<boolean>(false)
 
-const getType = (url: string) => {
-  let t: string = '';
-  [...imgList, ...videoList, ...fileList].map((item) => {
-    const str = item.slice(1, item.length);
-    if (url && String(url).indexOf(str) !== -1) {
-      if (imgList.includes(item)) {
-        t = 'img';
-      } else if (videoList.includes(item)) {
-        t = 'video';
-      } else {
-        t = str;
-      }
-    }
-  });
-  return t;
-};
 
 const onError = (e: any) => {
   e.target.src = imgMap.get('other')
@@ -149,7 +115,6 @@ const getDetail = (_type: string) => {
   _types.value = flag
   visible.value = true
 }
-
 </script>
 
 <style lang="less" scoped>

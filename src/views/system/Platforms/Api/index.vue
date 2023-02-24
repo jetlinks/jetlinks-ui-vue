@@ -1,5 +1,8 @@
 <template>
     <a-card class="api-page-container">
+        <p>
+            <AIcon type="ExclamationCircleOutlined" style="margin-right: 12px;" />配置系统支持API赋权的范围
+        </p>
         <a-row :gutter="24">
             <a-col :span="5">
                 <LeftTree @select="treeSelect" :mode="props.mode" />
@@ -117,7 +120,6 @@ function init() {
 
 <style scoped>
 .api-page-container {
-    padding: 24px;
     height: 100%;
     background-color: transparent;
 }

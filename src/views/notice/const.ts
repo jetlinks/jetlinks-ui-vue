@@ -147,10 +147,12 @@ export const TEMPLATE_FIELD_MAP = {
         dingTalkMessage: {
             agentId: '',
             message: '',
+            departmentIdList: '',
+            userIdList: ''
         },
         dingTalkRobotWebHook: {
             message: '',
-            messageType: '',
+            messageType: 'markdown',
             markdown: {
                 text: '',
                 title: '',

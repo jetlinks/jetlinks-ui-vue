@@ -1,46 +1,49 @@
 <template>
-    <div class="user-container">
-        <Search :columns="query.columns" @search="query.search" />
+    <page-container>
+        <div class="user-container">
+            <Search :columns="query.columns" @search="query.search" />
 
-        <JTable
-            ref="tableRef"
-            :columns="table.columns"
-            :request="getUserList_api"
-            model="TABLE"
-            :params="query.params.value"
-            :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }"
-        >
-            <template #headerTitle>
-                <!-- <a-button
+            <JTable
+                ref="tableRef"
+                :columns="table.columns"
+                :request="getUserList_api"
+                model="TABLE"
+                :params="query.params.value"
+                :defaultParams="{
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                }"
+            >
+                <template #headerTitle>
+                    <!-- <a-button
                     type="primary"
                     @click="table.openDialog('add')"
                     style="margin-right: 10px"
                     ><AIcon type="PlusOutlined" />新增</a-button
                 > -->
-                <PermissionButton
-                    :uhasPermission="`${permission}:add`"
-                    type="primary"
-                    @click="table.openDialog('add')"
-                >
-                    <AIcon type="PlusOutlined" />新增
-                </PermissionButton>
-            </template>
-            <template #type="slotProps">
-                {{ slotProps.type.name }}
-            </template>
-            <template #status="slotProps">
-                <BadgeStatus
-                    :status="slotProps.status"
-                    :text="slotProps.status ? '正常' : '禁用'"
-                    :statusNames="{
-                        1: 'success',
-                        0: 'error',
-                    }"
-                ></BadgeStatus>
-            </template>
-            <template #action="slotProps">
-                <a-space :size="16">
-                    <!-- <a-tooltip>
+                    <PermissionButton
+                        :uhasPermission="`${permission}:add`"
+                        type="primary"
+                        @click="table.openDialog('add')"
+                    >
+                        <AIcon type="PlusOutlined" />新增
+                    </PermissionButton>
+                </template>
+                <template #type="slotProps">
+                    {{ slotProps.type.name }}
+                </template>
+                <template #status="slotProps">
+                    <BadgeStatus
+                        :status="slotProps.status"
+                        :text="slotProps.status ? '正常' : '禁用'"
+                        :statusNames="{
+                            1: 'success',
+                            0: 'error',
+                        }"
+                    ></BadgeStatus>
+                </template>
+                <template #action="slotProps">
+                    <a-space :size="16">
+                        <!-- <a-tooltip>
                         <template #title>编辑</template>
                         <a-button
                             style="padding: 0"
@@ -50,7 +53,7 @@
                             <AIcon type="EditOutlined" />
                         </a-button>
                     </a-tooltip> -->
-                    <!-- <a-popconfirm
+                        <!-- <a-popconfirm
                         :title="`确定${slotProps.status ? '禁用' : '启用'}吗？`"
                         ok-text="确定"
                         cancel-text="取消"
@@ -66,7 +69,7 @@
                             </a-button>
                         </a-tooltip>
                     </a-popconfirm> -->
-                    <!-- <a-tooltip>
+                        <!-- <a-tooltip>
                         <template #title>重置密码</template>
                         <a-button
                             style="padding: 0"
@@ -76,7 +79,7 @@
                             <AIcon type="icon-zhongzhimima" />
                         </a-button>
                     </a-tooltip> -->
-                    <!-- <a-popconfirm
+                        <!-- <a-popconfirm
                         title="确认删除"
                         ok-text="确定"
                         cancel-text="取消"
@@ -97,66 +100,67 @@
                         </a-tooltip>
                     </a-popconfirm> -->
 
-                    <PermissionButton
-                        :uhasPermission="`${permission}:update`"
-                        type="link"
-                        :tooltip="{
-                            title: '编辑',
-                        }"
-                        @click="table.openDialog('edit')"
-                    >
-                        <AIcon type="EditOutlined" />
-                    </PermissionButton>
-                    <PermissionButton
-                        :uhasPermission="`${permission}:action`"
-                        type="link"
-                        :tooltip="{
-                            title: `${slotProps.status ? '禁用' : '启用'}`,
-                        }"
-                        :popConfirm="{
-                            title: `确定${
-                                slotProps.status ? '禁用' : '启用'
-                            }吗？`,
-                            onConfirm: () => table.changeStatus(slotProps),
-                        }"
-                    >
-                        <stop-outlined v-if="slotProps.status" />
-                        <play-circle-outlined v-else />
-                    </PermissionButton>
-                    <PermissionButton
-                        :uhasPermission="`${permission}:update`"
-                        type="link"
-                        :tooltip="{
-                            title: '重置密码',
-                        }"
-                        @click="table.openDialog('reset', slotProps)"
-                    >
-                        <AIcon type="icon-zhongzhimima" />
-                    </PermissionButton>
-                    <PermissionButton
-                        type="link"
-                        :uhasPermission="`${permission}:delete`"
-                        :tooltip="{
-                            title: slotProps.status
-                                ? '请先禁用，再删除'
-                                : '删除',
-                        }"
-                        :popConfirm="{
-                            title: `确认删除`,
-                            onConfirm: () => table.clickDel(slotProps),
-                        }"
-                        :disabled="slotProps.status"
-                    > 
-                        <AIcon type="DeleteOutlined" />
-                    </PermissionButton>
-                </a-space>
-            </template>
-        </JTable>
+                        <PermissionButton
+                            :uhasPermission="`${permission}:update`"
+                            type="link"
+                            :tooltip="{
+                                title: '编辑',
+                            }"
+                            @click="table.openDialog('edit')"
+                        >
+                            <AIcon type="EditOutlined" />
+                        </PermissionButton>
+                        <PermissionButton
+                            :uhasPermission="`${permission}:action`"
+                            type="link"
+                            :tooltip="{
+                                title: `${slotProps.status ? '禁用' : '启用'}`,
+                            }"
+                            :popConfirm="{
+                                title: `确定${
+                                    slotProps.status ? '禁用' : '启用'
+                                }吗？`,
+                                onConfirm: () => table.changeStatus(slotProps),
+                            }"
+                        >
+                            <stop-outlined v-if="slotProps.status" />
+                            <play-circle-outlined v-else />
+                        </PermissionButton>
+                        <PermissionButton
+                            :uhasPermission="`${permission}:update`"
+                            type="link"
+                            :tooltip="{
+                                title: '重置密码',
+                            }"
+                            @click="table.openDialog('reset', slotProps)"
+                        >
+                            <AIcon type="icon-zhongzhimima" />
+                        </PermissionButton>
+                        <PermissionButton
+                            type="link"
+                            :uhasPermission="`${permission}:delete`"
+                            :tooltip="{
+                                title: slotProps.status
+                                    ? '请先禁用，再删除'
+                                    : '删除',
+                            }"
+                            :popConfirm="{
+                                title: `确认删除`,
+                                onConfirm: () => table.clickDel(slotProps),
+                            }"
+                            :disabled="slotProps.status"
+                        >
+                            <AIcon type="DeleteOutlined" />
+                        </PermissionButton>
+                    </a-space>
+                </template>
+            </JTable>
 
-        <div class="dialogs">
-            <EditUserDialog ref="editDialogRef" @confirm="table.refresh" />
+            <div class="dialogs">
+                <EditUserDialog ref="editDialogRef" @confirm="table.refresh" />
+            </div>
         </div>
-    </div>
+    </page-container>
 </template>
 
 <script setup lang="ts" name="UserMange">
@@ -354,8 +358,6 @@ type modalType = '' | 'add' | 'edit' | 'reset';
 
 <style lang="less" scoped>
 .user-container {
-    padding: 24px;
-
     :deep(.ant-table-tbody) {
         .ant-table-cell {
             .ant-space-item {
