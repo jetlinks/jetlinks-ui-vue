@@ -54,7 +54,8 @@ const iconKeys = [
     'UploadOutlined',
     'LikeOutlined',
     'ArrowLeftOutlined',
-    'DownloadOutlined'
+    'DownloadOutlined',
+    'PauseOutlined'
 ]
 
 const Icon = (props: {type: string}) => {
