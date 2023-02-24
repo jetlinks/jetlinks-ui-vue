@@ -4,7 +4,7 @@
       <a-popconfirm v-bind="popConfirm" :disabled="!isPermission || props.disabled">
         <a-tooltip v-if="tooltip" v-bind="tooltip">
           <slot v-if="noButton"></slot>
-          <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" >
+          <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" :style="props.style">
             <slot></slot>
             <template #icon>
               <slot name="icon"></slot>
@@ -22,7 +22,7 @@
     <template v-else-if="tooltip">
       <a-tooltip v-bind="tooltip">
         <slot v-if="noButton"></slot>
-        <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" >
+        <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" :style="props.style">
           <slot></slot>
           <template #icon>
             <slot name="icon"></slot>
@@ -32,7 +32,7 @@
     </template>
     <template v-else>
       <slot v-if="noButton"></slot>
-      <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" >
+      <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" :style="props.style">
         <slot></slot>
         <template #icon>
           <slot name="icon"></slot>
@@ -42,7 +42,7 @@
   </template>
   <a-tooltip v-else title="没有权限">
     <slot v-if="noButton"></slot>
-    <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" >
+    <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" :style="props.style">
       <slot></slot>
       <template #icon>
         <slot name="icon"></slot>
@@ -51,7 +51,7 @@
   </a-tooltip>
 </template>
 <script setup lang="ts" name="PermissionButton">
-import { PropType } from 'vue'
+import { CSSProperties, PropType } from 'vue'
 import { TooltipProps, PopconfirmProps } from 'ant-design-vue/es'
 import { buttonProps } from 'ant-design-vue/es/button/button'
 import { usePermissionStore } from '@/store/permission';
@@ -84,6 +84,9 @@ const props = defineProps({
   },
   hasPermission: {
     type: String || Array,
+  },
+  style: {
+    type: Object as PropType<CSSProperties>
   },
   ...buttonProps()
 })

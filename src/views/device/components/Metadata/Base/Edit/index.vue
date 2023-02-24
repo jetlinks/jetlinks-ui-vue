@@ -4,7 +4,7 @@
     <template #extra>
       <a-button :loading="save.loading" type="primary" @click="save.saveMetadata">保存</a-button>
     </template>
-    <PropertyForm v-if="metadataStore.model.type === 'properties'"></PropertyForm>
+    <PropertyForm v-if="metadataStore.model.type === 'properties'" :type="type"></PropertyForm>
   </a-drawer>
 </template>
 <script lang="ts" setup name="Edit">
@@ -20,12 +20,18 @@ import { SystemConst } from '@/utils/consts';
 import { detail } from '@/api/device/instance';
 import { DeviceInstance } from '@/views/device/Instance/typings';
 import PropertyForm from './PropertyForm.vue';
+import { PropType } from 'vue';
 
-interface Props {
-  type: 'product' | 'device';
-  tabs?: string;
-}
-const props = defineProps<Props>()
+const props = defineProps({
+  type: {
+    type: String as PropType<'product' | 'device'>,
+    required: true,
+    default: 'product'
+  },
+  tabs: {
+    type: String
+  }
+})
 const route = useRoute()
 
 const instanceStore = useInstanceStore()

@@ -19,7 +19,14 @@
         >
             <template #headerTitle>
                 <a-space>
-                    <a-button type="primary" @click="handleAdd">新增</a-button>
+                    <PermissionButton
+                        type="primary"
+                        @click="handleAdd"
+                        hasPermission="device/Instance:add"
+                    >
+                        <template #icon><AIcon type="PlusOutlined" /></template>
+                        新增
+                    </PermissionButton>
                     <a-dropdown>
                         <a-button
                             >批量操作 <AIcon type="DownOutlined"
@@ -27,77 +34,101 @@
                         <template #overlay>
                             <a-menu>
                                 <a-menu-item>
-                                    <a-button @click="exportVisible = true"
-                                        ><AIcon
-                                            type="ExportOutlined"
-                                        />批量导出设备</a-button
+                                    <PermissionButton
+                                        @click="exportVisible = true"
+                                        hasPermission="device/Instance:export"
                                     >
+                                        <template #icon
+                                            ><AIcon type="ExportOutlined"
+                                        /></template>
+                                        批量导出设备
+                                    </PermissionButton>
                                 </a-menu-item>
                                 <a-menu-item>
-                                    <a-button @click="importVisible = true"
-                                        ><AIcon
-                                            type="ImportOutlined"
-                                        />批量导入设备</a-button
+                                    <PermissionButton
+                                        @click="importVisible = true"
+                                        hasPermission="device/Instance:import"
                                     >
+                                        <template #icon
+                                            ><AIcon type="ImportOutlined"
+                                        /></template>
+                                        批量导入设备
+                                    </PermissionButton>
                                 </a-menu-item>
                                 <a-menu-item>
-                                    <a-popconfirm
-                                        @confirm="activeAllDevice"
-                                        title="确认激活全部设备？"
-                                    >
-                                        <a-button type="primary" ghost
-                                            ><AIcon
-                                                type="CheckCircleOutlined"
-                                            />激活全部设备</a-button
-                                        >
-                                    </a-popconfirm>
-                                </a-menu-item>
-                                <a-menu-item>
-                                    <a-button
-                                        @click="syncDeviceStatus"
+                                    <PermissionButton
+                                        ghost
                                         type="primary"
-                                        ><AIcon
-                                            type="SyncOutlined"
-                                        />同步设备状态</a-button
+                                        :popConfirm="{
+                                            title: '确认激活全部设备？',
+                                            onConfirm: activeAllDevice,
+                                        }"
+                                        hasPermission="device/Instance:action"
                                     >
+                                        <template #icon
+                                            ><AIcon type="CheckCircleOutlined"
+                                        /></template>
+                                        激活全部设备
+                                    </PermissionButton>
+                                </a-menu-item>
+                                <a-menu-item>
+                                    <PermissionButton
+                                        type="primary"
+                                        @click="syncDeviceStatus"
+                                        hasPermission="device/Instance:view"
+                                    >
+                                        <template #icon
+                                            ><AIcon type="SyncOutlined"
+                                        /></template>
+                                        同步设备状态
+                                    </PermissionButton>
                                 </a-menu-item>
                                 <a-menu-item v-if="_selectedRowKeys.length">
-                                    <a-popconfirm
-                                        @confirm="delSelectedDevice"
-                                        title="已启用的设备无法删除，确认删除选中的禁用状态设备？"
+                                    <PermissionButton
+                                        type="primary"
+                                        danger
+                                        :popConfirm="{
+                                            title: '已启用的设备无法删除，确认删除选中的禁用状态设备？',
+                                            onConfirm: delSelectedDevice,
+                                        }"
+                                        hasPermission="device/Instance:delete"
                                     >
-                                        <a-button type="primary" danger
-                                            ><AIcon
-                                                type="DeleteOutlined"
-                                            />删除选中设备</a-button
-                                        >
-                                    </a-popconfirm>
-                                </a-menu-item>
-                                <a-menu-item
-                                    v-if="_selectedRowKeys.length"
-                                    title="确认激活选中设备?"
-                                >
-                                    <a-popconfirm
-                                        @confirm="activeSelectedDevice"
-                                    >
-                                        <a-button type="primary"
-                                            ><AIcon
-                                                type="CheckOutlined"
-                                            />激活选中设备</a-button
-                                        >
-                                    </a-popconfirm>
+                                        <template #icon
+                                            ><AIcon type="DeleteOutlined"
+                                        /></template>
+                                        删除选中设备
+                                    </PermissionButton>
                                 </a-menu-item>
                                 <a-menu-item v-if="_selectedRowKeys.length">
-                                    <a-popconfirm
-                                        @confirm="disabledSelectedDevice"
-                                        title="确认禁用选中设备?"
+                                    <PermissionButton
+                                        type="primary"
+                                        :popConfirm="{
+                                            title: '确认激活选中设备',
+                                            onConfirm: activeSelectedDevice,
+                                        }"
+                                        hasPermission="device/Instance:action"
                                     >
-                                        <a-button type="primary" danger
-                                            ><AIcon
-                                                type="StopOutlined"
-                                            />禁用选中设备</a-button
-                                        >
-                                    </a-popconfirm>
+                                        <template #icon
+                                            ><AIcon type="CheckOutlined"
+                                        /></template>
+                                        激活选中设备
+                                    </PermissionButton>
+                                </a-menu-item>
+                                <a-menu-item v-if="_selectedRowKeys.length">
+                                    <PermissionButton
+                                        type="primary"
+                                        danger
+                                        :popConfirm="{
+                                            title: '确认禁用选中设备?',
+                                            onConfirm: disabledSelectedDevice,
+                                        }"
+                                        hasPermission="device/Instance:action"
+                                    >
+                                        <template #icon
+                                            ><AIcon type="StopOutlined"
+                                        /></template>
+                                        禁用选中设备
+                                    </PermissionButton>
                                 </a-menu-item>
                             </a-menu>
                         </template>
@@ -109,7 +140,6 @@
                     :value="slotProps"
                     @click="handleClick"
                     :actions="getActions(slotProps, 'card')"
-                    v-bind="slotProps"
                     :active="_selectedRowKeys.includes(slotProps.id)"
                     :status="slotProps.state?.value"
                     :statusText="slotProps.state?.text"
@@ -120,13 +150,9 @@
                     }"
                 >
                     <template #img>
-                        <slot name="img">
-                            <img
-                                :src="
-                                    getImage('/device/instance/device-card.png')
-                                "
-                            />
-                        </slot>
+                        <img
+                            :src="getImage('/device/instance/device-card.png')"
+                        />
                     </template>
                     <template #content>
                         <h3
@@ -151,42 +177,24 @@
                         </a-row>
                     </template>
                     <template #actions="item">
-                        <a-tooltip
-                            v-bind="item.tooltip"
-                            :title="item.disabled && item.tooltip.title"
+                        <PermissionButton
+                            :disabled="item.disabled"
+                            :popConfirm="item.popConfirm"
+                            :tooltip="{
+                                ...item.tooltip,
+                            }"
+                            @click="item.onClick"
+                            :hasPermission="'device/Instance:' + item.key"
                         >
-                            <a-popconfirm
-                                v-if="item.popConfirm"
-                                v-bind="item.popConfirm"
-                                :disabled="item.disabled"
-                            >
-                                <a-button :disabled="item.disabled">
-                                    <AIcon
-                                        type="DeleteOutlined"
-                                        v-if="item.key === 'delete'"
-                                    />
-                                    <template v-else>
-                                        <AIcon :type="item.icon" />
-                                        <span>{{ item?.text }}</span>
-                                    </template>
-                                </a-button>
-                            </a-popconfirm>
+                            <AIcon
+                                type="DeleteOutlined"
+                                v-if="item.key === 'delete'"
+                            />
                             <template v-else>
-                                <a-button
-                                    :disabled="item.disabled"
-                                    @click="item.onClick"
-                                >
-                                    <AIcon
-                                        type="DeleteOutlined"
-                                        v-if="item.key === 'delete'"
-                                    />
-                                    <template v-else>
-                                        <AIcon :type="item.icon" />
-                                        <span>{{ item?.text }}</span>
-                                    </template>
-                                </a-button>
+                                <AIcon :type="item.icon" />
+                                <span>{{ item?.text }}</span>
                             </template>
-                        </a-tooltip>
+                        </PermissionButton>
                     </template>
                 </CardBox>
             </template>
@@ -197,38 +205,25 @@
                 />
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
-                    <a-tooltip
+                <a-space>
+                    <template
                         v-for="i in getActions(slotProps, 'table')"
                         :key="i.key"
-                        v-bind="i.tooltip"
                     >
-                        <a-popconfirm
-                            v-if="i.popConfirm"
-                            v-bind="i.popConfirm"
+                        <PermissionButton
                             :disabled="i.disabled"
-                        >
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-popconfirm>
-                        <a-button
-                            style="padding: 0"
+                            :popConfirm="i.popConfirm"
+                            :tooltip="{
+                                ...i.tooltip,
+                            }"
+                            @click="i.onClick"
                             type="link"
-                            v-else
-                            @click="i.onClick && i.onClick(slotProps)"
+                            style="padding: 0px"
+                            :hasPermission="'device/Instance:' + i.key"
                         >
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-button>
-                    </a-tooltip>
+                            <template #icon><AIcon :type="i.icon" /></template>
+                        </PermissionButton>
+                    </template>
                 </a-space>
             </template>
         </JTable>
@@ -278,6 +273,7 @@ import {
     queryOrgThree,
 } from '@/api/device/product';
 import { queryTree } from '@/api/device/category';
+import { useMenuStore } from '@/store/menu';
 
 const router = useRouter();
 const instanceRef = ref<Record<string, any>>({});
@@ -290,6 +286,8 @@ const current = ref<Record<string, any>>({});
 const operationVisible = ref<boolean>(false);
 const api = ref<string>('');
 const type = ref<string>('');
+
+const menuStory = useMenuStore();
 
 const statusMap = new Map();
 statusMap.set('online', 'success');
@@ -535,7 +533,7 @@ const handleAdd = () => {
  * 查看
  */
 const handleView = (id: string) => {
-    router.push('/iot/device/instance/detail/' + id);
+    menuStory.jumpPage('device/Instance/Detail', { id });
 };
 
 const getActions = (
@@ -556,7 +554,7 @@ const getActions = (
             },
         },
         {
-            key: 'edit',
+            key: 'update',
             text: '编辑',
             tooltip: {
                 title: '编辑',

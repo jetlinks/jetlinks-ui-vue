@@ -13,7 +13,7 @@
                                 v-model:value="formData.type"
                                 placeholder="请选择通知方式"
                                 :disabled="!!formData.id"
-                                @change="resetPublicFiles"
+                                @change="handleTypeChange"
                             >
                                 <a-select-option
                                     v-for="(item, index) in NOTICE_METHOD"
@@ -157,6 +157,7 @@
                                             formData.template.messageType
                                         "
                                         placeholder="请选择消息类型"
+                                        @change="handleMessageTypeChange"
                                     >
                                         <a-select-option
                                             v-for="(
@@ -480,7 +481,11 @@
                                     </a-form-item>
                                 </a-col>
                             </a-row>
-                            <a-form-item>
+                            <a-form-item
+                                v-bind="
+                                    validateInfos['template.calledShowNumbers']
+                                "
+                            >
                                 <template #label>
                                     <span>
                                         被叫显号
@@ -713,12 +718,11 @@
                                 placeholder="请输入说明"
                             />
                         </a-form-item>
-                        <a-form-item :wrapper-col="{ offset: 0, span: 3 }">
+                        <a-form-item>
                             <a-button
                                 type="primary"
                                 @click="handleSubmit"
                                 :loading="btnLoading"
-                                style="width: 100%"
                             >
                                 保存
                             </a-button>
@@ -757,6 +761,8 @@ import ToTag from './components/ToTag.vue';
 import { FILE_UPLOAD } from '@/api/comm';
 import { LocalStore } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
+import { phoneRegEx } from '@/utils/validate';
+import type { Rule } from 'ant-design-vue/es/form';
 
 const router = useRouter();
 const route = useRoute();
@@ -801,34 +807,38 @@ const resetPublicFiles = () => {
     formData.value.configId = undefined;
 
     if (
-        formData.value.type === 'dingTalk' ||
+        formData.value.provider === 'dingTalkMessage' ||
         formData.value.type === 'weixin'
     ) {
         formData.value.template.toTag = undefined;
         formData.value.template.toUser = undefined;
+        formData.value.template.agentId = undefined;
     }
     if (formData.value.type === 'weixin')
         formData.value.template.toParty = undefined;
     if (formData.value.type === 'email')
         formData.value.template.toParty = undefined;
     // formData.value.description = '';
+    formData.value.variableDefinitions = [];
 };
 
 // 根据通知方式展示对应的字段
 watch(
     () => formData.value.type,
     (val) => {
-        // formData.value.template = TEMPLATE_FIELD_MAP[val];
         msgType.value = MSG_TYPE[val];
-
-        formData.value.provider = msgType.value[0].value;
+        formData.value.provider =
+            route.params.id !== ':id'
+                ? formData.value.provider
+                : msgType.value[0].value;
+        // formData.value.provider = formData.value.provider || msgType.value[0].value;
         // console.log('formData.value.template: ', formData.value.template);
 
-        formData.value.template =
-            TEMPLATE_FIELD_MAP[val][formData.value.provider];
+        // formData.value.template =
+        //     TEMPLATE_FIELD_MAP[val][formData.value.provider];
 
         if (val !== 'email') getConfigList();
-        clearValid();
+        // clearValid();
         // console.log('formData.value: ', formData.value);
 
         if (val === 'sms') {
@@ -838,14 +848,14 @@ watch(
     },
 );
 
-watch(
-    () => formData.value.provider,
-    (val) => {
-        formData.value.template = TEMPLATE_FIELD_MAP[formData.value.type][val];
+// watch(
+//     () => formData.value.provider,
+//     (val) => {
+//         formData.value.template = TEMPLATE_FIELD_MAP[formData.value.type][val];
 
-        clearValid();
-    },
-);
+//         clearValid();
+//     },
+// );
 
 // 验证规则
 const formRules = ref({
@@ -859,7 +869,14 @@ const formRules = ref({
     // 钉钉
     'template.agentId': [{ required: true, message: '请输入agentId' }],
     'template.messageType': [{ required: true, message: '请选择消息类型' }],
-    'template.markdown.title': [{ required: true, message: '请输入标题' }],
+    'template.markdown.title': [
+        { required: true, message: '请输入标题' },
+        { max: 64, message: '最多可输入64个字符' },
+    ],
+    'template.link.title': [
+        { required: true, message: '请输入标题' },
+        { max: 64, message: '最多可输入64个字符' },
+    ],
     // 'template.url': [{ required: true, message: '请输入WebHook' }],
     // 微信
     // 'template.agentId': [{ required: true, message: '请输入agentId' }],
@@ -873,7 +890,21 @@ const formRules = ref({
     'template.signName': [{ required: true, message: '请输入签名' }],
     // webhook
     description: [{ max: 200, message: '最多可输入200个字符' }],
-    'template.message': [{ required: true, message: '请输入' }],
+    'template.message': [
+        { required: true, message: '请输入' },
+        { max: 500, message: '最多可输入500个字符' },
+    ],
+    'template.calledShowNumbers': [
+        {
+            trigger: 'blur',
+            validator(_rule: Rule, value: string) {
+                if (!phoneRegEx(value)) {
+                    return Promise.reject('请输入有效号码');
+                }
+                return Promise.resolve();
+            },
+        },
+    ],
 });
 
 const { resetFields, validate, validateInfos, clearValidate } = useForm(
@@ -881,38 +912,96 @@ const { resetFields, validate, validateInfos, clearValidate } = useForm(
     formRules.value,
 );
 
+// 钉钉机器人markdown标题变量提取
 watch(
-    () => formData.value.template.message,
+    () => formData.value.template.markdown?.title,
     (val) => {
         if (!val) return;
-        // 已经存在的变量
-        const oldKey = formData.value.variableDefinitions?.map((m) => m.id);
-        // 正则提取${}里面的值
-        const pattern = /(?<=\$\{).*?(?=\})/g;
-        const titleList = val.match(pattern)?.filter((f) => f);
-        const newKey = [...new Set(titleList)];
-        const result = newKey?.map((m) =>
-            oldKey.includes(m)
-                ? formData.value.variableDefinitions.find(
-                      (item) => item.id === m,
-                  )
-                : {
-                      id: m,
-                      name: '',
-                      type: 'string',
-                      format: '%s',
-                  },
-        );
-        formData.value.variableDefinitions = result as IVariableDefinitions[];
+        variableReg(val);
+    },
+    { deep: true },
+);
+// 钉钉机器人link标题变量提取
+watch(
+    () => formData.value.template.link?.title,
+    (val) => {
+        if (!val) return;
+        variableReg(val);
+    },
+    { deep: true },
+);
+// 邮件标题变量提取
+watch(
+    () => formData.value.template.subject,
+    (val) => {
+        if (!val) return;
+        variableReg(val);
     },
     { deep: true },
 );
 
-const clearValid = () => {
-    setTimeout(() => {
-        formData.value.variableDefinitions = [];
-        clearValidate();
-    }, 200);
+// 模板内容变量提取
+watch(
+    () => formData.value.template.message,
+    (val) => {
+        if (!val) return;
+        variableReg(val);
+    },
+    { deep: true },
+);
+// webhook请求体变量提取
+watch(
+    () => formData.value.template.body,
+    (val) => {
+        if (!val) return;
+        variableReg(val);
+    },
+    { deep: true },
+);
+
+/**
+ * 根据字段输入内容, 提取变量
+ * @param value
+ */
+const variableReg = (value: string) => {
+    // 已经存在的变量
+    const oldKey = formData.value.variableDefinitions?.map((m) => m.id);
+    // 正则提取${}里面的值
+    const pattern = /(?<=\$\{).*?(?=\})/g;
+    const titleList = value.match(pattern)?.filter((f) => f);
+    const newKey = [...new Set(titleList)];
+    const result = newKey?.map((m) =>
+        oldKey.includes(m)
+            ? formData.value.variableDefinitions.find((item) => item.id === m)
+            : {
+                  id: m,
+                  name: '',
+                  type: 'string',
+                  format: '%s',
+              },
+    );
+    formData.value.variableDefinitions = [
+        ...new Set([
+            ...formData.value.variableDefinitions,
+            ...(result as IVariableDefinitions[]),
+        ]),
+    ];
+};
+
+/**
+ * 钉钉机器人 消息类型选择改变
+ */
+const handleMessageTypeChange = () => {
+    formData.value.variableDefinitions = [];
+    formData.value.template.message = '';
+    if (formData.value.template.link) {
+        formData.value.template.link.title = '';
+        formData.value.template.link.picUrl = '';
+        formData.value.template.link.messageUrl = '';
+    }
+    if (formData.value.template.markdown) {
+        formData.value.template.markdown.title = '';
+    }
 };
 
 /**
@@ -942,9 +1031,22 @@ const getConfigList = async () => {
 };
 
 /**
+ * 通知方式改变
+ */
+const handleTypeChange = () => {
+    setTimeout(() => {
+        formData.value.template =
+            TEMPLATE_FIELD_MAP[formData.value.type][formData.value.provider];
+        resetPublicFiles();
+    }, 0);
+};
+
+/**
  * 通知类型改变
  */
 const handleProviderChange = () => {
+    formData.value.template =
+        TEMPLATE_FIELD_MAP[formData.value.type][formData.value.provider];
     getConfigList();
     resetPublicFiles();
 };
@@ -1006,29 +1108,32 @@ const handleSubmit = () => {
     if (formData.value.template.messageType === 'link')
         delete formData.value.template.markdown;
     // console.log('formData.value: ', formData.value);
-    validate()
-        .then(async () => {
-            formData.value.template.ttsCode =
-                formData.value.template.templateCode;
-            btnLoading.value = true;
-            let res;
-            if (!formData.value.id) {
-                res = await templateApi.save(formData.value);
-            } else {
-                res = await templateApi.update(formData.value);
-            }
-            // console.log('res: ', res);
-            if (res?.success) {
-                message.success('保存成功');
-                router.back();
-            }
-        })
-        .catch((err) => {
-            console.log('err: ', err);
-        })
-        .finally(() => {
-            btnLoading.value = false;
-        });
+    // 提交必填验证无法通过, 实际已有值, 问题未知, 暂时解决方法: 延迟验证
+    setTimeout(() => {
+        validate()
+            .then(async () => {
+                formData.value.template.ttsCode =
+                    formData.value.template.templateCode;
+                btnLoading.value = true;
+                let res;
+                if (!formData.value.id) {
+                    res = await templateApi.save(formData.value);
+                } else {
+                    res = await templateApi.update(formData.value);
+                }
+                // console.log('res: ', res);
+                if (res?.success) {
+                    message.success('保存成功');
+                    router.back();
+                }
+            })
+            .catch((err) => {
+                console.log('err: ', err);
+            })
+            .finally(() => {
+                btnLoading.value = false;
+            });
+    }, 200);
 };
 
 // test

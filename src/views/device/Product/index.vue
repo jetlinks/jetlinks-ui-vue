@@ -1,6 +1,5 @@
 <template>
     <page-container>
-        <a-card class="device-product">
             <Search
                 :columns="query.columns"
                 target="product-manage"
@@ -163,7 +162,6 @@
                 :title="title"
                 @success="refresh"
             />
-        </a-card>
     </page-container>
 </template>
 
@@ -195,10 +193,11 @@ import { isNoCommunity, downloadObject } from '@/utils/utils';
 import { omit } from 'lodash-es';
 import { typeOptions } from '@/components/Search/util';
 import Save from './Save/index.vue';
+import { useMenuStore } from 'store/menu'
 /**
  * 表格数据
  */
-
+ const menuStory = useMenuStore()
 const router = useRouter();
 const isAdd = ref<number>(0);
 const title = ref<string>('');
@@ -426,7 +425,7 @@ const beforeUpload = (file: any) => {
  * 查看
  */
 const handleView = (id: string) => {
-    router.push('/iot/device/product/detail/' + id);
+    menuStory.jumpPage('device/Product/Detail',{id})
 };
 
 /**

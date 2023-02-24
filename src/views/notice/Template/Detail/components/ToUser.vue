@@ -28,9 +28,17 @@ const _value = computed({
     set: (val: string) => emit('update:toUser', val),
 });
 
+const typeObj = {
+    weixin: 'wechat',
+    dingTalk: 'dingtalk',
+};
 const options = ref([]);
 const queryData = async () => {
-    const { result } = await templateApi.getUser(props.type, props.configId);
+    if (!props.configId) return;
+    const { result } = await templateApi.getUser(
+        typeObj[props.type],
+        props.configId,
+    );
     options.value = result.map((item: any) => ({
         label: item.name,
         value: item.id,

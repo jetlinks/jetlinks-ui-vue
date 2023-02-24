@@ -1,3 +1,9 @@
+export const keyByLabel = {
+  manual: '手动触发',
+  timer: '定时触发',
+  device: '设备触发',
+}
+
 type State = {
   value: string;
   text: string;

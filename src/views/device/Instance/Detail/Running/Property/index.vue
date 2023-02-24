@@ -76,14 +76,16 @@
         @close="indicatorVisible = false"
         :data="currentInfo"
     />
+    <Detail v-if="detailVisible" :data="currentInfo" @close="detailVisible = false" />
 </template>
 
 <script lang="ts" setup>
-import _, { groupBy, throttle, toArray } from 'lodash-es';
+import _, { groupBy, toArray } from 'lodash-es';
 import { PropertyData } from '../../../typings';
 import PropertyCard from './PropertyCard.vue';
 import ValueRender from './ValueRender.vue';
 import Save from './Save.vue';
+import Detail from './Detail/index.vue';
 import Indicators from './Indicators.vue';
 import { getProperty } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';

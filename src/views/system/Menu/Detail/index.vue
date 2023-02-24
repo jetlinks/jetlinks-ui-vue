@@ -1,12 +1,16 @@
 <template>
-    <div class="menu-detail-container">
-        <a-tabs v-model:activeKey="activeKey">
-            <a-tab-pane key="basic" tab="基本信息"> <BasicInfo /> </a-tab-pane>
-            <a-tab-pane key="button" tab="按钮管理">
-                <ButtonMange />
-            </a-tab-pane>
-        </a-tabs>
-    </div>
+    <page-container>
+        <div class="menu-detail-container">
+            <a-tabs v-model:activeKey="activeKey">
+                <a-tab-pane key="basic" tab="基本信息">
+                    <BasicInfo />
+                </a-tab-pane>
+                <a-tab-pane key="button" tab="按钮管理">
+                    <ButtonMange />
+                </a-tab-pane>
+            </a-tabs>
+        </div>
+    </page-container>
 </template>
 
 <script setup lang="ts">
@@ -24,7 +28,7 @@ const activeKey = ref('basic');
     }
     .ant-tabs-tabpane {
         background-color: #f0f2f5;
-        padding: 24px;
+        padding-top: 24px;
     }
 }
 </style>

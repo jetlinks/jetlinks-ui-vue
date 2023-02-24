@@ -59,7 +59,16 @@ export const category = (data: any) => server.post('/device/category/_tree', dat
   * 获取接入方式
   * @param data 查询条件
   */
- export const queryGatewayList = (data: any) => server.post('/gateway/device/_query/no-paging', data)
+ const defaultGatewayData = {
+  paging: false,
+  sorts: [
+   {
+    name: 'createTime',
+    order: 'desc',
+   },
+  ],
+ }
+ export const queryGatewayList = (data: any = defaultGatewayData) => server.post('/gateway/device/_query/no-paging', data)
 
  /**
   * 查询产品列表(分页)
@@ -166,3 +175,13 @@ export const saveDevice = (data:any) => server.post('/device-product',data)
  * 更新选择设备(设备接入)
  */
 export const updateDevice = (data:any) => server.patch('/device-product',data)
+
+/**
+ * 获取操作符
+ */
+export const getOperator = () => server.get<OperatorItem>('/property-calculate-rule/description')
+
+/**
+ * 获取聚合函数列表
+ */
+export const getStreamingAggType = () => server.get<Record<string, string>[]>('/dictionary/streaming-agg-type/items')

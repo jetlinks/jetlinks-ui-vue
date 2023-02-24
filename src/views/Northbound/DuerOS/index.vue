@@ -14,14 +14,20 @@
         >
             <template #headerTitle>
                 <a-space>
-                    <a-button type="primary" @click="handleAdd">新增</a-button>
+                    <PermissionButton
+                        type="primary"
+                        @click="handleAdd"
+                        hasPermission="Northbound/DuerOS:add"
+                    >
+                        <template #icon><AIcon type="PlusOutlined" /></template>
+                        新增
+                    </PermissionButton>
                 </a-space>
             </template>
             <template #card="slotProps">
                 <CardBox
                     :value="slotProps"
                     :actions="getActions(slotProps, 'card')"
-                    v-bind="slotProps"
                     :status="slotProps.state?.value"
                     :statusText="slotProps.state?.text"
                     :statusNames="{
@@ -30,9 +36,7 @@
                     }"
                 >
                     <template #img>
-                        <slot name="img">
-                            <img :src="getImage('/cloud/dueros.png')" />
-                        </slot>
+                        <img :src="getImage('/cloud/dueros.png')" />
                     </template>
                     <template #content>
                         <h3
@@ -55,42 +59,24 @@
                         </a-row>
                     </template>
                     <template #actions="item">
-                        <a-tooltip
-                            v-bind="item.tooltip"
-                            :title="item.disabled && item.tooltip.title"
+                        <PermissionButton
+                            :disabled="item.disabled"
+                            :popConfirm="item.popConfirm"
+                            :tooltip="{
+                                ...item.tooltip,
+                            }"
+                            @click="item.onClick"
+                            :hasPermission="'Northbound/DuerOS:' + item.key"
                         >
-                            <a-popconfirm
-                                v-if="item.popConfirm"
-                                v-bind="item.popConfirm"
-                                :disabled="item.disabled"
-                            >
-                                <a-button :disabled="item.disabled">
-                                    <AIcon
-                                        type="DeleteOutlined"
-                                        v-if="item.key === 'delete'"
-                                    />
-                                    <template v-else>
-                                        <AIcon :type="item.icon" />
-                                        <span>{{ item?.text }}</span>
-                                    </template>
-                                </a-button>
-                            </a-popconfirm>
+                            <AIcon
+                                type="DeleteOutlined"
+                                v-if="item.key === 'delete'"
+                            />
                             <template v-else>
-                                <a-button
-                                    :disabled="item.disabled"
-                                    @click="item.onClick"
-                                >
-                                    <AIcon
-                                        type="DeleteOutlined"
-                                        v-if="item.key === 'delete'"
-                                    />
-                                    <template v-else>
-                                        <AIcon :type="item.icon" />
-                                        <span>{{ item?.text }}</span>
-                                    </template>
-                                </a-button>
+                                <AIcon :type="item.icon" />
+                                <span>{{ item?.text }}</span>
                             </template>
-                        </a-tooltip>
+                        </PermissionButton>
                     </template>
                 </CardBox>
             </template>
@@ -104,38 +90,25 @@
                 {{ slotProps.applianceType.text }}
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
-                    <a-tooltip
+                <a-space>
+                    <template
                         v-for="i in getActions(slotProps, 'table')"
                         :key="i.key"
-                        v-bind="i.tooltip"
                     >
-                        <a-popconfirm
-                            v-if="i.popConfirm"
-                            v-bind="i.popConfirm"
+                        <PermissionButton
                             :disabled="i.disabled"
-                        >
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-popconfirm>
-                        <a-button
-                            style="padding: 0"
+                            :popConfirm="i.popConfirm"
+                            :tooltip="{
+                                ...i.tooltip,
+                            }"
+                            style="padding: 0px"
+                            @click="i.onClick"
                             type="link"
-                            v-else
-                            @click="i.onClick && i.onClick(slotProps)"
+                            :hasPermission="'Northbound/DuerOS:' + i.key"
                         >
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-button>
-                    </a-tooltip>
+                            <template #icon><AIcon :type="i.icon" /></template>
+                        </PermissionButton>
+                    </template>
                 </a-space>
             </template>
         </JTable>
@@ -143,17 +116,24 @@
 </template>
 
 <script setup lang="ts">
-import { query, _undeploy, _deploy, _delete, queryProductList, queryTypes } from '@/api/northbound/dueros';
+import {
+    query,
+    _undeploy,
+    _deploy,
+    _delete,
+    queryProductList,
+    queryTypes,
+} from '@/api/northbound/dueros';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage } from '@/utils/comm';
 import { message } from 'ant-design-vue';
-import { useMenuStore } from 'store/menu'
+import { useMenuStore } from 'store/menu';
 
 const router = useRouter();
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const current = ref<Record<string, any>>({});
-const menuStory = useMenuStore()
+const menuStory = useMenuStore();
 
 const statusMap = new Map();
 statusMap.set('enabled', 'success');
@@ -238,14 +218,14 @@ const columns = [
  * 新增
  */
 const handleAdd = () => {
-  menuStory.jumpPage('Northbound/DuerOS/Detail', { id: ':id'})
+    menuStory.jumpPage('Northbound/DuerOS/Detail', { id: ':id' });
 };
 
 /**
  * 查看
  */
 const handleView = (id: string) => {
-  menuStory.jumpPage('Northbound/DuerOS/Detail', { id }, { type: 'view' })
+    menuStory.jumpPage('Northbound/DuerOS/Detail', { id }, { type: 'view' });
 };
 
 const getActions = (
@@ -266,14 +246,18 @@ const getActions = (
             },
         },
         {
-            key: 'edit',
+            key: 'update',
             text: '编辑',
             tooltip: {
                 title: '编辑',
             },
             icon: 'EditOutlined',
             onClick: () => {
-              menuStory.jumpPage('Northbound/DuerOS/Detail', { id: data.id }, { type: 'edit' })
+                menuStory.jumpPage(
+                    'Northbound/DuerOS/Detail',
+                    { id: data.id },
+                    { type: 'edit' },
+                );
             },
         },
         {
@@ -283,7 +267,7 @@ const getActions = (
                 title: data.state?.value !== 'disabled' ? '禁用' : '启用',
             },
             icon:
-                data.state.value !== 'notActive'
+                data.state.value !== 'disabled'
                     ? 'StopOutlined'
                     : 'CheckCircleOutlined',
             popConfirm: {

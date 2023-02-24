@@ -52,6 +52,9 @@ const iconKeys = [
     'RightOutlined',
     'FileTextOutlined',
     'UploadOutlined',
+    'LikeOutlined',
+    'ArrowLeftOutlined',
+    'DownloadOutlined',
     'PauseOutlined'
 ]
 

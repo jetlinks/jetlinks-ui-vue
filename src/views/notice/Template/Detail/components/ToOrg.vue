@@ -27,10 +27,17 @@ const _value = computed({
     get: () => props.toParty,
     set: (val: string) => emit('update:toParty', val),
 });
-
+const typeObj = {
+    weixin: 'wechat',
+    dingTalk: 'dingtalk',
+};
 const options = ref([]);
 const queryData = async () => {
-    const { result } = await templateApi.getDept(props.type, props.configId);
+    if (!props.configId) return;
+    const { result } = await templateApi.getDept(
+        typeObj[props.type],
+        props.configId,
+    );
     options.value = result.map((item: any) => ({
         label: item.name,
         value: item.id,

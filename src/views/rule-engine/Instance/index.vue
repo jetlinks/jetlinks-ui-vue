@@ -193,6 +193,14 @@ const query = {
                 ],
             },
         },
+        {
+            title: '说明',
+            key: 'description',
+            dataIndex: 'description',
+            search: {
+                type: 'string',
+            },
+        },
     ],
 };
 const columns = [
@@ -320,7 +328,6 @@ const refresh = () => {
     tableRef.value?.reload();
 };
 const handleSearch = (e: any) => {
-    console.log(e);
     params.value = e;
 };
 </script>

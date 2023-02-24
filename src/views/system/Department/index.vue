@@ -1,30 +1,32 @@
 <template>
-    <div class="department-container">
-        <a-card class="department-content">
-            <div class="left">
-                <LeftTree @change="(id) => (departmentId = id)" />
-            </div>
-            <div class="right">
-                <a-tabs v-model:activeKey="activeKey">
-                    <a-tab-pane key="product" tab="产品">
-                        <Product
-                            :parentId="departmentId"
-                            @open-device-bind="openDeviceBind"
-                        />
-                    </a-tab-pane>
-                    <a-tab-pane key="device" tab="设备">
-                        <Device
-                            :parentId="departmentId"
-                            v-model:bindBool="bindBool"
-                        />
-                    </a-tab-pane>
-                    <a-tab-pane key="user" tab="用户">
-                        <User :parentId="departmentId" />
-                    </a-tab-pane>
-                </a-tabs>
-            </div>
-        </a-card>
-    </div>
+    <page-container>
+        <div class="department-container">
+            <a-card class="department-content">
+                <div class="left">
+                    <LeftTree @change="(id) => (departmentId = id)" />
+                </div>
+                <div class="right">
+                    <a-tabs v-model:activeKey="activeKey">
+                        <a-tab-pane key="product" tab="产品">
+                            <Product
+                                :parentId="departmentId"
+                                @open-device-bind="openDeviceBind"
+                            />
+                        </a-tab-pane>
+                        <a-tab-pane key="device" tab="设备">
+                            <Device
+                                :parentId="departmentId"
+                                v-model:bindBool="bindBool"
+                            />
+                        </a-tab-pane>
+                        <a-tab-pane key="user" tab="用户">
+                            <User :parentId="departmentId" />
+                        </a-tab-pane>
+                    </a-tabs>
+                </div>
+            </a-card>
+        </div>
+    </page-container>
 </template>
 
 <script setup lang="ts" name="Department">
@@ -46,7 +48,6 @@ const openDeviceBind = () => {
 
 <style lang="less" scoped>
 .department-container {
-    padding: 24px;
     .department-content {
         :deep(.ant-card-body) {
             display: flex;

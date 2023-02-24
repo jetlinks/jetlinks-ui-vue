@@ -25,10 +25,11 @@
                             <ApiDoes
                                 :select-api="selectedApi"
                                 :schemas="schemas"
+                                v-model:params-table="paramsTable"
                             />
                         </a-tab-pane>
                         <a-tab-pane key="test" tab="调试">
-                            <ApiTest :select-api="selectedApi" />
+                            <ApiTest :select-api="selectedApi" :params-table="paramsTable" />
                         </a-tab-pane>
                     </a-tabs>
                 </div>
@@ -66,8 +67,9 @@ const treeSelect = (node: treeNodeTpye, nodeSchemas: object = {}) => {
     tableData.value = table;
 };
 
-const activeKey = ref('does');
+const activeKey = ref<'does' | 'test'>('does');
 const schemas = ref({});
+const paramsTable = ref([])
 const initSelectedApi: apiDetailsType = {
     url: '',
     method: '',
@@ -78,7 +80,10 @@ const initSelectedApi: apiDetailsType = {
 };
 const selectedApi = ref<apiDetailsType>(initSelectedApi);
 
-watch(tableData, () => (selectedApi.value = initSelectedApi));
+watch(tableData, () => {
+    activeKey.value = 'does';
+    selectedApi.value = initSelectedApi;
+});
 </script>
 
 <style scoped>

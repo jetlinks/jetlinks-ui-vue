@@ -87,7 +87,7 @@ const handleEdit = (index: number) => {
 }
 const handleDelete = (index: number) => {
   editIndex.value = -1
-  _value.value.slice(index, 1)
+  _value.value.splice(index, 1)
 }
 const handleClose = () => {
   editIndex.value = -1

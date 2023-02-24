@@ -1,10 +1,12 @@
 <template>
-    <div class="details-container">
-        <a-tabs v-model:activeKey="activeKey">
-            <a-tab-pane key="1" tab="权限分配"><Permiss /></a-tab-pane>
-            <a-tab-pane key="2" tab="用户管理"><User /></a-tab-pane>
-        </a-tabs>
-    </div>
+    <page-container>
+        <div class="details-container">
+            <a-tabs v-model:activeKey="activeKey">
+                <a-tab-pane key="1" tab="权限分配"><Permiss /></a-tab-pane>
+                <a-tab-pane key="2" tab="用户管理"><User /></a-tab-pane>
+            </a-tabs>
+        </div>
+    </page-container>
 </template>
 
 <script setup lang="ts" name="Detail">
@@ -17,17 +19,9 @@ const activeKey = ref('1');
 
 <style lang="less" scoped>
 .details-container {
-    
-
-
     :deep(.ant-tabs-nav-wrap) {
         background-color: #fff;
-        padding: 24px 0 0 24px;
-    }
-
-    :deep(.ant-tabs-content-holder) {
-        padding: 24px;
+        padding-left: 24px;
     }
 }
-
 </style>

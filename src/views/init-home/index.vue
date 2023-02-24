@@ -18,7 +18,7 @@
                                 </template>
                                 <Basic ref="basicRef" />
                             </a-collapse-panel>
-                            <a-collapse-panel key="2" forceRender>
+                            <a-collapse-panel key="2" >
                                 <template #header>
                                     <span class="title">菜单初始化</span>
                                     <span class="sub-title"
@@ -36,7 +36,7 @@
                                 </template>
                                 <Role ref="roleRef"></Role>
                             </a-collapse-panel>
-                            <a-collapse-panel key="4">
+                            <a-collapse-panel key="4" forceRender>
                                 <template #header>
                                     <span class="title">初始化数据</span>
                                     <span class="sub-title"
