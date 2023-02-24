@@ -4,18 +4,25 @@
     type='simple'
     @search="handleSearch"
     class='search'
+    target="scene-triggrt-device-device"
   />
+  <a-divider style='margin: 0' />
   <j-table
-    :columns='columns'
     ref='actionRef'
+    model='CARD'
+    :columns='columns'
+    :params='params'
     :request='productQuery'
     :gridColumn='2'
-    model='CARD'
+    :bodyStyle='{
+      paddingRight: 0,
+      paddingLeft: 0
+    }'
   >
     <template #card="slotProps">
       <CardBox
         :value='slotProps'
-        :active="selectedRowKeys.includes(slotProps.id)"
+        :active="rowKey === slotProps.id"
         :status="slotProps.state"
         :statusText="slotProps.state === 1 ? '正常' : '禁用'"
         :statusNames="{ 1: 'success', 0: 'error',  }"
@@ -23,13 +30,17 @@
       >
         <template #img>
           <slot name="img">
-            <img :src="getImage('/device-product.png')" />
+            <img width='88' height='88' :src="slotProps.photoUrl || getImage('/device-product.png')" />
           </slot>
         </template>
         <template #content>
-          <h3 style="font-weight: 600" >
-            {{ slotProps.name }}
-          </h3>
+          <div style='width: calc(100% - 100px)'>
+            <Ellipsis>
+              <span style="font-size: 16px;font-weight: 600" >
+                {{ slotProps.name }}
+              </span>
+            </Ellipsis>
+          </div>
           <a-row>
             <a-col :span="12">
               <div class="card-item-content-text">
@@ -51,16 +62,25 @@ import { getTreeData_api } from '@/api/system/department'
 import { isNoCommunity } from '@/utils/utils'
 import { getImage } from '@/utils/comm'
 
+type Emit = {
+  (e: 'update:rowKey', data: string): void
+  (e: 'update:detail', data: string): void
+}
+
 const actionRef = ref()
 const params = ref({})
 const props = defineProps({
   rowKey: {
     type: String,
     default: ''
+  },
+  detail: {
+    type: Object,
+    default: () => ({})
   }
 })
 
-const selectedRowKeys = ref(props.rowKey)
+const emit = defineEmits<Emit>()
 
 const columns = [
   {
@@ -69,12 +89,19 @@ const columns = [
     width: 300,
     ellipsis: true,
     fixed: 'left',
+    search: {
+      type: 'string',
+    },
   },
   {
     title: '名称',
     dataIndex: 'name',
     width: 200,
     ellipsis: true,
+    search: {
+      type: 'string',
+      first: true
+    }
   },
   {
     title: '网关类型',
@@ -199,7 +226,6 @@ const columns = [
 
 const handleSearch = (p: any) => {
   params.value = p
-  actionRef.value.required()
 }
 
 const productQuery = (p: any) => {
@@ -217,12 +243,8 @@ const productQuery = (p: any) => {
 }
 
 const handleClick = (detail: any) => {
-  const _selected = new Set(selectedRowKeys.value)
-  if (_selected.has(detail.id)) {
-    _selected.delete(detail.id)
-  } else {
-    _selected.add(detail.id)
-  }
+  emit('update:rowKey', detail.id)
+  emit('update:detail', detail)
 }
 
 </script>
@@ -230,5 +252,7 @@ const handleClick = (detail: any) => {
 <style scoped lang='less'>
 .search {
   margin-bottom: 0;
+  padding-right: 0px;
+  padding-left: 0px;
 }
 </style>
