@@ -7,7 +7,7 @@
             @cancel="_vis = false"
             width="80%"
         >
-            <a-row :gutter="10">
+            <a-row :gutter="10" class="model-body">
                 <a-col :span="4">
                     <a-input
                         v-model:value="deptName"
@@ -40,6 +40,7 @@
                         :dataSource="dataSource"
                         :loading="tableLoading"
                         model="table"
+                        noPagination
                     >
                         <template #headerTitle>
                             <a-button type="primary" @click="handleAutoBind">
@@ -273,14 +274,24 @@ const getActions = (
  * 自动绑定
  */
 const handleAutoBind = () => {
-    configApi.dingTalkBindUser([], props.data.id).then(() => {
+    const arr = dataSource.value
+        .filter((item: any) => item.userId && item.status.value === 'error')
+        .map((i: any) => {
+            return {
+                userId: i.userId,
+                providerName: i.userName,
+                thirdPartyUserId: i.thirdPartyUserId,
+            };
+        });
+    // console.log('arr: ', arr);
+    configApi.dingTalkBindUser(arr, props.data.id).then(() => {
         message.success('操作成功');
         getTableData();
     });
 };
 
 /**
- * 获取钉钉部门用户
+ * 获取钉钉/微信部门用户
  */
 const getDeptUsers = async () => {
     let res = null;
@@ -304,14 +315,24 @@ const getBindUsers = async () => {
     return res?.result;
 };
 /**
- * 获取所有用户
+ * 获取所有用户未绑定的用户
  */
 const allUserList = ref([]);
 const getAllUsers = async () => {
-    const { result } = await configApi.getPlatformUsers();
+    const params = {
+        paging: false,
+        terms: [
+            {
+                column: `id$user-third$${props.data.type}_${props.data.provider}$not`,
+                value: props.data.id,
+            },
+        ],
+    };
+    const { result } = await configApi.getPlatformUsers(params);
     allUserList.value = result.map((m: any) => ({
         label: m.name,
         value: m.id,
+        ...m,
     }));
     return result;
 };
@@ -326,31 +347,36 @@ const getTableData = () => {
     Promise.all<any>([getDeptUsers(), getBindUsers(), getAllUsers()]).then(
         (res) => {
             dataSource.value = [];
-            const [deptUsers, bindUsers, allUsers] = res;
-            (deptUsers || []).forEach((item: any) => {
+            const [deptUsers, bindUsers, unBindUsers] = res;
+            (deptUsers || []).forEach((deptUser: any) => {
+                // 未绑定的用户
+                let unBindUser = unBindUsers.find(
+                    (f: any) => f.name === deptUser?.name,
+                );
                 // 绑定的用户
                 const bindUser = bindUsers.find(
-                    (f: any) => f.thirdPartyUserId === item.id,
+                    (f: any) => f.thirdPartyUserId === deptUser.id,
                 );
-                // 平台用户
-                const allUser = allUsers.find(
-                    (f: any) => f.id === bindUser?.userId,
-                );
+                if (bindUser) {
+                    unBindUser = unBindUsers.find(
+                        (f: any) => f.id === bindUser.userId,
+                    );
+                }
                 dataSource.value.push({
-                    thirdPartyUserId: item.id,
-                    thirdPartyUserName: item.name,
-                    userId: bindUser?.userId,
-                    userName: allUser
-                        ? `${allUser.name}(${allUser.username})`
+                    thirdPartyUserId: deptUser.id,
+                    thirdPartyUserName: deptUser.name,
+                    bindId: bindUser?.userId,
+                    userId: unBindUser?.id,
+                    userName: unBindUser
+                        ? `${unBindUser.name}(${unBindUser.username})`
                         : '',
                     status: {
                         text: bindUser?.providerName ? '已绑定' : '未绑定',
                         value: bindUser?.providerName ? 'success' : 'error',
                     },
-                    bindId: bindUser?.id,
                 });
             });
-            console.log('dataSource.value: ', dataSource.value);
+            // console.log('dataSource.value: ', dataSource.value);
         },
     );
     tableLoading.value = false;
@@ -434,8 +460,13 @@ const handleBindSubmit = () => {
 };
 const handleCancel = () => {
     bindVis.value = false;
-    resetFields()
+    resetFields();
 };
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.model-body {
+    height: 600px;
+    overflow-y: auto;
+}
+</style>
