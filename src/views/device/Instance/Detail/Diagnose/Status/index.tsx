@@ -11,6 +11,8 @@ import _ from "lodash"
 import DiagnosticAdvice from './DiagnosticAdvice'
 import ManualInspection from './ManualInspection'
 import { deployDevice } from "@/api/initHome"
+import PermissionButton from '@/components/PermissionButton/index.vue'
+import { useMenuStore } from "@/store/menu"
 
 type TypeProps = 'network' | 'child-device' | 'media' | 'cloud' | 'channel'
 
@@ -41,6 +43,7 @@ const Status = defineComponent({
         const diagnoseData = ref<Partial<Record<string, any>>>()
 
         const bindParentVisible = ref<boolean>(false)
+        const menuStory = useMenuStore();
 
         const configuration = reactive<{
             product: Record<string, any>,
@@ -57,19 +60,8 @@ const Status = defineComponent({
             artificialData.value = params
         }
 
-        // TODO
         const jumpAccessConfig = () => {
-            // const purl = getMenuPathByCode(MENUS_CODE['device/Product/Detail']);
-            // if (purl) {
-            //   history.push(
-            //     `${getMenuPathByParams(MENUS_CODE['device/Product/Detail'], device.productId)}`,
-            //     {
-            //       tab: 'access',
-            //     },
-            //   );
-            // } else {
-            //   message.error('规则可能有加密处理，请联系管理员');
-            // }
+            menuStory.jumpPage('device/Product/Detail', { id: unref(device).productId, tab: 'access' });
         };
 
         const jumpDeviceConfig = () => {
@@ -123,34 +115,40 @@ const Status = defineComponent({
                                             <Badge
                                                 status="default"
                                                 text={
-                                                    <span>网络组件已禁用，请先<Popconfirm
-                                                        title="确认启用"
-                                                        onConfirm={async () => {
-                                                            const res = await startNetwork(
-                                                                unref(gateway)?.channelId,
-                                                            );
-                                                            if (res.status === 200) {
-                                                                message.success('操作成功！');
-                                                                list.value = modifyArrayList(
-                                                                    list.value,
-                                                                    {
-                                                                        key: 'network',
-                                                                        name: '网络组件',
-                                                                        desc: '诊断网络组件配置是否正确，配置错误将导致设备连接失败',
-                                                                        status: 'success',
-                                                                        text: '正常',
-                                                                        info: null,
-                                                                    },
-                                                                );
-                                                            }
-                                                        }}
-                                                    >
-                                                        <Button type="link" style="padding: 0">启用</Button>
-                                                    </Popconfirm></span>
+                                                    <span>网络组件已禁用，请先
+                                                        <PermissionButton
+                                                            type="link"
+                                                            hasPermission="link/Type:action"
+                                                            popConfirm={{
+                                                                title: '确认启用',
+                                                                onConfirm: async () => {
+                                                                    const res = await startNetwork(
+                                                                        unref(gateway)?.channelId,
+                                                                    );
+                                                                    if (res.status === 200) {
+                                                                        message.success('操作成功！');
+                                                                        list.value = modifyArrayList(
+                                                                            list.value,
+                                                                            {
+                                                                                key: 'network',
+                                                                                name: '网络组件',
+                                                                                desc: '诊断网络组件配置是否正确，配置错误将导致设备连接失败',
+                                                                                status: 'success',
+                                                                                text: '正常',
+                                                                                info: null,
+                                                                            },
+                                                                        );
+                                                                    }
+                                                                }
+                                                            }}
+                                                        >
+                                                            启用
+                                                        </PermissionButton>
+                                                    </span>
                                                 }
                                             />
                                         </div>
-                                    </div>
+                                    </div >
                                 ) : (
                                     <div>
                                         <div class={styles.infoItem}>
@@ -287,28 +285,31 @@ const Status = defineComponent({
                                                 <Badge
                                                     status="default"
                                                     text={<span>设备接入网关已禁用，请先
-                                                        <Popconfirm
-                                                            title="确认启用"
-                                                            onConfirm={async () => {
-                                                                const resp = await startGateway(unref(device).accessId || '');
-                                                                if (resp.status === 200) {
-                                                                    message.success('操作成功！');
-                                                                    list.value = modifyArrayList(
-                                                                        list.value,
-                                                                        {
-                                                                            key: 'gateway',
-                                                                            name: '设备接入网关',
-                                                                            desc: desc,
-                                                                            status: 'success',
-                                                                            text: '正常',
-                                                                            info: null,
-                                                                        },
-                                                                    );
+                                                        <PermissionButton
+                                                            hasPermission="link/Type:action"
+                                                            popConfirm={{
+                                                                title: '确认启用',
+                                                                onConfirm: async () => {
+                                                                    const resp = await startGateway(unref(device).accessId || '');
+                                                                    if (resp.status === 200) {
+                                                                        message.success('操作成功！');
+                                                                        list.value = modifyArrayList(
+                                                                            list.value,
+                                                                            {
+                                                                                key: 'gateway',
+                                                                                name: '设备接入网关',
+                                                                                desc: desc,
+                                                                                status: 'success',
+                                                                                text: '正常',
+                                                                                info: null,
+                                                                            },
+                                                                        );
+                                                                    }
                                                                 }
                                                             }}
                                                         >
-                                                            <Button type="link" style="padding: 0">启用</Button>
-                                                        </Popconfirm>
+                                                            启用
+                                                        </PermissionButton>
                                                     </span>}
                                                 />
                                             </div>
@@ -411,28 +412,32 @@ const Status = defineComponent({
                                             status="default"
                                             text={
                                                 <span>
-                                                    设备接入网关已禁用，请先<Popconfirm
-                                                        title="确认启用"
-                                                        onConfirm={async () => {
-                                                            const resp = await startGateway(unref(device).accessId || '');
-                                                            if (resp.status === 200) {
-                                                                message.success('操作成功！');
-                                                                list.value = modifyArrayList(
-                                                                    list.value,
-                                                                    {
-                                                                        key: 'gateway',
-                                                                        name: '设备接入网关',
-                                                                        desc: desc,
-                                                                        status: 'success',
-                                                                        text: '正常',
-                                                                        info: null,
-                                                                    },
-                                                                );
+                                                    设备接入网关已禁用，请先
+                                                    <PermissionButton
+                                                        hasPermission="link/AccessConfig:action"
+                                                        popConfirm={{
+                                                            title: '确认启用',
+                                                            onConfirm: async () => {
+                                                                const resp = await startGateway(unref(device).accessId || '');
+                                                                if (resp.status === 200) {
+                                                                    message.success('操作成功！');
+                                                                    list.value = modifyArrayList(
+                                                                        list.value,
+                                                                        {
+                                                                            key: 'gateway',
+                                                                            name: '设备接入网关',
+                                                                            desc: desc,
+                                                                            status: 'success',
+                                                                            text: '正常',
+                                                                            info: null,
+                                                                        },
+                                                                    );
+                                                                }
                                                             }
                                                         }}
                                                     >
-                                                        <Button type="link" style="padding: 0">启用</Button>
-                                                    </Popconfirm>
+                                                        启用
+                                                    </PermissionButton>
                                                 </span>
                                             }
                                         />
@@ -519,28 +524,32 @@ const Status = defineComponent({
                                                 status="default"
                                                 text={
                                                     <span>
-                                                        网关父设备已禁用，请先<Popconfirm
-                                                            title="确认启用"
-                                                            onConfirm={async () => {
-                                                                const resp = await _deploy(response?.result?.id || '');
-                                                                if (resp.status === 200) {
-                                                                    message.success('操作成功！');
-                                                                    list.value = modifyArrayList(
-                                                                        list.value,
-                                                                        {
-                                                                            key: 'parent-device',
-                                                                            name: '网关父设备',
-                                                                            desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
-                                                                            status: 'success',
-                                                                            text: '正常',
-                                                                            info: null,
-                                                                        },
-                                                                    );
+                                                        网关父设备已禁用，请先
+                                                        <PermissionButton
+                                                            hasPermission="device/Product:action"
+                                                            popConfirm={{
+                                                                title: '确认启用',
+                                                                onConfirm: async () => {
+                                                                    const resp = await _deploy(response?.result?.id || '');
+                                                                    if (resp.status === 200) {
+                                                                        message.success('操作成功！');
+                                                                        list.value = modifyArrayList(
+                                                                            list.value,
+                                                                            {
+                                                                                key: 'parent-device',
+                                                                                name: '网关父设备',
+                                                                                desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
+                                                                                status: 'success',
+                                                                                text: '正常',
+                                                                                info: null,
+                                                                            },
+                                                                        );
+                                                                    }
                                                                 }
                                                             }}
                                                         >
-                                                            <Button type="link" style="padding: 0">启用</Button>
-                                                        </Popconfirm>
+                                                            启用
+                                                        </PermissionButton>
                                                     </span>
                                                 }
                                             />
@@ -623,28 +632,32 @@ const Status = defineComponent({
                                                 status="default"
                                                 text={
                                                     <span>
-                                                        产品已禁用，请<Popconfirm
-                                                            title="确认启用"
-                                                            onConfirm={async () => {
-                                                                const resp = await _deployProduct(unref(device).productId || '');
-                                                                if (resp.status === 200) {
-                                                                    message.success('操作成功！');
-                                                                    list.value = modifyArrayList(
-                                                                        list.value,
-                                                                        {
-                                                                            key: 'product',
-                                                                            name: '产品状态',
-                                                                            desc: '诊断产品状态是否正常，禁用状态将导致设备连接失败',
-                                                                            status: 'success',
-                                                                            text: '正常',
-                                                                            info: null,
-                                                                        },
-                                                                    );
+                                                        产品已禁用，请
+                                                        <PermissionButton
+                                                            hasPermission="device/Product:action"
+                                                            popConfirm={{
+                                                                title: '确认启用',
+                                                                onConfirm: async () => {
+                                                                    const resp = await _deployProduct(unref(device).productId || '');
+                                                                    if (resp.status === 200) {
+                                                                        message.success('操作成功！');
+                                                                        list.value = modifyArrayList(
+                                                                            list.value,
+                                                                            {
+                                                                                key: 'product',
+                                                                                name: '产品状态',
+                                                                                desc: '诊断产品状态是否正常，禁用状态将导致设备连接失败',
+                                                                                status: 'success',
+                                                                                text: '正常',
+                                                                                info: null,
+                                                                            },
+                                                                        );
+                                                                    }
                                                                 }
                                                             }}
                                                         >
-                                                            <Button type="link" style="padding: 0">启用</Button>
-                                                        </Popconfirm>
+                                                            启用
+                                                        </PermissionButton>
                                                         产品
                                                     </span>
                                                 }
@@ -695,29 +708,34 @@ const Status = defineComponent({
                                         status="default"
                                         text={
                                             <span>
-                                                设备已禁用，请<Popconfirm
-                                                    title="确认启用"
-                                                    onConfirm={async () => {
-                                                        const resp = await _deploy(unref(device)?.id || '');
-                                                        if (resp.status === 200) {
-                                                            instanceStore.current.state = { value: 'offline', text: '离线' }
-                                                            message.success('操作成功！');
-                                                            list.value = modifyArrayList(
-                                                                list.value,
-                                                                {
-                                                                    key: 'device',
-                                                                    name: '设备状态',
-                                                                    desc: '诊断设备状态是否正常，禁用状态将导致设备连接失败',
-                                                                    status: 'success',
-                                                                    text: '正常',
-                                                                    info: null,
-                                                                },
-                                                            );
+                                                设备已禁用，请
+                                                <PermissionButton
+                                                    hasPermission="device/Instance:action"
+                                                    popConfirm={{
+                                                        title: '确认启用',
+                                                        onConfirm: async () => {
+                                                            const resp = await _deploy(unref(device)?.id || '');
+                                                            if (resp.status === 200) {
+                                                                instanceStore.current.state = { value: 'offline', text: '离线' }
+                                                                message.success('操作成功！');
+                                                                list.value = modifyArrayList(
+                                                                    list.value,
+                                                                    {
+                                                                        key: 'device',
+                                                                        name: '设备状态',
+                                                                        desc: '诊断设备状态是否正常，禁用状态将导致设备连接失败',
+                                                                        status: 'success',
+                                                                        text: '正常',
+                                                                        info: null,
+                                                                    },
+                                                                );
+                                                            }
                                                         }
                                                     }}
                                                 >
-                                                    <Button type="link" style="padding: 0">启用</Button>
-                                                </Popconfirm>设备
+                                                    启用
+                                                </PermissionButton>
+                                                设备
                                             </span>
                                         }
                                     />

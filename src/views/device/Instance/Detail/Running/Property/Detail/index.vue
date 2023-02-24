@@ -2,15 +2,15 @@
     <a-modal title="详情" visible width="50vw" @ok="onCancel" @cancel="onCancel">
         <div style="margin-bottom: 10px"><TimeComponent v-model="dateValue" /></div>
         <div>
-            <a-tabs v-model:activeKey="activeKey">
+            <a-tabs v-model:activeKey="activeKey" style="max-height: 600px; overflow-y: auto">
                 <a-tab-pane key="table" tab="列表">
                     <Table :data="props.data" :time="_getTimes" />
                 </a-tab-pane>
                 <a-tab-pane key="charts" tab="图表">
-                    <Charts />
+                    <Charts :data="props.data" :time="_getTimes" />
                 </a-tab-pane>
-                <a-tab-pane key="geo" tab="轨迹">
-                    <AMap />
+                <a-tab-pane key="geo" tab="轨迹" v-if="data?.valueType?.type === 'geoPoint'">
+                    <PropertyAMap :data="props.data" :time="_getTimes" />
                 </a-tab-pane>
             </a-tabs>
         </div>
@@ -21,7 +21,7 @@
 import type { Dayjs } from 'dayjs';
 import TimeComponent from './TimeComponent.vue'
 import Charts from './Charts.vue'
-import AMap from './AMap.vue'
+import PropertyAMap from './PropertyAMap.vue'
 import Table from './Table.vue'
 
 const props = defineProps({

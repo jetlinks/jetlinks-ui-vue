@@ -1,4 +1,6 @@
 import AIcon from "@/components/AIcon";
+import { useInstanceStore } from "@/store/instance";
+import { useMenuStore } from "@/store/menu";
 import { Button, Descriptions, Modal } from "ant-design-vue"
 import styles from './index.module.less'
 
@@ -13,6 +15,10 @@ const ManualInspection = defineComponent({
     setup(props, { emit }) {
 
         const { data } = props
+
+        const instanceStore = useInstanceStore();
+
+        const menuStory = useMenuStore();
 
         const dataRender = () => {
             if (data.type === 'device' || data.type === 'product') {
@@ -207,7 +213,13 @@ const ManualInspection = defineComponent({
                 emit('save', data)
             }}
             onCancel={() => {
-                // TODO 跳转设备和产品
+                if (data.type === 'device') {
+                    instanceStore.tabActiveKey = 'Info'
+                } else if (data.type === 'product') {
+                    menuStory.jumpPage('device/Product/Detail', { id: data.productId, tab: 'access' });
+                } else {
+                    menuStory.jumpPage('link/AccessConfig/Detail', { id: data.configuration?.id });
+                }
             }}>
             <div style={{ display: 'flex' }}>{dataRender()}</div>
         </Modal>

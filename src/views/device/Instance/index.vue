@@ -155,13 +155,12 @@
                         />
                     </template>
                     <template #content>
-                        <h3
-                            class="card-item-content-title"
-                            @click.stop="handleView(slotProps.id)"
-                        >
-                            {{ slotProps.name }}
-                        </h3>
-                        <a-row>
+                        <Ellipsis style="width: calc(100% - 100px)">
+                            <span style="font-size: 16px; font-weight: 600"  @click.stop="handleView(slotProps.id)">
+                                {{ slotProps.name }}
+                            </span>
+                        </Ellipsis>
+                        <a-row style="margin-top: 20px">
                             <a-col :span="12">
                                 <div class="card-item-content-text">
                                     设备类型
@@ -172,7 +171,9 @@
                                 <div class="card-item-content-text">
                                     产品名称
                                 </div>
-                                <div>{{ slotProps.productName }}</div>
+                                <Ellipsis style="width: 100%">
+                                    {{ slotProps.productName }}
+                                </Ellipsis>
                             </a-col>
                         </a-row>
                     </template>
