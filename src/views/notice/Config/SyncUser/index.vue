@@ -395,7 +395,11 @@ watch(
  */
 const bindVis = ref(false);
 const confirmLoading = ref(false);
-const formData = ref({ userId: '' });
+const formData = ref({
+    userId: '',
+    thirdPartyUserId: '',
+    thirdPartyUserName: '',
+});
 const formRules = ref({
     userId: [{ required: true, message: '请选择用户', trigger: 'change' }],
 });
@@ -407,7 +411,8 @@ const { resetFields, validate, validateInfos, clearValidate } = useForm(
 
 const handleBind = (row: any) => {
     bindVis.value = true;
-    formData.value = row;
+    // formData.value = row;
+    Object.assign(formData.value, row);
     getAllUsers();
 };
 
@@ -428,8 +433,8 @@ const filterOption = (input: string, option: any) => {
 const handleBindSubmit = () => {
     validate().then(async () => {
         const params = {
-            // providerName: formData.value.thirdPartyUserName,
-            // thirdPartyUserId: formData.value.thirdPartyUserId,
+            providerName: formData.value.thirdPartyUserName,
+            thirdPartyUserId: formData.value.thirdPartyUserId,
             userId: formData.value.userId,
         };
         confirmLoading.value = true;
