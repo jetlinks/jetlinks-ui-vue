@@ -2,7 +2,7 @@
     <page-container>
         <div>
             <Search
-                :columns="query.columns"
+                :columns="columns"
                 target="device-instance"
                 @search="handleSearch"
             ></Search>
@@ -13,6 +13,7 @@
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
+                :params="params"
             >
                 <template #headerTitle>
                     <a-space>
@@ -41,23 +42,27 @@
                             </slot>
                         </template>
                         <template #content>
-                            <h3 style="font-weight: 600">
-                                {{ slotProps.name }}
-                            </h3>
+                            <Ellipsis>
+                                <span style="font-weight: 600; font-size: 16px">
+                                    {{ slotProps.name }}
+                                </span>
+                            </Ellipsis>
                             <a-row>
                                 <a-col :span="12">
                                     <div class="content-des-title">
                                         关联场景联动
                                     </div>
-                                    <div class="rule-desc">
-                                        {{ (slotProps?.scene || []).map((item: any) => item?.name).join(',') || '' }}
-                                    </div>
+                                    <Ellipsis
+                                        ><div>
+                                            {{ (slotProps?.scene || []).map((item: any) => item?.name).join(',') || '' }}
+                                        </div></Ellipsis
+                                    >
                                 </a-col>
                                 <a-col :span="12">
                                     <div class="content-des-title">
                                         告警级别
                                     </div>
-                                    <div class="rule-desc">
+                                    <div>
                                         {{ (Store.get('default-level') || []).find((item: any) => item?.level === slotProps.level)?.title ||
             slotProps.level }}
                                     </div>
@@ -200,6 +205,7 @@ import {
     _disable,
     remove,
     _execute,
+    getScene,
 } from '@/api/rule-engine/configuration';
 import { queryLevel } from '@/api/rule-engine/config';
 import { Store } from 'jetlinks-store';
@@ -207,6 +213,8 @@ import type { ActionsType } from '@/components/Table/index.vue';
 import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
+import encodeQuery from '@/utils/encodeQuery';
+import { useStorage } from '@vueuse/core';
 const params = ref<Record<string, any>>({});
 let isAdd = ref<number>(0);
 let title = ref<string>('');
@@ -217,35 +225,104 @@ const columns = [
         title: '名称',
         dataIndex: 'name',
         key: 'name',
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '类型',
         dataIndex: 'targetType',
         key: 'targetType',
         scopedSlots: true,
+        search: {
+            type: 'select',
+            options: [
+                {
+                    label: '产品',
+                    value: 'product',
+                },
+                {
+                    label: '设备',
+                    value: 'device',
+                },
+                {
+                    label: '组织',
+                    value: 'org',
+                },
+                {
+                    label: '其他',
+                    value: 'other',
+                },
+            ],
+        },
     },
     {
         title: '告警级别',
         dataIndex: 'level',
         key: 'level',
         scopedSlots: true,
+        search: {
+            type: 'select',
+            options: async () => {
+                const res = await queryLevel();
+                if (res.status === 200) {
+                    return (res?.result?.levels || [])
+                        .filter((i: any) => i?.level && i?.title)
+                        .map((item: any) => ({
+                            label: item.title,
+                            value: item.level,
+                        }));
+                }
+                return [];
+            },
+        },
     },
     {
         title: '关联场景联动',
         dataIndex: 'sceneId',
         wdith: 250,
         scopedSlots: true,
+        search: {
+            type: 'select',
+            options: async () => {
+                const res = await getScene(
+                    encodeQuery({
+                        sorts: { createTime: 'desc' },
+                    }),
+                );
+                if(res.status === 200){
+                    return res.result.map((item:any) => ({label:item.name, value:item.id}))
+                }
+                return [];
+            },
+        },
     },
     {
         title: '状态',
         dataIndex: 'state',
         key: 'state',
         scopedSlots: true,
+        search: {
+                type: 'select',
+                options: [
+                    {
+                        label: '正常',
+                        value: 'enabled',
+                    },
+                    {
+                        label: '禁用',
+                        value: 'disabled',
+                    },
+                ],
+            },
     },
     {
         title: '说明',
         dataIndex: 'description',
         key: 'description',
+        search:{
+            type:'string',
+        }
     },
     {
         title: '操作',
@@ -260,44 +337,6 @@ const map = {
     device: '设备',
     org: '组织',
     other: '其他',
-};
-const query = {
-    columns: [
-        {
-            title: '名称',
-            dataIndex: 'name',
-            key: 'name',
-            search: {
-                type: 'string',
-            },
-        },
-        {
-            title: '状态',
-            dataIndex: 'state',
-            key: 'state',
-            search: {
-                type: 'select',
-                options: [
-                    {
-                        label: '正常',
-                        value: 'enabled',
-                    },
-                    {
-                        label: '禁用',
-                        value: 'disabled',
-                    },
-                ],
-            },
-        },
-        {
-            title: '说明',
-            key: 'description',
-            dataIndex: 'description',
-            search: {
-                type: 'string',
-            },
-        },
-    ],
 };
 const handleSearch = (e: any) => {
     params.value = e;
@@ -357,9 +396,7 @@ const getActions = (
 
             icon: 'EditOutlined',
             onClick: () => {
-                title.value = '编辑';
-                isAdd.value = 2;
-                nextTick(() => {});
+                menuStory.jumpPage('rule-engine/Alarm/Configuration/Save',{},{id:data.id});
             },
         },
         {
@@ -423,17 +460,12 @@ const getActions = (
         return actions.filter((i: ActionsType) => i.key !== 'view');
     return actions;
 };
-const add = () =>{
-    // menuStory.jumpPage()
-}
+const add = () => {
+    menuStory.jumpPage('rule-engine/Alarm/Configuration/Save');
+};
 </script>
 <style lang="less" scoped>
 .content-des-title {
     font-size: 12px;
-}
-.rule-desc {
-    white-space: nowrap; /*强制在同一行内显示所有文本，直到文本结束或者遭遇br标签对象才换行。*/
-    overflow: hidden; /*超出部分隐藏*/
-    text-overflow: ellipsis; /*隐藏部分以省略号代替*/
 }
 </style>
