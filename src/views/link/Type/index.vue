@@ -15,7 +15,7 @@
             >
                 <template #headerTitle>
                     <a-button type="primary" @click="handlAdd"
-                        ><plus-outlined />新增</a-button
+                        ><AIcon type="PlusOutlined" />新增</a-button
                     >
                 </template>
                 <template #card="slotProps">
