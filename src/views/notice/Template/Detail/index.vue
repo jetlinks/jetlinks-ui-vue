@@ -919,7 +919,7 @@ watch(
     () => formData.value.template.markdown?.title,
     (val) => {
         if (!val) return;
-        variableReg(val);
+        variableReg();
     },
     { deep: true },
 );
@@ -928,7 +928,7 @@ watch(
     () => formData.value.template.link?.title,
     (val) => {
         if (!val) return;
-        variableReg(val);
+        variableReg();
     },
     { deep: true },
 );
@@ -937,7 +937,7 @@ watch(
     () => formData.value.template.subject,
     (val) => {
         if (!val) return;
-        variableReg(val);
+        variableReg();
     },
     { deep: true },
 );
@@ -947,7 +947,7 @@ watch(
     () => formData.value.template.message,
     (val) => {
         if (!val) return;
-        variableReg(val);
+        variableReg();
     },
     { deep: true },
 );
@@ -956,21 +956,42 @@ watch(
     () => formData.value.template.body,
     (val) => {
         if (!val) return;
-        variableReg(val);
+        variableReg();
     },
     { deep: true },
 );
 
 /**
+ * 将需要提取变量的字段值拼接为一个字符串, 用于统一提取变量
+ */
+const spliceStr = () => {
+    let variableFieldsStr = formData.value.template.message;
+    if (formData.value.provider === 'dingTalkRobotWebHook') {
+        if (formData.value.template.messageType === 'markdown')
+            variableFieldsStr += formData.value.template.markdown
+                ?.title as string;
+        if (formData.value.template.messageType === 'link')
+            variableFieldsStr += formData.value.template.link?.title as string;
+    }
+    if (formData.value.provider === 'embedded')
+        variableFieldsStr += formData.value.template.subject as string;
+    if (formData.value.provider === 'http')
+        variableFieldsStr += formData.value.template.body as string;
+    // console.log('variableFieldsStr: ', variableFieldsStr);
+    return variableFieldsStr || '';
+};
+
+/**
  * 根据字段输入内容, 提取变量
  * @param value
  */
-const variableReg = (value: string) => {
+const variableReg = () => {
+    const _val = spliceStr();
     // 已经存在的变量
     const oldKey = formData.value.variableDefinitions?.map((m) => m.id);
     // 正则提取${}里面的值
     const pattern = /(?<=\$\{).*?(?=\})/g;
-    const titleList = value.match(pattern)?.filter((f) => f);
+    const titleList = _val.match(pattern)?.filter((f) => f);
     const newKey = [...new Set(titleList)];
     const result = newKey?.map((m) =>
         oldKey.includes(m)
@@ -982,12 +1003,7 @@ const variableReg = (value: string) => {
                   format: '%s',
               },
     );
-    formData.value.variableDefinitions = [
-        ...new Set([
-            ...formData.value.variableDefinitions,
-            ...(result as IVariableDefinitions[]),
-        ]),
-    ];
+    formData.value.variableDefinitions = result as IVariableDefinitions[];
 };
 
 /**
