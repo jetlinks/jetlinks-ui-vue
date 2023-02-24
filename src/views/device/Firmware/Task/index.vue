@@ -58,12 +58,14 @@
         <Save v-if="visible" :data="current" @change="saveChange" />
     </page-container>
 </template>
-<script lang="ts" setup name="CertificatePage">
+<script lang="ts" setup name="TaskPage">
 import type { ActionsType } from '@/components/Table/index';
 import { task, startTask, stopTask } from '@/api/device/firmware';
 import { message } from 'ant-design-vue';
 import Save from './Save/index.vue';
+import { useMenuStore } from 'store/menu';
 
+const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
 const router = useRouter();
 const route = useRoute();
@@ -223,10 +225,7 @@ const handlEye = (data: object) => {
 };
 
 const handlDetails = (id: string) => {
-    // router.push({
-    //     path: `/iot/link/certificate/detail/${id}`,
-    //     query: { view: false },
-    // });
+    // menuStory.jumpPage('device/Firmware/Task/Detail', { id });
 };
 const saveChange = (value: boolean) => {
     visible.value = false;
