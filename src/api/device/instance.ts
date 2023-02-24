@@ -459,3 +459,11 @@ export const treeEdgeMap = (deviceId: string, data?: any) => server.post(`/edge/
  * @returns 
  */
 export const saveEdgeMap = (deviceId: string, data?: any) => server.post(`/edge/operations/${deviceId}/device-collector-save/invoke`, data)
+
+/**
+ * 查询属性详情
+ * @param deviceId 
+ * @param params 
+ * @returns 
+ */
+export const getPropertyData = (deviceId: string, params: Record<string, unknown>) => server.get(`/device-instance/${deviceId}/properties/_query`, params)

@@ -52,7 +52,8 @@ const iconKeys = [
     'RightOutlined',
     'FileTextOutlined',
     'UploadOutlined',
-    'ArrowLeftOutlined'
+    'ArrowLeftOutlined',
+    'DownloadOutlined'
 ]
 
 const Icon = (props: {type: string}) => {

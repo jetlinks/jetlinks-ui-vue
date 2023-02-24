@@ -61,14 +61,15 @@
                         showSearch
                         v-model:value="modelRef.productId"
                         placeholder="请选择所属产品"
+                        :filter-option="filterOption"
                     >
                         <a-select-option
                             :value="item.id"
                             v-for="item in productList"
                             :key="item.id"
-                            :title="item.name"
+                            :label="item.name"
                             :disabled="!!props.data.id"
-                        ></a-select-option>
+                        >{{item.name}}</a-select-option>
                     </a-select>
                 </a-form-item>
                 <a-form-item label="说明" name="describe">
@@ -109,6 +110,10 @@ const modelRef = reactive({
     describe: '',
     photoUrl: getImage('/device/instance/device-card.png'),
 });
+
+const filterOption = (input: string, option: any) => {
+    return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+};
 
 const vailId = async (_: Record<string, any>, value: string) => {
     if (!props?.data?.id && value) {

@@ -140,7 +140,6 @@
                     :value="slotProps"
                     @click="handleClick"
                     :actions="getActions(slotProps, 'card')"
-                    v-bind="slotProps"
                     :active="_selectedRowKeys.includes(slotProps.id)"
                     :status="slotProps.state?.value"
                     :statusText="slotProps.state?.text"
@@ -151,13 +150,9 @@
                     }"
                 >
                     <template #img>
-                        <slot name="img">
-                            <img
-                                :src="
-                                    getImage('/device/instance/device-card.png')
-                                "
-                            />
-                        </slot>
+                        <img
+                            :src="getImage('/device/instance/device-card.png')"
+                        />
                     </template>
                     <template #content>
                         <h3
@@ -292,7 +287,7 @@ const operationVisible = ref<boolean>(false);
 const api = ref<string>('');
 const type = ref<string>('');
 
-const menuStory = useMenuStore()
+const menuStory = useMenuStore();
 
 const statusMap = new Map();
 statusMap.set('online', 'success');
@@ -538,7 +533,7 @@ const handleAdd = () => {
  * 查看
  */
 const handleView = (id: string) => {
-    menuStory.jumpPage('device/Instance/Detail', {id})
+    menuStory.jumpPage('device/Instance/Detail', { id });
 };
 
 const getActions = (
