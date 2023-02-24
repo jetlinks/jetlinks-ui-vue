@@ -1,55 +1,59 @@
 <template>
-    <div class="relationship-container">
-        <Search :columns="query.columns" @search="query.search" />
+    <page-container>
+        <div class="relationship-container">
+            <Search :columns="query.columns" @search="query.search" />
 
-        <JTable
-            ref="tableRef"
-            :columns="table.columns"
-            :request="getRelationshipList_api"
-            model="TABLE"
-            :params="query.params.value"
-            :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }"
-        >
-            <template #headerTitle>
-                <PermissionButton
-                    type="primary"
-                    :uhasPermission="`${permission}:add`"
-                    @click="table.openDialog(undefined)"
-                >
-                    <AIcon type="PlusOutlined" />新增
-                </PermissionButton>
-            </template>
-            <template #action="slotProps">
-                <a-space :size="16">
+            <JTable
+                ref="tableRef"
+                :columns="table.columns"
+                :request="getRelationshipList_api"
+                model="TABLE"
+                :params="query.params.value"
+                :defaultParams="{
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                }"
+            >
+                <template #headerTitle>
                     <PermissionButton
-                        :uhasPermission="`${permission}:update`"
-                        type="link"
-                        :tooltip="{
-                            title: '编辑',
-                        }"
-                        @click="table.openDialog(slotProps)"
+                        type="primary"
+                        :uhasPermission="`${permission}:add`"
+                        @click="table.openDialog(undefined)"
                     >
-                        <AIcon type="EditOutlined" />
+                        <AIcon type="PlusOutlined" />新增
                     </PermissionButton>
+                </template>
+                <template #action="slotProps">
+                    <a-space :size="16">
+                        <PermissionButton
+                            :uhasPermission="`${permission}:update`"
+                            type="link"
+                            :tooltip="{
+                                title: '编辑',
+                            }"
+                            @click="table.openDialog(slotProps)"
+                        >
+                            <AIcon type="EditOutlined" />
+                        </PermissionButton>
 
-                    <PermissionButton
-                        :uhasPermission="`${permission}:delete`"
-                        type="link"
-                        :tooltip="{ title: '删除' }"
-                        :popConfirm="{
-                            title: `确认删除`,
-                            onConfirm: () => table.clickDel(slotProps),
-                        }"
-                        :disabled="slotProps.status"
-                    >
-                        <AIcon type="DeleteOutlined" />
-                    </PermissionButton>
-                </a-space>
-            </template>
-        </JTable>
+                        <PermissionButton
+                            :uhasPermission="`${permission}:delete`"
+                            type="link"
+                            :tooltip="{ title: '删除' }"
+                            :popConfirm="{
+                                title: `确认删除`,
+                                onConfirm: () => table.clickDel(slotProps),
+                            }"
+                            :disabled="slotProps.status"
+                        >
+                            <AIcon type="DeleteOutlined" />
+                        </PermissionButton>
+                    </a-space>
+                </template>
+            </JTable>
 
-        <EditDialog ref="editDialogRef" @refresh="table.refresh" />
-    </div>
+            <EditDialog ref="editDialogRef" @refresh="table.refresh" />
+        </div>
+    </page-container>
 </template>
 
 <script setup lang="ts" name="Relationship">
@@ -181,7 +185,6 @@ const table = {
 
 <style lang="less" scoped>
 .relationship-container {
-    padding: 24px;
     :deep(.ant-table-cell) {
         .ant-btn-link {
             padding: 0;

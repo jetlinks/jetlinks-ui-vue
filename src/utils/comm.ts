@@ -1,5 +1,6 @@
 import type { Slots } from 'vue'
 import { TOKEN_KEY } from '@/utils/variable'
+import { message } from 'ant-design-vue'
 
 /**
  * 静态图片资源处理
@@ -96,3 +97,15 @@ export const modifySearchColumnValue = (e: any, column: object) => {
   });
   return e;
 };
+
+/**
+ * 仅提示一次的message
+ * @param msg 消息内容
+ * @param type 消息类型
+ */
+export const onlyMessage = (msg: string, type: 'success' | 'error' | 'warning' = 'success') => {
+  message[type]({
+    content: msg,
+    key: type
+  })
+}

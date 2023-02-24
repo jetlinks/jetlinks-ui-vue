@@ -3,7 +3,7 @@
     <div class="top">
       <div class="left">
         <span v-for="item in symbolList.filter((t: SymbolType, i: number) => i <= 3)" :key="item.key"
-          @click="handleInsertCode(item.value)">
+          @click="addOperatorValue(item.value)">
           {{ item.value }}
         </span>
         <span>
@@ -12,7 +12,7 @@
             <template #overlay>
               <a-menu>
                 <a-menu-item v-for="item in symbolList.filter((t: SymbolType, i: number) => i > 6)" :key="item.key"
-                  @click="handleInsertCode(item.value)">
+                  @click="addOperatorValue(item.value)">
                   {{ item.value }}
                 </a-menu-item>
               </a-menu>
@@ -149,7 +149,7 @@ onMounted(() => {
   }, 100);
 })
 
-const handleInsertCode = (val: string) => {
+const addOperatorValue = (val: string) => {
   editor.value?.insert(val)
 }
 
@@ -158,6 +158,10 @@ const fullscreenClick = () => {
     emit('change', 'advance');
   }
 }
+
+defineExpose({
+  addOperatorValue
+})
 
 </script>
 <style lang="less" scoped>

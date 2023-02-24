@@ -3,6 +3,7 @@
     <div class="advance-box">
         <div class="left">
           <Editor
+            ref="editor"
             mode="advance"
             key="advance"
             v-model:value="_value"
@@ -16,7 +17,7 @@
           />
         </div>
         <div class="right">
-          <Operator :id="id" />
+          <Operator :id="id" @add-operator-value="addOperatorValue"/>
         </div>
       </div>
   </a-modal>
@@ -44,10 +45,15 @@ const handleCancel = () => {
   emit('change', 'simple')
 }
 const handleOk = () => {
+  console.log(_value.value)
   emit('update:value', _value.value)
   emit('change', 'simple')
 }
 
+const editor = ref()
+const addOperatorValue = (val: string) => {
+  editor.value.addOperatorValue(val)
+}
 
 </script>
 <style lang="less" scoped>
