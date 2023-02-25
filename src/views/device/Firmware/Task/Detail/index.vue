@@ -17,22 +17,27 @@
                             </div>
 
                             <div class="state-title-right">
-                                <a-popconfirm
-                                    title="确定批量重试?"
-                                    ok-text="确定"
-                                    cancel-text="取消"
-                                    @confirm="confirm"
-                                    v-if="
-                                        item.key === 'failed' &&
-                                        stateInfo?.mode?.value === 'push'
-                                    "
-                                >
-                                    <a href="#">批量重试</a>
-                                </a-popconfirm>
-                                <img
-                                    :src="buttonImg"
-                                    @click="handleRefresh(item.key)"
-                                />
+                                <div>
+                                    <a-popconfirm
+                                        title="确定批量重试?"
+                                        ok-text="确定"
+                                        cancel-text="取消"
+                                        @confirm="confirm"
+                                        v-if="
+                                            item.key === 'failed' &&
+                                            stateInfo?.mode?.value === 'push'
+                                        "
+                                    >
+                                        <a href="#">批量重试</a>
+                                    </a-popconfirm>
+                                </div>
+
+                                <div class="img">
+                                    <img
+                                        :src="buttonImg"
+                                        @click="handleRefresh(item.key)"
+                                    />
+                                </div>
                             </div>
                         </div>
                         <div class="state-box">
@@ -114,6 +119,7 @@
                     </a-space>
                 </template>
             </JTable>
+            <Save :data="current" v-if="visible" @change="saveChange" />
         </div>
     </page-container>
 </template>
@@ -124,12 +130,14 @@ import {
     history,
     historyCount,
     queryProduct,
+    startTask,
+    startOneTask,
 } from '@/api/device/firmware';
 import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 import moment from 'moment';
 import { cloneDeep } from 'lodash-es';
-
+import Save from './Save.vue';
 const tableRef = ref<Record<string, any>>({});
 const router = useRouter();
 const route = useRoute();
@@ -276,22 +284,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
     if (!data) {
         return [];
     }
-
-    const stop = data.waiting > 0 && data?.state?.value === 'processing';
-    const pause = data?.state?.value === 'canceled';
-
     const Actions = [
-        {
-            key: 'details',
-            text: '详情',
-            tooltip: {
-                title: '详情',
-            },
-            icon: 'icon-details',
-            onClick: async () => {
-                handlDetails(data.id);
-            },
-        },
         {
             key: 'eye',
             text: '查看',
@@ -300,45 +293,21 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
             icon: 'EyeOutlined',
             onClick: async () => {
-                handlEye(data);
+                handlEye(data.errorReason);
+            },
+        },
+        {
+            key: 'try',
+            text: '重试',
+            tooltip: {
+                title: '重试',
+            },
+            icon: 'RedoOutlined',
+            onClick: async () => {
+                handlTry(data.id);
             },
         },
     ];
-
-    if (stop) {
-        Actions.push({
-            key: 'actions',
-            text: '停止',
-            tooltip: {
-                title: '停止',
-            },
-            onClick: async () => {
-                const res = await stopTask(data.id);
-                if (res.success) {
-                    message.success('操作成功');
-                    tableRef.value.reload();
-                }
-            },
-            icon: 'StopOutlined',
-        });
-    } else if (pause) {
-        Actions.push({
-            key: 'actions',
-            text: '继续升级',
-            tooltip: {
-                title: '继续升级',
-            },
-            onClick: async () => {
-                const res = await startTask(data.id, ['canceled']);
-                if (res.success) {
-                    message.success('操作成功');
-                    tableRef.value.reload();
-                }
-            },
-            icon: 'ControlOutlined',
-        });
-    }
-
     return Actions;
 };
 
@@ -347,28 +316,29 @@ const handlAdd = () => {
     visible.value = true;
 };
 
-const handlEye = (data: object) => {
-    current.value = toRaw({ ...data, view: true });
+const handlEye = (data: string) => {
+    current.value = data || '';
     visible.value = true;
 };
 
-const handlDetails = (id: string) => {
-    // router.push({
-    //     path: `/iot/link/certificate/detail/${id}`,
-    //     query: { view: false },
-    // });
-};
-const saveChange = (value: boolean) => {
-    visible.value = false;
-    current.value = {};
-    if (value) {
+const handlTry = async (id: string) => {
+    const res = await startOneTask([id]);
+    if (res.success) {
         message.success('操作成功');
         tableRef.value.reload();
     }
 };
-const confirm = (e: MouseEvent) => {
-    console.log(e);
-    message.success('Click on Yes');
+const saveChange = (value: boolean) => {
+    visible.value = false;
+    current.value = {};
+};
+const confirm = async (e: MouseEvent) => {
+    const res = await startTask(taskId, ['failed']);
+    if (res.success) {
+        message.success('操作成功');
+        handleRefresh('failed');
+        tableRef.value.reload();
+    }
 };
 
 const handleRefresh = async (key: string) => {
@@ -416,6 +386,7 @@ const handleSearch = (e: any) => {
             rgba(255, 255, 255, 0.86) 91.82%
         );
         min-width: 185px;
+        max-width: 580px;
         flex: 1px;
         margin: 0 12px;
         .state-content {
@@ -430,12 +401,18 @@ const handleSearch = (e: any) => {
                 height: 22px;
                 .state-title-right {
                     z-index: 1;
-                    img {
-                        margin: 0 10px;
+                    display: flex;
+                    .img {
                         width: 22px;
-                        // margin-top: -12px;
-                        margin-top: -5px;
+                        margin: 0 10px;
                         cursor: pointer;
+                        img {
+                            width: 22px;
+                            margin-top: -5px;
+                        }
+                    }
+                    .img:active {
+                        border: 1px #40a9ff solid;
                     }
                 }
             }
