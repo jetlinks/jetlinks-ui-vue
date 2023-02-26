@@ -15,6 +15,7 @@ export type optionsType = {
     disabled?: boolean
 }[]
 export type formType = {
+    id?:string,
     name: string;
     provider: applyType;
     integrationModes: string[];
@@ -33,6 +34,7 @@ export type formType = {
             type: 'none' | 'bearer' | 'oauth2' | 'basic' | 'other', // 类型, 可选值：none, bearer, oauth2, basic, other
             bearer: { token: string }, // 授权信息	
             basic: { username: string, password: string }, // 基本信息	
+            token: string,
             oauth2: { // OAuth2信息
                 authorizationUrl: string, // 授权地址	
                 tokenUrl: string, // token地址	
@@ -58,12 +60,14 @@ export type formType = {
     sso: { // 统一单点登陆集成
         configuration: { // 配置
             oauth2: { // Oauth2单点登录配置
+                type?: string, // 认证方式
                 authorizationUrl: string, // 授权地址	
                 redirectUri: string, // 重定向地址	
                 clientId: string, // 客户端ID	
                 clientSecret: string, // 客户端密钥	
                 userInfoUrl: string, // 用户信息接口	
                 scope: string, // scope
+                logoUrl?:string, // logo
                 userProperty: { // 用户属性字段信息	
                     userId: string, // 用户ID	
                     username: string, // 用户名	

@@ -12,7 +12,20 @@
                     <a-input v-model:value="record.label" />
                 </template>
                 <template v-else-if="column.dataIndex === 'value'">
-                    <a-input v-model:value="record.value" />
+                    <a-input
+                        v-model:value="record.value"
+                        v-if="props.valueType === 'input'"
+                    />
+                    <a-select
+                        v-else-if="props.valueType === 'select'"
+                        v-model:value="record.value"
+                    >
+                        <a-select-option
+                            v-for="item in props.valueOptions"
+                            :value="item.value"
+                            >{{ item.label }}</a-select-option
+                        >
+                    </a-select>
                 </template>
                 <template v-else-if="column.dataIndex === 'action'">
                     <a-button
@@ -41,21 +54,31 @@
 import type { optionsType } from '../typing';
 
 const emits = defineEmits(['update:value']);
-const props = defineProps<{
-    value: optionsType;
-}>();
+const props = withDefaults(
+    defineProps<{
+        value: optionsType;
+        valueType?: 'input' | 'select';
+        valueOptions?: optionsType;
+    }>(),
+    {
+        valueType: 'input',
+    },
+);
 const columns = [
     {
         title: 'KEY',
         dataIndex: 'key',
+        width: '40%'
     },
     {
         title: 'VALUE',
         dataIndex: 'value',
+        width: '40%'
     },
     {
         title: ' ',
         dataIndex: 'action',
+        width: '20%'
     },
 ];
 
