@@ -40,11 +40,19 @@
                     </div>
                 </div>
             </div>
+            <div class="card-mask" v-if="props.hasMark">
+                <div class="mask-content">
+                    <slot name="mark" />
+                </div>
+            </div>
         </div>
 
         <!-- 按钮 -->
         <slot name="bottom-tool">
-            <div v-if="showTool && actions && actions.length" class="card-tools">
+            <div
+                v-if="showTool && actions && actions.length"
+                class="card-tools"
+            >
                 <div
                     v-for="item in actions"
                     :key="item.key"
@@ -53,8 +61,8 @@
                         delete: item.key === 'delete',
                     }"
                 >
-                <slot name="actions" v-bind="item"></slot>
-                <!-- <a-popconfirm  v-if="item.popConfirm" v-bind="item.popConfirm">
+                    <slot name="actions" v-bind="item"></slot>
+                    <!-- <a-popconfirm  v-if="item.popConfirm" v-bind="item.popConfirm">
                     <a-button :disabled="item.disabled">
                         <DeleteOutlined v-if="item.key === 'delete'" />
                         <template v-else>
@@ -79,10 +87,14 @@
 </template>
 
 <script setup lang="ts">
-import { SearchOutlined, CheckOutlined, DeleteOutlined } from '@ant-design/icons-vue';
+import {
+    SearchOutlined,
+    CheckOutlined,
+    DeleteOutlined,
+} from '@ant-design/icons-vue';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
 import { StatusColorEnum } from '@/utils/consts.ts';
-import type { ActionsType } from '@/components/Table/index.vue'
+import type { ActionsType } from '@/components/Table/index.vue';
 import { PropType } from 'vue';
 
 type EmitProps = {
@@ -90,14 +102,14 @@ type EmitProps = {
     (e: 'click', data: Record<string, any>): void;
 };
 
-type TableActionsType  = Partial<ActionsType>
+type TableActionsType = Partial<ActionsType>;
 
 const emit = defineEmits<EmitProps>();
 
 const props = defineProps({
     value: {
         type: Object as PropType<Record<string, any>>,
-        default: () => {}
+        default: () => {},
     },
     showStatus: {
         type: Boolean,
@@ -124,8 +136,12 @@ const props = defineProps({
     },
     active: {
         type: Boolean,
-        default: false
-    }
+        default: false,
+    },
+    hasMark: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const handleClick = () => {
@@ -167,9 +183,13 @@ const handleClick = () => {
         position: relative;
         border: 1px solid #e6e6e6;
 
-        &.hover {
+        &:hover {
             cursor: pointer;
             box-shadow: 0 0 24px rgba(#000, 0.1);
+
+            .card-mask {
+                visibility: visible;
+            }
         }
 
         &.active {
@@ -269,23 +289,18 @@ const handleClick = () => {
             width: 100%;
             height: 100%;
             color: #fff;
-            background-color: rgba(#000, 0);
+            background-color: rgba(#000, .5);
             visibility: hidden;
             cursor: pointer;
             transition: all 0.3s;
 
-            > div {
+            .mask-content {
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 width: 100%;
                 height: 100%;
                 padding: 0 !important;
-            }
-
-            &.show {
-                background-color: rgba(#000, 0.5);
-                visibility: visible;
             }
         }
     }

@@ -93,7 +93,7 @@ export enum ActionAlarmMode {
 export interface OperationTimerPeriod {
   from: string;
   to: string;
-  every: string[];
+  every: number;
   unit: keyof typeof TimeUnit;
 }
 
