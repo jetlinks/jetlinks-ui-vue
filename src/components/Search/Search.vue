@@ -98,7 +98,11 @@ const props = defineProps({
   class: {
     type: String,
     default: ''
-  }
+  },
+  // defaultTerms: {
+  //   type: Object,
+  //   default: () => ({})
+  // }
 })
 
 const searchRef = ref(null)
@@ -223,6 +227,7 @@ const handleParamsFormat = () => {
  */
 const searchSubmit = () => {
   emit('search', handleParamsFormat())
+  console.log('searchSubmit')
   if (props.type === 'advanced') {
     addUrlParams()
   }

@@ -1,7 +1,11 @@
 <template>
     <page-container>
         <div>
-            <Search :columns="query.columns" target="device-instance" @search="handleSearch"></Search>
+            <Search
+                :columns="query.columns"
+                target="device-instance"
+                @search="handleSearch"
+            ></Search>
             <JTable
                 :columns="columns"
                 :request="queryList"
@@ -14,7 +18,7 @@
                 <template #headerTitle>
                     <a-space>
                         <a-button type="primary" @click="add"
-                            ><plus-outlined/>新增</a-button
+                            ><plus-outlined />新增</a-button
                         >
                     </a-space>
                 </template>
@@ -36,14 +40,18 @@
                             </slot>
                         </template>
                         <template #content>
-                            <h3 style="font-weight: 600">
-                                {{ slotProps.name }}
-                            </h3>
+                            <Ellipsis>
+                                <span style="font-weight: 600; font-size: 16px">
+                                    {{ slotProps.name }}
+                                </span>
+                            </Ellipsis>
                             <a-row>
                                 <a-col :span="12">
-                                    <div class="rule-desc">
-                                        {{ slotProps.description }}
-                                    </div>
+                                    <Ellipsis>
+                                        <div>
+                                            {{ slotProps.description }}
+                                        </div>
+                                    </Ellipsis>
                                 </a-col>
                             </a-row>
                         </template>
@@ -154,7 +162,12 @@
 <script lang="ts" setup>
 import JTable from '@/components/Table';
 import type { InstanceItem } from './typings';
-import { queryList , startRule , stopRule , deleteRule} from '@/api/rule-engine/instance';
+import {
+    queryList,
+    startRule,
+    stopRule,
+    deleteRule,
+} from '@/api/rule-engine/instance';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage } from '@/utils/comm';
 import { message } from 'ant-design-vue';
@@ -266,7 +279,10 @@ const getActions = (
             tooltip: {
                 title: data.state?.value !== 'disable' ? '禁用' : '启用',
             },
-            icon: data.state?.value !== 'disable' ? 'StopOutlined' : 'CheckCircleOutlined',
+            icon:
+                data.state?.value !== 'disable'
+                    ? 'StopOutlined'
+                    : 'CheckCircleOutlined',
             popConfirm: {
                 title: `确认${data.state !== 'disable' ? '禁用' : '启用'}?`,
                 onConfirm: async () => {
@@ -332,9 +348,4 @@ const handleSearch = (e: any) => {
 };
 </script>
 <style scoped>
-.rule-desc {
-    white-space: nowrap; /*强制在同一行内显示所有文本，直到文本结束或者遭遇br标签对象才换行。*/
-    overflow: hidden; /*超出部分隐藏*/
-    text-overflow: ellipsis; /*隐藏部分以省略号代替*/
-}
 </style>

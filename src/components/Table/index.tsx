@@ -144,6 +144,10 @@ const JTable = defineComponent<JTableProps>({
                     pageSize: 12
                 }
             }
+        },
+        scroll: {
+            type: Object,
+            default: () => { x: 1366 }
         }
     } as any,
     setup(props: JTableProps, { slots, emit, expose }) {
@@ -260,7 +264,7 @@ const JTable = defineComponent<JTableProps>({
         /**
          * 导出方法
          */
-        expose({ reload })
+        expose({ reload, _dataSource })
 
         return () => <Spin spinning={loading.value}>
             <div class={styles["jtable-body"]} style={{ ...props.bodyStyle }}>
@@ -331,7 +335,7 @@ const JTable = defineComponent<JTableProps>({
                                         pagination={false}
                                         rowKey="id"
                                         rowSelection={props.rowSelection}
-                                        scroll={{ x: 1366 }}
+                                        scroll={props.scroll}
                                         v-slots={{
                                             bodyCell: (dt: Record<string, any>) => {
                                                 const { column, record } = dt;

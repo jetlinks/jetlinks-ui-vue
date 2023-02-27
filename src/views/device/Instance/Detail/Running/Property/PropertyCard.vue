@@ -1,15 +1,15 @@
 <template>
     <a-card :hoverable="true" class="card-box">
         <!-- <a-spin :spinning="loading"> -->
-            <div class="card-container">
-                <div class="header">
-                    <div class="title">{{ _props.data.name }}</div>
-                    <div class="extra">
-                        <a-space :size="16">
+        <div class="card-container">
+            <div class="header">
+                <div class="title">{{ _props.data.name }}</div>
+                <div class="extra">
+                    <a-space :size="16">
+                        <template v-for="i in actions" :key="i.key">
                             <a-tooltip
-                                v-for="i in actions"
-                                :key="i.key"
                                 v-bind="i.tooltip"
+                                v-if="i.key !== 'edit'"
                             >
                                 <a-button
                                     style="padding: 0; margin: 0"
@@ -17,26 +17,48 @@
                                     :disabled="i.disabled"
                                     @click="i.onClick && i.onClick(data)"
                                 >
-                                    <AIcon :type="i.icon" style="color: #323130; font-size: 12px" />
+                                    <AIcon
+                                        :type="i.icon"
+                                        style="color: #323130; font-size: 12px"
+                                    />
                                 </a-button>
                             </a-tooltip>
-                        </a-space>
-                    </div>
-                </div>
-                <div class="value">
-                    <ValueRender :data="data" :value="_props.data" type="card" />
-                </div>
-                <div class="bottom">
-                    <div style="color: rgba(0, 0, 0, .65); font-size: 12px">更新时间</div>
-                    <div class="time-value">{{_props?.data?.timeString || '--'}}</div>
+                            <PermissionButton
+                                :disabled="i.disabled"
+                                v-else
+                                :popConfirm="i.popConfirm"
+                                :tooltip="i.tooltip"
+                                @click="i.onClick && i.onClick(slotProps)"
+                                type="link"
+                                style="padding: 0px"
+                                :hasPermission="'device/Instance:update'"
+                            >
+                                <template #icon
+                                    ><AIcon :type="i.icon" style="color: #323130; font-size: 12px"
+                                /></template>
+                            </PermissionButton>
+                        </template>
+                    </a-space>
                 </div>
             </div>
+            <div class="value">
+                <ValueRender :data="data" :value="_props.data" type="card" />
+            </div>
+            <div class="bottom">
+                <div style="color: rgba(0, 0, 0, 0.65); font-size: 12px">
+                    更新时间
+                </div>
+                <div class="time-value">
+                    {{ _props?.data?.timeString || '--' }}
+                </div>
+            </div>
+        </div>
         <!-- </a-spin> -->
     </a-card>
 </template>
 
 <script lang="ts" setup>
-import ValueRender from './ValueRender.vue'
+import ValueRender from './ValueRender.vue';
 const _props = defineProps({
     data: {
         type: Object,
@@ -44,7 +66,7 @@ const _props = defineProps({
     },
     actions: {
         type: Array,
-        default: () => []
+        default: () => [],
     },
 });
 // const loading = ref<boolean>(true);
@@ -101,6 +123,6 @@ const _props = defineProps({
                 color: #000;
             }
         }
-    }   
+    }
 }
 </style>

@@ -13,23 +13,18 @@
             <a-image :src="value?.formatValue" />
         </template>
         <template v-else-if="['.flv', '.m3u8', '.mp4'].includes(type)">
-            <!-- TODO 视频组件缺失 -->
         </template>
         <template v-else>
-            <!-- <json-viewer
-                :value="{
-                    'id': '123'
-                }"
-                copyable
-                boxed
-                sort
-            ></json-viewer> -->
+            <JsonViewer
+                :expand-depth="5"
+                :value="value?.formatValue"
+            />
         </template>
     </a-modal>
 </template>
 
 <script lang="ts" setup>
-// import JsonViewer from 'vue3-json-viewer';
+import JsonViewer from 'vue-json-viewer';
 
 const _data = defineProps({
     type: {
@@ -46,9 +41,6 @@ const handleCancel = () => {
     _emit('close');
 };
 
-// watchEffect(() => {
-//     console.log(_data.value?.formatValue)
-// })
 </script>
 
 <style lang="less" scoped>
