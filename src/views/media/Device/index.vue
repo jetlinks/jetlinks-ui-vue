@@ -261,9 +261,13 @@ const getActions = (
             },
             icon: 'EditOutlined',
             onClick: () => {
-                menuStory.jumpPage('media/Device/Save', {
-                    id: data.id,
-                });
+                menuStory.jumpPage(
+                    'media/Device/Save',
+                    {},
+                    {
+                        id: data.id,
+                    },
+                );
             },
         },
         {
@@ -277,10 +281,14 @@ const getActions = (
                 // router.push(
                 //     `/media/device/Channel?id=${data.id}&type=${data.provider}`,
                 // );
-                menuStory.jumpPage('media/Device/Channel', {
-                    id: data.id,
-                    type: data.provider,
-                });
+                menuStory.jumpPage(
+                    'media/Device/Channel',
+                    {},
+                    {
+                        id: data.id,
+                        type: data.provider,
+                    },
+                );
             },
         },
         {

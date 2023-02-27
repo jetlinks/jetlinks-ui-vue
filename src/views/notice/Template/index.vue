@@ -29,7 +29,7 @@
                         <a-button>导入</a-button>
                     </a-upload>
                     <a-popconfirm
-                        title="确认导出当前页数据？"
+                        title="确认导出？"
                         ok-text="确定"
                         cancel-text="取消"
                         @confirm="handleExport"
@@ -314,7 +314,7 @@ const beforeUpload = (file: any) => {
  * 导出
  */
 const handleExport = () => {
-    downloadObject(configRef.value.dataSource, `通知配置`);
+    downloadObject(configRef.value._dataSource, `通知配置`);
 };
 
 const syncVis = ref(false);

@@ -15,7 +15,7 @@
             >
                 <template #headerTitle>
                     <a-button type="primary" @click="handlAdd"
-                        ><plus-outlined />新增</a-button
+                        ><AIcon type="PlusOutlined" />新增</a-button
                     >
                 </template>
                 <template #card="slotProps">
@@ -186,7 +186,7 @@
     </page-container>
 </template>
 <script lang="ts" setup name="TypePage">
-import type { ActionsType } from '@/components/Table/index.vue';
+import type { ActionsType } from '@/components/Table/index'
 import { getImage } from '@/utils/comm';
 import { supports, query, remove, start, shutdown } from '@/api/link/type';
 import { message } from 'ant-design-vue';

@@ -2,7 +2,7 @@
     <page-container
         :tabList="list"
         @back="onBack"
-        :tabActiveKey="instanceStore.active"
+        :tabActiveKey="instanceStore.tabActiveKey"
         @tabChange="onTabChange"
     >
         <template #title>

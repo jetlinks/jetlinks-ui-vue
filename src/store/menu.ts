@@ -4,6 +4,8 @@ import { filterAsnycRouter, MenuItem } from '@/utils/menu'
 import { isArray } from 'lodash-es'
 import { usePermissionStore } from './permission'
 import router from '@/router'
+import { message } from 'ant-design-vue'
+import { onlyMessage } from '@/utils/comm'
 
 const defaultOwnParams = [
   {
@@ -77,6 +79,7 @@ export const useMenuStore = defineStore({
           name, params, query
         })
       } else {
+        onlyMessage('暂无权限，请联系管理员', 'error')
         console.warn(`没有找到对应的页面: ${name}`)
       }
     },

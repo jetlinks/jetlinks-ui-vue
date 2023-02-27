@@ -12,6 +12,7 @@
                 <a-tabs
                     tab-position="left"
                     style="height: 600px"
+                    v-if="tabList.length"
                     v-model:activeKey="activeKey"
                     :tabBarStyle="{ width: '200px' }"
                     @change="tabChange"
@@ -22,6 +23,7 @@
                         :tab="i.tab"
                     />
                 </a-tabs>
+                <JEmpty v-else style="margin: 250px 0" />
             </div>
             <div class="property-box-right">
                 <Event v-if="type === 'event'" :data="data" />

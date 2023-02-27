@@ -1,6 +1,10 @@
 <template>
     <page-container>
-        <Search :columns="columns" target="northbound-aliyun" @search="handleSearch" />
+        <Search
+            :columns="columns"
+            target="northbound-aliyun"
+            @search="handleSearch"
+        />
         <JTable
             ref="instanceRef"
             :columns="columns"
@@ -24,22 +28,15 @@
                 <CardBox
                     :value="slotProps"
                     :actions="getActions(slotProps, 'card')"
-                    v-bind="slotProps"
                     :status="slotProps.state?.value"
                     :statusText="slotProps.state?.text"
                     :statusNames="{
                         enabled: 'success',
-                        disabled: 'error'
+                        disabled: 'error',
                     }"
                 >
                     <template #img>
-                        <slot name="img">
-                            <img
-                                :src="
-                                    getImage('/northbound/aliyun.png')
-                                "
-                            />
-                        </slot>
+                        <img :src="getImage('/northbound/aliyun.png')" />
                     </template>
                     <template #content>
                         <h3
@@ -114,23 +111,18 @@
 </template>
 
 <script setup lang="ts">
-import {
-    query,
-    _undeploy,
-    _deploy,
-    _delete
-} from '@/api/northbound/alicloud';
+import { query, _undeploy, _deploy, _delete } from '@/api/northbound/alicloud';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage } from '@/utils/comm';
 import { message } from 'ant-design-vue';
-import { useMenuStore } from 'store/menu'
+import { useMenuStore } from 'store/menu';
 
 const router = useRouter();
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const current = ref<Record<string, any>>({});
 
-const menuStory = useMenuStore()
+const menuStory = useMenuStore();
 
 const statusMap = new Map();
 statusMap.set('enabled', 'success');
@@ -167,7 +159,7 @@ const columns = [
             type: 'select',
             options: [
                 { label: '正常', value: 'enabled' },
-                { label: '禁用', value: 'disabled' }
+                { label: '禁用', value: 'disabled' },
             ],
         },
     },
@@ -184,14 +176,14 @@ const columns = [
  * 新增
  */
 const handleAdd = () => {
-  menuStory.jumpPage('Northbound/AliCloud/Detail', { id: ':id'})
+    menuStory.jumpPage('Northbound/AliCloud/Detail', { id: ':id' });
 };
 
 /**
  * 查看
  */
 const handleView = (id: string) => {
-  menuStory.jumpPage('Northbound/AliCloud/Detail', { id }, { type: 'view'})
+    menuStory.jumpPage('Northbound/AliCloud/Detail', { id }, { type: 'view' });
 };
 
 const getActions = (
@@ -219,7 +211,11 @@ const getActions = (
             },
             icon: 'EditOutlined',
             onClick: () => {
-              menuStory.jumpPage('Northbound/AliCloud/Detail', { id: data.id }, { type: 'edit'})
+                menuStory.jumpPage(
+                    'Northbound/AliCloud/Detail',
+                    { id: data.id },
+                    { type: 'edit' },
+                );
             },
         },
         {
@@ -283,6 +279,6 @@ const getActions = (
 };
 
 const handleSearch = (_params: any) => {
-    params.value = _params
-}
+    params.value = _params;
+};
 </script>

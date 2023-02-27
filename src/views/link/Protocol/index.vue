@@ -14,7 +14,7 @@
             >
                 <template #headerTitle>
                     <a-button type="primary" @click="handlAdd"
-                        ><plus-outlined />新增</a-button
+                        ><AIcon type="PlusOutlined" />新增</a-button
                     >
                 </template>
                 <template #card="slotProps">
@@ -31,7 +31,9 @@
                         </template>
                         <template #content>
                             <div class="card-item-content">
-                                <h3 class="card-item-content-title card-item-content-title-a">
+                                <h3
+                                    class="card-item-content-title card-item-content-title-a"
+                                >
                                     {{ slotProps.name }}
                                 </h3>
                                 <a-row class="card-item-content-box">
@@ -148,7 +150,7 @@
     </page-container>
 </template>
 <script lang="ts" setup name="AccessConfigPage">
-import type { ActionsType } from '@/components/Table/index.vue';
+import type { ActionsType } from '@/components/Table/index';
 import { getImage } from '@/utils/comm';
 import { list, remove } from '@/api/link/protocol';
 import { message } from 'ant-design-vue';
@@ -156,7 +158,6 @@ import Save from './Save/index.vue';
 import _ from 'lodash';
 
 const tableRef = ref<Record<string, any>>({});
-const router = useRouter();
 const params = ref<Record<string, any>>({});
 
 const visible = ref(false);

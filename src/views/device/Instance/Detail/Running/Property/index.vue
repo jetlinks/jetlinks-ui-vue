@@ -32,20 +32,30 @@
             </template>
             <template #action="slotProps">
                 <a-space :size="16">
-                    <a-tooltip
-                        v-for="i in getActions(slotProps)"
-                        :key="i.key"
-                        v-bind="i.tooltip"
-                    >
-                        <a-button
-                            style="padding: 0"
-                            type="link"
+                    <template v-for="i in getActions(slotProps)" :key="i.key">
+                        <a-tooltip v-bind="i.tooltip" v-if="i.key !== 'edit'">
+                            <a-button
+                                style="padding: 0"
+                                type="link"
+                                :disabled="i.disabled"
+                                @click="i.onClick && i.onClick(slotProps)"
+                            >
+                                <AIcon :type="i.icon" />
+                            </a-button>
+                        </a-tooltip>
+                        <PermissionButton
                             :disabled="i.disabled"
+                            v-else
+                            :popConfirm="i.popConfirm"
+                            :tooltip="i.tooltip"
                             @click="i.onClick && i.onClick(slotProps)"
+                            type="link"
+                            style="padding: 0px"
+                            :hasPermission="'device/Instance:update'"
                         >
-                            <AIcon :type="i.icon" />
-                        </a-button>
-                    </a-tooltip>
+                            <template #icon><AIcon :type="i.icon" /></template>
+                        </PermissionButton>
+                    </template>
                 </a-space>
             </template>
             <template #paginationRender>
@@ -76,14 +86,20 @@
         @close="indicatorVisible = false"
         :data="currentInfo"
     />
+    <Detail
+        v-if="detailVisible"
+        :data="currentInfo"
+        @close="detailVisible = false"
+    />
 </template>
 
 <script lang="ts" setup>
-import _, { groupBy, throttle, toArray } from 'lodash-es';
+import _, { groupBy, toArray } from 'lodash-es';
 import { PropertyData } from '../../../typings';
 import PropertyCard from './PropertyCard.vue';
 import ValueRender from './ValueRender.vue';
 import Save from './Save.vue';
+import Detail from './Detail/index.vue';
 import Indicators from './Indicators.vue';
 import { getProperty } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
@@ -238,11 +254,15 @@ const subscribeProperty = () => {
         ?.pipe(map((res: any) => res.payload))
         .subscribe((payload) => {
             list.value = [...list.value, payload];
-            unref(list).sort((a: any, b: any) => a.timestamp - b.timestamp)
-            .forEach((item: any) => {
-                const { value } = item;
-                propertyValue.value[value?.property] = { ...item, ...value };
-            });
+            unref(list)
+                .sort((a: any, b: any) => a.timestamp - b.timestamp)
+                .forEach((item: any) => {
+                    const { value } = item;
+                    propertyValue.value[value?.property] = {
+                        ...item,
+                        ...value,
+                    };
+                });
             // list.value = [...list.value, payload];
             // throttle(valueChange(list.value), 500);
         });
@@ -335,8 +355,8 @@ const onSearch = () => {
 };
 
 onUnmounted(() => {
-    subRef.value && subRef.value?.unsubscribe()
-})
+    subRef.value && subRef.value?.unsubscribe();
+});
 </script>
 
 <style scoped lang="less">

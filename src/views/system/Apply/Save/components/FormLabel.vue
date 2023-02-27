@@ -1,10 +1,10 @@
 <template>
     <div class="form-label-container">
         <span class="text">{{ props.text }}</span>
-        <span class="required">*</span>
+        <span class="required" v-show="props.required">*</span>
         <a-tooltip>
             <template #title>{{ props.tooltip }}</template>
-            <AIcon type="QuestionCircleOutlined" style="color: #00000073;cursor: inherit;" />
+            <AIcon type="QuestionCircleOutlined" class="icon" />
         </a-tooltip>
     </div>
 </template>
@@ -24,11 +24,15 @@ const props = defineProps<{
 
     .required {
         display: inline-block;
-        margin-right: 4px;
         color: #ff4d4f;
         font-size: 14px;
         font-family: SimSun, sans-serif;
         line-height: 1;
+    }
+    .icon {
+        color: #00000073;
+        cursor: inherit;
+        margin-left: 4px;
     }
 }
 </style>

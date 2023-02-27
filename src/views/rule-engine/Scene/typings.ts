@@ -9,6 +9,11 @@ type State = {
   text: string;
 };
 
+export type optionItem = {
+  label: string
+  value: string
+}
+
 type Action = {
   executor: string;
   configuration: Record<string, unknown>;
@@ -88,7 +93,7 @@ export enum ActionAlarmMode {
 export interface OperationTimerPeriod {
   from: string;
   to: string;
-  every: string[];
+  every: number;
   unit: keyof typeof TimeUnit;
 }
 
@@ -310,4 +315,10 @@ export interface FormModelType {
    */
   options?: Record<string, any>;
   description?: string;
+}
+
+export type metadataType = {
+  properties?: any[]
+  functions?: any[]
+  events?: any[]
 }

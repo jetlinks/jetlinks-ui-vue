@@ -66,14 +66,17 @@
         <Save v-if="visible" :data="current" @change="saveChange" />
     </page-container>
 </template>
-<script lang="ts" setup name="CertificatePage">
+<script lang="ts" setup name="FirmwarePage">
 import type { ActionsType } from '@/components/Table/index.vue';
-// import { save, query, remove } from '@/api/link/certificate';
 import { query, queryProduct, remove } from '@/api/device/firmware';
 import { message } from 'ant-design-vue';
 import moment from 'moment';
 import _ from 'lodash';
 import Save from './Save/index.vue';
+import { useMenuStore } from 'store/menu';
+import type { FormDataType } from './type';
+
+const menuStory = useMenuStore();
 
 const tableRef = ref<Record<string, any>>({});
 const router = useRouter();
@@ -178,7 +181,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
             icon: 'FileTextOutlined',
             onClick: async () => {
-                handlUpdate(data.id);
+                handlUpdate(data);
             },
         },
         {
@@ -208,23 +211,27 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
     ];
 };
 
-const handlUpdate = (id: string) => {
-    // router.push({
-    //     path: `/iot/link/certificate/detail/${id}`,
-    //     query: { view: true },
-    // });
+const handlUpdate = (data: FormDataType) => {
+    menuStory.jumpPage(
+        'device/Firmware/Task',
+        {},
+        {
+            id: data.id,
+            productId: data.productId,
+        },
+    );
 };
 
 const handlAdd = () => {
     current.value = {};
     visible.value = true;
 };
-const handlEdit = (data: object) => {
+const handlEdit = (data: FormDataType) => {
     current.value = _.cloneDeep(data);
     visible.value = true;
 };
 
-const saveChange = (value: object) => {
+const saveChange = (value: FormDataType) => {
     visible.value = false;
     current.value = {};
     if (value) {

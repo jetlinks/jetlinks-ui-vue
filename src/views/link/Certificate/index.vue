@@ -14,7 +14,7 @@
             >
                 <template #headerTitle>
                     <a-button type="primary" @click="handlAdd"
-                        ><plus-outlined />新增</a-button
+                        ><AIcon type="PlusOutlined" />新增</a-button
                     >
                 </template>
                 <template #type="slotProps">
@@ -59,8 +59,8 @@
     </page-container>
 </template>
 <script lang="ts" setup name="CertificatePage">
-import type { ActionsType } from '@/components/Table/index.vue';
-import { save, query, remove } from '@/api/link/certificate';
+import type { ActionsType } from '@/components/Table/index';
+import { query, remove } from '@/api/link/certificate';
 import { message } from 'ant-design-vue';
 
 const tableRef = ref<Record<string, any>>({});
@@ -72,6 +72,9 @@ const columns = [
         title: '证书标准',
         dataIndex: 'type',
         key: 'type',
+        fixed: 'left',
+        width: 200,
+        ellipsis: true,
         search: {
             type: 'select',
             options: [
@@ -87,6 +90,7 @@ const columns = [
         title: '证书名称',
         dataIndex: 'name',
         key: 'name',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -95,6 +99,7 @@ const columns = [
         title: '说明',
         dataIndex: 'description',
         key: 'description',
+        ellipsis: true,
         search: {
             type: 'string',
         },

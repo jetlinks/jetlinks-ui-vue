@@ -26,7 +26,8 @@ import AddButton from '../components/AddButton.vue'
 import Title from '../components/Title.vue'
 
 const sceneStore = useSceneStore()
-const { data } = storeToRefs(sceneStore)
+const { data } = storeToRefs<any>(sceneStore)
+
 const visible = ref(false)
 
 const rules = [{

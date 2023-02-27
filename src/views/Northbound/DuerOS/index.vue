@@ -28,7 +28,6 @@
                 <CardBox
                     :value="slotProps"
                     :actions="getActions(slotProps, 'card')"
-                    v-bind="slotProps"
                     :status="slotProps.state?.value"
                     :statusText="slotProps.state?.text"
                     :statusNames="{
@@ -37,9 +36,7 @@
                     }"
                 >
                     <template #img>
-                        <slot name="img">
-                            <img :src="getImage('/cloud/dueros.png')" />
-                        </slot>
+                        <img :src="getImage('/cloud/dueros.png')" />
                     </template>
                     <template #content>
                         <h3

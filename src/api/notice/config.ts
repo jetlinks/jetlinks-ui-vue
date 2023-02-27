@@ -16,21 +16,21 @@ export default {
     debug: (data: any, configId: string, templateId: string) => post(`/notifier/${configId}/${templateId}/_send`, data),
     getHistory: (data: any, id: string) => post(`/notify/history/config/${id}/_query`, data),
     // 获取所有平台用户
-    getPlatformUsers: () => post<any>(`/user/_query/no-paging`, { paging: false }),
+    getPlatformUsers: (data: any) => post<any>(`/user/_query/no-paging`, data),
     // 钉钉部门
     dingTalkDept: (id: string) => get<any>(`/notifier/dingtalk/corp/${id}/departments/tree`),
     // 钉钉部门人员
-    getDingTalkUsers: (configId: string, deptId: string) => get(`/notifier/dingtalk/corp/${configId}/${deptId}/users`),
+    getDingTalkUsers: (configId: string, deptId: string) => get<any>(`/notifier/dingtalk/corp/${configId}/${deptId}/users`),
     // 钉钉已经绑定的人员
-    getDingTalkBindUsers: (id: string) => get(`/user/third-party/dingTalk_dingTalkMessage/${id}`),
+    getDingTalkBindUsers: (id: string) => get<any>(`/user/third-party/dingTalk_dingTalkMessage/${id}`),
     // 钉钉绑定用户
-    dingTalkBindUser: (data: any, id: string) => patch(`/user/third-party/dingTalk_dingTalkMessage/${id}`, data),
+    dingTalkBindUser: (data: { userId: string; providerName: string; thirdPartyUserId: string }[], id: string) => patch(`/user/third-party/dingTalk_dingTalkMessage/${id}`, data),
     // 微信部门
     weChatDept: (id: string) => get<any>(`/notifier/wechat/corp/${id}/departments`),
     // 微信部门人员
-    getWeChatUsers: (configId: string, deptId: string) => get(`/notifier/wechat/corp/${configId}/${deptId}/users`),
+    getWeChatUsers: (configId: string, deptId: string) => get<any>(`/notifier/wechat/corp/${configId}/${deptId}/users`),
     // 微信已经绑定的人员
-    getWeChatBindUsers: (id: string) => get(`/user/third-party/weixin_corpMessage/${id}`),
+    getWeChatBindUsers: (id: string) => get<any>(`/user/third-party/weixin_corpMessage/${id}`),
     // 微信绑定用户
     weChatBindUser: (data: any, id: string) => patch(`/user/third-party/weixin_corpMessage/${id}`, data),
     // 解绑
