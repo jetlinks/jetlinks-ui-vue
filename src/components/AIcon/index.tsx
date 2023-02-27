@@ -56,6 +56,8 @@ const iconKeys = [
     'ArrowLeftOutlined',
     'DownloadOutlined',
     'PauseOutlined',
+    'ControlOutlined',
+    'RedoOutlined',
     'VideoCameraOutlined',
     'HistoryOutlined',
 ]
