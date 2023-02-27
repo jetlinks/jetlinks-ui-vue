@@ -58,12 +58,14 @@
         <Save v-if="visible" :data="current" @change="saveChange" />
     </page-container>
 </template>
-<script lang="ts" setup name="CertificatePage">
-import type { ActionsType } from '@/components/Table/index.vue';
+<script lang="ts" setup name="TaskPage">
+import type { ActionsType } from '@/components/Table/index';
 import { task, startTask, stopTask } from '@/api/device/firmware';
 import { message } from 'ant-design-vue';
-import Save from './Save/index.vue'
+import Save from './Save/index.vue';
+import { useMenuStore } from 'store/menu';
 
+const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
 const router = useRouter();
 const route = useRoute();
@@ -83,7 +85,6 @@ const columns = [
         search: {
             type: 'string',
         },
-        // scopedSlots: true,
     },
     {
         title: '推送方式',
@@ -153,14 +154,14 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
 
     const Actions = [
         {
-            key: 'edit',
+            key: 'details',
             text: '详情',
             tooltip: {
                 title: '详情',
             },
-            icon: 'EditOutlined',
+            icon: 'icon-details',
             onClick: async () => {
-                handlEdit(data.id);
+                handlDetails(data.id);
             },
         },
         {
@@ -206,7 +207,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                     tableRef.value.reload();
                 }
             },
-            icon: 'PauseOutlined',
+            icon: 'ControlOutlined',
         });
     }
 
@@ -216,21 +217,17 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
 const handlAdd = () => {
     current.value = {};
     visible.value = true;
-    
 };
 
 const handlEye = (data: object) => {
-    current.value = toRaw(data);
+    current.value = toRaw({ ...data, view: true });
     visible.value = true;
 };
 
-const handlEdit = (id: string) => {
-    // router.push({
-    //     path: `/iot/link/certificate/detail/${id}`,
-    //     query: { view: false },
-    // });
+const handlDetails = (id: string) => {
+    // menuStory.jumpPage('device/Firmware/Task/Detail', { id });
 };
-const saveChange = (value: FormDataType) => {
+const saveChange = (value: boolean) => {
     visible.value = false;
     current.value = {};
     if (value) {
@@ -248,9 +245,4 @@ const handleSearch = (e: any) => {
 };
 </script>
 
-<style lang="less" scoped>
-.a {
-    // display: none;
-    visibility: 0;
-}
-</style>
+<style lang="less" scoped></style>

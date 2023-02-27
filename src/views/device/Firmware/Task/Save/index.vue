@@ -15,17 +15,20 @@
             :model="formData"
             name="basic"
             autocomplete="off"
+            ref="formRef"
+            :rules="rules"
         >
             <a-row :gutter="[24, 0]">
                 <a-col :span="24">
-                    <a-form-item label="任务名称" v-bind="validateInfos.name">
+                    <a-form-item label="任务名称" name="name">
                         <a-input
                             placeholder="请输入任务名称"
                             v-model:value="formData.name"
+                            :disabled="view"
                     /></a-form-item>
                 </a-col>
                 <a-col :span="24"
-                    ><a-form-item label="推送方式" v-bind="validateInfos.mode">
+                    ><a-form-item label="推送方式" name="mode">
                         <a-select
                             v-model:value="formData.mode"
                             :options="[
@@ -37,18 +40,20 @@
                             show-search
                             :filter-option="filterOption"
                             @change="changeMode"
+                            :disabled="view"
                         /> </a-form-item
                 ></a-col>
                 <a-col :span="12" v-if="formData.mode === 'push'"
                     ><a-form-item
                         label="响应超时时间"
-                        v-bind="validateInfos.responseTimeoutSeconds"
+                        name="responseTimeoutSeconds"
                     >
                         <a-input-number
                             placeholder="请输入响应超时时间(秒)"
                             style="width: 100%"
                             :min="1"
                             :max="99999"
+                            :disabled="view"
                             v-model:value="
                                 formData.responseTimeoutSeconds
                             " /></a-form-item
@@ -56,79 +61,59 @@
                 <a-col
                     :span="formData.mode === 'push' ? 12 : 24"
                     v-if="formData.mode === 'push' || formData.mode === 'pull'"
-                    ><a-form-item
-                        label="升级超时时间"
-                        v-bind="validateInfos.timeoutSeconds"
-                    >
+                    ><a-form-item label="升级超时时间" name="timeoutSeconds">
                         <a-input-number
                             placeholder="请输入升级超时时间(秒)"
                             style="width: 100%"
                             :min="1"
                             :max="99999"
+                            :disabled="view"
                             v-model:value="
                                 formData.timeoutSeconds
                             " /></a-form-item
                 ></a-col>
                 <a-col :span="12" v-if="!!formData.mode"
-                    ><a-form-item
-                        label="升级设备"
-                        v-bind="validateInfos.releaseType"
-                    >
+                    ><a-form-item label="升级设备" name="releaseType">
                         <a-radio-group
                             v-model:value="formData.releaseType"
                             button-style="solid"
                             @change="changeShareCluster"
+                            :disabled="view"
                         >
                             <a-radio value="all">所有设备</a-radio>
                             <a-radio value="part">选择设备</a-radio>
                         </a-radio-group>
                     </a-form-item>
                 </a-col>
-                <a-col :span="12" v-if="formData.releaseType === 'part'"
-                    ><a-form-item
-                        label="选择设备"
-                        v-bind="validateInfos.deviceId"
-                    >
+                <a-col :span="12" v-if="formData.releaseType === 'part'">
+                    <a-form-item label="选择设备" name="deviceId">
                         <SelectDevices
                             v-model:modelValue="formData.deviceId"
-                            :data="devicesData"
+                            :data="data"
                         ></SelectDevices> </a-form-item
                 ></a-col>
-
                 <a-col :span="24">
-                    <a-form-item
-                        label="说明"
-                        v-bind="validateInfos.description"
-                    >
+                    <a-form-item label="说明" name="description">
                         <a-textarea
                             placeholder="请输入说明"
                             v-model:value="formData.description"
                             :maxlength="200"
                             :rows="3"
                             showCount
+                            :disabled="view"
                         /> </a-form-item
                 ></a-col>
             </a-row>
         </a-form>
     </a-modal>
-    <!-- <SelectDevices v-if="visible" @change="saveChange"></SelectDevices> -->
 </template>
 <script lang="ts" setup name="TaskPage">
-import { message, Form } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
-import { save, update, queryProduct } from '@/api/device/firmware';
+import { queryProduct, saveTask } from '@/api/device/firmware';
 import type { FormInstance } from 'ant-design-vue';
-import type { Properties } from '../../type';
 import SelectDevices from './SelectDevices.vue';
 
-const route = useRoute();
-console.log(111, route.query);
-
-const loading = ref(false);
-const useForm = Form.useForm;
-const productOptions = ref([]);
-const visible = ref(false);
-const devicesData = ref()
 const props = defineProps({
     data: {
         type: Object,
@@ -136,9 +121,16 @@ const props = defineProps({
     },
 });
 
+const formRef = ref<FormInstance>();
+
+const route = useRoute();
+const loading = ref(false);
+const productOptions = ref([]);
 const emit = defineEmits(['change']);
 
-const id = props.data.id;
+const firmwareId = route.query.id;
+const productId = route.query.productId;
+const view = props.data.view;
 
 const formData = ref({
     name: '',
@@ -146,98 +138,48 @@ const formData = ref({
     responseTimeoutSeconds: '',
     timeoutSeconds: '',
     releaseType: 'all',
-    deviceId: [],
+    deviceId: undefined,
     description: '',
 });
 
-const extraValue = ref({});
-
-const validatorSign = async (_: Record<string, any>, value: string) => {
-    // const { releaseType, url } = formData.value;
-    // if (value && !!releaseType && !!url && !extraValue.value) {
-    //     return extraValue.value[releaseType] !== value
-    //         ? Promise.reject('选择设备不一致，请检查文件是否上传正确')
-    //         : Promise.resolve();
-    // } else {
-    //     return Promise.resolve();
-    // }
+const rules = {
+    name: [
+        { required: true, message: '请输入任务名称' },
+        { max: 64, message: '最多可输入64个字符' },
+    ],
+    mode: [{ required: true, message: '请选择推送方式' }],
+    responseTimeoutSeconds: [{ required: true, message: '请输入响应超时时间' }],
+    timeoutSeconds: [{ required: true, message: '请输入升级超时时间' }],
+    releaseType: [{ required: true }],
+    deviceId: [{ required: true, message: '请选择设备' }],
+    description: [{ max: 200, message: '最多可输入200个字符' }],
 };
-
-const { resetFields, validate, validateInfos } = useForm(
-    formData,
-    reactive({
-        name: [
-            { required: true, message: '请输入任务名称' },
-            { max: 64, message: '最多可输入64个字符' },
-        ],
-        mode: [{ required: true, message: '请选择推送方式' }],
-        responseTimeoutSeconds: [
-            { required: true, message: '请输入响应超时时间' },
-        ],
-        timeoutSeconds: [{ required: true, message: '请输入升级超时时间' }],
-        releaseType: [{ required: true }],
-        deviceId: [
-            { required: true, message: '请选择设备' },
-            { validator: validatorSign },
-        ],
-        description: [{ max: 200, message: '最多可输入200个字符' }],
-    }),
-);
 
 const filterOption = (input: string, option: any) => {
     return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
 
-const changeMode = (value) => {
-    console.log(111, value, formData.value);
-};
-
-const onChange = () => {
-    visible.value = true;
-};
-const saveChange = () => {
-    visible.value = false;
-};
-
 const onSubmit = async () => {
-    validate()
-        .then(async (res) => {
-            // const product = productOptions.value.find(
-            //     (item) => item.value === res.mode,
-            // );
-            // const productName = product.label || props.data?.url;
-            // const size = extraValue.value.length || props.data?.size;
-            // const params = {
-            //     ...toRaw(formData.value),
-            //     properties: !!properties ? properties : [],
-            //     productName,
-            //     size,
-            // };
-            // loading.value = true;
-            // const response = !id
-            //     ? await save(params)
-            //     : await update({ ...props.data, ...params });
-            // if (response.status === 200) {
-            //     message.success('操作成功');
-            //     emit('change', true);
-            // }
-            // loading.value = false;
-        })
-        .catch((err) => {
-            loading.value = false;
-        });
+    const params = await formRef.value?.validate();
+    loading.value = true;
+    const resp = await saveTask({
+        ...params,
+        firmwareId,
+        productId,
+    });
+    loading.value = false;
+    resp.success && emit('change', true);
 };
 
 const handleOk = () => {
-    onSubmit();
+    return view ? emit('change', false) : onSubmit();
 };
 const handleCancel = () => {
     emit('change', false);
 };
 
-const changeSignMethod = () => {
-    formData.value.deviceId = '';
-    formData.value.url = '';
+const changeShareCluster = () => {
+    formData.value.deviceId = undefined;
 };
 
 onMounted(() => {
@@ -256,15 +198,13 @@ watch(
     () => props.data,
     (value) => {
         if (value.id) {
-            formData.value = value;
+            formData.value = {
+                ...value,
+                releaseType: value?.deviceId ? 'part' : 'all',
+            };
         }
     },
     { immediate: true, deep: true },
-);
-watch(
-    () => extraValue.value,
-    () => validate('deviceId'),
-    { deep: true },
 );
 </script>
 

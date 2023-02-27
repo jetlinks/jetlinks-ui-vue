@@ -59,8 +59,8 @@
     </page-container>
 </template>
 <script lang="ts" setup name="CertificatePage">
-import type { ActionsType } from '@/components/Table/index.vue';
-import { save, query, remove } from '@/api/link/certificate';
+import type { ActionsType } from '@/components/Table/index';
+import { query, remove } from '@/api/link/certificate';
 import { message } from 'ant-design-vue';
 
 const tableRef = ref<Record<string, any>>({});
