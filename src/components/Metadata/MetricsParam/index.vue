@@ -3,9 +3,10 @@
     <div class="list-item" v-for="(item, index) in _value" :key="`object_${index}`">
       <div class="item-left">
         <menu-outlined class="item-drag item-icon" />
+        {{ `#${index + 1}.` }}
       </div>
       <div class="item-middle item-editable">
-        <a-popover :visible="editIndex === index" placement="left">
+        <a-popover :visible="editIndex === index" placement="top" @visible-change="change" trigger="click">
           <template #title>
             <div class="edit-title" style="display: flex; justify-content: space-between; align-items: center;">
               <div style="width: 150px;">配置参数</div>
@@ -13,7 +14,7 @@
             </div>
           </template>
           <template #content>
-            <div style="max-width: 400px;">
+            <div>
               <a-form :model="_value[index]" layout="vertical">
                 <a-form-item label="标识" name="id" :rules="[
                   { required: true, message: '请输入标识' },
@@ -31,8 +32,12 @@
                 ]">
                   <a-input v-model:value="_value[index].name" size="small"></a-input>
                 </a-form-item>
-                <value-type-form v-model:value="_value[index].valueType" :name="['valueType']" isSub
-                  key="json_sub"></value-type-form>
+                <a-form-item label="指标值" name="value" :rules="[
+                  { required: true, message: '请输入指标值' },
+                  { validator: () => validateIndicator(_value[index]), message: '请输入指标值' }
+                ]">
+                  <JIndicators v-model:value="_value[index]" :type="type" size="small" :enum="enum"/>
+                </a-form-item>
               </a-form>
             </div>
           </template>
@@ -48,29 +53,35 @@
     </div>
     <a-button type="dashed" block @click="handleAdd">
       <template #icon><plus-outlined class="item-icon" /></template>
-      添加参数
+      添加指标
     </a-button>
   </div>
 </template>
-<script setup lang="ts" name="JsonParam">
+<script setup lang="ts" name="MetricsParam">
 import { PropType } from 'vue'
 import { MenuOutlined, EditOutlined, DeleteOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons-vue';
-import ValueTypeForm from '@/views/device/components/Metadata/Base/Edit/ValueTypeForm.vue';
-
-type JsonType = Record<any, any>;
+import JIndicators from '@/components/JIndicators/index.vue';
 
 interface Emits {
-  (e: 'update:value', data: JsonType[]): void;
+  (e: 'update:value', data: Record<any, any>[]): void;
 }
 const emit = defineEmits<Emits>()
 const props = defineProps({
   value: {
-    type: Object as PropType<JsonType[]>,
+    type: Object as PropType<Record<any, any>[]>,
     default: () => ([])
+  },
+  type: {
+    type: String,
+    default: ''
+  },
+  enum: {
+    type: Object,
+    default: () => ({})
   }
 })
 
-const _value = ref<JsonType[]>([])
+const _value = ref<Record<any, any>[]>([])
 watchEffect(() => {
   _value.value = props.value
 })
@@ -93,12 +104,27 @@ const handleClose = () => {
   editIndex.value = -1
 }
 const handleAdd = () => {
-  _value.value.push({
-    valueType: {
-      expands: {}
-    },
-  })
+  _value.value.push({})
   emit('update:value', _value.value)
+}
+
+const validateIndicator = (value: any) => {
+  if (value?.range) {
+    if (!value?.value || !value?.value[0] || !value?.value[1]) {
+      return Promise.reject(new Error('请输入指标值'));
+    }
+  } else {
+    if (value?.value === '' || value?.value === undefined) {
+      return Promise.reject(new Error('请输入指标值'));
+    }
+  }
+  return Promise.resolve();
+}
+
+const change = (visible: boolean) => {
+  if (!visible) {
+    editIndex.value = -1
+  }
 }
 </script>
 <style lang="less" scoped>

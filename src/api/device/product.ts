@@ -185,3 +185,12 @@ export const getOperator = () => server.get<OperatorItem>('/property-calculate-r
  * 获取聚合函数列表
  */
 export const getStreamingAggType = () => server.get<Record<string, string>[]>('/dictionary/streaming-agg-type/items')
+
+export const getMetadataConfig = (params: {
+  deviceId: string;
+  metadata: {
+    type: MetadataType | 'property';
+    id: string;
+    dataType: string;
+  };
+}) => server.get<Record<any, any>[]>(`/device/product/${params.deviceId}/config-metadata/${params.metadata.type}/${params.metadata.id}/${params.metadata.dataType}`)

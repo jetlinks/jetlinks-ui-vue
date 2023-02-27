@@ -33,6 +33,11 @@ const props = defineProps({
     type: String
   }
 })
+interface Emits {
+  (e: 'refresh'): void;
+}
+const emit = defineEmits<Emits>()
+
 const route = useRoute()
 
 const instanceStore = useInstanceStore()
@@ -95,6 +100,7 @@ const save = reactive({
           detail.metadata = metadata
           productStore.setCurrent(detail)
         }
+        emit('refresh')
       }
       const _data = updateMetadata(type, [formValue], _detail, updateStore)
       const result = await asyncUpdateMetadata(props.type, _data)
