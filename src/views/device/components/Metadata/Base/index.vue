@@ -33,22 +33,24 @@
       </a-tag>
     </template>
     <template #action="slotProps">
-      <PermissionButton :uhas-permission="`${permission}:update`" type="link" key="edit" style="padding: 0"
-        :udisabled="operateLimits('updata', type)" @click="handleEditClick(slotProps)" :tooltip="{
-          title: operateLimits('updata', type) ? '当前的存储方式不支持编辑' : '编辑',
-        }">
-        <EditOutlined />
-      </PermissionButton>
-      <PermissionButton :uhas-permission="`${permission}:delete`" type="link" key="delete" style="padding: 0"
-        :pop-confirm="{
-          title: '确认删除？', onConfirm: async () => {
-            await removeItem(slotProps);
-          },
-        }" :tooltip="{
-          title: '删除',
-        }">
-        <DeleteOutlined />
-      </PermissionButton>
+      <a-space>
+        <PermissionButton :uhas-permission="`${permission}:update`" type="link" key="edit" style="padding: 0"
+          :udisabled="operateLimits('updata', type)" @click="handleEditClick(slotProps)" :tooltip="{
+            title: operateLimits('updata', type) ? '当前的存储方式不支持编辑' : '编辑',
+          }">
+          <EditOutlined />
+        </PermissionButton>
+        <PermissionButton :uhas-permission="`${permission}:delete`" type="link" key="delete" style="padding: 0"
+          :pop-confirm="{
+            title: '确认删除？', onConfirm: async () => {
+              await removeItem(slotProps);
+            },
+          }" :tooltip="{
+            title: '删除',
+          }">
+          <DeleteOutlined />
+        </PermissionButton>
+      </a-space>
     </template>
   </JTable>
 </template>
@@ -123,6 +125,7 @@ onMounted(() => {
 })
 
 watch([route.params.id, type], () => {
+  loading.value = true
   // const res = target === 'product'
   //       ? await productDetail(route.params.id as string)
   //       : await detail(route.params.id as string);

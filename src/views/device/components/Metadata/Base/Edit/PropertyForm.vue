@@ -1,53 +1,82 @@
 <template>
-  <a-form ref="addFormRef" :model="form.model" layout="vertical">
-    <a-form-item label="标识" name="id" :rules="[
-      { required: true, message: '请输入标识' },
-      { max: 64, message: '最多可输入64个字符' },
-      {
-        pattern: /^[a-zA-Z0-9_]+$/,
-        message: '请输入英文或者数字或者-或者_',
-      },
-    ]">
-      <a-input v-model:value="form.model.id" size="small"></a-input>
-    </a-form-item>
-    <a-form-item label="名称" name="name" :rules="[
-      { required: true, message: '请输入名称' },
-      { max: 64, message: '最多可输入64个字符' },
-    ]">
-      <a-input v-model:value="form.model.name" size="small"></a-input>
-    </a-form-item>
-    <value-type-form :name="['valueType']" v-model:value="form.model.valueType" key="property"></value-type-form>
+  <a-form-item label="标识" name="id" :rules="[
+    { required: true, message: '请输入标识' },
+    { max: 64, message: '最多可输入64个字符' },
+    {
+      pattern: /^[a-zA-Z0-9_\-]+$/,
+      message: 'ID只能由数字、字母、下划线、中划线组成',
+    },
+  ]">
+    <a-input v-model:value="value.id" size="small" @change="asyncOtherConfig"></a-input>
+  </a-form-item>
+  <a-form-item label="名称" name="name" :rules="[
+    { required: true, message: '请输入名称' },
+    { max: 64, message: '最多可输入64个字符' },
+  ]">
+    <a-input v-model:value="value.name" size="small"></a-input>
+  </a-form-item>
+  <value-type-form :name="['valueType']" v-model:value="value.valueType" key="property"
+    @change-type="changeValueType"></value-type-form>
 
-    <expands-form :name="['expands']" v-model:value="form.model.expands" :type="type" :id="form.model.id"></expands-form>
+  <expands-form :name="['expands']" v-model:value="value.expands" :type="type" :id="value.id" :config="config"
+    :valueType="value.valueType"></expands-form>
 
-    <a-form-item label="说明" name="description" :rules="[
-      { max: 200, message: '最多可输入200个字符' },
-    ]">
-      <a-textarea v-model:value="form.model.description" size="small"></a-textarea>
-    </a-form-item>
-  </a-form>
+  <a-form-item label="说明" name="description" :rules="[
+    { max: 200, message: '最多可输入200个字符' },
+  ]">
+    <a-textarea v-model:value="value.description" size="small"></a-textarea>
+  </a-form-item>
 </template>
 <script setup lang="ts" name="PropertyForm">
 import { PropType } from 'vue';
 import ExpandsForm from './ExpandsForm.vue';
 import ValueTypeForm from './ValueTypeForm.vue'
+import { useProductStore } from '@/store/product';
+import { getMetadataConfig } from '@/api/device/product'
 
 const props = defineProps({
   type: {
     type: String as PropType<'product' | 'device'>,
     required: true,
     default: 'product'
+  },
+  value: {
+    type: Object,
+    default: () => ({})
   }
 })
+const productStore = useProductStore()
 
-const form = reactive({
-  model: {
-    valueType: {
-      expands: {}
+const config = ref<Record<any, any>[]>([])
+const asyncOtherConfig = async () => {
+  if (props.type !== 'product') return
+  const { valueType: { type }, id } = props.value
+  const productId = productStore.current?.id
+  if (!productId || !id || !type) return
+  const resp = await getMetadataConfig({
+    deviceId: productId,
+    metadata: {
+      id,
+      type: 'property',
+      dataType: type,
     },
-    expands: {}
-  } as any,
+  })
+  if (resp.status === 200) {
+    config.value = resp.result
+  }
+}
+onMounted(() => {
+  asyncOtherConfig()
 })
+
+const changeValueType = (val: string) => {
+  if (props.type === 'product' && ['int', 'float', 'double', 'long', 'date', 'string', 'boolean'].includes(val)) {
+    props.value.expands.metrics = []
+  } else {
+    delete props.value.expands?.metrics
+  }
+  asyncOtherConfig()
+}
 
 </script>
 <style scoped lang="less">
