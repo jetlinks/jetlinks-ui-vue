@@ -5,7 +5,11 @@
         :disabled="true"
     >
         <template #addonAfter>
-            <AIcon type="EditOutlined" @click="onVisible" />
+            <AIcon
+                :class="data.view ? 'disabled' : ''"
+                type="EditOutlined"
+                @click="onVisible"
+            />
         </template>
     </a-input>
     <a-modal
@@ -77,6 +81,13 @@ import moment from 'moment';
 
 type T = any;
 const emit = defineEmits(['update:modelValue', 'change']);
+
+const props = defineProps({
+    data: {
+        type: Object,
+        default: () => {},
+    },
+});
 
 const route = useRoute();
 const params = ref<Record<string, any>>({});
@@ -212,15 +223,18 @@ const cancelSelect = () => {
 };
 
 const handleOk = () => {
-    checkLable.value = _selectedRowKeys.value
-        .map((item) => checkAllDataMap.has(item) && checkAllDataMap.get(item))
-        .toString();
+    checkLable.value = updateSelect(_selectedRowKeys.value);
     emit('update:modelValue', _selectedRowKeys.value);
     visible.value = false;
 };
 
+const updateSelect = (selectedRowKeys: T[]) =>
+    selectedRowKeys
+        .map((item) => checkAllDataMap.has(item) && checkAllDataMap.get(item))
+        .toString();
+
 const onVisible = () => {
-    visible.value = true;
+    !props.data.view && (visible.value = true);
 };
 
 const handleCancel = () => {
@@ -236,6 +250,10 @@ onMounted(() => {
                     checkAllDataMap.set(item.id, item.name);
                     return item.id;
                 });
+                if (props.data.id) {
+                    checkLable.value = updateSelect(props.data.deviceId);
+                    emit('update:modelValue', props.data.deviceId);
+                }
             }
         },
     );
@@ -264,9 +282,8 @@ const handleSearch = (e: any) => {
 </script>
 
 <style lang="less" scoped>
-.form {
-    .form-submit {
-        background-color: @primary-color !important;
-    }
+.disabled {
+    pointer-events: auto !important;
+    cursor: not-allowed !important;
 }
 </style>
