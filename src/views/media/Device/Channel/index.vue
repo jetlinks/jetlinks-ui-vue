@@ -8,106 +8,129 @@
         />
 
         <JTable
-            ref="instanceRef"
+            ref="listRef"
             :columns="columns"
-            :request="(e:any) => templateApi.getHistory(e, data.id)"
+            :request="(e:any) => ChannelApi.list(e, route?.query.id as string)"
             :defaultParams="{
                 sorts: [{ name: 'notifyTime', order: 'desc' }],
-                terms: [{ column: 'notifyType$IN', value: data.type }],
             }"
             :params="params"
             model="table"
         >
-            <template #notifyTime="slotProps">
-                {{ moment(slotProps.notifyTime).format('YYYY-MM-DD HH:mm:ss') }}
+            <template #headerTitle>
+                <a-tooltip
+                    v-if="route?.query.type === 'gb28181-2016'"
+                    title="接入方式为GB/T28281时，不支持新增"
+                >
+                    <a-button type="primary" disabled> 新增 </a-button>
+                </a-tooltip>
+                <a-button type="primary" @click="handleAdd" v-else>
+                    新增
+                </a-button>
             </template>
-            <template #state="slotProps">
+            <template #status="slotProps">
                 <a-space>
                     <a-badge
-                        :status="slotProps.state.value"
-                        :text="slotProps.state.text"
+                        :status="
+                            slotProps.status.value === 'online'
+                                ? 'success'
+                                : 'error'
+                        "
+                        :text="slotProps.status.text"
                     ></a-badge>
-                    <AIcon
-                        v-if="slotProps.state.value === 'error'"
-                        type="ExclamationCircleOutlined"
-                        style="color: #1d39c4; cursor: pointer"
-                        @click="handleError(slotProps.errorStack)"
-                    />
                 </a-space>
             </template>
             <template #action="slotProps">
-                <AIcon
-                    type="ExclamationCircleOutlined"
-                    style="color: #1d39c4; cursor: pointer"
-                    @click="handleDetail(slotProps.context)"
-                />
+                <a-space :size="16">
+                    <a-tooltip
+                        v-for="i in getActions(slotProps, 'table')"
+                        :key="i.key"
+                        v-bind="i.tooltip"
+                    >
+                        <a-popconfirm
+                            v-if="i.popConfirm"
+                            v-bind="i.popConfirm"
+                            :disabled="i.disabled"
+                        >
+                            <a-button
+                                :disabled="i.disabled"
+                                style="padding: 0"
+                                type="link"
+                                ><AIcon :type="i.icon"
+                            /></a-button>
+                        </a-popconfirm>
+                        <a-button
+                            style="padding: 0"
+                            type="link"
+                            v-else
+                            @click="i.onClick && i.onClick(slotProps)"
+                        >
+                            <a-button
+                                :disabled="i.disabled"
+                                style="padding: 0"
+                                type="link"
+                                ><AIcon :type="i.icon"
+                            /></a-button>
+                        </a-button>
+                    </a-tooltip>
+                </a-space>
             </template>
         </JTable>
     </page-container>
 </template>
 
 <script setup lang="ts">
-import templateApi from '@/api/notice/template';
-import { PropType } from 'vue';
-import moment from 'moment';
-import { Modal } from 'ant-design-vue';
+import ChannelApi from '@/api/media/channel';
+import type { ActionsType } from '@/components/Table/index.vue';
+import { useMenuStore } from 'store/menu';
+import { message } from 'ant-design-vue';
 
-type Emits = {
-    (e: 'update:visible', data: boolean): void;
-};
-// const emit = defineEmits<Emits>();
-
-const props = defineProps({
-    visible: { type: Boolean, default: false },
-    data: {
-        type: Object as PropType<Partial<Record<string, any>>>,
-        default: () => ({}),
-    },
-});
-
-// const _vis = computed({
-//     get: () => props.visible,
-//     set: (val) => emit('update:visible', val),
-// });
-
-// watch(
-//     () => _vis.value,
-//     (val) => {
-//         if (val) handleSearch({ terms: [] });
-//     },
-// );
+const menuStory = useMenuStore();
+const route = useRoute();
 
 const columns = [
     {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
+        title: '通道ID',
+        dataIndex: 'channelId',
+        key: 'channelId',
         search: {
             type: 'string',
         },
     },
     {
-        title: '发送时间',
-        dataIndex: 'notifyTime',
-        key: 'notifyTime',
-        scopedSlots: true,
+        title: '名称',
+        dataIndex: 'name',
+        key: 'name',
         search: {
-            type: 'date',
-            handleValue: (v: any) => {
-                return v;
-            },
+            type: 'string',
+        },
+    },
+    {
+        title: '厂商',
+        dataIndex: 'manufacturer',
+        key: 'manufacturer',
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '安装地址',
+        dataIndex: 'address',
+        key: 'address',
+        search: {
+            type: 'string',
         },
     },
     {
         title: '状态',
-        dataIndex: 'state',
-        key: 'state',
+        dataIndex: 'status',
+        key: 'status',
         scopedSlots: true,
         search: {
             type: 'select',
             options: [
-                { label: '成功', value: 'success' },
-                { label: '失败', value: 'error' },
+                { label: '已连接', value: 'online' },
+                { label: '未连接', value: 'offline' },
             ],
             handleValue: (v: any) => {
                 return v;
@@ -133,41 +156,84 @@ const handleSearch = (e: any) => {
     // console.log('params.value: ', params.value);
 };
 
-/**
- * 查看错误信息
- */
-const handleError = (e: any) => {
-    Modal.info({
-        title: '错误信息',
-        content: h(
-            'p',
-            {
-                style: {
-                    maxHeight: '300px',
-                    overflowY: 'auto',
-                },
-            },
-            JSON.stringify(e),
-        ),
-    });
+const saveVis = ref(false);
+const handleAdd = () => {
+    saveVis.value = true;
 };
-/**
- * 查看详情
- */
-const handleDetail = (e: any) => {
-    Modal.info({
-        title: '详情信息',
-        content: h(
-            'p',
-            {
-                style: {
-                    maxHeight: '300px',
-                    overflowY: 'auto',
+
+const listRef = ref();
+const playVis = ref(false);
+const getActions = (
+    data: Partial<Record<string, any>>,
+    type: 'card' | 'table',
+): ActionsType[] => {
+    if (!data) return [];
+    const actions = [
+        {
+            key: 'edit',
+            text: '编辑',
+            tooltip: {
+                title: '编辑',
+            },
+            icon: 'EditOutlined',
+            onClick: () => {
+                saveVis.value = true;
+            },
+        },
+        {
+            key: 'play',
+            text: '播放',
+            tooltip: {
+                title: '播放',
+            },
+            icon: 'VideoCameraOutlined',
+            onClick: () => {
+                playVis.value = true;
+            },
+        },
+        {
+            key: 'backPlay',
+            text: '回放',
+            tooltip: {
+                title: '回放',
+            },
+            icon: 'HistoryOutlined',
+            onClick: () => {
+                menuStory.jumpPage(
+                    'media/Device/Playback',
+                    {},
+                    {
+                        id: route.query.id,
+                        type: route.query.type,
+                        channelId: data.channelId,
+                    },
+                );
+            },
+        },
+        {
+            key: 'delete',
+            text: '删除',
+            tooltip: {
+                title: '删除',
+            },
+            popConfirm: {
+                title: '确认删除?',
+                onConfirm: async () => {
+                    const resp = await ChannelApi.del(data.id);
+                    if (resp.status === 200) {
+                        message.success('操作成功！');
+                        listRef.value?.reload();
+                    } else {
+                        message.error('操作失败！');
+                    }
                 },
             },
-            JSON.stringify(e),
-        ),
-    });
+            icon: 'DeleteOutlined',
+        },
+    ];
+    return route?.query.type === 'gb28181-2016'
+        ? actions.filter((f) => f.key !== 'delete')
+        : actions;
 };
 </script>
 

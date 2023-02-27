@@ -670,33 +670,38 @@
                                 </div>
                             </a-form-item>
                         </template>
-                        <a-form-item
+                        <template
                             v-if="
                                 formData.type !== 'webhook' &&
                                 formData.type !== 'voice'
                             "
-                            v-bind="validateInfos['template.message']"
                         >
-                            <template #label>
-                                <span>
-                                    模版内容
-                                    <a-tooltip title="发送的内容，支持录入变量">
-                                        <AIcon
-                                            type="QuestionCircleOutlined"
-                                            style="margin-left: 2px"
-                                        />
-                                    </a-tooltip>
-                                </span>
-                            </template>
-                            <a-textarea
-                                v-model:value="formData.template.message"
-                                :maxlength="200"
-                                :rows="5"
-                                :disabled="formData.type === 'sms'"
-                                placeholder="变量格式:${name};
+                            <a-form-item
+                                v-bind="validateInfos['template.message']"
+                            >
+                                <template #label>
+                                    <span>
+                                        模版内容
+                                        <a-tooltip
+                                            title="发送的内容，支持录入变量"
+                                        >
+                                            <AIcon
+                                                type="QuestionCircleOutlined"
+                                                style="margin-left: 2px"
+                                            />
+                                        </a-tooltip>
+                                    </span>
+                                </template>
+                                <a-textarea
+                                    v-model:value="formData.template.message"
+                                    :maxlength="200"
+                                    :rows="5"
+                                    :disabled="formData.type === 'sms'"
+                                    placeholder="变量格式:${name};
     示例:尊敬的${name},${time}有设备触发告警,请注意处理"
-                            />
-                        </a-form-item>
+                                />
+                            </a-form-item>
+                        </template>
                         <a-form-item
                             label="变量列表"
                             v-if="
@@ -804,6 +809,7 @@ const formData = ref<TemplateFormData>({
  * 重置字段值
  */
 const resetPublicFiles = () => {
+    formData.value.template = {};
     switch (formData.value.provider) {
         case 'dingTalkMessage':
             formData.value.template.agentId = '';
@@ -854,6 +860,7 @@ const resetPublicFiles = () => {
     formData.value.configId = undefined;
     formData.value.variableDefinitions = [];
     handleMessageTypeChange();
+    // console.log('formData.value.template: ', formData.value.template);
 };
 
 // 根据通知方式展示对应的字段
@@ -1049,7 +1056,7 @@ const handleMessageTypeChange = () => {
         };
     }
     formData.value.variableDefinitions = [];
-    formData.value.template.message = '';
+    // formData.value.template.message = '';
 };
 
 /**
@@ -1085,7 +1092,6 @@ const handleTypeChange = () => {
     setTimeout(() => {
         formData.value.template =
             TEMPLATE_FIELD_MAP[formData.value.type][formData.value.provider];
-        // console.log('formData.value.template: ', formData.value.template);
         resetPublicFiles();
     }, 0);
 };

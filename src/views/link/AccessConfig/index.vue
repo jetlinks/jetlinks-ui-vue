@@ -188,7 +188,7 @@
     </page-container>
 </template>
 <script lang="ts" setup name="AccessConfigPage">
-import type { ActionsType } from '@/components/Table/index.vue';
+import type { ActionsType } from '@/components/Table/index';
 import { getImage } from '@/utils/comm';
 import {
     list,
