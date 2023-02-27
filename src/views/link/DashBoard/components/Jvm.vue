@@ -110,9 +110,6 @@ const handleJVMOptions = (optionsData, xAxis) => {
     if (chart) {
         const myChart = echarts.init(chart);
         const dataKeys = Object.keys(optionsData);
-
-        console.log(21, arrayReverse(xAxis), xAxis);
-
         const options = {
             xAxis: {
                 type: 'category',

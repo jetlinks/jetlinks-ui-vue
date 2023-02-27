@@ -190,9 +190,6 @@ watch(
     },
     { immediate: true, deep: true },
 );
-// onMounted(() => {
-//     createEcharts();
-// });
 </script>
 
 <style lang="less" scoped>

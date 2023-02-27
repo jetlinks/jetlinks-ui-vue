@@ -8,5 +8,4 @@ export const getGeo = (data: object) =>
     server.post(`/geo/object/device/_search/geo.json`, data);
 export const deviceCount = (data: object) =>
     server.get(`/device/instance/_count`, data);
-export const serverNode = (data: object) =>
-    server.get(`/dashboard/cluster/nodes`, data);
+export const serverNode = () => server.get(`/dashboard/cluster/nodes`);

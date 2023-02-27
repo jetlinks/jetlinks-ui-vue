@@ -4,8 +4,8 @@
             style="width: 300px; margin-bottom: 20px"
             @change="serverIdChange"
             :value="serverId"
-            :options="serverNode"
-            v-if="serverNode.length > 1"
+            :options="serverNodeOptions"
+            v-if="serverNodeOptions.length > 1"
         ></a-select>
         <div class="dash-board">
             <div class="dash-board-item">
@@ -42,99 +42,85 @@
     </div>
 </template>
 
-<script>
+<script lang="ts" setup name="TopCard">
 import { serverNode } from '@/api/link/dashboard';
 import TopEchartsItemNode from './TopEchartsItemNode.vue';
 import { getWebSocket } from '@/utils/websocket';
 import { map } from 'rxjs/operators';
 
-export default {
-    name: 'TopCard',
-    components: { TopEchartsItemNode },
-    data() {
-        return {
-            serverId: '',
-            serverNode: [],
-            topValues: {
-                cpu: 0,
-                jvm: 0,
-                jvmTotal: 0,
-                usage: 0,
-                usageTotal: 0,
-                systemUsage: 0,
-                systemUsageTotal: 0,
-            },
-        };
-    },
-    created() {
-        serverNode().then((resp) => {
-            if (resp.success) {
-                this.serverNode = resp.result.map((item) => ({
-                    label: item.name,
-                    value: item.id,
-                }));
-                if (this.serverNode && this.serverNode.length) {
-                    this.serverId = this.serverNode[0].value;
-                }
-            }
-        });
-    },
-    watch: {
-        serverId: {
-            handler(val) {
-                if (val) {
-                    this.getData(val);
-                }
-            },
-            immediate: true,
-        },
-    },
-    methods: {
-        serverIdChange(val) {
-            this.serverId = val;
-        },
-        getData() {
-            const id = 'operations-statistics-system-info-realTime';
-            const topic = '/dashboard/systemMonitor/stats/info/realTime';
-            getWebSocket(id, topic, {
-                type: 'all',
-                serverNodeId: this.serverId,
-                interval: '1s',
-                agg: 'avg',
-            })
-                .pipe(map((res) => res.payload))
-                .subscribe((payload) => {
-                    const value = payload.value;
-                    const cpu = value.cpu;
-                    const memory = value.memory;
-                    const disk = value.disk;
-                    this.topValues = {
-                        cpu: cpu.systemUsage,
-                        jvm: Number(
-                            (
-                                (memory.jvmHeapUsage / 100) *
-                                (memory.jvmHeapTotal / 1024)
-                            ).toFixed(1),
-                        ),
-                        jvmTotal: Math.ceil(memory.jvmHeapTotal / 1024),
-                        usage: Number(
-                            ((disk.total / 1024) * (disk.usage / 100)).toFixed(
-                                1,
-                            ),
-                        ),
-                        usageTotal: Math.ceil(disk.total / 1024),
-                        systemUsage: Number(
-                            (
-                                (memory.systemTotal / 1024) *
-                                (memory.systemUsage / 100)
-                            ).toFixed(1),
-                        ),
-                        systemUsageTotal: Math.ceil(memory.systemTotal / 1024),
-                    };
-                });
-        },
-    },
+const serverId = ref();
+const serverNodeOptions = ref([]);
+const topValues = ref({
+    cpu: 0,
+    jvm: 0,
+    jvmTotal: 0,
+    usage: 0,
+    usageTotal: 0,
+    systemUsage: 0,
+    systemUsageTotal: 0,
+});
+
+const serverIdChange = (val: string) => {
+    serverId.value = val;
 };
+
+const getData = () => {
+    const id = 'operations-statistics-system-info-realTime';
+    const topic = '/dashboard/systemMonitor/stats/info/realTime';
+    getWebSocket(id, topic, {
+        type: 'all',
+        serverNodeId: serverId.value,
+        interval: '1s',
+        agg: 'avg',
+    })
+        .pipe(map((res) => res.payload))
+        .subscribe((payload) => {
+            const {
+                value: { cpu, memory, disk },
+            } = payload;
+            topValues.value = {
+                cpu: cpu.systemUsage,
+                jvm: Number(
+                    (
+                        (memory.jvmHeapUsage / 100) *
+                        (memory.jvmHeapTotal / 1024)
+                    ).toFixed(1),
+                ),
+                jvmTotal: Math.ceil(memory.jvmHeapTotal / 1024),
+                usage: Number(
+                    ((disk.total / 1024) * (disk.usage / 100)).toFixed(1),
+                ),
+                usageTotal: Math.ceil(disk.total / 1024),
+                systemUsage: Number(
+                    (
+                        (memory.systemTotal / 1024) *
+                        (memory.systemUsage / 100)
+                    ).toFixed(1),
+                ),
+                systemUsageTotal: Math.ceil(memory.systemTotal / 1024),
+            };
+        });
+};
+
+onMounted(() => {
+    serverNode().then((resp) => {
+        if (resp.success) {
+            serverNodeOptions.value = resp.result.map((item) => ({
+                label: item.name,
+                value: item.id,
+            }));
+            if (serverNodeOptions.value.length) {
+                serverId.value = serverNodeOptions.value[0]?.value;
+            }
+        }
+    });
+});
+watch(
+    () => serverId.value,
+    (val) => {
+        val && getData();
+    },
+);
 </script>
 
 <style lang="less" scoped>

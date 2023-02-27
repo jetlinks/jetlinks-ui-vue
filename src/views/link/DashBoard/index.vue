@@ -11,15 +11,11 @@
     </page-container>
 </template>
 
-<script>
+<script lang="ts" setup name="DashBoardPage">
 import TopCard from './components/TopCard.vue';
 import Network from './components/Network.vue';
 import Cpu from './components/Cpu.vue';
 import Jvm from './components/Jvm.vue';
-export default {
-    name: 'LinkDashboard',
-    components: { Cpu, Jvm, Network, TopCard },
-};
 </script>
 
 <style lang="less" scoped></style>
