@@ -3,13 +3,19 @@
         <div class="top">
             <slot name="top" />
         </div>
-        <a-row :gutter="24" style="background-color: #fff;padding: 20px;">
-            <a-col :span="24" v-if="props.showTitle">API文档</a-col>
+        <a-row :gutter="24" style="background-color: #fff; padding: 20px">
+            <a-col
+                :span="24"
+                v-if="props.showTitle"
+                style="font-size: 16px; margin-bottom: 48px"
+                >API文档</a-col
+            >
             <a-col :span="5">
                 <LeftTree
                     @select="treeSelect"
                     :mode="props.mode"
                     :has-home="props.hasHome"
+                    :filter-array="treeFilter"
                 />
             </a-col>
             <a-col :span="19">
@@ -70,14 +76,16 @@ const props = defineProps<{
     mode: modeType;
     showTitle?: boolean;
     hasHome?: boolean;
+    code?: string
 }>();
-const showHome = ref<boolean>(Boolean(props.hasHome))
+const showHome = ref<boolean>(Boolean(props.hasHome));
 const tableData = ref([]);
+const treeFilter = ref([]);
 const treeSelect = (node: treeNodeTpye, nodeSchemas: object = {}) => {
-    if (node.key === 'home') return showHome.value = true;
+    if (node.key === 'home') return (showHome.value = true);
     schemas.value = nodeSchemas;
     if (!node.apiList) return;
-    showHome.value = false
+    showHome.value = false;
     const apiList: apiObjType[] = node.apiList as apiObjType[];
     const table: any = [];
     // 将对象形式的数据转换为表格需要的形式

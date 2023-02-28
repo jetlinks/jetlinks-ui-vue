@@ -390,7 +390,13 @@ const table = {
                         title: '查看API',
                     },
                     icon: 'icon-chakanAPI',
-                    onClick: () => {},
+                    onClick: () => {
+                        menuStory.jumpPage(
+                            'system/Apply/View',
+                            {},
+                            { code: data.id },
+                        );
+                    },
                 },
             );
         // 其他不为空

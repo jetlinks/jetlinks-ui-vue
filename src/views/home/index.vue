@@ -5,6 +5,10 @@
             <DeviceHome v-else-if="currentView === 'device'" />
             <DevOpsHome v-else-if="currentView === 'ops'" />
             <ComprehensiveHome v-else-if="currentView === 'comprehensive'" />
+
+            <Api :mode="'home'" hasHome showTitle>
+                <template #top> </template>
+            </Api>
         </div>
     </page-container>
 </template>
@@ -14,6 +18,7 @@ import InitHome from './components/InitHome/index.vue';
 import DeviceHome from './components/DeviceHome/index.vue';
 import DevOpsHome from './components/DevOpsHome/index.vue';
 import ComprehensiveHome from './components/ComprehensiveHome/index.vue';
+import Api from '@/views/system/Platforms/Api/index.vue';
 
 import { isNoCommunity } from '@/utils/utils';
 import { getMe_api, getView_api } from '@/api/home';

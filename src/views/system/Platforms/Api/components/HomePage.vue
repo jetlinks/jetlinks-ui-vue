@@ -60,9 +60,10 @@
             <div style="width: 50%">
                 <h3>示例数据</h3>
                 <div>
-                    <Table
+                    <JTable
                         :dataSource="data"
-                        :pagination="false"
+                        model="TABLE"
+                        noPagination
                         :columns="[
                             {
                                 title: '示例数据类型',
@@ -89,23 +90,19 @@
             <div>
                 <h3>服务器验签流程</h3>
                 <div>
-                    <img
-                        :src="getImage('/public/images/apiHome.png')"
-                        style="width: 80%"
-                    />
+                    <img :src="getImage('/apiHome.png')" style="width: 80%" />
                 </div>
             </div>
-            <div style="width: 505">
+            <div style="width: 505px">
                 <h3>验签说明</h3>
                 <div>
                     <p>使用和签名相同的算法(不需要对响应结果排序)</p>
                     <div>
-                        <JMonacoEditor
+                        <MonacoEditor
                             style="width: 100%; height: 620px"
                             theme="vs-dark"
                             language="java"
-                            :v-model:modelValue="`String secureKey = ...; //密钥\r\nString responseBody = ...;//服务端响应结果\r\nString timestampHeader = ...;//响应头: X-Timestamp\r\nString signHeader = ...; //响应头: X-Sign\r\n\r\nString sign = DigestUtils.md5Hex(responseBody+timestampHeader+secureKey);\r\nif(sign.equalsIgnoreCase(signHeader)){\r\n //验签通过\r\n}
-                                    \r\n\r\n`"
+                            v-model="javaStr1"
                         />
                     </div>
                 </div>
@@ -122,19 +119,19 @@
             <h3>添加 SDK 依赖</h3>
             <div class="h3-text">将以下Maven依赖加入到pom.xml文件中</div>
             <div>
-                <JMonacoEditor
+                <MonacoEditor
                     style="width: 100%; height: 100px"
                     theme="vs-dark"
-                    :v-model:modelValue="'<dependency>\r\n    <groupId>org.jetlinks.sdk</groupId>\r\n    <artifactId>api-sdk</artifactId>\r\n    <version>1.0.0</version>\r\n</dependency>'"
+                    v-model="javaStr2"
                     language="java"
                 />
             </div>
             <h3>SDK 客户端的初始化和请求方式</h3>
             <div>
-                <JMonacoEditor
+                <MonacoEditor
                     style="width: 100%; height: 370px"
                     theme="vs-dark"
-                    :v-model:modelValue="javaStr"
+                    v-model="javaStr"
                     language="java"
                 />
             </div>
@@ -144,7 +141,7 @@
 
 <script setup lang="ts">
 import { getImage } from '@/utils/comm';
-import JMonacoEditor from '@/components/MonacoEditor/index.vue';
+import MonacoEditor from '@/components/MonacoEditor/index.vue';
 
 const data = [
     {
@@ -183,6 +180,9 @@ const data = [
         data: '1574993804802 ',
     },
 ];
+const javaStr1 = `String secureKey = ...; //密钥\r\nString responseBody = ...;//服务端响应结果\r\nString timestampHeader = ...;//响应头: X-Timestamp\r\nString signHeader = ...; //响应头: X-Sign\r\n\r\nString sign = DigestUtils.md5Hex(responseBody+timestampHeader+secureKey);\r\nif(sign.equalsIgnoreCase(signHeader)){\r\n //验签通过\r\n}`;
+const javaStr2 =
+    '<dependency>\r\n    <groupId>org.jetlinks.sdk</groupId>\r\n    <artifactId>api-sdk</artifactId>\r\n    <version>1.0.0</version>\r\n</dependency>';
 const javaStr =
     '\r\n        //服务器的baseUrl\r\n        String baseUrl = "http://localhost:9000/jetlinks";\r\n  //客户端Id\r\n        String clientId = "aSoq98aAxzP";\r\n  //访问秘钥\r\n        String secureKey = "DaYsxpiWSfdTAPJyKW8rP2WAGyWErnsR";\r\n\r\n        ClientConfig clientConfig = new ClientConfig(baseUrl, clientId, secureKey);\r\n\r\n        ApiClient client = new WebApiClient(clientConfig);\r\n\r\nApiResponse < PagerResult < DeviceInfo >> response = client\r\n    .request(QueryDeviceRequest\r\n        .of(query -> query\r\n            .where("productId", "demo-device")\r\n            .doPaging(0, 100)));';
 </script>
