@@ -483,3 +483,18 @@ export const getPropertiesInfo = (deviceId: string, data: Record<string, unknown
  * @returns 
  */
 export const getPropertiesList = (deviceId: string, property: string, data: Record<string, unknown>) => server.post(`/device-instance/${deviceId}/property/${property}/_query`, data)
+
+/**
+ * 查询设备日志
+ * @param deviceId 
+ * @param data 
+ * @returns 
+ */
+export const queryLog = (deviceId: string, data: Record<string, unknown>) => server.post(`/device-instance/${deviceId}/logs`, data)
+
+/**
+ * 查询设备日志类型
+ * @returns 
+ */
+export const queryLogsType = () => server.get(`/dictionary/device-log-type/items`)
+
