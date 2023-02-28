@@ -557,14 +557,11 @@
 
 <script setup lang="ts">
 import { getImage } from '@/utils/comm';
-import { Form } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
-
 import CascadeApi from '@/api/media/cascade';
 
 const router = useRouter();
 const route = useRoute();
-const useForm = Form.useForm;
 
 // 表单数据
 const formData = ref({
@@ -640,10 +637,6 @@ const setPorts = () => {
 const getDetail = async () => {
     if (!route.query.id) return;
     const res = await CascadeApi.detail(route.query.id as string);
-    // console.log('res: ', res);
-    // formData.value = res.result;
-    // Object.assign(formData.value, res.result);
-
     const { id, name, proxyStream, sipConfigs } = res.result;
     formData.value = {
         id,
