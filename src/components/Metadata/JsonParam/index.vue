@@ -13,27 +13,25 @@
             </div>
           </template>
           <template #content>
-            <div style="max-width: 400px;">
-              <a-form :model="_value[index]" layout="vertical">
-                <a-form-item label="标识" name="id" :rules="[
-                  { required: true, message: '请输入标识' },
-                  { max: 64, message: '最多可输入64个字符' },
-                  {
-                    pattern: /^[a-zA-Z0-9_\-]+$/,
-                    message: 'ID只能由数字、字母、下划线、中划线组成',
-                  },
-                ]">
-                  <a-input v-model:value="_value[index].id" size="small"></a-input>
-                </a-form-item>
-                <a-form-item label="名称" name="name" :rules="[
-                  { required: true, message: '请输入名称' },
-                  { max: 64, message: '最多可输入64个字符' },
-                ]">
-                  <a-input v-model:value="_value[index].name" size="small"></a-input>
-                </a-form-item>
-                <value-type-form v-model:value="_value[index].valueType" :name="['valueType']" isSub
-                  key="json_sub"></value-type-form>
-              </a-form>
+            <div style="max-width: 400px;" class="ant-form-vertical">
+              <a-form-item label="标识" :name="name.concat([index, 'id'])" :rules="[
+                { required: true, message: '请输入标识' },
+                { max: 64, message: '最多可输入64个字符' },
+                {
+                  pattern: /^[a-zA-Z0-9_\-]+$/,
+                  message: 'ID只能由数字、字母、下划线、中划线组成',
+                },
+              ]">
+                <a-input v-model:value="_value[index].id" size="small"></a-input>
+              </a-form-item>
+              <a-form-item label="名称" :name="name.concat([index, 'name'])" :rules="[
+                { required: true, message: '请输入名称' },
+                { max: 64, message: '最多可输入64个字符' },
+              ]">
+                <a-input v-model:value="_value[index].name" size="small"></a-input>
+              </a-form-item>
+              <value-type-form v-model:value="_value[index].valueType" :name="name.concat([index, 'valueType'])" isSub
+                key="json_sub"></value-type-form>
             </div>
           </template>
           <div class="item-edit" @click="handleEdit(index)">
@@ -47,7 +45,9 @@
       </div>
     </div>
     <a-button type="dashed" block @click="handleAdd">
-      <template #icon><AIcon type="PlusOutlined" class="item-icon" /></template>
+      <template #icon>
+        <AIcon type="PlusOutlined" class="item-icon" />
+      </template>
       添加参数
     </a-button>
   </div>
@@ -65,6 +65,10 @@ const emit = defineEmits<Emits>()
 const props = defineProps({
   value: {
     type: Object as PropType<JsonType[]>,
+  },
+  name: {
+    type: Array as PropType<(string | number)[]>,
+    default: () => ([])
   }
 })
 

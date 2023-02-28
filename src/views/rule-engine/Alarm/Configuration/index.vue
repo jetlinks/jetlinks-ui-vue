@@ -9,6 +9,7 @@
             <JTable
                 :columns="columns"
                 :request="queryList"
+                :gridColumn="3"
                 ref="tableRef"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
@@ -42,7 +43,7 @@
                             </slot>
                         </template>
                         <template #content>
-                            <Ellipsis>
+                            <Ellipsis style="width: calc(100% - 100px)">
                                 <span style="font-weight: 600; font-size: 16px">
                                     {{ slotProps.name }}
                                 </span>
@@ -70,48 +71,25 @@
                             </a-row>
                         </template>
                         <template #actions="item">
-                            <a-tooltip
-                                v-bind="item.tooltip"
-                                :title="item.disabled && item.tooltip.title"
+                            <PermissionButton
                                 v-if="
                                     item.key != 'trigger' ||
                                     slotProps.sceneTriggerType == 'manual'
                                 "
+                                :disabled="item.disabled"
+                                :popConfirm="item.popConfirm"
+                                :tooltip="{ ...item.tootip }"
+                                @click="item.onClick"
                             >
-                                <a-popconfirm
-                                    v-if="item.popConfirm"
-                                    v-bind="item.popConfirm"
-                                    :disabled="item.disabled"
-                                    okText="确定"
-                                    cancelText="取消"
-                                >
-                                    <a-button :disabled="item.disabled">
-                                        <AIcon
-                                            type="DeleteOutlined"
-                                            v-if="item.key === 'delete'"
-                                        />
-                                        <template v-else>
-                                            <AIcon :type="item.icon" />
-                                            <span>{{ item?.text }}</span>
-                                        </template>
-                                    </a-button>
-                                </a-popconfirm>
+                                <AIcon
+                                    type="DeleteOutlined"
+                                    v-if="item.key === 'delete'"
+                                />
                                 <template v-else>
-                                    <a-button
-                                        :disabled="item.disabled"
-                                        @click="item.onClick"
-                                    >
-                                        <AIcon
-                                            type="DeleteOutlined"
-                                            v-if="item.key === 'delete'"
-                                        />
-                                        <template v-else>
-                                            <AIcon :type="item.icon" />
-                                            <span>{{ item?.text }}</span>
-                                        </template>
-                                    </a-button>
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item?.text }}</span>
                                 </template>
-                            </a-tooltip>
+                            </PermissionButton>
                         </template>
                     </CardBox>
                 </template>
@@ -151,45 +129,29 @@
                 </template>
                 <template #action="slotProps">
                     <a-space :size="16">
-                        <a-tooltip
-                            v-for="i in getActions(slotProps)"
+                        <template
+                            v-for="i in getActions(slotProps, 'table')"
                             :key="i.key"
-                            v-bind="i.tooltip"
                         >
-                            <span
+                            <PermissionButton
                                 v-if="
                                     i.key != 'trigger' ||
                                     slotProps.sceneTriggerType == 'manual'
                                 "
+                                :disabled="i.disabled"
+                                :popConfirm="i.popConfirm"
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                @click="i.onClick"
+                                type="link"
+                                style="padding: 0px"
                             >
-                                <a-popconfirm
-                                    v-if="i.popConfirm"
-                                    v-bind="i.popConfirm"
-                                    okText="确定"
-                                    cancelText="取消"
-                                >
-                                    <a-button
-                                        :disabled="i.disabled"
-                                        style="padding: 0"
-                                        type="link"
-                                        ><AIcon :type="i.icon"
-                                    /></a-button>
-                                </a-popconfirm>
-                                <a-button
-                                    style="padding: 0"
-                                    type="link"
-                                    v-else
-                                    @click="i.onClick && i.onClick(slotProps)"
-                                >
-                                    <a-button
-                                        :disabled="i.disabled"
-                                        style="padding: 0"
-                                        type="link"
-                                        ><AIcon :type="i.icon"
-                                    /></a-button>
-                                </a-button>
-                            </span>
-                        </a-tooltip>
+                                <template #icon
+                                    ><AIcon :type="i.icon"
+                                /></template>
+                            </PermissionButton>
+                        </template>
                     </a-space>
                 </template>
             </JTable>
@@ -214,7 +176,6 @@ import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import encodeQuery from '@/utils/encodeQuery';
-import { useStorage } from '@vueuse/core';
 const params = ref<Record<string, any>>({});
 let isAdd = ref<number>(0);
 let title = ref<string>('');
@@ -290,8 +251,11 @@ const columns = [
                         sorts: { createTime: 'desc' },
                     }),
                 );
-                if(res.status === 200){
-                    return res.result.map((item:any) => ({label:item.name, value:item.id}))
+                if (res.status === 200) {
+                    return res.result.map((item: any) => ({
+                        label: item.name,
+                        value: item.id,
+                    }));
                 }
                 return [];
             },
@@ -303,26 +267,26 @@ const columns = [
         key: 'state',
         scopedSlots: true,
         search: {
-                type: 'select',
-                options: [
-                    {
-                        label: '正常',
-                        value: 'enabled',
-                    },
-                    {
-                        label: '禁用',
-                        value: 'disabled',
-                    },
-                ],
-            },
+            type: 'select',
+            options: [
+                {
+                    label: '正常',
+                    value: 'enabled',
+                },
+                {
+                    label: '禁用',
+                    value: 'disabled',
+                },
+            ],
+        },
     },
     {
         title: '说明',
         dataIndex: 'description',
         key: 'description',
-        search:{
-            type:'string',
-        }
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '操作',
@@ -396,7 +360,11 @@ const getActions = (
 
             icon: 'EditOutlined',
             onClick: () => {
-                menuStory.jumpPage('rule-engine/Alarm/Configuration/Save',{},{id:data.id});
+                menuStory.jumpPage(
+                    'rule-engine/Alarm/Configuration/Save',
+                    {},
+                    { id: data.id },
+                );
             },
         },
         {
@@ -456,8 +424,6 @@ const getActions = (
             icon: 'DeleteOutlined',
         },
     ];
-    if (type === 'card')
-        return actions.filter((i: ActionsType) => i.key !== 'view');
     return actions;
 };
 const add = () => {

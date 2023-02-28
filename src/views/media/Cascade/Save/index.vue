@@ -4,13 +4,13 @@
         <a-card>
             <a-row :gutter="24">
                 <a-col :span="12">
-                    <a-form layout="vertical" :model="formData">
+                    <a-form ref="formRef" layout="vertical" :model="formData">
                         <a-row :gutter="24">
                             <TitleComponent data="基本信息" />
                             <a-col :span="12">
                                 <a-form-item
                                     label="名称"
-                                    name="name"
+                                    name="cascadeName"
                                     :rules="[
                                         {
                                             required: true,
@@ -23,7 +23,7 @@
                                     ]"
                                 >
                                     <a-input
-                                        v-model:value="formData.name"
+                                        v-model:value="formData.cascadeName"
                                         placeholder="请输入名称"
                                     />
                                 </a-form-item>
@@ -31,7 +31,7 @@
                             <a-col :span="12">
                                 <a-form-item
                                     label="代理视频流"
-                                    name="name"
+                                    name="proxyStream"
                                     :rules="[
                                         {
                                             required: true,
@@ -41,12 +41,12 @@
                                 >
                                     <a-radio-group
                                         button-style="solid"
-                                        v-model:value="formData.name"
+                                        v-model:value="formData.proxyStream"
                                     >
-                                        <a-radio-button value="enabled">
+                                        <a-radio-button :value="true">
                                             启用
                                         </a-radio-button>
-                                        <a-radio-button value="disabled">
+                                        <a-radio-button :value="false">
                                             禁用
                                         </a-radio-button>
                                     </a-radio-group>
@@ -56,8 +56,7 @@
                             <TitleComponent data="信令服务配置" />
                             <a-col :span="12">
                                 <a-form-item
-                                    label="集群节点"
-                                    name="name"
+                                    name="clusterNodeId"
                                     :rules="[
                                         {
                                             required: true,
@@ -65,9 +64,23 @@
                                         },
                                     ]"
                                 >
-                                    <a-input
-                                        v-model:value="formData.name"
+                                    <template #label>
+                                        <span>
+                                            集群节点
+                                            <a-tooltip
+                                                title="使用此集群节点级联到上级平台"
+                                            >
+                                                <AIcon
+                                                    type="QuestionCircleOutlined"
+                                                    style="margin-left: 2px"
+                                                />
+                                            </a-tooltip>
+                                        </span>
+                                    </template>
+                                    <a-select
+                                        v-model:value="formData.clusterNodeId"
                                         placeholder="请选择集群节点"
+                                        :options="clustersList"
                                     />
                                 </a-form-item>
                             </a-col>
@@ -95,7 +108,7 @@
                             <a-col :span="24">
                                 <a-form-item
                                     label="上级SIP ID"
-                                    name="name"
+                                    name="sipId"
                                     :rules="[
                                         {
                                             required: true,
@@ -108,7 +121,7 @@
                                     ]"
                                 >
                                     <a-input
-                                        v-model:value="formData.name"
+                                        v-model:value="formData.sipId"
                                         placeholder="请输入上级SIP ID"
                                     />
                                 </a-form-item>
@@ -116,7 +129,7 @@
                             <a-col :span="12">
                                 <a-form-item
                                     label="上级SIP域"
-                                    name="name"
+                                    name="domain"
                                     :rules="[
                                         {
                                             required: true,
@@ -129,7 +142,7 @@
                                     ]"
                                 >
                                     <a-input
-                                        v-model:value="formData.name"
+                                        v-model:value="formData.domain"
                                         placeholder="请输入上级平台SIP域"
                                     />
                                 </a-form-item>
@@ -137,29 +150,35 @@
                             <a-col :span="12">
                                 <a-form-item
                                     label="上级SIP 地址"
-                                    name="name"
+                                    name="remoteAddress"
                                     :rules="[
                                         {
                                             required: true,
                                             message: '请输入上级SIP 地址',
                                         },
                                         {
-                                            max: 64,
-                                            message: '最多可输入64个字符',
+                                            validator: checkSIP,
                                         },
                                     ]"
                                 >
                                     <a-row :gutter="10">
                                         <a-col :span="14">
                                             <a-input
-                                                v-model:value="formData.name"
+                                                v-model:value="
+                                                    formData.remoteAddress
+                                                "
                                                 placeholder="请输入IP地址"
                                             />
                                         </a-col>
                                         <a-col :span="10">
-                                            <a-input
-                                                v-model:value="formData.name"
+                                            <a-input-number
+                                                :min="1"
+                                                :max="65535"
+                                                v-model:value="
+                                                    formData.remotePort
+                                                "
                                                 placeholder="请输入端口"
+                                                style="width: 100%"
                                             />
                                         </a-col>
                                     </a-row>
@@ -169,7 +188,7 @@
                             <a-col :span="24">
                                 <a-form-item
                                     label="本地SIP ID"
-                                    name="name"
+                                    name="localSipId"
                                     :rules="[
                                         {
                                             required: true,
@@ -182,42 +201,51 @@
                                     ]"
                                 >
                                     <a-input
-                                        v-model:value="formData.name"
+                                        v-model:value="formData.localSipId"
                                         placeholder="网关侧的SIP ID"
                                     />
                                 </a-form-item>
                             </a-col>
                             <a-col :span="12">
                                 <a-form-item
-                                    label="SIP本地地址"
-                                    name="name"
+                                    name="host"
                                     :rules="[
                                         {
                                             required: true,
-                                            message: '请输入SIP本地地址',
+                                            message: '请选择SIP本地地址',
+                                        },
+                                        {
+                                            validator: checkLocalSIP,
                                         },
                                     ]"
                                 >
+                                    <template #label>
+                                        <span>
+                                            SIP本地地址
+                                            <a-tooltip
+                                                title="使用指定的网卡和端口进行请求"
+                                            >
+                                                <AIcon
+                                                    type="QuestionCircleOutlined"
+                                                    style="margin-left: 2px"
+                                                />
+                                            </a-tooltip>
+                                        </span>
+                                    </template>
                                     <a-row :gutter="10">
                                         <a-col :span="14">
                                             <a-select
-                                                v-model:value="formData.name"
+                                                v-model:value="formData.host"
                                                 placeholder="请选择IP地址"
-                                            >
-                                                <a-select-option value="1">
-                                                    1
-                                                </a-select-option>
-                                            </a-select>
+                                                :options="allList"
+                                            />
                                         </a-col>
                                         <a-col :span="10">
                                             <a-select
-                                                v-model:value="formData.name"
+                                                v-model:value="formData.port"
                                                 placeholder="请选择端口"
-                                            >
-                                                <a-select-option value="1">
-                                                    1
-                                                </a-select-option>
-                                            </a-select>
+                                                :options="allListPorts"
+                                            />
                                         </a-col>
                                     </a-row>
                                 </a-form-item>
@@ -225,29 +253,35 @@
                             <a-col :span="12">
                                 <a-form-item
                                     label="SIP远程地址"
-                                    name="name"
+                                    name="publicHost"
                                     :rules="[
                                         {
                                             required: true,
                                             message: '请输入SIP远程地址',
                                         },
                                         {
-                                            max: 64,
-                                            message: '最多可输入64个字符',
+                                            validator: checkPublicSIP,
                                         },
                                     ]"
                                 >
                                     <a-row :gutter="10">
                                         <a-col :span="14">
                                             <a-input
-                                                v-model:value="formData.name"
+                                                v-model:value="
+                                                    formData.publicHost
+                                                "
                                                 placeholder="请输入IP地址"
                                             />
                                         </a-col>
                                         <a-col :span="10">
-                                            <a-input
-                                                v-model:value="formData.name"
+                                            <a-input-number
+                                                :min="1"
+                                                :max="65535"
+                                                v-model:value="
+                                                    formData.publicPort
+                                                "
                                                 placeholder="请输入端口"
+                                                style="width: 100%"
                                             />
                                         </a-col>
                                     </a-row>
@@ -256,7 +290,7 @@
                             <a-col :span="24">
                                 <a-form-item
                                     label="传输协议"
-                                    name="name"
+                                    name="transport"
                                     :rules="[
                                         {
                                             required: true,
@@ -266,12 +300,13 @@
                                 >
                                     <a-radio-group
                                         button-style="solid"
-                                        v-model:value="formData.name"
+                                        v-model:value="formData.transport"
+                                        @change="setPorts"
                                     >
                                         <a-radio-button value="UDP">
                                             UDP
                                         </a-radio-button>
-                                        <a-radio-button value="TCP_PASSIVE">
+                                        <a-radio-button value="TCP">
                                             TCP
                                         </a-radio-button>
                                     </a-radio-group>
@@ -280,7 +315,7 @@
                             <a-col :span="12">
                                 <a-form-item
                                     label="用户"
-                                    name="name"
+                                    name="user"
                                     :rules="[
                                         {
                                             required: true,
@@ -293,7 +328,7 @@
                                     ]"
                                 >
                                     <a-input
-                                        v-model:value="formData.name"
+                                        v-model:value="formData.user"
                                         placeholder="请输入用户"
                                     />
                                 </a-form-item>
@@ -301,7 +336,7 @@
                             <a-col :span="12">
                                 <a-form-item
                                     label="接入密码"
-                                    name="name"
+                                    name="password"
                                     :rules="[
                                         {
                                             required: true,
@@ -313,8 +348,8 @@
                                         },
                                     ]"
                                 >
-                                    <a-input
-                                        v-model:value="formData.name"
+                                    <a-input-password
+                                        v-model:value="formData.password"
                                         placeholder="请输入接入密码"
                                     />
                                 </a-form-item>
@@ -322,7 +357,7 @@
                             <a-col :span="12">
                                 <a-form-item
                                     label="厂商"
-                                    name="name"
+                                    name="manufacturer"
                                     :rules="[
                                         {
                                             required: true,
@@ -335,7 +370,7 @@
                                     ]"
                                 >
                                     <a-input
-                                        v-model:value="formData.name"
+                                        v-model:value="formData.manufacturer"
                                         placeholder="请输入厂商"
                                     />
                                 </a-form-item>
@@ -343,7 +378,7 @@
                             <a-col :span="12">
                                 <a-form-item
                                     label="型号"
-                                    name="name"
+                                    name="model"
                                     :rules="[
                                         {
                                             required: true,
@@ -356,7 +391,7 @@
                                     ]"
                                 >
                                     <a-input
-                                        v-model:value="formData.name"
+                                        v-model:value="formData.model"
                                         placeholder="请输入型号"
                                     />
                                 </a-form-item>
@@ -364,7 +399,7 @@
                             <a-col :span="12">
                                 <a-form-item
                                     label="版本号"
-                                    name="name"
+                                    name="firmware"
                                     :rules="[
                                         {
                                             required: true,
@@ -377,7 +412,7 @@
                                     ]"
                                 >
                                     <a-input
-                                        v-model:value="formData.name"
+                                        v-model:value="formData.firmware"
                                         placeholder="请输入版本号"
                                     />
                                 </a-form-item>
@@ -385,42 +420,44 @@
                             <a-col :span="12">
                                 <a-form-item
                                     label="心跳周期（秒）"
-                                    name="name"
+                                    name="keepaliveInterval"
                                     :rules="[
                                         {
                                             required: true,
-                                            message: '请输入心跳周期（秒）',
-                                        },
-                                        {
-                                            max: 64,
-                                            message: '最多可输入64个字符',
+                                            message: '请输入心跳周期',
                                         },
                                     ]"
                                 >
                                     <a-input-number
-                                        v-model:value="formData.name"
-                                        placeholder="请输入心跳周期（秒）"
+                                        :min="1"
+                                        :max="10000"
+                                        v-model:value="
+                                            formData.keepaliveInterval
+                                        "
+                                        placeholder="请输入心跳周期"
+                                        style="width: 100%"
                                     />
                                 </a-form-item>
                             </a-col>
                             <a-col :span="12">
                                 <a-form-item
                                     label="注册间隔（秒）"
-                                    name="name"
+                                    name="registerInterval"
                                     :rules="[
                                         {
                                             required: true,
-                                            message: '请输入注册间隔（秒）',
-                                        },
-                                        {
-                                            max: 64,
-                                            message: '最多可输入64个字符',
+                                            message: '请输入注册间隔',
                                         },
                                     ]"
                                 >
                                     <a-input-number
-                                        v-model:value="formData.name"
-                                        placeholder="请输入注册间隔（秒）"
+                                        :min="1"
+                                        :max="10000"
+                                        v-model:value="
+                                            formData.registerInterval
+                                        "
+                                        placeholder="请输入注册间隔"
+                                        style="width: 100%"
                                     />
                                 </a-form-item>
                             </a-col>
@@ -520,115 +557,111 @@
 
 <script setup lang="ts">
 import { getImage } from '@/utils/comm';
-import { Form } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
-
-import DeviceApi from '@/api/media/device';
-
-import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
-import type { ProductType } from '@/views/media/Device/typings';
+import CascadeApi from '@/api/media/cascade';
 
 const router = useRouter();
 const route = useRoute();
-const useForm = Form.useForm;
 
 // 表单数据
 const formData = ref({
-    id: '',
+    id: route.query.id || undefined,
+    // name: '',
+    cascadeName: '',
+    proxyStream: false,
+    // 以下字段, 提交时需提取到sipConfigs[{}]字段当中
+    clusterNodeId: '',
     name: '',
-    channel: 'gb28181-2016',
-    photoUrl: getImage('/device-media.png'),
-    productId: '',
-    others: {
-        access_pwd: '',
-    },
-    description: '',
-    // 编辑字段
-    streamMode: 'UDP',
+    sipId: '',
+    domain: '',
+    remoteAddress: '',
+    remotePort: undefined,
+    localSipId: '',
+    host: '',
+    port: undefined,
+    // remotePublic: {
+    //     host: '',
+    //     port: undefined,
+    // },
+    publicHost: '',
+    publicPort: undefined,
+    transport: 'UDP',
+    user: '',
+    password: '',
     manufacturer: '',
     model: '',
     firmware: '',
+    keepaliveInterval: '60',
+    registerInterval: '3600',
 });
 
-// 验证规则
-const formRules = ref({
-    id: [
-        {
-            required: true,
-            message: '请输入ID',
-        },
-        { max: 64, message: '最多输入64个字符' },
-        {
-            pattern: /^[a-zA-Z0-9_\-]+$/,
-            message: '请输入英文或者数字或者-或者_',
-        },
-    ],
-    name: [
-        { required: true, message: '请输入名称' },
-        { max: 64, message: '最多可输入64个字符' },
-    ],
-    productId: [{ required: true, message: '请选择所属产品' }],
-    channel: [{ required: true, message: '请选择接入方式' }],
-    'others.access_pwd': [{ required: true, message: '请输入接入密码' }],
-    description: [{ max: 200, message: '最多可输入200个字符' }],
-    streamMode: [{ required: true, message: '请选择流传输模式' }],
-});
-
-watch(
-    () => formData.value.channel,
-    (val) => {
-        formRules.value['id'][0].required = val === 'gb28181-2016';
-        formRules.value['others.access_pwd'][0].required =
-            val === 'gb28181-2016';
-        validate();
-        getProductList();
-    },
-);
-
-const { resetFields, validate, validateInfos, clearValidate } = useForm(
-    formData.value,
-    formRules.value,
-);
-
-const clearValid = () => {
-    setTimeout(() => {
-        clearValidate();
-    }, 200);
+/**
+ * 获取集群节点
+ */
+const clustersList = ref([]);
+const getClustersList = async () => {
+    const { result } = await CascadeApi.clusters();
+    clustersList.value = result.map((m: any) => ({
+        label: m.name,
+        value: m.id,
+    }));
 };
+getClustersList();
+/**
+ * SIP本地地址
+ */
+const allList = ref<any[]>([]);
+const getAllList = async () => {
+    const { result } = await CascadeApi.all();
+    allList.value = result.map((m: any) => ({
+        label: m.host,
+        value: m.host,
+    }));
+    setPorts();
+};
+getAllList();
 
 /**
- * 获取所属产品
+ * 传输协议改变, 获取对应的端口
  */
-const productList = ref<ProductType[]>([]);
-const getProductList = async () => {
-    // console.log('formData.productId: ', formData.value.productId);
-    const params = {
-        paging: false,
-        sorts: [{ name: 'createTime', order: 'desc' }],
-        terms: [
-            { column: 'accessProvider', value: formData.value.channel },
-            { column: 'state', value: 1 },
-        ],
-    };
-    const { result } = await DeviceApi.queryProductList(params);
-    productList.value = result;
+const allListPorts = ref([]);
+const setPorts = () => {
+    allListPorts.value = allList.value.find(
+        (f: any) => f.host === formData.value.host,
+    )?.ports[formData.value.transport || ''];
 };
-getProductList();
-
-/**
- * 新增产品
- */
-const saveProductVis = ref(false);
 
 /**
  * 获取详情
  */
 const getDetail = async () => {
-    const res = await DeviceApi.detail(route.query.id as string);
-    // console.log('res: ', res);
-    // formData.value = res.result;
-    Object.assign(formData.value, res.result);
-    formData.value.channel = res.result.provider;
+    if (!route.query.id) return;
+    const res = await CascadeApi.detail(route.query.id as string);
+    const { id, name, proxyStream, sipConfigs } = res.result;
+    formData.value = {
+        id,
+        cascadeName: name,
+        proxyStream,
+        clusterNodeId: sipConfigs[0]?.clusterNodeId,
+        name: sipConfigs[0]?.name,
+        sipId: sipConfigs[0]?.sipId,
+        domain: sipConfigs[0]?.domain,
+        remoteAddress: sipConfigs[0]?.remoteAddress,
+        remotePort: sipConfigs[0]?.remotePort,
+        localSipId: sipConfigs[0]?.localSipId,
+        host: sipConfigs[0]?.host,
+        port: sipConfigs[0]?.port,
+        publicHost: sipConfigs[0]?.publicHost,
+        publicPort: sipConfigs[0]?.publicPort,
+        transport: sipConfigs[0]?.transport,
+        user: sipConfigs[0]?.user,
+        password: sipConfigs[0]?.password,
+        manufacturer: sipConfigs[0]?.manufacturer,
+        model: sipConfigs[0]?.model,
+        firmware: sipConfigs[0]?.firmware,
+        keepaliveInterval: sipConfigs[0]?.keepaliveInterval,
+        registerInterval: sipConfigs[0]?.registerInterval,
+    };
 
     console.log('formData.value: ', formData.value);
 };
@@ -637,31 +670,107 @@ onMounted(() => {
     getDetail();
 });
 
+const regDomain =
+    /[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\.?/;
+/**
+ * 上级SIP地址 字段验证
+ * @param _
+ * @param value 此处绑定的是 remoteAddress
+ */
+const checkSIP = (_: any, value: string) => {
+    return checkHost(value, formData.value.remotePort);
+};
+/**
+ * SIP远程地址 字段验证
+ * @param _
+ * @param value 此处绑定的是 publicHost
+ */
+const checkPublicSIP = (_: any, value: string) => {
+    return checkHost(value, formData.value.publicPort);
+};
+
+/**
+ * 字段验证
+ * @param host ip
+ * @param port 端口
+ */
+const checkHost = (host: string, port: string | number | undefined) => {
+    if (!host) {
+        return Promise.resolve();
+    } else if (!host) {
+        return Promise.reject(new Error('请输入IP 地址'));
+    } else if (host && !regDomain.test(host)) {
+        return Promise.reject(new Error('请输入正确的IP地址'));
+    } else if (!port) {
+        return Promise.reject(new Error('请输入端口'));
+    } else if ((host && Number(host) < 1) || Number(host) > 65535) {
+        return Promise.reject(new Error('端口请输入1~65535之间的正整数'));
+    }
+    return Promise.resolve();
+};
+
+/**
+ * SIP本地地址 字段验证
+ * @param _
+ * @param value
+ */
+const checkLocalSIP = (_: any, value: string) => {
+    if (!value) {
+        return Promise.resolve();
+    } else if (!value) {
+        return Promise.reject(new Error('请选择IP地址'));
+    } else if (!formData.value.port) {
+        return Promise.reject(new Error('请选择端口'));
+    }
+    return Promise.resolve();
+};
+
 /**
  * 表单提交
  */
+const formRef = ref();
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
     // console.log('formData.value: ', formData.value);
-    validate()
+    formRef.value
+        .validate()
         .then(async () => {
+            const {
+                id,
+                cascadeName,
+                proxyStream,
+                publicHost,
+                publicPort,
+                ...extraFormData
+            } = formData.value;
+            const params = {
+                id,
+                name: cascadeName,
+                proxyStream,
+                sipConfigs: [
+                    {
+                        ...extraFormData,
+                        remotePublic: {
+                            host: publicHost,
+                            port: publicPort,
+                        },
+                    },
+                ],
+            };
             btnLoading.value = true;
-            let res;
-            if (!route.query.id) {
-                res = await DeviceApi.save(formData.value);
-            } else {
-                res = await DeviceApi.update(formData.value);
-            }
-            if (res?.success) {
-                message.success('保存成功');
-                router.back();
-            }
-        })
-        .catch((err) => {
-            console.log('err: ', err);
-        })
-        .finally(() => {
+            const res = formData.value.id
+                ? await CascadeApi.update(params)
+                : await CascadeApi.save(params);
             btnLoading.value = false;
+            if (res.success) {
+                message.success('操作成功');
+                router.back();
+            } else {
+                message.error('操作失败');
+            }
+        })
+        .catch((err: any) => {
+            console.log('err: ', err);
         });
 };
 </script>

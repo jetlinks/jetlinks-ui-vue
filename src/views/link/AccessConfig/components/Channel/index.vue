@@ -39,12 +39,16 @@
                                 />
                             </a-form-item>
                             <a-form-item>
-                                <a-button
+                                <PermissionButton
                                     v-if="view === 'false'"
                                     type="primary"
                                     html-type="submit"
-                                    >保存</a-button
+                                    :hasPermission="`link/AccessConfig:${
+                                        id === ':id' ? 'add' : 'update'
+                                    }`"
                                 >
+                                    保存
+                                </PermissionButton>
                             </a-form-item>
                         </a-form>
                     </div>
@@ -86,10 +90,9 @@
 </template>
 
 <script lang="ts" setup name="AccessChannel">
-import { message, Form } from 'ant-design-vue';
-import type { FormInstance } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 import { update, save } from '@/api/link/accessConfig';
-import { ProtocolMapping } from '../../Detail/data';
+import { ProtocolMapping } from '../../data';
 
 interface FormState {
     name: string;
@@ -129,16 +132,7 @@ const onFinish = async (values: any) => {
         id === ':id' ? await save(params) : await update({ ...params, id });
     if (resp.status === 200) {
         message.success('操作成功！');
-        // if (params.get('save')) {
-        // if ((window as any).onTabSaveSuccess) {
-        //   if (resp.result) {
-        //     (window as any).onTabSaveSuccess(resp.result);
-        //     setTimeout(() => window.close(), 300);
-        //   }
-        // }
-        //   } else {
         history.back();
-        //   }
     }
 };
 
@@ -164,8 +158,6 @@ onMounted(() => {
 }
 .config-right {
     padding: 20px;
-    // color: rgba(0, 0, 0, 0.8);
-    // background: rgba(0, 0, 0, 0.04);
 
     .config-right-item {
         margin-bottom: 10px;

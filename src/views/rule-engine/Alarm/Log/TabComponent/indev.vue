@@ -24,11 +24,18 @@
             v-if="props.type === 'org'"
             @search="search"
         ></Search>
-        <JTable :columns="columns" :request="handleSearch" :params="params">
+        <JTable
+            :columns="columns"
+            :request="handleSearch"
+            :params="params"
+            :gridColumn="2"
+            model="CARD"
+        >
             <template #card="slotProps">
                 <CardBox
                     :value="slotProps"
                     v-bind="slotProps"
+                    :actions="getActions(slotProps, 'card')"
                     :statusText="
                         data.defaultLevel.find(
                             (i) => i.level === slotProps.level,
@@ -39,7 +46,7 @@
                         <img :src="imgMap.get(slotProps.targetType)" alt="" />
                     </template>
                     <template #content>
-                        <Ellipsis>
+                        <Ellipsis style="width: calc(100% - 100px)">
                             <span style="font-weight: 500">
                                 {{ slotProps.alarmName }}
                             </span>
@@ -90,10 +97,25 @@
                                 </span>
                             </a-col>
                         </a-row>
+                        
+                    </template>
+                    <template #actions="item">
+                        <PermissionButton
+                            :disabled="item.key === 'solve' && slotProps.state.value ==='normal'"
+                            :popConfirm="item.popConfirm"
+                            :tooltip="{
+                                ...item.tooltip,
+                            }"
+                            @click="item.onClick"
+                        >
+                            <AIcon :type="item.icon" />
+                            <span>{{ item?.text }}</span>
+                        </PermissionButton>
                     </template>
                 </CardBox>
             </template>
         </JTable>
+        <SolveLog :data="data" v-if="data.solveVisible" @closeSolve="closeSolve"/>
     </div>
 </template>
 
@@ -111,6 +133,11 @@ import { useAlarmStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
 import { Store } from 'jetlinks-store';
 import moment from 'moment';
+import type { ActionsType } from '@/components/Table';
+import SolveLog from '../SolveLog/index.vue'
+import { useMenuStore } from '@/store/menu';
+const menuStory = useMenuStore();
+
 const alarmStore = useAlarmStore();
 const { data } = storeToRefs(alarmStore);
 const getDefaulitLevel = () => {
@@ -156,11 +183,11 @@ const columns = [
         },
     },
     {
-        title: '最近告警事件',
+        title: '最近告警时间',
         dataIndex: 'alarmTime',
         key: 'alarmTime',
         search: {
-            type: 'dateTime',
+            type: 'date',
         },
     },
     {
@@ -254,12 +281,7 @@ let param = reactive({
     pageSize: 10,
     terms: [],
 });
-// let dataSource = reactive({
-//     data: [],
-//     pageSize: 10,
-//     pageIndex: 0,
-//     total: 0,
-// });
+
 const handleSearch = async (params: any) => {
     const resp = await query(params);
     if (resp.status === 200) {
@@ -284,33 +306,97 @@ const handleSearch = async (params: any) => {
 };
 watchEffect(() => {
     if (props.type !== 'all' && !props.id) {
-        params.value.terms.push({
-            termType: 'eq',
-            column: 'targetType',
-            value: props.type,
-            type: 'and',
-        });
+        params.value.terms = [
+            {
+                termType: 'eq',
+                column: 'targetType',
+                value: props.type,
+                type: 'and',
+            },
+        ];
     }
     if (props.id) {
-        params.value.terms.push({
-            termType: 'eq',
-            column: 'alarmConfigId',
-            value: props.id,
-            type: 'and',
-        });
+        params.value.terms = [
+            {
+                termType: 'eq',
+                column: 'alarmConfigId',
+                value: props.id,
+                type: 'and',
+            },
+        ];
+    }
+    if(props.type === 'all'){
+        params.value.terms = [];
     }
 });
 
 const search = (data: any) => {
-    const dt = {
-        pageSize: 10,
-        terms: [...data?.terms],
-    };
+    params.value.terms = [...data?.terms];
+    if (props.type !== 'all' && !props.id) {
+        params.value.terms.push(
+            {
+                termType: 'eq',
+                column: 'targetType',
+                value: props.type,
+                type: 'and',
+            },
+        );
+    }
+    if (props.id) {
+        params.value.terms.push (
+            {
+                termType: 'eq',
+                column: 'alarmConfigId',
+                value: props.id,
+                type: 'and',
+            },
+        );
+    }
 };
-const log = () => {
-    console.log(data.value.defaultLevel);
+
+const getActions = (
+    currentData: Partial<Record<string, any>>,
+    type: 'card',
+): ActionsType[] => {
+    if (!currentData) return [];
+    const actions = [
+        {
+            key: 'solve',
+            text: '告警处理',
+            tooltip: {
+                title: '告警处理',
+            },
+            icon: 'ToolOutlined',
+            onClick: () =>{
+                data.value.current = currentData;
+                data.value.solveVisible = true;
+            }
+        },
+        {
+            key: 'log',
+            text: '告警日志',
+            tooltip: {
+                title: '告警日志',
+            },
+            icon: 'FileOutlined',
+            onClick: () =>{
+                menuStory.jumpPage(`rule-engine/Alarm/Log/Detail`,{id:currentData.id});
+            }
+        },
+        {
+            key: 'detail',
+            text: '处理记录',
+            tooltip: {
+                title: '处理记录',
+            },
+            icon: 'FileTextOutlined',
+        },
+    ];
+    return actions;
 };
-log();
+const closeSolve = () =>{
+    data.value.solveVisible = false
+}
 </script>
 <style lang="less" scoped>
 </style>

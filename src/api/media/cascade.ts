@@ -11,7 +11,8 @@ export default {
     // 新增
     save: (data: any) => server.post(`/media/gb28181-cascade`, data),
     // 修改
-    update: (id: string, data: any) => server.put(`/media/gb28181-cascade/${id}`, data),
+    // update: (id: string, data: any) => server.put(`/media/gb28181-cascade/${id}`, data),
+    update: (data: any) => server.patch(`/media/gb28181-cascade`, data),
     // 删除
     del: (id: string) => server.remove(`media/gb28181-cascade/${id}`),
     // 禁用
@@ -21,8 +22,8 @@ export default {
 
     // 新增/编辑 
     // 获取集群节点
-    clusters: () => server.get(`/network/resources/alive/clusters`),
+    clusters: () => server.get<any>(`/network/resources/clusters`),
     // SIP本地地址
-    all: () => server.get(`/network/resources/alive/_all`),
+    all: () => server.get<any>(`/network/resources/alive/_all`),
 
 }
