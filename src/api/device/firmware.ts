@@ -49,8 +49,10 @@ export const queryProduct = (data?: any) =>
 export const queryDevice = () =>
     server.get(`/device/instance/_query/no-paging?paging=false`);
 
-export const validateVersion = (productId: string, versionOrder: number) =>
-    server.get(`/firmware/${productId}/${versionOrder}/exists`);
+export const validateVersion = (
+    productId: string,
+    versionOrder: number | string,
+) => server.get(`/firmware/${productId}/${versionOrder}/exists`);
 
 export const queryDetailList = (data: Record<string, unknown>) =>
     server.post(`/device-instance/detail/_query`, data);

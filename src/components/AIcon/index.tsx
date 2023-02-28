@@ -60,6 +60,9 @@ const iconKeys = [
     'RedoOutlined',
     'VideoCameraOutlined',
     'HistoryOutlined',
+    'ToolOutlined',
+    'FileOutlined',
+    'LikeOutlined'
 ]
 
 const Icon = (props: {type: string}) => {

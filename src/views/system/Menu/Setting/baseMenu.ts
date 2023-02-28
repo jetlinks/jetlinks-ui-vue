@@ -1906,7 +1906,7 @@ export default [
                 ],
               },
               {
-                id: 'tigger',
+                id: 'trigger',
                 name: '手动触发',
                 permissions: [
                   {
@@ -2323,7 +2323,7 @@ export default [
                 ],
               },
               {
-                id: 'tigger',
+                id: 'trigger',
                 name: '手动触发',
                 permissions: [
                   {
