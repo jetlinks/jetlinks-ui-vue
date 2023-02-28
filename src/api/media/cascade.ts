@@ -18,4 +18,11 @@ export default {
     disabled: (id: string) => server.post<any>(`/media/gb28181-cascade/${id}/_disabled`),
     // 启用
     enabled: (id: string) => server.post<any>(`/media/gb28181-cascade/${id}/_enabled`),
+
+    // 新增/编辑 
+    // 获取集群节点
+    clusters: () => server.get(`/network/resources/alive/clusters`),
+    // SIP本地地址
+    all: () => server.get(`/network/resources/alive/_all`),
+
 }

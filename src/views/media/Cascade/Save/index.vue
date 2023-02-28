@@ -4,40 +4,23 @@
         <a-card>
             <a-row :gutter="24">
                 <a-col :span="12">
-                    <a-form layout="vertical">
-                        <a-form-item
-                            label="接入方式"
-                            v-bind="validateInfos.channel"
-                        >
-                            <RadioCard
-                                layout="horizontal"
-                                :options="PROVIDER_OPTIONS"
-                                :checkStyle="true"
-                                :disabled="!!route.query.id"
-                                v-model="formData.channel"
-                            />
-                        </a-form-item>
+                    <a-form layout="vertical" :model="formData">
                         <a-row :gutter="24">
-                            <a-col :span="8">
-                                <JUpload
-                                    v-model:modelValue="formData.photoUrl"
-                                    :bgImage="formData.photoUrl"
-                                />
-                            </a-col>
-                            <a-col :span="16">
+                            <TitleComponent data="基本信息" />
+                            <a-col :span="12">
                                 <a-form-item
-                                    label="ID"
-                                    v-bind="validateInfos.id"
-                                >
-                                    <a-input
-                                        v-model:value="formData.id"
-                                        placeholder="请输入"
-                                        :disabled="!!route.query.id"
-                                    />
-                                </a-form-item>
-                                <a-form-item
-                                    label="设备名称"
-                                    v-bind="validateInfos.name"
+                                    label="名称"
+                                    name="name"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请输入名称',
+                                        },
+                                        {
+                                            max: 84,
+                                            message: '最多可输入84个字符',
+                                        },
+                                    ]"
                                 >
                                     <a-input
                                         v-model:value="formData.name"
@@ -45,93 +28,404 @@
                                     />
                                 </a-form-item>
                             </a-col>
-                        </a-row>
-                        <a-form-item
-                            label="所属产品"
-                            v-bind="validateInfos.productId"
-                        >
-                            <a-row :gutter="[0, 10]">
-                                <a-col :span="!!route.query.id ? 24 : 22">
-                                    <a-select
-                                        v-model:value="formData.productId"
-                                        placeholder="请选择所属产品"
-                                        :disabled="!!route.query.id"
-                                    >
-                                        <a-select-option
-                                            v-for="(item, index) in productList"
-                                            :key="index"
-                                            :value="item.id"
-                                        >
-                                            {{ item.name }}
-                                        </a-select-option>
-                                    </a-select>
-                                </a-col>
-                                <a-col :span="2" v-if="!route.query.id">
-                                    <a-button
-                                        type="link"
-                                        @click="saveProductVis = true"
-                                    >
-                                        <AIcon type="PlusOutlined" />
-                                    </a-button>
-                                </a-col>
-                            </a-row>
-                        </a-form-item>
-                        <a-form-item
-                            label="接入密码"
-                            v-bind="validateInfos['others.access_pwd']"
-                            v-if="formData.channel === 'gb28181-2016'"
-                        >
-                            <a-input-password
-                                v-model:value="formData.others.access_pwd"
-                                placeholder="请输入接入密码"
-                            />
-                        </a-form-item>
-                        <template v-if="!!route.query.id">
-                            <a-form-item
-                                label="流传输模式"
-                                v-bind="validateInfos.streamMode"
-                            >
-                                <a-radio-group
-                                    button-style="solid"
-                                    v-model:value="formData.streamMode"
+                            <a-col :span="12">
+                                <a-form-item
+                                    label="代理视频流"
+                                    name="name"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请选择代理视频流',
+                                        },
+                                    ]"
                                 >
-                                    <a-radio-button value="UDP">
-                                        UDP
-                                    </a-radio-button>
-                                    <a-radio-button value="TCP_PASSIVE">
-                                        TCP被动
-                                    </a-radio-button>
-                                </a-radio-group>
-                            </a-form-item>
-                            <a-form-item label="设备厂商">
-                                <a-input
-                                    v-model:value="formData.manufacturer"
-                                    placeholder="请输入设备厂商"
-                                />
-                            </a-form-item>
-                            <a-form-item label="设备型号">
-                                <a-input
-                                    v-model:value="formData.model"
-                                    placeholder="请输入设备型号"
-                                />
-                            </a-form-item>
-                            <a-form-item label="固件版本">
-                                <a-input
-                                    v-model:value="formData.firmware"
-                                    placeholder="请输入固件版本"
-                                />
-                            </a-form-item>
-                        </template>
+                                    <a-radio-group
+                                        button-style="solid"
+                                        v-model:value="formData.name"
+                                    >
+                                        <a-radio-button value="enabled">
+                                            启用
+                                        </a-radio-button>
+                                        <a-radio-button value="disabled">
+                                            禁用
+                                        </a-radio-button>
+                                    </a-radio-group>
+                                </a-form-item>
+                            </a-col>
 
-                        <a-form-item label="说明">
-                            <a-textarea
-                                v-model:value="formData.description"
-                                show-count
-                                :maxlength="200"
-                                :rows="5"
-                                placeholder="请输入说明"
-                            />
-                        </a-form-item>
+                            <TitleComponent data="信令服务配置" />
+                            <a-col :span="12">
+                                <a-form-item
+                                    label="集群节点"
+                                    name="name"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请选择集群节点',
+                                        },
+                                    ]"
+                                >
+                                    <a-input
+                                        v-model:value="formData.name"
+                                        placeholder="请选择集群节点"
+                                    />
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item
+                                    label="信令名称"
+                                    name="name"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请输入信令名称',
+                                        },
+                                        {
+                                            max: 64,
+                                            message: '最多可输入64个字符',
+                                        },
+                                    ]"
+                                >
+                                    <a-input
+                                        v-model:value="formData.name"
+                                        placeholder="请输入信令名称"
+                                    />
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="24">
+                                <a-form-item
+                                    label="上级SIP ID"
+                                    name="name"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请输入上级SIP ID',
+                                        },
+                                        {
+                                            max: 64,
+                                            message: '最多可输入64个字符',
+                                        },
+                                    ]"
+                                >
+                                    <a-input
+                                        v-model:value="formData.name"
+                                        placeholder="请输入上级SIP ID"
+                                    />
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item
+                                    label="上级SIP域"
+                                    name="name"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请输入上级平台SIP域',
+                                        },
+                                        {
+                                            max: 64,
+                                            message: '最多可输入64个字符',
+                                        },
+                                    ]"
+                                >
+                                    <a-input
+                                        v-model:value="formData.name"
+                                        placeholder="请输入上级平台SIP域"
+                                    />
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item
+                                    label="上级SIP 地址"
+                                    name="name"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请输入上级SIP 地址',
+                                        },
+                                        {
+                                            max: 64,
+                                            message: '最多可输入64个字符',
+                                        },
+                                    ]"
+                                >
+                                    <a-row :gutter="10">
+                                        <a-col :span="14">
+                                            <a-input
+                                                v-model:value="formData.name"
+                                                placeholder="请输入IP地址"
+                                            />
+                                        </a-col>
+                                        <a-col :span="10">
+                                            <a-input
+                                                v-model:value="formData.name"
+                                                placeholder="请输入端口"
+                                            />
+                                        </a-col>
+                                    </a-row>
+                                </a-form-item>
+                            </a-col>
+
+                            <a-col :span="24">
+                                <a-form-item
+                                    label="本地SIP ID"
+                                    name="name"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请输入网关侧的SIP ID',
+                                        },
+                                        {
+                                            max: 64,
+                                            message: '最多可输入64个字符',
+                                        },
+                                    ]"
+                                >
+                                    <a-input
+                                        v-model:value="formData.name"
+                                        placeholder="网关侧的SIP ID"
+                                    />
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item
+                                    label="SIP本地地址"
+                                    name="name"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请输入SIP本地地址',
+                                        },
+                                    ]"
+                                >
+                                    <a-row :gutter="10">
+                                        <a-col :span="14">
+                                            <a-select
+                                                v-model:value="formData.name"
+                                                placeholder="请选择IP地址"
+                                            >
+                                                <a-select-option value="1">
+                                                    1
+                                                </a-select-option>
+                                            </a-select>
+                                        </a-col>
+                                        <a-col :span="10">
+                                            <a-select
+                                                v-model:value="formData.name"
+                                                placeholder="请选择端口"
+                                            >
+                                                <a-select-option value="1">
+                                                    1
+                                                </a-select-option>
+                                            </a-select>
+                                        </a-col>
+                                    </a-row>
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item
+                                    label="SIP远程地址"
+                                    name="name"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请输入SIP远程地址',
+                                        },
+                                        {
+                                            max: 64,
+                                            message: '最多可输入64个字符',
+                                        },
+                                    ]"
+                                >
+                                    <a-row :gutter="10">
+                                        <a-col :span="14">
+                                            <a-input
+                                                v-model:value="formData.name"
+                                                placeholder="请输入IP地址"
+                                            />
+                                        </a-col>
+                                        <a-col :span="10">
+                                            <a-input
+                                                v-model:value="formData.name"
+                                                placeholder="请输入端口"
+                                            />
+                                        </a-col>
+                                    </a-row>
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="24">
+                                <a-form-item
+                                    label="传输协议"
+                                    name="name"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请选择传输协议',
+                                        },
+                                    ]"
+                                >
+                                    <a-radio-group
+                                        button-style="solid"
+                                        v-model:value="formData.name"
+                                    >
+                                        <a-radio-button value="UDP">
+                                            UDP
+                                        </a-radio-button>
+                                        <a-radio-button value="TCP_PASSIVE">
+                                            TCP
+                                        </a-radio-button>
+                                    </a-radio-group>
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item
+                                    label="用户"
+                                    name="name"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请输入用户',
+                                        },
+                                        {
+                                            max: 64,
+                                            message: '最多可输入64个字符',
+                                        },
+                                    ]"
+                                >
+                                    <a-input
+                                        v-model:value="formData.name"
+                                        placeholder="请输入用户"
+                                    />
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item
+                                    label="接入密码"
+                                    name="name"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请输入接入密码',
+                                        },
+                                        {
+                                            max: 64,
+                                            message: '最多可输入64个字符',
+                                        },
+                                    ]"
+                                >
+                                    <a-input
+                                        v-model:value="formData.name"
+                                        placeholder="请输入接入密码"
+                                    />
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item
+                                    label="厂商"
+                                    name="name"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请输入厂商',
+                                        },
+                                        {
+                                            max: 64,
+                                            message: '最多可输入64个字符',
+                                        },
+                                    ]"
+                                >
+                                    <a-input
+                                        v-model:value="formData.name"
+                                        placeholder="请输入厂商"
+                                    />
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item
+                                    label="型号"
+                                    name="name"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请输入型号',
+                                        },
+                                        {
+                                            max: 64,
+                                            message: '最多可输入64个字符',
+                                        },
+                                    ]"
+                                >
+                                    <a-input
+                                        v-model:value="formData.name"
+                                        placeholder="请输入型号"
+                                    />
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item
+                                    label="版本号"
+                                    name="name"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请输入版本号',
+                                        },
+                                        {
+                                            max: 64,
+                                            message: '最多可输入64个字符',
+                                        },
+                                    ]"
+                                >
+                                    <a-input
+                                        v-model:value="formData.name"
+                                        placeholder="请输入版本号"
+                                    />
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item
+                                    label="心跳周期（秒）"
+                                    name="name"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请输入心跳周期（秒）',
+                                        },
+                                        {
+                                            max: 64,
+                                            message: '最多可输入64个字符',
+                                        },
+                                    ]"
+                                >
+                                    <a-input-number
+                                        v-model:value="formData.name"
+                                        placeholder="请输入心跳周期（秒）"
+                                    />
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item
+                                    label="注册间隔（秒）"
+                                    name="name"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请输入注册间隔（秒）',
+                                        },
+                                        {
+                                            max: 64,
+                                            message: '最多可输入64个字符',
+                                        },
+                                    ]"
+                                >
+                                    <a-input-number
+                                        v-model:value="formData.name"
+                                        placeholder="请输入注册间隔（秒）"
+                                    />
+                                </a-form-item>
+                            </a-col>
+                        </a-row>
+
                         <a-form-item>
                             <a-button
                                 type="primary"
