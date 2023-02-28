@@ -70,7 +70,9 @@
                             </a-col>
                             <a-col :span="12">
                                 <div class="card-item-content-text">说明</div>
-                                <div>{{ slotProps.description }}</div>
+                                <Ellipsis>
+                                    {{ slotProps.description }}
+                                </Ellipsis>
                             </a-col>
                         </a-row>
                     </template>
