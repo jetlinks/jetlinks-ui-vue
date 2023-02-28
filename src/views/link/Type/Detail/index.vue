@@ -1032,11 +1032,10 @@ import { Store } from 'jetlinks-store';
 import MonacoEditor from '@/components/MonacoEditor/index.vue';
 
 const route = useRoute();
-const view = route.query.view as string;
+const NetworkType = route.query.type as string;
+const view = NetworkType ? 'false' : (route.query.view as string);
 const id = route.params.id as string;
-
 const activeKey = ref(['1']);
-
 const loading = ref(false);
 const formRef1 = ref<FormInstance>();
 const formRef2 = ref<FormInstance>();
@@ -1250,7 +1249,6 @@ watch(
         }
     },
     { deep: true },
-    // { deep: true, immediate: true },
 );
 
 watch(
@@ -1263,12 +1261,22 @@ watch(
         updateClustersListIndex();
     },
     { deep: true },
-    // { deep: true, immediate: true },
 );
 watch(
     () => dynamicValidateForm.cluster?.length,
     () => {
         updateClustersListIndex();
+    },
+    { deep: true, immediate: true },
+);
+watch(
+    () => NetworkType,
+    (value) => {
+        if (value) {
+            const { cluster } = dynamicValidateForm;
+            formData.value.type = value;
+            cluster[0].configuration.host = '0.0.0.0';
+        }
     },
     { deep: true, immediate: true },
 );

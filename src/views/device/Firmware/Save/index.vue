@@ -184,7 +184,12 @@
 import { message, Form } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 import FileUpload from './FileUpload.vue';
-import { save, update, queryProduct } from '@/api/device/firmware';
+import {
+    save,
+    update,
+    queryProduct,
+    validateVersion,
+} from '@/api/device/firmware';
 import type { FormInstance } from 'ant-design-vue';
 import type { Properties } from '../type';
 
@@ -246,6 +251,21 @@ const validatorSign = async (_: Record<string, any>, value: string) => {
         return Promise.resolve();
     }
 };
+const validatorVersionOrder = async (_: Record<string, any>, value: string) => {
+    const { signMethod, productId } = formData.value;
+    if (value && !!signMethod && productId) {
+        const res = await validateVersion(productId, value);
+        if (res.status === 200) {
+            if (id && props.data.versionOrder === value) {
+                formData.value.versionOrder = '';
+            } else {
+                Promise.reject(res.result ? ['版本序号已存在'] : '');
+            }
+        }
+    } else {
+        return Promise.resolve();
+    }
+};
 
 const { resetFields, validate, validateInfos } = useForm(
     formData,
@@ -258,8 +278,12 @@ const { resetFields, validate, validateInfos } = useForm(
         version: [
             { required: true, message: '请输入版本号' },
             { max: 64, message: '最多可输入64个字符', trigger: 'change' },
+            { validator: validatorVersionOrder, trigger: 'blur' },
         ],
-        versionOrder: [{ required: true, message: '请输入版本序号' }],
+        versionOrder: [
+            { required: true, message: '请输入版本序号' },
+            { validator: validatorVersionOrder, trigger: 'blur' },
+        ],
         signMethod: [{ required: true, message: '请选择签名方式' }],
         sign: [
             { required: true, message: '请输入签名' },
@@ -280,10 +304,10 @@ const onSubmit = async () => {
     validate()
         .then(async (res) => {
             const product = productOptions.value.find(
-                (item) => item.value === res.productId,
+                (item) => item?.value === res.productId,
             );
-            const productName = product.label || props.data?.url;
-            const size = extraValue.value.length || props.data?.size;
+            const productName = product?.label || props.data?.url;
+            const size = extraValue.value?.length || props.data?.size;
 
             const params = {
                 ...toRaw(formData.value),
