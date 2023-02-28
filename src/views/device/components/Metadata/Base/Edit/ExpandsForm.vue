@@ -19,7 +19,7 @@
   </a-form-item>
   <a-form-item v-if="type === 'product' && ['int', 'float', 'double', 'long', 'date', 'string', 'boolean'].includes(valueType.type)"
     label="指标配置" :name="name.concat(['metrics'])">
-    <metrics-param v-model:value="_value.metrics" :type="valueType.type" :enum="valueType"></metrics-param>
+    <metrics-param v-model:value="_value.metrics" :type="valueType.type" :enum="valueType" :name="name.concat(['metrics'])"></metrics-param>
   </a-form-item>
 </template>
 <script setup lang="ts" name="ExpandsForm">

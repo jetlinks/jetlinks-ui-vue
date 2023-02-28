@@ -7,7 +7,7 @@
       message: 'ID只能由数字、字母、下划线、中划线组成',
     },
   ]">
-    <a-input v-model:value="value.id" size="small" @change="asyncOtherConfig"></a-input>
+    <a-input v-model:value="value.id" size="small" @change="asyncOtherConfig" :disabled="metadataStore.model.action === 'edit'"></a-input>
   </a-form-item>
   <a-form-item label="名称" name="name" :rules="[
     { required: true, message: '请输入名称' },
@@ -67,6 +67,7 @@ import { useProductStore } from '@/store/product';
 import { getMetadataConfig } from '@/api/device/product'
 import JsonParam from '@/components/Metadata/JsonParam/index.vue'
 import { EventLevel, ExpandsTypeList } from '@/views/device/data';
+import { useMetadataStore } from '@/store/metadata';
 
 const props = defineProps({
   type: {
@@ -83,6 +84,9 @@ const props = defineProps({
     default: ''
   }
 })
+
+const metadataStore = useMetadataStore()
+
 if (props.modelType === 'events' || props.modelType === 'tags') {
   if (!props.value.expands) {
     props.value.expands = {}
