@@ -2,7 +2,7 @@
   <a-form-item label="数据类型" :name="name.concat(['type'])" :rules="[
     { required: true, message: '请选择数据类型' },
   ]">
-    <a-select v-model:value="value.type" :options="_dataTypeList" size="small"></a-select>
+    <a-select v-model:value="value.type" :options="_dataTypeList" size="small" @change="changeType"></a-select>
   </a-form-item>
   <a-form-item label="单位" :name="name.concat(['unit'])" v-if="['int', 'float', 'long', 'double'].includes(value.type)">
     <InputSelect v-model:value="value.unit" :options="unit.unitOptions" size="small"></InputSelect>
@@ -48,7 +48,7 @@
 </template>
 <script lang="ts" setup mame="BaseForm">
 import { DataTypeList, FileTypeList } from '@/views/device/data';
-import { DefaultOptionType } from 'ant-design-vue/es/select';
+import { DefaultOptionType, SelectValue } from 'ant-design-vue/es/select';
 import { PropType } from 'vue'
 import { getUnit } from '@/api/device/instance';
 import { Store } from 'jetlinks-store';
@@ -79,6 +79,7 @@ const props = defineProps({
 
 interface Emits {
   (e: 'update:value', data: ValueType): void;
+  (e: 'changeType', data: string): void;
 }
 const emit = defineEmits<Emits>()
 
@@ -107,6 +108,10 @@ const unit = {
 unit.getUnit()
 
 const _dataTypeList = computed(() => props.isSub ? DataTypeList.filter(item => item.value !== 'array' && item.value !== 'object') : DataTypeList)
+
+const changeType = (val: SelectValue) => {
+  emit('changeType', val as string)
+}
 </script>
 <style lang="less" scoped>
 :deep(.ant-form-item-label) {

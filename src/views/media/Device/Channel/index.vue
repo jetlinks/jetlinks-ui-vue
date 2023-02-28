@@ -76,6 +76,12 @@
                 </a-space>
             </template>
         </JTable>
+
+        <Save
+            v-model:visible="saveVis"
+            :channelData="channelData"
+            @submit="listRef.reload()"
+        />
     </page-container>
 </template>
 
@@ -84,6 +90,7 @@ import ChannelApi from '@/api/media/channel';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { useMenuStore } from 'store/menu';
 import { message } from 'ant-design-vue';
+import Save from './Save.vue';
 
 const menuStory = useMenuStore();
 const route = useRoute();
@@ -163,6 +170,8 @@ const handleAdd = () => {
 
 const listRef = ref();
 const playVis = ref(false);
+const channelData = ref();
+
 const getActions = (
     data: Partial<Record<string, any>>,
     type: 'card' | 'table',
@@ -178,6 +187,7 @@ const getActions = (
             icon: 'EditOutlined',
             onClick: () => {
                 saveVis.value = true;
+                channelData.value = data;
             },
         },
         {
