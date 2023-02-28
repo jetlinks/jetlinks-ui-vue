@@ -20,19 +20,32 @@
       >
         <WriteProperty v-model:value='formModel.writeProperties' v-model:action='optionCache.action' :properties='writeProperties' />
       </a-form-item>
+      <a-form-item
+        v-if='showReportEvent'
+        name='eventId'
+        :rules="[{ required: true, message: '请选择事件' }]"
+      >
+        <a-select
+          v-model:value='formModel.eventId'
+          :filter-option='filterSelectNode'
+          :options='eventOptions'
+          placeholder='请选择事件'
+          style='width: 100%'
+          @select='eventSelect'
+        />
+      </a-form-item>
     </a-form>
   </div>
 </template>
 
 <script setup lang='ts'>
-
+import { filterSelectNode } from '@/utils/comm'
 import { TopCard, Timer } from '@/views/rule-engine/Scene/Save/components'
 import { getImage } from '@/utils/comm'
 import { metadataType } from '@/views/rule-engine/Scene/typings'
 import type { PropType } from 'vue'
 import { TypeEnum } from '@/views/rule-engine/Scene/Save/Device/util'
 import ReadProperties from './ReadProperties.vue'
-import ReportEvent from './ReportEvent.vue'
 import WriteProperty from './WriteProperty.vue'
 
 const props = defineProps({
@@ -46,7 +59,10 @@ const formModel = reactive({
   operator: 'online',
   timer: {},
   readProperties: [],
-  writeProperties: {}
+  writeProperties: {},
+  eventId: undefined,
+  functionId: undefined,
+  functionParameters: []
 })
 
 const optionCache = reactive({
@@ -55,6 +71,7 @@ const optionCache = reactive({
 
 const readProperties = ref<any[]>([])
 const writeProperties = ref<any[]>([])
+const eventOptions = ref<any[]>([])
 
 const topOptions = computed(() => {
   const baseOptions = [
@@ -72,6 +89,7 @@ const topOptions = computed(() => {
 
   if (props.metadata.events?.length) {
     baseOptions.push(TypeEnum.reportEvent)
+    eventOptions.value = props.metadata.events.map(item => ({ ...item, label: item.name, value: item.id }))
   }
 
   if (props.metadata.properties?.length) {
@@ -124,6 +142,10 @@ const showTimer = computed(() => {
     TypeEnum.invokeFunction.value
   ].includes(formModel.operator)
 })
+
+const eventSelect = (_: string, eventItem: any) => {
+  optionCache.action = `${eventItem.name}上报`
+}
 
 </script>
 

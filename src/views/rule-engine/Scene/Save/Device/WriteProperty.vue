@@ -17,13 +17,20 @@
       </span>
     </a-col>
     <a-col :span='24' v-if='showTable'>
-
+      <div style='margin-top: 24px'>
+        <FunctionCall
+          :value='_value'
+          :data='callDataOptions'
+          @change='callDataChange'
+        />
+      </div>
     </a-col>
   </a-row>
 </template>
 
 <script setup lang='ts' name='WriteProperties'>
 import { filterSelectNode } from '@/utils/comm'
+import { FunctionCall } from '../components'
 import type { PropType } from 'vue'
 
 type Emit = {
@@ -49,7 +56,8 @@ const props = defineProps({
 const emit = defineEmits<Emit>()
 
 const reportKey = ref<string>()
-const callData = ref<Array<Record<string, any>>>()
+const callData = ref<Array<{ id: string, value: string | undefined }>>()
+const _value = ref([])
 
 const callDataOptions = computed(() => {
   const _valueKeys = Object.keys(props.value)
@@ -88,8 +96,22 @@ const change = (v: string, option: any) => {
   const _data = {
     [v]: undefined
   }
-  callData.value = [_data]
+  callData.value = [{ id: v, value: undefined }]
   emit('update:value', _data)
+  emit('update:action', `修改${option.name}`)
+}
+
+const callDataChange = (v: any[]) => {
+  emit('update:value', {
+    [reportKey.value!]: v[0]?.value
+  })
+}
+
+const initRowKey = () => {
+  if (props.value.length) {
+    const keys = Object.keys(props.value)
+    reportKey.value = keys[0]
+  }
 }
 
 </script>

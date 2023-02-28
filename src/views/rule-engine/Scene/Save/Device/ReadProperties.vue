@@ -53,7 +53,6 @@ const emit = defineEmits<Emit>()
 const readProperties = ref<string[]>(props.value)
 
 const change = (values: string[], optionItems: any[]) => {
-  console.log(values, optionItems)
   const names = optionItems.map((item) => item.name);
   let extraStr = '';
   let isLimit = false;
