@@ -2,7 +2,7 @@
     <a-modal title="详情" visible width="50vw" @ok="onCancel" @cancel="onCancel">
         <div style="margin-bottom: 10px"><TimeComponent v-model="dateValue" /></div>
         <div>
-            <a-tabs v-model:activeKey="activeKey" style="max-height: 600px; overflow-y: auto">
+            <a-tabs :destroyInactiveTabPane="true" v-model:activeKey="activeKey" style="max-height: 600px; overflow-y: auto">
                 <a-tab-pane key="table" tab="列表">
                     <Table :data="props.data" :time="_getTimes" />
                 </a-tab-pane>
