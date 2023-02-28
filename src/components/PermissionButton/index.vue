@@ -4,14 +4,14 @@
       <a-popconfirm v-bind="popConfirm" :disabled="!isPermission || props.disabled">
         <a-tooltip v-if="tooltip" v-bind="tooltip">
           <slot v-if="noButton"></slot>
-          <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" :style="props.style">
+          <a-button v-else v-bind="props" :disabled="_isPermission" :style="props.style">
             <slot></slot>
             <template #icon>
               <slot name="icon"></slot>
             </template>
           </a-button>
         </a-tooltip>
-        <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" >
+        <a-button v-else v-bind="props" :disabled="_isPermission" >
           <slot></slot>
           <template #icon>
             <slot name="icon"></slot>
@@ -22,7 +22,7 @@
     <template v-else-if="tooltip">
       <a-tooltip v-bind="tooltip">
         <slot v-if="noButton"></slot>
-        <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" :style="props.style">
+        <a-button v-else v-bind="props" :disabled="_isPermission" :style="props.style">
           <slot></slot>
           <template #icon>
             <slot name="icon"></slot>
@@ -32,7 +32,7 @@
     </template>
     <template v-else>
       <slot v-if="noButton"></slot>
-      <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" :style="props.style">
+      <a-button v-else v-bind="props" :disabled="_isPermission" :style="props.style">
         <slot></slot>
         <template #icon>
           <slot name="icon"></slot>
@@ -42,7 +42,7 @@
   </template>
   <a-tooltip v-else title="没有权限">
     <slot v-if="noButton"></slot>
-    <a-button v-else v-bind="_buttonProps" :disabled="_isPermission" :style="props.style">
+    <a-button v-else v-bind="props" :disabled="_isPermission" :style="props.style">
       <slot></slot>
       <template #icon>
         <slot name="icon"></slot>
@@ -91,7 +91,7 @@ const props = defineProps({
   ...buttonProps()
 })
 
-const { tooltip, popConfirm, hasPermission, noButton, ..._buttonProps } = props;
+// const { tooltip, popConfirm, hasPermission, noButton, ..._buttonProps } = props;
 
 const permissionStore = usePermissionStore()
 
@@ -103,8 +103,8 @@ const isPermission = computed(() => {
 })
 const _isPermission = computed(() =>
   'hasPermission' in props && isPermission.value
-    ? 'disabled' in _buttonProps
-      ? _buttonProps.disabled as boolean
+    ? 'disabled' in props
+      ? props.disabled as boolean
       : false
     : true
 )
