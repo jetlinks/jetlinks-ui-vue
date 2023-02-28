@@ -13,7 +13,7 @@
         </template>
         新增
       </PermissionButton>
-      <Edit v-if="metadataStore.model.edit" :type="target" :tabs="type"></Edit>
+      <Edit v-if="metadataStore.model.edit" :type="target" :tabs="type" @refresh="refreshMetadata"></Edit>
     </template>
     <template #level="slotProps">
       {{ levelMap[slotProps.expands?.level] || '-' }}
@@ -124,7 +124,7 @@ onMounted(() => {
 
 })
 
-watch([route.params.id, type], () => {
+const refreshMetadata = () => {
   loading.value = true
   // const res = target === 'product'
   //       ? await productDetail(route.params.id as string)
@@ -133,7 +133,8 @@ watch([route.params.id, type], () => {
   const item = JSON.parse(result || '{}') as MetadataItem[]
   data.value = item[type]?.sort((a: any, b: any) => b?.sortsIndex - a?.sortsIndex)
   loading.value = false
-}, { immediate: true })
+}
+watch([route.params.id, type], refreshMetadata, { immediate: true })
 
 const metadataStore = useMetadataStore()
 const handleAddClick = () => {

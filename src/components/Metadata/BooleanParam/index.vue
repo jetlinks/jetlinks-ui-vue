@@ -77,5 +77,8 @@ onMounted(() => {
       }
     }
   }
+  :deep(input) {
+    height: 22px;
+  }
 }
 </style>

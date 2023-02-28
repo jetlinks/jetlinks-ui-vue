@@ -15,12 +15,35 @@
   ]">
     <a-input v-model:value="value.name" size="small"></a-input>
   </a-form-item>
-  <value-type-form :name="['valueType']" v-model:value="value.valueType" key="property"
-    @change-type="changeValueType"></value-type-form>
+  {{ modelType }}
+  <template v-if="modelType === 'properties'">
+    <value-type-form :name="['valueType']" v-model:value="value.valueType" key="property"
+      @change-type="changeValueType"></value-type-form>
 
-  <expands-form :name="['expands']" v-model:value="value.expands" :type="type" :id="value.id" :config="config"
-    :valueType="value.valueType"></expands-form>
+    <expands-form :name="['expands']" v-model:value="value.expands" :type="type" :id="value.id" :config="config"
+      :valueType="value.valueType"></expands-form>
+  </template>
+  <template v-if="modelType === 'functions'">
+    <a-form-item label="是否异步" name="async" :rules="[
+      { required: true, message: '请选择是否异步' },
+    ]">
+      <a-radio-group v-model:value="value.async">
+        <a-radio :value="true">是</a-radio>
+        <a-radio :value="false">否</a-radio>
+      </a-radio-group>
+    </a-form-item>
+    <a-form-item label="输入参数" name="inputs" :rules="[
+      { required: true, message: '请输入输入参数' },
+    ]">
+      <JsonParam v-model:value="value.inputs" :name="['inputs']"></JsonParam>
+    </a-form-item>
+    <a-form-item label="输出参数" name="output">
+      <JsonParam v-model:value="value.output" :name="['output']"></JsonParam>
 
+      <value-type-form :name="['output']" v-model:value="value.valueType" key="function"
+      @change-type="changeValueType"></value-type-form>
+    </a-form-item>
+  </template>
   <a-form-item label="说明" name="description" :rules="[
     { max: 200, message: '最多可输入200个字符' },
   ]">
@@ -33,6 +56,7 @@ import ExpandsForm from './ExpandsForm.vue';
 import ValueTypeForm from './ValueTypeForm.vue'
 import { useProductStore } from '@/store/product';
 import { getMetadataConfig } from '@/api/device/product'
+import JsonParam from '@/components/Metadata/JsonParam/index.vue'
 
 const props = defineProps({
   type: {
@@ -43,6 +67,10 @@ const props = defineProps({
   value: {
     type: Object,
     default: () => ({})
+  },
+  modelType: {
+    type: String,
+    default: ''
   }
 })
 const productStore = useProductStore()

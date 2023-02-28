@@ -157,4 +157,8 @@ const handleAdd = () => {
 :deep(.ant-select) {
   font-size: 12px;
 }
+
+:deep(input) {
+  height: 22px;
+}
 </style>
