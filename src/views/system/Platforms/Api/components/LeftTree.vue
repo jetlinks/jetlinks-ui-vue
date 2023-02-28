@@ -19,8 +19,9 @@ import type { modeType, treeNodeTpye } from '../typing';
 
 const emits = defineEmits(['select']);
 const props = defineProps<{
-    mode:modeType
-}>()
+    mode: modeType;
+    hasHome?: boolean;
+}>();
 
 const treeData = ref<TreeProps['treeData']>([]);
 
@@ -35,14 +36,23 @@ const getTreeData = () => {
         Promise.all(allPromise).then((values) => {
             values.forEach((item: any, i) => {
                 tree[i].children = combData(item?.paths);
-                tree[i].schemas = item.components.schemas
+                tree[i].schemas = item.components.schemas;
             });
+            if (props.hasHome)
+                tree.unshift({
+                    key: 'home',
+                    name: '首页',
+                    schemas: {},
+                    children: [],
+                });
             treeData.value = tree;
         });
     });
 };
-const clickSelectItem: TreeProps['onSelect'] = (key, node: any) => {
-    if(!node.node.parent) return
+const clickSelectItem: TreeProps['onSelect'] = (key: any[], node: any) => {
+    if (key[0] === 'home') return emits('select',node.node.dataRef, {});
+
+    if (!node.node.parent && key[0] !== 'home') return;
     emits('select', node.node.dataRef, node.node?.parent.node.schemas);
 };
 

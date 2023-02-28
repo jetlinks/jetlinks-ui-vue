@@ -1022,9 +1022,9 @@
                                             .logoUrl
                                     "
                                     alt="avatar"
-                                    width="100%"
+                                    style="width: 150px;"
                                 />
-                                <div v-else>
+                                <div v-else style="width: 150px;">  
                                     <AIcon
                                         :type="
                                             form.uploadLoading
@@ -1777,6 +1777,16 @@ function clearNullProp(obj: object) {
             :deep(.ant-form-item-control) {
                 .ant-form-item-control-input-content {
                     display: flex;
+                    .ant-upload-select-picture-card {
+                        width: auto;
+                        height: auto;
+                        max-width: 150px;
+                        max-height: 150px;
+
+                        >.ant-upload {
+                            height: 150px;
+                        }
+                    }
                 }
             }
         }

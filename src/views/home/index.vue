@@ -1,10 +1,12 @@
 <template>
-    <div class="iot-home-container" v-loading="loading">
-        <InitHome v-if="currentView === 'init'" @refresh="setCurrentView" />
-        <DeviceHome v-else-if="currentView === 'device'" />
-        <DevOpsHome v-else-if="currentView === 'ops'" />
-        <ComprehensiveHome v-else-if="currentView === 'comprehensive'" />
-    </div>
+    <page-container>
+        <div class="iot-home-container" v-loading="loading">
+            <InitHome v-if="currentView === 'init'" @refresh="setCurrentView" />
+            <DeviceHome v-else-if="currentView === 'device'" />
+            <DevOpsHome v-else-if="currentView === 'ops'" />
+            <ComprehensiveHome v-else-if="currentView === 'comprehensive'" />
+        </div>
+    </page-container>
 </template>
 
 <script lang="ts" setup>

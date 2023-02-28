@@ -1,49 +1,58 @@
 <template>
-    <a-card class="api-page-container">
-        <p>
-            <AIcon type="ExclamationCircleOutlined" style="margin-right: 12px;" />配置系统支持API赋权的范围
-        </p>
-        <a-row :gutter="24">
+    <div class="api-page-container">
+        <div class="top">
+            <slot name="top" />
+        </div>
+        <a-row :gutter="24" style="background-color: #fff;padding: 20px;">
+            <a-col :span="24" v-if="props.showTitle">API文档</a-col>
             <a-col :span="5">
-                <LeftTree @select="treeSelect" :mode="props.mode" />
+                <LeftTree
+                    @select="treeSelect"
+                    :mode="props.mode"
+                    :has-home="props.hasHome"
+                />
             </a-col>
             <a-col :span="19">
-                <ChooseApi
-                    v-show="!selectedApi.url"
-                    v-model:click-api="selectedApi"
-                    :table-data="tableData"
-                    v-model:selectedRowKeys="selectedKeys"
-                    :source-keys="selectSourceKeys" :mode="props.mode"
-                />
+                <HomePage v-show="showHome" />
+                <div class="url-page" v-show="!showHome">
+                    <ChooseApi
+                        v-show="!selectedApi.url"
+                        v-model:click-api="selectedApi"
+                        :table-data="tableData"
+                        v-model:selectedRowKeys="selectedKeys"
+                        :source-keys="selectSourceKeys"
+                        :mode="props.mode"
+                    />
 
-                <div
-                    class="api-details"
-                    v-if="selectedApi.url && tableData.length > 0"
-                >
-                    <a-button
-                        @click="selectedApi = initSelectedApi"
-                        style="margin-bottom: 24px"
-                        >返回</a-button
+                    <div
+                        class="api-details"
+                        v-if="selectedApi.url && tableData.length > 0"
                     >
-                    <a-tabs v-model:activeKey="activeKey" type="card">
-                        <a-tab-pane key="does" tab="文档">
-                            <ApiDoes
-                                :select-api="selectedApi"
-                                :schemas="schemas"
-                            />
-                        </a-tab-pane>
-                        <a-tab-pane key="test" tab="调试">
-                            <ApiTest :select-api="selectedApi" />
-                        </a-tab-pane>
-                    </a-tabs>
+                        <a-button
+                            @click="selectedApi = initSelectedApi"
+                            style="margin-bottom: 24px"
+                            >返回</a-button
+                        >
+                        <a-tabs v-model:activeKey="activeKey" type="card">
+                            <a-tab-pane key="does" tab="文档">
+                                <ApiDoes
+                                    :select-api="selectedApi"
+                                    :schemas="schemas"
+                                />
+                            </a-tab-pane>
+                            <a-tab-pane key="test" tab="调试">
+                                <ApiTest :select-api="selectedApi" />
+                            </a-tab-pane>
+                        </a-tabs>
+                    </div>
                 </div>
             </a-col>
         </a-row>
-    </a-card>
+    </div>
 </template>
 
 <script setup lang="ts" name="apiPage">
-
+import HomePage from './components/HomePage.vue';
 import { getApiGranted_api, apiOperations_api } from '@/api/system/apiPage';
 import type {
     treeNodeTpye,
@@ -59,12 +68,16 @@ import ApiTest from './components/ApiTest.vue';
 const route = useRoute();
 const props = defineProps<{
     mode: modeType;
+    showTitle?: boolean;
+    hasHome?: boolean;
 }>();
-
+const showHome = ref<boolean>(Boolean(props.hasHome))
 const tableData = ref([]);
 const treeSelect = (node: treeNodeTpye, nodeSchemas: object = {}) => {
+    if (node.key === 'home') return showHome.value = true;
     schemas.value = nodeSchemas;
     if (!node.apiList) return;
+    showHome.value = false
     const apiList: apiObjType[] = node.apiList as apiObjType[];
     const table: any = [];
     // 将对象形式的数据转换为表格需要的形式
@@ -98,7 +111,7 @@ const selectedApi = ref<apiDetailsType>(initSelectedApi);
 
 const canSelectKeys = ref<string[]>([]); // 左侧可展示的项
 const selectedKeys = ref<string[]>([]); // 右侧默认勾选的项
-let selectSourceKeys = ref<string[]>([])
+let selectSourceKeys = ref<string[]>([]);
 init();
 
 function init() {
@@ -106,10 +119,10 @@ function init() {
     if (props.mode === 'appManger') {
     } else if (props.mode === 'home') {
     } else if (props.mode === 'api') {
-        apiOperations_api().then(resp=>{
-            selectedKeys.value = resp.result as string[]
-            selectSourceKeys.value = [...resp.result as string[]]
-        })
+        apiOperations_api().then((resp) => {
+            selectedKeys.value = resp.result as string[];
+            selectSourceKeys.value = [...(resp.result as string[])];
+        });
     }
     watch(tableData, () => {
         activeKey.value = 'does';
