@@ -1,6 +1,6 @@
 <template>
-    <div v-for="items in dataSource" :key="items.type">
-        <a-card  class="card-items">
+    <div v-for="items in dataSource" :key="items.type" class="card-items">
+        <div class="card-items-container">
             <TitleComponent :data="items.title"></TitleComponent>
             <a-row :gutter="[24, 24]">
                 <a-col :span="12" v-for="item in items.list" :key="item.id">
@@ -8,7 +8,7 @@
                         <div class="box">
                             <div class="left">
                                 <div class="images">
-                                    <img :src="backMap.get(item.id)" />
+                                    <img :src="BackMap.get(item.id)" />
                                 </div>
                                 <div class="context">
                                     <div class="title">
@@ -30,13 +30,13 @@
                     </div>
                 </a-col>
             </a-row>
-        </a-card>
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup name="AccessConfigProvider">
 import TitleComponent from '@/components/TitleComponent/index.vue';
-import { getImage } from '@/utils/comm';
+import { BackMap } from '../../data';
 
 const props = defineProps({
     dataSource: {
@@ -47,32 +47,16 @@ const props = defineProps({
 
 const emit = defineEmits(['onClick']);
 
-const backMap = new Map();
-backMap.set('mqtt-server-gateway', getImage('/access/mqtt.png'));
-backMap.set('websocket-server', getImage('/access/websocket.png'));
-backMap.set('modbus-tcp', getImage('/access/modbus.png'));
-backMap.set('coap-server-gateway', getImage('/access/coap.png'));
-backMap.set('tcp-server-gateway', getImage('/access/tcp.png'));
-backMap.set('Ctwing', getImage('/access/ctwing.png'));
-backMap.set('child-device', getImage('/access/child-device.png'));
-backMap.set('opc-ua', getImage('/access/opc-ua.png'));
-backMap.set('http-server-gateway', getImage('/access/http.png'));
-backMap.set('fixed-media', getImage('/access/video-device.png'));
-backMap.set('udp-device-gateway', getImage('/access/udp.png'));
-backMap.set('OneNet', getImage('/access/onenet.png'));
-backMap.set('gb28181-2016', getImage('/access/gb28181.png'));
-backMap.set('mqtt-client-gateway', getImage('/access/mqtt-broke.png'));
-backMap.set('edge-child-device', getImage('/access/child-device.png'));
-backMap.set('official-edge-gateway', getImage('/access/edge.png'));
-
 const click = (value: object) => {
     emit('onClick', value);
 };
 </script>
 
 <style lang="less" scoped>
-.card-items{
+.card-items {
     margin-bottom: 24px;
+    .card-items-container {
+    }
 }
 .provider {
     position: relative;
@@ -93,9 +77,6 @@ const click = (value: object) => {
         background-image: url('/public/images/access/rectangle.png');
         background-repeat: no-repeat;
         background-size: 100% 100%;
-        // border: 1px #8da1f4 solid;
-        // border-bottom-left-radius: 10%;
-        // border-bottom-right-radius: 10%;
         content: ' ';
     }
 
@@ -109,7 +90,6 @@ const click = (value: object) => {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-
     .left {
         display: flex;
         width: calc(100% - 70px);

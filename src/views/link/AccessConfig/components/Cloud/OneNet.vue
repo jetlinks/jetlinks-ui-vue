@@ -6,7 +6,7 @@
         <div class="steps-content">
             <div class="steps-box" v-if="current === 0">
                 <div class="alert">
-                    <info-circle-outlined />
+                    <AIcon type="InfoCircleOutlined" />
                     通过OneNet平台的HTTP推送服务进行数据接入
                 </div>
                 <div style="margin-top: 15px">
@@ -41,7 +41,9 @@
                                                             同步物联网平台设备数据到OneNet
                                                         </p>
                                                     </template>
-                                                    <question-circle-outlined />
+                                                    <AIcon
+                                                        type="QuestionCircleOutlined"
+                                                    />
                                                 </a-tooltip>
                                             </div>
                                             <a-input
@@ -105,7 +107,9 @@
                                                             接收OneNet推送的Token地址
                                                         </p>
                                                     </template>
-                                                    <question-circle-outlined />
+                                                    <AIcon
+                                                        type="QuestionCircleOutlined"
+                                                    />
                                                 </a-tooltip>
                                             </div>
                                             <a-input
@@ -136,7 +140,9 @@
                                                             端生成的消息加密key
                                                         </p>
                                                     </template>
-                                                    <question-circle-outlined />
+                                                    <AIcon
+                                                        type="QuestionCircleOutlined"
+                                                    />
                                                 </a-tooltip>
                                             </div>
                                             <a-input
@@ -253,7 +259,7 @@
         <div class="steps-content">
             <div class="steps-box" v-if="current === 1">
                 <div class="alert">
-                    <info-circle-outlined />
+                    <AIcon type="InfoCircleOutlined" />
                     只能选择HTTP通信方式的协议
                 </div>
                 <div class="search">
@@ -263,9 +269,14 @@
                         style="width: 300px"
                         @search="procotolSearch"
                     />
-                    <a-button type="primary" @click="addProcotol"
-                        >新增</a-button
+                    <PermissionButton
+                        type="primary"
+                        @click="addProcotol"
+                        hasPermission="link/Protocol:add"
                     >
+                        <template #icon><AIcon type="PlusOutlined" /></template>
+                        新增
+                    </PermissionButton>
                 </div>
                 <div class="card-item">
                     <a-row :gutter="[24, 24]" v-if="procotolList.length > 0">
@@ -375,97 +386,37 @@
             >
                 下一步
             </a-button>
-            <a-button
+            <PermissionButton
                 style="margin-right: 8px"
                 v-if="current === 2 && view === 'false'"
                 type="primary"
                 @click="saveData"
+                :hasPermission="`link/AccessConfig:${
+                    id === ':id' ? 'add' : 'update'
+                }`"
             >
                 保存
-            </a-button>
+            </PermissionButton>
             <a-button v-if="current > 0" @click="prev"> 上一步 </a-button>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup name="AccessCloudOneNet">
-import { message, Form } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 import type { FormInstance } from 'ant-design-vue';
-import { update, save, getNetworkList } from '@/api/link/accessConfig';
-import { ProtocolMapping, NetworkTypeMapping } from '../../Detail/data';
-import {
-    InfoCircleOutlined,
-    QuestionCircleOutlined,
-} from '@ant-design/icons-vue';
+import { update, save, getProtocolList } from '@/api/link/accessConfig';
 import AccessCard from '../AccessCard/index.vue';
 import { randomString } from '@/utils/utils';
 import { getImage } from '@/utils/comm';
+import { ProtocolMapping } from '../../data';
+import { useMenuStore } from 'store/menu';
 
+const menuStory = useMenuStore();
 const origin = window.location.origin;
 const img5 = getImage('/network/05.jpg');
 const img6 = getImage('/network/06.jpg');
 const img = getImage('/network/OneNet.jpg');
-
-//测试数据1{
-const resultList1 = [
-    {
-        id: '1612354213444087808',
-        name: '大华烟感协议',
-    },
-    {
-        id: '1610475299002855424',
-        name: '宇视摄像头协议',
-    },
-    {
-        id: '1610466717670780928',
-        name: '官方协议',
-    },
-    {
-        id: '1610205217785524224',
-        name: 'demo协议',
-    },
-    {
-        id: '1610204985806958592',
-        name: '水压协议',
-    },
-    {
-        id: '1605459961693745152',
-        name: '测试设备诊断日志显示',
-    },
-    {
-        id: '1582302200020783104',
-        name: 'demo',
-    },
-    {
-        id: '1581839391887794176',
-        name: '海康闸机协议',
-    },
-    {
-        id: '1567062365030637568',
-        name: '协议20220906160914',
-    },
-    {
-        id: '1561650927208628224',
-        name: 'local',
-    },
-    {
-        id: '1552881998413754368',
-        name: '官方协议V3-支持固件升级3',
-    },
-    {
-        id: '2b283b28a16d61e5fc2bdf39ceff34f8',
-        name: 'JetLinks官方协议',
-        description: 'JetLinks官方协议包',
-    },
-    {
-        id: '1551510679466844160',
-        name: '官方协议3.1',
-    },
-    {
-        id: '1551509716811161600',
-        name: '官方协议3.0',
-    },
-];
 
 interface FormState {
     apiAddress: string;
@@ -478,9 +429,6 @@ interface Form {
     name: string;
     description: string;
 }
-const route = useRoute();
-const view = route.query.view as string;
-const id = route.params.id as string;
 
 const props = defineProps({
     provider: {
@@ -493,7 +441,10 @@ const props = defineProps({
     },
 });
 
-const channel = ref(props.provider.channel);
+const route = useRoute();
+const view = route.query.view as string;
+const id = route.params.id as string;
+
 const formRef1 = ref<FormInstance>();
 const formRef2 = ref<FormInstance>();
 
@@ -557,36 +508,24 @@ const saveData = async () => {
 
     if (resp.status === 200) {
         message.success('操作成功！');
-        // 回到列表页面
-        // if (window.onTabSaveSuccess) {
-        //     window.onTabSaveSuccess(resp);
-        //     setTimeout(() => window.close(), 300);
-        // } else {
-        //     // this.$store.dispatch('jumpPathByKey', { key: MenuKeys['Link/AccessConfig'] })
-        // }
         history.back();
     }
 };
 
 const queryProcotolList = async (id: string, params = {}) => {
-    // const resp = await getProtocolList(ProtocolMapping.get(id), {
-    //     ...params,
-    //     'sorts[0].name': 'createTime',
-    //     'sorts[0].order': 'desc',
-    // });
-    // if (resp.status === 200) {
-    //     procotolList.value = resp.result;
-    //     allProcotolList.value = resp.result;
-    // }
-
-    //使用测试数据1
-    procotolList.value = resultList1;
-    allProcotolList.value = resultList1;
+    const resp = await getProtocolList(ProtocolMapping.get(id), {
+        ...params,
+        'sorts[0].name': 'createTime',
+        'sorts[0].order': 'desc',
+    });
+    if (resp.status === 200) {
+        procotolList.value = resp.result;
+        allProcotolList.value = resp.result;
+    }
 };
 
 const addProcotol = () => {
-    // const url = this.$store.state.permission.routes['Link/Protocol']
-    const url = '/iot/link/protocol';
+    const url = menuStory.menus['link/Protocol']?.path;
     const tab = window.open(
         `${window.location.origin + window.location.pathname}#${url}?save=true`,
     );
@@ -689,9 +628,6 @@ watch(
 }
 .config-right {
     padding: 20px;
-    // color: rgba(0, 0, 0, 0.8);
-    // background: rgba(0, 0, 0, 0.04);
-
     .config-right-item {
         margin-bottom: 10px;
 

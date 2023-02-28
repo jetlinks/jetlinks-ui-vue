@@ -159,7 +159,7 @@ import _ from 'lodash';
 
 const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
-
+const route = useRoute();
 const visible = ref(false);
 const current = ref({});
 
@@ -275,6 +275,14 @@ const saveChange = (value: object) => {
         tableRef.value.reload();
     }
 };
+
+watch(
+    () => route.query?.save,
+    (value) => {
+        value === 'true' && handlAdd();
+    },
+    { deep: true, immediate: true },
+);
 
 /**
  * 搜索
