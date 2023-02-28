@@ -3,7 +3,7 @@
     @ok="handleImport" :confirm-loading="loading">
     <div class="import-content">
       <p class="import-tip">
-        <exclamation-circle-outlined style="margin-right: 5px" />
+        <AIcon type="ExclamationCircleOutlined" style="margin-right: 5px" />
         导入的物模型会覆盖原来的属性、功能、事件、标签，请谨慎操作。
       </p>
     </div>
@@ -37,8 +37,7 @@
             <a-upload v-model:file-list="fileList" :before-upload="beforeUpload" accept=".json"
               :show-upload-list="false" :action="FILE_UPLOAD" @change="fileChange"
               :headers="{ 'X-Access-Token':  getToken()}">
-              <upload-outlined class="upload-button"/>
-              <!-- <button id="uploadFile" style="display: none;"></button> -->
+              <AIcon type="UploadOutlined" class="upload-button" />
             </a-upload>
           </template>
         </a-input>
@@ -62,9 +61,8 @@ import { Store } from 'jetlinks-store';
 import { SystemConst } from '@/utils/consts';
 import { useInstanceStore } from '@/store/instance'
 import { useProductStore } from '@/store/product';
-import { UploadOutlined, ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { FILE_UPLOAD } from '@/api/comm';
-import { LocalStore, getToken } from '@/utils/comm';
+import { getToken } from '@/utils/comm';
 import MonacoEditor from '@/components/MonacoEditor/index.vue'
 
 const route = useRoute()
@@ -258,13 +256,15 @@ const handleImport = async () => {
         if (resp.status === 200) {
           if (props?.type === 'device') {
             const metadata: DeviceMetadata = JSON.parse(paramsDevice || '{}')
+            // TODO导入
             // MetadataAction.insert(metadata);
-            instanceStore.setCurrent(metadata)
+            // instanceStore.setCurrent(metadata)
             message.success('导入成功')
           } else {
             const metadata: ProductItem = JSON.parse(params?.metadata || '{}')
+            // TODO导入
             // MetadataAction.insert(metadata);
-            productStore.setCurrent(metadata)
+            // productStore.setCurrent(metadata)
             message.success('导入成功')
           }
         }

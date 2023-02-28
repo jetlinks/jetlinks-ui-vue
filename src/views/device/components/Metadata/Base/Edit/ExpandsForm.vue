@@ -34,7 +34,6 @@ type ValueType = Record<any, any>;
 const props = defineProps({
   value: {
     type: Object as PropType<ValueType>,
-    default: () => ({})
   },
   type: {
     type: String
@@ -62,12 +61,22 @@ interface Emits {
 }
 const emit = defineEmits<Emits>()
 
-const _value = computed({
-  get: () => props.value,
-  set: val => {
-    emit('update:value', val)
-  }
+// const _value = computed({
+//   get: () => props.value || {},
+//   set: val => {
+//     emit('update:value', val)
+//   }
+// })
+const _value = ref<ValueType>({})
+watchEffect(() => {
+  _value.value = props.value || {}
 })
+
+watch(_value,
+  () => {
+    emit('update:value', _value.value)
+  },
+  { deep: true, immediate: true })
 
 const options = [
   {
@@ -87,7 +96,7 @@ const options = [
 const metadataStore = useMetadataStore()
 
 onMounted(() => {
-  if (props.type === 'product' || !props.value.source) {
+  if (props.type === 'product' || !props.value?.source) {
     emit('update:value', { ...props.value, source: 'device' })
   }
 })

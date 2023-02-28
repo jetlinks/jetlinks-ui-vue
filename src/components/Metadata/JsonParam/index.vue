@@ -2,14 +2,14 @@
   <div class="json-param">
     <div class="list-item" v-for="(item, index) in _value" :key="`object_${index}`">
       <div class="item-left">
-        <menu-outlined class="item-drag item-icon" />
+        <AIcon type="MenuOutlined" class="item-drag item-icon" />
       </div>
       <div class="item-middle item-editable">
         <a-popover :visible="editIndex === index" placement="left">
           <template #title>
             <div class="edit-title" style="display: flex; justify-content: space-between; align-items: center;">
               <div style="width: 150px;">配置参数</div>
-              <close-outlined @click="handleClose" />
+              <AIcon type="CloseOutlined" @click="handleClose" />
             </div>
           </template>
           <template #content>
@@ -38,23 +38,22 @@
           </template>
           <div class="item-edit" @click="handleEdit(index)">
             {{ item.name || '配置参数' }}
-            <edit-outlined class="item-icon" />
+            <AIcon type="EditOutlined" class="item-icon" />
           </div>
         </a-popover>
       </div>
       <div class="item-right">
-        <delete-outlined @click="handleDelete(index)" />
+        <AIcon type="DeleteOutlined" @click="handleDelete(index)" />
       </div>
     </div>
     <a-button type="dashed" block @click="handleAdd">
-      <template #icon><plus-outlined class="item-icon" /></template>
+      <template #icon><AIcon type="PlusOutlined" class="item-icon" /></template>
       添加参数
     </a-button>
   </div>
 </template>
 <script setup lang="ts" name="JsonParam">
 import { PropType } from 'vue'
-import { MenuOutlined, EditOutlined, DeleteOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons-vue';
 import ValueTypeForm from '@/views/device/components/Metadata/Base/Edit/ValueTypeForm.vue';
 
 type JsonType = Record<any, any>;
@@ -66,20 +65,23 @@ const emit = defineEmits<Emits>()
 const props = defineProps({
   value: {
     type: Object as PropType<JsonType[]>,
-    default: () => ([])
   }
 })
 
 const _value = ref<JsonType[]>([])
 watchEffect(() => {
-  _value.value = props.value
+  _value.value = props.value || [{
+    valueType: {
+      expands: {}
+    },
+  }]
 })
 
 watch(_value,
   () => {
     emit('update:value', _value.value)
   },
-  { deep: true })
+  { deep: true, immediate: true })
 
 const editIndex = ref<number>(-1)
 const handleEdit = (index: number) => {
