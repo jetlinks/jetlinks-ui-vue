@@ -48,7 +48,7 @@ const iconKeys = [
     'ClockCircleOutlined',
     'PartitionOutlined',
     'ShareAltOutlined',
-    'playCircleOutlined',
+    'PlayCircleOutlined',
     'RightOutlined',
     'FileTextOutlined',
     'UploadOutlined',

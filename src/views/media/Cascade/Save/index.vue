@@ -1,4 +1,4 @@
-<!-- 视频设备新增/编辑 -->
+<!-- 国标级联新增/编辑 -->
 <template>
     <page-container>
         <a-card>
@@ -144,102 +144,83 @@
                     </a-form>
                 </a-col>
                 <a-col :span="12">
-                    <div v-if="1" class="doc" style="height: 800">
+                    <div class="doc">
                         <h1>1.概述</h1>
                         <div>
-                            视频设备通过GB/T28181接入平台整体分为2部分，包括平台端配置和设备端配置，不同的设备端配置的路径或页面存在差异，但配置项基本大同小异。
+                            配置国标级联，平台可以将已经接入到自身的摄像头共享给第三方调用播放。
+                        </div>
+                        <div>
+                            <a-alert
+                                message="注：该配置只用于将本平台向上级联至第三方平台，如需第三方平台向上级联至本平台，请在“视频设备”页面新增设备时选择“GB/T28181”接入方式。"
+                                type="info"
+                                show-icon
+                            />
                         </div>
                         <h1>2.配置说明</h1>
-                        <h1>平台端配置</h1>
-                        <h2>1、ID</h2>
-                        <div>设备唯一标识，请填写设备端配置的设备编号。</div>
-                        <h2>2、所属产品</h2>
                         <div>
-                            只能选择接入方式为GB/T28281的产品，若当前无对应产品，可点击右侧快速添加按钮，填写产品名称和选择GB/T28181类型的网关完成产品创建
+                            以下配置说明以将本平台数据级联到LiveGBS平台为例。
                         </div>
-                        <h2>3、接入密码</h2>
-                        <div>
-                            配置接入密码，设备端配置的密码需与该密码一致。该字段可在产品-设备接入页面进行统一配置，配置后所有设备将继承产品配置。设备单独修改后将脱离继承关系。
-                        </div>
-                        <h1>设备端配置</h1>
-                        <div>
-                            各个厂家、不同设备型号的设备端配置页面布局存在差异，但配置项基本大同小异，此处以大华摄像头为例作为接入配置示例
-                        </div>
+                        <h2>1、上级SIP ID</h2>
+                        <div>请填写第三方平台中配置的<b>SIP ID</b>。</div>
                         <div class="image">
                             <a-image
                                 width="100%"
-                                :src="getImage('/media/doc1.png')"
+                                :src="getImage('/northbound/doc2.png')"
                             />
                         </div>
-                        <h2>1、SIP服务器编号/SIP域</h2>
-                        <div>
-                            SIP服务器编号填入该设备所属产品-接入方式页面“连接信息”的SIP。
-                            SIP域通常为SIP服务器编号的前10位。
-                        </div>
+                        <h2>2、上级SIP 域</h2>
+                        <div>请填写第三方平台中配置的<b>SIP ID域</b>。</div>
                         <div class="image">
                             <a-image
                                 width="100%"
-                                :src="getImage('/media/doc2.png')"
+                                :src="getImage('/northbound/doc1.png')"
                             />
                         </div>
-                        <h2>2、SIP服务器IP/端口</h2>
-                        <div>
-                            SIP服务器IP/端口填入该设备所属产品-接入方式页面中“连接信息”的IP/端口。
-                        </div>
+                        <h2>3、上级SIP 地址</h2>
+                        <div>请填写第三方平台中配置的<b>SIP ID地址</b>。</div>
                         <div class="image">
                             <a-image
                                 width="100%"
-                                :src="getImage('/media/doc3.png')"
+                                :src="getImage('/northbound/doc3.png')"
                             />
                         </div>
-                        <h2>3、设备编号</h2>
+                        <h2>4、本地SIP ID</h2>
                         <div>
-                            设备编号为设备唯一性标识，物联网平台的设备接入没有校验该字段，输入任意数字均不影响设备接入平台。
+                            请填写本地的<b>SIP ID地址</b>。
+                            地址由中心编码(8位)、行业编码(2位)、类型编码(3位)和序号(7位)四个码段共20位十
+                            进制数字字符构成。详细规则请参见《GB/T28181-2016》中附录D部分。
                         </div>
-                        <h2>4、注册密码</h2>
+                        <h2>5、SIP本地地址</h2>
                         <div>
-                            填入该设备所属产品-接入方式页面中“GB28281配置”处的接入密码
+                            请选择<b>指定的网卡和端口</b>，如有疑问请联系系统运维人员。
                         </div>
-                        <div class="image">
-                            <a-image
-                                width="100%"
-                                :src="getImage('/media/doc4.png')"
-                            />
-                        </div>
-                        <h2>5、其他字段</h2>
-                        <div>不影响设备接入平台，可保持设备初始化值。</div>
-                    </div>
-
-                    <div v-else class="doc" style="height: 600">
-                        <h1>1.概述</h1>
+                        <h2>6、用户</h2>
                         <div>
-                            视频设备通过RTSP、RTMP固定地址接入平台分为2步。
+                            部分平台有基于用户和接入密码的特殊认证。通常情况下,请填写<b
+                                >本地SIP ID</b
+                            >值。
                         </div>
-                        <div>1、添加视频设备</div>
-                        <div>2、添加视频下的通道地址。</div>
+                        <h2>7、接入密码</h2>
                         <div>
-                            注：当前页面为新增视频设备，新增完成后点击设备的“通道”按钮，添加通道。
+                            需与上级平台设置的接入密码一致，用于身份认证。
                         </div>
-                        <h1>2.配置说明</h1>
-                        <h2>1、ID</h2>
+                        <h2>8、厂商/型号/版本号</h2>
                         <div>
-                            设备唯一标识，若不填写，系统将自动生成唯一标识。
+                            本平台将以“设备”的身份级联到上级平台，请设置本平台在上级平台中显示的厂商、型号、版本号。
                         </div>
-                        <h2>2、所属产品</h2>
+                        <h2>9、心跳周期</h2>
                         <div>
-                            只能选择接入方式为固定地址的产品，若当前无对应产品，可点击右侧快速添加按钮，填写产品名称和选择固定地址类型的网关完成产品创建。
+                            需与上级平台设置的心跳周期保持一致，通常默认60秒。
+                        </div>
+                        <h2>10、注册间隔</h2>
+                        <div>
+                            若SIP代理通过注册方式校时,其注册间隔时间宜设置为小于
+                            SIP代理与 SIP服务器出现1s误 差所经过的运行时间。
                         </div>
                     </div>
                 </a-col>
             </a-row>
         </a-card>
-
-        <SaveProduct
-            v-model:visible="saveProductVis"
-            v-model:productId="formData.productId"
-            :channel="formData.channel"
-            @close="getProductList"
-        />
     </page-container>
 </template>
 
@@ -252,7 +233,6 @@ import DeviceApi from '@/api/media/device';
 
 import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
 import type { ProductType } from '@/views/media/Device/typings';
-import SaveProduct from './SaveProduct.vue';
 
 const router = useRouter();
 const route = useRoute();

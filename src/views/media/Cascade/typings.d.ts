@@ -31,7 +31,7 @@ type SipConfig = {
     transport: string;
     user: string;
 };
-type CascadeItem = {
+export type CascadeItem = {
     mediaServerId: string;
     onlineStatus: State;
     proxyStream: boolean;
