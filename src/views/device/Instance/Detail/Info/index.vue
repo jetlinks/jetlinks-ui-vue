@@ -28,7 +28,7 @@
                 instanceStore.current.firmwareInfo?.version
             }}</a-descriptions-item>
             <a-descriptions-item label="连接协议">{{
-                instanceStore.current.protocolName
+                instanceStore.current?.protocolName
             }}</a-descriptions-item>
             <a-descriptions-item label="消息协议">{{
                 instanceStore.current.transport

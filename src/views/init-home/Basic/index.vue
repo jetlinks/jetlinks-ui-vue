@@ -278,6 +278,7 @@ import { ValidateErrorEntity } from 'ant-design-vue/es/form/interface';
 import { message } from 'ant-design-vue';
 import { LocalStore } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
+import { SystemConst } from '@/utils/consts'
 const formRef = ref();
 const menuRef = ref();
 const formBasicRef = ref();
@@ -352,6 +353,7 @@ const saveBasicInfo = () =>{
             const res = await save(item);
             if (res.status === 200) {
                 resolve(true);
+                localStorage.setItem(SystemConst.AMAP_KEY,form.value.apikey);
                 const ico: any = document.querySelector('link[rel="icon"]');
                 if (ico !== null) {
                     ico.href = form.value.ico;

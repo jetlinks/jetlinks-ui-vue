@@ -12,6 +12,8 @@ import JUpload from './JUpload/index.vue'
 import { BasicLayoutPage, BlankLayoutPage, PageContainer } from './Layout'
 import Ellipsis from './Ellipsis/index.vue'
 import JEmpty from './Empty/index.vue'
+import AMapComponent from './AMapComponent/index.vue'
+import PathSimplifier from './AMapComponent/PathSimplifier.vue'
 
 export default  {
     install(app: App) {
@@ -30,5 +32,7 @@ export default  {
             .component('PageContainer', PageContainer)
             .component('Ellipsis', Ellipsis)
             .component('JEmpty', JEmpty)
+            .component('AMapComponent', AMapComponent)
+            .component('PathSimplifier', PathSimplifier)
     }
 }

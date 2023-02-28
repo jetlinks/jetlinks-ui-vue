@@ -48,7 +48,7 @@ const iconKeys = [
     'ClockCircleOutlined',
     'PartitionOutlined',
     'ShareAltOutlined',
-    'playCircleOutlined',
+    'PlayCircleOutlined',
     'RightOutlined',
     'FileTextOutlined',
     'UploadOutlined',
@@ -58,6 +58,8 @@ const iconKeys = [
     'PauseOutlined',
     'ControlOutlined',
     'RedoOutlined',
+    'VideoCameraOutlined',
+    'HistoryOutlined',
 ]
 
 const Icon = (props: {type: string}) => {

@@ -1,0 +1,1 @@
+export { default as FunctionCall } from './FunctionCall.vue'

@@ -19,7 +19,7 @@ export type formType = {
     name: string;
     provider: applyType;
     integrationModes: string[];
-    config: string;
+    config?: string;
     description: string;
     page: { // 页面集成
         baseUrl: string,
@@ -54,7 +54,7 @@ export type formType = {
         roleIdList: string[], // 角色列表	
         orgIdList: string[], // 部门列表	
         ipWhiteList: string, // IP白名单	
-        signature: 'MD5' | 'SHA256' | '', // 签名方式, 可选值：MD5，SHA256
+        signature?: 'MD5' | 'SHA256' | '', // 签名方式, 可选值：MD5，SHA256
         enableOAuth2: boolean, // 是否启用OAuth2	
     },
     sso: { // 统一单点登陆集成

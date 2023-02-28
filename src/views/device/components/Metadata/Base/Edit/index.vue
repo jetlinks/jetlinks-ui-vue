@@ -4,22 +4,23 @@
     <template #extra>
       <a-button :loading="save.loading" type="primary" @click="save.saveMetadata">保存</a-button>
     </template>
-    <PropertyForm v-if="metadataStore.model.type === 'properties'" :type="type"></PropertyForm>
+    <a-form ref="formRef" :model="form.model" layout="vertical">
+        <BaseForm :model-type="metadataStore.model.type" :type="type" v-model:value="form.model"></BaseForm>
+    </a-form>
   </a-drawer>
 </template>
 <script lang="ts" setup name="Edit">
 import { useInstanceStore } from '@/store/instance';
 import { useMetadataStore } from '@/store/metadata';
 import { useProductStore } from '@/store/product';
-import { MetadataItem, ProductItem } from '@/views/device/Product/typings';
+import { ProductItem } from '@/views/device/Product/typings';
 import { message } from 'ant-design-vue/es';
 import type { FormInstance } from 'ant-design-vue/es';
 import { updateMetadata, asyncUpdateMetadata } from '../../metadata'
 import { Store } from 'jetlinks-store';
-import { SystemConst } from '@/utils/consts';
 import { detail } from '@/api/device/instance';
 import { DeviceInstance } from '@/views/device/Instance/typings';
-import PropertyForm from './PropertyForm.vue';
+import BaseForm from './BaseForm.vue';
 import { PropType } from 'vue';
 
 const props = defineProps({
@@ -32,6 +33,11 @@ const props = defineProps({
     type: String
   }
 })
+interface Emits {
+  (e: 'refresh'): void;
+}
+const emit = defineEmits<Emits>()
+
 const route = useRoute()
 
 const instanceStore = useInstanceStore()
@@ -50,7 +56,14 @@ const close = () => {
 
 const title = computed(() => metadataStore.model.action === 'add' ? '新增' : '修改')
 
-const addFormRef = ref<FormInstance>()
+const form = reactive({
+  model: {} as any,
+})
+if (metadataStore.model.action === 'edit') {
+  form.model = metadataStore.model.item
+}
+
+const formRef = ref<FormInstance>()
 /**
  * 保存按钮
  */
@@ -58,7 +71,7 @@ const save = reactive({
   loading: false,
   saveMetadata: (deploy?: boolean) => {
     save.loading = true
-    addFormRef.value?.validateFields().then(async (formValue) => {
+    formRef.value?.validateFields().then(async (formValue) => {
       const type = metadataStore.model.type
       const _detail: ProductItem | DeviceInstance = props.type === 'device' ? instanceStore.detail : productStore.current
       const _metadata = JSON.parse(_detail?.metadata || '{}')
@@ -80,6 +93,7 @@ const save = reactive({
           detail.metadata = metadata
           productStore.setCurrent(detail)
         }
+        emit('refresh')
       }
       const _data = updateMetadata(type, [formValue], _detail, updateStore)
       const result = await asyncUpdateMetadata(props.type, _data)
@@ -90,8 +104,9 @@ const save = reactive({
             setTimeout(() => window.close(), 300);
           }
         } else {
-          Store.set(SystemConst.REFRESH_METADATA_TABLE, true);
+          // Store.set(SystemConst.REFRESH_METADATA_TABLE, true);
           if (deploy) {
+            // TODO 是否发布
             Store.set('product-deploy', deploy);
           } else {
             save.resetMetadata();
@@ -111,6 +126,7 @@ const save = reactive({
       }
       save.loading = false
     })
+    save.loading = false
   },
   resetMetadata: async () => {
     const { id } = route.params
@@ -121,10 +137,45 @@ const save = reactive({
   }
 })
 
-const form = reactive({
-  model: {} as Record<string, any>
-})
 </script>
-<style lang="less" scoped>
+<style scoped lang="less">
+:deep(.ant-form-item-label) {
+  line-height: 1;
 
+  >label {
+    font-size: 12px;
+
+    &.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+      font-size: 12px;
+    }
+  }
+}
+
+:deep(.ant-form-item-explain) {
+  font-size: 12px;
+}
+
+:deep(.ant-form-item-with-help) {
+  .ant-form-item-explain {
+    min-height: 20px;
+    line-height: 20px;
+  }
+}
+
+:deep(.ant-form-item) {
+  margin-bottom: 20px;
+
+  &.ant-form-item-with-help {
+    margin-bottom: 0;
+  }
+
+  input {
+    font-size: 12px;
+  }
+}
+
+:deep(.ant-input),
+:deep(.ant-select) {
+  font-size: 12px;
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <page-container class="apply-container">
+    <page-container>
         <div class="apply-container">
             <Search :columns="columns" @search="search" />
 
@@ -42,6 +42,7 @@
                             enabled: 'success',
                             disabled: 'error',
                         }"
+                        hasMark
                     >
                         <template #img>
                             <slot name="img">
@@ -118,6 +119,14 @@
                                 </PermissionButton>
                             </a-tooltip>
                         </template>
+
+                        <template #mark>
+                            <AIcon
+                                type="EyeOutlined"
+                                style="font-size: 24px"
+                                @click="() => table.toSave(slotProps.id, true)"
+                            />
+                        </template>
                     </CardBox>
                 </template>
 
@@ -151,11 +160,15 @@
                 </template>
             </JTable>
         </div>
+        <div class="dialogs">
+            <MenuDialog ref="dialogRef" mode="edit" />
+        </div>
     </page-container>
 </template>
 
 <script setup lang="ts" name="Apply">
 import PermissionButton from '@/components/PermissionButton/index.vue';
+import MenuDialog from './componenets/MenuDialog.vue';
 import {
     getApplyList_api,
     changeApplyStatus_api,
@@ -251,9 +264,10 @@ const columns = [
     },
 ];
 const params = ref({});
-const search = (newParams: any) => (params.value = {...newParams});
+const search = (newParams: any) => (params.value = { ...newParams });
 
 const tableRef = ref();
+const dialogRef = ref();
 const table = {
     refresh: () => {
         tableRef.value.reload();
@@ -344,7 +358,10 @@ const table = {
                     title: '集成菜单',
                 },
                 icon: 'MenuUnfoldOutlined',
-                onClick: () => {},
+                onClick: () => {
+                    dialogRef.value &&
+                        dialogRef.value.openDialog(data.id, data.provider);
+                },
             });
         // 有api操作权限
         if (otherServers.includes('apiServer'))
@@ -357,7 +374,13 @@ const table = {
                         title: '赋权',
                     },
                     icon: 'icon-fuquan',
-                    onClick: () => {},
+                    onClick: () => {
+                        menuStory.jumpPage(
+                            'system/Apply/Api',
+                            {},
+                            { code: data.id },
+                        );
+                    },
                 },
                 {
                     permission: true,
@@ -367,7 +390,13 @@ const table = {
                         title: '查看API',
                     },
                     icon: 'icon-chakanAPI',
-                    onClick: () => {},
+                    onClick: () => {
+                        menuStory.jumpPage(
+                            'system/Apply/View',
+                            {},
+                            { code: data.id },
+                        );
+                    },
                 },
             );
         // 其他不为空
