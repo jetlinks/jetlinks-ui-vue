@@ -59,12 +59,7 @@ const title = computed(() => metadataStore.model.action === 'add' ? '新增' : '
 const propertyForm = ref()
 
 const form = reactive({
-  model: {
-    valueType: {
-      expands: {}
-    },
-    expands: {}
-  } as any,
+  model: {} as any,
 })
 if (metadataStore.model.action === 'edit') {
   form.model = metadataStore.model.item
@@ -144,6 +139,44 @@ const save = reactive({
 })
 
 </script>
-<style lang="less" scoped>
+<style scoped lang="less">
+:deep(.ant-form-item-label) {
+  line-height: 1;
 
+  >label {
+    font-size: 12px;
+
+    &.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+      font-size: 12px;
+    }
+  }
+}
+
+:deep(.ant-form-item-explain) {
+  font-size: 12px;
+}
+
+:deep(.ant-form-item-with-help) {
+  .ant-form-item-explain {
+    min-height: 20px;
+    line-height: 20px;
+  }
+}
+
+:deep(.ant-form-item) {
+  margin-bottom: 20px;
+
+  &.ant-form-item-with-help {
+    margin-bottom: 0;
+  }
+
+  input {
+    font-size: 12px;
+  }
+}
+
+:deep(.ant-input),
+:deep(.ant-select) {
+  font-size: 12px;
+}
 </style>

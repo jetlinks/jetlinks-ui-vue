@@ -15,9 +15,8 @@
   ]">
     <a-input v-model:value="value.name" size="small"></a-input>
   </a-form-item>
-  {{ modelType }}
   <template v-if="modelType === 'properties'">
-    <value-type-form :name="['valueType']" v-model:value="value.valueType" key="property"
+    <value-type-form :name="['valueType']" v-model:value="value.valueType" key="property" title="数据类型"
       @change-type="changeValueType"></value-type-form>
 
     <expands-form :name="['expands']" v-model:value="value.expands" :type="type" :id="value.id" :config="config"
@@ -37,12 +36,15 @@
     ]">
       <JsonParam v-model:value="value.inputs" :name="['inputs']"></JsonParam>
     </a-form-item>
-    <a-form-item label="输出参数" name="output">
-      <JsonParam v-model:value="value.output" :name="['output']"></JsonParam>
-
-      <value-type-form :name="['output']" v-model:value="value.valueType" key="function"
-      @change-type="changeValueType"></value-type-form>
+    <value-type-form :name="['output']" v-model:value="value.output" key="function" title="输出参数"></value-type-form>
+  </template>
+  <template v-if="modelType === 'events'">
+    <a-form-item label="级别" :name="['expands', 'level']" :rules="[
+      { required: true, message: '请选择级别' },
+    ]">
+      <a-select v-model:value="value.expands.level" :options="EventLevel" size="small"></a-select>
     </a-form-item>
+    <value-type-form :name="['valueType']" v-model:value="value.valueType" key="function" title="输出参数"></value-type-form>
   </template>
   <a-form-item label="说明" name="description" :rules="[
     { max: 200, message: '最多可输入200个字符' },
@@ -57,6 +59,7 @@ import ValueTypeForm from './ValueTypeForm.vue'
 import { useProductStore } from '@/store/product';
 import { getMetadataConfig } from '@/api/device/product'
 import JsonParam from '@/components/Metadata/JsonParam/index.vue'
+import { EventLevel } from '@/views/device/data';
 
 const props = defineProps({
   type: {
@@ -73,12 +76,19 @@ const props = defineProps({
     default: ''
   }
 })
+if (props.modelType === 'events') {
+  if (!props.value.expands) {
+    props.value.expands = {}
+  }
+}
+
 const productStore = useProductStore()
 
 const config = ref<Record<any, any>[]>([])
 const asyncOtherConfig = async () => {
   if (props.type !== 'product') return
-  const { valueType: { type }, id } = props.value
+  const { valueType, id } = props.value
+  const { type } = valueType || {}
   const productId = productStore.current?.id
   if (!productId || !id || !type) return
   const resp = await getMetadataConfig({
@@ -93,8 +103,11 @@ const asyncOtherConfig = async () => {
     config.value = resp.result
   }
 }
+
 onMounted(() => {
-  asyncOtherConfig()
+  if (props.modelType === 'properties') {
+    asyncOtherConfig()
+  }
 })
 
 const changeValueType = (val: string) => {
