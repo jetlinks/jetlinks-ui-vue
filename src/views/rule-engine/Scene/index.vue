@@ -110,7 +110,7 @@
                             @click="i.onClick"
                             type="link"
                             style="padding: 0px"
-                            :hasPermission="'device/Instance:' + i.key"
+                            :hasPermission="'rule-engine/Scene:' + i.key"
                         >
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
