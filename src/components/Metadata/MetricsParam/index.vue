@@ -15,8 +15,8 @@
           </template>
           <template #content>
             <div>
-              <a-form :model="_value[index]" layout="vertical">
-                <a-form-item label="标识" name="id" :rules="[
+              <div class="ant-form-vertical">
+                <a-form-item label="标识" :name="name.concat([index, 'id'])" :rules="[
                   { required: true, message: '请输入标识' },
                   { max: 64, message: '最多可输入64个字符' },
                   {
@@ -26,19 +26,19 @@
                 ]">
                   <a-input v-model:value="_value[index].id" size="small"></a-input>
                 </a-form-item>
-                <a-form-item label="名称" name="name" :rules="[
+                <a-form-item label="名称" :name="name.concat([index, 'name'])" :rules="[
                   { required: true, message: '请输入名称' },
                   { max: 64, message: '最多可输入64个字符' },
                 ]">
                   <a-input v-model:value="_value[index].name" size="small"></a-input>
                 </a-form-item>
-                <a-form-item label="指标值" name="value" :rules="[
+                <a-form-item label="指标值" :name="name.concat([index, 'value'])" :rules="[
                   { required: true, message: '请输入指标值' },
                   { validator: () => validateIndicator(_value[index]), message: '请输入指标值' }
                 ]">
-                  <JIndicators v-model:value="_value[index]" :type="type" size="small" :enum="enum"/>
+                  <JIndicators v-model:value="_value[index]" :type="type" size="small" :enum="enum" />
                 </a-form-item>
-              </a-form>
+              </div>
             </div>
           </template>
           <div class="item-edit" @click="handleEdit(index)">
@@ -52,7 +52,9 @@
       </div>
     </div>
     <a-button type="dashed" block @click="handleAdd">
-      <template #icon><AIcon type="PlusOutlined" class="item-icon" /></template>
+      <template #icon>
+        <AIcon type="PlusOutlined" class="item-icon" />
+      </template>
       添加指标
     </a-button>
   </div>
@@ -77,6 +79,10 @@ const props = defineProps({
   enum: {
     type: Object,
     default: () => ({})
+  },
+  name: {
+    type: Array as PropType<(string | number)[]>,
+    default: () => ([])
   }
 })
 

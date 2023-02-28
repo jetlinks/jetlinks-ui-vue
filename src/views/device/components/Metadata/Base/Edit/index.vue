@@ -5,7 +5,7 @@
       <a-button :loading="save.loading" type="primary" @click="save.saveMetadata">保存</a-button>
     </template>
     <a-form ref="formRef" :model="form.model" layout="vertical">
-        <PropertyForm :model-type="metadataStore.model.type" :type="type" ref="propertyForm" v-model:value="form.model"></PropertyForm>
+        <BaseForm :model-type="metadataStore.model.type" :type="type" v-model:value="form.model"></BaseForm>
     </a-form>
   </a-drawer>
 </template>
@@ -20,7 +20,7 @@ import { updateMetadata, asyncUpdateMetadata } from '../../metadata'
 import { Store } from 'jetlinks-store';
 import { detail } from '@/api/device/instance';
 import { DeviceInstance } from '@/views/device/Instance/typings';
-import PropertyForm from './PropertyForm.vue';
+import BaseForm from './BaseForm.vue';
 import { PropType } from 'vue';
 
 const props = defineProps({
@@ -55,8 +55,6 @@ const close = () => {
 }
 
 const title = computed(() => metadataStore.model.action === 'add' ? '新增' : '修改')
-
-const propertyForm = ref()
 
 const form = reactive({
   model: {} as any,
@@ -128,6 +126,7 @@ const save = reactive({
       }
       save.loading = false
     })
+    save.loading = false
   },
   resetMetadata: async () => {
     const { id } = route.params
