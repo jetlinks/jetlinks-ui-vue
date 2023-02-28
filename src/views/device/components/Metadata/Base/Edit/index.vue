@@ -5,7 +5,7 @@
       <a-button :loading="save.loading" type="primary" @click="save.saveMetadata">保存</a-button>
     </template>
     <a-form ref="formRef" :model="form.model" layout="vertical">
-        <PropertyForm v-if="metadataStore.model.type === 'properties'" :type="type" ref="propertyForm" v-model:value="form.model"></PropertyForm>
+        <PropertyForm :model-type="metadataStore.model.type" :type="type" ref="propertyForm" v-model:value="form.model"></PropertyForm>
     </a-form>
   </a-drawer>
 </template>

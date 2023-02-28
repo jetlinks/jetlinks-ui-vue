@@ -41,12 +41,10 @@ const props = defineProps({
   }
 })
 
-interface Emits {
-  (e: 'update:value', data: string | undefined): void;
-}
-const emit = defineEmits<Emits>()
-
-const visible = ref(false)
+// interface Emits {
+//   (e: 'update:value', data: string | undefined): void;
+// }
+// const emit = defineEmits<Emits>()
 
 // const _value = computed({
 //   get: () => props.value,
