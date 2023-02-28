@@ -6,7 +6,7 @@
         ? '该设备已脱离产品物模型，修改产品物模型对该设备无影响'
         : '设备会默认继承产品的物模型，修改设备物模型后将脱离产品物模型'">
           <div class="ellipsis">
-            <info-circle-outlined style="margin-right: 3px" />
+            <AIcon type="InfoCircleOutlined" style="margin-right: 3px" />
             {{
               instanceStore.detail?.independentMetadata && type === 'device'
                 ? '该设备已脱离产品物模型，修改产品物模型对该设备无影响'
@@ -47,7 +47,6 @@
   </a-card>
 </template>
 <script setup lang="ts" name="Metadata">
-import { InfoCircleOutlined } from '@ant-design/icons-vue';
 import PermissionButton from '@/components/PermissionButton/index.vue'
 import { deleteMetadata } from '@/api/device/instance.js'
 import { message } from 'ant-design-vue'

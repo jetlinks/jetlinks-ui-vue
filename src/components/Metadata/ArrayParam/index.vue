@@ -3,7 +3,7 @@
     <template #title>
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <div style="width: 150px;">配置元素</div>
-        <close-outlined @click="visible = false" />
+        <AIcon type="CloseOutlined" @click="visible = false"/>
       </div>
     </template>
     <template #content>
@@ -19,14 +19,13 @@
       </div>
     </template>
     <a-button type="dashed" block @click="visible = true">
-      配置元素<edit-outlined class="item-icon" />
+      配置元素<AIcon type="EditOutlined" class="item-icon"/>
     </a-button>
   </a-popover>
 
 </template>
 <script setup lang="ts" name="ArrayParam">
 import ValueTypeForm from '@/views/device/components/Metadata/Base/Edit/ValueTypeForm.vue';
-import { EditOutlined, CloseOutlined } from '@ant-design/icons-vue';
 import { PropType } from 'vue';
 
 type ValueType = Record<any, any>;

@@ -1,5 +1,5 @@
 <template>
-    <page-container class="apply-container">
+    <page-container>
         <div class="apply-container">
             <Search :columns="columns" @search="search" />
 
@@ -374,7 +374,13 @@ const table = {
                         title: '赋权',
                     },
                     icon: 'icon-fuquan',
-                    onClick: () => {},
+                    onClick: () => {
+                        menuStory.jumpPage(
+                            'system/Apply/Api',
+                            {},
+                            { code: data.id },
+                        );
+                    },
                 },
                 {
                     permission: true,
@@ -384,7 +390,13 @@ const table = {
                         title: '查看API',
                     },
                     icon: 'icon-chakanAPI',
-                    onClick: () => {},
+                    onClick: () => {
+                        menuStory.jumpPage(
+                            'system/Apply/View',
+                            {},
+                            { code: data.id },
+                        );
+                    },
                 },
             );
         // 其他不为空

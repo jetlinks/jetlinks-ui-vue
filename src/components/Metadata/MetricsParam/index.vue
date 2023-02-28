@@ -2,7 +2,7 @@
   <div class="json-param">
     <div class="list-item" v-for="(item, index) in _value" :key="`object_${index}`">
       <div class="item-left">
-        <menu-outlined class="item-drag item-icon" />
+        <AIcon type="MenuOutlined" class="item-drag item-icon" />
         {{ `#${index + 1}.` }}
       </div>
       <div class="item-middle item-editable">
@@ -10,7 +10,7 @@
           <template #title>
             <div class="edit-title" style="display: flex; justify-content: space-between; align-items: center;">
               <div style="width: 150px;">配置参数</div>
-              <close-outlined @click="handleClose" />
+              <AIcon type="CloseOutlined" @click="handleClose" />
             </div>
           </template>
           <template #content>
@@ -43,23 +43,22 @@
           </template>
           <div class="item-edit" @click="handleEdit(index)">
             {{ item.name || '配置参数' }}
-            <edit-outlined class="item-icon" />
+            <AIcon type="EditOutlined" class="item-icon" />
           </div>
         </a-popover>
       </div>
       <div class="item-right">
-        <delete-outlined @click="handleDelete(index)" />
+        <AIcon type="DeleteOutlined" @click="handleDelete(index)" />
       </div>
     </div>
     <a-button type="dashed" block @click="handleAdd">
-      <template #icon><plus-outlined class="item-icon" /></template>
+      <template #icon><AIcon type="PlusOutlined" class="item-icon" /></template>
       添加指标
     </a-button>
   </div>
 </template>
 <script setup lang="ts" name="MetricsParam">
 import { PropType } from 'vue'
-import { MenuOutlined, EditOutlined, DeleteOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons-vue';
 import JIndicators from '@/components/JIndicators/index.vue';
 
 interface Emits {
