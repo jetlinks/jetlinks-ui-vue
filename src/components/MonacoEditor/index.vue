@@ -90,7 +90,7 @@ const insert = (val) => {
     ]);
 }
 
-watch(() => props.value,
+watch(() => props.modelValue,
     (val) => {
         instance.setValue(val)
     })

@@ -2,17 +2,19 @@
     <page-container>
         <Search
             :columns="columns"
-            target="notice-config"
+            target="media-cascade"
             @search="handleSearch"
         />
+
         <JTable
             ref="listRef"
             :columns="columns"
-            :request="DeviceApi.list"
+            :request="(e:any) => lastValueFrom(e)"
             :defaultParams="{
                 sorts: [{ name: 'createTime', order: 'desc' }],
             }"
             :params="params"
+            :gridColumn="2"
         >
             <template #headerTitle>
                 <a-button type="primary" @click="handleAdd"> 新增 </a-button>
@@ -23,45 +25,37 @@
                     :actions="getActions(slotProps, 'card')"
                     v-bind="slotProps"
                     :showStatus="true"
-                    :status="
-                        slotProps.state.value === 'online' ? 'success' : 'error'
-                    "
-                    :statusText="slotProps.state.text"
-                    :statusNames="{ success: 'success', error: 'error' }"
+                    :status="slotProps.status?.value"
+                    :statusText="slotProps.status?.text"
+                    :statusNames="{
+                        enabled: 'success',
+                        disabled: 'error',
+                    }"
                 >
                     <template #img>
                         <slot name="img">
-                            <img :src="getImage('/device-media.png')" />
+                            <img
+                                :src="
+                                    getImage('/device/instance/device-card.png')
+                                "
+                            />
                         </slot>
                     </template>
                     <template #content>
                         <h3 class="card-item-content-title">
                             {{ slotProps.name }}
                         </h3>
-                        <a-row>
-                            <a-col :span="12">
-                                <div class="card-item-content-text">厂商</div>
-                                <div>{{ slotProps.manufacturer }}</div>
-                            </a-col>
-                            <a-col :span="12">
-                                <div class="card-item-content-text">
-                                    通道数量
-                                </div>
-                                <div>{{ slotProps.channelNumber }}</div>
-                            </a-col>
-                            <a-col :span="12">
-                                <div class="card-item-content-text">型号</div>
-                                <div>{{ slotProps.model }}</div>
-                            </a-col>
-                            <a-col :span="12">
-                                <div class="card-item-content-text">
-                                    接入方式
-                                </div>
-                                <!-- <div>
-                                    {{ providerType[slotProps.provider] }}
-                                </div> -->
-                            </a-col>
-                        </a-row>
+                        <p>通道数量：{{ slotProps.count }}</p>
+                        <Ellipsis>
+                            <a-badge
+                                :text="`sip:${slotProps.sipConfigs[0]?.sipId}@${slotProps.sipConfigs[0]?.hostAndPort}`"
+                                :status="
+                                    slotProps.status?.value === 'enabled'
+                                        ? 'success'
+                                        : 'error'
+                                "
+                            />
+                        </Ellipsis>
                     </template>
                     <template #actions="item">
                         <a-tooltip
@@ -73,8 +67,19 @@
                                 v-bind="item.popConfirm"
                                 :disabled="item.disabled"
                             >
-                                <a-button :disabled="item.disabled">
+                                <a-button
+                                    :disabled="item.disabled"
+                                    v-if="item.key === 'delete'"
+                                >
                                     <AIcon type="DeleteOutlined" />
+                                </a-button>
+                                <a-button
+                                    :disabled="item.disabled"
+                                    @click="item.onClick"
+                                    v-else
+                                >
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item.text }}</span>
                                 </a-button>
                             </a-popconfirm>
                             <template v-else>
@@ -87,8 +92,52 @@
                                 </a-button>
                             </template>
                         </a-tooltip>
+                        <!-- <PermissionButton
+                            :disabled="item.disabled"
+                            :popConfirm="item.popConfirm"
+                            :tooltip="{
+                                ...item.tooltip,
+                            }"
+                            @click="item.onClick"
+                            :hasPermission="`media/Cascade:${item.key}`"
+                        >
+                            <AIcon
+                                type="DeleteOutlined"
+                                v-if="item.key === 'delete'"
+                            />
+                            <template v-else>
+                                <AIcon :type="item.icon" />
+                                <span>{{ item?.text }}</span>
+                            </template>
+                        </PermissionButton> -->
                     </template>
                 </CardBox>
+            </template>
+            <template #sipId="slotProps">
+                {{ slotProps.sipConfigs[0]?.sipId }}
+            </template>
+            <template #publicHost="slotProps">
+                {{ slotProps.sipConfigs[0]?.publicHost }}
+            </template>
+            <template #status="slotProps">
+                <a-badge
+                    :text="slotProps.status?.text"
+                    :status="
+                        slotProps.status?.value === 'enabled'
+                            ? 'success'
+                            : 'error'
+                    "
+                />
+            </template>
+            <template #onlineStatus="slotProps">
+                <a-badge
+                    :text="slotProps.onlineStatus?.text"
+                    :status="
+                        slotProps.onlineStatus?.value === 'online'
+                            ? 'success'
+                            : 'error'
+                    "
+                />
             </template>
             <template #action="slotProps">
                 <a-space :size="16">
@@ -123,6 +172,24 @@
                             /></a-button>
                         </a-button>
                     </a-tooltip>
+                    <!-- <template
+                        v-for="i in getActions(slotProps, 'table')"
+                        :key="i.key"
+                    >
+                        <PermissionButton
+                            :disabled="i.disabled"
+                            :popConfirm="i.popConfirm"
+                            :tooltip="{
+                                ...i.tooltip,
+                            }"
+                            @click="i.onClick"
+                            type="link"
+                            style="padding: 0px"
+                            :hasPermission="`device/Instance:${i.key}`"
+                        >
+                            <template #icon><AIcon :type="i.icon" /></template>
+                        </PermissionButton>
+                    </template> -->
                 </a-space>
             </template>
         </JTable>
@@ -131,6 +198,7 @@
 
 <script setup lang="ts">
 import DeviceApi from '@/api/media/device';
+import CascadeApi from '@/api/media/cascade';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
@@ -156,14 +224,14 @@ const columns = [
     },
     {
         title: '上级SIP ID',
-        dataIndex: 'sipConfigs',
-        key: 'sipConfigs',
+        dataIndex: 'sipId',
+        key: 'sipId',
         scopedSlots: true,
     },
     {
         title: '上级SIP 地址',
-        dataIndex: 'sipConfigs',
-        key: 'sipConfigs',
+        dataIndex: 'publicHost',
+        key: 'publicHost',
         scopedSlots: true,
     },
     {
@@ -217,17 +285,35 @@ const columns = [
  * @param params
  */
 const handleSearch = (e: any) => {
-    // console.log('handleSearch:', e);
     params.value = e;
+};
+
+/**
+ * 处理表格数据
+ * @param params
+ */
+const lastValueFrom = async (params: any) => {
+    const res = await CascadeApi.list(params);
+    res.result.data.forEach(async (item: any) => {
+        const resp = await queryBindChannel(item.id);
+        item.count = resp.result.total;
+    });
+    return res;
+};
+
+/**
+ * 查询通道数量
+ * @param id
+ */
+const queryBindChannel = async (id: string) => {
+    return await CascadeApi.queryCount(id);
 };
 
 /**
  * 新增
  */
 const handleAdd = () => {
-    menuStory.jumpPage('media/Device/Save', {
-        id: ':id',
-    });
+    menuStory.jumpPage('media/Cascade/Save');
 };
 
 const getActions = (
@@ -245,7 +331,7 @@ const getActions = (
             icon: 'EditOutlined',
             onClick: () => {
                 menuStory.jumpPage(
-                    'media/Device/Save',
+                    'media/Cascade/Save',
                     {},
                     {
                         id: data.id,
@@ -255,58 +341,79 @@ const getActions = (
         },
         {
             key: 'view',
-            text: '查看通道',
+            text: '选择通道',
             tooltip: {
-                title: '查看通道',
+                title: '选择通道',
             },
-            icon: 'PartitionOutlined',
+            icon: 'LinkOutlined',
             onClick: () => {
-                // router.push(
-                //     `/media/device/Channel?id=${data.id}&type=${data.provider}`,
-                // );
                 menuStory.jumpPage(
-                    'media/Device/Channel',
+                    'media/Cascade/Channel',
                     {},
                     {
                         id: data.id,
-                        type: data.provider,
                     },
                 );
             },
         },
         {
             key: 'debug',
-            text: '更新通道',
+            text: '推送',
             tooltip: {
                 title:
-                    data.provider === 'fixed-media'
-                        ? '固定地址无法更新通道'
-                        : data.state.value === 'offline'
-                        ? '设备已离线'
-                        : data.state.value === 'notActive'
-                        ? '设备已禁用'
-                        : '',
+                    data.status?.value === 'disabled'
+                        ? '禁用状态下不可推送'
+                        : '推送',
             },
-            disabled:
-                data.state.value === 'offline' ||
-                data.state.value === 'notActive' ||
-                data.provider === 'fixed-media',
-            icon: 'SyncOutlined',
+            disabled: data.status?.value === 'disabled',
+            icon: 'ShareAltOutlined',
             onClick: () => {
                 // updateChannel()
+            },
+        },
+        {
+            key: 'action',
+            text: data.status?.value === 'enabled' ? '禁用' : '启用',
+            tooltip: {
+                title: data.status?.value === 'enabled' ? '禁用' : '启用',
+            },
+            icon:
+                data.status?.value === 'enabled'
+                    ? 'StopOutlined'
+                    : 'PlayCircleOutlined',
+            popConfirm: {
+                title: `确认${
+                    data.status?.value === 'enabled' ? '禁用' : '启用'
+                }?`,
+                onConfirm: async () => {
+                    let res =
+                        data.status.value === 'enabled'
+                            ? await CascadeApi.disabled(data.id)
+                            : await CascadeApi.enabled(data.id);
+
+                    if (res.success) {
+                        message.success('操作成功！');
+                        listRef.value?.reload();
+                    } else {
+                        message.error('操作失败！');
+                    }
+                },
             },
         },
         {
             key: 'delete',
             text: '删除',
             tooltip: {
-                title: '在线设备无法删除',
+                title:
+                    data.status?.value === 'enabled'
+                        ? '请先禁用, 再删除'
+                        : '删除',
             },
-            disabled: data.state.value === 'online',
+            disabled: data.status?.value === 'enabled',
             popConfirm: {
                 title: '确认删除?',
                 onConfirm: async () => {
-                    const resp = await DeviceApi.del(data.id);
+                    const resp = await CascadeApi.del(data.id);
                     if (resp.status === 200) {
                         message.success('操作成功！');
                         listRef.value?.reload();

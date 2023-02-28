@@ -1,4 +1,4 @@
-<!-- 通知模板详情 -->
+<!-- 视频设备新增/编辑 -->
 <template>
     <page-container>
         <a-card>
