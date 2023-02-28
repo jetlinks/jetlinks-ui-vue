@@ -6,7 +6,7 @@
         <div class="steps-content">
             <div class="steps-box" v-if="current === 0">
                 <div class="alert">
-                    <info-circle-outlined />
+                    <AIcon type="InfoCircleOutlined" />
                     配置设备信令参数
                 </div>
                 <div>
@@ -85,7 +85,7 @@
                                             独立配置:集群下不同节点使用不同配置
                                         </p>
                                     </template>
-                                    <question-circle-outlined />
+                                    <AIcon type="QuestionCircleOutlined" />
                                 </a-tooltip>
                             </div>
 
@@ -218,9 +218,7 @@
                                         :header="`#${index + 1}.节点`"
                                     >
                                         <template #extra>
-                                            <delete-outlined
-                                                @click="removeCluster(cluster)"
-                                            />
+                                            <AIcon type="DeleteOutlined" />
                                         </template>
                                         <a-row :gutter="[24, 24]">
                                             <a-col :span="8">
@@ -274,7 +272,9 @@
                                                                     绑定到服务器上的网卡地址,绑定到所有网卡:0.0.0.0
                                                                 </p>
                                                             </template>
-                                                            <question-circle-outlined />
+                                                            <AIcon
+                                                                type="QuestionCircleOutlined"
+                                                            />
                                                         </a-tooltip>
                                                     </div>
 
@@ -363,7 +363,9 @@
                                                                     监听指定端口的请求
                                                                 </p>
                                                             </template>
-                                                            <question-circle-outlined />
+                                                            <AIcon
+                                                                type="QuestionCircleOutlined"
+                                                            />
                                                         </a-tooltip>
                                                     </div>
                                                     <a-input
@@ -417,7 +419,7 @@
                                     block
                                     @click="addCluster"
                                 >
-                                    <PlusOutlined />
+                                    <AIcon type="PlusOutlined" />
                                     新增
                                 </a-button>
                             </a-form-item>
@@ -502,14 +504,17 @@
             >
                 下一步
             </a-button>
-            <a-button
+            <PermissionButton
                 v-if="current === 1 && view === 'false'"
                 type="primary"
                 style="margin-right: 8px"
                 @click="saveData"
+                :hasPermission="`link/AccessConfig:${
+                    id === ':id' ? 'add' : 'update'
+                }`"
             >
                 保存
-            </a-button>
+            </PermissionButton>
             <a-button v-if="current > 0" @click="prev"> 上一步 </a-button>
         </div>
     </div>
@@ -519,12 +524,6 @@
 import { message, Form } from 'ant-design-vue';
 import type { FormInstance } from 'ant-design-vue';
 import { getResourcesCurrent, getClusters } from '@/api/link/accessConfig';
-import {
-    DeleteOutlined,
-    PlusOutlined,
-    QuestionCircleOutlined,
-    InfoCircleOutlined,
-} from '@ant-design/icons-vue';
 import { update, save } from '@/api/link/accessConfig';
 
 interface Form2 {

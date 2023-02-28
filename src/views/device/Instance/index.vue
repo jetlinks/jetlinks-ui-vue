@@ -694,7 +694,6 @@ const saveBtn = () => {
 };
 
 const handleSearch = (_params: any) => {
-    console.log(_params);
     params.value = _params;
 };
 </script>

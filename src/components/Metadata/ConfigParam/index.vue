@@ -16,13 +16,12 @@
       </div>
     </template>
     <a-button type="dashed" block>
-      存储配置<edit-outlined class="item-icon" />
+      存储配置<AIcon type="EditOutlined" class="item-icon"/>
     </a-button>
   </a-popover>
 </template>
 <script setup lang="ts" name="ConfigParam">
 import { PropType } from 'vue';
-import { EditOutlined } from '@ant-design/icons-vue';
 
 type ValueType = Record<any, any>;
 const props = defineProps({
@@ -31,7 +30,7 @@ const props = defineProps({
     default: () => ({})
   },
   name: {
-    type: Array as PropType<string[]>,
+    type: Array as PropType<(string| number)[]>,
     default: () => ([]),
     required: true
   },

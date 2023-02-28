@@ -44,7 +44,7 @@ const props = defineProps({
     })
   },
   name: {
-    type: Array as PropType<string[]>,
+    type: Array as PropType<(string| number)[]>,
     default: () => ([])
   },
   id: String,

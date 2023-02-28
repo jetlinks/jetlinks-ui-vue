@@ -12,7 +12,18 @@
         <a-form ref="formRef" :model="formData" layout="vertical">
             <a-row :gutter="10">
                 <a-col :span="12">
-                    <a-form-item name="channelId">
+                    <a-form-item
+                        name="channelId"
+                        :rules="[
+                            {
+                                max: 64,
+                                message: '最多可输入64个字符',
+                            },
+                            {
+                                validator: validateChannelId,
+                            },
+                        ]"
+                    >
                         <template #label>
                             通道ID
                             <a-tooltip title="若不填写，系统将自动生成唯一ID">
@@ -22,22 +33,35 @@
                                 />
                             </a-tooltip>
                         </template>
-                        <a-input v-model:value="formData.channelId" />
+                        <a-input
+                            v-model:value="formData.channelId"
+                            :disabled="!!formData.id"
+                            placeholder="请输入通道ID"
+                        />
                     </a-form-item>
                 </a-col>
                 <a-col :span="12">
                     <a-form-item
                         name="name"
                         label="通道名称"
-                        :rules="{ required: true, message: '请输入通道名称' }"
+                        :rules="[
+                            { required: true, message: '请输入通道名称' },
+                            { max: 64, message: '最多可输入64个字符' },
+                        ]"
                     >
-                        <a-input v-model:value="formData.name" />
+                        <a-input
+                            v-model:value="formData.name"
+                            placeholder="请输入通道名称"
+                        />
                     </a-form-item>
                 </a-col>
                 <a-col :span="24">
                     <a-form-item
                         name="media_url"
-                        :rules="{ required: true, message: '请输入视频地址' }"
+                        :rules="[
+                            { required: true, message: '请输入视频地址' },
+                            { max: 128, message: '最多可输入128个字符' },
+                        ]"
                     >
                         <template #label>
                             视频地址
@@ -50,26 +74,42 @@
                                 />
                             </a-tooltip>
                         </template>
-                        <a-input v-model:value="formData.others.media_url" />
-                    </a-form-item>
-                </a-col>
-                <a-col :span="12">
-                    <a-form-item name="media_username" label="用户名">
                         <a-input
-                            v-model:value="formData.others.media_username"
+                            v-model:value="formData.media_url"
+                            placeholder="请输入视频地址"
                         />
                     </a-form-item>
                 </a-col>
                 <a-col :span="12">
-                    <a-form-item name="media_password" label="密码">
+                    <a-form-item
+                        name="media_username"
+                        label="用户名"
+                        :rules="{ max: 64, message: '最多可输入64个字符' }"
+                    >
+                        <a-input
+                            v-model:value="formData.media_username"
+                            placeholder="请输入用户名"
+                        />
+                    </a-form-item>
+                </a-col>
+                <a-col :span="12">
+                    <a-form-item
+                        name="media_password"
+                        label="密码"
+                        :rules="{ max: 64, message: '最多可输入64个字符' }"
+                    >
                         <a-input-password
-                            v-model:value="formData.others.media_password"
+                            v-model:value="formData.media_password"
+                            placeholder="请输入密码"
                         />
                     </a-form-item>
                 </a-col>
                 <a-col :span="24">
                     <a-form-item name="address" label="安装地址">
-                        <a-input v-model:value="formData.address" />
+                        <a-input
+                            v-model:value="formData.address"
+                            placeholder="请输入安装地址"
+                        />
                     </a-form-item>
                 </a-col>
                 <a-col :span="24">
@@ -88,13 +128,18 @@
 </template>
 
 <script setup lang="ts">
-import templateApi from '@/api/notice/template';
+import ChannelApi from '@/api/media/channel';
 import { PropType } from 'vue';
+import { message } from 'ant-design-vue';
+import type { Rule } from 'ant-design-vue/es/form';
+
+const route = useRoute();
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
     (e: 'submit'): void;
 };
+
 const emit = defineEmits<Emits>();
 
 const props = defineProps({
@@ -112,28 +157,95 @@ const _vis = computed({
 
 const formRef = ref();
 const formData = ref({
-    id: '',
+    id: undefined,
     address: '',
     channelId: '',
     description: '',
-    deviceId: '',
+    deviceId: route.query.id,
     name: '',
-    others: {
-        media_password: '',
-        media_url: '',
-        media_username: '',
-    },
+    // 以下三个字段, 提交时需提取到others字段当中
+    media_password: '',
+    media_url: '',
+    media_username: '',
 });
-// const formRules = ref({});
+
+watch(
+    () => props.channelData,
+    (val: any) => {
+        const {
+            id,
+            address,
+            channelId,
+            description,
+            deviceId,
+            name,
+            others,
+            ...extra
+        } = val;
+        formData.value = {
+            id,
+            address,
+            channelId,
+            description,
+            deviceId,
+            name,
+            ...others,
+        };
+    },
+    { deep: true },
+);
+
+/**
+ * 通道ID字段验证是否存在
+ * @param _rule
+ * @param value
+ */
+let validateChannelId = async (_rule: Rule, value: string) => {
+    const { result } = await ChannelApi.validateField({
+        deviceId: route.query.id,
+        channelId: value,
+    });
+
+    if (!result.passed) {
+        return Promise.reject('该ID已存在');
+    } else {
+        return Promise.resolve();
+    }
+};
 
 /**
  * 提交
  */
+const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
     formRef.value
         .validate()
         .then(async () => {
-            emit('submit');
+            const {
+                media_url,
+                media_password,
+                media_username,
+                ...extraFormData
+            } = formData.value;
+            if (media_url || media_password || media_username) {
+                extraFormData.others = {
+                    media_url,
+                    media_password,
+                    media_username,
+                };
+            }
+            btnLoading.value = true;
+            const res = formData.value.id
+                ? await ChannelApi.update(formData.value.id, extraFormData)
+                : await ChannelApi.save(extraFormData);
+            btnLoading.value = false;
+            if (res.success) {
+                message.success('操作成功');
+                _vis.value = false;
+                emit('submit');
+            } else {
+                message.error('操作失败');
+            }
         })
         .catch((err: any) => {
             console.log('err: ', err);
@@ -142,6 +254,14 @@ const handleSubmit = () => {
 const handleCancel = () => {
     _vis.value = false;
 };
+watch(
+    () => _vis.value,
+    (val) => {
+        if (!val) {
+            formRef.value.resetFields();
+            // 以下字段非表单所填, 重置字段需手动置空
+            formData.value.id = undefined;
+        }
+    },
+);
 </script>
-
-<style lang="less" scoped></style>

@@ -39,12 +39,16 @@
                                 />
                             </a-form-item>
                             <a-form-item>
-                                <a-button
+                                <PermissionButton
                                     v-if="view === 'false'"
                                     type="primary"
                                     html-type="submit"
-                                    >保存</a-button
+                                    :hasPermission="`link/AccessConfig:${
+                                        id === ':id' ? 'add' : 'update'
+                                    }`"
                                 >
+                                    保存
+                                </PermissionButton>
                             </a-form-item>
                         </a-form>
                     </div>
@@ -122,16 +126,7 @@ const onFinish = async (values: any) => {
         id === ':id' ? await save(params) : await update({ ...params, id });
     if (resp.status === 200) {
         message.success('操作成功！');
-        // if (params.get('save')) {
-        // if ((window as any).onTabSaveSuccess) {
-        //   if (resp.result) {
-        //     (window as any).onTabSaveSuccess(resp.result);
-        //     setTimeout(() => window.close(), 300);
-        //   }
-        // }
-        //   } else {
         history.back();
-        //   }
     }
 };
 

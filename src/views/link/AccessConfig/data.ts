@@ -1,3 +1,4 @@
+import { getImage } from '@/utils/comm';
 
 const ProtocolMapping = new Map();
 ProtocolMapping.set('websocket-server', 'WebSocket');
@@ -25,6 +26,23 @@ NetworkTypeMapping.set('mqtt-server-gateway', 'MQTT_SERVER');
 NetworkTypeMapping.set('tcp-server-gateway', 'TCP_SERVER');
 NetworkTypeMapping.set('official-edge-gateway', 'MQTT_SERVER');
 
+const BackMap = new Map();
+BackMap.set('mqtt-server-gateway', getImage('/access/mqtt.png'));
+BackMap.set('websocket-server', getImage('/access/websocket.png'));
+BackMap.set('modbus-tcp', getImage('/access/modbus.png'));
+BackMap.set('coap-server-gateway', getImage('/access/coap.png'));
+BackMap.set('tcp-server-gateway', getImage('/access/tcp.png'));
+BackMap.set('Ctwing', getImage('/access/ctwing.png'));
+BackMap.set('child-device', getImage('/access/child-device.png'));
+BackMap.set('opc-ua', getImage('/access/opc-ua.png'));
+BackMap.set('http-server-gateway', getImage('/access/http.png'));
+BackMap.set('fixed-media', getImage('/access/video-device.png'));
+BackMap.set('udp-device-gateway', getImage('/access/udp.png'));
+BackMap.set('OneNet', getImage('/access/onenet.png'));
+BackMap.set('gb28181-2016', getImage('/access/gb28181.png'));
+BackMap.set('mqtt-client-gateway', getImage('/access/mqtt-broke.png'));
+BackMap.set('edge-child-device', getImage('/access/child-device.png'));
+BackMap.set('official-edge-gateway', getImage('/access/edge.png'));
 
 const descriptionList = {
     'udp-device-gateway':
@@ -43,21 +61,21 @@ const descriptionList = {
         'CoAP是针对只有少量的内存空间和有限的计算能力提供的一种基于UDP的协议。便于低功耗或网络受限的设备与平台通信，仅支持设备和平台之间单对单的请求-响应模式。',
 };
 
-const columnsMQTT = [
-    {
-        title: '分组',
-        dataIndex: 'group',
-        key: 'group',
-        ellipsis: true,
-        align: 'center',
-        width: 100,
-        scopedSlots: { customRender: 'group' },
-    },
+const ColumnsMQTT = [
+    // {
+    //     title: '分组',
+    //     dataIndex: 'group',
+    //     key: 'group',
+    //     ellipsis: true,
+    //     align: 'center',
+    //     width: 100,
+    //     scopedSlots: { customRender: 'group' },
+    // },
     {
         title: 'topic',
         dataIndex: 'topic',
         key: 'topic',
-        scopedSlots: { customRender: 'topic' },
+        ellipsis: true,
     },
     {
         title: '上下行',
@@ -72,37 +90,58 @@ const columnsMQTT = [
         title: '说明',
         dataIndex: 'description',
         key: 'description',
-        scopedSlots: { customRender: 'description' },
-    },
-]
-
-const columnsHTTP = [
-    {
-        title: '分组',
-        dataIndex: 'group',
-        key: 'group',
         ellipsis: true,
-        width: 100,
-        scopedSlots: { customRender: 'group' },
-      },
-      {
+    },
+];
+
+const ColumnsHTTP = [
+    // {
+    //     title: '分组',
+    //     dataIndex: 'group',
+    //     key: 'group',
+    //     ellipsis: true,
+    //     width: 100,
+    //     scopedSlots: { customRender: 'group' },
+    // },
+    {
         title: '地址',
         dataIndex: 'address',
         key: 'address',
-        scopedSlots: { customRender: 'address' },
-      },
-      {
+        ellipsis: true,
+        // scopedSlots: { customRender: 'address' },
+    },
+    {
         title: '示例',
         dataIndex: 'example',
         key: 'example',
-        scopedSlots: { customRender: 'example' },
-      },
-      {
+        ellipsis: true,
+        // scopedSlots: { customRender: 'example' },
+    },
+    {
         title: '说明',
         dataIndex: 'description',
         key: 'description',
-        scopedSlots: { customRender: 'description' }
-      },
-]
+        ellipsis: true,
+        // scopedSlots: { customRender: 'description' },
+    },
+];
 
-export { NetworkTypeMapping, ProtocolMapping, descriptionList, columnsMQTT, columnsHTTP };
+const TiTlePermissionButtonStyle = {
+    padding: 0,
+    color: ' #1890ff !important',
+    'font-weight': 700,
+    'font-size': '16px',
+    overflow: 'hidden',
+    'text-overflow': 'ellipsis',
+    'white-space': 'nowrap',
+};
+
+export {
+    NetworkTypeMapping,
+    ProtocolMapping,
+    BackMap,
+    descriptionList,
+    ColumnsMQTT,
+    ColumnsHTTP,
+    TiTlePermissionButtonStyle,
+};

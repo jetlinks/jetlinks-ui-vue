@@ -5,7 +5,7 @@
       <a-button :loading="save.loading" type="primary" @click="save.saveMetadata">保存</a-button>
     </template>
     <a-form ref="formRef" :model="form.model" layout="vertical">
-        <PropertyForm :model-type="metadataStore.model.type" :type="type" ref="propertyForm" v-model:value="form.model"></PropertyForm>
+        <BaseForm :model-type="metadataStore.model.type" :type="type" v-model:value="form.model"></BaseForm>
     </a-form>
   </a-drawer>
 </template>
@@ -20,7 +20,7 @@ import { updateMetadata, asyncUpdateMetadata } from '../../metadata'
 import { Store } from 'jetlinks-store';
 import { detail } from '@/api/device/instance';
 import { DeviceInstance } from '@/views/device/Instance/typings';
-import PropertyForm from './PropertyForm.vue';
+import BaseForm from './BaseForm.vue';
 import { PropType } from 'vue';
 
 const props = defineProps({
@@ -56,15 +56,8 @@ const close = () => {
 
 const title = computed(() => metadataStore.model.action === 'add' ? '新增' : '修改')
 
-const propertyForm = ref()
-
 const form = reactive({
-  model: {
-    valueType: {
-      expands: {}
-    },
-    expands: {}
-  } as any,
+  model: {} as any,
 })
 if (metadataStore.model.action === 'edit') {
   form.model = metadataStore.model.item
@@ -133,6 +126,7 @@ const save = reactive({
       }
       save.loading = false
     })
+    save.loading = false
   },
   resetMetadata: async () => {
     const { id } = route.params
@@ -144,6 +138,44 @@ const save = reactive({
 })
 
 </script>
-<style lang="less" scoped>
+<style scoped lang="less">
+:deep(.ant-form-item-label) {
+  line-height: 1;
 
+  >label {
+    font-size: 12px;
+
+    &.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+      font-size: 12px;
+    }
+  }
+}
+
+:deep(.ant-form-item-explain) {
+  font-size: 12px;
+}
+
+:deep(.ant-form-item-with-help) {
+  .ant-form-item-explain {
+    min-height: 20px;
+    line-height: 20px;
+  }
+}
+
+:deep(.ant-form-item) {
+  margin-bottom: 20px;
+
+  &.ant-form-item-with-help {
+    margin-bottom: 0;
+  }
+
+  input {
+    font-size: 12px;
+  }
+}
+
+:deep(.ant-input),
+:deep(.ant-select) {
+  font-size: 12px;
+}
 </style>

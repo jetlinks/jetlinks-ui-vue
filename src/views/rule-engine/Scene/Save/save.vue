@@ -66,6 +66,10 @@ const props = defineProps({
   }
 })
 
+watchEffect(() => {
+  Object.assign(formModel, props.data)
+})
+
 const emit = defineEmits<Emit>()
 
 const title = computed(() => {
