@@ -133,3 +133,18 @@ export const DateTypeList = [
   //   value: 'yyyy-MM-dd HH:mm:ss zzz',
   // },
 ];
+
+export const ExpandsTypeList = [
+  {
+    label: '读',
+    value: 'read',
+  },
+  {
+    label: '写',
+    value: 'write',
+  },
+  {
+    label: '上报',
+    value: 'report',
+  },
+]

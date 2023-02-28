@@ -13,18 +13,18 @@
             </div>
           </template>
           <template #content>
-            <a-form :model="_value[index]" layout="vertical">
-              <a-form-item label="Value" name="value" :rules="[
+            <div class="ant-form-vertical">
+              <a-form-item label="Value" :name="name.concat([index, 'value'])" :rules="[
                 { required: true, message: '请输入Value' },
               ]">
                 <a-input v-model:value="_value[index].value" size="small"></a-input>
               </a-form-item>
-              <a-form-item label="Text" name="text" :rules="[
+              <a-form-item label="Text" :name="name.concat([index, 'text'])" :rules="[
                 { required: true, message: '请输入Text' },
               ]">
                 <a-input v-model:value="_value[index].text" size="small"></a-input>
               </a-form-item>
-            </a-form>
+            </div>
           </template>
           <div class="item-edit" @click="handleEdit(index)">
             {{ item.text || '枚举项配置' }}
@@ -33,11 +33,13 @@
         </a-popover>
       </div>
       <div class="item-right">
-        <AIcon type="DeleteOutlined" @click="handleDelete(index)"/>
+        <AIcon type="DeleteOutlined" @click="handleDelete(index)" />
       </div>
     </div>
     <a-button type="dashed" block @click="handleAdd">
-      <template #icon><AIcon type="PlusOutlined" class="item-icon" /></template>
+      <template #icon>
+        <AIcon type="PlusOutlined" class="item-icon" />
+      </template>
       新增枚举型
     </a-button>
   </div>
@@ -57,20 +59,23 @@ const emit = defineEmits<Emits>()
 const props = defineProps({
   value: {
     type: Object as PropType<EnumType[]>,
+  },
+  name: {
+    type: Array as PropType<(string | number)[]>,
     default: () => ([])
   }
 })
 
 const _value = ref<EnumType[]>([])
 watchEffect(() => {
-  _value.value = props.value
+  _value.value = props.value || ([{}])
 })
 
 watch(_value,
-() => {
-  emit('update:value', _value.value)
-},
-{ deep: true })
+  () => {
+    emit('update:value', _value.value)
+  },
+  { deep: true, immediate: true })
 
 const editIndex = ref<number>(-1)
 const handleEdit = (index: number) => {

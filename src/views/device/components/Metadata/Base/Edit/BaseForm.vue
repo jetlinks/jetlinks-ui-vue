@@ -18,7 +18,6 @@
   <template v-if="modelType === 'properties'">
     <value-type-form :name="['valueType']" v-model:value="value.valueType" key="property" title="数据类型"
       @change-type="changeValueType"></value-type-form>
-
     <expands-form :name="['expands']" v-model:value="value.expands" :type="type" :id="value.id" :config="config"
       :valueType="value.valueType"></expands-form>
   </template>
@@ -46,20 +45,28 @@
     </a-form-item>
     <value-type-form :name="['valueType']" v-model:value="value.valueType" key="function" title="输出参数"></value-type-form>
   </template>
+  <template v-if="modelType === 'tags'">
+    <value-type-form :name="['valueType']" v-model:value="value.valueType" key="property" title="数据类型"></value-type-form>
+    <a-form-item label="读写类型" :name="['expands', 'type']" :rules="[
+      { required: true, message: '请选择读写类型' },
+    ]">
+      <a-select v-model:value="value.expands.type" :options="ExpandsTypeList" mode="multiple" size="small"></a-select>
+    </a-form-item>
+  </template>
   <a-form-item label="说明" name="description" :rules="[
     { max: 200, message: '最多可输入200个字符' },
   ]">
     <a-textarea v-model:value="value.description" size="small"></a-textarea>
   </a-form-item>
 </template>
-<script setup lang="ts" name="PropertyForm">
+<script setup lang="ts" name="BaseForm">
 import { PropType } from 'vue';
 import ExpandsForm from './ExpandsForm.vue';
 import ValueTypeForm from './ValueTypeForm.vue'
 import { useProductStore } from '@/store/product';
 import { getMetadataConfig } from '@/api/device/product'
 import JsonParam from '@/components/Metadata/JsonParam/index.vue'
-import { EventLevel } from '@/views/device/data';
+import { EventLevel, ExpandsTypeList } from '@/views/device/data';
 
 const props = defineProps({
   type: {
@@ -76,7 +83,7 @@ const props = defineProps({
     default: ''
   }
 })
-if (props.modelType === 'events') {
+if (props.modelType === 'events' || props.modelType === 'tags') {
   if (!props.value.expands) {
     props.value.expands = {}
   }
