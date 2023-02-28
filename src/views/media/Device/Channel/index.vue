@@ -1,3 +1,4 @@
+<!-- 视频设备-通道列表 -->
 <template>
     <page-container>
         <Search
@@ -91,6 +92,7 @@ import type { ActionsType } from '@/components/Table/index.vue';
 import { useMenuStore } from 'store/menu';
 import { message } from 'ant-design-vue';
 import Save from './Save.vue';
+import { cloneDeep } from 'lodash-es';
 
 const menuStory = useMenuStore();
 const route = useRoute();
@@ -158,9 +160,7 @@ const params = ref<Record<string, any>>({});
  * @param params
  */
 const handleSearch = (e: any) => {
-    // console.log('handleSearch e:', e);
     params.value = e;
-    // console.log('params.value: ', params.value);
 };
 
 const saveVis = ref(false);
@@ -172,6 +172,11 @@ const listRef = ref();
 const playVis = ref(false);
 const channelData = ref();
 
+/**
+ * 表格操作按钮
+ * @param data 表格数据项
+ * @param type 表格展示类型
+ */
 const getActions = (
     data: Partial<Record<string, any>>,
     type: 'card' | 'table',
@@ -186,8 +191,8 @@ const getActions = (
             },
             icon: 'EditOutlined',
             onClick: () => {
+                channelData.value = cloneDeep(data);
                 saveVis.value = true;
-                channelData.value = data;
             },
         },
         {
@@ -246,5 +251,3 @@ const getActions = (
         : actions;
 };
 </script>
-
-<style lang="less" scoped></style>

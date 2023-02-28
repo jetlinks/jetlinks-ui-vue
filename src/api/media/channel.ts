@@ -6,10 +6,11 @@ export default {
     // 详情
     detail: (id: string): any => server.get(`/media/channel/${id}`),
     // 验证通道ID是否存在
-    validateField: (params: string): any => server.get(`/media/channel/channelId/_validate`, params),
+    validateField: (params: any): any => server.get(`/media/channel/channelId/_validate`, params),
     // 新增
     save: (data: any) => server.post(`/media/channel`, data),
     // 修改
-    update: (data: any) => server.put(`/media/channel`, data),
+    update: (id: string, data: any) => server.put(`/media/channel/${id}`, data),
+    // 删除
     del: (id: string) => server.remove(`media/channel/${id}`),
 }
