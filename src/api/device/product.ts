@@ -1,5 +1,6 @@
+import { OperatorItem } from '@/components/FRuleEditor/Operator/typings'
 import server from '@/utils/request'
-import { DeviceMetadata, ProductItem, DepartmentItem  } from '@/views/device/Product/typings'
+import { DeviceMetadata, ProductItem, DepartmentItem, MetadataType  } from '@/views/device/Product/typings'
 
 /**
  * 根据条件查询产品（不带翻页）
