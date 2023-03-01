@@ -13,9 +13,14 @@
                 :params="params"
             >
                 <template #headerTitle>
-                    <a-button type="primary" @click="handlAdd"
-                        ><AIcon type="PlusOutlined" />新增</a-button
+                    <PermissionButton
+                        type="primary"
+                        @click="handlAdd"
+                        hasPermission="link/Protocol:add"
                     >
+                        <template #icon><AIcon type="PlusOutlined" /></template>
+                        新增
+                    </PermissionButton>
                 </template>
                 <template #card="slotProps">
                     <CardBox
@@ -31,11 +36,16 @@
                         </template>
                         <template #content>
                             <div class="card-item-content">
-                                <h3
-                                    class="card-item-content-title card-item-content-title-a"
-                                >
-                                    {{ slotProps.name }}
-                                </h3>
+                                <a-tooltip>
+                                    <template #title>
+                                        {{ slotProps.name }}
+                                    </template>
+                                    <h3
+                                        class="card-item-content-title card-item-content-title-a"
+                                    >
+                                        {{ slotProps.name }}
+                                    </h3>
+                                </a-tooltip>
                                 <a-row class="card-item-content-box">
                                     <a-col
                                         :span="12"
@@ -70,78 +80,49 @@
                             </div>
                         </template>
                         <template #actions="item">
-                            <a-tooltip
-                                v-bind="item.tooltip"
-                                :title="item.disabled && item.tooltip.title"
+                            <PermissionButton
+                                :disabled="item.disabled"
+                                :popConfirm="item.popConfirm"
+                                :tooltip="{
+                                    ...item.tooltip,
+                                }"
+                                @click="item.onClick"
+                                :hasPermission="'link/Protocol:' + item.key"
                             >
-                                <a-popconfirm
-                                    v-if="item.popConfirm"
-                                    v-bind="item.popConfirm"
-                                    :disabled="item.disabled"
-                                >
-                                    <a-button :disabled="item.disabled">
-                                        <AIcon
-                                            type="DeleteOutlined"
-                                            v-if="item.key === 'delete'"
-                                        />
-                                        <template v-else>
-                                            <AIcon :type="item.icon" />
-                                            <span>{{ item.text }}</span>
-                                        </template>
-                                    </a-button>
-                                </a-popconfirm>
+                                <AIcon
+                                    type="DeleteOutlined"
+                                    v-if="item.key === 'delete'"
+                                />
                                 <template v-else>
-                                    <a-button
-                                        :disabled="item.disabled"
-                                        @click="item.onClick"
-                                    >
-                                        <AIcon
-                                            type="DeleteOutlined"
-                                            v-if="item.key === 'delete'"
-                                        />
-                                        <template v-else>
-                                            <AIcon :type="item.icon" />
-                                            <span>{{ item.text }}</span>
-                                        </template>
-                                    </a-button>
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item?.text }}</span>
                                 </template>
-                            </a-tooltip>
+                            </PermissionButton>
                         </template>
                     </CardBox>
                 </template>
                 <template #action="slotProps">
-                    <a-space :size="16">
-                        <a-tooltip
+                    <a-space>
+                        <template
                             v-for="i in getActions(slotProps, 'table')"
                             :key="i.key"
-                            v-bind="i.tooltip"
                         >
-                            <a-popconfirm
-                                v-if="i.popConfirm"
-                                v-bind="i.popConfirm"
+                            <PermissionButton
                                 :disabled="i.disabled"
-                            >
-                                <a-button
-                                    :disabled="i.disabled"
-                                    style="padding: 0"
-                                    type="link"
-                                    ><AIcon :type="i.icon"
-                                /></a-button>
-                            </a-popconfirm>
-                            <a-button
-                                style="padding: 0"
+                                :popConfirm="i.popConfirm"
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                style="padding: 0px"
+                                @click="i.onClick"
                                 type="link"
-                                v-else
-                                @click="i.onClick && i.onClick(slotProps)"
+                                :hasPermission="'link/Protocol:' + i.key"
                             >
-                                <a-button
-                                    :disabled="i.disabled"
-                                    style="padding: 0"
-                                    type="link"
+                                <template #icon
                                     ><AIcon :type="i.icon"
-                                /></a-button>
-                            </a-button>
-                        </a-tooltip>
+                                /></template>
+                            </PermissionButton>
+                        </template>
                     </a-space>
                 </template>
             </JTable>
@@ -173,7 +154,6 @@ const columns = [
         },
         width: 200,
         fixed: 'left',
-        // scopedSlots: true,
     },
     {
         title: '名称',
@@ -182,6 +162,7 @@ const columns = [
         search: {
             type: 'string',
         },
+        ellipsis: true,
     },
     {
         title: '类型',
@@ -227,7 +208,7 @@ const getActions = (
     if (!data) return [];
     const actions = [
         {
-            key: 'edit',
+            key: 'update',
             text: '编辑',
             tooltip: {
                 title: '编辑',

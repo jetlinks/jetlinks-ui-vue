@@ -13,9 +13,14 @@
             :params="params"
         >
             <template #headerTitle>
-                <a-button type="primary" @click="handlAdd"
-                    ><AIcon type="PlusOutlined" />新增</a-button
+                <PermissionButton
+                    type="primary"
+                    @click="handlAdd"
+                    hasPermission="device/Firmware:add"
                 >
+                    <template #icon><AIcon type="PlusOutlined" /></template>
+                    新增
+                </PermissionButton>
             </template>
             <template #mode="slotProps">
                 <span>{{ slotProps.mode.text }}</span>
@@ -225,7 +230,7 @@ const handlEye = (data: object) => {
 };
 
 const handlDetails = (id: string) => {
-    // menuStory.jumpPage('device/Firmware/Task/Detail', { id });
+    menuStory.jumpPage('device/Firmware/Task/Detail', { id });
 };
 const saveChange = (value: boolean) => {
     visible.value = false;

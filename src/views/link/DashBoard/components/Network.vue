@@ -43,12 +43,12 @@
                 </div>
             </div>
             <div>
+                <a-empty v-if="empty" class="empty" />
                 <div
+                    v-else
                     ref="chartRef"
-                    v-if="flag"
                     style="width: 100%; height: 350px"
                 ></div>
-                <a-empty v-else style="height: 300px; margin-top: 120px" />
             </div>
         </div>
     </a-spin>
@@ -67,10 +67,8 @@ import moment from 'moment';
 import * as echarts from 'echarts';
 
 const chartRef = ref<Record<string, any>>({});
-
-const flag = ref(true);
+const empty = ref(false);
 const loading = ref(false);
-const myChart = ref(null);
 const data = ref({
     type: 'bytesRead',
     time: {
@@ -163,6 +161,7 @@ const handleNetworkOptions = (optionsData, xAxis) => {
                 : typeDataLine,
         };
         myChart.setOption(options);
+        // xAxis.length === 0 && (empty.value = true);
         window.addEventListener('resize', function () {
             myChart.resize();
         });
@@ -215,5 +214,8 @@ watch(
 .right {
     display: flex;
     align-items: center;
+}
+.empty {
+    height: 300px;
 }
 </style>
