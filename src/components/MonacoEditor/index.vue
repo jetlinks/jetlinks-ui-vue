@@ -74,6 +74,10 @@ watchEffect(() => {
     }, 300);
 });
 
+/**
+ * 光标位置插入内容
+ * @param {String} val 
+ */
 const insert = (val) => {
     if (!instance) return;
     const position = instance.getPosition();
@@ -90,12 +94,21 @@ const insert = (val) => {
     ]);
 };
 
-// watch(
-//     () => props.modelValue,
-//     (val) => {
-//         instance.setValue(val);
-//     },
-// );
+watch(
+    () => props.modelValue,
+    (val) => {
+        if (!instance) return;
+        // setValue之前获取光标位置
+        const position = instance.getPosition();
+        // setValue之后光标位置改变
+        instance.setValue(val);
+        // 设置光标位置为setValue之前的位置
+        instance.setPosition({
+            column: position?.column,
+            lineNumber: position?.lineNumber,
+        });
+    },
+);
 
 defineExpose({
     editorFormat,
