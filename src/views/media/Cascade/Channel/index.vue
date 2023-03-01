@@ -29,7 +29,9 @@
             </template>
             <template #rightExtraRender>
                 <a-space>
-                    <a-button type="primary">绑定通道</a-button>
+                    <a-button type="primary" @click="bindVis = true">
+                        绑定通道
+                    </a-button>
                     <a-popconfirm
                         title="确认解绑?"
                         @confirm="handleMultipleUnbind"
@@ -86,6 +88,8 @@
                 </a-space>
             </template>
         </JTable>
+
+        <BindChannel v-model:visible="bindVis" @submit="listRef.reload()" />
     </page-container>
 </template>
 
@@ -93,6 +97,7 @@
 import CascadeApi from '@/api/media/cascade';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { message } from 'ant-design-vue';
+import BindChannel from './BindChannel/index.vue';
 
 const route = useRoute();
 
@@ -174,6 +179,7 @@ const handleSearch = (e: any) => {
 
 const listRef = ref();
 const _selectedRowKeys = ref<string[]>([]);
+const bindVis = ref(false);
 
 const onSelectChange = (
     record: any[],
@@ -225,7 +231,7 @@ const getActions = (
                 onConfirm: async () => {
                     const resp = await CascadeApi.unbindChannel(
                         route.query.id as string,
-                        [data.id],
+                        [data.channelId],
                     );
                     if (resp.success) {
                         message.success('操作成功！');
@@ -244,9 +250,12 @@ const getActions = (
  * 批量解绑
  */
 const handleMultipleUnbind = async () => {
+    const channelIds = listRef.value?._dataSource
+        .filter((f: any) => _selectedRowKeys.value.includes(f.id))
+        .map((m: any) => m.channelId);
     const resp = await CascadeApi.unbindChannel(
         route.query.id as string,
-        _selectedRowKeys.value,
+        channelIds,
     );
     if (resp.success) {
         message.success('操作成功！');

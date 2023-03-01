@@ -1,33 +1,54 @@
 <!-- 国标级联-绑定通道 -->
 <template>
-    <page-container>
+    <a-modal
+        v-model:visible="_vis"
+        title="绑定通道"
+        cancelText="取消"
+        okText="确定"
+        width="80%"
+        @ok="handleSave"
+        @cancel="_vis = false"
+        :confirmLoading="loading"
+    >
         <Search
             type="simple"
             :columns="columns"
-            target="product"
+            target="media"
             @search="handleSearch"
         />
 
         <JTable
             ref="listRef"
+            model="table"
             :columns="columns"
-            :request="(e:any) => ChannelApi.list(e, route?.query.id as string)"
+            :request="CascadeApi.queryChannelList"
             :defaultParams="{
-                sorts: [{ name: 'notifyTime', order: 'desc' }],
+                sorts: [{ name: 'name', order: 'desc' }],
+                terms: [
+                    {
+                        column: 'id',
+                        termType: 'cascade_channel$not',
+                        type: 'and',
+                        value: route.query.id,
+                    },
+                    {
+                        column: 'catalogType',
+                        termType: 'eq',
+                        type: 'and',
+                        value: 'device',
+                    },
+                ],
             }"
             :params="params"
-            model="table"
+            :rowSelection="{
+                selectedRowKeys: _selectedRowKeys,
+                onSelect: onSelectChange,
+                onSelectAll: onSelectAllChange,
+            }"
+            @cancelSelect="_selectedRowKeys = []"
         >
             <template #headerTitle>
-                <a-tooltip
-                    v-if="route?.query.type === 'gb28181-2016'"
-                    title="接入方式为GB/T28281时，不支持新增"
-                >
-                    <a-button type="primary" disabled> 新增 </a-button>
-                </a-tooltip>
-                <a-button type="primary" @click="handleAdd" v-else>
-                    新增
-                </a-button>
+                <h3>通道列表</h3>
             </template>
             <template #status="slotProps">
                 <a-space>
@@ -41,76 +62,56 @@
                     ></a-badge>
                 </a-space>
             </template>
-            <template #action="slotProps">
-                <a-space :size="16">
-                    <a-tooltip
-                        v-for="i in getActions(slotProps, 'table')"
-                        :key="i.key"
-                        v-bind="i.tooltip"
-                    >
-                        <a-popconfirm
-                            v-if="i.popConfirm"
-                            v-bind="i.popConfirm"
-                            :disabled="i.disabled"
-                        >
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-popconfirm>
-                        <a-button
-                            style="padding: 0"
-                            type="link"
-                            v-else
-                            @click="i.onClick && i.onClick(slotProps)"
-                        >
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-button>
-                    </a-tooltip>
-                </a-space>
-            </template>
         </JTable>
-    </page-container>
+    </a-modal>
 </template>
 
 <script setup lang="ts">
-import ChannelApi from '@/api/media/channel';
-import type { ActionsType } from '@/components/Table/index.vue';
-import { useMenuStore } from 'store/menu';
+import CascadeApi from '@/api/media/cascade';
 import { message } from 'ant-design-vue';
-import { cloneDeep } from 'lodash-es';
+import { PropType } from 'vue';
 
-const menuStory = useMenuStore();
 const route = useRoute();
+
+type Emits = {
+    (e: 'update:visible', data: boolean): void;
+    (e: 'submit'): void;
+};
+const emit = defineEmits<Emits>();
+
+const props = defineProps({
+    visible: { type: Boolean, default: false },
+    data: {
+        type: Object as PropType<Partial<Record<string, any>>>,
+        default: () => ({}),
+    },
+});
+
+const _vis = computed({
+    get: () => props.visible,
+    set: (val) => emit('update:visible', val),
+});
+
+watch(
+    () => _vis.value,
+    (val) => {
+        if (val) handleSearch({ terms: [] });
+    },
+);
 
 const columns = [
     {
-        title: '通道ID',
-        dataIndex: 'channelId',
-        key: 'channelId',
+        title: '设备名称',
+        dataIndex: 'deviceName',
+        key: 'deviceName',
         search: {
             type: 'string',
         },
     },
     {
-        title: '名称',
+        title: '通道名称',
         dataIndex: 'name',
         key: 'name',
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '厂商',
-        dataIndex: 'manufacturer',
-        key: 'manufacturer',
         search: {
             type: 'string',
         },
@@ -119,6 +120,14 @@ const columns = [
         title: '安装地址',
         dataIndex: 'address',
         key: 'address',
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '厂商',
+        dataIndex: 'manufacturer',
+        key: 'manufacturer',
         search: {
             type: 'string',
         },
@@ -139,11 +148,6 @@ const columns = [
             },
         },
     },
-    {
-        title: '操作',
-        key: 'action',
-        scopedSlots: true,
-    },
 ];
 
 const params = ref<Record<string, any>>({});
@@ -154,93 +158,54 @@ const params = ref<Record<string, any>>({});
  */
 const handleSearch = (e: any) => {
     params.value = e;
-};
-
-const saveVis = ref(false);
-const handleAdd = () => {
-    saveVis.value = true;
+    console.log('params.value: ', params.value);
 };
 
 const listRef = ref();
-const playVis = ref(false);
-const channelData = ref();
+const _selectedRowKeys = ref<string[]>([]);
 
-/**
- * 表格操作按钮
- * @param data 表格数据项
- * @param type 表格展示类型
- */
-const getActions = (
-    data: Partial<Record<string, any>>,
-    type: 'card' | 'table',
-): ActionsType[] => {
-    if (!data) return [];
-    const actions = [
-        {
-            key: 'edit',
-            text: '编辑',
-            tooltip: {
-                title: '编辑',
-            },
-            icon: 'EditOutlined',
-            onClick: () => {
-                channelData.value = cloneDeep(data);
-                saveVis.value = true;
-            },
-        },
-        {
-            key: 'play',
-            text: '播放',
-            tooltip: {
-                title: '播放',
-            },
-            icon: 'VideoCameraOutlined',
-            onClick: () => {
-                playVis.value = true;
-            },
-        },
-        {
-            key: 'backPlay',
-            text: '回放',
-            tooltip: {
-                title: '回放',
-            },
-            icon: 'HistoryOutlined',
-            onClick: () => {
-                menuStory.jumpPage(
-                    'media/Device/Playback',
-                    {},
-                    {
-                        id: route.query.id,
-                        type: route.query.type,
-                        channelId: data.channelId,
-                    },
-                );
-            },
-        },
-        {
-            key: 'delete',
-            text: '删除',
-            tooltip: {
-                title: '删除',
-            },
-            popConfirm: {
-                title: '确认删除?',
-                onConfirm: async () => {
-                    const resp = await ChannelApi.del(data.id);
-                    if (resp.status === 200) {
-                        message.success('操作成功！');
-                        listRef.value?.reload();
-                    } else {
-                        message.error('操作失败！');
-                    }
-                },
-            },
-            icon: 'DeleteOutlined',
-        },
-    ];
-    return route?.query.type === 'gb28181-2016'
-        ? actions.filter((f) => f.key !== 'delete')
-        : actions;
+const onSelectChange = (
+    record: any[],
+    selected: boolean,
+    selectedRows: any[],
+) => {
+    _selectedRowKeys.value = selected
+        ? [...getSetRowKey(selectedRows)]
+        : _selectedRowKeys.value.filter((item: any) => item !== record?.id);
+};
+const onSelectAllChange = (
+    selected: boolean,
+    selectedRows: any[],
+    changeRows: any[],
+) => {
+    const unRowsKeys = getSelectedRowsKey(changeRows);
+    _selectedRowKeys.value = selected
+        ? [...getSetRowKey(selectedRows)]
+        : _selectedRowKeys.value
+              .concat(unRowsKeys)
+              .filter((item) => !unRowsKeys.includes(item));
+};
+const getSelectedRowsKey = (selectedRows: any[]) =>
+    selectedRows.map((item) => item?.id).filter((i) => !!i);
+
+const getSetRowKey = (selectedRows: any[]) =>
+    new Set([..._selectedRowKeys.value, ...getSelectedRowsKey(selectedRows)]);
+
+const loading = ref(false);
+const handleSave = async () => {
+    if (!_selectedRowKeys.value.length) message.error('请勾选数据');
+    loading.value = true;
+    const resp = await CascadeApi.bindChannel(
+        route.query.id as string,
+        _selectedRowKeys.value,
+    );
+    loading.value = false;
+    if (resp.success) {
+        message.success('操作成功！');
+        _vis.value = false;
+        emit('submit');
+    } else {
+        message.error('操作失败！');
+    }
 };
 </script>
