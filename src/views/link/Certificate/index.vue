@@ -61,7 +61,6 @@ import { useMenuStore } from 'store/menu';
 
 const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
-const router = useRouter();
 const params = ref<Record<string, any>>({});
 
 const columns = [
