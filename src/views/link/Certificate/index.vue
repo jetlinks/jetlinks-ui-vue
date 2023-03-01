@@ -13,45 +13,40 @@
                 :params="params"
             >
                 <template #headerTitle>
-                    <a-button type="primary" @click="handlAdd"
-                        ><AIcon type="PlusOutlined" />新增</a-button
+                    <PermissionButton
+                        type="primary"
+                        @click="handlAdd"
+                        hasPermission="link/Certificate:add"
                     >
+                        <template #icon><AIcon type="PlusOutlined" /></template>
+                        新增
+                    </PermissionButton>
                 </template>
                 <template #type="slotProps">
                     <span>{{ slotProps.type.text }}</span>
                 </template>
                 <template #action="slotProps">
-                    <a-space :size="16">
-                        <a-tooltip
+                    <a-space>
+                        <template
                             v-for="i in getActions(slotProps)"
                             :key="i.key"
-                            v-bind="i.tooltip"
                         >
-                            <a-popconfirm
-                                v-if="i.popConfirm"
-                                v-bind="i.popConfirm"
-                            >
-                                <a-button
-                                    :disabled="i.disabled"
-                                    style="padding: 0"
-                                    type="link"
-                                    ><AIcon :type="i.icon"
-                                /></a-button>
-                            </a-popconfirm>
-                            <a-button
-                                style="padding: 0"
+                            <PermissionButton
+                                :disabled="i.disabled"
+                                :popConfirm="i.popConfirm"
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                style="padding: 0px"
+                                @click="i.onClick"
                                 type="link"
-                                v-else
-                                @click="i.onClick && i.onClick(slotProps)"
+                                :hasPermission="'link/Certificate:' + i.key"
                             >
-                                <a-button
-                                    :disabled="i.disabled"
-                                    style="padding: 0"
-                                    type="link"
+                                <template #icon
                                     ><AIcon :type="i.icon"
-                                /></a-button>
-                            </a-button>
-                        </a-tooltip>
+                                /></template>
+                            </PermissionButton>
+                        </template>
                     </a-space>
                 </template>
             </JTable>
@@ -62,7 +57,9 @@
 import type { ActionsType } from '@/components/Table/index';
 import { query, remove } from '@/api/link/certificate';
 import { message } from 'ant-design-vue';
+import { useMenuStore } from 'store/menu';
 
+const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
 const router = useRouter();
 const params = ref<Record<string, any>>({});
@@ -119,7 +116,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
     }
     return [
         {
-            key: 'eye',
+            key: 'view',
             text: '查看',
             tooltip: {
                 title: '查看',
@@ -130,7 +127,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
         },
         {
-            key: 'edit',
+            key: 'update',
             text: '编辑',
             tooltip: {
                 title: '编辑',
@@ -157,24 +154,19 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
 };
 
 const handlAdd = () => {
-    router.push({
-        path: `/iot/link/certificate/detail/:id`,
-        query: { view: false },
-    });
+    menuStory.jumpPage(
+        `link/Certificate/Detail`,
+        { id: ':id' },
+        { view: false },
+    );
 };
 
 const handlEye = (id: string) => {
-    router.push({
-        path: `/iot/link/certificate/detail/${id}`,
-        query: { view: true },
-    });
+    menuStory.jumpPage(`link/Certificate/Detail`, { id }, { view: true });
 };
 
 const handlEdit = (id: string) => {
-    router.push({
-        path: `/iot/link/certificate/detail/${id}`,
-        query: { view: false },
-    });
+    menuStory.jumpPage(`link/Certificate/Detail`, { id }, { view: false });
 };
 
 const handlDelete = async (id: string) => {
