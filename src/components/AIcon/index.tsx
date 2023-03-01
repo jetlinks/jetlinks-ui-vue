@@ -63,7 +63,7 @@ const iconKeys = [
     'HistoryOutlined',
     'ToolOutlined',
     'FileOutlined',
-    'LikeOutlined'
+    'LikeOutlined',
 ]
 
 const Icon = (props: {type: string}) => {

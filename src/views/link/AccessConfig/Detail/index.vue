@@ -98,7 +98,13 @@ const getTypeList = (result: Record<string, any>) => {
             edge.push(item);
         } else {
             item.type = 'network';
-            network.push(item);
+            // network.push(item);
+            /**
+             * 插件设备接入 暂时不开发 todo
+             */
+            if (item.id !== 'plugin_gateway' || item.name !== '插件设备接入') {
+                network.push(item);
+            }
         }
     });
 
@@ -135,6 +141,10 @@ const queryProviders = async () => {
     const resp = await getProviders();
     if (resp.status === 200) {
         dataSource.value = getTypeList(resp.result);
+        // dataSource.value = getTypeList(resp.result)[0].list.filter(
+        //     (item) => item.name !== '插件设备接入',
+        // );
+        console.log(111, dataSource.value);
     }
 };
 

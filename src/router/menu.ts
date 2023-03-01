@@ -24,10 +24,6 @@ export default [
         component: () => import('@/views/demo/Form.vue')
     },
     {
-        path: '/search',
-        component: () => import('@/views/demo/Search.vue')
-    },
-    {
         path: '/system/Api',
         component: () => import('@/views/system/Platforms/index.vue')
     },

@@ -1,5 +1,5 @@
 <template>
-  <ProLayout
+  <j-pro-layout
     v-bind='layoutConf'
     v-model:openKeys="state.openKeys"
     v-model:collapsed="state.collapsed"
@@ -14,14 +14,13 @@
     <router-view v-slot='{ Component}'>
       <component :is='Component' />
     </router-view>
-  </ProLayout>
+  </j-pro-layout>
 </template>
 
 <script setup lang="ts" name='BasicLayoutPage'>
-import { ProLayout } from '@/components/Layout'
 import DefaultSetting from '../../../config/config'
 import { useMenuStore } from '@/store/menu'
-import { clearMenuItem } from 'components/Layout/utils'
+import { clearMenuItem } from 'jetlinks-ui-components/es/ProLayout/util'
 
 type StateType = {
   collapsed: boolean
@@ -36,11 +35,12 @@ const route = useRoute()
 const menu = useMenuStore()
 
 const layoutConf = reactive({
-  navTheme: DefaultSetting.layout.theme,
+  theme: DefaultSetting.layout.theme,
   siderWidth: DefaultSetting.layout.siderWidth,
   logo: DefaultSetting.layout.logo,
   title: DefaultSetting.layout.title,
   menuData: clearMenuItem(menu.siderMenus),
+  splitMenus: true
 });
 
 const state = reactive<StateType>({

@@ -5,7 +5,7 @@
       <a-button :loading="save.loading" type="primary" @click="save.saveMetadata">保存</a-button>
     </template>
     <a-form ref="formRef" :model="form.model" layout="vertical">
-        <BaseForm :model-type="metadataStore.model.type" :type="type" v-model:value="form.model"></BaseForm>
+      <BaseForm :model-type="metadataStore.model.type" :type="type" v-model:value="form.model"></BaseForm>
     </a-form>
   </a-drawer>
 </template>
@@ -17,11 +17,11 @@ import { ProductItem } from '@/views/device/Product/typings';
 import { message } from 'ant-design-vue/es';
 import type { FormInstance } from 'ant-design-vue/es';
 import { updateMetadata, asyncUpdateMetadata } from '../../metadata'
-import { Store } from 'jetlinks-store';
 import { detail } from '@/api/device/instance';
 import { DeviceInstance } from '@/views/device/Instance/typings';
 import BaseForm from './BaseForm.vue';
 import { PropType } from 'vue';
+import { _deploy } from '@/api/device/product';
 
 const props = defineProps({
   type: {
@@ -104,10 +104,16 @@ const save = reactive({
             setTimeout(() => window.close(), 300);
           }
         } else {
+          const { id } = route.params
+          if (props?.type === 'device') {
+            instanceStore.refresh(id as string)
+          } else {
+            productStore.refresh(id as string)
+          }
           // Store.set(SystemConst.REFRESH_METADATA_TABLE, true);
           if (deploy) {
-            // TODO 是否发布
-            Store.set('product-deploy', deploy);
+            _deploy(id as string)
+            // Store.set('product-deploy', deploy);
           } else {
             save.resetMetadata();
             message.success({

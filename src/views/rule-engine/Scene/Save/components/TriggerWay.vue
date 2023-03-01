@@ -63,7 +63,7 @@ const handleClick = (type: string) => {
 </script>
 
 <style scoped lang='less'>
-@import 'ant-design-vue/es/style/themes/default.less';
+// @import 'ant-design-vue/es/style/themes/default.less';
 
 .scene-trigger-way-warp {display: flex;
   flex-wrap: wrap;

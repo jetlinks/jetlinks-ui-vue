@@ -13,9 +13,14 @@
                 :params="params"
             >
                 <template #headerTitle>
-                    <a-button type="primary" @click="handlAdd"
-                        ><plus-outlined />新增</a-button
+                    <PermissionButton
+                        type="primary"
+                        @click="handlAdd"
+                        hasPermission="device/Firmware:add"
                     >
+                        <template #icon><AIcon type="PlusOutlined" /></template>
+                        新增
+                    </PermissionButton>
                 </template>
                 <template #productId="slotProps">
                     <span>{{ slotProps.productName }}</span>
@@ -28,37 +33,27 @@
                     }}</span>
                 </template>
                 <template #action="slotProps">
-                    <a-space :size="16">
-                        <a-tooltip
+                    <a-space>
+                        <template
                             v-for="i in getActions(slotProps)"
                             :key="i.key"
-                            v-bind="i.tooltip"
                         >
-                            <a-popconfirm
-                                v-if="i.popConfirm"
-                                v-bind="i.popConfirm"
-                            >
-                                <a-button
-                                    :disabled="i.disabled"
-                                    style="padding: 0"
-                                    type="link"
-                                    ><AIcon :type="i.icon"
-                                /></a-button>
-                            </a-popconfirm>
-                            <a-button
-                                style="padding: 0"
+                            <PermissionButton
+                                :disabled="i.disabled"
+                                :popConfirm="i.popConfirm"
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                style="padding: 0px"
+                                @click="i.onClick"
                                 type="link"
-                                v-else
-                                @click="i.onClick && i.onClick(slotProps)"
+                                :hasPermission="'device/Firmware:' + i.key"
                             >
-                                <a-button
-                                    :disabled="i.disabled"
-                                    style="padding: 0"
-                                    type="link"
+                                <template #icon
                                     ><AIcon :type="i.icon"
-                                /></a-button>
-                            </a-button>
-                        </a-tooltip>
+                                /></template>
+                            </PermissionButton>
+                        </template>
                     </a-space>
                 </template>
             </JTable>
@@ -79,7 +74,6 @@ import type { FormDataType } from './type';
 const menuStory = useMenuStore();
 
 const tableRef = ref<Record<string, any>>({});
-const router = useRouter();
 const params = ref<Record<string, any>>({});
 
 const productOptions = ref([]);
@@ -174,7 +168,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
     }
     return [
         {
-            key: 'FileTextOutlined',
+            key: 'view',
             text: '升级任务',
             tooltip: {
                 title: '升级任务',
@@ -185,7 +179,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
         },
         {
-            key: 'edit',
+            key: 'update',
             text: '编辑',
             tooltip: {
                 title: '编辑',
@@ -211,7 +205,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
     ];
 };
 
-const handlUpdate = (data: FormDataType) => {
+const handlUpdate = (data: Partial<Record<string, any>>) => {
     menuStory.jumpPage(
         'device/Firmware/Task',
         {},
@@ -226,7 +220,7 @@ const handlAdd = () => {
     current.value = {};
     visible.value = true;
 };
-const handlEdit = (data: FormDataType) => {
+const handlEdit = (data: Partial<Record<string, any>>) => {
     current.value = _.cloneDeep(data);
     visible.value = true;
 };

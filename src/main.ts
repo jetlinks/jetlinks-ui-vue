@@ -6,7 +6,6 @@ import router from './router'
 import './style.less'
 import jComponents from 'jetlinks-ui-components'
 import 'jetlinks-ui-components/es/style.js'
-import 'jetlinks-ui-components/es/style/variable.less'
 
 const app = createApp(App)
 
