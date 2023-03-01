@@ -87,11 +87,11 @@ watchEffect(() => {
 </script>
 
 <style lang="less" scoped>
-@import 'ant-design-vue/es/style/themes/default.less';
+// @import 'ant-design-vue/es/style/themes/default.less';
 
-:root {
-    --dialog-primary-color: @primary-color;
-}
+// :root {
+//     --dialog-primary-color: @primary-color;
+// }
 
 .dialog-item {
     display: flex;
