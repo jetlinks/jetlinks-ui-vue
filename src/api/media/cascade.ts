@@ -33,7 +33,7 @@ export default {
     // 验证国标ID是否存在
     validateField: (id: string, data: string[]): any => server.post(`/media/gb28181-cascade/${id}/gbChannelId/_validate`, data),
     // 更改国标ID
-    updateGbChannelId: (id: string, data: any): any => server.post(`/media/gb28181-cascade/binding/${id}`, data),
+    updateGbChannelId: (id: string, data: any): any => server.put(`/media/gb28181-cascade/binding/${id}`, data),
     // 查询通道分页列表
     queryChannelList: (data: any): any => server.post(`media/channel/_query`, data),
 
