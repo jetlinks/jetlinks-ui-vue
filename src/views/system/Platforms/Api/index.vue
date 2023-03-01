@@ -3,7 +3,7 @@
         <div class="top">
             <slot name="top" />
         </div>
-        <a-row :gutter="24" style="background-color: #fff; padding: 20px">
+        <a-row :gutter="24" style="background-color: #fff; padding: 20px;margin: 0;">
             <a-col
                 :span="24"
                 v-if="props.showTitle"
@@ -16,6 +16,7 @@
                     :mode="props.mode"
                     :has-home="props.hasHome"
                     :filter-array="treeFilter"
+                    :code="props.code"
                 />
             </a-col>
             <a-col :span="19">
@@ -71,7 +72,6 @@ import ChooseApi from './components/ChooseApi.vue';
 import ApiDoes from './components/ApiDoes.vue';
 import ApiTest from './components/ApiTest.vue';
 
-const route = useRoute();
 const props = defineProps<{
     mode: modeType;
     showTitle?: boolean;
@@ -117,15 +117,17 @@ const initSelectedApi: apiDetailsType = {
 };
 const selectedApi = ref<apiDetailsType>(initSelectedApi);
 
-const canSelectKeys = ref<string[]>([]); // 左侧可展示的项
 const selectedKeys = ref<string[]>([]); // 右侧默认勾选的项
 let selectSourceKeys = ref<string[]>([]);
 init();
 
 function init() {
-    const code = route.query.code;
+    // 右侧默认选中初始化
     if (props.mode === 'appManger') {
-    } else if (props.mode === 'home') {
+        getApiGranted_api(props.code as string).then((resp) => {
+            selectedKeys.value = resp.result as string[];
+            selectSourceKeys.value = [...(resp.result as string[])];
+        })
     } else if (props.mode === 'api') {
         apiOperations_api().then((resp) => {
             selectedKeys.value = resp.result as string[];
