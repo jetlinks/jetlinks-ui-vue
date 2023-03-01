@@ -225,7 +225,7 @@ const handlEye = (data: object) => {
 };
 
 const handlDetails = (id: string) => {
-    // menuStory.jumpPage('device/Firmware/Task/Detail', { id });
+    menuStory.jumpPage('device/Firmware/Task/Detail', { id });
 };
 const saveChange = (value: boolean) => {
     visible.value = false;
