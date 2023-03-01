@@ -6,6 +6,10 @@
 </template>
 
 <script lang="ts" setup>
+import { detail } from '@/api/rule-engine/log'
+import { useRoute } from 'vue-router';
+const route = useRoute();
+const id = route.params?.id; 
 const columns = [{
   title:'告警时间',
   dataIndex:'alarmTime',
@@ -30,8 +34,18 @@ const columns = [{
 /**
  * 获取详情列表
  */
-const queryList = () =>{
-  
+const queryList = async () =>{
+    const res = await detail(id);
+    if(res.status === 200){
+        if(res.result.targetType === 'devoce'){
+            columns.splice(2,0,{
+                dataIndex:'targetName',
+                title:'告警设备',
+                key:'targetName'
+            })
+        }
+        return res
+    }
 }
 </script>
 <style lang="less" scoped>
