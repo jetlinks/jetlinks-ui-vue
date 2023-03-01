@@ -42,7 +42,6 @@
 <script setup lang="ts">
 import { LocalStore } from '@/utils/comm';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
-// import { EventSourcePolyfill } from 'event-source-polyfill';
 import { EventSourcePolyfill } from 'event-source-polyfill';
 import { PropType } from 'vue';
 import { downloadObject } from '@/utils/utils';
