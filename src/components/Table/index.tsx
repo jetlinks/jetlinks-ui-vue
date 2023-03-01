@@ -158,7 +158,6 @@ const JTable = defineComponent<JTableProps>({
         const pageSize = ref<number>(6)
         const total = ref<number>(0)
         const loading = ref<boolean>(true)
-        const loading1 = ref<boolean>(true)
 
         const _columns = computed(() => props.columns.filter(i => !(i?.hideInTable)))
 
@@ -240,6 +239,7 @@ const JTable = defineComponent<JTableProps>({
         )
 
         onMounted(() => {
+            windowChange() // 初始化
             window.onresize = () => {
                 windowChange()
             }

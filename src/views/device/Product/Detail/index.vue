@@ -123,6 +123,7 @@ const tabs = {
     Info,
     Metadata,
     Device,
+    DataAnalysis
 };
 
 watch(
@@ -188,7 +189,7 @@ const handleUndeploy = async () => {
  */
 const getProtocol = async () => {
     if (productStore.current?.messageProtocol) {
-        const res = await getProtocolDetail(
+        const res:any = await getProtocolDetail(
             productStore.current?.messageProtocol,
         );
         if (res.status === 200) {

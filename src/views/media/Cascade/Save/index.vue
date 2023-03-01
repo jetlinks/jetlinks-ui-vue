@@ -157,8 +157,7 @@
                                             message: '请输入上级SIP 地址',
                                         },
                                         {
-                                            max: 64,
-                                            message: '最多可输入64个字符',
+                                            validator: checkSIP,
                                         },
                                     ]"
                                 >
@@ -213,7 +212,10 @@
                                     :rules="[
                                         {
                                             required: true,
-                                            message: '请输入SIP本地地址',
+                                            message: '请选择SIP本地地址',
+                                        },
+                                        {
+                                            validator: checkLocalSIP,
                                         },
                                     ]"
                                 >
@@ -242,11 +244,8 @@
                                             <a-select
                                                 v-model:value="formData.port"
                                                 placeholder="请选择端口"
-                                            >
-                                                <a-select-option value="1">
-                                                    1
-                                                </a-select-option>
-                                            </a-select>
+                                                :options="allListPorts"
+                                            />
                                         </a-col>
                                     </a-row>
                                 </a-form-item>
@@ -261,8 +260,7 @@
                                             message: '请输入SIP远程地址',
                                         },
                                         {
-                                            max: 64,
-                                            message: '最多可输入64个字符',
+                                            validator: checkPublicSIP,
                                         },
                                     ]"
                                 >
@@ -303,6 +301,7 @@
                                     <a-radio-group
                                         button-style="solid"
                                         v-model:value="formData.transport"
+                                        @change="setPorts"
                                     >
                                         <a-radio-button value="UDP">
                                             UDP
@@ -558,14 +557,11 @@
 
 <script setup lang="ts">
 import { getImage } from '@/utils/comm';
-import { Form } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
-
 import CascadeApi from '@/api/media/cascade';
 
 const router = useRouter();
 const route = useRoute();
-const useForm = Form.useForm;
 
 // 表单数据
 const formData = ref({
@@ -614,15 +610,26 @@ getClustersList();
 /**
  * SIP本地地址
  */
-const allList = ref([]);
+const allList = ref<any[]>([]);
 const getAllList = async () => {
     const { result } = await CascadeApi.all();
     allList.value = result.map((m: any) => ({
         label: m.host,
         value: m.host,
     }));
+    setPorts();
 };
 getAllList();
+
+/**
+ * 传输协议改变, 获取对应的端口
+ */
+const allListPorts = ref([]);
+const setPorts = () => {
+    allListPorts.value = allList.value.find(
+        (f: any) => f.host === formData.value.host,
+    )?.ports[formData.value.transport || ''];
+};
 
 /**
  * 获取详情
@@ -630,42 +637,74 @@ getAllList();
 const getDetail = async () => {
     if (!route.query.id) return;
     const res = await CascadeApi.detail(route.query.id as string);
-    // console.log('res: ', res);
-    // formData.value = res.result;
-    // Object.assign(formData.value, res.result);
-
-    const { id, name, proxyStream, sipConfigs } = res.result;
-    formData.value = {
-        id,
-        cascadeName: name,
-        proxyStream,
-        clusterNodeId: sipConfigs[0]?.clusterNodeId,
-        name: sipConfigs[0]?.name,
-        sipId: sipConfigs[0]?.sipId,
-        domain: sipConfigs[0]?.domain,
-        remoteAddress: sipConfigs[0]?.remoteAddress,
-        remotePort: sipConfigs[0]?.remotePort,
-        localSipId: sipConfigs[0]?.localSipId,
-        host: sipConfigs[0]?.host,
-        port: sipConfigs[0]?.port,
-        publicHost: sipConfigs[0]?.publicHost,
-        publicPort: sipConfigs[0]?.publicPort,
-        transport: sipConfigs[0]?.transport,
-        user: sipConfigs[0]?.user,
-        password: sipConfigs[0]?.password,
-        manufacturer: sipConfigs[0]?.manufacturer,
-        model: sipConfigs[0]?.model,
-        firmware: sipConfigs[0]?.firmware,
-        keepaliveInterval: sipConfigs[0]?.keepaliveInterval,
-        registerInterval: sipConfigs[0]?.registerInterval,
-    };
-
-    console.log('formData.value: ', formData.value);
+    const { id, name, proxyStream, sipConfigs, ...others } = res.result;
+    Object.keys(formData.value).forEach((key: string) => {
+        if (key === 'id') formData.value[key] = id;
+        else if (key === 'cascadeName') formData.value[key] = name;
+        else if (key === 'proxyStream') formData.value[key] = proxyStream;
+        else formData.value[key] = sipConfigs[0][key];
+    });
+    // console.log('formData.value: ', formData.value);
 };
 
 onMounted(() => {
     getDetail();
 });
+
+const regDomain =
+    /[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\.?/;
+/**
+ * 上级SIP地址 字段验证
+ * @param _
+ * @param value 此处绑定的是 remoteAddress
+ */
+const checkSIP = (_: any, value: string) => {
+    return checkHost(value, formData.value.remotePort);
+};
+/**
+ * SIP远程地址 字段验证
+ * @param _
+ * @param value 此处绑定的是 publicHost
+ */
+const checkPublicSIP = (_: any, value: string) => {
+    return checkHost(value, formData.value.publicPort);
+};
+
+/**
+ * 字段验证
+ * @param host ip
+ * @param port 端口
+ */
+const checkHost = (host: string, port: string | number | undefined) => {
+    if (!host) {
+        return Promise.resolve();
+    } else if (!host) {
+        return Promise.reject(new Error('请输入IP 地址'));
+    } else if (host && !regDomain.test(host)) {
+        return Promise.reject(new Error('请输入正确的IP地址'));
+    } else if (!port) {
+        return Promise.reject(new Error('请输入端口'));
+    } else if ((host && Number(host) < 1) || Number(host) > 65535) {
+        return Promise.reject(new Error('端口请输入1~65535之间的正整数'));
+    }
+    return Promise.resolve();
+};
+
+/**
+ * SIP本地地址 字段验证
+ * @param _
+ * @param value
+ */
+const checkLocalSIP = (_: any, value: string) => {
+    if (!value) {
+        return Promise.resolve();
+    } else if (!value) {
+        return Promise.reject(new Error('请选择IP地址'));
+    } else if (!formData.value.port) {
+        return Promise.reject(new Error('请选择端口'));
+    }
+    return Promise.resolve();
+};
 
 /**
  * 表单提交

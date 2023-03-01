@@ -28,7 +28,7 @@ type Emit = {
 const options = [
   { value: 'device', label: '设备触发', tip: '适用于设备数据或行为满足触发条件时，执行指定的动作', image: getImage('/device-trigger.png') },
   { value: 'manual', label: '手动触发', tip: '适用于第三方平台向物联网平台下发指令控制设备', image: getImage('/manual-trigger.png') },
-  { value: 'timing', label: '定时触发', tip: '适用于定期执行固定任务', image: getImage('/timing-trigger.png') },
+  { value: 'timer', label: '定时触发', tip: '适用于定期执行固定任务', image: getImage('/timing-trigger.png') },
 ]
 
 const props = defineProps({
@@ -63,7 +63,7 @@ const handleClick = (type: string) => {
 </script>
 
 <style scoped lang='less'>
-@import 'ant-design-vue/es/style/themes/default.less';
+// @import 'ant-design-vue/es/style/themes/default.less';
 
 .scene-trigger-way-warp {display: flex;
   flex-wrap: wrap;

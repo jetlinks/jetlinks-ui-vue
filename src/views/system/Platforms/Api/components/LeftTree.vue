@@ -132,11 +132,9 @@ const filterPath = (path: object, filterArr: string[]) => {
                         delete value[prop];
                 }
             }
-            if(Object.keys(value).length === 0) delete path[key]
+            if (Object.keys(value).length === 0) delete path[key];
         }
     }
-    console.log(path, filterArr);
-
     return path;
 };
 </script>

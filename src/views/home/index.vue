@@ -6,8 +6,26 @@
             <DevOpsHome v-else-if="currentView === 'ops'" />
             <ComprehensiveHome v-else-if="currentView === 'comprehensive'" />
 
-            <Api :mode="'home'" hasHome showTitle>
-                <template #top> </template>
+            <Api
+                v-else-if="currentView === 'api'"
+                :mode="'home'"
+                hasHome
+                showTitle
+                :code="clientId"
+            >
+                <template #top>
+                    <div class="card">
+                        <h3 style="margin: 0 0 24px 0">基本信息</h3>
+                        <p>
+                            <span style="font-weight: bold">clientId: </span>
+                            <span>{{ clientId }}</span>
+                        </p>
+                        <p>
+                            <span style="font-weight: bold">secureKey:</span>
+                            <span>{{ secureKey }}</span>
+                        </p>
+                    </div>
+                </template>
             </Api>
         </div>
     </page-container>
@@ -19,14 +37,16 @@ import DeviceHome from './components/DeviceHome/index.vue';
 import DevOpsHome from './components/DevOpsHome/index.vue';
 import ComprehensiveHome from './components/ComprehensiveHome/index.vue';
 import Api from '@/views/system/Platforms/Api/index.vue';
+import { useUserInfo } from '@/store/userInfo';
 
 import { isNoCommunity } from '@/utils/utils';
 import { getMe_api, getView_api } from '@/api/home';
-
-const router = useRouter();
+import { getAppInfo_api } from '@/api/system/apply';
 
 const currentView = ref<string>('');
 const loading = ref<boolean>(true);
+const clientId = useUserInfo().$state.userInfos.id;
+const secureKey = ref<string>('');
 
 // 获取选择的视图
 const setCurrentView = () => {
@@ -49,7 +69,12 @@ if (isNoCommunity) {
                     item.type === 'api-client' || item.type.id === 'api-client',
             );
 
-            isApiUser ? router.push('/system/api') : setCurrentView();
+            if (isApiUser) {
+                currentView.value = 'api';
+                getAppInfo_api(clientId).then((resp: any) => {
+                    secureKey.value = resp.result.apiServer.secureKey;
+                });
+            } else setCurrentView();
         }
     });
 } else setCurrentView();
@@ -57,7 +82,15 @@ if (isNoCommunity) {
 
 <style lang="less" scoped>
 .iot-home-container {
-    background: #f0f2f5;
-    overflow: hidden;
+    .card {
+        background-color: #fff;
+        padding: 24px;
+        margin-bottom: 24px;
+
+        p {
+            margin: 0;
+            font-size: 16px;
+        }
+    }
 }
 </style>

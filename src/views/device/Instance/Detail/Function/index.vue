@@ -1,12 +1,13 @@
 <template>
     <a-card>
         <a-empty
-            v-if="!metadata || (metadata && !metadata.functions)"
-            style="margin-top: 100px"
+            v-if="!metadata || (metadata && !metadata.functions.length)"
+            style="margin-top: 50px"
         >
             <template #description>
-                暂无数据，请配置
-                <a @click="emits('onJump', 'Metadata')">物模型</a>
+                请配置对应产品的
+                <!-- <a @click="emits('onJump', 'Metadata')">物模型属性功能</a> -->
+                <a @click="onJump">物模型属性功能</a>
             </template>
         </a-empty>
         <template v-else>
@@ -23,9 +24,12 @@
 import { useInstanceStore } from '@/store/instance';
 import Simple from './components/Simple.vue';
 import Advance from './components/Advance.vue';
+import { useMenuStore } from 'store/menu';
+
+const menuStory = useMenuStore();
 
 const instanceStore = useInstanceStore();
-const emits = defineEmits(['onJump']);
+// const emits = defineEmits(['onJump']);
 
 const metadata = computed(() => JSON.parse(instanceStore.detail.metadata));
 
@@ -34,6 +38,14 @@ const tabs = {
     Simple,
     Advance,
 };
-</script>
 
-<style lang="less" scoped></style>
+const onJump = () => {
+    menuStory.jumpPage(
+        'device/Product/Detail',
+        {
+            id: instanceStore.current.productId,
+        },
+        { key: 'metadata' },
+    );
+};
+</script>

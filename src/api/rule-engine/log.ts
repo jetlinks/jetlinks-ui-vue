@@ -19,3 +19,8 @@ export const getOrgList = (parmas?:any) => server.get('/organization/_query/no-p
  * 搜索
  */
 export const query = (data:any) => server.post('/alarm/record/_query/',data);
+
+/**
+ * 告警处理
+ */
+export const handleLog = (data:any) => server.post('/alarm/record/_handle',data)
