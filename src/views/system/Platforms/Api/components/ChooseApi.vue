@@ -3,7 +3,7 @@
         <JTable
             :columns="columns"
             :dataSource="props.tableData"
-            :rowSelection="rowSelection"
+            :rowSelection="props.mode !== 'home' ? rowSelection : undefined"
             noPagination
             model="TABLE"
         >
@@ -16,7 +16,9 @@
             </template>
         </JTable>
 
-        <a-button type="primary" @click="save">保存</a-button>
+        <a-button type="primary" @click="save" v-if="props.mode !== 'home'"
+            >保存</a-button
+        >
     </div>
 </template>
 

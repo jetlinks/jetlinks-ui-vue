@@ -10,7 +10,7 @@
                     :class="{ selected: selectValue === 'device' }"
                     @click="selectValue = 'device'"
                 >
-                    <img src="/images/home/device.png" alt="" />
+                    <img :src="getImage('/home/device.png')" alt="" />
                 </a-col>
                 <a-col
                     :span="8"
@@ -18,7 +18,7 @@
                     :class="{ selected: selectValue === 'ops' }"
                     @click="selectValue = 'ops'"
                 >
-                    <img src="/images/home/ops.png" alt="" />
+                    <img :src="getImage('/home/ops.png')" alt="" />
                 </a-col>
                 <a-col
                     :span="8"
@@ -26,7 +26,7 @@
                     :class="{ selected: selectValue === 'comprehensive' }"
                     @click="selectValue = 'comprehensive'"
                 >
-                    <img src="/images/home/comprehensive.png" alt="" />
+                    <img :src="getImage('/home/comprehensive.png')" alt="" />
                 </a-col>
             </a-row>
             <a-button type="primary" class="btn" @click="confirm"
@@ -38,6 +38,7 @@
 
 <script lang="ts" setup>
 import { setView_api } from '@/api/home';
+import { getImage } from '@/utils/comm';
 
 const emits = defineEmits(['refresh']);
 const selectValue = ref('device');
