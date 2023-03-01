@@ -58,6 +58,7 @@ const iconKeys = [
     'PauseOutlined',
     'ControlOutlined',
     'RedoOutlined',
+    'ExpandOutlined'
 ]
 
 const Icon = (props: {type: string}) => {

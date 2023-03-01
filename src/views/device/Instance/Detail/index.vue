@@ -79,7 +79,7 @@
                         <a-descriptions-item label="所属产品">
                             <PermissionButton
                                 type="link"
-                                style="margin-top: -5px; padding: 0"
+                                style="margin-top: -5px; padding: 0"  
                                 @click="jumpProduct"
                                 hasPermission="device/Product:view"
                             >
@@ -116,6 +116,7 @@ import Function from './Function/index.vue';
 import Modbus from './Modbus/index.vue';
 import OPCUA from './OPCUA/index.vue';
 import EdgeMap from './EdgeMap/index.vue';
+import Parsing from './Parsing/index.vue'
 import { _deploy, _disconnect } from '@/api/device/instance';
 import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
@@ -167,6 +168,7 @@ const tabs = {
     Modbus,
     OPCUA,
     EdgeMap,
+    Parsing
 };
 
 const getStatus = (id: string) => {
@@ -273,6 +275,15 @@ watchEffect(() => {
         list.value.push({
             key: 'EdgeMap',
             tab: '边缘端映射',
+        });
+    }
+    if (
+        instanceStore.current.features?.find((item: any) => item.id === 'transparentCodec') && 
+        !keys.includes('Parsing')
+    ) {
+        list.value.push({
+            key: 'Parsing',
+            tab: '数据解析',
         });
     }
 });
