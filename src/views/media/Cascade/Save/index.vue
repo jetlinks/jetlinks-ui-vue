@@ -637,33 +637,14 @@ const setPorts = () => {
 const getDetail = async () => {
     if (!route.query.id) return;
     const res = await CascadeApi.detail(route.query.id as string);
-    const { id, name, proxyStream, sipConfigs } = res.result;
-    formData.value = {
-        id,
-        cascadeName: name,
-        proxyStream,
-        clusterNodeId: sipConfigs[0]?.clusterNodeId,
-        name: sipConfigs[0]?.name,
-        sipId: sipConfigs[0]?.sipId,
-        domain: sipConfigs[0]?.domain,
-        remoteAddress: sipConfigs[0]?.remoteAddress,
-        remotePort: sipConfigs[0]?.remotePort,
-        localSipId: sipConfigs[0]?.localSipId,
-        host: sipConfigs[0]?.host,
-        port: sipConfigs[0]?.port,
-        publicHost: sipConfigs[0]?.publicHost,
-        publicPort: sipConfigs[0]?.publicPort,
-        transport: sipConfigs[0]?.transport,
-        user: sipConfigs[0]?.user,
-        password: sipConfigs[0]?.password,
-        manufacturer: sipConfigs[0]?.manufacturer,
-        model: sipConfigs[0]?.model,
-        firmware: sipConfigs[0]?.firmware,
-        keepaliveInterval: sipConfigs[0]?.keepaliveInterval,
-        registerInterval: sipConfigs[0]?.registerInterval,
-    };
-
-    console.log('formData.value: ', formData.value);
+    const { id, name, proxyStream, sipConfigs, ...others } = res.result;
+    Object.keys(formData.value).forEach((key: string) => {
+        if (key === 'id') formData.value[key] = id;
+        else if (key === 'cascadeName') formData.value[key] = name;
+        else if (key === 'proxyStream') formData.value[key] = proxyStream;
+        else formData.value[key] = sipConfigs[0][key];
+    });
+    // console.log('formData.value: ', formData.value);
 };
 
 onMounted(() => {

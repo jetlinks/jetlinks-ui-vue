@@ -58,6 +58,7 @@ const iconKeys = [
     'PauseOutlined',
     'ControlOutlined',
     'RedoOutlined',
+    'ExpandOutlined',
     'VideoCameraOutlined',
     'HistoryOutlined',
     'ToolOutlined',
