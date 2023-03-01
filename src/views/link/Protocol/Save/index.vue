@@ -1,13 +1,9 @@
 <template lang="">
     <a-modal
         :title="data.id ? '编辑' : '新增'"
-        ok-text="确认"
-        cancel-text="取消"
         :visible="true"
         width="700px"
-        :confirm-loading="loading"
         @cancel="handleCancel"
-        @ok="handleOk"
     >
         <a-form
             class="form"
@@ -55,6 +51,19 @@
                 />
             </a-form-item>
         </a-form>
+        <template #footer>
+            <a-button key="back" @click="handleCancel">取消</a-button>
+            <PermissionButton
+                key="submit"
+                type="primary"
+                :loading="loading"
+                @click="handleOk"
+                style="margin-left: 8px"
+                :hasPermission="`link/Protocol:${id ? 'update' : 'add'}`"
+            >
+                确认
+            </PermissionButton>
+        </template>
     </a-modal>
 </template>
 <script lang="ts" setup>
@@ -124,7 +133,6 @@ const onSubmit = () => {
                 ? await save(params)
                 : await update({ ...props.data, ...params });
             if (response.status === 200) {
-                message.success('操作成功');
                 emit('change', true);
             }
             loading.value = false;

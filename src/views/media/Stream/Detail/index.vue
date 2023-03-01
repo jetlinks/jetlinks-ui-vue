@@ -88,7 +88,7 @@
                                     <template #title>
                                         <p>调用流媒体接口时请求的服务地址</p>
                                     </template>
-                                    <question-circle-outlined />
+                                    <AIcon type="QuestionCircleOutlined" />
                                 </a-tooltip>
                             </div>
 
@@ -144,7 +144,7 @@
                                             视频设备将流推送到该IP地址下，部分设备仅支持IP地址，建议全是用IP地址
                                         </p>
                                     </template>
-                                    <question-circle-outlined />
+                                    <AIcon type="QuestionCircleOutlined" />
                                 </a-tooltip>
                             </div>
 
@@ -266,10 +266,9 @@
 </template>
 
 <script lang="ts" setup name="StreamDetail">
-import { message, Form } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 import { queryProviders, queryDetail, save, update } from '@/api/media/stream';
 import type { FormInstance } from 'ant-design-vue';
-import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 
 import { FormDataType } from '../type';
 

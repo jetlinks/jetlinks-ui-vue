@@ -17,19 +17,21 @@
                             </div>
 
                             <div class="state-title-right">
-                                <div>
-                                    <a-popconfirm
-                                        title="确定批量重试?"
-                                        ok-text="确定"
-                                        cancel-text="取消"
-                                        @confirm="confirm"
+                                <div class="state-button">
+                                    <PermissionButton
+                                        type="link"
                                         v-if="
                                             item.key === 'failed' &&
                                             stateInfo?.mode?.value === 'push'
                                         "
+                                        hasPermission="device/Firmware:update"
+                                        :popConfirm="{
+                                            title: `确定批量重试`,
+                                            onConfirm: confirm,
+                                        }"
                                     >
-                                        <a href="#">批量重试</a>
-                                    </a-popconfirm>
+                                        批量重试
+                                    </PermissionButton>
                                 </div>
 
                                 <div class="img">
@@ -85,37 +87,27 @@
                     <span>{{ slotProps.progress }}%</span>
                 </template>
                 <template #action="slotProps">
-                    <a-space :size="16">
-                        <a-tooltip
+                    <a-space>
+                        <template
                             v-for="i in getActions(slotProps)"
                             :key="i.key"
-                            v-bind="i.tooltip"
                         >
-                            <a-popconfirm
-                                v-if="i.popConfirm"
-                                v-bind="i.popConfirm"
-                            >
-                                <a-button
-                                    :disabled="i.disabled"
-                                    style="padding: 0"
-                                    type="link"
-                                    ><AIcon :type="i.icon"
-                                /></a-button>
-                            </a-popconfirm>
-                            <a-button
-                                style="padding: 0"
+                            <PermissionButton
+                                :disabled="i.disabled"
+                                :popConfirm="i.popConfirm"
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                style="padding: 0px"
+                                @click="i.onClick"
                                 type="link"
-                                v-else
-                                @click="i.onClick && i.onClick(slotProps)"
+                                :hasPermission="'device/Firmware:' + i.key"
                             >
-                                <a-button
-                                    :disabled="i.disabled"
-                                    style="padding: 0"
-                                    type="link"
+                                <template #icon
                                     ><AIcon :type="i.icon"
-                                /></a-button>
-                            </a-button>
-                        </a-tooltip>
+                                /></template>
+                            </PermissionButton>
+                        </template>
                     </a-space>
                 </template>
             </JTable>
@@ -129,7 +121,6 @@ import {
     taskById,
     history,
     historyCount,
-    queryProduct,
     startTask,
     startOneTask,
 } from '@/api/device/firmware';
@@ -138,8 +129,8 @@ import { getImage } from '@/utils/comm';
 import moment from 'moment';
 import { cloneDeep } from 'lodash-es';
 import Save from './Save.vue';
+
 const tableRef = ref<Record<string, any>>({});
-const router = useRouter();
 const route = useRoute();
 const params = ref<Record<string, any>>({});
 const taskId = route.params?.id as string;
@@ -286,7 +277,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
     }
     const Actions = [
         {
-            key: 'eye',
+            key: 'view',
             text: '查看',
             tooltip: {
                 title: '查看',
@@ -297,23 +288,21 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
         },
         {
-            key: 'try',
+            key: 'update',
             text: '重试',
             tooltip: {
                 title: '重试',
             },
             icon: 'RedoOutlined',
-            onClick: async () => {
-                handlTry(data.id);
+            popConfirm: {
+                title: `确认重试?`,
+                onConfirm: async () => {
+                    handlTry(data.id);
+                },
             },
         },
     ];
     return Actions;
-};
-
-const handlAdd = () => {
-    current.value = {};
-    visible.value = true;
 };
 
 const handlEye = (data: string) => {
@@ -433,5 +422,9 @@ const handleSearch = (e: any) => {
             }
         }
     }
+}
+.state-button {
+    margin-top: -5px;
+    margin-right: -12px;
 }
 </style>
