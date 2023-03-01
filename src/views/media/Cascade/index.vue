@@ -197,12 +197,10 @@
 </template>
 
 <script setup lang="ts">
-import DeviceApi from '@/api/media/device';
 import CascadeApi from '@/api/media/cascade';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
-import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
 
 import { useMenuStore } from 'store/menu';
 
@@ -295,7 +293,7 @@ const handleSearch = (e: any) => {
 const lastValueFrom = async (params: any) => {
     const res = await CascadeApi.list(params);
     res.result.data.forEach(async (item: any) => {
-        const resp = await queryBindChannel(item.id);
+        const resp = await queryChannelCount(item.id);
         item.count = resp.result.total;
     });
     return res;
@@ -305,8 +303,8 @@ const lastValueFrom = async (params: any) => {
  * 查询通道数量
  * @param id
  */
-const queryBindChannel = async (id: string) => {
-    return await CascadeApi.queryCount(id);
+const queryChannelCount = async (id: string) => {
+    return await CascadeApi.queryBindChannel(id, {});
 };
 
 /**
