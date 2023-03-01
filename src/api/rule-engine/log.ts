@@ -23,4 +23,14 @@ export const query = (data:any) => server.post('/alarm/record/_query/',data);
 /**
  * 告警处理
  */
-export const handleLog = (data:any) => server.post('/alarm/record/_handle',data)
+export const handleLog = (data:any) => server.post('/alarm/record/_handle',data);
+
+/**
+ * 告警记录
+ */
+export const detail = (id:string) => server.get(`/alarm/record/${id}`);
+
+/**
+ * 告警历史记录
+ */
+export const queryHistoryList = (data:any) => server.post('/alarm/history/_query',data)

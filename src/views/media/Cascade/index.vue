@@ -193,16 +193,17 @@
                 </a-space>
             </template>
         </JTable>
+
+        <Publish v-model:visible="publishVis" :data="currentData" />
     </page-container>
 </template>
 
 <script setup lang="ts">
-import DeviceApi from '@/api/media/device';
 import CascadeApi from '@/api/media/cascade';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
-import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
+import Publish from './Publish/index.vue';
 
 import { useMenuStore } from 'store/menu';
 
@@ -295,7 +296,7 @@ const handleSearch = (e: any) => {
 const lastValueFrom = async (params: any) => {
     const res = await CascadeApi.list(params);
     res.result.data.forEach(async (item: any) => {
-        const resp = await queryBindChannel(item.id);
+        const resp = await queryChannelCount(item.id);
         item.count = resp.result.total;
     });
     return res;
@@ -305,8 +306,8 @@ const lastValueFrom = async (params: any) => {
  * 查询通道数量
  * @param id
  */
-const queryBindChannel = async (id: string) => {
-    return await CascadeApi.queryCount(id);
+const queryChannelCount = async (id: string) => {
+    return await CascadeApi.queryBindChannel(id, {});
 };
 
 /**
@@ -316,6 +317,13 @@ const handleAdd = () => {
     menuStory.jumpPage('media/Cascade/Save');
 };
 
+const publishVis = ref(false);
+const currentData = ref();
+/**
+ * 按钮
+ * @param data
+ * @param type
+ */
 const getActions = (
     data: Partial<Record<string, any>>,
     type: 'card' | 'table',
@@ -368,7 +376,8 @@ const getActions = (
             disabled: data.status?.value === 'disabled',
             icon: 'ShareAltOutlined',
             onClick: () => {
-                // updateChannel()
+                publishVis.value = true;
+                currentData.value = data;
             },
         },
         {
