@@ -205,7 +205,9 @@ const getProtocol = async () => {
         }
     }
 };
-getProtocol();
+onMounted(()=>{
+    getProtocol();
+})
 </script>
 <style scoped lang="less">
 .ant-switch-loading,

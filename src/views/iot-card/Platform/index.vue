@@ -56,42 +56,15 @@
                         </a-row>
                     </template>
                     <template #actions="item">
-                        <a-tooltip
-                            v-bind="item.tooltip"
-                            :title="item.disabled && item.tooltip.title"
-                        >
-                            <a-popconfirm
-                                v-if="item.popConfirm"
-                                v-bind="item.popConfirm"
-                                :disabled="item.disabled"
-                            >
-                                <a-button :disabled="item.disabled">
-                                    <AIcon
-                                        type="DeleteOutlined"
-                                        v-if="item.key === 'delete'"
-                                    />
-                                    <template v-else>
-                                        <AIcon :type="item.icon" />
-                                        <span>{{ item.text }}</span>
-                                    </template>
-                                </a-button>
-                            </a-popconfirm>
+                        <PermissionButton :disabled="item.disabled" :popConfirm="item.popConfirm" :tooltip="{
+                            ...item.tooltip,
+                        }" @click="item.onClick" :hasPermission="'iot-card/Platform:' + item.key">
+                            <AIcon type="DeleteOutlined" v-if="item.key === 'delete'" />
                             <template v-else>
-                                <a-button
-                                    :disabled="item.disabled"
-                                    @click="item.onClick"
-                                >
-                                    <AIcon
-                                        type="DeleteOutlined"
-                                        v-if="item.key === 'delete'"
-                                    />
-                                    <template v-else>
-                                        <AIcon :type="item.icon" />
-                                        <span>{{ item.text }}</span>
-                                    </template>
-                                </a-button>
+                                <AIcon :type="item.icon" />
+                                <span>{{ item?.text }}</span>
                             </template>
-                        </a-tooltip>
+                        </PermissionButton>
                     </template>
                 </CardBox>
             </template>
@@ -107,33 +80,24 @@
             </template>
             <template #action="slotProps">
                 <a-space :size="16">
-                    <a-tooltip
-                        v-for="i in getActions(slotProps, 'table')"
+                    <template
+                        v-for="i in getActions(slotProps,'table')"
                         :key="i.key"
-                        v-bind="i.tooltip"
                     >
-                        <a-popconfirm v-if="i.popConfirm" v-bind="i.popConfirm">
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-popconfirm>
-                        <a-button
-                            style="padding: 0"
+                        <PermissionButton
+                            :disabled="i.disabled"
+                            :popConfirm="i.popConfirm"
+                            :tooltip="{
+                                ...i.tooltip,
+                            }"
+                            @click="i.onClick"
                             type="link"
-                            v-else
-                            @click="i.onClick && i.onClick(slotProps)"
+                            style="padding: 0px"
+                            :hasPermission="'iot-card/Platform:' + i.key"
                         >
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-button>
-                    </a-tooltip>
+                            <template #icon><AIcon :type="i.icon" /></template>
+                        </PermissionButton>
+                    </template>
                 </a-space>
             </template>
         </JTable>
@@ -218,7 +182,7 @@ const getActions = (
     if (!data) return [];
     return [
         {
-            key: 'edit',
+            key: 'update',
             text: '编辑',
             tooltip: {
                 title: '编辑',
