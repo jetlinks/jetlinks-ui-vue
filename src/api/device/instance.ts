@@ -485,11 +485,60 @@ export const getPropertiesInfo = (deviceId: string, data: Record<string, unknown
 export const getPropertiesList = (deviceId: string, property: string, data: Record<string, unknown>) => server.post(`/device-instance/${deviceId}/property/${property}/_query`, data)
 
 /**
+ * 获取指定协议
+ * @param id 
+ * @param transport 
+ * @returns 
+ */
+export const getProtocal = (id: string, transport: string) => server.get(`/protocol/${id}/transport/${transport}`)
+
+/**
+ * 获取产品解析规则
+ * @param productId 
+ * @returns 
+ */
+export const productCode = (productId: string) => server.get(`/device/transparent-codec/${productId}`)
+/**
+ * 保存产品解析规则
+ * @param productId 
+ * @returns 
+ */
+export const saveProductCode = (productId: string,data: Record<string, unknown>) => server.post(`/device/transparent-codec/${productId}`,data)
+/**
+ * 获取设备解析规则
+ * @param productId 
+ * @param deviceId 
+ * @returns 
+ */
+export const deviceCode = (productId: string,deviceId:string) => server.get(`device/transparent-codec/${productId}/${deviceId}`)
+/**
+ * 保存设备解析规则
+ * @param productId 
  * 查询设备日志
  * @param deviceId 
  * @param data 
  * @returns 
  */
+export const saveDeviceCode = (productId: string,deviceId:string,data: Record<string, unknown>) => server.post(`/device/transparent-codec/${productId}/${deviceId}`,data)
+/**
+ * 编码测试
+ * @param data 
+ * @returns 
+ */
+export const testCode = (data: Record<string, unknown>) => server.post(`/device/transparent-codec/decode-test`,data)
+/**
+ * 删除设备解析规则
+ * @param productId 
+ * @param deviceId 
+ * @returns 
+ */
+export const delDeviceCode = (productId: string, deviceId: string) => server.remove(`/device/transparent-codec/${productId}/${deviceId}`)
+/**
+ * 删除产品解析规则
+ * @param productId 
+ * @returns 
+ */
+export const delProductCode = (productId: string) => server.remove(`/device/transparent-codec/${productId}`)
 export const queryLog = (deviceId: string, data: Record<string, unknown>) => server.post(`/device-instance/${deviceId}/logs`, data)
 
 /**

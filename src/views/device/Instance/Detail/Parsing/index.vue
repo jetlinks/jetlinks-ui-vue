@@ -3,6 +3,26 @@
     <a-card>
         <div>
             <div class="top">
+                <div class="top-left">
+                    <div>
+                        <AIcon type="ExclamationCircleOutlined" />
+                        <template v-if="topTitle === 'rest'">
+                            当前数据解析内容已脱离产品影响，
+                            <PermissionButton type="link" hasPermission="device/Instance:update" @click="rest()">
+                                重置
+                            </PermissionButton>
+                            后将继承产品数据解析内容
+                        </template>
+                        <template v-else>
+                            当前数据解析内容继承自产品,
+                            <PermissionButton type="link" hasPermission="device/Instance:update" @click="readOnly = false"
+                                :style="color">
+                                修改
+                            </PermissionButton>
+                            后将脱离产品影响。
+                        </template>
+                    </div>
+                </div>
                 <div>
                     脚本语言:
                     <a-select :defaultValue="'JavaScript'" style="width: 200;margin-left: 5px;">
@@ -12,6 +32,16 @@
                 </div>
             </div>
             <div class="edit" ref="el">
+                <div v-show="readOnly" class="edit-only" @click="() => {
+                    message.warning({
+                        key: 1,
+                        content: () => '请点击上方修改字样,用以编辑脚本',
+                        style: {
+                            marginTop: '260px'
+                        }
+
+                    })
+                }"></div>
                 <MonacoEditor language="javascript" style="height: 100%;" theme="vs" v-model:modelValue="editorValue" />
             </div>
             <div class="bottom">
@@ -19,7 +49,7 @@
                     <div class="bottom-title">
                         <div class="bottom-title-text">模拟输入</div>
                         <div class="bottom-title-topic">
-                            <template v-if="productStore.current.transportProtocol === 'MQTT'">
+                            <template v-if="instanceStore.current.transport === 'MQTT'">
                                 <div style="margin-right: 5px;">Topic:</div>
                                 <a-auto-complete placeholder="请输入Topic" style="width: 300px" :options="topicList"
                                     :allowClear="true" :filterOption="(inputValue: any, option: any) =>
@@ -65,12 +95,13 @@ import AIcon from '@/components/AIcon'
 import PermissionButton from '@/components/PermissionButton/index.vue'
 import MonacoEditor from '@/components/MonacoEditor/index.vue';
 import { useFullscreen } from '@vueuse/core'
-import { useProductStore } from '@/store/product';
+import { useInstanceStore } from '@/store/instance';
 import {
-    productCode,
+    deviceCode,
     getProtocal,
     testCode,
-    saveProductCode,
+    saveDeviceCode,
+    delDeviceCode
 } from '@/api/device/instance'
 import { message } from 'ant-design-vue';
 import { isBoolean } from 'lodash';
@@ -80,9 +111,11 @@ const defaultValue =
 
 const el = ref<HTMLElement | null>(null)
 const { toggle } = useFullscreen(el)
-const productStore = useProductStore()
+const instanceStore = useInstanceStore();
 
 
+const topTitle = ref<string>('')
+const readOnly = ref<boolean>(true)
 const url = ref<string>('')
 const topic = ref<string>('')
 const topicList = ref([])
@@ -92,6 +125,9 @@ const loading = ref<boolean>(false)
 const isTest = ref<boolean>(false)
 const editorValue = ref<string>('')
 
+const color = computed(() => ({
+    color: readOnly.value ? '#415ed1' : '#a6a6a6'
+}))
 const resStyle = computed(() => (isBoolean(resultValue.value.success) ? {
     'margin-top': '10px',
     'border-color': resultValue.value.success ? 'green' : 'red'
@@ -103,25 +139,44 @@ const isDisabled = computed(() => simulation.value === '')
 
 const result = computed(() => resultValue.value.success ? JSON.stringify(resultValue.value.outputs?.[0]) : resultValue.value.reason)
 
-
+//重置
+const rest = async () => {
+    const res = await delDeviceCode(instanceStore.current.productId, instanceStore.current.id)
+    if (res.status === 200) {
+        getDeviceCode();
+        message.success('操作成功')
+    }
+    // service.delDeviceCode(productId, deviceId).then((res) => {
+    //   if (res.status === 200) {
+    //     getDeviceCode(productId, deviceId);
+    //     onlyMessage('操作成功');
+    //   }
+    // });
+};
 //获取topic
 const getTopic = async () => {
-    const res: any = await getProtocal(productStore.current.messageProtocol, productStore.current.transportProtocol)
+    const res: any = await getProtocal(instanceStore.current.protocol, instanceStore.current.transport)
     if (res.status === 200) {
         const item = res.result.routes?.map((items: any) => ({
             value: items.topic,
         }));
+        // setTopicList(item);
         topicList.value = item
     }
 };
-//获取产品解析规则
-const getProductCode = async () => {
-    const res: any = await productCode(productStore.current.id)
+//获取设备解析规则
+const getDeviceCode = async () => {
+    const res: any = await deviceCode(instanceStore.current.productId, instanceStore.current.id)
     if (res.status === 200) {
-        if(res.result){
-            editorValue.value = res.result?.configuration?.script
-        }else{
-            editorValue.value = defaultValue
+        const item = res.result?.configuration?.script ? res.result?.configuration?.script : defaultValue
+        if (res.result?.deviceId) {
+            readOnly.value = false
+            topTitle.value = 'rest'
+            editorValue.value = item
+        } else {
+            readOnly.value = true
+            topTitle.value = 'edit'
+            editorValue.value = item
         }
     }
 }
@@ -137,7 +192,7 @@ const test = async (dataTest: any) => {
     }
 };
 
-//保存产品解析规则
+//保存设备解析规则
 const save = async () => {
     const item = {
         provider: 'jsr223',
@@ -146,16 +201,16 @@ const save = async () => {
             lang: 'javascript',
         },
     }
-    const res = await saveProductCode(productStore.current.id, item)
+    const res = await saveDeviceCode(instanceStore.current.productId, instanceStore.current.id, item)
     if (res.status === 200) {
         message.success('保存成功');
-        getProductCode();
+        getDeviceCode();
     }
 };
 
 
 const debug = () => {
-    if (productStore.current.transportProtocol === 'MQTT') {
+    if (instanceStore.current.transport === 'MQTT') {
         if (topic.value !== '') {
             test({
                 headers: {
@@ -194,7 +249,7 @@ const debug = () => {
 
 
 onMounted(() => {
-    getProductCode()
+    getDeviceCode()
     getTopic()
 })
 
@@ -203,8 +258,13 @@ onMounted(() => {
 <style scoped lang='less'>
 .top {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     margin-bottom: 10px;
+
+    .top-left {
+        display: flex;
+        align-items: center;
+    }
 }
 
 .edit {
