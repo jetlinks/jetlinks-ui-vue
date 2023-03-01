@@ -42,6 +42,7 @@
 <script setup lang="ts">
 import { LocalStore } from '@/utils/comm';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
+// import { EventSourcePolyfill } from 'event-source-polyfill';
 import { EventSourcePolyfill } from 'event-source-polyfill';
 import { PropType } from 'vue';
 import { downloadObject } from '@/utils/utils';
@@ -80,13 +81,12 @@ const flag = ref(false);
 const errMessage = ref<any[]>([]);
 const errStr = computed(() => JSON.stringify(errMessage.value));
 const publish = () => {
-    const activeAPI = `/${BASE_API_PATH}/media/gb28181-cascade/${
+    const activeAPI = `${BASE_API_PATH}/media/gb28181-cascade/${
         props.data.id
     }/bindings/publish?:X_Access_Token=${LocalStore.get(TOKEN_KEY)}`;
     const source = new EventSourcePolyfill(activeAPI);
     source.onmessage = (e: any) => {
         const res = JSON.parse(e.data);
-        console.log('res: ', res);
         if (res.successful) {
             successCount.value += 1;
         } else {
