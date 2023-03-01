@@ -63,11 +63,27 @@
                         </div>
                         <div class="info-card">
                             <p>角色</p>
-                            <p>{{ userInfo.roleList.join(',') || '-' }}</p>
+                            <p>
+                                {{
+                                    (userInfo.roleList &&
+                                        userInfo.roleList
+                                            .map((item) => item.name)
+                                            .join(',')) ||
+                                    '-'
+                                }}
+                            </p>
                         </div>
                         <div class="info-card">
                             <p>组织</p>
-                            <p>{{ userInfo.orgList.join(',') || '-' }}</p>
+                            <p>
+                                {{
+                                    (userInfo.orgList &&
+                                        userInfo.orgList
+                                            .map((item) => item.name)
+                                            .join(',')) ||
+                                    '-'
+                                }}
+                            </p>
                         </div>
                         <div class="info-card">
                             <p>邮箱</p>
@@ -78,6 +94,7 @@
                         type="EditOutlined"
                         class="edit"
                         style="right: 40px"
+                        @click="editInfoVisible = true"
                     />
                 </div>
             </div>
@@ -94,10 +111,19 @@
                             >安全性高的密码可以使帐号更安全。建议您定期更换密码,设置一个包含字母,符号或数字中至少两项且长度超过8位的密码</span
                         >
                     </div>
-                    <AIcon type="EditOutlined" class="edit" />
+                    <span class="edit">
+                        <PermissionButton
+                            :uhasPermission="`${permission}:update`"
+                            type="link"
+                            @click="editPasswordVisible = true"
+                        >
+                            <AIcon type="EditOutlined" style="color: #1d39c4;" />
+                        </PermissionButton>
+                    </span>
                 </div>
             </div>
-            <div class="card">
+            <!-- 社区版不显示 -->
+            <div class="card" v-if="isNoCommunity">
                 <h3>绑定三方账号</h3>
                 <div class="content">
                     <div class="account-card" v-for="item in bindList">
@@ -106,7 +132,7 @@
                             style="height: 50px"
                             alt=""
                         />
-                        <div class="text">
+                        <Ellipsis style="width: 150px; font-size: 22px">
                             <div v-if="item.bound">
                                 <div>绑定名：{{ item.others.name }}</div>
                                 <div>
@@ -118,36 +144,123 @@
                                 </div>
                             </div>
                             <div v-else>{{ item.name }}未绑定</div>
-                        </div>
-
-                        <a-button v-if="item.bound">解除绑定</a-button>
-                        <a-button v-else type="primary">立即绑定</a-button>
+                        </Ellipsis>
+                        <a-popconfirm
+                            v-if="item.bound"
+                            title="确认解除绑定嘛?"
+                            @confirm="() => unBind(item.id)"
+                        >
+                            <a-button>解除绑定</a-button>
+                        </a-popconfirm>
+                        <a-button
+                            v-else
+                            type="primary"
+                            @click="clickBind(item.id)"
+                            >立即绑定</a-button
+                        >
                     </div>
                 </div>
             </div>
-            <div class="card">
+            <!-- 第三方用户不显示 -->
+            <div class="card" v-if="!isApiUser">
                 <h3>首页视图</h3>
+                <div class="choose-view">
+                    <a-row class="view-content" :gutter="24">
+                        <a-col
+                            :span="6"
+                            class="select-item"
+                            :class="{ selected: currentView === 'device' }"
+                            @click="currentView = 'device'"
+                        >
+                            <img :src="getImage('/home/device.png')" alt="" />
+                        </a-col>
+                        <a-col
+                            :span="6"
+                            class="select-item"
+                            :class="{ selected: currentView === 'ops' }"
+                            @click="currentView = 'ops'"
+                        >
+                            <img :src="getImage('/home/ops.png')" alt="" />
+                        </a-col>
+                        <a-col
+                            :span="6"
+                            class="select-item"
+                            :class="{
+                                selected: currentView === 'comprehensive',
+                            }"
+                            @click="currentView = 'comprehensive'"
+                        >
+                            <img
+                                :src="getImage('/home/comprehensive.png')"
+                                alt=""
+                            />
+                        </a-col>
+                    </a-row>
+                    <a-button type="primary" class="btn" @click="confirm"
+                        >确定</a-button
+                    >
+                </div>
             </div>
+
+            <EditInfoDialog
+                v-if="editInfoVisible"
+                v-model:visible="editInfoVisible"
+                :data="userInfo"
+                @ok="getUserInfo"
+            />
+            <EditPasswordDialog
+                v-if="editPasswordVisible"
+                v-model:visible="editPasswordVisible"
+            />
         </div>
     </page-container>
 </template>
 
 <script setup lang="ts">
+import PermissionButton from '@/components/PermissionButton/index.vue';
+import EditInfoDialog from './components/EditInfoDialog.vue';
+import EditPasswordDialog from './components/EditPasswordDialog.vue';
 import { LockOutlined } from '@ant-design/icons-vue';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { LocalStore, getImage } from '@/utils/comm';
-import { useUserInfo } from '@/store/userInfo';
 import { message, UploadChangeParam, UploadFile } from 'ant-design-vue';
-import { getSsoBinds_api } from '@/api/account/center';
+import {
+    getMeInfo_api,
+    getSsoBinds_api,
+    unBind_api,
+} from '@/api/account/center';
 import moment from 'moment';
+import { getMe_api, getView_api, setView_api } from '@/api/home';
+import { isNoCommunity } from '@/utils/utils';
+import { userInfoType } from './typing';
 
-const userInfo = useUserInfo().$state.userInfos as any as userInfoType;
+const permission = 'system/User';
+const userInfo = ref<userInfoType>({});
+// 第三方账号
 const bindList = ref<any[]>([]);
 const bindIcon = {
     'dingtalk-ent-app': '/notice/dingtalk.png',
     'wechat-webapp': '/notice/wechat.png',
     'internal-standalone': '/apply/provider1.png',
     'third-party': '/apply/provider5.png',
+};
+const unBind = (id: string) => {
+    unBind_api(id).then((resp) => {
+        if (resp.status === 200) {
+            message.success('解绑成功');
+            getSsoBinds();
+        }
+    });
+};
+const clickBind = (id: string) => {
+    window.open(`/${origin}/application/sso/${id}/login?autoCreateUser=false`);
+    localStorage.setItem('onBind', 'false');
+    localStorage.setItem('onLogin', 'yes');
+    window.onstorage = (e) => {
+        if (e.newValue) {
+            getSsoBinds();
+        }
+    };
 };
 const upload = reactive({
     fileList: [] as any[],
@@ -158,36 +271,74 @@ const upload = reactive({
         } else if (info.file.status === 'done') {
             info.file.url = info.file.response?.result;
             upload.uploadLoading = false;
-            userInfo.avatar = info.file.response?.result;
+            userInfo.value.avatar = info.file.response?.result;
         } else if (info.file.status === 'error') {
-            console.log(info.file);
             upload.uploadLoading = false;
             message.error('logo上传失败，请稍后再试');
         }
     },
 });
+// 首页视图
+const isApiUser = ref<boolean>();
+const currentView = ref<string>('');
+const confirm = () => {
+    setView_api({
+        name: 'view',
+        content: currentView.value,
+    }).then(() => message.success('保存成功'));
+};
 
+const editInfoVisible = ref<boolean>(false);
+const editPasswordVisible = ref<boolean>(false);
 init();
+
 function init() {
+    getUserInfo();
+    isNoCommunity && getSsoBinds();
+    getViews();
+}
+
+/**
+ * 获取用户信息
+ */
+function getUserInfo() {
+    getMeInfo_api().then((resp) => {
+        userInfo.value = resp.result as userInfoType;
+    });
+}
+/**
+ * 获取绑定第三方账号
+ */
+function getSsoBinds() {
     getSsoBinds_api().then((resp: any) => {
         if (resp.status === 200) bindList.value = resp.result;
     });
 }
-
-type userInfoType = {
-    avatar: string;
-    createTime: number;
-    email: string;
-    id: string;
-    name: string;
-    orgList: string[];
-    roleList: string[];
-    status: number;
-    telephone: string;
-    tenantDisabled: boolean;
-    type: { name: string; id: string };
-    username: string;
-};
+/**
+ * 获取首页视图
+ */
+function getViews() {
+    // 判断是否是api用户 不是则获取选中的视图
+    getMe_api()
+        .then((resp: any) => {
+            if (resp && resp.status === 200) {
+                isApiUser.value = resp.result.dimensions.find(
+                    (item: any) =>
+                        item.type === 'api-client' ||
+                        item.type.id === 'api-client',
+                );
+                if (!isApiUser.value) return getView_api();
+            }
+        })
+        .then((resp: any) => {
+            if (resp?.status === 200) {
+                if (resp.result) currentView.value = resp.result?.content;
+                else if (resp.result.username === 'admin') {
+                    currentView.value = 'comprehensive';
+                } else currentView.value = 'init';
+            }
+        });
+}
 </script>
 
 <style lang="less" scoped>
@@ -216,6 +367,7 @@ type userInfoType = {
         .content {
             display: flex;
             margin-top: 24px;
+            flex-wrap: wrap;
             .content-item {
                 margin-right: 24px;
                 .info-card {
@@ -250,15 +402,31 @@ type userInfoType = {
                 align-items: center;
                 justify-content: space-between;
                 padding: 24px;
+            }
+        }
 
-                .text {
-                    display: -webkit-box;
-                    font-size: 22px;
-                    width: 150px;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    word-break: break-all;
+        .choose-view {
+            width: 100%;
+            margin-top: 48px;
+            .view-content {
+                display: flex;
+                flex-flow: row wrap;
+                .select-item {
+                    border: 2px solid transparent;
+                    img {
+                        width: 100%;
+                    }
+
+                    &.selected {
+                        border-color: #10239e;
+                    }
                 }
+            }
+
+            .btn {
+                display: block;
+                margin: 48px auto;
+                margin-bottom: 0;
             }
         }
     }
