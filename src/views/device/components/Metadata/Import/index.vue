@@ -43,7 +43,6 @@
         </a-input>
       </a-form-item>
       <a-form-item label="物模型" v-bind="validateInfos.import" v-if="formModel.metadataType === 'script'">
-        <!-- TODO代码编辑器 -->
         <MonacoEditor v-model="formModel.import" theme="vs" style="height: 300px"></MonacoEditor>
       </a-form-item>
     </a-form>
@@ -57,8 +56,6 @@ import type { DefaultOptionType } from 'ant-design-vue/es/select';
 import type { UploadProps, UploadFile, UploadChangeParam } from 'ant-design-vue/es';
 import type { DeviceMetadata, ProductItem } from '@/views/device/Product/typings'
 import { message } from 'ant-design-vue/es';
-import { Store } from 'jetlinks-store';
-import { SystemConst } from '@/utils/consts';
 import { useInstanceStore } from '@/store/instance'
 import { useProductStore } from '@/store/product';
 import { FILE_UPLOAD } from '@/api/comm';
@@ -139,11 +136,6 @@ const rules = reactive({
   ],
 })
 const { validate, validateInfos } = useForm(formModel, rules);
-const onSubmit = () => {
-  validate().then(() => {
-
-  })
-}
 const fileList = ref<UploadFile[]>([])
 
 const productList = ref<DefaultOptionType[]>([])
@@ -208,11 +200,11 @@ const operateLimits = (mdata: DeviceMetadata) => {
 const handleImport = async () => {
   validate().then(async (data) => {
     loading.value = true
+    const { id } = route.params || {}
     if (data.metadata === 'alink') {
       const res = await convertMetadata('from', 'alink', data.import)
       if (res.status === 200) {
         const metadata = JSON.stringify(operateLimits(res.result))
-        const { id } = route.params || {}
         if (props?.type === 'device') {
           await saveMetadata(id as string, metadata)
           instanceStore.setCurrent(JSON.parse(metadata || '{}'))
@@ -227,8 +219,13 @@ const handleImport = async () => {
         loading.value = false
         message.error('发生错误!')
       }
-      Store.set(SystemConst.GET_METADATA, true)
-      Store.set(SystemConst.REFRESH_METADATA_TABLE, true)
+      if (props?.type === 'device') {
+        instanceStore.refresh(id as string)
+      } else {
+        productStore.refresh(id as string)
+      }
+      // Store.set(SystemConst.GET_METADATA, true)
+      // Store.set(SystemConst.REFRESH_METADATA_TABLE, true)
       close()
     } else {
       try {
@@ -255,21 +252,24 @@ const handleImport = async () => {
         loading.value = false
         if (resp.status === 200) {
           if (props?.type === 'device') {
-            const metadata: DeviceMetadata = JSON.parse(paramsDevice || '{}')
-            // TODO导入
-            // MetadataAction.insert(metadata);
-            // instanceStore.setCurrent(metadata)
+            const detail = instanceStore.current
+            detail.metadata = paramsDevice
+            instanceStore.setCurrent(detail)
             message.success('导入成功')
           } else {
-            const metadata: ProductItem = JSON.parse(params?.metadata || '{}')
-            // TODO导入
-            // MetadataAction.insert(metadata);
-            // productStore.setCurrent(metadata)
+            const detail = productStore.current
+            detail.metadata = params.metadata
+            productStore.setCurrent(detail)
             message.success('导入成功')
           }
         }
-        Store.set(SystemConst.GET_METADATA, true)
-        Store.set(SystemConst.REFRESH_METADATA_TABLE, true)
+        // Store.set(SystemConst.GET_METADATA, true)
+        // Store.set(SystemConst.REFRESH_METADATA_TABLE, true)
+        if (props?.type === 'device') {
+          instanceStore.refresh(id as string)
+        } else {
+          productStore.refresh(id as string)
+        }
         close();
       } catch (e) {
         loading.value = false
