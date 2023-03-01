@@ -193,6 +193,8 @@
                 </a-space>
             </template>
         </JTable>
+
+        <Publish v-model:visible="publishVis" :data="currentData" />
     </page-container>
 </template>
 
@@ -201,6 +203,7 @@ import CascadeApi from '@/api/media/cascade';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
+import Publish from './Publish/index.vue';
 
 import { useMenuStore } from 'store/menu';
 
@@ -314,6 +317,13 @@ const handleAdd = () => {
     menuStory.jumpPage('media/Cascade/Save');
 };
 
+const publishVis = ref(false);
+const currentData = ref();
+/**
+ * 按钮
+ * @param data
+ * @param type
+ */
 const getActions = (
     data: Partial<Record<string, any>>,
     type: 'card' | 'table',
@@ -366,7 +376,8 @@ const getActions = (
             disabled: data.status?.value === 'disabled',
             icon: 'ShareAltOutlined',
             onClick: () => {
-                // updateChannel()
+                publishVis.value = true;
+                currentData.value = data;
             },
         },
         {
