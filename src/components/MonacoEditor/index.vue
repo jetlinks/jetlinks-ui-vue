@@ -76,7 +76,7 @@ watchEffect(() => {
 
 /**
  * 光标位置插入内容
- * @param {String} val 
+ * @param {String} val
  */
 const insert = (val) => {
     if (!instance) return;
@@ -103,10 +103,7 @@ watch(
         // setValue之后光标位置改变
         instance.setValue(val);
         // 设置光标位置为setValue之前的位置
-        instance.setPosition({
-            column: position?.column,
-            lineNumber: position?.lineNumber,
-        });
+        instance.setPosition(position);
     },
 );
 
