@@ -14,9 +14,14 @@
                 :params="params"
             >
                 <template #headerTitle>
-                    <a-button type="primary" @click="handlAdd"
-                        ><AIcon type="PlusOutlined" />新增</a-button
+                    <PermissionButton
+                        type="primary"
+                        @click="handlAdd"
+                        hasPermission="link/Type:add"
                     >
+                        <template #icon><AIcon type="PlusOutlined" /></template>
+                        新增
+                    </PermissionButton>
                 </template>
                 <template #card="slotProps">
                     <CardBox
@@ -43,18 +48,14 @@
                         </template>
                         <template #content>
                             <div class="card-item-content">
-                                <!-- <a
+                                <PermissionButton
+                                    type="link"
                                     @click="handlEye(slotProps.id)"
-                                    class="card-item-content-title-a"
+                                    hasPermission="link/Type:view"
+                                    :style="TiTlePermissionButtonStyle"
                                 >
                                     {{ slotProps.name }}
-                                </a> -->
-                                <h3
-                                    @click="handlEye(slotProps.id)"
-                                    class="card-item-content-title card-item-content-title-a"
-                                >
-                                    {{ slotProps.name }}
-                                </h3>
+                                </PermissionButton>
                                 <a-row class="card-item-content-box">
                                     <a-col :span="12">
                                         <div class="card-item-content-text">
@@ -88,78 +89,49 @@
                             </div>
                         </template>
                         <template #actions="item">
-                            <a-tooltip
-                                v-bind="item.tooltip"
-                                :title="item.disabled && item.tooltip.title"
+                            <PermissionButton
+                                :disabled="item.disabled"
+                                :popConfirm="item.popConfirm"
+                                :tooltip="{
+                                    ...item.tooltip,
+                                }"
+                                @click="item.onClick"
+                                :hasPermission="'link/Type:' + item.key"
                             >
-                                <a-popconfirm
-                                    v-if="item.popConfirm"
-                                    v-bind="item.popConfirm"
-                                    :disabled="item.disabled"
-                                >
-                                    <a-button :disabled="item.disabled">
-                                        <AIcon
-                                            type="DeleteOutlined"
-                                            v-if="item.key === 'delete'"
-                                        />
-                                        <template v-else>
-                                            <AIcon :type="item.icon" />
-                                            <span>{{ item.text }}</span>
-                                        </template>
-                                    </a-button>
-                                </a-popconfirm>
+                                <AIcon
+                                    type="DeleteOutlined"
+                                    v-if="item.key === 'delete'"
+                                />
                                 <template v-else>
-                                    <a-button
-                                        :disabled="item.disabled"
-                                        @click="item.onClick"
-                                    >
-                                        <AIcon
-                                            type="DeleteOutlined"
-                                            v-if="item.key === 'delete'"
-                                        />
-                                        <template v-else>
-                                            <AIcon :type="item.icon" />
-                                            <span>{{ item.text }}</span>
-                                        </template>
-                                    </a-button>
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item?.text }}</span>
                                 </template>
-                            </a-tooltip>
+                            </PermissionButton>
                         </template>
                     </CardBox>
                 </template>
                 <template #action="slotProps">
-                    <a-space :size="16">
-                        <a-tooltip
+                    <a-space>
+                        <template
                             v-for="i in getActions(slotProps, 'table')"
                             :key="i.key"
-                            v-bind="i.tooltip"
                         >
-                            <a-popconfirm
-                                v-if="i.popConfirm"
-                                v-bind="i.popConfirm"
+                            <PermissionButton
                                 :disabled="i.disabled"
-                            >
-                                <a-button
-                                    :disabled="i.disabled"
-                                    style="padding: 0"
-                                    type="link"
-                                    ><AIcon :type="i.icon"
-                                /></a-button>
-                            </a-popconfirm>
-                            <a-button
-                                style="padding: 0"
+                                :popConfirm="i.popConfirm"
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                style="padding: 0px"
+                                @click="i.onClick"
                                 type="link"
-                                v-else
-                                @click="i.onClick && i.onClick(slotProps)"
+                                :hasPermission="'link/Type:' + i.key"
                             >
-                                <a-button
-                                    :disabled="i.disabled"
-                                    style="padding: 0"
-                                    type="link"
+                                <template #icon
                                     ><AIcon :type="i.icon"
-                                /></a-button>
-                            </a-button>
-                        </a-tooltip>
+                                /></template>
+                            </PermissionButton>
+                        </template>
                     </a-space>
                 </template>
                 <template #state="slotProps">
@@ -186,13 +158,15 @@
     </page-container>
 </template>
 <script lang="ts" setup name="TypePage">
-import type { ActionsType } from '@/components/Table/index'
+import type { ActionsType } from '@/components/Table/index';
 import { getImage } from '@/utils/comm';
 import { supports, query, remove, start, shutdown } from '@/api/link/type';
 import { message } from 'ant-design-vue';
+import { TiTlePermissionButtonStyle } from './data';
+import { useMenuStore } from 'store/menu';
 
+const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
-const router = useRouter();
 const params = ref<Record<string, any>>({});
 const options = ref([]);
 
@@ -282,9 +256,10 @@ const getActions = (
 ): ActionsType[] => {
     if (!data) return [];
     const state = data.state.value;
+    const stateText = state === 'enabled' ? '禁用' : '启用';
     const actions = [
         {
-            key: 'eye',
+            key: 'view',
             text: '查看',
             tooltip: {
                 title: '查看',
@@ -295,7 +270,7 @@ const getActions = (
             },
         },
         {
-            key: 'edit',
+            key: 'update',
             text: '编辑',
             tooltip: {
                 title: '编辑',
@@ -307,13 +282,13 @@ const getActions = (
         },
         {
             key: 'action',
-            text: state === 'enabled' ? '禁用' : '启用',
+            text: stateText,
             tooltip: {
-                title: state === 'enabled' ? '禁用' : '启用',
+                title: stateText,
             },
             icon: state === 'enabled' ? 'StopOutlined' : 'CheckCircleOutlined',
             popConfirm: {
-                title: `确认${state === 'enabled' ? '禁用' : '启用'}?`,
+                title: `确认${stateText}?`,
                 onConfirm: async () => {
                     let res =
                         state === 'enabled'
@@ -353,36 +328,19 @@ const getActions = (
     ];
     return type === 'table'
         ? actions
-        : actions.filter((item) => item.key !== 'eye');
+        : actions.filter((item) => item.key !== 'view');
 };
 
 const handlAdd = () => {
-    router.push({
-        path: `/iot/link/type/detail/:id`,
-        query: { view: false },
-    });
+    menuStory.jumpPage(`link/Type/Detail`, { id: ':id' }, { view: false });
 };
 
 const handlEye = (id: string) => {
-    router.push({
-        path: `/iot/link/type/detail/${id}`,
-        query: { view: true },
-    });
+    menuStory.jumpPage(`link/Type/Detail`, { id }, { view: true });
 };
 
 const handlEdit = (id: string) => {
-    router.push({
-        path: `/iot/link/type/detail/${id}`,
-        query: { view: false },
-    });
-};
-
-const handlDelete = async (id: string) => {
-    const res = await remove(id);
-    if (res.success) {
-        message.success('操作成功');
-        tableRef.value.reload();
-    }
+    menuStory.jumpPage(`link/Type/Detail`, { id }, { view: false });
 };
 
 const getDetails = (slotProps: Partial<Record<string, any>>) => {

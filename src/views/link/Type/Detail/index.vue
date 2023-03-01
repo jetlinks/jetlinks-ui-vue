@@ -56,10 +56,9 @@
                                                 独立配置:集群下不同节点使用不同配置
                                             </p>
                                         </template>
-                                        <question-circle-outlined />
+                                        <AIcon type="QuestionCircleOutlined" />
                                     </a-tooltip>
                                 </div>
-
                                 <a-radio-group
                                     v-model:value="formData.shareCluster"
                                     button-style="solid"
@@ -101,8 +100,9 @@
                                     :header="`#${index + 1}.节点`"
                                 >
                                     <template #extra v-if="!shareCluster">
-                                        <delete-outlined
+                                        <AIcon
                                             @click="removeCluster(cluster)"
+                                            type="DeleteOutlined"
                                         />
                                     </template>
                                     <a-row :gutter="[24, 0]">
@@ -171,7 +171,9 @@
                                                                 绑定到服务器上的网卡地址,绑定到所有网卡:0.0.0.0
                                                             </p>
                                                         </template>
-                                                        <question-circle-outlined />
+                                                        <AIcon
+                                                            type="QuestionCircleOutlined"
+                                                        />
                                                     </a-tooltip>
                                                 </div>
 
@@ -230,7 +232,9 @@
                                                                 监听指定端口的请求
                                                             </p>
                                                         </template>
-                                                        <question-circle-outlined />
+                                                        <AIcon
+                                                            type="QuestionCircleOutlined"
+                                                        />
                                                     </a-tooltip>
                                                 </div>
                                                 <a-select
@@ -281,7 +285,9 @@
                                                                 对外提供访问的地址,内网环境时填写服务器的内网IP地址
                                                             </p>
                                                         </template>
-                                                        <question-circle-outlined />
+                                                        <AIcon
+                                                            type="QuestionCircleOutlined"
+                                                        />
                                                     </a-tooltip>
                                                 </div>
                                                 <a-input
@@ -324,7 +330,9 @@
                                                                 对外提供访问的端口
                                                             </p>
                                                         </template>
-                                                        <question-circle-outlined />
+                                                        <AIcon
+                                                            type="QuestionCircleOutlined"
+                                                        />
                                                     </a-tooltip>
                                                 </div>
 
@@ -517,7 +525,9 @@
                                                                 当连接的服务为EMQ时,可能需要使用共享的订阅前缀,如:$queue或$share
                                                             </p>
                                                         </template>
-                                                        <question-circle-outlined />
+                                                        <AIcon
+                                                            type="QuestionCircleOutlined"
+                                                        />
                                                     </a-tooltip>
                                                 </div>
                                                 <a-input
@@ -560,7 +570,9 @@
                                                                 单次收发消息的最大长度,单位:字节;设置过大可能会影响性能
                                                             </p>
                                                         </template>
-                                                        <question-circle-outlined />
+                                                        <AIcon
+                                                            type="QuestionCircleOutlined"
+                                                        />
                                                     </a-tooltip>
                                                 </div>
                                                 <a-input-number
@@ -691,7 +703,9 @@
                                                                 处理TCP粘拆包的方式
                                                             </p>
                                                         </template>
-                                                        <question-circle-outlined />
+                                                        <AIcon
+                                                            type="QuestionCircleOutlined"
+                                                        />
                                                     </a-tooltip>
                                                 </div>
                                                 <a-select
@@ -966,7 +980,7 @@
                         </div>
                         <a-form-item v-if="!shareCluster">
                             <a-button type="dashed" block @click="addCluster">
-                                <PlusOutlined />
+                                <AIcon type="PlusOutlined" />
                                 新增
                             </a-button>
                         </a-form-item>
@@ -986,14 +1000,15 @@
                 </a-form>
             </div>
             <div class="footer">
-                <a-button
+                <PermissionButton
                     v-if="view === 'false'"
                     type="primary"
                     @click="saveData"
                     :loading="loading"
+                    :hasPermission="`link/Type:${id ? 'update' : 'add'}`"
                 >
                     保存
-                </a-button>
+                </PermissionButton>
             </div>
         </a-card>
     </page-container>
@@ -1002,11 +1017,6 @@
 <script lang="ts" setup name="AccessNetwork">
 import { message } from 'ant-design-vue';
 import type { FormInstance } from 'ant-design-vue';
-import {
-    DeleteOutlined,
-    PlusOutlined,
-    QuestionCircleOutlined,
-} from '@ant-design/icons-vue';
 import {
     update,
     save,
