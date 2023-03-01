@@ -75,7 +75,7 @@ watchEffect(() => {
 });
 
 const insert = (val) => {
-    if (!instance) return
+    if (!instance) return;
     const position = instance.getPosition();
     instance.executeEdits(instance.getValue(), [
         {
@@ -88,17 +88,19 @@ const insert = (val) => {
             text: val,
         },
     ]);
-}
+};
 
-watch(() => props.modelValue,
-    (val) => {
-        instance.setValue(val)
-    })
+// watch(
+//     () => props.modelValue,
+//     (val) => {
+//         instance.setValue(val);
+//     },
+// );
 
 defineExpose({
     editorFormat,
     insert,
-})
+});
 </script>
 
 <style lang="less" scoped>
