@@ -11,12 +11,23 @@
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
+                gridColumn="2"
+                gridColumns="[2]"
                 :params="params"
             >
                 <template #headerTitle>
-                    <a-button type="primary" @click="handlAdd"
-                        ><AIcon type="PlusOutlined" />新增</a-button
-                    >
+                    <a-space>
+                        <PermissionButton
+                            type="primary"
+                            @click="handlAdd"
+                            hasPermission="link/AccessConfig:add"
+                        >
+                            <template #icon
+                                ><AIcon type="PlusOutlined"
+                            /></template>
+                            新增
+                        </PermissionButton>
+                    </a-space>
                 </template>
                 <template #card="slotProps">
                     <CardBox
@@ -43,12 +54,15 @@
                         </template>
                         <template #content>
                             <div class="card-item-content">
-                                <h3
+                                <PermissionButton
+                                    type="link"
                                     @click="handlEye(slotProps.id)"
-                                    class="card-item-content-title card-item-content-title-a"
+                                    hasPermission="link/AccessConfig:view"
+                                    :style="TiTlePermissionButtonStyle"
                                 >
                                     {{ slotProps.name }}
-                                </h3>
+                                </PermissionButton>
+
                                 <a-row class="card-item-content-box">
                                     <a-col
                                         :span="12"
@@ -65,13 +79,7 @@
                                             "
                                         >
                                             <a-badge
-                                                :status="
-                                                    slotProps.channelInfo
-                                                        .addresses[0].health ===
-                                                    -1
-                                                        ? 'error'
-                                                        : 'success'
-                                                "
+                                                :status="getStatus(slotProps)"
                                             />
                                             <a-tooltip>
                                                 <template #title>{{
@@ -112,24 +120,12 @@
                                             <a-tooltip>
                                                 <template #title>
                                                     {{
-                                                        slotProps.description
-                                                            ? slotProps.description
-                                                            : providersList.find(
-                                                                  (item) =>
-                                                                      item.id ===
-                                                                      slotProps.provider,
-                                                              )?.description
+                                                        getDescription(
+                                                            slotProps,
+                                                        )
                                                     }}
                                                 </template>
-                                                {{
-                                                    slotProps.description
-                                                        ? slotProps.description
-                                                        : providersList.find(
-                                                              (item) =>
-                                                                  item.id ===
-                                                                  slotProps.provider,
-                                                          )?.description
-                                                }}
+                                                {{ getDescription(slotProps) }}
                                             </a-tooltip>
                                         </div>
                                     </a-col>
@@ -138,42 +134,24 @@
                         </template>
 
                         <template #actions="item">
-                            <a-tooltip
-                                v-bind="item.tooltip"
-                                :title="item.disabled && item.tooltip.title"
+                            <PermissionButton
+                                :disabled="item.disabled"
+                                :popConfirm="item.popConfirm"
+                                :tooltip="{
+                                    ...item.tooltip,
+                                }"
+                                @click="item.onClick"
+                                :hasPermission="'link/AccessConfig:' + item.key"
                             >
-                                <a-popconfirm
-                                    v-if="item.popConfirm"
-                                    v-bind="item.popConfirm"
-                                    :disabled="item.disabled"
-                                >
-                                    <a-button :disabled="item.disabled">
-                                        <AIcon
-                                            type="DeleteOutlined"
-                                            v-if="item.key === 'delete'"
-                                        />
-                                        <template v-else>
-                                            <AIcon :type="item.icon" />
-                                            <span>{{ item.text }}</span>
-                                        </template>
-                                    </a-button>
-                                </a-popconfirm>
+                                <AIcon
+                                    type="DeleteOutlined"
+                                    v-if="item.key === 'delete'"
+                                />
                                 <template v-else>
-                                    <a-button
-                                        :disabled="item.disabled"
-                                        @click="item.onClick"
-                                    >
-                                        <AIcon
-                                            type="DeleteOutlined"
-                                            v-if="item.key === 'delete'"
-                                        />
-                                        <template v-else>
-                                            <AIcon :type="item.icon" />
-                                            <span>{{ item.text }}</span>
-                                        </template>
-                                    </a-button>
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item?.text }}</span>
                                 </template>
-                            </a-tooltip>
+                            </PermissionButton>
                         </template>
                     </CardBox>
                 </template>
@@ -198,12 +176,14 @@ import {
     deploy,
 } from '@/api/link/accessConfig';
 import { message } from 'ant-design-vue';
+import { useMenuStore } from 'store/menu';
+import { TiTlePermissionButtonStyle } from './data';
 
+const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
-const router = useRouter();
 const params = ref<Record<string, any>>({});
 
-let providersList = ref([]);
+let providersList = ref<Record<string, any>>([]);
 
 const statusMap = new Map();
 statusMap.set('enabled', 'success');
@@ -225,8 +205,6 @@ const columns = [
         key: 'provider',
         search: {
             type: 'select',
-            // options: providersList,
-            // options: getProvidersList
             options: async () => {
                 const res = await getProviders();
                 return (res?.result || []).map((item) => ({
@@ -275,9 +253,10 @@ const columns = [
 const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
     if (!data) return [];
     const state = data.state.value;
+    const stateText = state === 'enabled' ? '禁用' : '启用';
     return [
         {
-            key: 'edit',
+            key: 'update',
             text: '编辑',
             tooltip: {
                 title: '编辑',
@@ -289,13 +268,13 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
         },
         {
             key: 'action',
-            text: state === 'enabled' ? '禁用' : '启用',
+            text: stateText,
             tooltip: {
-                title: state === 'enabled' ? '禁用' : '启用',
+                title: stateText,
             },
             icon: state === 'enabled' ? 'StopOutlined' : 'CheckCircleOutlined',
             popConfirm: {
-                title: `确认${state === 'enabled' ? '禁用' : '启用'}?`,
+                title: `确认${stateText}?`,
                 onConfirm: async () => {
                     let res =
                         state === 'enabled'
@@ -342,26 +321,28 @@ const getProvidersList = async () => {
 getProvidersList();
 
 const handlAdd = () => {
-    // router.push('/link/accessConfig/detail/add/new');
-    router.push({
-        path: `/iot/link/accessConfig/detail/:id`,
-        query: { view: false },
-    });
+    menuStory.jumpPage(
+        `link/AccessConfig/Detail`,
+        { id: ':id' },
+        { view: false },
+    );
 };
 const handlEdit = (id: string) => {
-    // router.push(`/link/accessConfig/detail/edit/${id}`);
-    router.push({
-        path: `/iot/link/accessConfig/detail/${id}`,
-        query: { view: false },
-    });
+    menuStory.jumpPage(`link/AccessConfig/Detail`, { id }, { view: false });
 };
 const handlEye = (id: string) => {
-    // router.push(`/link/accessConfig/detail/view/${id}`);
-    router.push({
-        path: `/iot/link/accessConfig/detail/${id}`,
-        query: { view: true },
-    });
+    menuStory.jumpPage(`link/AccessConfig/Detail`, { id }, { view: true });
 };
+
+const getDescription = (slotProps: Record<string, any>) =>
+    slotProps.description
+        ? slotProps.description
+        : providersList?.find(
+              (item: Record<string, any>) => item.id === slotProps.provider,
+          )?.description;
+
+const getStatus = (slotProps: Record<string, any>) =>
+    slotProps.channelInfo.addresses[0].health === -1 ? 'error' : 'success';
 
 /**
  * 搜索
@@ -370,18 +351,6 @@ const handlEye = (id: string) => {
 const handleSearch = (e: any) => {
     params.value = e;
 };
-
-// const handlAdd = () => {
-//     router.push({
-//         path: '/link/accessConfig/detail/add',
-//         query: {
-//             id: '1610475400026861568',
-//         },
-//     });
-// };
-// const handlAdd = () => {
-//   router.push('/link/accessConfig/detail/add');
-// }
 </script>
 <style lang="less" scoped>
 .tableCardDisabled {

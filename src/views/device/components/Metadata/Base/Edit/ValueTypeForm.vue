@@ -1,6 +1,6 @@
 <template>
   <a-form-item :label="title" :name="name.concat(['type'])" :rules="[
-    metadataStore.model.type !== 'functions' ? { required: true, message: '请选择数据类型' } : {},
+    metadataStore.model.type !== 'functions' ? { required: true, message: `请选择${title}` } : {},
   ]">
     <a-select v-model:value="_value.type" :options="metadataStore.model.type === 'events' ? eventDataTypeList : _dataTypeList" size="small" @change="changeType"></a-select>
   </a-form-item>
@@ -17,7 +17,7 @@
   <a-form-item label="枚举项" :name="name.concat(['elements'])" v-if="['enum'].includes(_value.type)" :rules="[
     { required: true, message: '请配置枚举项' }
   ]">
-    <EnumParam v-model:value="_value.elements"></EnumParam>
+    <EnumParam v-model:value="_value.elements" :name="name.concat(['elements'])"></EnumParam>
   </a-form-item>
   <a-form-item :name="name.concat(['expands', 'maxLength'])" v-if="['string', 'password'].includes(_value.type)">
     <template #label>
@@ -34,8 +34,8 @@
   <a-form-item label="元素配置" :name="name.concat(['elementType'])" v-if="['array'].includes(_value.type)">
     <ArrayParam v-model:value="_value.elementType" :name="name.concat(['elementType'])"></ArrayParam>
   </a-form-item>
-  <a-form-item label="JSON对象" :name="name.concat(['properties'])" v-if="['object'].includes(_value.type)">
-    <JsonParam v-model:value="_value.jsonConfig" :name="name.concat(['properties'])"></JsonParam>
+  <a-form-item label="JSON对象" :name="name.concat(['properties'])" v-if="['object'].includes(_value.type)" :rules="[]">
+    <JsonParam v-model:value="_value.properties" :name="name.concat(['properties'])"></JsonParam>
   </a-form-item>
   <a-form-item label="文件类型" :name="name.concat(['fileType'])" v-if="['file'].includes(_value.type)" initialValue="url"
     :rules="[
@@ -68,7 +68,7 @@ const props = defineProps({
     default: false
   },
   name: {
-    type: Array as PropType<string[]>,
+    type: Array as PropType<(string | number)[]>,
     default: () => ([]),
     required: true
   },

@@ -10,7 +10,7 @@
   <a-form-item label="读写类型" :name="name.concat(['type'])" :rules="[
     { required: true, message: '请选择读写类型' },
   ]">
-    <a-select v-model:value="_value.type" :options="options" mode="multiple" size="small"></a-select>
+    <a-select v-model:value="_value.type" :options="ExpandsTypeList" mode="multiple" size="small"></a-select>
   </a-form-item>
   <a-form-item label="其他配置" v-if="config.length > 0">
     <a-form-item v-for="(item, index) in config" :key="index">
@@ -19,12 +19,12 @@
   </a-form-item>
   <a-form-item v-if="type === 'product' && ['int', 'float', 'double', 'long', 'date', 'string', 'boolean'].includes(valueType.type)"
     label="指标配置" :name="name.concat(['metrics'])">
-    <metrics-param v-model:value="_value.metrics" :type="valueType.type" :enum="valueType"></metrics-param>
+    <metrics-param v-model:value="_value.metrics" :type="valueType.type" :enum="valueType" :name="name.concat(['metrics'])"></metrics-param>
   </a-form-item>
 </template>
 <script setup lang="ts" name="ExpandsForm">
 import { useMetadataStore } from '@/store/metadata';
-import { PropertySource } from '@/views/device/data';
+import { ExpandsTypeList, PropertySource } from '@/views/device/data';
 import { PropType } from 'vue';
 import VirtualRuleParam from '@/components/Metadata/VirtualRuleParam/index.vue';
 import ConfigParam from '@/components/Metadata/ConfigParam/index.vue'
@@ -77,21 +77,6 @@ watch(_value,
     emit('update:value', _value.value)
   },
   { deep: true, immediate: true })
-
-const options = [
-  {
-    label: '读',
-    value: 'read',
-  },
-  {
-    label: '写',
-    value: 'write',
-  },
-  {
-    label: '上报',
-    value: 'report',
-  },
-]
 
 const metadataStore = useMetadataStore()
 

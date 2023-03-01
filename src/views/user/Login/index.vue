@@ -115,7 +115,7 @@
                                         >
                                     </a-form-item>
                                     <a-form-item>
-                                        <a-button
+                                        <j-button
                                             :loading="loading"
                                             type="primary"
                                             html-type="submit"
@@ -123,7 +123,7 @@
                                             block
                                         >
                                             登录
-                                        </a-button>
+                                        </j-button>
                                     </a-form-item>
                                 </a-form>
                                 <div class="other">
@@ -133,14 +133,14 @@
                                         </div>
                                     </a-divider>
                                     <div class="other-button">
-                                        <a-button
+                                        <j-button
                                             v-for="(item, index) in bindings"
                                             :key="index"
                                             type="link"
                                             @Click="handleClickOther(item)"
                                         >
                                             <img
-                                                style="width: 32px, height: 33px"
+                                                style="width: 32px; height: 33px"
                                                 :alt="item.name"
                                                 :src="
                                                     iconMap.get(
@@ -148,7 +148,7 @@
                                                     ) || defaultImg
                                                 "
                                             />
-                                        </a-button>
+                                        </j-button>
                                     </div>
                                 </div>
                             </div>
@@ -443,6 +443,7 @@ screenRotation(screenWidth.value, screenHeight.value);
                             position: relative;
                             bottom: 10px;
                             text-align: center;
+
                         }
                     }
 
@@ -463,6 +464,10 @@ screenRotation(screenWidth.value, screenHeight.value);
                             // vertical-align: middle;
                         }
                     }
+
+                  .login-form-button {
+                    width: 100%;
+                  }
                 }
             }
         }

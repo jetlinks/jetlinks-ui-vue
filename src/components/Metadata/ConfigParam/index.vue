@@ -30,7 +30,7 @@ const props = defineProps({
     default: () => ({})
   },
   name: {
-    type: Array as PropType<string[]>,
+    type: Array as PropType<(string| number)[]>,
     default: () => ([]),
     required: true
   },
