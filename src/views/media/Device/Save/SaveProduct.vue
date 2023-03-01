@@ -55,8 +55,8 @@
                             :status="item.state?.value"
                             :statusText="item.state?.text"
                             :statusNames="{
-                                online: 'enabled',
-                                offline: 'disabled',
+                                enabled: 'processing',
+                                disabled: 'error',
                             }"
                         >
                             <template #img>

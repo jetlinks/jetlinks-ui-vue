@@ -88,6 +88,7 @@ const tableData = computed(() => {
     return props.value.slice((current.value - 1) * 10, current.value * 10);
 });
 
+if(props.value.length < 1) addRow()
 watch(
     () => props.value,
     (n, o) => {

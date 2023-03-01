@@ -117,6 +117,7 @@ import Modbus from './Modbus/index.vue';
 import OPCUA from './OPCUA/index.vue';
 import EdgeMap from './EdgeMap/index.vue';
 import Parsing from './Parsing/index.vue'
+import Log from './Log/index.vue'
 import { _deploy, _disconnect } from '@/api/device/instance';
 import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
@@ -149,6 +150,10 @@ const list = ref([
         tab: '物模型',
     },
     {
+        key: 'Log',
+        tab: '日志管理',
+    },
+    {
         key: 'Function',
         tab: '设备功能',
     },
@@ -168,7 +173,8 @@ const tabs = {
     Modbus,
     OPCUA,
     EdgeMap,
-    Parsing
+    Parsing,
+    Log
 };
 
 const getStatus = (id: string) => {

@@ -9,11 +9,11 @@
           title: operateLimits('add', type) ? '当前的存储方式不支持新增' : '新增',
         }">
         <template #icon>
-          <PlusOutlined />
+          <AIcon type="PlusOutlined" />
         </template>
         新增
       </PermissionButton>
-      <Edit v-if="metadataStore.model.edit" :type="target" :tabs="type"></Edit>
+      <Edit v-if="metadataStore.model.edit" :type="target" :tabs="type" @refresh="refreshMetadata"></Edit>
     </template>
     <template #level="slotProps">
       {{ levelMap[slotProps.expands?.level] || '-' }}
@@ -33,22 +33,24 @@
       </a-tag>
     </template>
     <template #action="slotProps">
-      <PermissionButton :uhas-permission="`${permission}:update`" type="link" key="edit" style="padding: 0"
-        :udisabled="operateLimits('updata', type)" @click="handleEditClick(slotProps)" :tooltip="{
-          title: operateLimits('updata', type) ? '当前的存储方式不支持编辑' : '编辑',
-        }">
-        <EditOutlined />
-      </PermissionButton>
-      <PermissionButton :uhas-permission="`${permission}:delete`" type="link" key="delete" style="padding: 0"
-        :pop-confirm="{
-          title: '确认删除？', onConfirm: async () => {
-            await removeItem(slotProps);
-          },
-        }" :tooltip="{
-          title: '删除',
-        }">
-        <DeleteOutlined />
-      </PermissionButton>
+      <a-space>
+        <PermissionButton :uhas-permission="`${permission}:update`" type="link" key="edit" style="padding: 0"
+          :udisabled="operateLimits('updata', type)" @click="handleEditClick(slotProps)" :tooltip="{
+            title: operateLimits('updata', type) ? '当前的存储方式不支持编辑' : '编辑',
+          }">
+          <AIcon type="EditOutlined" />
+        </PermissionButton>
+        <PermissionButton :uhas-permission="`${permission}:delete`" type="link" key="delete" style="padding: 0"
+          :pop-confirm="{
+            title: '确认删除？', onConfirm: async () => {
+              await removeItem(slotProps);
+            },
+          }" :tooltip="{
+            title: '删除',
+          }">
+          <Aicon type="DeleteOutlined" />
+        </PermissionButton>
+      </a-space>
     </template>
   </JTable>
 </template>
@@ -60,7 +62,6 @@ import { useInstanceStore } from '@/store/instance'
 import { useProductStore } from '@/store/product'
 import { useMetadataStore } from '@/store/metadata'
 import PermissionButton from '@/components/PermissionButton/index.vue'
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue/es'
 import { SystemConst } from '@/utils/consts'
 import { Store } from 'jetlinks-store'
@@ -122,7 +123,8 @@ onMounted(() => {
 
 })
 
-watch([route.params.id, type], () => {
+const refreshMetadata = () => {
+  loading.value = true
   // const res = target === 'product'
   //       ? await productDetail(route.params.id as string)
   //       : await detail(route.params.id as string);
@@ -130,7 +132,8 @@ watch([route.params.id, type], () => {
   const item = JSON.parse(result || '{}') as MetadataItem[]
   data.value = item[type]?.sort((a: any, b: any) => b?.sortsIndex - a?.sortsIndex)
   loading.value = false
-}, { immediate: true })
+}
+watch([route.params.id, type], refreshMetadata, { immediate: true })
 
 const metadataStore = useMetadataStore()
 const handleAddClick = () => {

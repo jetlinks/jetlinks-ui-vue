@@ -99,7 +99,6 @@ export default defineConfig(({ mode}) => {
               less: {
                   modifyVars: {
                       hack: `true; @import (reference) "${path.resolve('src/style/variable.less')}";`,
-                      ...Config.theme,
                   },
                   javascriptEnabled: true,
               }

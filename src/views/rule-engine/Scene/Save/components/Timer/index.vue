@@ -17,12 +17,26 @@
         button-style='solid'
       />
     </a-form-item>
-    <a-form-item v-if='showCron' name='cron'>
-      <a-input placeholder='corn表达式' v-model='formModel.cron' />
+    <a-form-item v-if='showCron' name='cron' :rules="[
+      { max: 64, message: '最多可输入64个字符' },
+      {
+        validator: async (_, v) => {
+           if (v) {
+             if (!isCron(v)) {
+               return Promise.reject(new Error('请输入正确的cron表达式'));
+             }
+           } else {
+             return Promise.reject(new Error('请输入cron表达式'));
+           }
+           return Promise.resolve();
+        }
+      }
+    ]">
+      <a-input placeholder='corn表达式' v-model:value='formModel.cron' />
     </a-form-item>
     <template v-else>
       <a-form-item name='when'>
-
+        <WhenOption v-model:value='formModel.when' :type='formModel.trigger' />
       </a-form-item>
       <a-form-item name='mod'>
         <a-radio-group
@@ -38,9 +52,10 @@
     </template>
     <a-space v-if='showOnce' style='display: flex;gap: 24px'>
       <a-form-item :name="['once', 'time']">
-        <a-time-picker valueFormat='HH:mm:ss' v-model:value='formModel.once.time' style='width: 100%' format='HH:mm:ss' />
+        <a-time-picker valueFormat='HH:mm:ss' v-model:value='formModel.once.time' style='width: 100%'
+                       format='HH:mm:ss' />
       </a-form-item>
-      <a-form-item> 执行一次 </a-form-item>
+      <a-form-item> 执行一次</a-form-item>
     </a-space>
     <a-space v-if='showPeriod' style='display: flex;gap: 24px'>
       <a-form-item>
@@ -89,8 +104,16 @@
 <script setup lang='ts' name='Timer'>
 import type { PropType } from 'vue'
 import moment from 'moment'
+import WhenOption from './WhenOption.vue'
+import { cloneDeep } from 'lodash-es'
+import type { OperationTimer } from '../../../typings'
+import { isCron } from '@/utils/regular'
 
 type NameType = string[] | string
+
+type Emit = {
+  (e: 'update:value', data: OperationTimer): void
+}
 
 const props = defineProps({
   name: {
@@ -103,13 +126,15 @@ const props = defineProps({
   }
 })
 
-const formModel = reactive({
+const emit = defineEmits<Emit>()
+
+const formModel = reactive<OperationTimer>({
   trigger: 'week',
   when: [],
   mod: 'period',
   cron: undefined,
   once: {
-    time: ''
+    time: moment(new Date()).format('HH:mm:ss')
   },
   period: {
     from: moment(new Date()).startOf('day').format('HH:mm:ss'),
@@ -118,6 +143,8 @@ const formModel = reactive({
     unit: 'seconds'
   }
 })
+
+Object.assign(formModel, props.value)
 
 const showCron = computed(() => {
   return formModel.trigger === 'cron'
@@ -130,6 +157,22 @@ const showOnce = computed(() => {
 const showPeriod = computed(() => {
   return formModel.trigger !== 'cron' && formModel.mod === 'period'
 })
+
+watch(() => formModel, () => {
+  const cloneValue = cloneDeep(formModel)
+  if (cloneValue.trigger === 'cron') {
+    delete cloneValue.when
+  } else {
+    delete cloneValue.cron
+  }
+
+  if (cloneValue.mod === 'period') {
+    delete cloneValue.once
+  } else {
+    delete cloneValue.period
+  }
+  emit('update:value', cloneValue)
+}, { deep: true })
 
 </script>
 

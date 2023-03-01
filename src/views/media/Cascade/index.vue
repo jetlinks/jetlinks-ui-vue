@@ -1,0 +1,430 @@
+<template>
+    <page-container>
+        <Search
+            :columns="columns"
+            target="media-cascade"
+            @search="handleSearch"
+        />
+
+        <JTable
+            ref="listRef"
+            :columns="columns"
+            :request="(e:any) => lastValueFrom(e)"
+            :defaultParams="{
+                sorts: [{ name: 'createTime', order: 'desc' }],
+            }"
+            :params="params"
+            :gridColumn="2"
+        >
+            <template #headerTitle>
+                <a-button type="primary" @click="handleAdd"> 新增 </a-button>
+            </template>
+            <template #card="slotProps">
+                <CardBox
+                    :value="slotProps"
+                    :actions="getActions(slotProps, 'card')"
+                    v-bind="slotProps"
+                    :showStatus="true"
+                    :status="slotProps.status?.value"
+                    :statusText="slotProps.status?.text"
+                    :statusNames="{
+                        enabled: 'success',
+                        disabled: 'error',
+                    }"
+                >
+                    <template #img>
+                        <slot name="img">
+                            <img
+                                :src="
+                                    getImage('/device/instance/device-card.png')
+                                "
+                            />
+                        </slot>
+                    </template>
+                    <template #content>
+                        <h3 class="card-item-content-title">
+                            {{ slotProps.name }}
+                        </h3>
+                        <p>通道数量：{{ slotProps.count }}</p>
+                        <Ellipsis>
+                            <a-badge
+                                :text="`sip:${slotProps.sipConfigs[0]?.sipId}@${slotProps.sipConfigs[0]?.hostAndPort}`"
+                                :status="
+                                    slotProps.status?.value === 'enabled'
+                                        ? 'success'
+                                        : 'error'
+                                "
+                            />
+                        </Ellipsis>
+                    </template>
+                    <template #actions="item">
+                        <a-tooltip
+                            v-bind="item.tooltip"
+                            :title="item.disabled && item.tooltip.title"
+                        >
+                            <a-popconfirm
+                                v-if="item.popConfirm"
+                                v-bind="item.popConfirm"
+                                :disabled="item.disabled"
+                            >
+                                <a-button
+                                    :disabled="item.disabled"
+                                    v-if="item.key === 'delete'"
+                                >
+                                    <AIcon type="DeleteOutlined" />
+                                </a-button>
+                                <a-button
+                                    :disabled="item.disabled"
+                                    @click="item.onClick"
+                                    v-else
+                                >
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item.text }}</span>
+                                </a-button>
+                            </a-popconfirm>
+                            <template v-else>
+                                <a-button
+                                    :disabled="item.disabled"
+                                    @click="item.onClick"
+                                >
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item.text }}</span>
+                                </a-button>
+                            </template>
+                        </a-tooltip>
+                        <!-- <PermissionButton
+                            :disabled="item.disabled"
+                            :popConfirm="item.popConfirm"
+                            :tooltip="{
+                                ...item.tooltip,
+                            }"
+                            @click="item.onClick"
+                            :hasPermission="`media/Cascade:${item.key}`"
+                        >
+                            <AIcon
+                                type="DeleteOutlined"
+                                v-if="item.key === 'delete'"
+                            />
+                            <template v-else>
+                                <AIcon :type="item.icon" />
+                                <span>{{ item?.text }}</span>
+                            </template>
+                        </PermissionButton> -->
+                    </template>
+                </CardBox>
+            </template>
+            <template #sipId="slotProps">
+                {{ slotProps.sipConfigs[0]?.sipId }}
+            </template>
+            <template #publicHost="slotProps">
+                {{ slotProps.sipConfigs[0]?.publicHost }}
+            </template>
+            <template #status="slotProps">
+                <a-badge
+                    :text="slotProps.status?.text"
+                    :status="
+                        slotProps.status?.value === 'enabled'
+                            ? 'success'
+                            : 'error'
+                    "
+                />
+            </template>
+            <template #onlineStatus="slotProps">
+                <a-badge
+                    :text="slotProps.onlineStatus?.text"
+                    :status="
+                        slotProps.onlineStatus?.value === 'online'
+                            ? 'success'
+                            : 'error'
+                    "
+                />
+            </template>
+            <template #action="slotProps">
+                <a-space :size="16">
+                    <a-tooltip
+                        v-for="i in getActions(slotProps, 'table')"
+                        :key="i.key"
+                        v-bind="i.tooltip"
+                    >
+                        <a-popconfirm
+                            v-if="i.popConfirm"
+                            v-bind="i.popConfirm"
+                            :disabled="i.disabled"
+                        >
+                            <a-button
+                                :disabled="i.disabled"
+                                style="padding: 0"
+                                type="link"
+                                ><AIcon :type="i.icon"
+                            /></a-button>
+                        </a-popconfirm>
+                        <a-button
+                            style="padding: 0"
+                            type="link"
+                            v-else
+                            @click="i.onClick && i.onClick(slotProps)"
+                        >
+                            <a-button
+                                :disabled="i.disabled"
+                                style="padding: 0"
+                                type="link"
+                                ><AIcon :type="i.icon"
+                            /></a-button>
+                        </a-button>
+                    </a-tooltip>
+                    <!-- <template
+                        v-for="i in getActions(slotProps, 'table')"
+                        :key="i.key"
+                    >
+                        <PermissionButton
+                            :disabled="i.disabled"
+                            :popConfirm="i.popConfirm"
+                            :tooltip="{
+                                ...i.tooltip,
+                            }"
+                            @click="i.onClick"
+                            type="link"
+                            style="padding: 0px"
+                            :hasPermission="`device/Instance:${i.key}`"
+                        >
+                            <template #icon><AIcon :type="i.icon" /></template>
+                        </PermissionButton>
+                    </template> -->
+                </a-space>
+            </template>
+        </JTable>
+    </page-container>
+</template>
+
+<script setup lang="ts">
+import DeviceApi from '@/api/media/device';
+import CascadeApi from '@/api/media/cascade';
+import type { ActionsType } from '@/components/Table/index.vue';
+import { message } from 'ant-design-vue';
+import { getImage } from '@/utils/comm';
+import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
+
+import { useMenuStore } from 'store/menu';
+
+const menuStory = useMenuStore();
+
+const listRef = ref<Record<string, any>>({});
+const params = ref<Record<string, any>>({});
+
+const columns = [
+    {
+        title: '名称',
+        dataIndex: 'name',
+        key: 'name',
+        width: 200,
+        fixed: 'left',
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '上级SIP ID',
+        dataIndex: 'sipId',
+        key: 'sipId',
+        scopedSlots: true,
+    },
+    {
+        title: '上级SIP 地址',
+        dataIndex: 'publicHost',
+        key: 'publicHost',
+        scopedSlots: true,
+    },
+    {
+        title: '通道数量',
+        dataIndex: 'count',
+        key: 'count',
+    },
+    {
+        title: '状态',
+        dataIndex: 'status',
+        key: 'status',
+        scopedSlots: true,
+        search: {
+            type: 'select',
+            options: [
+                { label: '正常', value: 'enabled' },
+                { label: '禁用', value: 'disabled' },
+            ],
+            handleValue: (v: any) => {
+                return v;
+            },
+        },
+    },
+    {
+        title: '级联状态',
+        dataIndex: 'onlineStatus',
+        key: 'onlineStatus',
+        scopedSlots: true,
+        search: {
+            type: 'select',
+            options: [
+                { label: '已连接', value: 'online' },
+                { label: '未连接', value: 'offline' },
+            ],
+            handleValue: (v: any) => {
+                return v;
+            },
+        },
+    },
+    {
+        title: '操作',
+        key: 'action',
+        fixed: 'right',
+        width: 200,
+        scopedSlots: true,
+    },
+];
+
+/**
+ * 搜索
+ * @param params
+ */
+const handleSearch = (e: any) => {
+    params.value = e;
+};
+
+/**
+ * 处理表格数据
+ * @param params
+ */
+const lastValueFrom = async (params: any) => {
+    const res = await CascadeApi.list(params);
+    res.result.data.forEach(async (item: any) => {
+        const resp = await queryBindChannel(item.id);
+        item.count = resp.result.total;
+    });
+    return res;
+};
+
+/**
+ * 查询通道数量
+ * @param id
+ */
+const queryBindChannel = async (id: string) => {
+    return await CascadeApi.queryCount(id);
+};
+
+/**
+ * 新增
+ */
+const handleAdd = () => {
+    menuStory.jumpPage('media/Cascade/Save');
+};
+
+const getActions = (
+    data: Partial<Record<string, any>>,
+    type: 'card' | 'table',
+): ActionsType[] => {
+    if (!data) return [];
+    const actions = [
+        {
+            key: 'edit',
+            text: '编辑',
+            tooltip: {
+                title: '编辑',
+            },
+            icon: 'EditOutlined',
+            onClick: () => {
+                menuStory.jumpPage(
+                    'media/Cascade/Save',
+                    {},
+                    {
+                        id: data.id,
+                    },
+                );
+            },
+        },
+        {
+            key: 'view',
+            text: '选择通道',
+            tooltip: {
+                title: '选择通道',
+            },
+            icon: 'LinkOutlined',
+            onClick: () => {
+                menuStory.jumpPage(
+                    'media/Cascade/Channel',
+                    {},
+                    {
+                        id: data.id,
+                    },
+                );
+            },
+        },
+        {
+            key: 'debug',
+            text: '推送',
+            tooltip: {
+                title:
+                    data.status?.value === 'disabled'
+                        ? '禁用状态下不可推送'
+                        : '推送',
+            },
+            disabled: data.status?.value === 'disabled',
+            icon: 'ShareAltOutlined',
+            onClick: () => {
+                // updateChannel()
+            },
+        },
+        {
+            key: 'action',
+            text: data.status?.value === 'enabled' ? '禁用' : '启用',
+            tooltip: {
+                title: data.status?.value === 'enabled' ? '禁用' : '启用',
+            },
+            icon:
+                data.status?.value === 'enabled'
+                    ? 'StopOutlined'
+                    : 'PlayCircleOutlined',
+            popConfirm: {
+                title: `确认${
+                    data.status?.value === 'enabled' ? '禁用' : '启用'
+                }?`,
+                onConfirm: async () => {
+                    let res =
+                        data.status.value === 'enabled'
+                            ? await CascadeApi.disabled(data.id)
+                            : await CascadeApi.enabled(data.id);
+
+                    if (res.success) {
+                        message.success('操作成功！');
+                        listRef.value?.reload();
+                    } else {
+                        message.error('操作失败！');
+                    }
+                },
+            },
+        },
+        {
+            key: 'delete',
+            text: '删除',
+            tooltip: {
+                title:
+                    data.status?.value === 'enabled'
+                        ? '请先禁用, 再删除'
+                        : '删除',
+            },
+            disabled: data.status?.value === 'enabled',
+            popConfirm: {
+                title: '确认删除?',
+                onConfirm: async () => {
+                    const resp = await CascadeApi.del(data.id);
+                    if (resp.status === 200) {
+                        message.success('操作成功！');
+                        listRef.value?.reload();
+                    } else {
+                        message.error('操作失败！');
+                    }
+                },
+            },
+            icon: 'DeleteOutlined',
+        },
+    ];
+    return actions;
+};
+</script>

@@ -4,14 +4,14 @@ import store from './store'
 import components from './components'
 import router from './router'
 import './style.less'
-import 'ant-design-vue/es/notification/style/css';
-// import jConmonents from 'jetlinks-ui-components'
-// import 'jetlinks-ui-components/lib/style'
+import jComponents from 'jetlinks-ui-components'
+import 'jetlinks-ui-components/es/style.js'
+import 'jetlinks-ui-components/es/style/variable.less'
 
 const app = createApp(App)
 
 app.use(store)
   .use(router)
   .use(components)
-  // .use(jConmonents)
+  .use(jComponents)
   .mount('#app')

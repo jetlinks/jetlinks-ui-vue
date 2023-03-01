@@ -710,6 +710,7 @@
                         <a-select
                             v-model:value="form.data.apiServer.roleIdList"
                             :options="form.roleIdList"
+                            mode="multiple"
                             placeholder="请选中角色"
                         ></a-select>
                         <PermissionButton
@@ -869,7 +870,7 @@
                                 'sso',
                                 'configuration',
                                 'oauth2',
-                                'client_id',
+                                'clientId',
                             ]"
                             :rules="[
                                 {
@@ -1003,7 +1004,6 @@
                                 v-model:file-list="form.fileList"
                                 accept=".jpg,.png,.jfif,.pjp,.pjpeg,.jpeg"
                                 :maxCount="1"
-                                name="avatar"
                                 list-type="picture-card"
                                 :show-upload-list="false"
                                 :headers="{
@@ -1022,8 +1022,9 @@
                                             .logoUrl
                                     "
                                     alt="avatar"
+                                    style="width: 150px;"
                                 />
-                                <div v-else>
+                                <div v-else style="width: 150px;">  
                                     <AIcon
                                         :type="
                                             form.uploadLoading
@@ -1295,6 +1296,7 @@
                         <a-form-item label="角色">
                             <a-select
                                 v-model:value="form.data.sso.roleIdList"
+                                mode="multiple"
                                 :options="form.roleIdList"
                                 placeholder="请选中角色"
                             ></a-select>
@@ -1372,7 +1374,10 @@
         </a-button>
 
         <div class="dialog">
-            <MenuDialog ref="dialogRef" />
+            <MenuDialog
+                ref="dialogRef"
+                :mode="routeQuery.id ? 'edit' : 'add'"
+            />
         </div>
     </div>
 </template>
@@ -1389,7 +1394,7 @@ import {
 } from '@/api/system/apply';
 import FormLabel from './FormLabel.vue';
 import RequestTable from './RequestTable.vue';
-import MenuDialog from './MenuDialog.vue';
+import MenuDialog from '../../componenets/MenuDialog.vue';
 import { getImage } from '@/utils/comm';
 import type { formType, dictType, optionsType } from '../typing';
 import { getRoleList_api } from '@/api/system/user';
@@ -1400,32 +1405,34 @@ import {
     UploadFile,
 } from 'ant-design-vue';
 import { randomString } from '@/utils/utils';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, difference } from 'lodash';
+import { useMenuStore } from '@/store/menu';
 
 const emit = defineEmits(['changeApplyType']);
 const routeQuery = useRoute().query;
+const menuStory = useMenuStore();
 
 const deptPermission = 'system/Department';
 const rolePermission = 'system/Role';
 
 const dialogRef = ref();
+// 初始化表单
 const initForm: formType = {
     name: '',
     provider: 'internal-standalone',
     integrationModes: [],
-    config: '',
     description: '',
     page: {
         // 页面集成
         baseUrl: '',
         routeType: 'hash',
-        parameters: [{ label: '', value: '' }],
+        parameters: [],
     },
     apiClient: {
         // API客户端
         baseUrl: '',
-        headers: [{ label: '', value: '' }], // 请求头
-        parameters: [{ label: '', value: '' }], // 请求参数
+        headers: [], // 请求头
+        parameters: [], // 请求参数
         authConfig: {
             // API客户端
             type: 'oauth2', // 类型, 可选值：none, bearer, oauth2, basic, other
@@ -1447,13 +1454,12 @@ const initForm: formType = {
     },
     apiServer: {
         // API服务
-        appId: '',
+        appId: randomString(16),
         secureKey: randomString(), // 密钥
         redirectUri: '', // 重定向URL
         roleIdList: [], // 角色列表
         orgIdList: [], // 部门列表
         ipWhiteList: '', // IP白名单
-        signature: '', // 签名方式, 可选值：MD5，SHA256
         enableOAuth2: false, // 是否启用OAuth2
     },
     sso: {
@@ -1497,9 +1503,9 @@ const initForm: formType = {
 const formRef = ref<FormInstance>();
 const form = reactive({
     data: { ...initForm },
-    integrationModesISO: [] as string[],
-    roleIdList: [] as optionsType,
-    orgIdList: [] as dictType,
+    integrationModesISO: [] as string[], // 接入方式镜像  折叠面板使用
+    roleIdList: [] as optionsType, // 角色列表
+    orgIdList: [] as dictType, // 组织列表
 
     errorNumInfo: {
         page: new Set(),
@@ -1509,7 +1515,6 @@ const form = reactive({
     },
 
     fileList: [] as any[],
-    fileUrlList: [] as string[],
     uploadLoading: false,
 });
 // 接入方式的选项
@@ -1591,6 +1596,7 @@ function init() {
         () => form.data.provider,
         (n) => {
             emit('changeApplyType', n);
+            if (routeQuery.id) return;
             if (n === 'wechat-webapp' || n === 'dingtalk-ent-app') {
                 form.data.integrationModes = ['ssoClient'];
                 form.integrationModesISO = ['ssoClient'];
@@ -1616,6 +1622,7 @@ function getInfo(id: string) {
                 (item: any) => item.value,
             ),
         } as formType;
+        form.data.apiServer && (form.data.apiServer.appId = id);
     });
 }
 // 获取角色列表
@@ -1651,6 +1658,23 @@ function clickAddItem(data: string[], target: string) {
 function clickSave() {
     formRef.value?.validate().then(() => {
         const params = cloneDeep(form.data);
+        // 删除多余的参数
+        const list = ['page', 'apiClient', 'apiServer', 'ssoClient'];
+        difference(list, params.integrationModes).forEach((item) => {
+            if (item === 'ssoClient') {
+                // @ts-ignore
+                delete params['sso'];
+            }
+            delete params[item];
+        });
+        clearNullProp(params);
+        if (
+            params.provider === 'internal-standalone' &&
+            params.integrationModes.includes('page')
+        ) {
+            // @ts-ignore
+            delete params.page.parameters;
+        }
 
         if (
             params.provider === 'internal-standalone' &&
@@ -1674,15 +1698,19 @@ function clickSave() {
         const request = routeQuery.id
             ? updateApp_api(routeQuery.id as string, params)
             : addApp_api(params);
-        request.then((resp) => {
+        request.then((resp: any) => {
             if (resp.status === 200) {
                 const isPage = params.integrationModes.includes('page');
                 if (isPage) {
                     form.data = params;
-                    dialogRef.value && dialogRef.value.openDialog();
+                    dialogRef.value &&
+                        dialogRef.value.openDialog(
+                            routeQuery.id || resp.result.id,
+                            form.data.provider,
+                        );
                 } else {
                     message.success('保存成功');
-                    jumpPage('system/Apply');
+                    menuStory.jumpPage('system/Apply');
                 }
             }
         });
@@ -1722,9 +1750,15 @@ function changeBackUpload(info: UploadChangeParam<UploadFile<any>>) {
 function test(...args: any[]) {
     console.log('test:', args);
 }
-
-function jumpPage(arg0: string) {
-    throw new Error('Function not implemented.');
+function clearNullProp(obj: object) {
+    if (typeof obj !== 'object') return;
+    for (const prop in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+            const val = obj[prop];
+            if (val === '') delete obj[prop];
+            else if (typeof val === 'object') clearNullProp(obj[prop]);
+        }
+    }
 }
 </script>
 
@@ -1743,6 +1777,16 @@ function jumpPage(arg0: string) {
             :deep(.ant-form-item-control) {
                 .ant-form-item-control-input-content {
                     display: flex;
+                    .ant-upload-select-picture-card {
+                        width: auto;
+                        height: auto;
+                        max-width: 150px;
+                        max-height: 150px;
+
+                        >.ant-upload {
+                            height: 150px;
+                        }
+                    }
                 }
             }
         }

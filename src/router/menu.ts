@@ -31,6 +31,10 @@ export default [
         path: '/system/Api',
         component: () => import('@/views/system/Platforms/index.vue')
     },
+    {
+        path: '/account/center',
+        component: () => import('@/views/account/Center/index.vue')
+    },
 
     // end: 测试用, 可删除
 

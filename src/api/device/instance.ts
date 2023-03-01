@@ -514,6 +514,7 @@ export const deviceCode = (productId: string,deviceId:string) => server.get(`dev
 /**
  * 保存设备解析规则
  * @param productId 
+ * 查询设备日志
  * @param deviceId 
  * @param data 
  * @returns 
@@ -538,3 +539,11 @@ export const delDeviceCode = (productId: string, deviceId: string) => server.rem
  * @returns 
  */
 export const delProductCode = (productId: string) => server.remove(`/device/transparent-codec/${productId}`)
+export const queryLog = (deviceId: string, data: Record<string, unknown>) => server.post(`/device-instance/${deviceId}/logs`, data)
+
+/**
+ * 查询设备日志类型
+ * @returns 
+ */
+export const queryLogsType = () => server.get(`/dictionary/device-log-type/items`)
+

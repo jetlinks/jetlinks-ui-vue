@@ -9,8 +9,10 @@
                     ></Provider>
                 </div>
                 <div v-else>
-                    <div v-if="!id"><a @click="goBack">返回</a></div>
-                    <AccessNetwork
+                    <div class="go-back" v-if="id === ':id'">
+                        <a @click="goBack">返回</a>
+                    </div>
+                    <Network
                         v-if="showType === 'network'"
                         :provider="provider"
                         :data="data"
@@ -42,18 +44,15 @@
 </template>
 
 <script lang="ts" setup name="AccessConfigDetail">
-import { getImage } from '@/utils/comm';
-import AccessNetwork from '../components/Network.vue';
+import Network from '../components/Network/index.vue';
 import Provider from '../components/Provider/index.vue';
-import { getProviders, detail } from '@/api/link/accessConfig';
 import Media from '../components/Media/index.vue';
 import Channel from '../components/Channel/index.vue';
 import Edge from '../components/Edge/index.vue';
 import Cloud from '../components/Cloud/index.vue';
+import { getProviders, detail } from '@/api/link/accessConfig';
 
 const route = useRoute();
-
-const view = route.query.view as string;
 const id = route.params.id as string;
 
 const dataSource = ref([]);
@@ -74,7 +73,7 @@ const goBack = () => {
     type.value = true;
 };
 
-const getTypeList = (result: any[]) => {
+const getTypeList = (result: Record<string, any>) => {
     const list = [];
     const media: any[] = [];
     const network: any[] = [];
@@ -184,76 +183,7 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.provider {
-    position: relative;
-    width: 100%;
-    padding: 20px;
-    background: url('/public/images/access/background.png') no-repeat;
-    background-size: 100% 100%;
-    border: 1px solid #e6e6e6;
-
-    &::before {
-        position: absolute;
-        top: 0;
-        left: 40px;
-        display: block;
-        width: 15%;
-        min-width: 64px;
-        height: 2px;
-        background-image: url('/public/images/access/rectangle.png');
-        background-repeat: no-repeat;
-        background-size: 100% 100%;
-        // border: 1px #8da1f4 solid;
-        // border-bottom-left-radius: 10%;
-        // border-bottom-right-radius: 10%;
-        content: ' ';
-    }
-
-    &:hover {
-        box-shadow: 0 0 24px rgba(#000, 0.1);
-    }
-}
-
-.box {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-
-    .left {
-        display: flex;
-        width: calc(100% - 70px);
-        .images {
-            width: 64px;
-            height: 64px;
-
-            img {
-                width: 100%;
-            }
-        }
-
-        .context {
-            width: calc(100% - 84px);
-            margin: 10px;
-
-            .title {
-                font-weight: 600;
-            }
-
-            .desc {
-                width: 100%;
-                margin-top: 10px;
-                overflow: hidden;
-                color: rgba(0, 0, 0, 0.55);
-                font-weight: 400;
-                font-size: 13px;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-            }
-        }
-    }
-    .right {
-        width: 70px;
-    }
+.go-back {
+    margin: 0 0 20px 0;
 }
 </style>

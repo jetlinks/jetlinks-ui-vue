@@ -10,7 +10,7 @@
         <div v-if="channel !== 'edge-child-device'" class="steps-content">
             <div class="steps-box" v-if="current === 0">
                 <div class="alert">
-                    <question-circle-outlined />
+                    <AIcon type="InfoCircleOutlined" />
                     选择与设备通信的网络组件
                 </div>
                 <div class="search">
@@ -20,7 +20,14 @@
                         style="width: 300px"
                         @search="networkSearch"
                     />
-                    <a-button type="primary" @click="addNetwork">新增</a-button>
+                    <PermissionButton
+                        type="primary"
+                        @click="addNetwork"
+                        hasPermission="link/Type:add"
+                    >
+                        <template #icon><AIcon type="PlusOutlined" /></template>
+                        新增
+                    </PermissionButton>
                 </div>
                 <div class="card-item">
                     <a-row :gutter="[24, 24]" v-if="networkList.length > 0">
@@ -103,51 +110,53 @@
             <a-row :gutter="[24, 24]">
                 <a-col :span="12">
                     <title-component data="基本信息" />
-                    <div>
-                        <a-form
-                            :model="formState"
-                            name="basic"
-                            autocomplete="off"
-                            layout="vertical"
-                            @finish="onFinish"
-                            ref="formRef"
+                    <a-form
+                        :model="formState"
+                        name="basic"
+                        autocomplete="off"
+                        layout="vertical"
+                        @finish="onFinish"
+                        ref="formRef"
+                    >
+                        <a-form-item
+                            label="名称"
+                            name="name"
+                            :rules="[
+                                {
+                                    required: true,
+                                    message: '请输入名称',
+                                    trigger: 'blur',
+                                },
+                                { max: 64, message: '最多可输入64个字符' },
+                            ]"
                         >
-                            <a-form-item
-                                label="名称"
-                                name="name"
-                                :rules="[
-                                    {
-                                        required: true,
-                                        message: '请输入名称',
-                                        trigger: 'blur',
-                                    },
-                                    { max: 64, message: '最多可输入64个字符' },
-                                ]"
+                            <a-input
+                                placeholder="请输入名称"
+                                v-model:value="formState.name"
+                            />
+                        </a-form-item>
+                        <a-form-item label="说明" name="description">
+                            <a-textarea
+                                placeholder="请输入说明"
+                                :rows="4"
+                                v-model:value="formState.description"
+                                show-count
+                                :maxlength="200"
+                            />
+                        </a-form-item>
+                        <a-form-item>
+                            <PermissionButton
+                                v-if="current !== 1 && view === 'false'"
+                                type="primary"
+                                html-type="submit"
+                                :hasPermission="`link/AccessConfig:${
+                                    id === ':id' ? 'add' : 'update'
+                                }`"
                             >
-                                <a-input
-                                    placeholder="请输入名称"
-                                    v-model:value="formState.name"
-                                />
-                            </a-form-item>
-                            <a-form-item label="说明" name="description">
-                                <a-textarea
-                                    placeholder="请输入说明"
-                                    :rows="4"
-                                    v-model:value="formState.description"
-                                    show-count
-                                    :maxlength="200"
-                                />
-                            </a-form-item>
-                            <a-form-item>
-                                <a-button
-                                    v-if="current !== 1 && view === 'false'"
-                                    type="primary"
-                                    html-type="submit"
-                                    >保存</a-button
-                                >
-                            </a-form-item>
-                        </a-form>
-                    </div>
+                                保存
+                            </PermissionButton>
+                        </a-form-item>
+                    </a-form>
                 </a-col>
                 <a-col :span="12">
                     <div class="config-right">
@@ -178,119 +187,35 @@
             >
                 下一步
             </a-button>
-            <a-button
+            <PermissionButton
                 v-if="current === 1 && view === 'false'"
                 type="primary"
                 style="margin-right: 8px"
                 @click="saveData"
+                :hasPermission="`link/AccessConfig:${
+                    id === ':id' ? 'add' : 'update'
+                }`"
             >
                 保存
-            </a-button>
+            </PermissionButton>
             <a-button v-if="current > 0" @click="prev"> 上一步 </a-button>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup name="AccessEdge">
-import { message, Form } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 import type { FormInstance } from 'ant-design-vue';
 import { update, save, getNetworkList } from '@/api/link/accessConfig';
 import {
     descriptionList,
     ProtocolMapping,
     NetworkTypeMapping,
-} from '../../Detail/data';
-import { QuestionCircleOutlined } from '@ant-design/icons-vue';
+} from '../../data';
 import AccessCard from '../AccessCard/index.vue';
+import { useMenuStore } from 'store/menu';
 
-//测试数据1
-const networkListTest = {
-    message: 'success',
-    result: [
-        {
-            id: '1585192878304051200',
-            name: 'MQTT网络组件',
-            addresses: [
-                {
-                    address: 'mqtt://120.77.179.54:8101',
-                    health: 1,
-                    ok: true,
-                    bad: false,
-                    disabled: false,
-                },
-            ],
-        },
-        {
-            id: '1583268266806009856',
-            name: '我的第一个MQTT服务组件',
-            description: '',
-            addresses: [
-                {
-                    address: 'mqtt://120.77.179.54:8100',
-                    health: 1,
-                    ok: true,
-                    bad: false,
-                    disabled: false,
-                },
-            ],
-        },
-        {
-            id: '1570335308902912000',
-            name: '0915MQTT网络组件_勿动',
-            description: '测试，勿动！',
-            addresses: [
-                {
-                    address: 'mqtt://120.77.179.54:8083',
-                    health: 1,
-                    ok: true,
-                    bad: false,
-                    disabled: false,
-                },
-            ],
-        },
-        {
-            id: '1567062350140858368',
-            name: '网络组件20220906160907',
-            addresses: [
-                {
-                    address: 'mqtt://120.77.179.54:8083',
-                    health: 1,
-                    ok: true,
-                    bad: false,
-                    disabled: false,
-                },
-            ],
-        },
-        {
-            id: '1556563257890742272',
-            name: 'MQTT网络组件',
-            addresses: [
-                {
-                    address: 'mqtt://0.0.0.0:8104',
-                    health: 1,
-                    ok: true,
-                    bad: false,
-                    disabled: false,
-                },
-            ],
-        },
-        {
-            id: '1534774770408108032',
-            name: 'MQTT',
-            addresses: [
-                {
-                    address: 'mqtt://120.77.179.54:8088',
-                    health: 1,
-                    ok: true,
-                    bad: false,
-                    disabled: false,
-                },
-            ],
-        },
-    ],
-    status: 200,
-    timestamp: 1674960624150,
-};
+const menuStory = useMenuStore();
 
 interface FormState {
     name: string;
@@ -327,6 +252,7 @@ const stepCurrent = ref(0);
 const steps = ref(['网络组件', '完成']);
 const networkCurrent = ref('');
 const networkList = ref([]);
+const allNetworkList = ref([]);
 
 const onFinish = async (values: any) => {
     const providerId = props.provider.id;
@@ -341,16 +267,7 @@ const onFinish = async (values: any) => {
         id === ':id' ? await save(params) : await update({ ...params, id });
     if (resp.status === 200) {
         message.success('操作成功！');
-        // if (params.get('save')) {
-        // if ((window as any).onTabSaveSuccess) {
-        //   if (resp.result) {
-        //     (window as any).onTabSaveSuccess(resp.result);
-        //     setTimeout(() => window.close(), 300);
-        //   }
-        // }
-        //   } else {
         history.back();
-        //   }
     }
 };
 
@@ -359,28 +276,27 @@ const checkedChange = (id: string) => {
 };
 
 const queryNetworkList = async (id: string, include: string, data = {}) => {
-    // const resp = await getNetworkList(
-    //     NetworkTypeMapping.get(id),
-    //     include,
-    //     data,
-    // );
-    // if (resp.status === 200) {
-    //     networkList.value = resp.result;
-    // }
-
-    //使用测试数据1
-    networkList.value = networkListTest.result;
+    const resp = await getNetworkList(
+        NetworkTypeMapping.get(id),
+        include,
+        data,
+    );
+    if (resp.status === 200) {
+        networkList.value = resp.result;
+        allNetworkList.value = resp.result;
+    }
 };
 
 const networkSearch = (value: string) => {
-    queryNetworkList(props.provider.id, networkCurrent.value || '', {
-        terms: [
-            {
-                column: 'name$LIKE',
-                value: `%${value}%`,
-            },
-        ],
-    });
+    if (value) {
+        networkList.value = allNetworkList.value.filter(
+            (i: any) =>
+                i.name &&
+                i.name.toLocaleLowerCase().includes(value.toLocaleLowerCase()),
+        );
+    } else {
+        networkList.value = allNetworkList.value;
+    }
 };
 
 const saveData = async () => {
@@ -389,8 +305,7 @@ const saveData = async () => {
 };
 
 const addNetwork = () => {
-    // const url = this.$store.state.permission.routes['Link/Type/Detail']
-    const url = '/iot/link/type/detail/:id';
+    const url = menuStory.menus['link/Type/Detail']?.path;
     const tab = window.open(
         `${window.location.origin + window.location.pathname}#${url}?type=${
             NetworkTypeMapping.get(props.provider?.id) || ''
@@ -426,17 +341,17 @@ onMounted(() => {
         };
         networkCurrent.value = props.data.channelId;
     }
-}),
-    watch(
-        current,
-        (v) => {
-            stepCurrent.value = v;
-        },
-        {
-            deep: true,
-            immediate: true,
-        },
-    );
+});
+watch(
+    current,
+    (v) => {
+        stepCurrent.value = v;
+    },
+    {
+        deep: true,
+        immediate: true,
+    },
+);
 </script>
 
 <style lang="less" scoped>

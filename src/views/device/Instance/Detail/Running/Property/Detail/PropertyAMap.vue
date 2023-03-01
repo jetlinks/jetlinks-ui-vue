@@ -3,12 +3,14 @@
         <div style="position: relative">
             <div style="position: absolute; right: 0; top: 5px; z-index: 999">
                 <a-space>
-                    <a-button type="primary">开始动画</a-button>
-                    <a-button type="primary">停止动画</a-button>
+                    <a-button type="primary" @click="onStart">开始动画</a-button>
+                    <a-button type="primary" @click="onStop">停止动画</a-button>
                 </a-space>
             </div>
         </div>
-        <AMap :points="geoList" />
+        <AMapComponent style="height: 500px">
+            <PathSimplifier :pathData="geoList" ref="amapPath"></PathSimplifier>
+        </AMapComponent>
     </a-spin>
 </template>
 
@@ -16,7 +18,6 @@
 import { getPropertyData } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import encodeQuery from '@/utils/encodeQuery';
-import AMap from './AMap.vue';
 
 const instanceStore = useInstanceStore();
 
@@ -33,6 +34,15 @@ const prop = defineProps({
 
 const geoList = ref<any[]>([]);
 const loading = ref<boolean>(false);
+const amapPath = ref()
+
+const onStart = () => {
+    amapPath.value.start()
+}
+
+const onStop = () => {
+    amapPath.value.stop()
+}
 
 const query = async () => {
     loading.value = true;
@@ -53,7 +63,10 @@ const query = async () => {
         ((resp.result as any)?.data || []).forEach((item: any) => {
             list.push([item.value.lon, item.value.lat]);
         });
-        geoList.value = list
+        geoList.value = [{
+            name: prop?.data?.name,
+            path: list
+        }]
     }
 };
 
