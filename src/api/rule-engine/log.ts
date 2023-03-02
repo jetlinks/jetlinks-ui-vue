@@ -33,4 +33,9 @@ export const detail = (id:string) => server.get(`/alarm/record/${id}`);
 /**
  * 告警历史记录
  */
-export const queryHistoryList = (data:any) => server.post('/alarm/history/_query',data)
+export const queryHistoryList = (data:any) => server.post('/alarm/history/_query',data);
+
+/**
+ * 获取告警处理结果
+ */
+export const queryHandleHistory = (data:any) => server.post('/alarm/record/handle-history/_query',data);

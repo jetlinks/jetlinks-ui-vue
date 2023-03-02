@@ -10,6 +10,7 @@
                 :columns="columns"
                 :request="queryList"
                 :gridColumn="3"
+                :gridColumns="[1,2,3]"
                 ref="tableRef"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
