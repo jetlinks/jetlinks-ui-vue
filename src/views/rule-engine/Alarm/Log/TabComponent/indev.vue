@@ -115,7 +115,8 @@
                 </CardBox>
             </template>
         </JTable>
-        <SolveLog :data="data" v-if="data.solveVisible" @closeSolve="closeSolve"/>
+        <SolveComponent :data="data" v-if="data.solveVisible" @closeSolve="closeSolve"/>
+        <SolveLog :data="data.current" v-if="data.logVisible"/>
     </div>
 </template>
 
@@ -134,6 +135,7 @@ import { storeToRefs } from 'pinia';
 import { Store } from 'jetlinks-store';
 import moment from 'moment';
 import type { ActionsType } from '@/components/Table';
+import SolveComponent from '../SolveComponent/index.vue';
 import SolveLog from '../SolveLog/index.vue'
 import { useMenuStore } from '@/store/menu';
 const menuStory = useMenuStore();
@@ -390,6 +392,10 @@ const getActions = (
                 title: '处理记录',
             },
             icon: 'FileTextOutlined',
+            onClick:() =>{
+                data.value.current = currentData;
+                data.value.logVisible = true;
+            }
         },
     ];
     return actions;

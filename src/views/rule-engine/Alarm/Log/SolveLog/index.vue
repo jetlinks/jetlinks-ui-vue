@@ -1,79 +1,96 @@
 <template>
     <a-modal
-        title="告警处理"
-        okText="确定"
-        cancelText="取消"
         visible
-        @cancel="handleCancel"
-        @ok="handleSave"
-        destroyOnClose
-        :confirmLoading="loading"
+        title="处理记录"
+        :width="1200"
+        cancelText="取消"
+        okText="确定"
     >
-        <a-form :rules="rules" layout="vertical" ref="formRef" :model="form">
-            <a-form-item label="处理结果" name="describe">
-                <a-textarea
-                    :rows="8"
-                    :maxlength="200"
-                    showCount
-                    placeholder="请输入处理结果"
-                    v-model:value="form.describe"
-                ></a-textarea>
-            </a-form-item>
-        </a-form>
+        <Search :columns="columns" target="bind-channel"></Search>
+        <JTable
+            model="TABLE"
+            :columns="columns"
+            :defaultParams="{
+                sorts: [{ name: 'createTime', order: 'desc' }],
+                terms,
+            }"
+            :request="queryHandleHistory"
+        >
+            <template #alarmTime="slotProps">
+                <span>
+                    {{
+                        moment(slotProps.alarmTime).format(
+                            'YYYY-MM-DD HH:mm:ss',
+                        )
+                    }}
+                </span>
+            </template>
+        </JTable>
     </a-modal>
 </template>
 
 <script lang="ts" setup>
-import { handleLog } from '@/api/rule-engine/log';
-import { onlyMessage } from '@/utils/comm';
+import { queryHandleHistory } from '@/api/rule-engine/log';
+import moment from 'moment';
 const props = defineProps({
     data: {
         type: Object,
     },
 });
-const loading = ref<boolean>(false);
-const formRef = ref();
-const rules = {
-    describe: [
-        {
-            required: true,
-            message: '请输入处理结果',
+const terms = [
+    {
+        column: 'alarmRecordId',
+        termType: 'eq',
+        value: props.data.id,
+        type: 'and',
+    },
+];
+const columns = [
+    {
+        title: '处理时间',
+        dataIndex: 'handleTime',
+        key: 'handleTime',
+        search: {
+            type: 'string',
         },
-    ],
-};
-const form = reactive({
-    describe: '',
-});
-let visible = ref(true);
-const emit = defineEmits(['closeSolve'])
-const handleCancel = () => {
-    emit('closeSolve');
-};
-const handleSave = () => {
-    loading.value = true;
-    formRef.value
-        .validate()
-        .then(async () => {
-            const res = await handleLog({
-                describe: form.describe,
-                type: 'user',
-                state: 'normal',
-                alarmRecordId: props.data?.current?.id || '',
-                alarmConfigId: props.data?.current?.alarmConfigId || '',
-                alarmTime: props?.data?.current?.alarmTime || '',
-            });
-            if (res.status === 200) {
-                onlyMessage('操作成功！');
-            } else {
-                onlyMessage('操作失败！', 'error');
-            }
-            loading.value = false;
-        })
-        .catch((error) => {
-            console.log(error);
-            loading.value = false;
-        });
-};
+    },
+    {
+        dataIndex: 'handleType',
+        title: '处理类型',
+        key: 'handleType',
+        scopedSlots: true,
+        search: {
+            type: 'select',
+            options: [
+                {
+                    label: '系统',
+                    value: 'system',
+                },
+                {
+                    label: '人工',
+                    value: 'user',
+                },
+            ],
+        },
+    },
+    {
+        title: '告警时间',
+        dataIndex: 'alarmTime',
+        key: 'alarmTime',
+        scopedSlots: true,
+        search: {
+            type: 'date',
+        },
+    },
+    {
+        title: '告警处理',
+        dataIndex: 'description',
+        key: 'description',
+        search: {
+            type: 'string',
+        },
+    },
+];
 </script>
 <style lang="less" scoped>
 </style>
