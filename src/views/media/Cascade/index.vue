@@ -6,7 +6,7 @@
             @search="handleSearch"
         />
 
-        <JTable
+        <JProTable
             ref="listRef"
             :columns="columns"
             :request="(e:any) => lastValueFrom(e)"
@@ -192,7 +192,7 @@
                     </template> -->
                 </a-space>
             </template>
-        </JTable>
+        </JProTable>
 
         <Publish v-model:visible="publishVis" :data="currentData" />
     </page-container>

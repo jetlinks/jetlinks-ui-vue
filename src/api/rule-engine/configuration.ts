@@ -35,3 +35,12 @@ export const save = (data:any) =>server.post('/alarm/config',data);
  * 获取基础设置数据
  */
 export const detail = (id:string) => server.get(`/alarm/config/${id}`);
+/**
+ * 解除场景联动绑定
+ */
+export const unbindScene = (id:string,data:any) => server.post(`/alarm/rule/bind/${id}/_delete`,data);
+
+/**
+ * 保存关联场景
+ */
+export const bindScene = (data:any) => server.patch("/alarm/rule/bind",data)

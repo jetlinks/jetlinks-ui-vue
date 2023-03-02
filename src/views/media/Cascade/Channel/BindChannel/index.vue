@@ -17,7 +17,7 @@
             @search="handleSearch"
         />
 
-        <JTable
+        <JProTable
             ref="listRef"
             model="table"
             :columns="columns"
@@ -62,7 +62,7 @@
                     ></a-badge>
                 </a-space>
             </template>
-        </JTable>
+        </JProTable>
     </a-modal>
 </template>
 

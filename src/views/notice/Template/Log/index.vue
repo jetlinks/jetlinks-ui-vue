@@ -7,7 +7,7 @@
             @search="handleSearch"
         />
 
-        <JTable
+        <JProTable
             ref="instanceRef"
             :columns="columns"
             :request="(e:any) => templateApi.getHistory(e, data.id)"
@@ -42,7 +42,7 @@
                     @click="handleDetail(slotProps.context)"
                 />
             </template>
-        </JTable>
+        </JProTable>
     </a-modal>
 </template>
 

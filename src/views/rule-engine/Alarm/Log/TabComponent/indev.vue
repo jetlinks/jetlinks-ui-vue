@@ -280,11 +280,6 @@ let params = ref({
     sorts: [{ name: 'alarmTime', order: 'desc' }],
     terms: [],
 });
-let param = reactive({
-    pageSize: 10,
-    terms: [],
-});
-
 const handleSearch = async (params: any) => {
     const resp = await query(params);
     if (resp.status === 200) {

@@ -1,54 +1,54 @@
 <template>
   <template v-if="isPermission">
     <template v-if="popConfirm">
-      <a-popconfirm v-bind="popConfirm" :disabled="!isPermission || props.disabled">
-        <a-tooltip v-if="tooltip" v-bind="tooltip">
+      <j-popconfirm v-bind="popConfirm" :disabled="!isPermission || props.disabled">
+        <j-tooltip v-if="tooltip" v-bind="tooltip">
           <slot v-if="noButton"></slot>
-          <a-button v-else v-bind="props" :disabled="_isPermission" :style="props.style">
+          <j-button v-else v-bind="props" :disabled="_isPermission" :style="props.style">
             <slot></slot>
             <template #icon>
               <slot name="icon"></slot>
             </template>
-          </a-button>
-        </a-tooltip>
-        <a-button v-else v-bind="props" :disabled="_isPermission" >
+          </j-button>
+        </j-tooltip>
+        <j-button v-else v-bind="props" :disabled="_isPermission" >
           <slot></slot>
           <template #icon>
             <slot name="icon"></slot>
           </template>
-        </a-button>
-      </a-popconfirm>
+        </j-button>
+      </j-popconfirm>
     </template>
     <template v-else-if="tooltip">
-      <a-tooltip v-bind="tooltip">
+      <j-tooltip v-bind="tooltip">
         <slot v-if="noButton"></slot>
-        <a-button v-else v-bind="props" :disabled="_isPermission" :style="props.style">
+        <j-button v-else v-bind="props" :disabled="_isPermission" :style="props.style">
           <slot></slot>
           <template #icon>
             <slot name="icon"></slot>
           </template>
-        </a-button>
-      </a-tooltip>
+        </j-button>
+      </j-tooltip>
     </template>
     <template v-else>
       <slot v-if="noButton"></slot>
-      <a-button v-else v-bind="props" :disabled="_isPermission" :style="props.style">
+      <j-button v-else v-bind="props" :disabled="_isPermission" :style="props.style">
         <slot></slot>
         <template #icon>
           <slot name="icon"></slot>
         </template>
-      </a-button>
+      </j-button>
     </template>
   </template>
-  <a-tooltip v-else title="没有权限">
+  <j-tooltip v-else title="没有权限">
     <slot v-if="noButton"></slot>
-    <a-button v-else v-bind="props" :disabled="_isPermission" :style="props.style">
+    <j-button v-else v-bind="props" :disabled="_isPermission" :style="props.style">
       <slot></slot>
       <template #icon>
         <slot name="icon"></slot>
       </template>
-    </a-button>
-  </a-tooltip>
+    </j-button>
+  </j-tooltip>
 </template>
 <script setup lang="ts" name="PermissionButton">
 import { CSSProperties, PropType } from 'vue'
