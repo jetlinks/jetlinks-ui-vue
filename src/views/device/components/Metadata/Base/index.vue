@@ -1,5 +1,5 @@
 <template>
-  <JTable :loading="loading" :data-source="data" size="small" :columns="columns" row-key="id" model="TABLE">
+  <j-pro-table :loading="loading" :data-source="data" size="small" :columns="columns" row-key="id" model="TABLE">
     <template #headerTitle>
       <a-input-search v-model:value="searchValue" placeholder="请输入名称" @search="handleSearch"></a-input-search>
     </template>
@@ -28,12 +28,12 @@
       {{ sourceMap[slotProps.expands?.source] }}
     </template>
     <template #type="slotProps">
-      <a-tag v-for="item in (slotProps.expands?.type || [])" :key="item">
+      <j-tag v-for="item in (slotProps.expands?.type || [])" :key="item">
         {{ expandsType[item] }}
-      </a-tag>
+      </j-tag>
     </template>
     <template #action="slotProps">
-      <a-space>
+      <j-space>
         <PermissionButton :uhas-permission="`${permission}:update`" type="link" key="edit" style="padding: 0"
           :udisabled="operateLimits('updata', type)" @click="handleEditClick(slotProps)" :tooltip="{
             title: operateLimits('updata', type) ? '当前的存储方式不支持编辑' : '编辑',
@@ -50,14 +50,13 @@
           }">
           <Aicon type="DeleteOutlined" />
         </PermissionButton>
-      </a-space>
+      </j-space>
     </template>
-  </JTable>
+  </j-pro-table>
 </template>
 <script setup lang="ts" name="BaseMetadata">
 import type { MetadataItem, MetadataType } from '@/views/device/Product/typings'
 import MetadataMapping from './columns'
-import JTable from '@/components/Table'
 import { useInstanceStore } from '@/store/instance'
 import { useProductStore } from '@/store/product'
 import { useMetadataStore } from '@/store/metadata'
