@@ -2,13 +2,13 @@
 <template>
     <page-container>
         <Search :columns="columns" target="iot-card-management-search" @search="handleSearch" />
-        <JTable ref="cardManageRef" :columns="columns" :request="query"
+        <j-pro-table ref="cardManageRef" :columns="columns" :request="query"
             :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }" :rowSelection="{
                 selectedRowKeys: _selectedRowKeys,
                 onChange: onSelectChange,
             }" @cancelSelect="cancelSelect" :params="params" :gridColumn="3">
             <template #headerTitle>
-                <a-space>
+                <j-space>
                     <a-button type="primary" @click="handleAdd">
                         <AIcon type="PlusOutlined" />新增
                     </a-button>
@@ -80,7 +80,7 @@
                             </a-menu>
                         </template>
                     </a-dropdown>
-                </a-space>
+                </j-space>
             </template>
             <template #card="slotProps">
                 <CardBox :value="slotProps" @click="handleClick" :actions="getActions(slotProps, 'card')" v-bind="slotProps"
@@ -265,7 +265,7 @@
                     </template>
                 </a-space>
             </template>
-        </JTable>
+        </j-pro-table>
         <!-- 批量导入 -->
         <Import v-if="importVisible" @close="importVisible = false" />
         <!-- 批量导出 -->

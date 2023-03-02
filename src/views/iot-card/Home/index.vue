@@ -1,8 +1,8 @@
 <!-- 物联卡-首页 -->
 <template>
     <page-container>
-        <a-row :gutter="24">
-            <a-col :span="14">
+        <j-row :gutter="24">
+            <j-col :span="14">
                 <div class="home-guide">
                     <Guide title="物联卡引导"></Guide>
                     <div
@@ -25,8 +25,8 @@
                         </div>
                     </div>
                 </div>
-            </a-col>
-            <a-col :span="10">
+            </j-col>
+            <j-col :span="10">
                 <div class="home-statistics">
                     <Guide title="基础统计">
                         <template #extra>
@@ -71,8 +71,8 @@
                         </div>
                     </div>
                 </div>
-            </a-col>
-            <a-col :span="24" style="min-height: 580px">
+            </j-col>
+            <j-col :span="24" style="min-height: 580px">
                 <div class="home-body">
                     <Guide
                         title="平台架构图"
@@ -82,22 +82,20 @@
                         <img :src="getImage('/iot-card/iotcard-home.png')" />
                     </div>
                 </div>
-            </a-col>
-        </a-row>
+            </j-col>
+        </j-row>
     </page-container>
 </template>
 
 <script setup lang="ts">
 import { getImage } from '@/utils/comm';
 import Guide from '../components/Guide.vue';
-import { message } from 'ant-design-vue';
 import moment from 'moment';
 import { queryFlow, list } from '@/api/iot-card/home';
 import * as echarts from 'echarts';
 import { useMenuStore } from '@/store/menu';
 import { usePermissionStore } from '@/store/permission';
 
-const router = useRouter();
 const { proxy } = <any>getCurrentInstance();
 
 interface GuideItemProps {

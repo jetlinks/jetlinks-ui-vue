@@ -2,10 +2,10 @@
 <template>
     <page-container>
         <Search :columns="columns" target="recharge-search" @search="handleSearch" />
-        <JTable ref="rechargeRef" :columns="columns" :request="queryRechargeList" model="TABLE"
+        <j-pro-table ref="rechargeRef" :columns="columns" :request="queryRechargeList" model="TABLE"
             :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }" :params="params">
             <template #headerTitle>
-                <a-space>
+                <j-space>
                     <PermissionButton @click="visible = true" :hasPermission="'iot-card/Recharge:pay'" type="primary">
                         充值
                     </PermissionButton>
@@ -15,7 +15,7 @@
                         </span>
                         本平台仅提供充值入口，具体充值结果需以运营商的充值结果为准
                     </div>
-                </a-space>
+                </j-space>
             </template>
             <template #createTime="slotProps">
                 {{
@@ -27,7 +27,7 @@
                 }}
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
+                <j-space :size="16">
                     <template
                         v-for="i in getActions(slotProps)"
                         :key="i.key"
@@ -46,9 +46,9 @@
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
                     </template>
-                </a-space>
+                </j-space>
             </template>
-        </JTable>
+        </j-pro-table>
         <!-- 充值 -->
         <Save v-if="visible" @change="saveChange" />
         <Detail v-if="detailVisible" :data="current" @close="close" />

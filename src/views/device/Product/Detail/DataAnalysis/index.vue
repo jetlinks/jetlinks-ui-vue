@@ -1,18 +1,18 @@
 
 <template>
-    <a-card>
+    <j-card>
         <div>
             <div class="top">
                 <div>
                     脚本语言:
-                    <a-select :defaultValue="'JavaScript'" style="width: 200;margin-left: 5px;">
-                        <a-select-option value="JavaScript">JavaScript(ECMAScript 5)</a-select-option>
-                    </a-select>
+                    <j-select :defaultValue="'JavaScript'" style="width: 200;margin-left: 5px;">
+                        <j-select-option value="JavaScript">JavaScript(ECMAScript 5)</j-select-option>
+                    </j-select>
                     <AIcon type="ExpandOutlined" style="margin-left: 20px;" @click="toggle" />
                 </div>
             </div>
             <div class="edit" ref="el">
-                <MonacoEditor language="javascript" style="height: 100%;" theme="vs" v-model:modelValue="editorValue" />
+                <j-monaco-editor language="javascript" style="height: 100%;" theme="vs" v-model:modelValue="editorValue" />
             </div>
             <div class="bottom">
                 <div style="width: 49.5%;">
@@ -21,25 +21,25 @@
                         <div class="bottom-title-topic">
                             <template v-if="productStore.current.transportProtocol === 'MQTT'">
                                 <div style="margin-right: 5px;">Topic:</div>
-                                <a-auto-complete placeholder="请输入Topic" style="width: 300px" :options="topicList"
+                                <j-auto-complete placeholder="请输入Topic" style="width: 300px" :options="topicList"
                                     :allowClear="true" :filterOption="(inputValue: any, option: any) =>
                                         option!.value.indexOf(inputValue) !== -1" v-model:value="topic" />
                             </template>
                             <template v-else>
                                 <div style="margin-right: 5px;">URL:</div>
-                                <a-input placeholder="请输入URL" v-model:value="url" style="width: 300px"></a-input>
+                                <j-input placeholder="请输入URL" v-model:value="url" style="width: 300px"></j-input>
                             </template>
                         </div>
 
                     </div>
-                    <a-textarea :rows="5" placeholder="// 二进制数据以0x开头的十六进制输入，字符串数据输入原始字符串" style="margin-top: 10px;"
+                    <j-textarea :rows="5" placeholder="// 二进制数据以0x开头的十六进制输入，字符串数据输入原始字符串" style="margin-top: 10px;"
                         v-model:value="simulation" />
                 </div>
                 <div style="width: 49.5%;">
                     <div class="bottom-title">
                         <div class="bottom-title-text">运行结果</div>
                     </div>
-                    <a-textarea :autoSize="{ minRows: 5 }" :style="resStyle" v-model:value="result" />
+                    <j-textarea :autoSize="{ minRows: 5 }" :style="resStyle" v-model:value="result" />
                 </div>
             </div>
         </div>
@@ -57,13 +57,13 @@
                 保存
             </PermissionButton>
         </div>
-    </a-card>
+    </j-card>
 </template>
 
 <script setup lang='ts' name="DataAnalysis">
 import AIcon from '@/components/AIcon'
 import PermissionButton from '@/components/PermissionButton/index.vue'
-import MonacoEditor from '@/components/MonacoEditor/index.vue';
+// import MonacoEditor from '@/components/MonacoEditor/index.vue';
 import { useFullscreen } from '@vueuse/core'
 import { useProductStore } from '@/store/product';
 import {
