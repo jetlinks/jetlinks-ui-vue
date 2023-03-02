@@ -19,7 +19,12 @@
     </a-steps>
     <a-divider style='margin-bottom: 0px' />
     <div class='steps-content'>
-      <Product v-if='addModel.stepNumber === 0' v-model:rowKey='addModel.productId' v-model:detail='addModel.productDetail' />
+      <Product
+        v-if='addModel.stepNumber === 0'
+        v-model:rowKey='addModel.productId'
+        v-model:detail='addModel.productDetail'
+        @change='productChange'
+      />
       <DeviceSelect
         v-else-if='addModel.stepNumber === 1'
         :productId='addModel.productId'
@@ -32,6 +37,7 @@
         ref='typeRef'
         v-else-if='addModel.stepNumber === 2'
         :metadata='addModel.metadata'
+        :operator='addModel.operator'
       />
     </div>
     <template #footer>
@@ -53,11 +59,11 @@ import { detail as deviceDetail  } from '@/api/device/instance'
 import Product from './Product.vue'
 import DeviceSelect from './DeviceSelect.vue'
 import Type from './Type.vue'
+import { continuousValue, timeUnitEnum } from '@/views/rule-engine/Scene/Save/components/Timer/util'
 
 type Emit = {
   (e: 'cancel'): void
-  (e: 'update:value', data: TriggerDevice): void
-  (e: 'update:options', data: any): void
+  (e: 'save', data: TriggerDevice, options: Record<string, any>): void
 }
 
 interface AddModelType extends Omit<TriggerDevice, 'selectorValues'> {
@@ -65,8 +71,9 @@ interface AddModelType extends Omit<TriggerDevice, 'selectorValues'> {
   deviceKeys: Array<{ label: string, value: string }>
   orgId: Array<{ label: string, value: string }>
   productDetail: any
-  selectorValues: Array<{ label: string, value: string }>
-  metadata: metadataType
+  selectorValues: Array<Record<string, any>>
+  metadata: metadataType,
+  operator: TriggerDeviceOptions
 }
 
 const emit = defineEmits<Emit>()
@@ -82,7 +89,7 @@ const props = defineProps({
     })
   },
   options: {
-    type: Object as PropType<any>,
+    type: Object as PropType<Record<string, any>>,
     default: () => ({})
   }
 })
@@ -95,13 +102,106 @@ const addModel = reactive<AddModelType>({
   deviceKeys: [],
   orgId: [],
   productDetail: {},
-  metadata: {}
+  metadata: {},
+  operator: {
+    operator: 'online'
+  }
 })
+
+const optionsCache = ref(props.options)
 
 Object.assign(addModel, props.value)
 
 const handleOptions = (data: TriggerDeviceOptions) => {
+  const typeIconMap = {
+    writeProperty: 'icon-bianji1',
+    invokeFunction: 'icon-widgets',
+    reportEvent: 'icon-shijian',
+    readProperty: 'icon-Group',
+  };
 
+  const _options: any = {
+    name: '', // 名称
+    extraName: '', // 拓展参数
+    onlyName: false,
+    type: '', // 触发类型
+    typeIcon: typeIconMap[data.operator],
+    productName: '',
+    selectorIcon: '',
+    time: undefined,
+    when: undefined,
+    extraTime: undefined,
+    action: optionsCache.value?.action,
+  };
+
+  if (addModel.selector === 'fixed') {
+    let isLimit = false;
+    let indexOf = 0;
+    const nameStr = addModel.selectorValues!.reduce((_prev, next, index) => {
+      if (_prev.length <= 30) {
+        indexOf = index;
+        return index === 0 ? next.name : _prev + '、' + next.name;
+      } else {
+        isLimit = true;
+      }
+      return _prev;
+    }, '');
+    // _options.name = TriggerDeviceModel.selectorValues?.map((item) => item.name).join('、');
+    _options.name = nameStr;
+    if (isLimit && addModel.selectorValues!.length > indexOf) {
+      _options.extraName = `等${addModel.selectorValues!.length}台设备`;
+    }
+    _options.selectorIcon = 'icon-shebei1';
+  } else if (addModel.selector === 'org') {
+    _options.name = addModel.selectorValues?.[0].name + '的';
+    _options.productName = addModel.productDetail.name; // 产品名称
+    _options.selectorIcon = 'icon-zuzhi';
+  } else {
+    _options.name = '所有的' + addModel.productDetail.name;
+  }
+
+  if (data.timer) {
+    const _timer = data.timer;
+    if (_timer.trigger === 'cron') {
+      _options.time = _timer.cron;
+    } else {
+      // console.log('continuousValue', continuousValue(_timer.when! || [], _timer!.trigger))
+      let whenStr = '每天';
+      if (_timer.when!.length) {
+        whenStr = _timer!.trigger === 'week' ? '每周' : '每月';
+        const whenStrArr = continuousValue(_timer.when! || [], _timer!.trigger);
+        const whenStrArr3 = whenStrArr.splice(0, 3);
+        whenStr += whenStrArr3.join('、');
+        whenStr += `等${_timer.when!.length}天`;
+      }
+      _options.when = whenStr;
+      if (_timer.once) {
+        _options.time = _timer.once.time + ' 执行1次';
+      } else if (_timer.period) {
+        _options.time = _timer.period.from + '-' + _timer.period.to;
+        _options.extraTime = `每${_timer.period.every}${timeUnitEnum[_timer.period.unit]}执行1次`;
+      }
+    }
+
+    if (data.operator === 'online') {
+      _options.type = '上线';
+      _options.action = '';
+      _options.typeIcon = 'icon-a-Group4713';
+    }
+
+    if (data.operator === 'offline') {
+      _options.type = '离线';
+      _options.action = '';
+      _options.typeIcon = 'icon-a-Group4892';
+    }
+
+    if (data.operator === 'reportProperty') {
+      _options.type = '属性上报';
+      _options.action = '';
+      _options.typeIcon = 'icon-file-upload-outline';
+    }
+    return _options;
+  }
 }
 
 const prev = () => {
@@ -118,6 +218,16 @@ const handleMetadata = (metadata?: string) => {
   } catch (e) {
     console.warn('handleMetadata: ' + e)
   }
+}
+
+const productChange = () => {
+  addModel.deviceKeys = []
+  addModel.orgId = []
+  addModel.selector = 'fixed'
+  addModel.operator = {
+    operator: 'online'
+  }
+  addModel.selectorValues = []
 }
 
 const save = async (step?: number) => {
@@ -139,9 +249,16 @@ const save = async (step?: number) => {
     addModel.stepNumber = 2
   } else {
     const typeData = await typeRef.value.vail()
-    console.log(typeData)
     if (typeData) {
-      const _options = handleOptions(typeData);
+      optionsCache.value.action = typeData.action
+      const _options = handleOptions(typeData.data);
+      const data = {
+        operator: typeData.data,
+        selector: addModel.selector,
+        selectorValues: addModel.selectorValues,
+        productId: addModel.productId
+      }
+      emit('save', data, _options)
     }
   }
 }

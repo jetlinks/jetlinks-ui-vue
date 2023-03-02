@@ -57,7 +57,7 @@
 import { filterSelectNode } from '@/utils/comm'
 import { TopCard, Timer } from '@/views/rule-engine/Scene/Save/components'
 import { getImage } from '@/utils/comm'
-import { metadataType } from '@/views/rule-engine/Scene/typings'
+import type { metadataType, TriggerDeviceOptions } from '@/views/rule-engine/Scene/typings'
 import type { PropType } from 'vue'
 import { TypeEnum } from '@/views/rule-engine/Scene/Save/Device/util'
 import ReadProperties from './ReadProperties.vue'
@@ -69,6 +69,10 @@ import { cloneDeep, omit } from 'lodash-es'
 const props = defineProps({
   metadata: {
     type: Object as PropType<metadataType>,
+    default: () => ({})
+  },
+  operator: {
+    type: Object as PropType<TriggerDeviceOptions>,
     default: () => ({})
   }
 })
@@ -82,6 +86,8 @@ const formModel = reactive({
   functionId: undefined,
   functionParameters: []
 })
+
+Object.assign(formModel, props.operator)
 
 const optionCache = reactive({
   action: ''
@@ -222,7 +228,7 @@ defineExpose({
         filterKey.push('writeProperties')
       }
 
-      resolve(omit(cloneModel, filterKey))
+      resolve({ data: omit(cloneModel, filterKey), action: optionCache.action })
     })
   }
 })
