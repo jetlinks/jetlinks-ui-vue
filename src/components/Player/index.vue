@@ -11,8 +11,8 @@ import 'vue3-video-play/dist/style.css';
 import vue3videoPlay from 'vue3-video-play';
 
 const options = reactive({
-    width: '800px', //播放器高度
-    height: '450px', //播放器高度
+    width: '500px', //播放器高度
+    height: '280px', //播放器高度
     color: '#409eff', //主题色
     title: '', //视频名称
     src: 'https://cdn.jsdelivr.net/gh/xdlumia/files/video-play/IronMan.mp4', //视频源
