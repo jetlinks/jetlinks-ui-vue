@@ -1,8 +1,8 @@
 <template>
-    <a-badge
+    <j-badge
         :status="statusNames ? statusNames[status] : 'default'"
         :text="text"
-    ></a-badge>
+    ></j-badge>
 </template>
 
 <script setup lang="ts">

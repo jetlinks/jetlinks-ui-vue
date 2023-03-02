@@ -23,5 +23,6 @@ export default {
     // 语音/短信获取阿里云模板
     getAliTemplate: (id: any) => get(`/notifier/sms/aliyun/${id}/templates`),
     // 短信获取签名
-    getSigns: (id: any) => get(`/notifier/sms/aliyun/${id}/signs`)
+    getSigns: (id: any) => get(`/notifier/sms/aliyun/${id}/signs`),
+    getListByConfigId: (id: string, data: any): any => post(`/notifier/template/${id}/_query`, data),
 }

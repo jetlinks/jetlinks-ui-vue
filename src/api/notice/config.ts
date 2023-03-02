@@ -34,5 +34,9 @@ export default {
     // 微信绑定用户
     weChatBindUser: (data: any, id: string) => patch(`/user/third-party/weixin_corpMessage/${id}`, data),
     // 解绑
-    unBindUser: (data: any, id: string) => post(`/user/third-party/${id}/_unbind`, data)
+    unBindUser: (data: any, id: string) => post(`/user/third-party/${id}/_unbind`, data),
+    //通知类型
+    queryMessageType: () => get(`/notifier/config/types`),
+    // 不分页-列表
+    queryListNoPaging: (data: any) => post(`/notifier/config/_query/no-paging?paging=false`, data)
 }

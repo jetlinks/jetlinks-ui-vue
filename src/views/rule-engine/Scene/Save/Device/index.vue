@@ -14,6 +14,7 @@
         <Title :options='data.options.trigger' />
       </AddButton>
     </a-form-item>
+    <Action />
     <AddModel v-if='visible' @cancel='visible = false' v-model='data.device' v-model:options='data.options.trigger' />
   </div>
 </template>
@@ -24,6 +25,7 @@ import { useSceneStore } from '@/store/scene'
 import AddModel from './AddModal.vue'
 import AddButton from '../components/AddButton.vue'
 import Title from '../components/Title.vue'
+import Action from '../action/index.vue'
 
 const sceneStore = useSceneStore()
 const { data } = storeToRefs<any>(sceneStore)
