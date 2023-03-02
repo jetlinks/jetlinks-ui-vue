@@ -3,7 +3,7 @@
         <div class="data-source-container">
             <Search :columns="query.columns" @search="query.search" />
 
-            <JTable
+            <j-pro-table
                 ref="tableRef"
                 :columns="table.columns"
                 :request="getDataSourceList_api"
@@ -122,7 +122,7 @@
                         </PermissionButton>
                     </a-space>
                 </template>
-            </JTable>
+            </j-pro-table>
 
             <div class="dialogs">
                 <EditDialog ref="editDialogRef" @confirm="table.refresh" />

@@ -3,7 +3,7 @@
         <a-card class="role-container">
             <Search :columns="query.columns" />
 
-            <JTable
+            <j-pro-table
                 ref="tableRef"
                 :columns="table.columns"
                 :request="getRoleList_api"
@@ -45,7 +45,7 @@
                         </PermissionButton>
                     </a-space>
                 </template>
-            </JTable>
+            </j-pro-table>
 
             <div class="dialogs">
                 <AddDialog ref="addDialogRef" />

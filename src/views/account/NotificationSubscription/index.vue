@@ -2,7 +2,7 @@
     <page-container>
         <div class="notification-subscription-container">
             <Search :columns="columns" @search="query.search" />
-            <JTable
+            <j-pro-table
                 ref="tableRef"
                 :columns="columns"
                 :request="getNoticeList_api"
@@ -87,7 +87,7 @@
                         </PermissionButton>
                     </a-space>
                 </template>
-            </JTable>
+            </j-pro-table>
 
             <EditDialog
                 v-if="dialogVisible"

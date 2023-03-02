@@ -1,7 +1,7 @@
 <template>
     <div class="product-container">
         <Search :columns="query.columns" @search="query.search" />
-        <JTable
+        <j-pro-table
             ref="tableRef"
             :request="table.requestFun"
             :gridColumn="2"
@@ -130,7 +130,7 @@
                     </template>
                 </CardBox>
             </template>
-        </JTable>
+        </j-pro-table>
 
         <div class="dialogs">
             <AddDeviceOrProductDialog
