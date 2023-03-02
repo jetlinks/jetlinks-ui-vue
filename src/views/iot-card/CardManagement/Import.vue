@@ -80,8 +80,8 @@
 import { FILE_UPLOAD } from '@/api/comm';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { LocalStore } from '@/utils/comm';
-import { downloadFile } from '@/utils/utils';
-import { queryPlatformNoPage, _import } from '@/api/iot-card/cardManagement';
+import { downloadFile, downloadFileByUrl } from '@/utils/utils';
+import { queryPlatformNoPage, _import ,exportCard} from '@/api/iot-card/cardManagement';
 import { message } from 'ant-design-vue';
 
 const emit = defineEmits(['close']);
@@ -136,9 +136,21 @@ const fileChange = (info: any) => {
     }
 };
 
-const downFileFn = (type: string) => {
-    const url = `${BASE_API_PATH}/network/card/template.${type}`;
-    downloadFile(url);
+const downFileFn =async (type: string) => {
+    // const url = `${BASE_API_PATH}/network/card/template.${type}`;
+    // downloadFile(url);
+    const res:any = await exportCard(type)
+    if(res){
+        const blob = new Blob([res], { type: type });
+            const url = URL.createObjectURL(blob);
+            console.log(url);
+            downloadFileByUrl(
+                url,
+                `物联卡导入模版`,
+                type,
+            );
+    }
+
 };
 
 const handleCancel = () => {

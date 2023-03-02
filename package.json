@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite --mode develop",
+    "dev:force": "vite --force --mode develop",
     "build": "node --max_old_space_size=1024000 ./node_modules/vite/bin/vite.js build",
     "preview": "vite preview",
     "eslint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
@@ -23,7 +24,7 @@
     "event-source-polyfill": "^1.0.31",
     "global": "^4.4.0",
     "jetlinks-store": "^0.0.3",
-    "jetlinks-ui-components": "^1.0.0",
+    "jetlinks-ui-components": "^1.0.1",
     "js-cookie": "^3.0.1",
     "less": "^4.1.3",
     "less-loader": "^11.1.0",

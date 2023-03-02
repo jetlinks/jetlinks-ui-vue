@@ -1,52 +1,57 @@
 <template>
-  <a-row :gutter='24'>
-    <a-col :span='10'>
-      <a-form-item
-        name='functionId'
-        :rules="[{ required: true, message: '请选择功能' }]"
-      >
-        <a-select
-          showSearch
-          allowClear
-          v-model='functionId'
-          style='width: 100%'
-          placeholder='请选择功能'
-          :filterOption='filterSelectNode'
-          @select='onSelect'
-        />
-      </a-form-item>
-    </a-col>
-    <a-col :span='14'>
-      <a-form-item>定时调用所选功能</a-form-item>
-    </a-col>
-    <a-col :span='24'>
-      <a-form-item
-        style='margin-top: 24px'
-        name='functionParameters'
-      >
+  <a-form ref='invokeForm' :model='formModel' layout='vertical' :colon='false'>
+    <a-row :gutter='24'>
+      <a-col :span='10'>
+        <a-form-item
+          name='functionId'
+          :rules="[{ required: true, message: '请选择功能' }]"
+        >
+          <a-select
+            showSearch
+            allowClear
+            v-model:value='formModel.functionId'
+            style='width: 100%'
+            placeholder='请选择功能'
+            :options='functions'
+            :filterOption='filterSelectNode'
+            @select='onSelect'
+          />
+        </a-form-item>
+      </a-col>
+      <a-col :span='14'>
+        <a-form-item>定时调用所选功能</a-form-item>
+      </a-col>
+      <a-col :span='24'>
         <FunctionCall
-          v-model:value='_value'
-          :data='callDataOptions'
+          :value='_value'
+          :data='functionData'
           @change='callDataChange'
         />
-      </a-form-item>
-    </a-col>
-  </a-row>
+      </a-col>
+    </a-row>
+  </a-form>
 </template>
 
 <script setup lang='ts' name='InvokeFunction'>
 import { filterSelectNode } from '@/utils/comm'
 import { FunctionCall } from '../components'
+import type { PropType } from 'vue'
+import { defineExpose } from 'vue'
 
 type Emit = {
-  (e: 'update:value', data: Record<string, any>): void
+  (e: 'update:functionParameters', data: Array<Record<string, any>>): void
+  (e: 'update:functionId', data: string): void
   (e: 'update:action', data: string): void
 }
 
 const props = defineProps({
-  value: {
-    type: Object,
-    default: () => ({})
+  functionId: {
+    type: String,
+    default: undefined
+  },
+  functionParameters: {
+    type: Array as PropType<Record<string, any>[]>,
+    default: () => []
   },
   action: {
     type: String,
@@ -59,45 +64,52 @@ const props = defineProps({
 })
 
 const emit = defineEmits<Emit>()
+const invokeForm = ref()
+const formModel = reactive({
+  functionId: props.functionId
+})
+const _value = ref<any[]>(props.functionParameters)
 
-const functionId = ref()
-const _value = ref([])
+/**
+ * 获取当前选择功能属性
+ */
+const functionData = computed(() => {
+  const functionItem: any = props.functions.find((f: any) => f.id === formModel.functionId)
+  const arrCache = []
 
-const callDataOptions = computed(() => {
-  const _valueKeys = Object.keys(props.value)
-  if (_valueKeys.length) {
-    return _valueKeys.map(key => {
-      const item: any = props.functions.find((p: any) => p.id === key)
-      if (item) {
-        return {
-          id: item.id,
-          name: item.name,
-          type: item.valueType ? item.valueType.type : '-',
-          format: item.valueType ? item.valueType.format : undefined,
-          options: item.valueType ? item.valueType.element : undefined,
-          value: props.value[key]
-        }
-      }
-      return {
-        id: key,
-        name: key,
-        type: '',
-        format: undefined,
-        options: undefined,
-        value: props.value[key]
-      }
-    })
+  if (functionItem) {
+    const properties = functionItem.valueType ? functionItem.valueType.properties : functionItem.inputs;
+    for (const datum of properties) {
+      arrCache.push({
+        id: datum.id,
+        name: datum.name,
+        type: datum.valueType ? datum.valueType.type : '-',
+        format: datum.valueType ? datum.valueType.format : undefined,
+        options: datum.valueType ? datum.valueType.elements : undefined,
+        value: undefined,
+      });
+    }
   }
-  return []
+
+  return arrCache
 })
 
 const onSelect = (v: string, item: any) => {
   emit('update:action', `执行${item.name}`)
+  emit('update:functionId', v)
 }
 
-const callDataChange = () => {
-
+const callDataChange = (v: any[]) => {
+  _value.value = v
+  emit('update:functionParameters', v)
 }
+
+defineExpose({
+  validateFields: () => new Promise(async (resolve)  => {
+    const data = await invokeForm.value?.validateFields()
+    resolve(data)
+  })
+})
 
 </script>
 
