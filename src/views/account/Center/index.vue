@@ -51,7 +51,7 @@
                         </div>
                         <div class="info-card">
                             <p>注册时间</p>
-                            <p>{{ userInfo.createTime }}</p>
+                            <p>{{ moment(userInfo.createTime).format('YYYY-MM-DD HH:mm:ss') }}</p>
                         </div>
                         <div class="info-card">
                             <p>电话</p>
@@ -216,7 +216,7 @@
     </page-container>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Center">
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import EditInfoDialog from './components/EditInfoDialog.vue';
 import EditPasswordDialog from './components/EditPasswordDialog.vue';

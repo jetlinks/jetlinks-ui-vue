@@ -6,11 +6,12 @@
         width="770px"
         @cancel="emits('update:visible', false)"
     >
-        <a-form :model="form" layout="vertical">
+        <a-form :model="form" layout="vertical" ref="formRef">
             <a-row :gutter="24">
                 <a-col :span="12">
                     <a-form-item
                         label="姓名"
+                        name="name"
                         :rules="[{ required: true, message: '姓名必填' }]"
                     >
                         <a-input
@@ -78,6 +79,7 @@
 <script setup lang="ts">
 import { updateMeInfo_api } from '@/api/account/center';
 import { message } from 'ant-design-vue';
+import { FormInstance } from 'ant-design-vue/es';
 import { userInfoType } from '../typing';
 
 const emits = defineEmits(['ok', 'update:visible']);
@@ -86,14 +88,16 @@ const props = defineProps<{
     data: userInfoType;
 }>();
 const form = ref(props.data);
-
+const formRef = ref<FormInstance>();
 const handleOk = () => {
-    updateMeInfo_api(form.value).then((resp) => {
-        if (resp.status === 200) {
-            message.success('保存成功');
-            emits('ok');
-            emits('update:visible', false);
-        }
+    formRef.value?.validate().then(() => {
+        updateMeInfo_api(form.value).then((resp) => {
+            if (resp.status === 200) {
+                message.success('保存成功');
+                emits('ok');
+                emits('update:visible', false);
+            }
+        });
     });
 };
 </script>

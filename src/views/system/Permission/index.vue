@@ -92,7 +92,7 @@
                                 :type="
                                     slotProps.status
                                         ? 'StopOutlined'
-                                        : 'PlayCircleOutlined '
+                                        : 'PlayCircleOutlined'
                                 "
                             />
                         </PermissionButton>
