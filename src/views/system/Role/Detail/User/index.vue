@@ -2,7 +2,7 @@
     <a-card class="role-user-container">
         <Search :columns="query.columns" />
 
-        <JTable
+        <j-pro-table
             ref="tableRef"
             :columns="table.columns"
             :request="getUserByRole_api"
@@ -37,7 +37,7 @@
                     </a-popconfirm>
                 </a-space>
             </template>
-        </JTable>
+        </j-pro-table>
 
         <div class="dialogs">
             <AddUserDialog :open="dialog.openAdd" @refresh="table.refresh" />

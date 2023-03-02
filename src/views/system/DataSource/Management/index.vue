@@ -45,7 +45,7 @@
                     >保存</a-button
                 >
             </div>
-            <JTable
+            <j-pro-table
                 ref="tableRef"
                 :columns="table.columns"
                 model="TABLE"
@@ -109,7 +109,7 @@
                         <AIcon type="DeleteOutlined" />
                     </PermissionButton>
                 </template>
-            </JTable>
+            </j-pro-table>
             <a-botton class="add-row" @click="table.addRow">
                 <AIcon type="PlusOutlined" /> 新增行
             </a-botton>

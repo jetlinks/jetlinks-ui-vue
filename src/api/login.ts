@@ -52,3 +52,8 @@ export const settingDetail = (scopes: string) => server.get(`/system/config/${sc
  * 获取当前登录用户信息
  */
 export const userDetail = () => server.get<any>('/user/detail')
+
+/**
+ * 退出登录
+ */
+export const loginout_api = () => server.get<any>('/user-token/reset')

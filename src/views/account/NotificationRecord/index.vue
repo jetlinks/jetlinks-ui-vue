@@ -3,7 +3,7 @@
         <div class="notification-record-container">
             <Search :columns="columns" @search="query.search" />
 
-            <JTable
+            <j-pro-table
                 ref="tableRef"
                 :columns="columns"
                 :request="getList_api"
@@ -78,7 +78,7 @@
                         </PermissionButton>
                     </a-space>
                 </template>
-            </JTable>
+            </j-pro-table>
 
             <ViewDialog v-if="viewVisible" v-model:visible="viewVisible" :data="viewItem" />
         </div>

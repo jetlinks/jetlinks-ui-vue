@@ -1,6 +1,6 @@
 <template>
     <div class="choose-api-container">
-        <JTable
+        <j-pro-table
             :columns="columns"
             :dataSource="props.tableData"
             :rowSelection="props.mode !== 'home' ? rowSelection : undefined"
@@ -14,7 +14,7 @@
                     >{{ slotProps.url }}</span
                 >
             </template>
-        </JTable>
+        </j-pro-table>
 
         <a-button type="primary" @click="save" v-if="props.mode !== 'home'"
             >保存</a-button

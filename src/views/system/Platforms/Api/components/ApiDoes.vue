@@ -21,7 +21,7 @@
         <div class="api-card">
             <h5>请求参数</h5>
             <div class="content">
-                <JTable
+                <j-pro-table
                     :columns="requestCard.columns"
                     :dataSource="requestCard.tableData"
                     noPagination
@@ -33,19 +33,19 @@
                     <template #type="slotProps">
                         <span>{{ slotProps.schema.type }}</span>
                     </template>
-                </JTable>
+                </j-pro-table>
             </div>
         </div>
         <div class="api-card">
             <h5>响应状态</h5>
             <div class="content">
-                <JTable
+                <j-pro-table
                     :columns="responseStatusCard.columns"
                     :dataSource="responseStatusCard.tableData"
                     noPagination
                     model="TABLE"
                 >
-                </JTable>
+                </j-pro-table>
 
                 <a-tabs v-model:activeKey="responseStatusCard.activeKey">
                     <a-tab-pane
@@ -60,13 +60,13 @@
         <div class="api-card">
             <h5>响应参数</h5>
             <div class="content">
-                <JTable
+                <j-pro-table
                     :columns="respParamsCard.columns"
                     :dataSource="respParamsCard.tableData"
                     noPagination
                     model="TABLE"
                 >
-                </JTable>
+                </j-pro-table>
             </div>
 
             <MonacoEditor
