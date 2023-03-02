@@ -15,7 +15,7 @@
                 {{ item.label }}
             </j-radio-button>
         </j-radio-group>
-        <a-range-picker
+        <j-range-picker
             format="YYYY-MM-DD"
             valueFormat="YYYY-MM-DD"
             style="margin-left: 12px"
@@ -23,7 +23,7 @@
             v-model:value="rangeVal"
             :allowClear="false"
         >
-        </a-range-picker>
+        </j-range-picker>
     </div>
 </template>
 
