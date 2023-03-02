@@ -12,7 +12,7 @@
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
                 gridColumn="2"
-                gridColumns="[2]"
+                :gridColumns="[1, 2]"
                 :params="params"
             >
                 <template #headerTitle>

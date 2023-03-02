@@ -16,9 +16,14 @@
                 :params="params"
             >
                 <template #headerTitle>
-                    <a-button type="primary" @click="handlAdd"
-                        ><plus-outlined />新增</a-button
+                    <PermissionButton
+                        type="primary"
+                        @click="handlAdd"
+                        hasPermission="media/Stream:add"
                     >
+                        <template #icon><AIcon type="PlusOutlined" /></template>
+                        新增
+                    </PermissionButton>
                 </template>
                 <template #card="slotProps">
                     <CardBox
@@ -106,42 +111,24 @@
                             </div>
                         </template>
                         <template #actions="item">
-                            <a-tooltip
-                                v-bind="item.tooltip"
-                                :title="item.disabled && item.tooltip.title"
+                            <PermissionButton
+                                :disabled="item.disabled"
+                                :popConfirm="item.popConfirm"
+                                :tooltip="{
+                                    ...item.tooltip,
+                                }"
+                                @click="item.onClick"
+                                :hasPermission="'media/Stream:' + item.key"
                             >
-                                <a-popconfirm
-                                    v-if="item.popConfirm"
-                                    v-bind="item.popConfirm"
-                                    :disabled="item.disabled"
-                                >
-                                    <a-button :disabled="item.disabled">
-                                        <AIcon
-                                            type="DeleteOutlined"
-                                            v-if="item.key === 'delete'"
-                                        />
-                                        <template v-else>
-                                            <AIcon :type="item.icon" />
-                                            <span>{{ item.text }}</span>
-                                        </template>
-                                    </a-button>
-                                </a-popconfirm>
+                                <AIcon
+                                    type="DeleteOutlined"
+                                    v-if="item.key === 'delete'"
+                                />
                                 <template v-else>
-                                    <a-button
-                                        :disabled="item.disabled"
-                                        @click="item.onClick"
-                                    >
-                                        <AIcon
-                                            type="DeleteOutlined"
-                                            v-if="item.key === 'delete'"
-                                        />
-                                        <template v-else>
-                                            <AIcon :type="item.icon" />
-                                            <span>{{ item.text }}</span>
-                                        </template>
-                                    </a-button>
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item?.text }}</span>
                                 </template>
-                            </a-tooltip>
+                            </PermissionButton>
                         </template>
                     </CardBox>
                 </template>
@@ -154,10 +141,10 @@ import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage } from '@/utils/comm';
 import { query, remove, disable, enalbe } from '@/api/media/stream';
 import { message } from 'ant-design-vue';
-import Detail from './Detail/index.vue';
+import { useMenuStore } from 'store/menu';
 
+const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
-const router = useRouter();
 const params = ref<Record<string, any>>({});
 
 const columns = [
@@ -194,9 +181,10 @@ const columns = [
 const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
     if (!data) return [];
     const state = data.state.value;
+    const stateText = state === 'enabled' ? '禁用' : '启用';
     const actions = [
         {
-            key: 'edit',
+            key: 'update',
             text: '编辑',
             tooltip: {
                 title: '编辑',
@@ -208,13 +196,13 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
         },
         {
             key: 'action',
-            text: state === 'enabled' ? '禁用' : '启用',
+            text: stateText,
             tooltip: {
-                title: state === 'enabled' ? '禁用' : '启用',
+                title: stateText,
             },
             icon: state === 'enabled' ? 'StopOutlined' : 'CheckCircleOutlined',
             popConfirm: {
-                title: `确认${state === 'enabled' ? '禁用' : '启用'}?`,
+                title: `确认${stateText}?`,
                 onConfirm: async () => {
                     let res =
                         state === 'enabled'
@@ -255,22 +243,13 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
 };
 
 const handlAdd = () => {
-    router.push({
-        path: `/iot/link/Stream/detail/:id`,
-        query: { view: false },
-    });
+    menuStory.jumpPage(`media/Stream/Detail`, { id: ':id' }, { view: false });
 };
 const handlEdit = (id: string) => {
-    router.push({
-        path: `/iot/link/Stream/detail/${id}`,
-        query: { view: false },
-    });
+    menuStory.jumpPage(`media/Stream/Detail`, { id }, { view: false });
 };
 const handlEye = (id: string) => {
-    router.push({
-        path: `/iot/link/Stream/detail/${id}`,
-        query: { view: true },
-    });
+    menuStory.jumpPage(`media/Stream/Detail`, { id }, { view: true });
 };
 
 /**

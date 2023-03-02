@@ -23,8 +23,8 @@
               :tooltip="{ title: '重置后将使用产品的物模型配置' }" key="reload">
               重置操作
             </PermissionButton>
-            <PermissionButton :uhasPermission="`${permission}:update`" @click="visible = true">快速导入</PermissionButton>
-            <PermissionButton :uhasPermission="`${permission}:update`" @click="cat = true">物模型TSL</PermissionButton>
+            <PermissionButton :hasPermission="`${permission}:update`" @click="visible = true">快速导入</PermissionButton>
+            <PermissionButton :hasPermission="`${permission}:update`" @click="cat = true">物模型TSL</PermissionButton>
           </a-space>
         </template>
 
@@ -50,7 +50,6 @@
 import PermissionButton from '@/components/PermissionButton/index.vue'
 import { deleteMetadata } from '@/api/device/instance.js'
 import { message } from 'ant-design-vue'
-import { Store } from 'jetlinks-store'
 import { SystemConst } from '@/utils/consts'
 import { useInstanceStore } from '@/store/instance'
 import Import from './Import/index.vue'
@@ -75,11 +74,11 @@ const resetMetadata = async () => {
   const resp = await deleteMetadata(id as string)
   if (resp.status === 200) {
     message.info('操作成功')
-
-    Store.set(SystemConst.REFRESH_DEVICE, true)
-    setTimeout(() => {
-      Store.set(SystemConst.REFRESH_METADATA_TABLE, true)
-    }, 400)
+    instanceStore.refresh(id as string)
+    // Store.set(SystemConst.REFRESH_DEVICE, true)
+    // setTimeout(() => {
+    //   Store.set(SystemConst.REFRESH_METADATA_TABLE, true)
+    // }, 400)
   }
 }
 </script>

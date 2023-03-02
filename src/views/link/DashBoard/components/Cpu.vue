@@ -10,7 +10,9 @@
                     format="YYYY-MM-DD HH:mm:ss"
                     v-model="data.time"
                 >
-                    <template #suffixIcon><a-icon type="calendar" /></template>
+                    <template #suffixIcon
+                        ><AIcon type="CalendarOutlined"
+                    /></template>
                     <template #renderExtraFooter>
                         <a-radio-group
                             default-value="a"
@@ -31,7 +33,8 @@
                     >
                 </a-range-picker>
             </div>
-            <div ref="chartRef" style="width: 100%; height: 300px"></div>
+            <a-empty v-if="empty" class="empty" />
+            <div v-else ref="chartRef" style="width: 100%; height: 300px"></div>
         </div>
     </a-spin>
 </template>
@@ -50,8 +53,8 @@ import {
 } from './tool.ts';
 
 const chartRef = ref<Record<string, any>>({});
-
 const loading = ref(false);
+const empty = ref(false);
 const data = ref({
     type: 'hour',
     time: [null, null],
@@ -140,6 +143,7 @@ const handleCpuOptions = (optionsData, xAxis) => {
                 : typeDataLine,
         };
         myChart.setOption(options);
+        xAxis.length === 0 && (empty.value = true);
         window.addEventListener('resize', function () {
             myChart.resize();
         });
@@ -185,5 +189,8 @@ watch(
         width: 200px;
         margin-top: 8px;
     }
+}
+.empty {
+    height: 300px;
 }
 </style>

@@ -1,24 +1,14 @@
 <!-- 充值管理 -->
 <template>
     <page-container>
-        <Search
-            :columns="columns"
-            target="recharge-search"
-            @search="handleSearch"
-        />
-        <JTable
-            ref="rechargeRef"
-            :columns="columns"
-            :request="queryRechargeList"
-            model="TABLE"
-            :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }"
-            :params="params"
-        >
+        <Search :columns="columns" target="recharge-search" @search="handleSearch" />
+        <JTable ref="rechargeRef" :columns="columns" :request="queryRechargeList" model="TABLE"
+            :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }" :params="params">
             <template #headerTitle>
                 <a-space>
-                    <a-button type="primary" @click="visible = true">
+                    <PermissionButton @click="visible = true" :hasPermission="'iot-card/Recharge:pay'" type="primary">
                         充值
-                    </a-button>
+                    </PermissionButton>
                     <div class="tips-text">
                         <span style="margin-right: 8px; font-size: 16px">
                             <AIcon type="ExclamationCircleOutlined"></AIcon>
@@ -30,41 +20,32 @@
             <template #createTime="slotProps">
                 {{
                     slotProps.createTime
-                        ? moment(slotProps.createTime).format(
-                              'YYYY-MM-DD HH:mm:ss',
-                          )
-                        : ''
+                    ? moment(slotProps.createTime).format(
+                        'YYYY-MM-DD HH:mm:ss',
+                    )
+                    : ''
                 }}
             </template>
             <template #action="slotProps">
                 <a-space :size="16">
-                    <a-tooltip
+                    <template
                         v-for="i in getActions(slotProps)"
                         :key="i.key"
-                        v-bind="i.tooltip"
                     >
-                        <a-popconfirm v-if="i.popConfirm" v-bind="i.popConfirm">
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-popconfirm>
-                        <a-button
-                            style="padding: 0"
+                        <PermissionButton
+                            :disabled="i.disabled"
+                            :popConfirm="i.popConfirm"
+                            :tooltip="{
+                                ...i.tooltip,
+                            }"
+                            @click="i.onClick"
                             type="link"
-                            v-else
-                            @click="i.onClick && i.onClick(slotProps)"
+                            style="padding: 0px"
+                            :hasPermission="'iot-card/Recharge:' + i.key"
                         >
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-button>
-                    </a-tooltip>
+                            <template #icon><AIcon :type="i.icon" /></template>
+                        </PermissionButton>
+                    </template>
                 </a-space>
             </template>
         </JTable>
@@ -145,8 +126,8 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
             icon: 'EyeOutlined',
             onClick: () => {
-              detailVisible.value = true;
-              current.value = data;
+                detailVisible.value = true;
+                current.value = data;
             },
         },
     ];

@@ -40,6 +40,53 @@
                     </a-popconfirm>
                 </a-space>
             </template>
+            <template #gbChannelId="slotProps">
+                <a-space>
+                    <Ellipsis>
+                        {{ slotProps.gbChannelId }}
+                    </Ellipsis>
+                    <a-popover
+                        v-model:visible="slotProps.popVis"
+                        trigger="click"
+                    >
+                        <template #title>
+                            <div class="header">
+                                <span>编辑国标ID</span>
+                                <AIcon
+                                    type="CloseOutlined"
+                                    @click="handleClose(slotProps)"
+                                />
+                            </div>
+                        </template>
+                        <template #content>
+                            <div class="simple-form">
+                                <a-input
+                                    v-model:value="gbID"
+                                    @change="validField(slotProps)"
+                                />
+                                <div
+                                    class="error"
+                                    v-if="valid && !valid?.passed"
+                                >
+                                    <!-- {{ valid?.reason }} -->
+                                    该国标ID在同一设备下已存在
+                                </div>
+                            </div>
+                            <a-button
+                                type="primary"
+                                @click="handleSave(slotProps)"
+                                :loading="loading"
+                                style="width: 100%"
+                            >
+                                保存
+                            </a-button>
+                        </template>
+                        <a-button type="link" @click="slotProps.popVis = true">
+                            <AIcon type="EditOutlined" />
+                        </a-button>
+                    </a-popover>
+                </a-space>
+            </template>
             <template #status="slotProps">
                 <a-space>
                     <a-badge
@@ -106,6 +153,8 @@ const columns = [
         title: '设备名称',
         dataIndex: 'deviceName',
         key: 'deviceName',
+        // width: 200,
+        // fixed: 'left',
         search: {
             type: 'string',
         },
@@ -174,7 +223,6 @@ const params = ref<Record<string, any>>({});
  */
 const handleSearch = (e: any) => {
     params.value = e;
-    console.log('params.value: ', params.value);
 };
 
 const listRef = ref();
@@ -250,6 +298,10 @@ const getActions = (
  * 批量解绑
  */
 const handleMultipleUnbind = async () => {
+    if (!_selectedRowKeys.value.length) {
+        message.error('请先选择需要解绑的通道列表');
+        return;
+    }
     const channelIds = listRef.value?._dataSource
         .filter((f: any) => _selectedRowKeys.value.includes(f.id))
         .map((m: any) => m.channelId);
@@ -264,4 +316,61 @@ const handleMultipleUnbind = async () => {
         message.error('操作失败！');
     }
 };
+
+/**
+ * 编辑国标ID
+ */
+const gbID = ref('');
+const loading = ref(false);
+const handleSave = async (data: any) => {
+    if (!gbID.value) message.error('请输入国标ID');
+    if (!valid.value?.passed) return;
+
+    loading.value = true;
+    const resp = await CascadeApi.updateGbChannelId(data.id, {
+        gbChannelId: gbID.value,
+    });
+    loading.value = false;
+    if (resp.success) {
+        message.success('操作成功！');
+        listRef.value?.reload();
+        valid.value = undefined;
+        gbID.value = '';
+    } else {
+        message.error('操作失败！');
+    }
+};
+
+/**
+ * 验证ID是否存在
+ */
+const valid = ref<{ passed: string; reason: string }>();
+const validField = async (data: any) => {
+    const { result } = await CascadeApi.validateField(data.cascadeId, [
+        gbID.value,
+    ]);
+    valid.value = result;
+};
+
+/**
+ * 取消
+ */
+const handleClose = (data: any) => {
+    data.popVis = false;
+    valid.value = undefined;
+    gbID.value = '';
+};
 </script>
+<style lang="less" scoped>
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.simple-form {
+    margin-bottom: 10px;
+    .error {
+        color: red;
+    }
+}
+</style>

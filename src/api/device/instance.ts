@@ -85,6 +85,7 @@ export const batchDeleteDevice = (data: string[]) => server.put(`/device-instanc
  */
 export const deviceTemplateDownload = (productId: string, type: string) => `${BASE_API_PATH}/device-instance/${productId}/template.${type}`
 
+export const templateDownload = (productId: string, type: string) => server.get(`/device-instance/${productId}/template.${type}`,{},{responseType: 'blob'})
 /**
  * 设备导入
  * @param productId 产品id

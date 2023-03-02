@@ -301,3 +301,13 @@ export const Rules = {
         },
     ],
 };
+
+export const TiTlePermissionButtonStyle = {
+    padding: 0,
+    color: ' #1890ff !important',
+    'font-weight': 700,
+    'font-size': '16px',
+    overflow: 'hidden',
+    'text-overflow': 'ellipsis',
+    'white-space': 'nowrap',
+};

@@ -144,7 +144,7 @@ const columns = [
         search: {
             type: 'string',
         },
-        // width: 200,
+        ellipsis: true,
     },
     {
         title: '请求方法',
