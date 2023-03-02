@@ -1,6 +1,6 @@
 import server from '@/utils/request';
 import { LocalStore } from '@/utils/comm';
-import { TOKEN_KEY } from '@/utils/variable';
+import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 
 export default {
     // 列表
@@ -19,7 +19,7 @@ export default {
     // ========== 视频播放 ==========
     // 开始直播
     ptzStart: (deviceId: string, channelId: string, type: string) =>
-        `/media/device/${deviceId}/${channelId}/live.${type}?:X_Access_Token=${LocalStore.get(TOKEN_KEY)}`,
+        `${BASE_API_PATH}/media/device/${deviceId}/${channelId}/live.${type}?:X_Access_Token=${LocalStore.get(TOKEN_KEY)}`,
 
     // 云台控制-停止
     ptzStop: (deviceId: string, channelId: string) => server.post(`/media/device/${deviceId}/${channelId}/_ptz/STOP`),
