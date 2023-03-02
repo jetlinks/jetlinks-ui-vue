@@ -118,13 +118,13 @@ const handleOk = () => {
             oldPassword: form.value.oldPassword,
             newPassword: form.value.newPassword,
         };
-        // updateMepsd_api(params).then((resp) => {
-        //     if (resp.status === 200) {
-        //         message.success('保存成功');
-        //         emits('ok');
-        //         emits('update:visible', false);
-        //     }
-        // });
+        updateMepsd_api(params).then((resp) => {
+            if (resp.status === 200) {
+                message.success('保存成功');
+                emits('ok');
+                emits('update:visible', false);
+            }
+        });
     });
 };
 console.clear();
