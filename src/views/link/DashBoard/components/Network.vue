@@ -37,18 +37,13 @@
                         @change="pickerTimeChange"
                     >
                         <template #suffixIcon
-                            ><a-icon type="calendar"
+                            ><AIcon type="CalendarOutlined"
                         /></template>
                     </a-range-picker>
                 </div>
             </div>
             <div>
-                <a-empty v-if="empty" class="empty" />
-                <div
-                    v-else
-                    ref="chartRef"
-                    style="width: 100%; height: 350px"
-                ></div>
+                <div ref="chartRef" style="width: 100%; height: 350px"></div>
             </div>
         </div>
     </a-spin>
@@ -61,13 +56,11 @@ import {
     typeDataLine,
     areaStyle,
     networkParams,
-    arrayReverse,
 } from './tool.ts';
 import moment from 'moment';
 import * as echarts from 'echarts';
 
 const chartRef = ref<Record<string, any>>({});
-const empty = ref(false);
 const loading = ref(false);
 const data = ref({
     type: 'bytesRead',
@@ -134,7 +127,6 @@ const setOptions = (data, key) => ({
 
 const handleNetworkOptions = (optionsData, xAxis) => {
     const chart = chartRef.value;
-
     if (chart) {
         const myChart = echarts.init(chart);
         const dataKeys = Object.keys(optionsData);
@@ -148,7 +140,7 @@ const handleNetworkOptions = (optionsData, xAxis) => {
                 type: 'value',
             },
             grid: {
-                left: '80px',
+                left: '100px',
                 right: '50px',
             },
             tooltip: {
@@ -161,7 +153,6 @@ const handleNetworkOptions = (optionsData, xAxis) => {
                 : typeDataLine,
         };
         myChart.setOption(options);
-        // xAxis.length === 0 && (empty.value = true);
         window.addEventListener('resize', function () {
             myChart.resize();
         });
@@ -214,8 +205,5 @@ watch(
 .right {
     display: flex;
     align-items: center;
-}
-.empty {
-    height: 300px;
 }
 </style>
