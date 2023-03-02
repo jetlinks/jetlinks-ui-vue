@@ -298,6 +298,10 @@ const getActions = (
  * 批量解绑
  */
 const handleMultipleUnbind = async () => {
+    if (!_selectedRowKeys.value.length) {
+        message.error('请先选择需要解绑的通道列表');
+        return;
+    }
     const channelIds = listRef.value?._dataSource
         .filter((f: any) => _selectedRowKeys.value.includes(f.id))
         .map((m: any) => m.channelId);

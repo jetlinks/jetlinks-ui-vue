@@ -100,6 +100,12 @@ export const _import = (configId: any, params: any) => server.get(`/network/card
 export const _export = (format: string, data: any) => server.post(`/network/card/download.${format}/_query`, data, { responseType: 'blob' });
 
 /**
+ * 下载模板
+ * @param format 类型 xlsx、csv
+ */
+export const exportCard = (format: string) => server.get(`/network/card/template.${format}`,{},{responseType: 'blob'});
+
+/**
  * 验证iccid
  * @param id
  */

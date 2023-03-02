@@ -60,7 +60,7 @@
     </a-card>
 </template>
 
-<script setup lang='ts' name="Parsing">
+<script setup lang='ts' name="DataAnalysis">
 import AIcon from '@/components/AIcon'
 import PermissionButton from '@/components/PermissionButton/index.vue'
 import MonacoEditor from '@/components/MonacoEditor/index.vue';
@@ -225,7 +225,7 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     padding: 10px;
-    background-color: '#f7f7f7';
+    background-color: #f7f7f7;
 
     .bottom-title {
         display: flex;

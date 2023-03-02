@@ -146,12 +146,6 @@ const rest = async () => {
         getDeviceCode();
         message.success('操作成功')
     }
-    // service.delDeviceCode(productId, deviceId).then((res) => {
-    //   if (res.status === 200) {
-    //     getDeviceCode(productId, deviceId);
-    //     onlyMessage('操作成功');
-    //   }
-    // });
 };
 //获取topic
 const getTopic = async () => {
@@ -285,7 +279,7 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     padding: 10px;
-    background-color: '#f7f7f7';
+    background-color: #f7f7f7;
 
     .bottom-title {
         display: flex;
