@@ -1,7 +1,10 @@
 <template>
-  <a-table
+  <j-table
+    model='TABLE'
+    :noPagination='true'
     :data-source='dataSource.value'
     :columns='columns'
+    :bodyStyle='{ padding: 0}'
   >
     <template #bodyCell="{ column, record, index }">
       <template v-if='column.dataIndex === "name"'>
@@ -33,7 +36,7 @@
         />
       </template>
     </template>
-  </a-table>
+  </j-table>
 </template>
 
 <script setup lang='ts' name='FunctionCall'>
@@ -60,13 +63,6 @@ const props = defineProps({
 const dataSource = reactive<{value: any[]}>({
   value: []
 })
-
-watch(() => props.data, () => {
-  dataSource.value = props.data.map((item: any) => {
-    const oldValue = props.value.find((oldItem: any) => oldItem.name === item.id)
-    return oldValue ? { ...item, value: oldValue.value } : item
-  })
-}, { immediate: true })
 
 const columns = [
   {
@@ -98,6 +94,13 @@ const handleOptions = (record: any) => {
       return undefined
   }
 }
+
+watch(() => props.data, () => {
+  dataSource.value = props.data.map((item: any) => {
+    const oldValue = props.value.find((oldItem: any) => oldItem.name === item.id)
+    return oldValue ? { ...item, value: oldValue.value } : item
+  })
+}, { immediate: true })
 
 watch(() => dataSource.value, () => {
   const _value = dataSource.value.map(item => ({
