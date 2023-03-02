@@ -8,7 +8,7 @@
             @search="handleSearch"
         />
 
-        <JTable
+        <JProTable
             ref="listRef"
             :columns="columns"
             :request="(e:any) => ChannelApi.list(e, route?.query.id as string)"
@@ -76,14 +76,14 @@
                     </a-tooltip>
                 </a-space>
             </template>
-        </JTable>
+        </JProTable>
 
         <Save
             v-model:visible="saveVis"
             :channelData="channelData"
             @submit="listRef.reload()"
         />
-        <Live v-model:visible="playerVis" />
+        <Live v-model:visible="playerVis" :data="channelData" />
     </page-container>
 </template>
 
@@ -205,6 +205,7 @@ const getActions = (
             },
             icon: 'VideoCameraOutlined',
             onClick: () => {
+                channelData.value = cloneDeep(data);
                 playerVis.value = true;
             },
         },

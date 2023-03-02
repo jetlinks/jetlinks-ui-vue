@@ -64,6 +64,12 @@ const iconKeys = [
     'ToolOutlined',
     'FileOutlined',
     'LikeOutlined',
+    'CaretUpOutlined',
+    'CaretRightOutlined',
+    'CaretLeftOutlined',
+    'CaretDownOutlined',
+    'MinusOutlined',
+    'AudioOutlined',
 ]
 
 const Icon = (props: {type: string}) => {

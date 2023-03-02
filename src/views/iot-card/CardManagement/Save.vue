@@ -1,5 +1,5 @@
 <template>
-    <a-modal
+    <j-modal
         :maskClosable="false"
         width="600px"
         :visible="true"
@@ -11,39 +11,39 @@
         :confirmLoading="btnLoading"
     >
         <div style="margin-top: 10px">
-            <a-form
+            <j-form
                 :layout="'vertical'"
                 ref="formRef"
                 :rules="rules"
                 :model="modelRef"
             >
-                <a-form-item label="卡号" name="id">
-                    <a-input
+                <j-form-item label="卡号" name="id">
+                    <j-input
                         v-model:value="modelRef.id"
                         placeholder="请输入卡号"
                         :disabled="type === 'edit'"
-                    ></a-input>
-                </a-form-item>
-                <a-form-item name="iccId">
+                    ></j-input>
+                </j-form-item>
+                <j-form-item name="iccId">
                     <template #label>
                         <span>
                             ICCID
-                            <a-tooltip title="IC卡的唯一识别号码">
+                            <j-tooltip title="IC卡的唯一识别号码">
                                 <AIcon
                                     type="QuestionCircleOutlined"
                                     style="margin-left: 2px"
                                 />
-                            </a-tooltip>
+                            </j-tooltip>
                         </span>
                     </template>
-                    <a-input
+                    <j-input
                         v-model:value="modelRef.iccId"
                         placeholder="请输入ICCID"
                         :disabled="type === 'edit'"
                     />
-                </a-form-item>
-                <a-form-item label="平台对接" name="platformConfigId">
-                    <a-select
+                </j-form-item>
+                <j-form-item label="平台对接" name="platformConfigId">
+                    <j-select
                         showSearch
                         :filter-option="filterOption"
                         :disabled="type === 'edit'"
@@ -52,11 +52,11 @@
                         v-model:value="modelRef.platformConfigId"
                         placeholder="请选择平台对接"
                     >
-                    </a-select>
-                </a-form-item>
+                </j-select>
+                </j-form-item>
 
-                <a-form-item label="运营商" name="operatorName">
-                    <a-select
+                <j-form-item label="运营商" name="operatorName">
+                    <j-select
                         allowClear
                         showSearch
                         :filter-option="filterOption"
@@ -64,10 +64,10 @@
                         v-model:value="modelRef.operatorName"
                         placeholder="请选择运营商"
                     >
-                    </a-select>
-                </a-form-item>
-                <a-form-item label="类型" name="cardType">
-                    <a-select
+                    </j-select>
+                </j-form-item>
+                <j-form-item label="类型" name="cardType">
+                    <j-select
                         allowClear
                         showSearch
                         :disabled="type === 'edit'"
@@ -76,19 +76,19 @@
                         v-model:value="modelRef.cardType"
                         placeholder="请选择类型"
                     >
-                    </a-select>
-                </a-form-item>
-                <a-form-item label="说明" name="describe">
-                    <a-textarea
+                    </j-select>
+                </j-form-item>
+                <j-form-item label="说明" name="describe">
+                    <j-textarea
                         v-model:value="modelRef.describe"
                         placeholder="请输入说明"
                         showCount
                         :maxlength="200"
                     />
-                </a-form-item>
-            </a-form>
+                </j-form-item>
+            </j-form>
         </div>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script lang="ts" setup>

@@ -15,7 +15,7 @@
           组装上报设备的数据。您可以导出完整物模型，用于云端应用开发。
         </p>
       </div>
-      <a-tabs @change="handleConvertMetadata">
+      <a-tabs @change="handleConvertMetadata" destroy-inactive-tab-pane>
         <a-tab-pane v-for="item in codecs" :key="item.id" :tab="item.name">
           <div class="cat-panel">
             <MonacoEditor v-model="value" theme="vs" style="height: 100%"></MonacoEditor>

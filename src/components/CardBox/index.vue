@@ -21,7 +21,7 @@
                 <!-- 勾选 -->
                 <div v-if="active" class="checked-icon">
                     <div>
-                        <CheckOutlined />
+                        <AIcon type="CheckOutlined" />
                     </div>
                 </div>
 
@@ -62,24 +62,6 @@
                     }"
                 >
                     <slot name="actions" v-bind="item"></slot>
-                    <!-- <a-popconfirm  v-if="item.popConfirm" v-bind="item.popConfirm">
-                    <a-button :disabled="item.disabled">
-                        <DeleteOutlined v-if="item.key === 'delete'" />
-                        <template v-else>
-                            <AIcon :type="item.icon" />
-                            <span>{{ item.text }}</span>
-                        </template>
-                    </a-button>
-                </a-popconfirm>
-                <template v-else>
-                    <a-button :disabled="item.disabled">
-                        <DeleteOutlined v-if="item.key === 'delete'" />
-                        <template v-else>
-                            <AIcon :type="item.icon" />
-                            <span>{{ item.text }}</span>
-                        </template>
-                    </a-button>
-                </template> -->
                 </div>
             </div>
         </slot>
@@ -87,13 +69,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-    SearchOutlined,
-    CheckOutlined,
-    DeleteOutlined,
-} from '@ant-design/icons-vue';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
-import { StatusColorEnum } from '@/utils/consts.ts';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { PropType } from 'vue';
 
