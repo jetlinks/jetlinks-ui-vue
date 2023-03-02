@@ -1,4 +1,6 @@
-import server from '@/utils/request'
+import server from '@/utils/request';
+import { LocalStore } from '@/utils/comm';
+import { TOKEN_KEY } from '@/utils/variable';
 
 export default {
     // 列表
@@ -12,5 +14,54 @@ export default {
     // 修改
     update: (id: string, data: any) => server.put(`/media/channel/${id}`, data),
     // 删除
-    del: (id: string) => server.remove(`media/channel/${id}`),
+    del: (id: string) => server.remove(`/media/channel/${id}`),
+
+    // ========== 视频播放 ==========
+    // 开始直播
+    ptzStart: (deviceId: string, channelId: string, type: string) =>
+        `/media/device/${deviceId}/${channelId}/live.${type}?:X_Access_Token=${LocalStore.get(TOKEN_KEY)}`,
+
+    // 云台控制-停止
+    ptzStop: (deviceId: string, channelId: string) => server.post(`/media/device/${deviceId}/${channelId}/_ptz/STOP`),
+
+    // 云台控制-缩放、转向等
+    ptzTool: (deviceId: string, channelId: string, direct: string, speed: number = 90) =>
+        server.post(`/media/device/${deviceId}/${channelId}/_ptz/${direct}/${speed}`),
+
+    // 重置
+    mediaStop: (deviceId: string, channelId: string) => server.post(`/media/device/${deviceId}/${channelId}/_stop`),
+
+    // 查询是否正在录像
+    ptzIsRecord: (deviceId: string, channelId: string) => server.get(`/media/device/${deviceId}/${channelId}/live/recording`),
+
+    // 开始录像
+    recordStart: (deviceId: string, channelId: string, data: any) =>
+        server.post(`/media/device/${deviceId}/${channelId}/_record`, data),
+
+    // 停止录像
+    recordStop: (deviceId: string, channelId: string, data: any) =>
+        server.post(`/media/device/${deviceId}/${channelId}/_stop-record`, data),
+
+    // 查询本地回放记录
+    queryRecordLocal: (deviceId: string, channelId: string, data: any) =>
+        server.post(`/media/device/${deviceId}/${channelId}/records/in-local`, data),
+
+    // 播放本地回放
+    playbackLocal: (deviceId: string, channelId: string, suffix: string) =>
+        server.get(`/media/device/${deviceId}/${channelId}/playback.${suffix}`),
+
+    // 本地录像播放控制
+    playbackControl: (deviceId: string, channelId: string) =>
+        server.post(`/media/device/${deviceId}/${channelId}/stream-control`),
+
+    // 查询云端回放记录
+    recordsInServer: (deviceId: string, channelId: string) =>
+        server.post(`/media/device/${deviceId}/${channelId}/records/in-server`),
+
+    // 查询云端回放文件信息
+    recordsInServerFiles: (deviceId: string, channelId: string) =>
+        server.post(`/media/device/${deviceId}/${channelId}/records/in-server/files`),
+
+    // 播放云端回放
+    playbackStart: (recordId: string) => server.get(`/media/record/${recordId}.mp4`),
 }

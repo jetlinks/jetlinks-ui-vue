@@ -337,6 +337,14 @@ const JTable = defineComponent<JTableProps>({
                                         rowSelection={props.rowSelection}
                                         scroll={props.scroll}
                                         v-slots={{
+                                            headerCell: (dt: Record<string, any>) => {
+                                                const { column, title } = dt;
+                                                if (column?.headerCell) {
+                                                    return slots?.[column?.headerCell]!(column.title)
+                                                } else {
+                                                    return title || ''
+                                                }
+                                            },
                                             bodyCell: (dt: Record<string, any>) => {
                                                 const { column, record } = dt;
                                                 if ((column?.key || column?.dataIndex) && column?.scopedSlots && (slots?.[column?.dataIndex] || slots?.[column?.key])) {

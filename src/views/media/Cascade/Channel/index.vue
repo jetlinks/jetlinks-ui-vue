@@ -40,6 +40,16 @@
                     </a-popconfirm>
                 </a-space>
             </template>
+            <template #gbChannelIdHeader="title">
+                <a-tooltip
+                    title="国标级联有16位、20位两种格式。在当前页面修改不会修改视频设备-通道页面中的国标ID"
+                >
+                    <a-space>
+                        <span>{{ title }}</span>
+                        <AIcon type="InfoCircleOutlined" />
+                    </a-space>
+                </a-tooltip>
+            </template>
             <template #gbChannelId="slotProps">
                 <a-space>
                     <Ellipsis>
@@ -172,6 +182,7 @@ const columns = [
         dataIndex: 'gbChannelId',
         key: 'gbChannelId',
         scopedSlots: true,
+        headerCell: 'gbChannelIdHeader', // 表头单元格插槽
         search: {
             type: 'string',
         },
@@ -298,6 +309,10 @@ const getActions = (
  * 批量解绑
  */
 const handleMultipleUnbind = async () => {
+    if (!_selectedRowKeys.value.length) {
+        message.error('请先选择需要解绑的通道列表');
+        return;
+    }
     const channelIds = listRef.value?._dataSource
         .filter((f: any) => _selectedRowKeys.value.includes(f.id))
         .map((m: any) => m.channelId);

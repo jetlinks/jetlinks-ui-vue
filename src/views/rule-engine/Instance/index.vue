@@ -105,7 +105,6 @@
                                 @click="i.onClick"
                                 type="link"
                                 style="padding: 0px"
-                                :hasPermission="'device/Instance:' + i.key"
                             >
                                 <template #icon
                                     ><AIcon :type="i.icon"

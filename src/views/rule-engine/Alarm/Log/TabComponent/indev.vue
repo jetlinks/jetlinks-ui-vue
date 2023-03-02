@@ -28,6 +28,7 @@
             :columns="columns"
             :request="handleSearch"
             :params="params"
+            :gridColumns="[1,1,2]"
             :gridColumn="2"
             model="CARD"
         >
@@ -115,7 +116,8 @@
                 </CardBox>
             </template>
         </JTable>
-        <SolveLog :data="data" v-if="data.solveVisible" @closeSolve="closeSolve"/>
+        <SolveComponent :data="data" v-if="data.solveVisible" @closeSolve="closeSolve"/>
+        <SolveLog :data="data.current" v-if="data.logVisible" @closeLog="closeLog"/>
     </div>
 </template>
 
@@ -134,6 +136,7 @@ import { storeToRefs } from 'pinia';
 import { Store } from 'jetlinks-store';
 import moment from 'moment';
 import type { ActionsType } from '@/components/Table';
+import SolveComponent from '../SolveComponent/index.vue';
 import SolveLog from '../SolveLog/index.vue'
 import { useMenuStore } from '@/store/menu';
 const menuStory = useMenuStore();
@@ -390,12 +393,25 @@ const getActions = (
                 title: '处理记录',
             },
             icon: 'FileTextOutlined',
+            onClick:() =>{
+                data.value.current = currentData;
+                data.value.logVisible = true;
+            }
         },
     ];
     return actions;
 };
+/**
+ * 关闭告警日志
+ */
 const closeSolve = () =>{
-    data.value.solveVisible = false
+    data.value.solveVisible = false;
+}
+/**
+ * 关闭处理记录
+ */
+const closeLog = () =>{
+    data.value.logVisible = false;
 }
 </script>
 <style lang="less" scoped>

@@ -36,8 +36,8 @@
 import { FILE_UPLOAD } from '@/api/comm'
 import { TOKEN_KEY  } from '@/utils/variable';
 import { LocalStore } from '@/utils/comm';
-import { downloadFile } from '@/utils/utils';
-import { deviceImport, deviceTemplateDownload } from '@/api/device/instance'
+import { downloadFile, downloadFileByUrl } from '@/utils/utils';
+import { deviceImport, deviceTemplateDownload ,templateDownload} from '@/api/device/instance'
 import { EventSourcePolyfill } from 'event-source-polyfill'
 import { message } from 'ant-design-vue';
 
@@ -72,8 +72,20 @@ const flag = ref<boolean>(false)
 const count = ref<number>(0)
 const errMessage = ref<string>('')
 
-const downFile = (type: string) => {
-    downloadFile(deviceTemplateDownload(props.product, type));
+const downFile =async (type: string) => {
+    // downloadFile(deviceTemplateDownload(props.product, type));
+    const res:any =await templateDownload(props.product, type)
+    if(res){
+        const blob = new Blob([res], { type: type });
+            const url = URL.createObjectURL(blob);
+            console.log(url);
+            downloadFileByUrl(
+                url,
+                `设备导入模版`,
+                type,
+            );
+    }
+
 }
 
 const submitData = async (fileUrl: string) => {
