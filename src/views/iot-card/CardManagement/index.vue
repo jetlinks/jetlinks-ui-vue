@@ -9,30 +9,33 @@
             }" @cancelSelect="cancelSelect" :params="params" :gridColumn="3">
             <template #headerTitle>
                 <j-space>
-                    <a-button type="primary" @click="handleAdd">
+                    <!-- <a-button type="primary" @click="handleAdd">
                         <AIcon type="PlusOutlined" />新增
-                    </a-button>
-                    <a-dropdown>
-                        <a-button>
+                    </a-button> -->
+                    <PermissionButton @click="handleAdd" :hasPermission="'iot-card/CardManagement:add'" type="primary">
+                        <AIcon type="PlusOutlined" />新增
+                    </PermissionButton>
+                    <j-dropdown>
+                        <j-button>
                             批量操作
                             <AIcon type="DownOutlined" />
-                        </a-button>
+                        </j-button>
                         <template #overlay>
-                            <a-menu>
-                                <a-menu-item>
+                            <j-menu>
+                                <j-menu-item>
                                     <PermissionButton @click="exportVisible = true"
                                         :hasPermission="'iot-card/CardManagement:export'">
                                         <AIcon type="ExportOutlined" />
                                         批量导出
                                     </PermissionButton>
-                                </a-menu-item>
-                                <a-menu-item>
+                                </j-menu-item>
+                                <j-menu-item>
                                     <PermissionButton @click="importVisible = true"
                                         :hasPermission="'iot-card/CardManagement:import'">
                                         <AIcon type="ImportOutlined" />批量导入
                                     </PermissionButton>
-                                </a-menu-item>
-                                <a-menu-item>
+                                </j-menu-item>
+                                <j-menu-item>
                                     <PermissionButton :popConfirm="{
                                         title: '确认激活吗？',
                                         onConfirm: handleActive,
@@ -40,8 +43,8 @@
                                         <AIcon type="CheckCircleOutlined" />
                                         批量激活
                                     </PermissionButton>
-                                </a-menu-item>
-                                <a-menu-item>
+                                </j-menu-item>
+                                <j-menu-item>
                                     <PermissionButton :popConfirm="{
                                         title: '确认停用吗？',
                                         onConfirm: handleStop,
@@ -49,8 +52,8 @@
                                         <AIcon type="StopOutlined" />
                                             批量停用
                                     </PermissionButton>
-                                </a-menu-item>
-                                <a-menu-item>
+                                </j-menu-item>
+                                <j-menu-item>
                                     <PermissionButton :popConfirm="{
                                         title: '确认复机吗？',
                                         onConfirm: handleResumption,
@@ -58,8 +61,8 @@
                                          <AIcon type="PoweroffOutlined" />
                                             批量复机
                                     </PermissionButton>
-                                </a-menu-item>
-                                <a-menu-item>
+                                </j-menu-item>
+                                <j-menu-item>
                                     <PermissionButton :popConfirm="{
                                         title: '确认同步状态吗？',
                                         onConfirm: handleSync,
@@ -67,8 +70,8 @@
                                          <AIcon type="SwapOutlined" />
                                             同步状态
                                     </PermissionButton>
-                                </a-menu-item>
-                                <a-menu-item v-if="_selectedRowKeys.length > 0">
+                                </j-menu-item>
+                                <j-menu-item v-if="_selectedRowKeys.length > 0">
                                     <PermissionButton :popConfirm="{
                                         title: '确认删除吗？',
                                         onConfirm: handelRemove,
@@ -76,10 +79,10 @@
                                          <AIcon type="SwapOutlined" />
                                          批量删除
                                     </PermissionButton>
-                                </a-menu-item>
-                            </a-menu>
+                                </j-menu-item>
+                            </j-menu>
                         </template>
-                    </a-dropdown>
+                    </j-dropdown>
                 </j-space>
             </template>
             <template #card="slotProps">
@@ -99,23 +102,23 @@
                         <h3 class="card-item-content-title">
                             {{ slotProps.id }}
                         </h3>
-                        <a-row>
-                            <a-col :span="8">
+                        <j-row>
+                            <j-col :span="8">
                                 <div class="card-item-content-text">
                                     平台对接
                                 </div>
                                 <div>{{ slotProps.platformConfigName }}</div>
-                            </a-col>
-                            <a-col :span="6">
+                            </j-col>
+                            <j-col :span="6">
                                 <div class="card-item-content-text">类型</div>
                                 <div>{{ slotProps.cardType.text }}</div>
-                            </a-col>
-                            <a-col :span="6">
+                            </j-col>
+                            <j-col :span="6">
                                 <div class="card-item-content-text">提醒</div>
                                 <!-- <div>{{ slotProps.cardType.text }}</div> -->
-                            </a-col>
-                        </a-row>
-                        <a-divider style="margin: 12px 0" />
+                            </j-col>
+                        </j-row>
+                        <j-divider style="margin: 12px 0" />
                         <div v-if="slotProps.usedFlow === 0">
                             <span class="flow-text">
                                 {{ slotProps.totalFlow }}
@@ -135,7 +138,7 @@
                                     总共 {{ slotProps.totalFlow }} M
                                 </div>
                             </div>
-                            <a-progress :strokeColor="'#ADC6FF'" :showInfo="false" :percent="
+                            <j-progress :strokeColor="'#ADC6FF'" :showInfo="false" :percent="
                                 slotProps.totalFlow - slotProps.usedFlow
                             " />
                         </div>
@@ -185,7 +188,7 @@
                                     </template>
                                 </a-button>
                             </template>
-                                    </a-tooltip> -->
+                                    </j-tooltip> -->
                     </template>
                 </CardBox>
             </template>
@@ -244,7 +247,7 @@
                 }}
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
+                <j-space :size="16">
                     <template
                         v-for="i in getActions(slotProps,'table')"
                         :key="i.key"
@@ -263,7 +266,7 @@
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
                     </template>
-                </a-space>
+                </j-space>
             </template>
         </j-pro-table>
         <!-- 批量导入 -->
