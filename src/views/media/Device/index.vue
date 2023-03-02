@@ -5,7 +5,7 @@
             target="notice-config"
             @search="handleSearch"
         />
-        <JTable
+        <JProTable
             ref="listRef"
             :columns="columns"
             :request="DeviceApi.list"
@@ -125,7 +125,7 @@
                     </a-tooltip>
                 </a-space>
             </template>
-        </JTable>
+        </JProTable>
     </page-container>
 </template>
 

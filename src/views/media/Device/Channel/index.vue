@@ -8,7 +8,7 @@
             @search="handleSearch"
         />
 
-        <JTable
+        <JProTable
             ref="listRef"
             :columns="columns"
             :request="(e:any) => ChannelApi.list(e, route?.query.id as string)"
@@ -76,7 +76,7 @@
                     </a-tooltip>
                 </a-space>
             </template>
-        </JTable>
+        </JProTable>
 
         <Save
             v-model:visible="saveVis"
