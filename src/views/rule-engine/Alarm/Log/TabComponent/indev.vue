@@ -28,6 +28,7 @@
             :columns="columns"
             :request="handleSearch"
             :params="params"
+            :gridColumns="[1,1,2]"
             :gridColumn="2"
             model="CARD"
         >
@@ -116,7 +117,7 @@
             </template>
         </JTable>
         <SolveComponent :data="data" v-if="data.solveVisible" @closeSolve="closeSolve"/>
-        <SolveLog :data="data.current" v-if="data.logVisible"/>
+        <SolveLog :data="data.current" v-if="data.logVisible" @closeLog="closeLog"/>
     </div>
 </template>
 
@@ -400,8 +401,17 @@ const getActions = (
     ];
     return actions;
 };
+/**
+ * 关闭告警日志
+ */
 const closeSolve = () =>{
-    data.value.solveVisible = false
+    data.value.solveVisible = false;
+}
+/**
+ * 关闭处理记录
+ */
+const closeLog = () =>{
+    data.value.logVisible = false;
 }
 </script>
 <style lang="less" scoped>
