@@ -1,12 +1,12 @@
 <template>
-    <a-spin :spinning="loading">
-        <JTable
+    <j-spin :spinning="loading">
+        <JProTable
             :columns="columns"
             :dataSource="dataSource"
             :bodyStyle="{ padding: '0 0 0 20px' }"
         >
             <template #headerTitle>
-                <a-input-search
+                <j-input-search
                     placeholder="请输入名称"
                     style="width: 300px; margin-bottom: 10px"
                     @search="onSearch"
@@ -31,18 +31,18 @@
                 {{ propertyValue[slotProps?.id]?.timeString || '--' }}
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
+                <j-space :size="16">
                     <template v-for="i in getActions(slotProps)" :key="i.key">
-                        <a-tooltip v-bind="i.tooltip" v-if="i.key !== 'edit'">
-                            <a-button
+                        <j-tooltip v-bind="i.tooltip" v-if="i.key !== 'edit'">
+                            <j-button
                                 style="padding: 0"
                                 type="link"
                                 :disabled="i.disabled"
                                 @click="i.onClick && i.onClick(slotProps)"
                             >
                                 <AIcon :type="i.icon" />
-                            </a-button>
-                        </a-tooltip>
+                            </j-button>
+                        </j-tooltip>
                         <PermissionButton
                             :disabled="i.disabled"
                             v-else
@@ -56,10 +56,10 @@
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
                     </template>
-                </a-space>
+                </j-space>
             </template>
             <template #paginationRender>
-                <a-pagination
+                <j-pagination
                     size="small"
                     :total="total"
                     :showQuickJumper="false"
@@ -78,8 +78,8 @@
                     @change="pageChange"
                 />
             </template>
-        </JTable>
-    </a-spin>
+        </JProTable>
+    </j-spin>
     <Save v-if="editVisible" @close="editVisible = false" :data="currentInfo" />
     <Indicators
         v-if="indicatorVisible"

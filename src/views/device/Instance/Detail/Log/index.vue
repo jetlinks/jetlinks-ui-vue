@@ -1,11 +1,11 @@
 <template>
-    <a-card>
+    <j-card>
         <Search
             :columns="columns"
             target="device-instance-log"
             @search="handleSearch"
         />
-        <JTable
+        <JProTable
             ref="instanceRefLog"
             :columns="columns"
             :request="(e: Record<string, any>) => queryLog(instanceStore.current.id, e)"
@@ -26,23 +26,23 @@
                 }}
             </template>
             <template #action="slotProps">
-                <a-space>
+                <j-space>
                     <template
                         v-for="i in getActions(slotProps, 'table')"
                         :key="i.key"
                     >
-                        <a-button
+                        <j-button
                             @click="i.onClick"
                             type="link"
                             style="padding: 0px"
                         >
                             <template #icon><AIcon :type="i.icon" /></template>
-                        </a-button>
+                        </j-button>
                     </template>
-                </a-space>
+                </j-space>
             </template>
-        </JTable>
-    </a-card>
+        </JProTable>
+    </j-card>
 </template>
 
 <script lang="ts" setup>

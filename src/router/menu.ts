@@ -31,7 +31,14 @@ export default [
         path: '/account/center',
         component: () => import('@/views/account/Center/index.vue')
     },
-
+    {
+        path: '/account/NotificationSubscription',
+        component: () => import('@/views/account/NotificationSubscription/index.vue')
+    },
+    {
+        path: '/account/NotificationRecord',
+        component: () => import('@/views/account/NotificationRecord/index.vue')
+    },
     // end: 测试用, 可删除
 
     // 初始化

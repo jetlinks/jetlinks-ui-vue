@@ -29,6 +29,7 @@
         v-model:selectorValues='addModel.selectorValues'
       />
       <Type
+        ref='typeRef'
         v-else-if='addModel.stepNumber === 2'
         :metadata='addModel.metadata'
       />
@@ -46,7 +47,7 @@
 
 <script setup lang='ts' name='AddModel'>
 import type { PropType } from 'vue'
-import type { metadataType, TriggerDevice } from '@/views/rule-engine/Scene/typings'
+import type { metadataType, TriggerDevice, TriggerDeviceOptions } from '@/views/rule-engine/Scene/typings'
 import { onlyMessage } from '@/utils/comm'
 import { detail as deviceDetail  } from '@/api/device/instance'
 import Product from './Product.vue'
@@ -69,6 +70,7 @@ interface AddModelType extends Omit<TriggerDevice, 'selectorValues'> {
 }
 
 const emit = defineEmits<Emit>()
+const typeRef = ref()
 
 const props = defineProps({
   value: {
@@ -81,9 +83,7 @@ const props = defineProps({
   },
   options: {
     type: Object as PropType<any>,
-    default: () => ({
-
-    })
+    default: () => ({})
   }
 })
 
@@ -100,7 +100,7 @@ const addModel = reactive<AddModelType>({
 
 Object.assign(addModel, props.value)
 
-const handleOptions = () => {
+const handleOptions = (data: TriggerDeviceOptions) => {
 
 }
 
@@ -138,10 +138,12 @@ const save = async (step?: number) => {
     }
     addModel.stepNumber = 2
   } else {
-
+    const typeData = await typeRef.value.vail()
+    console.log(typeData)
+    if (typeData) {
+      const _options = handleOptions(typeData);
+    }
   }
-  // handleOptions()
-  // emit('update:value', {})
 }
 
 const saveClick = () => save()

@@ -108,6 +108,7 @@ import WhenOption from './WhenOption.vue'
 import { cloneDeep } from 'lodash-es'
 import type { OperationTimer } from '../../../typings'
 import { isCron } from '@/utils/regular'
+import { defineExpose } from 'vue'
 
 type NameType = string[] | string
 
@@ -143,6 +144,7 @@ const formModel = reactive<OperationTimer>({
     unit: 'seconds'
   }
 })
+const timerForm = ref()
 
 Object.assign(formModel, props.value)
 
@@ -173,6 +175,13 @@ watch(() => formModel, () => {
   }
   emit('update:value', cloneValue)
 }, { deep: true })
+
+defineExpose({
+  validateFields: () => new Promise(async (resolve)  => {
+    const data = await timerForm.value?.validateFields()
+    resolve(data)
+  })
+})
 
 </script>
 

@@ -1,6 +1,6 @@
 <template>
     <div style="margin-top: 20px">
-        <a-descriptions bordered>
+        <j-descriptions bordered>
             <template #title>
                 标签
                 <PermissionButton
@@ -11,14 +11,14 @@
                     <AIcon type="EditOutlined" />编辑
                 </PermissionButton>
             </template>
-            <a-descriptions-item
+            <j-descriptions-item
                 :span="1"
                 v-for="item in dataSource"
                 :key="item.key"
                 :label="`${item.name}（${item.key})`"
-                >{{ item?.value }}</a-descriptions-item
+                >{{ item?.value }}</j-descriptions-item
             >
-        </a-descriptions>
+        </j-descriptions>
         <Save v-if="visible" @close="visible = false" @save="saveBtn" />
     </div>
 </template>
