@@ -83,6 +83,7 @@
             :channelData="channelData"
             @submit="listRef.reload()"
         />
+        <Live v-model:visible="playerVis" />
     </page-container>
 </template>
 
@@ -92,6 +93,7 @@ import type { ActionsType } from '@/components/Table/index.vue';
 import { useMenuStore } from 'store/menu';
 import { message } from 'ant-design-vue';
 import Save from './Save.vue';
+import Live from './Live/index.vue';
 import { cloneDeep } from 'lodash-es';
 
 const menuStory = useMenuStore();
@@ -169,7 +171,7 @@ const handleAdd = () => {
 };
 
 const listRef = ref();
-const playVis = ref(false);
+const playerVis = ref(false);
 const channelData = ref();
 
 /**
@@ -203,7 +205,7 @@ const getActions = (
             },
             icon: 'VideoCameraOutlined',
             onClick: () => {
-                playVis.value = true;
+                playerVis.value = true;
             },
         },
         {
