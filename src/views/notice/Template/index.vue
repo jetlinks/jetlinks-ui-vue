@@ -5,7 +5,7 @@
             target="notice-config"
             @search="handleSearch"
         />
-        <JTable
+        <JProTable
             ref="configRef"
             :columns="columns"
             :request="TemplateApi.list"
@@ -159,7 +159,7 @@
                     </a-tooltip>
                 </a-space>
             </template>
-        </JTable>
+        </JProTable>
 
         <Debug v-model:visible="debugVis" :data="currentConfig" />
         <Log v-model:visible="logVis" :data="currentConfig" />

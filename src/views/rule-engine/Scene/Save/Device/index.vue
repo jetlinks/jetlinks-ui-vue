@@ -14,6 +14,7 @@
         <Title :options='data.options.trigger' />
       </AddButton>
     </a-form-item>
+    <Action />
     <AddModel v-if='visible' @cancel='visible = false' @save='save' :value='data.trigger.device' :options='data.options.trigger' />
   </div>
 </template>
@@ -24,6 +25,7 @@ import { useSceneStore } from '@/store/scene'
 import AddModel from './AddModal.vue'
 import AddButton from '../components/AddButton.vue'
 import Title from '../components/Title.vue'
+import Action from '../action/index.vue'
 import type { TriggerDevice } from '@/views/rule-engine/Scene/typings'
 
 const sceneStore = useSceneStore()

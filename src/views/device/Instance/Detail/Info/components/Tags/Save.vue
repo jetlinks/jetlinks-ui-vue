@@ -1,15 +1,15 @@
 <template>
-    <a-modal
+    <j-modal
         :width="1000"
         :visible="true"
         title="编辑标签"
         @ok="handleOk"
         @cancel="handleCancel"
     >
-        <a-table
+        <j-table
             rowKey="id"
             :columns="columns"
-            :data-source="dataSource"
+            :datj-source="dataSource"
             bordered
             :pagination="false"
         >
@@ -43,8 +43,8 @@
                     </template>
                 </div>
             </template>
-        </a-table>
-    </a-modal>
+        </j-table>
+    </j-modal>
 </template>
 
 <script lang="ts" setup>

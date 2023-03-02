@@ -61,10 +61,13 @@ import { getImage } from '@/utils/comm';
 import { message } from 'ant-design-vue';
 import { useMenuStore } from '@/store/menu';
 import { useRoute } from 'vue-router';
-import { Store } from 'jetlinks-store';
+import { useAlarmConfigurationStore } from '@/store/alarm';
+import { storeToRefs } from 'pinia';
 const route = useRoute();
 const id = route.query?.id;
 let selectDisable = ref(false);
+const alarmConfigurationStore = useAlarmConfigurationStore();
+let { configurationData } = storeToRefs(alarmConfigurationStore);
 const queryData = () => {
     if (id) {
         detail(id).then((res) => {
@@ -73,7 +76,7 @@ const queryData = () => {
                 form.name = res?.result?.name;
                 form.targetType = res?.result?.targetType;
                 form.description = res?.result?.description;
-                Store.set('configuration-data', res.result);
+                configurationData.value.current = res.result;
                 query({
                     terms: [
                         {
@@ -183,7 +186,7 @@ const handleSave = async () => {
                     { id: res.result?.id },
                 );
                 if (!id) {
-                    Store.set('configuration-data', res.result);
+                    configurationData.value.current = res.result;
                 }
             }
         })

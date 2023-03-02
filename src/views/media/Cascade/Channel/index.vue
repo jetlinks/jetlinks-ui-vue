@@ -8,7 +8,7 @@
             @search="handleSearch"
         />
 
-        <JTable
+        <JProTable
             ref="listRef"
             model="table"
             :columns="columns"
@@ -144,7 +144,7 @@
                     </a-tooltip>
                 </a-space>
             </template>
-        </JTable>
+        </JProTable>
 
         <BindChannel v-model:visible="bindVis" @submit="listRef.reload()" />
     </page-container>

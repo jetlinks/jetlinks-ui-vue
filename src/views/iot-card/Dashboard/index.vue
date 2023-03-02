@@ -2,14 +2,14 @@
 <template>
     <page-container>
         <div class="card-dashboard-container">
-            <a-card style="margin-bottom: 24px">
-                <a-row :gutter="24">
-                    <a-col :span="24"><Guide title="数据统计" /></a-col>
-                    <a-col :span="8">
+            <j-card style="margin-bottom: 24px">
+                <j-row :gutter="24">
+                    <j-col :span="24"><Guide title="数据统计" /></j-col>
+                    <j-col :span="8">
                         <div class="data-statistics-item">
                             <div class="flow-info" style="width: 100%">
                                 <div class="label">昨日流量消耗</div>
-                                <a-tooltip placement="bottomLeft">
+                                <j-tooltip placement="bottomLeft">
                                     <template #title>
                                         <span>{{ dayTotal }} M</span>
                                     </template>
@@ -17,19 +17,19 @@
                                         {{ dayTotal }}
                                         <span class="unit">M</span>
                                     </div>
-                                </a-tooltip>
+                                </j-tooltip>
                             </div>
                             <LineChart
                                 color="#FBA500"
                                 :chartData="dayOptions"
                             />
                         </div>
-                    </a-col>
-                    <a-col :span="8">
+                    </j-col>
+                    <j-col :span="8">
                         <div class="data-statistics-item">
                             <div class="flow-info" style="width: 100%">
                                 <div class="label">当月流量消耗</div>
-                                <a-tooltip placement="bottomLeft">
+                                <j-tooltip placement="bottomLeft">
                                     <template #title>
                                         <span>{{ monthTotal }} M</span>
                                     </template>
@@ -37,16 +37,16 @@
                                         {{ monthTotal }}
                                         <span class="unit">M</span>
                                     </div>
-                                </a-tooltip>
+                                </j-tooltip>
                             </div>
                             <LineChart :chartData="monthOptions" />
                         </div>
-                    </a-col>
-                    <a-col :span="8">
+                    </j-col>
+                    <j-col :span="8">
                         <div class="data-statistics-item">
                             <div class="flow-info" style="width: 100%">
                                 <div class="label">本年流量消耗</div>
-                                <a-tooltip placement="bottomLeft">
+                                <j-tooltip placement="bottomLeft">
                                     <template #title>
                                         <span>{{ yearTotal }} M</span>
                                     </template>
@@ -54,18 +54,18 @@
                                         {{ yearTotal }}
                                         <span class="unit">M</span>
                                     </div>
-                                </a-tooltip>
+                                </j-tooltip>
                             </div>
                             <LineChart
                                 color="#58E1D3"
                                 :chartData="yearOptions"
                             />
                         </div>
-                    </a-col>
-                </a-row>
-            </a-card>
-            <a-row :gutter="24">
-                <a-col :span="16">
+                    </j-col>
+                </j-row>
+            </j-card>
+            <j-row :gutter="24">
+                <j-col :span="16">
                     <div class="static-card">
                         <Guide title="流量统计">
                             <template #extra>
@@ -85,11 +85,11 @@
                             :chartData="flowData"
                         />
                         <div class="empty-body" v-else>
-                            <a-empty :image="Empty.PRESENTED_IMAGE_SIMPLE" />
+                            <j-empty :image="Empty.PRESENTED_IMAGE_SIMPLE" />
                         </div>
                     </div>
-                </a-col>
-                <a-col :span="8">
+                </j-col>
+                <j-col :span="8">
                     <div class="static-card">
                         <Guide title="流量使用TOP10">
                             <template #extra>
@@ -118,7 +118,7 @@
                                 </div>
                                 <div class="cardNum">{{ item.cardNum }}</div>
                                 <div class="progress">
-                                    <a-progress
+                                    <j-progress
                                         :strokeColor="'#ADC6FF'"
                                         :trailColor="'#E0E4E8'"
                                         :strokeLinecap="'butt'"
@@ -128,7 +128,7 @@
                                                 (item.value / topTotal) * 100,
                                             )
                                         "
-                                    ></a-progress>
+                                    ></j-progress>
                                 </div>
                                 <div class="total">
                                     {{ item?.value?.toFixed(2) }} M
@@ -136,11 +136,11 @@
                             </div>
                         </div>
                         <div class="empty-body" v-else>
-                            <a-empty :image="Empty.PRESENTED_IMAGE_SIMPLE" />
+                            <j-empty :image="Empty.PRESENTED_IMAGE_SIMPLE" />
                         </div>
                     </div>
-                </a-col>
-            </a-row>
+                </j-col>
+            </j-row>
         </div>
     </page-container>
 </template>

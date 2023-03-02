@@ -6,7 +6,7 @@
             target="record-search"
             @search="handleSearch"
         />
-        <JTable
+        <j-pro-table
             ref="RecordRef"
             :columns="columns"
             :request="queryList"
@@ -21,7 +21,7 @@
                         : ''
                 }}
             </template>
-        </JTable>
+        </j-pro-table>
     </page-container>
 </template>
 
