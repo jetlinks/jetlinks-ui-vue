@@ -12,7 +12,6 @@
             <template #icon="{ id, selected }">
                 <AIcon
                     type="VideoCameraOutlined"
-                    class="online"
                     v-if="!treeData.find((f: any) => f.id === id)"
                 />
             </template>
@@ -117,9 +116,7 @@ const getChildren = (key: any, params: any): Promise<any> => {
                 key,
                 res.result.data.map((item: DataNode) => ({
                     ...item,
-                    // icon: (<AIcon type="VideoCameraOutlined" className={item.status.value}/>),
-                    // icon: `<AIcon type="VideoCameraOutlined" class="${item.status.value}"/>`,
-                    // icon: (h:any) => h('h1', 22),
+                    class: item.status.value,
                     isLeaf: isLeaf(item),
                 })),
             );
@@ -133,7 +130,6 @@ const getChildren = (key: any, params: any): Promise<any> => {
                 }, 50);
             }
             console.log('treeData.value: ', treeData.value);
-            console.log('res.result: ', res.result);
             resolve(res.result);
         }
     });
