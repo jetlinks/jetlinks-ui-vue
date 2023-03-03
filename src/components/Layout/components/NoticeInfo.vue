@@ -1,18 +1,29 @@
 <template>
     <div class="notice-info-container">
-        <img v-if="props.data.length" :src="NoData" alt="" />
-        <a-tabs v-else :activeKey="'default'">
-            <a-tab-pane key="default" tab="未读消息"> 
-                <ul class="list">
-                    <li class="list-item" v-for="item in props.data" @click="read(item.id)">
-                        <h5>{{ item.topicName }}</h5>
-                        <p>{{ item.message }}</p>
-                    </li>
-                </ul>   
-                <div class="btns">
-                    <span @click="read()">当前标记为已读</span>
-                    <span @click="jumpPage('account/NotificationRecord')">查看更多</span>
-                </div> 
+        <a-tabs :activeKey="'default'">
+            <a-tab-pane key="default" tab="未读消息">
+                <div class="no-data" v-if="props.data.length === 0">
+                    <img src="https://gw.alipayobjects.com/zos/rmsportal/sAuJeJzSKbUmHfBQRzmZ.svg" alt="" />
+                </div>
+
+                <div v-else class="content">
+                    <ul class="list">
+                        <li
+                            class="list-item"
+                            v-for="item in props.data"
+                            @click="read(item.id)"
+                        >
+                            <h5>{{ item.topicName }}</h5>
+                            <p>{{ item.message }}</p>
+                        </li>
+                    </ul>
+                    <div class="btns">
+                        <span @click="read()">当前标记为已读</span>
+                        <span @click="jumpPage('account/NotificationRecord')"
+                            >查看更多</span
+                        >
+                    </div>
+                </div>
             </a-tab-pane>
         </a-tabs>
     </div>
@@ -21,22 +32,19 @@
 <script setup lang="ts">
 import { changeStatus_api } from '@/api/account/notificationRecord';
 import { useMenuStore } from '@/store/menu';
-import NoData from './nodata.svg';
 
-const emits = defineEmits(['onAction'])
+const emits = defineEmits(['onAction']);
 const props = defineProps<{
     data: any[];
 }>();
 const { jumpPage } = useMenuStore();
 
-const read = (id?:string)=>{
-    const ids = id ? [id]: props.data.map(item=>item.id)
-    changeStatus_api('_read',ids).then(resp=>{
-        if(resp.status === 200) emits('onAction')
-    })
-}
-
-
+const read = (id?: string) => {
+    const ids = id ? [id] : props.data.map((item) => item.id);
+    changeStatus_api('_read', ids).then((resp:any) => {
+        if (resp.status === 200) emits('onAction');
+    });
+};
 </script>
 
 <style lang="less" scoped>
@@ -52,22 +60,61 @@ const read = (id?:string)=>{
         justify-content: center;
     }
 
-    .list {
-        .list-item {
-            border-bottom: 1px solid #f0f0f0;
-            padding: 24px;
+    .no-data {
+        width: 100%;
+        padding: 73px 0 88px;
+        color: rgba(0, 0, 0, 0.45);
+        text-align: center;
+
+        img {
+            height: 76px;
         }
     }
-    .btns {
-        display: flex;
-        span {
-            display: block;
-            width: 50%;
-            text-align: center;
-            cursor: pointer;
 
-            &:first-child{
-                border-right: 1px solid #f0f0f0;
+    .content {
+        .list {
+            max-height: 400px;
+            overflow: auto;
+            padding: 0;
+            margin: 0;
+            &::-webkit-scrollbar {
+                //隐藏或取消滚动条
+                display: none;
+            }
+
+            .list-item {
+                padding: 12px 24px;
+                list-style: none;
+                border-bottom: 1px solid #f0f0f0;
+                cursor: pointer;
+                h5 {
+                    color: rgba(0, 0, 0, 0.85);
+                    font-size: 14px;
+                    font-weight: normal;
+                }
+                p {
+                    font-size: 12px;
+                    color: rgba(0, 0, 0, 0.45);
+                }
+
+                &:hover{
+                    background: #f0f5ff;
+                }
+            }
+        }
+        .btns {
+            display: flex;
+            height: 46px;
+            line-height: 46px;
+            span {
+                display: block;
+                width: 50%;
+                text-align: center;
+                cursor: pointer;
+
+                &:first-child {
+                    border-right: 1px solid #f0f0f0;
+                }
             }
         }
     }

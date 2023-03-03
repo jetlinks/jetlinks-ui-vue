@@ -11,12 +11,12 @@
             </div>
             <template #overlay>
                 <a-menu>
-                    <a-menu-item @click="jumpPage('account/center')" style="width: 160px;">
-                        <AIcon type="UserOutlined" />
+                    <a-menu-item @click="push('/account/center')" style="width: 160px;">
+                        <AIcon type="UserOutlined" style="margin-right: 8px;" />
                         <span>个人中心</span>
                     </a-menu-item>
                     <a-menu-item @click="logOut">
-                        <AIcon type="LogoutOutlined" />
+                        <AIcon type="LogoutOutlined" style="margin-right: 8px;" />
                         <span>退出登录</span>
                     </a-menu-item>
                 </a-menu>
@@ -27,17 +27,17 @@
 
 <script setup lang="ts">
 import { loginout_api } from '@/api/login';
-import { useMenuStore } from '@/store/menu';
 import { useUserInfo } from '@/store/userInfo';
+
+const {push} = useRouter();
 
 const userInfo = useUserInfo().$state.userInfos as any;
 
-const { jumpPage } = useMenuStore();
 
 const logOut = () => {
     loginout_api().then(() => {
         localStorage.clear();
-        jumpPage('user/login');
+        push('/user/login');
     });
 };
 </script>
