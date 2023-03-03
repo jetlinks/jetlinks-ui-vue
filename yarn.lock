@@ -2146,7 +2146,7 @@ cli-width@^3.0.0:
   resolved "https://registry.npmmirror.com/cli-width/-/cli-width-3.0.0.tgz"
   integrity sha512-FxqpkPPwu1HjuN93Omfm4h8uIanXofW0RxVEW3k5RKx+mJJYSthzNhp32Kzxxy3YAEZ/Dc/EWN1vZRY0+kOhbw==
 
-clipboard@^2.0.4:
+clipboard@^2.0.10, clipboard@^2.0.4:
   version "2.0.11"
   resolved "https://registry.jetlinks.cn/clipboard/-/clipboard-2.0.11.tgz"
   integrity sha512-C+0bbOqkezLIsmWSvlsXS0Q0bmkugu7jcfMIACB+RDEntIzQIkdr148we28AfSloQLRdZlYL/QYyrq05j/3Faw==
@@ -3416,6 +3416,11 @@ highlight.js@^11.3.1:
   resolved "https://registry.npmmirror.com/highlight.js/-/highlight.js-11.7.0.tgz"
   integrity sha512-1rRqesRFhMO/PRF+G86evnyJkCgaZFOI+Z6kdj15TA18funfoqJXvgPCLSf0SWq3SRfg1j3HlDs8o4s3EGq1oQ==
 
+hls.js@^1.0.10:
+  version "1.3.4"
+  resolved "https://registry.jetlinks.cn/hls.js/-/hls.js-1.3.4.tgz#8212a3f95c3321f64a586f20e67876f3a9d09488"
+  integrity sha512-iFEwVqtEDk6sKotcTwtJ5OMo/nuDTk9PrpB8FI2J2WYf8EriTVfR4FaK0aNyYtwbYeRSWCXJKlz23xeREdlNYg==
+
 homedir-polyfill@^1.0.0:
   version "1.0.3"
   resolved "https://registry.npmmirror.com/homedir-polyfill/-/homedir-polyfill-1.0.3.tgz"
@@ -3896,10 +3901,10 @@ jetlinks-store@^0.0.3:
   resolved "https://registry.npmjs.org/jetlinks-store/-/jetlinks-store-0.0.3.tgz"
   integrity sha512-AZf/soh1hmmwjBZ00fr1emuMEydeReaI6IBTGByQYhTmK1Zd5pQAxC7WLek2snRAn/HHDgJfVz2hjditKThl6Q==
 
-jetlinks-ui-components@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.2.tgz#753507e4a84dee966c65d4ae33943507bd60cc9d"
-  integrity sha512-LXKetf75/uqzWP4XOobm+iUWTVEeMJNnwEk+GrNftQdcDzGvUxBaoFCoS+HBH06FnE2VBbh6rEwrpDhkLSNEow==
+jetlinks-ui-components@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.3.tgz#08a35ebfa016574affcfd11204359cdccf8e139f"
+  integrity sha512-kA/AxzdfNy+Sl8En8raMwIh3stofgElkUuJ+oRJMpQVTGbrOk29DifRsHJJFNvtEvclmLdKZkOkthOuEdG2mnw==
   dependencies:
     "@vueuse/core" "^9.12.0"
     ant-design-vue "^3.2.15"
@@ -6554,6 +6559,11 @@ three@0.143.0:
   resolved "https://registry.npmjs.org/three/-/three-0.143.0.tgz"
   integrity sha512-oKcAGYHhJ46TGEuHjodo2n6TY2R6lbvrkp+feKZxqsUL/WkH7GKKaeu6RHeyb2Xjfk2dPLRKLsOP0KM2VgT8Zg==
 
+throttle-debounce@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.jetlinks.cn/throttle-debounce/-/throttle-debounce-3.0.1.tgz#32f94d84dfa894f786c9a1f290e7a645b6a19abb"
+  integrity sha512-dTEWWNu6JmeVXY0ZYoPuH5cRIwc0MeGbJwah9KUNYSJwommQpCzTySTpEe8Gs1J23aeWEuAobe4Ag7EHVt/LOg==
+
 through2@^4.0.0:
   version "4.0.2"
   resolved "https://registry.npmmirror.com/through2/-/through2-4.0.2.tgz"
@@ -6940,6 +6950,11 @@ uuid@^3.3.2:
   resolved "https://registry.jetlinks.cn/uuid/-/uuid-3.4.0.tgz"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
 
+v-clipboard3@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.jetlinks.cn/v-clipboard3/-/v-clipboard3-0.1.4.tgz#13bdd12ce9728190d70f6ebf8b71de59d88b550e"
+  integrity sha512-iGIXgluf2WLbT+/Z1de9kKzoK9c9aPpy+zcPlY8/fneO+NHK95QEmFx2Q9LoxeUPRemD+nOfEv1J20Ki7W0v7Q==
+
 v8-compile-cache-lib@^3.0.1:
   version "3.0.1"
   resolved "https://registry.npmmirror.com/v8-compile-cache-lib/-/v8-compile-cache-lib-3.0.1.tgz"
@@ -7072,6 +7087,13 @@ vue-types@^3.0.0:
   dependencies:
     is-plain-object "3.0.1"
 
+vue3-json-viewer@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.jetlinks.cn/vue3-json-viewer/-/vue3-json-viewer-2.2.2.tgz#43a512f378c602bb6b7f2a72adeaf7d15b443885"
+  integrity sha512-56l3XDGggnpwEqZieXsSMhNT4NhtO6d7zuSAxHo4i0UVxymyY2jRb7UMQOU1ztChKALZCAzX7DlgrsnEhxu77A==
+  dependencies:
+    clipboard "^2.0.10"
+
 vue3-markdown-it@^1.0.10:
   version "1.0.10"
   resolved "https://registry.npmmirror.com/vue3-markdown-it/-/vue3-markdown-it-1.0.10.tgz"
@@ -7099,7 +7121,16 @@ vue3-ts-jsoneditor@^2.7.1:
     vanilla-jsoneditor "^0.7.9"
     vue "^3.2.37"
 
-vue@^3.2.25:
+vue3-video-play@^1.3.1-beta.6:
+  version "1.3.1-beta.6"
+  resolved "https://registry.jetlinks.cn/vue3-video-play/-/vue3-video-play-1.3.1-beta.6.tgz#bca3f55a11053eaa37053835e4610c04d9cc509e"
+  integrity sha512-Olrx2/LNAds7fuor/yX9ZKT9sOcwcfTt2g2YbbCrEaAmZ5Tb0hwBr5z+/CoLwELzzRzXCHPmWWoT0Wm5W/Nwpw==
+  dependencies:
+    hls.js "^1.0.10"
+    throttle-debounce "^3.0.1"
+    vue "^3.2.2"
+
+vue@^3.2.2, vue@^3.2.25:
   version "3.2.47"
   resolved "https://registry.jetlinks.cn/vue/-/vue-3.2.47.tgz#3eb736cbc606fc87038dbba6a154707c8a34cff0"
   integrity sha512-60188y/9Dc9WVrAZeUVSDxRQOZ+z+y5nO2ts9jWXSTkMvayiWxCWOWtBQoYjLeccfXkiiPZWAHcV+WTPhkqJHQ==
