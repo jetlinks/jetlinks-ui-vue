@@ -3901,7 +3901,7 @@ jetlinks-store@^0.0.3:
   resolved "https://registry.npmjs.org/jetlinks-store/-/jetlinks-store-0.0.3.tgz"
   integrity sha512-AZf/soh1hmmwjBZ00fr1emuMEydeReaI6IBTGByQYhTmK1Zd5pQAxC7WLek2snRAn/HHDgJfVz2hjditKThl6Q==
 
-jetlinks-ui-components@^1.0.1:
+jetlinks-ui-components@^1.0.3:
   version "1.0.3"
   resolved "https://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.3.tgz#08a35ebfa016574affcfd11204359cdccf8e139f"
   integrity sha512-kA/AxzdfNy+Sl8En8raMwIh3stofgElkUuJ+oRJMpQVTGbrOk29DifRsHJJFNvtEvclmLdKZkOkthOuEdG2mnw==
