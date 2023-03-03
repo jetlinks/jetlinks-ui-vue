@@ -35,8 +35,12 @@ export default {
     // 更改国标ID
     updateGbChannelId: (id: string, data: any): any => server.put(`/media/gb28181-cascade/binding/${id}`, data),
     // 查询通道分页列表
-    queryChannelList: (data: any): any => server.post(`media/channel/_query`, data),
+    queryChannelList: (data: any): any => server.post(`/media/channel/_query`, data),
     // 推送
-    publish: (id: string, params: any) => server.get(`/media/gb28181-cascade/${id}/bindings/publish`, params)
+    publish: (id: string, params: any) => server.get(`/media/gb28181-cascade/${id}/bindings/publish`, params),
+
+    // 分屏展示接口
+    // 设备树
+    getMediaTree: (data?: any) => server.post<any>(`/media/device/_query/no-paging`, data),
 
 }
