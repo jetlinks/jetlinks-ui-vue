@@ -9,8 +9,12 @@
             :fieldNames="{ title: 'name', key: 'id' }"
             @select="onSelect"
         >
-            <template #icon="{ key, selected }">
-                <AIcon type="VideoCameraOutlined" class="online" />
+            <template #icon="{ id, selected }">
+                <AIcon
+                    type="VideoCameraOutlined"
+                    class="online"
+                    v-if="!treeData.find((f: any) => f.id === id)"
+                />
             </template>
         </a-tree>
     </div>
