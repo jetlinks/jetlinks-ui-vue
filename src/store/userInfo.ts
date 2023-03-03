@@ -20,7 +20,9 @@ export const useUserInfo = defineStore('userInfo', {
             token: '',
             user: {},
         },
+        alarmUpdateCount: 0
     }),
+    
     actions: {
         login(userInfo: any) {
             const username = userInfo.userName.trim();
@@ -49,6 +51,9 @@ export const useUserInfo = defineStore('userInfo', {
                     }
                 }).catch(() => rej())
             })
+        },
+        updateAlarm(){
+            this.alarmUpdateCount += 1
         }
     },
 });
