@@ -2,7 +2,7 @@
     <div>
         <Search :columns="query.columns" @search="query.search" />
 
-        <JTable
+        <j-pro-table
             ref="tableRef"
             :columns="table.columns"
             :request="table.requestFun"
@@ -58,7 +58,7 @@
                     </PermissionButton>
                 </a-space>
             </template>
-        </JTable>
+        </j-pro-table>
 
         <div class="dialogs">
             <AddBindUserDialog

@@ -6,7 +6,7 @@
             target="platform-search"
             @search="handleSearch"
         />
-        <JTable
+        <j-pro-table
             ref="platformRef"
             :columns="columns"
             :request="queryList"
@@ -15,11 +15,14 @@
             :gridColumn="3"
         >
             <template #headerTitle>
-                <a-space>
-                    <a-button type="primary" @click="handleAdd">
+                <j-space>
+                    <!-- <j-button type="primary" @click="handleAdd">
                         <AIcon type="PlusOutlined" />新增
-                    </a-button>
-                </a-space>
+                    </j-button> -->
+                    <PermissionButton @click="handleAdd" :hasPermission="'iot-card/Platform:add'" type="primary">
+                        <AIcon type="PlusOutlined" />新增
+                    </PermissionButton>
+                </j-space>
             </template>
             <template #card="slotProps">
                 <CardBox
@@ -42,18 +45,18 @@
                         <h3 class="card-item-content-title">
                             {{ slotProps.name }}
                         </h3>
-                        <a-row>
-                            <a-col :span="12">
+                        <j-row>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">
                                     平台类型
                                 </div>
                                 <div>{{ slotProps.operatorName }}</div>
-                            </a-col>
-                            <a-col :span="12">
+                            </j-col>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">说明</div>
                                 <div>{{ slotProps.explain }}</div>
-                            </a-col>
-                        </a-row>
+                            </j-col>
+                        </j-row>
                     </template>
                     <template #actions="item">
                         <PermissionButton :disabled="item.disabled" :popConfirm="item.popConfirm" :tooltip="{
@@ -69,7 +72,7 @@
                 </CardBox>
             </template>
             <template #state="slotProps">
-                <a-badge
+                <j-badge
                     :text="slotProps.state.text"
                     :status="
                         slotProps.state.value === 'disabled'
@@ -79,7 +82,7 @@
                 />
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
+                <j-space :size="16">
                     <template
                         v-for="i in getActions(slotProps,'table')"
                         :key="i.key"
@@ -98,9 +101,9 @@
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
                     </template>
-                </a-space>
+                </j-space>
             </template>
-        </JTable>
+        </j-pro-table>
     </page-container>
 </template>
 

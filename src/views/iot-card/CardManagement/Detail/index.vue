@@ -8,15 +8,15 @@
             :data="current"
             @change="saveChange"
         />
-        <a-row :gutter="[24, 24]">
-            <a-col :span="24">
-                <a-card>
-                    <a-descriptions size="small" :column="3" bordered>
+        <j-row :gutter="[24, 24]">
+            <j-col :span="24">
+                <j-card>
+                    <j-descriptions size="small" :column="3" bordered>
                         <template #title>
                             <Guide>
                                 <template #title>
                                     <span>基本信息</span>
-                                    <a-button
+                                    <j-button
                                         type="link"
                                         @click="
                                             () => {
@@ -28,74 +28,74 @@
                                     >
                                         <AIcon type="EditOutlined"></AIcon>
                                         编辑
-                                    </a-button>
+                                    </j-button>
                                 </template>
                             </Guide>
                         </template>
 
-                        <a-descriptions-item label="卡号">{{
+                        <j-descriptions-item label="卡号">{{
                             detail.id
-                        }}</a-descriptions-item>
-                        <a-descriptions-item label="ICCID">{{
+                        }}</j-descriptions-item>
+                        <j-descriptions-item label="ICCID">{{
                             detail.iccId
-                        }}</a-descriptions-item>
-                        <a-descriptions-item label="绑定设备">{{
+                        }}</j-descriptions-item>
+                        <j-descriptions-item label="绑定设备">{{
                             detail.deviceName
-                        }}</a-descriptions-item>
-                        <a-descriptions-item label="平台类型">{{
+                        }}</j-descriptions-item>
+                        <j-descriptions-item label="平台类型">{{
                             detail.operatorPlatformType?.text
-                        }}</a-descriptions-item>
-                        <a-descriptions-item label="平台名称">{{
+                        }}</j-descriptions-item>
+                        <j-descriptions-item label="平台名称">{{
                             detail.platformConfigName
-                        }}</a-descriptions-item>
-                        <a-descriptions-item label="运营商">{{
+                        }}</j-descriptions-item>
+                        <j-descriptions-item label="运营商">{{
                             detail.operatorName
-                        }}</a-descriptions-item>
-                        <a-descriptions-item label="类型">{{
+                        }}</j-descriptions-item>
+                        <j-descriptions-item label="类型">{{
                             detail.cardType?.text
-                        }}</a-descriptions-item>
-                        <a-descriptions-item label="激活日期">{{
+                        }}</j-descriptions-item>
+                        <j-descriptions-item label="激活日期">{{
                             detail.activationDate
                                 ? moment(detail.activationDate).format(
                                       'YYYY-MM-DD HH:mm:ss',
                                   )
                                 : ''
-                        }}</a-descriptions-item>
-                        <a-descriptions-item label="更新时间">{{
+                        }}</j-descriptions-item>
+                        <j-descriptions-item label="更新时间">{{
                             detail.updateTime
                                 ? moment(detail.updateTime).format(
                                       'YYYY-MM-DD HH:mm:ss',
                                   )
                                 : ''
-                        }}</a-descriptions-item>
-                        <a-descriptions-item label="总流量">{{
+                        }}</j-descriptions-item>
+                        <j-descriptions-item label="总流量">{{
                             detail.totalFlow
                                 ? detail.totalFlow.toFixed(2) + ' M'
                                 : ''
-                        }}</a-descriptions-item>
-                        <a-descriptions-item label="使用流量">{{
+                        }}</j-descriptions-item>
+                        <j-descriptions-item label="使用流量">{{
                             detail.usedFlow
                                 ? detail.usedFlow.toFixed(2) + ' M'
                                 : ''
-                        }}</a-descriptions-item>
-                        <a-descriptions-item label="剩余流量">{{
+                        }}</j-descriptions-item>
+                        <j-descriptions-item label="剩余流量">{{
                             detail.residualFlow
                                 ? detail.residualFlow.toFixed(2) + ' M'
                                 : ''
-                        }}</a-descriptions-item>
-                        <a-descriptions-item label="状态">{{
+                        }}</j-descriptions-item>
+                        <j-descriptions-item label="状态">{{
                             detail?.cardState?.text
-                        }}</a-descriptions-item>
-                        <a-descriptions-item label="说明">{{
+                        }}</j-descriptions-item>
+                        <j-descriptions-item label="说明">{{
                             detail?.describe
-                        }}</a-descriptions-item>
-                    </a-descriptions>
-                </a-card>
-            </a-col>
-            <a-col :span="24">
+                        }}</j-descriptions-item>
+                    </j-descriptions>
+                </j-card>
+            </j-col>
+            <j-col :span="24">
                 <!-- 流量统计 -->
-                <a-row :gutter="24">
-                    <a-col :span="16">
+                <j-row :gutter="24">
+                    <j-col :span="16">
                         <div class="card">
                             <Guide title="流量统计">
                                 <template #extra>
@@ -113,15 +113,15 @@
                                 :chartData="flowData"
                             />
                         </div>
-                    </a-col>
-                    <a-col :span="8">
+                    </j-col>
+                    <j-col :span="8">
                         <div class="card">
                             <Guide title="数据统计" />
                             <div class="static-info" style="min-height: 490px">
                                 <div class="data-statistics-item">
                                     <div class="flow-info" style="width: 100%">
                                         <div class="label">昨日流量消耗</div>
-                                        <a-tooltip placement="bottomLeft">
+                                        <j-tooltip placement="bottomLeft">
                                             <template #title>
                                                 <span>{{ dayTotal }} M</span>
                                             </template>
@@ -129,7 +129,7 @@
                                                 {{ dayTotal }}
                                                 <span class="unit">M</span>
                                             </div>
-                                        </a-tooltip>
+                                        </j-tooltip>
                                     </div>
                                     <LineChart
                                         color="#FBA500"
@@ -139,7 +139,7 @@
                                 <div class="data-statistics-item">
                                     <div class="flow-info" style="width: 100%">
                                         <div class="label">当月流量消耗</div>
-                                        <a-tooltip placement="bottomLeft">
+                                        <j-tooltip placement="bottomLeft">
                                             <template #title>
                                                 <span>{{ monthTotal }} M</span>
                                             </template>
@@ -147,14 +147,14 @@
                                                 {{ monthTotal }}
                                                 <span class="unit">M</span>
                                             </div>
-                                        </a-tooltip>
+                                        </j-tooltip>
                                     </div>
                                     <LineChart :chartData="monthOptions" />
                                 </div>
                                 <div class="data-statistics-item">
                                     <div class="flow-info" style="width: 100%">
                                         <div class="label">本年流量消耗</div>
-                                        <a-tooltip placement="bottomLeft">
+                                        <j-tooltip placement="bottomLeft">
                                             <template #title>
                                                 <span>{{ yearTotal }} M</span>
                                             </template>
@@ -162,7 +162,7 @@
                                                 {{ yearTotal }}
                                                 <span class="unit">M</span>
                                             </div>
-                                        </a-tooltip>
+                                        </j-tooltip>
                                     </div>
                                     <LineChart
                                         color="#58E1D3"
@@ -171,10 +171,10 @@
                                 </div>
                             </div>
                         </div>
-                    </a-col>
-                </a-row>
-            </a-col>
-        </a-row>
+                    </j-col>
+                </j-row>
+            </j-col>
+        </j-row>
     </page-container>
 </template>
 

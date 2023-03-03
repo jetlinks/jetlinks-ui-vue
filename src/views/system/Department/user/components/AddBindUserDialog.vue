@@ -12,7 +12,7 @@
     >
         <Search :columns="query.columns" @search="query.search" />
         <div class="table">
-            <JTable
+            <j-pro-table
                 ref="tableRef"
                 :columns="table.columns"
                 :request="table.requestFun"

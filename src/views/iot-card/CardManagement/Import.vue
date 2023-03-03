@@ -1,6 +1,6 @@
 <template>
     <!-- 导入 -->
-    <a-modal
+    <j-modal
         :maskClosable="false"
         :visible="true"
         title="导入"
@@ -10,30 +10,30 @@
         @cancel="handleCancel"
     >
         <div style="margin-top: 10px">
-            <a-form :layout="'vertical'">
-                <a-form-item label="平台对接" required>
-                    <a-select
+            <j-form :layout="'vertical'">
+                <j-form-item label="平台对接" required>
+                    <j-select
                         showSearch
                         v-model:value="modelRef.configId"
                         :options="configList"
                         placeholder="请选择平台对接"
                     >
-                    </a-select>
-                </a-form-item>
+                    </j-select>
+                </j-form-item>
 
-                <a-form-item v-if="modelRef.configId" label="文件格式">
-                    <a-radio-group
+                <j-form-item v-if="modelRef.configId" label="文件格式">
+                    <j-radio-group
                         button-style="solid"
                         v-model:value="modelRef.fileType"
                         placeholder="请选择文件格式"
                     >
-                        <a-radio-button value="xlsx">xlsx</a-radio-button>
-                        <a-radio-button value="csv">csv</a-radio-button>
-                    </a-radio-group>
-                </a-form-item>
+                        <j-radio-button value="xlsx">xlsx</j-radio-button>
+                        <j-radio-button value="csv">csv</j-radio-button>
+                    </j-radio-group>
+                </j-form-item>
 
-                <a-form-item label="文件上传" v-if="modelRef.configId">
-                    <a-upload
+                <j-form-item label="文件上传" v-if="modelRef.configId">
+                    <j-upload
                         v-model:fileList="modelRef.upload"
                         name="file"
                         :action="FILE_UPLOAD"
@@ -44,24 +44,24 @@
                         :showUploadList="false"
                         @change="fileChange"
                     >
-                        <a-button :loading="loading">
+                        <j-button :loading="loading">
                             <template #icon>
                                 <AIcon type="UploadOutlined" />
                             </template>
                             文件上传
-                        </a-button>
-                    </a-upload>
-                </a-form-item>
-                <a-form-item v-if="modelRef.configId" label="下载模板">
-                    <a-space>
-                        <a-button icon="file" @click="downFileFn('xlsx')">
+                        </j-button>
+                    </j-upload>
+                </j-form-item>
+                <j-form-item v-if="modelRef.configId" label="下载模板">
+                    <j-space>
+                        <j-button icon="file" @click="downFileFn('xlsx')">
                             .xlsx
-                        </a-button>
-                        <a-button icon="file" @click="downFileFn('csv')">
+                        </j-button>
+                        <j-button icon="file" @click="downFileFn('csv')">
                             .csv
-                        </a-button>
-                    </a-space>
-                </a-form-item>
+                        </j-button>
+                    </j-space>
+                </j-form-item>
                 <div v-if="totalCount">
                     <a-icon class="check-num" type="check" /> 已完成 总数量
                     <span class="check-num">{{ totalCount }}</span>
@@ -71,9 +71,9 @@
                     失败 总数量
                     <span class="check-num">{{ errCount }}</span>
                 </div>
-            </a-form>
+            </j-form>
         </div>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script setup lang="ts">

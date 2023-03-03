@@ -3,7 +3,7 @@
         <div class="apply-container">
             <Search :columns="columns" @search="search" />
 
-            <JTable
+            <j-pro-table
                 ref="tableRef"
                 :columns="columns"
                 :request="getApplyList_api"
@@ -158,7 +158,7 @@
                         </PermissionButton>
                     </a-space>
                 </template>
-            </JTable>
+            </j-pro-table>
         </div>
         <div class="dialogs">
             <MenuDialog ref="dialogRef" mode="edit" />

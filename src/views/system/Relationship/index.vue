@@ -3,7 +3,7 @@
         <div class="relationship-container">
             <Search :columns="query.columns" @search="query.search" />
 
-            <JTable
+            <j-pro-table
                 ref="tableRef"
                 :columns="table.columns"
                 :request="getRelationshipList_api"
@@ -49,7 +49,7 @@
                         </PermissionButton>
                     </a-space>
                 </template>
-            </JTable>
+            </j-pro-table>
 
             <EditDialog ref="editDialogRef" @refresh="table.refresh" />
         </div>
