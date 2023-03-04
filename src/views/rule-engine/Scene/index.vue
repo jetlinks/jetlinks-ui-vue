@@ -1,7 +1,7 @@
 <template>
     <page-container>
         <Search :columns="columns" target="scene" @search="handleSearch" />
-        <JTable
+        <JProTable
             ref="sceneRef"
             :columns="columns"
             :request="query"
@@ -9,7 +9,7 @@
             :params="params"
         >
             <template #headerTitle>
-                <a-space>
+                <j-space>
                     <PermissionButton
                         type="primary"
                         @click="handleAdd"
@@ -18,7 +18,7 @@
                         <template #icon><AIcon type="PlusOutlined" /></template>
                         新增
                     </PermissionButton>
-                </a-space>
+                </j-space>
             </template>
             <template #card="slotProps">
                 <SceneCard
@@ -90,13 +90,13 @@
                 {{ typeMap.get(slotProps.triggerType)?.text }}
             </template>
             <template #state="slotProps">
-                <a-badge
+                <j-badge
                     :text="slotProps.state?.text"
                     :status="statusMap.get(slotProps.state?.value)"
                 />
             </template>
             <template #action="slotProps">
-                <a-space>
+                <j-space>
                     <template
                         v-for="i in getActions(slotProps, 'table')"
                         :key="i.key"
@@ -115,9 +115,9 @@
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
                     </template>
-                </a-space>
+                </j-space>
             </template>
-        </JTable>
+        </JProTable>
         <SaveModal v-if="visible" @close="visible = false" :data="current" />
     </page-container>
 </template>

@@ -24,7 +24,7 @@
             获取路径：“中移物联卡能力开放平台”--“个人中心”--“客户信息”--“接入信息”
         </p>
         <div class="image">
-            <a-image
+            <j-image
                 width="100%"
                 :src="getImage('/iot-card/onelink-appid.png')"
             />
@@ -37,7 +37,7 @@
             获取路径：“中移物联卡能力开放平台”--“个人中心”--“客户信息”--“接入信息”
         </p>
         <div class="image">
-            <a-image
+            <j-image
                 width="100%"
                 :src="getImage('/iot-card/onelink-pass.png')"
             />
@@ -77,7 +77,7 @@
                 获取路径：“5G连接管理平台”--“能力开放”--“API网关账号管理”
             </p>
             <div class="image">
-                <a-image
+                <j-image
                     width="100%"
                     :src="getImage('/iot-card/ctwing-id.png')"
                 />
@@ -90,7 +90,7 @@
                 获取路径：“5G连接管理平台”--“能力开放”--“API网关账号管理”
             </p>
             <div class="image">
-                <a-image
+                <j-image
                     width="100%"
                     :src="getImage('/iot-card/ctwing-pass.png')"
                 />
@@ -103,7 +103,7 @@
                 获取路径：“5G连接管理平台”--“能力开放”--“API网关账号管理”
             </p>
             <div class="image">
-                <a-image
+                <j-image
                     width="100%"
                     :src="getImage('/iot-card/ctwing-secret.png')"
                 />
@@ -137,7 +137,7 @@
                 获取路径：“雁飞智连CMP平台”--“我的应用”--“应用列表”
             </p>
             <div class="image">
-                <a-image
+                <j-image
                     width="100%"
                     :src="getImage('/iot-card/unicom-id.png')"
                 />
@@ -150,7 +150,7 @@
                 获取路径：“雁飞智连CMP平台”--“我的应用”--“应用列表”
             </p>
             <div class="image">
-                <a-image
+                <j-image
                     width="100%"
                     :src="getImage('/iot-card/unicom-secret.png')"
                 />
@@ -164,7 +164,7 @@
                 <br />
             </p>
             <div class="image">
-                <a-image
+                <j-image
                     width="100%"
                     :src="getImage('/iot-card/unicom-openid.png')"
                 />

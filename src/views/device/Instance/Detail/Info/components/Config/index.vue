@@ -2,7 +2,7 @@
     <div style="margin-top: 20px" v-if="config.length">
         <div style="display: flex; margin-bottom: 20px; align-items: center">
             <div style="font-size: 16px; font-weight: 700">配置</div>
-            <a-space>
+            <j-space>
                 <PermissionButton
                     type="link"
                     @click="visible = true"
@@ -20,10 +20,10 @@
                     }"
                     hasPermission="device/Instance:update"
                 >
-                    <AIcon type="CheckOutlined" />应用配置<a-tooltip
+                    <AIcon type="CheckOutlined" />应用配置<j-tooltip
                         title="修改配置后需重新应用后才能生效。"
                         ><AIcon type="QuestionCircleOutlined"
-                    /></a-tooltip>
+                    /></j-tooltip>
                 </PermissionButton>
                 <PermissionButton
                     type="link"
@@ -34,26 +34,26 @@
                     }"
                     hasPermission="device/Instance:update"
                 >
-                    <AIcon type="SyncOutlined" />恢复默认<a-tooltip
+                    <AIcon type="SyncOutlined" />恢复默认<j-tooltip
                         title="该设备单独编辑过配置信息，点击此将恢复成默认的配置信息，请谨慎操作。"
                         ><AIcon type="QuestionCircleOutlined"
-                    /></a-tooltip>
+                    /></j-tooltip>
                 </PermissionButton>
-            </a-space>
+            </j-space>
         </div>
-        <a-descriptions bordered size="small" v-for="i in config" :key="i.name">
+        <j-descriptions bordered size="small" v-for="i in config" :key="i.name">
             <template #title
                 ><h4 style="font-size: 15px">{{ i.name }}</h4></template
             >
-            <a-descriptions-item
+            <j-descriptions-item
                 v-for="item in i.properties"
                 :key="item.property"
             >
                 <template #label>
                     <span style="margin-right: 5px">{{ item.name }}</span>
-                    <a-tooltip v-if="item.description" :title="item.description"
+                    <j-tooltip v-if="item.description" :title="item.description"
                         ><AIcon type="QuestionCircleOutlined"
-                    /></a-tooltip>
+                    /></j-tooltip>
                 </template>
                 <span
                     v-if="
@@ -68,7 +68,7 @@
                         instanceStore.current?.configuration?.[item.property] ||
                         ''
                     }}</span>
-                    <a-tooltip
+                    <j-tooltip
                         v-if="isExit(item.property)"
                         :title="`有效值:${
                             instanceStore.current?.configuration?.[
@@ -76,10 +76,10 @@
                             ]
                         }`"
                         ><AIcon type="QuestionCircleOutlined"
-                    /></a-tooltip>
+                    /></j-tooltip>
                 </span>
-            </a-descriptions-item>
-        </a-descriptions>
+            </j-descriptions-item>
+        </j-descriptions>
         <Save
             v-if="visible"
             @save="saveBtn"

@@ -60,7 +60,7 @@
             <div style="width: 50%">
                 <h3>示例数据</h3>
                 <div>
-                    <JTable
+                    <j-pro-table
                         :dataSource="data"
                         model="TABLE"
                         noPagination

@@ -1,6 +1,6 @@
 <template>
-    <a-card>
-        <a-descriptions bordered>
+    <j-card>
+        <j-descriptions bordered>
             <template #title>
                 设备信息
                 <PermissionButton
@@ -12,59 +12,59 @@
                     编辑
                 </PermissionButton>
             </template>
-            <a-descriptions-item label="设备ID">{{
+            <j-descriptions-item label="设备ID">{{
                 instanceStore.current.id
-            }}</a-descriptions-item>
-            <a-descriptions-item label="产品名称">{{
+            }}</j-descriptions-item>
+            <j-descriptions-item label="产品名称">{{
                 instanceStore.current.productName
-            }}</a-descriptions-item>
-            <a-descriptions-item label="产品分类">{{
+            }}</j-descriptions-item>
+            <j-descriptions-item label="产品分类">{{
                 instanceStore.current.classifiedName
-            }}</a-descriptions-item>
-            <a-descriptions-item label="设备类型">{{
+            }}</j-descriptions-item>
+            <j-descriptions-item label="设备类型">{{
                 instanceStore.current.deviceType?.text
-            }}</a-descriptions-item>
-            <a-descriptions-item label="固件版本">{{
+            }}</j-descriptions-item>
+            <j-descriptions-item label="固件版本">{{
                 instanceStore.current.firmwareInfo?.version
-            }}</a-descriptions-item>
-            <a-descriptions-item label="连接协议">{{
+            }}</j-descriptions-item>
+            <j-descriptions-item label="连接协议">{{
                 instanceStore.current?.protocolName
-            }}</a-descriptions-item>
-            <a-descriptions-item label="消息协议">{{
+            }}</j-descriptions-item>
+            <j-descriptions-item label="消息协议">{{
                 instanceStore.current.transport
-            }}</a-descriptions-item>
-            <a-descriptions-item label="创建时间">{{
+            }}</j-descriptions-item>
+            <j-descriptions-item label="创建时间">{{
                 instanceStore.current.createTime
                     ? moment(instanceStore.current.createTime).format(
                           'YYYY-MM-DD HH:mm:ss',
                       )
                     : ''
-            }}</a-descriptions-item>
-            <a-descriptions-item label="注册时间">{{
+            }}</j-descriptions-item>
+            <j-descriptions-item label="注册时间">{{
                 instanceStore.current.registerTime
                     ? moment(instanceStore.current.registerTime).format(
                           'YYYY-MM-DD HH:mm:ss',
                       )
                     : ''
-            }}</a-descriptions-item>
-            <a-descriptions-item label="最后上线时间">{{
+            }}</j-descriptions-item>
+            <j-descriptions-item label="最后上线时间">{{
                 instanceStore.current.onlineTime
                     ? moment(instanceStore.current.onlineTime).format(
                           'YYYY-MM-DD HH:mm:ss',
                       )
                     : ''
-            }}</a-descriptions-item>
-            <a-descriptions-item
+            }}</j-descriptions-item>
+            <j-descriptions-item
                 label="父设备"
                 v-if="
                     instanceStore.current.deviceType?.value === 'childrenDevice'
                 "
-                >{{ instanceStore.current.parentId }}</a-descriptions-item
+                >{{ instanceStore.current.parentId }}</j-descriptions-item
             >
-            <a-descriptions-item label="说明">{{
+            <j-descriptions-item label="说明">{{
                 instanceStore.current.description
-            }}</a-descriptions-item>
-        </a-descriptions>
+            }}</j-descriptions-item>
+        </j-descriptions>
         <Config />
         <Tags
             v-if="
@@ -84,7 +84,7 @@
             @close="visible = false"
             @save="saveBtn"
         />
-    </a-card>
+    </j-card>
 </template>
 
 <script lang="ts" setup>

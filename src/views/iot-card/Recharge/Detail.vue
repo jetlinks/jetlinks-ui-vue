@@ -1,5 +1,5 @@
 <template>
-    <a-modal
+    <j-modal
         :maskClosable="false"
         width="1000px"
         :visible="true"
@@ -10,40 +10,40 @@
         @cancel="handleCancel"
     >
         <div style="margin-top: 10px">
-            <a-descriptions
+            <j-descriptions
                 :column="2"
                 bordered
                 :contentStyle="{ minWidth: '300px' }"
                 :labelStyle="{ minWidth: '120px' }"
             >
-                <a-descriptions-item label="充值金额">{{
+                <j-descriptions-item label="充值金额">{{
                     data.chargeMoney
-                }}</a-descriptions-item>
-                <a-descriptions-item label="账户id">{{
+                }}</j-descriptions-item>
+                <j-descriptions-item label="账户id">{{
                     data?.rechargeId
-                }}</a-descriptions-item>
-                <a-descriptions-item label="平台对接">{{
+                }}</j-descriptions-item>
+                <j-descriptions-item label="平台对接">{{
                     data.configName
-                }}</a-descriptions-item>
-                <a-descriptions-item label="订单号">{{
+                }}</j-descriptions-item>
+                <j-descriptions-item label="订单号">{{
                     data.orderNumber
-                }}</a-descriptions-item>
-                <a-descriptions-item label="支付方式">{{
+                }}</j-descriptions-item>
+                <j-descriptions-item label="支付方式">{{
                     data.paymentType
-                }}</a-descriptions-item>
-                <a-descriptions-item label="支付URL">
+                }}</j-descriptions-item>
+                <j-descriptions-item label="支付URL">
                     <div style="height: 100px; overflow: auto">
                         {{ data.url ? data.url : '' }}
                     </div>
-                </a-descriptions-item>
-                <a-descriptions-item label="订单时间">{{
+                </j-descriptions-item>
+                <j-descriptions-item label="订单时间">{{
                     data.createTime
                         ? moment(data.createTime).format('YYYY-MM-DD HH:mm:ss')
                         : '-'
-                }}</a-descriptions-item>
-            </a-descriptions>
+                }}</j-descriptions-item>
+            </j-descriptions>
         </div>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script lang="ts" setup>

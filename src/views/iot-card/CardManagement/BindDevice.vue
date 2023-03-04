@@ -1,6 +1,6 @@
 <!-- 绑定设备 -->
 <template>
-    <a-modal
+    <j-modal
         :maskClosable="false"
         width="1100px"
         :visible="true"
@@ -18,7 +18,7 @@
                 @search="handleSearch"
                 type="simple"
             />
-            <JTable
+            <j-pro-table
                 ref="bindDeviceRef"
                 :columns="columns"
                 :request="queryUnbounded"
@@ -44,14 +44,14 @@
                     }}
                 </template>
                 <template #state="slotProps">
-                    <a-badge
+                    <j-badge
                         :text="slotProps.state.text"
                         :status="statusMap.get(slotProps.state.value)"
                     />
                 </template>
-            </JTable>
+            </j-pro-table>
         </div>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script setup lang="ts">

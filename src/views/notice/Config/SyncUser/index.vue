@@ -34,7 +34,7 @@
                     <a-empty v-if="!deptTreeData.length" />
                 </a-col>
                 <a-col :span="20">
-                    <JTable
+                    <JProTable
                         ref="tableRef"
                         :columns="columns"
                         :dataSource="dataSource"
@@ -92,7 +92,7 @@
                                 </a-tooltip>
                             </a-space>
                         </template>
-                    </JTable>
+                    </JProTable>
                 </a-col>
             </a-row>
         </a-modal>

@@ -30,7 +30,7 @@
 
         <Search :columns="props.queryColumns" @search="query.search" />
 
-        <JTable
+        <j-pro-table
             ref="tableRef"
             :request="table.requestFun"
             :gridColumn="2"
@@ -101,7 +101,7 @@
                     </template>
                 </CardBox>
             </template>
-        </JTable>
+        </j-pro-table>
     </a-modal>
 </template>
 
@@ -115,6 +115,7 @@ import {
     bindDeviceOrProductList_api,
 } from '@/api/system/department';
 import { message } from 'ant-design-vue';
+import { dictType } from '../typing';
 
 const emits = defineEmits(['confirm']);
 const props = defineProps<{

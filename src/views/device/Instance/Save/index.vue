@@ -1,88 +1,88 @@
 <template>
-    <a-modal
+    <j-modal
         :maskClosable="false"
         width="650px"
         :visible="true"
-        :title="!!props.data.id ? '编辑' : '新增'"
+        :title="!!data?.id ? '编辑' : '新增'"
         @ok="handleSave"
         @cancel="handleCancel"
         :confirmLoading="loading"
     >
         <div style="margin-top: 10px">
-            <a-form
+            <j-form
                 :layout="'vertical'"
                 ref="formRef"
                 :rules="rules"
                 :model="modelRef"
             >
-                <a-row type="flex">
-                    <a-col flex="180px">
-                        <a-form-item name="photoUrl">
+                <j-row type="flex">
+                    <j-col flex="180px">
+                        <j-form-item name="photoUrl">
                             <JUpload v-model="modelRef.photoUrl" />
-                        </a-form-item>
-                    </a-col>
-                    <a-col flex="auto">
-                        <a-form-item name="id">
+                        </j-form-item>
+                    </j-col>
+                    <j-col flex="auto">
+                        <j-form-item name="id">
                             <template #label>
                                 <span>
                                     ID
-                                    <a-tooltip title="若不填写，系统将自动生成唯一ID">
+                                    <j-tooltip title="若不填写，系统将自动生成唯一ID">
                                         <AIcon
                                             type="QuestionCircleOutlined"
                                             style="margin-left: 2px;" />
-                                    </a-tooltip>
+                                    </j-tooltip>
                                 </span>
                             </template>
-                            <a-input
+                            <j-input
                                 v-model:value="modelRef.id"
                                 placeholder="请输入ID"
-                                :disabled="!!props.data.id"
+                                :disabled="!!data?.id"
                             />
-                        </a-form-item>
-                        <a-form-item label="名称" name="name">
-                            <a-input
+                        </j-form-item>
+                        <j-form-item label="名称" name="name">
+                            <j-input
                                 v-model:value="modelRef.name"
                                 placeholder="请输入名称"
                             />
-                        </a-form-item>
-                    </a-col>
-                </a-row>
-                <a-form-item name="productId">
+                        </j-form-item>
+                    </j-col>
+                </j-row>
+                <j-form-item name="productId">
                     <template #label>
                         <span>所属产品
-                            <a-tooltip title="只能选择“正常”状态的产品">
+                            <j-tooltip title="只能选择“正常”状态的产品">
                                 <AIcon
                                     type="QuestionCircleOutlined"
                                     style="margin-left: 2px" />
-                            </a-tooltip>
+                            </j-tooltip>
                         </span>
                     </template>
-                    <a-select
+                    <j-select
                         showSearch
                         v-model:value="modelRef.productId"
                         placeholder="请选择所属产品"
                         :filter-option="filterOption"
                     >
-                        <a-select-option
+                        <j-select-option
                             :value="item.id"
                             v-for="item in productList"
                             :key="item.id"
                             :label="item.name"
-                            :disabled="!!props.data.id"
-                        >{{item.name}}</a-select-option>
-                    </a-select>
-                </a-form-item>
-                <a-form-item label="说明" name="describe">
-                    <a-textarea
+                            :disabled="!!data?.id"
+                        >{{item.name}}</j-select-option>
+                    </j-select>
+                </j-form-item>
+                <j-form-item label="说明" name="describe">
+                    <j-textarea
                         v-model:value="modelRef.describe"
                         placeholder="请输入说明"
                         showCount
                         :maxlength="200"
                     />
-                </a-form-item>
-            </a-form>
+                </j-form-item>
+            </j-form>
         </div>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script lang="ts" setup>
@@ -157,7 +157,7 @@ const rules = {
             message: '最多输入64个字符',
         },
         {
-            pattern: /^[a-zA-Z0-9_\-]+$/,
+            pattern: /^[j-zA-Z0-9_\-]+$/,
             message: '请输入英文或者数字或者-或者_',
         },
         {

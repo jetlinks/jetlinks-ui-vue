@@ -1,15 +1,15 @@
 <template>
-    <a-card>
+    <j-card>
         <div class="property-box">
             <div class="property-box-left">
-                <a-input-search
+                <j-input-search
                     v-model:value="value"
                     placeholder="请输入事件名称"
                     style="width: 200px; margin-bottom: 10px"
                     @search="onSearch"
                     :allowClear="true"
                 />
-                <a-tabs
+                <j-tabs
                     tab-position="left"
                     style="height: 600px"
                     v-if="tabList.length"
@@ -17,12 +17,12 @@
                     :tabBarStyle="{ width: '200px' }"
                     @change="tabChange"
                 >
-                    <a-tab-pane
+                    <j-tab-pane
                         v-for="i in tabList"
                         :key="i.key"
                         :tab="i.tab"
                     />
-                </a-tabs>
+                </j-tabs>
                 <JEmpty v-else style="margin: 250px 0" />
             </div>
             <div class="property-box-right">
@@ -30,7 +30,7 @@
                 <Property v-else :data="properties" />
             </div>
         </div>
-    </a-card>
+    </j-card>
 </template>
 
 <script lang="ts" setup>

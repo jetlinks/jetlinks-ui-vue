@@ -66,6 +66,7 @@ import { getImage } from '@/utils/comm'
 type Emit = {
   (e: 'update:rowKey', data: string): void
   (e: 'update:detail', data: string): void
+  (e: 'change', data: string): void
 }
 
 const actionRef = ref()
@@ -246,6 +247,7 @@ const productQuery = (p: any) => {
 const handleClick = (detail: any) => {
   emit('update:rowKey', detail.id)
   emit('update:detail', detail)
+  emit('change', detail)
 }
 
 </script>

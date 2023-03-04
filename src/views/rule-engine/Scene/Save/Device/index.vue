@@ -14,7 +14,8 @@
         <Title :options='data.options.trigger' />
       </AddButton>
     </a-form-item>
-    <AddModel v-if='visible' @cancel='visible = false' v-model='data.device' v-model:options='data.options.trigger' />
+    <Action />
+    <AddModel v-if='visible' @cancel='visible = false' @save='save' :value='data.trigger.device' :options='data.options.trigger' />
   </div>
 </template>
 
@@ -24,9 +25,11 @@ import { useSceneStore } from '@/store/scene'
 import AddModel from './AddModal.vue'
 import AddButton from '../components/AddButton.vue'
 import Title from '../components/Title.vue'
+import Action from '../action/index.vue'
+import type { TriggerDevice } from '@/views/rule-engine/Scene/typings'
 
 const sceneStore = useSceneStore()
-const { data } = storeToRefs<any>(sceneStore)
+const { data } = storeToRefs(sceneStore)
 
 const visible = ref(false)
 
@@ -38,6 +41,11 @@ const rules = [{
     return Promise.resolve();
   },
 }]
+
+const save = (device: TriggerDevice, options: Record<string, any>) => {
+  data.value.trigger!.device = device
+  data.value.options!.trigger = options
+}
 
 </script>
 

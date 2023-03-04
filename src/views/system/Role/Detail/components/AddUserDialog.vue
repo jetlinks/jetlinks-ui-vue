@@ -7,7 +7,7 @@
     >
         <Search :columns="query.columns" type="simple" />
 
-        <JTable
+        <j-pro-table
             ref="tableRef"
             :columns="table.columns"
             :request="getUserByRole_api"
@@ -19,7 +19,7 @@
             }"
             @cancelSelect="table.cancelSelect"
         >
-        </JTable>
+        </j-pro-table>
 
         <template #footer>
             <a-button key="back" @click="dialog.visible = false">取消</a-button>

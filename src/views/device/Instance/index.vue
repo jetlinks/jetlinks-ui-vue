@@ -1,11 +1,11 @@
 <template>
     <page-container>
-        <Search
+        <JSearch
             :columns="columns"
             target="device-instance"
             @search="handleSearch"
         />
-        <JTable
+        <JProTable
             ref="instanceRef"
             :columns="columns"
             :request="query"
@@ -18,7 +18,7 @@
             :params="params"
         >
             <template #headerTitle>
-                <a-space>
+                <j-space>
                     <PermissionButton
                         type="primary"
                         @click="handleAdd"
@@ -27,13 +27,13 @@
                         <template #icon><AIcon type="PlusOutlined" /></template>
                         新增
                     </PermissionButton>
-                    <a-dropdown>
-                        <a-button
+                    <j-dropdown>
+                        <j-button
                             >批量操作 <AIcon type="DownOutlined"
-                        /></a-button>
+                        /></j-button>
                         <template #overlay>
-                            <a-menu>
-                                <a-menu-item>
+                            <j-menu>
+                                <j-menu-item>
                                     <PermissionButton
                                         @click="exportVisible = true"
                                         hasPermission="device/Instance:export"
@@ -43,8 +43,8 @@
                                         /></template>
                                         批量导出设备
                                     </PermissionButton>
-                                </a-menu-item>
-                                <a-menu-item>
+                                </j-menu-item>
+                                <j-menu-item>
                                     <PermissionButton
                                         @click="importVisible = true"
                                         hasPermission="device/Instance:import"
@@ -54,8 +54,8 @@
                                         /></template>
                                         批量导入设备
                                     </PermissionButton>
-                                </a-menu-item>
-                                <a-menu-item>
+                                </j-menu-item>
+                                <j-menu-item>
                                     <PermissionButton
                                         ghost
                                         type="primary"
@@ -70,8 +70,8 @@
                                         /></template>
                                         激活全部设备
                                     </PermissionButton>
-                                </a-menu-item>
-                                <a-menu-item>
+                                </j-menu-item>
+                                <j-menu-item>
                                     <PermissionButton
                                         type="primary"
                                         @click="syncDeviceStatus"
@@ -82,8 +82,8 @@
                                         /></template>
                                         同步设备状态
                                     </PermissionButton>
-                                </a-menu-item>
-                                <a-menu-item v-if="_selectedRowKeys.length">
+                                </j-menu-item>
+                                <j-menu-item v-if="_selectedRowKeys.length">
                                     <PermissionButton
                                         type="primary"
                                         danger
@@ -98,8 +98,8 @@
                                         /></template>
                                         删除选中设备
                                     </PermissionButton>
-                                </a-menu-item>
-                                <a-menu-item v-if="_selectedRowKeys.length">
+                                </j-menu-item>
+                                <j-menu-item v-if="_selectedRowKeys.length">
                                     <PermissionButton
                                         type="primary"
                                         :popConfirm="{
@@ -113,8 +113,8 @@
                                         /></template>
                                         激活选中设备
                                     </PermissionButton>
-                                </a-menu-item>
-                                <a-menu-item v-if="_selectedRowKeys.length">
+                                </j-menu-item>
+                                <j-menu-item v-if="_selectedRowKeys.length">
                                     <PermissionButton
                                         type="primary"
                                         danger
@@ -129,11 +129,11 @@
                                         /></template>
                                         禁用选中设备
                                     </PermissionButton>
-                                </a-menu-item>
-                            </a-menu>
+                                </j-menu-item>
+                            </j-menu>
                         </template>
-                    </a-dropdown>
-                </a-space>
+                    </j-dropdown>
+                </j-space>
             </template>
             <template #card="slotProps">
                 <CardBox
@@ -160,22 +160,22 @@
                                 {{ slotProps.name }}
                             </span>
                         </Ellipsis>
-                        <a-row style="margin-top: 20px">
-                            <a-col :span="12">
+                        <j-row style="margin-top: 20px">
+                            <j-col :span="12">
                                 <div class="card-item-content-text">
                                     设备类型
                                 </div>
                                 <div>{{ slotProps.deviceType?.text }}</div>
-                            </a-col>
-                            <a-col :span="12">
+                            </j-col>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">
                                     产品名称
                                 </div>
                                 <Ellipsis style="width: 100%">
                                     {{ slotProps.productName }}
                                 </Ellipsis>
-                            </a-col>
-                        </a-row>
+                            </j-col>
+                        </j-row>
                     </template>
                     <template #actions="item">
                         <PermissionButton
@@ -200,13 +200,13 @@
                 </CardBox>
             </template>
             <template #state="slotProps">
-                <a-badge
+                <j-badge
                     :text="slotProps.state?.text"
                     :status="statusMap.get(slotProps.state?.value)"
                 />
             </template>
             <template #action="slotProps">
-                <a-space>
+                <j-space>
                     <template
                         v-for="i in getActions(slotProps, 'table')"
                         :key="i.key"
@@ -225,9 +225,9 @@
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
                     </template>
-                </a-space>
+                </j-space>
             </template>
-        </JTable>
+        </JProTable>
     </page-container>
     <Import v-if="importVisible" @close="importVisible = false" />
     <Export
