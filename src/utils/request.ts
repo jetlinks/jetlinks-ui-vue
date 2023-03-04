@@ -24,12 +24,17 @@ export const request = axios.create({
  * @param {String} url
  * @param {Object} [data]
  * @param {String} responseType 如果接口是需要导出文件流，那么responseType = 'blob'
+ * @param {Object|String} [ext] 扩展参数，如果是配置headers，ext对象内包含headers对象，如下
+ * {
+        headers: {'Content-Type': 'text/plain;charset=UTF-8'},
+    }
  * @returns {AxiosInstance}
  */
-export const post = function<T>(url: string, data = {}, params = {}) {
-    params = typeof params === 'string' ? { responseType: params } : params
+export const post = function<T>(url: string, data = {}, params = {}, ext={}) {
+    ext = typeof ext === 'string' ? { responseType: ext } : ext
     return request<any, AxiosResponseRewrite<T>>({
-        ...params,
+        ...ext,
+        params,
         method: 'POST',
         url,
         data
