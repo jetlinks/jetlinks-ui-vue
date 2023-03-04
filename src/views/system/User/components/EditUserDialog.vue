@@ -1,18 +1,19 @@
 <template>
-    <a-modal
-        v-model:visible="dialog.visible"
-        :title="dialog.title"
+    <j-modal
+        visible
+        :title="dialogTitle"
         width="675px"
-        @ok="dialog.handleOk"
+        @ok="confirm"
+        @cancel="emits('update:visible', false)"
         class="edit-dialog-container"
-        :confirmLoading="dialog.loading"
+        :confirmLoading="loading"
         cancelText="取消"
         okText="确定"
     >
-        <a-form ref="formRef" :model="form.data" layout="vertical">
-            <a-row :gutter="24" v-if="form.IsShow('add', 'edit')">
-                <a-col :span="12">
-                    <a-form-item
+        <j-form ref="formRef" :model="form.data" layout="vertical">
+            <j-row :gutter="24" v-if="form.IsShow('add', 'edit')">
+                <j-col :span="12">
+                    <j-form-item
                         name="name"
                         label="姓名"
                         :rules="[
@@ -23,14 +24,14 @@
                             },
                         ]"
                     >
-                        <a-input
+                        <j-input
                             v-model:value="form.data.name"
                             placeholder="请输入姓名"
                         />
-                    </a-form-item>
-                </a-col>
-                <a-col :span="12">
-                    <a-form-item
+                    </j-form-item>
+                </j-col>
+                <j-col :span="12">
+                    <j-form-item
                         name="username"
                         label="用户名"
                         :rules="[
@@ -41,17 +42,17 @@
                             },
                         ]"
                     >
-                        <a-input
+                        <j-input
                             v-model:value="form.data.username"
                             placeholder="请输入用户名"
-                            :disabled="dialog.type === 'edit'"
+                            :disabled="props.type === 'edit'"
                         />
-                    </a-form-item>
-                </a-col>
-            </a-row>
-            <a-row v-if="form.IsShow('add', 'reset')">
-                <a-col :span="24">
-                    <a-form-item
+                    </j-form-item>
+                </j-col>
+            </j-row>
+            <j-row v-if="form.IsShow('add', 'reset')">
+                <j-col :span="24">
+                    <j-form-item
                         name="password"
                         label="密码"
                         :rules="[
@@ -62,21 +63,16 @@
                             },
                         ]"
                     >
-                        <a-input-password
+                        <j-input-password
                             v-model:value="form.data.password"
                             placeholder="请输入密码"
                         />
-                        <!-- <Progress
-                            :percent="20"
-                            :steps="5"
-                            :strokeColor="{ from: '#ff5500', to: '#ff9300' }"
-                        /> -->
-                    </a-form-item>
-                </a-col>
-            </a-row>
-            <a-row v-if="form.IsShow('add', 'reset')">
-                <a-col :span="24">
-                    <a-form-item
+                    </j-form-item>
+                </j-col>
+            </j-row>
+            <j-row v-if="form.IsShow('add', 'reset')">
+                <j-col :span="24">
+                    <j-form-item
                         name="confirmPassword"
                         label="确认密码"
                         :rules="[
@@ -87,31 +83,26 @@
                             },
                         ]"
                     >
-                        <a-input-password
+                        <j-input-password
                             v-model:value="form.data.confirmPassword"
                             placeholder="请再次输入密码"
                             :maxlength="64"
                         />
-                        <!-- <Progress
-                            :percent="60"
-                            :steps="5"
-                            :strokeColor="{ from: '#ff5500', to: '#ff9300' }"
-                        /> -->
-                    </a-form-item>
-                </a-col>
-            </a-row>
+                    </j-form-item>
+                </j-col>
+            </j-row>
             <!-- 还差页面权限 -->
-            <a-row :gutter="24" v-if="form.IsShow('add', 'edit')">
-                <a-col :span="12">
-                    <a-form-item name="roleIdList" label="角色" class="flex">
-                        <a-select
+            <j-row :gutter="24" v-if="form.IsShow('add', 'edit')">
+                <j-col :span="12">
+                    <j-form-item name="roleIdList" label="角色" class="flex">
+                        <j-select
                             v-model:value="form.data.roleIdList"
                             mode="multiple"
                             style="width: 100%"
                             placeholder="请选择角色"
                             :options="form.roleOptions"
-                        ></a-select>
-                        
+                        ></j-select>
+
                         <PermissionButton
                             :uhasPermission="`${rolePermission}:update`"
                             @click="form.clickAddItem('roleIdList', 'Role')"
@@ -119,11 +110,11 @@
                         >
                             <AIcon type="PlusOutlined" />
                         </PermissionButton>
-                    </a-form-item>
-                </a-col>
-                <a-col :span="12">
-                    <a-form-item name="orgIdList" label="组织" class="flex">
-                        <a-tree-select
+                    </j-form-item>
+                </j-col>
+                <j-col :span="12">
+                    <j-form-item name="orgIdList" label="组织" class="flex">
+                        <j-tree-select
                             v-model:value="form.data.orgIdList"
                             show-search
                             style="width: 100%"
@@ -135,7 +126,7 @@
                             <template #title="{ name }">
                                 {{ name }}
                             </template>
-                        </a-tree-select>
+                        </j-tree-select>
                         <PermissionButton
                             :uhasPermission="`${deptPermission}:update`"
                             @click="form.clickAddItem('roleIdList', 'Role')"
@@ -143,12 +134,12 @@
                         >
                             <AIcon type="PlusOutlined" />
                         </PermissionButton>
-                    </a-form-item>
-                </a-col>
-            </a-row>
-            <a-row :gutter="24" v-if="form.IsShow('add', 'edit')">
-                <a-col :span="12">
-                    <a-form-item
+                    </j-form-item>
+                </j-col>
+            </j-row>
+            <j-row :gutter="24" v-if="form.IsShow('add', 'edit')">
+                <j-col :span="12">
+                    <j-form-item
                         name="telephone"
                         label="手机号"
                         :rules="[
@@ -158,15 +149,15 @@
                             },
                         ]"
                     >
-                        <a-input
+                        <j-input
                             v-model:value="form.data.telephone"
                             placeholder="请输入手机号"
                             :maxlength="64"
                         />
-                    </a-form-item>
-                </a-col>
-                <a-col :span="12">
-                    <a-form-item
+                    </j-form-item>
+                </j-col>
+                <j-col :span="12">
+                    <j-form-item
                         name="email"
                         label="邮箱"
                         :rules="[
@@ -177,22 +168,21 @@
                             },
                         ]"
                     >
-                        <a-input
+                        <j-input
                             v-model:value="form.data.email"
                             placeholder="请输入邮箱"
                             :maxlength="64"
                         />
-                    </a-form-item>
-                </a-col>
-            </a-row>
-        </a-form>
-    </a-modal>
+                    </j-form-item>
+                </j-col>
+            </j-row>
+        </j-form>
+    </j-modal>
 </template>
 
 <script setup lang="ts">
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import { FormInstance, message } from 'ant-design-vue';
-// import Progress from './Progress.vue';
 import {
     validateField_api,
     getRoleList_api,
@@ -209,46 +199,35 @@ import { AxiosResponse } from 'axios';
 const deptPermission = 'system/Department';
 const rolePermission = 'system/Role';
 
-const emits = defineEmits(['confirm']);
+const emits = defineEmits(['confirm', 'update:visible']);
+const props = defineProps<{
+    type: modalType;
+    data: any;
+    visible: boolean;
+}>();
 // 弹窗相关
-const dialog = reactive({
-    title: '',
-    visible: false,
-    type: '' as modalType,
-    loading: false,
-
-    handleOk: () => {
-        formRef.value?.validate().then(() => {
-            form.submit(() => {
-                dialog.changeVisible('', {} as any);
+const loading = ref(false);
+const dialogTitle = computed(() => {
+    if (props.type === 'add') return '新增';
+    else if (props.type === 'edit') return '编辑';
+    else if (props.type === 'reset') return '重置密码';
+    else return '';
+});
+const confirm = () => {
+    loading.value = true;
+    formRef.value
+        ?.validate()
+        .then(() => form.submit())
+        .then((resp: any) => {
+            if (resp.status === 200) {
+                message.success('操作成功');
                 emits('confirm');
-            });
-        });
-    },
-    /**
-     * 设置表单类型
-     * @param type 弹窗类型
-     * @param defaultForm 表单回显对象
-     */
-    changeVisible: (type: modalType, defaultForm: formType) => {
-        dialog.setTitle(type);
-        console.log(defaultForm);
-        
-        form.getUserInfo(defaultForm.id || '', type);
-        dialog.type = type;
-        dialog.visible = type !== '';
-    },
-    setTitle: (type: modalType) => {
-        if (type === 'add') dialog.title = '新增';
-        else if (type === 'edit') dialog.title = '编辑';
-        else if (type === 'reset') dialog.title = '重置密码';
-        else dialog.title = '';
-    },
-});
-// 将打开弹窗的操作暴露给父组件
-defineExpose({
-    openDialog: dialog.changeVisible,
-});
+                emits('update:visible', false);
+            }
+        })
+        .finally(() => (loading.value = false));
+};
+
 const formRef = ref<FormInstance>();
 const form = reactive({
     data: {} as formType,
@@ -257,7 +236,7 @@ const form = reactive({
         checkUserName: (_rule: Rule, value: string): Promise<any> =>
             new Promise((resolve, reject) => {
                 console.log(_rule);
-                if (dialog.type === 'edit') return resolve('');
+                if (props.type === 'edit') return resolve('');
 
                 if (!value) return reject('请输入用户名');
                 else if (value.length > 64) return reject('最多可输入64个字符');
@@ -284,7 +263,6 @@ const form = reactive({
                 ? Promise.resolve()
                 : Promise.reject('两次密码输入不一致');
         },
-        //
     },
 
     roleOptions: [] as optionType[],
@@ -293,11 +271,15 @@ const form = reactive({
     init: () => {
         form.getDepartmentList();
         form.getRoleList();
+        form.getUserInfo();
     },
-    getUserInfo: (id: string, type: modalType) => {
-        if (type === 'add') form.data = {} as formType;
-        else if (type === 'reset') form.data = { id } as formType;
-        else if (type === 'edit') {
+    getUserInfo: () => {
+        const id = props.data.id || '';
+        console.log(111);
+
+        if (props.type === 'add') form.data = {} as formType;
+        else if (props.type === 'reset') form.data = { id } as formType;
+        else if (props.type === 'edit') {
             getUser_api(id).then((resp: any) => {
                 form.data = {
                     ...(resp.result as formType),
@@ -314,46 +296,33 @@ const form = reactive({
             });
         }
     },
-    submit: (cb?: Function) => {
+    submit: (): Promise<any> => {
         let api: axiosFunType;
         let params = {};
-        switch (dialog.type) {
-            case 'add': {
-                api = addUser_api;
-                params = {
-                    user: form.data,
-                    orgIdList: form.data.orgIdList,
-                    roleIdList: form.data.roleIdList,
-                };
-                break;
-            }
-            case 'edit': {
-                api = updateUser_api;
-                params = {
-                    id: form.data.id,
-                    user: form.data,
-                    orgIdList: form.data.orgIdList,
-                    roleIdList: form.data.roleIdList,
-                };
-                break;
-            }
-            case 'reset': {
-                api = updatePassword_api;
-                params = {
-                    id: form.data.id,
-                    password: form.data.password,
-                };
-                break;
-            }
-            default:
-                return;
-        }
-        console.log(params);
 
-        api(params).then(() => {
-            message.success('操作成功');
-            cb && cb();
-        });
+        if (props.type === 'add') {
+            api = addUser_api;
+            params = {
+                user: form.data,
+                orgIdList: form.data.orgIdList,
+                roleIdList: form.data.roleIdList,
+            };
+        } else if (props.type === 'edit') {
+            api = updateUser_api;
+            params = {
+                id: form.data.id,
+                user: form.data,
+                orgIdList: form.data.orgIdList,
+                roleIdList: form.data.roleIdList,
+            };
+        } else if (props.type === 'reset') {
+            api = updatePassword_api;
+            params = {
+                id: form.data.id,
+                password: form.data.password,
+            };
+        } else return Promise.reject();
+        return api(params);
     },
     getRoleList: () => {
         getRoleList_api().then((resp: any) => {
@@ -368,7 +337,7 @@ const form = reactive({
             form.departmentOptions = resp.result;
         });
     },
-    IsShow: (...typeList: modalType[]) => typeList.includes(dialog.type),
+    IsShow: (...typeList: modalType[]) => typeList.includes(props.type),
     clickAddItem: (prop: 'roleIdList' | 'orgIdList', target: string) => {
         const tab: any = window.open(`${origin}/#/system/${target}?save=true`);
         tab.onSaveSuccess = (value: string) => {

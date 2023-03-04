@@ -158,6 +158,7 @@ const columns = [
         key: 'action',
         ellipsis: true,
         scopedSlots: true,
+        width:'200px'
     },
 ];
 const query = {
