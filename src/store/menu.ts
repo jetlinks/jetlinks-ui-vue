@@ -4,8 +4,8 @@ import { filterAsnycRouter, MenuItem } from '@/utils/menu'
 import { isArray } from 'lodash-es'
 import { usePermissionStore } from './permission'
 import router from '@/router'
-import { message } from 'ant-design-vue'
 import { onlyMessage } from '@/utils/comm'
+import { AccountMenu } from '@/router/menu'
 
 const defaultOwnParams = [
   {
@@ -115,8 +115,10 @@ export const useMenuStore = defineStore({
               hideInMenu: true
             }
           })
+          silderMenus.push(AccountMenu)
           this.siderMenus = silderMenus
           console.log('menusData', menusData)
+          console.log('silderMenus', silderMenus)
           res(menusData)
         }
       })

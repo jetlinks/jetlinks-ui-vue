@@ -1,5 +1,49 @@
 export const LoginPath = '/login'
 
+export const AccountMenu = {
+    path: '/account',
+    component: () => import('@/components/Layout/BasicLayoutPage.vue'),
+    redirect: '/account/center',
+    name: 'account',
+    meta: {
+        title: '个人中心',
+        icon: '',
+        hideInMenu: true
+    },
+    children: [
+        {
+            path: '/account/center',
+            name: 'account/center',
+            meta: {
+                title: '基本设置',
+                icon: '',
+                hideInMenu: false
+            },
+            component: () => import('@/views/account/Center/index.vue')
+        },
+        {
+            path: '/account/NotificationSubscription',
+            name: 'account/NotificationSubscription',
+            meta: {
+                title: '通知订阅',
+                icon: '',
+                hideInMenu: false
+            },
+            component: () => import('@/views/account/NotificationSubscription/index.vue')
+        },
+        {
+            path: '/account/NotificationRecord',
+            name: 'account/NotificationRecord',
+            meta: {
+                title: '通知记录',
+                icon: '',
+                hideInMenu: false
+            },
+            component: () => import('@/views/account/NotificationRecord/index.vue')
+        },
+    ]
+}
+
 export default [
     { path: '/*', redirect: '/'},
     // start: 测试用, 可删除
@@ -27,18 +71,7 @@ export default [
         path: '/system/Api',
         component: () => import('@/views/system/Platforms/index.vue')
     },
-    {
-        path: '/account/center',
-        component: () => import('@/views/account/Center/index.vue')
-    },
-    {
-        path: '/account/NotificationSubscription',
-        component: () => import('@/views/account/NotificationSubscription/index.vue')
-    },
-    {
-        path: '/account/NotificationRecord',
-        component: () => import('@/views/account/NotificationRecord/index.vue')
-    },
+    AccountMenu,
     // end: 测试用, 可删除
 
     // 初始化
