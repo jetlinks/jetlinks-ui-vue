@@ -316,7 +316,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
 
 const getProvidersList = async () => {
     const res = await getProviders();
-    providersList = res.result;
+    providersList.value = res.result;
 };
 getProvidersList();
 
@@ -337,7 +337,7 @@ const handlEye = (id: string) => {
 const getDescription = (slotProps: Record<string, any>) =>
     slotProps.description
         ? slotProps.description
-        : providersList?.find(
+        : providersList.value?.find(
               (item: Record<string, any>) => item.id === slotProps.provider,
           )?.description;
 

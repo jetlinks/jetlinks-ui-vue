@@ -10,6 +10,8 @@ import vue3videoPlay from 'vue3-video-play';
 const props = defineProps({
     src: { type: String, default: '' },
     type: { type: String, default: 'mp4' },
+    width: { type: String, default: '500px' },
+    height: { type: String, default: '280px' },
 });
 
 watch(
@@ -21,8 +23,6 @@ watch(
 
 const options = reactive({
     ...props,
-    width: '500px', //播放器高度
-    height: '280px', //播放器高度
     color: '#409eff', //主题色
     title: '', //视频名称
     // src: props.src,

@@ -3903,8 +3903,8 @@ jetlinks-store@^0.0.3:
 
 jetlinks-ui-components@^1.0.3:
   version "1.0.3"
-  resolved "https://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.3.tgz#8307018ed5bcdd42f3bb4e29376e04f3e8a425db"
-  integrity sha512-jH/BtAu21zVzMopHCXEn1jwbGHh/1XHP68ekiOGH+jWowLbb2pkX0kHFyF6ydhYa7cspvJ04atWlEugXvXZYvg==
+  resolved "https://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.3.tgz#303ca83cf6096721e49e72d1a3a73b054b0aa7fa"
+  integrity sha512-Jm7tP/CtnK2GIRSPTjd/UOw8emZ3C7/i9af8m+XCM8wi/J1SZh4cZGc487vR1DPxyWZfJjG87Zdy45DZ5EMw2w==
   dependencies:
     "@vueuse/core" "^9.12.0"
     ant-design-vue "^3.2.15"
