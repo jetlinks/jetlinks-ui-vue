@@ -68,7 +68,7 @@
 
 <script lang="ts" setup>
 import { queryPlatformNoPage, recharge } from '@/api/iot-card/cardManagement';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { PaymentMethod } from '@/views/iot-card/data';
 
 const emit = defineEmits(['change']);
@@ -167,7 +167,7 @@ const handleOk = () => {
             btnLoading.value = false;
             if (resp.status === 200) {
                 if (resp.result === '失败') {
-                    message.error('缴费失败');
+                    message.error('缴费失败')
                 } else {
                     window.open(resp.result);
                 }
@@ -176,6 +176,7 @@ const handleOk = () => {
             }
         })
         .catch((err: any) => {
+            btnLoading.value=false
             console.log('error', err);
         });
 };

@@ -1,53 +1,27 @@
 <!-- 绑定设备 -->
 <template>
-    <j-modal
-        :maskClosable="false"
-        width="1100px"
-        :visible="true"
-        title="选择设备"
-        okText="确定"
-        cancelText="取消"
-        @ok="handleOk"
-        @cancel="handleCancel"
-        :confirmLoading="btnLoading"
-    >
+    <j-modal :maskClosable="false" width="1100px" :visible="true" title="选择设备" okText="确定" cancelText="取消" @ok="handleOk"
+        @cancel="handleCancel" :confirmLoading="btnLoading">
         <div style="margin-top: 10px">
-            <Search
-                :columns="columns"
-                target="iot-card-bind-device"
-                @search="handleSearch"
-                type="simple"
-            />
-            <j-pro-table
-                ref="bindDeviceRef"
-                :columns="columns"
-                :request="queryUnbounded"
-                model="TABLE"
-                :defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
-                :rowSelection="{
-                    type: 'radio',
-                    selectedRowKeys: _selectedRowKeys,
-                    onSelect: onSelectChange,
-                }"
-                @cancelSelect="cancelSelect"
-                :params="params"
-            >
+            <Search :columns="columns" target="iot-card-bind-device" @search="handleSearch" type="simple" />
+            <j-pro-table ref="bindDeviceRef" :columns="columns" :request="queryUnbounded" model="TABLE" :defaultParams="{
+                sorts: [{ name: 'createTime', order: 'desc' }],
+            }" :rowSelection="{
+    type: 'radio',
+    selectedRowKeys: _selectedRowKeys,
+    onSelect: onSelectChange,
+}" @cancelSelect="cancelSelect" :params="params">
                 <template #registryTime="slotProps">
                     {{
                         slotProps.registryTime
-                            ? moment(slotProps.registryTime).format(
-                                  'YYYY-MM-DD HH:mm:ss',
-                              )
-                            : ''
+                        ? moment(slotProps.registryTime).format(
+                            'YYYY-MM-DD HH:mm:ss',
+                        )
+                        : ''
                     }}
                 </template>
                 <template #state="slotProps">
-                    <j-badge
-                        :text="slotProps.state.text"
-                        :status="statusMap.get(slotProps.state.value)"
-                    />
+                    <j-badge :text="slotProps.state.text" :status="statusMap.get(slotProps.state.value)" />
                 </template>
             </j-pro-table>
         </div>
@@ -57,7 +31,7 @@
 <script setup lang="ts">
 import { queryUnbounded, bind } from '@/api/iot-card/cardManagement';
 import moment from 'moment';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 const emit = defineEmits(['change']);
 
@@ -141,7 +115,7 @@ const handleOk = () => {
     bind(props.cardId, _selectedRowKeys.value[0])
         .then((resp: any) => {
             if (resp.status === 200) {
-                message.success('操作成功');
+                message.success('操作成功')
                 emit('change', true);
             }
         })
