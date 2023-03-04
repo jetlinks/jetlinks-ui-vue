@@ -5,7 +5,7 @@
             target="product-manage"
             @search="handleSearch"
         />
-        <JTable
+        <JProTable
             :columns="columns"
             :request="queryProductList"
             ref="tableRef"
@@ -205,7 +205,7 @@
                     </template>
                 </a-space>
             </template>
-        </JTable>
+        </JProTable>
         <!-- 新增、编辑 -->
         <Save ref="saveRef" :isAdd="isAdd" :title="title" @success="refresh" />
     </page-container>

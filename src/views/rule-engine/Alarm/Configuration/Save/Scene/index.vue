@@ -1,5 +1,5 @@
 <template>
-    <JTable
+    <JProTable
         model="CARD"
         :request="query"
         :defaultParams="{
@@ -71,7 +71,7 @@
                 </template>
             </SceneCard>
         </template>
-    </JTable>
+    </JProTable>
     <Save
         :id="id"
         :type="configurationData.current?.targetType"
