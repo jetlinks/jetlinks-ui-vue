@@ -1,12 +1,12 @@
 <template>
-    <a-spin :spinning="loading">
-        <a-input
+    <j-spin :spinning="loading">
+        <j-input
             placeholder="请上传文件"
             v-model:value="fileValue"
             style="width: calc(100% - 110px)"
             :disabled="true"
         />
-        <a-upload
+        <j-upload
             name="file"
             :multiple="true"
             :action="FIRMWARE_UPLOAD"
@@ -17,15 +17,15 @@
             :showUploadList="false"
             class="upload-box"
         >
-            <a-button type="primary">
+            <j-button type="primary">
                 <div>
                     <AIcon type="UploadOutlined" /><span class="upload-text"
                         >上传文件</span
                     >
                 </div>
-            </a-button>
-        </a-upload>
-    </a-spin>
+            </j-button>
+        </j-upload>
+    </j-spin>
 </template>
 
 <script setup lang="ts" name="FileUpload">

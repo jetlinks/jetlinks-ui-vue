@@ -1,5 +1,5 @@
 <template lang="">
-    <a-modal
+    <j-modal
         title="查看"
         ok-text="确认"
         cancel-text="取消"
@@ -9,7 +9,7 @@
         @ok="handleOk"
     >
         <span>失败原因：{{ data }}</span>
-    </a-modal>
+    </j-modal>
 </template>
 <script lang="ts" setup name="TaskDetailSavePage">
 const props = defineProps({

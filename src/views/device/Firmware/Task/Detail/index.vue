@@ -10,7 +10,7 @@
                     <div class="state-content">
                         <div class="state-header">
                             <div class="state-title">
-                                <a-badge
+                                <j-badge
                                     :text="item.name"
                                     :color="colorMap.get(item.key)"
                                 />
@@ -56,7 +56,7 @@
             </div>
 
             <Search :columns="columns" target="search" @search="handleSearch" />
-            <JTable
+            <j-pro-table
                 ref="tableRef"
                 model="TABLE"
                 :columns="columns"
@@ -78,7 +78,7 @@
                     <span>{{ slotProps.productName }}</span>
                 </template>
                 <template #state="slotProps">
-                    <a-badge
+                    <j-badge
                         :text="slotProps.state.text"
                         :color="colorMap.get(slotProps.state.value)"
                     />
@@ -87,7 +87,7 @@
                     <span>{{ slotProps.progress }}%</span>
                 </template>
                 <template #action="slotProps">
-                    <a-space>
+                    <j-space>
                         <template
                             v-for="i in getActions(slotProps)"
                             :key="i.key"
@@ -108,9 +108,9 @@
                                 /></template>
                             </PermissionButton>
                         </template>
-                    </a-space>
+                    </j-space>
                 </template>
-            </JTable>
+            </j-pro-table>
             <Save :data="current" v-if="visible" @change="saveChange" />
         </div>
     </page-container>

@@ -1,7 +1,7 @@
 <template>
     <page-container>
-        <a-card>
-            <a-form
+        <j-card>
+            <j-form
                 ref="formRef"
                 class="form"
                 layout="vertical"
@@ -9,9 +9,9 @@
                 name="basic"
                 autocomplete="off"
             >
-                <a-row :gutter="[16, 0]">
-                    <a-col :span="12">
-                        <a-form-item
+                <j-row :gutter="[16, 0]">
+                    <j-col :span="12">
+                        <j-form-item
                             label="流媒体名称"
                             name="name"
                             :rules="[
@@ -25,14 +25,14 @@
                                 },
                             ]"
                         >
-                            <a-input
+                            <j-input
                                 v-model:value="formData.name"
                                 placeholder="请输入流媒体名称"
                             />
-                        </a-form-item>
-                    </a-col>
-                    <a-col :span="12">
-                        <a-form-item
+                        </j-form-item>
+                    </j-col>
+                    <j-col :span="12">
+                        <j-form-item
                             label="服务商"
                             name="provider"
                             :rules="[
@@ -42,16 +42,16 @@
                                 },
                             ]"
                         >
-                            <a-select
+                            <j-select
                                 ref="select"
                                 v-model:value="formData.provider"
                                 :options="options"
                                 placeholder="请选择服务商"
-                            ></a-select>
-                        </a-form-item>
-                    </a-col>
-                    <a-col :span="12">
-                        <a-form-item
+                            ></j-select>
+                        </j-form-item>
+                    </j-col>
+                    <j-col :span="12">
+                        <j-form-item
                             label="密钥"
                             :name="['configuration', 'secret']"
                             :rules="[
@@ -61,14 +61,14 @@
                                 },
                             ]"
                         >
-                            <a-input-password
+                            <j-input-password
                                 placeholder="请输入密钥"
                                 v-model:value="formData.configuration.secret"
                             />
-                        </a-form-item>
-                    </a-col>
-                    <a-col :span="8" class="form-item">
-                        <a-form-item
+                        </j-form-item>
+                    </j-col>
+                    <j-col :span="8" class="form-item">
+                        <j-form-item
                             :name="['configuration', 'apiHost']"
                             :rules="[
                                 {
@@ -84,22 +84,22 @@
                             <div class="form-label">
                                 API Host
                                 <span class="form-label-required">*</span>
-                                <a-tooltip>
+                                <j-tooltip>
                                     <template #title>
                                         <p>调用流媒体接口时请求的服务地址</p>
                                     </template>
                                     <AIcon type="QuestionCircleOutlined" />
-                                </a-tooltip>
+                                </j-tooltip>
                             </div>
 
-                            <a-input
+                            <j-input
                                 placeholder="请输入API Host"
                                 v-model:value="formData.configuration.apiHost"
                             />
-                        </a-form-item>
-                    </a-col>
-                    <a-col :span="4">
-                        <a-form-item
+                        </j-form-item>
+                    </j-col>
+                    <j-col :span="4">
+                        <j-form-item
                             class="form-item"
                             :name="['configuration', 'apiPort']"
                             :rules="[
@@ -111,7 +111,7 @@
                         >
                             <div class="form-label"></div>
 
-                            <a-input-number
+                            <j-input-number
                                 style="width: 100%"
                                 :min="1"
                                 :max="65535"
@@ -119,10 +119,10 @@
                                 placeholder="请输入输入端口"
                                 v-model:value="formData.configuration.apiPort"
                             />
-                        </a-form-item>
-                    </a-col>
-                    <a-col :span="8" class="form-item">
-                        <a-form-item
+                        </j-form-item>
+                    </j-col>
+                    <j-col :span="8" class="form-item">
+                        <j-form-item
                             :name="['configuration', 'rtpIp']"
                             :rules="[
                                 {
@@ -138,24 +138,24 @@
                             <div class="form-label">
                                 RTP IP
                                 <span class="form-label-required">*</span>
-                                <a-tooltip>
+                                <j-tooltip>
                                     <template #title>
                                         <p>
                                             视频设备将流推送到该IP地址下，部分设备仅支持IP地址，建议全是用IP地址
                                         </p>
                                     </template>
                                     <AIcon type="QuestionCircleOutlined" />
-                                </a-tooltip>
+                                </j-tooltip>
                             </div>
 
-                            <a-input
+                            <j-input
                                 placeholder="请输入RTP IP"
                                 v-model:value="formData.configuration.rtpIp"
                             />
-                        </a-form-item>
-                    </a-col>
-                    <a-col :span="4" v-if="!checked">
-                        <a-form-item
+                        </j-form-item>
+                    </j-col>
+                    <j-col :span="4" v-if="!checked">
+                        <j-form-item
                             class="form-item"
                             :name="['configuration', 'rtpPort']"
                             :rules="[
@@ -167,7 +167,7 @@
                         >
                             <div class="form-label"></div>
 
-                            <a-input-number
+                            <j-input-number
                                 style="width: 100%"
                                 :min="1"
                                 :max="65535"
@@ -175,10 +175,10 @@
                                 placeholder="请输入端口"
                                 v-model:value="formData.configuration.rtpPort"
                             />
-                        </a-form-item>
-                    </a-col>
-                    <a-col :span="4" v-if="checked">
-                        <a-form-item
+                        </j-form-item>
+                    </j-col>
+                    <j-col :span="4" v-if="checked">
+                        <j-form-item
                             class="form-item"
                             :name="['configuration', 'dynamicRtpPortRange0']"
                             :rules="[
@@ -189,7 +189,7 @@
                             ]"
                         >
                             <div class="form-label"></div>
-                            <a-input-number
+                            <j-input-number
                                 style="width: 100%"
                                 :min="1"
                                 :max="
@@ -201,11 +201,11 @@
                                     formData.configuration.dynamicRtpPortRange0
                                 "
                             />
-                        </a-form-item>
-                    </a-col>
+                        </j-form-item>
+                    </j-col>
                     <div class="form-item-checked" v-if="checked">至</div>
-                    <a-col :span="4" v-if="checked">
-                        <a-form-item
+                    <j-col :span="4" v-if="checked">
+                        <j-form-item
                             class="form-item"
                             :name="['configuration', 'dynamicRtpPortRange1']"
                             :rules="[
@@ -216,7 +216,7 @@
                             ]"
                         >
                             <div class="form-label"></div>
-                            <a-input-number
+                            <j-input-number
                                 style="width: 100%"
                                 :min="
                                     formData.configuration.dynamicRtpPortRange0
@@ -228,40 +228,40 @@
                                     formData.configuration.dynamicRtpPortRange1
                                 "
                             />
-                        </a-form-item>
-                    </a-col>
-                    <a-col :span="4">
-                        <a-form-item
+                        </j-form-item>
+                    </j-col>
+                    <j-col :span="4">
+                        <j-form-item
                             class="form-item-checked2"
                             :name="['configuration', 'dynamicRtpPort']"
                         >
                             <div class="form-label"></div>
-                            <a-checkbox
+                            <j-checkbox
                                 v-model:checked="
                                     formData.configuration.dynamicRtpPort
                                 "
                             >
                                 动态端口
-                            </a-checkbox>
-                        </a-form-item>
-                    </a-col>
+                            </j-checkbox>
+                        </j-form-item>
+                    </j-col>
 
-                    <a-col :span="24">
-                        <a-form-item>
-                            <a-button
+                    <j-col :span="24">
+                        <j-form-item>
+                            <j-button
                                 v-if="view === 'false'"
                                 class="form-submit"
                                 html-type="submit"
                                 type="primary"
                                 @click.prevent="onSubmit"
                                 :loading="loading"
-                                >保存</a-button
+                                >保存</j-button
                             >
-                        </a-form-item>
-                    </a-col>
-                </a-row>
-            </a-form>
-        </a-card>
+                        </j-form-item>
+                    </j-col>
+                </j-row>
+            </j-form>
+        </j-card>
     </page-container>
 </template>
 
@@ -283,7 +283,7 @@ const loading = ref(false);
 const options = ref([]);
 const checked = ref(false);
 const regDomain =
-    /[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\.?/;
+    /[j-zA-Z0-9][-j-zA-Z0-9]{0,62}(\.[j-zA-Z0-9][-j-zA-Z0-9]{0,62})+\.?/;
 
 const formData = ref<FormDataType>({
     name: '',

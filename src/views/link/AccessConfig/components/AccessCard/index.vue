@@ -1,24 +1,24 @@
 <template>
-    <a-card
+    <j-card
         hoverable
         :class="['card-render', checked === data.id ? 'checked' : '']"
         @click="checkedChange(data.id)"
     >
         <div class="title">
-            <a-tooltip placement="topLeft" :title="data.name">{{
+            <j-tooltip placement="topLeft" :title="data.name">{{
                 data.name
-            }}</a-tooltip>
+            }}</j-tooltip>
         </div>
         <slot name="other"></slot>
         <div class="desc">
-            <a-tooltip placement="topLeft" :title="data.description">{{
+            <j-tooltip placement="topLeft" :title="data.description">{{
                 data.description
-            }}</a-tooltip>
+            }}</j-tooltip>
         </div>
         <div class="checked-icon">
             <div><CheckOutlined /></div>
         </div>
-    </a-card>
+    </j-card>
 </template>
 
 <script lang="ts" setup name="AccessCard">

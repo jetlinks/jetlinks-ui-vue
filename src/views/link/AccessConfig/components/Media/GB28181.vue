@@ -1,8 +1,8 @@
 <template>
     <div style="margin-top: 10px">
-        <a-steps :current="stepCurrent">
-            <a-step v-for="item in steps" :key="item" :title="item" />
-        </a-steps>
+        <j-steps :current="stepCurrent">
+            <j-step v-for="item in steps" :key="item" :title="item" />
+        </j-steps>
         <div class="steps-content">
             <div class="steps-box" v-if="current === 0">
                 <div class="alert">
@@ -10,16 +10,16 @@
                     配置设备信令参数
                 </div>
                 <div>
-                    <a-form
+                    <j-form
                         :model="formState"
                         ref="formRef1"
                         name="basic"
                         autocomplete="off"
                         layout="vertical"
                     >
-                        <a-row :gutter="[24, 24]">
-                            <a-col :span="12">
-                                <a-form-item
+                        <j-row :gutter="[24, 24]">
+                            <j-col :span="12">
+                                <j-form-item
                                     label="SIP 域"
                                     name="domain"
                                     :rules="[
@@ -33,14 +33,14 @@
                                         },
                                     ]"
                                 >
-                                    <a-input
+                                    <j-input
                                         v-model:value="formState.domain"
                                         placeholder="请输入SIP 域"
                                     />
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="12">
-                                <a-form-item
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="12">
+                                <j-form-item
                                     label="SIP ID"
                                     name="sipId"
                                     :rules="[
@@ -54,15 +54,15 @@
                                         },
                                     ]"
                                 >
-                                    <a-input
+                                    <j-input
                                         v-model:value="formState.sipId"
                                         placeholder="请输入SIP ID"
                                     />
-                                </a-form-item>
-                            </a-col>
-                        </a-row>
+                                </j-form-item>
+                            </j-col>
+                        </j-row>
 
-                        <a-form-item
+                        <j-form-item
                             name="shareCluster"
                             :rules="[
                                 {
@@ -76,7 +76,7 @@
                                 <span style="color: red; margin: 0 4px 0 -2px"
                                     >*</span
                                 >
-                                <a-tooltip>
+                                <j-tooltip>
                                     <template #title>
                                         <p>
                                             共享配置:集群下所有节点共用同一配置
@@ -86,20 +86,20 @@
                                         </p>
                                     </template>
                                     <AIcon type="QuestionCircleOutlined" />
-                                </a-tooltip>
+                                </j-tooltip>
                             </div>
 
-                            <a-radio-group
+                            <j-radio-group
                                 v-model:value="formState.shareCluster"
                             >
-                                <a-radio :value="true">共享配置</a-radio>
-                                <a-radio :value="false">独立配置</a-radio>
-                            </a-radio-group>
-                        </a-form-item>
+                                <j-radio :value="true">共享配置</j-radio>
+                                <j-radio :value="false">独立配置</j-radio>
+                            </j-radio-group>
+                        </j-form-item>
                         <div v-if="formState.shareCluster" class="form-item1">
-                            <a-row :gutter="[24, 24]">
-                                <a-col :span="6">
-                                    <a-form-item
+                            <j-row :gutter="[24, 24]">
+                                <j-col :span="6">
+                                    <j-form-item
                                         label="SIP 地址"
                                         :name="['hostPort', 'host']"
                                         :rules="[
@@ -109,7 +109,7 @@
                                             },
                                         ]"
                                     >
-                                        <a-select
+                                        <j-select
                                             v-model:value="
                                                 formState.hostPort.host
                                             "
@@ -118,14 +118,14 @@
                                             show-search
                                             :filter-option="filterOption"
                                         >
-                                            <a-select-option value="0.0.0.0"
-                                                >0.0.0.0</a-select-option
+                                            <j-select-option value="0.0.0.0"
+                                                >0.0.0.0</j-select-option
                                             >
-                                        </a-select>
-                                    </a-form-item>
-                                </a-col>
-                                <a-col :span="6">
-                                    <a-form-item
+                                        </j-select>
+                                    </j-form-item>
+                                </j-col>
+                                <j-col :span="6">
+                                    <j-form-item
                                         :name="['hostPort', 'port']"
                                         :rules="[
                                             {
@@ -136,7 +136,7 @@
                                     >
                                         <div class="form-label"></div>
 
-                                        <a-select
+                                        <j-select
                                             v-model:value="
                                                 formState.hostPort.port
                                             "
@@ -146,10 +146,10 @@
                                             show-search
                                             :filter-option="filterOption"
                                         />
-                                    </a-form-item>
-                                </a-col>
-                                <a-col :span="6">
-                                    <a-form-item
+                                    </j-form-item>
+                                </j-col>
+                                <j-col :span="6">
+                                    <j-form-item
                                         label="公网 Host"
                                         :name="['hostPort', 'publicHost']"
                                         :rules="[
@@ -164,17 +164,17 @@
                                             },
                                         ]"
                                     >
-                                        <a-input
+                                        <j-input
                                             style="width: 105%"
                                             v-model:value="
                                                 formState.hostPort.publicHost
                                             "
                                             placeholder="请输入IP地址"
                                         />
-                                    </a-form-item>
-                                </a-col>
-                                <a-col :span="6">
-                                    <a-form-item
+                                    </j-form-item>
+                                </j-col>
+                                <j-col :span="6">
+                                    <j-form-item
                                         :name="['hostPort', 'publicPort']"
                                         :rules="[
                                             {
@@ -185,7 +185,7 @@
                                     >
                                         <div class="form-label"></div>
 
-                                        <a-input-number
+                                        <j-input-number
                                             style="width: 100%"
                                             placeholder="请输入端口"
                                             v-model:value="
@@ -194,13 +194,13 @@
                                             :min="1"
                                             :max="65535"
                                         />
-                                    </a-form-item>
-                                </a-col>
-                            </a-row>
+                                    </j-form-item>
+                                </j-col>
+                            </j-row>
                         </div>
-                    </a-form>
+                    </j-form>
                     <div v-if="!formState.shareCluster">
-                        <a-form
+                        <j-form
                             ref="formRef2"
                             layout="vertical"
                             name="dynamic_form_nest_item"
@@ -212,17 +212,17 @@
                                 ) in dynamicValidateForm.cluster"
                                 :key="cluster.id"
                             >
-                                <a-collapse v-model:activeKey="activeKey">
-                                    <a-collapse-panel
+                                <j-collapse v-model:activeKey="activeKey">
+                                    <j-collapse-panel
                                         :key="cluster.id"
                                         :header="`#${index + 1}.节点`"
                                     >
                                         <template #extra>
                                             <AIcon type="DeleteOutlined" />
                                         </template>
-                                        <a-row :gutter="[24, 24]">
-                                            <a-col :span="8">
-                                                <a-form-item
+                                        <j-row :gutter="[24, 24]">
+                                            <j-col :span="8">
+                                                <j-form-item
                                                     :name="[
                                                         'cluster',
                                                         index,
@@ -232,7 +232,7 @@
                                                     <div class="form-label">
                                                         节点名称
                                                     </div>
-                                                    <a-select
+                                                    <j-select
                                                         v-model:value="
                                                             cluster.clusterNodeId
                                                         "
@@ -244,11 +244,11 @@
                                                             filterOption
                                                         "
                                                     >
-                                                    </a-select>
-                                                </a-form-item>
-                                            </a-col>
-                                            <a-col :span="4">
-                                                <a-form-item
+                                                    </j-select>
+                                                </j-form-item>
+                                            </j-col>
+                                            <j-col :span="4">
+                                                <j-form-item
                                                     :name="[
                                                         'cluster',
                                                         index,
@@ -266,7 +266,7 @@
                                                             class="form-label-required"
                                                             >*</span
                                                         >
-                                                        <a-tooltip>
+                                                        <j-tooltip>
                                                             <template #title>
                                                                 <p>
                                                                     绑定到服务器上的网卡地址,绑定到所有网卡:0.0.0.0
@@ -275,10 +275,10 @@
                                                             <AIcon
                                                                 type="QuestionCircleOutlined"
                                                             />
-                                                        </a-tooltip>
+                                                        </j-tooltip>
                                                     </div>
 
-                                                    <a-select
+                                                    <j-select
                                                         v-model:value="
                                                             cluster.host
                                                         "
@@ -296,11 +296,11 @@
                                                             )
                                                         "
                                                     >
-                                                    </a-select>
-                                                </a-form-item>
-                                            </a-col>
-                                            <a-col :span="4">
-                                                <a-form-item
+                                                    </j-select>
+                                                </j-form-item>
+                                            </j-col>
+                                            <j-col :span="4">
+                                                <j-form-item
                                                     :name="[
                                                         'cluster',
                                                         index,
@@ -314,7 +314,7 @@
                                                     <div
                                                         class="form-label"
                                                     ></div>
-                                                    <a-select
+                                                    <j-select
                                                         v-model:value="
                                                             cluster.port
                                                         "
@@ -328,10 +328,10 @@
                                                             filterOption
                                                         "
                                                     />
-                                                </a-form-item>
-                                            </a-col>
-                                            <a-col :span="4">
-                                                <a-form-item
+                                                </j-form-item>
+                                            </j-col>
+                                            <j-col :span="4">
+                                                <j-form-item
                                                     :name="[
                                                         'cluster',
                                                         index,
@@ -357,7 +357,7 @@
                                                             class="form-label-required"
                                                             >*</span
                                                         >
-                                                        <a-tooltip>
+                                                        <j-tooltip>
                                                             <template #title>
                                                                 <p>
                                                                     监听指定端口的请求
@@ -366,9 +366,9 @@
                                                             <AIcon
                                                                 type="QuestionCircleOutlined"
                                                             />
-                                                        </a-tooltip>
+                                                        </j-tooltip>
                                                     </div>
-                                                    <a-input
+                                                    <j-input
                                                         style="width: 110%"
                                                         v-model:value="
                                                             cluster.publicHost
@@ -376,10 +376,10 @@
                                                         placeholder="请输入IP地址"
                                                         allowClear
                                                     />
-                                                </a-form-item>
-                                            </a-col>
-                                            <a-col :span="4">
-                                                <a-form-item
+                                                </j-form-item>
+                                            </j-col>
+                                            <j-col :span="4">
+                                                <j-form-item
                                                     :name="[
                                                         'cluster',
                                                         index,
@@ -397,7 +397,7 @@
                                                         class="form-label"
                                                     ></div>
 
-                                                    <a-input-number
+                                                    <j-input-number
                                                         style="width: 100%"
                                                         placeholder="请输入端口"
                                                         v-model:value="
@@ -406,14 +406,14 @@
                                                         :min="1"
                                                         :max="65535"
                                                     />
-                                                </a-form-item>
-                                            </a-col>
-                                        </a-row>
-                                    </a-collapse-panel>
-                                </a-collapse>
+                                                </j-form-item>
+                                            </j-col>
+                                        </j-row>
+                                    </j-collapse-panel>
+                                </j-collapse>
                             </div>
-                            <a-form-item>
-                                <a-button
+                            <j-form-item>
+                                <j-button
                                     style="margin-top: 10px"
                                     type="dashed"
                                     block
@@ -421,9 +421,9 @@
                                 >
                                     <AIcon type="PlusOutlined" />
                                     新增
-                                </a-button>
-                            </a-form-item>
-                        </a-form>
+                                </j-button>
+                            </j-form-item>
+                        </j-form>
                     </div>
                 </div>
             </div>
@@ -434,38 +434,38 @@
                         clientHeight > 900 ? 750 : clientHeight * 0.7
                     }px`"
                 >
-                    <a-row :gutter="[24, 24]">
-                        <a-col :span="12">
+                    <j-row :gutter="[24, 24]">
+                        <j-col :span="12">
                             <title-component data="基本信息" />
                             <div>
-                                <a-form :model="formData" layout="vertical">
-                                    <a-form-item
+                                <j-form :model="formData" layout="vertical">
+                                    <j-form-item
                                         label="名称"
                                         v-bind="validateInfos.name"
                                     >
-                                        <a-input
+                                        <j-input
                                             v-model:value="formData.name"
                                             allowClear
                                             placeholder="请输入名称"
                                         />
-                                    </a-form-item>
+                                    </j-form-item>
 
-                                    <a-form-item
+                                    <j-form-item
                                         label="说明"
                                         v-bind="validateInfos.description"
                                     >
-                                        <a-textarea
+                                        <j-textarea
                                             placeholder="请输入说明"
                                             :rows="4"
                                             v-model:value="formData.description"
                                             show-count
                                             :maxlength="200"
                                         />
-                                    </a-form-item>
-                                </a-form>
+                                    </j-form-item>
+                                </j-form>
                             </div>
-                        </a-col>
-                        <a-col :span="12">
+                        </j-col>
+                        <j-col :span="12">
                             <div class="config-right">
                                 <div class="config-right-item">
                                     <div class="config-right-item-title">
@@ -491,19 +491,19 @@
                                     </div>
                                 </div>
                             </div>
-                        </a-col>
-                    </a-row>
+                        </j-col>
+                    </j-row>
                 </div>
             </div>
         </div>
         <div class="steps-action">
-            <a-button
+            <j-button
                 v-if="[0].includes(current)"
                 style="margin-right: 8px"
                 @click="next"
             >
                 下一步
-            </a-button>
+            </j-button>
             <PermissionButton
                 v-if="current === 1 && view === 'false'"
                 type="primary"
@@ -515,7 +515,7 @@
             >
                 保存
             </PermissionButton>
-            <a-button v-if="current > 0" @click="prev"> 上一步 </a-button>
+            <j-button v-if="current > 0" @click="prev"> 上一步 </j-button>
         </div>
     </div>
 </template>

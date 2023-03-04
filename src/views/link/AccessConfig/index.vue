@@ -3,7 +3,7 @@
         <div>
             <Search :columns="columns" target="search" @search="handleSearch" />
 
-            <JTable
+            <j-pro-table
                 ref="tableRef"
                 model="CARD"
                 :columns="columns"
@@ -16,7 +16,7 @@
                 :params="params"
             >
                 <template #headerTitle>
-                    <a-space>
+                    <j-space>
                         <PermissionButton
                             type="primary"
                             @click="handlAdd"
@@ -27,7 +27,7 @@
                             /></template>
                             新增
                         </PermissionButton>
-                    </a-space>
+                    </j-space>
                 </template>
                 <template #card="slotProps">
                     <CardBox
@@ -63,8 +63,8 @@
                                     {{ slotProps.name }}
                                 </PermissionButton>
 
-                                <a-row class="card-item-content-box">
-                                    <a-col
+                                <j-row class="card-item-content-box">
+                                    <j-col
                                         :span="12"
                                         v-if="slotProps.channelInfo"
                                         class="card-item-content-text"
@@ -78,10 +78,10 @@
                                                 slotProps.channelInfo.addresses
                                             "
                                         >
-                                            <a-badge
+                                            <j-badge
                                                 :status="getStatus(slotProps)"
                                             />
-                                            <a-tooltip>
+                                            <j-tooltip>
                                                 <template #title>{{
                                                     slotProps.channelInfo
                                                         .addresses[0].address
@@ -90,10 +90,10 @@
                                                     slotProps.channelInfo
                                                         .addresses[0].address
                                                 }}
-                                            </a-tooltip>
+                                            </j-tooltip>
                                         </div>
-                                    </a-col>
-                                    <a-col
+                                    </j-col>
+                                    <j-col
                                         :span="12"
                                         v-if="slotProps.protocolDetail"
                                     >
@@ -101,7 +101,7 @@
                                             协议
                                         </div>
                                         <div class="card-item-content-text">
-                                            <a-tooltip>
+                                            <j-tooltip>
                                                 <template #title>{{
                                                     slotProps.protocolDetail
                                                         .name
@@ -110,14 +110,14 @@
                                                     slotProps.protocolDetail
                                                         .name
                                                 }}
-                                            </a-tooltip>
+                                            </j-tooltip>
                                         </div>
-                                    </a-col>
-                                </a-row>
-                                <a-row>
-                                    <a-col :span="24">
+                                    </j-col>
+                                </j-row>
+                                <j-row>
+                                    <j-col :span="24">
                                         <div class="card-item-content-text">
-                                            <a-tooltip>
+                                            <j-tooltip>
                                                 <template #title>
                                                     {{
                                                         getDescription(
@@ -126,10 +126,10 @@
                                                     }}
                                                 </template>
                                                 {{ getDescription(slotProps) }}
-                                            </a-tooltip>
+                                            </j-tooltip>
                                         </div>
-                                    </a-col>
-                                </a-row>
+                                    </j-col>
+                                </j-row>
                             </div>
                         </template>
 
@@ -156,12 +156,12 @@
                     </CardBox>
                 </template>
                 <template #state="slotProps">
-                    <a-badge
+                    <j-badge
                         :text="slotProps.state.text"
                         :status="statusMap.get(slotProps.state.value)"
                     />
                 </template>
-            </JTable>
+            </j-pro-table>
         </div>
     </page-container>
 </template>

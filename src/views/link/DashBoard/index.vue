@@ -1,12 +1,12 @@
 <template>
     <page-container>
         <div>
-            <a-row :gutter="[24, 24]">
-                <a-col :span="24"><TopCard /> </a-col>
-                <a-col :span="24"><Network /></a-col>
-                <a-col :span="12"><Cpu /></a-col>
-                <a-col :span="12"><Jvm /></a-col>
-            </a-row>
+            <j-row :gutter="[24, 24]">
+                <j-col :span="24"><TopCard /> </j-col>
+                <j-col :span="24"><Network /></j-col>
+                <j-col :span="12"><Cpu /></j-col>
+                <j-col :span="12"><Jvm /></j-col>
+            </j-row>
         </div>
     </page-container>
 </template>
