@@ -61,7 +61,10 @@
                             保存
                             <template #overlay>
                                 <a-menu>
-                                    <a-empty v-if="!historyList.length" />
+                                    <a-empty
+                                        v-if="!historyList.length"
+                                        description="暂无数据"
+                                    />
                                     <a-menu-item
                                         v-for="(item, index) in historyList"
                                         :key="`his${index}`"
@@ -124,7 +127,11 @@
                             >
                                 刷新
                             </div>
-                            <LivePlayer :src="item.url" />
+                            <LivePlayer
+                                :src="item.url"
+                                :width="screenWidth"
+                                :height="screenHeight"
+                            />
                         </div>
                     </template>
                 </div>
@@ -179,20 +186,39 @@ const props = defineProps<ScreenProps>();
 
 const DEFAULT_SAVE_CODE = 'screen-save';
 
+// 分屏数量 1/4/9/0
 const screen = ref(1);
+// 视频窗口
 const players = ref<Player[]>([]);
+// 当前选中的窗口
 const playerActive = ref(0);
+// 单个播放窗口宽高
+const screenWidth = ref('');
+const screenHeight = ref('');
+// 历史记录
 const historyList = ref<any[]>([]);
+// 展示保存浮窗
 const visible = ref(false);
 const loading = ref(false);
-const fullscreenRef = ref(null);
-const { isFullscreen, enter, exit, toggle } = useFullscreen();
-
+// 保存表单
 const formRef = ref();
 const formData = ref({
     name: '',
 });
 
+// 全屏元素
+const fullscreenRef = ref(null);
+const { isFullscreen, enter, exit, toggle } = useFullscreen(
+    fullscreenRef.value,
+);
+
+/**
+ * 刷新视频
+ * @param id
+ * @param channelId
+ * @param url
+ * @param index
+ */
 const reloadPlayer = (
     id: string,
     channelId: string,
@@ -221,6 +247,12 @@ const reloadPlayer = (
     }, 1000);
 };
 
+/**
+ * 视频链接变化, 更新播放内容
+ * @param id
+ * @param channelId
+ * @param url
+ */
 const replaceVideo = (id: string, channelId: string, url: string) => {
     const olPlayers = [...players.value];
     const newPlayer = {
@@ -246,6 +278,10 @@ const replaceVideo = (id: string, channelId: string, url: string) => {
     }
 };
 
+/**
+ * 点击分屏历史记录
+ * @param item
+ */
 const handleHistory = (item: any) => {
     if (props.historyHandle) {
         const log = JSON.parse(item.content || '{}');
@@ -271,12 +307,20 @@ const handleHistory = (item: any) => {
     }
 };
 
+/**
+ * 获取历史分屏
+ */
 const getHistory = async () => {
     const res = await getSearchHistory(DEFAULT_SAVE_CODE);
     if (res.success) {
         historyList.value = res.result;
     }
 };
+
+/**
+ * 删除历史分屏
+ * @param id
+ */
 const deleteHistory = async (id: string) => {
     const res = await deleteSearchHistory(DEFAULT_SAVE_CODE, id);
     if (res.success) {
@@ -285,6 +329,9 @@ const deleteHistory = async (id: string) => {
     }
 };
 
+/**
+ * 保存分屏
+ */
 const saveHistory = async () => {
     formRef.value
         .validate()
@@ -292,7 +339,7 @@ const saveHistory = async () => {
             const param = {
                 name: formData.value.name,
                 content: JSON.stringify({
-                    screen: screen,
+                    screen: screen.value,
                     players: players.value.map((item: any) => ({
                         deviceId: item.id,
                         channelId: item.channelId,
@@ -306,6 +353,7 @@ const saveHistory = async () => {
                 visible.value = false;
                 getHistory();
                 message.success('保存成功');
+                formRef.value.resetFields();
             } else {
                 message.error('保存失败');
             }
@@ -315,6 +363,9 @@ const saveHistory = async () => {
         });
 };
 
+/**
+ * 初始化
+ */
 const mediaInit = () => {
     const newArr = [];
     for (let i = 0; i < 9; i++) {
@@ -329,6 +380,10 @@ const mediaInit = () => {
     players.value = newArr;
 };
 
+/**
+ * 改变分屏数量
+ * @param e
+ */
 const handleScreenChange = (e: any) => {
     if (e.target.value) {
         screenChange(e.target.value);
@@ -348,8 +403,19 @@ const screenChange = (index: number) => {
     }));
     playerActive.value = 0;
     screen.value = index;
+
+    // if (screen.value === 4) {
+    //     screenWidth.value = '350px';
+    //     screenHeight.value = '2000px';
+    // }
 };
 
+/**
+ * 刷新
+ * @param e
+ * @param item
+ * @param index
+ */
 const handleRefresh = (e: any, item: any, index: number) => {
     e.stopPropagation();
     if (item.url) {
@@ -363,10 +429,6 @@ const handleRefresh = (e: any, item: any, index: number) => {
  */
 const handleMouseDown = (type: string) => {
     const { id, channelId } = players.value[playerActive.value];
-    console.log('players.value: ', players.value);
-    console.log('playerActive.value: ', playerActive.value);
-    console.log('id: ', id);
-    console.log('channelId: ', channelId);
     if (id && channelId && props.onMouseDown) {
         props.onMouseDown(id, channelId, type);
     }
@@ -392,6 +454,10 @@ watchEffect(() => {
         getHistory();
     }
     mediaInit();
+});
+
+defineExpose({
+    replaceVideo,
 });
 </script>
 
