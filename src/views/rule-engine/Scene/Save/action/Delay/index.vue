@@ -10,7 +10,7 @@
         <a-input-number
             style="max-width: 220px"
             placeholder="请输入时间"
-            v-model:value="value"
+            v-model:value="_value"
             :precision="3"
             :min="0"
             :max="6535"
@@ -32,6 +32,18 @@
 <script lang="ts" setup>
 import { onlyMessage } from '@/utils/comm';
 
+const props = defineProps({
+    value: {
+        type: Object,
+        default: () => {
+            return {
+                time: 0,
+                unit: 'seconds',
+            };
+        },
+    },
+});
+
 const timeUnitEnum = {
     seconds: '秒',
     minutes: '分',
@@ -40,24 +52,38 @@ const timeUnitEnum = {
 
 const emit = defineEmits(['cancel', 'save']);
 
-const value = ref<number>(0);
-const unit = ref<'seconds' | 'minutes' | 'hours'>('seconds');
+const _value = ref<number>(props.value.time);
+const unit = ref<'seconds' | 'minutes' | 'hours'>(
+    props.value?.unit || 'seconds',
+);
+
+watch(
+    () => props.value,
+    (newVal) => {
+        _value.value = newVal?.time || 0
+        unit.value = newVal?.unit || 'seconds'
+    },
+    {
+        immediate: true,
+        deep: true,
+    },
+);
 
 const onCancel = () => {
     emit('cancel');
 };
 const onOk = () => {
-    if (unref(value) || unref(value) === 0) {
+    if (unref(_value) || unref(_value) === 0) {
     } else {
         onlyMessage('请输入时间', 'error');
     }
     emit(
         'save',
         {
-            time: value.value,
+            time: _value.value,
             unit: unit.value,
         },
-        { name: `${value.value} ${timeUnitEnum[unit.value]}后，执行后续动作` },
+        { name: `${_value.value} ${timeUnitEnum[unit.value]}后，执行后续动作` },
     );
 };
 </script>

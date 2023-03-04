@@ -25,24 +25,51 @@
                     float="right"
                 />
             </a-form-item>
-            <template v-if="actionType === 'device'">
-                <Device @cancel="onCancel" @save="onPropsOk" />
-            </template>
-            <template v-else-if="actionType === 'notify'">
-                <Notify @cancel="onCancel" @save="onPropsOk" />
-            </template>
-            <template v-else-if="actionType === 'delay'">
-                <Delay @cancel="onCancel" @save="onPropsOk" />
-            </template>
+            <ActionTypeComponent
+                v-bind="props"
+                v-if="!!actionType"
+                :actionType="actionType"
+                @save="onPropsOk"
+                @cancel="onPropsCancel"
+            />
         </a-form>
     </j-modal>
 </template>
 
 <script lang="ts" setup>
 import { getImage } from '@/utils/comm';
-import Delay from '../Delay/index.vue'
-import Notify from '../Notify/index.vue'
-import Device from '../Device/index.vue'
+import Delay from '../Delay/index.vue';
+import Notify from '../Notify/index.vue';
+import Device from '../Device/index.vue';
+import { PropType } from 'vue';
+import { ActionsType } from '../../../typings';
+import ActionTypeComponent from './ActionTypeComponent.vue'
+import { randomString } from '@/utils/utils';
+
+
+const props = defineProps({
+    branchesName: {
+        type: Number,
+        default: 0,
+    },
+    branchGroup: {
+        type: Number,
+        default: 0,
+    },
+    name: {
+        type: Number,
+        default: 0,
+    },
+    data: {
+        type: Object as PropType<ActionsType>,
+        default: () => ({
+            key: randomString()
+        })
+    },
+    parallel: {
+        type: Boolean,
+    },
+});
 
 const emit = defineEmits(['cancel', 'save']);
 
@@ -81,25 +108,42 @@ const options = [
 
 const actionForm = ref();
 const formModel = reactive({
-    type: '',
+    type: 'device',
 });
 
-const actionType = ref<string>('')
+const actionType = ref<string>('');
 
-const onCancel = () => {
-    emit('cancel');
-};
+watch(
+    () => props.data,
+    (newVal) => {
+        if (newVal?.executor) {
+            formModel.type = (newVal?.executor === 'alarm' ? newVal?.alarm?.mode : newVal?.executor) as string
+        }
+    },
+    {
+        immediate: true,
+        deep: true,
+    },
+);
 const onOk = () => {
     actionForm.value.validate().then((values: any) => {
-        actionType.value = values?.type
+        actionType.value = values?.type;
         if (values?.type === 'relieve' || values?.type === 'trigger') {
-            // emit('save');
-            //   props.save({ ...props.data, executor: 'alarm', alarm: { mode: values.type } }, {});
+            emit('save', { ...props.data, executor: 'alarm', alarm: { mode: values.type } }, {});
         }
     });
 };
 
-const onPropsOk = (data: any, option: any) => {
-    console.log(data, option)
+const onCancel = () => {
+    emit('cancel');
+};
+
+const onPropsOk = (data: any, options?: any) => {
+    emit('save', { ...data, executor: data.type }, options);
+    actionType.value = ''
+};
+
+const onPropsCancel = () => {
+    actionType.value = ''
 }
 </script>

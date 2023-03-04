@@ -19,3 +19,6 @@ export const _action = (id: string, type: '_disable' | '_enable') => server.put(
  * @returns 
  */
 export const _execute = (id: string) => server.post(`/scene/${id}/_execute`);
+
+// 内置参数
+export const queryBuiltInParams = (data: any, params?: any) => server.post(`/scene/parse-variables`, data, params);

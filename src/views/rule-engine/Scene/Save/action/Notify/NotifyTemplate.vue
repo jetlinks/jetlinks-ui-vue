@@ -7,20 +7,16 @@
         class="search"
     />
     <div style="height: 400px; overflow-y: auto">
-        <JTable
+        <JProTable
             :columns="columns"
-            :request="(e) => TemplateApi.getListByConfigId(props.notifierId, e)"
+            :request="(e) => handleData(e)"
             model="CARD"
             :bodyStyle="{
                 paddingRight: 0,
                 paddingLeft: 0,
             }"
-            :defaultParams="{
-                sorts: [{ name: 'createTime', order: 'desc' }],
-            }"
             :params="params"
             :gridColumn="2"
-            :gridColumns="[2, 2, 2]"
             :rowSelection="{
                 selectedRowKeys: _selectedRowKeys,
             }"
@@ -71,7 +67,7 @@
                     </template>
                 </CardBox>
             </template>
-        </JTable>
+        </JProTable>
     </div>
 </template>
 
@@ -142,6 +138,27 @@ const handleClick = (dt: any) => {
     emit('update:value', dt.id);
 };
 
+const handleData = async (e: any) => {
+    const sorts = [
+        { name: 'id', value: props.value },
+        { name: 'createTime', order: 'desc' },
+    ];
+    const resp = await TemplateApi.getListByConfigId(props.notifierId, {
+        ...e,
+        sorts: sorts,
+    });
+    return {
+        code: resp.message,
+        result: {
+            data: resp.result ? resp.result : [],
+            pageIndex: 0,
+            pageSize: resp.result.length,
+            total: resp.result.length,
+        },
+        status: resp.status,
+    };
+};
+
 watch(
     () => props.value,
     (newValue) => {
@@ -163,5 +180,10 @@ watch(
     margin-bottom: 0;
     padding-right: 0px;
     padding-left: 0px;
+}
+
+.logo {
+    width: 88px;
+    height: 88px;
 }
 </style>
