@@ -103,7 +103,7 @@ import {
     saveDeviceCode,
     delDeviceCode
 } from '@/api/device/instance'
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { isBoolean } from 'lodash';
 
 const defaultValue =

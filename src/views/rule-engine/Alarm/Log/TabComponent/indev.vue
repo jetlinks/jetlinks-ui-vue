@@ -24,7 +24,7 @@
             v-if="props.type === 'org'"
             @search="search"
         ></Search>
-        <JTable
+        <JProTable
             :columns="columns"
             :request="handleSearch"
             :params="params"
@@ -115,7 +115,7 @@
                     </template>
                 </CardBox>
             </template>
-        </JTable>
+        </JProTable>
         <SolveComponent :data="data" v-if="data.solveVisible" @closeSolve="closeSolve"/>
         <SolveLog :data="data.current" v-if="data.logVisible" @closeLog="closeLog"/>
     </div>

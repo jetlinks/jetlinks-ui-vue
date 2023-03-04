@@ -1,6 +1,6 @@
 import type { Slots } from 'vue'
 import { TOKEN_KEY } from '@/utils/variable'
-import { message } from 'ant-design-vue'
+import { message } from 'jetlinks-ui-components';
 
 /**
  * 静态图片资源处理

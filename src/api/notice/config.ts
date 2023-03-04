@@ -17,6 +17,8 @@ export default {
     getHistory: (data: any, id: string) => post(`/notify/history/config/${id}/_query`, data),
     // 获取所有平台用户
     getPlatformUsers: (data: any) => post<any>(`/user/_query/no-paging`, data),
+    // 获取所有关系
+    getRelationUsers: (data: any) => post<any>(`/relation/_query/no-paging`, data),
     // 钉钉部门
     dingTalkDept: (id: string) => get<any>(`/notifier/dingtalk/corp/${id}/departments/tree`),
     // 钉钉部门人员
@@ -38,5 +40,9 @@ export default {
     //通知类型
     queryMessageType: () => get(`/notifier/config/types`),
     // 不分页-列表
-    queryListNoPaging: (data: any) => post(`/notifier/config/_query/no-paging?paging=false`, data)
+    queryListNoPaging: (data: any) => post(`/notifier/config/_query/no-paging?paging=false`, data),
+    // 
+    queryDingTalkUsers: (id: string) => get<any>(`/notifier/dingtalk/corp/${id}/users?sorts[0].name='name'&sorts[0].order=asc`),
+    // 
+    queryWechatUsers: (id: string) => get<any>(`/notifier/wechat/corp/${id}/users?sorts[0].name='name'&sorts[0].order=asc`),
 }

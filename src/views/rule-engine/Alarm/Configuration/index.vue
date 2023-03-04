@@ -6,7 +6,7 @@
                 target="device-instance"
                 @search="handleSearch"
             ></Search>
-            <JTable
+            <JProTable
                 :columns="columns"
                 :request="queryList"
                 :gridColumn="3"
@@ -155,7 +155,7 @@
                         </template>
                     </a-space>
                 </template>
-            </JTable>
+            </JProTable>
         </div>
     </page-container>
 </template>
