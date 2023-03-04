@@ -2,7 +2,6 @@ import {defineConfig, loadEnv} from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import Components from 'unplugin-vue-components/vite'
-import {AntDesignVueResolver} from 'unplugin-vue-components/resolvers'
 import AutoImport from 'unplugin-auto-import/vite'
 import { createHtmlPlugin } from 'vite-plugin-html'
 import Config from './config/config'
@@ -11,6 +10,7 @@ import VueSetupExtend from 'vite-plugin-vue-setup-extend'
 import { createStyleImportPlugin, AndDesignVueResolve } from 'vite-plugin-style-import'
 import * as path from 'path'
 import monacoEditorPlugin from 'vite-plugin-monaco-editor';
+import { JetlinksVueResolver } from './plugin/jetlinks'
 
 
 // https://vitejs.dev/config/
@@ -53,7 +53,7 @@ export default defineConfig(({ mode}) => {
           monacoEditorPlugin({}),
           vueJsx(),
           Components({
-              resolvers: [AntDesignVueResolver({ importStyle: 'less' }), VueAmapResolver()],
+              resolvers: [JetlinksVueResolver({ importStyle: 'less' }), VueAmapResolver()],
               directoryAsNamespace: true
           }),
           AutoImport({
