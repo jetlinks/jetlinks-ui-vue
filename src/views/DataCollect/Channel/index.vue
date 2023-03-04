@@ -117,7 +117,7 @@
         </div>
     </page-container>
 </template>
-<script lang="ts" setup name="TypePage">
+<script lang="ts" setup name="DataCollectPage">
 import type { ActionsType } from '@/components/Table/index';
 import { getImage } from '@/utils/comm';
 import { query, remove, update } from '@/api/data-collect/channel';
@@ -277,7 +277,7 @@ const handlEdit = (data: object) => {
     visible.value = true;
 };
 const handlEye = (id: string) => {
-    console.log(id);
+    menuStory.jumpPage(`DataCollect/Collector`, {}, { channelId: id });
 };
 const saveChange = (value: object) => {
     visible.value = false;
