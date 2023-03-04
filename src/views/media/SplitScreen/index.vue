@@ -30,10 +30,19 @@ const deviceId = ref('');
 const channelId = ref('');
 const player = ref();
 
+/**
+ * 获取视频链接
+ * @param dId 
+ * @param cId 
+ */
 const getMediaUrl = (dId: string, cId: string): string => {
     return channelApi.ptzStart(dId, cId, 'mp4');
 };
 
+/**
+ * 点击左侧摄像头, 播放对应视频
+ * @param e 
+ */
 const mediaStart = (e: { cId: string; dId: string }) => {
     channelId.value = e.cId;
     deviceId.value = e.dId;

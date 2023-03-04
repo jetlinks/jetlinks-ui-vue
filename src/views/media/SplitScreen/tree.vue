@@ -41,8 +41,12 @@ interface DataNode {
     children?: DataNode[];
 }
 
+/**
+ * 点击节点
+ * @param _ 
+ * @param param1 
+ */
 const onSelect = (_: any, { node }: any) => {
-    console.log('node: ', node);
     emit('onSelect', { dId: node.deviceId, cId: node.channelId });
 };
 
@@ -76,6 +80,12 @@ const getDeviceList = async () => {
 };
 getDeviceList();
 
+/**
+ * 更新数据
+ * @param list 
+ * @param key 
+ * @param children 
+ */
 const updateTreeData = (
     list: DataNode[],
     key: any,
@@ -129,12 +139,15 @@ const getChildren = (key: any, params: any): Promise<any> => {
                     });
                 }, 50);
             }
-            console.log('treeData.value: ', treeData.value);
             resolve(res.result);
         }
     });
 };
 
+/**
+ * 异步加载子节点数据
+ * @param param0 
+ */
 const onLoadData = ({ key, children }: any): Promise<void> => {
     return new Promise(async (resolve) => {
         if (children) {
