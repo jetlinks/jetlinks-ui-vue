@@ -124,7 +124,11 @@
                             >
                                 刷新
                             </div>
-                            <LivePlayer :src="item.url" />
+                            <LivePlayer
+                                :src="item.url"
+                                :width="screenWidth"
+                                :height="screenHeight"
+                            />
                         </div>
                     </template>
                 </div>
@@ -186,7 +190,12 @@ const historyList = ref<any[]>([]);
 const visible = ref(false);
 const loading = ref(false);
 const fullscreenRef = ref(null);
-const { isFullscreen, enter, exit, toggle } = useFullscreen();
+const screenWidth = ref('');
+const screenHeight = ref('');
+
+const { isFullscreen, enter, exit, toggle } = useFullscreen(
+    fullscreenRef.value,
+);
 
 const formRef = ref();
 const formData = ref({
@@ -348,6 +357,11 @@ const screenChange = (index: number) => {
     }));
     playerActive.value = 0;
     screen.value = index;
+
+    // if (screen.value === 4) {
+    //     screenWidth.value = '350px';
+    //     screenHeight.value = '2000px';
+    // }
 };
 
 const handleRefresh = (e: any, item: any, index: number) => {
@@ -392,6 +406,10 @@ watchEffect(() => {
         getHistory();
     }
     mediaInit();
+});
+
+defineExpose({
+    replaceVideo,
 });
 </script>
 
