@@ -133,7 +133,7 @@
 import { getImage } from '@/utils/comm';
 import PlatformType from '@/views/iot-card/components/PlatformType.vue';
 import { queryById, save, update } from '@/api/iot-card/platform';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import Doc from '../doc/index.vue';
 
 const router = useRouter();

@@ -5,10 +5,10 @@ import JTable from './Table/index'
 import TitleComponent from "./TitleComponent/index.vue";
 import Form from './Form';
 import CardBox from './CardBox/index.vue';
-import Search from './Search'
+// import Search from './Search'
 import NormalUpload from './NormalUpload/index.vue'
 import FileFormat from './FileFormat/index.vue'
-import JUpload from './JUpload/index.vue'
+// import JUpload from './JUpload/index.vue'
 import { BasicLayoutPage, BlankLayoutPage } from './Layout'
 import { PageContainer } from 'jetlinks-ui-components/es/components'
 import Ellipsis from './Ellipsis/index.vue'
@@ -24,10 +24,10 @@ export default  {
             .component('TitleComponent', TitleComponent)
             .component('Form', Form)
             .component('CardBox', CardBox)
-            .component('Search', Search)
+            // .component('Search', Search)
             .component('NormalUpload', NormalUpload)
             .component('FileFormat', FileFormat)
-            .component('JUpload', JUpload)
+            // .component('JUpload', JUpload)
             .component('BasicLayoutPage', BasicLayoutPage)
             .component('BlankLayoutPage', BlankLayoutPage)
             .component('PageContainer', PageContainer)

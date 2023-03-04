@@ -1,6 +1,6 @@
 <template>
     <page-container>
-        <JSearch
+        <j-advanced-search
             :columns="columns"
             target="device-instance"
             @search="handleSearch"
@@ -259,7 +259,7 @@ import {
     batchDeployDevice,
     batchDeleteDevice,
 } from '@/api/device/instance';
-import type { ActionsType } from '@/components/Table/index.vue';
+// import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage, LocalStore } from '@/utils/comm';
 import { message } from 'ant-design-vue';
 import Import from './Import/index.vue';

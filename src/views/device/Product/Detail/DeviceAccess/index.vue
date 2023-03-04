@@ -374,6 +374,7 @@ const productStore = useProductStore();
 import Driver from 'driver.js';
 import 'driver.js/dist/driver.min.css';
 import { marked } from 'marked';
+import type { FormInstance, TableColumnType } from 'ant-design-vue';
 const render = new marked.Renderer();
 marked.setOptions({
     renderer: render,
@@ -690,31 +691,53 @@ const driver1 = new Driver({
 /**
  * 表格列表
  */
-const columnsMQTT: any[] = [
-    {
-        title: '分组',
-        dataIndex: 'group',
-        key: 'group',
-        ellipsis: true,
-        width: 100,
-        // customCell: (record: any, index: number) => {
-        //     const list =
-        //         (config?.routes || []).sort((a: any, b: any) => a - b) || [];
-        //     const arr = list.filter((res: any) => {
-        //         // 这里gpsNumber是我需要判断的字段名（相同就合并）
-        //         return res?.group == record?.group;
-        //     });
-        //     if (index == 0 || list[index - 1]?.group != record?.group) {
-        //         return { rowSpan: arr.length };
-        //     } else {
-        //         return { rowSpan: 0 };
-        //     }
-        // },
-    },
+// const columnsMQTT: any[] = [
+//     {
+//         title: '分组',
+//         dataIndex: 'group',
+//         key: 'group',
+//         ellipsis: true,
+//         width: 100,
+//         // customCell: (record: any, index: number) => {
+//         //     const list =
+//         //         (config?.routes || []).sort((a: any, b: any) => a - b) || [];
+//         //     const arr = list.filter((res: any) => {
+//         //         // 这里gpsNumber是我需要判断的字段名（相同就合并）
+//         //         return res?.group == record?.group;
+//         //     });
+//         //     if (index == 0 || list[index - 1]?.group != record?.group) {
+//         //         return { rowSpan: arr.length };
+//         //     } else {
+//         //         return { rowSpan: 0 };
+//         //     }
+//         // },
+//     },
+//     {
+//         title: 'topic',
+//         dataIndex: 'topic',
+//         key: 'topic',
+//     },
+//     {
+//         title: '上下行',
+//         dataIndex: 'stream',
+//         key: 'stream',
+//         ellipsis: true,
+//         align: 'center',
+//         width: 100,
+//     },
+//     {
+//         title: '说明',
+//         dataIndex: 'description',
+//         key: 'description',
+//     },
+// ];
+let columnsMQTT = ref(<TableColumnType>[]);
+const ColumnsMQTT = [
     {
         title: 'topic',
         dataIndex: 'topic',
         key: 'topic',
+        ellipsis: true,
     },
     {
         title: '上下行',
@@ -723,46 +746,71 @@ const columnsMQTT: any[] = [
         ellipsis: true,
         align: 'center',
         width: 100,
+        scopedSlots: { customRender: 'stream' },
     },
     {
         title: '说明',
         dataIndex: 'description',
         key: 'description',
+        ellipsis: true,
     },
 ];
-
-const columnsHTTP: any[] = [
+const columnsHTTP = ref(<TableColumnType>[]);
+const ColumnsHTTP = [
     {
-        title: '分组',
-        dataIndex: 'group',
-        key: 'group',
+        title: '地址',
+        dataIndex: 'address',
+        key: 'address',
         ellipsis: true,
-        width: 100,
-        // customCell: (record: any, index: number) => {
-        //     const list =
-        //         (config?.routes || []).sort((a: any, b: any) => a - b) || [];
-        //     const arr = list.filter((res: any) => {
-        //         // 这里gpsNumber是我需要判断的字段名（相同就合并）
-        //         return res?.group == record?.group;
-        //     });
-        //     if (index == 0 || list[index - 1]?.group != record?.group) {
-        //         return { rowSpan: arr.length };
-        //     } else {
-        //         return { rowSpan: 0 };
-        //     }
-        // },
+        // scopedSlots: { customRender: 'address' },
     },
     {
         title: '示例',
         dataIndex: 'example',
         key: 'example',
+        ellipsis: true,
+        // scopedSlots: { customRender: 'example' },
     },
     {
         title: '说明',
         dataIndex: 'description',
         key: 'description',
+        ellipsis: true,
+        // scopedSlots: { customRender: 'description' },
     },
 ];
+// const columnsHTTP: any[] = [
+//     {
+//         title: '分组',
+//         dataIndex: 'group',
+//         key: 'group',
+//         ellipsis: true,
+//         width: 100,
+//         // customCell: (record: any, index: number) => {
+//         //     const list =
+//         //         (config?.routes || []).sort((a: any, b: any) => a - b) || [];
+//         //     const arr = list.filter((res: any) => {
+//         //         // 这里gpsNumber是我需要判断的字段名（相同就合并）
+//         //         return res?.group == record?.group;
+//         //     });
+//         //     if (index == 0 || list[index - 1]?.group != record?.group) {
+//         //         return { rowSpan: arr.length };
+//         //     } else {
+//         //         return { rowSpan: 0 };
+//         //     }
+//         // },
+//     },
+//     {
+//         title: '示例',
+//         dataIndex: 'example',
+//         key: 'example',
+//     },
+//     {
+//         title: '说明',
+//         dataIndex: 'description',
+//         key: 'description',
+//     },
+// ];
 /**
  * 获取上下行数据
  */
@@ -806,6 +854,34 @@ const getConfigDetail = async (
         (resp) => {
             if (resp.status === 200) {
                 config.value = resp.result;
+                const Group = {
+                    title: '分组',
+                    dataIndex: 'group',
+                    key: 'group',
+                    ellipsis: true,
+                    align: 'center',
+                    width: 100,
+                    customCell: (record: any, rowIndex: number) => {
+                        const obj = {
+                            children: record,
+                            rowSpan: 0,
+                        };
+                        const list = config.value?.routes || [];
+
+                        const arr = list.filter(
+                            (res: any) => res.group === record.group,
+                        );
+
+                        const isRowIndex =
+                            rowIndex === 0 ||
+                            list[rowIndex - 1].group !== record.group;
+                        isRowIndex && (obj.rowSpan = arr.length);
+
+                        return obj;
+                    },
+                };
+                columnsMQTT.value = [Group, ...ColumnsMQTT];
+                columnsHTTP.value = [Group, ...ColumnsHTTP];
                 if (config.value?.document) {
                     markdownToHtml.value = marked(config.value.document);
                 }
@@ -989,10 +1065,12 @@ watchEffect(() => {
 });
 </script>
 <style lang="less" scoped>
-:deep(._jtable-body_1eyxz_1
-        ._jtable-body-header_1eyxz_6
-        ._jtable-body-header-right_1eyxz_12
-        ._jtable-body-header-right-button_1eyxz_17) {
+:deep(
+        ._jtable-body_1eyxz_1
+            ._jtable-body-header_1eyxz_6
+            ._jtable-body-header-right_1eyxz_12
+            ._jtable-body-header-right-button_1eyxz_17
+    ) {
     display: none;
     margin-left: 10px;
     gap: 8px;

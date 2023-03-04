@@ -42,6 +42,7 @@ watch(
 );
 
 onMounted(() => {
+    loading.value = true
     notice.queryMessageType().then((resp) => {
         if (resp.status === 200) {
             options.value = (resp.result as any[]).map((item) => {
@@ -52,6 +53,7 @@ onMounted(() => {
                 };
             });
         }
+        loading.value = false
     });
     notifyType.value = props.value
 });

@@ -82,7 +82,9 @@ import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { LocalStore } from '@/utils/comm';
 import { downloadFile, downloadFileByUrl } from '@/utils/utils';
 import { queryPlatformNoPage, _import ,exportCard} from '@/api/iot-card/cardManagement';
-import { message } from 'ant-design-vue';
+// import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
+
 
 const emit = defineEmits(['close']);
 
@@ -125,10 +127,10 @@ const fileChange = (info: any) => {
         _import(modelRef.configId, { fileUrl: r.result })
             .then((resp: any) => {
                 totalCount.value = resp.result.total;
-                message.success('导入成功');
+                message.success('导入成功')
             })
             .catch((err) => {
-                message.error(err.response.data.message || '导入失败');
+                message.error(err.response.data.message || '导入失败')
             })
             .finally(() => {
                 loading.value = false;

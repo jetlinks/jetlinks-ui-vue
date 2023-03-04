@@ -10,7 +10,7 @@
     >
         <Search :columns="columns" @search="handleSearch"></Search>
         <div style="height: 500px; overflow-y: auto">
-            <JTable
+            <JProTable
                 model="CARD"
                 :request="query"
                 :rowSelection="{
@@ -76,7 +76,7 @@
                         </template>
                     </SceneCard>
                 </template>
-            </JTable>
+            </JProTable>
         </div>
     </a-modal>
 </template>

@@ -7,16 +7,12 @@
         class="search"
     />
     <div style="height: 400px; overflow-y: auto">
-        <JTable
+        <JProTable
             :columns="columns"
-            :request="ConfigApi.list"
-            model="CARD"
-            :bodyStyle="{
-                paddingRight: 0,
-                paddingLeft: 0,
-            }"
-            :defaultParams="{
+            :request="(e) => ConfigApi.list({
+                ...e,
                 terms: [
+                    ...e?.terms,
                     {
                         terms: [
                             {
@@ -27,11 +23,15 @@
                         ],
                     },
                 ],
-                sorts: [{ name: 'createTime', order: 'desc' }],
+                sorts: [{ name: 'id', value: props.value }, { name: 'createTime', order: 'desc' }],
+            })"
+            model="CARD"
+            :bodyStyle="{
+                paddingRight: 0,
+                paddingLeft: 0,
             }"
             :params="params"
             :gridColumn="2"
-            :gridColumns="[2, 2, 2]"
             :rowSelection="{
                 selectedRowKeys: _selectedRowKeys,
             }"
@@ -82,7 +82,7 @@
                     </template>
                 </CardBox>
             </template>
-        </JTable>
+        </JProTable>
     </div>
 </template>
 
@@ -174,5 +174,10 @@ watch(
     margin-bottom: 0;
     padding-right: 0px;
     padding-left: 0px;
+}
+
+.logo{
+    width: 88px;
+    height: 88px;
 }
 </style>

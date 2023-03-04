@@ -42,6 +42,8 @@
                             :branchesName="props.name"
                             :parallel="true"
                             :actions="parallelArray.length ? parallelArray[0].actions : []"
+                            @add="onAdd"
+                            @delete="onDelete"
                         />
                     </div>
                 </a-collapse-panel>
@@ -53,8 +55,6 @@
 <script lang="ts" setup>
 import ShakeLimit from '../components/ShakeLimit/index.vue';
 import { List } from './ListItem';
-import { storeToRefs } from 'pinia';
-import { useSceneStore } from '@/store/scene';
 import { BranchesThen } from '../../typings';
 import { PropType } from 'vue';
 
@@ -73,7 +73,9 @@ const props = defineProps({
     openShakeLimit: Boolean,
 });
 
-const shakeLimit = ref({});
+const shakeLimit = ref({
+    enabled: false
+});
 const activeKeys = ref<string[]>(['1']);
 const parallelArray = ref<BranchesThen[]>([]);
 const serialArray = ref<BranchesThen[]>([]);
@@ -105,6 +107,13 @@ watch(
         immediate: true,
     },
 );
+
+const onDelete = (_key: string) => {
+    console.log(_key)
+}
+const onAdd = (data: any) => {
+    console.log(data)
+}
 </script>
 
 <style lang="less" scoped>

@@ -5,7 +5,7 @@
             target="product-manage"
             @search="handleSearch"
         />
-        <JTable
+        <JProTable
             :columns="columns"
             :request="queryProductList"
             ref="tableRef"
@@ -85,7 +85,7 @@
                         </a-row>
                     </template>
                     <template #actions="item">
-                        <a-tooltip
+                        <!-- <a-tooltip
                             v-bind="item.tooltip"
                             :title="item.disabled && item.tooltip.title"
                         >
@@ -122,7 +122,24 @@
                                     </template>
                                 </a-button>
                             </template>
-                        </a-tooltip>
+                        </a-tooltip> -->
+                        <PermissionButton
+                            :disabled="item.disabled"
+                            :popConfirm="item.popConfirm"
+                            :tooltip="{
+                                ...item.tooltip,
+                            }"
+                            @click="item.onClick"
+                        >
+                            <AIcon
+                                type="DeleteOutlined"
+                                v-if="item.key === 'delete'"
+                            />
+                            <template v-else>
+                                <AIcon :type="item.icon" />
+                                <span>{{ item?.text }}</span>
+                            </template>
+                        </PermissionButton>
                     </template>
                 </CardBox>
             </template>
@@ -137,7 +154,7 @@
             </template>
             <template #action="slotProps">
                 <a-space :size="16">
-                    <a-tooltip
+                    <!-- <a-tooltip
                         v-for="i in getActions(slotProps)"
                         :key="i.key"
                         v-bind="i.tooltip"
@@ -168,10 +185,27 @@
                                 ><AIcon :type="i.icon"
                             /></a-button>
                         </a-button>
-                    </a-tooltip>
+                    </a-tooltip> -->
+                    <template
+                        v-for="i in getActions(slotProps, 'table')"
+                        :key="i.key"
+                    >
+                        <PermissionButton
+                            :disabled="i.disabled"
+                            :popConfirm="i.popConfirm"
+                            :tooltip="{
+                                ...i.tooltip,
+                            }"
+                            @click="i.onClick"
+                            type="link"
+                            style="padding: 0px"
+                        >
+                            <template #icon><AIcon :type="i.icon" /></template>
+                        </PermissionButton>
+                    </template>
                 </a-space>
             </template>
-        </JTable>
+        </JProTable>
         <!-- 新增、编辑 -->
         <Save ref="saveRef" :isAdd="isAdd" :title="title" @success="refresh" />
     </page-container>

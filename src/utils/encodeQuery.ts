@@ -1,11 +1,11 @@
 import { isObject, isArray } from 'lodash-es'
 
-const encodeParams = (params: Record<string, any>) => {
+export const encodeParams = (params: Record<string, any>) => {
   const _params = new URLSearchParams()
   for (const key in params) {
     const _value = params[key]
     const isArrOrObj = isObject(_value) || isArray(_value)
-    _params.set(key, isArrOrObj ? encodeParams(_value) : _value)
+    _params.set(key, isArrOrObj ? JSON.stringify(_value) : _value)
   }
   return _params.toString()
 }
