@@ -3,12 +3,12 @@
         <div>
             <Search :columns="columns" target="search" @search="handleSearch" />
 
-            <JTable
+            <j-pro-table
                 ref="tableRef"
                 :columns="columns"
                 model="CARD"
                 :gridColumn="3"
-                :request="queryChannel"
+                :request="query"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
@@ -30,12 +30,9 @@
                         :value="slotProps"
                         :actions="getActions(slotProps, 'card')"
                         v-bind="slotProps"
-                        :status="slotProps.state.value"
-                        :statusText="slotProps.state.text"
-                        :statusNames="{
-                            enabled: 'success',
-                            disabled: 'error',
-                        }"
+                        :status="getState(slotProps).value"
+                        :statusText="getState(slotProps).text"
+                        :statusNames="StatusColorEnum"
                     >
                         <template #img>
                             <slot name="img">
@@ -47,7 +44,7 @@
                                 <PermissionButton
                                     type="link"
                                     @click="handlEye(slotProps.id)"
-                                    hasPermission="link/Type:view"
+                                    hasPermission="DataCollect/Collector:view"
                                     :style="TiTlePermissionButtonStyle"
                                 >
                                     {{ slotProps.name }}
@@ -99,7 +96,9 @@
                                     ...item.tooltip,
                                 }"
                                 @click="item.onClick"
-                                :hasPermission="'link/Type:' + item.key"
+                                :hasPermission="
+                                    'DataCollect/Channel:' + item.key
+                                "
                             >
                                 <AIcon
                                     type="DeleteOutlined"
@@ -113,30 +112,31 @@
                         </template>
                     </CardBox>
                 </template>
-            </JTable>
+            </j-pro-table>
+            <Save v-if="visible" :data="current" @change="saveChange" />
         </div>
     </page-container>
 </template>
 <script lang="ts" setup name="TypePage">
 import type { ActionsType } from '@/components/Table/index';
 import { getImage } from '@/utils/comm';
-import {
-    queryChannel,
-    updateChannel,
-    removeChannel,
-} from '@/api/data-collect/channel';
+import { query, remove, update } from '@/api/data-collect/channel';
 import { message } from 'ant-design-vue';
-import { TiTlePermissionButtonStyle } from './data';
+import {
+    TiTlePermissionButtonStyle,
+    StatusColorEnum,
+    updateStatus,
+} from './data';
 import { useMenuStore } from 'store/menu';
+import Save from './Save/index.vue';
+import _ from 'lodash';
 
 const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const options = ref([]);
-
-const statusMap = new Map();
-statusMap.set('enabled', 'success');
-statusMap.set('disabled', 'error');
+const visible = ref(false);
+const current = ref({});
 
 const columns = [
     {
@@ -214,17 +214,6 @@ const getActions = (
     const state = data.state.value;
     const stateText = state === 'enabled' ? '禁用' : '启用';
     const actions = [
-        // {
-        //     key: 'view',
-        //     text: '查看',
-        //     tooltip: {
-        //         title: '查看',
-        //     },
-        //     icon: 'EyeOutlined',
-        //     onClick: async () => {
-        //         handlEye(data.id);
-        //     },
-        // },
         {
             key: 'update',
             text: '编辑',
@@ -233,7 +222,7 @@ const getActions = (
             },
             icon: 'EditOutlined',
             onClick: () => {
-                handlEdit(data.id);
+                handlEdit(data);
             },
         },
         {
@@ -246,16 +235,11 @@ const getActions = (
             popConfirm: {
                 title: `确认${stateText}?`,
                 onConfirm: async () => {
-                    // let res =
-                    //     state === 'enabled'
-                    //         ? await shutdown(data.id)
-                    //         : await start(data.id);
-                    // if (res.success) {
-                    //     message.success('操作成功');
-                    //     tableRef.value?.reload();
-                    // } else {
-                    //     message.error('操作失败！');
-                    // }
+                    const res = await update(data.id, updateStatus[state]);
+                    if (res.success) {
+                        message.success('操作成功');
+                        tableRef.value?.reload();
+                    }
                 },
             },
         },
@@ -270,13 +254,11 @@ const getActions = (
             popConfirm: {
                 title: '确认删除?',
                 onConfirm: async () => {
-                    // const res = await remove(data.id);
-                    // if (res.success) {
-                    //     message.success('操作成功');
-                    //     tableRef.value.reload();
-                    // } else {
-                    //     message.error('操作失败！');
-                    // }
+                    const res = await remove(data.id);
+                    if (res.success) {
+                        message.success('操作成功');
+                        tableRef.value.reload();
+                    }
                 },
             },
             icon: 'DeleteOutlined',
@@ -286,15 +268,38 @@ const getActions = (
 };
 
 const handlAdd = () => {
-    // menuStory.jumpPage(`link/Type/Detail`, { id: ':id' }, { view: false });
+    current.value = {};
+    visible.value = true;
 };
 
+const handlEdit = (data: object) => {
+    current.value = _.cloneDeep(data);
+    visible.value = true;
+};
 const handlEye = (id: string) => {
-    // menuStory.jumpPage(`link/Type/Detail`, { id }, { view: true });
+    console.log(id);
 };
-
-const handlEdit = (id: string) => {
-    // menuStory.jumpPage(`link/Type/Detail`, { id }, { view: false });
+const saveChange = (value: object) => {
+    visible.value = false;
+    current.value = {};
+    if (value) {
+        message.success('操作成功');
+        tableRef.value.reload();
+    }
+};
+const getState = (record: Partial<Record<string, any>>) => {
+    if (record) {
+        if (record?.state?.value === 'enabled') {
+            return { ...record?.runningState };
+        } else {
+            return {
+                text: '禁用',
+                value: 'disabled',
+            };
+        }
+    } else {
+        return {};
+    }
 };
 
 /**
