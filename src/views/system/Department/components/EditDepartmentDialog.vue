@@ -1,16 +1,17 @@
 <template>
-    <a-modal
-        v-model:visible="dialog.visible"
-        :title="dialog.title"
+    <j-modal
+        visible
+        :title="title"
         width="520px"
-        @ok="dialog.handleOk"
+        @cancel="emits('update:visible',false)"
+        @ok="confirm"
         class="edit-dialog-container"
         cancelText="取消"
         okText="确定"
-        :confirmLoading="form.loading"
+        :confirmLoading="loading"
     >
-        <a-form ref="formRef" :model="form.data" layout="vertical">
-            <a-form-item name="parentId" label="上级组织">
+        <j-form ref="formRef" :model="form.data" layout="vertical">
+            <j-form-item name="parentId" label="上级组织">
                 <a-tree-select
                     v-model:value="form.data.parentId"
                     style="width: 100%"
@@ -20,8 +21,8 @@
                 >
                     <template #title="{ name }"> {{ name }} </template>
                 </a-tree-select>
-            </a-form-item>
-            <a-form-item
+            </j-form-item>
+            <j-form-item
                 name="name"
                 label="名称"
                 :rules="[
@@ -29,82 +30,85 @@
                     { max: 64, message: '最多可输入64个字符' },
                 ]"
             >
-                <a-input
+                <j-input
                     v-model:value="form.data.name"
                     placeholder="请输入名称"
                 />
-            </a-form-item>
+            </j-form-item>
 
-            <a-form-item
+            <j-form-item
                 name="sortIndex"
                 label="排序"
                 :rules="[{ required: true, message: '请输入排序' }]"
             >
-                <a-input
+                <j-input
                     v-model:value="form.data.sortIndex"
                     placeholder="请输入排序"
                     :maxlength="64"
                     @blur="form.checkSort"
                 />
-            </a-form-item>
-        </a-form>
-    </a-modal>
+            </j-form-item>
+        </j-form>
+    </j-modal>
 </template>
 
 <script setup lang="ts">
 import { FormInstance } from 'ant-design-vue';
-import {cloneDeep} from 'lodash-es'
+import { cloneDeep } from 'lodash-es';
 import {
     addDepartment_api,
     updateDepartment_api,
 } from '@/api/system/department';
 
-const emits = defineEmits(['refresh']);
+const emits = defineEmits(['refresh', 'update:visible']);
 const props = defineProps<{
     treeData: any[];
+    data: any;
+    visible: boolean;
 }>();
 // 弹窗相关
-const dialog = reactive({
-    title: '',
-    visible: false,
-    handleOk: () => {
-        formRef.value?.validate().then(() => {
-            form.submit();
-        });
-    },
-    // 控制弹窗的打开与关闭
-    changeVisible: (status: boolean, row: any = {}) => {
-        if (row.id) {
-            dialog.title = '编辑';
-            form.data = cloneDeep(row);
-        } else if (row.parentId) {
-            dialog.title = '新增子组织';
+const title = ref('');
+const loading = ref(false);
+const confirm = () => {
+    loading.value = true;
+    formRef.value
+        ?.validate()
+        .then(() => form.submit())
+        .then((resp: any) => {
+            emits('refresh', resp.result.id);
+            emits('update:visible', false);
+        })
+        .finally(() => (loading.value = false));
+};
+// 表单相关
+const formRef = ref<FormInstance>();
+const form = reactive({
+    data: {} as formType,
+    beforeSortIndex: '' as string | number,
+
+    init: () => {
+        if (props.data.id) {
+            title.value = '编辑';
+            form.data = cloneDeep(props.data);
+        } else if (props.data.parentId) {
+            title.value = '新增子组织';
             form.data = {
                 name: '',
-                sortIndex: ((row.children && row.children.length) || 0) + 1,
-                parentId: row.parentId,
+                sortIndex: props.data.sortIndex,
+                parentId: props.data.parentId,
             };
         } else {
-            dialog.title = '新增';
+            title.value = '新增';
             form.data = {
                 name: '',
-                sortIndex: props.treeData.length + 1,
+                sortIndex: props.data.sortIndex,
             };
         }
         form.beforeSortIndex = form.data.sortIndex;
-        dialog.visible = status;
         nextTick(() => {
             formRef.value?.clearValidate();
         });
     },
-});
-// 表单相关
-const formRef = ref<FormInstance>();
-const form = reactive({
-    loading: false,
-    data: {} as formType,
-    beforeSortIndex: '' as string | number,
-
     checkSort: (e: any) => {
         const value = e.target.value.match(/^[0-9]*/)[0];
         if (value) {
@@ -114,16 +118,11 @@ const form = reactive({
     },
 
     submit: () => {
-        form.loading = true;
         const api = form.data.id ? updateDepartment_api : addDepartment_api;
-        api(form.data)
-            .then((resp:any) => {
-                emits('refresh',resp.result.id);
-                dialog.changeVisible(false);
-            })
-            .finally(() => (form.loading = false));
+        return api(form.data);
     },
 });
+form.init();
 
 type formType = {
     id?: string;
@@ -131,11 +130,4 @@ type formType = {
     name: string;
     sortIndex: string | number;
 };
-
-// 将打开弹窗的操作暴露给父组件
-defineExpose({
-    openDialog: dialog.changeVisible,
-});
 </script>
-
-<style scoped></style>

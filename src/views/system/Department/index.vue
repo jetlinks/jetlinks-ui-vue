@@ -1,30 +1,28 @@
 <template>
     <page-container>
         <div class="department-container">
-            <a-card class="department-content">
-                <div class="left">
-                    <LeftTree @change="(id) => (departmentId = id)" />
-                </div>
-                <div class="right">
-                    <a-tabs v-model:activeKey="activeKey">
-                        <a-tab-pane key="product" tab="产品">
-                            <Product
-                                :parentId="departmentId"
-                                @open-device-bind="openDeviceBind"
-                            />
-                        </a-tab-pane>
-                        <a-tab-pane key="device" tab="设备">
-                            <Device
-                                :parentId="departmentId"
-                                v-model:bindBool="bindBool"
-                            />
-                        </a-tab-pane>
-                        <a-tab-pane key="user" tab="用户">
-                            <User :parentId="departmentId" />
-                        </a-tab-pane>
-                    </a-tabs>
-                </div>
-            </a-card>
+            <div class="left">
+                <LeftTree @change="(id) => (departmentId = id)" />
+            </div>
+            <div class="right">
+                <j-tabs v-model:activeKey="activeKey">
+                    <j-tab-pane key="product" tab="产品">
+                        <Product
+                            :parentId="departmentId"
+                            @open-device-bind="openDeviceBind"
+                        />
+                    </j-tab-pane>
+                    <j-tab-pane key="device" tab="设备">
+                        <Device
+                            :parentId="departmentId"
+                            v-model:bindBool="bindBool"
+                        />
+                    </j-tab-pane>
+                    <j-tab-pane key="user" tab="用户">
+                        <User :parentId="departmentId" />
+                    </j-tab-pane>
+                </j-tabs>
+            </div>
         </div>
     </page-container>
 </template>
@@ -48,20 +46,17 @@ const openDeviceBind = () => {
 
 <style lang="less" scoped>
 .department-container {
-    .department-content {
-        :deep(.ant-card-body) {
-            display: flex;
+    display: flex;
+    background-color: #fff;
+    padding: 24px;
 
-            .left {
-                flex-basis: 300px;
-            }
-            .right {
-                width: calc(100% - 300px);
-
-                .ant-tabs-nav-wrap {
-                    padding-left: 24px;
-                }
-            }
+    .left {
+        flex-basis: 300px;
+    }
+    .right {
+        width: calc(100% - 300px);
+        :deep(.ant-tabs-nav-wrap) {
+            padding-left: 24px;
         }
     }
 }

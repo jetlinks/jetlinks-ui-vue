@@ -1,6 +1,6 @@
 <template>
     <div class="left-tree-container">
-        <a-input
+        <j-input
             v-model:value="searchValue"
             @change="search"
             placeholder="请输入组织名称"
@@ -9,7 +9,7 @@
             <template #suffix>
                 <search-outlined />
             </template>
-        </a-input>
+        </j-input>
         <div class="add-btn">
             <PermissionButton
                 type="primary"
@@ -30,47 +30,11 @@
             <template #title="{ name, data }">
                 <span>{{ name }}</span>
                 <span class="func-btns" @click="(e) => e.stopPropagation()">
-                    <!-- <a-tooltip>
-                        <template #title>编辑</template>
-                        <a-button style="padding: 0" type="link">
-                            <edit-outlined @click="openDialog(data)" />
-                        </a-button>
-                    </a-tooltip> -->
-                    <!-- <a-tooltip>
-                        <template #title>新增子组织</template>
-                        <a-button style="padding: 0" type="link">
-                            <plus-circle-outlined
-                                style="margin: 0 8px"
-                                @click="
-                                    openDialog({
-                                        ...data,
-                                        id: '',
-                                        parentId: data.id,
-                                    })
-                                "
-                            />
-                        </a-button>
-                    </a-tooltip> -->
-
-                    <!-- <a-popconfirm
-                        title="确认删除"
-                        ok-text="确定"
-                        cancel-text="取消"
-                        @confirm="delDepartment(data.id)"
-                    >
-                        <a-tooltip>
-                            <template #title>删除</template>
-                            <a-button style="padding: 0" type="link">
-                                <delete-outlined />
-                            </a-button>
-                        </a-tooltip>
-                    </a-popconfirm> -->
-
                     <PermissionButton
                         :uhasPermission="`${permission}:update`"
                         type="link"
                         :tooltip="{
-                            title: '新增子组织',
+                            title: '编辑',
                         }"
                         @click="openDialog(data)"
                     >
@@ -109,8 +73,10 @@
 
         <!-- 编辑弹窗 -->
         <EditDepartmentDialog
+            v-if="dialog.visible"
+            v-model:visible="dialog.visible"
             :tree-data="sourceTree"
-            ref="editDialogRef"
+            :data="dialog.selectItem"
             @refresh="refresh"
         />
     </div>
@@ -215,9 +181,24 @@ function refresh(id: string) {
 }
 
 // 弹窗
-const editDialogRef = ref(); // 新增弹窗实例
+const dialog = reactive({
+    visible: false,
+    selectItem: {},
+});
 const openDialog = (row: any = {}) => {
-    editDialogRef.value.openDialog(true, row);
+    // 计算默认排序值，为子列表中最大的排序值+1
+    let sortIndex = row.sortIndex || 1;
+    if (!row.id) {
+        let childrens = [] as any[];
+        if (row.parentId) {
+            childrens = row.children;
+        } else childrens = treeData.value;
+        sortIndex =
+            Math.max(...(childrens?.map((item) => item.sortIndex) || [0])) + 1;
+    }
+
+    dialog.selectItem = { ...row, sortIndex };
+    dialog.visible = true;
 };
 init();
 function init() {
@@ -236,6 +217,7 @@ function init() {
 <style lang="less" scoped>
 .left-tree-container {
     padding-right: 24px;
+    border-right: 1px solid #f0f0f0;
 
     .add-btn {
         margin: 24px 0;

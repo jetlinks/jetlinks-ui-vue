@@ -3,12 +3,10 @@
         class="add-device-or-product-dialog-container"
         title="绑定"
         width="1440px"
-        @ok="dialog.handleOk"
-        :confirmLoading="dialog.loading.value"
-        cancelText="取消"
-        okText="确定"
-        v-model:visible="dialog.visible.value"
-        destroyOnClose
+        @ok="confirm"
+        :confirmLoading="loading"
+        @cancel="emits('update:visible', false)"
+        visible
     >
         <h5 class="row">
             <exclamation-circle-outlined style="margin-right: 6px" />
@@ -110,52 +108,47 @@ import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { getImage } from '@/utils/comm';
 import { uniq, intersection } from 'lodash-es';
 import {
-    getDeviceOrProductList_api,getDeviceList_api,
+    getDeviceOrProductList_api,
+    getDeviceList_api,
     getPermission_api,
     bindDeviceOrProductList_api,
 } from '@/api/system/department';
 import { message } from 'ant-design-vue';
 import { dictType } from '../typing';
 
-const emits = defineEmits(['confirm']);
+const emits = defineEmits(['confirm', 'update:visible']);
 const props = defineProps<{
+    visible: boolean;
     queryColumns: any[];
     parentId: string;
     allPermission: dictType;
     assetType: 'product' | 'device';
 }>();
 // 弹窗相关
-const dialog = {
-    visible: ref<boolean>(false),
-    loading: ref<boolean>(false),
-    handleOk: () => {
-        if (table.selectedRows.length < 1) {
-            return message.warning('请先勾选数据');
-        }
+const loading = ref(false);
+const confirm = () => {
+    if (table.selectedRows.length < 1) {
+        return message.warning('请先勾选数据');
+    }
 
-        const params = table.selectedRows.map((item: any) => ({
-            targetType: 'org',
-            targetId: props.parentId,
-            assetType: props.assetType,
-            assetIdList: [item.id],
-            permission: item.selectPermissions,
-        }));
+    const params = table.selectedRows.map((item: any) => ({
+        targetType: 'org',
+        targetId: props.parentId,
+        assetType: props.assetType,
+        assetIdList: [item.id],
+        permission: item.selectPermissions,
+    }));
 
-        dialog.loading.value = true;
-        bindDeviceOrProductList_api(props.assetType, params)
-            .then(() => {
-                message.success('操作成功');
-                emits('confirm');
-                dialog.changeVisible();
-            })
-            .finally(() => {
-                dialog.loading.value = false;
-            });
-    },
-    // 控制弹窗的打开与关闭
-    changeVisible: () => {
-        dialog.visible.value = !dialog.visible.value;
-    },
+    loading.value = true;
+    bindDeviceOrProductList_api(props.assetType, params)
+        .then(() => {
+            message.success('操作成功');
+            emits('confirm');
+            emits('update:visible', false);
+        })
+        .finally(() => {
+            loading.value = false;
+        });
 };
 
 const bulkBool = ref<boolean>(true);
@@ -308,7 +301,10 @@ const table: any = {
     // 获取并整理数据
     getData: (params: object, parentId: string) =>
         new Promise((resolve) => {
-            const api = props.assetType === 'product' ? getDeviceOrProductList_api: getDeviceList_api;
+            const api =
+                props.assetType === 'product'
+                    ? getDeviceOrProductList_api
+                    : getDeviceList_api;
             api(params).then((resp: any) => {
                 type resultType = {
                     data: any[];
@@ -319,43 +315,55 @@ const table: any = {
                 const { pageIndex, pageSize, total, data } =
                     resp.result as resultType;
                 const ids = data.map((item) => item.id);
-                getPermission_api(props.assetType,ids, parentId).then((perResp: any) => {
-                    const permissionObj = {};
-                    perResp.result.forEach((item: any) => {
-                        permissionObj[item.assetId] = props.allPermission
-                            .filter((permission) =>
-                                item.allPermissions.includes(permission.id),
-                            )
-                            .map((item) => ({
-                                label: item.name,
-                                value: item.id,
-                                disabled: true,
-                            }));
-                    });
-                    data.forEach((item) => {
-                        item.permissionList = permissionObj[item.id];
-                        item.selectPermissions = ['read'];
+                getPermission_api(props.assetType, ids, parentId).then(
+                    (perResp: any) => {
+                        const permissionObj = {};
+                        perResp.result.forEach((item: any) => {
+                            permissionObj[item.assetId] = props.allPermission
+                                .filter((permission) =>
+                                    item.allPermissions.includes(permission.id),
+                                )
+                                .map((item) => ({
+                                    label: item.name,
+                                    value: item.id,
+                                    disabled: true,
+                                }));
+                        });
+                        data.forEach((item) => {
+                            item.permissionList = permissionObj[item.id];
+                            item.selectPermissions = ['read'];
 
-                        // 产品的状态进行转换处理
-                        if(props.assetType === 'product') {
-                            item.state = {
-                                value: item.state === 1 ? 'online': item.state === 0 ? 'offline': '',
-                                text: item.state === 1 ? '正常': item.state === 0 ? '禁用': ''
+                            // 产品的状态进行转换处理
+                            if (props.assetType === 'product') {
+                                item.state = {
+                                    value:
+                                        item.state === 1
+                                            ? 'online'
+                                            : item.state === 0
+                                            ? 'offline'
+                                            : '',
+                                    text:
+                                        item.state === 1
+                                            ? '正常'
+                                            : item.state === 0
+                                            ? '禁用'
+                                            : '',
+                                };
                             }
-                        }
-                    });
+                        });
 
-                    resolve({
-                        code: 200,
-                        result: {
-                            data: data,
-                            pageIndex,
-                            pageSize,
-                            total,
-                        },
-                        status: 200,
-                    });
-                });
+                        resolve({
+                            code: 200,
+                            result: {
+                                data: data,
+                                pageIndex,
+                                pageSize,
+                                total,
+                            },
+                            status: 200,
+                        });
+                    },
+                );
             });
         }),
     // 整理参数并获取数据
@@ -412,11 +420,6 @@ const table: any = {
     },
 };
 table.init();
-
-// 将打开弹窗的操作暴露给父组件
-defineExpose({
-    openDialog: dialog.changeVisible,
-});
 </script>
 
 <style lang="less" scoped>
