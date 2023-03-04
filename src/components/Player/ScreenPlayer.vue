@@ -61,7 +61,10 @@
                             保存
                             <template #overlay>
                                 <a-menu>
-                                    <a-empty v-if="!historyList.length" />
+                                    <a-empty
+                                        v-if="!historyList.length"
+                                        description="暂无数据"
+                                    />
                                     <a-menu-item
                                         v-for="(item, index) in historyList"
                                         :key="`his${index}`"
@@ -301,7 +304,7 @@ const saveHistory = async () => {
             const param = {
                 name: formData.value.name,
                 content: JSON.stringify({
-                    screen: screen,
+                    screen: screen.value,
                     players: players.value.map((item: any) => ({
                         deviceId: item.id,
                         channelId: item.channelId,
@@ -315,6 +318,7 @@ const saveHistory = async () => {
                 visible.value = false;
                 getHistory();
                 message.success('保存成功');
+                formRef.value.resetFields();
             } else {
                 message.error('保存失败');
             }
