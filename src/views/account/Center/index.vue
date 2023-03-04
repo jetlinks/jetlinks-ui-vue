@@ -30,10 +30,10 @@
                                 :action="`${BASE_API_PATH}/file/static`"
                                 @change="upload.changeBackUpload"
                             >
-                                <a-button>
+                                <j-button>
                                     <AIcon type="UploadOutlined" />
                                     更换头像
-                                </a-button>
+                                </j-button>
                             </a-upload>
                         </div>
                     </div>
@@ -145,18 +145,18 @@
                             </div>
                             <div v-else>{{ item.name }}未绑定</div>
                         </Ellipsis>
-                        <a-popconfirm
+                        <j-popconfirm
                             v-if="item.bound"
                             title="确认解除绑定嘛?"
                             @confirm="() => unBind(item.id)"
                         >
-                            <a-button>解除绑定</a-button>
-                        </a-popconfirm>
-                        <a-button
+                            <j-button>解除绑定</j-button>
+                        </j-popconfirm>
+                        <j-button
                             v-else
                             type="primary"
                             @click="clickBind(item.id)"
-                            >立即绑定</a-button
+                            >立即绑定</j-button
                         >
                     </div>
                 </div>
@@ -165,24 +165,24 @@
             <div class="card" v-if="!isApiUser">
                 <h3>首页视图</h3>
                 <div class="choose-view">
-                    <a-row class="view-content" :gutter="24">
-                        <a-col
+                    <j-row class="view-content" :gutter="24">
+                        <j-col
                             :span="6"
                             class="select-item"
                             :class="{ selected: currentView === 'device' }"
                             @click="currentView = 'device'"
                         >
                             <img :src="getImage('/home/device.png')" alt="" />
-                        </a-col>
-                        <a-col
+                        </j-col>
+                        <j-col
                             :span="6"
                             class="select-item"
                             :class="{ selected: currentView === 'ops' }"
                             @click="currentView = 'ops'"
                         >
                             <img :src="getImage('/home/ops.png')" alt="" />
-                        </a-col>
-                        <a-col
+                        </j-col>
+                        <j-col
                             :span="6"
                             class="select-item"
                             :class="{
@@ -194,10 +194,10 @@
                                 :src="getImage('/home/comprehensive.png')"
                                 alt=""
                             />
-                        </a-col>
-                    </a-row>
-                    <a-button type="primary" class="btn" @click="confirm"
-                        >确定</a-button
+                        </j-col>
+                    </j-row>
+                    <j-button type="primary" class="btn" @click="confirm"
+                        >确定</j-button
                     >
                 </div>
             </div>
@@ -205,7 +205,7 @@
             <EditInfoDialog
                 v-if="editInfoVisible"
                 v-model:visible="editInfoVisible"
-                :data="userInfo"
+                :data="{...userInfo}"
                 @ok="getUserInfo"
             />
             <EditPasswordDialog

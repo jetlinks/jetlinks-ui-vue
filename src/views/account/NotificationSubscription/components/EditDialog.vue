@@ -1,13 +1,13 @@
 <template>
-    <a-modal
+    <j-modal
         visible
         :title="props.data.id ? '编辑' : '新增'"
         width="865px"
         @ok="confirm"
         @cancel="emits('update:visible', false)"
     >
-        <a-form :model="form" layout="vertical" ref="formRef">
-            <a-form-item
+        <j-form :model="form" layout="vertical" ref="formRef">
+            <j-form-item
                 label="名称"
                 name="subscribeName"
                 :rules="[
@@ -18,48 +18,48 @@
                     },
                 ]"
             >
-                <a-input
+                <j-input
                     v-model:value="form.subscribeName"
                     placeholder="请输入名称"
                 />
-            </a-form-item>
+            </j-form-item>
 
-            <a-row :gutter="24">
-                <a-col :span="12">
-                    <a-form-item
+            <j-row :gutter="24">
+                <j-col :span="12">
+                    <j-form-item
                         label="类型"
                         name="topicProvider"
                         :rules="[{ required: true, message: '请选择类型' }]"
                     >
-                        <a-select
+                        <j-select
                             v-model:value="form.topicProvider"
                             placeholder="请选择类型"
                             :options="typeList"
                         />
-                    </a-form-item>
-                </a-col>
-                <a-col :span="12">
-                    <a-form-item
+                    </j-form-item>
+                </j-col>
+                <j-col :span="12">
+                    <j-form-item
                         label="告警规则"
                         :name="['topicConfig', 'alarmConfigId']"
                         :rules="[{ required: true, message: '请选择告警规则' }]"
                     >
-                        <a-select
+                        <j-select
                             :value="form.topicConfig.alarmConfigId?.split(',')"
                             :options="alarmList"
                             placeholder="请选择告警规则"
                             mode="multiple"
                             @change="onSelect"
-                        ></a-select>
-                    </a-form-item>
-                </a-col>
-            </a-row>
-            <a-form-item
+                        ></j-select>
+                    </j-form-item>
+                </j-col>
+            </j-row>
+            <j-form-item
                 name="notice"
                 label="通知方式"
                 :rules="[{ required: true, message: '请选择通知方式' }]"
             >
-                <a-checkbox-group
+                <j-checkbox-group
                     v-model:value="form.notice"
                     name="checkboxgroup"
                     :options="[
@@ -69,9 +69,9 @@
                         },
                     ]"
                 />
-            </a-form-item>
-        </a-form>
-    </a-modal>
+            </j-form-item>
+        </j-form>
+    </j-modal>
 </template>
 
 <script setup lang="ts">

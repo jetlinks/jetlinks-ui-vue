@@ -1,6 +1,6 @@
 <template>
     <div>
-        <a-dropdown placement="bottomRight">
+        <j-dropdown placement="bottomRight">
             <div style="cursor: pointer;height: 100%;">
                 <img
                     :src="userInfo.avatar"
@@ -10,18 +10,18 @@
                 <span>{{ userInfo.name }}</span>
             </div>
             <template #overlay>
-                <a-menu>
-                    <a-menu-item @click="push('/account/center')" style="width: 160px;">
+                <j-menu>
+                    <j-menu-item @click="push('/account/center')" style="width: 160px;">
                         <AIcon type="UserOutlined" style="margin-right: 8px;" />
                         <span>个人中心</span>
-                    </a-menu-item>
-                    <a-menu-item @click="logOut">
+                    </j-menu-item>
+                    <j-menu-item @click="logOut">
                         <AIcon type="LogoutOutlined" style="margin-right: 8px;" />
                         <span>退出登录</span>
-                    </a-menu-item>
-                </a-menu>
+                    </j-menu-item>
+                </j-menu>
             </template>
-        </a-dropdown>
+        </j-dropdown>
     </div>
 </template>
 

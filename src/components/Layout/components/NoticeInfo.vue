@@ -1,7 +1,7 @@
 <template>
     <div class="notice-info-container">
-        <a-tabs :activeKey="'default'">
-            <a-tab-pane key="default" tab="未读消息">
+        <j-tabs :activeKey="'default'">
+            <j-tab-pane key="default" tab="未读消息">
                 <div class="no-data" v-if="props.data.length === 0">
                     <img src="https://gw.alipayobjects.com/zos/rmsportal/sAuJeJzSKbUmHfBQRzmZ.svg" alt="" />
                 </div>
@@ -24,8 +24,8 @@
                         >
                     </div>
                 </div>
-            </a-tab-pane>
-        </a-tabs>
+            </j-tab-pane>
+        </j-tabs>
     </div>
 </template>
 
