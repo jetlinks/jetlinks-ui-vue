@@ -2,37 +2,40 @@
 <template>
     <page-container>
         <Search :columns="columns" target="iot-card-management-search" @search="handleSearch" />
-        <JTable ref="cardManageRef" :columns="columns" :request="query"
+        <j-pro-table ref="cardManageRef" :columns="columns" :request="query"
             :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }" :rowSelection="{
                 selectedRowKeys: _selectedRowKeys,
                 onChange: onSelectChange,
             }" @cancelSelect="cancelSelect" :params="params" :gridColumn="3">
             <template #headerTitle>
-                <a-space>
-                    <a-button type="primary" @click="handleAdd">
+                <j-space>
+                <!-- <a-button type="primary" @click="handleAdd">
                         <AIcon type="PlusOutlined" />新增
-                    </a-button>
-                    <a-dropdown>
-                        <a-button>
+                                        </a-button> -->
+                    <PermissionButton @click="handleAdd" :hasPermission="'iot-card/CardManagement:add'" type="primary">
+                        <AIcon type="PlusOutlined" />新增
+                    </PermissionButton>
+                    <j-dropdown>
+                        <j-button>
                             批量操作
                             <AIcon type="DownOutlined" />
-                        </a-button>
+                        </j-button>
                         <template #overlay>
-                            <a-menu>
-                                <a-menu-item>
+                            <j-menu>
+                                <j-menu-item>
                                     <PermissionButton @click="exportVisible = true"
                                         :hasPermission="'iot-card/CardManagement:export'">
                                         <AIcon type="ExportOutlined" />
                                         批量导出
                                     </PermissionButton>
-                                </a-menu-item>
-                                <a-menu-item>
+                                </j-menu-item>
+                                <j-menu-item>
                                     <PermissionButton @click="importVisible = true"
                                         :hasPermission="'iot-card/CardManagement:import'">
                                         <AIcon type="ImportOutlined" />批量导入
                                     </PermissionButton>
-                                </a-menu-item>
-                                <a-menu-item>
+                                </j-menu-item>
+                                <j-menu-item>
                                     <PermissionButton :popConfirm="{
                                         title: '确认激活吗？',
                                         onConfirm: handleActive,
@@ -40,47 +43,47 @@
                                         <AIcon type="CheckCircleOutlined" />
                                         批量激活
                                     </PermissionButton>
-                                </a-menu-item>
-                                <a-menu-item>
+                                </j-menu-item>
+                                <j-menu-item>
                                     <PermissionButton :popConfirm="{
                                         title: '确认停用吗？',
                                         onConfirm: handleStop,
                                     }" ghost type="primary" :hasPermission="'iot-card/CardManagement:action'">
                                         <AIcon type="StopOutlined" />
-                                            批量停用
+                                        批量停用
                                     </PermissionButton>
-                                </a-menu-item>
-                                <a-menu-item>
+                                </j-menu-item>
+                                <j-menu-item>
                                     <PermissionButton :popConfirm="{
                                         title: '确认复机吗？',
                                         onConfirm: handleResumption,
                                     }" ghost type="primary" :hasPermission="'iot-card/CardManagement:action'">
-                                         <AIcon type="PoweroffOutlined" />
-                                            批量复机
+                                        <AIcon type="PoweroffOutlined" />
+                                        批量复机
                                     </PermissionButton>
-                                </a-menu-item>
-                                <a-menu-item>
+                                </j-menu-item>
+                                <j-menu-item>
                                     <PermissionButton :popConfirm="{
                                         title: '确认同步状态吗？',
                                         onConfirm: handleSync,
                                     }" ghost type="primary" :hasPermission="'iot-card/CardManagement:sync'">
-                                         <AIcon type="SwapOutlined" />
-                                            同步状态
+                                        <AIcon type="SwapOutlined" />
+                                        同步状态
                                     </PermissionButton>
-                                </a-menu-item>
-                                <a-menu-item v-if="_selectedRowKeys.length > 0">
+                                </j-menu-item>
+                                <j-menu-item v-if="_selectedRowKeys.length > 0">
                                     <PermissionButton :popConfirm="{
                                         title: '确认删除吗？',
                                         onConfirm: handelRemove,
-                                    }"  ghost type="primary" :hasPermission="'iot-card/CardManagement:delete'">
-                                         <AIcon type="SwapOutlined" />
-                                         批量删除
+                                    }" ghost type="primary" :hasPermission="'iot-card/CardManagement:delete'">
+                                        <AIcon type="SwapOutlined" />
+                                        批量删除
                                     </PermissionButton>
-                                </a-menu-item>
-                            </a-menu>
+                                </j-menu-item>
+                            </j-menu>
                         </template>
-                    </a-dropdown>
-                </a-space>
+                    </j-dropdown>
+                </j-space>
             </template>
             <template #card="slotProps">
                 <CardBox :value="slotProps" @click="handleClick" :actions="getActions(slotProps, 'card')" v-bind="slotProps"
@@ -99,23 +102,23 @@
                         <h3 class="card-item-content-title">
                             {{ slotProps.id }}
                         </h3>
-                        <a-row>
-                            <a-col :span="8">
+                        <j-row>
+                            <j-col :span="8">
                                 <div class="card-item-content-text">
                                     平台对接
                                 </div>
                                 <div>{{ slotProps.platformConfigName }}</div>
-                            </a-col>
-                            <a-col :span="6">
+                            </j-col>
+                            <j-col :span="6">
                                 <div class="card-item-content-text">类型</div>
                                 <div>{{ slotProps.cardType.text }}</div>
-                            </a-col>
-                            <a-col :span="6">
+                            </j-col>
+                            <j-col :span="6">
                                 <div class="card-item-content-text">提醒</div>
                                 <!-- <div>{{ slotProps.cardType.text }}</div> -->
-                            </a-col>
-                        </a-row>
-                        <a-divider style="margin: 12px 0" />
+                            </j-col>
+                        </j-row>
+                        <j-divider style="margin: 12px 0" />
                         <div v-if="slotProps.usedFlow === 0">
                             <span class="flow-text">
                                 {{ slotProps.totalFlow }}
@@ -135,7 +138,7 @@
                                     总共 {{ slotProps.totalFlow }} M
                                 </div>
                             </div>
-                            <a-progress :strokeColor="'#ADC6FF'" :showInfo="false" :percent="
+                            <j-progress :strokeColor="'#ADC6FF'" :showInfo="false" :percent="
                                 slotProps.totalFlow - slotProps.usedFlow
                             " />
                         </div>
@@ -185,7 +188,7 @@
                                     </template>
                                 </a-button>
                             </template>
-                                    </a-tooltip> -->
+                                                        </j-tooltip> -->
                     </template>
                 </CardBox>
             </template>
@@ -244,28 +247,20 @@
                 }}
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
-                    <template
-                        v-for="i in getActions(slotProps,'table')"
-                        :key="i.key"
-                    >
-                        <PermissionButton
-                            :disabled="i.disabled"
-                            :popConfirm="i.popConfirm"
-                            :tooltip="{
-                                ...i.tooltip,
-                            }"
-                            @click="i.onClick"
-                            type="link"
-                            style="padding: 0px"
-                            :hasPermission="'iot-card/CardManagement:' + i.key"
-                        >
-                            <template #icon><AIcon :type="i.icon" /></template>
+                <j-space :size="16">
+                    <template v-for="i in getActions(slotProps, 'table')" :key="i.key">
+                        <PermissionButton :disabled="i.disabled" :popConfirm="i.popConfirm" :tooltip="{
+                            ...i.tooltip,
+                        }" @click="i.onClick" type="link" style="padding: 0px"
+                            :hasPermission="'iot-card/CardManagement:' + i.key">
+                            <template #icon>
+                                <AIcon :type="i.icon" />
+                            </template>
                         </PermissionButton>
                     </template>
-                </a-space>
+                </j-space>
             </template>
-        </JTable>
+        </j-pro-table>
         <!-- 批量导入 -->
         <Import v-if="importVisible" @close="importVisible = false" />
         <!-- 批量导出 -->
@@ -294,7 +289,7 @@ import {
     removeCards,
     unbind,
 } from '@/api/iot-card/cardManagement';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import type { CardManagement } from './typing';
 import { getImage } from '@/utils/comm';
 import BindDevice from './BindDevice.vue';
@@ -510,7 +505,7 @@ const getActions = (
                     onConfirm: async () => {
                         unbind(data.id).then((resp: any) => {
                             if (resp.status === 200) {
-                                message.success('操作成功');
+                                message.success('操作成功')
                                 cardManageRef.value?.reload();
                             }
                         });
@@ -559,21 +554,21 @@ const getActions = (
                     if (data.cardStateType?.value === 'toBeActivated') {
                         changeDeploy(data.id).then((resp) => {
                             if (resp.status === 200) {
-                                message.success('操作成功');
+                                message.success('操作成功')
                                 cardManageRef.value?.reload();
                             }
                         });
                     } else if (data.cardStateType?.value === 'deactivate') {
                         resumption(data.id).then((resp) => {
                             if (resp.status === 200) {
-                                message.success('操作成功');
+                                message.success('操作成功')
                                 cardManageRef.value?.reload();
                             }
                         });
                     } else {
                         unDeploy(data.id).then((resp) => {
                             if (resp.status === 200) {
-                                message.success('操作成功');
+                                message.success('操作成功')
                                 cardManageRef.value?.reload();
                             }
                         });
@@ -594,7 +589,7 @@ const getActions = (
                 onConfirm: async () => {
                     const resp: any = await del(data.id);
                     if (resp.status === 200) {
-                        message.success('操作成功！');
+                        message.success('操作成功')
                         cardManageRef.value?.reload();
                     } else {
                         message.error('操作失败！');
@@ -689,7 +684,7 @@ const handleStop = () => {
     ) {
         unDeployBatch(_selectedRowKeys.value).then((res: any) => {
             if (res.status === 200) {
-                message.success('操作成功');
+                message.success('操作成功')
             }
         });
     } else {
@@ -707,7 +702,7 @@ const handleResumption = () => {
     ) {
         resumptionBatch(_selectedRowKeys.value).then((res: any) => {
             if (res.status === 200) {
-                message.success('操作成功');
+                message.success('操作成功')
             }
         });
     } else {
@@ -733,7 +728,7 @@ const handleSync = () => {
 const handelRemove = async () => {
     const resp = await removeCards(_selectedRow.value);
     if (resp.status === 200) {
-        message.success('操作成功！');
+        message.success('操作成功')
         _selectedRowKeys.value = [];
         _selectedRow.value = [];
         cardManageRef.value?.reload();

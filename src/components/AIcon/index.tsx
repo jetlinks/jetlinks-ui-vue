@@ -70,6 +70,10 @@ const iconKeys = [
     'CaretDownOutlined',
     'MinusOutlined',
     'AudioOutlined',
+    'BellOutlined',
+    'UserOutlined',
+    'LogoutOutlined',
+    'ReadIconOutlined'
 ]
 
 const Icon = (props: {type: string}) => {

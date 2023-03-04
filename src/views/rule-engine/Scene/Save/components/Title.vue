@@ -5,13 +5,13 @@
       <div class='center-item'>
         <AIcon v-if='options.selectorIcon' :type='options.selectorIcon' class='icon-padding-right' />
         <span class='trigger-options-name'>
-            <Ellipsis style='width: 310px'>
+            <Ellipsis style='max-width: 310px'>
               {{ options.name }}
             </Ellipsis>
-          </span>
+        </span>
         <span v-if='options.extraName'>{{ options.extraName }}</span>
       </div>
-      <template v-if='options.onlyName'>
+      <template v-if='!options.onlyName'>
         <div v-if='options.productName' class='center-item'>
           <AIcon type='icon-chanpin1' class='icon-padding-right' />
           <span className='trigger-options-type'>{{ options.productName }}</span>
@@ -28,7 +28,7 @@
         </div>
         <div v-if='options.action' class='center-item'>
           <AIcon :type='options.typeIcon' class='icon-padding-right' />
-          <span className='trigger-options-action'>{{ options.productName }}</span>
+          <span className='trigger-options-action'>{{ options.action }}</span>
         </div>
         <div v-if='options.type' class='center-item'>
           <AIcon :type='options.typeIcon' class='icon-padding-right' />
@@ -57,6 +57,8 @@ const isAdd = computed(() => {
 
 <style scoped lang='less'>
 .trigger-options-content {
+  display: inline-flex;
+  gap: 16px;
 
   .center-item {
     display: flex;

@@ -1,6 +1,6 @@
 <template>
     <div class="button-mange-container">
-        <JTable
+        <j-pro-table
             ref="tableRef"
             :columns="table.columns"
             model="TABLE"
@@ -47,7 +47,7 @@
                     </PermissionButton>
                 </a-space>
             </template>
-        </JTable>
+        </j-pro-table>
 
         <div class="dialog">
             <ButtonAddDialog

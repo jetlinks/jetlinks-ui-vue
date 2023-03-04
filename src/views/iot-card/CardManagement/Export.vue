@@ -1,6 +1,6 @@
 <template>
     <!-- 导入 -->
-    <a-modal
+    <j-modal
         :maskClosable="false"
         :visible="true"
         title="导出"
@@ -10,19 +10,19 @@
         @cancel="handleCancel"
     >
         <div style="margin-top: 10px">
-            <a-space>
+            <j-space>
                 <span>文件格式：</span>
-                <a-radio-group
+                <j-radio-group
                     v-model:value="type"
                     placeholder="请选择文件格式"
                     button-style="solid"
                 >
-                    <a-radio-button value="xlsx">xlsx</a-radio-button>
-                    <a-radio-button value="csv">csv</a-radio-button>
-                </a-radio-group>
-            </a-space>
+                    <j-radio-button value="xlsx">xlsx</j-radio-button>
+                    <j-radio-button value="csv">csv</j-radio-button>
+                </j-radio-group>
+            </j-space>
         </div>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script setup lang="ts">

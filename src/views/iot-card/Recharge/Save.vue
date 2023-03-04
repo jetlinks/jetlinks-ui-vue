@@ -1,5 +1,5 @@
 <template>
-    <a-modal
+    <j-modal
         :maskClosable="false"
         width="600px"
         :visible="true"
@@ -17,14 +17,14 @@
                     style="margin-right: 6px"
                 />暂只支持移动OneLink平台
             </div>
-            <a-form
+            <j-form
                 layout="vertical"
                 ref="formRef"
                 :rules="rules"
                 :model="modelRef"
             >
-                <a-form-item label="平台对接" name="configId">
-                    <a-select
+                <j-form-item label="平台对接" name="configId">
+                    <j-select
                         v-model:value="modelRef.configId"
                         :options="configList"
                         allowClear
@@ -32,16 +32,16 @@
                         style="width: 100%"
                         placeholder="请选择平台对接"
                     >
-                    </a-select>
-                </a-form-item>
-                <a-form-item label="账户id" name="rechargeId">
-                    <a-input
+                    </j-select>
+                </j-form-item>
+                <j-form-item label="账户id" name="rechargeId">
+                    <j-input
                         v-model:value="modelRef.rechargeId"
                         placeholder="请输入账户id"
                     />
-                </a-form-item>
-                <a-form-item label="充值金额" name="chargeMoney">
-                    <a-input-number
+                </j-form-item>
+                <j-form-item label="充值金额" name="chargeMoney">
+                    <j-input-number
                         allowClear
                         :precision="2"
                         style="width: 100%"
@@ -50,25 +50,25 @@
                         :max="500"
                         placeholder="请输入1~500之间的金额"
                     />
-                </a-form-item>
+                </j-form-item>
 
-                <a-form-item label="支付方式" name="paymentType">
-                    <a-select
+                <j-form-item label="支付方式" name="paymentType">
+                    <j-select
                         allowClear
                         :options="PaymentMethod"
                         v-model:value="modelRef.paymentType"
                         placeholder="请选择支付方式"
                     >
-                    </a-select>
-                </a-form-item>
-            </a-form>
+                    </j-select>
+                </j-form-item>
+            </j-form>
         </div>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script lang="ts" setup>
 import { queryPlatformNoPage, recharge } from '@/api/iot-card/cardManagement';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { PaymentMethod } from '@/views/iot-card/data';
 
 const emit = defineEmits(['change']);
@@ -167,7 +167,7 @@ const handleOk = () => {
             btnLoading.value = false;
             if (resp.status === 200) {
                 if (resp.result === '失败') {
-                    message.error('缴费失败');
+                    message.error('缴费失败')
                 } else {
                     window.open(resp.result);
                 }
@@ -176,6 +176,7 @@ const handleOk = () => {
             }
         })
         .catch((err: any) => {
+            btnLoading.value=false
             console.log('error', err);
         });
 };

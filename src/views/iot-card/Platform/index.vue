@@ -1,38 +1,25 @@
 <!-- 平台对接 -->
 <template>
     <page-container>
-        <Search
-            :columns="columns"
-            target="platform-search"
-            @search="handleSearch"
-        />
-        <JTable
-            ref="platformRef"
-            :columns="columns"
-            :request="queryList"
-            :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }"
-            :params="params"
-            :gridColumn="3"
-        >
+        <Search :columns="columns" target="platform-search" @search="handleSearch" />
+        <j-pro-table ref="platformRef" :columns="columns" :request="queryList"
+            :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }" :params="params" :gridColumn="3">
             <template #headerTitle>
-                <a-space>
-                    <a-button type="primary" @click="handleAdd">
+                <j-space>
+                <!-- <j-button type="primary" @click="handleAdd">
                         <AIcon type="PlusOutlined" />新增
-                    </a-button>
-                </a-space>
+                        </j-button> -->
+                    <PermissionButton @click="handleAdd" :hasPermission="'iot-card/Platform:add'" type="primary">
+                        <AIcon type="PlusOutlined" />新增
+                    </PermissionButton>
+                </j-space>
             </template>
             <template #card="slotProps">
-                <CardBox
-                    :value="slotProps"
-                    :actions="getActions(slotProps, 'card')"
-                    v-bind="slotProps"
-                    :status="slotProps.state.value"
-                    :statusText="slotProps.state.text"
-                    :statusNames="{
+                <CardBox :value="slotProps" :actions="getActions(slotProps, 'card')" v-bind="slotProps"
+                    :status="slotProps.state.value" :statusText="slotProps.state.text" :statusNames="{
                         enabled: 'success',
                         disabled: 'error',
-                    }"
-                >
+                    }">
                     <template #img>
                         <slot name="img">
                             <img :src="getImage('/iot-card/iot-card-bg.png')" />
@@ -42,18 +29,18 @@
                         <h3 class="card-item-content-title">
                             {{ slotProps.name }}
                         </h3>
-                        <a-row>
-                            <a-col :span="12">
+                        <j-row>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">
                                     平台类型
                                 </div>
                                 <div>{{ slotProps.operatorName }}</div>
-                            </a-col>
-                            <a-col :span="12">
+                            </j-col>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">说明</div>
                                 <div>{{ slotProps.explain }}</div>
-                            </a-col>
-                        </a-row>
+                            </j-col>
+                        </j-row>
                     </template>
                     <template #actions="item">
                         <PermissionButton :disabled="item.disabled" :popConfirm="item.popConfirm" :tooltip="{
@@ -69,45 +56,34 @@
                 </CardBox>
             </template>
             <template #state="slotProps">
-                <a-badge
-                    :text="slotProps.state.text"
-                    :status="
-                        slotProps.state.value === 'disabled'
-                            ? 'error'
-                            : 'success'
-                    "
-                />
+                <j-badge :text="slotProps.state.text" :status="
+                    slotProps.state.value === 'disabled'
+                        ? 'error'
+                        : 'success'
+                " />
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
-                    <template
-                        v-for="i in getActions(slotProps,'table')"
-                        :key="i.key"
-                    >
-                        <PermissionButton
-                            :disabled="i.disabled"
-                            :popConfirm="i.popConfirm"
-                            :tooltip="{
-                                ...i.tooltip,
-                            }"
-                            @click="i.onClick"
-                            type="link"
-                            style="padding: 0px"
-                            :hasPermission="'iot-card/Platform:' + i.key"
-                        >
-                            <template #icon><AIcon :type="i.icon" /></template>
+                <j-space :size="16">
+                    <template v-for="i in getActions(slotProps, 'table')" :key="i.key">
+                        <PermissionButton :disabled="i.disabled" :popConfirm="i.popConfirm" :tooltip="{
+                            ...i.tooltip,
+                        }" @click="i.onClick" type="link" style="padding: 0px"
+                            :hasPermission="'iot-card/Platform:' + i.key">
+                            <template #icon>
+                                <AIcon :type="i.icon" />
+                            </template>
                         </PermissionButton>
                     </template>
-                </a-space>
+                </j-space>
             </template>
-        </JTable>
+        </j-pro-table>
     </page-container>
 </template>
 
 <script setup lang="ts">
 import { getImage } from '@/utils/comm';
 import type { ActionsType } from '@/components/Table';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { queryList, update, del } from '@/api/iot-card/platform';
 import { useMenuStore } from 'store/menu'
 const menuStory = useMenuStore()
@@ -189,8 +165,8 @@ const getActions = (
             },
             icon: 'EditOutlined',
             onClick: () => {
-            //   router.push(`/iot-card/Platform/detail/${data.id}`);
-            menuStory.jumpPage('iot-card/Platform/Detail',{id:data.id});
+                //   router.push(`/iot-card/Platform/detail/${data.id}`);
+                menuStory.jumpPage('iot-card/Platform/Detail', { id: data.id });
             },
         },
         {
@@ -204,9 +180,8 @@ const getActions = (
                     ? 'StopOutlined'
                     : 'PlayCircleOutlined',
             popConfirm: {
-                title: `确认${
-                    data.state.value === 'enabled' ? '禁用' : '启用'
-                }？`,
+                title: `确认${data.state.value === 'enabled' ? '禁用' : '启用'
+                    }？`,
                 okText: ' 确定',
                 cancelText: '取消',
                 onConfirm: () => {
@@ -263,7 +238,7 @@ const handleSearch = (e: any) => {
  * 新增
  */
 const handleAdd = () => {
-  menuStory.jumpPage('iot-card/Platform/Detail',{id:'add'})
+    menuStory.jumpPage('iot-card/Platform/Detail', { id: 'add' })
 };
 </script>
 

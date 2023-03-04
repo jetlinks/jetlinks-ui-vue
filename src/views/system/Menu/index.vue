@@ -3,7 +3,7 @@
         <div class="menu-container">
             <Search :columns="query.columns" @search="query.search" />
 
-            <JTable
+            <j-pro-table
                 ref="tableRef"
                 :columns="table.columns"
                 :request="table.getList"
@@ -71,7 +71,7 @@
                         </PermissionButton>
                     </a-space>
                 </template>
-            </JTable>
+            </j-pro-table>
         </div>
     </page-container>
 </template>

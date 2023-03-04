@@ -1,16 +1,16 @@
 <template>
     <page-container>
-        <a-card>
-            <a-row :gutter="24">
-                <a-col :span="14">
+        <j-card>
+            <j-row :gutter="24">
+                <j-col :span="14">
                     <TitleComponent data="详情" />
-                    <a-form
+                    <j-form
                         :layout="'vertical'"
                         ref="formRef"
                         :rules="rules"
                         :model="form"
                     >
-                        <a-form-item
+                        <j-form-item
                             label="平台类型"
                             name="operatorName"
                             required
@@ -28,104 +28,104 @@
                                 v-model:value="form.operatorName"
                                 @change="typeChange"
                             ></PlatformType
-                        ></a-form-item>
-                        <a-form-item label="名称" name="name">
-                            <a-input
+                        ></j-form-item>
+                        <j-form-item label="名称" name="name">
+                            <j-input
                                 v-model:value="form.name"
                                 placeholder="请输入名称"
                             />
-                        </a-form-item>
+                        </j-form-item>
 
                         <!-- onelink -->
                         <div v-if="form.operatorName === 'onelink'">
-                            <a-form-item label="App ID" name="appId">
-                                <a-input
+                            <j-form-item label="App ID" name="appId">
+                                <j-input
                                     v-model:value="form.appId"
                                     placeholder="请输入App ID"
                                 />
-                            </a-form-item>
-                            <a-form-item label="Password" name="passWord">
-                                <a-input-password
+                            </j-form-item>
+                            <j-form-item label="Password" name="passWord">
+                                <j-input-password
                                     v-model:value="form.passWord"
                                     placeholder="请输入密码"
                                 />
-                            </a-form-item>
-                            <a-form-item label="接口地址" name="apiAddr">
-                                <a-input
+                            </j-form-item>
+                            <j-form-item label="接口地址" name="apiAddr">
+                                <j-input
                                     v-model:value="form.apiAddr"
                                     placeholder="请输入接口地址"
                                 />
-                            </a-form-item>
+                            </j-form-item>
                         </div>
                         <!-- ctwing -->
                         <div v-if="form.operatorName === 'ctwing'">
-                            <a-form-item label="用户id" name="userId">
-                                <a-input
+                            <j-form-item label="用户id" name="userId">
+                                <j-input
                                     v-model:value="form.userId"
                                     placeholder="请输入用户id"
                                 />
-                            </a-form-item>
-                            <a-form-item label="密码" name="passWord">
-                                <a-input-password
+                            </j-form-item>
+                            <j-form-item label="密码" name="passWord">
+                                <j-input-password
                                     v-model:value="form.passWord"
                                     placeholder="请输入密码"
                                 />
-                            </a-form-item>
-                            <a-form-item label="secretKey" name="secretKey">
-                                <a-input
+                            </j-form-item>
+                            <j-form-item label="secretKey" name="secretKey">
+                                <j-input
                                     v-model:value="form.secretKey"
                                     placeholder="请输入secretKey"
                                 />
-                            </a-form-item>
+                            </j-form-item>
                         </div>
                         <!-- unicom -->
                         <div v-if="form.operatorName === 'unicom'">
-                            <a-form-item label="App ID" name="appId">
-                                <a-input
+                            <j-form-item label="App ID" name="appId">
+                                <j-input
                                     v-model:value="form.appId"
                                     placeholder="请输入App ID"
                                 />
-                            </a-form-item>
-                            <a-form-item label="App Secret" name="appSecret">
-                                <a-input
+                            </j-form-item>
+                            <j-form-item label="App Secret" name="appSecret">
+                                <j-input
                                     v-model:value="form.appSecret"
                                     placeholder="请输入App Secret"
                                 />
-                            </a-form-item>
-                            <a-form-item label="创建者ID" name="openId">
-                                <a-input
+                            </j-form-item>
+                            <j-form-item label="创建者ID" name="openId">
+                                <j-input
                                     v-model:value="form.openId"
                                     placeholder="请输入创建者ID"
                                 />
-                            </a-form-item>
+                            </j-form-item>
                         </div>
 
-                        <a-form-item label="说明" name="explain">
-                            <a-textarea
+                        <j-form-item label="说明" name="explain">
+                            <j-textarea
                                 v-model:value="form.explain"
                                 placeholder="请输入说明"
                                 showCount
                                 :rows="3"
                                 :maxlength="200"
                             />
-                        </a-form-item>
-                        <a-form-item>
-                            <a-divider />
-                            <a-button
+                        </j-form-item>
+                        <j-form-item>
+                            <j-divider />
+                            <j-button
                                 :loading="saveBtnLoading"
                                 type="primary"
                                 @click="handleSave"
                             >
                                 保存
-                            </a-button>
-                        </a-form-item>
-                    </a-form>
-                </a-col>
-                <a-col :span="10">
+                            </j-button>
+                        </j-form-item>
+                    </j-form>
+                </j-col>
+                <j-col :span="10">
                     <Doc :type="form.operatorName" />
-                </a-col>
-            </a-row>
-        </a-card>
+                </j-col>
+            </j-row>
+        </j-card>
     </page-container>
 </template>
 
@@ -133,7 +133,7 @@
 import { getImage } from '@/utils/comm';
 import PlatformType from '@/views/iot-card/components/PlatformType.vue';
 import { queryById, save, update } from '@/api/iot-card/platform';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import Doc from '../doc/index.vue';
 
 const router = useRouter();

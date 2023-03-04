@@ -3,7 +3,7 @@
         <div class="user-container">
             <Search :columns="query.columns" @search="query.search" />
 
-            <JTable
+            <j-pro-table
                 ref="tableRef"
                 :columns="table.columns"
                 :request="getUserList_api"
@@ -43,62 +43,6 @@
                 </template>
                 <template #action="slotProps">
                     <a-space :size="16">
-                        <!-- <a-tooltip>
-                        <template #title>编辑</template>
-                        <a-button
-                            style="padding: 0"
-                            type="link"
-                            @click="table.openDialog('edit', slotProps)"
-                        >
-                            <AIcon type="EditOutlined" />
-                        </a-button>
-                    </a-tooltip> -->
-                        <!-- <a-popconfirm
-                        :title="`确定${slotProps.status ? '禁用' : '启用'}吗？`"
-                        ok-text="确定"
-                        cancel-text="取消"
-                        @confirm="table.changeStatus(slotProps)"
-                    >
-                        <a-tooltip>
-                            <template #title>{{
-                                slotProps.status ? '禁用' : '启用'
-                            }}</template>
-                            <a-button style="padding: 0" type="link">
-                                <stop-outlined v-if="slotProps.status" />
-                                <play-circle-outlined v-else />
-                            </a-button>
-                        </a-tooltip>
-                    </a-popconfirm> -->
-                        <!-- <a-tooltip>
-                        <template #title>重置密码</template>
-                        <a-button
-                            style="padding: 0"
-                            type="link"
-                            @click="table.openDialog('reset', slotProps)"
-                        >
-                            <AIcon type="icon-zhongzhimima" />
-                        </a-button>
-                    </a-tooltip> -->
-                        <!-- <a-popconfirm
-                        title="确认删除"
-                        ok-text="确定"
-                        cancel-text="取消"
-                        @confirm="table.clickDel(slotProps)"
-                        :disabled="slotProps.status"
-                    >
-                        <a-tooltip>
-                            <template #title>{{
-                                slotProps.status ? '请先禁用，再删除' : '删除'
-                            }}</template>
-                            <a-button
-                                style="padding: 0"
-                                type="link"
-                                :disabled="slotProps.status"
-                            >
-                                <AIcon type="DeleteOutlined" />
-                            </a-button>
-                        </a-tooltip>
-                    </a-popconfirm> -->
 
                         <PermissionButton
                             :uhasPermission="`${permission}:update`"
@@ -154,7 +98,7 @@
                         </PermissionButton>
                     </a-space>
                 </template>
-            </JTable>
+            </j-pro-table>
 
             <div class="dialogs">
                 <EditUserDialog ref="editDialogRef" @confirm="table.refresh" />

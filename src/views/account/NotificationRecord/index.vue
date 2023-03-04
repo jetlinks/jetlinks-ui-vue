@@ -3,7 +3,7 @@
         <div class="notification-record-container">
             <Search :columns="columns" @search="query.search" />
 
-            <JTable
+            <j-pro-table
                 ref="tableRef"
                 :columns="columns"
                 :request="getList_api"
@@ -54,18 +54,6 @@
                             }"
                         >
                             <AIcon type="ReadIconOutlined" />
-                            <!-- <svg
-                                width="1em"
-                                height="1em"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <path
-                                    d="M12 18H6L2 22V2C2 2 2.9 2 4 2H20C21.1 2 22 2 22 2V11H20V4H4V16H12V18ZM23 14.34L21.59 12.93L17.35 17.17L15.23 15.05L13.82 16.46L17.34 20L23 14.34Z"
-                                    fill="currentColor"
-                                />
-                            </svg> -->
                         </PermissionButton>
                         <PermissionButton
                             type="link"
@@ -78,9 +66,13 @@
                         </PermissionButton>
                     </a-space>
                 </template>
-            </JTable>
+            </j-pro-table>
 
-            <ViewDialog v-if="viewVisible" v-model:visible="viewVisible" :data="viewItem" />
+            <ViewDialog
+                v-if="viewVisible"
+                v-model:visible="viewVisible"
+                :data="viewItem"
+            />
         </div>
     </page-container>
 </template>
@@ -97,7 +89,10 @@ import { optionItem } from '@/views/rule-engine/Scene/typings';
 import { dictItemType } from '@/views/system/DataSource/typing';
 import moment from 'moment';
 import { message } from 'ant-design-vue';
+import NoticeCp from '@/components/Layout/components/Notice.vue';
+import { useUserInfo } from '@/store/userInfo';
 
+const { updateAlarm } = useUserInfo();
 const columns = [
     {
         title: '类型',
@@ -181,6 +176,7 @@ const table = {
             if (resp.status === 200) {
                 message.success('操作成功！');
                 table.refresh();
+                updateAlarm();
             }
         });
     },
