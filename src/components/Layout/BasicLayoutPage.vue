@@ -50,7 +50,7 @@ const layoutConf = reactive({
     siderWidth: DefaultSetting.layout.siderWidth,
     logo: DefaultSetting.layout.logo,
     title: DefaultSetting.layout.title,
-    menuData: menu.siderMenus,
+    menuData: clearMenuItem(menu.siderMenus),
     splitMenus: true,
 });
 

@@ -71,7 +71,6 @@ export default [
         path: '/system/Api',
         component: () => import('@/views/system/Platforms/index.vue')
     },
-    AccountMenu,
     // end: 测试用, 可删除
 
     // 初始化

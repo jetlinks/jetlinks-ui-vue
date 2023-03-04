@@ -115,6 +115,7 @@ export const useMenuStore = defineStore({
               hideInMenu: true
             }
           })
+          menusData.push(AccountMenu)
           silderMenus.push(AccountMenu)
           this.siderMenus = silderMenus
           console.log('menusData', menusData)
