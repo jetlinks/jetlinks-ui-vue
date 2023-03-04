@@ -232,6 +232,8 @@ const dialog = reactive({
      */
     changeVisible: (type: modalType, defaultForm: formType) => {
         dialog.setTitle(type);
+        console.log(defaultForm);
+        
         form.getUserInfo(defaultForm.id || '', type);
         dialog.type = type;
         dialog.visible = type !== '';
