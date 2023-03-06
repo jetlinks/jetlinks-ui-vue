@@ -11,18 +11,18 @@
                 <PermissionButton
                     type="primary"
                     :uhasPermission="`${permission}:update`"
-                    @click="dialog.openDialog('新增')"
+                    @click="openDialog('新增', {})"
                 >
                     <AIcon type="PlusOutlined" />新增
                 </PermissionButton>
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
+                <j-space :size="16">
                     <PermissionButton
                         type="link"
                         :uhasPermission="`${permission}:update`"
                         :tooltip="{ title: '编辑' }"
-                        @click="dialog.openDialog('编辑', slotProps)"
+                        @click="openDialog('编辑', slotProps)"
                     >
                         <AIcon type="EditOutlined" />
                     </PermissionButton>
@@ -30,7 +30,7 @@
                         type="link"
                         :uhasPermission="true"
                         :tooltip="{ title: '查看' }"
-                        @click="dialog.openDialog('查看', slotProps)"
+                        @click="openDialog('查看', slotProps)"
                     >
                         <AIcon type="SearchOutlined" />
                     </PermissionButton>
@@ -45,15 +45,18 @@
                     >
                         <AIcon type="DeleteOutlined" />
                     </PermissionButton>
-                </a-space>
+                </j-space>
             </template>
         </j-pro-table>
 
         <div class="dialog">
             <ButtonAddDialog
-                ref="dialogRef"
-                @confirm="dialog.confirm"
+                v-if="dialogVisible"
+                v-model:visible="dialogVisible"
                 :menu-info="menuInfo"
+                :mode="dialogTitle"
+                :data="selectItem"
+                @confirm="table.getList"
             />
         </div>
     </div>
@@ -76,15 +79,13 @@ const routeParams = {
 };
 
 // 弹窗相关
-const dialogRef = ref<any>(null);
-const dialog = {
-    // 打开弹窗
-    openDialog: (mode: string, row?: object) => {
-        dialogRef.value && dialogRef.value.openDialog(mode, { ...row });
-    },
-    confirm: () => {
-        table.getList();
-    },
+const selectItem = ref<any>({});
+const dialogVisible = ref(false);
+const dialogTitle = ref<'查看' | '新增' | '编辑'>('新增');
+const openDialog = (mode: '查看' | '新增' | '编辑', row: object) => {
+    selectItem.value = { ...row };
+    dialogTitle.value = mode;
+    dialogVisible.value = true;
 };
 // 菜单的基本信息-其中包括了表格的数据
 const menuInfo = ref<any>({});

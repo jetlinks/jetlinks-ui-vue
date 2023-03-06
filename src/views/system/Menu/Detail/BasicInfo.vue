@@ -1,10 +1,10 @@
 <template>
     <div class="basic-info-container">
-        <a-card>
+        <div class="card">
             <h3>基本信息</h3>
-            <a-form ref="basicFormRef" :model="form.data" class="basic-form">
+            <j-form ref="basicFormRef" :model="form.data" class="basic-form">
                 <div class="row" style="display: flex">
-                    <a-form-item
+                    <j-form-item
                         label="菜单图标"
                         name="icon"
                         :rules="[
@@ -20,25 +20,28 @@
                                 :type="form.data.icon"
                                 style="font-size: 90px"
                             />
-                            <span class="mark" @click="dialog.openDialog"
+                            <span class="mark" @click="dialogVisible = true"
                                 >点击修改</span
                             >
                         </div>
 
                         <div
                             v-else
-                            @click="dialog.openDialog"
+                            @click="dialogVisible = true"
                             class="icon-upload no-icon"
                         >
                             <span>
-                                <plus-outlined style="font-size: 30px" />
+                                <AIcon
+                                    type="PlusOutlined"
+                                    style="font-size: 30px"
+                                />
                                 <p>点击选择图标</p>
                             </span>
                         </div>
-                    </a-form-item>
-                    <a-row :gutter="24" style="flex: 1 1 auto">
-                        <a-col :span="12">
-                            <a-form-item
+                    </j-form-item>
+                    <j-row :gutter="24" style="flex: 1 1 auto">
+                        <j-col :span="12">
+                            <j-form-item
                                 label="名称"
                                 name="name"
                                 :rules="[
@@ -46,11 +49,11 @@
                                     { max: 64, message: '最多可输入64个字符' },
                                 ]"
                             >
-                                <a-input v-model:value="form.data.name" />
-                            </a-form-item>
-                        </a-col>
-                        <a-col :span="12">
-                            <a-form-item
+                                <j-input v-model:value="form.data.name" />
+                            </j-form-item>
+                        </j-col>
+                        <j-col :span="12">
+                            <j-form-item
                                 label="编码"
                                 name="code"
                                 :rules="[
@@ -58,11 +61,11 @@
                                     { max: 64, message: '最多可输入64个字符' },
                                 ]"
                             >
-                                <a-input v-model:value="form.data.code" />
-                            </a-form-item>
-                        </a-col>
-                        <a-col :span="12">
-                            <a-form-item
+                                <j-input v-model:value="form.data.code" />
+                            </j-form-item>
+                        </j-col>
+                        <j-col :span="12">
+                            <j-form-item
                                 label="页面地址"
                                 name="url"
                                 :rules="[
@@ -73,11 +76,11 @@
                                     { max: 128, message: '最多可输入128字符' },
                                 ]"
                             >
-                                <a-input v-model:value="form.data.url" />
-                            </a-form-item>
-                        </a-col>
-                        <a-col :span="12">
-                            <a-form-item
+                                <j-input v-model:value="form.data.url" />
+                            </j-form-item>
+                        </j-col>
+                        <j-col :span="12">
+                            <j-form-item
                                 label="排序"
                                 name="sortIndex"
                                 :rules="[
@@ -87,80 +90,84 @@
                                     },
                                 ]"
                             >
-                                <a-input v-model:value="form.data.sortIndex" />
-                            </a-form-item>
-                        </a-col>
-                    </a-row>
+                                <j-input v-model:value="form.data.sortIndex" />
+                            </j-form-item>
+                        </j-col>
+                    </j-row>
                 </div>
 
-                <a-form-item label="说明" name="describe">
-                    <a-textarea
+                <j-form-item label="说明" name="describe">
+                    <j-textarea
                         v-model:value="form.data.describe"
                         :rows="4"
                         placeholder="请输入说明"
                     />
-                </a-form-item>
-            </a-form>
-        </a-card>
-        <a-card>
+                </j-form-item>
+            </j-form>
+        </div>
+        <div class="card">
             <h3>权限配置</h3>
-            <a-form
+            <j-form
                 ref="permissFormRef"
                 :model="form.data"
                 class="basic-form permiss-form"
             >
-                <a-form-item name="accessSupport" required>
+                <j-form-item name="accessSupport" required>
                     <template #label>
                         <span style="margin-right: 3px">数据权限控制</span>
-                        <a-tooltip title="此菜单页面数据所对应的资产类型">
-                            <question-circle-outlined
+                        <j-tooltip title="此菜单页面数据所对应的资产类型">
+                            <AIcon
+                                type="QuestionCircleOutlined"
                                 class="img-style"
                                 style="color: #a6a6a6"
                             />
-                        </a-tooltip>
+                        </j-tooltip>
                     </template>
-                    <a-radio-group
+                    <j-radio-group
                         v-model:value="form.data.accessSupport"
                         name="radioGroup"
                     >
-                        <a-radio value="unsupported">不支持</a-radio>
-                        <a-radio value="support">支持</a-radio>
-                        <a-radio value="indirect">
+                        <j-radio value="unsupported">不支持</j-radio>
+                        <j-radio value="support">支持</j-radio>
+                        <j-radio value="indirect">
                             <span style="margin-right: 3px">间接控制</span>
-                            <a-tooltip
+                            <j-tooltip
                                 title="此菜单内的数据基于其他菜单的数据权限控制"
                             >
-                                <question-circle-filled class="img-style" />
-                            </a-tooltip>
-                        </a-radio>
-                    </a-radio-group>
+                                <AIcon
+                                    type="QuestionCircleFilled"
+                                    class="img-style"
+                                />
+                            </j-tooltip>
+                        </j-radio>
+                    </j-radio-group>
 
-                    <a-form-item
+                    <j-form-item
                         name="assetType"
                         v-if="form.data.accessSupport === 'support'"
                         :rules="[{ required: true, message: '请选择资产类型' }]"
                         style="margin-top: 24px; margin-bottom: 0"
                     >
-                        <a-select
+                        <j-select
                             v-model:value="form.data.assetType"
                             style="width: 500px"
                             placeholder="请选择资产类型"
                         >
-                            <a-select-option
+                            <j-select-option
                                 v-for="item in form.assetsType"
                                 :value="item.value"
-                                >{{ item.label }}</a-select-option
+                                >{{ item.label }}</j-select-option
                             >
-                        </a-select>
-                    </a-form-item>
+                        </j-select>
+                    </j-form-item>
 
-                    <a-form-item
+                    <j-form-item
                         name="indirectMenus"
                         v-if="form.data.accessSupport === 'indirect'"
                         :rules="[{ required: true, message: '请选择关联菜单' }]"
                         style="margin-top: 24px; margin-bottom: 0"
                     >
-                        <a-tree-select
+                        <j-tree-select
                             v-model:value="form.data.indirectMenus"
                             style="width: 400px"
                             :dropdown-style="{
@@ -177,18 +184,18 @@
                                 value: 'id',
                             }"
                         >
-                        </a-tree-select>
-                    </a-form-item>
-                </a-form-item>
-                <a-form-item label="权限">
+                        </j-tree-select>
+                    </j-form-item>
+                </j-form-item>
+                <j-form-item label="权限">
                     <PermissChoose
                         :first-width="3"
                         max-height="350px"
                         v-model:value="form.data.permissions"
                         :key="form.data.id || ''"
                     />
-                </a-form-item>
-            </a-form>
+                </j-form-item>
+            </j-form>
 
             <PermissionButton
                 type="primary"
@@ -197,22 +204,20 @@
             >
                 保存
             </PermissionButton>
-        </a-card>
+        </div>
 
         <!-- 弹窗 -->
-        <div class="dialogs">
-            <ChooseIconDialog ref="ChooseIconRef" @confirm="dialog.confirm" />
-        </div>
+        <ChooseIconDialog
+            v-if="dialogVisible"
+            v-model:visible="dialogVisible"
+            @confirm="(typeStr:string)=>form.data.icon = typeStr"
+        />
     </div>
 </template>
 
 <script setup lang="ts">
 import PermissionButton from '@/components/PermissionButton/index.vue';
-import {
-    PlusOutlined,
-    QuestionCircleFilled,
-    QuestionCircleOutlined,
-} from '@ant-design/icons-vue';
+
 import { FormInstance, message } from 'ant-design-vue';
 import ChooseIconDialog from '../components/ChooseIconDialog.vue';
 import PermissChoose from '../components/PermissChoose.vue';
@@ -260,9 +265,12 @@ const form = reactive({
         // 获取菜单详情
         routeParams.id &&
             getMenuInfo_api(routeParams.id).then((resp: any) => {
+                console.log(1111);
+
                 form.data = {
                     ...(resp.result as formType),
-                    accessSupport: resp.result.accessSupport.value,
+                    accessSupport:
+                        resp.result?.accessSupport?.value || 'unsupported',
                 };
             });
         // 获取关联菜单
@@ -323,15 +331,7 @@ const form = reactive({
 form.init();
 
 // 弹窗
-const ChooseIconRef = ref<any>(null);
-const dialog = {
-    openDialog: () => {
-        ChooseIconRef.value && ChooseIconRef.value.openDialog();
-    },
-    confirm: (typeStr: string) => {
-        form.data.icon = typeStr || form.data.icon;
-    },
-};
+const dialogVisible = ref(false);
 
 type formType = {
     id?: string;
@@ -356,8 +356,10 @@ type assetType = {
 
 <style lang="less" scoped>
 .basic-info-container {
-    .ant-card {
+    .card {
         margin-bottom: 24px;
+        padding: 24px;
+        background-color: #fff;
 
         h3 {
             position: relative;
