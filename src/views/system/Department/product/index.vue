@@ -1,11 +1,14 @@
 <template>
     <div class="product-container">
-        <j-advanced-search :columns="columns" @search="query.search" />
+        <j-advanced-search
+            :columns="columns"
+            @search="(params:any)=>queryParams = {...params}"
+        />
         <j-pro-table
             ref="tableRef"
             :request="table.requestFun"
             :gridColumn="2"
-            :params="query.params.value"
+            :params="queryParams"
             :rowSelection="{
                 selectedRowKeys: table._selectedRowKeys.value,
             }"
@@ -325,12 +328,7 @@ const columns = [
         scopedSlots: true,
     },
 ];
-const query = {
-    params: ref({}),
-    search: (params: any) => {
-        query.params.value = params;
-    },
-};
+const queryParams = ref({});
 
 const tableRef = ref();
 const table = {
