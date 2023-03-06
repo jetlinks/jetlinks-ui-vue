@@ -5,7 +5,7 @@
             <!-- 工具栏 -->
             <div class="player-screen-tool" v-if="showScreen">
                 <a-radio-group
-                    v-model:value="screen"
+                    :value="screen"
                     button-style="solid"
                     @change="handleScreenChange"
                 >
@@ -208,9 +208,7 @@ const formData = ref({
 
 // 全屏元素
 const fullscreenRef = ref(null);
-const { isFullscreen, enter, exit, toggle } = useFullscreen(
-    fullscreenRef.value,
-);
+const { isFullscreen, enter, exit, toggle } = useFullscreen(fullscreenRef);
 
 /**
  * 刷新视频

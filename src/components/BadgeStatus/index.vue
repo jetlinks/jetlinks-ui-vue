@@ -28,5 +28,4 @@ const props = defineProps({
      */
     statusNames: { type: Object },
 });
-
 </script>

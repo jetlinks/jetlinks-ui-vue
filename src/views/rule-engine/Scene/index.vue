@@ -1,6 +1,6 @@
 <template>
     <page-container>
-        <Search :columns="columns" target="scene" @search="handleSearch" />
+        <j-advanced-search :columns="columns" target="scene" @search="handleSearch" />
         <JProTable
             ref="sceneRef"
             :columns="columns"
@@ -23,7 +23,6 @@
             <template #card="slotProps">
                 <SceneCard
                     :value="slotProps"
-                    @click="handleClick"
                     :actions="getActions(slotProps, 'card')"
                     :status="slotProps.state?.value"
                     :statusText="slotProps.state?.text"
@@ -50,7 +49,7 @@
                         <Ellipsis style="width: calc(100% - 100px)">
                             <span
                                 style="font-size: 16px; font-weight: 600"
-                                @click.stop="handleView(slotProps.id)"
+                                @click.stop="handleView(slotProps.id, slotProps.triggerType)"
                             >
                                 {{ slotProps.name }}
                             </span>
@@ -126,7 +125,7 @@
 import SaveModal from './Save/save.vue';
 import type { SceneItem } from './typings';
 import { useMenuStore } from 'store/menu';
-import { query, _delete, _action } from '@/api/rule-engine/scene';
+import { query, _delete, _action, _execute } from '@/api/rule-engine/scene';
 import { message } from 'ant-design-vue';
 import type { ActionsType } from '@/components/Table';
 import { getImage } from '@/utils/comm';
@@ -180,10 +179,12 @@ const columns = [
         scopedSlots: true,
         search: {
             type: 'select',
-            options: Array.from(typeMap).map((item) => ({
-                label: item[1],
-                value: item[0],
-            })),
+            options: Array.from(typeMap).map((item) => {
+                return {
+                    label: item[1]?.text,
+                    value: item[0],
+                }
+            }),
         },
     },
     {
@@ -305,9 +306,18 @@ const getActions = (
                         : '未启用，不能手动触发',
             },
             icon: 'LikeOutlined',
-            onClick: () => {
-                // handleView(data.id, data.triggerType);
-            },
+            popConfirm: {
+                title: '',
+                onConfirm: async () => {
+                    const resp = await _execute(data.id)
+                    if (resp.status === 200) {
+                        message.success('操作成功！');
+                        sceneRef.value?.reload();
+                    } else {
+                        message.error('操作失败！');
+                    }
+                }
+            }
         };
         actions.splice(1, 0, _item);
     }

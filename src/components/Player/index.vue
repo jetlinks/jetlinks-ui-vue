@@ -30,7 +30,7 @@ const options = reactive({
     muted: false, //静音
     webFullScreen: false,
     speedRate: ['0.75', '1.0', '1.25', '1.5', '2.0'], //播放倍速
-    autoPlay: true, //自动播放
+    autoPlay: false, //自动播放
     loop: false, //循环播放
     mirror: false, //镜像画面
     ligthOff: false, //关灯模式
