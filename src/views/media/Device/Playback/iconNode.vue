@@ -19,11 +19,11 @@ interface Props {
 const props = defineProps<Props>();
 
 // type 为local时有效，0：未下载； 1：下载中：2：已下载
-// const status = ref(props.item?.isServer ? 2 : 0);
-const status = computed({
-    get: () => (props.item?.isServer ? 2 : 0),
-    set: (val: number) => {},
-});
+const status = ref(props.item?.isServer ? 2 : 0);
+// const status = computed({
+//     get: () => (props.item?.isServer ? 2 : 0),
+//     set: (val: number) => {},
+// });
 
 const getLocalIcon = (s: number) => {
     if (s === 0) {

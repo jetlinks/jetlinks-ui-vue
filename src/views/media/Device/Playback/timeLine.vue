@@ -255,6 +255,8 @@ const handleProgress = (event: any, item: any) => {
         onChange(_start, item.endTime, item.deviceId, item.channelId);
     }
 };
+
+defineExpose({ playByStartTime });
 </script>
 
 <style lang="less" scoped>
