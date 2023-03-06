@@ -229,7 +229,7 @@
             </template>
         </JProTable>
     </page-container>
-    <Import v-if="importVisible" @close="importVisible = false" />
+    <Import v-if="importVisible" @close="importVisible = false" @save="onRefresh" />
     <Export
         v-if="exportVisible"
         @close="exportVisible = false"
@@ -259,7 +259,6 @@ import {
     batchDeployDevice,
     batchDeleteDevice,
 } from '@/api/device/instance';
-// import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage, LocalStore } from '@/utils/comm';
 import { message } from 'ant-design-vue';
 import Import from './Import/index.vue';
@@ -275,6 +274,7 @@ import {
 } from '@/api/device/product';
 import { queryTree } from '@/api/device/category';
 import { useMenuStore } from '@/store/menu';
+import { ActionsType } from './typings';
 
 const router = useRouter();
 const instanceRef = ref<Record<string, any>>({});
@@ -696,4 +696,8 @@ const saveBtn = () => {
 const handleSearch = (_params: any) => {
     params.value = _params;
 };
+
+const onRefresh = () => {
+    instanceRef.value?.reload();
+}
 </script>

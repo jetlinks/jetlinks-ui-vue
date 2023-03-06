@@ -8,7 +8,7 @@ import CardBox from './CardBox/index.vue';
 // import Search from './Search'
 import NormalUpload from './NormalUpload/index.vue'
 import FileFormat from './FileFormat/index.vue'
-// import JUpload from './JUpload/index.vue'
+import JProUpload from './JUpload/index.vue'
 import { BasicLayoutPage, BlankLayoutPage } from './Layout'
 import { PageContainer } from 'jetlinks-ui-components/es/components'
 import Ellipsis from './Ellipsis/index.vue'
@@ -27,7 +27,7 @@ export default  {
             // .component('Search', Search)
             .component('NormalUpload', NormalUpload)
             .component('FileFormat', FileFormat)
-            // .component('JUpload', JUpload)
+            .component('JProUpload', JProUpload)
             .component('BasicLayoutPage', BasicLayoutPage)
             .component('BlankLayoutPage', BlankLayoutPage)
             .component('PageContainer', PageContainer)
