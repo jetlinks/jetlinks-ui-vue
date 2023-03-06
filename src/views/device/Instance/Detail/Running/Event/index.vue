@@ -1,28 +1,30 @@
 <template>
-    <Search :columns="columns" target="device-instance-running-events" />
-    <JTable
+    <j-advanced-search class="search" type="simple" :columns="columns" target="device-instance-running-events" @search="handleSearch" />
+    <JProTable
         ref="eventsRef"
         :columns="columns"
         :request="_getEventList"
         model="TABLE"
-        :bodyStyle="{ padding: '0 24px' }"
+        :params="params"
+        :bodyStyle="{ padding: '0 0 0 24px' }"
     >
         <template #timestamp="slotProps">
-            {{ moment(slotProps.timestamp).format('YYYY-MM-DD HH:mm:ss') }}
+            {{ dayjs(slotProps.timestamp).format('YYYY-MM-DD HH:mm:ss') }}
         </template>
         <template #action="slotProps">
-            <a-button type="link" @click="detail(slotProps)">
+            <j-button type="link" @click="detail(slotProps)">
                 <AIcon type="SearchOutlined" />
-            </a-button>
+            </j-button>
         </template>
-    </JTable>
+    </JProTable>
 </template>
 
 <script lang="ts" setup>
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { getEventList } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
-import { Modal } from 'ant-design-vue';
+import { Modal } from 'jetlinks-ui-components';
+import JsonViewer from 'vue-json-viewer';
 
 const events = defineProps({
     data: {
@@ -51,11 +53,11 @@ const columns = ref<Record<string, any>>([
 ]);
 const params = ref<Record<string, any>>({});
 
-const _getEventList = () =>
+const _getEventList = (_params: any) =>
     getEventList(
         instanceStore.current.id || '',
         events.data.id || '',
-        params.value,
+        _params
     );
 
 watchEffect(() => {
@@ -78,12 +80,25 @@ watchEffect(() => {
     }
 });
 
-const detail = () => {
+const handleSearch = (_params: any) => {
+    params.value = _params;
+};
+
+const detail = (_info: any) => {
     Modal.info({
         title: () => '详情',
         width: 850,
-        content: () => h('div', {}, [h('p', '暂未开发')]),
+        content: () => h('JsonViewer', {
+            'expand-depth': 5,
+            value: _info
+        }),
         okText: '关闭',
     });
 };
 </script>
+
+<style lang="less" scoped>
+.search {
+    padding: 0 0 0 24px;
+}
+</style>

@@ -18,7 +18,7 @@
       <div>
         <h2>1、在百度小度技能平台创建技能，并授权。完成物联网平台与DuerOS的关联。</h2>
         <div class="image">
-          <a-image width="100%" :src="getImage('/cloud/dueros-doc.jpg')" />
+          <j-image width="100%" :src="getImage('/cloud/dueros-doc.jpg')" />
         </div>
         <h1>授权地址</h1>
         <div>物联网平台的登录地址。注意需要为https。</div>
@@ -26,19 +26,19 @@
         <h1>Client_Id</h1>
         <div>请填写系统管理-应用管理中的clientId。</div>
         <div class="image">
-          <a-image width="100%" :src="getImage('/cloud/dueros-doc1.png')" />
+          <j-image width="100%" :src="getImage('/cloud/dueros-doc1.png')" />
         </div>
         <h1>回调地址</h1>
         <div>请复制DuerOS平台中的值，填写到系统管理-应用管理中-redirectUrl中。</div>
         <div class="image">
-          <a-image width="100%" :src="getImage('/cloud/dueros-doc2.png')" />
+          <j-image width="100%" :src="getImage('/cloud/dueros-doc2.png')" />
         </div>
         <h1>Token地址</h1>
         <div>请复制并填写：HTTPS://{location.host}/api/v1/token</div>
         <h1>ClientSecret</h1>
         <div>请复制系统管理-应用管理中的secureKey，填写到DuerOS平台。</div>
         <div class="image">
-          <a-image width="100%" :src="getImage('/cloud/dueros-doc3.png')" />
+          <j-image width="100%" :src="getImage('/cloud/dueros-doc3.png')" />
         </div>
         <div></div>
         <h1>WebService</h1>

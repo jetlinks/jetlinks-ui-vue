@@ -1,36 +1,36 @@
 <template>
-    <a-spin :spinning="loading">
+    <j-spin :spinning="loading">
         <div>
-            <a-space>
+            <j-space>
                 <div>
                     统计周期：
-                    <a-select v-model:value="cycle" style="width: 120px">
-                        <a-select-option value="*" v-if="_type"
-                            >实际值</a-select-option
+                    <j-select v-model:value="cycle" style="width: 120px">
+                        <j-select-option value="*" v-if="_type"
+                            >实际值</j-select-option
                         >
-                        <a-select-option value="1m">按分钟统计</a-select-option>
-                        <a-select-option value="1h">按小时统计</a-select-option>
-                        <a-select-option value="1d">按天统计</a-select-option>
-                        <a-select-option value="1w">按周统计</a-select-option>
-                        <a-select-option value="1M">按月统计</a-select-option>
-                    </a-select>
+                        <j-select-option value="1m">按分钟统计</j-select-option>
+                        <j-select-option value="1h">按小时统计</j-select-option>
+                        <j-select-option value="1d">按天统计</j-select-option>
+                        <j-select-option value="1w">按周统计</j-select-option>
+                        <j-select-option value="1M">按月统计</j-select-option>
+                    </j-select>
                 </div>
                 <div v-if="cycle !== '*' && _type">
                     统计规则：
-                    <a-select v-model:value="agg" style="width: 120px">
-                        <a-select-option value="AVG">平均值</a-select-option>
-                        <a-select-option value="MAX">最大值</a-select-option>
-                        <a-select-option value="MIN">最小值</a-select-option>
-                        <a-select-option value="COUNT">总数</a-select-option>
-                    </a-select>
+                    <j-select v-model:value="agg" style="width: 120px">
+                        <j-select-option value="AVG">平均值</j-select-option>
+                        <j-select-option value="MAX">最大值</j-select-option>
+                        <j-select-option value="MIN">最小值</j-select-option>
+                        <j-select-option value="COUNT">总数</j-select-option>
+                    </j-select>
                 </div>
-            </a-space>
+            </j-space>
         </div>
         <div style="width: 100%; height: 500px">
             <Chart :options="options" v-if="chartsList.length" />
             <JEmpty v-else />
         </div>
-    </a-spin>
+    </j-spin>
 </template>
 
 <script lang="ts" setup>

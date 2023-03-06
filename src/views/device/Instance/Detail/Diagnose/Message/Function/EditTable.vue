@@ -1,5 +1,5 @@
 <template>
-    <a-table
+    <j-table
         rowKey="id"
         :columns="columns"
         :data-source="dataSource"
@@ -36,12 +36,11 @@
                 </template>
             </div>
         </template>
-    </a-table>
+    </j-table>
 </template>
 
 <script lang="ts" setup>
-import { PropType } from "vue-demi";
-
+import { PropType } from "vue";
 
 type Emits = {
     (e: 'update:modelValue', data: Record<string, any>[]): void;

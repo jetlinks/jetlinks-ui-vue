@@ -1,14 +1,14 @@
 <template>
-    <a-select allowClear v-model:value="_value" @change="onChange" placeholder="请选择" style="width: 100%">
-        <a-select-option
+    <j-select allowClear v-model:value="_value" @change="onChange" placeholder="请选择" style="width: 100%">
+        <j-select-option
             v-for="item in list"
             :key="item.id"
             :value="item.id"
             :label="item.name"
             :filter-option="filterOption"
-            >{{ item.name }}</a-select-option
+            >{{ item.name }}</j-select-option
         >
-    </a-select>
+    </j-select>
 </template>
 
 <script lang="ts" setup>

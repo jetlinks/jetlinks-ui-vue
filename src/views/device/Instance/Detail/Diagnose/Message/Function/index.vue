@@ -1,110 +1,110 @@
 <template>
     <div class="function">
-        <a-form :layout="'vertical'" ref="formRef" :model="modelRef">
-            <a-row :gutter="24">
-                <a-col :span="6">
-                    <a-form-item
+        <j-form :layout="'vertical'" ref="formRef" :model="modelRef">
+            <j-row :gutter="24">
+                <j-col :span="6">
+                    <j-form-item
                         name="type"
                         :rules="{
                             required: true,
                             message: '请选择',
                         }"
                     >
-                        <a-select
+                        <j-select
                             placeholder="请选择"
                             v-model:value="modelRef.type"
                             show-search
                             :filter-option="filterOption"
                         >
-                            <a-select-option value="READ_PROPERTY"
-                                >读取属性</a-select-option
+                            <j-select-option value="READ_PROPERTY"
+                                >读取属性</j-select-option
                             >
-                            <a-select-option value="WRITE_PROPERTY"
-                                >修改属性</a-select-option
+                            <j-select-option value="WRITE_PROPERTY"
+                                >修改属性</j-select-option
                             >
-                            <a-select-option value="INVOKE_FUNCTION"
-                                >调用功能</a-select-option
+                            <j-select-option value="INVOKE_FUNCTION"
+                                >调用功能</j-select-option
                             >
-                        </a-select>
-                    </a-form-item>
-                </a-col>
-                <a-col
+                        </j-select>
+                    </j-form-item>
+                </j-col>
+                <j-col
                     :span="6"
                     v-if="
                         ['READ_PROPERTY', 'WRITE_PROPERTY'].includes(
-                            modelRef.type,
+                            modelRef?.type || '',
                         )
                     "
                 >
-                    <a-form-item
+                    <j-form-item
                         name="properties"
                         :rules="{
                             required: true,
                             message: '请选择属性',
                         }"
                     >
-                        <a-select
+                        <j-select
                             placeholder="请选择属性"
                             v-model:value="modelRef.properties"
                             show-search
                             :filter-option="filterOption"
                         >
-                            <a-select-option
+                            <j-select-option
                                 v-for="i in metadata?.properties || []"
                                 :key="i.id"
                                 :value="i.id"
                                 :label="i.name"
-                                >{{ i.name }}</a-select-option
+                                >{{ i.name }}</j-select-option
                             >
-                        </a-select>
-                    </a-form-item>
-                </a-col>
-                <a-col :span="6" v-if="modelRef.type === 'WRITE_PROPERTY'">
-                    <a-form-item
+                        </j-select>
+                    </j-form-item>
+                </j-col>
+                <j-col :span="6" v-if="modelRef.type === 'WRITE_PROPERTY'">
+                    <j-form-item
                         name="propertyValue"
                         :rules="{
                             required: true,
                             message: '请输入值',
                         }"
                     >
-                        <a-input v-model:value="modelRef.propertyValue" />
-                    </a-form-item>
-                </a-col>
-                <a-col :span="6" v-if="modelRef.type === 'INVOKE_FUNCTION'">
-                    <a-form-item
+                        <j-input v-model:value="modelRef.propertyValue" />
+                    </j-form-item>
+                </j-col>
+                <j-col :span="6" v-if="modelRef.type === 'INVOKE_FUNCTION'">
+                    <j-form-item
                         name="function"
                         :rules="{
                             required: true,
                             message: '请选择功能',
                         }"
                     >
-                        <a-select
+                        <j-select
                             placeholder="请选择功能"
                             v-model:value="modelRef.function"
                             show-search
                             :filter-option="filterOption"
                             @change="funcChange"
                         >
-                            <a-select-option
+                            <j-select-option
                                 v-for="i in metadata?.functions || []"
                                 :key="i.id"
                                 :value="i.id"
                                 :label="i.name"
-                                >{{ i.name }}</a-select-option
+                                >{{ i.name }}</j-select-option
                             >
-                        </a-select>
-                    </a-form-item>
-                </a-col>
-                <a-col :span="4">
-                    <a-button type="primary" @click="saveBtn">发送</a-button>
-                </a-col>
-                <a-col
+                        </j-select>
+                    </j-form-item>
+                </j-col>
+                <j-col :span="4">
+                    <j-button type="primary" @click="saveBtn">发送</j-button>
+                </j-col>
+                <j-col
                     :span="24"
                     v-if="
                         modelRef.type === 'INVOKE_FUNCTION' && modelRef.function && modelRef.inputs.length
                     "
                 >
-                    <a-form-item
+                    <j-form-item
                         name="inputs"
                         label="参数列表"
                         :rules="{
@@ -113,10 +113,10 @@
                         }"
                     >
                         <EditTable v-model="modelRef.inputs" />
-                    </a-form-item>
-                </a-col>
-            </a-row>
-        </a-form>
+                    </j-form-item>
+                </j-col>
+            </j-row>
+        </j-form>
     </div>
 </template>
 

@@ -1,17 +1,17 @@
 <template>
-    <a-spin :spinning="loading">
+    <j-spin :spinning="loading">
         <div style="position: relative">
             <div style="position: absolute; right: 0; top: 5px; z-index: 999">
-                <a-space>
-                    <a-button type="primary" @click="onStart">开始动画</a-button>
-                    <a-button type="primary" @click="onStop">停止动画</a-button>
-                </a-space>
+                <j-space>
+                    <j-button type="primary" @click="onStart">开始动画</j-button>
+                    <j-button type="primary" @click="onStop">停止动画</j-button>
+                </j-space>
             </div>
         </div>
         <AMapComponent style="height: 500px">
             <PathSimplifier :pathData="geoList" ref="amapPath"></PathSimplifier>
         </AMapComponent>
-    </a-spin>
+    </j-spin>
 </template>
 
 <script lang="ts" setup>

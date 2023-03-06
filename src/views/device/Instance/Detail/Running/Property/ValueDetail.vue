@@ -1,5 +1,5 @@
 <template>
-    <a-modal
+    <j-modal
         :maskClosable="false"
         width="600px"
         :visible="true"
@@ -10,7 +10,7 @@
         @cancel="handleCancel"
     >
         <template v-if="['.jpg', '.png'].includes(type)">
-            <a-image :src="value?.formatValue" />
+            <j-image :src="value?.formatValue" />
         </template>
         <template v-else-if="['.flv', '.m3u8', '.mp4'].includes(type)">
         </template>
@@ -20,7 +20,7 @@
                 :value="value?.formatValue"
             />
         </template>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script lang="ts" setup>
