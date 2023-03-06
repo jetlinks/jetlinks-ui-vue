@@ -1,14 +1,14 @@
 <template>
     <page-container>
         <div class="user-container">
-            <Search :columns="columns" @search="query.search" />
+            <j-advanced-search :columns="columns" @search="(params:any)=>queryParams = {...params}" />
 
             <j-pro-table
                 ref="tableRef"
                 :columns="columns"
                 :request="getUserList_api"
                 model="TABLE"
-                :params="query.params.value"
+                :params="queryParams"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
@@ -208,12 +208,7 @@ const columns = [
         scopedSlots: true,
     },
 ];
-const query = {
-    params: ref({}),
-    search: (params: object) => {
-        query.params.value = params;
-    },
-};
+const queryParams = ({});
 
 const tableRef = ref<Record<string, any>>({}); // 表格实例
 const table = {
