@@ -26,7 +26,7 @@
             </div>
             <div id="btn" class="time-line-btn"></div>
             <div id="time" class="time-line">
-                {{ moment(playTime || 0).format('HH:mm:ss') }}
+                {{ dayjs(playTime || 0).format('HH:mm:ss') }}
             </div>
         </div>
     </div>
@@ -34,13 +34,13 @@
 
 <script setup lang="ts">
 import { message } from 'ant-design-vue';
-import type { Moment } from 'moment';
-import moment from 'moment';
 import type { recordsItemType } from './typings';
+import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 
 export type TimeChangeType = {
-    endTime: Moment;
-    startTime: Moment;
+    endTime: Dayjs;
+    startTime: Dayjs;
     deviceId: string;
     channelId: string;
 };
@@ -48,7 +48,7 @@ export type TimeChangeType = {
 interface Props {
     onChange: (times: TimeChangeType | undefined) => void;
     data: recordsItemType[];
-    dateTime?: Moment;
+    dateTime?: Dayjs;
     type: string;
     playStatus: number;
     playTime: number;
@@ -65,13 +65,13 @@ const props = defineProps<Props>();
 // 获取选中当天开始时间戳
 const startT = ref<number>(
     new Date(
-        moment(props.dateTime).startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+        dayjs(props.dateTime).startOf('day').format('YYYY-MM-DD HH:mm:ss'),
     ).getTime(),
 );
 // 获取选中当天结束时间戳
 const endT = ref<number>(
     new Date(
-        moment(props.dateTime).endOf('day').format('YYYY-MM-DD HH:mm:ss'),
+        dayjs(props.dateTime).endOf('day').format('YYYY-MM-DD HH:mm:ss'),
     ).getTime(),
 );
 const list = ref<any[]>([]);
@@ -96,7 +96,7 @@ watch(
     () => props.dateTime,
     (val: any) => {
         startT.value = new Date(
-            moment(val).startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+            dayjs(val).startOf('day').format('YYYY-MM-DD HH:mm:ss'),
         ).getTime();
     },
 );
@@ -109,8 +109,8 @@ const onChange = (
 ) => {
     playTime.value = startTime;
     props.onChange({
-        startTime: moment(startTime),
-        endTime: moment(endTime),
+        startTime: dayjs(startTime),
+        endTime: dayjs(endTime),
         deviceId,
         channelId,
     });

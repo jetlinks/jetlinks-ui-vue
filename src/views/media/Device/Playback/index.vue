@@ -52,8 +52,7 @@
                             v-model:value="time"
                             :fullscreen="false"
                             :disabledDate="
-                                (currentDate) =>
-                                    currentDate > moment(new Date())
+                                (currentDate) => currentDate > dayjs(new Date())
                             "
                             @change="handlePanelChange"
                         />
@@ -129,14 +128,14 @@
 
                                     <div>
                                         {{
-                                            moment(
+                                            dayjs(
                                                 item.startTime ||
                                                     item.mediaStartTime,
                                             ).format('HH:mm:ss')
                                         }}
                                         ~
                                         {{
-                                            moment(
+                                            dayjs(
                                                 item.endTime ||
                                                     item.mediaEndTime,
                                             ).format('HH:mm:ss')
@@ -155,21 +154,20 @@
 
 <script setup lang="ts">
 import playBackApi from '@/api/media/playback';
-import type { Moment } from 'moment';
-import moment from 'moment';
 import TimeLine from './timeLine.vue';
 import IconNode from './iconNode.vue';
 import type { recordsItemType } from './typings';
 import LivePlayer from '@/components/Player/index.vue';
 import { getImage } from '@/utils/comm';
 import dayjs from 'dayjs';
+import type { Dayjs } from 'dayjs';
 
 const route = useRoute();
 
 const url = ref('');
 const type = ref('local');
 const historyList = ref<recordsItemType[]>([]);
-const time = ref<Moment | undefined>(undefined);
+const time = ref<Dayjs | undefined>(undefined);
 const loading = ref(false);
 const cloudTime = ref<any>();
 // const location = ref();
@@ -185,7 +183,7 @@ const channelId = computed(() => route.query.channelId as string);
 
 const deviceType = ref('');
 
-const queryLocalRecords = async (date: Moment) => {
+const queryLocalRecords = async (date: Dayjs) => {
     console.log('date: ', date);
 
     playStatus.value = 0;
@@ -246,7 +244,7 @@ const queryLocalRecords = async (date: Moment) => {
  * 查询云端视频
  * @param date
  */
-const queryServiceRecords = async (date: Moment) => {
+const queryServiceRecords = async (date: Dayjs) => {
     playStatus.value = 0;
     url.value = '';
     if (deviceId.value && channelId.value && date) {
@@ -279,7 +277,7 @@ const downloadClick = async (item: recordsItemType) => {
     const downloadUrl = playBackApi.downLoadFile(item.id);
     const downNode = document.createElement('a');
     downNode.href = downloadUrl;
-    downNode.download = `${channelId}-${moment(item.startTime).format(
+    downNode.download = `${channelId}-${dayjs(item.startTime).format(
         'YYYY-MM-DD-HH-mm-ss',
     )}.mp4`;
     downNode.style.display = 'none';
@@ -288,46 +286,21 @@ const downloadClick = async (item: recordsItemType) => {
     document.body.removeChild(downNode);
 };
 
-watch(
-    () => route.query,
-    (val: any) => {
-        const _type = val.type;
-
-        if (_type) {
-            deviceType.value = _type;
-            const _timeStr = moment(new Date());
-            time.value = _timeStr;
-            if (_type === 'fixed-media') {
-                type.value = 'cloud';
-                queryServiceRecords(_timeStr);
-            } else {
-                queryLocalRecords(_timeStr);
-                type.value = 'local';
-            }
+onMounted(() => {
+    const _type = route.query.type as string;
+    if (_type) {
+        deviceType.value = _type;
+        const _timeStr = dayjs(new Date());
+        time.value = _timeStr;
+        if (_type === 'fixed-media') {
+            type.value = 'cloud';
+            queryServiceRecords(_timeStr);
+        } else {
+            queryLocalRecords(_timeStr);
+            type.value = 'local';
         }
-    },
-);
-// onMounted(() => {
-//     const _type = route.query.type as string;
-//     if (_type) {
-//         // 
-//         const _timeStr = moment(new Date());
-//         console.log('_timeStr: ', _timeStr);
-//         const _timeStr1 = dayjs(new Date());
-//         console.log('_timeStr1: ', _timeStr1);
-//         // 
-//         // deviceType.value = _type;
-//         // const _timeStr = moment(new Date());
-//         // time.value = _timeStr;
-//         // if (_type === 'fixed-media') {
-//         //     type.value = 'cloud';
-//         //     queryServiceRecords(_timeStr);
-//         // } else {
-//         //     queryLocalRecords(_timeStr);
-//         //     type.value = 'local';
-//         // }
-//     }
-// });
+    }
+});
 
 const handleTimeLineChange = (times: any) => {
     if (times) {
@@ -339,8 +312,8 @@ const handleTimeLineChange = (times: any) => {
                       times.deviceId,
                       times.channelId,
                       'mp4',
-                      moment(times.startTime).format('YYYY-MM-DD HH:mm:ss'),
-                      moment(times.endTime).format('YYYY-MM-DD HH:mm:ss'),
+                      dayjs(times.startTime).format('YYYY-MM-DD HH:mm:ss'),
+                      dayjs(times.endTime).format('YYYY-MM-DD HH:mm:ss'),
                   )
                 : playBackApi.playbackStart(times.deviceId);
     } else {
