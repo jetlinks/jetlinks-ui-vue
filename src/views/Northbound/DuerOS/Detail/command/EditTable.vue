@@ -1,5 +1,5 @@
 <template>
-    <a-table
+    <j-table
         rowKey="id"
         :columns="columns"
         :data-source="dataSource"
@@ -36,7 +36,7 @@
                 </template>
             </div>
         </template>
-    </a-table>
+    </j-table>
 </template>
 
 <script lang="ts" setup>

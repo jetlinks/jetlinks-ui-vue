@@ -9,7 +9,7 @@
         <j-table
             rowKey="id"
             :columns="columns"
-            :datj-source="dataSource"
+            :data-source="dataSource"
             bordered
             :pagination="false"
         >

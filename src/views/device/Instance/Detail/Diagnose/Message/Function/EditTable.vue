@@ -2,7 +2,7 @@
     <j-table
         rowKey="id"
         :columns="columns"
-        :datj-source="dataSource"
+        :data-source="dataSource"
         bordered
         :pagination="false"
     >
@@ -40,8 +40,7 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType } from "vue-demi";
-
+import { PropType } from "vue";
 
 type Emits = {
     (e: 'update:modelValue', data: Record<string, any>[]): void;
