@@ -3,7 +3,12 @@
     <page-container>
         <div class="playback-warp">
             <div class="playback-left">
-                <LivePlayer :src="url" />
+                <LivePlayer
+                    ref="player"
+                    :src="url"
+                    width="758px"
+                    height="462px"
+                />
                 <TimeLine
                     ref="playTimeNode"
                     :type="type"
@@ -17,9 +22,120 @@
             </div>
             <div class="playback-right">
                 <a-spin :spinning="loading">
-                    <a-tooltip title="">
-
+                    <a-tooltip placement="topLeft">
+                        <template #title>
+                            <div>云端：存储在服务器中</div>
+                            <div>本地：存储在设备本地</div>
+                        </template>
+                        <div>类型: <AIcon type="QuestionCircleOutlined" /></div>
                     </a-tooltip>
+                    <RadioCard
+                        layout="horizontal"
+                        :options="[
+                            {
+                                label: '云端',
+                                value: 'cloud',
+                                imgUrl: getImage('/media/cloud.png'),
+                            },
+                            {
+                                label: '本地',
+                                value: 'local',
+                                imgUrl: getImage('/local.png'),
+                                disabled: deviceType === 'fixed-media',
+                            },
+                        ]"
+                        :checkStyle="true"
+                        v-model="type"
+                    />
+                    <div class="playback-calendar">
+                        <a-calendar
+                            v-model:value="time"
+                            :fullscreen="false"
+                            :disabledDate="
+                                (currentDate) =>
+                                    currentDate > moment(new Date())
+                            "
+                            @panelChange="handlePanelChange"
+                        />
+                    </div>
+                    <div
+                        class="playback-list"
+                        :class="{ 'no-list': !historyList.length }"
+                    >
+                        <a-empty v-if="!historyList.length" />
+                        <a-list
+                            class="playback-list-items"
+                            itemLayout="horizontal"
+                            :dataSource="historyList"
+                        >
+                            <template #renderItem="{ item }">
+                                <a-list-item>
+                                    <template #actions>
+                                        <a-tooltip
+                                            key="play-btn"
+                                            :title="
+                                                (item.startTime ||
+                                                    item.mediaStartTime) ===
+                                                    playNowTime &&
+                                                playStatus === 1
+                                                    ? '暂停'
+                                                    : '播放'
+                                            "
+                                        >
+                                            <a @click="handlePlay">
+                                                <AIcon
+                                                    :type="
+                                                        (item.startTime ||
+                                                            item.mediaStartTime) ===
+                                                            playNowTime &&
+                                                        playStatus === 1
+                                                            ? 'PauseCircleOutlined'
+                                                            : 'PlayCircleOutlined'
+                                                    "
+                                                />
+                                            </a>
+                                        </a-tooltip>
+                                        <a-tooltip
+                                            key="download"
+                                            :title="
+                                                type !== 'local'
+                                                    ? '下载录像文件'
+                                                    : item.isServer
+                                                    ? '查看'
+                                                    : '下载到云端'
+                                            "
+                                        >
+                                            <IconNode
+                                                :type="type"
+                                                :item="item"
+                                                :on-cloud-view="cloudView"
+                                                :on-down-load="
+                                                    () => downloadClick(item)
+                                                "
+                                            />
+                                        </a-tooltip>
+                                    </template>
+
+                                    <div>
+                                        {{
+                                            moment(
+                                                item.startTime ||
+                                                    item.mediaStartTime,
+                                            ).format('HH:mm:ss')
+                                        }}
+                                        ~
+                                        {{
+                                            moment(
+                                                item.endTime ||
+                                                    item.mediaEndTime,
+                                            ).format('HH:mm:ss')
+                                        }}
+                                    </div>
+                                </a-list-item>
+                            </template>
+                            <div></div>
+                        </a-list>
+                    </div>
                 </a-spin>
             </div>
         </div>
@@ -34,6 +150,7 @@ import TimeLine from './timeLine.vue';
 import IconNode from './iconNode.vue';
 import type { recordsItemType } from './typings';
 import LivePlayer from '@/components/Player/index.vue';
+import { getImage } from '@/utils/comm';
 
 const route = useRoute();
 
@@ -194,6 +311,43 @@ const handleTimeLineChange = (times: any) => {
                 : playBackApi.playbackStart(times.deviceId);
     } else {
         url.value = '';
+    }
+};
+
+watch(
+    () => type.value,
+    (val: string) => {
+        if (val === 'cloud') {
+            queryServiceRecords(time.value!);
+        } else {
+            queryLocalRecords(time.value!);
+        }
+    },
+);
+
+const handlePanelChange = (date: any) => {
+    // time.value = date;
+    if (type.value === 'cloud') {
+        queryServiceRecords(date);
+    } else {
+        queryLocalRecords(date);
+    }
+};
+
+// 播放暂停
+const handlePlay = (_startTime: any) => {
+    if (playStatus.value === 0 || _startTime !== playNowTime.value) {
+        if (playTimeNode.value) {
+            playTimeNode.value.playByStartTime(_startTime);
+        }
+    } else if (playStatus.value == 1 && _startTime === playNowTime.value) {
+        if (player.value.getVueInstance) {
+            // player.value.getVueInstance().pause();
+        }
+    } else if (playStatus.value == 2 && _startTime === playNowTime.value) {
+        if (player.value.getVueInstance) {
+            // player.value.getVueInstance().play();
+        }
     }
 };
 </script>
