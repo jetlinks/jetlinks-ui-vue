@@ -1,6 +1,6 @@
 <template>
     <div class="permiss-tree-container">
-        <a-table
+        <j-table
             :columns="columns"
             :data-source="tableData"
             :pagination="false"
@@ -10,28 +10,28 @@
             <!-- 表头 -->
             <template #headerCell="{ column }">
                 <div v-if="column.key === 'menu'">
-                    <a-checkbox
+                    <j-checkbox
                         v-model:checked="selectedAll"
                         :indeterminate="indeterminate"
                         @change="selectAllChange"
-                        >菜单权限</a-checkbox
+                        >菜单权限</j-checkbox
                     >
                 </div>
                 <div v-else-if="column.key === 'data'">
                     <span style="">数据权限</span>
-                    <a-tooltip>
+                    <j-tooltip>
                         <template #title
                             >勾选任意数据权限均能看到自己创建的数据权限</template
                         >
-                        <question-circle-outlined />
-                    </a-tooltip>
-                    <a-checkbox
+                        <AIcon type="QuestionCircleOutlined" />
+                    </j-tooltip>
+                    <j-checkbox
                         v-model:checked="bulkShow"
                         @change="bulkValue = ''"
                         style="margin-left: 10px"
-                        >批量设置</a-checkbox
+                        >批量设置</j-checkbox
                     >
-                    <a-select
+                    <j-select
                         v-show="bulkShow"
                         v-model:value="bulkValue"
                         :size="'middle'"
@@ -39,7 +39,7 @@
                         :options="bulkOptions"
                         @change="bulkChange"
                         placeholder="请选择"
-                    ></a-select>
+                    ></j-select>
                 </div>
                 <div v-else>
                     <span>{{ column.title }}</span>
@@ -48,21 +48,21 @@
             <!-- 表格内容 -->
             <template #bodyCell="{ column, record }">
                 <div v-if="column.key === 'menu'">
-                    <a-checkbox
+                    <j-checkbox
                         v-model:checked="record.granted"
                         :indeterminate="record.indeterminate"
                         @change="menuChange(record, true)"
-                        >{{ record.name }}</a-checkbox
+                        >{{ record.name }}</j-checkbox
                     >
                 </div>
 
                 <div v-else-if="column.key === 'action'">
                     <div v-if="record.buttons && record.buttons.length > 0">
-                        <a-checkbox
+                        <j-checkbox
                             v-for="button in record.buttons"
                             v-model:checked="button.granted"
                             @change="actionChange(record)"
-                            >{{ button.name }}</a-checkbox
+                            >{{ button.name }}</j-checkbox
                         >
                     </div>
                 </div>
@@ -72,13 +72,16 @@
                         不支持数据权限配置，默认可查看全部数据
                     </span>
                     <div v-else-if="record.accessSupport.value === 'support'">
-                        <a-radio-group v-model:value="record.selectAccesses">
-                            <a-radio
+                        <j-radio-group
+                            v-model:value="record.selectAccesses"
+                            @change="resetBulk"
+                        >
+                            <j-radio
                                 :value="asset.supportId"
                                 v-for="asset in record.assetAccesses"
-                                >{{ asset.name }}</a-radio
+                                >{{ asset.name }}</j-radio
                             >
-                        </a-radio-group>
+                        </j-radio-group>
                     </div>
                     <span
                         v-else-if="
@@ -89,12 +92,11 @@
                     >
                 </div>
             </template>
-        </a-table>
+        </j-table>
     </div>
 </template>
 
 <script setup lang="ts">
-import { QuestionCircleOutlined } from '@ant-design/icons-vue';
 import { cloneDeep } from 'lodash-es';
 import { getPrimissTree_api } from '@/api/system/role';
 
@@ -166,6 +168,12 @@ const bulkChange = () => {
             item.selectAccesses = bulkValue.value;
         }
     });
+};
+
+// 重置批量设置
+const resetBulk = () => {
+    bulkValue.value = '';
+    bulkShow.value = false;
 };
 // ------------下面为表格内容部分------------------
 const flatTableData: tableItemType[] = []; // 表格数据的扁平化版本--浅克隆   方便进行对表格数据进行操作
@@ -272,6 +280,9 @@ function menuChange(
             return menuChange(parent, false);
         }
     }
+
+    // 取消批量设置
+    resetBulk();
 
     // 改变头部节点状态
     const selectList = flatTableData.filter((item) => item.granted); // 第一列选中的项
@@ -390,8 +401,3 @@ type tableItemType = {
     assetAccesses?: any[];
 };
 </script>
-
-<style lang="less" scoped>
-.permiss-tree-container {
-}
-</style>

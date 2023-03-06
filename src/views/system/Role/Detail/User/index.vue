@@ -1,134 +1,149 @@
 <template>
-    <a-card class="role-user-container">
-        <Search :columns="query.columns" />
+    <div class="role-user-container">
+        <j-advanced-search
+            :columns="columns"
+            @search="(params:any)=>queryParams = {...params}"
+        />
 
         <j-pro-table
             ref="tableRef"
-            :columns="table.columns"
-            :request="getUserByRole_api"
+            :columns="columns"
+            :request="table.getList"
             model="TABLE"
-            :defaultParams="query.params"
+            :params="queryParams"
             :rowSelection="{
-                selectedRowKeys: table._selectedRowKeys,
-                onChange: table.onSelectChange,
+                selectedRowKeys: selectedRowKeys,
+                onChange: (keys:string[])=>selectedRowKeys = keys,
             }"
-            @cancelSelect="table.cancelSelect"
+            @cancelSelect="selectedRowKeys = []"
+            size="small"
         >
             <template #headerTitle>
-                <a-button type="primary" @click="table.clickAdd"
-                    ><plus-outlined />新增</a-button
-                >
+                <j-button type="primary" @click="dialogVisible = true">
+                    <AIcon type="PlusOutlined" />新增
+                </j-button>
+            </template>
+
+            <template #status="slotProps">
+                <BadgeStatus
+                    :status="slotProps.status"
+                    :text="slotProps.status ? '正常' : '禁用'"
+                    :statusNames="{
+                        1: 'success',
+                        0: 'error',
+                    }"
+                ></BadgeStatus>
             </template>
 
             <template #action="slotProps">
-                <a-space :size="16">
-                    <a-popconfirm
-                        title="确认解绑"
-                        ok-text="确定"
-                        cancel-text="取消"
-                        @confirm="table.clickUnBind(slotProps)"
+                <j-space :size="16">
+                    <PermissionButton
+                        type="link"
+                        :tooltip="{ title: '解绑' }"
+                        :pop-confirm="{
+                            title: `确认解绑`,
+                            onConfirm: () => table.unbind([slotProps.id]),
+                        }"
                     >
-                        <a-tooltip>
-                            <template #title>解绑</template>
-                            <a-button style="padding: 0" type="link">
-                                <disconnect-outlined />
-                            </a-button>
-                        </a-tooltip>
-                    </a-popconfirm>
-                </a-space>
+                        <AIcon type="DisconnectOutlined" />
+                    </PermissionButton>
+                </j-space>
             </template>
         </j-pro-table>
 
-        <div class="dialogs">
-            <AddUserDialog :open="dialog.openAdd" @refresh="table.refresh" />
-        </div>
-    </a-card>
+        <AddUserDialog
+            v-if="dialogVisible"
+            v-model:visible="dialogVisible"
+            :role-id="roleId"
+            @refresh="table.refresh"
+        />
+    </div>
 </template>
 
 <script setup lang="ts" name="RoleUser">
-import { PlusOutlined, DisconnectOutlined } from '@ant-design/icons-vue';
+import PermissionButton from '@/components/PermissionButton/index.vue';
 import AddUserDialog from '../components/AddUserDialog.vue';
 import { getUserByRole_api, unbindUser_api } from '@/api/system/role';
 import { message } from 'ant-design-vue';
-import userType from './index';
 
-const route = useRoute();
-const roleId = route.params.id as string;
-const query = reactive<userType.queryType>({
-    columns: [
-        {
-            title: '姓名',
-            dataIndex: 'name',
-            key: 'name',
+const roleId = useRoute().params.id as string;
+
+const columns = [
+    {
+        title: '姓名',
+        dataIndex: 'name',
+        key: 'name',
+        search: {
+            type: 'string',
         },
-        {
-            title: '用户名',
-            dataIndex: 'username',
-            key: 'username',
-        },
-        {
-            title: '创建时间',
-            dataIndex: 'createTime',
-            key: 'createTime',
-        },
-        {
-            title: '状态',
-            dataIndex: 'status',
-            key: 'status',
-        },
-    ],
-    params: {
-        terms: [
-            {
-                terms: [
-                    {
-                        column: 'id$in-dimension$role',
-                        value: route.params.id,
-                    },
-                ],
-            },
-        ],
     },
-});
+    {
+        title: '用户名',
+        dataIndex: 'username',
+        key: 'username',
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '创建时间',
+        dataIndex: 'createTime',
+        key: 'createTime',
+        search: {
+            type: 'date',
+        },
+    },
+    {
+        title: '状态',
+        dataIndex: 'status',
+        key: 'status',
+        search: {
+            type: 'select',
+            options: [
+                {
+                    label: '正常',
+                    value: 1,
+                },
+                {
+                    label: '禁用',
+                    value: 0,
+                },
+            ],
+        },
+        scopedSlots: true,
+    },
+    {
+        title: '操作',
+        dataIndex: 'action',
+        key: 'action',
+        width: '200px',
+        scopedSlots: true,
+    },
+];
+const queryParams = ref({});
 
 const tableRef = ref<Record<string, any>>({});
-const table = reactive<userType.tableType>({
-    columns: [
-        {
-            title: '姓名',
-            dataIndex: 'name',
-            key: 'name',
-        },
-        {
-            title: '用户名',
-            dataIndex: 'username',
-            key: 'username',
-        },
-        {
-            title: '创建时间',
-            dataIndex: 'createTime',
-            key: 'createTime',
-        },
-        {
-            title: '状态',
-            dataIndex: 'status',
-            key: 'status',
-        },
-        {
-            title: '操作',
-            dataIndex: 'action',
-            key: 'action',
-            scopedSlots: true,
-        },
-    ],
-    tableData: [],
-    // 点击打开新增弹窗
-    clickAdd: () => {
-        dialog.openAdd += 1;
-    },
-    // 点击解绑
-    clickUnBind: (row: any) => {
-        table.unbind([row.id]);
+const selectedRowKeys = ref<string[]>([]);
+const table = {
+    getList: (oParams: any) => {
+        const params = {
+            ...oParams,
+            terms: [
+                {
+                    terms: [
+                        {
+                            column: 'id$in-dimension$role',
+                            value: roleId,
+                        },
+                    ],
+                },
+            ],
+        };
+        if (oParams.terms[0])
+            params.terms.unshift({
+                terms: oParams.terms[0].terms,
+            });
+        return getUserByRole_api(params);
     },
     // 批量解绑
     unbind: (ids: string[] = []) => {
@@ -143,20 +158,24 @@ const table = reactive<userType.tableType>({
     refresh: () => {
         tableRef.value.reload();
     },
-    // 多选
-    _selectedRowKeys: [] as string[],
-    onSelectChange: (keys: string[]) => {
-        table._selectedRowKeys = [...keys];
-    },
-    cancelSelect: () => {
-        table._selectedRowKeys = [];
-    },
-});
+};
 
 // 弹窗相关
-const dialog = reactive({
-    openAdd: 0,
-});
+const dialogVisible = ref(false);
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.role-user-container {
+    background-color: #fff;
+
+    :deep(.ant-table-tbody) {
+        .ant-table-cell {
+            .ant-space-item {
+                .ant-btn-link {
+                    padding: 0;
+                }
+            }
+        }
+    }
+}
+</style>
