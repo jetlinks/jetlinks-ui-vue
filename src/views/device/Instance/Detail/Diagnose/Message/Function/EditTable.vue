@@ -1,8 +1,8 @@
 <template>
-    <a-table
+    <j-table
         rowKey="id"
         :columns="columns"
-        :data-source="dataSource"
+        :datj-source="dataSource"
         bordered
         :pagination="false"
     >
@@ -36,7 +36,7 @@
                 </template>
             </div>
         </template>
-    </a-table>
+    </j-table>
 </template>
 
 <script lang="ts" setup>

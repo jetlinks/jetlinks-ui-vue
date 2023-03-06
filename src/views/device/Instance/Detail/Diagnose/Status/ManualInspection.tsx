@@ -1,7 +1,6 @@
-import AIcon from "@/components/AIcon";
 import { useInstanceStore } from "@/store/instance";
 import { useMenuStore } from "@/store/menu";
-import { Button, Descriptions, Modal } from "ant-design-vue"
+import { AIcon, Button, Modal, Descriptions, DescriptionsItem, Space } from "jetlinks-ui-components"
 import styles from './index.module.less'
 
 const ManualInspection = defineComponent({
@@ -39,12 +38,12 @@ const ManualInspection = defineComponent({
                             <div style={{ marginTop: '10px' }}>
                                 <Descriptions title={data?.data?.name} layout="vertical" bordered>
                                     {(data?.data?.properties || []).map((item: any) => (
-                                        <Descriptions.Item
+                                        <DescriptionsItem
                                             key={item.property}
                                             label={`${item.name}${item?.description ? `(${item.description})` : ''}`}
                                         >
                                             {data?.configuration[item.property] || ''}
-                                        </Descriptions.Item>
+                                        </DescriptionsItem>
                                     ))}
                                 </Descriptions>
                             </div>
@@ -80,30 +79,30 @@ const ManualInspection = defineComponent({
                                 <Descriptions title={data?.data?.name} layout="vertical" bordered>
                                     {data.configuration?.provider === 'OneNet' ? (
                                         <>
-                                            <Descriptions.Item label={'接口地址'}>
+                                            <DescriptionsItem label={'接口地址'}>
                                                 {data?.configuration?.configuration?.apiAddress || ''}
-                                            </Descriptions.Item>
-                                            <Descriptions.Item label={'apiKey'}>
+                                            </DescriptionsItem>
+                                            <DescriptionsItem label={'apiKey'}>
                                                 {data?.configuration?.configuration?.apiKey || ''}
-                                            </Descriptions.Item>
-                                            <Descriptions.Item label={'通知Token'}>
+                                            </DescriptionsItem>
+                                            <DescriptionsItem label={'通知Token'}>
                                                 {data?.configuration?.configuration?.validateToken || ''}
-                                            </Descriptions.Item>
-                                            <Descriptions.Item label={'aesKey'}>
+                                            </DescriptionsItem>
+                                            <DescriptionsItem label={'aesKey'}>
                                                 {data?.configuration?.configuration?.aesKey || ''}
-                                            </Descriptions.Item>
+                                            </DescriptionsItem>
                                         </>
                                     ) : (
                                         <>
-                                            <Descriptions.Item label={'接口地址'}>
+                                            <DescriptionsItem label={'接口地址'}>
                                                 {data?.configuration?.configuration?.apiAddress || ''}
-                                            </Descriptions.Item>
-                                            <Descriptions.Item label={'appKey'}>
+                                            </DescriptionsItem>
+                                            <DescriptionsItem label={'appKey'}>
                                                 {data?.configuration?.configuration?.appKey || ''}
-                                            </Descriptions.Item>
-                                            <Descriptions.Item label={'appSecret'}>
+                                            </DescriptionsItem>
+                                            <DescriptionsItem label={'appSecret'}>
                                                 {data?.configuration?.configuration?.appSecret || ''}
-                                            </Descriptions.Item>
+                                            </DescriptionsItem>
                                         </>
                                     )}
                                 </Descriptions>
@@ -140,45 +139,45 @@ const ManualInspection = defineComponent({
                                 <Descriptions title={data?.data?.name} layout="vertical" bordered>
                                     {data?.configuration?.configuration?.shareCluster ? (
                                         <>
-                                            <Descriptions.Item label={'SIP 域'}>
+                                            <DescriptionsItem label={'SIP 域'}>
                                                 {data?.configuration?.configuration?.domain || ''}
-                                            </Descriptions.Item>
-                                            <Descriptions.Item label={'SIP ID'}>
+                                            </DescriptionsItem>
+                                            <DescriptionsItem label={'SIP ID'}>
                                                 {data?.configuration?.configuration?.sipId || ''}
-                                            </Descriptions.Item>
-                                            <Descriptions.Item label={'集群'}>
+                                            </DescriptionsItem>
+                                            <DescriptionsItem label={'集群'}>
                                                 {data?.configuration?.configuration?.shareCluster ? '共享配置' : '独立配置'}
-                                            </Descriptions.Item>
-                                            <Descriptions.Item label={'SIP 地址'}>
+                                            </DescriptionsItem>
+                                            <DescriptionsItem label={'SIP 地址'}>
                                                 {`${data?.configuration?.configuration?.hostPort?.host}:${data?.configuration?.configuration?.hostPort?.port}`}
-                                            </Descriptions.Item>
-                                            <Descriptions.Item label={'公网 Host'}>
+                                            </DescriptionsItem>
+                                            <DescriptionsItem label={'公网 Host'}>
                                                 {`${data?.configuration?.configuration?.hostPort?.publicHost}:${data?.configuration?.configuration?.hostPort?.publicPort}`}
-                                            </Descriptions.Item>
+                                            </DescriptionsItem>
                                         </>
                                     ) : (
                                         <>
-                                            <Descriptions.Item label={'SIP 域'}>
+                                            <DescriptionsItem label={'SIP 域'}>
                                                 {data?.configuration?.configuration?.domain || ''}
-                                            </Descriptions.Item>
-                                            <Descriptions.Item label={'SIP ID'}>
+                                            </DescriptionsItem>
+                                            <DescriptionsItem label={'SIP ID'}>
                                                 {data?.configuration?.configuration?.sipId || ''}
-                                            </Descriptions.Item>
-                                            <Descriptions.Item label={'集群'}>
+                                            </DescriptionsItem>
+                                            <DescriptionsItem label={'集群'}>
                                                 {data?.configuration?.configuration?.shareCluster ? '共享配置' : '独立配置'}
-                                            </Descriptions.Item>
+                                            </DescriptionsItem>
                                             {data?.configuration?.configuration?.cluster.map((i: any, it: number) => (
                                                 <div key={it}>
                                                     <div>节点{it + 1}</div>
-                                                    <Descriptions.Item label={'节点名称'}>
+                                                    <DescriptionsItem label={'节点名称'}>
                                                         {i?.clusterNodeId || ''}
-                                                    </Descriptions.Item>
-                                                    <Descriptions.Item label={'SIP 地址'}>
+                                                    </DescriptionsItem>
+                                                    <DescriptionsItem label={'SIP 地址'}>
                                                         {`${i.host}:${i?.port}`}
-                                                    </Descriptions.Item>
-                                                    <Descriptions.Item label={'公网 Host'}>
+                                                    </DescriptionsItem>
+                                                    <DescriptionsItem label={'公网 Host'}>
                                                         {`${i?.publicHost}:${i?.publicPort}`}
-                                                    </Descriptions.Item>
+                                                    </DescriptionsItem>
                                                 </div>
                                             ))}
                                         </>
@@ -207,20 +206,29 @@ const ManualInspection = defineComponent({
             title="人工检查"
             visible
             width={1000}
-            cancelText="去修改"
-            okText="确认无误"
             onOk={() => {
                 emit('save', data)
             }}
             onCancel={() => {
-                if (data.type === 'device') {
-                    instanceStore.tabActiveKey = 'Info'
-                } else if (data.type === 'product') {
-                    menuStory.jumpPage('device/Product/Detail', { id: data.productId, tab: 'access' });
-                } else {
-                    menuStory.jumpPage('link/AccessConfig/Detail', { id: data.configuration?.id });
-                }
-            }}>
+                emit('close')
+            }}
+            v-slots={{
+                footer: <Space>
+                    <Button onClick={() => {
+                        if (data.type === 'device') {
+                            instanceStore.tabActiveKey = 'Info'
+                        } else if (data.type === 'product') {
+                            menuStory.jumpPage('device/Product/Detail', { id: data.productId, tab: 'access' });
+                        } else {
+                            menuStory.jumpPage('link/AccessConfig/Detail', { id: data.configuration?.id });
+                        }
+                    }}>去修改</Button>
+                    <Button onClick={() => {
+                        emit('save', data)
+                    }}>确认无误</Button>
+                </Space>
+            }}
+        >
             <div style={{ display: 'flex' }}>{dataRender()}</div>
         </Modal>
     }

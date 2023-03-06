@@ -1,5 +1,5 @@
 <template>
-    <a-modal 
+    <j-modal 
         :maskClosable="false"
         :visible="true"
         title="编辑"
@@ -7,9 +7,9 @@
         @cancel="handleCancel"
         :confirmLoading="loading"
     >
-        <a-alert message="当数据来源为设备时，填写的值将下发到设备" type="warning" showIcon />
-        <a-form :rules="rules" layout="vertical" ref="formRef" :model="modelRef" style="margin-top: 20px">
-            <a-form-item name="propertyValue" :label="data?.name || '自定义属性'">
+        <j-alert message="当数据来源为设备时，填写的值将下发到设备" type="warning" showIcon />
+        <j-form :rules="rules" layout="vertical" ref="formRef" :model="modelRef" style="margin-top: 20px">
+            <j-form-item name="propertyValue" :label="data?.name || '自定义属性'">
                 <ValueItem
                     v-model:modelValue="modelRef.propertyValue"
                     :itemType="data?.valueType?.type || data?.dataType"
@@ -24,16 +24,15 @@
                             : undefined
                     "
                 />
-            </a-form-item>
-        </a-form>
-    </a-modal> 
+            </j-form-item>
+        </j-form>
+    </j-modal> 
 </template>
 
 <script lang="ts" setup>
 import { setProperty } from '@/api/device/instance'
-const emit = defineEmits(['close']);
 import { useInstanceStore } from "@/store/instance"
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 const props = defineProps({
     data: {
@@ -41,6 +40,8 @@ const props = defineProps({
         default: () => {}
     }
 })
+
+const emit = defineEmits(['close']);
 
 const loading = ref<boolean>(false)
 const instanceStore = useInstanceStore()

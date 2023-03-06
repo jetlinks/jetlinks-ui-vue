@@ -16,7 +16,7 @@
                 <div class="dialog-box">
                     <div class="dialog-header">
                         <div class="dialog-title">
-                            <a-badge
+                            <j-badge
                                 :color="
                                     statusColor.get(
                                         item.error ? 'error' : 'success',
@@ -41,7 +41,7 @@
                         class="dialog-editor"
                         v-if="visible.includes(item.key)"
                     >
-                        <a-textarea autoSize :bordered="false" :value="item?.detail" />
+                        <j-textarea autoSize :bordered="false" :value="item?.detail" />
                     </div>
                 </div>
             </div>
@@ -50,8 +50,9 @@
 </template>
 
 <script lang="ts" setup>
-const operationMap = new Map();
 import moment from 'moment';
+
+const operationMap = new Map();
 operationMap.set('connection', '连接');
 operationMap.set('auth', '权限验证');
 operationMap.set('decode', '解码');
@@ -80,19 +81,9 @@ const getDetail = (item: any) => {
         visible.value.splice(index, 1);
     }
 };
-
-watchEffect(() => {
-  console.log(props.data)
-})
 </script>
 
 <style lang="less" scoped>
-// @import 'ant-design-vue/es/style/themes/default.less';
-
-// :root {
-//     --dialog-primary-color: @primary-color;
-// }
-
 .dialog-item {
     display: flex;
     justify-content: flex-start;

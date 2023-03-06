@@ -10,9 +10,9 @@
                 <div style="display: flex; align-items: center">
                     <AIcon type="ArrowLeftOutlined" @click="onBack" />
                     <div style="margin-left: 20px">{{ instanceStore.current.name }}</div>
-                    <a-divider type="vertical" />
-                    <a-space>
-                        <a-badge
+                    <j-divider type="vertical" />
+                    <j-space>
+                        <j-badge
                             :text="instanceStore.current.state?.text"
                             :status="
                                 statusMap.get(
@@ -49,7 +49,7 @@
                         >
                             断开连接
                         </PermissionButton>
-                        <a-tooltip
+                        <j-tooltip
                             v-if="
                                 instanceStore.current?.accessProvider ===
                                     'child-device' &&
@@ -68,15 +68,15 @@
                                 type="QuestionCircleOutlined"
                                 style="font-size: 14px"
                             />
-                        </a-tooltip>
-                    </a-space>
+                        </j-tooltip>
+                    </j-space>
                 </div>
                 <div style="padding-top: 10px">
-                    <a-descriptions size="small" :column="4">
-                        <a-descriptions-item label="ID">{{
+                    <j-descriptions size="small" :column="4">
+                        <j-descriptions-item label="ID">{{
                             instanceStore.current.id
-                        }}</a-descriptions-item>
-                        <a-descriptions-item label="所属产品">
+                        }}</j-descriptions-item>
+                        <j-descriptions-item label="所属产品">
                             <PermissionButton
                                 type="link"
                                 style="margin-top: -5px; padding: 0"  
@@ -85,8 +85,8 @@
                             >
                                 {{ instanceStore.current.productName }}
                             </PermissionButton>
-                        </a-descriptions-item>
-                    </a-descriptions>
+                        </j-descriptions-item>
+                    </j-descriptions>
                 </div>
             </div>
         </template>
@@ -119,7 +119,7 @@ import EdgeMap from './EdgeMap/index.vue';
 import Parsing from './Parsing/index.vue'
 import Log from './Log/index.vue'
 import { _deploy, _disconnect } from '@/api/device/instance';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { getImage } from '@/utils/comm';
 import { getWebSocket } from '@/utils/websocket';
 import { useMenuStore } from '@/store/menu';

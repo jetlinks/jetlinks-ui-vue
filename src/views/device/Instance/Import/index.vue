@@ -64,6 +64,6 @@ const handleCancel = () => {
 }
 
 const handleSave = () => {
-    emit('close')
+    emit('save')
 }
 </script>

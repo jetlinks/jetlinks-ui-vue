@@ -1,12 +1,12 @@
 <template>
-    <a-modal :maskClosable="false" width="800px" :visible="true" title="当前进度" @ok="handleCancel" @cancel="handleCancel">
+    <j-modal :maskClosable="false" width="800px" :visible="true" title="当前进度" @ok="handleCancel" @cancel="handleCancel">
         <div>
-            <a-badge v-if="flag" status="processing" text="进行中" />
-            <a-badge v-else status="success" text="已完成" /> 
+            <j-badge v-if="flag" status="processing" text="进行中" />
+            <j-badge v-else status="success" text="已完成" /> 
         </div>
         <p>总数量：{{count}}</p>
         <a style="color: red">{{errMessage}}</a>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script lang="ts" setup>
