@@ -3,7 +3,7 @@
         <div>
             <Search :columns="columns" target="search" @search="handleSearch" />
 
-            <JTable
+            <j-pro-table
                 ref="tableRef"
                 :columns="columns"
                 :gridColumn="3"
@@ -56,36 +56,36 @@
                                 >
                                     {{ slotProps.name }}
                                 </PermissionButton>
-                                <a-row class="card-item-content-box">
-                                    <a-col :span="12">
+                                <j-row class="card-item-content-box">
+                                    <j-col :span="12">
                                         <div class="card-item-content-text">
                                             类型
                                         </div>
                                         <div class="card-item-content-text">
-                                            <a-tooltip>
+                                            <j-tooltip>
                                                 <template #title>{{
                                                     slotProps.type
                                                 }}</template>
                                                 {{ slotProps.type }}
-                                            </a-tooltip>
+                                            </j-tooltip>
                                         </div>
-                                    </a-col>
-                                    <a-col :span="12">
+                                    </j-col>
+                                    <j-col :span="12">
                                         <div class="card-item-content-text">
                                             详情
                                         </div>
                                         <div class="card-item-content-text">
-                                            <a-tooltip>
+                                            <j-tooltip>
                                                 <template #title>{{
                                                     getDetails(slotProps)
                                                 }}</template>
                                                 <span class="details-text">{{
                                                     getDetails(slotProps)
                                                 }}</span>
-                                            </a-tooltip>
+                                            </j-tooltip>
                                         </div>
-                                    </a-col>
-                                </a-row>
+                                    </j-col>
+                                </j-row>
                             </div>
                         </template>
                         <template #actions="item">
@@ -111,7 +111,7 @@
                     </CardBox>
                 </template>
                 <template #action="slotProps">
-                    <a-space>
+                    <j-space>
                         <template
                             v-for="i in getActions(slotProps, 'table')"
                             :key="i.key"
@@ -132,10 +132,10 @@
                                 /></template>
                             </PermissionButton>
                         </template>
-                    </a-space>
+                    </j-space>
                 </template>
                 <template #state="slotProps">
-                    <a-badge
+                    <j-badge
                         :text="slotProps.state.text"
                         :status="statusMap.get(slotProps.state.value)"
                     />
@@ -153,7 +153,7 @@
                 <template #details="slotProps">
                     {{ getDetails(slotProps) }}
                 </template>
-            </JTable>
+            </j-pro-table>
         </div>
     </page-container>
 </template>
@@ -346,7 +346,7 @@ const handlEdit = (id: string) => {
 const getDetails = (slotProps: Partial<Record<string, any>>) => {
     const { typeObject, shareCluster, configuration, cluster } = slotProps;
     const headers =
-        typeObject.name.replace(/[^a-zA-Z]/g, '').toLowerCase() + '://';
+        typeObject.name.replace(/[^j-zA-Z]/g, '').toLowerCase() + '://';
     const content = !!shareCluster
         ? (configuration.publicHost || configuration.remoteHost) +
           ':' +

@@ -50,26 +50,26 @@
                                     {{ slotProps.name }}
                                 </PermissionButton>
 
-                                <a-row class="card-item-content-box">
-                                    <a-col :span="12">
+                                <j-row class="card-item-content-box">
+                                    <j-col :span="12">
                                         <div class="card-item-content-text">
                                             协议
                                         </div>
                                         <div class="card-item-content-text">
-                                            <a-tooltip>
+                                            <j-tooltip>
                                                 <template #title>{{
                                                     slotProps.provider
                                                 }}</template>
                                                 {{ slotProps.provider }}
-                                            </a-tooltip>
+                                            </j-tooltip>
                                         </div>
-                                    </a-col>
-                                    <a-col :span="12">
+                                    </j-col>
+                                    <j-col :span="12">
                                         <div class="card-item-content-text">
                                             地址
                                         </div>
                                         <div class="card-item-content-text">
-                                            <a-tooltip>
+                                            <j-tooltip>
                                                 <template #title>{{
                                                     slotProps.configuration
                                                         .host ||
@@ -82,10 +82,10 @@
                                                     slotProps.configuration
                                                         .endpoint
                                                 }}</span>
-                                            </a-tooltip>
+                                            </j-tooltip>
                                         </div>
-                                    </a-col>
-                                </a-row>
+                                    </j-col>
+                                </j-row>
                             </div>
                         </template>
                         <template #actions="item">
@@ -117,7 +117,7 @@
         </div>
     </page-container>
 </template>
-<script lang="ts" setup name="TypePage">
+<script lang="ts" setup name="DataCollectPage">
 import type { ActionsType } from '@/components/Table/index';
 import { getImage } from '@/utils/comm';
 import { query, remove, update } from '@/api/data-collect/channel';
@@ -277,7 +277,7 @@ const handlEdit = (data: object) => {
     visible.value = true;
 };
 const handlEye = (id: string) => {
-    console.log(id);
+    menuStory.jumpPage(`DataCollect/Collector`, {}, { channelId: id });
 };
 const saveChange = (value: object) => {
     visible.value = false;

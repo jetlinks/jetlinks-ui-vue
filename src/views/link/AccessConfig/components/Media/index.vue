@@ -1,18 +1,18 @@
 <template>
     <div class="container">
         <div v-if="channel === 'fixed-media'" class="card-last">
-            <a-row :gutter="[24, 24]">
-                <a-col :span="12">
+            <j-row :gutter="[24, 24]">
+                <j-col :span="12">
                     <title-component data="基本信息" />
                     <div>
-                        <a-form
+                        <j-form
                             :model="formState"
                             name="basic"
                             autocomplete="off"
                             layout="vertical"
                             @finish="onFinish"
                         >
-                            <a-form-item
+                            <j-form-item
                                 label="名称"
                                 name="name"
                                 :rules="[
@@ -24,21 +24,21 @@
                                     { max: 64, message: '最多可输入64个字符' },
                                 ]"
                             >
-                                <a-input
+                                <j-input
                                     placeholder="请输入名称"
                                     v-model:value="formState.name"
                                 />
-                            </a-form-item>
-                            <a-form-item label="说明" name="description">
-                                <a-textarea
+                            </j-form-item>
+                            <j-form-item label="说明" name="description">
+                                <j-textarea
                                     placeholder="请输入说明"
                                     :rows="4"
                                     v-model:value="formState.description"
                                     show-count
                                     :maxlength="200"
                                 />
-                            </a-form-item>
-                            <a-form-item>
+                            </j-form-item>
+                            <j-form-item>
                                 <PermissionButton
                                     v-if="view === 'false'"
                                     type="primary"
@@ -49,11 +49,11 @@
                                 >
                                     保存
                                 </PermissionButton>
-                            </a-form-item>
-                        </a-form>
+                            </j-form-item>
+                        </j-form>
                     </div>
-                </a-col>
-                <a-col :span="12">
+                </j-col>
+                <j-col :span="12">
                     <div class="config-right">
                         <div class="config-right-item">
                             <div class="config-right-item-title">接入方式</div>
@@ -75,8 +75,8 @@
                             </div>
                         </div>
                     </div>
-                </a-col>
-            </a-row>
+                </j-col>
+            </j-row>
         </div>
         <div v-else-if="channel === 'gb28181'">
             <GB28181 :provider="props.provider" :data="props.data"></GB28181>

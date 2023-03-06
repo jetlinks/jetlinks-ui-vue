@@ -1,5 +1,5 @@
 <template lang="">
-    <a-input
+    <j-input
         placeholder="请选择设备"
         v-model:value="checkLable"
         :disabled="true"
@@ -11,8 +11,8 @@
                 @click="onVisible"
             />
         </template>
-    </a-input>
-    <a-modal
+    </j-input>
+    <j-modal
         v-if="visible"
         title="选择设备"
         ok-text="确认"
@@ -28,7 +28,7 @@
             @search="handleSearch"
             type="simple"
         />
-        <JTable
+        <j-pro-table
             ref="tableRef"
             model="TABLE"
             :columns="columns"
@@ -43,20 +43,20 @@
             :params="params"
         >
             <template #headerTitle>
-                <a-checkbox
+                <j-checkbox
                     v-model:checked="state.checkAll"
                     :indeterminate="state.indeterminate"
                     @change="onCheckAllChange"
                     style="margin-left: 8px"
                 >
                     全选
-                </a-checkbox>
+                </j-checkbox>
             </template>
             <template #productId="slotProps">
                 <span>{{ slotProps.productName }}</span>
             </template>
             <template #state="slotProps">
-                <a-badge
+                <j-badge
                     :text="slotProps.state?.text"
                     :status="statusMap.get(slotProps.state?.value)"
                 />
@@ -69,8 +69,8 @@
                     moment(slotProps.registerTime).format('YYYY-MM-DD HH:mm:ss')
                 }}</span>
             </template>
-        </JTable>
-    </a-modal>
+        </j-pro-table>
+    </j-modal>
 </template>
 <script lang="ts" setup name="SelectDevicesPage">
 import {

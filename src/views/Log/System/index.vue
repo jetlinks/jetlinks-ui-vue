@@ -1,7 +1,7 @@
 <template>
     <div>
         <Search :columns="columns" target="search" @search="handleSearch" />
-        <JTable
+        <j-pro-table
             ref="tableRef"
             model="TABLE"
             :columns="columns"
@@ -12,7 +12,7 @@
             :params="params"
         >
             <template #level="slotProps">
-                <a-tag
+                <j-tag
                     :color="
                         slotProps.level === 'WARN'
                             ? 'orange'
@@ -24,7 +24,7 @@
                     "
                 >
                     {{ slotProps.level }}
-                </a-tag>
+                </j-tag>
             </template>
             <template #createTime="slotProps">
                 {{ moment(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss') }}
@@ -34,39 +34,39 @@
             </template>
 
             <template #action="slotProps">
-                <a-space :size="16">
-                    <a-tooltip
+                <j-space :size="16">
+                    <j-tooltip
                         v-for="i in getActions(slotProps)"
                         :key="i.key"
                         v-bind="i.tooltip"
                     >
-                        <a-popconfirm v-if="i.popConfirm" v-bind="i.popConfirm">
-                            <a-button
+                        <j-popconfirm v-if="i.popConfirm" v-bind="i.popConfirm">
+                            <j-button
                                 :disabled="i.disabled"
                                 style="padding: 0"
                                 type="link"
                                 ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-popconfirm>
-                        <a-button
+                            /></j-button>
+                        </j-popconfirm>
+                        <j-button
                             style="padding: 0"
                             type="link"
                             v-else
                             @click="i.onClick && i.onClick(slotProps)"
                         >
-                            <a-button
+                            <j-button
                                 :disabled="i.disabled"
                                 style="padding: 0"
                                 type="link"
                                 ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-button>
-                    </a-tooltip>
-                </a-space>
+                            /></j-button>
+                        </j-button>
+                    </j-tooltip>
+                </j-space>
             </template>
-        </JTable>
+        </j-pro-table>
     </div>
-    <a-modal
+    <j-modal
         :width="1100"
         v-model:visible="visible"
         title="详情"
@@ -82,7 +82,7 @@
             <span>{{ descriptionsData?.className }}</span>
         </div>
         <div class="mb-10">
-            <a-tag
+            <j-tag
                 :color="
                     descriptionsData?.level === 'WARN'
                         ? 'orange'
@@ -94,15 +94,15 @@
                 "
             >
                 {{ descriptionsData?.level }}
-            </a-tag>
+            </j-tag>
             <span>{{ descriptionsData?.message }}</span>
         </div>
-        <a-textarea
+        <j-textarea
             v-model:value="descriptionsData.exceptionStack"
             placeholder="暂无数据"
             :auto-size="{ minRows: 24, maxRows: 28 }"
         />
-    </a-modal>
+    </j-modal>
 </template>
 <script lang="ts" setup name="SystemLog">
 import type { ActionsType } from '@/components/Table/index.vue';

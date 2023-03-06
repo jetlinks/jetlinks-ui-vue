@@ -1,9 +1,9 @@
 <template>
     <page-container>
-        <a-card>
-            <a-row :gutter="[24, 24]" style="padding: 24px">
-                <a-col :span="12">
-                    <a-form
+        <j-card>
+            <j-row :gutter="[24, 24]" style="padding: 24px">
+                <j-col :span="12">
+                    <j-form
                         class="form"
                         layout="vertical"
                         :model="formData"
@@ -12,30 +12,30 @@
                         :wrapper-col="{ span: 16 }"
                         autocomplete="off"
                     >
-                        <a-form-item
+                        <j-form-item
                             label="证书标准"
                             v-bind="validateInfos.type"
                         >
-                            <a-radio-group v-model:value="formData.type">
-                                <a-radio-button
+                            <j-radio-group v-model:value="formData.type">
+                                <j-radio-button
                                     class="form-radio-button"
                                     value="common"
                                 >
                                     <img :src="getImage('/certificate.png')" />
-                                </a-radio-button>
-                            </a-radio-group>
-                        </a-form-item>
+                                </j-radio-button>
+                            </j-radio-group>
+                        </j-form-item>
 
-                        <a-form-item
+                        <j-form-item
                             label="证书名称"
                             v-bind="validateInfos.name"
                         >
-                            <a-input
+                            <j-input
                                 placeholder="请输入证书名称"
                                 v-model:value="formData.name"
                             />
-                        </a-form-item>
-                        <a-form-item
+                        </j-form-item>
+                        <j-form-item
                             label="证书文件"
                             v-bind="validateInfos['configs.cert']"
                         >
@@ -44,8 +44,8 @@
                                 v-model:modelValue="formData.configs.cert"
                                 placeholder='证书格式以"-----BEGIN CERTIFICATE-----"开头，以"-----END CERTIFICATE-----"结尾"'
                             />
-                        </a-form-item>
-                        <a-form-item
+                        </j-form-item>
+                        <j-form-item
                             label="证书私钥"
                             v-bind="validateInfos['configs.key']"
                         >
@@ -54,31 +54,31 @@
                                 v-model:modelValue="formData.configs.key"
                                 placeholder='证书私钥格式以"-----BEGIN (RSA|EC) PRIVATE KEY-----"开头，以"-----END(RSA|EC) PRIVATE KEY-----"结尾。'
                             />
-                        </a-form-item>
-                        <a-form-item label="说明" name="description">
-                            <a-textarea
+                        </j-form-item>
+                        <j-form-item label="说明" name="description">
+                            <j-textarea
                                 placeholder="请输入说明"
                                 v-model:value="formData.description"
                                 :maxlength="200"
                                 :rows="3"
                                 showCount
                             />
-                        </a-form-item>
+                        </j-form-item>
 
-                        <a-form-item>
-                            <a-button
+                        <j-form-item>
+                            <j-button
                                 v-if="view === 'false'"
                                 class="form-submit"
                                 html-type="submit"
                                 type="primary"
                                 @click.prevent="onSubmit"
                                 :loading="loading"
-                                >保存</a-button
+                                >保存</j-button
                             >
-                        </a-form-item>
-                    </a-form>
-                </a-col>
-                <a-col :span="12">
+                        </j-form-item>
+                    </j-form>
+                </j-col>
+                <j-col :span="12">
                     <div class="doc">
                         <h1>1. 概述</h1>
                         <div>
@@ -95,9 +95,9 @@
                             您可以使用文本编辑工具打开KEY格式的证书私钥文件，复制其中的内容并粘贴到该文本框，或者单击该文本框下的上传并选择存储在本地计算机的证书私钥文件，将文件内容上传到文本框。
                         </div>
                     </div>
-                </a-col>
-            </a-row>
-        </a-card>
+                </j-col>
+            </j-row>
+        </j-card>
     </page-container>
 </template>
 

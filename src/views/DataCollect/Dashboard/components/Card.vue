@@ -1,24 +1,24 @@
 <template>
-    <a-spin :spinning="loading">
+    <j-spin :spinning="loading">
         <div class="dash-board">
             <div class="header">
                 <div class="left">
                     <h3 style="width: 100px">点位数据量</h3>
                 </div>
                 <div class="right">
-                    <a-radio-group
+                    <j-radio-group
                         default-value="a"
                         button-style="solid"
                         style="margin-right: 10px"
                         v-model:value="data.time.type"
                     >
-                        <a-radio-button value="hour">
+                        <j-radio-button value="hour">
                             最近1小时
-                        </a-radio-button>
-                        <a-radio-button value="today"> 今日 </a-radio-button>
-                        <a-radio-button value="week"> 近一周 </a-radio-button>
-                    </a-radio-group>
-                    <a-range-picker
+                        </j-radio-button>
+                        <j-radio-button value="today"> 今日 </j-radio-button>
+                        <j-radio-button value="week"> 近一周 </j-radio-button>
+                    </j-radio-group>
+                    <j-range-picker
                         :allowClear="false"
                         :show-time="{ format: 'HH:mm:ss' }"
                         format="YYYY-MM-DD HH:mm:ss"
@@ -28,14 +28,14 @@
                         <template #suffixIcon
                             ><AIcon type="CalendarOutlined"
                         /></template>
-                    </a-range-picker>
+                    </j-range-picker>
                 </div>
             </div>
             <div>
                 <div ref="chartRef" style="width: 100%; height: 350px"></div>
             </div>
         </div>
-    </a-spin>
+    </j-spin>
 </template>
 
 <script lang="ts" setup>

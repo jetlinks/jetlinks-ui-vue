@@ -1,7 +1,7 @@
 <template>
     <page-container>
-        <a-row :gutter="24">
-            <a-col :span="8" v-for="item in statusData" :key="item[0].type">
+        <j-row :gutter="24">
+            <j-col :span="8" v-for="item in statusData" :key="item[0].type">
                 <TopCard
                     :title="item[0].label"
                     :img="
@@ -10,13 +10,13 @@
                     :footer="item"
                     :value="item[0].total"
                 />
-            </a-col>
-        </a-row>
-        <a-row :gutter="24">
-            <a-col :span="24">
+            </j-col>
+        </j-row>
+        <j-row :gutter="24">
+            <j-col :span="24">
                 <Card />
-            </a-col>
-        </a-row>
+            </j-col>
+        </j-row>
     </page-container>
 </template>
 

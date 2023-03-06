@@ -1,7 +1,7 @@
 <template>
     <div>
         <Search :columns="columns" target="search" @search="handleSearch" />
-        <JTable
+        <j-pro-table
             ref="tableRef"
             model="TABLE"
             :columns="columns"
@@ -17,102 +17,102 @@
                 }}
             </template>
             <template #responseTime="slotProps">
-                <a-tag color="purple">
+                <j-tag color="purple">
                     {{ slotProps.responseTime - slotProps.requestTime }} ms
-                </a-tag>
+                </j-tag>
             </template>
             <template #username="slotProps">
-                <a-tag color="geekblue">
+                <j-tag color="geekblue">
                     {{ slotProps.context.userName }}
-                </a-tag>
+                </j-tag>
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
-                    <a-tooltip
+                <j-space :size="16">
+                    <j-tooltip
                         v-for="i in getActions(slotProps)"
                         :key="i.key"
                         v-bind="i.tooltip"
                     >
-                        <a-popconfirm v-if="i.popConfirm" v-bind="i.popConfirm">
-                            <a-button
+                        <j-popconfirm v-if="i.popConfirm" v-bind="i.popConfirm">
+                            <j-button
                                 :disabled="i.disabled"
                                 style="padding: 0"
                                 type="link"
                                 ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-popconfirm>
-                        <a-button
+                            /></j-button>
+                        </j-popconfirm>
+                        <j-button
                             style="padding: 0"
                             type="link"
                             v-else
                             @click="i.onClick && i.onClick(slotProps)"
                         >
-                            <a-button
+                            <j-button
                                 :disabled="i.disabled"
                                 style="padding: 0"
                                 type="link"
                                 ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-button>
-                    </a-tooltip>
-                </a-space>
+                            /></j-button>
+                        </j-button>
+                    </j-tooltip>
+                </j-space>
             </template>
-        </JTable>
+        </j-pro-table>
     </div>
-    <a-modal
+    <j-modal
         :width="1100"
         v-model:visible="visible"
         title="详情"
         @ok="handleOk"
     >
-        <a-descriptions :data="descriptionsData" title="" bordered :column="2">
-            <a-descriptions-item label="URL">
+        <j-descriptions :data="descriptionsData" title="" bordered :column="2">
+            <j-descriptions-item label="URL">
                 {{ descriptionsData?.url }}
-            </a-descriptions-item>
-            <a-descriptions-item label="请求方法">
+            </j-descriptions-item>
+            <j-descriptions-item label="请求方法">
                 {{ descriptionsData?.httpMethod }}
-            </a-descriptions-item>
-            <a-descriptions-item label="动作">
+            </j-descriptions-item>
+            <j-descriptions-item label="动作">
                 {{ descriptionsData?.action }}
-            </a-descriptions-item>
-            <a-descriptions-item label="类名">
+            </j-descriptions-item>
+            <j-descriptions-item label="类名">
                 {{ descriptionsData?.target }}
-            </a-descriptions-item>
-            <a-descriptions-item label="方法名">
+            </j-descriptions-item>
+            <j-descriptions-item label="方法名">
                 {{ descriptionsData?.method }}
-            </a-descriptions-item>
-            <a-descriptions-item label="IP">
+            </j-descriptions-item>
+            <j-descriptions-item label="IP">
                 {{ descriptionsData?.ip }}
-            </a-descriptions-item>
-            <a-descriptions-item label="请求时间">
+            </j-descriptions-item>
+            <j-descriptions-item label="请求时间">
                 {{
                     moment(descriptionsData?.requestTime).format(
                         'YYYY-MM-DD HH:mm:ss',
                     )
                 }}
-            </a-descriptions-item>
-            <a-descriptions-item label="请求耗时">
+            </j-descriptions-item>
+            <j-descriptions-item label="请求耗时">
                 {{
                     descriptionsData?.responseTime -
                     descriptionsData?.requestTime +
                     'ms'
                 }}
-            </a-descriptions-item>
-            <a-descriptions-item label="请求头" :span="2">
+            </j-descriptions-item>
+            <j-descriptions-item label="请求头" :span="2">
                 {{ descriptionsData?.httpHeaders }}
-            </a-descriptions-item>
-            <a-descriptions-item label="请求参数" :span="2">
+            </j-descriptions-item>
+            <j-descriptions-item label="请求参数" :span="2">
                 {{ descriptionsData?.parameters }}
-            </a-descriptions-item>
-            <a-descriptions-item label="异常信息" :span="2">
-                <a-textarea
+            </j-descriptions-item>
+            <j-descriptions-item label="异常信息" :span="2">
+                <j-textarea
                     v-model:value="descriptionsData.exception"
                     placeholder="暂无数据"
                     :auto-size="{ minRows: 3, maxRows: 20 }"
                 />
-            </a-descriptions-item>
-        </a-descriptions>
-    </a-modal>
+            </j-descriptions-item>
+        </j-descriptions>
+    </j-modal>
 </template>
 <script lang="ts" setup name="AccessLog">
 import type { ActionsType } from '@/components/Table/index.vue';

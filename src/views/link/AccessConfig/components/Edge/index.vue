@@ -1,12 +1,12 @@
 <template>
     <div v-if="type === 'edge'" class="container">
-        <a-steps
+        <j-steps
             v-if="channel !== 'edge-child-device'"
             class="steps-steps"
             :current="stepCurrent"
         >
-            <a-step v-for="item in steps" :key="item" :title="item" />
-        </a-steps>
+            <j-step v-for="item in steps" :key="item" :title="item" />
+        </j-steps>
         <div v-if="channel !== 'edge-child-device'" class="steps-content">
             <div class="steps-box" v-if="current === 0">
                 <div class="alert">
@@ -14,7 +14,7 @@
                     选择与设备通信的网络组件
                 </div>
                 <div class="search">
-                    <a-input-search
+                    <j-input-search
                         allowClear
                         placeholder="请输入"
                         style="width: 300px"
@@ -30,8 +30,8 @@
                     </PermissionButton>
                 </div>
                 <div class="card-item">
-                    <a-row :gutter="[24, 24]" v-if="networkList.length > 0">
-                        <a-col
+                    <j-row :gutter="[24, 24]" v-if="networkList.length > 0">
+                        <j-col
                             :span="8"
                             v-for="item in networkList"
                             :key="item.id"
@@ -48,7 +48,7 @@
                             >
                                 <template #other>
                                     <div class="other">
-                                        <a-tooltip placement="topLeft">
+                                        <j-tooltip placement="topLeft">
                                             <div
                                                 v-if="
                                                     (item.addresses || [])
@@ -61,7 +61,7 @@
                                                     :key="i.address"
                                                     class="item"
                                                 >
-                                                    <a-badge
+                                                    <j-badge
                                                         :color="
                                                             i.health === -1
                                                                 ? 'red'
@@ -77,7 +77,7 @@
                                                 :key="i.address"
                                                 class="item"
                                             >
-                                                <a-badge
+                                                <j-badge
                                                     :color="
                                                         i.health === -1
                                                             ? 'red'
@@ -93,13 +93,13 @@
                                                     >...</span
                                                 >
                                             </div>
-                                        </a-tooltip>
+                                        </j-tooltip>
                                     </div>
                                 </template>
                             </access-card>
-                        </a-col>
-                    </a-row>
-                    <a-empty v-else description="暂无数据" />
+                        </j-col>
+                    </j-row>
+                    <j-empty v-else description="暂无数据" />
                 </div>
             </div>
         </div>
@@ -107,10 +107,10 @@
             v-if="channel === 'edge-child-device' || current === 1"
             class="card-last"
         >
-            <a-row :gutter="[24, 24]">
-                <a-col :span="12">
+            <j-row :gutter="[24, 24]">
+                <j-col :span="12">
                     <title-component data="基本信息" />
-                    <a-form
+                    <j-form
                         :model="formState"
                         name="basic"
                         autocomplete="off"
@@ -118,7 +118,7 @@
                         @finish="onFinish"
                         ref="formRef"
                     >
-                        <a-form-item
+                        <j-form-item
                             label="名称"
                             name="name"
                             :rules="[
@@ -130,21 +130,21 @@
                                 { max: 64, message: '最多可输入64个字符' },
                             ]"
                         >
-                            <a-input
+                            <j-input
                                 placeholder="请输入名称"
                                 v-model:value="formState.name"
                             />
-                        </a-form-item>
-                        <a-form-item label="说明" name="description">
-                            <a-textarea
+                        </j-form-item>
+                        <j-form-item label="说明" name="description">
+                            <j-textarea
                                 placeholder="请输入说明"
                                 :rows="4"
                                 v-model:value="formState.description"
                                 show-count
                                 :maxlength="200"
                             />
-                        </a-form-item>
-                        <a-form-item>
+                        </j-form-item>
+                        <j-form-item>
                             <PermissionButton
                                 v-if="current !== 1 && view === 'false'"
                                 type="primary"
@@ -155,10 +155,10 @@
                             >
                                 保存
                             </PermissionButton>
-                        </a-form-item>
-                    </a-form>
-                </a-col>
-                <a-col :span="12">
+                        </j-form-item>
+                    </j-form>
+                </j-col>
+                <j-col :span="12">
                     <div class="config-right">
                         <div class="config-right-item">
                             <title-component data="配置概览" />
@@ -173,20 +173,20 @@
                             </div>
                         </div>
                     </div>
-                </a-col>
-            </a-row>
+                </j-col>
+            </j-row>
         </div>
         <div
             v-if="channel !== 'edge-child-device'"
             :class="current !== 1 ? 'steps-action' : 'steps-action-save'"
         >
-            <a-button
+            <j-button
                 v-if="[0].includes(current)"
                 style="margin-right: 8px"
                 @click="next"
             >
                 下一步
-            </a-button>
+            </j-button>
             <PermissionButton
                 v-if="current === 1 && view === 'false'"
                 type="primary"
@@ -198,7 +198,7 @@
             >
                 保存
             </PermissionButton>
-            <a-button v-if="current > 0" @click="prev"> 上一步 </a-button>
+            <j-button v-if="current > 0" @click="prev"> 上一步 </j-button>
         </div>
     </div>
 </template>

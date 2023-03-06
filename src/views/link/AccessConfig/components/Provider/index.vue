@@ -2,8 +2,8 @@
     <div v-for="items in dataSource" :key="items.type" class="card-items">
         <div class="card-items-container">
             <TitleComponent :data="items.title"></TitleComponent>
-            <a-row :gutter="[24, 24]">
-                <a-col :span="12" v-for="item in items.list" :key="item.id">
+            <j-row :gutter="[24, 24]">
+                <j-col :span="12" v-for="item in items.list" :key="item.id">
                     <div class="provider">
                         <div class="box">
                             <div class="left">
@@ -15,21 +15,21 @@
                                         {{ item.name }}
                                     </div>
                                     <div class="desc">
-                                        <a-tooltip :title="item.description">
+                                        <j-tooltip :title="item.description">
                                             {{ item.description || '' }}
-                                        </a-tooltip>
+                                        </j-tooltip>
                                     </div>
                                 </div>
                             </div>
                             <div class="right">
-                                <a-button type="primary" @click="click(item)"
-                                    >接入</a-button
+                                <j-button type="primary" @click="click(item)"
+                                    >接入</j-button
                                 >
                             </div>
                         </div>
                     </div>
-                </a-col>
-            </a-row>
+                </j-col>
+            </j-row>
         </div>
     </div>
 </template>

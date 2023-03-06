@@ -1,5 +1,5 @@
 <template lang="">
-    <a-modal
+    <j-modal
         :title="data.id ? '查看' : '新增' + '任务'"
         ok-text="确认"
         cancel-text="取消"
@@ -9,7 +9,7 @@
         @cancel="handleCancel"
         @ok="handleOk"
     >
-        <a-form
+        <j-form
             class="form"
             layout="vertical"
             :model="formData"
@@ -18,18 +18,18 @@
             ref="formRef"
             :rules="rules"
         >
-            <a-row :gutter="[24, 0]">
-                <a-col :span="24">
-                    <a-form-item label="任务名称" name="name">
-                        <a-input
+            <j-row :gutter="[24, 0]">
+                <j-col :span="24">
+                    <j-form-item label="任务名称" name="name">
+                        <j-input
                             placeholder="请输入任务名称"
                             v-model:value="formData.name"
                             :disabled="view"
-                    /></a-form-item>
-                </a-col>
-                <a-col :span="24"
-                    ><a-form-item label="推送方式" name="mode">
-                        <a-select
+                    /></j-form-item>
+                </j-col>
+                <j-col :span="24"
+                    ><j-form-item label="推送方式" name="mode">
+                        <j-select
                             v-model:value="formData.mode"
                             :options="[
                                 { label: '平台推送', value: 'push' },
@@ -41,14 +41,14 @@
                             :filter-option="filterOption"
                             @change="changeMode"
                             :disabled="view"
-                        /> </a-form-item
-                ></a-col>
-                <a-col :span="12" v-if="formData.mode === 'push'"
-                    ><a-form-item
+                        /> </j-form-item
+                ></j-col>
+                <j-col :span="12" v-if="formData.mode === 'push'"
+                    ><j-form-item
                         label="响应超时时间"
                         name="responseTimeoutSeconds"
                     >
-                        <a-input-number
+                        <j-input-number
                             placeholder="请输入响应超时时间(秒)"
                             style="width: 100%"
                             :min="1"
@@ -56,13 +56,13 @@
                             :disabled="view"
                             v-model:value="
                                 formData.responseTimeoutSeconds
-                            " /></a-form-item
-                ></a-col>
-                <a-col
+                            " /></j-form-item
+                ></j-col>
+                <j-col
                     :span="formData.mode === 'push' ? 12 : 24"
                     v-if="formData.mode === 'push' || formData.mode === 'pull'"
-                    ><a-form-item label="升级超时时间" name="timeoutSeconds">
-                        <a-input-number
+                    ><j-form-item label="升级超时时间" name="timeoutSeconds">
+                        <j-input-number
                             placeholder="请输入升级超时时间(秒)"
                             style="width: 100%"
                             :min="1"
@@ -70,42 +70,42 @@
                             :disabled="view"
                             v-model:value="
                                 formData.timeoutSeconds
-                            " /></a-form-item
-                ></a-col>
-                <a-col :span="12" v-if="!!formData.mode"
-                    ><a-form-item label="升级设备" name="releaseType">
-                        <a-radio-group
+                            " /></j-form-item
+                ></j-col>
+                <j-col :span="12" v-if="!!formData.mode"
+                    ><j-form-item label="升级设备" name="releaseType">
+                        <j-radio-group
                             v-model:value="formData.releaseType"
                             button-style="solid"
                             @change="changeShareCluster"
                             :disabled="view"
                         >
-                            <a-radio value="all">所有设备</a-radio>
-                            <a-radio value="part">选择设备</a-radio>
-                        </a-radio-group>
-                    </a-form-item>
-                </a-col>
-                <a-col :span="12" v-if="formData.releaseType === 'part'">
-                    <a-form-item label="选择设备" name="deviceId">
+                            <j-radio value="all">所有设备</j-radio>
+                            <j-radio value="part">选择设备</j-radio>
+                        </j-radio-group>
+                    </j-form-item>
+                </j-col>
+                <j-col :span="12" v-if="formData.releaseType === 'part'">
+                    <j-form-item label="选择设备" name="deviceId">
                         <SelectDevices
                             v-model:modelValue="formData.deviceId"
                             :data="data"
-                        ></SelectDevices> </a-form-item
-                ></a-col>
-                <a-col :span="24">
-                    <a-form-item label="说明" name="description">
-                        <a-textarea
+                        ></SelectDevices> </j-form-item
+                ></j-col>
+                <j-col :span="24">
+                    <j-form-item label="说明" name="description">
+                        <j-textarea
                             placeholder="请输入说明"
                             v-model:value="formData.description"
                             :maxlength="200"
                             :rows="3"
                             showCount
                             :disabled="view"
-                        /> </a-form-item
-                ></a-col>
-            </a-row>
-        </a-form>
-    </a-modal>
+                        /> </j-form-item
+                ></j-col>
+            </j-row>
+        </j-form>
+    </j-modal>
 </template>
 <script lang="ts" setup name="TaskPage">
 import { message } from 'ant-design-vue';

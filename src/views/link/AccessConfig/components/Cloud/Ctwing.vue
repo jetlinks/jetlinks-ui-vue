@@ -1,8 +1,8 @@
 <template>
     <div class="container">
-        <a-steps class="steps-steps" :current="stepCurrent">
-            <a-step v-for="item in steps" :key="item" :title="item" />
-        </a-steps>
+        <j-steps class="steps-steps" :current="stepCurrent">
+            <j-step v-for="item in steps" :key="item" :title="item" />
+        </j-steps>
         <div class="steps-content">
             <div class="steps-box" v-if="current === 0">
                 <div class="alert">
@@ -10,18 +10,18 @@
                     通过CTWing平台的HTTP推送服务进行数据接入
                 </div>
                 <div style="margin-top: 15px">
-                    <a-row :gutter="[24, 24]">
-                        <a-col :span="16">
-                            <a-form
+                    <j-row :gutter="[24, 24]">
+                        <j-col :span="16">
+                            <j-form
                                 :model="formState"
                                 ref="formRef1"
                                 name="basic"
                                 autocomplete="off"
                                 layout="vertical"
                             >
-                                <a-row :gutter="[24, 24]">
-                                    <a-col :span="12">
-                                        <a-form-item
+                                <j-row :gutter="[24, 24]">
+                                    <j-col :span="12">
+                                        <j-form-item
                                             label="接口地址"
                                             name="apiAddress"
                                             :rules="[
@@ -30,16 +30,16 @@
                                                 },
                                             ]"
                                         >
-                                            <a-input
+                                            <j-input
                                                 disabled
                                                 v-model:value="
                                                     formState.apiAddress
                                                 "
                                             />
-                                        </a-form-item>
-                                    </a-col>
-                                    <a-col :span="12">
-                                        <a-form-item
+                                        </j-form-item>
+                                    </j-col>
+                                    <j-col :span="12">
+                                        <j-form-item
                                             label="appKey"
                                             name="appKey"
                                             :rules="[
@@ -54,16 +54,16 @@
                                                 },
                                             ]"
                                         >
-                                            <a-input
+                                            <j-input
                                                 v-model:value="formState.appKey"
                                                 placeholder="请输入appKey"
                                             />
-                                        </a-form-item>
-                                    </a-col>
-                                </a-row>
-                                <a-row :gutter="[24, 24]">
-                                    <a-col :span="12">
-                                        <a-form-item
+                                        </j-form-item>
+                                    </j-col>
+                                </j-row>
+                                <j-row :gutter="[24, 24]">
+                                    <j-col :span="12">
+                                        <j-form-item
                                             label="appSecret"
                                             name="appSecret"
                                             :rules="[
@@ -78,23 +78,23 @@
                                                 },
                                             ]"
                                         >
-                                            <a-input
+                                            <j-input
                                                 v-model:value="
                                                     formState.appSecret
                                                 "
                                                 placeholder="请输入appSecret"
                                             />
-                                        </a-form-item>
-                                    </a-col>
-                                    <a-col :span="12"> </a-col>
-                                </a-row>
-                                <a-row :gutter="[24, 24]">
-                                    <a-col :span="24">
-                                        <a-form-item
+                                        </j-form-item>
+                                    </j-col>
+                                    <j-col :span="12"> </j-col>
+                                </j-row>
+                                <j-row :gutter="[24, 24]">
+                                    <j-col :span="24">
+                                        <j-form-item
                                             label="说明"
                                             name="description"
                                         >
-                                            <a-textarea
+                                            <j-textarea
                                                 placeholder="请输入说明"
                                                 :rows="4"
                                                 v-model:value="
@@ -103,11 +103,11 @@
                                                 show-count
                                                 :maxlength="200"
                                             />
-                                        </a-form-item>
-                                    </a-col>
-                                </a-row> </a-form
-                        ></a-col>
-                        <a-col :span="8">
+                                        </j-form-item>
+                                    </j-col>
+                                </j-row> </j-form
+                        ></j-col>
+                        <j-col :span="8">
                             <div class="doc">
                                 <h1>操作指引：</h1>
                                 <div>
@@ -122,7 +122,7 @@
                                     </div>
                                 </div>
                                 <div class="image">
-                                    <a-image width="100%" :src="img1" />
+                                    <j-image width="100%" :src="img1" />
                                 </div>
                                 <div>
                                     3、IOT端创建类型为CTWing的设备接入网关
@@ -131,13 +131,13 @@
                                     4、IOT端创建产品，选中接入方式为CTWing,填写CTWing平台中的产品ID、Master-APIkey。
                                 </div>
                                 <div class="image">
-                                    <a-image width="100%" :src="img2" />
+                                    <j-image width="100%" :src="img2" />
                                 </div>
                                 <div>
                                     5、IOT端添加设备，为每一台设备设置唯一的IMEI（需与CTWing平台中填写的值一致）
                                 </div>
                                 <div class="image">
-                                    <a-image width="100%" :src="img3" />
+                                    <j-image width="100%" :src="img3" />
                                 </div>
                                 <h1>设备接入网关配置说明</h1>
                                 <div>
@@ -145,15 +145,15 @@
                                     Key和App Secret复制到当前页面
                                 </div>
                                 <div class="image">
-                                    <a-image width="100%" :src="img4" />
+                                    <j-image width="100%" :src="img4" />
                                 </div>
                                 <h1>其他说明</h1>
                                 <div>
                                     1.在IOT端启用设备时，若CTWing平台没有与之对应的设备，则将在CTWing端自动创建新设备
                                 </div>
                             </div>
-                        </a-col>
-                    </a-row>
+                        </j-col>
+                    </j-row>
                 </div>
             </div>
         </div>
@@ -164,7 +164,7 @@
                     只能选择HTTP通信方式的协议
                 </div>
                 <div class="search">
-                    <a-input-search
+                    <j-input-search
                         allowClear
                         placeholder="请输入"
                         style="width: 300px"
@@ -180,8 +180,8 @@
                     </PermissionButton>
                 </div>
                 <div class="card-item">
-                    <a-row :gutter="[24, 24]" v-if="procotolList.length > 0">
-                        <a-col
+                    <j-row :gutter="[24, 24]" v-if="procotolList.length > 0">
+                        <j-col
                             :span="8"
                             v-for="item in procotolList"
                             :key="item.id"
@@ -192,25 +192,25 @@
                                 :data="item"
                             >
                             </access-card>
-                        </a-col>
-                    </a-row>
-                    <a-empty v-else description="暂无数据" />
+                        </j-col>
+                    </j-row>
+                    <j-empty v-else description="暂无数据" />
                 </div>
             </div>
         </div>
         <div v-if="current === 2" class="card-last">
-            <a-row :gutter="[24, 24]">
-                <a-col :span="12">
+            <j-row :gutter="[24, 24]">
+                <j-col :span="12">
                     <title-component data="基本信息" />
                     <div>
-                        <a-form
+                        <j-form
                             :model="formData"
                             name="basic"
                             autocomplete="off"
                             layout="vertical"
                             ref="formRef2"
                         >
-                            <a-form-item
+                            <j-form-item
                                 label="名称"
                                 name="name"
                                 :rules="[
@@ -222,24 +222,24 @@
                                     { max: 64, message: '最多可输入64个字符' },
                                 ]"
                             >
-                                <a-input
+                                <j-input
                                     placeholder="请输入名称"
                                     v-model:value="formData.name"
                                 />
-                            </a-form-item>
-                            <a-form-item label="说明" name="description">
-                                <a-textarea
+                            </j-form-item>
+                            <j-form-item label="说明" name="description">
+                                <j-textarea
                                     placeholder="请输入说明"
                                     :rows="4"
                                     v-model:value="formData.description"
                                     show-count
                                     :maxlength="200"
                                 />
-                            </a-form-item>
-                        </a-form>
+                            </j-form-item>
+                        </j-form>
                     </div>
-                </a-col>
-                <a-col :span="12">
+                </j-col>
+                <j-col :span="12">
                     <div class="config-right">
                         <div class="config-right-item">
                             <title-component data="配置概览" />
@@ -275,18 +275,18 @@
                             </div>
                         </div>
                     </div>
-                </a-col>
-            </a-row>
+                </j-col>
+            </j-row>
         </div>
         <div :class="current !== 2 ? 'steps-action' : 'steps-action-save'">
-            <a-button
+            <j-button
                 v-if="[0, 1].includes(current)"
                 type="primary"
                 style="margin-right: 8px"
                 @click="next"
             >
                 下一步
-            </a-button>
+            </j-button>
             <PermissionButton
                 v-if="current === 2 && view === 'false'"
                 type="primary"
@@ -298,7 +298,7 @@
             >
                 保存
             </PermissionButton>
-            <a-button v-if="current > 0" @click="prev"> 上一步 </a-button>
+            <j-button v-if="current > 0" @click="prev"> 上一步 </j-button>
         </div>
     </div>
 </template>
