@@ -88,7 +88,7 @@
 import { queryNoPagingPost } from '@/api/device/product';
 import { isExists, update } from '@/api/device/instance';
 import { getImage } from '@/utils/comm';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 const emit = defineEmits(['close', 'save']);
 const props = defineProps({

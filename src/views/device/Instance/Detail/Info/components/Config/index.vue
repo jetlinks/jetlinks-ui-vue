@@ -97,7 +97,7 @@ import {
     _deploy,
     configurationReset,
 } from '@/api/device/instance';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import Save from './Save.vue';
 
 const instanceStore = useInstanceStore();

@@ -1,14 +1,14 @@
 <!-- 参数类型输入组件 -->
 <template>
     <div class="wrapper">
-        <a-select
+        <j-select
             v-if="typeMap.get(itemType) === 'select'"
             v-model:value="myValue"
             :options="options"
             allowClear
             style="width: 100%"
         />
-        <a-date-picker
+        <j-date-picker
             v-else-if="typeMap.get(itemType) === 'date'"
             v-model:value="myValue"
             allowClear
@@ -17,13 +17,13 @@
             format="YYYY-MM-DD HH:mm:ss"
             style="width: 100%"
         />
-        <a-input-number
+        <j-input-number
             v-else-if="typeMap.get(itemType) === 'inputNumber'"
             v-model:value="myValue"
             allowClear
             style="width: 100%"
         />
-        <a-input
+        <j-input
             allowClear
             v-else-if="typeMap.get(itemType) === 'object'"
             v-model:value="myValue"
@@ -31,19 +31,19 @@
             <template #addonAfter>
                 <form-outlined @click="modalVis = true" />
             </template>
-        </a-input>
+        </j-input>
         <GeoComponent
             v-else-if="typeMap.get(itemType) === 'geoPoint'"
             v-model:point="myValue"
         />
-        <a-input
+        <j-input
             v-else-if="typeMap.get(itemType) === 'file'"
             v-model:value="myValue"
             placeholder="请输入图片链接"
             allowClear
         >
             <template #addonAfter>
-                <a-upload
+                <j-upload
                     name="file"
                     :action="FILE_UPLOAD"
                     :headers="headers"
@@ -51,10 +51,10 @@
                     @change="handleFileChange"
                 >
                     <cloud-upload-outlined />
-                </a-upload>
+                </j-upload>
             </template>
-        </a-input>
-        <a-input
+        </j-input>
+        <j-input
             v-else
             allowClear
             type="text"
@@ -63,7 +63,7 @@
         />
 
         <!-- 代码编辑器弹窗 -->
-        <a-modal
+        <j-modal
             title="编辑"
             ok-text="确认"
             cancel-text="取消"
@@ -75,13 +75,12 @@
             <div style="width: 100%; height: 400px">
                 <MonacoEditor v-model:modelValue="objectValue" />
             </div>
-        </a-modal>
+        </j-modal>
     </div>
 </template>
 
 <script setup lang="ts">
 import { PropType } from 'vue';
-import { FormOutlined, CloudUploadOutlined } from '@ant-design/icons-vue';
 import { UploadChangeParam, UploadFile } from 'ant-design-vue';
 import { DefaultOptionType } from 'ant-design-vue/lib/select';
 import MonacoEditor from '@/components/MonacoEditor/index.vue';

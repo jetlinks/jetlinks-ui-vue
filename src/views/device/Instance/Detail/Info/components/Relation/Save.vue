@@ -46,7 +46,7 @@
 <script lang="ts" setup>
 import { queryUserListNoPaging, saveRelations } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 const emit = defineEmits(['close', 'save']);
 

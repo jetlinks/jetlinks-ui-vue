@@ -26,7 +26,7 @@
             <div
                 :class="[
                     'checked-icon',
-                    disabled && myValue === item.value
+                    (disabled && myValue === item.value) || item.disabled
                         ? 'checked-icon-disabled'
                         : '',
                 ]"
@@ -45,6 +45,7 @@ interface IOption {
     label: string;
     value: string;
     logo: string;
+    disabled?: boolean;
 }
 
 type Emits = {

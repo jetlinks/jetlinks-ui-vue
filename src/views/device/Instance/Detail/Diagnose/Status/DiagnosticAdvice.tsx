@@ -1,7 +1,6 @@
-import { Badge, Descriptions, Modal, Tooltip } from "ant-design-vue"
+import { Badge, Descriptions, Modal, Tooltip, AIcon, DescriptionsItem } from "jetlinks-ui-components"
 import TitleComponent from '@/components/TitleComponent/index.vue'
 import styles from './index.module.less'
-import AIcon from "@/components/AIcon";
 import _ from "lodash";
 
 const DiagnosticAdvice = defineComponent({
@@ -42,11 +41,11 @@ const DiagnosticAdvice = defineComponent({
             <div style={{ marginTop: 15 }}>
                 <TitleComponent data="连接信息" />
                 <Descriptions column={2}>
-                    <Descriptions.Item span={1} label="设备ID">
+                    <DescriptionsItem span={1} label="设备ID">
                         {data?.info?.id || ''}
-                    </Descriptions.Item>
+                    </DescriptionsItem>
                     {data?.info?.address?.length > 0 && (
-                        <Descriptions.Item span={1} label="连接地址">
+                        <DescriptionsItem span={1} label="连接地址">
                             <Tooltip
                                 placement="topLeft"
                                 title={
@@ -69,11 +68,11 @@ const DiagnosticAdvice = defineComponent({
                                     ))}
                                 </div>
                             </Tooltip>
-                        </Descriptions.Item>
+                        </DescriptionsItem>
                     )}
 
                     {(_.flatten(_.map(data?.info?.config, 'properties')) || []).map((item: any, index: number) => (
-                        <Descriptions.Item
+                        <DescriptionsItem
                             key={index}
                             span={1}
                             label={
@@ -90,7 +89,7 @@ const DiagnosticAdvice = defineComponent({
                             }
                         >
                             {data?.info?.configValue[item?.property] || ''}
-                        </Descriptions.Item>
+                        </DescriptionsItem>
                     ))}
                 </Descriptions>
             </div>

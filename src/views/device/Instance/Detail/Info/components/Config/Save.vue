@@ -19,7 +19,7 @@
             </div>
         </template>
         <j-form layout="vertical" ref="formRef" :model="modelRef">
-            <template v-for="(item, index) in props.config" :key="index">
+            <template v-for="(item, index) in (props.config || [])" :key="index">
                 <j-form-item
                     :name="item.property"
                     v-for="i in item.properties"
@@ -54,7 +54,7 @@
 <script lang="ts" setup>
 import { modify } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 const emit = defineEmits(['close', 'save']);
 
