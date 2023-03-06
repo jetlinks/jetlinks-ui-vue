@@ -1,6 +1,6 @@
 <template>
     <page-container>
-        <Search
+        <j-advanced-search
             :columns="columns"
             target="notice-config"
             @search="handleSearch"
