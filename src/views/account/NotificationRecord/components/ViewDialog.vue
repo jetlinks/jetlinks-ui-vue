@@ -1,5 +1,5 @@
 <template>
-    <a-modal
+    <j-modal
         visible
         title="详情"
         width="1000px"
@@ -7,48 +7,48 @@
         @cancel="emits('update:visible', false)"
         class="view-dialog-container"
     >
-        <a-row v-if="data?.targetType === 'device'">
-            <a-col :span="4" class="label">告警设备</a-col>
-            <a-col :span="8" class="value">
+        <j-row v-if="data?.targetType === 'device'">
+            <j-col :span="4" class="label">告警设备</j-col>
+            <j-col :span="8" class="value">
                 {{ data?.targetName || '' }}
-            </a-col>
-            <a-col :span="4" class="label">设备ID</a-col>
-            <a-col :span="8" class="value">
+            </j-col>
+            <j-col :span="4" class="label">设备ID</j-col>
+            <j-col :span="8" class="value">
                 {{ data?.targetId || '' }}
-            </a-col>
-        </a-row>
-        <a-row>
-            <a-col :span="4" class="label">告警名称</a-col>
-            <a-col :span="8" class="value">
+            </j-col>
+        </j-row>
+        <j-row>
+            <j-col :span="4" class="label">告警名称</j-col>
+            <j-col :span="8" class="value">
                 {{ data?.alarmName || data?.alarmConfigName || '' }}
-            </a-col>
-            <a-col :span="4" class="label">告警时间</a-col>
-            <a-col :span="8" class="value">
+            </j-col>
+            <j-col :span="4" class="label">告警时间</j-col>
+            <j-col :span="8" class="value">
                 {{ moment(data?.alarmTime).format('YYYY-MM-DD HH:mm:ss') }}
-            </a-col>
+            </j-col>
 
-            <a-col :span="4" class="label">告警级别</a-col>
-            <a-col :span="8" class="value">
+            <j-col :span="4" class="label">告警级别</j-col>
+            <j-col :span="8" class="value">
                 {{ (levelList.length > 0 && getLevelLabel(data.level)) || '' }}
-            </a-col>
-            <a-col :span="4" class="label">告警说明</a-col>
-            <a-col :span="8" class="value">{{ data?.description || '' }}</a-col>
+            </j-col>
+            <j-col :span="4" class="label">告警说明</j-col>
+            <j-col :span="8" class="value">{{ data?.description || '' }}</j-col>
 
-            <a-col
+            <j-col
                 :span="4"
                 class="label"
                 style="display: flex; height: 440px; align-items: center"
-                >告警流水</a-col
+                >告警流水</j-col
             >
-            <a-col
+            <j-col
                 :span="20"
                 class="value"
                 style="max-height: 440px; overflow: auto"
             >
                 <JsonViewer :value="JSON.parse(data?.alarmInfo || '{}')" />
-            </a-col>
-        </a-row>
-    </a-modal>
+            </j-col>
+        </j-row>
+    </j-modal>
 </template>
 
 <script setup lang="ts">

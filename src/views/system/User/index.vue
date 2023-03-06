@@ -1,11 +1,11 @@
 <template>
     <page-container>
         <div class="user-container">
-            <Search :columns="query.columns" @search="query.search" />
+            <Search :columns="columns" @search="query.search" />
 
             <j-pro-table
                 ref="tableRef"
-                :columns="table.columns"
+                :columns="columns"
                 :request="getUserList_api"
                 model="TABLE"
                 :params="query.params.value"
@@ -14,12 +14,6 @@
                 }"
             >
                 <template #headerTitle>
-                    <!-- <a-button
-                    type="primary"
-                    @click="table.openDialog('add')"
-                    style="margin-right: 10px"
-                    ><AIcon type="PlusOutlined" />新增</a-button
-                > -->
                     <PermissionButton
                         :uhasPermission="`${permission}:add`"
                         type="primary"
@@ -42,15 +36,14 @@
                     ></BadgeStatus>
                 </template>
                 <template #action="slotProps">
-                    <a-space :size="16">
-
+                    <j-space :size="16">
                         <PermissionButton
                             :uhasPermission="`${permission}:update`"
                             type="link"
                             :tooltip="{
                                 title: '编辑',
                             }"
-                            @click="table.openDialog('edit')"
+                            @click="table.openDialog('edit', slotProps)"
                         >
                             <AIcon type="EditOutlined" />
                         </PermissionButton>
@@ -96,13 +89,17 @@
                         >
                             <AIcon type="DeleteOutlined" />
                         </PermissionButton>
-                    </a-space>
+                    </j-space>
                 </template>
             </j-pro-table>
 
-            <div class="dialogs">
-                <EditUserDialog ref="editDialogRef" @confirm="table.refresh" />
-            </div>
+            <EditUserDialog
+                v-if="dialog.visible"
+                :type="dialog.type"
+                v-model:visible="dialog.visible"
+                :data="dialog.selectItem"
+                @confirm="table.refresh"
+            />
         </div>
     </page-container>
 </template>
@@ -121,154 +118,110 @@ import { message } from 'ant-design-vue';
 
 const permission = 'system/User';
 
+const columns = [
+    {
+        title: '名称',
+        dataIndex: 'name',
+        key: 'name',
+        ellipsis: true,
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '用户名',
+        dataIndex: 'username',
+        key: 'username',
+        ellipsis: true,
+        fixed: 'left',
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '用户类型',
+        dataIndex: 'type',
+        key: 'type',
+        ellipsis: true,
+        fixed: 'left',
+        search: {
+            type: 'select',
+            options: () =>
+                new Promise((resolve) => {
+                    getUserType_api().then((resp: any) => {
+                        resolve(
+                            resp.result.map((item: dictType) => ({
+                                label: item.name,
+                                value: item.id,
+                            })),
+                        );
+                    });
+                }),
+        },
+        scopedSlots: true,
+    },
+    {
+        title: '状态',
+        dataIndex: 'status',
+        key: 'status',
+        ellipsis: true,
+        search: {
+            rename: 'status',
+            type: 'select',
+            options: [
+                {
+                    label: '启用',
+                    value: 1,
+                },
+                {
+                    label: '禁用',
+                    value: 0,
+                },
+            ],
+        },
+        scopedSlots: true,
+    },
+    {
+        title: '手机号',
+        dataIndex: 'telephone',
+        key: 'telephone',
+        ellipsis: true,
+        fixed: 'left',
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '邮箱',
+        dataIndex: 'email',
+        key: 'email',
+        ellipsis: true,
+        fixed: 'left',
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '操作',
+        dataIndex: 'action',
+        key: 'action',
+        scopedSlots: true,
+    },
+];
 const query = {
-    columns: [
-        {
-            title: '名称',
-            dataIndex: 'name',
-            key: 'name',
-            ellipsis: true,
-            search: {
-                type: 'string',
-            },
-        },
-        {
-            title: '用户名',
-            dataIndex: 'username',
-            key: 'username',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-            },
-        },
-        {
-            title: '用户类型',
-            dataIndex: 'type',
-            key: 'type',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'select',
-                options: () =>
-                    new Promise((resolve) => {
-                        getUserType_api().then((resp: any) => {
-                            resolve(
-                                resp.result.map((item: dictType) => ({
-                                    label: item.name,
-                                    value: item.id,
-                                })),
-                            );
-                        });
-                    }),
-            },
-        },
-        {
-            title: '状态',
-            dataIndex: 'status',
-            key: 'status',
-            ellipsis: true,
-            search: {
-                rename: 'status',
-                type: 'select',
-                options: [
-                    {
-                        label: '启用',
-                        value: 1,
-                    },
-                    {
-                        label: '禁用',
-                        value: 0,
-                    },
-                ],
-            },
-        },
-        {
-            title: '手机号',
-            dataIndex: 'telephone',
-            key: 'telephone',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-            },
-        },
-        {
-            title: '邮箱',
-            dataIndex: 'email',
-            key: 'email',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-            },
-        },
-    ],
     params: ref({}),
-
     search: (params: object) => {
         query.params.value = params;
     },
 };
 
-const editDialogRef = ref(); // 弹窗实例
 const tableRef = ref<Record<string, any>>({}); // 表格实例
 const table = {
-    columns: [
-        {
-            title: '名称',
-            dataIndex: 'name',
-            key: 'name',
-        },
-        {
-            title: '用户名',
-            dataIndex: 'username',
-            key: 'username',
-            ellipsis: true,
-        },
-        {
-            title: '用户类型',
-            dataIndex: 'type',
-            key: 'type',
-            scopedSlots: true,
-        },
-        {
-            title: '状态',
-            dataIndex: 'status',
-            key: 'status',
-            scopedSlots: true,
-        },
-        {
-            title: '手机号',
-            dataIndex: 'telephone',
-            key: 'telephone',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-            },
-        },
-        {
-            title: '邮箱',
-            dataIndex: 'email',
-            key: 'email',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-            },
-        },
-        {
-            title: '操作',
-            dataIndex: 'action',
-            key: 'action',
-            scopedSlots: true,
-        },
-    ],
-
     // 打开编辑弹窗
     openDialog: (type: modalType, row?: any) => {
-        editDialogRef.value.openDialog(type, row || {});
+        dialog.selectItem = { ...(row || {}) };
+        dialog.type = type;
+        dialog.visible = true;
     },
     changeStatus: (row: any) => {
         const params = {
@@ -292,6 +245,12 @@ const table = {
         tableRef.value.reload();
     },
 };
+
+const dialog = reactive({
+    selectItem: {},
+    visible: false,
+    type: '' as modalType,
+});
 
 type dictType = {
     id: string;

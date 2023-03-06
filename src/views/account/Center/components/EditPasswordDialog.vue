@@ -1,13 +1,13 @@
 <template>
-    <a-modal
+    <j-modal
         visible
         title="重置密码"
         @ok="handleOk"
         width="520px"
         @cancel="emits('update:visible', false)"
     >
-        <a-form :model="form" layout="vertical" ref="formRef">
-            <a-form-item
+        <j-form :model="form" layout="vertical" ref="formRef">
+            <j-form-item
                 label="旧密码"
                 name="oldPassword"
                 :rules="[
@@ -15,12 +15,12 @@
                     { validator: checkMothods.old, trigger: 'blur' },
                 ]"
             >
-                <a-input
+                <j-input
                     v-model:value="form.oldPassword"
                     placeholder="请输入旧密码"
                 />
-            </a-form-item>
-            <a-form-item
+            </j-form-item>
+            <j-form-item
                 label="密码"
                 name="newPassword"
                 :rules="[
@@ -28,12 +28,12 @@
                     { validator: checkMothods.new, trigger: 'blur' },
                 ]"
             >
-                <a-input-password
+                <j-input-password
                     v-model:value="form.newPassword"
                     placeholder="请输入姓名"
                 />
-            </a-form-item>
-            <a-form-item
+            </j-form-item>
+            <j-form-item
                 label="确认密码"
                 name="confirmPassword"
                 :rules="[
@@ -41,13 +41,13 @@
                     { validator: checkMothods.confirm, trigger: 'blur' },
                 ]"
             >
-                <a-input-password
+                <j-input-password
                     v-model:value="form.confirmPassword"
                     placeholder="请输入姓名"
                 />
-            </a-form-item>
-        </a-form>
-    </a-modal>
+            </j-form-item>
+        </j-form>
+    </j-modal>
 </template>
 
 <script setup lang="ts">

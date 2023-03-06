@@ -1,6 +1,6 @@
 <template>
     <div class="notice-container">
-        <a-dropdown :trigger="['click']" @visible-change="visibleChange">
+        <j-dropdown :trigger="['click']" @visible-change="visibleChange">
             <div class="icon-content">
                 <AIcon
                     type="BellOutlined"
@@ -14,7 +14,7 @@
                     <NoticeInfo :data="list" @on-action="getList" />
                 </div>
             </template>
-        </a-dropdown>
+        </j-dropdown>
     </div>
 </template>
 

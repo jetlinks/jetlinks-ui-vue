@@ -1,79 +1,79 @@
 <template>
-    <a-modal
+    <j-modal
         visible
         title="编辑"
         @ok="handleOk"
         width="770px"
         @cancel="emits('update:visible', false)"
     >
-        <a-form :model="form" layout="vertical" ref="formRef">
-            <a-row :gutter="24">
-                <a-col :span="12">
-                    <a-form-item
+        <j-form :model="form" layout="vertical" ref="formRef">
+            <j-row :gutter="24">
+                <j-col :span="12">
+                    <j-form-item
                         label="姓名"
                         name="name"
                         :rules="[{ required: true, message: '姓名必填' }]"
                     >
-                        <a-input
+                        <j-input
                             v-model:value="form.name"
                             placeholder="请输入姓名"
                         />
-                    </a-form-item>
-                </a-col>
-                <a-col :span="12">
-                    <a-form-item label="用户名">
-                        <a-input
+                    </j-form-item>
+                </j-col>
+                <j-col :span="12">
+                    <j-form-item label="用户名">
+                        <j-input
                             v-model:value="form.username"
                             placeholder="请输入用户名"
                             disabled
                         />
-                    </a-form-item>
-                </a-col>
-            </a-row>
-            <a-row :gutter="24">
-                <a-col :span="12">
-                    <a-form-item label="角色">
-                        <a-input
+                    </j-form-item>
+                </j-col>
+            </j-row>
+            <j-row :gutter="24">
+                <j-col :span="12">
+                    <j-form-item label="角色">
+                        <j-input
                             :value="
                                 form.roleList.map((item) => item.name).join(',')
                             "
                             placeholder="请输入角色"
                             disabled
                         />
-                    </a-form-item>
-                </a-col>
-                <a-col :span="12">
-                    <a-form-item label="组织">
-                        <a-input
+                    </j-form-item>
+                </j-col>
+                <j-col :span="12">
+                    <j-form-item label="组织">
+                        <j-input
                             :value="
                                 form.orgList.map((item) => item.name).join(',')
                             "
                             placeholder="请输入组织"
                             disabled
                         />
-                    </a-form-item>
-                </a-col>
-            </a-row>
-            <a-row :gutter="24">
-                <a-col :span="12">
-                    <a-form-item label="手机号">
-                        <a-input
+                    </j-form-item>
+                </j-col>
+            </j-row>
+            <j-row :gutter="24">
+                <j-col :span="12">
+                    <j-form-item label="手机号">
+                        <j-input
                             v-model:value="form.telephone"
                             placeholder="请输入手机号"
                         />
-                    </a-form-item>
-                </a-col>
-                <a-col :span="12">
-                    <a-form-item label="邮箱">
-                        <a-input
+                    </j-form-item>
+                </j-col>
+                <j-col :span="12">
+                    <j-form-item label="邮箱">
+                        <j-input
                             v-model:value="form.email"
                             placeholder="请输入邮箱"
                         />
-                    </a-form-item>
-                </a-col>
-            </a-row>
-        </a-form>
-    </a-modal>
+                    </j-form-item>
+                </j-col>
+            </j-row>
+        </j-form>
+    </j-modal>
 </template>
 
 <script setup lang="ts">

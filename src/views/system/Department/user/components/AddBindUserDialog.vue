@@ -1,14 +1,13 @@
 <template>
-    <a-modal
+    <j-modal
         class="add-bind-user-dialog-container"
         title="绑定"
         width="1440px"
-        @ok="dialog.handleOk"
+        visible
         centered
-        :confirmLoading="dialog.loading.value"
-        cancelText="取消"
-        okText="确定"
-        v-model:visible="dialog.visible.value"
+        :confirmLoading="loading"
+        @ok="confirm"
+        @cancel="emits('update:visible', false)"
     >
         <Search :columns="query.columns" @search="query.search" />
         <div class="table">
@@ -28,43 +27,35 @@
                 }"
             />
         </div>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script setup lang="ts">
 import { bindUser_api, getBindUserList_api } from '@/api/system/department';
 import { message } from 'ant-design-vue';
 
-const emits = defineEmits(['confirm']);
+const emits = defineEmits(['confirm', 'update:visible']);
 
-const props = defineProps({
-    parentId: String,
-});
+const props = defineProps<{
+    parentId: string;
+    visible: boolean;
+}>();
 // 弹窗相关
-const dialog = {
-    loading: ref<boolean>(false),
-    visible: ref<boolean>(false),
-    handleOk: () => {
-        if (table._selectedRowKeys.length && props.parentId) {
-            bindUser_api(props.parentId, table._selectedRowKeys).then(() => {
-                emits('confirm');
+const loading = ref(false);
+const confirm = () => {
+    if (table._selectedRowKeys.length && props.parentId) {
+        loading.value = true;
+        bindUser_api(props.parentId, table._selectedRowKeys)
+            .then(() => {
                 message.success('操作成功');
-                dialog.changeVisible();
-            });
-        } else {
-            dialog.changeVisible();
-        }
-    },
-    // 控制弹窗的打开与关闭
-    changeVisible: () => {
-        if (!dialog.visible.value) query.search({});
-        dialog.visible.value = !dialog.visible.value;
-    },
+                emits('confirm');
+                emits('update:visible', false);
+            })
+            .finally(() => (loading.value = false));
+    } else {
+        emits('update:visible', false);
+    }
 };
-// 将打开弹窗的操作暴露给父组件
-defineExpose({
-    openDialog: dialog.changeVisible,
-});
 
 const query = {
     columns: [

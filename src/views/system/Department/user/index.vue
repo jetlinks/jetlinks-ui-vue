@@ -1,12 +1,12 @@
 <template>
     <div>
-        <Search :columns="query.columns" @search="query.search" />
+        <Search :columns="columns" @search="(p:any)=>params = p" />
 
         <j-pro-table
             ref="tableRef"
-            :columns="table.columns"
+            :columns="columns"
             :request="table.requestFun"
-            :params="query.params"
+            :params="params"
             :rowSelection="{
                 selectedRowKeys: table._selectedRowKeys,
                 onChange: table.onSelectChange,
@@ -18,12 +18,14 @@
                 <PermissionButton
                     type="primary"
                     :uhasPermission="`${permission}:bind-user`"
-                    @click="table.openDialog"
-                    style="margin-right: 15px;"
+                    @click="dialogVisible = true"
+                    style="margin-right: 15px"
                 >
                     <AIcon type="PlusOutlined" />绑定用户
                 </PermissionButton>
-                <div style="display: inline-block;width: 12px;height: 1px;"></div>
+                <div
+                    style="display: inline-block; width: 12px; height: 1px"
+                ></div>
                 <PermissionButton
                     :uhasPermission="`${permission}:bind`"
                     :popConfirm="{
@@ -34,7 +36,7 @@
                     <AIcon type="DisconnectOutlined" />批量解绑
                 </PermissionButton>
             </template>
-            <template #status="slotProps">
+            <template #state="slotProps">
                 <BadgeStatus
                     :status="slotProps.status"
                     :text="slotProps.status ? '正常' : '禁用'"
@@ -45,7 +47,7 @@
                 ></BadgeStatus>
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
+                <j-space :size="16">
                     <PermissionButton
                         type="link"
                         :uhasPermission="`${permission}:bind`"
@@ -56,13 +58,14 @@
                     >
                         <AIcon type="DisconnectOutlined" />
                     </PermissionButton>
-                </a-space>
+                </j-space>
             </template>
         </j-pro-table>
 
         <div class="dialogs">
             <AddBindUserDialog
-                ref="addDialogRef"
+                v-if="dialogVisible"
+                v-model:visible="dialogVisible"
                 :parent-id="props.parentId"
                 @confirm="table.refresh"
             />
@@ -78,90 +81,67 @@ import { message } from 'ant-design-vue';
 
 const permission = 'system/Department';
 
-const addDialogRef = ref();
-
 const props = defineProps<{
     parentId: string;
 }>();
 
-const query = {
-    columns: [
-        {
-            title: '姓名',
-            dataIndex: 'name',
-            key: 'name',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-            },
+const columns = [
+    {
+        title: '姓名',
+        dataIndex: 'name',
+        key: 'name',
+        ellipsis: true,
+        fixed: 'left',
+        search: {
+            type: 'string',
         },
-        {
-            title: '用户名',
-            dataIndex: 'username',
-            key: 'username',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-            },
-        },
-
-        {
-            title: '状态',
-            dataIndex: 'state',
-            key: 'state',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'select',
-                options: [
-                    {
-                        label: '正常',
-                        value: 1,
-                    },
-                    {
-                        label: '禁用',
-                        value: 0,
-                    },
-                ],
-            },
-        },
-    ],
-    params: ref({}),
-    search: (params: any) => {
-        query.params.value = params;
     },
-};
+    {
+        title: '用户名',
+        dataIndex: 'username',
+        key: 'username',
+        ellipsis: true,
+        fixed: 'left',
+        search: {
+            type: 'string',
+        },
+    },
+
+    {
+        title: '状态',
+        dataIndex: 'state',
+        key: 'state',
+        ellipsis: true,
+        fixed: 'left',
+        search: {
+            type: 'select',
+            options: [
+                {
+                    label: '正常',
+                    value: 1,
+                },
+                {
+                    label: '禁用',
+                    value: 0,
+                },
+            ],
+        },
+        scopedSlots: true,
+    },
+    {
+        title: '操作',
+        dataIndex: 'action',
+        key: 'action',
+        scopedSlots: true,
+        width: '200px',
+    },
+];
+// 搜索参数
+const params = ref({});
 
 // 表格
 const tableRef = ref<Record<string, any>>({}); // 表格实例
 const table = reactive({
-    columns: [
-        {
-            title: '姓名',
-            dataIndex: 'name',
-            key: 'name',
-        },
-        {
-            title: '用户名',
-            dataIndex: 'username',
-            key: 'username',
-        },
-
-        {
-            title: '状态',
-            dataIndex: 'status',
-            key: 'status',
-            scopedSlots: true,
-        },
-        {
-            title: '操作',
-            dataIndex: 'action',
-            key: 'action',
-            scopedSlots: true,
-        },
-    ],
     _selectedRowKeys: [] as string[],
 
     requestFun: async (oParams: any) => {
@@ -210,10 +190,6 @@ const table = reactive({
             table.refresh();
         });
     },
-    // 打开编辑弹窗
-    openDialog: () => {
-        addDialogRef.value && addDialogRef.value.openDialog();
-    },
     onSelectChange: (keys: string[]) => {
         table._selectedRowKeys = keys;
     },
@@ -225,6 +201,6 @@ const table = reactive({
         tableRef.value.reload();
     },
 });
-</script>
 
-<style scoped></style>
+const dialogVisible = ref(false);
+</script>

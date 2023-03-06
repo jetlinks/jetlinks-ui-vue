@@ -35,7 +35,7 @@
                     ></BadgeStatus>
                 </template>
                 <template #action="slotProps">
-                    <a-space :size="16">
+                    <j-space :size="16">
                         <PermissionButton
                             type="link"
                             :popConfirm="{
@@ -52,7 +52,7 @@
                                         ? '标为未读'
                                         : '标为已读',
                             }"
-                        >
+                        >1
                             <AIcon type="ReadIconOutlined" />
                         </PermissionButton>
                         <PermissionButton
@@ -64,7 +64,7 @@
                         >
                             <AIcon type="SearchOutlined" />
                         </PermissionButton>
-                    </a-space>
+                    </j-space>
                 </template>
             </j-pro-table>
 
@@ -89,7 +89,6 @@ import { optionItem } from '@/views/rule-engine/Scene/typings';
 import { dictItemType } from '@/views/system/DataSource/typing';
 import moment from 'moment';
 import { message } from 'ant-design-vue';
-import NoticeCp from '@/components/Layout/components/Notice.vue';
 import { useUserInfo } from '@/store/userInfo';
 
 const { updateAlarm } = useUserInfo();
@@ -159,6 +158,7 @@ const columns = [
         key: 'action',
         ellipsis: true,
         scopedSlots: true,
+        width:'200px'
     },
 ];
 const query = {

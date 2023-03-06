@@ -13,7 +13,7 @@
             @cancelSelect="table.cancelSelect"
         >
             <template #headerTitle>
-                <a-space>
+                <j-space>
                     <PermissionButton
                         :uhasPermission="`${permission}:assert`"
                         type="primary"
@@ -21,11 +21,11 @@
                     >
                         <AIcon type="PlusOutlined" />资产分配
                     </PermissionButton>
-                    <a-dropdown trigger="hover">
-                        <a-button>批量操作</a-button>
+                    <j-dropdown trigger="hover">
+                        <j-button>批量操作</j-button>
                         <template #overlay>
-                            <a-menu>
-                                <a-menu-item>
+                            <j-menu>
+                                <j-menu-item>
                                     <PermissionButton
                                         :uhasPermission="`${permission}:bind`"
                                         :popConfirm="{
@@ -38,19 +38,19 @@
                                             type="DisconnectOutlined"
                                         />批量解绑
                                     </PermissionButton>
-                                </a-menu-item>
-                                <a-menu-item>
+                                </j-menu-item>
+                                <j-menu-item>
                                     <PermissionButton
                                         :uhasPermission="`${permission}:assert`"
-                                        @click="()=>table.clickEdit()"
+                                        @click="() => table.clickEdit()"
                                     >
                                         <AIcon type="EditOutlined" />批量编辑
                                     </PermissionButton>
-                                </a-menu-item>
-                            </a-menu>
+                                </j-menu-item>
+                            </j-menu>
                         </template>
-                    </a-dropdown>
-                </a-space>
+                    </j-dropdown>
+                </j-space>
             </template>
 
             <template #card="slotProps">
@@ -82,8 +82,8 @@
                         <h3 class="card-item-content-title">
                             {{ slotProps.name }}
                         </h3>
-                        <a-row>
-                            <a-col :span="12">
+                        <j-row>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">ID</div>
                                 <div
                                     style="cursor: pointer"
@@ -91,8 +91,8 @@
                                 >
                                     {{ slotProps.id }}
                                 </div>
-                            </a-col>
-                            <a-col :span="12">
+                            </j-col>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">
                                     资产权限
                                 </div>
@@ -107,8 +107,8 @@
                                         )
                                     }}
                                 </div>
-                            </a-col>
-                        </a-row>
+                            </j-col>
+                        </j-row>
                     </template>
                     <template #actions>
                         <PermissionButton
@@ -134,7 +134,8 @@
 
         <div class="dialogs">
             <AddDeviceOrProductDialog
-                ref="addDialogRef"
+                v-if="dialogs.addShow"
+                v-model:visible="dialogs.addShow"
                 :query-columns="query.columns"
                 :parent-id="props.parentId"
                 :all-permission="table.permissionList.value"
@@ -142,14 +143,18 @@
                 @confirm="table.addConfirm"
             />
             <EditPermissionDialog
-                ref="editDialogRef"
+                v-if="dialogs.editShow"
+                v-model:visible="dialogs.editShow"
+                :ids="dialogs.selectIds"
+                :permission-list="dialogs.permissList"
                 :parent-id="props.parentId"
                 :all-permission="table.permissionList.value"
                 asset-type="product"
                 @confirm="table.refresh"
             />
             <NextDialog
-                ref="nextDialogRef"
+                v-if="dialogs.nextShow"
+                v-model:visible="dialogs.nextShow"
                 @confirm="emits('openDeviceBind')"
             />
         </div>
@@ -171,7 +176,7 @@ import {
 } from '@/api/system/department';
 import { intersection } from 'lodash-es';
 
-import { dictType } from '../typing.d.ts';
+import type { dictType } from '../typing.d.ts';
 import { message } from 'ant-design-vue';
 
 const permission = 'system/Department';
@@ -256,7 +261,7 @@ const table = {
         const permissionList = table.permissionList.value;
         if (permissionList.length < 1 || values.length < 1) return '';
         const result = values.map(
-            (key) => permissionList.find((item) => item.id === key)?.name,
+            (key) => permissionList.find((item:any) => item.id === key)?.name,
         );
         return result.join(',');
     },
@@ -375,9 +380,7 @@ const table = {
         }
     },
     clickAdd: () => {
-        console.log(222)
-        console.log(addDialogRef.value)
-        addDialogRef.value && addDialogRef.value.openDialog();
+        dialogs.addShow = true;
     },
     clickEdit: (row?: any) => {
         const ids = row ? [row.id] : [...table._selectedRowKeys.value];
@@ -385,18 +388,19 @@ const table = {
         if (row || table.selectedRows.length === 1) {
             const permissionList =
                 row?.permission || table.selectedRows[0].permission;
-            return (
-                editDialogRef.value &&
-                editDialogRef.value.openDialog(ids, permissionList)
-            );
+            dialogs.selectIds = ids;
+            dialogs.permissList = permissionList;
+            dialogs.editShow = true;
+            return;
         } else if (table.selectedRows.length === 0) return;
         const permissionList = table.selectedRows.map(
             (item) => item.permission,
         );
-        const mixPermissionList = intersection(...permissionList);
+        const mixPermissionList = intersection(...permissionList) as string[];
 
-        editDialogRef.value &&
-            editDialogRef.value.openDialog(ids, mixPermissionList);
+        dialogs.selectIds = ids;
+        dialogs.permissList = mixPermissionList;
+        dialogs.editShow = true;
     },
     clickUnBind: (row?: any) => {
         const ids = row ? [row.id] : [...table._selectedRowKeys.value];
@@ -421,14 +425,19 @@ const table = {
     },
     addConfirm: () => {
         table.refresh();
-        nextDialogRef.value && nextDialogRef.value.openDialog();
+        dialogs.nextShow = true;
     },
 };
 
-const addDialogRef = ref();
-const editDialogRef = ref();
-const nextDialogRef = ref();
 table.init();
+
+const dialogs = reactive({
+    selectIds: [] as string[],
+    permissList: [] as string[],
+    addShow: false,
+    editShow: false,
+    nextShow: false,
+});
 </script>
 
 <style lang="less" scoped>
