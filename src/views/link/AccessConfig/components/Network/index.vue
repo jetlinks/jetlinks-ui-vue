@@ -1,8 +1,8 @@
 <template>
     <div>
-        <a-steps :current="stepCurrent">
-            <a-step v-for="item in steps" :key="item" :title="item" />
-        </a-steps>
+        <j-steps :current="stepCurrent">
+            <j-step v-for="item in steps" :key="item" :title="item" />
+        </j-steps>
         <div class="steps-content">
             <div class="steps-box" v-if="current === 0">
                 <div class="alert">
@@ -10,7 +10,7 @@
                     选择与设备通信的网络组件
                 </div>
                 <div class="search">
-                    <a-input-search
+                    <j-input-search
                         allowClear
                         placeholder="请输入"
                         style="width: 300px"
@@ -26,8 +26,8 @@
                     </PermissionButton>
                 </div>
                 <div class="card-item">
-                    <a-row :gutter="[24, 24]" v-if="networkList.length > 0">
-                        <a-col
+                    <j-row :gutter="[24, 24]" v-if="networkList.length > 0">
+                        <j-col
                             :span="8"
                             v-for="item in networkList"
                             :key="item.id"
@@ -44,7 +44,7 @@
                             >
                                 <template #other>
                                     <div class="other">
-                                        <a-tooltip placement="topLeft">
+                                        <j-tooltip placement="topLeft">
                                             <div
                                                 v-if="
                                                     (item.addresses || [])
@@ -57,7 +57,7 @@
                                                     :key="i.address"
                                                     class="item"
                                                 >
-                                                    <a-badge
+                                                    <j-badge
                                                         :color="getColor(i)"
                                                     />{{ i.address }}
                                                 </div>
@@ -69,7 +69,7 @@
                                                 :key="i.address"
                                                 class="item"
                                             >
-                                                <a-badge
+                                                <j-badge
                                                     :color="getColor(i)"
                                                     :text="i.address"
                                                 />
@@ -81,13 +81,13 @@
                                                     >...</span
                                                 >
                                             </div>
-                                        </a-tooltip>
+                                        </j-tooltip>
                                     </div>
                                 </template>
                             </access-card>
-                        </a-col>
-                    </a-row>
-                    <a-empty v-else description="暂无数据" />
+                        </j-col>
+                    </j-row>
+                    <j-empty v-else description="暂无数据" />
                 </div>
             </div>
             <div class="steps-box" v-else-if="current === 1">
@@ -96,7 +96,7 @@
                     使用选择的消息协议，对网络组件通信数据进行编解码、认证等操作
                 </div>
                 <div class="search">
-                    <a-input-search
+                    <j-input-search
                         allowClear
                         placeholder="请输入"
                         style="width: 300px"
@@ -112,8 +112,8 @@
                     </PermissionButton>
                 </div>
                 <div class="card-item">
-                    <a-row :gutter="[24, 24]" v-if="procotolList.length > 0">
-                        <a-col
+                    <j-row :gutter="[24, 24]" v-if="procotolList.length > 0">
+                        <j-col
                             :span="8"
                             v-for="item in procotolList"
                             :key="item?.id"
@@ -124,9 +124,9 @@
                                 :data="item"
                             >
                             </access-card>
-                        </a-col>
-                    </a-row>
-                    <a-empty v-else description="暂无数据" />
+                        </j-col>
+                    </j-row>
+                    <j-empty v-else description="暂无数据" />
                 </div>
             </div>
             <div class="steps-box" v-else>
@@ -136,41 +136,41 @@
                         clientHeight > 900 ? 750 : clientHeight * 0.7
                     }px`"
                 >
-                    <a-row :gutter="[24, 24]">
-                        <a-col :span="12">
+                    <j-row :gutter="[24, 24]">
+                        <j-col :span="12">
                             <title-component data="基本信息" />
                             <div>
-                                <a-form
+                                <j-form
                                     ref="formRef"
                                     :model="formData"
                                     layout="vertical"
                                 >
-                                    <a-form-item
+                                    <j-form-item
                                         label="名称"
                                         v-bind="validateInfos.name"
                                     >
-                                        <a-input
+                                        <j-input
                                             v-model:value="formData.name"
                                             allowClear
                                             placeholder="请输入名称"
                                         />
-                                    </a-form-item>
-                                    <a-form-item
+                                    </j-form-item>
+                                    <j-form-item
                                         label="说明"
                                         v-bind="validateInfos.description"
                                     >
-                                        <a-textarea
+                                        <j-textarea
                                             placeholder="请输入说明"
                                             :rows="4"
                                             v-model:value="formData.description"
                                             show-count
                                             :maxlength="200"
                                         />
-                                    </a-form-item>
-                                </a-form>
+                                    </j-form-item>
+                                </j-form>
                             </div>
-                        </a-col>
-                        <a-col :span="12">
+                        </j-col>
+                        <j-col :span="12">
                             <div class="config-right">
                                 <div class="config-right-item">
                                     <div class="config-right-item-title">
@@ -212,7 +212,7 @@
                                         v-for="i in getNetworkCurrentData()"
                                         :key="i.address"
                                     >
-                                        <a-badge
+                                        <j-badge
                                             :color="getColor(i)"
                                             :text="i.address"
                                         />
@@ -235,10 +235,10 @@
                                                 : 'URL信息'
                                         }}
                                     </div>
-                                    <a-table
+                                    <j-table
                                         :pagination="false"
                                         :rowKey="generateUUID()"
-                                        :data-source="config.routes || []"
+                                        :datj-source="config.routes || []"
                                         bordered
                                         :columns="
                                             config.id === 'MQTT'
@@ -261,23 +261,23 @@
                                                 }}</span>
                                             </template>
                                         </template>
-                                    </a-table>
+                                    </j-table>
                                 </div>
                             </div>
-                        </a-col>
-                    </a-row>
+                        </j-col>
+                    </j-row>
                 </div>
             </div>
         </div>
         <div class="steps-action">
-            <a-button
+            <j-button
                 v-if="[0, 1].includes(current)"
                 type="primary"
                 style="margin-right: 8px"
                 @click="next"
             >
                 下一步
-            </a-button>
+            </j-button>
             <PermissionButton
                 v-if="current === 2 && view === 'false'"
                 type="primary"
@@ -289,12 +289,12 @@
             >
                 保存
             </PermissionButton>
-            <a-button
+            <j-button
                 v-if="type === 'child-device' ? current > 1 : current > 0"
                 @click="prev"
             >
                 上一步
-            </a-button>
+            </j-button>
         </div>
     </div>
 </template>

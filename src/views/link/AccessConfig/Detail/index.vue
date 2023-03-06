@@ -1,7 +1,7 @@
 <template>
     <page-container>
-        <a-spin :spinning="loading">
-            <a-card :bordered="false">
+        <j-spin :spinning="loading">
+            <j-card :bordered="false">
                 <div v-if="type && id === ':id'">
                     <Provider
                         @onClick="goProviders"
@@ -38,8 +38,8 @@
                         :data="data"
                     />
                 </div>
-            </a-card>
-        </a-spin>
+            </j-card>
+        </j-spin>
     </page-container>
 </template>
 

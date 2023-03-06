@@ -1,13 +1,13 @@
 <template>
-    <a-spin :spinning="loading">
+    <j-spin :spinning="loading">
         <div>
-            <a-textarea
+            <j-textarea
                 :rows="4"
                 @change="textChange"
                 v-model:value="keystoreBase64"
                 :placeholder="placeholder"
             />
-            <a-upload
+            <j-upload
                 accept=".pem"
                 listType="text"
                 :action="NETWORK_CERTIFICATE_UPLOAD"
@@ -17,13 +17,13 @@
                 :showUploadList="false"
                 @change="handleChange"
             >
-                <a-button style="margin-top: 10px">
+                <j-button style="margin-top: 10px">
                     <upload-outlined />
-                    上传文件</a-button
+                    上传文件</j-button
                 >
-            </a-upload>
+            </j-upload>
         </div>
-    </a-spin>
+    </j-spin>
 </template>
 
 <script setup lang="ts" name="CertificateFile">

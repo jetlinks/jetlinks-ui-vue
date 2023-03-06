@@ -3,7 +3,7 @@
         <div>
             <Search :columns="columns" target="search" @search="handleSearch" />
 
-            <JTable
+            <j-pro-table
                 ref="tableRef"
                 model="CARD"
                 :columns="columns"
@@ -56,8 +56,8 @@
                                 >
                                     {{ slotProps.name }}
                                 </h3>
-                                <a-row class="card-item-content-box">
-                                    <a-col
+                                <j-row class="card-item-content-box">
+                                    <j-col
                                         :span="8"
                                         class="card-item-content-text"
                                     >
@@ -65,20 +65,20 @@
                                             服务商
                                         </div>
                                         <div class="card-item-content-text">
-                                            <a-tooltip>
+                                            <j-tooltip>
                                                 <template #title>{{
                                                     slotProps.provider
                                                 }}</template>
                                                 {{ slotProps.provider }}
-                                            </a-tooltip>
+                                            </j-tooltip>
                                         </div>
-                                    </a-col>
-                                    <a-col :span="8">
+                                    </j-col>
+                                    <j-col :span="8">
                                         <div class="card-item-content-text">
                                             RTP IP
                                         </div>
                                         <div class="card-item-content-text">
-                                            <a-tooltip>
+                                            <j-tooltip>
                                                 <template #title>{{
                                                     slotProps.configuration
                                                         ?.rtpIp
@@ -87,15 +87,15 @@
                                                     slotProps.configuration
                                                         ?.rtpIp
                                                 }}
-                                            </a-tooltip>
+                                            </j-tooltip>
                                         </div>
-                                    </a-col>
-                                    <a-col :span="8">
+                                    </j-col>
+                                    <j-col :span="8">
                                         <div class="card-item-content-text">
                                             API HOST
                                         </div>
                                         <div class="card-item-content-text">
-                                            <a-tooltip>
+                                            <j-tooltip>
                                                 <template #title>{{
                                                     slotProps.configuration
                                                         ?.apiHost
@@ -104,10 +104,10 @@
                                                     slotProps.configuration
                                                         ?.apiHost
                                                 }}
-                                            </a-tooltip>
+                                            </j-tooltip>
                                         </div>
-                                    </a-col>
-                                </a-row>
+                                    </j-col>
+                                </j-row>
                             </div>
                         </template>
                         <template #actions="item">
@@ -132,7 +132,7 @@
                         </template>
                     </CardBox>
                 </template>
-            </JTable>
+            </j-pro-table>
         </div>
     </page-container>
 </template>

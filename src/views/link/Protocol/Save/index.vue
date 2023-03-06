@@ -1,24 +1,24 @@
 <template lang="">
-    <a-modal
+    <j-modal
         :title="data.id ? '编辑' : '新增'"
         :visible="true"
         width="700px"
         @cancel="handleCancel"
     >
-        <a-form
+        <j-form
             class="form"
             layout="vertical"
             :model="formData"
             name="basic"
             autocomplete="off"
         >
-            <a-form-item label="名称" v-bind="validateInfos.name">
-                <a-input
+            <j-form-item label="名称" v-bind="validateInfos.name">
+                <j-input
                     placeholder="请输入名称"
                     v-model:value="formData.name"
                 />
-            </a-form-item>
-            <a-form-item label="类型" v-bind="validateInfos.type">
+            </j-form-item>
+            <j-form-item label="类型" v-bind="validateInfos.type">
                 <RadioCard
                     :disabled="!!id"
                     layout="horizontal"
@@ -26,12 +26,12 @@
                     :options="options"
                     v-model="formData.type"
                 />
-            </a-form-item>
-            <a-form-item
+            </j-form-item>
+            <j-form-item
                 label="文件地址"
                 v-bind="validateInfos['configuration.location']"
             >
-                <a-input
+                <j-input
                     v-if="formData.type === 'local'"
                     placeholder="请输入文件地址"
                     v-model:value="formData.configuration.location"
@@ -40,19 +40,19 @@
                     v-else
                     v-model:modelValue="formData.configuration.location"
                 />
-            </a-form-item>
-            <a-form-item label="说明" v-bind="validateInfos.description">
-                <a-textarea
+            </j-form-item>
+            <j-form-item label="说明" v-bind="validateInfos.description">
+                <j-textarea
                     placeholder="请输入说明"
                     v-model:value="formData.description"
                     :maxlength="200"
                     :rows="3"
                     showCount
                 />
-            </a-form-item>
-        </a-form>
+            </j-form-item>
+        </j-form>
         <template #footer>
-            <a-button key="back" @click="handleCancel">取消</a-button>
+            <j-button key="back" @click="handleCancel">取消</j-button>
             <PermissionButton
                 key="submit"
                 type="primary"
@@ -64,7 +64,7 @@
                 确认
             </PermissionButton>
         </template>
-    </a-modal>
+    </j-modal>
 </template>
 <script lang="ts" setup>
 import { message, Form } from 'ant-design-vue';

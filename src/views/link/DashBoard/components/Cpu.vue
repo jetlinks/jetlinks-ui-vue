@@ -1,9 +1,9 @@
 <template>
-    <a-spin :spinning="loading">
+    <j-spin :spinning="loading">
         <div class="dash-board">
             <div class="header">
                 <h3>CPU使用率趋势</h3>
-                <a-range-picker
+                <j-range-picker
                     @change="pickerTimeChange"
                     :allowClear="false"
                     :show-time="{ format: 'HH:mm:ss' }"
@@ -14,28 +14,28 @@
                         ><AIcon type="CalendarOutlined"
                     /></template>
                     <template #renderExtraFooter>
-                        <a-radio-group
+                        <j-radio-group
                             default-value="a"
                             button-style="solid"
                             style="margin-right: 10px"
                             v-model:value="data.type"
                         >
-                            <a-radio-button value="hour">
+                            <j-radio-button value="hour">
                                 最近1小时
-                            </a-radio-button>
-                            <a-radio-button value="today">
+                            </j-radio-button>
+                            <j-radio-button value="today">
                                 今日
-                            </a-radio-button>
-                            <a-radio-button value="week">
+                            </j-radio-button>
+                            <j-radio-button value="week">
                                 近一周
-                            </a-radio-button>
-                        </a-radio-group></template
+                            </j-radio-button>
+                        </j-radio-group></template
                     >
-                </a-range-picker>
+                </j-range-picker>
             </div>
             <div ref="chartRef" style="width: 100%; height: 300px"></div>
         </div>
-    </a-spin>
+    </j-spin>
 </template>
 m
 <script lang="ts" setup name="Cpu">

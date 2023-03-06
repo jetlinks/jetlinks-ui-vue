@@ -1,7 +1,7 @@
 <template>
     <page-container>
         <Search :columns="columns" target="search" @search="handleSearch" />
-        <JTable
+        <j-pro-table
             ref="tableRef"
             model="TABLE"
             :columns="columns"
@@ -29,37 +29,25 @@
                 <span>{{ slotProps.progress }}%</span>
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
-                    <a-tooltip
-                        v-for="i in getActions(slotProps)"
-                        :key="i.key"
-                        v-bind="i.tooltip"
-                    >
-                        <a-popconfirm v-if="i.popConfirm" v-bind="i.popConfirm">
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-popconfirm>
-                        <a-button
-                            style="padding: 0"
+                <j-space>
+                    <template v-for="i in getActions(slotProps)" :key="i.key">
+                        <PermissionButton
+                            :disabled="i.disabled"
+                            :popConfirm="i.popConfirm"
+                            :tooltip="{
+                                ...i.tooltip,
+                            }"
+                            style="padding: 0px"
+                            @click="i.onClick"
                             type="link"
-                            v-else
-                            @click="i.onClick && i.onClick(slotProps)"
+                            :hasPermission="'device/Firmware:' + i.key"
                         >
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-button>
-                    </a-tooltip>
-                </a-space>
+                            <template #icon><AIcon :type="i.icon" /></template>
+                        </PermissionButton>
+                    </template>
+                </j-space>
             </template>
-        </JTable>
+        </j-pro-table>
         <Save v-if="visible" :data="current" @change="saveChange" />
     </page-container>
 </template>
@@ -159,7 +147,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
 
     const Actions = [
         {
-            key: 'details',
+            key: 'view',
             text: '详情',
             tooltip: {
                 title: '详情',
@@ -170,7 +158,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
         },
         {
-            key: 'eye',
+            key: 'view',
             text: '查看',
             tooltip: {
                 title: '查看',
@@ -184,7 +172,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
 
     if (stop) {
         Actions.push({
-            key: 'actions',
+            key: 'update',
             text: '停止',
             tooltip: {
                 title: '停止',
@@ -200,7 +188,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
         });
     } else if (pause) {
         Actions.push({
-            key: 'actions',
+            key: 'update',
             text: '继续升级',
             tooltip: {
                 title: '继续升级',

@@ -1,12 +1,12 @@
 <template>
-    <a-spin :spinning="loading">
-        <a-input
+    <j-spin :spinning="loading">
+        <j-input
             placeholder="请上传文件"
             v-model:value="value"
             style="width: calc(100% - 100px)"
             :disabled="true"
         />
-        <a-upload
+        <j-upload
             name="file"
             accept=".jar, .zip"
             :multiple="true"
@@ -19,9 +19,9 @@
             class="upload-box"
             :before-upload="beforeUpload"
         >
-            <a-button type="primary">上传jar包</a-button>
-        </a-upload>
-    </a-spin>
+            <j-button type="primary">上传jar包</j-button>
+        </j-upload>
+    </j-spin>
 </template>
 
 <script setup lang="ts" name="FileUpload">
@@ -46,7 +46,7 @@ const loading = ref(false);
 
 const beforeUpload: UploadProps['beforeUpload'] = (file) => {
     const arr = file.name.split('.');
-    const isFile = ['jar', 'zip'].includes(arr[arr.length - 1]); // file.type === 'application/zip' || file.type === 'application/java-archive'
+    const isFile = ['jar', 'zip'].includes(arr[arr.length - 1]); // file.type === 'application/zip' || file.type === 'application/javj-archive'
     if (!isFile) {
         message.error('请上传.zip.jar格式的文件');
         loading.value = false;

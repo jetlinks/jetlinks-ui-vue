@@ -3,7 +3,7 @@
         <div>
             <Search :columns="columns" target="search" @search="handleSearch" />
 
-            <JTable
+            <j-pro-table
                 ref="tableRef"
                 :columns="columns"
                 :request="list"
@@ -36,7 +36,7 @@
                         </template>
                         <template #content>
                             <div class="card-item-content">
-                                <a-tooltip>
+                                <j-tooltip>
                                     <template #title>
                                         {{ slotProps.name }}
                                     </template>
@@ -45,9 +45,9 @@
                                     >
                                         {{ slotProps.name }}
                                     </h3>
-                                </a-tooltip>
-                                <a-row class="card-item-content-box">
-                                    <a-col
+                                </j-tooltip>
+                                <j-row class="card-item-content-box">
+                                    <j-col
                                         :span="12"
                                         class="card-item-content-text"
                                     >
@@ -55,28 +55,28 @@
                                             ID
                                         </div>
                                         <div class="card-item-content-text">
-                                            <a-tooltip>
+                                            <j-tooltip>
                                                 <template #title>{{
                                                     slotProps.id
                                                 }}</template>
                                                 {{ slotProps.id }}
-                                            </a-tooltip>
+                                            </j-tooltip>
                                         </div>
-                                    </a-col>
-                                    <a-col :span="12">
+                                    </j-col>
+                                    <j-col :span="12">
                                         <div class="card-item-content-text">
                                             类型
                                         </div>
                                         <div class="card-item-content-text">
-                                            <a-tooltip>
+                                            <j-tooltip>
                                                 <template #title>{{
                                                     slotProps.type
                                                 }}</template>
                                                 {{ slotProps.type }}
-                                            </a-tooltip>
+                                            </j-tooltip>
                                         </div>
-                                    </a-col>
-                                </a-row>
+                                    </j-col>
+                                </j-row>
                             </div>
                         </template>
                         <template #actions="item">
@@ -102,7 +102,7 @@
                     </CardBox>
                 </template>
                 <template #action="slotProps">
-                    <a-space>
+                    <j-space>
                         <template
                             v-for="i in getActions(slotProps, 'table')"
                             :key="i.key"
@@ -123,9 +123,9 @@
                                 /></template>
                             </PermissionButton>
                         </template>
-                    </a-space>
+                    </j-space>
                 </template>
-            </JTable>
+            </j-pro-table>
         </div>
         <Save v-if="visible" :data="current" @change="saveChange" />
     </page-container>

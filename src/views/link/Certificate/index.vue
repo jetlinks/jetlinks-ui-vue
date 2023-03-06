@@ -2,7 +2,7 @@
     <page-container>
         <div>
             <Search :columns="columns" target="search" @search="handleSearch" />
-            <JTable
+            <j-pro-table
                 ref="tableRef"
                 model="TABLE"
                 :columns="columns"
@@ -26,7 +26,7 @@
                     <span>{{ slotProps.type.text }}</span>
                 </template>
                 <template #action="slotProps">
-                    <a-space>
+                    <j-space>
                         <template
                             v-for="i in getActions(slotProps)"
                             :key="i.key"
@@ -47,9 +47,9 @@
                                 /></template>
                             </PermissionButton>
                         </template>
-                    </a-space>
+                    </j-space>
                 </template>
-            </JTable>
+            </j-pro-table>
         </div>
     </page-container>
 </template>

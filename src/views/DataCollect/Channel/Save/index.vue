@@ -1,11 +1,11 @@
 <template lang="">
-    <a-modal
+    <j-modal
         :title="data.id ? '编辑' : '新增'"
         :visible="true"
         width="700px"
         @cancel="handleCancel"
     >
-        <a-form
+        <j-form
             class="form"
             layout="vertical"
             :model="formData"
@@ -14,14 +14,14 @@
             :rules="FormValidate"
             ref="formRef"
         >
-            <a-form-item label="通道名称" name="name">
-                <a-input
+            <j-form-item label="通道名称" name="name">
+                <j-input
                     placeholder="请输入通道名称"
                     v-model:value="formData.name"
                 />
-            </a-form-item>
-            <a-form-item label="通讯协议" name="provider">
-                <a-select
+            </j-form-item>
+            <j-form-item label="通讯协议" name="provider">
+                <j-select
                     style="width: 100%"
                     v-model:value="formData.provider"
                     :options="providersList"
@@ -31,8 +31,8 @@
                     :filter-option="filterOption"
                     :disabled="!!id"
                 />
-            </a-form-item>
-            <a-form-item
+            </j-form-item>
+            <j-form-item
                 v-if="formData.provider === 'MODBUS_TCP'"
                 :name="['configuration', 'host']"
                 :rules="FormValidate.host"
@@ -40,50 +40,50 @@
                 <div class="form-label">
                     Modbus主机IP
                     <span class="form-label-required">*</span>
-                    <a-tooltip>
+                    <j-tooltip>
                         <template #title>
                             <p>支持ipv4、ipv6、域名</p>
                         </template>
                         <AIcon type="QuestionCircleOutlined" />
-                    </a-tooltip>
+                    </j-tooltip>
                 </div>
-                <a-input
+                <j-input
                     placeholder="请输入Modbus主机IP"
                     v-model:value="formData.configuration.host"
                 />
-            </a-form-item>
-            <a-form-item
+            </j-form-item>
+            <j-form-item
                 v-if="formData.provider === 'MODBUS_TCP'"
                 label="端口"
                 :name="['configuration', 'port']"
                 :rules="FormValidate.port"
             >
-                <a-input-number
+                <j-input-number
                     style="width: 100%"
                     placeholder="请输入端口"
                     v-model:value="formData.configuration.port"
                     :min="1"
                     :max="65535"
                 />
-            </a-form-item>
-            <a-form-item
+            </j-form-item>
+            <j-form-item
                 v-if="formData.provider === 'OPC_UA'"
                 label="端点url"
                 :name="['configuration', 'endpoint']"
                 :rules="FormValidate.endpoint"
             >
-                <a-input
+                <j-input
                     placeholder="请输入端点url"
                     v-model:value="formData.configuration.endpoint"
                 />
-            </a-form-item>
-            <a-form-item
+            </j-form-item>
+            <j-form-item
                 v-if="formData.provider === 'OPC_UA'"
                 label="安全策略"
                 :name="['configuration.securityPolicy']"
                 :rules="FormValidate.securityPolicy"
             >
-                <a-select
+                <j-select
                     style="width: 100%"
                     v-model:value="formData.configuration.securityPolicy"
                     :options="Options['security-policies']"
@@ -92,14 +92,14 @@
                     show-search
                     :filter-option="filterOption"
                 />
-            </a-form-item>
-            <a-form-item
+            </j-form-item>
+            <j-form-item
                 v-if="formData.provider === 'OPC_UA'"
                 label="安全模式"
                 :name="['configuration.securityMode']"
                 :rules="FormValidate.securityMode"
             >
-                <a-select
+                <j-select
                     style="width: 100%"
                     v-model:value="formData.configuration.securityMode"
                     :options="Options['security-modes']"
@@ -108,8 +108,8 @@
                     show-search
                     :filter-option="filterOption"
                 />
-            </a-form-item>
-            <a-form-item
+            </j-form-item>
+            <j-form-item
                 v-if="
                     formData.configuration.securityMode === 'SignAndEncrypt' ||
                     formData.configuration.securityMode === 'Sign'
@@ -118,7 +118,7 @@
                 :name="['configuration.certificate']"
                 :rules="FormValidate.certificate"
             >
-                <a-select
+                <j-select
                     style="width: 100%"
                     v-model:value="formData.configuration.certificate"
                     :options="certificateList"
@@ -127,8 +127,8 @@
                     show-search
                     :filter-option="filterOption"
                 />
-            </a-form-item>
-            <a-form-item
+            </j-form-item>
+            <j-form-item
                 v-if="formData.provider === 'OPC_UA'"
                 label="权限认证"
                 :name="['configuration.authType']"
@@ -140,41 +140,41 @@
                     :options="Options['auth-types']"
                     v-model="formData.configuration.authType"
                 />
-            </a-form-item>
-            <a-form-item
+            </j-form-item>
+            <j-form-item
                 v-if="formData.configuration.authType === 'username'"
                 label="用户名"
                 :name="['configuration.username']"
                 :rules="FormValidate.username"
             >
-                <a-input
+                <j-input
                     placeholder="请输入用户名"
                     v-model:value="formData.configuration.username"
                 />
-            </a-form-item>
-            <a-form-item
+            </j-form-item>
+            <j-form-item
                 v-if="formData.configuration.authType === 'username'"
                 label="密码"
                 :name="['configuration.password']"
                 :rules="FormValidate.password"
             >
-                <a-input-password
+                <j-input-password
                     placeholder="请输入密码"
                     v-model:value="formData.configuration.password"
                 />
-            </a-form-item>
-            <a-form-item label="说明" name="description">
-                <a-textarea
+            </j-form-item>
+            <j-form-item label="说明" name="description">
+                <j-textarea
                     placeholder="请输入说明"
                     v-model:value="formData.description"
                     :maxlength="200"
                     :rows="3"
                     showCount
                 />
-            </a-form-item>
-        </a-form>
+            </j-form-item>
+        </j-form>
         <template #footer>
-            <a-button key="back" @click="handleCancel">取消</a-button>
+            <j-button key="back" @click="handleCancel">取消</j-button>
             <PermissionButton
                 key="submit"
                 type="primary"
@@ -186,7 +186,7 @@
                 确认
             </PermissionButton>
         </template>
-    </a-modal>
+    </j-modal>
 </template>
 <script lang="ts" setup>
 import {
