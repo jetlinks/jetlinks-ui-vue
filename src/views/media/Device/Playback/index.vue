@@ -162,6 +162,7 @@ import IconNode from './iconNode.vue';
 import type { recordsItemType } from './typings';
 import LivePlayer from '@/components/Player/index.vue';
 import { getImage } from '@/utils/comm';
+import dayjs from 'dayjs';
 
 const route = useRoute();
 
@@ -171,7 +172,7 @@ const historyList = ref<recordsItemType[]>([]);
 const time = ref<Moment | undefined>(undefined);
 const loading = ref(false);
 const cloudTime = ref<any>();
-const location = ref({ search: '' });
+// const location = ref();
 const player = ref<any>();
 const playStatus = ref(0); // 播放状态, 0 停止， 1 播放， 2 暂停, 3 播放完成
 const playTime = ref(0);
@@ -179,13 +180,14 @@ const playTime = ref(0);
 const playNowTime = ref(0); // 当前播放视频标识
 const playTimeNode = ref<any>(null);
 const isEnded = ref(false); // 是否结束播放
-const param = new URLSearchParams(location.value.search);
 const deviceId = computed(() => route.query.id as string);
 const channelId = computed(() => route.query.channelId as string);
 
 const deviceType = ref('');
 
 const queryLocalRecords = async (date: Moment) => {
+    console.log('date: ', date);
+
     playStatus.value = 0;
     url.value = '';
 
@@ -287,10 +289,9 @@ const downloadClick = async (item: recordsItemType) => {
 };
 
 watch(
-    () => location.value,
+    () => route.query,
     (val: any) => {
-        const _param = new URLSearchParams(val?.search);
-        const _type = _param.get('type');
+        const _type = val.type;
 
         if (_type) {
             deviceType.value = _type;
@@ -306,6 +307,27 @@ watch(
         }
     },
 );
+// onMounted(() => {
+//     const _type = route.query.type as string;
+//     if (_type) {
+//         // 
+//         const _timeStr = moment(new Date());
+//         console.log('_timeStr: ', _timeStr);
+//         const _timeStr1 = dayjs(new Date());
+//         console.log('_timeStr1: ', _timeStr1);
+//         // 
+//         // deviceType.value = _type;
+//         // const _timeStr = moment(new Date());
+//         // time.value = _timeStr;
+//         // if (_type === 'fixed-media') {
+//         //     type.value = 'cloud';
+//         //     queryServiceRecords(_timeStr);
+//         // } else {
+//         //     queryLocalRecords(_timeStr);
+//         //     type.value = 'local';
+//         // }
+//     }
+// });
 
 const handleTimeLineChange = (times: any) => {
     if (times) {
@@ -338,6 +360,8 @@ watch(
 );
 
 const handlePanelChange = (date: any) => {
+    console.log('type: ', typeof date);
+    console.log('date: ', date);
     time.value = date;
     if (type.value === 'cloud') {
         queryServiceRecords(date);
