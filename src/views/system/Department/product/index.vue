@@ -1,15 +1,15 @@
 <template>
     <div class="product-container">
-        <Search :columns="query.columns" @search="query.search" />
+        <j-advanced-search :columns="columns" @search="query.search" />
         <j-pro-table
             ref="tableRef"
             :request="table.requestFun"
             :gridColumn="2"
-            model="CARD"
             :params="query.params.value"
             :rowSelection="{
                 selectedRowKeys: table._selectedRowKeys.value,
             }"
+            :columns="columns"
             @cancelSelect="table.cancelSelect"
         >
             <template #headerTitle>
@@ -56,7 +56,7 @@
             <template #card="slotProps">
                 <CardBox
                     :value="slotProps"
-                    :actions="[{ key: 1 }]"
+                    :actions="table.getActions(slotProps, 'card')"
                     v-bind="slotProps"
                     :active="
                         table._selectedRowKeys.value.includes(slotProps.id)
@@ -110,8 +110,52 @@
                             </j-col>
                         </j-row>
                     </template>
-                    <template #actions>
-                        <PermissionButton
+                    <template #actions="item">
+                        <a-tooltip
+                            v-bind="item.tooltip"
+                            :title="item.disabled && item.tooltip.title"
+                        >
+                            <a-dropdown
+                                placement="bottomRight"
+                                v-if="item.key === 'others'"
+                            >
+                                <a-button>
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item.text }}</span>
+                                </a-button>
+                                <template #overlay>
+                                    <a-menu>
+                                        <a-menu-item
+                                            v-for="(o, i) in item.children"
+                                            :key="i"
+                                        >
+                                            <a-button
+                                                type="link"
+                                                @click="o.onClick"
+                                            >
+                                                <AIcon :type="o.icon" />
+                                                <span>{{ o.text }}</span>
+                                            </a-button>
+                                        </a-menu-item>
+                                    </a-menu>
+                                </template>
+                            </a-dropdown>
+                            <PermissionButton
+                                v-else
+                                :uhasPermission="item.permission"
+                                :tooltip="item.tooltip"
+                                :pop-confirm="item.popConfirm"
+                                @click="item.onClick"
+                                :disabled="item.disabled"
+                            >
+                                <AIcon :type="item.icon" />
+                                <span v-if="item.key !== 'delete'">{{
+                                    item.text
+                                }}</span>
+                            </PermissionButton>
+                        </a-tooltip>
+
+                        <!-- <PermissionButton
                             :uhasPermission="`${permission}:assert`"
                             @click="() => table.clickEdit(slotProps)"
                         >
@@ -126,9 +170,42 @@
                             }"
                         >
                             <AIcon type="DisconnectOutlined" />
-                        </PermissionButton>
+                        </PermissionButton> -->
                     </template>
                 </CardBox>
+            </template>
+
+            <template #permission="slotProps">
+                {{
+                    table.permissionList.value.length &&
+                    table.getPermissLabel(slotProps.permission)
+                }}
+            </template>
+            <template #state="slotProps">
+                <BadgeStatus
+                    :status="slotProps.state.value"
+                    :text="slotProps.state.text"
+                    :statusNames="{
+                        online: 'success',
+                        offline: 'error',
+                        notActive: 'warning',
+                    }"
+                ></BadgeStatus>
+            </template>
+            <template #action="slotProps">
+                <a-space :size="16">
+                    <PermissionButton
+                        v-for="i in table.getActions(slotProps, 'table')"
+                        :uhasPermission="i.permission"
+                        type="link"
+                        :tooltip="i?.tooltip"
+                        :pop-confirm="i.popConfirm"
+                        @click="i.onClick"
+                        :disabled="i?.disabled"
+                    >
+                        <AIcon :type="i.icon" />
+                    </PermissionButton>
+                </a-space>
             </template>
         </j-pro-table>
 
@@ -136,7 +213,7 @@
             <AddDeviceOrProductDialog
                 v-if="dialogs.addShow"
                 v-model:visible="dialogs.addShow"
-                :query-columns="query.columns"
+                :query-columns="columns"
                 :parent-id="props.parentId"
                 :all-permission="table.permissionList.value"
                 asset-type="product"
@@ -185,49 +262,70 @@ const emits = defineEmits(['openDeviceBind']);
 const props = defineProps<{
     parentId: string;
 }>();
+
+const columns = [
+    {
+        title: 'ID',
+        dataIndex: 'id',
+        key: 'id',
+        ellipsis: true,
+        fixed: 'left',
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '名称',
+        dataIndex: 'name',
+        key: 'name',
+        ellipsis: true,
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '资产权限',
+        dataIndex: 'permission',
+        key: 'permission',
+        ellipsis: true,
+        scopedSlots: true,
+    },
+    {
+        title: '说明',
+        dataIndex: 'describe',
+        key: 'describe',
+        ellipsis: true,
+    },
+    {
+        title: '状态',
+        dataIndex: 'state',
+        key: 'state',
+        ellipsis: true,
+        search: {
+            type: 'select',
+            options: [
+                {
+                    label: '正常',
+                    value: 1,
+                },
+                {
+                    label: '禁用',
+                    value: 0,
+                },
+            ],
+        },
+        scopedSlots: true,
+    },
+
+    {
+        title: '操作',
+        dataIndex: 'action',
+        key: 'action',
+        fixed: 'right',
+        scopedSlots: true,
+    },
+];
 const query = {
-    columns: [
-        {
-            title: 'ID',
-            dataIndex: 'id',
-            key: 'id',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-            },
-        },
-        {
-            title: '名称',
-            dataIndex: 'name',
-            key: 'name',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-            },
-        },
-        {
-            title: '状态',
-            dataIndex: 'state',
-            key: 'state',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'select',
-                options: [
-                    {
-                        label: '正常',
-                        value: 1,
-                    },
-                    {
-                        label: '禁用',
-                        value: 0,
-                    },
-                ],
-            },
-        },
-    ],
     params: ref({}),
     search: (params: any) => {
         query.params.value = params;
@@ -250,6 +348,33 @@ const table = {
         );
     },
 
+    getActions: (
+        data: Partial<Record<string, any>>,
+        type: 'card' | 'table',
+    ) => {
+        if (!data) return [];
+        else
+            return [
+                {
+                    permission: true,
+                    key: 'edit',
+                    tooltip: { title: '编辑' },
+                    icon: 'EditOutlined',
+                    onClick: () => table.clickEdit(data),
+                },
+                {
+                    permission: true,
+                    key: 'unbind',
+                    tooltip: { title: '解除绑定' },
+                    popConfirm: {
+                        title: `是否解除绑定`,
+                        onConfirm: () => table.clickUnBind(data),
+                    },
+                    icon: 'DisconnectOutlined',
+                },
+            ];
+    },
+
     // 获取权限数据字典
     getPermissionDict: () => {
         getPermissionDict_api().then((resp: any) => {
@@ -261,7 +386,7 @@ const table = {
         const permissionList = table.permissionList.value;
         if (permissionList.length < 1 || values.length < 1) return '';
         const result = values.map(
-            (key) => permissionList.find((item:any) => item.id === key)?.name,
+            (key) => permissionList.find((item: any) => item.id === key)?.name,
         );
         return result.join(',');
     },
@@ -442,6 +567,15 @@ const dialogs = reactive({
 
 <style lang="less" scoped>
 .product-container {
+    :deep(.ant-table-tbody) {
+        .ant-table-cell {
+            .ant-space-item {
+                .ant-btn-link {
+                    padding: 0;
+                }
+            }
+        }
+    }
     .card {
         .card-warp {
             &.active {
