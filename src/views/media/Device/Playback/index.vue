@@ -35,12 +35,12 @@
                             {
                                 label: '云端',
                                 value: 'cloud',
-                                imgUrl: getImage('/media/cloud.png'),
+                                logo: getImage('/media/cloud.png'),
                             },
                             {
                                 label: '本地',
                                 value: 'local',
-                                imgUrl: getImage('/local.png'),
+                                logo: getImage('/local.png'),
                                 disabled: deviceType === 'fixed-media',
                             },
                         ]"
@@ -55,15 +55,19 @@
                                 (currentDate) =>
                                     currentDate > moment(new Date())
                             "
-                            @panelChange="handlePanelChange"
+                            @change="handlePanelChange"
                         />
                     </div>
                     <div
                         class="playback-list"
                         :class="{ 'no-list': !historyList.length }"
                     >
-                        <a-empty v-if="!historyList.length" />
+                        <a-empty
+                            v-if="!historyList.length"
+                            description="暂无数据"
+                        />
                         <a-list
+                            v-else
                             class="playback-list-items"
                             itemLayout="horizontal"
                             :dataSource="historyList"
@@ -82,7 +86,14 @@
                                                     : '播放'
                                             "
                                         >
-                                            <a @click="handlePlay">
+                                            <a
+                                                @click="
+                                                    handlePlay(
+                                                        item.startTime ||
+                                                            item.mediaStartTime,
+                                                    )
+                                                "
+                                            >
                                                 <AIcon
                                                     :type="
                                                         (item.startTime ||
@@ -169,14 +180,15 @@ const playNowTime = ref(0); // 当前播放视频标识
 const playTimeNode = ref<any>(null);
 const isEnded = ref(false); // 是否结束播放
 const param = new URLSearchParams(location.value.search);
-const deviceId = computed(() => route.params.id as string);
-const channelId = computed(() => route.params.channelId as string);
+const deviceId = computed(() => route.query.id as string);
+const channelId = computed(() => route.query.channelId as string);
 
 const deviceType = ref('');
 
 const queryLocalRecords = async (date: Moment) => {
     playStatus.value = 0;
     url.value = '';
+
     if (deviceId.value && channelId.value && date) {
         loading.value = true;
         const params = {
@@ -326,7 +338,7 @@ watch(
 );
 
 const handlePanelChange = (date: any) => {
-    // time.value = date;
+    time.value = date;
     if (type.value === 'cloud') {
         queryServiceRecords(date);
     } else {
@@ -334,7 +346,7 @@ const handlePanelChange = (date: any) => {
     }
 };
 
-// 播放暂停
+// 播放/暂停
 const handlePlay = (_startTime: any) => {
     if (playStatus.value === 0 || _startTime !== playNowTime.value) {
         if (playTimeNode.value) {

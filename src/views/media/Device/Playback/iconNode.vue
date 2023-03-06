@@ -55,6 +55,9 @@ const downLoadCloud = (item: recordsItemType) => {
                 );
             }
             status.value = res.status === 200 ? 2 : 0;
+        })
+        .catch(() => {
+            status.value = 0;
         });
 };
 

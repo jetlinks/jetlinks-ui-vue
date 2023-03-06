@@ -25,11 +25,10 @@
             border: 1px solid @borderColor;
             border-radius: 2px;
 
-            .ant-picker-calendar-header {
+            :deep(.ant-picker-calendar-header) {
                 justify-content: space-between;
-
-                > div:nth-child(3) {
-                    display: none;
+                & > div:nth-child(3) {
+                    display: none !important;
                 }
             }
         }
