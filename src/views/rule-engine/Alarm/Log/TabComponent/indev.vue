@@ -28,7 +28,7 @@
             :columns="columns"
             :request="handleSearch"
             :params="params"
-            :gridColumns="[1,1,2]"
+            :gridColumns="[1, 1, 2]"
             :gridColumn="2"
             model="CARD"
         >
@@ -98,16 +98,23 @@
                                 </span>
                             </a-col>
                         </a-row>
-                        
                     </template>
                     <template #actions="item">
                         <PermissionButton
-                            :disabled="item.key === 'solve' && slotProps.state.value ==='normal'"
+                            :disabled="
+                                item.key === 'solve' &&
+                                slotProps.state.value === 'normal'
+                            "
                             :popConfirm="item.popConfirm"
                             :tooltip="{
                                 ...item.tooltip,
                             }"
                             @click="item.onClick"
+                            :hasPermission="
+                                item.key == 'solve'
+                                    ? 'rule-engine/Alarm/Log:action'
+                                    : 'rule-engine/Alarm/Log:view'
+                            "
                         >
                             <AIcon :type="item.icon" />
                             <span>{{ item?.text }}</span>
@@ -116,8 +123,16 @@
                 </CardBox>
             </template>
         </JProTable>
-        <SolveComponent :data="data" v-if="data.solveVisible" @closeSolve="closeSolve"/>
-        <SolveLog :data="data.current" v-if="data.logVisible" @closeLog="closeLog"/>
+        <SolveComponent
+            :data="data"
+            v-if="data.solveVisible"
+            @closeSolve="closeSolve"
+        />
+        <SolveLog
+            :data="data.current"
+            v-if="data.logVisible"
+            @closeLog="closeLog"
+        />
     </div>
 </template>
 
@@ -139,6 +154,7 @@ import type { ActionsType } from '@/components/Table';
 import SolveComponent from '../SolveComponent/index.vue';
 import SolveLog from '../SolveLog/index.vue'
 import { useMenuStore } from '@/store/menu';
+import { usePermissionStore } from '@/store/permission';
 const menuStory = useMenuStore();
 
 const alarmStore = useAlarmStore();
@@ -368,6 +384,13 @@ const getActions = (
             onClick: () =>{
                 data.value.current = currentData;
                 data.value.solveVisible = true;
+            },
+            popConfirm:{
+                title:  !usePermissionStore().hasPermission('rule-engine/Alarm/Log:action')
+          ? '暂无权限，请联系管理员'
+          : data.state?.value === 'normal'
+          ? '无告警'
+          : ''
             }
         },
         {

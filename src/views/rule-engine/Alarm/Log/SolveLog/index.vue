@@ -13,7 +13,7 @@
             target="bind-channel"
             @search="handleSearch"
         ></Search>
-        <JTable
+        <JProTable
             model="TABLE"
             :columns="columns"
             :defaultParams="{
@@ -47,7 +47,7 @@
                     }}
                 </span>
             </template>
-        </JTable>
+        </JProTable>
     </a-modal>
 </template>
 

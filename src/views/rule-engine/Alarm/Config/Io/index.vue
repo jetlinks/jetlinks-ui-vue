@@ -21,15 +21,16 @@
                                         "
                                     />
                                 </a-tooltip>
-                                <div
-                                    style="
-                                        margin: 0 0px 0 4px;
-                                        color: #1d39c4;
-                                        cursor: pointer;
-                                    "
+
+                                <PermissionButton
+                                    type="link"
+                                    @click="showOutput"
+                                    hasPermission="device/Instance:update"
                                 >
-                                    <edit-outlined  @click="showOutput"/>
-                                </div>
+                                    <template #icon
+                                        ><AIcon type="EditOutlined"
+                                    /></template>
+                                </PermissionButton>
                             </div>
                         </template>
                         <a-descriptions
@@ -82,15 +83,14 @@
                                         "
                                     />
                                 </a-tooltip>
-                                <div
-                                    style="
-                                        margin: 0 0px 0 4px;
-                                        color: #1d39c4;
-                                        cursor: pointer;
-                                    "
+                                <PermissionButton
+                                    type="link"
+                                    @click="showInput"
+                                    hasPermission="device/Instance:update"
                                 >
-                                    <edit-outlined  @click="showInput"/>
-                                </div>
+                                    <template #icon
+                                        ><AIcon type="EditOutlined" /></template
+                                ></PermissionButton>
                             </div>
                         </template>
                         <a-descriptions
@@ -168,14 +168,24 @@
                 </div>
             </a-col>
         </a-row>
-        <InputSave :data="input" v-if="inputVisible" @closeModel="closeInput" @saveSuc="saveInput"/>
-        <OutputSave :data="output" v-if="outputVisible" @closeModel="closeOutput" @saveSuc="saveOutput"/>
+        <InputSave
+            :data="input"
+            v-if="inputVisible"
+            @closeModel="closeInput"
+            @saveSuc="saveInput"
+        />
+        <OutputSave
+            :data="output"
+            v-if="outputVisible"
+            @closeModel="closeOutput"
+            @saveSuc="saveOutput"
+        />
     </div>
 </template>
 
 <script lang="ts" setup>
-import InputSave from './Save/input.vue'
-import OutputSave from './save/output.vue'
+import InputSave from './Save/input.vue';
+import OutputSave from './save/output.vue';
 import {
     EditOutlined,
     DeleteOutlined,
@@ -439,24 +449,24 @@ handleInputSearch();
 handleOutputSearch();
 const showInput = () => {
     inputVisible.value = true;
-}
-const closeInput = () =>{
+};
+const closeInput = () => {
     inputVisible.value = false;
-}
-const saveInput = () =>{
+};
+const saveInput = () => {
     inputVisible.value = false;
     handleInputSearch();
-}
-const showOutput = () =>{
+};
+const showOutput = () => {
     outputVisible.value = true;
-}
-const closeOutput = () =>{
+};
+const closeOutput = () => {
     outputVisible.value = false;
-}
-const saveOutput = () =>{
+};
+const saveOutput = () => {
     outputVisible.value = false;
     handleOutputSearch();
-}
+};
 </script>
 <style lang="less" scoped>
 .alarmTitle {

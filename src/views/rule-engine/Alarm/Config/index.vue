@@ -35,12 +35,13 @@
                                 </div>
                             </div>
                         </a-card>
-                        <a-button
+                        <!-- <a-button
                             type="primary"
                             size="middle"
                             @click="handleSaveLevel"
                             >保存</a-button
-                        >
+                        > -->
+                        <PermissionButton type="primary" size="middle" @click="handleSaveLevel" hasPermission="rule-engine/Alarm/Config:update">保存</PermissionButton>
                     </div>
                 </a-col>
                 <a-col :span="10">
