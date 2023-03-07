@@ -1,18 +1,17 @@
 <template>
-    <a-modal
+    <j-modal
         class="edit-dialog-container"
-        :title="dialog.title"
         width="1050px"
-        @ok="dialog.handleOk"
-        :confirmLoading="dialog.loading.value"
-        cancelText="取消"
-        okText="确定"
-        v-model:visible="dialog.visible.value"
+        visible
+        :title="dialogTitle"
+        :confirmLoading="loading"
+        @ok="confirm"
+        @cancel="emits('update:visible', false)"
     >
-        <a-form ref="formRef" :model="form.data" layout="vertical">
-            <a-row :gutter="24">
-                <a-col :span="12">
-                    <a-form-item
+        <j-form ref="formRef" :model="form.data" layout="vertical">
+            <j-row :gutter="24">
+                <j-col :span="12">
+                    <j-form-item
                         name="name"
                         label="名称"
                         :rules="[
@@ -20,72 +19,72 @@
                             { max: 64, message: '最多可输入64个字符' },
                         ]"
                     >
-                        <a-input
+                        <j-input
                             v-model:value="form.data.name"
                             placeholder="请输入名称"
                         />
-                    </a-form-item>
-                </a-col>
-                <a-col :span="12">
-                    <a-form-item
+                    </j-form-item>
+                </j-col>
+                <j-col :span="12">
+                    <j-form-item
                         name="typeId"
                         label="类型"
                         :rules="[{ required: true, message: '请选择类型' }]"
                     >
-                        <a-select
+                        <j-select
                             v-model:value="form.data.typeId"
                             :options="form.typeOptions"
                             placeholder="请选择类型"
                             :disabled="!!form.data.id"
                         />
-                    </a-form-item>
-                </a-col>
-            </a-row>
-            <a-row :gutter="24" v-if="form.data.typeId === 'rdb'">
-                <a-col :span="24">
-                    <a-form-item
+                    </j-form-item>
+                </j-col>
+            </j-row>
+            <j-row :gutter="24" v-if="form.data.typeId === 'rdb'">
+                <j-col :span="24">
+                    <j-form-item
                         :name="['shareConfig', 'url']"
                         label="URL"
                         :rules="[{ required: true, message: '请输入URL' }]"
                     >
-                        <a-input
+                        <j-input
                             v-model:value="form.data.shareConfig.url"
                             placeholder="请输入r2bdc或者jdbc连接地址，示例：r2dbc:mysql://127.0.0.1:3306/test"
                         />
-                    </a-form-item>
-                </a-col>
-            </a-row>
-            <a-row :gutter="24" v-if="form.data.typeId === 'rabbitmq'">
-                <a-col :span="24">
-                    <a-form-item
+                    </j-form-item>
+                </j-col>
+            </j-row>
+            <j-row :gutter="24" v-if="form.data.typeId === 'rabbitmq'">
+                <j-col :span="24">
+                    <j-form-item
                         :name="['shareConfig', 'adminUrl']"
                         label="管理地址"
                         :rules="[{ required: true, message: '请输入管理地址' }]"
                     >
-                        <a-input
+                        <j-input
                             v-model:value="form.data.shareConfig.adminUrl"
                             placeholder="请输入管理地址，示例：http://localhost:15672"
                         />
-                    </a-form-item>
-                </a-col>
-            </a-row>
-            <a-row :gutter="24" v-if="form.data.typeId === 'rabbitmq'">
-                <a-col :span="24">
-                    <a-form-item
+                    </j-form-item>
+                </j-col>
+            </j-row>
+            <j-row :gutter="24" v-if="form.data.typeId === 'rabbitmq'">
+                <j-col :span="24">
+                    <j-form-item
                         :name="['shareConfig', 'addresses']"
                         label="链接地址"
                         :rules="[{ required: true, message: '请输入链接地址' }]"
                     >
-                        <a-input
+                        <j-input
                             v-model:value="form.data.shareConfig.addresses"
                             placeholder="请输入链接地址，示例：localhost:5672"
                         />
-                    </a-form-item>
-                </a-col>
-            </a-row>
-            <a-row :gutter="24" v-show="form.data.typeId">
-                <a-col :span="12">
-                    <a-form-item
+                    </j-form-item>
+                </j-col>
+            </j-row>
+            <j-row :gutter="24" v-show="form.data.typeId">
+                <j-col :span="12">
+                    <j-form-item
                         :name="['shareConfig', 'username']"
                         label="用户名"
                         :rules="[
@@ -96,14 +95,14 @@
                             },
                         ]"
                     >
-                        <a-input
+                        <j-input
                             v-model:value="form.data.shareConfig.username"
                             placeholder="请输入用户名"
                         />
-                    </a-form-item>
-                </a-col>
-                <a-col :span="12">
-                    <a-form-item
+                    </j-form-item>
+                </j-col>
+                <j-col :span="12">
+                    <j-form-item
                         :name="['shareConfig', 'password']"
                         label="密码"
                         :rules="[
@@ -114,16 +113,16 @@
                             },
                         ]"
                     >
-                        <a-input-password
+                        <j-input-password
                             v-model:value="form.data.shareConfig.password"
                             placeholder="请输入密码"
                         />
-                    </a-form-item>
-                </a-col>
-            </a-row>
-            <a-row :gutter="24" v-if="form.data.typeId === 'rabbitmq'">
-                <a-col :span="24">
-                    <a-form-item
+                    </j-form-item>
+                </j-col>
+            </j-row>
+            <j-row :gutter="24" v-if="form.data.typeId === 'rabbitmq'">
+                <j-col :span="24">
+                    <j-form-item
                         :name="['shareConfig', 'virtualHost']"
                         label="虚拟域"
                         :rules="[
@@ -134,16 +133,16 @@
                             },
                         ]"
                     >
-                        <a-input
+                        <j-input
                             v-model:value="form.data.shareConfig.virtualHost"
                             placeholder="请输入虚拟域"
                         />
-                    </a-form-item>
-                </a-col>
-            </a-row>
-            <a-row :gutter="24" v-if="form.data.typeId === 'rdb'">
-                <a-col :span="24">
-                    <a-form-item
+                    </j-form-item>
+                </j-col>
+            </j-row>
+            <j-row :gutter="24" v-if="form.data.typeId === 'rdb'">
+                <j-col :span="24">
+                    <j-form-item
                         :name="['shareConfig', 'schema']"
                         label="schema"
                         :rules="[
@@ -154,28 +153,28 @@
                             },
                         ]"
                     >
-                        <a-input
+                        <j-input
                             v-model:value="form.data.shareConfig.schema"
                             placeholder="请输入schema"
                         />
-                    </a-form-item>
-                </a-col>
-            </a-row>
-            <a-row :gutter="24">
-                <a-col :span="24">
-                    <a-form-item name="description" label="说明">
-                        <a-textarea
+                    </j-form-item>
+                </j-col>
+            </j-row>
+            <j-row :gutter="24">
+                <j-col :span="24">
+                    <j-form-item name="description" label="说明">
+                        <j-textarea
                             v-model:value="form.data.description"
                             placeholder="请输入说明"
                             :rows="3"
                             showCount
                             :maxlength="200"
                         />
-                    </a-form-item>
-                </a-col>
-            </a-row>
-        </a-form>
-    </a-modal>
+                    </j-form-item>
+                </j-col>
+            </j-row>
+        </j-form>
+    </j-modal>
 </template>
 
 <script setup lang="ts">
@@ -186,38 +185,35 @@ import {
 import { FormInstance, message } from 'ant-design-vue';
 import type { dictItemType, optionItemType, sourceItemType } from '../typing';
 
-const emits = defineEmits(['confirm']);
-
+const emits = defineEmits(['confirm', 'update:visible']);
+const props = defineProps<{
+    visible: boolean;
+    data: sourceItemType;
+}>();
 // 弹窗相关
-const dialog = {
-    title: '',
-    loading: ref<boolean>(false),
-    visible: ref<boolean>(false),
-    handleOk: () => {
-        formRef.value?.validate().then(() => {
-            form.submit();
-        });
-    },
-    // 打开弹窗
-    openDialog: (row: sourceItemType) => {
-        if (row.id) dialog.title = '编辑数据源';
-        else dialog.title = '新增数据源';
-        form.data = { ...row };
-        nextTick(() => {
-            formRef.value?.clearValidate();
-            dialog.visible.value = true;
-        });
-    },
+const dialogTitle = computed(() =>
+    props.data.id ? '编辑数据源' : '新增数据源',
+);
+const loading = ref(false);
+const confirm = () => {
+    loading.value = true;
+    formRef.value
+        ?.validate()
+        .then(() => form.submit())
+        .then((resp: any) => {
+            if (resp.status === 200) {
+                message.success('操作成功');
+                emits('confirm');
+                emits('update:visible', false);
+            }
+        })
+        .finally(() => (loading.value = false));
 };
-// 将打开弹窗的操作暴露给父组件
-defineExpose({
-    openDialog: dialog.openDialog,
-});
 
 const formRef = ref<FormInstance>();
 const form = reactive({
     data: {
-        shareConfig: {},
+        ...props.data,
     } as sourceItemType,
 
     typeOptions: [] as optionItemType[],
@@ -232,14 +228,7 @@ const form = reactive({
         });
     },
     submit: () => {
-        dialog.loading.value = true;
-        saveDataSource_api(form.data)
-            .then(() => {
-                message.success('操作成功');
-                emits('confirm');
-                dialog.visible.value = false;
-            })
-            .finally(() => (dialog.loading.value = false));
+        return saveDataSource_api(form.data);
     },
 });
 form.getTypeOption();
