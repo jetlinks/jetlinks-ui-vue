@@ -256,7 +256,7 @@ const handleProgress = (event: any, item: any) => {
     }
 };
 
-defineExpose({ playByStartTime });
+defineExpose({ playByStartTime, onNextPlay });
 </script>
 
 <style lang="less" scoped>

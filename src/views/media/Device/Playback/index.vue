@@ -6,10 +6,40 @@
             <div class="playback-left">
                 <LivePlayer
                     ref="player"
-                    :src="url"
-                    width="758px"
-                    height="462px"
-                    type="mp4"
+                    autoplay
+                    :url="url"
+                    className="playback-media"
+                    :live="type === 'local'"
+                    :on-play="
+                        () => {
+                            isEnded = false;
+                            playStatus = 1;
+                        }
+                    "
+                    :on-pause="
+                        () => {
+                            playStatus = 2;
+                        }
+                    "
+                    :on-ended="
+                        () => {
+                            playStatus = 0;
+                            if (playTimeNode && isEnded) {
+                                isEnded = true;
+                                playTimeNode.onNextPlay();
+                            }
+                        }
+                    "
+                    :on-error="
+                        () => {
+                            playStatus = 0;
+                        }
+                    "
+                    :on-time-update="
+                        (e: any) => {
+                            playTime = e;
+                        }
+                    "
                 />
                 <TimeLine
                     ref="playTimeNode"
@@ -274,7 +304,7 @@ const cloudView = (startTime: number, endTime: number) => {
 
 /**
  * 下载到云端
- * @param item 
+ * @param item
  */
 const downloadClick = async (item: recordsItemType) => {
     const downloadUrl = playBackApi.downLoadFile(item.id);
@@ -341,7 +371,7 @@ watch(
 
 /**
  * 日历操作
- * @param date 
+ * @param date
  */
 const handlePanelChange = (date: any) => {
     time.value = date;
@@ -354,7 +384,7 @@ const handlePanelChange = (date: any) => {
 
 /**
  * 播放/暂停
- * @param _startTime 
+ * @param _startTime
  */
 const handlePlay = (_startTime: any) => {
     if (playStatus.value === 0 || _startTime !== playNowTime.value) {
