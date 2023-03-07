@@ -1,5 +1,5 @@
 <template>
-    <a-modal
+    <j-modal
         visible
         :title="props.mode"
         width="660px"
@@ -8,8 +8,8 @@
         :maskClosable="false"
         :confirmLoading="loading"
     >
-        <a-form :model="form.data" class="basic-form" ref="formRef">
-            <a-form-item
+        <j-form :model="form.data" class="basic-form" ref="formRef">
+            <j-form-item
                 label="编码"
                 name="id"
                 :rules="[
@@ -17,12 +17,12 @@
                     { max: 64, message: '最多可输入64个字符' },
                 ]"
             >
-                <a-input
+                <j-input
                     v-model:value="form.data.id"
                     :disabled="props.mode !== '新增'"
                 />
-            </a-form-item>
-            <a-form-item
+            </j-form-item>
+            <j-form-item
                 label="名称"
                 name="name"
                 :rules="[
@@ -30,12 +30,12 @@
                     { max: 64, message: '最多可输入64个字符' },
                 ]"
             >
-                <a-input
+                <j-input
                     v-model:value="form.data.name"
                     :disabled="props.mode === '查看'"
                 />
-            </a-form-item>
-            <a-form-item
+            </j-form-item>
+            <j-form-item
                 label="权限"
                 name="permissions"
                 :rules="[
@@ -53,17 +53,17 @@
                     :disabled="props.mode === '查看'"
                     :key="form.data.id || ''"
                 />
-            </a-form-item>
-            <a-form-item label="说明" name="describe">
-                <a-textarea
+            </j-form-item>
+            <j-form-item label="说明" name="describe">
+                <j-textarea
                     v-model:value="form.data.describe"
                     :rows="4"
                     placeholder="请输入说明"
                     :disabled="props.mode === '查看'"
                 />
-            </a-form-item>
-        </a-form>
-    </a-modal>
+            </j-form-item>
+        </j-form>
+    </j-modal>
 </template>
 
 <script setup lang="ts">

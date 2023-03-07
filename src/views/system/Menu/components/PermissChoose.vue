@@ -1,6 +1,6 @@
 <template>
     <div class="permission-choose-container">
-        <a-input
+        <j-input
             v-model:value="searchValue"
             style="width: 300px"
             allowClear
@@ -10,35 +10,35 @@
         />
 
         <div class="permission-table">
-            <a-row :gutter="24" class="table-head">
-                <a-col :span="props.firstWidth">权限名称</a-col
-                ><a-col :span="24 - props.firstWidth">权限操作</a-col>
-            </a-row>
+            <j-row :gutter="24" class="table-head">
+                <j-col :span="props.firstWidth">权限名称</j-col
+                ><j-col :span="24 - props.firstWidth">权限操作</j-col>
+            </j-row>
             <div class="table-body" :style="{ 'max-height': props.maxHeight }">
-                <a-row
+                <j-row
                     :gutter="24"
                     class="row"
                     v-for="rowItem in permission.list"
                 >
-                    <a-col :span="props.firstWidth" class="item-name">
-                        <a-checkbox
+                    <j-col :span="props.firstWidth" class="item-name">
+                        <j-checkbox
                             v-model:checked="rowItem.checkAll"
                             :indeterminate="rowItem.indeterminate"
                             @change="() => permission.selectAllOpions(rowItem)"
                             :disabled="props.disabled"
                         >
                             {{ rowItem.name }}
-                        </a-checkbox>
-                    </a-col>
-                    <a-col :span="24 - props.firstWidth">
-                        <a-checkbox-group
+                        </j-checkbox>
+                    </j-col>
+                    <j-col :span="24 - props.firstWidth">
+                        <j-checkbox-group
                             v-model:value="rowItem.checkedList"
                             :options="rowItem.options"
                             @change="((checkValue:string[])=>permission.selectOption(rowItem, checkValue))"
                             :disabled="props.disabled"
                         />
-                    </a-col>
-                </a-row>
+                    </j-col>
+                </j-row>
             </div>
         </div>
     </div>
