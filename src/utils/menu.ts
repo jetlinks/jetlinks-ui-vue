@@ -167,7 +167,6 @@ const findChildrenRoute = (code: string, url: string, routes: any[] = []): MenuI
         url: `${url}/${route.code}`,
         code: `${code}/${route.code}`,
         name: route.name,
-        props: true,
         isShow: false
       }
     })
@@ -184,7 +183,6 @@ const findDetailRouteItem = (code: string, url: string): Partial<MenuItem> | nul
       code: `${code}/Detail`,
       component: detailComponent,
       name: '详情信息',
-      props: true,
       isShow: false
     }
   }
@@ -217,7 +215,6 @@ export function filterAsnycRouter(asyncRouterMap: any, parentCode = '', level = 
         hideInMenu: route.isShow === false,
         buttons: route.buttons?.map((b: any) => b.id) || []
       },
-      props: true,
     }
 
     const silder = {..._route}
