@@ -38,7 +38,7 @@
 import { ComponentInternalInstance } from 'vue';
 
 import { getProductList_api } from '@/api/home';
-import { productItem } from '../../index';
+import { productItem } from '../../typing';
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const props = defineProps({
     openNumber: Number,

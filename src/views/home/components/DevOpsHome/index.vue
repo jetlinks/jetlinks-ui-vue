@@ -28,7 +28,7 @@ import PlatformPicCard from '../PlatformPicCard.vue';
 import StepCard from '../StepCard.vue';
 import { useMenuStore } from "@/store/menu";
 
-import { bootConfig, recommendList } from '../../index';
+import { bootConfig, recommendList } from '../../typing';
 // 页面权限控制
 const menuPermission = useMenuStore().hasPermission;
 

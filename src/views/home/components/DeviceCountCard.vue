@@ -1,13 +1,7 @@
 <template>
-    <a-card class="device-count-container">
-        <template #title>
-            <h5 class="title">设备统计</h5>
-        </template>
-        <template #extra>
-            <span style="color: #1d39c4; cursor: pointer" @click="jumpPage"
-                >详情</span
-            >
-        </template>
+    <div class="device-count-container">
+        <h5 class="title">设备统计</h5>
+        <span class="detail" @click="jumpPage('device/DashBoard')"> 详情 </span>
 
         <div class="box-list">
             <div class="box-item">
@@ -21,34 +15,33 @@
                 <img src="/images/home/top-2.png" alt="" />
             </div>
         </div>
-    </a-card>
+    </div>
 </template>
 
 <script setup lang="ts">
 import { getDeviceCount_api, getProductCount_api } from '@/api/home';
+import { useMenuStore } from '@/store/menu';
+
+const { jumpPage } = useMenuStore();
 const projectNum = ref(0);
 const deviceNum = ref(0);
 
-onMounted(() => {
-    getData();
-});
-
 const getData = () => {
-    getDeviceCount_api().then((resp) => {
+    getDeviceCount_api().then((resp: any) => {
         deviceNum.value = resp.result;
     });
-    getProductCount_api().then((resp) => {
+    getProductCount_api({}).then((resp: any) => {
         projectNum.value = resp.result;
     });
 };
-const jumpPage = () => {};
+getData();
 </script>
 
 <style lang="less" scoped>
 .device-count-container {
-    :deep(.ant-card-body) {
-        padding-top: 0;
-    }
+    background-color: #fff;
+    padding: 24px 14px;
+    position: relative;
     .title {
         position: relative;
         z-index: 2;
@@ -70,6 +63,14 @@ const jumpPage = () => {};
             transform: translateY(-50%);
             content: ' ';
         }
+    }
+    .detail {
+        color: #1d39c4;
+        cursor: pointer;
+        position: absolute;
+        right: 12px;
+        top: 24px;
+        z-index: 3;
     }
 
     .box-list {

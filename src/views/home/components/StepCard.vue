@@ -41,7 +41,7 @@ import { message } from 'ant-design-vue';
 import ProductChooseDialog from './dialogs/ProductChooseDialog.vue';
 import DeviceChooseDialog from './dialogs/DeviceChooseDialog.vue';
 
-import { recommendList } from '../index';
+import { recommendList } from '../typing';
 
 type rowType = {
     params: object;

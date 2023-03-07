@@ -1,5 +1,5 @@
 <template>
-    <a-card class="platform-pic-container">
+    <div class="platform-pic-container">
         <div class="title">
             <span>平台架构图</span>
             <p>PLATFORM ARCHITECTURE DIAGRAM</p>
@@ -9,7 +9,7 @@
             class="bj"
             alt=""
         />
-    </a-card>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -19,13 +19,11 @@ const props = defineProps({
 </script>
 
 <style lang="less" scoped>
-:deep(.ant-card-body) {
-    padding: 0;
-}
 .platform-pic-container {
     position: relative;
     width: 100%;
     overflow: hidden;
+    background-color: #fff;
     border-bottom: 1px solid #2f54eb;
 
     .bj {
