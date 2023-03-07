@@ -1,5 +1,5 @@
 <template>
-    <a-card>
+    <j-card>
         <div class="diagnose">
             <div class="diagnose-header" :style="{background: headerColorMap.get(topState)}">
                 <div class="diagnose-top">
@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="diagnose-progress">
-                    <a-progress
+                    <j-progress
                         :percent="percent"
                         :showInfo="false"
                         size="small"
@@ -38,7 +38,7 @@
                 <Status v-show="activeKey !== 'message'" :providerType="providerType" @countChange="countChange" @percentChange="percentChange" @stateChange="stateChange" />
             </div>
         </div>
-    </a-card>
+    </j-card>
 </template>
 
 <script lang="ts" setup>

@@ -18,7 +18,7 @@
                 <j-row type="flex">
                     <j-col flex="180px">
                         <j-form-item name="photoUrl">
-                            <JUpload v-model="modelRef.photoUrl" />
+                            <JProUpload v-model="modelRef.photoUrl" />
                         </j-form-item>
                     </j-col>
                     <j-col flex="auto">
@@ -60,15 +60,14 @@
                     <j-select
                         showSearch
                         v-model:value="modelRef.productId"
-                        placeholder="请选择所属产品"
-                        :filter-option="filterOption"
+                        :disabled="!!data?.id"
+                        placeholder="请选择状态为“正常”的产品"
                     >
                         <j-select-option
                             :value="item.id"
                             v-for="item in productList"
                             :key="item.id"
                             :label="item.name"
-                            :disabled="!!data?.id"
                         >{{item.name}}</j-select-option>
                     </j-select>
                 </j-form-item>
@@ -89,7 +88,7 @@
 import { queryNoPagingPost } from '@/api/device/product';
 import { isExists, update } from '@/api/device/instance';
 import { getImage } from '@/utils/comm';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 const emit = defineEmits(['close', 'save']);
 const props = defineProps({
@@ -105,15 +104,11 @@ const formRef = ref();
 
 const modelRef = reactive({
     productId: undefined,
-    id: '',
+    id: undefined,
     name: '',
     describe: '',
     photoUrl: getImage('/device/instance/device-card.png'),
 });
-
-const filterOption = (input: string, option: any) => {
-    return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-};
 
 const vailId = async (_: Record<string, any>, value: string) => {
     if (!props?.data?.id && value) {
@@ -202,10 +197,15 @@ const handleCancel = () => {
 const handleSave = () => {
     formRef.value
         .validate()
-        .then(async () => {
+        .then(async (_data: any) => {
             loading.value = true;
-            const resp = await update(toRaw(modelRef));
-            loading.value = false;
+            const obj = {...toRaw(modelRef), ..._data}
+            if(!obj.id){
+                delete obj.id
+            }
+            const resp = await update(obj).finally(() => {
+                loading.value = false;
+            })
             if (resp.status === 200) {
                 message.success('操作成功！');
                 emit('save');

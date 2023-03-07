@@ -1,123 +1,99 @@
 <template>
-    <a-modal
-        v-model:visible="dialog.visible"
+    <j-modal
+        visible
         title="新增"
         width="1000px"
-        @ok="dialog.handleOk"
+        @ok="confirm"
+        @cancel="emits('update:visible', false)"
     >
-        <Search :columns="query.columns" type="simple" />
+        <j-advanced-search
+            :columns="columns"
+            type="simple"
+            @search="(params:any)=>queryParams = {...params}"
+        />
 
         <j-pro-table
             ref="tableRef"
-            :columns="table.columns"
-            :request="getUserByRole_api"
+            :columns="columns"
+            :request="getUserList"
             model="TABLE"
-            :params="query.params"
+            :params="queryParams"
             :rowSelection="{
-                selectedRowKeys: table._selectedRowKeys,
-                onChange: table.onSelectChange,
+                selectedRowKeys: selectedRowKeys,
+                onChange: (keys:string[])=>selectedRowKeys = keys,
             }"
-            @cancelSelect="table.cancelSelect"
+            @cancelSelect="selectedRowKeys = []"
         >
         </j-pro-table>
-
-        <template #footer>
-            <a-button key="back" @click="dialog.visible = false">取消</a-button>
-            <a-button key="submit" type="primary" @click="dialog.handleOk"
-                >确定</a-button
-            >
-        </template>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script setup lang="ts">
 import { getUserByRole_api, bindUser_api } from '@/api/system/role';
 import { message } from 'ant-design-vue';
-const route = useRoute();
 
-const emits = defineEmits(['refresh']);
-const props = defineProps({
-    open: Number,
-});
+const emits = defineEmits(['refresh', 'update:visible']);
+const props = defineProps<{
+    visible: boolean;
+    roleId: string
+}>();
 
-const query = reactive({
-    columns: [
-        {
-            title: '姓名',
-            dataIndex: 'name',
-            key: 'name',
+const columns = [
+    {
+        title: '姓名',
+        dataIndex: 'name',
+        key: 'name',
+        search: {
+            type: 'string',
         },
-        {
-            title: '用户名',
-            dataIndex: 'username',
-            key: 'username',
+    },
+    {
+        title: '用户名',
+        dataIndex: 'username',
+        key: 'username',
+        search: {
+            type: 'string',
         },
-    ],
-    params: {
+    },
+];
+const queryParams = ref({});
+
+const selectedRowKeys = ref<string[]>([]);
+const getUserList = (oParams: any) => {
+    const params = {
+        ...oParams,
         sorts: [{ name: 'createTime', order: 'desc' }],
         terms: [
             {
                 terms: [
                     {
                         column: 'id$in-dimension$role$not',
-                        value: route.params.id,
+                        value: props.roleId,
                     },
                 ],
             },
         ],
-    },
-});
-const tableRef = ref<Record<string, any>>({});
-const table = reactive({
-    _selectedRowKeys: [] as string[],
-    columns: [
-        {
-            title: '姓名',
-            dataIndex: 'name',
-            key: 'name',
-        },
-        {
-            title: '用户名',
-            dataIndex: 'username',
-            key: 'username',
-        },
-    ],
-    tableData: [],
-    onSelectChange: (keys: string[]) => {
-        table._selectedRowKeys = [...keys];
-    },
-    cancelSelect: () => {
-        table._selectedRowKeys = [];
-    },
-});
+    };
+    if (oParams.terms[0])
+        params.terms.unshift({
+            terms: oParams.terms[0].terms,
+        });
+    return getUserByRole_api(params);
+};
 
-// 弹窗相关
-const dialog = reactive({
-    visible: false,
-    handleOk: () => {
-        if (table._selectedRowKeys.length < 1) {
-            message.error('请至少选择一项');
-        } else {
-            bindUser_api(
-                route.params.id as string,
-                table._selectedRowKeys,
-            ).then((resp) => {
+const confirm = () => {
+    if (selectedRowKeys.value.length < 1) {
+        message.error('请至少选择一项');
+    } else {
+        bindUser_api(props.roleId, selectedRowKeys.value).then(
+            (resp) => {
                 if (resp.status === 200) {
                     message.success('操作成功');
                     emits('refresh');
-                    dialog.visible = false;
+                    emits('update:visible', false);
                 }
-            });
-        }
-    },
-});
-
-watch(
-    () => props.open,
-    () => {
-        dialog.visible = true;
-    },
-);
+            },
+        );
+    }
+};
 </script>
-
-<style scoped></style>

@@ -1,11 +1,11 @@
 <template>
     <page-container>
-        <Search
+        <j-advanced-search
             :columns="columns"
             target="northbound-dueros"
             @search="handleSearch"
         />
-        <JTable
+        <JProTable
             ref="instanceRef"
             :columns="columns"
             :request="query"
@@ -13,7 +13,7 @@
             :params="params"
         >
             <template #headerTitle>
-                <a-space>
+                <j-space>
                     <PermissionButton
                         type="primary"
                         @click="handleAdd"
@@ -22,7 +22,7 @@
                         <template #icon><AIcon type="PlusOutlined" /></template>
                         新增
                     </PermissionButton>
-                </a-space>
+                </j-space>
             </template>
             <template #card="slotProps">
                 <CardBox
@@ -45,18 +45,18 @@
                         >
                             {{ slotProps.name }}
                         </h3>
-                        <a-row>
-                            <a-col :span="12">
+                        <j-row>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">产品</div>
                                 <div>{{ slotProps?.productName }}</div>
-                            </a-col>
-                            <a-col :span="12">
+                            </j-col>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">
                                     设备类型
                                 </div>
                                 <div>{{ slotProps?.applianceType?.text }}</div>
-                            </a-col>
-                        </a-row>
+                            </j-col>
+                        </j-row>
                     </template>
                     <template #actions="item">
                         <PermissionButton
@@ -81,7 +81,7 @@
                 </CardBox>
             </template>
             <template #state="slotProps">
-                <a-badge
+                <j-badge
                     :text="slotProps.state?.text"
                     :status="statusMap.get(slotProps.state?.value)"
                 />
@@ -90,7 +90,7 @@
                 {{ slotProps.applianceType.text }}
             </template>
             <template #action="slotProps">
-                <a-space>
+                <j-space>
                     <template
                         v-for="i in getActions(slotProps, 'table')"
                         :key="i.key"
@@ -109,9 +109,9 @@
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
                     </template>
-                </a-space>
+                </j-space>
             </template>
-        </JTable>
+        </JProTable>
     </page-container>
 </template>
 
@@ -124,15 +124,13 @@ import {
     queryProductList,
     queryTypes,
 } from '@/api/northbound/dueros';
-import type { ActionsType } from '@/components/Table/index.vue';
+import type { ActionsType } from '@/views/device/Instance/typings';
 import { getImage } from '@/utils/comm';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { useMenuStore } from 'store/menu';
 
-const router = useRouter();
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
-const current = ref<Record<string, any>>({});
 const menuStory = useMenuStore();
 
 const statusMap = new Map();

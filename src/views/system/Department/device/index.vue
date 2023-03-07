@@ -1,16 +1,19 @@
 <template>
     <div class="product-container">
-        <Search :columns="query.columns" @search="query.search" />
+        <j-advanced-search
+            :columns="columns"
+            @search="(params:any) => (queryParams = params)"
+        />
         <j-pro-table
             ref="tableRef"
             :request="table.requestFun"
             :gridColumn="2"
-            model="CARD"
-            :params="query.params.value"
+            :params="queryParams"
             :rowSelection="{
                 selectedRowKeys: table._selectedRowKeys.value,
             }"
             @cancelSelect="table.cancelSelect"
+            :columns="columns"
         >
             <template #headerTitle>
                 <j-space>
@@ -130,13 +133,46 @@
                     </template>
                 </CardBox>
             </template>
+
+            <template #permission="slotProps">
+                {{
+                    table.permissionList.value.length &&
+                    table.getPermissLabel(slotProps.permission)
+                }}
+            </template>
+            <template #state="slotProps">
+                <BadgeStatus
+                    :status="slotProps.state.value"
+                    :text="slotProps.state.text"
+                    :statusNames="{
+                        online: 'success',
+                        offline: 'error',
+                        notActive: 'warning',
+                    }"
+                ></BadgeStatus>
+            </template>
+            <template #action="slotProps">
+                <a-space :size="16">
+                    <PermissionButton
+                        v-for="i in table.getActions(slotProps, 'table')"
+                        :uhasPermission="i.permission"
+                        type="link"
+                        :tooltip="i?.tooltip"
+                        :pop-confirm="i.popConfirm"
+                        @click="i.onClick"
+                        :disabled="i?.disabled"
+                    >
+                        <AIcon :type="i.icon" />
+                    </PermissionButton>
+                </a-space>
+            </template>
         </j-pro-table>
 
         <div class="dialogs">
             <AddDeviceOrProductDialog
                 v-if="dialogs.addShow"
                 v-model:visible="dialogs.addShow"
-                :query-columns="query.columns"
+                :query-columns="columns"
                 :parent-id="props.parentId"
                 :all-permission="table.permissionList.value"
                 asset-type="device"
@@ -171,7 +207,7 @@ import {
 } from '@/api/system/department';
 import { intersection } from 'lodash-es';
 
-import type { dictType } from '../typing';
+import type { dictType, optionsType } from '../typing';
 import { message } from 'ant-design-vue';
 
 const permission = 'system/Department';
@@ -181,93 +217,97 @@ const props = defineProps<{
     parentId: string;
     bindBool: boolean;
 }>();
-const query = {
-    columns: [
-        {
-            title: 'ID',
-            dataIndex: 'id',
-            key: 'id',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-            },
+const columns = [
+    {
+        title: 'ID',
+        dataIndex: 'id',
+        key: 'id',
+        ellipsis: true,
+        fixed: 'left',
+        search: {
+            type: 'string',
         },
-        {
-            title: '名称',
-            dataIndex: 'name',
-            key: 'name',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-            },
-        },
-        {
-            title: '所属产品',
-            dataIndex: 'productId$product-info',
-            key: 'productId$product-info',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'select',
-                options: () =>
-                    new Promise((resolve) => {
-                        const params = {
-                            paging: false,
-                            'sorts[0].name': 'createTime',
-                            'sorts[0].order': 'desc',
-                        };
-                        getDeviceProduct_api(params).then((resp: any) => {
-                            const result = resp.result.map((item: any) => ({
-                                label: item.name,
-                                value: item.id,
-                            }));
-                            resolve(result);
-                        });
-                    }),
-            },
-        },
-        {
-            title: '注册时间',
-            dataIndex: 'registryTime',
-            key: 'registryTime',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'date',
-            },
-        },
-        {
-            title: '状态',
-            dataIndex: 'state',
-            key: 'state',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'select',
-                options: [
-                    {
-                        label: '在线',
-                        value: 'online',
-                    },
-                    {
-                        label: '离线',
-                        value: 'offline',
-                    },
-                    {
-                        label: '禁用',
-                        value: 'notActive',
-                    },
-                ],
-            },
-        },
-    ],
-    params: ref({}),
-    search: (params: any) => {
-        query.params.value = params;
     },
-};
+    {
+        title: '名称',
+        dataIndex: 'name',
+        key: 'name',
+        ellipsis: true,
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '所属产品',
+        dataIndex: 'productName',
+        key: 'productName',
+        ellipsis: true,
+        search: {
+            rename: 'productId$product-info',
+            type: 'select',
+            options: () =>
+                new Promise((resolve) => {
+                    const params = {
+                        paging: false,
+                        'sorts[0].name': 'createTime',
+                        'sorts[0].order': 'desc',
+                    };
+                    getDeviceProduct_api(params).then((resp: any) => {
+                        const result = resp.result.map((item: any) => ({
+                            label: item.name,
+                            value: item.id,
+                        }));
+                        resolve(result);
+                    });
+                }),
+        },
+    },
+    {
+        title: '资产权限',
+        dataIndex: 'permission',
+        key: 'permission',
+        ellipsis: true,
+        scopedSlots: true,
+    },
+    {
+        title: '注册时间',
+        dataIndex: 'registryTime',
+        key: 'registryTime',
+        ellipsis: true,
+        search: {
+            type: 'date',
+        },
+    },
+    {
+        title: '状态',
+        dataIndex: 'state',
+        key: 'state',
+        ellipsis: true,
+        search: {
+            type: 'select',
+            options: [
+                {
+                    label: '正常',
+                    value: 1,
+                },
+                {
+                    label: '禁用',
+                    value: 0,
+                },
+            ],
+        },
+        scopedSlots: true,
+    },
+
+    {
+        title: '操作',
+        dataIndex: 'action',
+        key: 'action',
+        fixed: 'right',
+        scopedSlots: true,
+    },
+];
+const queryParams = ref({});
 
 const tableRef = ref();
 const table = {
@@ -285,6 +325,32 @@ const table = {
         );
     },
 
+    getActions: (
+        data: Partial<Record<string, any>>,
+        type: 'card' | 'table',
+    ) => {
+        if (!data) return [];
+        else
+            return [
+                {
+                    permission: true,
+                    key: 'edit',
+                    tooltip: { title: '编辑' },
+                    icon: 'EditOutlined',
+                    onClick: () => table.clickEdit(data),
+                },
+                {
+                    permission: true,
+                    key: 'unbind',
+                    tooltip: { title: '解除绑定' },
+                    popConfirm: {
+                        title: `是否解除绑定`,
+                        onConfirm: () => table.clickUnBind(data),
+                    },
+                    icon: 'DisconnectOutlined',
+                },
+            ];
+    },
     // 获取权限数据字典
     getPermissionDict: () => {
         getPermissionDict_api().then((resp: any) => {

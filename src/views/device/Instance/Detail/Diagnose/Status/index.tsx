@@ -1,4 +1,4 @@
-import { Badge, Button, message, Popconfirm, Space } from "ant-design-vue"
+import { Badge, Button, message, Popconfirm, Space } from "jetlinks-ui-components"
 import TitleComponent from '@/components/TitleComponent/index.vue'
 import styles from './index.module.less'
 import type { ListProps } from './util'
@@ -13,6 +13,7 @@ import ManualInspection from './ManualInspection'
 import { deployDevice } from "@/api/initHome"
 import PermissionButton from '@/components/PermissionButton/index.vue'
 import { useMenuStore } from "@/store/menu"
+import BindParentDevice from '../../components/BindParentDevice/index.vue'
 
 type TypeProps = 'network' | 'child-device' | 'media' | 'cloud' | 'channel'
 
@@ -1691,6 +1692,102 @@ const Status = defineComponent({
                     }}
                 />
             )}
+            {
+                bindParentVisible && (
+                    <BindParentDevice
+                        data={device.value}
+                        onCancel={() => {
+                            bindParentVisible.value = false
+                        }}
+                        onOk={async (parentId: string) => {
+                            let item: ListProps | undefined = undefined;
+                            const response = await detail(parentId);
+                            if (response.status === 200) {
+                                if (response?.result?.state?.value === 'notActive') {
+                                    item = {
+                                        key: 'parent-device',
+                                        name: '网关父设备',
+                                        desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
+                                        status: 'error',
+                                        text: '异常',
+                                        info: (
+                                            <div>
+                                                <div class={styles.infoItem}>
+                                                    <Badge
+                                                        status="default"
+                                                        text={
+                                                            <span>
+                                                                网关父设备已禁用，请先
+                                                                <PermissionButton
+                                                                    hasPermission="device/Product:action"
+                                                                    popConfirm={{
+                                                                        title: '确认启用',
+                                                                        onConfirm: async () => {
+                                                                            const resp = await _deploy(response?.result?.id || '');
+                                                                            if (resp.status === 200) {
+                                                                                message.success('操作成功！');
+                                                                                list.value = modifyArrayList(
+                                                                                    list.value,
+                                                                                    {
+                                                                                        key: 'parent-device',
+                                                                                        name: '网关父设备',
+                                                                                        desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
+                                                                                        status: 'success',
+                                                                                        text: '正常',
+                                                                                        info: null,
+                                                                                    },
+                                                                                );
+                                                                            }
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    启用
+                                                                </PermissionButton>
+                                                            </span>
+                                                        }
+                                                    />
+                                                </div>
+                                            </div>
+                                        ),
+                                    };
+                                } else if (response?.state?.value === 'online') {
+                                    item = {
+                                        key: 'parent-device',
+                                        name: '网关父设备',
+                                        desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
+                                        status: 'success',
+                                        text: '正常',
+                                        info: null,
+                                    };
+                                } else {
+                                    item = {
+                                        key: 'parent-device',
+                                        name: '网关父设备',
+                                        desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
+                                        status: 'error',
+                                        text: '异常',
+                                        info: (
+                                            <div>
+                                                <div class={styles.infoItem}>
+                                                    <Badge
+                                                        status="default"
+                                                        text={<span>网关父设备已离线，请先排查网关设备故障</span>}
+                                                    />
+                                                </div>
+                                            </div>
+                                        ),
+                                    };
+                                }
+                                if (item) {
+                                    list.value = modifyArrayList(unref(list), item);
+                                }
+                                instanceStore.current.parentId = parentId;
+                                bindParentVisible.value = false
+                            }
+                        }}
+                    />
+                )
+            }
         </div>
     },
 })

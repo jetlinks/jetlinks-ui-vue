@@ -2,7 +2,8 @@
     <j-spin :spinning="loading">
         <JProTable
             :columns="columns"
-            :dataSource="dataSource"
+            :request="query"
+            :params="_params"
             :bodyStyle="{ padding: '0 0 0 20px' }"
         >
             <template #headerTitle>
@@ -58,26 +59,6 @@
                     </template>
                 </j-space>
             </template>
-            <template #paginationRender>
-                <j-pagination
-                    size="small"
-                    :total="total"
-                    :showQuickJumper="false"
-                    :showSizeChanger="true"
-                    :current="pageIndex + 1"
-                    :pageSize="pageSize"
-                    :pageSizeOptions="['8', '12', '24', '60', '100']"
-                    :show-total="
-                        (num) =>
-                            `第 ${pageIndex * pageSize + 1} - ${
-                                (pageIndex + 1) * pageSize > num
-                                    ? num
-                                    : (pageIndex + 1) * pageSize
-                            } 条/总共 ${num} 条`
-                    "
-                    @change="pageChange"
-                />
-            </template>
         </JProTable>
     </j-spin>
     <Save v-if="editVisible" @close="editVisible = false" :data="currentInfo" />
@@ -107,6 +88,7 @@ import { message } from 'ant-design-vue';
 import { getWebSocket } from '@/utils/websocket';
 import { map } from 'rxjs/operators';
 import { queryDashboard } from '@/api/comm';
+
 const columns = [
     {
         title: '名称',
@@ -142,9 +124,6 @@ const _data = defineProps({
 const value = ref<string>('');
 const dataSource = ref<PropertyData[]>([]);
 const _dataSource = ref<PropertyData[]>([]);
-const pageIndex = ref<number>(0);
-const pageSize = ref<number>(8);
-const total = ref<number>(0);
 const editVisible = ref<boolean>(false); // 编辑
 const detailVisible = ref<boolean>(false); // 详情
 const currentInfo = ref<Record<string, any>>({});
@@ -152,6 +131,9 @@ const instanceStore = useInstanceStore();
 const indicatorVisible = ref<boolean>(false); // 指标
 const loading = ref<boolean>(false);
 const propertyValue = ref<Record<string, any>>({});
+const _params = reactive({
+    name: '',
+});
 
 const subRef = ref();
 
@@ -309,39 +291,35 @@ const getDashboard = async () => {
     loading.value = false;
 };
 
-const query = (page: number, size: number, value: string) => {
-    pageIndex.value = page || 0;
-    pageSize.value = size || 8;
-    const _from = pageIndex.value * pageSize.value;
-    const _to = (pageIndex.value + 1) * pageSize.value;
-    const arr = _.cloneDeep(_dataSource.value);
-    if (unref(value)) {
-        const li = arr.filter((i: any) => {
-            return i?.name.indexOf(unref(value)) !== -1;
+const query = (params: Record<string, any>) =>
+    new Promise((resolve) => {
+        const _from = params.pageIndex * params.pageSize;
+        const _to = (params.pageIndex + 1) * params.pageSize;
+        let arr = _.cloneDeep(_dataSource.value);
+        if (params?.name) {
+            const li = _dataSource.value.filter((i: any) => {
+                return i?.name.indexOf(params.name) !== -1;
+            });
+            arr = _.cloneDeep(li);
+        }
+        resolve({
+            result: {
+                data: arr.slice(_from, _to),
+                pageIndex: params.pageIndex || 0,
+                pageSize: params.pageSize || 12,
+                total: arr.length,
+            },
+            status: 200,
         });
-        dataSource.value = li.slice(_from, _to);
-        total.value = li.length;
-    } else {
-        dataSource.value = arr.slice(_from, _to);
-        total.value = arr.length;
-    }
-    getDashboard();
-};
-
-const pageChange = (page: number, size: number) => {
-    if (size === pageSize.value) {
-        query(page - 1, size, value.value);
-    } else {
-        query(0, size, value.value);
-    }
-};
+        getDashboard();
+    });
 
 watch(
     () => _data.data,
     (newVal) => {
         if (newVal.length) {
             _dataSource.value = newVal as PropertyData[];
-            query(0, 8, value.value);
+            _params.name = '';
         }
     },
     {
@@ -351,7 +329,7 @@ watch(
 );
 
 const onSearch = () => {
-    query(0, 8, value.value);
+    _params.name = value.value;
 };
 
 onUnmounted(() => {

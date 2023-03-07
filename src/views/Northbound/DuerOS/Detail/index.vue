@@ -1,17 +1,17 @@
 <template>
     <page-container>
-        <a-card>
-            <a-row :gutter="24">
-                <a-col :span="16">
+        <j-card>
+            <j-row :gutter="24">
+                <j-col :span="16">
                     <TitleComponent data="基本信息" />
-                    <a-form
+                    <j-form
                         :layout="'vertical'"
                         ref="formRef"
                         :model="modelRef"
                     >
-                        <a-row :gutter="24">
-                            <a-col :span="24">
-                                <a-form-item
+                        <j-row :gutter="24">
+                            <j-col :span="24">
+                                <j-form-item
                                     label="名称"
                                     name="name"
                                     :rules="[
@@ -25,14 +25,14 @@
                                         },
                                     ]"
                                 >
-                                    <a-input
+                                    <j-input
                                         placeholder="请输入名称"
                                         v-model:value="modelRef.name"
                                     />
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="12">
-                                <a-form-item
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="12">
+                                <j-form-item
                                     label="产品"
                                     name="id"
                                     :rules="[
@@ -42,7 +42,7 @@
                                         },
                                     ]"
                                 >
-                                    <a-select
+                                    <j-select
                                         :disabled="
                                             type !== 'edit' &&
                                             modelRef.id &&
@@ -54,18 +54,18 @@
                                         :filter-option="filterOption"
                                         @change="productChange"
                                     >
-                                        <a-select-option
+                                        <j-select-option
                                             v-for="item in productList"
                                             :key="item.id"
                                             :value="item.id"
                                             :label="item.name"
-                                            >{{ item.name }}</a-select-option
+                                            >{{ item.name }}</j-select-option
                                         >
-                                    </a-select>
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="12">
-                                <a-form-item
+                                    </j-select>
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="12">
+                                <j-form-item
                                     name="applianceType"
                                     :rules="{
                                         required: true,
@@ -75,50 +75,50 @@
                                     <template #label>
                                         <span>
                                             设备类型
-                                            <a-tooltip
+                                            <j-tooltip
                                                 title="DuerOS平台拟定的规范"
                                             >
                                                 <AIcon
                                                     type="QuestionCircleOutlined"
                                                     style="margin-left: 2px"
                                                 />
-                                            </a-tooltip>
+                                            </j-tooltip>
                                         </span>
                                     </template>
-                                    <a-select
+                                    <j-select
                                         placeholder="请选择设备类型"
                                         v-model:value="modelRef.applianceType"
                                         show-search
                                         :filter-option="filterOption"
                                         @change="typeChange"
                                     >
-                                        <a-select-option
+                                        <j-select-option
                                             v-for="item in typeList"
                                             :key="item.id"
                                             :value="item.id"
                                             :label="item.name"
-                                            >{{ item.name }}</a-select-option
+                                            >{{ item.name }}</j-select-option
                                         >
-                                    </a-select>
-                                </a-form-item>
-                                <a-form-item
+                                    </j-select>
+                                </j-form-item>
+                                <j-form-item
                                     name="productName"
                                     v-show="false"
                                     label="产品名称"
                                 >
-                                    <a-input
+                                    <j-input
                                         v-model:value="modelRef.productName"
                                     />
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="24">
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="24">
                                 <p>动作映射</p>
-                                <a-collapse
+                                <j-collapse
                                     v-if="modelRef.actionMappings.length"
                                     :activeKey="actionActiveKey"
                                     @change="onActionCollChange"
                                 >
-                                    <a-collapse-panel
+                                    <j-collapse-panel
                                         v-for="(
                                             item, index
                                         ) in modelRef.actionMappings"
@@ -139,9 +139,9 @@
                                                 type="DeleteOutlined"
                                                 @click="delItem(index)"
                                         /></template>
-                                        <a-row :gutter="24">
-                                            <a-col :span="12">
-                                                <a-form-item
+                                        <j-row :gutter="24">
+                                            <j-col :span="12">
+                                                <j-form-item
                                                     :name="[
                                                         'actionMappings',
                                                         index,
@@ -155,16 +155,16 @@
                                                     <template #label>
                                                         <span>
                                                             动作
-                                                            <a-tooltip
+                                                            <j-tooltip
                                                                 title="DuerOS平台拟定的设备类型具有的相关动作"
                                                             >
                                                                 <AIcon
                                                                     type="QuestionCircleOutlined"
                                                                 />
-                                                            </a-tooltip>
+                                                            </j-tooltip>
                                                         </span>
                                                     </template>
-                                                    <a-select
+                                                    <j-select
                                                         placeholder="请选择动作"
                                                         v-model:value="
                                                             item.action
@@ -174,7 +174,7 @@
                                                             filterOption
                                                         "
                                                     >
-                                                        <a-select-option
+                                                        <j-select-option
                                                             v-for="i in getTypesActions(
                                                                 item.action,
                                                             )"
@@ -183,13 +183,13 @@
                                                             :label="i.name"
                                                             >{{
                                                                 i.name
-                                                            }}</a-select-option
+                                                            }}</j-select-option
                                                         >
-                                                    </a-select>
-                                                </a-form-item>
-                                            </a-col>
-                                            <a-col :span="12">
-                                                <a-form-item
+                                                    </j-select>
+                                                </j-form-item>
+                                            </j-col>
+                                            <j-col :span="12">
+                                                <j-form-item
                                                     :name="[
                                                         'actionMappings',
                                                         index,
@@ -203,16 +203,16 @@
                                                     <template #label>
                                                         <span>
                                                             操作
-                                                            <a-tooltip
+                                                            <j-tooltip
                                                                 title="映射物联网平台中所选产品具备的动作"
                                                             >
                                                                 <AIcon
                                                                     type="QuestionCircleOutlined"
                                                                 />
-                                                            </a-tooltip>
+                                                            </j-tooltip>
                                                         </span>
                                                     </template>
-                                                    <a-select
+                                                    <j-select
                                                         placeholder="请选择操作"
                                                         v-model:value="
                                                             item.actionType
@@ -222,22 +222,22 @@
                                                             filterOption
                                                         "
                                                     >
-                                                        <a-select-option
+                                                        <j-select-option
                                                             value="command"
-                                                            >下发指令</a-select-option
+                                                            >下发指令</j-select-option
                                                         >
-                                                        <a-select-option
+                                                        <j-select-option
                                                             value="latestData"
-                                                            >获取历史数据</a-select-option
+                                                            >获取历史数据</j-select-option
                                                         >
-                                                    </a-select>
-                                                </a-form-item>
-                                            </a-col>
-                                            <a-col
+                                                    </j-select>
+                                                </j-form-item>
+                                            </j-col>
+                                            <j-col
                                                 :span="24"
                                                 v-if="item.actionType"
                                             >
-                                                <a-form-item
+                                                <j-form-item
                                                     :name="[
                                                         'actionMappings',
                                                         index,
@@ -256,14 +256,14 @@
                                                             item.actionType
                                                         "
                                                     />
-                                                </a-form-item>
-                                            </a-col>
-                                        </a-row>
-                                    </a-collapse-panel>
-                                </a-collapse>
-                            </a-col>
-                            <a-col :span="24">
-                                <a-button
+                                                </j-form-item>
+                                            </j-col>
+                                        </j-row>
+                                    </j-collapse-panel>
+                                </j-collapse>
+                            </j-col>
+                            <j-col :span="24">
+                                <j-button
                                     type="dashed"
                                     style="width: 100%; margin-top: 10px"
                                     @click="addItem"
@@ -272,16 +272,16 @@
                                         type="PlusOutlined"
                                         style="margin-left: 2px"
                                     />新增动作
-                                </a-button>
-                            </a-col>
-                            <a-col :span="24">
+                                </j-button>
+                            </j-col>
+                            <j-col :span="24">
                                 <p style="margin-top: 20px">属性映射</p>
-                                <a-collapse
+                                <j-collapse
                                     v-if="modelRef.propertyMappings.length"
                                     :activeKey="propertyActiveKey"
                                     @change="onPropertyCollChange"
                                 >
-                                    <a-collapse-panel
+                                    <j-collapse-panel
                                         v-for="(
                                             item, index
                                         ) in modelRef.propertyMappings"
@@ -302,9 +302,9 @@
                                                 type="DeleteOutlined"
                                                 @click="delPropertyItem(index)"
                                         /></template>
-                                        <a-row :gutter="24">
-                                            <a-col :span="12">
-                                                <a-form-item
+                                        <j-row :gutter="24">
+                                            <j-col :span="12">
+                                                <j-form-item
                                                     label="DuerOS属性"
                                                     :name="[
                                                         'propertyMappings',
@@ -317,7 +317,7 @@
                                                             '请选择DuerOS属性',
                                                     }"
                                                 >
-                                                    <a-select
+                                                    <j-select
                                                         placeholder="请选择DuerOS属性"
                                                         v-model:value="
                                                             item.source
@@ -327,7 +327,7 @@
                                                             filterOption
                                                         "
                                                     >
-                                                        <a-select-option
+                                                        <j-select-option
                                                             v-for="i in getDuerOSProperties(
                                                                 item.source,
                                                             )"
@@ -335,13 +335,13 @@
                                                             :value="i.id"
                                                             >{{
                                                                 i.name
-                                                            }}</a-select-option
+                                                            }}</j-select-option
                                                         >
-                                                    </a-select>
-                                                </a-form-item>
-                                            </a-col>
-                                            <a-col :span="12">
-                                                <a-form-item
+                                                    </j-select>
+                                                </j-form-item>
+                                            </j-col>
+                                            <j-col :span="12">
+                                                <j-form-item
                                                     label="平台属性"
                                                     :name="[
                                                         'propertyMappings',
@@ -354,7 +354,7 @@
                                                             '请选择平台属性',
                                                     }"
                                                 >
-                                                    <a-select
+                                                    <j-select
                                                         placeholder="请选择平台属性"
                                                         v-model:value="
                                                             item.target
@@ -365,7 +365,7 @@
                                                             filterOption
                                                         "
                                                     >
-                                                        <a-select-option
+                                                        <j-select-option
                                                             v-for="i in getProductProperties(
                                                                 item.target,
                                                             )"
@@ -373,17 +373,17 @@
                                                             :value="item.id"
                                                             >{{
                                                                 i.name
-                                                            }}</a-select-option
+                                                            }}</j-select-option
                                                         >
-                                                    </a-select>
-                                                </a-form-item>
-                                            </a-col>
-                                        </a-row>
-                                    </a-collapse-panel>
-                                </a-collapse>
-                            </a-col>
-                            <a-col :span="24">
-                                <a-button
+                                                    </j-select>
+                                                </j-form-item>
+                                            </j-col>
+                                        </j-row>
+                                    </j-collapse-panel>
+                                </j-collapse>
+                            </j-col>
+                            <j-col :span="24">
+                                <j-button
                                     type="dashed"
                                     style="width: 100%; margin-top: 10px"
                                     @click="addPropertyItem"
@@ -392,10 +392,10 @@
                                         type="PlusOutlined"
                                         style="margin-left: 2px"
                                     />新增属性
-                                </a-button>
-                            </a-col>
-                            <a-col :span="24" style="margin-top: 20px">
-                                <a-form-item
+                                </j-button>
+                            </j-col>
+                            <j-col :span="24" style="margin-top: 20px">
+                                <j-form-item
                                     label="说明"
                                     name="description"
                                     :rules="{
@@ -403,16 +403,16 @@
                                         message: '最多输入200个字符',
                                     }"
                                 >
-                                    <a-textarea
+                                    <j-textarea
                                         v-model:value="modelRef.description"
                                         placeholder="请输入说明"
                                         showCount
                                         :maxlength="200"
                                     />
-                                </a-form-item>
-                            </a-col>
-                        </a-row>
-                    </a-form>
+                                </j-form-item>
+                            </j-col>
+                        </j-row>
+                    </j-form>
                     <div v-if="type === 'edit'">
                         <PermissionButton
                             type="primary"
@@ -423,12 +423,12 @@
                             保存
                         </PermissionButton>
                     </div>
-                </a-col>
-                <a-col :span="8">
+                </j-col>
+                <j-col :span="8">
                     <Doc />
-                </a-col>
-            </a-row>
-        </a-card>
+                </j-col>
+            </j-row>
+        </j-card>
     </page-container>
 </template>
 
@@ -442,9 +442,10 @@ import {
     detail,
 } from '@/api/northbound/dueros';
 import _ from 'lodash';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
+import { useMenuStore } from '@/store/menu';
 
-const router = useRouter();
+const menuStory = useMenuStore();
 const route = useRoute();
 
 const formRef = ref();
@@ -640,7 +641,8 @@ const saveBtn = async () => {
                 if (resp.status === 200) {
                     message.success('操作成功！');
                     formRef.value.resetFields();
-                    router.push('/iot/northbound/DuerOS/');
+                    menuStory.jumpPage('Northbound/DuerOS');
+
                 }
             }
         })

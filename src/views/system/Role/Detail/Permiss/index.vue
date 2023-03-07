@@ -1,42 +1,42 @@
 <template>
     <div class="role-permiss-container">
-        <a-card>
+        <section class="card">
             <h5>基本信息</h5>
-            <a-form ref="formRef" class="basic-form" :model="form.data" layout="vertical">
-                <a-form-item
+            <j-form ref="formRef" class="basic-form" :model="form.data" layout="vertical">
+                <j-form-item
                     name="name"
                     label="名称"
                     :rules="[{ required: true, message: '请输入名称' }]"
                 >
-                    <a-input
+                    <j-input
                         v-model:value="form.data.name"
                         placeholder="请输入角色名称"
                         :maxlength="64"
                     />
-                </a-form-item>
-                <a-form-item name="name" label="说明">
-                    <a-textarea
+                </j-form-item>
+                <j-form-item name="name" label="说明">
+                    <j-textarea
                         v-model:value="form.data.description"
                         placeholder="请输入说明"
                         :maxlength="200"
                         show-count
                     />
-                </a-form-item>
-            </a-form>
-        </a-card>
+                </j-form-item>
+            </j-form>
+        </section>
 
-        <a-card>
+        <section class="card">
             <h5>权限分配</h5>
             <PermissTree v-model:select-items="form.menus" />
 
-            <a-button
+            <j-button
                 type="primary"
                 :disabled="form.loading"
                 @click="form.clickSave"
                 style="margin-top: 24px;"
-                >保存</a-button
+                >保存</j-button
             >
-        </a-card>
+        </section>
     </div>
 </template>
 
@@ -86,8 +86,10 @@ form.getForm();
 
 <style lang="less" scoped>
 .role-permiss-container {
-    .ant-card {
+    .card {
         margin-bottom: 24px;
+        background-color: #fff;
+        padding: 24px;
 
         h5 {
             position: relative;

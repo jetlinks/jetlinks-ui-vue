@@ -9,7 +9,7 @@
         <j-table
             rowKey="id"
             :columns="columns"
-            :datj-source="dataSource"
+            :data-source="dataSource"
             bordered
             :pagination="false"
         >
@@ -49,7 +49,7 @@
 
 <script lang="ts" setup>
 import { useInstanceStore } from '@/store/instance';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import _ from 'lodash';
 import { saveTags, delTags } from '@/api/device/instance'
 

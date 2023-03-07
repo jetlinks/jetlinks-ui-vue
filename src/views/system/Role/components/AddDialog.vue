@@ -1,18 +1,20 @@
 <template>
     <a-modal
-        v-model:visible="dialog.visible"
+        visible
         title="新增"
         width="670px"
-        @ok="dialog.handleOk"
+        @cancel="emits('update:visible', false)"
+        @ok="confirm"
+        :confirm-loading="loading"
     >
-        <a-form ref="formRef" :model="form.data" layout="vertical">
+        <a-form ref="formRef" :model="form" layout="vertical">
             <a-form-item
                 name="name"
                 label="名称"
                 :rules="[{ required: true, message: '请输入名称' }]"
             >
                 <a-input
-                    v-model:value="form.data.name"
+                    v-model:value="form.name"
                     placeholder="请输入角色名称"
                     allow-clear
                     :maxlength="64"
@@ -20,72 +22,52 @@
             </a-form-item>
             <a-form-item name="name" label="说明">
                 <a-textarea
-                    v-model:value="form.data.description"
+                    v-model:value="form.description"
                     placeholder="请输入说明"
                     allow-clear
                     :maxlength="200"
                 />
             </a-form-item>
         </a-form>
-
-        <template #footer>
-            <a-button key="back" @click="dialog.visible = false">取消</a-button>
-            <a-button
-                key="submit"
-                type="primary"
-                :loading="form.loading"
-                @click="dialog.handleOk"
-                >确定</a-button
-            >
-        </template>
     </a-modal>
 </template>
 
 <script setup lang="ts">
 import { FormInstance, message } from 'ant-design-vue';
 import { saveRole_api } from '@/api/system/role';
-const router = useRouter();
+import { useMenuStore } from '@/store/menu';
 const route = useRoute();
+const { jumpPage } = useMenuStore();
+
+const emits = defineEmits(['update:visible']);
+const props = defineProps<{
+    visible: boolean;
+}>();
 // 弹窗相关
-const dialog = reactive({
-    visible: false,
-    handleOk: () => {
-        formRef.value
-            ?.validate()
-            .then(() => saveRole_api(form.data))
-            .then((resp) => {
-                if (resp.status === 200) {
-                    message.success('操作成功');
-                    dialog.visible = false;
-
-                    if (route.query.save) {
-                        // @ts-ignore
-                        window?.onSaveSuccess && window.onSaveSuccess(resp.result.id);
-                        window.close();
-                    } else router.push(`/system/Role/detail/${resp.result.id}`);
-                }
-            });
-    },
-    // 控制弹窗的打开与关闭
-    changeVisible: (status: boolean, defaultForm: object = {}) => {
-        dialog.visible = status;
-        form.data = { name: '', description: '', ...defaultForm };
-    },
-});
-// 表单相关
+const loading = ref(false);
+const form = ref<any>({});
 const formRef = ref<FormInstance>();
-const form = reactive({
-    loading: false,
-    data: {
-        name: '',
-        description: '',
-    },
-});
 
-// 将打开弹窗的操作暴露给父组件
-defineExpose({
-    openDialog: dialog.changeVisible,
-});
+const confirm = () => {
+    loading.value = true;
+    formRef.value
+        ?.validate()
+        .then(() => saveRole_api(form.value))
+        .then((resp) => {
+            if (resp.status === 200) {
+                message.success('操作成功');
+                emits('update:visible', false);
+
+                if (route.query.save) {
+                    // @ts-ignore
+                    window?.onSaveSuccess(resp.result.id);
+                    window.close();
+                } else jumpPage(`system/Role/detail`, { id: resp.result.id });
+            }
+        })
+        .finally(() => (loading.value = false));
+};
+// 表单相关
 </script>
 
 <style scoped></style>

@@ -1,24 +1,33 @@
 <template>
-    <a-modal
-        v-model:visible="dialog.visible"
+    <j-modal
+        visible
         title="菜单图标"
         width="800px"
-        @ok="dialog.handleOk"
+        @cancel="emits('update:visible', false)"
+        @ok="confirm"
     >
-        <a-radio-group v-model:value="selected" class="radio">
-            <a-radio-button
+        <j-radio-group v-model:value="selected" class="radio">
+            <j-radio-button
                 v-for="typeStr in iconKeys"
                 :value="typeStr"
                 :class="{ active: selected === typeStr }"
             >
-                <a-icon :type="typeStr" />
-            </a-radio-button>
-        </a-radio-group>
-    </a-modal>
+                <AIcon :type="typeStr" />
+            </j-radio-button>
+        </j-radio-group>
+    </j-modal>
 </template>
 
 <script setup lang="ts">
-const emits = defineEmits(['confirm']);
+const emits = defineEmits(['confirm', 'update:visible']);
+const props = defineProps<{
+    visible: boolean;
+}>();
+
+const confirm = () => {
+    emits('confirm', selected.value);
+    emits('update:visible', false);
+};
 const iconKeys = [
     'EyeOutlined',
     'EditOutlined',
@@ -48,29 +57,11 @@ const iconKeys = [
     'TeamOutlined',
     'MenuUnfoldOutlined',
     'MenuFoldOutlined',
-    'QuestionCircleOutlined',
     'InfoCircleOutlined',
     'SearchOutlined',
 ];
 
-const dialog = reactive({
-    visible: false,
-    handleOk: () => {
-        emits('confirm', selected.value);
-        dialog.changeVisible();
-        selected.value = '';
-    },
-    changeVisible: (show?: boolean) => {
-        dialog.visible = show === undefined ? !dialog.visible : show;
-    },
-});
-
 const selected = ref<string>('');
-
-// 将打开弹窗的操作暴露给父组件
-defineExpose({
-    openDialog: dialog.changeVisible,
-});
 </script>
 
 <style lang="less" scoped>

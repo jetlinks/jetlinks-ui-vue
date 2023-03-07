@@ -155,10 +155,12 @@ const permission = reactive({
             const checked = checkedValue?.find(
                 (checkedItem) => checkedItem.permission === item.id,
             );
-            const options = item.actions.map((actionItem: any) => ({
-                label: actionItem.name,
-                value: actionItem.action,
-            }));
+
+            const options =
+            item.actions && item.actions.map((actionItem: any) => ({
+                    label: actionItem.name,
+                    value: actionItem.action,
+                })) || [];
             return {
                 id: item.id,
                 name: item.name,
@@ -181,7 +183,6 @@ const permission = reactive({
     },
 });
 permission.init();
-
 
 type permissionType = {
     id: string;

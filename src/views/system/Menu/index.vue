@@ -1,14 +1,18 @@
 <template>
     <page-container>
         <div class="menu-container">
-            <Search :columns="query.columns" @search="query.search" />
+            <j-advanced-search
+                :columns="columns"
+                @search="(params:any)=>queryParams = {...params}"
+            />
 
             <j-pro-table
                 ref="tableRef"
-                :columns="table.columns"
+                :columns="columns"
                 :request="table.getList"
                 model="TABLE"
-                :params="query.params"
+                :params="queryParams"
+                noPagination
             >
                 <template #headerTitle>
                     <PermissionButton
@@ -18,17 +22,11 @@
                     >
                         <AIcon type="PlusOutlined" />新增
                     </PermissionButton>
-                    <a-button
+                    <j-button
                         style="margin-left: 12px"
                         @click="router.push('/system/Menu/Setting')"
-                        >菜单配置</a-button
+                        >菜单配置</j-button
                     >
-                    <!-- <PermissionButton
-                        :uhasPermission="true"
-                        @click="router.push('/system/Menu/Setting')"
-                    >
-                        菜单配置
-                    </PermissionButton> -->
                 </template>
                 <template #createTime="slotProps">
                     {{
@@ -38,17 +36,17 @@
                     }}
                 </template>
                 <template #action="slotProps">
-                    <a-space :size="16">
-                        <a-tooltip>
+                    <j-space :size="16">
+                        <j-tooltip>
                             <template #title>查看</template>
-                            <a-button
+                            <j-button
                                 style="padding: 0"
                                 type="link"
                                 @click="table.toDetails(slotProps)"
                             >
-                                <search-outlined />
-                            </a-button>
-                        </a-tooltip>
+                                <AIcon type="SearchOutlined" />
+                            </j-button>
+                        </j-tooltip>
 
                         <PermissionButton
                             type="link"
@@ -69,7 +67,7 @@
                         >
                             <AIcon type="DeleteOutlined" />
                         </PermissionButton>
-                    </a-space>
+                    </j-space>
                 </template>
             </j-pro-table>
         </div>
@@ -80,7 +78,6 @@
 import PermissionButton from '@/components/PermissionButton/index.vue';
 
 import { getMenuTree_api, delMenuInfo_api } from '@/api/system/menu';
-import { SearchOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import moment from 'moment';
 
@@ -88,112 +85,75 @@ const permission = 'system/Menu';
 
 const router = useRouter();
 
-// 筛选
-const query = reactive({
-    columns: [
-        {
-            title: '编码',
-            dataIndex: 'code',
-            key: 'code',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-            },
+const columns = [
+    {
+        title: '编码',
+        dataIndex: 'code',
+        key: 'code',
+        ellipsis: true,
+        fixed: 'left',
+        search: {
+            type: 'string',
         },
-        {
-            title: '名称',
-            dataIndex: 'name',
-            key: 'name',
-            ellipsis: true,
-            search: {
-                type: 'string',
-            },
-        },
-        {
-            title: '页面地址',
-            dataIndex: 'url',
-            key: 'url',
-            ellipsis: true,
-            search: {
-                type: 'string',
-            },
-        },
-        {
-            title: '排序',
-            dataIndex: 'sortIndex',
-            key: 'sortIndex',
-            ellipsis: true,
-            search: {
-                type: 'number',
-            },
-        },
-        {
-            title: '创建时间',
-            dataIndex: 'createTime',
-            key: 'createTime',
-            ellipsis: true,
-            search: {
-                type: 'date',
-            },
-        },
-    ],
-    params: {
-        terms: [],
+        width: 300,
     },
-    search: (params: any) => {
-        query.params = params;
+    {
+        title: '名称',
+        dataIndex: 'name',
+        key: 'name',
+        ellipsis: true,
+        search: {
+            type: 'string',
+        },
+        width: 220,
     },
-});
+    {
+        title: '页面地址',
+        dataIndex: 'url',
+        key: 'url',
+        ellipsis: true,
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '排序',
+        dataIndex: 'sortIndex',
+        key: 'sortIndex',
+        ellipsis: true,
+        search: {
+            type: 'number',
+        },
+        width: 80,
+    },
+    {
+        title: '说明',
+        dataIndex: 'describe',
+        key: 'describe',
+        width: 200,
+    },
+    {
+        title: '创建时间',
+        dataIndex: 'createTime',
+        key: 'createTime',
+        ellipsis: true,
+        search: {
+            type: 'date',
+        },
+        width: 180,
+    },
+    {
+        title: '操作',
+        dataIndex: 'action',
+        key: 'action',
+        scopedSlots: true,
+        width: 140,
+    },
+];
+const queryParams = ref({ terms: [] });
 
 const tableRef = ref<Record<string, any>>({}); // 表格实例
 const table = reactive({
-    columns: [
-        {
-            title: '编码',
-            dataIndex: 'code',
-            key: 'code',
-            width: 300,
-        },
-        {
-            title: '名称',
-            dataIndex: 'name',
-            key: 'name',
-            width: 220,
-        },
-        {
-            title: '页面地址',
-            dataIndex: 'url',
-            key: 'url',
-        },
-        {
-            title: '排序',
-            dataIndex: 'sortIndex',
-            key: 'sortIndex',
-            width: 80,
-        },
-        {
-            title: '说明',
-            dataIndex: 'describe',
-            key: 'describe',
-            width: 200,
-        },
-        {
-            title: '创建时间',
-            dataIndex: 'createTime',
-            key: 'createTime',
-            scopedSlots: true,
-            width: 180,
-        },
-        {
-            title: '操作',
-            dataIndex: 'action',
-            key: 'action',
-            scopedSlots: true,
-            width: 140,
-        },
-    ],
-    tableData: [],
     total: 0,
     getList: async (_params: any) => {
         //过滤非集成的菜单
@@ -220,7 +180,7 @@ const table = reactive({
             ..._params,
             terms:
                 _params.terms && _params.length !== 0
-                    ? [...query.params.terms, item]
+                    ? [..._params.terms, item]
                     : [item],
             sorts: [{ name: 'sortIndex', order: 'asc' }],
             paging: false,
@@ -233,9 +193,9 @@ const table = reactive({
             code: resp.message,
             result: {
                 data: resp.result,
-                pageIndex: 0,
-                pageSize: 0,
-                total: 0,
+                pageIndex: resp.pageIndex,
+                pageSize: resp.pageSize,
+                total: resp.total,
             },
             status: resp.status,
         };

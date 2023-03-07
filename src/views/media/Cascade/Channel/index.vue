@@ -1,7 +1,7 @@
 <!-- 国标级联-通道列表 -->
 <template>
     <page-container>
-        <Search
+        <j-advanced-search
             type="simple"
             :columns="columns"
             target="media"

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <a-table
+        <j-table
             :columns="columns"
             size="small"
             rowKey="id"
@@ -11,7 +11,7 @@
                 pageSize: dataSource?.pageSize || 10,
                 showSizeChanger: true,
                 total: dataSource?.total || 0,
-                pageSizeOptions: [5, 10, 20, 50],
+                pageSizeOptions: ['8', '12', '24', '60', '100']
             }"
         >
             <template #bodyCell="{ column, record }">
@@ -26,8 +26,8 @@
                     />
                 </template>
                 <template v-else-if="column.key === 'action'">
-                    <a-space>
-                        <a-button
+                    <j-space>
+                        <j-button
                             v-if="
                                 showLoad ||
                                 (!getType(record?.value) &&
@@ -36,16 +36,16 @@
                             type="link"
                             @click="_download(record)"
                             ><AIcon type="DownloadOutlined"
-                        /></a-button>
-                        <a-button type="link" @click="showDetail(record)"
+                        /></j-button>
+                        <j-button type="link" @click="showDetail(record)"
                             ><AIcon type="SearchOutlined"
-                        /></a-button>
-                    </a-space>
+                        /></j-button>
+                    </j-space>
                 </template>
             </template>
-        </a-table>
+        </j-table>
     </div>
-    <a-modal
+    <j-modal
         title="详情"
         :visible="visible"
         @ok="visible = false"
@@ -60,13 +60,13 @@
             :expand-depth="5"
             :value="current.formatValue"
         />
-        <a-textarea
+        <j-textarea
             v-else-if="data?.valueType?.type === 'file'"
             :value="current.formatValue"
             :row="3"
         />
-        <a-input v-else disabled :value="current.formatValue" />
-    </a-modal>
+        <j-input v-else disabled :value="current.formatValue" />
+    </j-modal>
 </template>
 
 <script lang="ts" setup>
@@ -90,7 +90,12 @@ const _props = defineProps({
 });
 
 const instanceStore = useInstanceStore();
-const dataSource = ref({});
+const dataSource = ref({
+    pageIndex: 0,
+    pageSize: 10,
+    data: [],
+    total: 0
+});
 const current = ref<any>({});
 const visible = ref<boolean>(false);
 

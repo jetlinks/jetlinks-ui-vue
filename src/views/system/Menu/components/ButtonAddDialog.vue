@@ -1,13 +1,12 @@
 <template>
     <a-modal
-        v-model:visible="dialog.visible"
-        :title="form.mode"
+        visible
+        :title="props.mode"
         width="660px"
-        @ok="dialog.handleOk"
+        @ok="confirm"
+        @cancel="emits('update:visible', false)"
         :maskClosable="false"
-        cancelText="取消"
-        okText="确定"
-        :confirmLoading="dialog.loading"
+        :confirmLoading="loading"
     >
         <a-form :model="form.data" class="basic-form" ref="formRef">
             <a-form-item
@@ -20,7 +19,7 @@
             >
                 <a-input
                     v-model:value="form.data.id"
-                    :disabled="form.mode !== '新增'"
+                    :disabled="props.mode !== '新增'"
                 />
             </a-form-item>
             <a-form-item
@@ -33,7 +32,7 @@
             >
                 <a-input
                     v-model:value="form.data.name"
-                    :disabled="form.mode === '查看'"
+                    :disabled="props.mode === '查看'"
                 />
             </a-form-item>
             <a-form-item
@@ -47,19 +46,11 @@
                     },
                 ]"
             >
-                <!-- <a-form-item-rest>
-                    <PermissChoose
-                        :first-width="8"
-                        max-height="350px"
-                        v-model:value="form.data.permissions"
-                        :disabled="form.mode === '查看'"
-                    />
-                </a-form-item-rest> -->
                 <PermissChoose
                     :first-width="8"
                     max-height="350px"
                     v-model:value="form.data.permissions"
-                    :disabled="form.mode === '查看'"
+                    :disabled="props.mode === '查看'"
                     :key="form.data.id || ''"
                 />
             </a-form-item>
@@ -68,7 +59,7 @@
                     v-model:value="form.data.describe"
                     :rows="4"
                     placeholder="请输入说明"
-                    :disabled="form.mode === '查看'"
+                    :disabled="props.mode === '查看'"
                 />
             </a-form-item>
         </a-form>
@@ -81,54 +72,42 @@ import { Rule } from 'ant-design-vue/es/form';
 import PermissChoose from '../components/PermissChoose.vue';
 import { saveMenuInfo_api } from '@/api/system/menu';
 
+const emits = defineEmits(['confirm', 'update:visible']);
 const props = defineProps<{
     menuInfo: {
         buttons: formType[];
         id: string;
     };
+    visible: boolean;
+    mode: '查看' | '新增' | '编辑';
+    data: formType;
 }>();
-const emits = defineEmits(['confirm']);
-const dialog = reactive({
-    visible: false,
-    loading: false,
-    handleOk: () => {
-        props.menuInfo.id &&
-            formRef.value &&
-            formRef.value
-                .validate()
-                .then(() => {
-                    const buttons = toRaw(props.menuInfo.buttons);
-                    const button = buttons.find(
-                        (item) => item.id === form.data.id,
-                    );
-                    if (button) {
-                        Object.entries(form.data).forEach(([key, value]) => {
-                            button[key] = value;
-                        });
-                    } else buttons.push({ ...form.data });
-                    const params = {
-                        ...props.menuInfo,
-                        buttons,
-                    };
-                    dialog.loading = true;
-                    saveMenuInfo_api(params)
-                        .then((resp) => {
-                            dialog.changeVisible();
-                            message.success('操作成功');
-                            emits('confirm');
-                        })
-                        .finally(() => (dialog.loading = false));
-                })
-                .catch(() => {});
-    },
-    changeVisible: (mode?: string, formValue?: formType) => {
-        dialog.visible = !dialog.visible;
-        form.data = { ...initForm, ...formValue };
-        form.mode = mode || '';
 
-        formRef.value && formRef.value.clearValidate();
-    },
-});
+const loading = ref(false);
+const confirm = () => {
+    loading.value = true;
+    formRef.value &&
+        formRef.value.validate().then(() => {
+            const buttons = toRaw(props.menuInfo.buttons);
+            const button = buttons.find((item) => item.id === form.data.id);
+            if (button) {
+                Object.entries(form.data).forEach(([key, value]) => {
+                    button[key] = value;
+                });
+            } else buttons.push({ ...form.data });
+            const params = {
+                ...props.menuInfo,
+                buttons,
+            };
+            saveMenuInfo_api(params)
+                .then((resp) => {
+                    message.success('操作成功');
+                    emits('confirm');
+                    emits('update:visible', false);
+                })
+                .finally(() => (loading.value = false));
+        });
+};
 const initForm = {
     name: '',
     id: '',
@@ -137,17 +116,11 @@ const initForm = {
 } as formType;
 const formRef = ref<FormInstance>();
 const form = reactive({
-    data: { ...initForm },
-    mode: '',
-    checkPermission: async (_rule: Rule, value: string[]) => {
+    data: { ...initForm, ...props.data },
+    checkPermission: (_rule: Rule, value: string[]) => {
         if (!value || value.length < 1) return Promise.reject('请选择权限');
         return Promise.resolve();
     },
-});
-
-// 将打开弹窗的操作暴露给父组件
-defineExpose({
-    openDialog: dialog.changeVisible,
 });
 
 type formType = {
