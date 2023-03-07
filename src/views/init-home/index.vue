@@ -7,9 +7,9 @@
         <div class="container-box">
             <div class="container-main">
                 <div class="container-right">
-                    <a-spin :spinning="spinning">
-                        <a-collapse v-model:activeKey="activeKey" accordion>
-                            <a-collapse-panel key="1">
+                    <j-spin :spinning="spinning">
+                        <j-collapse v-model:activeKey="activeKey" accordion>
+                            <j-collapse-panel key="1">
                                 <template #header>
                                     <span class="title">基本信息</span>
                                     <span class="sub-title"
@@ -17,8 +17,8 @@
                                     >
                                 </template>
                                 <Basic ref="basicRef" />
-                            </a-collapse-panel>
-                            <a-collapse-panel key="2" >
+                            </j-collapse-panel>
+                            <j-collapse-panel key="2" >
                                 <template #header>
                                     <span class="title">菜单初始化</span>
                                     <span class="sub-title"
@@ -26,8 +26,8 @@
                                     >
                                 </template>
                                 <Menu></Menu>
-                            </a-collapse-panel>
-                            <a-collapse-panel key="3" forceRender>
+                            </j-collapse-panel>
+                            <j-collapse-panel key="3" forceRender>
                                 <template #header>
                                     <span class="title">角色初始化</span>
                                     <span class="sub-title"
@@ -35,8 +35,8 @@
                                     >
                                 </template>
                                 <Role ref="roleRef"></Role>
-                            </a-collapse-panel>
-                            <a-collapse-panel key="4" forceRender>
+                            </j-collapse-panel>
+                            <j-collapse-panel key="4" forceRender>
                                 <template #header>
                                     <span class="title">初始化数据</span>
                                     <span class="sub-title"
@@ -44,15 +44,15 @@
                                     >
                                 </template>
                                 <InitData ref="initDataRef"></InitData>
-                            </a-collapse-panel>
-                        </a-collapse>
-                    </a-spin>
-                    <a-button
+                            </j-collapse-panel>
+                        </j-collapse>
+                    </j-spin>
+                    <j-button
                         type="primary"
                         class="btn-style"
                         @click="submitData"
                         :loading="loading"
-                        >确定</a-button
+                        >确定</j-button
                     >
                 </div>
             </div>
