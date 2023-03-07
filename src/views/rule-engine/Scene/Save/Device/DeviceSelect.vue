@@ -12,17 +12,13 @@ import DeviceList from './DeviceList.vue'
 import OrgList from './OrgList.vue'
 import { getImage } from '@/utils/comm'
 import type { PropType } from 'vue'
-
-type ItemType = {
-  name: string,
-  value: string
-}
+import { SelectorValuesItem } from '@/views/rule-engine/Scene/typings'
 
 type Emit = {
   (e: 'update:selector', data: string): void
-  (e: 'update:selectorValues', data: ItemType[]): void
-  (e: 'update:deviceKeys', data: ItemType[]): void
-  (e: 'update:orgId', data: ItemType[]): void
+  (e: 'update:selectorValues', data: SelectorValuesItem[]): void
+  (e: 'update:deviceKeys', data: SelectorValuesItem[]): void
+  (e: 'update:orgId', data: SelectorValuesItem[]): void
 }
 
 const emit = defineEmits<Emit>()
@@ -36,18 +32,22 @@ const props = defineProps({
     type: String,
     default: ''
   },
-  device: {
-    type: Array as PropType<ItemType[]>,
+  selectorValues: {
+    type: Array as PropType<SelectorValuesItem[]>,
+    default: () => []
+  },
+  deviceKeys: {
+    type: Array as PropType<SelectorValuesItem[]>,
     default: () => []
   },
   orgId: {
-    type: Array as PropType<ItemType[]>,
+    type: Array as PropType<SelectorValuesItem[]>,
     default: () => []
   }
 })
 
 const selectorModel = ref(props.selector)
-const devices = ref(props.device)
+const devices = ref(props.deviceKeys)
 const orgIds = ref(props.orgId)
 
 const typeList = [
@@ -69,6 +69,7 @@ const updateDevice = (d: any[]) => {
 }
 
 const updateOrg = (d: any[]) => {
+  console.log('updateOrg', d)
   orgIds.value = d
   emit('update:orgId', d)
   emit('update:selectorValues', d)
