@@ -2,12 +2,14 @@
 <template>
     <page-container>
         <div class="playback-warp">
+            <!-- 播放器/进度条 -->
             <div class="playback-left">
                 <LivePlayer
                     ref="player"
                     :src="url"
                     width="758px"
                     height="462px"
+                    type="mp4"
                 />
                 <TimeLine
                     ref="playTimeNode"
@@ -170,7 +172,6 @@ const historyList = ref<recordsItemType[]>([]);
 const time = ref<Dayjs | undefined>(undefined);
 const loading = ref(false);
 const cloudTime = ref<any>();
-// const location = ref();
 const player = ref<any>();
 const playStatus = ref(0); // 播放状态, 0 停止， 1 播放， 2 暂停, 3 播放完成
 const playTime = ref(0);
@@ -184,8 +185,6 @@ const channelId = computed(() => route.query.channelId as string);
 const deviceType = ref('');
 
 const queryLocalRecords = async (date: Dayjs) => {
-    console.log('date: ', date);
-
     playStatus.value = 0;
     url.value = '';
 
@@ -273,6 +272,10 @@ const cloudView = (startTime: number, endTime: number) => {
     queryServiceRecords(time.value!);
 };
 
+/**
+ * 下载到云端
+ * @param item 
+ */
 const downloadClick = async (item: recordsItemType) => {
     const downloadUrl = playBackApi.downLoadFile(item.id);
     const downNode = document.createElement('a');
@@ -302,6 +305,10 @@ onMounted(() => {
     }
 });
 
+/**
+ * 播放进度条点击
+ * @param times
+ */
 const handleTimeLineChange = (times: any) => {
     if (times) {
         playNowTime.value = Number(times.startTime.valueOf());
@@ -332,9 +339,11 @@ watch(
     },
 );
 
+/**
+ * 日历操作
+ * @param date 
+ */
 const handlePanelChange = (date: any) => {
-    console.log('type: ', typeof date);
-    console.log('date: ', date);
     time.value = date;
     if (type.value === 'cloud') {
         queryServiceRecords(date);
@@ -343,7 +352,10 @@ const handlePanelChange = (date: any) => {
     }
 };
 
-// 播放/暂停
+/**
+ * 播放/暂停
+ * @param _startTime 
+ */
 const handlePlay = (_startTime: any) => {
     if (playStatus.value === 0 || _startTime !== playNowTime.value) {
         if (playTimeNode.value) {
