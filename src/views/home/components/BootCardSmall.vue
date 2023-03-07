@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import { message } from 'ant-design-vue';
-import { bootConfig } from "../index";
+import { bootConfig } from "../typing";
 
 const router = useRouter();
 const props = defineProps({

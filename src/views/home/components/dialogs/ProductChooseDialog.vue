@@ -1,59 +1,52 @@
 <template>
-    <div ref="modal" class="access-method-dialog-container"></div>
-    <a-modal
-        v-model:visible="visible"
+    <j-modal
+        visible
         title="选择产品"
-        style="width: 700px"
-        @ok="handleOk"
-        show-search
+        width="700px"
+        @ok="confirm"
+        @cancel="emits('update:visible', false)"
         :filter-option="filterOption"
-        :getContainer="getContainer"
         :maskClosable="false"
+        class="access-method-dialog-container"
     >
-        <a-form :model="form" name="basic" autocomplete="off" layout="vertical">
-            <a-form-item
+        <j-form :model="form" name="basic" autocomplete="off" layout="vertical">
+            <j-form-item
                 label="产品"
                 name="productId"
                 :rules="[{ required: true, message: '该字段是必填字段' }]"
             >
-                <a-select
+                <j-select
                     v-model:value="form.productId"
                     style="width: 100%"
                     :options="productList"
                 >
-                </a-select>
-            </a-form-item>
-        </a-form>
-
-        <template #footer>
-            <a-button key="back" @click="visible = false">取消</a-button>
-            <a-button key="submit" type="primary" @click="handleOk"
-                >确认</a-button
-            >
-        </template>
-    </a-modal>
+                </j-select>
+            </j-form-item>
+        </j-form>
+    </j-modal>
 </template>
 
 <script setup lang="ts">
-import { ComponentInternalInstance } from 'vue';
-
 import { getProductList_api } from '@/api/home';
-import { productItem } from '../../index';
-const { proxy } = getCurrentInstance() as ComponentInternalInstance;
-const props = defineProps({
-    openNumber: Number,
-});
-const emits = defineEmits(['confirm']);
-const visible = ref<boolean>(false);
+import { productItem } from '../../typing';
+
+const emits = defineEmits(['confirm', 'update:visible']);
+const props = defineProps<{
+    visible: boolean;
+}>();
+
+const confirm = () => {
+    emits('confirm', form.value.productId);
+    emits('update:visible', false);
+};
+
 const form = ref({
     productId: '',
 });
 
 const productList = ref<[productItem] | []>([]);
-
-const getContainer = () => proxy?.$refs.modal as HTMLElement;
 const getOptions = () => {
-    getProductList_api().then((resp:any) => {
+    getProductList_api().then((resp: any) => {
         productList.value = resp.result
             .filter((i: any) => !i?.accessId)
             .map((item: { name: any; id: any }) => ({
@@ -62,21 +55,11 @@ const getOptions = () => {
             })) as [productItem];
     });
 };
-const handleOk = () => {
-    emits('confirm', form.value.productId);
-    visible.value = false;
-};
+
 const filterOption = (input: string, option: any) => {
     return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
-watch(
-    () => props.openNumber,
-    () => {
-        visible.value = true;
-        form.value.productId = '';
-        getOptions();
-    },
-);
+getOptions();
 </script>
 
 <style lang="less" scoped>

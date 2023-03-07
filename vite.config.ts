@@ -10,6 +10,7 @@ import VueSetupExtend from 'vite-plugin-vue-setup-extend'
 import { createStyleImportPlugin, AndDesignVueResolve } from 'vite-plugin-style-import'
 import * as path from 'path'
 import monacoEditorPlugin from 'vite-plugin-monaco-editor';
+// import { JetlinksVueResolver } from 'jetlinks-ui-components/lib/plugin/resolve'
 import { JetlinksVueResolver } from './plugin/jetlinks'
 import copy from 'rollup-plugin-copy';
 

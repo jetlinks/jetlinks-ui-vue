@@ -83,6 +83,7 @@ const selectItem = ref<any>({});
 const dialogVisible = ref(false);
 const dialogTitle = ref<'查看' | '新增' | '编辑'>('新增');
 const openDialog = (mode: '查看' | '新增' | '编辑', row: object) => {
+    if(!routeParams.id) return message.warning('请先新增菜单基本信息')
     selectItem.value = { ...row };
     dialogTitle.value = mode;
     dialogVisible.value = true;

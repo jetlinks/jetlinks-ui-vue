@@ -1,13 +1,12 @@
 <template>
-    <a-card class="boot-card-container" :bordered="false">
-        <template #title>
-            <h5 class="title">{{ cardTitle }}</h5>
-        </template>
+    <div class="boot-card-container" :bordered="false">
+        <h5 class="title">{{ cardTitle }}</h5>
+
         <div class="box">
             <div
                 class="box-item"
                 v-for="(item, index) in cardData"
-                @click="jumpPage(item)"
+                @click="jumpPage(item.link,item.params)"
             >
                 <div class="item-english">{{ item.english }}</div>
                 <div class="item-title">{{ item.label }}</div>
@@ -18,46 +17,27 @@
                 />
             </div>
         </div>
-    </a-card>
+    </div>
 </template>
 
 <script setup lang="ts">
-import { message } from 'ant-design-vue';
-import { bootConfig } from "../index";
+import { bootConfig } from "../typing";
+import { useMenuStore } from '@/store/menu';
 
-const router = useRouter();
+const { jumpPage } = useMenuStore();
+
 const props = defineProps({
     cardData: Array<bootConfig>,
     cardTitle: String,
 });
 const { cardData, cardTitle } = toRefs(props);
 
-const jumpPage = (row: bootConfig): void => {
-    if (row.auth && row.link) {
-        router.push(`${row.link}${objToParams(row.params || {})}`);
-    } else {
-        message.warning('暂无权限，请联系管理员');
-    }
-};
-
-const objToParams = (source: object): string => {
-    if (Object.prototype.toString.call(source) === '[object Object]') {
-        const paramsArr = <any>[];
-        Object.entries(source).forEach(([prop, value]) => {
-            if (typeof value === 'object') value = JSON.stringify(value);
-            paramsArr.push(`${prop}=${value}`);
-        });
-        if (paramsArr.length > 0) return '?' + paramsArr.join('&');
-    }
-    return '';
-};
 </script>
 
 <style lang="less" scoped>
 .boot-card-container {
-    :deep(.ant-card-body) {
-        padding-top: 0;
-    }
+    background-color: #fff;
+    padding: 24px 14px;
     .title {
         position: relative;
         z-index: 2;

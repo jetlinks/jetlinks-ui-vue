@@ -1,132 +1,132 @@
 <template>
     <div class="setting-container">
-        <a-card>
-            <h5 class="top">
-                <exclamation-circle-outlined />
-                <span style="padding-left: 12px"
-                    >基于系统源代码中的菜单数据，配置系统菜单。</span
-                >
-            </h5>
+        <h5 class="top">
+            <exclamation-circle-outlined />
+            <span style="padding-left: 12px"
+                >基于系统源代码中的菜单数据，配置系统菜单。</span
+            >
+        </h5>
 
-            <div class="transfer">
-                <!-- 左侧树 -->
-                <div class="basic-tree left">
-                    <div class="title">
-                        <div class="title-label">
-                            <span>源菜单</span>
-                            <a-tooltip>
-                                <template #title
-                                    >根据系统代码自动读取的菜单数据</template
-                                >
-                                <question-circle-outlined />
-                            </a-tooltip>
-                        </div>
-                        <div class="title-func">
-                            <a-button
-                                type="primary"
-                                @click="dialogShow = true"
-                                ghost
-                                >一键拷贝</a-button
+        <div class="transfer">
+            <!-- 左侧树 -->
+            <div class="basic-tree left">
+                <div class="title">
+                    <div class="title-label">
+                        <span>源菜单</span>
+                        <j-tooltip>
+                            <template #title
+                                >根据系统代码自动读取的菜单数据</template
                             >
-                        </div>
+                            <question-circle-outlined />
+                        </j-tooltip>
                     </div>
-                    <div class="content">
-                        <a-input
-                            v-model:value="transfer.data.leftSearchValue"
-                            style="margin-bottom: 8px"
-                            placeholder="请输入菜单名称"
+                    <div class="title-func">
+                        <j-button
+                            type="primary"
+                            @click="dialogShow = true"
+                            ghost
+                            >一键拷贝</j-button
                         >
-                            <template #prefix>
-                                <search-outlined style="color: #b3b3b3" />
-                            </template>
-                        </a-input>
-                        <a-tree
-                            autoExpandParent
-                            :tree-data="transfer.data.leftTreeData"
-                            draggable
-                        >
-                            <template #title="row">
-                                <div>{{ row.name }}</div>
-                            </template>
-                        </a-tree>
                     </div>
                 </div>
-
-                <div class="center">
-                    <a-button>请拖动至右侧</a-button>
-                </div>
-                <!-- 右侧树 -->
-                <div class="basic-tree right">
-                    <div class="title">
-                        <div class="title-label">
-                            <span>系统菜单</span>
-                            <a-tooltip>
-                                <template #title
-                                    >菜单管理页面配置的菜单数据</template
-                                >
-                                <question-circle-outlined />
-                            </a-tooltip>
-                        </div>
-                    </div>
-                    <div class="content">
-                        <a-input
-                            v-model:value="transfer.data.rightSearchValue"
-                            style="margin-bottom: 8px"
-                            placeholder="请输入菜单名称"
-                        >
-                            <template #prefix>
-                                <search-outlined style="color: #b3b3b3" />
-                            </template>
-                        </a-input>
-                        <a-tree
-                            draggable
-                            autoExpandParent
-                            :tree-data="transfer.data.rightTreeData"
-                            @drop="transfer.onRightDrop"
-                        >
-                            <template #title="row">
-                                <div
-                                    style="
-                                        display: flex;
-                                        justify-content: space-between;
-                                    "
-                                >
-                                    <span>{{ row.name }}</span>
-                                    <a-popconfirm
-                                        title="确认删除？"
-                                        ok-text="确定"
-                                        cancel-text="取消"
-                                        @confirm="transfer.removeItem(row)"
-                                    >
-                                        <a-tooltip>
-                                            <template #title>删除</template>
-                                            <a-button
-                                                style="padding: 0"
-                                                type="link"
-                                            >
-                                                <close-outlined />
-                                            </a-button>
-                                        </a-tooltip>
-                                    </a-popconfirm>
-                                </div>
-                            </template>
-                        </a-tree>
-                    </div>
+                <div class="content">
+                    <j-input
+                        v-model:value="transfer.data.leftSearchValue"
+                        style="margin-bottom: 8px"
+                        placeholder="请输入菜单名称"
+                    >
+                        <template #prefix>
+                            <search-outlined style="color: #b3b3b3" />
+                        </template>
+                    </j-input>
+                    <j-tree
+                        autoExpandParent
+                        :tree-data="transfer.data.leftTreeData"
+                        draggable
+                    >
+                        <template #title="row">
+                            <div>{{ row.name }}</div>
+                        </template>
+                    </j-tree>
                 </div>
             </div>
 
-            <div class="dialogs">
-                <a-modal
-                    v-model:visible="dialogShow"
-                    title="一键拷贝"
-                    @ok="transfer.copy"
-                    cancelText="取消"
-                    okText="确认"
-                >
-                    <p>源数据将会覆盖当前的系统菜单数据，确定要一键拷贝吗？</p>
-                </a-modal>
+            <div class="center">
+                <j-button>请拖动至右侧</j-button>
             </div>
-        </a-card>
+            <!-- 右侧树 -->
+            <div class="basic-tree right">
+                <div class="title">
+                    <div class="title-label">
+                        <span>系统菜单</span>
+                        <j-tooltip>
+                            <template #title
+                                >菜单管理页面配置的菜单数据</template
+                            >
+                            <question-circle-outlined />
+                        </j-tooltip>
+                    </div>
+                </div>
+                <div class="content">
+                    <j-input
+                        v-model:value="transfer.data.rightSearchValue"
+                        style="margin-bottom: 8px"
+                        placeholder="请输入菜单名称"
+                    >
+                        <template #prefix>
+                            <search-outlined style="color: #b3b3b3" />
+                        </template>
+                    </j-input>
+                    <j-tree
+                        draggable
+                        autoExpandParent
+                        :tree-data="transfer.data.rightTreeData"
+                        @drop="transfer.onRightDrop"
+                    >
+                        <template #title="row">
+                            <div
+                                style="
+                                    display: flex;
+                                    justify-content: space-between;
+                                "
+                            >
+                                <span>{{ row.name }}</span>
+                                <j-popconfirm
+                                    title="确认删除？"
+                                    ok-text="确定"
+                                    cancel-text="取消"
+                                    @confirm="transfer.removeItem(row)"
+                                >
+                                    <j-tooltip>
+                                        <template #title>删除</template>
+                                        <j-button
+                                            style="padding: 0"
+                                            type="link"
+                                        >
+                                            <close-outlined />
+                                        </j-button>
+                                    </j-tooltip>
+                                </j-popconfirm>
+                            </div>
+                        </template>
+                    </j-tree>
+                </div>
+            </div>
+        </div>
+
+        <j-button type="primary" style="margin-top: 24px;">保存</j-button>
+
+        <div class="dialogs">
+            <j-modal
+                v-model:visible="dialogShow"
+                title="一键拷贝"
+                @ok="transfer.copy"
+                cancelText="取消"
+                okText="确认"
+            >
+                <p>源数据将会覆盖当前的系统菜单数据，确定要一键拷贝吗？</p>
+            </j-modal>
+        </div>
     </div>
 </template>
 
@@ -282,6 +282,9 @@ const dialogShow = ref<boolean>(false);
 <style lang="less" scoped>
 .setting-container {
     padding: 24px;
+    margin: 24px;
+    background-color: #fff;
+
     .top {
         font-size: inherit;
         margin-bottom: 24px;
