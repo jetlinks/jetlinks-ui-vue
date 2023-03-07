@@ -11,7 +11,7 @@
     >
         <template #headerTitle>
             <a-space>
-                <PermissionButton type="primary" @click="showModal">
+                <PermissionButton type="primary" @click="showModal" hasPermission="rule-engine/Alarm/Configuration:add">
                     <template #icon><AIcon type="PlusOutlined" /></template>
                     新增
                 </PermissionButton>
@@ -64,6 +64,7 @@
                             ...item.tooltip,
                         }"
                         @click="item.onClick"
+                        :hasPermission="'rule-engine/Alarm/Configuration:'+item.key"
                     >
                         <AIcon :type="item.icon" />
                         <span>{{ item?.text }}</span>
@@ -137,7 +138,7 @@ const getActions = (
     if (!data) return [];
     const actions: ActionsType[] = [
         {
-            key: 'unbind',
+            key: 'action',
             text: '解绑',
             icon: 'DisconnectOutlined',
             popConfirm: {

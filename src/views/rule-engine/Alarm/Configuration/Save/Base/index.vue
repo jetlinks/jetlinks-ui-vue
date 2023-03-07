@@ -46,9 +46,7 @@
             <a-form-item label="说明" name="description">
                 <a-textarea v-model:value="form.description"></a-textarea>
             </a-form-item>
-            <a-button type="primary" @click="handleSave" :loading="loading"
-                >保存</a-button
-            >
+            <PermissionButton type="primary" @click="handleSave" :hasPermission="['rule-engine/Alarm/Configuration:add','rule-engine/Alarm/Configuration:update']">保存</PermissionButton>
         </a-form>
     </div>
 </template>
@@ -63,6 +61,7 @@ import { useMenuStore } from '@/store/menu';
 import { useRoute } from 'vue-router';
 import { useAlarmConfigurationStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
+import { usePermissionStore } from '@/store/permission';
 const route = useRoute();
 const id = route.query?.id;
 let selectDisable = ref(false);

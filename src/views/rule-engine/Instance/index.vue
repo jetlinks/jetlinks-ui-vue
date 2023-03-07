@@ -6,7 +6,7 @@
                 target="device-instance"
                 @search="handleSearch"
             ></Search>
-            <JTable
+            <JProTable
                 :columns="columns"
                 :request="queryList"
                 ref="tableRef"
@@ -16,11 +16,18 @@
                 :params="params"
             >
                 <template #headerTitle>
-                    <a-space>
-                        <a-button type="primary" @click="add"
-                            ><plus-outlined />新增</a-button
+                    <j-space>
+                        <PermissionButton
+                            type="primary"
+                            @click="add"
+                            hasPermission="rule-engine/Instance:add"
                         >
-                    </a-space>
+                            <template #icon
+                                ><AIcon type="PlusOutlined"
+                            /></template>
+                            新增
+                        </PermissionButton>
+                    </j-space>
                 </template>
                 <template #card="slotProps">
                     <CardBox
@@ -29,6 +36,7 @@
                         v-bind="slotProps"
                         :status="slotProps.state?.value"
                         :statusText="slotProps.state?.text"
+                        @click="openRuleEditor"
                         :statusNames="{
                             started: 'success',
                             disable: 'error',
@@ -62,6 +70,9 @@
                                 :tooltip="{
                                     ...item.tooltip,
                                 }"
+                                :hasPermission="
+                                    'rule-engine/Instance:' + item.key
+                                "
                                 @click="item.onClick"
                             >
                                 <AIcon
@@ -113,7 +124,7 @@
                         </template>
                     </a-space>
                 </template>
-            </JTable>
+            </JProTable>
             <!-- 新增、编辑 -->
             <Save
                 ref="saveRef"
@@ -138,6 +149,7 @@ import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage } from '@/utils/comm';
 import { message } from 'ant-design-vue';
 import Save from './Save/index.vue';
+import { SystemConst } from '@/utils/consts';
 const params = ref<Record<string, any>>({});
 let isAdd = ref<number>(0);
 let title = ref<string>('');
@@ -216,7 +228,7 @@ const getActions = (
     }
     const actions = [
         {
-            key: 'edit',
+            key: 'update',
             text: '编辑',
             tooltip: {
                 title: '编辑',
@@ -311,6 +323,11 @@ const refresh = () => {
 };
 const handleSearch = (e: any) => {
     params.value = e;
+};
+const openRuleEditor = (item: any) => {
+    window.open(
+        `/${SystemConst.API_BASE}/rule-editor/index.html#flow/${item.id}`,
+    );
 };
 </script>
 <style scoped>
