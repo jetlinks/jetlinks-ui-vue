@@ -392,12 +392,12 @@ const handlePlay = (_startTime: any) => {
             playTimeNode.value.playByStartTime(_startTime);
         }
     } else if (playStatus.value == 1 && _startTime === playNowTime.value) {
-        if (player.value.getVueInstance) {
-            // player.value.getVueInstance().pause();
+        if (player.value) {
+            player.value.pause();
         }
     } else if (playStatus.value == 2 && _startTime === playNowTime.value) {
-        if (player.value.getVueInstance) {
-            // player.value.getVueInstance().play();
+        if (player.value) {
+            player.value.play();
         }
     }
 };
