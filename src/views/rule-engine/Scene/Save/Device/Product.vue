@@ -1,5 +1,5 @@
 <template>
-  <Search
+  <j-advanced-search
     :columns="columns"
     type='simple'
     @search="handleSearch"
@@ -7,7 +7,7 @@
     target="scene-triggrt-device-device"
   />
   <a-divider style='margin: 0' />
-  <j-table
+  <j-pro-table
     ref='actionRef'
     model='CARD'
     :columns='columns'
@@ -53,7 +53,7 @@
         </template>
       </CardBox>
     </template>
-  </j-table>
+  </j-pro-table>
 </template>
 
 <script setup lang='ts' name='Product'>
@@ -83,6 +83,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<Emit>()
+const firstFind = ref(true)
 
 const columns = [
   {
@@ -230,7 +231,7 @@ const handleSearch = (p: any) => {
   params.value = p
 }
 
-const productQuery = (p: any) => {
+const productQuery = async (p: any) => {
   const sorts: any = [];
 
   if (props.rowKey) {
@@ -241,7 +242,15 @@ const productQuery = (p: any) => {
   }
   sorts.push({ name: 'createTime', order: 'desc' });
   p.sorts = sorts
-  return queryProductList(p)
+  const resp = await queryProductList(p)
+  if (resp.success && props.rowKey && firstFind.value) {
+    const productItem = (resp.result as { data: any[]}).data.find((item: any) => item.id === props.rowKey)
+    emit('update:detail', productItem)
+    firstFind.value = false
+  }
+  return {
+    ...resp
+  }
 }
 
 const handleClick = (detail: any) => {

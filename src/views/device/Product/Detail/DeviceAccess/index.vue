@@ -4,11 +4,12 @@
         <div v-if="productStore.current.accessId === undefined || null">
             <a-empty :image="simpleImage">
                 <template #description>
-                    <span>
+                    <span v-if="permissionStore.hasPermission('device/Product:update')">
                         请先<a-button type="link" @click="showModal"
                             >选择</a-button
                         >设备接入网关，用以提供设备接入能力
                     </span>
+                    <span v-else>暂无权限，请联系管理员</span>
                 </template>
             </a-empty>
         </div>
@@ -173,9 +174,7 @@
                             </a-select>
                         </a-form-item>
                     </a-form>
-                    <a-button type="primary" @click="submitDevice"
-                        >保存</a-button
-                    >
+                    <PermissionButton type="primary" @click="submitDevice" hasPermission="device/Instance:update">保存</PermissionButton>
                 </a-col>
                 <a-col
                     :span="12"
@@ -271,16 +270,11 @@
             target="deviceModal"
             @search="search"
         />
-        <JTable
+        <JProTable
             :columns="columns"
             :request="queryList"
             ref="tableRef"
             modal="card"
-            :rowSelection="{
-                selectedRowKeys: _selectedRowKeys,
-                onChange: onSelectChange,
-                type: 'radio',
-            }"
             :defaultParams="{
                 ...temp,
                 sorts: [
@@ -343,7 +337,7 @@
             <template #id="slotProps">
                 <a>{{ slotProps.id }}</a>
             </template>
-        </JTable>
+        </JProTable>
     </a-modal>
 </template>
 
@@ -353,6 +347,7 @@ import { ConfigMetadata } from '@/views/device/Product/typings';
 import { Empty, message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 import Title from '../Title/index.vue';
+import { usePermissionStore } from '@/store/permission';
 import './index.less';
 import {
     getProviders,
@@ -375,6 +370,7 @@ import Driver from 'driver.js';
 import 'driver.js/dist/driver.min.css';
 import { marked } from 'marked';
 import type { FormInstance, TableColumnType } from 'ant-design-vue';
+const permissionStore = usePermissionStore();
 const render = new marked.Renderer();
 marked.setOptions({
     renderer: render,
@@ -547,10 +543,6 @@ const temp = {
 };
 const _selectedRowKeys = ref<string[]>([]);
 const currentForm = ref({});
-
-const onSelectChange = (keys: string[]) => {
-    _selectedRowKeys.value = [...keys];
-};
 
 const cancelSelect = () => {
     _selectedRowKeys.value = [];

@@ -5,7 +5,7 @@
             target="alarm-log-detail"
             @search="handleSearch"
         ></Search>
-        <JTable
+        <JProTable
             :columns="columns"
             model="TABLE"
             :request="queryList"
@@ -39,7 +39,7 @@
                     </template>
                 </a-space>
             </template>
-        </JTable>
+        </JProTable>
         <Info v-if="visiable"  :data="current" @close="close"/>
     </page-container>
 </template>

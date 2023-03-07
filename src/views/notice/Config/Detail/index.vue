@@ -408,6 +408,7 @@ const { resetFields, validate, validateInfos, clearValidate } = useForm(
 );
 
 const getDetail = async () => {
+  console.log('getDetail', route)
     if (route.params.id === ':id') return;
     const res = await configApi.detail(route.params.id as string);
     // formData.value = res.result;

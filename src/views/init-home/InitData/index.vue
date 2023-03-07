@@ -11,13 +11,13 @@
         />
     </div>
     <!-- 初始数据提交表单 -->
-    <a-modal
+    <j-modal
         v-model:visible="visible"
         title="初始数据"
         width="52vw"
         :maskClosable="false"
         @cancel="cancel"
-        @ok="save"
+        @ok="handelSave"
         okText="确定"
         cancelText="取消"
         class="modal-style"
@@ -31,88 +31,88 @@
             </p>
         </div>
         <div style="margin-top: 20px">
-            <a-form
+            <j-form
                 layout="vertical"
                 :model="modalForm"
                 ref="formRef"
                 :rules="rulesModle"
             >
-                <a-row :span="24" :gutter="24">
-                    <a-col :span="12">
-                        <a-form-item name="host">
+                <j-row :span="24" :gutter="24">
+                    <j-col :span="12">
+                        <j-form-item name="host">
                             <template #label>
                                 <span>本地地址 </span>
-                                <a-tooltip
+                                <j-tooltip
                                     title="绑定到服务器上的网卡地址,绑定到所有网卡:0.0.0.0"
                                 >
                                     <img
                                         class="img-style"
                                         :src="getImage('/init-home/mark.png')"
                                     />
-                                </a-tooltip>
+                                </j-tooltip>
                             </template>
-                            <a-input
+                            <j-input
                                 v-model:value="modalForm.host"
                                 :disabled="true"
                             />
-                        </a-form-item>
-                        <a-form-item name="publicHost">
+                        </j-form-item>
+                        <j-form-item name="publicHost">
                             <template #label>
                                 <span>公网地址 </span>
-                                <a-tooltip
+                                <j-tooltip
                                     title="对外提供访问的地址内网环境时填写服务器的内网IP地址"
                                 >
                                     <img
                                         class="img-style"
                                         :src="getImage('/init-home/mark.png')"
                                     />
-                                </a-tooltip>
+                                </j-tooltip>
                             </template>
-                            <a-input v-model:value="modalForm.publicHost">
-                            </a-input>
-                        </a-form-item>
-                    </a-col>
-                    <a-col :span="12">
-                        <a-form-item name="port">
+                            <j-input v-model:value="modalForm.publicHost">
+                            </j-input>
+                        </j-form-item>
+                    </j-col>
+                    <j-col :span="12">
+                        <j-form-item name="port">
                             <template #label>
                                 <span>本地端口 </span>
-                                <a-tooltip title="监听指定端口的请求">
+                                <j-tooltip title="监听指定端口的请求">
                                     <img
                                         class="img-style"
                                         :src="getImage('/init-home/mark.png')"
                                     />
-                                </a-tooltip>
+                                </j-tooltip>
                             </template>
-                            <a-select v-model:value="modalForm.port">
-                                <a-select-option
+                            <j-select v-model:value="modalForm.port">
+                                <j-select-option
                                     v-for="item in optionPorts"
                                     :key="item"
                                     :value="item.value"
                                     :label="item.label"
-                                    >{{ item.label }}</a-select-option
+                                    >{{ item.label }}</j-select-option
                                 >
-                            </a-select>
-                        </a-form-item>
-                        <a-form-item name="publicPort">
+                            </j-select>
+                        </j-form-item>
+                        <j-form-item name="publicPort">
                             <template #label>
                                 <span>公网端口 </span>
-                                <a-tooltip title="对外提供访问的端口">
+                                <j-tooltip title="对外提供访问的端口">
                                     <img
                                         class="img-style"
                                         :src="getImage('/init-home/mark.png')"
                                     />
-                                </a-tooltip>
+                                </j-tooltip>
                             </template>
-                            <a-input-number
+                            <j-input-number
                                 v-model:value="modalForm.publicPort"
                                 style="width: 100%"
                             />
-                        </a-form-item>
-                    </a-col>
-                </a-row>
-            </a-form>
+                        </j-form-item>
+                    </j-col>
+                </j-row>
+            </j-form>
         </div>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script lang="ts" setup>
@@ -321,10 +321,12 @@ const saveCurrentData = () => {
     });
 };
 const { optionPorts, isSucessInit } = toRefs(initialization);
-const save = () => {
-    message.success('保存成功');
-    flag.value = true;
-    visible.value = false;
+const handelSave = () => {
+    formRef.value.validate().then(() => {
+        message.success('保存成功');
+        flag.value = true;
+        visible.value = false;
+    });
 };
 /**
  * 初始化

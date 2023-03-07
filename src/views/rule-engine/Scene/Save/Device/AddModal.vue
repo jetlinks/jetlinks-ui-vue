@@ -53,9 +53,9 @@
 
 <script setup lang='ts' name='AddModel'>
 import type { PropType } from 'vue'
-import type { metadataType, TriggerDevice, TriggerDeviceOptions } from '@/views/rule-engine/Scene/typings'
+import type { metadataType, TriggerDevice, TriggerDeviceOptions, SelectorValuesItem } from '@/views/rule-engine/Scene/typings'
 import { onlyMessage } from '@/utils/comm'
-import { detail as deviceDetail  } from '@/api/device/instance'
+import { detail as deviceDetail } from '@/api/device/instance'
 import Product from './Product.vue'
 import DeviceSelect from './DeviceSelect.vue'
 import Type from './Type.vue'
@@ -66,12 +66,13 @@ type Emit = {
   (e: 'save', data: TriggerDevice, options: Record<string, any>): void
 }
 
+
 interface AddModelType extends Omit<TriggerDevice, 'selectorValues'> {
   stepNumber: number
-  deviceKeys: Array<{ label: string, value: string }>
-  orgId: Array<{ label: string, value: string }>
+  deviceKeys: SelectorValuesItem[]
+  orgId: SelectorValuesItem[]
   productDetail: any
-  selectorValues: Array<Record<string, any>>
+  selectorValues: SelectorValuesItem[]
   metadata: metadataType,
   operator: TriggerDeviceOptions
 }
@@ -95,22 +96,20 @@ const props = defineProps({
 })
 
 const addModel = reactive<AddModelType>({
-  productId: '',
-  selector: 'fixed',
-  selectorValues: [],
+  productId: props.value.productId || '',
+  selector: props.value.selector || 'fixed',
+  selectorValues: props.value.selectorValues || [],
   stepNumber: 0,
-  deviceKeys: [],
-  orgId: [],
+  deviceKeys: props.value.selectorValues || [],
+  orgId: props.value.selectorValues || [],
   productDetail: {},
   metadata: {},
-  operator: {
+  operator: props.value.operation || {
     operator: 'online'
   }
 })
 
 const optionsCache = ref(props.options)
-
-Object.assign(addModel, props.value)
 
 const handleOptions = (data: TriggerDeviceOptions) => {
   const typeIconMap = {
@@ -230,6 +229,11 @@ const productChange = () => {
   addModel.selectorValues = []
 }
 
+const getDeviceDetailByMetadata = async (deviceId: string) => {
+  const resp = await deviceDetail(deviceId)
+  return resp.result?.metadata
+}
+
 const save = async (step?: number) => {
   let _step = step !== undefined ? step : addModel.stepNumber
   if (_step === 0) {
@@ -240,12 +244,8 @@ const save = async (step?: number) => {
       return onlyMessage(isFixed ? '请选择设备' : '请选择部门', 'error')
     }
     // 选择方式为设备且仅选中一个设备时，物模型取该设备
-    if (isFixed && addModel.selectorValues?.length === 1) {
-      const resp = await deviceDetail(addModel.selectorValues[0].value)
-      handleMetadata(resp.result.metadata)
-    } else {
-      handleMetadata(addModel.productDetail?.metadata)
-    }
+    const onlyOneDevice = isFixed && addModel.selectorValues?.length === 1
+    handleMetadata( onlyOneDevice ? await getDeviceDetailByMetadata(addModel.selectorValues[0].value) : addModel.productDetail?.metadata)
     addModel.stepNumber = 2
   } else {
     const typeData = await typeRef.value.vail()
@@ -272,6 +272,16 @@ const stepChange = (step: number) => {
     addModel.stepNumber = 0
   }
 }
+
+const initQuery = async () => {
+  if (props.value.selector === 'fixed' && props.value.selectorValues?.length) {
+    handleMetadata(await getDeviceDetailByMetadata(props.value.selectorValues[0].value))
+  }
+}
+
+nextTick(() => {
+  initQuery()
+})
 
 </script>
 

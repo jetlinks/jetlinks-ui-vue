@@ -25,7 +25,7 @@
                     <div class="tool-item">刷新</div>
                     <div class="tool-item" @click.stop="handleReset">重置</div>
                 </div>
-                <LivePlayer :src="src" :type="mediaType" />
+                <LivePlayer :url="url" :protocol="mediaType" autoplay />
             </div>
             <MediaTool
                 @onMouseDown="handleMouseDown"
@@ -71,14 +71,14 @@ const _vis = computed({
 });
 
 // 视频地址
-const src = ref('');
+const url = ref('');
 // 视频类型
-const mediaType = ref('mp4');
+const mediaType = ref<'mp4' | 'flv' | 'hls'>('mp4');
 /**
  * 媒体开始播放
  */
 const mediaStart = () => {
-    src.value = channelApi.ptzStart(
+    url.value = channelApi.ptzStart(
         props.data.deviceId,
         props.data.channelId,
         mediaType.value,
@@ -150,6 +150,9 @@ watch(
         if (val) {
             mediaStart();
             getIsRecord();
+        } else {
+            // url置空, 即销毁播放器
+            url.value = '';
         }
     },
 );

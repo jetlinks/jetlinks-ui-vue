@@ -15,19 +15,26 @@
             :params="params"
         >
             <template #headerTitle>
-                <a-space>
-                    <a-button type="primary" @click="add"
-                        ><plus-outlined />新增</a-button
+                <j-space>
+                    <PermissionButton
+                        type="primary"
+                        @click="add"
+                        hasPermission="device/Product:add"
                     >
+                        <template #icon><AIcon type="PlusOutlined" /></template>
+                        新增
+                    </PermissionButton>
                     <a-upload
                         name="file"
                         accept=".json"
                         :showUploadList="false"
                         :before-upload="beforeUpload"
                     >
-                        <a-button>导入</a-button>
+                        <PermissionButton hasPermission="device/Product:import"
+                            >导入</PermissionButton
+                        >
                     </a-upload>
-                </a-space>
+                </j-space>
             </template>
             <template #deviceType="slotProps">
                 <div>{{ slotProps.deviceType.text }}</div>
@@ -130,6 +137,7 @@
                                 ...item.tooltip,
                             }"
                             @click="item.onClick"
+                            :hasPermission="'device/Product:' + item.key"
                         >
                             <AIcon
                                 type="DeleteOutlined"
@@ -193,6 +201,7 @@
                         <PermissionButton
                             :disabled="i.disabled"
                             :popConfirm="i.popConfirm"
+                            :hasPermission="'device/Product:' + i.key"
                             :tooltip="{
                                 ...i.tooltip,
                             }"
@@ -334,12 +343,11 @@ const getActions = (
             },
         },
         {
-            key: 'edit',
+            key: 'update',
             text: '编辑',
             tooltip: {
                 title: '编辑',
             },
-
             icon: 'EditOutlined',
             onClick: () => {
                 title.value = '编辑';
@@ -350,7 +358,7 @@ const getActions = (
             },
         },
         {
-            key: 'download',
+            key: 'export',
             text: '导出',
             tooltip: {
                 title: '导出',

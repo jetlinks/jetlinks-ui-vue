@@ -92,7 +92,8 @@ export type MenuItem = {
     icon?: string
     [key: string]: any
   },
-  component?: any
+  component?: any,
+  props?: boolean
 };
 
 // 额外子级路由
@@ -213,7 +214,7 @@ export function filterAsnycRouter(asyncRouterMap: any, parentCode = '', level = 
         title: route.name,
         hideInMenu: route.isShow === false,
         buttons: route.buttons?.map((b: any) => b.id) || []
-      }
+      },
     }
 
     const silder = {..._route}

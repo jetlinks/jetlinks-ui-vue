@@ -1,50 +1,88 @@
 <!-- 视频播放 -->
 <template>
-    <vue3videoPlay v-bind="options" />
+    <LivePlayer
+        ref="player"
+        fluent
+        :protocol="props.protocol || 'mp4'"
+        :class="props.className"
+        :loading="props.loading"
+        :live="'live' in props ? props.live !== false : true"
+        :autoplay="'autoplay' in props ? props.autoplay !== false : true"
+        :muted="'muted' in props ? props.muted !== false : true"
+        :hide-big-play-button="true"
+        :poster="props.poster || ''"
+        :timeout="props.timeout || 20"
+        :video-url="url || ''"
+        @play="props.onPlay"
+        @pause="props.onPause"
+        @ended="props.onEnded"
+        @error="props.onError"
+        @timeupdate="props.onTimeUpdate"
+    />
 </template>
 
 <script setup lang="ts">
-import 'vue3-video-play/dist/style.css';
-import vue3videoPlay from 'vue3-video-play';
+import LivePlayer from '@liveqing/liveplayer-v3';
 
-const props = defineProps({
-    src: { type: String, default: '' },
-    type: { type: String, default: 'mp4' },
-    width: { type: String, default: '500px' },
-    height: { type: String, default: '280px' },
+type PlayerProps = {
+    url?: string;
+    live?: boolean;
+    autoplay?: boolean;
+    muted?: boolean;
+    poster?: string;
+    timeout?: number;
+    className?: string;
+    updateTime?: number;
+    key?: string | number;
+    loading?: boolean;
+    protocol?: 'mp4' | 'flv' | 'hls';
+    onDestroy?: (e?: any) => void;
+    onMessage?: (msg: any) => void;
+    onError?: (err: any) => void;
+    onTimeUpdate?: (time: any) => void;
+    onPause?: (e?: any) => void;
+    onPlay?: (e?: any) => void;
+    onFullscreen?: () => void;
+    onSnapOutside?: (base64: any) => void;
+    onSnapInside?: (base64: any) => void;
+    onCustomButtons?: (name: any) => void;
+    onEnded?: (e?: any) => void;
+    onClick?: () => void;
+};
+
+const props = defineProps<PlayerProps>();
+
+const player = ref<HTMLVideoElement>();
+const url = ref(props.url);
+
+watchEffect(() => {
+    url.value = props.url;
 });
 
-watch(
-    () => props.src,
-    (val: string) => {
-        options.src = val;
-    },
-);
+/**
+ * 播放
+ */
+const play = () => {
+    player.value?.play();
+};
 
-const options = reactive({
-    ...props,
-    color: '#409eff', //主题色
-    title: '', //视频名称
-    // src: props.src,
-    // type: props.type,
-    muted: false, //静音
-    webFullScreen: false,
-    speedRate: ['0.75', '1.0', '1.25', '1.5', '2.0'], //播放倍速
-    autoPlay: false, //自动播放
-    loop: false, //循环播放
-    mirror: false, //镜像画面
-    ligthOff: false, //关灯模式
-    volume: 0.3, //默认音量大小
-    control: true, //是否显示控制
-    controlBtns: [
-        'audioTrack',
-        'quality',
-        'speedRate',
-        'volume',
-        'setting',
-        'pip',
-        'pageFullScreen',
-        'fullScreen',
-    ], //显示所有按钮,
+/**
+ * 暂停
+ */
+const pause = () => {
+    player.value?.pause();
+};
+
+/**
+ * 暂停状态
+ */
+const paused = () => {
+    return player.value?.paused;
+};
+
+defineExpose({
+    play,
+    pause,
+    paused,
 });
 </script>

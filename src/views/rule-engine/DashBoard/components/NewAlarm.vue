@@ -20,7 +20,7 @@
                                 :title="item.alarmName"
                                 placement="topLeft"
                             >
-                                <a>{{ item.alarmName }}</a>
+                                <a @click="()=>{return jumpDetail(item)}">{{ item.alarmName }}</a>
                             </a-tooltip>
                         </div>
                         <div class="new-alarm-item-state">
@@ -63,6 +63,7 @@
 <script lang="ts" setup>
 import { Empty } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
+import { useMenuStore } from '@/store/menu';
 import moment from 'moment';
 const props = defineProps({
     alarmList: {
@@ -70,6 +71,10 @@ const props = defineProps({
         default: [],
     },
 });
+const menuStore = useMenuStore();
+const jumpDetail = (item:any) =>{
+    menuStore.jumpPage(`rule-engine/Alarm/Log/Detail`,{id:item.id});
+}
 </script>
 <style scoped lang="less">
 .new-alarm {

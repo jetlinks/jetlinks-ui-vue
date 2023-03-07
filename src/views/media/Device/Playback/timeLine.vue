@@ -37,6 +37,7 @@ import { message } from 'ant-design-vue';
 import type { recordsItemType } from './typings';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
+import { useElementSize } from '@vueuse/core';
 
 export type TimeChangeType = {
     endTime: Dayjs;
@@ -77,18 +78,17 @@ const endT = ref<number>(
 const list = ref<any[]>([]);
 const playTime = ref<number>(0);
 const LineContent = ref<HTMLDivElement>();
-// const LineContentSize = LineContent.value;
-const LineContentSize = ref({ width: 100 });
+const LineContentSize = useElementSize(LineContent);
 
 const setTimeAndPosition = (ob: number) => {
     const oBtn = document.getElementById('btn');
     const oTime = document.getElementById('time');
 
-    if (oBtn && oTime && LineContentSize.value.width) {
+    if (oBtn && oTime && LineContentSize.width) {
         oBtn.style.visibility = 'visible';
-        oBtn.style.left = `${ob * LineContentSize.value.width}px`;
+        oBtn.style.left = `${ob * LineContentSize.width.value}px`;
         oTime.style.visibility = 'visible';
-        oTime.style.left = `${ob * LineContentSize.value.width - 15}px`;
+        oTime.style.left = `${ob * LineContentSize.width.value - 15}px`;
     }
 };
 
@@ -214,7 +214,7 @@ const getLineItemStyle = (
     endTime: number,
 ): { left: string; width: string } => {
     const start = startTime - startT.value > 0 ? startTime - startT.value : 0;
-    const _width = LineContentSize.value.width!;
+    const _width = LineContentSize.width.value!;
     const itemWidth = ((endTime - startTime) / (24 * 3600000)) * _width;
     return {
         left: `${(start / (24 * 3600000)) * _width}px`,
@@ -256,7 +256,7 @@ const handleProgress = (event: any, item: any) => {
     }
 };
 
-defineExpose({ playByStartTime });
+defineExpose({ playByStartTime, onNextPlay });
 </script>
 
 <style lang="less" scoped>

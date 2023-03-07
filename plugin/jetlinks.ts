@@ -8,213 +8,214 @@ export interface IMatcher {
 const matchComponents: IMatcher[] = [
   {
     pattern: /^Avatar/,
-    styleDir: 'Avatar',
+    styleDir: 'Avatar'
   },
   {
     pattern: /^AutoComplete/,
-    styleDir: 'AutoComplete',
+    styleDir: 'AutoComplete'
   },
   {
     pattern: /^Anchor/,
-    styleDir: 'Anchor',
+    styleDir: 'Anchor'
   },
 
   {
     pattern: /^Badge/,
-    styleDir: 'Badge',
+    styleDir: 'Badge'
   },
   {
     pattern: /^Breadcrumb/,
-    styleDir: 'Breadcrumb',
+    styleDir: 'Breadcrumb'
   },
   {
     pattern: /^Button/,
-    styleDir: 'Button',
+    styleDir: 'Button'
   },
   {
     pattern: /^Checkbox/,
-    styleDir: 'Checkbox',
+    styleDir: 'Checkbox'
+  },
+  {
+    pattern: /^CardSelect/,
+    styleDir: 'CardSelect'
   },
   {
     pattern: /^Card/,
-    styleDir: 'Card',
+    styleDir: 'Card'
   },
   {
     pattern: /^Collapse/,
-    styleDir: 'Collapse',
+    styleDir: 'Collapse'
   },
   {
     pattern: /^Descriptions/,
-    styleDir: 'Descriptions',
+    styleDir: 'Descriptions'
   },
   {
     pattern: /^RangePicker|^WeekPicker|^MonthPicker/,
-    styleDir: 'DatePicker',
+    styleDir: 'DatePicker'
   },
   {
     pattern: /^Dropdown/,
-    styleDir: 'Dropdown',
+    styleDir: 'Dropdown'
   },
 
   {
     pattern: /^Form/,
-    styleDir: 'Form',
+    styleDir: 'Form'
   },
   {
     pattern: /^InputNumber/,
-    styleDir: 'InputNumber',
+    styleDir: 'InputNumber'
   },
 
   {
     pattern: /^Input|^Textarea/,
-    styleDir: 'Input',
+    styleDir: 'Input'
   },
   {
     pattern: /^Statistic/,
-    styleDir: 'Statistic',
+    styleDir: 'Statistic'
   },
   {
     pattern: /^CheckableTag/,
-    styleDir: 'Tag',
+    styleDir: 'Tag'
   },
   {
     pattern: /^TimeRangePicker/,
-    styleDir: 'TimePicker',
+    styleDir: 'TimePicker'
   },
   {
     pattern: /^Layout/,
-    styleDir: 'Layout',
+    styleDir: 'Layout'
   },
   {
     pattern: /^Menu|^SubMenu/,
-    styleDir: 'Menu',
+    styleDir: 'Menu'
   },
 
   {
     pattern: /^Table/,
-    styleDir: 'Table',
+    styleDir: 'Table'
   },
   {
     pattern: /^TimePicker|^TimeRangePicker/,
-    styleDir: 'TimeTicker',
+    styleDir: 'TimeTicker'
   },
   {
     pattern: /^Radio/,
-    styleDir: 'Radio',
+    styleDir: 'Radio'
   },
 
   {
     pattern: /^Image/,
-    styleDir: 'Image',
+    styleDir: 'Image'
   },
 
   {
     pattern: /^List/,
-    styleDir: 'List',
+    styleDir: 'List'
   },
 
   {
     pattern: /^Tab/,
-    styleDir: 'Tabs',
+    styleDir: 'Tabs'
   },
   {
     pattern: /^Mentions/,
-    styleDir: 'Mentions',
+    styleDir: 'Mentions'
   },
 
   {
     pattern: /^Step/,
-    styleDir: 'Steps',
+    styleDir: 'Steps'
   },
   {
     pattern: /^Skeleton/,
-    styleDir: 'Skeleton',
+    styleDir: 'Skeleton'
   },
 
   {
     pattern: /^Select/,
-    styleDir: 'Select',
+    styleDir: 'Select'
   },
   {
     pattern: /^TreeSelect/,
-    styleDir: 'TreeSelect',
+    styleDir: 'TreeSelect'
   },
   {
     pattern: /^Tree|^DirectoryTree/,
-    styleDir: 'Tree',
+    styleDir: 'Tree'
   },
   {
     pattern: /^Typography/,
-    styleDir: 'Typography',
+    styleDir: 'Typography'
   },
   {
     pattern: /^Timeline/,
-    styleDir: 'Timeline',
+    styleDir: 'Timeline'
   },
   {
     pattern: /^Upload/,
-    styleDir: 'Upload',
+    styleDir: 'Upload'
   },
   {
     pattern: /^ProTable/,
-    styleDir: 'ProTable',
+    styleDir: 'ProTable'
   },
   {
     pattern: /^Search|^AdvancedSearch/,
-    styleDir: 'Search',
+    styleDir: 'Search'
   },
   {
     pattern: /^Ellipsis/,
-    styleDir: 'Ellipsis',
+    styleDir: 'Ellipsis'
   },
   {
     pattern: /^MonacoEditor/,
-    styleDir: 'MonacoEditor',
+    styleDir: 'MonacoEditor'
   },
   {
     pattern: /^ProLayout/,
-    styleDir: 'ProLayout',
+    styleDir: 'ProLayout'
   },
   {
     pattern: /^ScrollTable/,
-    styleDir: 'ScrollTable',
+    styleDir: 'ScrollTable'
   },
   {
     pattern: /^TableCard/,
-    styleDir: 'TableCard',
+    styleDir: 'TableCard'
   },
   {
     pattern: /^Scrollbar/,
-    styleDir: 'Scrollbar',
+    styleDir: 'Scrollbar'
   },
   {
     pattern: /^AIcon/,
-    styleDir: 'AIcon',
+    styleDir: 'AIcon'
   },
-  {
-    pattern: /^CardSelect/,
-    styleDir: 'CardSelect',
-  },
+
   {
     pattern: /^Tooltip/,
-    styleDir: 'Tooltip',
+    styleDir: 'Tooltip'
   },
   {
     pattern: /^Empty/,
-    styleDir: 'Empty',
+    styleDir: 'Empty'
   },
   {
     pattern: /^Popconfirm/,
-    styleDir: 'Popconfirm',
+    styleDir: 'Popconfirm'
   },
   {
     pattern: /^message/,
-    styleDir: 'Message',
+    styleDir: 'Message'
   },
   {
     pattern: /^Notification/,
-    styleDir: 'Notification',
-  },
+    styleDir: 'Notification'
+  }
 ]
 
 export interface JetlinksVueResolverOptions {
@@ -259,7 +260,6 @@ function getStyleDir(compName: string, _isAntd = false): string {
   let styleDir
   const components = _isAntd ? AntdMatchComponents : matchComponents
   const total = components.length
-  console.log('getStyleDir', compName)
   for (let i = 0; i < total; i++) {
     const matcher = components[i]
     if (compName.match(matcher.pattern)) {
@@ -273,10 +273,10 @@ function getStyleDir(compName: string, _isAntd = false): string {
   return styleDir
 }
 
-function getSideEffects(compName: string, options: JetlinksVueResolverOptions, _isAntd= false): any {
+function getSideEffects(compName: string, options: JetlinksVueResolverOptions, _isAntd = false): any {
   const {
     importStyle = true,
-    importLess = false,
+    importLess = false
   } = options
 
   if (!importStyle)
@@ -286,23 +286,21 @@ function getSideEffects(compName: string, options: JetlinksVueResolverOptions, _
 
   if (importStyle === 'less' || importLess) {
     const styleDir = getStyleDir(compName, _isAntd)
-    console.log('getSideEffects-style-path', `${packageName}/${lib}/${styleDir}/style`)
     return `${packageName}/${lib}/${styleDir}/style`
-  }
-  else {
+  } else {
     const styleDir = getStyleDir(compName, _isAntd)
     return `${packageName}/${lib}/${styleDir}/style/css`
   }
 }
 
-const filterName = [ 'message', 'Notification', 'AIcon']
+const filterName = ['message', 'Notification', 'AIcon']
 const primitiveNames = ['Affix', 'Anchor', 'AnchorLink', 'message', 'Notification', 'AutoComplete', 'AutoCompleteOptGroup', 'AutoCompleteOption', 'Alert', 'Avatar', 'AvatarGroup', 'BackTop', 'Badge', 'BadgeRibbon', 'Breadcrumb', 'BreadcrumbItem', 'BreadcrumbSeparator', 'Button', 'ButtonGroup', 'Calendar', 'Card', 'CardGrid', 'CardMeta', 'Collapse', 'CollapsePanel', 'Carousel', 'Cascader', 'Checkbox', 'CheckboxGroup', 'Col', 'Comment', 'ConfigProvider', 'DatePicker', 'MonthPicker', 'WeekPicker', 'RangePicker', 'QuarterPicker', 'Descriptions', 'DescriptionsItem', 'Divider', 'Dropdown', 'DropdownButton', 'Drawer', 'Empty', 'Form', 'FormItem', 'FormItemRest', 'Grid', 'Input', 'InputGroup', 'InputPassword', 'InputSearch', 'Textarea', 'Image', 'ImagePreviewGroup', 'InputNumber', 'Layout', 'LayoutHeader', 'LayoutSider', 'LayoutFooter', 'LayoutContent', 'List', 'ListItem', 'ListItemMeta', 'Menu', 'MenuDivider', 'MenuItem', 'MenuItemGroup', 'SubMenu', 'Mentions', 'MentionsOption', 'Modal', 'Statistic', 'StatisticCountdown', 'PageHeader', 'Pagination', 'Popconfirm', 'Popover', 'Progress', 'Radio', 'RadioButton', 'RadioGroup', 'Rate', 'Result', 'Row', 'Select', 'SelectOptGroup', 'SelectOption', 'Skeleton', 'SkeletonButton', 'SkeletonAvatar', 'SkeletonInput', 'SkeletonImage', 'Slider', 'Space', 'Spin', 'Steps', 'Step', 'Switch', 'Table', 'TableColumn', 'TableColumnGroup', 'TableSummary', 'TableSummaryRow', 'TableSummaryCell', 'Transfer', 'Tree', 'TreeNode', 'DirectoryTree', 'TreeSelect', 'TreeSelectNode', 'Tabs', 'TabPane', 'Tag', 'CheckableTag', 'TimePicker', 'TimeRangePicker', 'Timeline', 'TimelineItem', 'Tooltip', 'Typography', 'TypographyLink', 'TypographyParagraph', 'TypographyText', 'TypographyTitle', 'Upload', 'UploadDragger', 'LocaleProvider', 'ProTable', 'Search', 'AdvancedSearch', 'Ellipsis', 'MonacoEditor', 'ProLayout', 'ScrollTable', 'TableCard', 'Scrollbar', 'CardSelect', 'ColorPicker']
 const prefix = 'J'
 
 let jetlinksNames: Set<string>
 
 function genJetlinksNames(primitiveNames: string[]): void {
-  jetlinksNames = new Set(primitiveNames.map(name =>  filterName.includes(name) ? name : `${prefix}${name}`))
+  jetlinksNames = new Set(primitiveNames.map(name => filterName.includes(name) ? name : `${prefix}${name}`))
 }
 
 let antdvNames: Set<string>
@@ -322,16 +320,14 @@ function isAntdv(compName: string): boolean {
   return antdvNames.has(compName)
 }
 
-export function JetlinksVueResolver(options: JetlinksVueResolverOptions = {
-
-}): any {
+export function JetlinksVueResolver(options: JetlinksVueResolverOptions = {}): any {
   return {
     type: 'component',
     resolve: (name: string) => {
       if (options.resolveIcons && name.match(/(Outlined|Filled|TwoTone)$/)) {
         return {
           name,
-          from: '@ant-design/icons-vue',
+          from: '@ant-design/icons-vue'
         }
       }
       const _isJetlinks = isJetlinks(name)
@@ -340,13 +336,16 @@ export function JetlinksVueResolver(options: JetlinksVueResolverOptions = {
         const importName = filterName.includes(name) ? name : name.slice(1)
         options.packageName = _isJetlinks ? 'jetlinks-ui-components' : 'ant-design-vue'
         const path = `${options.packageName}/${options.cjs ? 'lib' : 'es'}`
-
+        const stylePath = getSideEffects(importName, options, _isAntd)
+        if (_isJetlinks) {
+          console.log(name, importName, stylePath)
+        }
         return {
           name: importName,
           from: path,
-          sideEffects: getSideEffects(importName, options, _isAntd),
+          sideEffects: stylePath
         }
       }
-    },
+    }
   }
 }

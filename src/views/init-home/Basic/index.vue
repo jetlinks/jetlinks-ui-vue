@@ -1,62 +1,62 @@
 <!-- 基础内容 -->
 <template>
-    <a-form layout="vertical" :model="form" ref="formBasicRef">
-        <a-row :span="24" :gutter="24">
-            <a-col :span="10">
-                <a-form-item
+    <j-form layout="vertical" :model="form" ref="formBasicRef">
+        <j-row :span="24" :gutter="24">
+            <j-col :span="10">
+                <j-form-item
                     label="系统名称"
                     name="title"
                     v-bind="validateInfos.title"
                 >
-                    <a-input
+                    <j-input
                         v-model:value="form.title"
                         :maxlength="64"
                         placeholder="请输入系统名称"
                     />
-                </a-form-item>
-                <a-form-item
+                </j-form-item>
+                <j-form-item
                     label="主题色"
                     name="headerTheme"
                     v-bind="validateInfos.headerTheme"
                 >
-                    <a-select v-model:value="form.headerTheme">
-                        <a-select-option value="light">白色</a-select-option>
-                        <a-select-option value="dark">黑色</a-select-option>
-                    </a-select>
-                </a-form-item>
-                <a-form-item>
+                    <j-select v-model:value="form.headerTheme">
+                        <j-select-option value="light">白色</j-select-option>
+                        <j-select-option value="dark">黑色</j-select-option>
+                    </j-select>
+                </j-form-item>
+                <j-form-item>
                     <template #label>
                         <span>高德API Key</span>
-                        <a-tooltip title="配置后平台可调用高德地图GIS服务">
+                        <j-tooltip title="配置后平台可调用高德地图GIS服务">
                             <img
                                 class="img-style"
                                 :src="getImage('/init-home/mark.png')"
                             />
-                        </a-tooltip>
+                        </j-tooltip>
                     </template>
-                    <a-input
+                    <j-input
                         v-model:value="form.apikey"
                         placeholder="请输入高德API Key"
                     />
-                </a-form-item>
-                <a-form-item name="basePath" v-bind="validateInfos.basePath">
+                </j-form-item>
+                <j-form-item name="basePath" v-bind="validateInfos.basePath">
                     <template #label>
                         <span>base-path</span>
-                        <a-tooltip title="系统后台访问的url">
+                        <j-tooltip title="系统后台访问的url">
                             <img
                                 class="img-style"
                                 :src="getImage('/init-home/mark.png')"
                             />
-                        </a-tooltip>
+                        </j-tooltip>
                     </template>
-                    <a-input
+                    <j-input
                         v-model:value="form.basePath"
-                        placeholder="请输入高德API Key"
+                        placeholder="请输入base-path"
                     />
-                </a-form-item>
-                <a-row :gutter="24" :span="24">
-                    <a-col>
-                        <a-form-item label="系统logo">
+                </j-form-item>
+                <j-row :gutter="24" :span="24">
+                    <j-col>
+                        <j-form-item label="系统logo">
                             <div class="upload-image-warp-logo">
                                 <div class="upload-image-border-logo">
                                     <a-upload
@@ -123,18 +123,18 @@
 
                             <div class="upload-tips">推荐尺寸200*200</div>
                             <div class="upload-tips">支持jpg,png</div>
-                        </a-form-item>
-                    </a-col>
-                    <a-col>
-                        <a-form-item>
+                        </j-form-item>
+                    </j-col>
+                    <j-col>
+                        <j-form-item>
                             <template #label>
                                 <span>浏览器页签</span>
-                                <a-tooltip title="浏览器tab页中显示的图片元素">
+                                <j-tooltip title="浏览器tab页中显示的图片元素">
                                     <img
                                         class="img-style"
                                         :src="getImage('/init-home/mark.png')"
                                     />
-                                </a-tooltip>
+                                </j-tooltip>
                             </template>
                             <div class="upload-image-warp-logo">
                                 <div class="upload-image-border-logo">
@@ -189,12 +189,12 @@
 
                             <div class="upload-tips">推荐尺寸64*64</div>
                             <div class="upload-tips">支持icon格式</div>
-                        </a-form-item>
-                    </a-col>
-                </a-row>
-            </a-col>
-            <a-col :span="14">
-                <a-form-item label="登录背景图">
+                        </j-form-item>
+                    </j-col>
+                </j-row>
+            </j-col>
+            <j-col :span="14">
+                <j-form-item label="登录背景图">
                     <div class="upload-image-warp-back">
                         <div class="upload-image-border-back">
                             <a-upload
@@ -247,10 +247,10 @@
                     </div>
                     <div class="upload-tips">支持4M以内的图片:支持jpg、png</div>
                     <div class="upload-tips">建议尺寸1400x1080</div>
-                </a-form-item>
-            </a-col>
-        </a-row>
-    </a-form>
+                </j-form-item>
+            </j-col>
+        </j-row>
+    </j-form>
 </template>
 <script setup lang="ts">
 import { modalState, formState, logoState } from '../data/interface';
