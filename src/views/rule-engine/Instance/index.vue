@@ -127,17 +127,16 @@
             </JProTable>
             <!-- 新增、编辑 -->
             <Save
-                ref="saveRef"
-                :isAdd="isAdd"
-                :title="title"
+                :data="current"
                 @success="refresh"
+                v-if="visiable"
+                @close-save="closeSave"
             />
         </div>
     </page-container>
 </template>
 
 <script lang="ts" setup>
-import JTable from '@/components/Table';
 import type { InstanceItem } from './typings';
 import {
     queryList,
@@ -151,10 +150,7 @@ import { message } from 'ant-design-vue';
 import Save from './Save/index.vue';
 import { SystemConst } from '@/utils/consts';
 const params = ref<Record<string, any>>({});
-let isAdd = ref<number>(0);
-let title = ref<string>('');
-let saveRef = ref();
-let currentForm = ref();
+let visiable = ref(false);
 const tableRef = ref<Record<string, any>>({});
 const query = {
     columns: [
@@ -219,6 +215,7 @@ const columns = [
         scopedSlots: true,
     },
 ];
+const current = ref();
 const getActions = (
     data: Partial<Record<string, any>>,
     type?: 'card' | 'table',
@@ -236,11 +233,8 @@ const getActions = (
 
             icon: 'EditOutlined',
             onClick: () => {
-                title.value = '编辑';
-                isAdd.value = 2;
-                nextTick(() => {
-                    saveRef.value.show(data);
-                });
+                current.value = data;
+                visiable.value = true;
             },
         },
         {
@@ -309,11 +303,11 @@ const getActions = (
     return actions;
 };
 const add = () => {
-    isAdd.value = 1;
-    title.value = '新增';
-    nextTick(() => {
-        saveRef.value.show(currentForm.value);
-    });
+    current.value = {
+        name:'',
+        description:''
+    },
+    visiable.value = true
 };
 /**
  * 刷新数据
@@ -329,6 +323,9 @@ const openRuleEditor = (item: any) => {
         `/${SystemConst.API_BASE}/rule-editor/index.html#flow/${item.id}`,
     );
 };
+const closeSave = () =>{
+    visiable.value = false;
+}
 </script>
 <style scoped>
 </style>
