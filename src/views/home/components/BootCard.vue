@@ -26,7 +26,6 @@ import { useMenuStore } from '@/store/menu';
 
 const { jumpPage } = useMenuStore();
 
-const router = useRouter();
 const props = defineProps({
     cardData: Array<bootConfig>,
     cardTitle: String,

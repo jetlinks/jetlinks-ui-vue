@@ -74,7 +74,7 @@ const deviceStepDetails: recommendList[] = [
         details:
             '产品是设备的集合，通常指一组具有相同功能的设备。物联设备必须通过产品进行接入方式配置。',
         iconUrl: '/images/home/bottom-4.png',
-        linkUrl: 'iot/device/Product',
+        linkUrl: 'device/Product',
         auth: productPermission('add'),
         params: {
             type: 'add',
@@ -85,7 +85,7 @@ const deviceStepDetails: recommendList[] = [
         details:
             '通过产品对同一类型的设备进行统一的接入方式配置。请参照设备铭牌说明选择匹配的接入方式。',
         iconUrl: '/images/home/bottom-1.png',
-        linkUrl: 'iot/device/Product/detail',
+        linkUrl: 'device/Product/Detail',
         auth: productPermission('update'),
         dialogTag: 'accessMethod',
     },
@@ -93,7 +93,7 @@ const deviceStepDetails: recommendList[] = [
         title: '添加测试设备',
         details: '添加单个设备，用于验证产品模型是否配置正确。',
         iconUrl: '/images/home/bottom-5.png',
-        linkUrl: 'iot/device/Instance',
+        linkUrl: 'device/Instance',
         auth: devicePermission('add'),
         params: {
             type: 'add',
@@ -104,8 +104,7 @@ const deviceStepDetails: recommendList[] = [
         details:
             '对添加的测试设备进行功能调试，验证能否连接到平台，设备功能是否配置正确。',
         iconUrl: '/images/home/bottom-2.png',
-        linkUrl: 'iot/device/Instance/detail',
-        // auth: devicePermission('update'),
+        linkUrl: 'device/Instance/Detail',
         auth: true,
         dialogTag: 'funcTest',
     },
@@ -113,7 +112,7 @@ const deviceStepDetails: recommendList[] = [
         title: '批量添加设备',
         details: '批量添加同一产品下的设备',
         iconUrl: '/images/home/bottom-3.png',
-        linkUrl: 'iot/device/Instance',
+        linkUrl: 'device/Instance',
         auth: devicePermission('import'),
         params: {
             import: true,
