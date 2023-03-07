@@ -214,6 +214,10 @@ const channelId = computed(() => route.query.channelId as string);
 
 const deviceType = ref('');
 
+/**
+ * 查询本地视频
+ * @param date 
+ */
 const queryLocalRecords = async (date: Dayjs) => {
     playStatus.value = 0;
     url.value = '';
@@ -388,17 +392,11 @@ const handlePanelChange = (date: any) => {
  */
 const handlePlay = (_startTime: any) => {
     if (playStatus.value === 0 || _startTime !== playNowTime.value) {
-        if (playTimeNode.value) {
-            playTimeNode.value.playByStartTime(_startTime);
-        }
+        playTimeNode.value?.playByStartTime(_startTime);
     } else if (playStatus.value == 1 && _startTime === playNowTime.value) {
-        if (player.value) {
-            player.value.pause();
-        }
+        player.value?.pause();
     } else if (playStatus.value == 2 && _startTime === playNowTime.value) {
-        if (player.value) {
-            player.value.play();
-        }
+        player.value?.play();
     }
 };
 </script>
