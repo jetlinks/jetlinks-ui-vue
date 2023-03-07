@@ -73,7 +73,7 @@ const props = defineProps({
 });
 const menuStore = useMenuStore();
 const jumpDetail = (item:any) =>{
-    menuStore.jumpPage(`rule-engine/Alarm/Log/Detail`,{id:item.id});
+    menuStore.jumpPage(`rule-engine/Alarm/Log/Detail`,{id:item.id},{detail:true});
 }
 </script>
 <style scoped lang="less">
