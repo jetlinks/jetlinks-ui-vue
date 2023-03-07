@@ -1,14 +1,17 @@
 <template>
     <page-container>
         <div class="relationship-container">
-            <Search :columns="query.columns" @search="query.search" />
+            <j-advanced-search
+                :columns="columns"
+                @search="(params:any)=>queryParams = {...params}"
+            />
 
             <j-pro-table
                 ref="tableRef"
-                :columns="table.columns"
+                :columns="columns"
                 :request="getRelationshipList_api"
                 model="TABLE"
-                :params="query.params.value"
+                :params="queryParams"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
@@ -23,7 +26,7 @@
                     </PermissionButton>
                 </template>
                 <template #action="slotProps">
-                    <a-space :size="16">
+                    <j-space :size="16">
                         <PermissionButton
                             :uhasPermission="`${permission}:update`"
                             type="link"
@@ -47,11 +50,16 @@
                         >
                             <AIcon type="DeleteOutlined" />
                         </PermissionButton>
-                    </a-space>
+                    </j-space>
                 </template>
             </j-pro-table>
 
-            <EditDialog ref="editDialogRef" @refresh="table.refresh" />
+            <EditDialog
+                v-if="dialog.visible"
+                v-model:visible="dialog.visible"
+                :data="dialog.selectRow"
+                @refresh="table.refresh"
+            />
         </div>
     </page-container>
 </template>
@@ -67,105 +75,79 @@ import EditDialog from './components/EditDialog.vue';
 
 const permission = 'system/Relationship';
 
-const query = {
-    columns: [
-        {
-            title: '名称',
-            dataIndex: 'name',
-            key: 'name',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-            },
+const columns = [
+    {
+        title: '名称',
+        dataIndex: 'name',
+        key: 'name',
+        ellipsis: true,
+        fixed: 'left',
+        search: {
+            type: 'string',
         },
-        {
-            title: '关联方',
-            dataIndex: 'objectTypeName',
-            key: 'objectTypeName',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'select',
-                options: [
-                    {
-                        label: '启用',
-                        value: 1,
-                    },
-                    {
-                        label: '禁用',
-                        value: 0,
-                    },
-                ],
-            },
-        },
-        {
-            title: '被关联方',
-            dataIndex: 'targetType',
-            key: 'targetType',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'select',
-                options: [
-                    {
-                        label: '用户',
-                        value: 'user',
-                    },
-                ],
-            },
-        },
-        {
-            title: '说明',
-            dataIndex: 'description',
-            key: 'description',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-            },
-        },
-    ],
-    params: ref({}),
-    search: (params: object) => {
-        query.params.value = params;
     },
-};
+    {
+        title: '关联方',
+        dataIndex: 'objectTypeName',
+        key: 'objectTypeName',
+        ellipsis: true,
+        fixed: 'left',
+        search: {
+            type: 'select',
+            options: [
+                {
+                    label: '用户',
+                    value: '用户',
+                },
+                {
+                    label: '设备',
+                    value: '设备',
+                },
+            ],
+        },
+    },
+    {
+        title: '被关联方',
+        dataIndex: 'targetTypeName',
+        key: 'targetTypeName',
+        ellipsis: true,
+        fixed: 'left',
+        search: {
+            rename: 'targetType',
+            type: 'select',
+            options: [
+                {
+                    label: '用户',
+                    value: 'user',
+                },
+            ],
+        },
+    },
+    {
+        title: '说明',
+        dataIndex: 'description',
+        key: 'description',
+        ellipsis: true,
+        fixed: 'left',
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '操作',
+        dataIndex: 'action',
+        key: 'action',
+        scopedSlots: true,
+    },
+];
+const queryParams = ref({});
 
-const editDialogRef = ref(); // 新增弹窗实例
 const tableRef = ref<Record<string, any>>({}); // 表格实例
 const table = {
-    columns: [
-        {
-            title: '名称',
-            dataIndex: 'name',
-            key: 'name',
-        },
-        {
-            title: '关联方',
-            dataIndex: 'objectTypeName',
-            key: 'objectTypeName',
-        },
-        {
-            title: '被关联方',
-            dataIndex: 'targetTypeName',
-            key: 'targetTypeName',
-        },
-        {
-            title: '说明',
-            dataIndex: 'description',
-            key: 'description',
-        },
-        {
-            title: '操作',
-            dataIndex: 'action',
-            key: 'action',
-            scopedSlots: true,
-        },
-    ],
     // 打开编辑弹窗
     openDialog: (row: object | undefined = {}) => {
-        editDialogRef.value.openDialog(true, row);
+        dialog.selectRow = { ...row };
+        dialog.visible = true;
     },
     // 删除
     clickDel: (row: any) => {
@@ -181,6 +163,11 @@ const table = {
         tableRef.value.reload();
     },
 };
+
+const dialog = reactive({
+    selectRow: {} as any,
+    visible: false,
+});
 </script>
 
 <style lang="less" scoped>
