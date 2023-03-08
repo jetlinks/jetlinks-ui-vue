@@ -17,10 +17,17 @@
                     { max: 64, message: '最多可输入64个字符' },
                 ]"
             >
-                <j-input
+                <j-auto-complete
                     v-model:value="form.data.id"
+                    :options="codeOptions"
+                    placeholder="请输入编码"
                     :disabled="props.mode !== '新增'"
-                />
+                >
+                    <template #option="{ value: val, message }">
+                        {{ val }}
+                        <span class="message">{{ message }}</span>
+                    </template>
+                </j-auto-complete>
             </j-form-item>
             <j-form-item
                 label="名称"
@@ -122,6 +129,11 @@ const form = reactive({
         return Promise.resolve();
     },
 });
+const codeOptions = [
+    { label: 'add', value: 'add', message: '新增' },
+    { label: 'delete', value: 'delete', message: '删除' },
+    { label: 'update', value: 'update', message: '更新' },
+];
 
 type formType = {
     name: string;
@@ -140,6 +152,11 @@ type formType = {
             label::after {
                 display: none;
             }
+        }
+
+        .message {
+            font-size: 12px;
+            color: rgba(0, 0, 0, 0.4);
         }
     }
 }
