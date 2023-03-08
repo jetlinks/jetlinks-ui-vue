@@ -10,7 +10,7 @@
         @cancel="_vis = false"
         :confirmLoading="loading"
     >
-        <Search
+        <j-advanced-search
             type="simple"
             :columns="columns"
             target="media"

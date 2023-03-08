@@ -1,6 +1,6 @@
 <template>
     <a-modal v-model:visible="_vis" title="通知记录" :footer="null" width="70%">
-        <Search
+        <j-search
             type="simple"
             :columns="columns"
             target="product"
