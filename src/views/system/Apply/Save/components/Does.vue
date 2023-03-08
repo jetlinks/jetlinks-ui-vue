@@ -12,7 +12,7 @@
                 内部独立应用的<span>后端服务</span>相互<span>独立运行</span>，互不影响。
             </div>
             <div class="image">
-                <a-image width="100%" :src="img1" />
+                <j-image width="100%" :src="img1" />
             </div>
 
             <h1>2.接入方式说明</h1>
@@ -58,7 +58,7 @@
             </div>
             <div>内部独立应用的<span>后端服务在同一个环境运行</span>。</div>
             <div class="image">
-                <a-image width="100%" :src="img2" />
+                <j-image width="100%" :src="img2" />
             </div>
             <h1>2.接入方式说明</h1>
             <div>1、页面集成</div>
@@ -86,7 +86,7 @@
             <h1>1.概述</h1>
             <div>钉钉企业内部应用适用于通过钉钉登录<span>物联网平台</span></div>
             <div class="image">
-                <a-image width="100%" :src="img4" />
+                <j-image width="100%" :src="img4" />
             </div>
             <h1>2.接入方式说明</h1>
             <div>1、单点登录</div>
@@ -106,7 +106,7 @@
             <h1>1.概述</h1>
             <div>微信网站应用适用于通过微信授权登录<span>物联网平台</span></div>
             <div class="image">
-                <a-image width="100%" :src="img3" />
+                <j-image width="100%" :src="img3" />
             </div>
             <h1>2.接入方式说明</h1>
             <div>1、单点登录</div>
@@ -121,7 +121,7 @@
                 。例如将公司业务管理系统集成至物联网平台，或者将物联网平台集成至业务管理系统。以实现多处访问、集中管控的业务场景。
             </div>
             <div class="image">
-                <a-image width="100%" :src="img5" />
+                <j-image width="100%" :src="img5" />
             </div>
             <h1>2.接入方式说明</h1>
             <div>1、页面集成</div>
