@@ -1,31 +1,31 @@
 <template>
     <page-container>
-        <a-row :gutter="24">
-            <a-col :span="6">
+        <j-row :gutter="24">
+            <j-col :span="6">
                 <TopCard
                     title="设备数量"
                     :img="getImage('/media/dashboard-1.png')"
                     :footer="deviceFooter"
                     :value="deviceTotal"
                 />
-            </a-col>
-            <a-col :span="6">
+            </j-col>
+            <j-col :span="6">
                 <TopCard
                     title="通道数量"
                     :img="getImage('/media/dashboard-2.png')"
                     :footer="channelFooter"
                     :value="channelTotal"
                 />
-            </a-col>
-            <a-col :span="6">
+            </j-col>
+            <j-col :span="6">
                 <TopCard
                     title="录像数量"
                     :img="getImage('/media/dashboard-3.png')"
                     :footer="aggFooter"
                     :value="aggTotal"
                 />
-            </a-col>
-            <a-col :span="6">
+            </j-col>
+            <j-col :span="6">
                 <TopCard
                     title="播放中数量"
                     tooltip="当前正在播放的通道数量之和"
@@ -33,15 +33,15 @@
                     :footer="aggPlayingFooter"
                     :value="aggPlayingTotal"
                 />
-            </a-col>
-            <a-col :span="24" class="dash-board-bottom">
+            </j-col>
+            <j-col :span="24" class="dash-board-bottom">
                 <Card
                     title="播放数量(人次)"
                     :chartData="chartData"
                     @change="getPlayCount"
                 />
-            </a-col>
-        </a-row>
+            </j-col>
+        </j-row>
     </page-container>
 </template>
 
