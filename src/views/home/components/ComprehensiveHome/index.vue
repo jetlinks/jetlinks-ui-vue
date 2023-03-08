@@ -1,24 +1,24 @@
 <template>
     <div class="comprehensive-home-conatiner">
-        <a-row :gutter="24" class="top" style="margin-bottom: 24px">
-            <a-col :span="6" class="left">
+        <j-row :gutter="24" class="top" style="margin-bottom: 24px">
+            <j-col :span="6" class="left">
                 <BootCardSmall
                     :cardData="deviceBootConfig"
                     cardTitle="物联网引导"
                 />
                 <div style="width: 100%; height: 24px"></div>
                 <BootCardSmall :cardData="opsBootConfig" cardTitle="运维引导" />
-            </a-col>
-            <a-col :span="18" class="right">
-                <a-row :gutter="24">
-                    <a-col :span="12"><DeviceCountCard /></a-col>
-                    <a-col :span="12"><BasicCountCard /></a-col>
-                    <a-col :span="24" style="margin-top: 24px">
+            </j-col>
+            <j-col :span="18" class="right">
+                <j-row :gutter="24">
+                    <j-col :span="12"><DeviceCountCard /></j-col>
+                    <j-col :span="12"><BasicCountCard /></j-col>
+                    <j-col :span="24" style="margin-top: 24px">
                         <PlatformPicCard image="/images/home/content1.png" />
-                    </a-col>
-                </a-row>
-            </a-col>
-        </a-row>
+                    </j-col>
+                </j-row>
+            </j-col>
+        </j-row>
 
         <StepCard
             cardTitle="设备接入推荐步骤"
@@ -31,19 +31,36 @@
             tooltip="请根据业务需要对下述步骤进行选择性操作。"
             :dataList="opsStepDetails"
         />
+
+        <div class="dialog">
+            <ProductChooseDialog
+                v-if="productDialogVisible"
+                v-model:visible="productDialogVisible"
+                @confirm="(id:string)=>jumpPage('device/Product/Detail', { id })"
+            />
+            <DeviceChooseDialog
+                v-if="deviceDialogVisible"
+                v-model:visible="deviceDialogVisible"
+                @confirm="(id:string)=>jumpPage('device/Instance/Detail', { id })"
+            />
+        </div>
     </div>
 </template>
 
 <script setup lang="ts" name="ComprehensiveHome">
+import ProductChooseDialog from '../dialogs/ProductChooseDialog.vue';
+import DeviceChooseDialog from '../dialogs/DeviceChooseDialog.vue';
 import BootCardSmall from '../BootCardSmall.vue';
 import DeviceCountCard from '../DeviceCountCard.vue';
 import BasicCountCard from '../BasicCountCard.vue';
 import PlatformPicCard from '../PlatformPicCard.vue';
 import StepCard from '../StepCard.vue';
 
-import { useMenuStore } from '@/store/menu';
 import { usePermissionStore } from '@/store/permission';
 import { recommendList, bootConfig } from '../../typing';
+import { useMenuStore } from '@/store/menu';
+
+const { jumpPage } = useMenuStore();
 
 // 按钮权限控制
 const hasPermission = usePermissionStore().hasPermission;
@@ -53,8 +70,6 @@ const devicePermission = (action: string) =>
     hasPermission(`device/Instance:${action}`);
 const rulePermission = (action: string) =>
     hasPermission(`rule-engine/Instance:${action}`);
-// 页面权限控制
-const menuPermission = useMenuStore().hasPermission;
 
 // 物联网引导-数据
 const deviceBootConfig: bootConfig[] = [
@@ -97,7 +112,7 @@ const deviceStepDetails: recommendList[] = [
         details:
             '产品是设备的集合，通常指一组具有相同功能的设备。物联设备必须通过产品进行接入方式配置。',
         iconUrl: '/images/home/bottom-4.png',
-        linkUrl: '/iot/device/Product',
+        linkUrl: 'device/Product',
         auth: productPermission('add'),
         params: {
             type: 'add',
@@ -108,15 +123,17 @@ const deviceStepDetails: recommendList[] = [
         details:
             '通过产品对同一类型的设备进行统一的接入方式配置。请参照设备铭牌说明选择匹配的接入方式。',
         iconUrl: '/images/home/bottom-1.png',
-        linkUrl: '/iot/device/Product/detail',
+        linkUrl: 'device/Product/Detail',
         auth: productPermission('update'),
-        dialogTag: 'accessMethod',
+        onClick: () => {
+            productDialogVisible.value = true;
+        },
     },
     {
         title: '添加测试设备',
         details: '添加单个设备，用于验证产品模型是否配置正确。',
         iconUrl: '/images/home/bottom-5.png',
-        linkUrl: '/iot/device/Instance',
+        linkUrl: 'device/Instance',
         auth: devicePermission('add'),
         params: {
             type: 'add',
@@ -127,16 +144,17 @@ const deviceStepDetails: recommendList[] = [
         details:
             '对添加的测试设备进行功能调试，验证能否连接到平台，设备功能是否配置正确。',
         iconUrl: '/images/home/bottom-2.png',
-        linkUrl: '/iot/device/Instance/detail',
-        // auth: devicePermission('update'),
-        auth: true,
-        dialogTag: 'funcTest',
+        linkUrl: 'device/Instance/Detail',
+        auth: devicePermission('update'),
+        onClick: () => {
+            deviceDialogVisible.value = true;
+        },
     },
     {
         title: '批量添加设备',
         details: '批量添加同一产品下的设备',
         iconUrl: '/images/home/bottom-3.png',
-        linkUrl: '/iot/device/Instance',
+        linkUrl: 'device/Instance',
         auth: devicePermission('import'),
         params: {
             import: true,
@@ -209,4 +227,7 @@ const opsStepDetails: recommendList[] = [
         },
     },
 ];
+
+const productDialogVisible = ref(false);
+const deviceDialogVisible = ref(false);
 </script>
