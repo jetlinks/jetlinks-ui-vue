@@ -67,10 +67,10 @@ export default [
         path: '/form',
         component: () => import('@/views/demo/Form.vue')
     },
-    {
-        path: '/system/Api',
-        component: () => import('@/views/system/Platforms/index.vue')
-    },
+    // {
+    //     path: '/system/Api',
+    //     component: () => import('@/views/system/Platforms/index.vue')
+    // },
     // end: 测试用, 可删除
 
     // 初始化

@@ -1,5 +1,5 @@
 <template>
-    <a-tree
+    <j-tree
         :tree-data="treeData"
         @select="clickSelectItem"
         v-model:selected-keys="selectedKeys"
@@ -9,7 +9,7 @@
         <template #title="{ name }">
             {{ name }}
         </template>
-    </a-tree>
+    </j-tree>
 </template>
 
 <script setup lang="ts">
@@ -141,9 +141,6 @@ const filterPath = (path: object, filterArr: string[]) => {
 
 <style lang="less">
 .left-tree-container {
-    border-right: 1px solid #e9e9e9;
-    height: calc(100vh - 150px);
-    overflow-y: auto;
     .ant-tree-list {
         .ant-tree-list-holder-inner {
             .ant-tree-switcher-noop {
