@@ -1,11 +1,11 @@
 <template>
     <page-container>
-        <Search
+        <j-advanced-search
             :columns="columns"
             target="northbound-aliyun"
             @search="handleSearch"
         />
-        <JTable
+        <JProTable
             ref="instanceRef"
             :columns="columns"
             :request="query"
@@ -13,7 +13,7 @@
             :params="params"
         >
             <template #headerTitle>
-                <a-space>
+                <j-space>
                     <PermissionButton
                         type="primary"
                         @click="handleAdd"
@@ -22,7 +22,7 @@
                         <template #icon><AIcon type="PlusOutlined" /></template>
                         新增
                     </PermissionButton>
-                </a-space>
+                </j-space>
             </template>
             <template #card="slotProps">
                 <CardBox
@@ -45,20 +45,20 @@
                         >
                             {{ slotProps.name }}
                         </h3>
-                        <a-row>
-                            <a-col :span="12">
+                        <j-row>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">
                                     网桥产品
                                 </div>
                                 <div>{{ slotProps?.bridgeProductName }}</div>
-                            </a-col>
-                            <a-col :span="12">
+                            </j-col>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">
                                     <label>说明</label>
                                 </div>
                                 <div>{{ slotProps?.description }}</div>
-                            </a-col>
-                        </a-row>
+                            </j-col>
+                        </j-row>
                     </template>
                     <template #actions="item">
                         <PermissionButton
@@ -81,13 +81,13 @@
                 </CardBox>
             </template>
             <template #state="slotProps">
-                <a-badge
+                <j-badge
                     :text="slotProps.state?.text"
                     :status="statusMap.get(slotProps.state?.value)"
                 />
             </template>
             <template #action="slotProps">
-                <a-space>
+                <j-space>
                     <template
                         v-for="i in getActions(slotProps, 'table')"
                         :key="i.key"
@@ -104,23 +104,21 @@
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
                     </template>
-                </a-space>
+                </j-space>
             </template>
-        </JTable>
+        </JProTable>
     </page-container>
 </template>
 
 <script setup lang="ts">
 import { query, _undeploy, _deploy, _delete } from '@/api/northbound/alicloud';
-import type { ActionsType } from '@/components/Table/index.vue';
+import type { ActionsType } from '@/views/device/Instance/typings'
 import { getImage } from '@/utils/comm';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { useMenuStore } from 'store/menu';
 
-const router = useRouter();
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
-const current = ref<Record<string, any>>({});
 
 const menuStory = useMenuStore();
 
@@ -149,6 +147,9 @@ const columns = [
         title: '说明',
         dataIndex: 'describe',
         key: 'describe',
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '状态',

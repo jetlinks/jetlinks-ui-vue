@@ -1,5 +1,5 @@
 <template>
-  <a-form-item label="标识" name="id" :rules="[
+  <j-form-item label="标识" name="id" :rules="[
     { required: true, message: '请输入标识' },
     { max: 64, message: '最多可输入64个字符' },
     {
@@ -7,14 +7,14 @@
       message: 'ID只能由数字、字母、下划线、中划线组成',
     },
   ]">
-    <a-input v-model:value="value.id" size="small" @change="asyncOtherConfig" :disabled="metadataStore.model.action === 'edit'"></a-input>
-  </a-form-item>
-  <a-form-item label="名称" name="name" :rules="[
+    <j-input v-model:value="value.id" size="small" @change="asyncOtherConfig" :disabled="metadataStore.model.action === 'edit'"></j-input>
+  </j-form-item>
+  <j-form-item label="名称" name="name" :rules="[
     { required: true, message: '请输入名称' },
     { max: 64, message: '最多可输入64个字符' },
   ]">
-    <a-input v-model:value="value.name" size="small"></a-input>
-  </a-form-item>
+    <j-input v-model:value="value.name" size="small"></j-input>
+  </j-form-item>
   <template v-if="modelType === 'properties'">
     <value-type-form :name="['valueType']" v-model:value="value.valueType" key="property" title="数据类型"
       @change-type="changeValueType"></value-type-form>
@@ -22,42 +22,42 @@
       :valueType="value.valueType"></expands-form>
   </template>
   <template v-if="modelType === 'functions'">
-    <a-form-item label="是否异步" name="async" :rules="[
+    <j-form-item label="是否异步" name="async" :rules="[
       { required: true, message: '请选择是否异步' },
     ]">
-      <a-radio-group v-model:value="value.async">
-        <a-radio :value="true">是</a-radio>
-        <a-radio :value="false">否</a-radio>
-      </a-radio-group>
-    </a-form-item>
-    <a-form-item label="输入参数" name="inputs" :rules="[
+      <j-radio-group v-model:value="value.async">
+        <j-radio :value="true">是</j-radio>
+        <j-radio :value="false">否</j-radio>
+      </j-radio-group>
+    </j-form-item>
+    <j-form-item label="输入参数" name="inputs" :rules="[
       { required: true, message: '请输入输入参数' },
     ]">
       <JsonParam v-model:value="value.inputs" :name="['inputs']"></JsonParam>
-    </a-form-item>
+    </j-form-item>
     <value-type-form :name="['output']" v-model:value="value.output" key="function" title="输出参数"></value-type-form>
   </template>
   <template v-if="modelType === 'events'">
-    <a-form-item label="级别" :name="['expands', 'level']" :rules="[
+    <j-form-item label="级别" :name="['expands', 'level']" :rules="[
       { required: true, message: '请选择级别' },
     ]">
-      <a-select v-model:value="value.expands.level" :options="EventLevel" size="small"></a-select>
-    </a-form-item>
+      <j-select v-model:value="value.expands.level" :options="EventLevel" size="small"></j-select>
+    </j-form-item>
     <value-type-form :name="['valueType']" v-model:value="value.valueType" key="function" title="输出参数"></value-type-form>
   </template>
   <template v-if="modelType === 'tags'">
     <value-type-form :name="['valueType']" v-model:value="value.valueType" key="property" title="数据类型"></value-type-form>
-    <a-form-item label="读写类型" :name="['expands', 'type']" :rules="[
+    <j-form-item label="读写类型" :name="['expands', 'type']" :rules="[
       { required: true, message: '请选择读写类型' },
     ]">
-      <a-select v-model:value="value.expands.type" :options="ExpandsTypeList" mode="multiple" size="small"></a-select>
-    </a-form-item>
+      <j-select v-model:value="value.expands.type" :options="ExpandsTypeList" mode="multiple" size="small"></j-select>
+    </j-form-item>
   </template>
-  <a-form-item label="说明" name="description" :rules="[
+  <j-form-item label="说明" name="description" :rules="[
     { max: 200, message: '最多可输入200个字符' },
   ]">
-    <a-textarea v-model:value="value.description" size="small"></a-textarea>
-  </a-form-item>
+    <j-textarea v-model:value="value.description" size="small"></j-textarea>
+  </j-form-item>
 </template>
 <script setup lang="ts" name="BaseForm">
 import { PropType } from 'vue';

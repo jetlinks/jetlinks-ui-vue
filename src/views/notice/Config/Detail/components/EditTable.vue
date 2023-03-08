@@ -1,7 +1,7 @@
 <!-- webhook请求头可编辑表格 -->
 <template>
     <div class="table-wrapper">
-        <a-table
+        <j-table
             :columns="columns"
             :data-source="dataSource"
             bordered
@@ -9,18 +9,18 @@
         >
             <template #bodyCell="{ column, text, record }">
                 <template v-if="['key', 'value'].includes(column.dataIndex)">
-                    <a-input v-model:value="record[column.dataIndex]" />
+                    <j-input v-model:value="record[column.dataIndex]" />
                 </template>
                 <template v-else-if="column.dataIndex === 'operation'">
-                    <a-button type="text">
+                    <j-button type="text">
                         <template #icon>
                             <delete-outlined @click="handleDelete(record.id)" />
                         </template>
-                    </a-button>
+                    </j-button>
                 </template>
             </template>
-        </a-table>
-        <a-button
+        </j-table>
+        <j-button
             type="dashed"
             @click="handleAdd"
             style="width: 100%; margin-top: 5px"
@@ -29,7 +29,7 @@
                 <plus-outlined />
             </template>
             添加
-        </a-button>
+        </j-button>
     </div>
 </template>
 

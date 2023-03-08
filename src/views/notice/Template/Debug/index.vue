@@ -1,5 +1,5 @@
 <template>
-    <a-modal
+    <j-modal
         v-model:visible="_vis"
         title="调试"
         cancelText="取消"
@@ -8,33 +8,33 @@
         @cancel="handleCancel"
         :confirmLoading="btnLoading"
     >
-        <a-form ref="formRef" layout="vertical" :model="formData">
-            <a-form-item
+        <j-form ref="formRef" layout="vertical" :model="formData">
+            <j-form-item
                 label="通知配置"
                 name="configId"
                 :rules="{ required: true, message: '该字段为必填字段' }"
             >
-                <a-select
+                <j-select
                     v-model:value="formData.configId"
                     placeholder="请选择通知配置"
                 >
-                    <a-select-option
+                    <j-select-option
                         v-for="(item, index) in configList"
                         :key="index"
                         :value="item.id"
                     >
                         {{ item.name }}
-                    </a-select-option>
-                </a-select>
-            </a-form-item>
-            <a-form-item
+                    </j-select-option>
+                </j-select>
+            </j-form-item>
+            <j-form-item
                 label="变量"
                 v-if="
                     formData.templateDetailTable &&
                     formData.templateDetailTable.length
                 "
             >
-                <a-table
+                <j-table
                     row-key="id"
                     :columns="columns"
                     :data-source="formData.templateDetailTable"
@@ -48,7 +48,7 @@
                             <span>{{ record[column.dataIndex] }}</span>
                         </template>
                         <template v-else>
-                            <a-form-item
+                            <j-form-item
                                 :name="['templateDetailTable', index, 'value']"
                                 :rules="{
                                     required: record.required,
@@ -78,13 +78,13 @@
                                     v-model:modelValue="record.value"
                                     :itemType="record.type"
                                 />
-                            </a-form-item>
+                            </j-form-item>
                         </template>
                     </template>
-                </a-table>
-            </a-form-item>
-        </a-form>
-    </a-modal>
+                </j-table>
+            </j-form-item>
+        </j-form>
+    </j-modal>
 </template>
 
 <script setup lang="ts">

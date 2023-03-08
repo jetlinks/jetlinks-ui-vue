@@ -21,6 +21,56 @@
                 />
             </j-col>
         </j-row>
+
+        <!-- 选择设备 -->
+        <j-modal
+            title="选择设备"
+            width="800px"
+            v-model:visible="visible"
+            :maskClosable="false"
+            :destroyOnClose="true"
+            @cancel="visible = false"
+            @ok="handleSubmit"
+        >
+            <j-advanced-search
+                type="simple"
+                :columns="columns"
+                @search="handleSearch"
+            />
+            <JProTable
+                ref="tableRef"
+                model="table"
+                rowKey="id"
+                :columns="columns"
+                :request="deviceApi.list"
+                :defaultParams="{
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                }"
+                :params="params"
+                :rowSelection="{
+                    type: 'radio',
+                    selectedRowKeys: deviceItem?.id
+                        ? [deviceItem.id]
+                        : undefined,
+                    onSelect: (record: any) => {
+                        deviceItem = record;
+                    }
+                }"
+            >
+                <template #state="slotProps">
+                    <a-space>
+                        <a-badge
+                            :status="
+                                slotProps.state.value === 'online'
+                                    ? 'success'
+                                    : 'error'
+                            "
+                            :text="slotProps.state.text"
+                        />
+                    </a-space>
+                </template>
+            </JProTable>
+        </j-modal>
     </page-container>
 </template>
 
@@ -32,6 +82,13 @@ import BasicCountCard from '@/views/media/Home/components/BasicCountCard.vue';
 
 import { usePermissionStore } from '@/store/permission';
 import type { bootConfig, recommendList } from '@/views/home/typing';
+
+import deviceApi from '@/api/media/device';
+import { message } from 'ant-design-vue';
+
+import { useMenuStore } from 'store/menu';
+
+const menuStory = useMenuStore();
 
 // 权限控制
 const hasPermission = usePermissionStore().hasPermission;
@@ -54,6 +111,7 @@ const deviceBootConfig: bootConfig[] = [
         link: 'media/Cascade',
     },
 ];
+
 const deviceStepDetails: recommendList[] = [
     {
         title: '添加视频设备',
@@ -66,8 +124,16 @@ const deviceStepDetails: recommendList[] = [
         title: '查看通道',
         details: '查看设备下的通道数据，可以进行直播、录制等操作。',
         iconUrl: '/images/home/bottom-7.png',
-        linkUrl: 'media/Device/Channel',
+        // linkUrl: 'media/Device/Channel',
+        linkUrl: '',
         auth: hasPermission('media/Device:view'),
+        onClick: (row: any) => {
+            if (hasPermission('media/Device:view')) {
+                visible.value = true;
+            } else {
+                message.warning('暂无权限，请联系管理员');
+            }
+        },
     },
     {
         title: '分屏展示',
@@ -76,4 +142,71 @@ const deviceStepDetails: recommendList[] = [
         linkUrl: 'media/SplitScreen',
     },
 ];
+
+// 选择设备
+const visible = ref(false);
+const columns = [
+    {
+        title: 'ID',
+        dataIndex: 'id',
+        key: 'id',
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '名称',
+        dataIndex: 'name',
+        key: 'name',
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '通道数量',
+        dataIndex: 'channelNumber',
+        key: 'channelNumber',
+    },
+    {
+        title: '状态',
+        dataIndex: 'state',
+        key: 'state',
+        scopedSlots: true,
+        search: {
+            type: 'select',
+            options: [
+                { label: '在线', value: 'online' },
+                { label: '离线', value: 'offline' },
+            ],
+            handleValue: (v: any) => {
+                return v;
+            },
+        },
+    },
+];
+const params = ref<Record<string, any>>({});
+
+/**
+ * 搜索
+ * @param params
+ */
+const handleSearch = (e: any) => {
+    params.value = e;
+};
+
+const deviceItem = ref();
+const handleSubmit = () => {
+    if (deviceItem.value && deviceItem.value.id) {
+        menuStory.jumpPage(
+            'media/Device/Channel',
+            {},
+            {
+                id: deviceItem.value.id,
+                type: deviceItem.value.provider,
+            },
+        );
+    } else {
+        message.warning('请选择设备');
+    }
+};
 </script>

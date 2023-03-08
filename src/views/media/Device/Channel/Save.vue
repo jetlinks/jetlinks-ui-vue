@@ -1,6 +1,6 @@
 <!-- Modal 弹窗，用于新增、修改数据 -->
 <template>
-    <a-modal
+    <j-modal
         v-model:visible="_vis"
         :title="!!formData.id ? '编辑' : '新增'"
         width="650px"
@@ -9,10 +9,10 @@
         @ok="handleSubmit"
         @cancel="handleCancel"
     >
-        <a-form ref="formRef" :model="formData" layout="vertical">
-            <a-row :gutter="10">
-                <a-col :span="12">
-                    <a-form-item
+        <j-form ref="formRef" :model="formData" layout="vertical">
+            <j-row :gutter="10">
+                <j-col :span="12">
+                    <j-form-item
                         name="channelId"
                         :rules="[
                             {
@@ -26,22 +26,22 @@
                     >
                         <template #label>
                             通道ID
-                            <a-tooltip title="若不填写，系统将自动生成唯一ID">
+                            <j-tooltip title="若不填写，系统将自动生成唯一ID">
                                 <AIcon
                                     type="QuestionCircleOutlined"
                                     style="margin-left: 2px"
                                 />
-                            </a-tooltip>
+                            </j-tooltip>
                         </template>
-                        <a-input
+                        <j-input
                             v-model:value="formData.channelId"
                             :disabled="!!formData.id"
                             placeholder="请输入通道ID"
                         />
-                    </a-form-item>
-                </a-col>
-                <a-col :span="12">
-                    <a-form-item
+                    </j-form-item>
+                </j-col>
+                <j-col :span="12">
+                    <j-form-item
                         name="name"
                         label="通道名称"
                         :rules="[
@@ -49,14 +49,14 @@
                             { max: 64, message: '最多可输入64个字符' },
                         ]"
                     >
-                        <a-input
+                        <j-input
                             v-model:value="formData.name"
                             placeholder="请输入通道名称"
                         />
-                    </a-form-item>
-                </a-col>
-                <a-col :span="24">
-                    <a-form-item
+                    </j-form-item>
+                </j-col>
+                <j-col :span="24">
+                    <j-form-item
                         name="media_url"
                         :rules="[
                             { required: true, message: '请输入视频地址' },
@@ -65,66 +65,66 @@
                     >
                         <template #label>
                             视频地址
-                            <a-tooltip
+                            <j-tooltip
                                 title="不同厂家的RTSP固定地址规则不同，请按对应厂家的规则填写"
                             >
                                 <AIcon
                                     type="QuestionCircleOutlined"
                                     style="margin-left: 2px"
                                 />
-                            </a-tooltip>
+                            </j-tooltip>
                         </template>
-                        <a-input
+                        <j-input
                             v-model:value="formData.media_url"
                             placeholder="请输入视频地址"
                         />
-                    </a-form-item>
-                </a-col>
-                <a-col :span="12">
-                    <a-form-item
+                    </j-form-item>
+                </j-col>
+                <j-col :span="12">
+                    <j-form-item
                         name="media_username"
                         label="用户名"
                         :rules="{ max: 64, message: '最多可输入64个字符' }"
                     >
-                        <a-input
+                        <j-input
                             v-model:value="formData.media_username"
                             placeholder="请输入用户名"
                         />
-                    </a-form-item>
-                </a-col>
-                <a-col :span="12">
-                    <a-form-item
+                    </j-form-item>
+                </j-col>
+                <j-col :span="12">
+                    <j-form-item
                         name="media_password"
                         label="密码"
                         :rules="{ max: 64, message: '最多可输入64个字符' }"
                     >
-                        <a-input-password
+                        <j-input-password
                             v-model:value="formData.media_password"
                             placeholder="请输入密码"
                         />
-                    </a-form-item>
-                </a-col>
-                <a-col :span="24">
-                    <a-form-item name="address" label="安装地址">
-                        <a-input
+                    </j-form-item>
+                </j-col>
+                <j-col :span="24">
+                    <j-form-item name="address" label="安装地址">
+                        <j-input
                             v-model:value="formData.address"
                             placeholder="请输入安装地址"
                         />
-                    </a-form-item>
-                </a-col>
-                <a-col :span="24">
-                    <a-form-item name="description" label="说明">
-                        <a-textarea
+                    </j-form-item>
+                </j-col>
+                <j-col :span="24">
+                    <j-form-item name="description" label="说明">
+                        <j-textarea
                             v-model:value="formData.description"
                             :rows="4"
                             :maxlength="200"
                             showCount
                         />
-                    </a-form-item>
-                </a-col>
-            </a-row>
-        </a-form>
-    </a-modal>
+                    </j-form-item>
+                </j-col>
+            </j-row>
+        </j-form>
+    </j-modal>
 </template>
 
 <script setup lang="ts">

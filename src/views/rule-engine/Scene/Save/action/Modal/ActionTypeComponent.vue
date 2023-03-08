@@ -1,7 +1,7 @@
 <template>
     <div>
         <template v-if="actionType === 'device'">
-            <Device v-bind="props" :value="data?.device" @cancel="onCancel" @save="onPropsOk" />
+            <Device v-bind="props" :value="data?.device" @cancel="onCancel" @save="onPropsOk" :thenName="branchesName" />
         </template>
         <template v-else-if="actionType === 'notify'">
             <Notify v-bind="props" :value="data?.notify" @cancel="onCancel" @save="onPropsOk" />

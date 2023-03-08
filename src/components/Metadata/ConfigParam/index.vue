@@ -1,5 +1,5 @@
 <template>
-  <a-popover placement="left" trigger="click">
+  <j-popover placement="left" trigger="click">
     <template #title>
       <div class="edit-title" style="display: flex; justify-content: space-between; align-items: center;">
         <div style="width: 150px;">{{ config.name }}</div>
@@ -7,18 +7,18 @@
     </template>
     <template #content>
       <div style="max-width: 400px;" class="ant-form-vertical">
-        <a-form-item v-for="item in config.properties" :name="name.concat([item.property])" :label="item.name">
-          <a-select v-model:value="value[item.property]" :options="item.type?.elements?.map((e: { 'text': string, 'value': string }) => ({
+        <j-form-item v-for="item in config.properties" :name="name.concat([item.property])" :label="item.name">
+          <j-select v-model:value="value[item.property]" :options="item.type?.elements?.map((e: { 'text': string, 'value': string }) => ({
             label: e.text,
             value: e.value,
-          }))" size="small"></a-select>
-        </a-form-item>
+          }))" size="small"></j-select>
+        </j-form-item>
       </div>
     </template>
-    <a-button type="dashed" block>
+    <j-button type="dashed" block>
       存储配置<AIcon type="EditOutlined" class="item-icon"/>
-    </a-button>
-  </a-popover>
+    </j-button>
+  </j-popover>
 </template>
 <script setup lang="ts" name="ConfigParam">
 import { PropType } from 'vue';

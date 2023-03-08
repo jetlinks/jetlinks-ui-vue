@@ -1,13 +1,13 @@
 <template>
-  <a-drawer :mask-closable="false" width="25vw" visible :title="`${title}-${typeMapping[metadataStore.model.type]}`"
+  <j-drawer :mask-closable="false" width="25vw" visible :title="`${title}-${typeMapping[metadataStore.model.type]}`"
     @close="close" destroy-on-close :z-index="1000" placement="right">
     <template #extra>
-      <a-button :loading="save.loading" type="primary" @click="save.saveMetadata">保存</a-button>
+      <j-button :loading="save.loading" type="primary" @click="save.saveMetadata">保存</j-button>
     </template>
-    <a-form ref="formRef" :model="form.model" layout="vertical">
+    <j-form ref="formRef" :model="form.model" layout="vertical">
       <BaseForm :model-type="metadataStore.model.type" :type="type" v-model:value="form.model"></BaseForm>
-    </a-form>
-  </a-drawer>
+    </j-form>
+  </j-drawer>
 </template>
 <script lang="ts" setup name="Edit">
 import { useInstanceStore } from '@/store/instance';
@@ -22,6 +22,7 @@ import { DeviceInstance } from '@/views/device/Instance/typings';
 import BaseForm from './BaseForm.vue';
 import { PropType } from 'vue';
 import { _deploy } from '@/api/device/product';
+import { cloneDeep } from 'lodash';
 
 const props = defineProps({
   type: {
@@ -60,7 +61,7 @@ const form = reactive({
   model: {} as any,
 })
 if (metadataStore.model.action === 'edit') {
-  form.model = metadataStore.model.item
+  form.model = cloneDeep(metadataStore.model.item)
 }
 
 const formRef = ref<FormInstance>()
@@ -75,7 +76,9 @@ const save = reactive({
       const type = metadataStore.model.type
       const _detail: ProductItem | DeviceInstance = props.type === 'device' ? instanceStore.detail : productStore.current
       const _metadata = JSON.parse(_detail?.metadata || '{}')
-      const list = _metadata[type] as any[]
+      console.log(_metadata)
+      console.log(type)
+      const list = (_metadata[type] as any[]) || []
       if (formValue.id) {
         if (metadataStore.model.action === 'add' && list.some(item => item.id === formValue.id)) {
           message.error('标识已存在')

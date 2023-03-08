@@ -19,7 +19,7 @@
                 <template #title="{ name, description }">
                     <a-space>
                         {{ name }}
-                        <spn style="color: grey; margin-left: 5px">{{ description }}</spn>
+                        <span style="color: grey; margin-left: 5px">{{ description }}</span>
                     </a-space>
                 </template>
             </a-tree-select>

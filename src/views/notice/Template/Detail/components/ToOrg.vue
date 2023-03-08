@@ -1,5 +1,5 @@
 <template>
-    <a-select
+    <j-select
         :options="options"
         @change="change"
         placeholder="请选择收信部门"

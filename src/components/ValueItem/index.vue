@@ -29,7 +29,7 @@
             v-model:value="myValue"
         >
             <template #addonAfter>
-                <form-outlined @click="modalVis = true" />
+                <AIcon type="FormOutlined" @click="modalVis = true" />
             </template>
         </j-input>
         <GeoComponent
@@ -50,7 +50,7 @@
                     :showUploadList="false"
                     @change="handleFileChange"
                 >
-                    <cloud-upload-outlined />
+                    <AIcon type="CloudUploadOutlined" />
                 </j-upload>
             </template>
         </j-input>

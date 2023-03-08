@@ -53,14 +53,14 @@
                 />
             </div>
             <div class="playback-right">
-                <a-spin :spinning="loading">
-                    <a-tooltip placement="topLeft">
+                <j-spin :spinning="loading">
+                    <j-tooltip placement="topLeft">
                         <template #title>
                             <div>云端：存储在服务器中</div>
                             <div>本地：存储在设备本地</div>
                         </template>
                         <div>类型: <AIcon type="QuestionCircleOutlined" /></div>
-                    </a-tooltip>
+                    </j-tooltip>
                     <RadioCard
                         layout="horizontal"
                         :options="[
@@ -80,11 +80,11 @@
                         v-model="type"
                     />
                     <div class="playback-calendar">
-                        <a-calendar
+                        <j-calendar
                             v-model:value="time"
                             :fullscreen="false"
                             :disabledDate="
-                                (currentDate) => currentDate > dayjs(new Date())
+                                (currentDate: Dayjs) => currentDate > dayjs(new Date())
                             "
                             @change="handlePanelChange"
                         />
@@ -93,20 +93,20 @@
                         class="playback-list"
                         :class="{ 'no-list': !historyList.length }"
                     >
-                        <a-empty
+                        <j-empty
                             v-if="!historyList.length"
                             description="暂无数据"
                         />
-                        <a-list
+                        <j-list
                             v-else
                             class="playback-list-items"
                             itemLayout="horizontal"
                             :dataSource="historyList"
                         >
                             <template #renderItem="{ item }">
-                                <a-list-item>
+                                <j-list-item>
                                     <template #actions>
-                                        <a-tooltip
+                                        <j-tooltip
                                             key="play-btn"
                                             :title="
                                                 (item.startTime ||
@@ -136,8 +136,8 @@
                                                     "
                                                 />
                                             </a>
-                                        </a-tooltip>
-                                        <a-tooltip
+                                        </j-tooltip>
+                                        <j-tooltip
                                             key="download"
                                             :title="
                                                 type !== 'local'
@@ -155,7 +155,7 @@
                                                     () => downloadClick(item)
                                                 "
                                             />
-                                        </a-tooltip>
+                                        </j-tooltip>
                                     </template>
 
                                     <div>
@@ -173,12 +173,12 @@
                                             ).format('HH:mm:ss')
                                         }}
                                     </div>
-                                </a-list-item>
+                                </j-list-item>
                             </template>
                             <div></div>
-                        </a-list>
+                        </j-list>
                     </div>
-                </a-spin>
+                </j-spin>
             </div>
         </div>
     </page-container>

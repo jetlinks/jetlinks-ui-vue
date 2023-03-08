@@ -3,26 +3,26 @@
         <div class="card-header">
             <div class="title">{{ title }}</div>
             <div class="tools">
-                <a-space>
-                    <a-radio-group
+                <j-space>
+                    <j-radio-group
                         v-model:value="dimension"
                         button-style="solid"
                     >
-                        <a-radio-button value="today">今日</a-radio-button>
-                        <a-radio-button value="week">近一周</a-radio-button>
-                        <a-radio-button value="month">近一月</a-radio-button>
-                        <a-radio-button value="year">近一年</a-radio-button>
-                    </a-radio-group>
-                    <a-range-picker
+                        <j-radio-button value="today">今日</j-radio-button>
+                        <j-radio-button value="week">近一周</j-radio-button>
+                        <j-radio-button value="month">近一月</j-radio-button>
+                        <j-radio-button value="year">近一年</j-radio-button>
+                    </j-radio-group>
+                    <j-range-picker
                         format="YYYY-MM-DD HH:mm:ss"
                         valueFormat="x"
                         v-model:value="dateRange"
                     />
-                </a-space>
+                </j-space>
             </div>
         </div>
         <div v-if="chartData.length" class="chart" ref="chartRef"></div>
-        <a-empty v-else class="no-data" description="暂无数据"></a-empty>
+        <j-empty v-else class="no-data" description="暂无数据"></j-empty>
     </div>
 </template>
 
@@ -56,52 +56,49 @@ const chartRef = ref();
 const createChart = () => {
     nextTick(() => {
         const myChart = echarts.init(chartRef.value as HTMLElement);
-
+        const sData: number[] = props.chartData.map(
+            (m: any) => m.value && m.value.toFixed(2),
+        );
+        const maxY = Math.max.apply(null, sData.length ? sData : [0]);
         const options = {
             grid: {
-                left: '7%',
+                left: maxY > 100000 ? 90 : 50,
                 right: '5%',
                 top: '5%',
                 bottom: '5%',
             },
             tooltip: {
                 trigger: 'axis',
-                // 		formatter: '{a}<br>{b}: {c}',
-                axisPointer: {
-                    type: 'shadow',
-                },
+                formatter: '{b0}<br />{a0}: {c0}',
             },
-            xAxis: [
-                {
-                    data: props.chartData.map((m: any) => m.x),
-                },
-            ],
-            yAxis: [
-                {
-                    show: false,
-                    axisTick: {
-                        show: false,
-                    },
-                    axisLine: {
-                        show: false,
-                    },
-                    splitLine: {
-                        lineStyle: {
-                            type: 'solid',
-                        },
-                    },
-                },
-            ],
+            xAxis: {
+                type: 'category',
+                data: props.chartData.map((m: any) => m.x),
+            },
+            yAxis: {
+                type: 'value',
+                // minInterval: 1,
+            },
             series: [
+                {
+                    name: '播放数量(人次)',
+                    data: sData,
+                    type: 'bar',
+                    barWidth: 16,
+                    itemStyle: {
+                        color: '#2f54eb',
+                    },
+                },
                 {
                     name: '播放数量(人次)',
                     type: 'line',
                     symbol: 'circle',
                     showSymbol: false,
                     smooth: true,
-                    data: props.chartData.map(
-                        (m: any) => m.value && m.value.toFixed(2),
-                    ),
+                    lineStyle: {
+                        color: '#a5fff9',
+                    },
+                    data: sData,
                 },
             ],
         };
@@ -116,8 +113,6 @@ const createChart = () => {
 watch(
     () => props.chartData,
     (val) => {
-        console.log('createChart', val);
-
         createChart();
     },
     { deep: true },

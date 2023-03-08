@@ -2,36 +2,36 @@
   <div class="indicator-box">
     <template v-if="['int', 'long', 'double', 'float'].includes(type)">
       <template v-if="value.range">
-        <a-input-number v-model:value="value.value[0]" :max="value.value[1]" size="small"
-          style="width: 100%;"></a-input-number>
+        <j-input-number v-model:value="value.value[0]" :max="value.value[1]" size="small"
+          style="width: 100%;"></j-input-number>
         ~
-        <a-input-number v-model:value="value.value[1]" :min="value.value[0]" size="small"
-          style="width: 100%;"></a-input-number>
+        <j-input-number v-model:value="value.value[1]" :min="value.value[0]" size="small"
+          style="width: 100%;"></j-input-number>
       </template>
-      <a-input-number v-else v-model:value="value.value" size="small" style="width: 100%;"></a-input-number>
+      <j-input-number v-else v-model:value="value.value" size="small" style="width: 100%;"></j-input-number>
     </template>
     <template v-else-if="type === 'date'">
-      <a-range-picker v-if="value.range" show-time v-model:value="value.value" size="small" />
-      <a-date-picker v-else show-time v-model:value="value.value" size="small" />
+      <j-range-picker v-if="value.range" show-time v-model:value="value.value" size="small" />
+      <j-date-picker v-else show-time v-model:value="value.value" size="small" />
     </template>
     <template v-else-if="type === 'boolean'">
-      <a-select v-model:value="value.value[0]" :options="list" size="small" placeholder="请选择"></a-select>
+      <j-select v-model:value="value.value[0]" :options="list" size="small" placeholder="请选择"></j-select>
     </template>
     <template v-else-if="type === 'string'">
-      <a-input v-model:value="value.value" size="small" placeholder="请输入"></a-input>
+      <j-input v-model:value="value.value" size="small" placeholder="请输入"></j-input>
     </template>
     <template v-else>
       <template v-if="value.range">
-        <a-input v-model:value="value.value[0]" :max="value.value[1]" size="small" placeholder="请输入"></a-input>
+        <j-input v-model:value="value.value[0]" :max="value.value[1]" size="small" placeholder="请输入"></j-input>
         ~
-        <a-input v-model:value="value.value[1]" :min="value.value[0]" size="small" placeholder="请输入"></a-input>
+        <j-input v-model:value="value.value[1]" :min="value.value[0]" size="small" placeholder="请输入"></j-input>
       </template>
-      <a-input-number v-else v-model:value="value.value" size="small" placeholder="请输入"></a-input-number>
+      <j-input-number v-else v-model:value="value.value" size="small" placeholder="请输入"></j-input-number>
     </template>
     <div v-if="type !== 'boolean' && type !== 'string'">
-      <a-checkbox style="min-width: 60px; margin-left: 5px;" v-model:checked="value.range" @change="changeChecked">
+      <j-checkbox style="min-width: 60px; margin-left: 5px;" v-model:checked="value.range" @change="changeChecked">
         范围
-      </a-checkbox>
+      </j-checkbox>
     </div>
   </div>
 </template>

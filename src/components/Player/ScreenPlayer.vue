@@ -4,32 +4,32 @@
         <div class="live-player-content">
             <!-- 工具栏 -->
             <div class="player-screen-tool" v-if="showScreen">
-                <a-radio-group
+                <j-radio-group
                     :value="screen"
                     button-style="solid"
                     @change="handleScreenChange"
                 >
-                    <a-radio-button :value="1">单屏</a-radio-button>
-                    <a-radio-button :value="4">四分屏</a-radio-button>
-                    <a-radio-button :value="9">九分屏</a-radio-button>
-                    <a-radio-button :value="0">全屏</a-radio-button>
-                </a-radio-group>
+                    <j-radio-button :value="1">单屏</j-radio-button>
+                    <j-radio-button :value="4">四分屏</j-radio-button>
+                    <j-radio-button :value="9">九分屏</j-radio-button>
+                    <j-radio-button :value="0">全屏</j-radio-button>
+                </j-radio-group>
                 <div class="screen-tool-save">
-                    <a-tooltip title="可保存分屏配置记录">
+                    <j-tooltip title="可保存分屏配置记录">
                         <AIcon type="QuestionCircleOutlined" />
-                    </a-tooltip>
-                    <a-popover
+                    </j-tooltip>
+                    <j-popover
                         v-model:visible="visible"
                         trigger="click"
                         title="分屏名称"
                     >
                         <template #content>
-                            <a-form
+                            <j-form
                                 ref="formRef"
                                 :model="formData"
                                 layout="vertical"
                             >
-                                <a-form-item
+                                <j-form-item
                                     name="name"
                                     :rules="[
                                         {
@@ -42,37 +42,37 @@
                                         },
                                     ]"
                                 >
-                                    <a-textarea v-model:value="formData.name" />
-                                </a-form-item>
-                                <a-button
+                                    <j-textarea v-model:value="formData.name" />
+                                </j-form-item>
+                                <j-button
                                     type="primary"
                                     @click="saveHistory"
                                     :loading="loading"
                                     style="width: 100%; margin-top: 16px"
                                 >
                                     保存
-                                </a-button>
-                            </a-form>
+                                </j-button>
+                            </j-form>
                         </template>
-                        <a-dropdown-button
+                        <j-dropdown-button
                             type="primary"
                             @click="visible = true"
                         >
                             保存
                             <template #overlay>
-                                <a-menu>
-                                    <a-empty
+                                <j-menu>
+                                    <j-empty
                                         v-if="!historyList.length"
                                         description="暂无数据"
                                     />
-                                    <a-menu-item
+                                    <j-menu-item
                                         v-for="(item, index) in historyList"
                                         :key="`his${index}`"
                                         @click="handleHistory(item)"
                                     >
-                                        <a-space>
+                                        <j-space>
                                             <span>{{ item.name }}</span>
-                                            <a-popconfirm
+                                            <j-popconfirm
                                                 title="确认删除?"
                                                 ok-text="确认"
                                                 cancel-text="取消"
@@ -89,13 +89,13 @@
                                                             e?.stopPropagation()
                                                     "
                                                 />
-                                            </a-popconfirm>
-                                        </a-space>
-                                    </a-menu-item>
-                                </a-menu>
+                                            </j-popconfirm>
+                                        </j-space>
+                                    </j-menu-item>
+                                </j-menu>
                             </template>
-                        </a-dropdown-button>
-                    </a-popover>
+                        </j-dropdown-button>
+                    </j-popover>
                 </div>
             </div>
             <!-- 播放器 -->
