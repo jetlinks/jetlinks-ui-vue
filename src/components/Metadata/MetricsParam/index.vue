@@ -6,7 +6,7 @@
         {{ `#${index + 1}.` }}
       </div>
       <div class="item-middle item-editable">
-        <a-popover :visible="editIndex === index" placement="top" @visible-change="change" trigger="click">
+        <j-popover :visible="editIndex === index" placement="top" @visible-change="change" trigger="click">
           <template #title>
             <div class="edit-title" style="display: flex; justify-content: space-between; align-items: center;">
               <div style="width: 150px;">配置参数</div>
@@ -16,7 +16,7 @@
           <template #content>
             <div>
               <div class="ant-form-vertical">
-                <a-form-item label="标识" :name="name.concat([index, 'id'])" :rules="[
+                <j-form-item label="标识" :name="name.concat([index, 'id'])" :rules="[
                   { required: true, message: '请输入标识' },
                   { max: 64, message: '最多可输入64个字符' },
                   {
@@ -24,20 +24,19 @@
                     message: 'ID只能由数字、字母、下划线、中划线组成',
                   },
                 ]">
-                  <a-input v-model:value="_value[index].id" size="small"></a-input>
-                </a-form-item>
-                <a-form-item label="名称" :name="name.concat([index, 'name'])" :rules="[
+                  <j-input v-model:value="_value[index].id" size="small"></j-input>
+                </j-form-item>
+                <j-form-item label="名称" :name="name.concat([index, 'name'])" :rules="[
                   { required: true, message: '请输入名称' },
                   { max: 64, message: '最多可输入64个字符' },
                 ]">
-                  <a-input v-model:value="_value[index].name" size="small"></a-input>
-                </a-form-item>
-                <a-form-item label="指标值" :name="name.concat([index, 'value'])" :rules="[
-                  { required: true, message: '请输入指标值' },
-                  { validator: () => validateIndicator(_value[index]), message: '请输入指标值' }
+                  <j-input v-model:value="_value[index].name" size="small"></j-input>
+                </j-form-item>
+                <j-form-item label="指标值" :name="name.concat([index, 'value'])" :rules="[
+                  { required: true, validator: () => validateIndicator(_value[index]), message: '请输入指标值' }
                 ]">
                   <JIndicators v-model:value="_value[index]" :type="type" size="small" :enum="enum" />
-                </a-form-item>
+                </j-form-item>
               </div>
             </div>
           </template>
@@ -45,18 +44,18 @@
             {{ item.name || '配置参数' }}
             <AIcon type="EditOutlined" class="item-icon" />
           </div>
-        </a-popover>
+        </j-popover>
       </div>
       <div class="item-right">
         <AIcon type="DeleteOutlined" @click="handleDelete(index)" />
       </div>
     </div>
-    <a-button type="dashed" block @click="handleAdd">
+    <j-button type="dashed" block @click="handleAdd">
       <template #icon>
         <AIcon type="PlusOutlined" class="item-icon" />
       </template>
       添加指标
-    </a-button>
+    </j-button>
   </div>
 </template>
 <script setup lang="ts" name="MetricsParam">
