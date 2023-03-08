@@ -123,6 +123,7 @@ const getAggData = () => {
             {
                 title: '总时长',
                 value: timestampFormat(res.result.duration),
+                status: '',
             },
         ];
     });
@@ -139,6 +140,7 @@ const getAggPlayingData = () => {
             {
                 title: '播放人数',
                 value: res.result.playerTotal,
+                status: '',
             },
         ];
     });
@@ -188,9 +190,11 @@ const getPlayCount = async (params: any) => {
         ])
         .then((res) => {
             let result: any = [];
-            res.result.forEach((item: any) => {
-                result = [...result, ...item.data];
-            });
+            res.result
+                .sort((a: any, b: any) => b.data.timestamp - a.data.timestamp)
+                .forEach((item: any) => {
+                    result.push({ group: item.group, ...item.data });
+                });
             chartData.value = result.map((m: any) => ({
                 x: m.timeString,
                 value: m.value,
