@@ -156,7 +156,10 @@
                     </template>
                     <template #content>
                         <Ellipsis style="width: calc(100% - 100px)">
-                            <span style="font-size: 16px; font-weight: 600"  @click.stop="handleView(slotProps.id)">
+                            <span
+                                style="font-size: 16px; font-weight: 600"
+                                @click.stop="handleView(slotProps.id)"
+                            >
                                 {{ slotProps.name }}
                             </span>
                         </Ellipsis>
@@ -205,6 +208,11 @@
                     :status="statusMap.get(slotProps.state?.value)"
                 />
             </template>
+            <template #createTime="slotProps">
+                <span>{{
+                    dayjs(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss')
+                }}</span>
+            </template>
             <template #action="slotProps">
                 <j-space>
                     <template
@@ -229,11 +237,16 @@
             </template>
         </JProTable>
     </page-container>
-    <Import v-if="importVisible" @close="importVisible = false" @save="onRefresh" />
+    <Import
+        v-if="importVisible"
+        @close="importVisible = false"
+        @save="onRefresh"
+    />
     <Export
         v-if="exportVisible"
         @close="exportVisible = false"
         :data="params"
+        @save="onRefresh"
     />
     <Process
         v-if="operationVisible"
@@ -260,7 +273,7 @@ import {
     batchDeleteDevice,
 } from '@/api/device/instance';
 import { getImage, LocalStore } from '@/utils/comm';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import Import from './Import/index.vue';
 import Export from './Export/index.vue';
 import Process from './Process/index.vue';
@@ -274,9 +287,9 @@ import {
 } from '@/api/device/product';
 import { queryTree } from '@/api/device/category';
 import { useMenuStore } from '@/store/menu';
-import { ActionsType } from './typings';
+import type { ActionsType } from './typings';
+import dayjs from 'dayjs';
 
-const router = useRouter();
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const _selectedRowKeys = ref<string[]>([]);
@@ -699,5 +712,5 @@ const handleSearch = (_params: any) => {
 
 const onRefresh = () => {
     instanceRef.value?.reload();
-}
+};
 </script>

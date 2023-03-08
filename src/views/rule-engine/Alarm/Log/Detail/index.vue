@@ -5,7 +5,7 @@
             target="alarm-log-detail"
             @search="handleSearch"
         ></Search>
-        <JTable
+        <JProTable
             :columns="columns"
             model="TABLE"
             :request="queryList"
@@ -39,7 +39,7 @@
                     </template>
                 </a-space>
             </template>
-        </JTable>
+        </JProTable>
         <Info v-if="visiable"  :data="current" @close="close"/>
     </page-container>
 </template>
@@ -128,7 +128,7 @@ const queryList = async (params: any) => {
         // sorts: [{ name: 'alarmTime', order: 'desc' }],
     });
     if (res.status === 200) {
-
+        details.value = res.result.data[0];
         return {
             code: res.message,
             result: {
@@ -178,6 +178,13 @@ const handleSearch = (_params: any) => {
 const close = () => {
   visiable.value = false
 }
+
+watchEffect(()=>{
+    current.value = details.value;
+    if(route.query.detail && details.value){
+        visiable.value = true;
+    }
+})
 </script>
 <style lang="less" scoped>
 </style>

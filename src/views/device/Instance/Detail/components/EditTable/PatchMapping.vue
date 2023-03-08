@@ -1,5 +1,5 @@
 <template>
-    <a-modal
+    <j-modal
         width="900px"
         title="批量映射"
         visible
@@ -10,49 +10,49 @@
             <div class="map-tree-top">
                 采集器的点位名称与属性名称一致时将自动映射绑定；有多个采集器点位名称与属性名称一致时以第1个采集器的点位数据进行绑定
             </div>
-            <a-spin :spinning="loading">
+            <j-spin :spinning="loading">
                 <div class="map-tree-content">
-                    <a-card class="map-tree-content-card" title="源数据">
-                        <a-tree
+                    <j-card class="map-tree-content-card" title="源数据">
+                        <j-tree
                             checkable
                             :height="300"
                             :tree-data="dataSource"
                             :checkedKeys="checkedKeys"
                             @check="onCheck"
                         />
-                    </a-card>
+                    </j-card>
                     <div style="width: 100px">
-                        <a-button
+                        <j-button
                             :disabled="rightList.length >= leftList.length"
                             @click="onRight"
-                            >加入右侧</a-button
+                            >加入右侧</j-button
                         >
                     </div>
-                    <a-card class="map-tree-content-card" title="采集器">
-                        <a-list
+                    <j-card class="map-tree-content-card" title="采集器">
+                        <j-list
                             size="small"
                             :data-source="rightList"
                             class="map-tree-content-card-list"
                         >
                             <template #renderItem="{ item }">
-                                <a-list-item>
+                                <j-list-item>
                                     {{ item.title }}
                                     <template #actions>
-                                        <a-popconfirm
+                                        <j-popconfirm
                                             title="确定删除?"
                                             @confirm="_delete(item.key)"
                                         >
                                             <AIcon type="DeleteOutlined" />
-                                        </a-popconfirm>
+                                        </j-popconfirm>
                                     </template>
-                                </a-list-item>
+                                </j-list-item>
                             </template>
-                        </a-list>
-                    </a-card>
+                        </j-list>
+                    </j-card>
                 </div>
-            </a-spin>
+            </j-spin>
         </div>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script lang="ts" setup>

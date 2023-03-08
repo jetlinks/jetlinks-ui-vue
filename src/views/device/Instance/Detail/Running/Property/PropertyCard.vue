@@ -1,17 +1,17 @@
 <template>
-    <a-card :hoverable="true" class="card-box">
-        <!-- <a-spin :spinning="loading"> -->
+    <j-card :hoverable="true" class="card-box">
+        <!-- <j-spin :spinning="loading"> -->
         <div class="card-container">
             <div class="header">
                 <div class="title">{{ _props.data.name }}</div>
                 <div class="extra">
-                    <a-space :size="16">
+                    <j-space :size="16">
                         <template v-for="i in actions" :key="i.key">
-                            <a-tooltip
+                            <j-tooltip
                                 v-bind="i.tooltip"
                                 v-if="i.key !== 'edit'"
                             >
-                                <a-button
+                                <j-button
                                     style="padding: 0; margin: 0"
                                     type="link"
                                     :disabled="i.disabled"
@@ -21,8 +21,8 @@
                                         :type="i.icon"
                                         style="color: #323130; font-size: 12px"
                                     />
-                                </a-button>
-                            </a-tooltip>
+                                </j-button>
+                            </j-tooltip>
                             <PermissionButton
                                 :disabled="i.disabled"
                                 v-else
@@ -38,7 +38,7 @@
                                 /></template>
                             </PermissionButton>
                         </template>
-                    </a-space>
+                    </j-space>
                 </div>
             </div>
             <div class="value">
@@ -53,8 +53,8 @@
                 </div>
             </div>
         </div>
-        <!-- </a-spin> -->
-    </a-card>
+        <!-- </j-spin> -->
+    </j-card>
 </template>
 
 <script lang="ts" setup>

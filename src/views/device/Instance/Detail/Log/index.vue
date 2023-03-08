@@ -1,9 +1,11 @@
 <template>
     <j-card>
-        <Search
+        <j-advanced-search
             :columns="columns"
             target="device-instance-log"
             @search="handleSearch"
+            type="simple"
+            class="search"
         />
         <JProTable
             ref="instanceRefLog"
@@ -12,6 +14,7 @@
             model="TABLE"
             :defaultParams="{ sorts: [{ name: 'timestamp', order: 'desc' }] }"
             :params="params"
+            :bodyStyle="{ padding: 0 }"
         >
             <template #type="slotProps">
                 {{ slotProps?.type?.text }}
@@ -150,4 +153,7 @@ const handleSearch = (_params: any) => {
 </script>
 
 <style lang="less" scoped>
+.search {
+    padding: 0;
+}
 </style>

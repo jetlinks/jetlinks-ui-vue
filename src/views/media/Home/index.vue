@@ -31,7 +31,7 @@ import StepCard from '@/views/home/components/StepCard.vue';
 import BasicCountCard from '@/views/media/Home/components/BasicCountCard.vue';
 
 import { usePermissionStore } from '@/store/permission';
-import type { bootConfig, recommendList } from '@/views/home/index';
+import type { bootConfig, recommendList } from '@/views/home/typing';
 
 // 权限控制
 const hasPermission = usePermissionStore().hasPermission;

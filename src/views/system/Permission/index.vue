@@ -1,14 +1,17 @@
 <template>
     <page-container>
         <div class="permission-container">
-            <Search :columns="query.columns" @search="query.search" />
+            <j-advanced-search
+                :columns="columns"
+                @search="(params:any) => (queryParams = params)"
+            />
 
             <j-pro-table
                 ref="tableRef"
-                :columns="table.columns"
+                :columns="columns"
                 :request="getPermission_api"
                 model="TABLE"
-                :params="query.params"
+                :params="queryParams"
                 :defaultParams="{ sorts: [{ name: 'id', order: 'asc' }] }"
             >
                 <template #headerTitle>
@@ -19,12 +22,12 @@
                     >
                         <AIcon type="PlusOutlined" />新增
                     </PermissionButton>
-                    <a-dropdown trigger="hover">
-                        <a-button>批量操作</a-button>
+                    <j-dropdown trigger="hover">
+                        <j-button>批量操作</j-button>
                         <template #overlay>
-                            <a-menu>
-                                <a-menu-item>
-                                    <a-upload
+                            <j-menu>
+                                <j-menu-item>
+                                    <j-upload
                                         name="file"
                                         action="#"
                                         accept=".json"
@@ -41,9 +44,9 @@
                                         >
                                             导入
                                         </PermissionButton>
-                                    </a-upload>
-                                </a-menu-item>
-                                <a-menu-item>
+                                    </j-upload>
+                                </j-menu-item>
+                                <j-menu-item>
                                     <PermissionButton
                                         :uhasPermission="`${permission}:export`"
                                         :popConfirm="{
@@ -54,16 +57,23 @@
                                     >
                                         导出
                                     </PermissionButton>
-                                </a-menu-item>
-                            </a-menu>
+                                </j-menu-item>
+                            </j-menu>
                         </template>
-                    </a-dropdown>
+                    </j-dropdown>
                 </template>
                 <template #status="slotProps">
-                    <StatusLabel :status-value="slotProps.status" />
+                    <BadgeStatus
+                        :status="slotProps.status"
+                        :text="slotProps.status ? '启用' : '禁用'"
+                        :statusNames="{
+                            1: 'success',
+                            0: 'error',
+                        }"
+                    ></BadgeStatus>
                 </template>
                 <template #action="slotProps">
-                    <a-space :size="16">
+                    <j-space :size="16">
                         <PermissionButton
                             :uhasPermission="`${permission}:update`"
                             type="link"
@@ -113,13 +123,16 @@
                         >
                             <AIcon type="DeleteOutlined" />
                         </PermissionButton>
-                    </a-space>
+                    </j-space>
                 </template>
             </j-pro-table>
 
-            <div class="dialogs">
-                <EditDialog ref="editDialogRef" @refresh="table.refresh" />
-            </div>
+            <EditDialog
+                v-if="dialog.visible"
+                v-model:visible="dialog.visible"
+                :data="dialog.selectItem"
+                @refresh="table.refresh"
+            />
         </div>
     </page-container>
 </template>
@@ -127,7 +140,6 @@
 <script setup lang="ts">
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import EditDialog from './components/EditDialog.vue';
-import StatusLabel from './components/StatusLabel.vue';
 import { message } from 'ant-design-vue';
 import {
     getPermission_api,
@@ -141,87 +153,63 @@ import { usePermissionStore } from '@/store/permission';
 const permission = 'system/Permission';
 const hasPermission = usePermissionStore().hasPermission;
 
-const editDialogRef = ref(); // 新增弹窗实例
-const tableRef = ref<Record<string, any>>({}); // 表格实例
-// 筛选
-const query = reactive({
-    columns: [
-        {
-            title: '标识',
-            dataIndex: 'id',
-            key: 'id',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-            },
+const columns = [
+    {
+        title: '标识',
+        dataIndex: 'id',
+        key: 'id',
+        ellipsis: true,
+        fixed: 'left',
+        search: {
+            type: 'string',
         },
-        {
-            title: '名称',
-            dataIndex: 'name',
-            key: 'name',
-            ellipsis: true,
-            search: {
-                type: 'string',
-            },
-        },
-        {
-            title: '状态',
-            dataIndex: 'status',
-            key: 'status',
-            ellipsis: true,
-            search: {
-                rename: 'status',
-                type: 'select',
-                options: [
-                    {
-                        label: '启用',
-                        value: 1,
-                    },
-                    {
-                        label: '禁用',
-                        value: 0,
-                    },
-                ],
-            },
-        },
-    ],
-    params: {},
-    search: (params: object) => {
-        query.params = params;
     },
-});
-
+    {
+        title: '名称',
+        dataIndex: 'name',
+        key: 'name',
+        ellipsis: true,
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '状态',
+        dataIndex: 'status',
+        key: 'status',
+        ellipsis: true,
+        search: {
+            type: 'select',
+            options: [
+                {
+                    label: '启用',
+                    value: 1,
+                },
+                {
+                    label: '禁用',
+                    value: 0,
+                },
+            ],
+        },
+        scopedSlots: true,
+    },
+    {
+        title: '操作',
+        dataIndex: 'action',
+        key: 'action',
+        width: '200px',
+        fixed: 'right',
+        scopedSlots: true,
+    },
+];
+const queryParams = ref({});
 // 表格
-const table = reactive({
-    columns: [
-        {
-            title: '标识',
-            dataIndex: 'id',
-            key: 'id',
-        },
-        {
-            title: '名称',
-            dataIndex: 'name',
-            key: 'name',
-        },
-        {
-            title: '状态',
-            dataIndex: 'status',
-            key: 'status',
-            scopedSlots: true,
-        },
-        {
-            title: '操作',
-            dataIndex: 'action',
-            key: 'action',
-            scopedSlots: true,
-        },
-    ],
-    tableData: [],
+const tableRef = ref<Record<string, any>>({}); // 表格实例
+const table = {
     // 打开编辑弹窗
     openDialog: (row: object | undefined = {}) => {
-        editDialogRef.value.openDialog(true, row);
+        dialog.selectItem = { ...row };
+        dialog.visible = true;
     },
     // 导入数据
     clickImport: (file: File) => {
@@ -248,7 +236,7 @@ const table = reactive({
     clickExport: () => {
         const params = {
             paging: false,
-            ...query.params,
+            ...queryParams,
         };
         exportPermission_api(params).then((resp) => {
             if (resp.status === 200) {
@@ -283,12 +271,16 @@ const table = reactive({
     refresh: () => {
         tableRef.value.reload();
     },
+};
+
+const dialog = reactive({
+    selectItem: {},
+    visible: false,
 });
 </script>
 
 <style lang="less" scoped>
 .permission-container {
-
     .ant-dropdown-trigger {
         margin-left: 12px;
     }

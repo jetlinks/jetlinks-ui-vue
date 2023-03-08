@@ -1,14 +1,14 @@
 <template>
     <page-container>
         <div class="menu-detail-container">
-            <a-tabs v-model:activeKey="activeKey">
-                <a-tab-pane key="basic" tab="基本信息">
+            <j-tabs v-model:activeKey="activeKey">
+                <j-tab-pane key="basic" tab="基本信息">
                     <BasicInfo />
-                </a-tab-pane>
-                <a-tab-pane key="button" tab="按钮管理">
+                </j-tab-pane>
+                <j-tab-pane key="button" tab="按钮管理">
                     <ButtonMange />
-                </a-tab-pane>
-            </a-tabs>
+                </j-tab-pane>
+            </j-tabs>
         </div>
     </page-container>
 </template>

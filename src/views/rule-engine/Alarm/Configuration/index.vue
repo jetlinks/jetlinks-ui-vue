@@ -10,7 +10,7 @@
                 :columns="columns"
                 :request="queryList"
                 :gridColumn="3"
-                :gridColumns="[1,2,3]"
+                :gridColumns="[1, 2, 3]"
                 ref="tableRef"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
@@ -18,11 +18,18 @@
                 :params="params"
             >
                 <template #headerTitle>
-                    <a-space>
-                        <a-button type="primary" @click="add"
-                            ><plus-outlined />新增</a-button
+                    <j-space>
+                        <PermissionButton
+                            type="primary"
+                            @click="add"
+                            hasPermission="device/Instance:add"
                         >
-                    </a-space>
+                            <template #icon
+                                ><AIcon type="PlusOutlined"
+                            /></template>
+                            新增
+                        </PermissionButton>
+                    </j-space>
                 </template>
                 <template #card="slotProps">
                     <CardBox
@@ -74,13 +81,17 @@
                         <template #actions="item">
                             <PermissionButton
                                 v-if="
-                                    item.key != 'trigger' ||
+                                    item.key != 'tigger' ||
                                     slotProps.sceneTriggerType == 'manual'
                                 "
                                 :disabled="item.disabled"
                                 :popConfirm="item.popConfirm"
                                 :tooltip="{ ...item.tootip }"
                                 @click="item.onClick"
+                                :hasPermission="
+                                    'rule-engine/Alarm/Configuration:' +
+                                    item.key
+                                "
                             >
                                 <AIcon
                                     type="DeleteOutlined"
@@ -136,7 +147,7 @@
                         >
                             <PermissionButton
                                 v-if="
-                                    i.key != 'trigger' ||
+                                    i.key != 'tigger' ||
                                     slotProps.sceneTriggerType == 'manual'
                                 "
                                 :disabled="i.disabled"
@@ -147,6 +158,10 @@
                                 @click="i.onClick"
                                 type="link"
                                 style="padding: 0px"
+                                :hasPermission="
+                                    'rule-engine/Alarm/Configuration:' +
+                                    item.key
+                                "
                             >
                                 <template #icon
                                     ><AIcon :type="i.icon"
@@ -161,7 +176,6 @@
 </template>
 
 <script lang="ts" setup>
-import JTable from '@/components/Table';
 import {
     queryList,
     _enable,
@@ -323,7 +337,7 @@ const getActions = (
     }
     const actions = [
         {
-            key: 'trigger',
+            key: 'tigger',
             text: '手动触发',
             disabled: data?.state?.value === 'disabled',
             tooltip: {
@@ -353,7 +367,7 @@ const getActions = (
             icon: 'LikeOutlined',
         },
         {
-            key: 'edit',
+            key: 'update',
             text: '编辑',
             tooltip: {
                 title: '编辑',

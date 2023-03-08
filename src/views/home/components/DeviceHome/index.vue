@@ -1,6 +1,6 @@
 <template>
     <div class="device-home-container">
-        <a-row :gutter="10">
+        <a-row :gutter="24">
             <a-col :span="14">
                 <BootCard :cardData="deviceBootConfig" cardTitle="物联网引导" />
             </a-col>
@@ -18,7 +18,7 @@
                 :dataList="deviceStepDetails"
             />
         </a-row>
-    </div>
+    </div> 
 </template>
 
 <script setup lang="ts" name="deviceHome">
@@ -28,7 +28,7 @@ import PlatformPicCard from '../PlatformPicCard.vue';
 import StepCard from '../StepCard.vue';
 
 import { usePermissionStore } from '@/store/permission';
-import { bootConfig, recommendList } from '../../index';
+import { bootConfig, recommendList } from '../../typing';
 
 // 按钮权限控制
 const hasPermission = usePermissionStore().hasPermission;
@@ -43,28 +43,28 @@ const deviceBootConfig: bootConfig[] = [
     {
         english: 'STEP1',
         label: '创建产品',
-        link: '/iot/device/Product',
+        link: 'device/Product',
         auth: productPermission('add'),
         params: {
-            save: true,
+            type: 'add',
         },
     },
     {
         english: 'STEP2',
         label: '创建设备',
-        link: '/iot/device/Instance',
+        link: 'device/Instance',
         auth: devicePermission('add'),
         params: {
-            save: true,
+            type: 'add',
         },
     },
     {
         english: 'STEP3',
         label: '规则引擎',
-        link: '/iot/rule-engine/Instance',
+        link: 'rule-engine/Instance',
         auth: rulePermission('add'),
         params: {
-            save: true,
+            type: 'add',
         },
     },
 ];
@@ -74,10 +74,10 @@ const deviceStepDetails: recommendList[] = [
         details:
             '产品是设备的集合，通常指一组具有相同功能的设备。物联设备必须通过产品进行接入方式配置。',
         iconUrl: '/images/home/bottom-4.png',
-        linkUrl: '/iot/device/Product',
+        linkUrl: 'device/Product',
         auth: productPermission('add'),
         params: {
-            save: true,
+            type: 'add',
         },
     },
     {
@@ -85,7 +85,7 @@ const deviceStepDetails: recommendList[] = [
         details:
             '通过产品对同一类型的设备进行统一的接入方式配置。请参照设备铭牌说明选择匹配的接入方式。',
         iconUrl: '/images/home/bottom-1.png',
-        linkUrl: '/iot/device/Product/detail',
+        linkUrl: 'device/Product/Detail',
         auth: productPermission('update'),
         dialogTag: 'accessMethod',
     },
@@ -93,10 +93,10 @@ const deviceStepDetails: recommendList[] = [
         title: '添加测试设备',
         details: '添加单个设备，用于验证产品模型是否配置正确。',
         iconUrl: '/images/home/bottom-5.png',
-        linkUrl: '/iot/device/Instance',
+        linkUrl: 'device/Instance',
         auth: devicePermission('add'),
         params: {
-            save: true,
+            type: 'add',
         },
     },
     {
@@ -104,8 +104,7 @@ const deviceStepDetails: recommendList[] = [
         details:
             '对添加的测试设备进行功能调试，验证能否连接到平台，设备功能是否配置正确。',
         iconUrl: '/images/home/bottom-2.png',
-        linkUrl: '/iot/device/Instance/detail',
-        // auth: devicePermission('update'),
+        linkUrl: 'device/Instance/Detail',
         auth: true,
         dialogTag: 'funcTest',
     },
@@ -113,7 +112,7 @@ const deviceStepDetails: recommendList[] = [
         title: '批量添加设备',
         details: '批量添加同一产品下的设备',
         iconUrl: '/images/home/bottom-3.png',
-        linkUrl: '/iot/device/Instance',
+        linkUrl: 'device/Instance',
         auth: devicePermission('import'),
         params: {
             import: true,

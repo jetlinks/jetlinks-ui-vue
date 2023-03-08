@@ -1,20 +1,23 @@
 <template>
     <page-container>
         <a-card class="role-container">
-            <Search :columns="query.columns" />
+            <j-advanced-search
+                :columns="columns"
+                @search="(params:any)=>queryParams = params"
+            />
 
             <j-pro-table
                 ref="tableRef"
-                :columns="table.columns"
+                :columns="columns"
                 :request="getRoleList_api"
                 model="TABLE"
-                :params="query.params"
+                :params="queryParams"
             >
                 <template #headerTitle>
                     <PermissionButton
                         type="primary"
                         :uhasPermission="`${permission}:add`"
-                        @click="table.clickAdd"
+                        @click="dialogVisible = true"
                     >
                         <AIcon type="PlusOutlined" />新增
                     </PermissionButton>
@@ -47,9 +50,7 @@
                 </template>
             </j-pro-table>
 
-            <div class="dialogs">
-                <AddDialog ref="addDialogRef" />
-            </div>
+            <AddDialog v-if="dialogVisible" v-model:visible="dialogVisible" />
         </a-card>
     </page-container>
 </template>
@@ -59,73 +60,56 @@ import PermissionButton from '@/components/PermissionButton/index.vue';
 import AddDialog from './components/AddDialog.vue';
 import { getRoleList_api, delRole_api } from '@/api/system/role';
 import { message } from 'ant-design-vue';
+import { useMenuStore } from '@/store/menu';
 
 const permission = 'system/Role';
+const { jumpPage } = useMenuStore();
 
 const addDialogRef = ref(); // 新增弹窗实例
-const router = useRouter();
-const route = useRoute();
+const isSave = !!useRoute().query.save;
 
-// 筛选
-const query = reactive({
-    columns: [
-        {
-            title: '标识',
-            dataIndex: 'id',
-            key: 'id',
-            ellipsis: true,
-            fixed: 'left',
+const columns = [
+    {
+        title: '标识',
+        dataIndex: 'id',
+        key: 'id',
+        ellipsis: true,
+        fixed: 'left',
+        search: {
+            type: 'string',
         },
-        {
-            title: '名称',
-            dataIndex: 'name',
-            key: 'name',
-            ellipsis: true,
+    },
+    {
+        title: '名称',
+        dataIndex: 'name',
+        key: 'name',
+        ellipsis: true,
+        search: {
+            type: 'string',
         },
-        {
-            title: '描述',
-            key: 'description',
-            ellipsis: true,
-            dataIndex: 'description',
-            filters: true,
-            onFilter: true,
+    },
+    {
+        title: '描述',
+        key: 'description',
+        ellipsis: true,
+        dataIndex: 'description',
+        search: {
+            type: 'string',
         },
-        {
-            title: '操作',
-            valueType: 'option',
-            width: 200,
-            fixed: 'right',
-        },
-    ],
-    params: {},
-});
+    },
+    {
+        title: '操作',
+        dataIndex: 'action',
+        key: 'action',
+        width: 200,
+        fixed: 'right',
+        scopedSlots: true,
+    },
+];
+const queryParams = ref({});
 // 表格
 const tableRef = ref<Record<string, any>>({});
-const table = reactive({
-    columns: [
-        {
-            title: '标识',
-            dataIndex: 'id',
-            key: 'id',
-        },
-        {
-            title: '名称',
-            dataIndex: 'name',
-            key: 'name',
-        },
-        {
-            title: '说明',
-            dataIndex: 'description',
-            key: 'description',
-        },
-        {
-            title: '操作',
-            dataIndex: 'action',
-            key: 'action',
-            scopedSlots: true,
-        },
-    ],
-    tableData: [],
+const table = {
     clickAdd: () => {
         addDialogRef.value.openDialog(true, {});
     },
@@ -137,13 +121,11 @@ const table = reactive({
             }
         });
     },
-    clickEdit: (row: any) => {
-        router.push(`/system/Role/detail/${row.id}`);
+    clickEdit: ({ id }: { id: string }) => {
+        jumpPage(`system/Role/Detail`, { id });
     },
-});
-nextTick(() => {
-    route.query.save && table.clickAdd();
-});
+};
+const dialogVisible = ref(isSave);
 </script>
 
 <style lang="less" scoped>

@@ -1,14 +1,16 @@
 <template>
-    <a-modal
-        v-model:visible="dialog.visible"
-        :title="dialog.title"
+    <j-modal
+        visible
+        :title="dialogTitle"
         :maskClosable="false"
         width="675px"
-        @ok="dialog.handleOk"
+        @ok="confirm"
+        @cancel="emits('update:visible', false)"
+        :confirmLoading="loading"
         class="edit-dialog-container"
     >
-        <a-form ref="formRef" :model="form.data" layout="vertical">
-            <a-form-item
+        <j-form ref="formRef" :model="form.data" layout="vertical">
+            <j-form-item
                 label="名称"
                 name="name"
                 :rules="[
@@ -16,13 +18,13 @@
                     { max: 64, message: '最多可输入64个字符' },
                 ]"
             >
-                <a-input
+                <j-input
                     v-model:value="form.data.name"
                     placeholder="请输入名称"
                     :maxlength="64"
                 />
-            </a-form-item>
-            <a-form-item
+            </j-form-item>
+            <j-form-item
                 name="relation"
                 label="标识"
                 :rules="[
@@ -31,76 +33,66 @@
                     { validator: form.rules.checkRelation, trigger: 'change' },
                 ]"
             >
-                <a-input
+                <j-input
                     v-model:value="form.data.relation"
                     placeholder="请输入标识"
                     :maxlength="64"
                     :disabled="!!form.data.id"
                 />
-            </a-form-item>
+            </j-form-item>
 
-            <a-row :gutter="24">
-                <a-col :span="12">
-                    <a-form-item
+            <j-row :gutter="24">
+                <j-col :span="12">
+                    <j-form-item
                         name="objectType"
                         label="关联方"
                         :rules="[{ required: true, message: '请选择关联方' }]"
                     >
-                        <a-select
+                        <j-select
                             v-model:value="form.data.objectType"
                             :disabled="!!form.data.id"
                         >
-                            <a-select-option
+                            <j-select-option
                                 v-for="item in form.objectList"
                                 :value="item.id"
-                                >{{ item.name }}</a-select-option
+                                >{{ item.name }}</j-select-option
                             >
-                        </a-select>
-                    </a-form-item>
-                </a-col>
-                <a-col :span="12">
-                    <a-form-item
+                        </j-select>
+                    </j-form-item>
+                </j-col>
+                <j-col :span="12">
+                    <j-form-item
                         name="targetType"
-                        label="标识"
+                        label="被关联方"
                         :rules="[{ required: true, message: '请选择被关联方' }]"
                     >
-                        <a-select
+                        <j-select
                             v-model:value="form.data.targetType"
                             :disabled="!!form.data.id"
                         >
-                            <a-select-option
-                                v-for="item in form.targetList"
+                            <j-select-option
+                                v-for="item in targetList"
                                 :value="item.id"
-                                >{{ item.name }}</a-select-option
+                                >{{ item.name }}</j-select-option
                             >
-                        </a-select>
-                    </a-form-item>
-                </a-col>
-            </a-row>
-            <a-form-item
+                        </j-select>
+                    </j-form-item>
+                </j-col>
+            </j-row>
+            <j-form-item
                 name="description"
                 label="说明"
                 :rules="[{ max: 200, message: '最多可输入200个字符' }]"
             >
-                <a-textarea
+                <j-textarea
                     v-model:value="form.data.description"
                     placeholder="请输入说明"
                     show-count
                     :maxlength="200"
                 />
-            </a-form-item>
-        </a-form>
-        <template #footer>
-            <a-button key="back" @click="dialog.visible = false">取消</a-button>
-            <a-button
-                key="submit"
-                type="primary"
-                :loading="form.loading"
-                @click="dialog.handleOk"
-                >确定</a-button
-            >
-        </template>
-    </a-modal>
+            </j-form-item>
+        </j-form>
+    </j-modal>
 </template>
 
 <script setup lang="ts">
@@ -112,53 +104,45 @@ import {
     addRelation_api,
     editRelation_api,
 } from '@/api/system/relationship';
+import { dictItemType } from '../../DataSource/typing';
 
-const emits = defineEmits(['refresh']);
+const emits = defineEmits(['refresh', 'update:visible']);
+const props = defineProps<{
+    visible: boolean;
+    data: formType;
+}>();
 // 弹窗相关
-const dialog = reactive({
-    title: '',
-    visible: false,
-    handleOk: () => {
-        formRef.value?.validate().then(() => {
-            form.submit();
-        });
-    },
-    // 控制弹窗的打开与关闭
-    changeVisible: (status: boolean, defaultForm: formType) => {
-        dialog.title = defaultForm.id ? '编辑' : '新增';
-        form.data = { ...defaultForm };
-        dialog.visible = status;
-        nextTick(() => {
-            formRef.value?.clearValidate();
-        });
-    },
-});
-
-// 表单相关
-const initForm: formType = {
-    name: '',
-    relation: '',
-    objectType: '',
-    targetType: '',
-    description: '',
+const loading = ref(false);
+const dialogTitle = computed(() => (props.data.id ? '编辑' : '新增'));
+const confirm = () => {
+    loading.value = true;
+    formRef.value
+        ?.validate()
+        .then(() => form.submit())
+        .then((resp: any) => {
+            if (resp.status === 200) {
+                message.success('操作成功');
+                emits('refresh');
+                emits('update:visible', false);
+            }
+        })
+        .finally(() => (loading.value = false));
 };
+
 const formRef = ref<FormInstance>();
 const form = reactive({
-    loading: false,
-    data: {} as formType,
+    data: props.data,
     rules: {
         checkRelation: (_rule: Rule, value: string): any => {
             if (!value) return '';
             const reg = new RegExp('^[0-9a-zA-Z_\\\\-]+$');
-            if (reg.test(value)) return Promise.resolve();
-            else
-                return Promise.reject(
-                    '标识只能由数字、字母、下划线、中划线组成',
-                );
+
+            return reg.test(value)
+                ? Promise.resolve()
+                : Promise.reject('标识只能由数字、字母、下划线、中划线组成');
         },
     },
     objectList: [] as any[],
-    targetList: [] as any[],
 
     getObjectList: () => {
         getObjectList_api().then((resp: any) => {
@@ -166,43 +150,23 @@ const form = reactive({
         });
     },
     submit: () => {
-        formRef.value?.validate().then(() => {
-            const params = {
-                ...form.data,
-                objectTypeName: form.objectList.find(
-                    (item) => item.id === form.data.objectType,
-                ).name,
-                targetTypeName: form.targetList.find(
-                    (item) => item.id === form.data.targetType,
-                ).name,
-            };
-            const api =
-                dialog.title === '编辑'
-                    ? editRelation_api
-                    : addRelation_api;
-            api(params).then((resp: any) => {
-                if (resp.status === 200) {
-                    message.success('操作成功');
-                    emits('refresh');
-                    dialog.visible = false;
-                }
-            });
-        });
+        const params = {
+            ...form.data,
+            objectTypeName: form.objectList.find(
+                (item) => item.id === form.data.objectType,
+            ).name,
+            targetTypeName: targetList.value.find(
+                (item: dictItemType) => item.id === form.data.targetType,
+            )?.name,
+        };
+        const api = props.data.id ? editRelation_api : addRelation_api;
+        return api(params);
     },
 });
-form.getObjectList();
-
-watch(
-    () => form.data.objectType,
-    (n) => {
-        form.targetList = n === 'device' ? [{ id: 'user', name: '用户' }] : [];
-    },
+const targetList = computed(() =>
+    form.data.objectType === 'device' ? [{ id: 'user', name: '用户' }] : [],
 );
-
-// 将打开弹窗的操作暴露给父组件
-defineExpose({
-    openDialog: dialog.changeVisible,
-});
+form.getObjectList();
 
 type formType = {
     name: string;
@@ -213,5 +177,3 @@ type formType = {
     id?: string;
 };
 </script>
-
-<style scoped></style>

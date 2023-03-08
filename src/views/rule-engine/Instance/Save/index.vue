@@ -3,8 +3,8 @@
         :maskClosable="false"
         width="650px"
         destroyOnClose
-        v-model:visible="visible"
-        :title="props.title"
+        visible
+        :title="props.data?.id ? '编辑' : '新增'"
         @ok="handleSave"
         @cancel="handleCancel"
         okText="确定"
@@ -39,31 +39,23 @@
 </template>
 
 <script lang="ts" setup>
-import { saveRule , modify } from '@/api/rule-engine/instance';
+import { saveRule, modify } from '@/api/rule-engine/instance';
 import { getImage } from '@/utils/comm';
 import { message } from 'ant-design-vue';
 
-const emit = defineEmits(['success']);
+const emit = defineEmits(['success', 'closeSave']);
 const props = defineProps({
-    title: {
-        type: String,
-        default: '',
+    data: {
+        type: Object,
     },
-    isAdd: {
-        type: Number,
-        default: '',
-    },
-});
-const productList = ref<Record<string, any>[]>([]);
-const loading = ref<boolean>(false);
-const visible = ref<boolean>(false);
-const formRef = ref();
-let id = ref<string>();
-const modelRef = reactive({
-    name: '',
-    description: '',
 });
 
+const productList = ref<Record<string, any>[]>([]);
+const loading = ref<boolean>(false);
+const formRef = ref();
+let id = ref<string>();
+const modelRef = ref();
+modelRef.value = props.data
 const rules = {
     name: [
         {
@@ -76,15 +68,8 @@ const rules = {
         },
     ],
 };
-
-watch(
-    () => props.isAdd,
-    () => {},
-    { immediate: true, deep: true },
-);
-
 const handleCancel = () => {
-    visible.value = false;
+    emit('closeSave');
 };
 
 const handleSave = () => {
@@ -92,26 +77,24 @@ const handleSave = () => {
         .validate()
         .then(async () => {
             loading.value = true;
-            if (props.isAdd === 1) {
-                let resp = await saveRule(modelRef);
+            if (!modelRef.value?.id) {
+                let resp = await saveRule(modelRef.value);
                 loading.value = false;
                 if (resp.status === 200) {
                     message.success('操作成功！');
+                    emit('closeSave');
                     emit('success');
-                    formRef.value.resetFields();
-                    visible.value = false;
-                }else{
-                    message.error('操作失败')
+                } else {
+                    message.error('操作失败');
                 }
-            }else if(props.isAdd === 2) {
-                let resp = await modify(id,modelRef);
+            } else {
+                let resp = await modify(modelRef.value?.id, modelRef.value);
                 loading.value = false;
                 if (resp.status === 200) {
                     message.success('操作成功！');
+                    emit('closeSave');
                     emit('success');
-                    formRef.value.resetFields();
-                    visible.value = false;
-                }else{
+                } else {
                     message.error('操作失败！');
                 }
             }
@@ -120,19 +103,4 @@ const handleSave = () => {
             console.log('error', err);
         });
 };
-
-const show = (data: any) => {
-    if (props.isAdd === 1) {
-        modelRef.name = '';
-        modelRef.description = '';
-    } else if (props.isAdd === 2) {
-        modelRef.name = data?.name;
-        modelRef.description = data?.description;
-        id = data.id
-    }
-    visible.value = true;
-};
-defineExpose({
-    show: show,
-});
 </script>

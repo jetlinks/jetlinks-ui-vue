@@ -74,6 +74,8 @@ const iconKeys = [
     'UserOutlined',
     'LogoutOutlined',
     'ReadIconOutlined',
+    'CloudDownloadOutlined',
+    'PauseCircleOutlined',,
     'FormOutlined',
 ]
 

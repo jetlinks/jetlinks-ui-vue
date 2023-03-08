@@ -1,20 +1,20 @@
 <template>
-    <a-modal title="详情" visible width="50vw" @ok="onCancel" @cancel="onCancel">
+    <j-modal title="详情" visible width="50vw" @ok="onCancel" @cancel="onCancel">
         <div style="margin-bottom: 10px"><TimeComponent v-model="dateValue" /></div>
         <div>
-            <a-tabs :destroyInactiveTabPane="true" v-model:activeKey="activeKey" style="max-height: 600px; overflow-y: auto">
-                <a-tab-pane key="table" tab="列表">
+            <j-tabs :destroyInactiveTabPane="true" v-model:activeKey="activeKey" style="max-height: 600px; overflow-y: auto">
+                <j-tab-pane key="table" tab="列表">
                     <Table :data="props.data" :time="_getTimes" />
-                </a-tab-pane>
-                <a-tab-pane key="charts" tab="图表">
+                </j-tab-pane>
+                <j-tab-pane key="charts" tab="图表">
                     <Charts :data="props.data" :time="_getTimes" />
-                </a-tab-pane>
-                <a-tab-pane key="geo" tab="轨迹" v-if="data?.valueType?.type === 'geoPoint'">
+                </j-tab-pane>
+                <j-tab-pane key="geo" tab="轨迹" v-if="data?.valueType?.type === 'geoPoint'">
                     <PropertyAMap :data="props.data" :time="_getTimes" />
-                </a-tab-pane>
-            </a-tabs>
+                </j-tab-pane>
+            </j-tabs>
         </div>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script lang="ts" setup>

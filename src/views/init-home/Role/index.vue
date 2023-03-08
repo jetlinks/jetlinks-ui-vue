@@ -1,6 +1,6 @@
 <template>
     <div class="init-home-role">
-        <a-checkbox-group @change="getCheckValue">
+        <j-checkbox-group @change="getCheckValue">
             <div class="init-home-role-content">
                 <div
                     class="role-item role-item-1"
@@ -11,7 +11,7 @@
                     "
                 >
                     <div class="role-item-title">
-                        <a-checkbox :value="ROLEKEYS.device"></a-checkbox>
+                        <j-checkbox :value="ROLEKEYS.device"></j-checkbox>
                         <div class="role-title">设备接入岗</div>
                     </div>
                     <div class="role-item-content"></div>
@@ -28,7 +28,7 @@
                     "
                 >
                     <div class="role-item-title">
-                        <a-checkbox :value="ROLEKEYS.link"></a-checkbox>
+                        <j-checkbox :value="ROLEKEYS.link"></j-checkbox>
                         <div class="role-title">运维管理岗</div>
                     </div>
                     <div class="role-item-content"></div>
@@ -45,7 +45,7 @@
                     "
                 >
                     <div class="role-item-title">
-                        <a-checkbox :value="ROLEKEYS.complex"></a-checkbox>
+                        <j-checkbox :value="ROLEKEYS.complex"></j-checkbox>
                         <div class="role-title">综合管理岗</div>
                     </div>
                     <div class="role-item-content"></div>
@@ -54,7 +54,7 @@
                     </div>
                 </div>
             </div>
-        </a-checkbox-group>
+        </j-checkbox-group>
     </div>
 </template>
 

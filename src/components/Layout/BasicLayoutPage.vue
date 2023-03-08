@@ -13,12 +13,12 @@
             }}</a>
             <span v-else>{{ slotProps.route.breadcrumbName }}</span>
         </template>
-        <template #rightContentRender> 
-          <div style="margin-right: 24px;display: flex;align-items: center;">
-            <AIcon type="QuestionCircleOutlined" @click="toDoc" />
-            <Notice style="margin: 0 24px;" />
-            <UserInfo />
-          </div>
+        <template #rightContentRender>
+            <div class="right-content">
+                <AIcon type="QuestionCircleOutlined" @click="toDoc" />
+                <Notice style="margin: 0 24px" />
+                <UserInfo />
+            </div>
         </template>
         <router-view v-slot="{ Component }">
             <component :is="Component" />
@@ -28,7 +28,7 @@
 
 <script setup lang="ts" name="BasicLayoutPage">
 import UserInfo from './components/UserInfo.vue';
-import Notice from './components/Notice.vue'
+import Notice from './components/Notice.vue';
 import DefaultSetting from '../../../config/config';
 import { useMenuStore } from '@/store/menu';
 import { clearMenuItem } from 'jetlinks-ui-components/es/ProLayout/util';
@@ -95,8 +95,13 @@ watchEffect(() => {
     }
 });
 
-
-const toDoc = ()=>window.open('http://doc.v2.jetlinks.cn/')
+const toDoc = () => window.open('http://doc.v2.jetlinks.cn/');
 </script>
 
-<style scoped></style>
+<style scoped>
+.right-content {
+    margin-right: 24px;
+    display: flex;
+    align-items: center;
+}
+</style>

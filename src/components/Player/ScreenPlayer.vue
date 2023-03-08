@@ -127,11 +127,7 @@
                             >
                                 刷新
                             </div>
-                            <LivePlayer
-                                :src="item.url"
-                                :width="screenWidth"
-                                :height="screenHeight"
-                            />
+                            <LivePlayer :url="item.url" autoplay />
                         </div>
                     </template>
                 </div>
@@ -192,9 +188,6 @@ const screen = ref(1);
 const players = ref<Player[]>([]);
 // 当前选中的窗口
 const playerActive = ref(0);
-// 单个播放窗口宽高
-const screenWidth = ref('');
-const screenHeight = ref('');
 // 历史记录
 const historyList = ref<any[]>([]);
 // 展示保存浮窗

@@ -1,5 +1,5 @@
 <template>
-  <Search
+  <j-advanced-search
     :columns="columns"
     type='simple'
     @search="handleSearch"
@@ -7,7 +7,7 @@
     target="scene-triggrt-device-device"
   />
   <a-divider style='margin: 0' />
-  <j-table
+  <j-pro-table
     ref='actionRef'
     model='CARD'
     :columns='columns'
@@ -60,7 +60,7 @@
         </template>
       </CardBox>
     </template>
-  </j-table>
+  </j-pro-table>
 </template>
 
 <script setup lang='ts' name='DeviceSelectList'>
@@ -68,17 +68,17 @@ import type { PropType } from 'vue'
 import { getImage } from '@/utils/comm'
 import { query } from '@/api/device/instance'
 import { cloneDeep } from 'lodash-es'
+import type { SelectorValuesItem } from '@/views/rule-engine/Scene/typings'
 
 type Emit = {
-  (e: 'update', data: Array<{ name: string, value: string}>): void
+  (e: 'update', data: SelectorValuesItem[]): void
 }
 
-const actionRef = ref()
 const params = ref({})
 const context = inject('SceneDeviceAddModel')
 const props = defineProps({
   rowKeys: {
-    type: Array as PropType<Array<{ name: string, value: string}>>,
+    type: Array as PropType<SelectorValuesItem[]>,
     default: () => ([])
   },
   productId: {
