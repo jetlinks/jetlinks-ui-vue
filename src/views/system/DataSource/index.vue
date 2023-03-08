@@ -1,14 +1,17 @@
 <template>
     <page-container>
         <div class="data-source-container">
-            <Search :columns="query.columns" @search="query.search" />
+            <j-advanced-search
+                :columns="columns"
+                @search="(params:any)=>queryParams = {...params}"
+            />
 
             <j-pro-table
                 ref="tableRef"
-                :columns="table.columns"
+                :columns="columns"
                 :request="getDataSourceList_api"
                 model="TABLE"
-                :params="query.params.value"
+                :params="queryParams"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
@@ -41,7 +44,7 @@
                     }}
                 </template>
                 <template #action="slotProps">
-                    <a-space :size="16">
+                    <j-space :size="16">
                         <PermissionButton
                             :uhasPermission="`${permission}:update`"
                             type="link"
@@ -120,13 +123,16 @@
                         >
                             <AIcon type="DeleteOutlined" />
                         </PermissionButton>
-                    </a-space>
+                    </j-space>
                 </template>
             </j-pro-table>
 
-            <div class="dialogs">
-                <EditDialog ref="editDialogRef" @confirm="table.refresh" />
-            </div>
+            <EditDialog
+                v-if="dialog.visible"
+                v-model:visible="dialog.visible"
+                :data="dialog.selectItem"
+                @confirm="table.refresh"
+            />
         </div>
     </page-container>
 </template>
@@ -150,113 +156,81 @@ const permission = 'system/DataSource';
 
 const router = useRouter();
 
-const query = {
-    columns: [
-        {
-            title: '名称',
-            dataIndex: 'name',
-            key: 'name',
-            search: {
-                type: 'string',
-            },
+const columns = [
+    {
+        title: '名称',
+        dataIndex: 'name',
+        key: 'name',
+        search: {
+            type: 'string',
         },
-        {
-            title: '类型',
-            dataIndex: 'typeId',
-            key: 'typeId',
-            search: {
-                type: 'select',
-                options: () =>
-                    new Promise((resolve) => {
-                        if (table.typeOptions.value.length > 0)
-                            return resolve(table.typeOptions.value);
-                        getDataTypeDict_api().then((resp: any) => {
-                            const result = resp.result as dictItemType[];
-                            resolve(
-                                result.map((item) => ({
-                                    label: item.name,
-                                    value: item.id,
-                                })),
-                            );
-                        });
-                    }),
-            },
-        },
-        {
-            title: '说明',
-            dataIndex: 'description',
-            key: 'description',
-            search: {
-                type: 'string',
-            },
-        },
-        {
-            title: '状态',
-            dataIndex: 'state',
-            key: 'state',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'select',
-                options: [
-                    {
-                        label: '正常',
-                        value: 'enabled',
-                    },
-                    {
-                        label: '已禁用',
-                        value: 'disabled',
-                    },
-                ],
-            },
-        },
-    ],
-    params: ref({}),
-    search: (params: object) => {
-        query.params.value = params;
+        width: '250px',
     },
-};
+    {
+        title: '类型',
+        dataIndex: 'typeId',
+        key: 'typeId',
+        search: {
+            type: 'select',
+            options: () =>
+                new Promise((resolve) => {
+                    if (table.typeOptions.value.length > 0)
+                        return resolve(table.typeOptions.value);
+                    getDataTypeDict_api().then((resp: any) => {
+                        const result = resp.result as dictItemType[];
+                        resolve(
+                            result.map((item) => ({
+                                label: item.name,
+                                value: item.id,
+                            })),
+                        );
+                    });
+                }),
+        },
+        scopedSlots: true,
+    },
+    {
+        title: '说明',
+        dataIndex: 'description',
+        key: 'description',
+        search: {
+            type: 'string',
+        },
+        ellipsis: true,
+    },
+    {
+        title: '状态',
+        dataIndex: 'state',
+        key: 'state',
+        search: {
+            type: 'select',
+            options: [
+                {
+                    label: '正常',
+                    value: 'enabled',
+                },
+                {
+                    label: '已禁用',
+                    value: 'disabled',
+                },
+            ],
+        },
+        scopedSlots: true,
+        width: '120px',
+    },
+    {
+        title: '操作',
+        dataIndex: 'action',
+        key: 'action',
+        scopedSlots: true,
+        width: '200px',
+        fixed: 'right',
+    },
+];
+const queryParams = ref({});
 
-const editDialogRef = ref(); // 新增弹窗实例
 const tableRef = ref<Record<string, any>>({}); // 表格实例
 const table = {
-    columns: [
-        {
-            title: '名称',
-            dataIndex: 'name',
-            key: 'name',
-            width: '250px',
-        },
-        {
-            title: '类型',
-            dataIndex: 'typeId',
-            key: 'typeId',
-            scopedSlots: true,
-        },
-
-        {
-            title: '说明',
-            dataIndex: 'description',
-            key: 'description',
-            ellipsis: true,
-        },
-        {
-            title: '状态',
-            dataIndex: 'state',
-            key: 'state',
-            scopedSlots: true,
-            width: '120px',
-        },
-        {
-            title: '操作',
-            dataIndex: 'action',
-            key: 'action',
-            scopedSlots: true,
-            width: '200px',
-            fixed: 'right',
-        },
-    ],
-
     typeOptions: ref<optionItemType[]>([]),
 
     getTypeOption: () => {
@@ -279,7 +253,8 @@ const table = {
     },
     // 打开编辑弹窗
     openDialog: (row: sourceItemType | {}) => {
-        editDialogRef.value.openDialog({ shareConfig: {}, ...row });
+        dialog.selectItem = { shareConfig: {}, ...row };
+        dialog.visible = true;
     },
     // 删除
     clickDel: (row: sourceItemType) => {
@@ -304,6 +279,11 @@ const table = {
     },
 };
 table.getTypeOption();
+
+const dialog = reactive({
+    visible: false,
+    selectItem: {} as any,
+});
 </script>
 
 <style lang="less" scoped>

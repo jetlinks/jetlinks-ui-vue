@@ -1,5 +1,5 @@
 <template>
-  <Search
+  <j-advanced-search
     :columns="columns"
     type='simple'
     @search="handleSearch"
@@ -7,7 +7,7 @@
     target="scene-triggrt-device-category"
   />
   <a-divider style='margin: 0' />
-  <JTable
+  <j-pro-table
     ref="instanceRef"
     model='TABLE'
     type='TREE'
@@ -26,9 +26,10 @@
       onChange: selectedRowChange
     }'
     :onChange='tableChange'
+    @selectCancel='cancelAll'
   >
 
-  </JTable>
+  </j-pro-table>
 
 </template>
 
@@ -36,14 +37,15 @@
 import type { PropType } from 'vue'
 import { getExpandedRowById } from './util'
 import { getTreeData_api } from '@/api/system/department'
+import { SelectorValuesItem } from '@/views/rule-engine/Scene/typings'
 
 type Emit = {
-  (e: 'update', data: Array<{ name: string, value: string}>): void
+  (e: 'update', data: SelectorValuesItem[]): void
 }
 
 const props = defineProps({
   rowKeys: {
-    type: Array as PropType<Array<{ name: string, value: string}>>,
+    type: Array as PropType<SelectorValuesItem[]>,
     default: () => ([])
   },
   productId: {
@@ -69,6 +71,9 @@ const columns = [
     width: 300,
     ellipsis: true,
     dataIndex: 'name',
+    search: {
+      type: 'string'
+    }
   },
   {
     title: '排序',
@@ -109,10 +114,14 @@ const query = async (p: any) => {
   return resp
 }
 
-const selectedRowChange = (_: any, selectedRows: any[]) => {
+const selectedRowChange = (values: any, selectedRows: any[]) => {
   const item = selectedRows[0]
-  console.log(selectedRows)
-  emit('update', item ? [{ name: item.name, value: item.id }] : [])
+  console.log(values, selectedRows)
+  emit('update', [{ name: item.name, value: item.id }])
+}
+
+const cancelAll = () => {
+  emit('update', [])
 }
 
 const expandedRowChange = (keys: string[]) => {

@@ -17,7 +17,13 @@
             :gridColumn="2"
         >
             <template #headerTitle>
-                <a-button type="primary" @click="handleAdd"> 新增 </a-button>
+                <PermissionButton
+                    type="primary"
+                    @click="handleAdd"
+                    hasPermission="media/Cascade:add"
+                >
+                    <template #icon><AIcon type="PlusOutlined" />新增</template>
+                </PermissionButton>
             </template>
             <template #card="slotProps">
                 <CardBox
@@ -58,48 +64,14 @@
                         </Ellipsis>
                     </template>
                     <template #actions="item">
-                        <a-tooltip
-                            v-bind="item.tooltip"
-                            :title="item.disabled && item.tooltip.title"
-                        >
-                            <a-popconfirm
-                                v-if="item.popConfirm"
-                                v-bind="item.popConfirm"
-                                :disabled="item.disabled"
-                            >
-                                <a-button
-                                    :disabled="item.disabled"
-                                    v-if="item.key === 'delete'"
-                                >
-                                    <AIcon type="DeleteOutlined" />
-                                </a-button>
-                                <a-button
-                                    :disabled="item.disabled"
-                                    @click="item.onClick"
-                                    v-else
-                                >
-                                    <AIcon :type="item.icon" />
-                                    <span>{{ item.text }}</span>
-                                </a-button>
-                            </a-popconfirm>
-                            <template v-else>
-                                <a-button
-                                    :disabled="item.disabled"
-                                    @click="item.onClick"
-                                >
-                                    <AIcon :type="item.icon" />
-                                    <span>{{ item.text }}</span>
-                                </a-button>
-                            </template>
-                        </a-tooltip>
-                        <!-- <PermissionButton
+                        <PermissionButton
                             :disabled="item.disabled"
                             :popConfirm="item.popConfirm"
                             :tooltip="{
                                 ...item.tooltip,
                             }"
                             @click="item.onClick"
-                            :hasPermission="`media/Cascade:${item.key}`"
+                            :hasPermission="'media/Cascade:' + item.key"
                         >
                             <AIcon
                                 type="DeleteOutlined"
@@ -109,7 +81,7 @@
                                 <AIcon :type="item.icon" />
                                 <span>{{ item?.text }}</span>
                             </template>
-                        </PermissionButton> -->
+                        </PermissionButton>
                     </template>
                 </CardBox>
             </template>
@@ -141,38 +113,7 @@
             </template>
             <template #action="slotProps">
                 <a-space :size="16">
-                    <a-tooltip
-                        v-for="i in getActions(slotProps, 'table')"
-                        :key="i.key"
-                        v-bind="i.tooltip"
-                    >
-                        <a-popconfirm
-                            v-if="i.popConfirm"
-                            v-bind="i.popConfirm"
-                            :disabled="i.disabled"
-                        >
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-popconfirm>
-                        <a-button
-                            style="padding: 0"
-                            type="link"
-                            v-else
-                            @click="i.onClick && i.onClick(slotProps)"
-                        >
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-button>
-                    </a-tooltip>
-                    <!-- <template
+                    <template
                         v-for="i in getActions(slotProps, 'table')"
                         :key="i.key"
                     >
@@ -185,11 +126,11 @@
                             @click="i.onClick"
                             type="link"
                             style="padding: 0px"
-                            :hasPermission="`device/Instance:${i.key}`"
+                            :hasPermission="'media/Cascade:' + i.key"
                         >
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
-                    </template> -->
+                    </template>
                 </a-space>
             </template>
         </JProTable>
@@ -331,7 +272,7 @@ const getActions = (
     if (!data) return [];
     const actions = [
         {
-            key: 'edit',
+            key: 'update',
             text: '编辑',
             tooltip: {
                 title: '编辑',
@@ -348,7 +289,7 @@ const getActions = (
             },
         },
         {
-            key: 'view',
+            key: 'channel',
             text: '选择通道',
             tooltip: {
                 title: '选择通道',
@@ -365,7 +306,7 @@ const getActions = (
             },
         },
         {
-            key: 'debug',
+            key: 'push',
             text: '推送',
             tooltip: {
                 title:

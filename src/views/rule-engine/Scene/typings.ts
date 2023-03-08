@@ -122,13 +122,18 @@ export interface TriggerDeviceOptions {
   functionParameters?: Record<string, any>[];
 }
 
+export type SelectorValuesItem = {
+  name: string
+  value: any
+}
+
 /**
  * 设备触发配置
  */
 export interface TriggerDevice {
   productId: string;
   selector: string;
-  selectorValues?: Record<string, any>[];
+  selectorValues?: SelectorValuesItem[];
   operation?: TriggerDeviceOptions;
 }
 

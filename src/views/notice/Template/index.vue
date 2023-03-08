@@ -17,16 +17,24 @@
         >
             <template #headerTitle>
                 <a-space>
-                    <a-button type="primary" @click="handleAdd">
+                    <PermissionButton
+                        type="primary"
+                        @click="handleAdd"
+                        hasPermission="notice/Template:add"
+                    >
                         新增
-                    </a-button>
+                    </PermissionButton>
                     <a-upload
                         name="file"
                         accept="json"
                         :showUploadList="false"
                         :before-upload="beforeUpload"
                     >
-                        <a-button>导入</a-button>
+                        <PermissionButton
+                            hasPermission="notice/Template:import"
+                        >
+                            导入
+                        </PermissionButton>
                     </a-upload>
                     <a-popconfirm
                         title="确认导出？"
@@ -34,7 +42,11 @@
                         cancel-text="取消"
                         @confirm="handleExport"
                     >
-                        <a-button>导出</a-button>
+                        <PermissionButton
+                            hasPermission="notice/Template:export"
+                        >
+                            导出
+                        </PermissionButton>
                     </a-popconfirm>
                 </a-space>
             </template>
@@ -77,42 +89,24 @@
                         </a-row>
                     </template>
                     <template #actions="item">
-                        <a-tooltip
-                            v-bind="item.tooltip"
-                            :title="item.disabled && item.tooltip.title"
+                        <PermissionButton
+                            :disabled="item.disabled"
+                            :popConfirm="item.popConfirm"
+                            :tooltip="{
+                                ...item.tooltip,
+                            }"
+                            @click="item.onClick"
+                            :hasPermission="'notice/Template:' + item.key"
                         >
-                            <a-popconfirm
-                                v-if="item.popConfirm"
-                                v-bind="item.popConfirm"
-                                :disabled="item.disabled"
-                            >
-                                <a-button :disabled="item.disabled">
-                                    <AIcon
-                                        type="DeleteOutlined"
-                                        v-if="item.key === 'delete'"
-                                    />
-                                    <template v-else>
-                                        <AIcon :type="item.icon" />
-                                        <span>{{ item.text }}</span>
-                                    </template>
-                                </a-button>
-                            </a-popconfirm>
+                            <AIcon
+                                type="DeleteOutlined"
+                                v-if="item.key === 'delete'"
+                            />
                             <template v-else>
-                                <a-button
-                                    :disabled="item.disabled"
-                                    @click="item.onClick"
-                                >
-                                    <AIcon
-                                        type="DeleteOutlined"
-                                        v-if="item.key === 'delete'"
-                                    />
-                                    <template v-else>
-                                        <AIcon :type="item.icon" />
-                                        <span>{{ item.text }}</span>
-                                    </template>
-                                </a-button>
+                                <AIcon :type="item.icon" />
+                                <span>{{ item?.text }}</span>
                             </template>
-                        </a-tooltip>
+                        </PermissionButton>
                     </template>
                 </CardBox>
             </template>
@@ -126,37 +120,24 @@
             </template>
             <template #action="slotProps">
                 <a-space :size="16">
-                    <a-tooltip
+                    <template
                         v-for="i in getActions(slotProps, 'table')"
                         :key="i.key"
-                        v-bind="i.tooltip"
                     >
-                        <a-popconfirm
-                            v-if="i.popConfirm"
-                            v-bind="i.popConfirm"
+                        <PermissionButton
                             :disabled="i.disabled"
-                        >
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-popconfirm>
-                        <a-button
-                            style="padding: 0"
+                            :popConfirm="i.popConfirm"
+                            :tooltip="{
+                                ...i.tooltip,
+                            }"
+                            @click="i.onClick"
                             type="link"
-                            v-else
-                            @click="i.onClick && i.onClick(slotProps)"
+                            style="padding: 0px"
+                            :hasPermission="'notice/Template:' + i.key"
                         >
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-button>
-                    </a-tooltip>
+                            <template #icon><AIcon :type="i.icon" /></template>
+                        </PermissionButton>
+                    </template>
                 </a-space>
             </template>
         </JProTable>
@@ -286,7 +267,7 @@ const handleAdd = () => {
  * 导入
  */
 const beforeUpload = (file: any) => {
-    console.log('file: ', file);
+    // console.log('file: ', file);
     const reader = new FileReader();
     reader.readAsText(file);
     reader.onload = async (result) => {
@@ -330,7 +311,7 @@ const getActions = (
     if (!data) return [];
     const actions = [
         {
-            key: 'edit',
+            key: 'update',
             text: '编辑',
             tooltip: {
                 title: '编辑',
@@ -355,7 +336,7 @@ const getActions = (
             },
         },
         {
-            key: 'debug',
+            key: 'export',
             text: '导出',
             tooltip: {
                 title: '导出',
@@ -366,7 +347,7 @@ const getActions = (
             },
         },
         {
-            key: 'debug',
+            key: 'log',
             text: '通知记录',
             tooltip: {
                 title: '通知记录',

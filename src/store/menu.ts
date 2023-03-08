@@ -76,7 +76,7 @@ export const useMenuStore = defineStore({
       const path = this.hasMenu(name)
       if (path) {
         router.push({
-          name, params, query
+          name, params, query, state: { params }
         })
       } else {
         onlyMessage('暂无权限，请联系管理员', 'error')

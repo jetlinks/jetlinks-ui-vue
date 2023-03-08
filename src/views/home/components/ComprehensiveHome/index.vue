@@ -43,7 +43,7 @@ import StepCard from '../StepCard.vue';
 
 import { useMenuStore } from '@/store/menu';
 import { usePermissionStore } from '@/store/permission';
-import { recommendList, bootConfig } from '../../index';
+import { recommendList, bootConfig } from '../../typing';
 
 // 按钮权限控制
 const hasPermission = usePermissionStore().hasPermission;

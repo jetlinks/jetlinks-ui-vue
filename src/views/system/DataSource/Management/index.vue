@@ -1,13 +1,13 @@
 <template>
-    <a-card class="mangement-container">
+    <div class="mangement-container">
         <div class="left">
-            <a-input-search
+            <j-input-search
                 v-model:value="leftData.searchValue"
                 placeholder="请输入"
                 style="margin-bottom: 24px"
             />
             <!-- 使用v-if用于解决异步加载数据后不展开的问题 -->
-            <a-tree
+            <j-tree
                 v-if="leftData.treeData.length > 0"
                 showLine
                 defaultExpandAll
@@ -37,12 +37,12 @@
                         {{ dataRef.title }}
                     </span>
                 </template>
-            </a-tree>
+            </j-tree>
         </div>
         <div class="right">
             <div class="btns">
-                <a-button type="primary" @click="table.clickSave"
-                    >保存</a-button
+                <j-button type="primary" @click="table.clickSave"
+                    >保存</j-button
                 >
             </div>
             <j-pro-table
@@ -52,7 +52,7 @@
                 :dataSource="table.data"
             >
                 <template #name="slotProps">
-                    <a-input
+                    <j-input
                         :disabled="slotProps.scale !== undefined"
                         v-model:value="slotProps.name"
                         placeholder="请输入名称"
@@ -60,37 +60,37 @@
                     />
                 </template>
                 <template #type="slotProps">
-                    <a-input
+                    <j-input
                         v-model:value="slotProps.type"
                         placeholder="请输入类型"
                         :maxlength="64"
                     />
                 </template>
                 <template #length="slotProps">
-                    <a-input-number
+                    <j-input-number
                         v-model:value="slotProps.length"
                         :min="0"
                         :max="99999"
                     />
                 </template>
                 <template #precision="slotProps">
-                    <a-input-number
+                    <j-input-number
                         v-model:value="slotProps.precision"
                         :min="0"
                         :max="99999"
                     />
                 </template>
                 <template #notnull="slotProps">
-                    <a-radio-group
+                    <j-radio-group
                         v-model:value="slotProps.notnull"
                         button-style="solid"
                     >
-                        <a-radio-button :value="true">是</a-radio-button>
-                        <a-radio-button :value="false">否</a-radio-button>
-                    </a-radio-group>
+                        <j-radio-button :value="true">是</j-radio-button>
+                        <j-radio-button :value="false">否</j-radio-button>
+                    </j-radio-group>
                 </template>
                 <template #comment="slotProps">
-                    <a-input
+                    <j-input
                         v-model:value="slotProps.comment"
                         placeholder="请输入说明"
                     />
@@ -110,19 +110,19 @@
                     </PermissionButton>
                 </template>
             </j-pro-table>
-            <a-botton class="add-row" @click="table.addRow">
+            <j-botton class="add-row" @click="table.addRow">
                 <AIcon type="PlusOutlined" /> 新增行
-            </a-botton>
+            </j-botton>
         </div>
-    </a-card>
+    </div>
     <div class="dialogs">
-        <a-modal
+        <j-modal
             v-model:visible="dialog.visible"
             title="新增"
             @ok="dialog.handleOk"
         >
-            <a-form :model="dialog.form" ref="addFormRef">
-                <a-form-item
+            <j-form :model="dialog.form" ref="addFormRef">
+                <j-form-item
                     label="名称"
                     name="name"
                     :rules="[
@@ -148,13 +148,13 @@
                         },
                     ]"
                 >
-                    <a-input
+                    <j-input
                         v-model:value="dialog.form.name"
                         placeholder="请输入名称"
                     />
-                </a-form-item>
-            </a-form>
-        </a-modal>
+                </j-form-item>
+            </j-form>
+        </j-modal>
     </div>
 </template>
 
@@ -311,8 +311,11 @@ const table = reactive({
             name: leftData.selectedKeys[0],
             columns: table.data,
         };
-        saveTable_api(id, params).then(() => {
-            table.getTabelData(params.name);
+        saveTable_api(id, params).then((resp) => {
+            if (resp.status === 200) {
+                message.success('操作成功');
+                table.getTabelData(params.name);
+            }
         });
     },
     clickDel: (row: any) => {},
@@ -348,50 +351,48 @@ function init() {
 
 <style lang="less" scoped>
 .mangement-container {
+    margin: 24px;
     padding: 24px;
-    background-color: transparent;
-    :deep(.ant-card-body) {
-        display: flex;
-        background-color: #fff;
+    background-color: #fff;
+    display: flex;
 
-        .left {
-            flex-basis: 280px;
-            padding-right: 24px;
-            box-sizing: border-box;
+    .left {
+        flex-basis: 280px;
+        padding-right: 24px;
+        box-sizing: border-box;
 
-            .ant-tree-treenode {
+        :deep(.ant-tree-treenode) {
+            width: 100%;
+            .ant-tree-switcher-noop {
+                display: none;
+            }
+            .ant-tree-node-content-wrapper {
                 width: 100%;
-                .ant-tree-switcher-noop {
-                    display: none;
-                }
-                .ant-tree-node-content-wrapper {
+                .ant-tree-title {
                     width: 100%;
-                    .ant-tree-title {
-                        width: 100%;
-                    }
                 }
-                &:first-child .ant-tree-node-selected {
-                    background-color: transparent;
-                }
+            }
+            &:first-child .ant-tree-node-selected {
+                background-color: transparent;
             }
         }
-        .right {
-            width: calc(100% - 280px);
-            box-sizing: border-box;
-            border-left: 1px solid #f0f0f0;
+    }
+    .right {
+        width: calc(100% - 280px);
+        box-sizing: border-box;
+        border-left: 1px solid #f0f0f0;
 
-            .btns {
-                display: flex;
-                justify-content: right;
-                padding: 0px 24px;
-            }
+        .btns {
+            display: flex;
+            justify-content: right;
+            padding: 0px 24px;
+        }
 
-            .add-row {
-                display: block;
-                text-align: center;
-                width: 100%;
-                cursor: pointer;
-            }
+        .add-row {
+            display: block;
+            text-align: center;
+            width: 100%;
+            cursor: pointer;
         }
     }
 }
