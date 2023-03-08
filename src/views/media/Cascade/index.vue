@@ -53,7 +53,7 @@
                         </h3>
                         <p>通道数量：{{ slotProps.count }}</p>
                         <Ellipsis>
-                            <a-badge
+                            <j-badge
                                 :text="`sip:${slotProps.sipConfigs[0]?.sipId}@${slotProps.sipConfigs[0]?.hostAndPort}`"
                                 :status="
                                     slotProps.status?.value === 'enabled'
@@ -92,7 +92,7 @@
                 {{ slotProps.sipConfigs[0]?.publicHost }}
             </template>
             <template #status="slotProps">
-                <a-badge
+                <j-badge
                     :text="slotProps.status?.text"
                     :status="
                         slotProps.status?.value === 'enabled'
@@ -102,7 +102,7 @@
                 />
             </template>
             <template #onlineStatus="slotProps">
-                <a-badge
+                <j-badge
                     :text="slotProps.onlineStatus?.text"
                     :status="
                         slotProps.onlineStatus?.value === 'online'
@@ -112,7 +112,7 @@
                 />
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
+                <j-space :size="16">
                     <template
                         v-for="i in getActions(slotProps, 'table')"
                         :key="i.key"
@@ -131,7 +131,7 @@
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
                     </template>
-                </a-space>
+                </j-space>
             </template>
         </JProTable>
 

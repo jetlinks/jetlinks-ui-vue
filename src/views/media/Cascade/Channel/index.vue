@@ -28,34 +28,34 @@
                 <h3>通道列表</h3>
             </template>
             <template #rightExtraRender>
-                <a-space>
-                    <a-button type="primary" @click="bindVis = true">
+                <j-space>
+                    <j-button type="primary" @click="bindVis = true">
                         绑定通道
-                    </a-button>
-                    <a-popconfirm
+                    </j-button>
+                    <j-popconfirm
                         title="确认解绑?"
                         @confirm="handleMultipleUnbind"
                     >
-                        <a-button> 批量解绑 </a-button>
-                    </a-popconfirm>
-                </a-space>
+                        <j-button> 批量解绑 </j-button>
+                    </j-popconfirm>
+                </j-space>
             </template>
             <template #gbChannelIdHeader="title">
-                <a-tooltip
+                <j-tooltip
                     title="国标级联有16位、20位两种格式。在当前页面修改不会修改视频设备-通道页面中的国标ID"
                 >
-                    <a-space>
+                    <j-space>
                         <span>{{ title }}</span>
                         <AIcon type="InfoCircleOutlined" />
-                    </a-space>
-                </a-tooltip>
+                    </j-space>
+                </j-tooltip>
             </template>
             <template #gbChannelId="slotProps">
-                <a-space>
+                <j-space>
                     <Ellipsis>
                         {{ slotProps.gbChannelId }}
                     </Ellipsis>
-                    <a-popover
+                    <j-popover
                         v-model:visible="slotProps.popVis"
                         trigger="click"
                     >
@@ -70,7 +70,7 @@
                         </template>
                         <template #content>
                             <div class="simple-form">
-                                <a-input
+                                <j-input
                                     v-model:value="gbID"
                                     @change="validField(slotProps)"
                                 />
@@ -82,67 +82,67 @@
                                     该国标ID在同一设备下已存在
                                 </div>
                             </div>
-                            <a-button
+                            <j-button
                                 type="primary"
                                 @click="handleSave(slotProps)"
                                 :loading="loading"
                                 style="width: 100%"
                             >
                                 保存
-                            </a-button>
+                            </j-button>
                         </template>
-                        <a-button type="link" @click="slotProps.popVis = true">
+                        <j-button type="link" @click="slotProps.popVis = true">
                             <AIcon type="EditOutlined" />
-                        </a-button>
-                    </a-popover>
-                </a-space>
+                        </j-button>
+                    </j-popover>
+                </j-space>
             </template>
             <template #status="slotProps">
-                <a-space>
-                    <a-badge
+                <j-space>
+                    <j-badge
                         :status="
                             slotProps.status.value === 'online'
                                 ? 'success'
                                 : 'error'
                         "
                         :text="slotProps.status.text"
-                    ></a-badge>
-                </a-space>
+                    ></j-badge>
+                </j-space>
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
-                    <a-tooltip
+                <j-space :size="16">
+                    <j-tooltip
                         v-for="i in getActions(slotProps, 'table')"
                         :key="i.key"
                         v-bind="i.tooltip"
                     >
-                        <a-popconfirm
+                        <j-popconfirm
                             v-if="i.popConfirm"
                             v-bind="i.popConfirm"
                             :disabled="i.disabled"
                         >
-                            <a-button
+                            <j-button
                                 :disabled="i.disabled"
                                 style="padding: 0"
                                 type="link"
                                 ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-popconfirm>
-                        <a-button
+                            /></j-button>
+                        </j-popconfirm>
+                        <j-button
                             style="padding: 0"
                             type="link"
                             v-else
                             @click="i.onClick && i.onClick(slotProps)"
                         >
-                            <a-button
+                            <j-button
                                 :disabled="i.disabled"
                                 style="padding: 0"
                                 type="link"
                                 ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-button>
-                    </a-tooltip>
-                </a-space>
+                            /></j-button>
+                        </j-button>
+                    </j-tooltip>
+                </j-space>
             </template>
         </JProTable>
 
