@@ -9,8 +9,8 @@
                 <j-form-item name="messageType" label="指令类型" :rules="{
                     required: true,
                     message: '请选择指令类型',
-                }">
-                    <j-select placeholder="请选择指令类型" v-model:value="modelRef.messageType" show-search :filter-option="filterOption">
+                }" class="other">
+                    <j-select placeholder="请选择指令类型" v-model:value="modelRef.messageType" show-search>
                         <j-select-option value="READ_PROPERTY">读取属性</j-select-option>
                         <j-select-option value="WRITE_PROPERTY">修改属性</j-select-option>
                         <j-select-option value="INVOKE_FUNCTION">调用功能</j-select-option>
@@ -22,7 +22,7 @@
                     required: true,
                     message: '请选择属性',
                 }">
-                    <j-select placeholder="请选择属性" v-model:value="modelRef.message.properties" show-search :filter-option="filterOption">
+                    <j-select placeholder="请选择属性" v-model:value="modelRef.message.properties" show-search @change="onPropertyChange">
                         <j-select-option v-for="i in (metadata?.properties) || []" :key="i.id" :value="i.id" :label="i.name">{{i.name}}</j-select-option>
                     </j-select>
                 </j-form-item>
@@ -32,7 +32,27 @@
                     required: true,
                     message: '请输入值',
                 }">
-                    <j-input />
+                    <ValueItem
+                        v-model:modelValue="modelRef.message.value"
+                        :itemType="property.type || property.valueType?.type || 'int'"
+                        :options="
+                            property.valueType?.type === 'enum'
+                                ? (property?.dataType?.elements || []).map(
+                                        (item) => {
+                                            return {
+                                                label: item?.text,
+                                                value: item?.value,
+                                            };
+                                        },
+                                    )
+                                : property.valueType?.type === 'boolean'
+                                ? [
+                                        { label: '是', value: true },
+                                        { label: '否', value: false },
+                                    ]
+                                : undefined
+                        "
+                    />
                 </j-form-item>
             </j-col>
             <j-col :span="24" v-if="modelRef.messageType === 'INVOKE_FUNCTION'">
@@ -40,7 +60,7 @@
                     required: true,
                     message: '请选择功能',
                 }">
-                    <j-select placeholder="请选择功能" v-model:value="modelRef.message.functionId" show-search :filter-option="filterOption" @change="funcChange">
+                    <j-select placeholder="请选择功能" v-model:value="modelRef.message.functionId" show-search @change="funcChange">
                         <j-select-option v-for="i in (metadata?.functions) || []" :key="i.id" :value="i.id" :label="i.name">{{i.name}}</j-select-option>
                     </j-select>
                 </j-form-item>
@@ -61,10 +81,6 @@
 import EditTable from './EditTable.vue'
 
 const formRef = ref();
-
-const filterOption = (input: string, option: any) => {
-    return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-};
 
 const props = defineProps({
     actionType: {
@@ -89,10 +105,12 @@ const props = defineProps({
 type Emits = {
     (e: 'update:modelValue', data: any): void;
 };
+
 const emit = defineEmits<Emits>();
 
 const modelRef = computed({
     get: () => {
+        onPropertyChange(props.modelValue?.message?.properties)
         return props.modelValue || {
             messageType: undefined,
             message: {
@@ -107,6 +125,8 @@ const modelRef = computed({
     }
 })
 
+const property = ref<any>({})
+
 const funcChange = (val: string) => {
     if(val){
         const arr = props.metadata?.functions.find((item: any) => item.id === val)?.inputs || []
@@ -119,6 +139,13 @@ const funcChange = (val: string) => {
             }
         })
         modelRef.value.message.inputs = list
+    }
+}
+
+const onPropertyChange = (val: string) => {
+    if(val){
+        const _item = props.metadata?.properties.find((item: any) => item.id === val)
+        property.value = _item?.[0] || {}
     }
 }
 
@@ -140,3 +167,12 @@ const saveBtn = () => new Promise((resolve) => {
 defineExpose({ saveBtn })
 
 </script>
+
+<style lang="less" scoped>
+:deep(.ant-form-item){
+    margin-bottom: 0;
+}
+.other {
+    margin-bottom: 24px;
+}
+</style>
