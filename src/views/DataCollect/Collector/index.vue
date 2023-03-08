@@ -4,16 +4,21 @@
             <div class="left">
                 <Tree @change="changeTree" />
             </div>
-            <div class="right">right</div>
+            <div class="right">
+                <Point :data="data"></Point>
+            </div>
         </div>
     </page-container>
 </template>
 
 <script setup lang="ts" name="CollectorPage">
 import Tree from './Tree/index.vue';
+import Point from './Point/index.vue';
 
-const changeTree = (value: any) => {
-    console.log(32, value);
+const data = ref();
+
+const changeTree = (row: any) => {
+    data.value = row;
 };
 </script>
 
@@ -31,6 +36,7 @@ const changeTree = (value: any) => {
         margin: 10px;
     }
     .right {
+        flex: 1;
         padding: 10px;
     }
 }

@@ -75,7 +75,8 @@ const iconKeys = [
     'LogoutOutlined',
     'ReadIconOutlined',
     'CloudDownloadOutlined',
-    'PauseCircleOutlined',
+    'PauseCircleOutlined',,
+    'FormOutlined',
 ]
 
 const Icon = (props: {type: string}) => {
