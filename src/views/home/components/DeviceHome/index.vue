@@ -1,23 +1,23 @@
 <template>
     <div class="device-home-container">
-        <a-row :gutter="24">
-            <a-col :span="14">
+        <j-row :gutter="24">
+            <j-col :span="14">
                 <BootCard :cardData="deviceBootConfig" cardTitle="物联网引导" />
-            </a-col>
-            <a-col :span="10">
+            </j-col>
+            <j-col :span="10">
                 <DeviceCountCard />
-            </a-col>
-        </a-row>
-        <a-row>
+            </j-col>
+        </j-row>
+        <j-row>
             <PlatformPicCard />
-        </a-row>
-        <a-row>
+        </j-row>
+        <j-row>
             <StepCard
                 cardTitle="设备接入推荐步骤"
                 tooltip="不同的设备因为通信协议的不同，存在接入步骤的差异"
                 :dataList="deviceStepDetails"
             />
-        </a-row>
+        </j-row>
     </div> 
 </template>
 
@@ -105,7 +105,6 @@ const deviceStepDetails: recommendList[] = [
             '对添加的测试设备进行功能调试，验证能否连接到平台，设备功能是否配置正确。',
         iconUrl: '/images/home/bottom-2.png',
         linkUrl: 'device/Instance/Detail',
-        auth: true,
         dialogTag: 'funcTest',
     },
     {

@@ -57,7 +57,7 @@ let selectRow: recommendList | rowType = {
 };
 // 跳转页面
 const jumpPage = (row: recommendList) => {
-    if (!row.auth) return message.warning('暂无权限，请联系管理员');
+    if ( row.auth === false) return message.warning('暂无权限，请联系管理员');
     selectRow = row; // 二次跳转需要使用
     if (row.dialogTag == 'accessMethod')
         return (productDialogVisible.value = true);

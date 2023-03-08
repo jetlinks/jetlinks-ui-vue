@@ -57,14 +57,15 @@ const rulePermission = (action: string) =>
 const menuPermission = useMenuStore().hasPermission;
 
 // 物联网引导-数据
-const _deviceBootConfig: bootConfig[] = [
+const deviceBootConfig: bootConfig[] = [
     {
         english: 'STEP1',
         label: '创建产品',
         link: '/iot/device/Product',
         auth: productPermission('add'),
+        image: '/images/home/guide-home1.png',
         params: {
-            save: true,
+            type: 'add',
         },
     },
     {
@@ -72,8 +73,9 @@ const _deviceBootConfig: bootConfig[] = [
         label: '创建设备',
         link: '/iot/device/Instance',
         auth: devicePermission('add'),
+        image: '/images/home/guide-home1.png',
         params: {
-            save: true,
+            type: 'add',
         },
     },
     {
@@ -81,20 +83,12 @@ const _deviceBootConfig: bootConfig[] = [
         label: '规则引擎',
         link: '/iot/rule-engine/Instance',
         auth: rulePermission('add'),
+        image: '/images/home/guide-home3.png',
         params: {
-            save: true,
+            type: 'add',
         },
     },
 ];
-const deviceImages = [
-    '/images/home/guide-home1.png',
-    '/images/home/guide-home2.png',
-    '/images/home/guide-home3.png',
-];
-const deviceBootConfig = _deviceBootConfig.map((item, i) => ({
-    ...item,
-    image: deviceImages[i],
-}));
 
 // 设备接入推荐步骤-数据
 const deviceStepDetails: recommendList[] = [
@@ -106,7 +100,7 @@ const deviceStepDetails: recommendList[] = [
         linkUrl: '/iot/device/Product',
         auth: productPermission('add'),
         params: {
-            save: true,
+            type: 'add',
         },
     },
     {
@@ -125,7 +119,7 @@ const deviceStepDetails: recommendList[] = [
         linkUrl: '/iot/device/Instance',
         auth: devicePermission('add'),
         params: {
-            save: true,
+            type: 'add',
         },
     },
     {
@@ -151,41 +145,32 @@ const deviceStepDetails: recommendList[] = [
 ];
 
 // 运维管理引导-数据
-const _opsBootConfig: bootConfig[] = [
+const opsBootConfig: bootConfig[] = [
     {
         english: 'STEP1',
         label: '设备接入配置',
-        link: '/iot/link/accessConfig',
-        auth: menuPermission('link/accessConfig'),
+        link: 'link/AccessConfig',
+        image: '/images/home/guide-home4.png',
     },
     {
         english: 'STEP2',
         label: '日志排查',
-        link: '/iot/link/Log',
-        auth: menuPermission('link/Log'),
+        link: 'Log',
         params: {
             key: 'system',
         },
+        image: '/images/home/guide-home5.png',
     },
     {
         english: 'STEP3',
         label: '实时监控',
-        link: '/iot/link/dashboard',
-        auth: menuPermission('link/dashboard'),
+        link: 'link/Dashboard',
         params: {
             save: true,
         },
+        image: '/images/home/guide-home6.png',
     },
 ];
-const opsImages = [
-    '/images/home/guide-home4.png',
-    '/images/home/guide-home5.png',
-    '/images/home/guide-home6.png',
-];
-const opsBootConfig = _opsBootConfig.map((item, i) => ({
-    ...item,
-    image: opsImages[i],
-}));
 
 // 运维管理推荐步骤-数据
 const opsStepDetails: recommendList[] = [
@@ -194,42 +179,34 @@ const opsStepDetails: recommendList[] = [
         details:
             '根据业务需求自定义开发对应的产品（设备模型）接入协议，并上传到平台。',
         iconUrl: '/images/home/bottom-1.png',
-        linkUrl: '/iot/link/protocol',
-        auth: menuPermission('link/Protocol'),
+        linkUrl: 'link/Protocol',
     },
     {
         title: '证书管理',
         details: '统一维护平台内的证书，用于数据通信加密。',
         iconUrl: '/images/home/bottom-6.png',
-        linkUrl: '/iot/link/Certificate',
-        auth: menuPermission('link/Certificate'),
+        linkUrl: 'link/Certificate',
     },
     {
         title: '网络组件',
         details: '根据不同的传输类型配置平台底层网络组件相关参数。',
         iconUrl: '/images/home/bottom-3.png',
-        linkUrl: '/iot/link/type',
-        auth: menuPermission('link/Type'),
+        linkUrl: 'link/Type',
     },
     {
         title: '设备接入网关',
         details: '根据不同的传输类型，关联消息协议，配置设备接入网关相关参数。',
         iconUrl: '/images/home/bottom-4.png',
-        linkUrl: '/iot/link/accessConfig',
-        auth: menuPermission('link/AccessConfig'),
+        linkUrl: 'link/AccessConfig',
     },
     {
         title: '日志管理',
         details: '监控系统日志，及时处理系统异常。',
         iconUrl: '/images/home/bottom-5.png',
-        linkUrl: '/iot/link/Log',
-        auth: menuPermission('Log'),
+        linkUrl: 'Log',
         params: {
             key: 'system',
         },
     },
 ];
-
-
-
 </script>

@@ -1,58 +1,91 @@
 <template>
-    <a-card class="device-count-container">
-        <template #title>
-            <h5 class="title">基础统计</h5>
-        </template>
-        <template #extra>
-            <span style="color: #1d39c4; cursor: pointer" @click="jumpPage"
-                >详情</span
-            >
-        </template>
+    <div class="device-count-container">
+        <h5 class="title">基础统计</h5>
+        <span class="detail" @click="jumpPage('link/DashBoard')"> 详情 </span>
 
         <div class="box-list">
             <div class="box-item">
                 <div class="label">CPU使用率</div>
-                <div class="value">{{ cpu }}</div>
+                <div class="value">{{ cpu + '%' }}</div>
                 <Pie
                     class="chart"
+                    :value="cpu"
                     chart-ref="cpuChart"
-                    :value="20"
                     :color-arr="['#ebebeb', '#d3adf7']"
                     image="/images/home/top-3.svg"
                 />
             </div>
             <div class="box-item">
                 <div class="label">JVM内存</div>
-                <div class="value">{{ jvm }}</div>
+                <div class="value">{{ jvm + '%' }}</div>
                 <Pie
                     class="chart"
                     chart-ref="jvmChart"
-                    :value="31"
+                    :value="jvm"
                     :color-arr="['#d6e4ff', '#85a5ff']"
                     image="/images/home/top-4.svg"
                 />
             </div>
         </div>
-    </a-card>
+    </div>
 </template>
 
 <script setup lang="ts">
+import { getWebSocket } from '@/utils/websocket';
 import Pie from './Pie.vue';
+import { map } from 'rxjs/operators';
+import { useMenuStore } from '@/store/menu';
 
-const cpu = ref('20%');
-const jvm = ref('31%');
+const cpu = ref(0);
+const jvm = ref(0);
 
-const getData = ()=>{
-    
-}
+const { jumpPage } = useMenuStore();
 
-const jumpPage = () => {};
+const cpuSocket = getWebSocket(
+    'operations-statistics-system-info-cpu-realTime',
+    '/dashboard/systemMonitor/stats/info/realTime',
+    {
+        type: 'cpu',
+        interval: '2s',
+        agg: 'avg',
+    },
+)
+    ?.pipe(map((res: any) => res.payload))
+    .subscribe((resp: any) => {
+        cpu.value = resp.value?.systemUsage || 0;
+    });
+const jvmSocket = getWebSocket(
+    `operations-statistics-system-info-memory-realTime`,
+    `/dashboard/systemMonitor/stats/info/realTime`,
+    {
+        type: 'memory',
+        interval: '2s',
+        agg: 'avg',
+    },
+)
+    ?.pipe(map((res: any) => res.payload))
+    .subscribe((payload: any) => {
+        jvm.value = payload.value?.jvmHeapUsage || 0;
+    });
+
+onUnmounted(() => {
+    cpuSocket && cpuSocket.unsubscribe();
+    jvmSocket && jvmSocket.unsubscribe();
+});
 </script>
 
 <style lang="less" scoped>
 .device-count-container {
-    :deep(.ant-card-body) {
-        padding-top: 0;
+    background-color: #fff;
+    padding: 24px 14px;
+    position: relative;
+    .detail {
+        color: #1d39c4;
+        cursor: pointer;
+        position: absolute;
+        right: 12px;
+        top: 24px;
+        z-index: 3;
     }
     .title {
         position: relative;

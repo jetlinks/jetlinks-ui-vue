@@ -5,7 +5,7 @@ export interface recommendList {
     iconUrl: string;
     linkUrl: string;
     params?: object;
-    auth: boolean;
+    auth?: boolean;
     dialogTag?: 'accessMethod' | 'funcTest';
 }
 // 产品列表里的每项
@@ -25,7 +25,7 @@ export interface bootConfig {
     english: string,
     label: string,
     link: string,
-    auth: boolean,
+    auth?: boolean,
     image?:string,
     params?: object,
 }
