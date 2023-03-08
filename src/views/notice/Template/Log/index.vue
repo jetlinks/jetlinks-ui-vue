@@ -1,5 +1,5 @@
 <template>
-    <a-modal v-model:visible="_vis" title="通知记录" :footer="null" width="70%">
+    <j-modal v-model:visible="_vis" title="通知记录" :footer="null" width="70%">
         <j-advanced-search
             type="simple"
             :columns="columns"
@@ -21,18 +21,18 @@
                 {{ moment(slotProps.notifyTime).format('YYYY-MM-DD HH:mm:ss') }}
             </template>
             <template #state="slotProps">
-                <a-space>
-                    <a-badge
+                <j-space>
+                    <j-badge
                         :status="slotProps.state.value"
                         :text="slotProps.state.text"
-                    ></a-badge>
+                    ></j-badge>
                     <AIcon
                         v-if="slotProps.state.value === 'error'"
                         type="ExclamationCircleOutlined"
                         style="color: #1d39c4; cursor: pointer"
                         @click="handleError(slotProps.errorStack)"
                     />
-                </a-space>
+                </j-space>
             </template>
             <template #action="slotProps">
                 <AIcon
@@ -42,7 +42,7 @@
                 />
             </template>
         </JProTable>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script setup lang="ts">
