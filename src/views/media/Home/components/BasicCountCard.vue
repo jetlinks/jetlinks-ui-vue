@@ -1,14 +1,11 @@
 <template>
-    <a-card class="device-count-container">
-        <template #title>
-            <h5 class="title">基础统计</h5>
-        </template>
-        <template #extra>
-            <span style="color: #1d39c4; cursor: pointer" @click="jumpPage"
-                >详情</span
-            >
-        </template>
-
+    <div class="device-count-container">
+        <h5 class="title">
+            <span>基础统计</span>
+            <a style="font-size: 12px;" @click="jumpPage">
+                详情
+            </a>
+        </h5>
         <div class="box-list">
             <div class="box-item">
                 <div class="label">设备数量</div>
@@ -21,7 +18,7 @@
                 <img :src="getImage('/home/top-2.png')" alt="" />
             </div>
         </div>
-    </a-card>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -56,6 +53,8 @@ const jumpPage = () => {
 
 <style lang="less" scoped>
 .device-count-container {
+    background-color: #fff;
+    padding: 24px 14px;
     :deep(.ant-card-body) {
         padding-top: 0;
     }
