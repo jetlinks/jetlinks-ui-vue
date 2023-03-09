@@ -1,7 +1,7 @@
 <template>
   <j-pro-table :loading="loading" :data-source="data" size="small" :columns="columns" row-key="id" model="TABLE">
     <template #headerTitle>
-      <a-input-search v-model:value="searchValue" placeholder="请输入名称" @search="handleSearch"></a-input-search>
+      <j-input-search v-model:value="searchValue" placeholder="请输入名称" @search="handleSearch"></j-input-search>
     </template>
     <template #rightExtraRender>
       <PermissionButton type="primary" :uhas-permission="`${permission}:update`" key="add" @click="handleAddClick"
@@ -135,6 +135,13 @@ const refreshMetadata = () => {
 watch([route.params.id, type], refreshMetadata, { immediate: true })
 
 const metadataStore = useMetadataStore()
+watch(() => metadataStore.model.importMetadata,
+  (val: boolean) => {
+    if (!!val) {
+      refreshMetadata()
+      metadataStore.set('importMetadata', false)
+    }
+  })
 const handleAddClick = () => {
   metadataStore.set('edit', true)
   metadataStore.set('item', undefined)
@@ -189,6 +196,4 @@ const removeItem = async (record: MetadataItem) => {
   }
 };
 </script>
-<style scoped lang="less">
-
-</style>
+<style scoped lang="less"></style>

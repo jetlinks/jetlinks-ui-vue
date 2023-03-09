@@ -51,7 +51,6 @@
                                         placeholder="请选择产品"
                                         v-model:value="modelRef.id"
                                         show-search
-                                        :filter-option="filterOption"
                                         @change="productChange"
                                     >
                                         <j-select-option
@@ -89,7 +88,6 @@
                                         placeholder="请选择设备类型"
                                         v-model:value="modelRef.applianceType"
                                         show-search
-                                        :filter-option="filterOption"
                                         @change="typeChange"
                                     >
                                         <j-select-option
@@ -170,13 +168,10 @@
                                                             item.action
                                                         "
                                                         show-search
-                                                        :filter-option="
-                                                            filterOption
-                                                        "
                                                     >
                                                         <j-select-option
                                                             v-for="i in getTypesActions(
-                                                                item.action,
+                                                                item.action || ''
                                                             )"
                                                             :key="i.id"
                                                             :value="i.id"
@@ -218,9 +213,6 @@
                                                             item.actionType
                                                         "
                                                         show-search
-                                                        :filter-option="
-                                                            filterOption
-                                                        "
                                                     >
                                                         <j-select-option
                                                             value="command"
@@ -261,6 +253,9 @@
                                         </j-row>
                                     </j-collapse-panel>
                                 </j-collapse>
+                                <j-card v-else>
+                                    <j-empty />
+                                </j-card>
                             </j-col>
                             <j-col :span="24">
                                 <j-button
@@ -323,13 +318,10 @@
                                                             item.source
                                                         "
                                                         show-search
-                                                        :filter-option="
-                                                            filterOption
-                                                        "
                                                     >
                                                         <j-select-option
                                                             v-for="i in getDuerOSProperties(
-                                                                item.source,
+                                                                item.source || '',
                                                             )"
                                                             :key="i.id"
                                                             :value="i.id"
@@ -361,16 +353,13 @@
                                                         "
                                                         mode="tags"
                                                         show-search
-                                                        :filter-option="
-                                                            filterOption
-                                                        "
                                                     >
                                                         <j-select-option
                                                             v-for="i in getProductProperties(
                                                                 item.target,
                                                             )"
                                                             :key="i.id"
-                                                            :value="item.id"
+                                                            :value="i.id"
                                                             >{{
                                                                 i.name
                                                             }}</j-select-option
@@ -381,6 +370,9 @@
                                         </j-row>
                                     </j-collapse-panel>
                                 </j-collapse>
+                                <j-card v-else>
+                                    <j-empty />
+                                </j-card>
                             </j-col>
                             <j-col :span="24">
                                 <j-button
@@ -492,10 +484,6 @@ const onPropertyCollChange = (_key: string[]) => {
 
 const onActionCollChange = (_key: string[]) => {
     actionActiveKey.value = _key;
-};
-
-const filterOption = (input: string, option: any) => {
-    return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
 
 const addItem = () => {
@@ -636,8 +624,9 @@ const saveBtn = async () => {
         .then(async (data: any) => {
             if (tasks.every((item) => item) && data) {
                 loading.value = true;
-                const resp = await savePatch(data);
-                loading.value = false;
+                const resp = await savePatch(data).finally(() => {
+                    loading.value = false;
+                })
                 if (resp.status === 200) {
                     message.success('操作成功！');
                     formRef.value.resetFields();

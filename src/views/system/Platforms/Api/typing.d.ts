@@ -22,6 +22,7 @@ export type apiDetailsType = {
     parameters: any[];
     requestBody?: any;
     responses:object;
+    description?:string;
 }
 
 export type modeType = 'api'| 'appManger' | 'home'

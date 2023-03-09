@@ -2,12 +2,12 @@ import { ProductItem } from '@/views/device/Product/typings';
 import { ActionsDeviceProps } from '../../../typings';
 
 type DeviceModelType = {
-    steps: {
-        key: string;
-        title: string;
-        content: React.ReactNode;
-    }[];
-    current: number;
+    // steps: {
+    //     key: string;
+    //     title: string;
+    //     content: React.ReactNode;
+    // }[];
+    // current: number;
     productId: string;
     deviceId: string;
     productDetail: ProductItem | any;

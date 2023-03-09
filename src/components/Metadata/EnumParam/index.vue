@@ -5,7 +5,7 @@
         <AIcon type="MenuOutlined" class="item-drag item-icon" />
       </div>
       <div class="item-middle item-editable">
-        <a-popover :visible="editIndex === index" placement="top">
+        <j-popover :visible="editIndex === index" placement="top">
           <template #title>
             <div class="edit-title" style="display: flex; justify-content: space-between; align-items: center;">
               <div style="width: 150px;">枚举项配置</div>
@@ -14,34 +14,34 @@
           </template>
           <template #content>
             <div class="ant-form-vertical">
-              <a-form-item label="Value" :name="name.concat([index, 'value'])" :rules="[
+              <j-form-item label="Value" :name="name.concat([index, 'value'])" :rules="[
                 { required: true, message: '请输入Value' },
               ]">
-                <a-input v-model:value="_value[index].value" size="small"></a-input>
-              </a-form-item>
-              <a-form-item label="Text" :name="name.concat([index, 'text'])" :rules="[
+                <j-input v-model:value="_value[index].value" size="small"></j-input>
+              </j-form-item>
+              <j-form-item label="Text" :name="name.concat([index, 'text'])" :rules="[
                 { required: true, message: '请输入Text' },
               ]">
-                <a-input v-model:value="_value[index].text" size="small"></a-input>
-              </a-form-item>
+                <j-input v-model:value="_value[index].text" size="small"></j-input>
+              </j-form-item>
             </div>
           </template>
           <div class="item-edit" @click="handleEdit(index)">
             {{ item.text || '枚举项配置' }}
             <AIcon type="EditOutlined" class="item-icon" />
           </div>
-        </a-popover>
+        </j-popover>
       </div>
       <div class="item-right">
         <AIcon type="DeleteOutlined" @click="handleDelete(index)" />
       </div>
     </div>
-    <a-button type="dashed" block @click="handleAdd">
+    <j-button type="dashed" block @click="handleAdd">
       <template #icon>
         <AIcon type="PlusOutlined" class="item-icon" />
       </template>
       新增枚举型
-    </a-button>
+    </j-button>
   </div>
 </template>
 <script setup lang="ts" name="BooleanParam">

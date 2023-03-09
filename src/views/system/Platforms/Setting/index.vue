@@ -1,6 +1,7 @@
 <template>
     <page-container>
-        <Api mode="api">
+        <div class="api-container">
+            <Api mode="api">
             <template #top>
                 <p>
                     <AIcon
@@ -10,9 +11,18 @@
                 </p>
             </template>
         </Api>
+        </div>
     </page-container>
 </template>
 
-<script setup lang="ts" name="Platforms">
-import Api from './Api/index.vue';
+<script setup lang="ts" name="Api">
+import Api from '../Api/index.vue';
 </script>
+
+<style lang="less" scoped>
+.api-container {
+    background-color: #fff;
+    padding: 24px;
+}
+
+</style>

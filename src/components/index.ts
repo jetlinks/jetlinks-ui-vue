@@ -15,6 +15,7 @@ import Ellipsis from './Ellipsis/index.vue'
 import JEmpty from './Empty/index.vue'
 import AMapComponent from './AMapComponent/index.vue'
 import PathSimplifier from './AMapComponent/PathSimplifier.vue'
+import ValueItem from './ValueItem/index.vue'
 
 export default  {
     install(app: App) {
@@ -35,5 +36,6 @@ export default  {
             .component('JEmpty', JEmpty)
             .component('AMapComponent', AMapComponent)
             .component('PathSimplifier', PathSimplifier)
+            .component('ValueItem', ValueItem)
     }
 }

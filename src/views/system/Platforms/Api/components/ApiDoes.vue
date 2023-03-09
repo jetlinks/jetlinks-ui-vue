@@ -4,7 +4,7 @@
             <h5>{{ selectApi.summary }}</h5>
             <div class="input">
                 <InputCard :value="selectApi.method" />
-                <a-input :value="selectApi?.url" disabled />
+                <j-input :value="selectApi?.url" disabled />
             </div>
         </div>
 
@@ -18,6 +18,14 @@
             <span>{{ `["/"]` }}</span>
         </p>
 
+        <div class="api-card" v-if="props.selectApi.description">
+            <h5>接口描述</h5>
+            <div>{{ props.selectApi.description }}</div>
+        </div>
+        <div class="api-card" v-if="requestCard.codeText">
+            <h5>请求示例</h5>
+            <JsonViewer :value="requestCard.codeText" copyable />
+        </div>
         <div class="api-card">
             <h5>请求参数</h5>
             <div class="content">
@@ -26,12 +34,13 @@
                     :dataSource="requestCard.tableData"
                     noPagination
                     model="TABLE"
+                    size="small"
                 >
                     <template #required="slotProps">
                         <span>{{ Boolean(slotProps.required) + '' }}</span>
                     </template>
                     <template #type="slotProps">
-                        <span>{{ slotProps.schema.type }}</span>
+                        <span>{{ slotProps?.schema.type }}</span>
                     </template>
                 </j-pro-table>
             </div>
@@ -44,16 +53,17 @@
                     :dataSource="responseStatusCard.tableData"
                     noPagination
                     model="TABLE"
+                    size="small"
                 >
                 </j-pro-table>
 
-                <a-tabs v-model:activeKey="responseStatusCard.activeKey">
-                    <a-tab-pane
+                <j-tabs v-model:activeKey="responseStatusCard.activeKey">
+                    <j-tab-pane
                         :key="key"
                         :tab="key"
                         v-for="key in tabs"
-                    ></a-tab-pane>
-                </a-tabs>
+                    ></j-tab-pane>
+                </j-tabs>
             </div>
         </div>
 
@@ -65,21 +75,19 @@
                     :dataSource="respParamsCard.tableData"
                     noPagination
                     model="TABLE"
+                    size="small"
                 >
                 </j-pro-table>
             </div>
 
-            <MonacoEditor
-                v-model:modelValue="codeText"
-                style="height: 300px; width: 100%"
-                theme="vs"
-            />
+            <JsonViewer :value="respParamsCard.codeText" copyable />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import MonacoEditor from '@/components/MonacoEditor/index.vue';
+import { JsonViewer } from 'vue3-json-viewer';
+import 'vue3-json-viewer/dist/index.css';
 import type { apiDetailsType } from '../typing';
 import InputCard from './InputCard.vue';
 import { PropType } from 'vue';
@@ -98,7 +106,7 @@ const { selectApi } = toRefs(props);
 
 type tableCardType = {
     columns: object[];
-    tableData: object[];
+    tableData: any[];
     codeText?: any;
     activeKey?: any;
     getData?: any;
@@ -134,8 +142,36 @@ const requestCard = reactive<tableCardType>({
         },
     ],
     tableData: [],
+    codeText: undefined,
     getData: () => {
-        requestCard.tableData = props.selectApi.parameters;
+        if (!props.selectApi.requestBody)
+            return (requestCard.tableData = props.selectApi.parameters);
+        const schema =
+            props.selectApi.requestBody.content['application/json'].schema;
+        const schemaName = (schema.$ref || schema.items.$ref)?.split('/').pop();
+        const type = schema.type || '';
+        const tableData = findData(schemaName);
+        if (type === 'array') {
+            requestCard.codeText = [getCodeText(tableData, 3)];
+        } else requestCard.codeText = getCodeText(tableData, 3);
+        // console.clear();
+        // console.log(schemaName, tableData);
+
+        requestCard.tableData = [
+            {
+                name: schemaName[0].toLowerCase() + schemaName.substring(1),
+                description: schemaName,
+                in: 'body',
+                required: true,
+                schema: { type: type || schemaName },
+                children: tableData.map((item) => ({
+                    name: item.paramsName,
+                    description: item.desc,
+                    required: false,
+                    schema: { type: item.paramsType },
+                })),
+            },
+        ];
     },
 });
 const responseStatusCard = reactive<tableCardType>({
@@ -200,101 +236,16 @@ const respParamsCard = reactive<tableCardType>({
     tableData: [],
     codeText: '',
     getData: (code: string) => {
-        type schemaObjType = {
-            paramsName: string;
-            paramsType: string;
-            desc?: string;
-            children?: schemaObjType[];
-        };
-
         const schemaName = responseStatusCard.tableData.find(
             (item: any) => item.code === code,
         )?.schema;
-        const schemas = toRaw(props.schemas);
-        const basicType = ['string', 'integer', 'boolean'];
 
         const tableData = findData(schemaName);
-        const codeText = getCodeText(tableData, 3);
+        respParamsCard.codeText = getCodeText(tableData, 3);
 
         respParamsCard.tableData = tableData;
-        respParamsCard.codeText = JSON.stringify(codeText);
-
-        function findData(schemaName: string) {
-            if (!schemaName || !schemas[schemaName]) {
-                return [];
-            }
-            const result: schemaObjType[] = [];
-            const schema = schemas[schemaName];
-            Object.entries(schema.properties).forEach((item: [string, any]) => {
-                const paramsType =
-                    item[1].type ||
-                    (item[1].$ref && item[1].$ref.split('/').pop()) ||
-                    (item[1].items && item[1].items.$ref.split('/').pop()) ||
-                    '';
-                const schemaObj: schemaObjType = {
-                    paramsName: item[0],
-                    paramsType,
-                    desc: item[1].description || '',
-                };
-                if (!basicType.includes(paramsType))
-                    schemaObj.children = findData(paramsType);
-                result.push(schemaObj);
-            });
-
-            return result;
-        }
-        function getCodeText(arr: schemaObjType[], level: number): object {
-            const result = {};
-
-            arr.forEach((item) => {
-                switch (item.paramsType) {
-                    case 'string':
-                        result[item.paramsName] = '';
-                        break;
-                    case 'integer':
-                        result[item.paramsName] = 0;
-                        break;
-                    case 'boolean':
-                        result[item.paramsName] = true;
-                        break;
-                    case 'array':
-                        result[item.paramsName] = [];
-                        break;
-                    case 'object':
-                        result[item.paramsName] = {};
-                        break;
-                    default: {
-                        const properties = schemas[item.paramsType]
-                            .properties as object;
-                        const newArr = Object.entries(properties).map(
-                            (item: [string, any]) => ({
-                                paramsName: item[0],
-                                paramsType: level
-                                    ? (item[1].$ref &&
-                                          item[1].$ref.split('/').pop()) ||
-                                      (item[1].items &&
-                                          item[1].items.$ref
-                                              .split('/')
-                                              .pop()) ||
-                                      item[1].type ||
-                                      ''
-                                    : item[1].type,
-                            }),
-                        );
-                        result[item.paramsName] = getCodeText(
-                            newArr,
-                            level - 1,
-                        );
-                    }
-                }
-            });
-
-            return result;
-        }
     },
 });
-
-const { codeText } = toRefs(requestCard);
 
 const getContent = (data: any) => {
     if (data && data.content) {
@@ -317,6 +268,83 @@ watch(
 watch([() => responseStatusCard.activeKey, () => props.selectApi], (n) => {
     n[0] && respParamsCard.getData(n[0]);
 });
+
+function findData(schemaName: string) {
+    const schemas = toRaw(props.schemas);
+    const basicType = ['string', 'integer', 'boolean'];
+
+    if (!schemaName || !schemas[schemaName]) {
+        return [];
+    }
+    const result: schemaObjType[] = [];
+    const schema = schemas[schemaName];
+    Object.entries(schema.properties).forEach((item: [string, any]) => {
+        const paramsType =
+            item[1].type ||
+            (item[1].$ref && item[1].$ref.split('/').pop()) ||
+            (item[1].items && item[1].items.$ref.split('/').pop()) ||
+            '';
+        const schemaObj: schemaObjType = {
+            paramsName: item[0],
+            paramsType,
+            desc: item[1].description || '',
+        };
+        if (!basicType.includes(paramsType))
+            schemaObj.children = findData(paramsType);
+        result.push(schemaObj);
+    });
+
+    return result;
+}
+function getCodeText(arr: schemaObjType[], level: number): object {
+    const result = {};
+    const schemas = toRaw(props.schemas);
+    arr.forEach((item) => {
+        switch (item.paramsType) {
+            case 'string':
+                result[item.paramsName] = '';
+                break;
+            case 'integer':
+                result[item.paramsName] = 0;
+                break;
+            case 'boolean':
+                result[item.paramsName] = true;
+                break;
+            case 'array':
+                result[item.paramsName] = [];
+                break;
+            case 'object':
+                result[item.paramsName] = '';
+                break;
+            default: {
+                const properties = schemas[item.paramsType]
+                    .properties as object;
+                const newArr = Object.entries(properties).map(
+                    (item: [string, any]) => ({
+                        paramsName: item[0],
+                        paramsType: level
+                            ? (item[1].$ref && item[1].$ref.split('/').pop()) ||
+                              (item[1].items &&
+                                  item[1].items.$ref.split('/').pop()) ||
+                              item[1].type ||
+                              ''
+                            : item[1].type,
+                    }),
+                );
+                result[item.paramsName] = getCodeText(newArr, level - 1);
+            }
+        }
+    });
+
+    return result;
+}
+
+type schemaObjType = {
+    paramsName: string;
+    paramsType: string;
+    desc?: string;
+    children?: schemaObjType[];
+};
 </script>
 
 <style lang="less" scoped>

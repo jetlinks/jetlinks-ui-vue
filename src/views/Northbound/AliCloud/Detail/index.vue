@@ -1,17 +1,17 @@
 <template>
     <page-container>
-        <a-card>
-            <a-row :gutter="24">
-                <a-col :span="16">
+        <j-card>
+            <j-row :gutter="24">
+                <j-col :span="16">
                     <TitleComponent data="基本信息" />
-                    <a-form
+                    <j-form
                         :layout="'vertical'"
                         ref="formRef"
                         :model="modelRef"
                     >
-                        <a-row :gutter="24">
-                            <a-col :span="24">
-                                <a-form-item
+                        <j-row :gutter="24">
+                            <j-col :span="24">
+                                <j-form-item
                                     label="名称"
                                     name="name"
                                     :rules="[
@@ -25,14 +25,14 @@
                                         },
                                     ]"
                                 >
-                                    <a-input
+                                    <j-input
                                         placeholder="请输入名称"
                                         v-model:value="modelRef.name"
                                     />
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="24">
-                                <a-form-item
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="24">
+                                <j-form-item
                                     :name="['accessConfig', 'regionId']"
                                     :rules="[
                                         {
@@ -44,63 +44,62 @@
                                     <template #label>
                                         <span>
                                             服务地址
-                                            <a-tooltip
+                                            <j-tooltip
                                                 title="阿里云内部给每台机器设置的唯一编号"
                                             >
                                                 <AIcon
                                                     type="QuestionCircleOutlined"
                                                     style="margin-left: 2px"
                                                 />
-                                            </a-tooltip>
+                                            </j-tooltip>
                                         </span>
                                     </template>
-                                    <a-select
+                                    <j-select
                                         placeholder="请选择服务地址"
                                         v-model:value="
                                             modelRef.accessConfig.regionId
                                         "
                                         show-search
-                                        :filter-option="filterOption"
                                         @blur="productChange"
                                     >
-                                        <a-select-option
+                                        <j-select-option
                                             v-for="item in regionsList"
                                             :key="item.id"
                                             :value="item.id"
                                             :label="item.name"
-                                            >{{ item.name }}</a-select-option
+                                            >{{ item.name }}</j-select-option
                                         >
-                                    </a-select>
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="24">
-                                <a-form-item
+                                    </j-select>
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="24">
+                                <j-form-item
                                     :name="['accessConfig', 'instanceId']"
                                 >
                                     <template #label>
                                         <span>
                                             实例ID
-                                            <a-tooltip
+                                            <j-tooltip
                                                 title="阿里云物联网平台中的实例ID,没有则不填"
                                             >
                                                 <AIcon
                                                     type="QuestionCircleOutlined"
                                                     style="margin-left: 2px"
                                                 />
-                                            </a-tooltip>
+                                            </j-tooltip>
                                         </span>
                                     </template>
-                                    <a-input
+                                    <j-input
                                         placeholder="请输入实例ID"
                                         v-model:value="
                                             modelRef.accessConfig.instanceId
                                         "
                                         @blur="productChange"
                                     />
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="24">
-                                <a-form-item
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="24">
+                                <j-form-item
                                     :name="['accessConfig', 'accessKeyId']"
                                     :rules="[
                                         {
@@ -116,27 +115,27 @@
                                     <template #label>
                                         <span>
                                             accessKey
-                                            <a-tooltip
+                                            <j-tooltip
                                                 title="用于程序通知方式调用云服务API的用户标识"
                                             >
                                                 <AIcon
                                                     type="QuestionCircleOutlined"
                                                     style="margin-left: 2px"
                                                 />
-                                            </a-tooltip>
+                                            </j-tooltip>
                                         </span>
                                     </template>
-                                    <a-input
+                                    <j-input
                                         placeholder="请输入accessKey"
                                         v-model:value="
                                             modelRef.accessConfig.accessKeyId
                                         "
                                         @blur="productChange"
                                     />
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="24">
-                                <a-form-item
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="24">
+                                <j-form-item
                                     :name="['accessConfig', 'accessSecret']"
                                     :rules="[
                                         {
@@ -152,27 +151,27 @@
                                     <template #label>
                                         <span>
                                             accessSecret
-                                            <a-tooltip
+                                            <j-tooltip
                                                 title="用于程序通知方式调用云服务费API的秘钥标识"
                                             >
                                                 <AIcon
                                                     type="QuestionCircleOutlined"
                                                     style="margin-left: 2px"
                                                 />
-                                            </a-tooltip>
+                                            </j-tooltip>
                                         </span>
                                     </template>
-                                    <a-input
+                                    <j-input
                                         placeholder="请输入accessSecret"
                                         v-model:value="
                                             modelRef.accessConfig.accessSecret
                                         "
                                         @blur="productChange"
                                     />
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="24">
-                                <a-form-item
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="24">
+                                <j-form-item
                                     name="bridgeProductKey"
                                     :rules="{
                                         required: true,
@@ -182,44 +181,43 @@
                                     <template #label>
                                         <span>
                                             网桥产品
-                                            <a-tooltip
+                                            <j-tooltip
                                                 title="物联网平台对应的阿里云产品"
                                             >
                                                 <AIcon
                                                     type="QuestionCircleOutlined"
                                                     style="margin-left: 2px"
                                                 />
-                                            </a-tooltip>
+                                            </j-tooltip>
                                         </span>
                                     </template>
-                                    <a-select
+                                    <j-select
                                         placeholder="请选择网桥产品"
                                         v-model:value="
                                             modelRef.bridgeProductKey
                                         "
                                         show-search
-                                        :filter-option="filterOption"
                                     >
-                                        <a-select-option
+                                        <j-select-option
                                             v-for="item in aliyunProductList"
                                             :key="item.productKey"
                                             :value="item.productKey"
                                             :label="item.productName"
                                             >{{
                                                 item.productName
-                                            }}</a-select-option
+                                            }}</j-select-option
                                         >
-                                    </a-select>
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="24">
+                                    </j-select>
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="24">
                                 <p>产品映射</p>
-                                <a-collapse
+                                <j-collapse
                                     v-if="modelRef.mappings.length"
                                     :activeKey="activeKey"
                                     @change="onCollChange"
                                 >
-                                    <a-collapse-panel
+                                    <j-collapse-panel
                                         v-for="(
                                             item, index
                                         ) in modelRef.mappings"
@@ -239,9 +237,9 @@
                                                 type="DeleteOutlined"
                                                 @click="delItem(index)"
                                         /></template>
-                                        <a-row :gutter="24">
-                                            <a-col :span="12">
-                                                <a-form-item
+                                        <j-row :gutter="24">
+                                            <j-col :span="12">
+                                                <j-form-item
                                                     label="阿里云产品"
                                                     :name="[
                                                         'mappings',
@@ -254,19 +252,16 @@
                                                             '请选择阿里云产品',
                                                     }"
                                                 >
-                                                    <a-select
+                                                    <j-select
                                                         placeholder="请选择阿里云产品"
                                                         v-model:value="
                                                             item.productKey
                                                         "
                                                         show-search
-                                                        :filter-option="
-                                                            filterOption
-                                                        "
                                                     >
-                                                        <a-select-option
+                                                        <j-select-option
                                                             v-for="i in getAliyunProductList(
-                                                                item.productKey,
+                                                                item?.productKey || ''
                                                             )"
                                                             :key="i.productKey"
                                                             :value="
@@ -277,13 +272,13 @@
                                                             "
                                                             >{{
                                                                 i.productName
-                                                            }}</a-select-option
+                                                            }}</j-select-option
                                                         >
-                                                    </a-select>
-                                                </a-form-item>
-                                            </a-col>
-                                            <a-col :span="12">
-                                                <a-form-item
+                                                    </j-select>
+                                                </j-form-item>
+                                            </j-col>
+                                            <j-col :span="12">
+                                                <j-form-item
                                                     label="平台产品"
                                                     :name="[
                                                         'mappings',
@@ -296,36 +291,36 @@
                                                             '请选择平台产品',
                                                     }"
                                                 >
-                                                    <a-select
+                                                    <j-select
                                                         placeholder="请选择平台产品"
                                                         v-model:value="
                                                             item.productId
                                                         "
                                                         show-search
-                                                        :filter-option="
-                                                            filterOption
-                                                        "
                                                     >
-                                                        <a-select-option
+                                                        <j-select-option
                                                             v-for="i in getPlatProduct(
-                                                                item.productId,
+                                                                item.productId || ''
                                                             )"
                                                             :key="i.id"
-                                                            :value="item.id"
+                                                            :value="i?.id"
                                                             :label="i.name"
                                                             >{{
                                                                 i.name
-                                                            }}</a-select-option
+                                                            }}</j-select-option
                                                         >
-                                                    </a-select>
-                                                </a-form-item>
-                                            </a-col>
-                                        </a-row>
-                                    </a-collapse-panel>
-                                </a-collapse>
-                            </a-col>
-                            <a-col :span="24">
-                                <a-button
+                                                    </j-select>
+                                                </j-form-item>
+                                            </j-col>
+                                        </j-row>
+                                    </j-collapse-panel>
+                                </j-collapse>
+                                <j-card v-else>
+                                    <j-empty />
+                                </j-card>
+                            </j-col>
+                            <j-col :span="24">
+                                <j-button
                                     type="dashed"
                                     style="width: 100%; margin-top: 10px"
                                     @click="addItem"
@@ -334,10 +329,10 @@
                                         type="PlusOutlined"
                                         style="margin-left: 2px"
                                     />添加
-                                </a-button>
-                            </a-col>
-                            <a-col :span="24" style="margin-top: 20px">
-                                <a-form-item
+                                </j-button>
+                            </j-col>
+                            <j-col :span="24" style="margin-top: 20px">
+                                <j-form-item
                                     label="说明"
                                     name="description"
                                     :rules="{
@@ -345,16 +340,16 @@
                                         message: '最多输入200个字符',
                                     }"
                                 >
-                                    <a-textarea
+                                    <j-textarea
                                         v-model:value="modelRef.description"
                                         placeholder="请输入说明"
                                         showCount
                                         :maxlength="200"
                                     />
-                                </a-form-item>
-                            </a-col>
-                        </a-row>
-                    </a-form>
+                                </j-form-item>
+                            </j-col>
+                        </j-row>
+                    </j-form>
                     <div v-if="type === 'edit'">
                         <PermissionButton
                             type="primary"
@@ -365,12 +360,12 @@
                             保存
                         </PermissionButton>
                     </div>
-                </a-col>
-                <a-col :span="8">
+                </j-col>
+                <j-col :span="8">
                     <Doc />
-                </a-col>
-            </a-row>
-        </a-card>
+                </j-col>
+            </j-row>
+        </j-card>
     </page-container>
 </template>
 
@@ -384,7 +379,7 @@ import {
     queryProductList,
 } from '@/api/northbound/alicloud';
 import _ from 'lodash';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 const router = useRouter();
 const route = useRoute();
@@ -429,10 +424,6 @@ const aliyunProductList = ref<Record<string, any>[]>([]);
 const loading = ref<boolean>(false);
 const type = ref<'edit' | 'view'>('edit');
 const activeKey = ref<string[]>(['0']);
-
-const filterOption = (input: string, option: any) => {
-    return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-};
 
 const queryRegionsList = async () => {
     const resp = await getRegionsList();
@@ -503,8 +494,9 @@ const saveBtn = () => {
             );
             data.bridgeProductName = product?.productName || '';
             loading.value = true;
-            const resp = await savePatch({...toRaw(modelRef), ...data});
-            loading.value = false;
+            const resp = await savePatch({...toRaw(modelRef), ...data}).finally(() => {
+                loading.value = false;
+            })
             if (resp.status === 200) {
                 message.success('操作成功！');
                 formRef.value.resetFields();

@@ -1,23 +1,25 @@
 <template>
     <div class="choose-api-container">
-        <j-pro-table
-            :columns="columns"
-            :dataSource="props.tableData"
-            :rowSelection="props.mode !== 'home' ? rowSelection : undefined"
-            noPagination
-            model="TABLE"
-        >
-            <template #url="slotProps">
-                <span
-                    style="color: #1d39c4; cursor: pointer"
-                    @click="jump(slotProps)"
-                    >{{ slotProps.url }}</span
-                >
-            </template>
-        </j-pro-table>
+        <div class="table">
+            <j-pro-table
+                :columns="columns"
+                :dataSource="props.tableData"
+                :rowSelection="props.mode !== 'home' ? rowSelection : undefined"
+                noPagination
+                model="TABLE"
+            >
+                <template #url="slotProps">
+                    <span
+                        style="color: #1d39c4; cursor: pointer"
+                        @click="jump(slotProps)"
+                        >{{ slotProps.url }}</span
+                    >
+                </template>
+            </j-pro-table>
+        </div>
 
-        <a-button type="primary" @click="save" v-if="props.mode !== 'home'"
-            >保存</a-button
+        <j-button type="primary" @click="save" v-if="props.mode !== 'home'"
+            >保存</j-button
         >
     </div>
 </template>
@@ -88,8 +90,10 @@ watch(
 
 <style lang="less" scoped>
 .choose-api-container {
-    height: 100%;
-
+    .table {
+        max-height: calc(100vh - 260px);
+        overflow-y: auto;
+    }
     :deep(.jtable-body-header) {
         display: none !important;
     }

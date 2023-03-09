@@ -18,10 +18,25 @@
                 :dataList="deviceStepDetails"
             />
         </j-row>
-    </div> 
+
+        <div class="dialog">
+            <ProductChooseDialog
+                v-if="productDialogVisible"
+                v-model:visible="productDialogVisible"
+                @confirm="(id:string)=>jumpPage('device/Product/Detail', { id })"
+            />
+            <DeviceChooseDialog
+                v-if="deviceDialogVisible"
+                v-model:visible="deviceDialogVisible"
+                @confirm="(id:string)=>jumpPage('device/Instance/Detail', { id })"
+            />
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts" name="deviceHome">
+import ProductChooseDialog from '../dialogs/ProductChooseDialog.vue';
+import DeviceChooseDialog from '../dialogs/DeviceChooseDialog.vue';
 import BootCard from '../BootCard.vue';
 import DeviceCountCard from '../DeviceCountCard.vue';
 import PlatformPicCard from '../PlatformPicCard.vue';
@@ -29,6 +44,7 @@ import StepCard from '../StepCard.vue';
 
 import { usePermissionStore } from '@/store/permission';
 import { bootConfig, recommendList } from '../../typing';
+import { useMenuStore } from '@/store/menu';
 
 // 按钮权限控制
 const hasPermission = usePermissionStore().hasPermission;
@@ -38,6 +54,11 @@ const devicePermission = (action: string) =>
     hasPermission(`device/Instance:${action}`);
 const rulePermission = (action: string) =>
     hasPermission(`rule-engine/Instance:${action}`);
+
+const { jumpPage } = useMenuStore();
+
+const productDialogVisible = ref(false);
+const deviceDialogVisible = ref(false);
 
 const deviceBootConfig: bootConfig[] = [
     {
@@ -87,7 +108,9 @@ const deviceStepDetails: recommendList[] = [
         iconUrl: '/images/home/bottom-1.png',
         linkUrl: 'device/Product/Detail',
         auth: productPermission('update'),
-        dialogTag: 'accessMethod',
+        onClick: () => {
+            productDialogVisible.value = true;
+        },
     },
     {
         title: '添加测试设备',
@@ -105,7 +128,9 @@ const deviceStepDetails: recommendList[] = [
             '对添加的测试设备进行功能调试，验证能否连接到平台，设备功能是否配置正确。',
         iconUrl: '/images/home/bottom-2.png',
         linkUrl: 'device/Instance/Detail',
-        dialogTag: 'funcTest',
+        onClick: () => {
+            deviceDialogVisible.value = true;
+        },
     },
     {
         title: '批量添加设备',

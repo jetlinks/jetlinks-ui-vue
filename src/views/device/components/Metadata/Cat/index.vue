@@ -1,13 +1,13 @@
 <template>
-  <a-drawer :mask-closable="false" title="查看物模型" width="700" v-model:visible="_visible" destroy-on-close @close="close">
+  <j-drawer :mask-closable="false" title="查看物模型" width="700" v-model:visible="_visible" destroy-on-close @close="close">
     <template #extra>
-      <a-space>
-        <a-button type="primary" @click="handleExport">
+      <j-space>
+        <j-button type="primary" @click="handleExport">
           导出
-        </a-button>
-      </a-space>
+        </j-button>
+      </j-space>
     </template>
-    <a-spin :spinning="loading">
+    <j-spin :spinning="loading">
       <div class="cat-content">
         <p class="cat-tip">
           物模型是对设备在云端的功能描述，包括设备的属性、服务和事件。物联网平台通过定义一种物的描述语言来描述物模型，称之为
@@ -15,15 +15,15 @@
           组装上报设备的数据。您可以导出完整物模型，用于云端应用开发。
         </p>
       </div>
-      <a-tabs @change="handleConvertMetadata" destroy-inactive-tab-pane>
-        <a-tab-pane v-for="item in codecs" :key="item.id" :tab="item.name">
+      <j-tabs @change="handleConvertMetadata" destroy-inactive-tab-pane>
+        <j-tab-pane v-for="item in codecs" :key="item.id" :tab="item.name">
           <div class="cat-panel">
             <MonacoEditor v-model="value" theme="vs" style="height: 100%"></MonacoEditor>
           </div>
-        </a-tab-pane>
-      </a-tabs>
-    </a-spin>
-  </a-drawer>
+        </j-tab-pane>
+      </j-tabs>
+    </j-spin>
+  </j-drawer>
 </template>
 <script setup lang="ts" name="Cat">
 import { message } from 'ant-design-vue/es';
