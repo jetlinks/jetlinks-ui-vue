@@ -182,10 +182,7 @@ const opsBootConfig: bootConfig[] = [
     {
         english: 'STEP3',
         label: '实时监控',
-        link: 'link/Dashboard',
-        params: {
-            save: true,
-        },
+        link: 'link/DashBoard',
         image: '/images/home/guide-home6.png',
     },
 ];

@@ -32,12 +32,12 @@ const opsBootConfig: bootConfig[] = [
     {
         english: 'STEP1',
         label: '设备接入配置',
-        link: 'link/accessConfig',
+        link: 'link/AccessConfig',
     },
     {
         english: 'STEP2',
         label: '日志排查',
-        link: 'link/Log',
+        link: 'Log',
         params: {
             key: 'system',
         },
@@ -45,7 +45,7 @@ const opsBootConfig: bootConfig[] = [
     {
         english: 'STEP3',
         label: '实时监控',
-        link: 'link/dashboard',
+        link: 'link/DashBoard',
         params: {
             type: 'add',
         },

@@ -52,9 +52,10 @@ const secureKey = ref<string>('');
 const setCurrentView = () => {
     getView_api().then((resp: any) => {
         if (resp.status === 200) {
-            if (resp.result) currentView.value = resp.result?.content;
-            else if (resp.result.username === 'admin') {
-                currentView.value = 'comprehensive';
+            if (resp.result) {
+                if (resp.result.username === 'admin')
+                    currentView.value = 'comprehensive';
+                else currentView.value = resp.result?.content;
             } else currentView.value = 'init';
         }
     });
