@@ -9,6 +9,7 @@
                 <TopCard
                     :typeList="TypeList"
                     v-model:value="modelRef.message.messageType"
+                    @change="onMessageTypeChange"
                 />
             </j-form-item>
             <template v-if="deviceMessageType === 'INVOKE_FUNCTION'">
@@ -21,7 +22,7 @@
                         showSearch
                         placeholder="请选择功能"
                         v-model:value="modelRef.message.functionId"
-                        @change="onFunctionChange"
+                        @change="(val) => onFunctionChange(val, [])"
                     >
                         <j-select-option
                             v-for="item in metadata?.functions || []"
@@ -36,7 +37,7 @@
                     :name="['message', 'inputs']"
                     :rules="[{ required: true, message: '请输入功能值' }]"
                 >
-                    <EditTable v-model="modelRef.message.inputs" />
+                    <EditTable v-model:modelValue="modelRef.message.inputs" :builtInList="builtInList" />
                 </j-form-item>
             </template>
             <template v-else-if="deviceMessageType === 'READ_PROPERTY'">
@@ -60,44 +61,11 @@
                 </j-form-item>
             </template>
             <template v-else-if="deviceMessageType === 'WRITE_PROPERTY'">
-                <j-row>
-                    <j-col :span="11">
-                        <j-form-item
-                            :name="['message', 'properties']"
-                            label="读取属性"
-                            :rules="[
-                                { required: true, message: '请选择读取属性' },
-                            ]"
-                        >
-                            <j-select
-                                showSearch
-                                placeholder="请选择属性"
-                                v-model:value="modelRef.message.properties"
-                            >
-                                <j-select-option
-                                    v-for="item in metadata?.properties || []"
-                                    :value="item?.id"
-                                    :key="item?.id"
-                                    >{{ item?.name }}</j-select-option
-                                >
-                            </j-select>
-                        </j-form-item>
-                    </j-col>
-                    <j-col :span="2"></j-col>
-                    <j-col :span="11">
-                        <j-form-item
-                            :name="['message', 'properties']"
-                            label="读取属性"
-                            :rules="[
-                                { required: true, message: '请选择读取属性' },
-                            ]"
-                        >
-                            <j-select placeholder="请选择">
-                                <!-- TODO -->
-                            </j-select>
-                        </j-form-item>
-                    </j-col>
-                </j-row>
+                <WriteProperty
+                    v-model:value="modelRef.message.properties"
+                    :metadata="metadata"
+                    :builtInList="builtInList"
+                />
             </template>
         </a-form>
     </div>
@@ -108,6 +76,13 @@ import { getImage } from '@/utils/comm';
 import TopCard from '../device/TopCard.vue';
 import { detail } from '@/api/device/instance';
 import EditTable from './EditTable.vue';
+import WriteProperty from './WriteProperty.vue';
+import { queryBuiltInParams } from '@/api/rule-engine/scene';
+import { useSceneStore } from '@/store/scene';
+import { storeToRefs } from 'pinia'
+
+const sceneStore = useSceneStore();
+const { data } = storeToRefs(sceneStore);
 
 const TypeList = [
     {
@@ -172,44 +147,93 @@ const deviceMessageType = computed(() => {
     return modelRef.message.messageType;
 });
 
-const onFunctionChange = (val: string) => {
+const builtInList = ref<any[]>([]);
+
+const onFunctionChange = (val: string, values?: any[]) => {
     const _item = (metadata.value?.functions || []).find((item: any) => {
         return val === item.id;
     });
     const list = (_item?.inputs || []).map((item: any) => {
+        const _a = values?.find((i) => i.name === item.id);
         return {
             id: item.id,
-            name: item.name,
-            value: undefined,
+            value: _a?.value,
             valueType: item?.valueType?.type,
+            ..._a,
+            name: item.name,
         };
     });
     modelRef.message.inputs = list;
 };
 
-watchEffect(() => {
-    // console.log(props.values)
-    // console.log(metadata.value)
-    // Object.assign()
-});
+const onMessageTypeChange = (val: string) => {
+    if (['WRITE_PROPERTY', 'INVOKE_FUNCTION'].includes(val)) {
+        const _params = {
+            branch: props.thenName,
+            branchGroup: props.branchGroup,
+            action: props.name - 1,
+        };
+        queryBuiltInParams(unref(data), _params).then((res: any) => {
+            if (res.status === 200) {
+                builtInList.value = res.result
+            }
+        });
+    }
+};
 
 watch(
-    () => [props.values?.productDetail, props.values.deviceDetail],
-    ([newVal1, newVal2]) => {
-        if (newVal1) {
-            if (props.values?.selector === 'fixed') {
-                detail(newVal2.id).then((resp) => {
-                    if (resp.status === 200) {
-                        metadata.value = JSON.parse(
-                            resp.result?.metadata || '{}',
-                        );
-                    }
-                });
+    () => [
+        props.values?.productDetail,
+        props.values.selectorValues,
+        props.values?.selector,
+    ],
+    ([newVal1, newVal2, newVal3]) => {
+        if (newVal1?.id) {
+            if (newVal3?.selector === 'fixed') {
+                const id = newVal2?.[0]?.value;
+                if (id) {
+                    detail(id).then((resp) => {
+                        if (resp.status === 200) {
+                            metadata.value = JSON.parse(
+                                resp.result?.metadata || '{}',
+                            );
+                        }
+                    });
+                }
             } else {
                 metadata.value = JSON.parse(newVal1?.metadata || '{}');
             }
         }
     },
+    { immediate: true, deep: true },
+);
+
+watch(
+    () => props.values?.message,
+    (newVal) => {
+        if (newVal?.messageType) {
+            modelRef.message = newVal;
+            if (newVal.messageType === 'INVOKE_FUNCTION' && newVal.functionId) {
+                onFunctionChange(newVal.functionId, newVal?.inputs);
+            }
+            onMessageTypeChange(newVal.messageType)
+        }
+    },
     { deep: true, immediate: true },
 );
+
+const onFormSave = () => {
+    return new Promise((resolve, reject) => {
+        formRef.value
+            .validate()
+            .then(async (_data: any) => {
+                resolve(_data);
+            })
+            .catch((err: any) => {
+                reject(err);
+            });
+    });
+};
+
+defineExpose({ onFormSave });
 </script>

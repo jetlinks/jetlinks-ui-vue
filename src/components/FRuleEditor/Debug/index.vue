@@ -15,7 +15,7 @@
       <a-table :columns="columns" :data-source="property" :pagination="false" bordered size="small">
         <template #bodyCell="{ column, record, index }">
           <template v-if="column.key === 'id'">
-            <a-input v-model:value="record.id" size="small"></a-input>
+            <j-auto-complete :options="options" v-model:value="record.id" size="small" width="130px"/>
           </template>
           <template v-if="column.key === 'current'">
             <a-input v-model:value="record.current" size="small"></a-input>
@@ -58,8 +58,8 @@
       </div>
       <div class="log">
         <a-descriptions>
-          <a-descriptions-item v-for="item in ruleEditorStore.state.log" :label="moment(item.time).format('HH:mm:ss')" :key="item.time"
-            :span="3">
+          <a-descriptions-item v-for="item in ruleEditorStore.state.log" :label="moment(item.time).format('HH:mm:ss')"
+            :key="item.time" :span="3">
             <a-tooltip placement="top" :title="item.content">
               {{ item.content }}
             </a-tooltip>
@@ -78,6 +78,7 @@ import { message } from 'ant-design-vue';
 import { useRuleEditorStore } from '@/store/ruleEditor';
 import moment from 'moment';
 import { getWebSocket } from '@/utils/websocket';
+import { PropertyMetadata } from '@/views/device/Product/typings';
 
 
 const props = defineProps({
@@ -143,17 +144,17 @@ const runScript = () => {
     return;
   }
   ws.value = getWebSocket(`virtual-property-debug-${props.id}-${new Date().getTime()}`,
-  '/virtual-property-debug',
-  {
-    virtualId: `${virtualIdRef.value}-virtual-id`,
-    property: props.id,
-    virtualRule: {
-      ...props.virtualRule,
-    },
-    properties: _properties || [],
-  })
+    '/virtual-property-debug',
+    {
+      virtualId: `${virtualIdRef.value}-virtual-id`,
+      property: props.id,
+      virtualRule: {
+        ...props.virtualRule,
+      },
+      properties: _properties || [],
+    })
   ws.value.subscribe((data: any) => {
-      ruleEditorStore.state.log.push({ time: new Date().getTime(), content: JSON.stringify(data.payload) });
+    ruleEditorStore.state.log.push({ time: new Date().getTime(), content: JSON.stringify(data.payload) });
   })
 }
 const beginAction = () => {
@@ -175,6 +176,18 @@ onUnmounted(() => {
     ws.value.unsubscribe?.();
   }
 })
+
+const options = ref<{ label: string, value: string }[]>()
+const getProperty = () => {
+  const metadata = productStore.current.metadata || '{}';
+  const _p: PropertyMetadata[] = JSON.parse(metadata).properties || [];
+  options.value = _p.filter((p) => p.id !== props.id).map((item) => ({
+    label: item.name,
+    value: item.id,
+  }));
+  console.log(options.value)
+}
+getProperty()
 </script>
 <style lang="less" scoped>
 .debug-container {
