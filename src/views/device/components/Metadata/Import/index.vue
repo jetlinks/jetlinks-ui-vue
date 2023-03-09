@@ -1,5 +1,5 @@
 <template>
-  <a-modal :mask-closable="false" title="导入物模型" destroy-on-close v-model:visible="_visible" @cancel="close"
+  <j-modal :mask-closable="false" title="导入物模型" destroy-on-close v-model:visible="_visible" @cancel="close"
     @ok="handleImport" :confirm-loading="loading">
     <div class="import-content">
       <p class="import-tip">
@@ -7,46 +7,46 @@
         导入的物模型会覆盖原来的属性、功能、事件、标签，请谨慎操作。
       </p>
     </div>
-    <a-form layout="vertical" v-model="formModel">
-      <a-form-item v-if="type === 'product'" label="导入方式" v-bind="validateInfos.type">
-        <a-select v-model:value="formModel.type">
-          <a-select-option value="copy">拷贝产品</a-select-option>
-          <a-select-option value="import">导入物模型</a-select-option>
-        </a-select>
-      </a-form-item>
-      <a-form-item label="选择产品" v-bind="validateInfos.copy" v-if="formModel.type === 'copy'">
-        <a-select :options="productList" v-model:value="formModel.copy" option-filter-prop="label"></a-select>
-      </a-form-item>
-      <a-form-item label="物模型类型" v-bind="validateInfos.metadata"
+    <j-form layout="vertical" v-model="formModel">
+      <j-form-item v-if="type === 'product'" label="导入方式" v-bind="validateInfos.type">
+        <j-select v-model:value="formModel.type">
+          <j-select-option value="copy">拷贝产品</j-select-option>
+          <j-select-option value="import">导入物模型</j-select-option>
+        </j-select>
+      </j-form-item>
+      <j-form-item label="选择产品" v-bind="validateInfos.copy" v-if="formModel.type === 'copy'">
+        <j-select :options="productList" v-model:value="formModel.copy" option-filter-prop="label"></j-select>
+      </j-form-item>
+      <j-form-item label="物模型类型" v-bind="validateInfos.metadata"
         v-if="type === 'device' || formModel.type === 'import'">
-        <a-select v-model:value="formModel.metadata">
-          <a-select-option value="jetlinks">Jetlinks物模型</a-select-option>
-          <a-select-option value="alink">阿里云物模型TSL</a-select-option>
-        </a-select>
-      </a-form-item>
-      <a-form-item label="导入类型" v-bind="validateInfos.metadataType"
+        <j-select v-model:value="formModel.metadata">
+          <j-select-option value="jetlinks">Jetlinks物模型</j-select-option>
+          <j-select-option value="alink">阿里云物模型TSL</j-select-option>
+        </j-select>
+      </j-form-item>
+      <j-form-item label="导入类型" v-bind="validateInfos.metadataType"
         v-if="type === 'device' || formModel.type === 'import'">
-        <a-select v-model:value="formModel.metadataType">
-          <a-select-option value="file">文件上传</a-select-option>
-          <a-select-option value="script">脚本</a-select-option>
-        </a-select>
-      </a-form-item>
-      <a-form-item label="文件上传" v-bind="validateInfos.upload" v-if="formModel.metadataType === 'file'">
-        <a-input v-model:value="formModel.upload">
+        <j-select v-model:value="formModel.metadataType">
+          <j-select-option value="file">文件上传</j-select-option>
+          <j-select-option value="script">脚本</j-select-option>
+        </j-select>
+      </j-form-item>
+      <j-form-item label="文件上传" v-bind="validateInfos.upload" v-if="formModel.metadataType === 'file'">
+        <j-input v-model:value="formModel.upload">
           <template #addonAfter>
-            <a-upload v-model:file-list="fileList" :before-upload="beforeUpload" accept=".json"
+            <j-upload v-model:file-list="fileList" :before-upload="beforeUpload" accept=".json"
               :show-upload-list="false" :action="FILE_UPLOAD" @change="fileChange"
               :headers="{ 'X-Access-Token':  getToken()}">
               <AIcon type="UploadOutlined" class="upload-button" />
-            </a-upload>
+            </j-upload>
           </template>
-        </a-input>
-      </a-form-item>
-      <a-form-item label="物模型" v-bind="validateInfos.import" v-if="formModel.metadataType === 'script'">
+        </j-input>
+      </j-form-item>
+      <j-form-item label="物模型" v-bind="validateInfos.import" v-if="formModel.metadataType === 'script'">
         <MonacoEditor v-model="formModel.import" theme="vs" style="height: 300px"></MonacoEditor>
-      </a-form-item>
-    </a-form>
-  </a-modal>
+      </j-form-item>
+    </j-form>
+  </j-modal>
 </template>
 <script setup lang="ts" name="Import">
 import { useForm } from 'ant-design-vue/es/form';
@@ -54,13 +54,14 @@ import { saveMetadata } from '@/api/device/instance'
 import { queryNoPagingPost, convertMetadata, modify } from '@/api/device/product'
 import type { DefaultOptionType } from 'ant-design-vue/es/select';
 import type { UploadProps, UploadFile, UploadChangeParam } from 'ant-design-vue/es';
-import type { DeviceMetadata, ProductItem } from '@/views/device/Product/typings'
-import { message } from 'ant-design-vue/es';
+import type { DeviceMetadata } from '@/views/device/Product/typings'
+import { message } from 'jetlinks-ui-components';
 import { useInstanceStore } from '@/store/instance'
 import { useProductStore } from '@/store/product';
 import { FILE_UPLOAD } from '@/api/comm';
 import { getToken } from '@/utils/comm';
 import MonacoEditor from '@/components/MonacoEditor/index.vue'
+import { useMetadataStore } from '@/store/metadata';
 
 const route = useRoute()
 const instanceStore = useInstanceStore()
@@ -87,7 +88,6 @@ const _visible = computed({
 })
 
 const close = () => {
-  console.log(1)
   emits('update:visible', false);
 }
 
@@ -196,7 +196,7 @@ const operateLimits = (mdata: DeviceMetadata) => {
   });
   return obj;
 };
-
+const metadataStore = useMetadataStore()
 const handleImport = async () => {
   validate().then(async (data) => {
     loading.value = true
@@ -224,6 +224,7 @@ const handleImport = async () => {
       } else {
         productStore.refresh(id as string)
       }
+      metadataStore.set('importMetadata', true)
       // Store.set(SystemConst.GET_METADATA, true)
       // Store.set(SystemConst.REFRESH_METADATA_TABLE, true)
       close()
@@ -263,13 +264,14 @@ const handleImport = async () => {
             message.success('导入成功')
           }
         }
-        // Store.set(SystemConst.GET_METADATA, true)
-        // Store.set(SystemConst.REFRESH_METADATA_TABLE, true)
         if (props?.type === 'device') {
           instanceStore.refresh(id as string)
         } else {
           productStore.refresh(id as string)
         }
+        metadataStore.set('importMetadata', true)
+        // Store.set(SystemConst.GET_METADATA, true)
+        // Store.set(SystemConst.REFRESH_METADATA_TABLE, true)
         close();
       } catch (e) {
         loading.value = false

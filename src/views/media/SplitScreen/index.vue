@@ -1,6 +1,6 @@
 <template>
     <page-container>
-        <a-card class="splitScreen">
+        <j-card class="splitScreen">
             <div class="split-screen">
                 <LeftTree @onSelect="mediaStart" />
                 <div class="right-content">
@@ -17,7 +17,7 @@
                     />
                 </div>
             </div>
-        </a-card>
+        </j-card>
     </page-container>
 </template>
 

@@ -14,7 +14,6 @@
                 selectedRowKeys: _selectedRowKeys,
                 onChange: onSelectChange,
             }"
-            @cancelSelect="cancelSelect"
             :params="params"
         >
             <template #headerTitle>
@@ -641,10 +640,6 @@ const getActions = (
 
 const onSelectChange = (keys: string[]) => {
     _selectedRowKeys.value = [...keys];
-};
-
-const cancelSelect = () => {
-    _selectedRowKeys.value = [];
 };
 
 const handleClick = (dt: any) => {

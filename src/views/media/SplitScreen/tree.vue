@@ -1,6 +1,6 @@
 <template>
     <div class="left-content">
-        <a-tree
+        <j-tree
             :height="700"
             :show-line="{ showLeafIcon: false }"
             :show-icon="true"
@@ -15,7 +15,7 @@
                     v-if="!treeData.find((f: any) => f.id === id)"
                 />
             </template>
-        </a-tree>
+        </j-tree>
     </div>
 </template>
 

@@ -1,6 +1,6 @@
 <!-- 国标级联-绑定通道 -->
 <template>
-    <a-modal
+    <j-modal
         v-model:visible="_vis"
         title="绑定通道"
         cancelText="取消"
@@ -51,19 +51,19 @@
                 <h3>通道列表</h3>
             </template>
             <template #status="slotProps">
-                <a-space>
-                    <a-badge
+                <j-space>
+                    <j-badge
                         :status="
                             slotProps.status.value === 'online'
                                 ? 'success'
                                 : 'error'
                         "
                         :text="slotProps.status.text"
-                    ></a-badge>
-                </a-space>
+                    ></j-badge>
+                </j-space>
             </template>
         </JProTable>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script setup lang="ts">

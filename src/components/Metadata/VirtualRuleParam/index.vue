@@ -1,33 +1,33 @@
 <template>
-  <a-form-item :name="name.concat(['script'])">
+  <j-form-item :name="name.concat(['script'])">
     <f-rule-editor v-model:value="value.script" :id="id"></f-rule-editor>
-  </a-form-item>
+  </j-form-item>
   <template v-if="showWindow">
-    <a-form-item label="规则配置" :name="name.concat(['isVirtualRule'])">
-      <a-switch v-model:checked="value.isVirtualRule" :checked-value="true" :un-checked-value="false"
-        @change="changeWindow"></a-switch>
-    </a-form-item>
+    <j-form-item label="规则配置" :name="name.concat(['isVirtualRule'])">
+      <j-switch v-model:checked="value.isVirtualRule" :checked-value="true" :un-checked-value="false"
+        @change="changeWindow"></j-switch>
+    </j-form-item>
     <template v-if="value.isVirtualRule">
-      <a-form-item label="窗口" :name="name.concat(['windowType'])" :rules="[
+      <j-form-item label="窗口" :name="name.concat(['windowType'])" :rules="[
         { required: true, message: '请选择窗口' },
       ]">
-        <a-select v-model:value="value.windowType" :options="windowTypeEnum" size="small" allow-clear></a-select>
-      </a-form-item>
-      <a-form-item label="聚合函数" :name="name.concat(['aggType'])" :rules="[
+        <j-select v-model:value="value.windowType" :options="windowTypeEnum" size="small" allow-clear></j-select>
+      </j-form-item>
+      <j-form-item label="聚合函数" :name="name.concat(['aggType'])" :rules="[
         { required: true, message: '请选择聚合函数' },
       ]">
-        <a-select v-model:value="value.aggType" :options="aggTypeOptions" size="small" allow-clear></a-select>
-      </a-form-item>
-      <a-form-item :label="spanLabel" :name="name.concat(['window', 'span'])" :rules="[
+        <j-select v-model:value="value.aggType" :options="aggTypeOptions" size="small" allow-clear></j-select>
+      </j-form-item>
+      <j-form-item :label="spanLabel" :name="name.concat(['window', 'span'])" :rules="[
         { required: true, message: '请输入窗口长度' },
       ]">
-        <a-input-number v-model:value="value.window.span" size="small" style="width: 100%;"></a-input-number>
-      </a-form-item>
-      <a-form-item :label="everyLabel" :name="name.concat(['window', 'every'])" :rules="[
+        <j-input-number v-model:value="value.window.span" size="small" style="width: 100%;"></j-input-number>
+      </j-form-item>
+      <j-form-item :label="everyLabel" :name="name.concat(['window', 'every'])" :rules="[
         { required: true, message: '请输入步长' },
       ]">
-        <a-input-number v-model:value="value.window.every" size="small" style="width: 100%;"></a-input-number>
-      </a-form-item>
+        <j-input-number v-model:value="value.window.every" size="small" style="width: 100%;"></j-input-number>
+      </j-form-item>
     </template>
   </template>
 </template>

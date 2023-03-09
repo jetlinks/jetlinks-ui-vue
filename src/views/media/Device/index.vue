@@ -44,30 +44,30 @@
                         <h3 class="card-item-content-title">
                             {{ slotProps.name }}
                         </h3>
-                        <a-row>
-                            <a-col :span="12">
+                        <j-row>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">厂商</div>
                                 <div>{{ slotProps.manufacturer }}</div>
-                            </a-col>
-                            <a-col :span="12">
+                            </j-col>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">
                                     通道数量
                                 </div>
                                 <div>{{ slotProps.channelNumber }}</div>
-                            </a-col>
-                            <a-col :span="12">
+                            </j-col>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">型号</div>
                                 <div>{{ slotProps.model }}</div>
-                            </a-col>
-                            <a-col :span="12">
+                            </j-col>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">
                                     接入方式
                                 </div>
                                 <div>
                                     {{ providerType[slotProps.provider] }}
                                 </div>
-                            </a-col>
-                        </a-row>
+                            </j-col>
+                        </j-row>
                     </template>
                     <template #actions="item">
                         <PermissionButton
@@ -92,7 +92,7 @@
                 </CardBox>
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
+                <j-space :size="16">
                     <template
                         v-for="i in getActions(slotProps, 'table')"
                         :key="i.key"
@@ -111,7 +111,7 @@
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
                     </template>
-                </a-space>
+                </j-space>
             </template>
         </JProTable>
     </page-container>
@@ -294,9 +294,12 @@ const getActions = (
                 data.state.value === 'notActive' ||
                 data.provider === 'fixed-media',
             icon: 'SyncOutlined',
-            onClick: () => {
-                // updateChannel()
-                console.log('updateChannel: ', data);
+            onClick: async () => {
+                const res = await DeviceApi.updateChannels(data.id);
+                if (res.success) {
+                    message.success('通道更新成功');
+                    listRef.value?.reload();
+                }
             },
         },
         {

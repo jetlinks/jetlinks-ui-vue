@@ -6,7 +6,7 @@
             <div
                 class="box-item"
                 v-for="(item, index) in cardData"
-                @click="jumpPage(item.link,item.params)"
+                @click="jumpPage(item)"
             >
                 <div class="item-english">{{ item.english }}</div>
                 <div class="item-title">{{ item.label }}</div>
@@ -21,10 +21,11 @@
 </template>
 
 <script setup lang="ts">
-import { bootConfig } from "../typing";
+import { bootConfig } from '../typing';
 import { useMenuStore } from '@/store/menu';
+import { message } from 'ant-design-vue';
 
-const { jumpPage } = useMenuStore();
+const { jumpPage: _jumpPage } = useMenuStore();
 
 const props = defineProps({
     cardData: Array<bootConfig>,
@@ -32,6 +33,10 @@ const props = defineProps({
 });
 const { cardData, cardTitle } = toRefs(props);
 
+const jumpPage = (item: bootConfig) => {
+    if (item.auth === undefined || item.auth) _jumpPage(item.link, item.params);
+    else message.warning('暂无权限，请联系管理员');
+};
 </script>
 
 <style lang="less" scoped>

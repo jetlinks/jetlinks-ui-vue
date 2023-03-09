@@ -1,30 +1,30 @@
 <template>
-    <a-modal
-        v-model:visible="dialog.visible"
+    <j-modal
+        visible
         title="集成菜单"
         width="600px"
-        @ok="dialog.handleOk"
-        @cancel="dialog.cancel"
+        @ok="handleOk"
+        @cancel="cancel"
         class="edit-dialog-container"
-        :confirmLoading="dialog.loading"
-        cancelText="取消"
-        okText="确定"
+        :confirmLoading="loading"
     >
-        <a-select
+        <j-select
             v-model:value="form.checkedSystem"
-            @change="(value) => value && getTree(value as string)"
+            @change="(value:string) => value && getTree(value)"
             style="width: 200px"
             placeholder="请选择集成系统"
         >
-            <a-select-option
+            <j-select-option
                 v-for="item in form.systemList"
                 :value="item.value"
-                >{{ item.label }}</a-select-option
+                >{{ item.label }}</j-select-option
             >
-        </a-select>
+        </j-select>
 
-        <p style="margin: 20px 0 0 0" v-show="form.menuTree.length > 0">当前集成菜单</p>
-        <a-tree
+        <p style="margin: 20px 0 0 0" v-show="form.menuTree.length > 0">
+            当前集成菜单
+        </p>
+        <j-tree
             v-model:checkedKeys="form.checkedMenu"
             v-model:expandedKeys="form.expandedKeys"
             checkable
@@ -35,8 +35,8 @@
             <template #title="{ name }">
                 <span>{{ name }}</span>
             </template>
-        </a-tree>
-    </a-modal>
+        </j-tree>
+    </j-modal>
 </template>
 
 <script setup lang="ts">
@@ -55,69 +55,60 @@ import { message } from 'ant-design-vue';
 import { getMenuTree_api } from '@/api/system/menu';
 
 const menuStory = useMenuStore();
-
+const emits = defineEmits(['update:visible']);
 const props = defineProps<{
     mode: 'add' | 'edit';
+    visible: boolean;
+    id: string;
+    provider: applyType;
 }>();
 // 弹窗相关
-const dialog = reactive({
-    visible: false,
-    loading: false,
-
-    handleOk: () => {
-        const items = filterTree(form.menuTree, [
-            ...form.checkedMenu,
-            ...form.half,
-        ]);
-        if (form.checkedSystem) {
-            if (items && items.length !== 0) {
-                saveOwnerMenu_api('iot', form.id, items).then((resp) => {
+const loading = ref(false);
+const handleOk = () => {
+    const items = filterTree(form.menuTree, [
+        ...form.checkedMenu,
+        ...form.half,
+    ]);
+    if (form.checkedSystem) {
+        if (items && items.length !== 0) {
+            loading.value = true;
+            saveOwnerMenu_api('iot', form.id, items)
+                .then((resp) => {
                     if (resp.status === 200) {
                         message.success('操作成功');
-                        dialog.visible = false;
+                        emits('update:visible', false);
                     }
-                });
-            } else {
-                message.warning('请勾选配置菜单');
-            }
+                })
+                .finally(() => (loading.value = false));
         } else {
-            message.warning('请选择所属系统');
+            message.warning('请勾选配置菜单');
         }
-    },
-    cancel: () => {
-        if (props.mode === 'add')
-            menuStory.jumpPage('system/Apply/Save', {}, { id: form.id });
-        dialog.visible = false;
-    },
-    changeVisible: (id: string, provider: applyType) => {
-        form.id = id;
-        form.provider = provider;
-        form.checkedSystem = undefined;
-        form.checkedMenu = [];
-        dialog.visible = true;
-
-        if (id) {
-            getSystemList();
-            getMenus();
-        }
-    },
-});
-// 将打开弹窗的操作暴露给父组件
-defineExpose({
-    openDialog: dialog.changeVisible,
-});
+    } else {
+        message.warning('请选择所属系统');
+    }
+};
+const cancel = () => {
+    if (props.mode === 'add')
+        menuStory.jumpPage('system/Apply/Save', {}, { id: form.id });
+    emits('update:visible', false);
+};
 
 const form = reactive({
-    id: '',
-    checkedSystem: '' as undefined | string,
+    id: props.id,
+    checkedSystem: undefined as undefined | string,
     checkedMenu: [] as string[],
     expandedKeys: [] as string[],
     half: [] as string[],
 
-    provider: '' as applyType,
+    provider: props.provider,
     systemList: [] as optionItemType[],
     menuTree: [] as any[],
 });
+
+if (props.id) {
+    getSystemList();
+    getMenus();
+}
 /**
  * 与集成系统关联的菜单
  * @param params

@@ -3,34 +3,34 @@
         <div class="title">请选择首页视图</div>
 
         <div class="choose-view">
-            <a-row class="view-content" :gutter="24">
-                <a-col
+            <j-row class="view-content" :gutter="24">
+                <j-col
                     :span="8"
                     class="select-item"
                     :class="{ selected: selectValue === 'device' }"
                     @click="selectValue = 'device'"
                 >
                     <img :src="getImage('/home/device.png')" alt="" />
-                </a-col>
-                <a-col
+                </j-col>
+                <j-col
                     :span="8"
                     class="select-item"
                     :class="{ selected: selectValue === 'ops' }"
                     @click="selectValue = 'ops'"
                 >
                     <img :src="getImage('/home/ops.png')" alt="" />
-                </a-col>
-                <a-col
+                </j-col>
+                <j-col
                     :span="8"
                     class="select-item"
                     :class="{ selected: selectValue === 'comprehensive' }"
                     @click="selectValue = 'comprehensive'"
                 >
                     <img :src="getImage('/home/comprehensive.png')" alt="" />
-                </a-col>
-            </a-row>
-            <a-button type="primary" class="btn" @click="confirm"
-                >确定</a-button
+                </j-col>
+            </j-row>
+            <j-button type="primary" class="btn" @click="confirm"
+                >确定</j-button
             >
         </div>
     </div>

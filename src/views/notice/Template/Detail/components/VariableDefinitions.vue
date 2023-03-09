@@ -1,7 +1,7 @@
 <!-- 模板内容-变量列表 -->
 <template>
     <div class="table-wrapper">
-        <a-table
+        <j-table
             :columns="columns"
             :data-source="dataSource"
             bordered
@@ -11,52 +11,52 @@
                 <span v-if="column.dataIndex === 'id'">
                     {{ record[column.dataIndex] }}
                 </span>
-                <a-input
+                <j-input
                     v-if="column.dataIndex === 'name'"
                     v-model:value="record.name"
                 />
-                <a-select
+                <j-select
                     v-if="column.dataIndex === 'type'"
                     v-model:value="record.type"
                     @change="handleTypeChange(record)"
                 >
-                    <a-select-option value="string">字符串</a-select-option>
-                    <a-select-option value="date">时间</a-select-option>
-                    <a-select-option value="double">数字</a-select-option>
-                </a-select>
+                    <j-select-option value="string">字符串</j-select-option>
+                    <j-select-option value="date">时间</j-select-option>
+                    <j-select-option value="double">数字</j-select-option>
+                </j-select>
                 <template v-if="column.dataIndex === 'format'">
                     <span v-if="record.type === 'string'">
                         {{ record.format }}
                     </span>
-                    <a-select
+                    <j-select
                         v-if="record.type === 'date'"
                         v-model:value="record.format"
                     >
-                        <a-select-option value="timestamp">
+                        <j-select-option value="timestamp">
                             timestamp
-                        </a-select-option>
-                        <a-select-option value="yyyy-MM-dd">
+                        </j-select-option>
+                        <j-select-option value="yyyy-MM-dd">
                             yyyy-MM-dd
-                        </a-select-option>
-                        <a-select-option value="yyyy-MM-dd HH:mm:ss">
+                        </j-select-option>
+                        <j-select-option value="yyyy-MM-dd HH:mm:ss">
                             yyyy-MM-dd HH:mm:ss
-                        </a-select-option>
-                    </a-select>
-                    <a-input
+                        </j-select-option>
+                    </j-select>
+                    <j-input
                         v-if="record.type === 'double'"
                         v-model:value="record.format"
                     >
                         <template #suffix>
-                            <a-tooltip
+                            <j-tooltip
                                 title="格式为：%.xf x代表数字保留的小数位数。当x=0时,代表格式为整数"
                             >
                                 <AIcon type="QuestionCircleOutlined" />
-                            </a-tooltip>
+                            </j-tooltip>
                         </template>
-                    </a-input>
+                    </j-input>
                 </template>
             </template>
-        </a-table>
+        </j-table>
     </div>
 </template>
 

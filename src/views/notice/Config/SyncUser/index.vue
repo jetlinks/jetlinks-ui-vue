@@ -1,15 +1,15 @@
 <template>
     <div>
-        <a-modal
+        <j-modal
             v-model:visible="_vis"
             title="同步用户"
             :footer="null"
             @cancel="_vis = false"
             width="80%"
         >
-            <a-row :gutter="10" class="model-body">
-                <a-col :span="4">
-                    <a-input
+            <j-row :gutter="10" class="model-body">
+                <j-col :span="4">
+                    <j-input
                         v-model:value="deptName"
                         @keyup.enter="getDepartment"
                         allowClear
@@ -23,17 +23,17 @@
                                 @click="getDepartment"
                             />
                         </template>
-                    </a-input>
-                    <a-tree
+                    </j-input>
+                    <j-tree
                         :tree-data="deptTreeData"
                         :fieldNames="{ title: 'name', key: 'id' }"
                         :selectedKeys="[deptId]"
                         @select="onTreeSelect"
                     >
-                    </a-tree>
-                    <a-empty v-if="!deptTreeData.length" />
-                </a-col>
-                <a-col :span="20">
+                    </j-tree>
+                    <j-empty v-if="!deptTreeData.length" />
+                </j-col>
+                <j-col :span="20">
                     <JProTable
                         ref="tableRef"
                         :columns="columns"
@@ -43,38 +43,38 @@
                         noPagination
                     >
                         <template #headerTitle>
-                            <a-button type="primary" @click="handleAutoBind">
+                            <j-button type="primary" @click="handleAutoBind">
                                 自动绑定
-                            </a-button>
+                            </j-button>
                         </template>
                         <template #status="slotProps">
-                            <a-space>
-                                <a-badge
+                            <j-space>
+                                <j-badge
                                     :status="slotProps.status.value"
                                     :text="slotProps.status.text"
-                                ></a-badge>
-                            </a-space>
+                                ></j-badge>
+                            </j-space>
                         </template>
                         <template #action="slotProps">
-                            <a-space :size="16">
-                                <a-tooltip
+                            <j-space :size="16">
+                                <j-tooltip
                                     v-for="i in getActions(slotProps, 'table')"
                                     :key="i.key"
                                     v-bind="i.tooltip"
                                 >
-                                    <a-popconfirm
+                                    <j-popconfirm
                                         v-if="i.popConfirm"
                                         v-bind="i.popConfirm"
                                         :disabled="i.disabled"
                                     >
-                                        <a-button
+                                        <j-button
                                             :disabled="i.disabled"
                                             style="padding: 0"
                                             type="link"
                                             ><AIcon :type="i.icon"
-                                        /></a-button>
-                                    </a-popconfirm>
-                                    <a-button
+                                        /></j-button>
+                                    </j-popconfirm>
+                                    <j-button
                                         style="padding: 0"
                                         type="link"
                                         v-else
@@ -82,23 +82,23 @@
                                             i.onClick && i.onClick(slotProps)
                                         "
                                     >
-                                        <a-button
+                                        <j-button
                                             :disabled="i.disabled"
                                             style="padding: 0"
                                             type="link"
                                             ><AIcon :type="i.icon"
-                                        /></a-button>
-                                    </a-button>
-                                </a-tooltip>
-                            </a-space>
+                                        /></j-button>
+                                    </j-button>
+                                </j-tooltip>
+                            </j-space>
                         </template>
                     </JProTable>
-                </a-col>
-            </a-row>
-        </a-modal>
+                </j-col>
+            </j-row>
+        </j-modal>
 
         <!-- 绑定用户 -->
-        <a-modal
+        <j-modal
             v-model:visible="bindVis"
             title="绑定用户"
             :maskClosable="false"
@@ -106,9 +106,9 @@
             @cancel="handleCancel"
             @ok="handleBindSubmit"
         >
-            <a-form layout="vertical">
-                <a-form-item label="用户" v-bind="validateInfos.userId">
-                    <a-select
+            <j-form layout="vertical">
+                <j-form-item label="用户" v-bind="validateInfos.userId">
+                    <j-select
                         v-model:value="formData.userId"
                         :options="allUserList"
                         allowClear
@@ -117,9 +117,9 @@
                         :filter-option="filterOption"
                         placeholder="请选择用户"
                     />
-                </a-form-item>
-            </a-form>
-        </a-modal>
+                </j-form-item>
+            </j-form>
+        </j-modal>
     </div>
 </template>
 

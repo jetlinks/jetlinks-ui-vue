@@ -1,13 +1,13 @@
 <template>
     <div class="wrapper">
-        <a-tabs v-model="activeKey" tab-position="left">
-            <a-tab-pane
+        <j-tabs v-model="activeKey" tab-position="left">
+            <j-tab-pane
                 v-for="func in newFunctions"
                 :key="func.id"
                 :tab="func.name"
             >
-                <a-row :gutter="30">
-                    <a-col :span="15">
+                <j-row :gutter="30">
+                    <j-col :span="15">
                         <MonacoEditor
                             :ref="`monacoEditor${func.id}`"
                             v-model="func.json"
@@ -15,31 +15,31 @@
                             style="height: 400px"
                         />
                         <div class="editor-btn">
-                            <a-space>
-                                <a-button
+                            <j-space>
+                                <j-button
                                     type="primary"
                                     @click="handleExecute(func)"
                                 >
                                     执行
-                                </a-button>
-                                <a-button
+                                </j-button>
+                                <j-button
                                     type="default"
                                     @click="handleClear(func)"
                                 >
                                     清空
-                                </a-button>
-                            </a-space>
+                                </j-button>
+                            </j-space>
                         </div>
-                    </a-col>
-                    <a-col :span="9">
+                    </j-col>
+                    <j-col :span="9">
                         <h6>执行结果：</h6>
                         <span class="execute-result">
                             {{ func.executeResult }}
                         </span>
-                    </a-col>
-                </a-row>
-            </a-tab-pane>
-        </a-tabs>
+                    </j-col>
+                </j-row>
+            </j-tab-pane>
+        </j-tabs>
     </div>
 </template>
 

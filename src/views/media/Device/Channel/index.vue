@@ -19,62 +19,62 @@
             model="table"
         >
             <template #headerTitle>
-                <a-tooltip
+                <j-tooltip
                     v-if="route?.query.type === 'gb28181-2016'"
                     title="接入方式为GB/T28281时，不支持新增"
                 >
-                    <a-button type="primary" disabled> 新增 </a-button>
-                </a-tooltip>
-                <a-button type="primary" @click="handleAdd" v-else>
+                    <j-button type="primary" disabled> 新增 </j-button>
+                </j-tooltip>
+                <j-button type="primary" @click="handleAdd" v-else>
                     新增
-                </a-button>
+                </j-button>
             </template>
             <template #status="slotProps">
-                <a-space>
-                    <a-badge
+                <j-space>
+                    <j-badge
                         :status="
                             slotProps.status.value === 'online'
                                 ? 'success'
                                 : 'error'
                         "
                         :text="slotProps.status.text"
-                    ></a-badge>
-                </a-space>
+                    ></j-badge>
+                </j-space>
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
-                    <a-tooltip
+                <j-space :size="16">
+                    <j-tooltip
                         v-for="i in getActions(slotProps, 'table')"
                         :key="i.key"
                         v-bind="i.tooltip"
                     >
-                        <a-popconfirm
+                        <j-popconfirm
                             v-if="i.popConfirm"
                             v-bind="i.popConfirm"
                             :disabled="i.disabled"
                         >
-                            <a-button
+                            <j-button
                                 :disabled="i.disabled"
                                 style="padding: 0"
                                 type="link"
                                 ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-popconfirm>
-                        <a-button
+                            /></j-button>
+                        </j-popconfirm>
+                        <j-button
                             style="padding: 0"
                             type="link"
                             v-else
                             @click="i.onClick && i.onClick(slotProps)"
                         >
-                            <a-button
+                            <j-button
                                 :disabled="i.disabled"
                                 style="padding: 0"
                                 type="link"
                                 ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-button>
-                    </a-tooltip>
-                </a-space>
+                            /></j-button>
+                        </j-button>
+                    </j-tooltip>
+                </j-space>
             </template>
         </JProTable>
 

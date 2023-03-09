@@ -10,10 +10,12 @@
 
         <div class="add-btn">
             <PermissionButton
-                type="primary"
                 class="add-btn"
-                @click="openDialog()"
+                type="primary"
+                @click="handlAdd()"
+                hasPermission="DataCollect/Collector:add"
             >
+                <template #icon><AIcon type="PlusOutlined" /></template>
                 新增采集器
             </PermissionButton>
         </div>
@@ -21,18 +23,10 @@
             <a-tree
                 :tree-data="defualtDataSource"
                 v-model:selected-keys="selectedKeys"
-                :fieldNames="{ key: 'name' }"
+                :fieldNames="{ key: 'id' }"
                 v-if="defualtDataSource[0].children.length !== 0"
-                @check="checkTree"
-            >
-                <!-- <a-tree
-                :tree-data="defualtDataSource"
-                v-model:selected-keys="selectedKeys"
-                :fieldNames="{ key: 'name' }"
                 :height="600"
-                v-if="defualtDataSource[0].children.length !== 0"
-                @check="checkTree"
-            > -->
+            >
                 <template #title="{ name, data }">
                     <Ellipsis class="tree-left-title">
                         {{ name }}
@@ -53,42 +47,43 @@
                             :tooltip="{
                                 title: '编辑',
                             }"
-                            @click="openDialog(data)"
+                            @click="handlEdit(data)"
+                            hasPermission="DataCollect/Collector:update"
                         >
                             <AIcon type="EditOutlined" />
                         </PermissionButton>
                         <PermissionButton
-                            v-if="data?.state?.value === 'disabled'"
                             type="link"
                             :tooltip="{
-                                title: '启用',
+                                title:
+                                    data?.state?.value === 'disabled'
+                                        ? '启用'
+                                        : '禁用',
                             }"
-                            @click="openDialog(data)"
+                            hasPermission="DataCollect/Collector:update"
+                            @click="handlUpdate(data)"
                         >
-                            <AIcon type="CheckCircleOutlined" />
-                        </PermissionButton>
-                        <PermissionButton
-                            v-if="data?.state?.value !== 'disabled'"
-                            type="link"
-                            :tooltip="{
-                                title: '禁用',
-                            }"
-                            @click="
-                                openDialog({
-                                    ...data,
-                                    id: '',
-                                    parentId: data.id,
-                                })
-                            "
-                        >
-                            <AIcon type="StopOutlined" />
+                            <AIcon
+                                :type="
+                                    data?.state?.value === 'disabled'
+                                        ? 'CheckCircleOutlined'
+                                        : 'StopOutlined'
+                                "
+                            />
                         </PermissionButton>
                         <PermissionButton
                             type="link"
-                            :tooltip="{ title: '删除' }"
+                            :disabled="data?.state?.value !== 'disabled'"
+                            :tooltip="{
+                                title:
+                                    data?.state?.value !== 'disabled'
+                                        ? '正常的采集器不能删除'
+                                        : '删除',
+                            }"
+                            hasPermission="DataCollect/Collector:delete"
                             :popConfirm="{
-                                title: `确定要删除吗`,
-                                onConfirm: () => openDialog(data.id),
+                                title: `该操作将会删除下属点位，确定删除？`,
+                                onConfirm: () => handlDelete(data.id),
                             }"
                         >
                             <AIcon type="DeleteOutlined" />
@@ -98,13 +93,22 @@
             </a-tree>
             <j-empty v-else description="暂无数据" />
         </a-spin>
+        <Save v-if="visible" :data="current" @change="saveChange" />
     </div>
 </template>
 
 <script setup lang="ts" name="TreePage">
-import type { TreeProps } from 'ant-design-vue';
-import { treeFilter } from '@/utils/comm';
-import { queryCollector } from '@/api/data-collect/collector';
+import {
+    queryCollector,
+    queryChannelNoPaging,
+    update,
+    remove,
+} from '@/api/data-collect/collector';
+import Save from './Save/index.vue';
+import { message } from 'ant-design-vue';
+import { Store } from 'jetlinks-store';
+import _ from 'lodash';
+import { colorMap, getState } from '../data.ts';
 
 const props = defineProps({
     data: {
@@ -116,16 +120,12 @@ const emits = defineEmits(['change']);
 
 const route = useRoute();
 const channelId = route.query?.channelId;
-
-const colorMap = new Map();
-colorMap.set('running', 'success');
-colorMap.set('partialError', 'warning');
-colorMap.set('failed', 'error');
-colorMap.set('stopped', 'default');
-
 const spinning = ref(false);
-const selectedKeys = ref();
+const selectedKeys = ref([]);
 const searchValue = ref();
+const visible = ref(false);
+const current = ref({});
+const collectorAll = ref();
 
 const defualtDataSource = ref([
     {
@@ -154,17 +154,49 @@ const defualtParams = {
 };
 const params = ref();
 
-const openDialog = (row: any = {}) => {
-    console.log(row);
+const handlAdd = () => {
+    current.value = {};
+    visible.value = true;
 };
 
-const checkTree = (value: any) => {
-    console.log(22, value);
+const handlEdit = (data: object) => {
+    current.value = _.cloneDeep(data);
+    visible.value = true;
+};
+
+const handlUpdate = async (data: object) => {
+    const state = data?.state?.value;
+    const resp = await update(data?.id, {
+        state: state !== 'disabled' ? 'disabled' : 'enabled',
+        runningState: state !== 'disabled' ? 'stopped' : 'running',
+    });
+    if (resp.status === 200) {
+        handleSearch(params.value);
+        message.success('操作成功');
+    }
+};
+const handlDelete = async (id: string) => {
+    const resp = await remove(id);
+    if (resp.status === 200) {
+        handleSearch(params.value);
+        message.success('操作成功');
+    }
+};
+
+const saveChange = (value: object) => {
+    visible.value = false;
+    current.value = {};
+    if (value) {
+        handleSearch(params.value);
+        message.success('操作成功');
+    }
 };
 
 const handleSearch = async (value: string) => {
-    if (!!searchValue.value) {
-        params.value = { ...defualtParams };
+    if (!searchValue.value && !value) {
+        params.value = _.cloneDeep(defualtParams);
+    } else if (!!searchValue.value) {
+        params.value = { ..._.cloneDeep(defualtParams) };
         params.value.terms[1] = {
             terms: [
                 {
@@ -181,55 +213,37 @@ const handleSearch = async (value: string) => {
     const res = await queryCollector(params.value);
     if (res.status === 200) {
         defualtDataSource.value[0].children = res.result;
+        collectorAll.value = res.result;
+        if (selectedKeys.value.length === 0) {
+            selectedKeys.value = [res?.result[0]?.id] || [];
+            emits('change', res?.result[0]);
+        }
     }
     spinning.value = false;
 };
 
-const getState = (record: any) => {
-    const enabled = record?.state?.value === 'enabled';
-    if (record) {
-        return enabled
-            ? {
-                  value: record?.runningState?.value,
-                  text: record?.runningState?.text,
-              }
-            : {
-                  value: 'processing',
-                  text: '禁用',
-              };
-    } else {
-        return {};
-    }
+const getChannelNoPaging = async () => {
+    const res = await queryChannelNoPaging();
+    Store.set('channelListAll', res.result);
 };
 
 onMounted(() => {
-    handleSearch(defualtParams);
+    handleSearch(_.cloneDeep(defualtParams));
+    getChannelNoPaging();
 });
 
 watch(selectedKeys, (n) => {
-    emits('change', n[0]);
+    const key = _.isArray(n) ? n[0] : n;
+    const row = collectorAll.value.find((i) => i.id === key);
+    emits('change', row);
 });
-// watch(
-//     () => route.query,
-//     (value) => {
-//         if (value?.channelId) {
-//             params.value = {
-//                 ...defualtParams,
-//                 terms: [
-//                     {
-//                         column: 'channelId',
-//                         value: value?.channelId,
-//                     },
-//                 ],
-//             };
 
-//             handleSearch(params.value);
-//         } else {
-//             handleSearch(defualtParams);
-//         }
-//     },
-//     { immediate: true, deep: true },
-// );
+watch(
+    () => searchValue.value,
+    (value) => {
+        !value && handleSearch(value);
+    },
+);
 </script>
 
 <style lang="less" scoped>
@@ -253,16 +267,13 @@ watch(selectedKeys, (n) => {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                height: 20px;
                 .tree-left-title {
                     width: 80px;
-                    // margin-left: -5px;
                 }
                 .tree-left-tag {
                     width: 70px;
                     display: flex;
                     justify-content: center;
-                    align-items: center;
                 }
                 .func-btns {
                     // display: none;

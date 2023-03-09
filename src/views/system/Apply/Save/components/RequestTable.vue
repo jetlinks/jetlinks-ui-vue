@@ -1,52 +1,52 @@
 <template>
     <div class="request-table-container">
-        <a-table
+        <j-table
             :columns="columns"
-            :data-source="tableData"
+            :datj-source="tableData"
             :pagination="false"
             size="small"
             bordered
         >
             <template #bodyCell="{ column, record, index }">
                 <template v-if="column.dataIndex === 'key'">
-                    <a-input v-model:value="record.label" />
+                    <j-input v-model:value="record.label" />
                 </template>
                 <template v-else-if="column.dataIndex === 'value'">
-                    <a-input
+                    <j-input
                         v-model:value="record.value"
                         v-if="props.valueType === 'input'"
                     />
-                    <a-select
+                    <j-select
                         v-else-if="props.valueType === 'select'"
                         v-model:value="record.value"
                     >
-                        <a-select-option
+                        <j-select-option
                             v-for="item in props.valueOptions"
                             :value="item.value"
-                            >{{ item.label }}</a-select-option
+                            >{{ item.label }}</j-select-option
                         >
-                    </a-select>
+                    </j-select>
                 </template>
                 <template v-else-if="column.dataIndex === 'action'">
-                    <a-button
+                    <j-button
                         type="link"
                         @click="removeRow((current - 1) * 10 + index)"
                     >
                         <AIcon type="DeleteOutlined" />
-                    </a-button>
+                    </j-button>
                 </template>
             </template>
-        </a-table>
-        <a-pagination
+        </j-table>
+        <j-pagination
             v-show="props.value.length > 10"
             v-model:current="current"
             :page-size="10"
             :total="props.value.length"
             show-less-items
         />
-        <a-button type="dashed" @click="addRow" class="add-btn">
+        <j-button type="dashed" @click="addRow" class="add-btn">
             <AIcon type="PlusOutlined" />新增
-        </a-button>
+        </j-button>
     </div>
 </template>
 
@@ -120,7 +120,6 @@ function addRow() {
         label: '',
         value: '',
     };
-    console.log(111);
 
     emits('update:value', [...props.value, newRow]);
 }

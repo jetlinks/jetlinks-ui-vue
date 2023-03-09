@@ -1,11 +1,11 @@
 <!-- 视频设备新增/编辑 -->
 <template>
     <page-container>
-        <a-card>
-            <a-row :gutter="24">
-                <a-col :span="12">
-                    <a-form layout="vertical">
-                        <a-form-item
+        <j-card>
+            <j-row :gutter="24">
+                <j-col :span="12">
+                    <j-form layout="vertical">
+                        <j-form-item
                             label="接入方式"
                             v-bind="validateInfos.channel"
                         >
@@ -16,134 +16,134 @@
                                 :disabled="!!route.query.id"
                                 v-model="formData.channel"
                             />
-                        </a-form-item>
-                        <a-row :gutter="24">
-                            <a-col :span="8">
+                        </j-form-item>
+                        <j-row :gutter="24">
+                            <j-col :span="8">
                                 <JUpload
                                     v-model:modelValue="formData.photoUrl"
                                     :bgImage="formData.photoUrl"
                                 />
-                            </a-col>
-                            <a-col :span="16">
-                                <a-form-item
+                            </j-col>
+                            <j-col :span="16">
+                                <j-form-item
                                     label="ID"
                                     v-bind="validateInfos.id"
                                 >
-                                    <a-input
+                                    <j-input
                                         v-model:value="formData.id"
                                         placeholder="请输入"
                                         :disabled="!!route.query.id"
                                     />
-                                </a-form-item>
-                                <a-form-item
+                                </j-form-item>
+                                <j-form-item
                                     label="设备名称"
                                     v-bind="validateInfos.name"
                                 >
-                                    <a-input
+                                    <j-input
                                         v-model:value="formData.name"
                                         placeholder="请输入名称"
                                     />
-                                </a-form-item>
-                            </a-col>
-                        </a-row>
-                        <a-form-item
+                                </j-form-item>
+                            </j-col>
+                        </j-row>
+                        <j-form-item
                             label="所属产品"
                             v-bind="validateInfos.productId"
                         >
-                            <a-row :gutter="[0, 10]">
-                                <a-col :span="!!route.query.id ? 24 : 22">
-                                    <a-select
+                            <j-row :gutter="[0, 10]">
+                                <j-col :span="!!route.query.id ? 24 : 22">
+                                    <j-select
                                         v-model:value="formData.productId"
                                         placeholder="请选择所属产品"
                                         :disabled="!!route.query.id"
                                     >
-                                        <a-select-option
+                                        <j-select-option
                                             v-for="(item, index) in productList"
                                             :key="index"
                                             :value="item.id"
                                         >
                                             {{ item.name }}
-                                        </a-select-option>
-                                    </a-select>
-                                </a-col>
-                                <a-col :span="2" v-if="!route.query.id">
-                                    <a-button
+                                        </j-select-option>
+                                    </j-select>
+                                </j-col>
+                                <j-col :span="2" v-if="!route.query.id">
+                                    <j-button
                                         type="link"
                                         @click="saveProductVis = true"
                                     >
                                         <AIcon type="PlusOutlined" />
-                                    </a-button>
-                                </a-col>
-                            </a-row>
-                        </a-form-item>
-                        <a-form-item
+                                    </j-button>
+                                </j-col>
+                            </j-row>
+                        </j-form-item>
+                        <j-form-item
                             label="接入密码"
                             v-bind="validateInfos['others.access_pwd']"
                             v-if="formData.channel === 'gb28181-2016'"
                         >
-                            <a-input-password
+                            <j-input-password
                                 v-model:value="formData.others.access_pwd"
                                 placeholder="请输入接入密码"
                             />
-                        </a-form-item>
+                        </j-form-item>
                         <template v-if="!!route.query.id">
-                            <a-form-item
+                            <j-form-item
                                 label="流传输模式"
                                 v-bind="validateInfos.streamMode"
                             >
-                                <a-radio-group
+                                <j-radio-group
                                     button-style="solid"
                                     v-model:value="formData.streamMode"
                                 >
-                                    <a-radio-button value="UDP">
+                                    <j-radio-button value="UDP">
                                         UDP
-                                    </a-radio-button>
-                                    <a-radio-button value="TCP_PASSIVE">
+                                    </j-radio-button>
+                                    <j-radio-button value="TCP_PASSIVE">
                                         TCP被动
-                                    </a-radio-button>
-                                </a-radio-group>
-                            </a-form-item>
-                            <a-form-item label="设备厂商">
-                                <a-input
+                                    </j-radio-button>
+                                </j-radio-group>
+                            </j-form-item>
+                            <j-form-item label="设备厂商">
+                                <j-input
                                     v-model:value="formData.manufacturer"
                                     placeholder="请输入设备厂商"
                                 />
-                            </a-form-item>
-                            <a-form-item label="设备型号">
-                                <a-input
+                            </j-form-item>
+                            <j-form-item label="设备型号">
+                                <j-input
                                     v-model:value="formData.model"
                                     placeholder="请输入设备型号"
                                 />
-                            </a-form-item>
-                            <a-form-item label="固件版本">
-                                <a-input
+                            </j-form-item>
+                            <j-form-item label="固件版本">
+                                <j-input
                                     v-model:value="formData.firmware"
                                     placeholder="请输入固件版本"
                                 />
-                            </a-form-item>
+                            </j-form-item>
                         </template>
 
-                        <a-form-item label="说明">
-                            <a-textarea
+                        <j-form-item label="说明">
+                            <j-textarea
                                 v-model:value="formData.description"
                                 show-count
                                 :maxlength="200"
                                 :rows="5"
                                 placeholder="请输入说明"
                             />
-                        </a-form-item>
-                        <a-form-item>
-                            <a-button
+                        </j-form-item>
+                        <j-form-item>
+                            <j-button
                                 type="primary"
                                 @click="handleSubmit"
                                 :loading="btnLoading"
                             >
                                 保存
-                            </a-button>
-                        </a-form-item>
-                    </a-form>
-                </a-col>
-                <a-col :span="12">
+                            </j-button>
+                        </j-form-item>
+                    </j-form>
+                </j-col>
+                <j-col :span="12">
                     <div v-if="1" class="doc" style="height: 800">
                         <h1>1.概述</h1>
                         <div>
@@ -166,7 +166,7 @@
                             各个厂家、不同设备型号的设备端配置页面布局存在差异，但配置项基本大同小异，此处以大华摄像头为例作为接入配置示例
                         </div>
                         <div class="image">
-                            <a-image
+                            <j-image
                                 width="100%"
                                 :src="getImage('/media/doc1.png')"
                             />
@@ -177,7 +177,7 @@
                             SIP域通常为SIP服务器编号的前10位。
                         </div>
                         <div class="image">
-                            <a-image
+                            <j-image
                                 width="100%"
                                 :src="getImage('/media/doc2.png')"
                             />
@@ -187,7 +187,7 @@
                             SIP服务器IP/端口填入该设备所属产品-接入方式页面中“连接信息”的IP/端口。
                         </div>
                         <div class="image">
-                            <a-image
+                            <j-image
                                 width="100%"
                                 :src="getImage('/media/doc3.png')"
                             />
@@ -201,7 +201,7 @@
                             填入该设备所属产品-接入方式页面中“GB28281配置”处的接入密码
                         </div>
                         <div class="image">
-                            <a-image
+                            <j-image
                                 width="100%"
                                 :src="getImage('/media/doc4.png')"
                             />
@@ -230,9 +230,9 @@
                             只能选择接入方式为固定地址的产品，若当前无对应产品，可点击右侧快速添加按钮，填写产品名称和选择固定地址类型的网关完成产品创建。
                         </div>
                     </div>
-                </a-col>
-            </a-row>
-        </a-card>
+                </j-col>
+            </j-row>
+        </j-card>
 
         <SaveProduct
             v-model:visible="saveProductVis"
@@ -285,7 +285,7 @@ const formRules = ref({
         },
         { max: 64, message: '最多输入64个字符' },
         {
-            pattern: /^[a-zA-Z0-9_\-]+$/,
+            pattern: /^[j-zA-Z0-9_\-]+$/,
             message: '请输入英文或者数字或者-或者_',
         },
     ],

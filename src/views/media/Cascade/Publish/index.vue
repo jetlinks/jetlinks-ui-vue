@@ -1,6 +1,6 @@
 <!-- 国标级联-推送 -->
 <template>
-    <a-modal
+    <j-modal
         v-model:visible="_vis"
         title="推送"
         cancelText="取消"
@@ -9,10 +9,10 @@
         @ok="_vis = false"
         @cancel="_vis = false"
     >
-        <a-row :gutter="20">
-            <a-col :span="8">
+        <j-row :gutter="20">
+            <j-col :span="8">
                 <p>成功：{{ successCount }}</p>
-                <a-space>
+                <j-space>
                     <p>失败：{{ failCount }}</p>
                     <a
                         v-if="errMessage.length"
@@ -24,19 +24,19 @@
                         "
                         >下载</a
                     >
-                </a-space>
-            </a-col>
-            <a-col :span="8">
+                </j-space>
+            </j-col>
+            <j-col :span="8">
                 <p>推送通道数量：{{ data.count }}</p>
-            </a-col>
-            <a-col :span="8">
+            </j-col>
+            <j-col :span="8">
                 <p>已推送通道数量：{{ successCount + failCount }}</p>
-            </a-col>
-        </a-row>
+            </j-col>
+        </j-row>
         <div v-if="flag">
-            <a-textarea :rows="10" v-model:value="errStr" />
+            <j-textarea :rows="10" v-model:value="errStr" />
         </div>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script setup lang="ts">

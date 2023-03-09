@@ -1,14 +1,14 @@
 <!-- 国标级联新增/编辑 -->
 <template>
     <page-container>
-        <a-card>
-            <a-row :gutter="24">
-                <a-col :span="12">
-                    <a-form ref="formRef" layout="vertical" :model="formData">
-                        <a-row :gutter="24">
+        <j-card>
+            <j-row :gutter="24">
+                <j-col :span="12">
+                    <j-form ref="formRef" layout="vertical" :model="formData">
+                        <j-row :gutter="24">
                             <TitleComponent data="基本信息" />
-                            <a-col :span="12">
-                                <a-form-item
+                            <j-col :span="12">
+                                <j-form-item
                                     label="名称"
                                     name="cascadeName"
                                     :rules="[
@@ -22,14 +22,14 @@
                                         },
                                     ]"
                                 >
-                                    <a-input
+                                    <j-input
                                         v-model:value="formData.cascadeName"
                                         placeholder="请输入名称"
                                     />
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="12">
-                                <a-form-item
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="12">
+                                <j-form-item
                                     label="代理视频流"
                                     name="proxyStream"
                                     :rules="[
@@ -39,23 +39,23 @@
                                         },
                                     ]"
                                 >
-                                    <a-radio-group
+                                    <j-radio-group
                                         button-style="solid"
                                         v-model:value="formData.proxyStream"
                                     >
-                                        <a-radio-button :value="true">
+                                        <j-radio-button :value="true">
                                             启用
-                                        </a-radio-button>
-                                        <a-radio-button :value="false">
+                                        </j-radio-button>
+                                        <j-radio-button :value="false">
                                             禁用
-                                        </a-radio-button>
-                                    </a-radio-group>
-                                </a-form-item>
-                            </a-col>
+                                        </j-radio-button>
+                                    </j-radio-group>
+                                </j-form-item>
+                            </j-col>
 
                             <TitleComponent data="信令服务配置" />
-                            <a-col :span="12">
-                                <a-form-item
+                            <j-col :span="12">
+                                <j-form-item
                                     name="clusterNodeId"
                                     :rules="[
                                         {
@@ -67,25 +67,25 @@
                                     <template #label>
                                         <span>
                                             集群节点
-                                            <a-tooltip
+                                            <j-tooltip
                                                 title="使用此集群节点级联到上级平台"
                                             >
                                                 <AIcon
                                                     type="QuestionCircleOutlined"
                                                     style="margin-left: 2px"
                                                 />
-                                            </a-tooltip>
+                                            </j-tooltip>
                                         </span>
                                     </template>
-                                    <a-select
+                                    <j-select
                                         v-model:value="formData.clusterNodeId"
                                         placeholder="请选择集群节点"
                                         :options="clustersList"
                                     />
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="12">
-                                <a-form-item
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="12">
+                                <j-form-item
                                     label="信令名称"
                                     name="name"
                                     :rules="[
@@ -99,14 +99,14 @@
                                         },
                                     ]"
                                 >
-                                    <a-input
+                                    <j-input
                                         v-model:value="formData.name"
                                         placeholder="请输入信令名称"
                                     />
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="24">
-                                <a-form-item
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="24">
+                                <j-form-item
                                     label="上级SIP ID"
                                     name="sipId"
                                     :rules="[
@@ -120,14 +120,14 @@
                                         },
                                     ]"
                                 >
-                                    <a-input
+                                    <j-input
                                         v-model:value="formData.sipId"
                                         placeholder="请输入上级SIP ID"
                                     />
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="12">
-                                <a-form-item
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="12">
+                                <j-form-item
                                     label="上级SIP域"
                                     name="domain"
                                     :rules="[
@@ -141,14 +141,14 @@
                                         },
                                     ]"
                                 >
-                                    <a-input
+                                    <j-input
                                         v-model:value="formData.domain"
                                         placeholder="请输入上级平台SIP域"
                                     />
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="12">
-                                <a-form-item
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="12">
+                                <j-form-item
                                     label="上级SIP 地址"
                                     name="remoteAddress"
                                     :rules="[
@@ -161,17 +161,17 @@
                                         },
                                     ]"
                                 >
-                                    <a-row :gutter="10">
-                                        <a-col :span="14">
-                                            <a-input
+                                    <j-row :gutter="10">
+                                        <j-col :span="14">
+                                            <j-input
                                                 v-model:value="
                                                     formData.remoteAddress
                                                 "
                                                 placeholder="请输入IP地址"
                                             />
-                                        </a-col>
-                                        <a-col :span="10">
-                                            <a-input-number
+                                        </j-col>
+                                        <j-col :span="10">
+                                            <j-input-number
                                                 :min="1"
                                                 :max="65535"
                                                 v-model:value="
@@ -180,13 +180,13 @@
                                                 placeholder="请输入端口"
                                                 style="width: 100%"
                                             />
-                                        </a-col>
-                                    </a-row>
-                                </a-form-item>
-                            </a-col>
+                                        </j-col>
+                                    </j-row>
+                                </j-form-item>
+                            </j-col>
 
-                            <a-col :span="24">
-                                <a-form-item
+                            <j-col :span="24">
+                                <j-form-item
                                     label="本地SIP ID"
                                     name="localSipId"
                                     :rules="[
@@ -200,14 +200,14 @@
                                         },
                                     ]"
                                 >
-                                    <a-input
+                                    <j-input
                                         v-model:value="formData.localSipId"
                                         placeholder="网关侧的SIP ID"
                                     />
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="12">
-                                <a-form-item
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="12">
+                                <j-form-item
                                     name="host"
                                     :rules="[
                                         {
@@ -222,36 +222,36 @@
                                     <template #label>
                                         <span>
                                             SIP本地地址
-                                            <a-tooltip
+                                            <j-tooltip
                                                 title="使用指定的网卡和端口进行请求"
                                             >
                                                 <AIcon
                                                     type="QuestionCircleOutlined"
                                                     style="margin-left: 2px"
                                                 />
-                                            </a-tooltip>
+                                            </j-tooltip>
                                         </span>
                                     </template>
-                                    <a-row :gutter="10">
-                                        <a-col :span="14">
-                                            <a-select
+                                    <j-row :gutter="10">
+                                        <j-col :span="14">
+                                            <j-select
                                                 v-model:value="formData.host"
                                                 placeholder="请选择IP地址"
                                                 :options="allList"
                                             />
-                                        </a-col>
-                                        <a-col :span="10">
-                                            <a-select
+                                        </j-col>
+                                        <j-col :span="10">
+                                            <j-select
                                                 v-model:value="formData.port"
                                                 placeholder="请选择端口"
                                                 :options="allListPorts"
                                             />
-                                        </a-col>
-                                    </a-row>
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="12">
-                                <a-form-item
+                                        </j-col>
+                                    </j-row>
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="12">
+                                <j-form-item
                                     label="SIP远程地址"
                                     name="publicHost"
                                     :rules="[
@@ -264,17 +264,17 @@
                                         },
                                     ]"
                                 >
-                                    <a-row :gutter="10">
-                                        <a-col :span="14">
-                                            <a-input
+                                    <j-row :gutter="10">
+                                        <j-col :span="14">
+                                            <j-input
                                                 v-model:value="
                                                     formData.publicHost
                                                 "
                                                 placeholder="请输入IP地址"
                                             />
-                                        </a-col>
-                                        <a-col :span="10">
-                                            <a-input-number
+                                        </j-col>
+                                        <j-col :span="10">
+                                            <j-input-number
                                                 :min="1"
                                                 :max="65535"
                                                 v-model:value="
@@ -283,12 +283,12 @@
                                                 placeholder="请输入端口"
                                                 style="width: 100%"
                                             />
-                                        </a-col>
-                                    </a-row>
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="24">
-                                <a-form-item
+                                        </j-col>
+                                    </j-row>
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="24">
+                                <j-form-item
                                     label="传输协议"
                                     name="transport"
                                     :rules="[
@@ -298,22 +298,22 @@
                                         },
                                     ]"
                                 >
-                                    <a-radio-group
+                                    <j-radio-group
                                         button-style="solid"
                                         v-model:value="formData.transport"
                                         @change="setPorts"
                                     >
-                                        <a-radio-button value="UDP">
+                                        <j-radio-button value="UDP">
                                             UDP
-                                        </a-radio-button>
-                                        <a-radio-button value="TCP">
+                                        </j-radio-button>
+                                        <j-radio-button value="TCP">
                                             TCP
-                                        </a-radio-button>
-                                    </a-radio-group>
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="12">
-                                <a-form-item
+                                        </j-radio-button>
+                                    </j-radio-group>
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="12">
+                                <j-form-item
                                     label="用户"
                                     name="user"
                                     :rules="[
@@ -327,14 +327,14 @@
                                         },
                                     ]"
                                 >
-                                    <a-input
+                                    <j-input
                                         v-model:value="formData.user"
                                         placeholder="请输入用户"
                                     />
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="12">
-                                <a-form-item
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="12">
+                                <j-form-item
                                     label="接入密码"
                                     name="password"
                                     :rules="[
@@ -348,14 +348,14 @@
                                         },
                                     ]"
                                 >
-                                    <a-input-password
+                                    <j-input-password
                                         v-model:value="formData.password"
                                         placeholder="请输入接入密码"
                                     />
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="12">
-                                <a-form-item
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="12">
+                                <j-form-item
                                     label="厂商"
                                     name="manufacturer"
                                     :rules="[
@@ -369,14 +369,14 @@
                                         },
                                     ]"
                                 >
-                                    <a-input
+                                    <j-input
                                         v-model:value="formData.manufacturer"
                                         placeholder="请输入厂商"
                                     />
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="12">
-                                <a-form-item
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="12">
+                                <j-form-item
                                     label="型号"
                                     name="model"
                                     :rules="[
@@ -390,14 +390,14 @@
                                         },
                                     ]"
                                 >
-                                    <a-input
+                                    <j-input
                                         v-model:value="formData.model"
                                         placeholder="请输入型号"
                                     />
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="12">
-                                <a-form-item
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="12">
+                                <j-form-item
                                     label="版本号"
                                     name="firmware"
                                     :rules="[
@@ -411,14 +411,14 @@
                                         },
                                     ]"
                                 >
-                                    <a-input
+                                    <j-input
                                         v-model:value="formData.firmware"
                                         placeholder="请输入版本号"
                                     />
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="12">
-                                <a-form-item
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="12">
+                                <j-form-item
                                     label="心跳周期（秒）"
                                     name="keepaliveInterval"
                                     :rules="[
@@ -428,7 +428,7 @@
                                         },
                                     ]"
                                 >
-                                    <a-input-number
+                                    <j-input-number
                                         :min="1"
                                         :max="10000"
                                         v-model:value="
@@ -437,10 +437,10 @@
                                         placeholder="请输入心跳周期"
                                         style="width: 100%"
                                     />
-                                </a-form-item>
-                            </a-col>
-                            <a-col :span="12">
-                                <a-form-item
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="12">
+                                <j-form-item
                                     label="注册间隔（秒）"
                                     name="registerInterval"
                                     :rules="[
@@ -450,7 +450,7 @@
                                         },
                                     ]"
                                 >
-                                    <a-input-number
+                                    <j-input-number
                                         :min="1"
                                         :max="10000"
                                         v-model:value="
@@ -459,29 +459,29 @@
                                         placeholder="请输入注册间隔"
                                         style="width: 100%"
                                     />
-                                </a-form-item>
-                            </a-col>
-                        </a-row>
+                                </j-form-item>
+                            </j-col>
+                        </j-row>
 
-                        <a-form-item>
-                            <a-button
+                        <j-form-item>
+                            <j-button
                                 type="primary"
                                 @click="handleSubmit"
                                 :loading="btnLoading"
                             >
                                 保存
-                            </a-button>
-                        </a-form-item>
-                    </a-form>
-                </a-col>
-                <a-col :span="12">
+                            </j-button>
+                        </j-form-item>
+                    </j-form>
+                </j-col>
+                <j-col :span="12">
                     <div class="doc">
                         <h1>1.概述</h1>
                         <div>
                             配置国标级联，平台可以将已经接入到自身的摄像头共享给第三方调用播放。
                         </div>
                         <div>
-                            <a-alert
+                            <j-alert
                                 message="注：该配置只用于将本平台向上级联至第三方平台，如需第三方平台向上级联至本平台，请在“视频设备”页面新增设备时选择“GB/T28181”接入方式。"
                                 type="info"
                                 show-icon
@@ -494,7 +494,7 @@
                         <h2>1、上级SIP ID</h2>
                         <div>请填写第三方平台中配置的<b>SIP ID</b>。</div>
                         <div class="image">
-                            <a-image
+                            <j-image
                                 width="100%"
                                 :src="getImage('/northbound/doc2.png')"
                             />
@@ -502,7 +502,7 @@
                         <h2>2、上级SIP 域</h2>
                         <div>请填写第三方平台中配置的<b>SIP ID域</b>。</div>
                         <div class="image">
-                            <a-image
+                            <j-image
                                 width="100%"
                                 :src="getImage('/northbound/doc1.png')"
                             />
@@ -510,7 +510,7 @@
                         <h2>3、上级SIP 地址</h2>
                         <div>请填写第三方平台中配置的<b>SIP ID地址</b>。</div>
                         <div class="image">
-                            <a-image
+                            <j-image
                                 width="100%"
                                 :src="getImage('/northbound/doc3.png')"
                             />
@@ -549,9 +549,9 @@
                             SIP代理与 SIP服务器出现1s误 差所经过的运行时间。
                         </div>
                     </div>
-                </a-col>
-            </a-row>
-        </a-card>
+                </j-col>
+            </j-row>
+        </j-card>
     </page-container>
 </template>
 
@@ -652,7 +652,7 @@ onMounted(() => {
 });
 
 const regDomain =
-    /[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\.?/;
+    /[j-zA-Z0-9][-j-zA-Z0-9]{0,62}(\.[j-zA-Z0-9][-j-zA-Z0-9]{0,62})+\.?/;
 /**
  * 上级SIP地址 字段验证
  * @param _
