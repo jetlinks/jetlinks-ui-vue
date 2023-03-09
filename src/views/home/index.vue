@@ -17,12 +17,22 @@
                     <div class="card">
                         <h3 style="margin: 0 0 24px 0">基本信息</h3>
                         <p>
-                            <span style="font-weight: bold">clientId: </span>
-                            <span>{{ clientId }}</span>
+                            <span class="label">clientId: </span>
+                            <span class="value">{{ clientId }}</span>
                         </p>
                         <p>
-                            <span style="font-weight: bold">secureKey:</span>
-                            <span>{{ secureKey }}</span>
+                            <span class="label">secureKey:</span>
+                            <span class="value">
+                                {{ showKey ? secureKey : '****************' }}
+                            </span>
+                            <AIcon
+                                :type="
+                                    showKey
+                                        ? 'EyeOutlined'
+                                        : 'EyeInvisibleOutlined'
+                                "
+                                @click="showKey = !showKey"
+                            />
                         </p>
                     </div>
                 </template>
@@ -47,7 +57,7 @@ const currentView = ref<string>('');
 const loading = ref<boolean>(true);
 const clientId = useUserInfo().$state.userInfos.id;
 const secureKey = ref<string>('');
-
+const showKey = ref(false);
 // 获取选择的视图
 const setCurrentView = () => {
     getView_api().then((resp: any) => {
@@ -91,6 +101,15 @@ if (isNoCommunity) {
         p {
             margin: 0;
             font-size: 16px;
+
+            .label {
+                font-weight: bold;
+                margin-right: 3px;
+            }
+            .value {
+                margin-right: 10px;
+                font-size: 14px;
+            }
         }
     }
 }

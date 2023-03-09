@@ -4,6 +4,7 @@
         title="重置密码"
         @ok="handleOk"
         width="520px"
+        :confirmLoading="loading"
         @cancel="emits('update:visible', false)"
     >
         <j-form :model="form" layout="vertical" ref="formRef">
@@ -11,7 +12,7 @@
                 label="旧密码"
                 name="oldPassword"
                 :rules="[
-                    { required: true },
+                    { required: true, message: '请输入密码' },
                     { validator: checkMothods.old, trigger: 'blur' },
                 ]"
             >
@@ -24,7 +25,7 @@
                 label="密码"
                 name="newPassword"
                 :rules="[
-                    { required: true },
+                    { required: true,message:'请输入密码' },
                     { validator: checkMothods.new, trigger: 'blur' },
                 ]"
             >
@@ -37,7 +38,7 @@
                 label="确认密码"
                 name="confirmPassword"
                 :rules="[
-                    { required: true },
+                    { required: true, message: '请输入确认密码' },
                     { validator: checkMothods.confirm, trigger: 'blur' },
                 ]"
             >
@@ -63,6 +64,7 @@ const emits = defineEmits(['ok', 'update:visible']);
 const props = defineProps<{
     visible: boolean;
 }>();
+const loading = ref(false)
 const formRef = ref<FormInstance>();
 const form = ref<formType>({
     oldPassword: '',
@@ -72,7 +74,7 @@ const form = ref<formType>({
 
 const checkMothods = {
     old: async (_rule: Rule, value: string) => {
-        if (!value) return Promise.reject('请输入密码');
+        if (!value) return Promise.reject();
         try {
             const resp: any = await checkOldPassword_api(value);
             if (resp.status === 200 && !resp.result.passed)
@@ -83,7 +85,7 @@ const checkMothods = {
         }
     },
     new: async (_rule: Rule, value: string) => {
-        if (!value) return Promise.reject('请输入密码');
+        if (!value) return Promise.reject();
         else if (
             form.value.confirmPassword &&
             value !== form.value.confirmPassword
@@ -99,7 +101,7 @@ const checkMothods = {
         }
     },
     confirm: async (_rule: Rule, value: string) => {
-        if (!value) return Promise.reject('请输入确认密码');
+        if (!value) return Promise.reject();
 
         try {
             const resp: any = await validateField_api('password', value);
@@ -114,6 +116,7 @@ const checkMothods = {
 
 const handleOk = () => {
     formRef.value?.validate().then(() => {
+        loading.value = true
         const params = {
             oldPassword: form.value.oldPassword,
             newPassword: form.value.newPassword,
@@ -124,7 +127,7 @@ const handleOk = () => {
                 emits('ok');
                 emits('update:visible', false);
             }
-        });
+        }).finally(()=>loading.value = false)
     });
 };
 console.clear();
