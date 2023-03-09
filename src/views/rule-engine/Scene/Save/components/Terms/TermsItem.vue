@@ -48,7 +48,7 @@
 <script setup lang='ts' name='TermsItem'>
 import type { PropType } from 'vue'
 import type { TermsType } from '@/views/rule-engine/Scene/typings'
-import DropdownButton from '../DropdownButton.vue'
+import DropdownButton from '../DropdownButton'
 import { storeToRefs } from 'pinia';
 import { useSceneStore } from 'store/scene'
 import ParamsItem from './ParamsItem.vue'
@@ -86,14 +86,12 @@ const props = defineProps({
 const showDelete = ref(false)
 
 const mouseover = () => {
-  console.log(props.whenName)
   if (props.whenName !== 0){
     showDelete.value = true
   }
 }
 
 const mouseout = () => {
-  console.log(props.whenName)
   if (props.whenName !== 0){
     showDelete.value = false
   }

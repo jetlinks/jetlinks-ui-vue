@@ -18,7 +18,7 @@
                 @search="handleSearch"
                 type="simple"
             />
-            <JTable
+            <JProTable
                 ref="bindDeviceRef"
                 :columns="columns"
                 :request="query"
@@ -78,7 +78,7 @@
                         :status="statusMap.get(slotProps.state.value)"
                     />
                 </template>
-            </JTable>
+            </JProTable>
         </div>
     </a-modal>
 </template>

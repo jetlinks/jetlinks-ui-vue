@@ -306,23 +306,6 @@ const columns = [
 const _selectedRowKeys = ref<string[]>([]);
 const currentForm = ref({});
 
-const onSelectChange = (keys: string[]) => {
-    _selectedRowKeys.value = [...keys];
-};
-
-const cancelSelect = () => {
-    _selectedRowKeys.value = [];
-};
-
-// const handleClick = (dt: any) => {
-//     if (_selectedRowKeys.value.includes(dt.id)) {
-//         const _index = _selectedRowKeys.value.findIndex((i) => i === dt.id);
-//         _selectedRowKeys.value.splice(_index, 1);
-//     } else {
-//         _selectedRowKeys.value = [..._selectedRowKeys.value, dt.id];
-//     }
-// };
-
 const getActions = (
     data: Partial<Record<string, any>>,
     type: 'card' | 'table',
