@@ -1,10 +1,11 @@
 <template>
     <a-spin :spinning="loading">
-        <j-card-select
+        <!-- <j-card-select
             v-model:value="notifyType"
             :options="options"
             :icon-size="106"
-        />
+        /> -->
+        <a-radio-group v-model:value="notifyType" :options="options" @change="onRadioChange" />
     </a-spin>
 </template>
 
@@ -34,12 +35,16 @@ const notifyType = ref('');
 const options = ref<any[]>([]);
 
 watch(
-    () => notifyType,
+    () => props.value,
     (newVal) => {
-        emit('update:value', newVal)
+        notifyType.value = newVal
     },
     { deep: true, immediate: true },
 );
+
+const onRadioChange = (e: any) => {
+    emit('update:value', e.target.value)
+}
 
 onMounted(() => {
     loading.value = true

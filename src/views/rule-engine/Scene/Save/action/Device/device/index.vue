@@ -61,6 +61,7 @@
                     v-model:value="modelRef.selectorValues"
                     placeholder="请选择参数"
                     @select="onVariableChange"
+                    :fieldNames="{ label: 'name', value: 'id' }"
                 >
                     <template #title="{ name, description }">
                         <a-space>
@@ -108,6 +109,7 @@ const props = defineProps({
     },
 });
 
+// save保存deviceDetail
 const emits = defineEmits(['save', 'cancel']);
 
 const sceneStore = useSceneStore();
@@ -122,6 +124,7 @@ const modelRef = reactive({
     source: '',
     relationName: '',
     upperKey: '',
+    message: undefined,
 });
 
 const list = ref<any[]>([]);
@@ -160,7 +163,7 @@ const filterTree = (nodes: any[]) => {
     if (!nodes?.length) {
         return nodes;
     }
-    return nodes.filter((it) => {
+    const arr = nodes.filter((it) => {
         if (
             it.children.find(
                 (item: any) =>
@@ -173,43 +176,16 @@ const filterTree = (nodes: any[]) => {
         }
         return false;
     });
-};
-
-const treeDataFilter = (arr: any[]) => {
-    if (Array.isArray(arr) && arr.length) {
-        const list: any[] = [];
-        arr.map((item: any) => {
-            if (item.children) {
-                const children = treeDataFilter(item.children);
-                if (children.length) {
-                    list.push({
-                        ...item,
-                        title: item.name,
-                        value: item.id,
-                        disabled: true,
-                        children,
-                    });
-                }
-            } else {
-                if (
-                    item.children.find(
-                        (item: any) =>
-                            item.id.indexOf(
-                                'deviceId' || 'device_id' || 'device_Id',
-                            ) > -1,
-                    ) &&
-                    !item.children.find(
-                        (item: any) => item.id.indexOf('bolaen') > -1,
-                    )
-                ) {
-                    list.push(item);
-                }
-            }
-        });
-        return list;
-    } else {
-        return [];
-    }
+    return arr.map((item) => {
+        if (item.children) {
+        }
+        return {
+            ...item,
+            title: item.name,
+            value: item.id,
+            disabled: !!item.children,
+        };
+    });
 };
 
 const sourceChangeEvent = async () => {
@@ -220,11 +196,9 @@ const sourceChangeEvent = async () => {
     };
     const resp = await queryBuiltInParams(unref(data), _params);
     if (resp.status === 200) {
-        // const array = filterTree(resp.result as any[]);
+        const array = filterTree(resp.result as any[]);
         //判断相同产品才有按变量
         // if (props.formProductId === DeviceModel.productId)// TODO
-        console.log(array);
-        const arr = treeDataFilter(resp.result as any[]);
         builtInList.value = array;
     }
 };
@@ -293,6 +267,7 @@ const filterType = async () => {
 };
 
 const onSelectorChange = (val: string) => {
+    modelRef.selectorValues = undefined;
     if (val === 'relation') {
         queryRelationList();
     }
@@ -300,7 +275,17 @@ const onSelectorChange = (val: string) => {
 
 const onDeviceChange = (_detail: any) => {
     if (_detail) {
-        emits('save', modelRef, _detail);
+        if (_detail.id) {
+            modelRef.deviceId = _detail.id;
+            modelRef.selectorValues = [
+                { value: _detail.id, name: _detail.name },
+            ] as any;
+            modelRef.message = {} as any;
+        } else {
+            modelRef.deviceId = '';
+            modelRef.selectorValues = [] as any;
+        }
+        emits('save', unref(modelRef), _detail);
     }
 };
 
@@ -310,7 +295,7 @@ const onRelationChange = (val: any, options: any) => {
     modelRef.selectorValues = val;
     modelRef.upperKey = 'scene.deviceId';
     modelRef.relationName = options.label;
-    emits('save', modelRef, {});
+    emits('save', unref(modelRef), {});
 };
 
 const onTagChange = (val: any[], arr: any[]) => {
@@ -321,11 +306,12 @@ const onTagChange = (val: any[], arr: any[]) => {
     if (arr) {
         tagList.value = arr;
     }
+    emits('save', unref(modelRef), {});
 };
 
 const onVariableChange = (val: any, node: any) => {
     modelRef.deviceId = val;
-    // modelRef.deviceDetail = node;
+    emits('save', unref(modelRef), node);
     modelRef.selectorValues = [{ value: val, name: node.description }] as any;
 };
 
@@ -348,6 +334,21 @@ watch(
         deep: true,
     },
 );
+
+const onFormSave = () => {
+    return new Promise((resolve, reject) => {
+        formRef.value
+            .validate()
+            .then(async (_data: any) => {
+                resolve(_data);
+            })
+            .catch((err: any) => {
+                reject(err);
+            });
+    });
+};
+
+defineExpose({ onFormSave });
 </script>
 
 <style scoped lang='less'>

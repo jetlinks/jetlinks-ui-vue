@@ -18,12 +18,13 @@
                     },
                 ]"
             >
-                <j-card-select
+                <!-- <j-card-select
                     v-model:value="formModel.type"
                     :options="options"
                     type="horizontal"
                     float="right"
-                />
+                /> -->
+                <a-radio-group v-model:value="formModel.type" :options="options" />
             </a-form-item>
             <ActionTypeComponent
                 v-bind="props"
@@ -43,9 +44,8 @@ import Notify from '../Notify/index.vue';
 import Device from '../Device/index.vue';
 import { PropType } from 'vue';
 import { ActionsType } from '../../../typings';
-import ActionTypeComponent from './ActionTypeComponent.vue'
+import ActionTypeComponent from './ActionTypeComponent.vue';
 import { randomString } from '@/utils/utils';
-
 
 const props = defineProps({
     branchesName: {
@@ -63,8 +63,8 @@ const props = defineProps({
     data: {
         type: Object as PropType<ActionsType>,
         default: () => ({
-            key: randomString()
-        })
+            key: randomString(),
+        }),
     },
     parallel: {
         type: Boolean,
@@ -117,7 +117,11 @@ watch(
     () => props.data,
     (newVal) => {
         if (newVal?.executor) {
-            formModel.type = (newVal?.executor === 'alarm' ? newVal?.alarm?.mode : newVal?.executor) as string
+            formModel.type = (
+                newVal?.executor === 'alarm'
+                    ? newVal?.alarm?.mode
+                    : newVal?.executor
+            ) as string;
         }
     },
     {
@@ -129,7 +133,15 @@ const onOk = () => {
     actionForm.value.validate().then((values: any) => {
         actionType.value = values?.type;
         if (values?.type === 'relieve' || values?.type === 'trigger') {
-            emit('save', { ...props.data, executor: 'alarm', alarm: { mode: values.type } }, {});
+            emit(
+                'save',
+                {
+                    ...props.data,
+                    executor: 'alarm',
+                    alarm: { mode: values.type },
+                },
+                {},
+            );
         }
     });
 };
@@ -140,10 +152,10 @@ const onCancel = () => {
 
 const onPropsOk = (data: any, options?: any) => {
     emit('save', { ...data, executor: data.type }, options);
-    actionType.value = ''
+    actionType.value = '';
 };
 
 const onPropsCancel = () => {
-    actionType.value = ''
-}
+    actionType.value = '';
+};
 </script>
