@@ -135,18 +135,18 @@ const runScript = () => {
   });
 
   if (ws.value) {
-    ws.value.unsubscribe();
+    ws.value.unsubscribe?.();
   }
   if (!props.virtualRule?.script) {
     isBeginning.value = true;
     message.warning('请编辑规则');
     return;
   }
-  ws.value = getWebSocket(`virtual-property-debug-${ruleEditorStore.state.property}-${new Date().getTime()}`,
+  ws.value = getWebSocket(`virtual-property-debug-${props.id}-${new Date().getTime()}`,
   '/virtual-property-debug',
   {
     virtualId: `${virtualIdRef.value}-virtual-id`,
-    property: ruleEditorStore.state.property,
+    property: props.id,
     virtualRule: {
       ...props.virtualRule,
     },
@@ -163,7 +163,7 @@ const beginAction = () => {
 const stopAction = () => {
   isBeginning.value = true;
   if (ws.value) {
-    ws.value.unsubscribe();
+    ws.value.unsubscribe?.();
   }
 }
 const clearAction = () => {
@@ -172,7 +172,7 @@ const clearAction = () => {
 
 onUnmounted(() => {
   if (ws.value) {
-    ws.value.unsubscribe();
+    ws.value.unsubscribe?.();
   }
 })
 </script>
