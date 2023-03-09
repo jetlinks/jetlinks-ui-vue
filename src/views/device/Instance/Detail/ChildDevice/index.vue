@@ -1,91 +1,113 @@
 <template>
     <a-card>
-        <Search
-            :columns="columns"
-            target="child-device"
-            @search="handleSearch"
-            class="child-device-search"
+        <SaveChild
+            v-if="childVisible"
+            @close-child-save="closeChildSave"
+            :childData="current"
         />
-        <JTable
-            ref="childDeviceRef"
-            :columns="columns"
-            :request="query"
-            :defaultParams="{
-                terms: [
-                    {
-                        column: 'parentId',
-                        value: detail?.id || '',
-                        termType: 'eq',
-                    },
-                ],
-            }"
-            :rowSelection="{
-                selectedRowKeys: _selectedRowKeys,
-                onChange: onSelectChange,
-            }"
-            @cancelSelect="cancelSelect"
-            :params="params"
-            :model="'TABLE'"
-        >
-            <template #headerTitle>
-                <a-space>
-                    <a-button type="primary"> 新增并绑定 </a-button>
-                    <a-button type="primary" @click="visible = true">
-                        绑定
-                    </a-button>
-                    <a-popconfirm title="确认解绑吗？" @confirm="handleUnBind">
-                        <a-button type="primary"> 批量解绑 </a-button>
-                    </a-popconfirm>
-                </a-space>
-            </template>
-            <template #registryTime="slotProps">
-                {{
-                    slotProps.registryTime
-                        ? moment(slotProps.registryTime).format(
-                              'YYYY-MM-DD HH:mm:ss',
-                          )
-                        : ''
-                }}
-            </template>
-            <template #state="slotProps">
-                <a-badge
-                    :text="slotProps.state.text"
-                    :status="statusMap.get(slotProps.state.value)"
-                />
-            </template>
-            <template #action="slotProps">
-                <a-space :size="16">
-                    <a-tooltip
-                        v-for="i in getActions(slotProps)"
-                        :key="i.key"
-                        v-bind="i.tooltip"
-                    >
-                        <a-popconfirm v-if="i.popConfirm" v-bind="i.popConfirm">
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-popconfirm>
-                        <a-button
-                            style="padding: 0"
-                            type="link"
-                            v-else
-                            @click="i.onClick && i.onClick(slotProps)"
+        <div v-else>
+            <Search
+                :columns="columns"
+                target="child-device"
+                @search="handleSearch"
+                class="child-device-search"
+            />
+            <JProTable
+                ref="childDeviceRef"
+                :columns="columns"
+                :request="query"
+                :defaultParams="{
+                    terms: [
+                        {
+                            column: 'parentId',
+                            value: detail?.id || '',
+                            termType: 'eq',
+                        },
+                    ],
+                }"
+                :rowSelection="{
+                    selectedRowKeys: _selectedRowKeys,
+                    onChange: onSelectChange,
+                }"
+                @cancelSelect="cancelSelect"
+                :params="params"
+                :model="'TABLE'"
+            >
+                <template #headerTitle>
+                    <j-space>
+                        <PermissionButton
+                            type="primary"
+                            v-if="
+                                detail?.accessProvider ===
+                                'official-edge-gateway'
+                            "
+                            hasPermission="device/Instance:update"
+                            @click="
+                                current = {};
+                                childVisible = true;
+                            "
+                            >新增并绑定</PermissionButton
                         >
-                            <a-button
+                        <PermissionButton
+                            type="primary"
+                            @click="visible = true"
+                            hasPermission="device/Instance:update"
+                        >
+                            绑定</PermissionButton
+                        >
+                        <PermissionButton
+                            type="primary"
+                            hasPermission="device/Instance:update"
+                            :popConfirm="{
+                                title: '确定解绑吗？',
+                                onConfirm: handleUnBind,
+                            }"
+                            >批量解除</PermissionButton
+                        >
+                    </j-space>
+                </template>
+                <template #registryTime="slotProps">
+                    {{
+                        slotProps.registryTime
+                            ? moment(slotProps.registryTime).format(
+                                  'YYYY-MM-DD HH:mm:ss',
+                              )
+                            : ''
+                    }}
+                </template>
+                <template #state="slotProps">
+                    <a-badge
+                        :text="slotProps.state.text"
+                        :status="statusMap.get(slotProps.state.value)"
+                    />
+                </template>
+                <template #action="slotProps">
+                    <j-space :size="16">
+                        <template
+                            v-for="i in getActions(slotProps, 'table')"
+                            :key="i.key"
+                        >
+                            <PermissionButton
                                 :disabled="i.disabled"
-                                style="padding: 0"
+                                :popConfirm="i.popConfirm"
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                @click="i.onClick"
                                 type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-button>
-                    </a-tooltip>
-                </a-space>
-            </template>
-        </JTable>
-        <BindChildDevice v-if="visible" @change="closeBindDevice" />
+                                style="padding: 0px"
+                                :hasPermission="'device/Instance:' + i.key"
+                            >
+                                <template #icon
+                                    ><AIcon :type="i.icon"
+                                /></template>
+                            </PermissionButton>
+                        </template>
+                    </j-space>
+                </template>
+            </JProTable>
+            <BindChildDevice v-if="visible" @change="closeBindDevice" />
+        </div>
     </a-card>
 </template>
 
@@ -97,11 +119,17 @@ import { useInstanceStore } from '@/store/instance';
 import { storeToRefs } from 'pinia';
 import { message } from 'ant-design-vue';
 import BindChildDevice from './BindChildDevice/index.vue';
+import { usePermissionStore } from '@/store/permission';
+import SaveChild from './SaveChild/index.vue';
 
 const instanceStore = useInstanceStore();
 const { detail } = storeToRefs(instanceStore);
 const router = useRouter();
-
+const childVisible = ref(false);
+const permissionStore = usePermissionStore();
+// watchEffect(() => {
+//     console.log(detail.value);
+// });
 const statusMap = new Map();
 statusMap.set('online', 'success');
 statusMap.set('offline', 'error');
@@ -111,6 +139,7 @@ const childDeviceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const _selectedRowKeys = ref<string[]>([]);
 const visible = ref<boolean>(false);
+const current = ref({});
 
 const columns = [
     {
@@ -192,7 +221,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
         },
         {
-            key: 'unbind',
+            key: 'action',
             text: '解绑',
             tooltip: {
                 title: '解绑',
@@ -213,6 +242,18 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                         message.success('操作成功！');
                     }
                 },
+            },
+        },
+        {
+            key: 'update',
+            text: '编辑',
+            tooltip: {
+                title: '编辑',
+            },
+            icon: 'EditOutlined',
+            onClick: () => {
+                current.value = data;
+                childVisible.value = true;
             },
         },
     ];
@@ -251,6 +292,10 @@ const closeBindDevice = (val: boolean) => {
     if (val) {
         childDeviceRef.value?.reload();
     }
+};
+
+const closeChildSave = () => {
+    childVisible.value = false;
 };
 </script>
 

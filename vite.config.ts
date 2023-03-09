@@ -50,7 +50,6 @@ export default defineConfig(({ mode}) => {
           },
       },
       plugins: [
-
           vue(),
           monacoEditorPlugin({}),
           vueJsx(),

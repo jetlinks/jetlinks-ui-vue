@@ -84,14 +84,16 @@
                                                 ?.addresses"
                                             :key="`${i.address}_address${idx}`"
                                         >
-                                            <j-badge
-                                                :text="i.address"
-                                                :color="
-                                                    i.health === -1
-                                                        ? 'red'
-                                                        : 'green'
-                                                "
-                                            />
+                                            <Ellipsis>
+                                                <j-badge
+                                                    :text="i.address"
+                                                    :color="
+                                                        i.health === -1
+                                                            ? 'red'
+                                                            : 'green'
+                                                    "
+                                                />
+                                            </Ellipsis>
                                         </p>
                                     </j-col>
                                 </j-row>
@@ -263,6 +265,7 @@ const handleCancel = () => {
     text-align: center;
     .gateway-item {
         padding: 16px;
+        text-align: left;
         .card-item-content-title,
         .desc,
         .subtitle {
