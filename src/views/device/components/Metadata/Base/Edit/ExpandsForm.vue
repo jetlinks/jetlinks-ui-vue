@@ -86,7 +86,7 @@ const metadataStore = useMetadataStore()
 
 onMounted(() => {
   if (props.type === 'product' || !props.value?.source) {
-    emit('update:value', { ...props.value, source: 'device' })
+    emit('update:value', { source: 'device', ...props.value })
   }
 })
 

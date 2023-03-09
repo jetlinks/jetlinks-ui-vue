@@ -1,9 +1,9 @@
 <template>
-  <j-pro-table :loading="loading" :data-source="data" size="small" :columns="columns" row-key="id" model="TABLE">
-    <template #headerTitle>
+  <div class="table-header">
+    <div>
       <j-input-search v-model:value="searchValue" placeholder="请输入名称" @search="handleSearch"></j-input-search>
-    </template>
-    <template #rightExtraRender>
+    </div>
+    <div>
       <PermissionButton type="primary" :uhas-permission="`${permission}:update`" key="add" @click="handleAddClick"
         :disabled="operateLimits('add', type)" :tooltip="{
           title: operateLimits('add', type) ? '当前的存储方式不支持新增' : '新增',
@@ -14,45 +14,52 @@
         新增
       </PermissionButton>
       <Edit v-if="metadataStore.model.edit" :type="target" :tabs="type" @refresh="refreshMetadata"></Edit>
+    </div>
+  </div>
+  <a-table :loading="loading" :data-source="data" :columns="columns" row-key="id" model="TABLE" size="small"
+    :pagination="pagination">
+    <template #bodyCell="{ column, record }">
+      <template v-if="column.dataIndex === 'level'">
+        {{ levelMap[record.expands?.level] || '-' }}
+      </template>
+      <template v-if="column.dataIndex === 'async'">
+        {{ record.async ? '是' : '否' }}
+      </template>
+      <template v-if="column.dataIndex === 'valueType'">
+        {{ record.valueType?.type }}
+      </template>
+      <template v-if="column.dataIndex === 'source'">
+        {{ sourceMap[record.expands?.source] }}
+      </template>
+      <template v-if="column.dataIndex === 'type'">
+        <j-tag v-for="item in (record.expands?.type || [])" :key="item">
+          {{ expandsType[item] }}
+        </j-tag>
+      </template>
+      <template v-if="column.dataIndex === 'action'">
+        <j-space>
+          <PermissionButton :uhas-permission="`${permission}:update`" type="link" key="edit" style="padding: 0"
+            :udisabled="operateLimits('updata', type)" @click="handleEditClick(record)" :tooltip="{
+              title: operateLimits('updata', type) ? '当前的存储方式不支持编辑' : '编辑',
+            }">
+            <AIcon type="EditOutlined" />
+          </PermissionButton>
+          <PermissionButton :uhas-permission="`${permission}:delete`" type="link" key="delete" style="padding: 0"
+            :pop-confirm="{
+              title: '确认删除？', onConfirm: async () => {
+                await removeItem(record);
+              },
+            }"
+            :tooltip="{
+              title: '删除',
+            }"
+          >
+            <AIcon type="DeleteOutlined" />
+          </PermissionButton>
+        </j-space>
+      </template>
     </template>
-    <template #level="slotProps">
-      {{ levelMap[slotProps.expands?.level] || '-' }}
-    </template>
-    <template #async="slotProps">
-      {{ slotProps.async ? '是' : '否' }}
-    </template>
-    <template #valueType="slotProps">
-      {{ slotProps.valueType?.type }}
-    </template>
-    <template #source="slotProps">
-      {{ sourceMap[slotProps.expands?.source] }}
-    </template>
-    <template #type="slotProps">
-      <j-tag v-for="item in (slotProps.expands?.type || [])" :key="item">
-        {{ expandsType[item] }}
-      </j-tag>
-    </template>
-    <template #action="slotProps">
-      <j-space>
-        <PermissionButton :uhas-permission="`${permission}:update`" type="link" key="edit" style="padding: 0"
-          :udisabled="operateLimits('updata', type)" @click="handleEditClick(slotProps)" :tooltip="{
-            title: operateLimits('updata', type) ? '当前的存储方式不支持编辑' : '编辑',
-          }">
-          <AIcon type="EditOutlined" />
-        </PermissionButton>
-        <PermissionButton :uhas-permission="`${permission}:delete`" type="link" key="delete" style="padding: 0"
-          :pop-confirm="{
-            title: '确认删除？', onConfirm: async () => {
-              await removeItem(slotProps);
-            },
-          }" :tooltip="{
-            title: '删除',
-          }">
-          <Aicon type="DeleteOutlined" />
-        </PermissionButton>
-      </j-space>
-    </template>
-  </j-pro-table>
+  </a-table>
 </template>
 <script setup lang="ts" name="BaseMetadata">
 import type { MetadataItem, MetadataType } from '@/views/device/Product/typings'
@@ -61,7 +68,7 @@ import { useInstanceStore } from '@/store/instance'
 import { useProductStore } from '@/store/product'
 import { useMetadataStore } from '@/store/metadata'
 import PermissionButton from '@/components/PermissionButton/index.vue'
-import { message } from 'ant-design-vue/es'
+import { TablePaginationConfig, message } from 'ant-design-vue/es'
 import { SystemConst } from '@/utils/consts'
 import { Store } from 'jetlinks-store'
 import { asyncUpdateMetadata, removeMetadata } from '../metadata'
@@ -106,6 +113,15 @@ const actions = [
     scopedSlots: true,
   },
 ];
+const pagination = {
+  showTotal: (num: number, range: number[]) => {
+    return `第 ${range[0]} - ${range[1]} 条/总共 ${num} 条`;
+  },
+  showSizeChanger: true,
+  showQuickJumper: false,
+  defaultPageSize: 10,
+  size: 'small',
+} as TablePaginationConfig
 const columns = computed(() => MetadataMapping.get(type)!.concat(actions))
 const items = computed(() => JSON.parse((target === 'product' ? productStore.current?.metadata : instanceStore.current.metadata) || '{}') as MetadataItem[])
 const searchValue = ref<string>()
@@ -196,4 +212,10 @@ const removeItem = async (record: MetadataItem) => {
   }
 };
 </script>
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 0;
+}
+</style>
