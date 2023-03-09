@@ -16,10 +16,11 @@
                 disabled && myValue === item.value
                     ? 'active-checked-disabled'
                     : '',
+                item.disabled ? 'disabled' : '',
             ]"
             v-for="(item, index) in options"
             :key="index"
-            @click="myValue = item.value"
+            @click="handleRadio(item)"
         >
             <img v-if="item.logo" class="img" :src="item.logo" alt="" />
             <span>{{ item.label }}</span>
@@ -86,6 +87,11 @@ const myValue = computed({
         }
     },
 });
+
+const handleRadio = (item: any) => {
+    if (item.disabled) return;
+    myValue.value = item.value;
+};
 </script>
 
 <style lang="less" scoped>
@@ -93,6 +99,11 @@ const myValue = computed({
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    .disabled {
+        color: rgba(0, 0, 0, 0.25);
+        border-color: #f5f5f5;
+        cursor: not-allowed;
+    }
     &-item {
         width: 49%;
         height: 70px;

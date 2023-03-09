@@ -133,22 +133,22 @@ watch(
     () => dimension.value,
     (val) => {
         if (val === 'today') {
-            dateRange[0] = moment().startOf('day').format('x');
+            dateRange.value[0] = moment().startOf('day').format('x');
         }
         if (val === 'week') {
-            dateRange[0] = moment().subtract(1, 'week').format('x');
+            dateRange.value[0] = moment().subtract(1, 'week').format('x');
         }
         if (val === 'month') {
-            dateRange[0] = moment().subtract(1, 'month').format('x');
+            dateRange.value[0] = moment().subtract(1, 'month').format('x');
         }
         if (val === 'year') {
-            dateRange[0] = moment().subtract(1, 'year').format('x');
+            dateRange.value[0] = moment().subtract(1, 'year').format('x');
         }
-        dateRange[1] = moment().format('x');
+        dateRange.value[1] = moment().format('x');
         emits('change', {
             time: {
-                start: dateRange[0],
-                end: dateRange[1],
+                start: dateRange.value[0],
+                end: dateRange.value[1],
             },
         });
     },

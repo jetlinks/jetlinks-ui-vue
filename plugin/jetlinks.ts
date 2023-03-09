@@ -100,7 +100,7 @@ const matchComponents: IMatcher[] = [
   },
   {
     pattern: /^TimePicker|^TimeRangePicker/,
-    styleDir: 'TimeTicker'
+    styleDir: 'TimePicker'
   },
   {
     pattern: /^Radio/,

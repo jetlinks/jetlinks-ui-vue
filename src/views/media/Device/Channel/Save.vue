@@ -55,7 +55,22 @@
                         />
                     </j-form-item>
                 </j-col>
-                <j-col :span="24">
+                <j-col :span="24" v-if="route.query.type === 'gb28181-2016'">
+                    <j-form-item
+                        label="厂商"
+                        name="manufacturer"
+                        :rules="[
+                            { required: false, message: '' },
+                            { max: 64, message: '最多可输入64个字符' },
+                        ]"
+                    >
+                        <j-input
+                            v-model:value="formData.manufacturer"
+                            placeholder="请输入厂商名称"
+                        />
+                    </j-form-item>
+                </j-col>
+                <j-col :span="24" v-if="route.query.type === 'fixed-media'">
                     <j-form-item
                         name="media_url"
                         :rules="[
@@ -112,6 +127,21 @@
                         />
                     </j-form-item>
                 </j-col>
+                <j-col :span="24" v-if="route.query.type === 'gb28181-2016'">
+                    <j-form-item label="云台类型" name="ptzType">
+                        <j-select
+                            v-model:value="formData.ptzType"
+                            :options="[
+                                { label: '未知', value: 0 },
+                                { label: '球体', value: 1 },
+                                { label: '半球体', value: 2 },
+                                { label: '固定枪机', value: 3 },
+                                { label: '遥控枪机', value: 4 },
+                            ]"
+                            placeholder="请选择云台类型"
+                        />
+                    </j-form-item>
+                </j-col>
                 <j-col :span="24">
                     <j-form-item name="description" label="说明">
                         <j-textarea
@@ -163,7 +193,9 @@ const formData = ref({
     description: '',
     deviceId: route.query.id,
     name: '',
-    // 以下三个字段, 提交时需提取到others字段当中
+    manufacturer: '',
+    ptzType: '',
+    // 以下字段, 提交时需提取到others字段当中
     media_password: '',
     media_url: '',
     media_username: '',
@@ -172,6 +204,7 @@ const formData = ref({
 watch(
     () => props.channelData,
     (val: any) => {
+        console.log('val: ', val);
         const {
             id,
             address,
@@ -179,6 +212,8 @@ watch(
             description,
             deviceId,
             name,
+            manufacturer,
+            ptzType,
             others,
             ...extra
         } = val;
@@ -189,6 +224,8 @@ watch(
             description,
             deviceId,
             name,
+            manufacturer,
+            ptzType: ptzType?.value || 0,
             ...others,
         };
     },
@@ -225,6 +262,8 @@ const handleSubmit = () => {
                 media_url,
                 media_password,
                 media_username,
+                manufacturer,
+                ptzType,
                 ...extraFormData
             } = formData.value;
             if (media_url || media_password || media_username) {
