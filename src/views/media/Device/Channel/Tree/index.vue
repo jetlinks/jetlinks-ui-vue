@@ -1,10 +1,7 @@
 <template>
     <div class="channel-tree">
         <div class="channel-tree-query">
-            <j-input
-                @change="debounce(queryTree, 300)"
-                placeholder="请输入目录名称"
-            >
+            <j-input @change="queryTree" placeholder="请输入目录名称">
                 <template #suffix>
                     <AIcon type="SearchOutlined" />
                 </template>
@@ -71,13 +68,13 @@ const getDeviceDetail = async (id: string) => {
     }
 };
 
-const queryTree = (e: any) => {
+const queryTree = debounce((e: any) => {
     getTreeData(props.deviceId, {
         terms: [
             { column: 'name', termType: 'like', value: `%${e.target.value}%` },
         ],
     });
-};
+}, 300);
 
 watchEffect(() => {
     getDeviceDetail(props.deviceId);
