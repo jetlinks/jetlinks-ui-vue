@@ -3,6 +3,7 @@
         visible
         :title="props.data.id ? '编辑' : '新增'"
         width="865px"
+        :confirmLoading="loading"
         @ok="confirm"
         @cancel="emits('update:visible', false)"
     >
@@ -92,6 +93,7 @@ const props = defineProps<{
     data: rowType;
 }>();
 
+const loading = ref(false);
 const initForm = {
     subscribeName: '',
     topicConfig: {},
@@ -106,13 +108,16 @@ const form = ref({
 const confirm = () => {
     formRef.value &&
         formRef.value.validate().then(() => {
-            save_api(form.value).then((resp) => {
-                if (resp.status === 200) {
-                    message.success('操作成功');
-                    emits('ok')
-                    emits('update:visible', false);
-                }
-            });
+            loading.value = true;
+            save_api(form.value)
+                .then((resp) => {
+                    if (resp.status === 200) {
+                        message.success('操作成功');
+                        emits('ok');
+                        emits('update:visible', false);
+                    }
+                })
+                .finally(() => (loading.value = false));
         });
 };
 

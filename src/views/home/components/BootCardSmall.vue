@@ -28,34 +28,19 @@
 
 <script setup lang="ts">
 import { message } from 'ant-design-vue';
-import { bootConfig } from "../typing";
+import { bootConfig } from '../typing';
+import { useMenuStore } from '@/store/menu';
 
-const router = useRouter();
 const props = defineProps({
     cardData: Array<bootConfig>,
     cardTitle: String,
 });
 const { cardData, cardTitle } = toRefs(props);
+const { jumpPage: _jumpPage } = useMenuStore();
 
-const jumpPage = (row: bootConfig): void => {
-    if (row.auth && row.link) {
-        router.push(`${row.link}${objToParams(row.params || {})}`);
-    } else {
-        message.warning('暂无权限，请联系管理员');
-    }
-};
-
-const objToParams = (source: object): string => {
-    if (Object.prototype.toString.call(source) === '[object Object]') {
-        const paramsArr = <any>[];
-        // 直接使用for in遍历对象ts会报错
-        Object.entries(source).forEach(([prop, value]) => {
-            if (typeof value === 'object') value = JSON.stringify(value);
-            paramsArr.push(`${prop}=${value}`);
-        });
-        if (paramsArr.length > 0) return '?' + paramsArr.join('&');
-    }
-    return '';
+const jumpPage = (item: bootConfig) => {
+    if (item.auth === undefined || item.auth) _jumpPage(item.link, item.params);
+    else message.warning('暂无权限，请联系管理员');
 };
 </script>
 
