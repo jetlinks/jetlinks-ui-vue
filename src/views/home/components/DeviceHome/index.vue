@@ -23,7 +23,7 @@
             <ProductChooseDialog
                 v-if="productDialogVisible"
                 v-model:visible="productDialogVisible"
-                @confirm="(id:string)=>jumpPage('device/Product/Detail', { id })"
+                @confirm="(id:string)=>jumpPage('device/Product/Detail', { id, tab: 'Device'})"
             />
             <DeviceChooseDialog
                 v-if="deviceDialogVisible"
@@ -67,7 +67,7 @@ const deviceBootConfig: bootConfig[] = [
         link: 'device/Product',
         auth: productPermission('add'),
         params: {
-            type: 'add',
+            save: true,
         },
     },
     {
@@ -85,7 +85,7 @@ const deviceBootConfig: bootConfig[] = [
         link: 'rule-engine/Instance',
         auth: rulePermission('add'),
         params: {
-            type: 'add',
+            save: true,
         },
     },
 ];
@@ -98,7 +98,7 @@ const deviceStepDetails: recommendList[] = [
         linkUrl: 'device/Product',
         auth: productPermission('add'),
         params: {
-            type: 'add',
+            save: true,
         },
     },
     {

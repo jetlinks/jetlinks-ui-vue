@@ -36,7 +36,7 @@
             <ProductChooseDialog
                 v-if="productDialogVisible"
                 v-model:visible="productDialogVisible"
-                @confirm="(id:string)=>jumpPage('device/Product/Detail', { id })"
+                @confirm="(id:string)=>jumpPage('device/Product/Detail', { id, tab: 'Device'})"
             />
             <DeviceChooseDialog
                 v-if="deviceDialogVisible"
@@ -80,7 +80,7 @@ const deviceBootConfig: bootConfig[] = [
         auth: productPermission('add'),
         image: '/images/home/guide-home1.png',
         params: {
-            type: 'add',
+            save: true,
         },
     },
     {
@@ -100,7 +100,7 @@ const deviceBootConfig: bootConfig[] = [
         auth: rulePermission('add'),
         image: '/images/home/guide-home3.png',
         params: {
-            type: 'add',
+            save: true,
         },
     },
 ];
@@ -115,7 +115,7 @@ const deviceStepDetails: recommendList[] = [
         linkUrl: 'device/Product',
         auth: productPermission('add'),
         params: {
-            type: 'add',
+            save: true,
         },
     },
     {
@@ -227,4 +227,17 @@ const opsStepDetails: recommendList[] = [
 
 const productDialogVisible = ref(false);
 const deviceDialogVisible = ref(false);
+
+
+
+// 设备管理-产品---新增弹窗  {save:true}
+// 设备管理-产品-产品详情---设备接入标签页 {id: 'xxxx', tab:'xxx'}
+// 规则引擎-规则编排---新增弹窗 {save: true}
+
+
+// 设备管理-设备---新增弹窗
+// 设备管理-设备---导入弹窗
+// 设备管理-设备-设备详情---设备诊断标签页
+
+// 运维管理-日志管理---系统日志标签页
 </script>
