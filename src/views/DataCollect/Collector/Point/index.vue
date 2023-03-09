@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <j-spin :spinning="spinning">
         <j-advanced-search
             :columns="columns"
             target="search"
@@ -15,6 +15,16 @@
             :request="queryPoint"
             :defaultParams="{
                 sorts: [{ name: 'id', order: 'desc' }],
+                terms: [
+                    {
+                        terms: [
+                            {
+                                column: 'collectorId',
+                                value: props.data.id,
+                            },
+                        ],
+                    },
+                ],
             }"
             :params="params"
             :rowSelection="{
@@ -42,6 +52,7 @@
                                 <j-menu-item>
                                     <PermissionButton
                                         hasPermission="DataCollect/Collector:update"
+                                        @click="handlBatchUpdate()"
                                     >
                                         <template #icon
                                             ><AIcon type="FormOutlined"
@@ -52,6 +63,10 @@
                                 <j-menu-item>
                                     <PermissionButton
                                         hasPermission="DataCollect/Collector:delete"
+                                        :popConfirm="{
+                                            title: `确定删除？`,
+                                            onConfirm: () => handlDelete(),
+                                        }"
                                     >
                                         <template #icon
                                             ><AIcon type="EditOutlined"
@@ -75,17 +90,6 @@
                     :statusText="getState(slotProps)?.text"
                     :statusNames="Object.fromEntries(colorMap.entries())"
                 >
-                    <!-- <PointCardBox
-                    :showStatus="true"
-                    :value="slotProps"
-                    :actions="getActions(slotProps)"
-                    :active="_selectedRowKeys.includes(slotProps.id)"
-                    v-bind="slotProps"
-                    class="card-box"
-                    :status="getState(slotProps).value"
-                    :statusText="slotProps.runningState?.text"
-                    :statusNames="Object.fromEntries(colorMap.entries())"
-                > -->
                     <template #title>
                         <slot name="title">
                             <div class="card-box-title">
@@ -95,8 +99,19 @@
                     </template>
                     <template #action>
                         <div class="card-box-action">
-                            <a><AIcon type="DeleteOutlined" /></a>
-                            <a><AIcon type="FormOutlined" /></a>
+                            <a>
+                                <j-popconfirm
+                                    title="确定删除？"
+                                    @confirm="handlDelete(slotProps.id)"
+                                >
+                                    <AIcon type="DeleteOutlined" />
+                                </j-popconfirm>
+                            </a>
+                            <a
+                                ><AIcon
+                                    @click="handlEdit(slotProps)"
+                                    type="FormOutlined"
+                            /></a>
                         </div>
                     </template>
                     <template #img>
@@ -112,8 +127,26 @@
                         <div class="card-box-content">
                             <div class="card-box-content-left">
                                 <span>--</span>
-                                <a><AIcon type="EditOutlined" /></a>
-                                <a><AIcon type="RedoOutlined" /></a>
+                                <a
+                                    v-if="
+                                        getAccessModes(slotProps).includes(
+                                            'write',
+                                        )
+                                    "
+                                    ><AIcon
+                                        @click.stop="clickEdit(slotProps)"
+                                        type="EditOutlined"
+                                /></a>
+                                <a
+                                    v-if="
+                                        getAccessModes(slotProps).includes(
+                                            'read',
+                                        )
+                                    "
+                                    ><AIcon
+                                        @click.stop="clickRedo(slotProps)"
+                                        type="RedoOutlined"
+                                /></a>
                             </div>
                             <div class="card-box-content-right">
                                 <div
@@ -139,17 +172,41 @@
             :data="current"
             @change="saveChange"
         />
-    </div>
+        <SaveOPCUA
+            v-if="visibleSaveOPCUA"
+            :data="current"
+            @change="saveChange"
+        />
+        <WritePoint
+            v-if="visibleWritePoint"
+            :data="current"
+            @change="saveChange"
+        />
+        <BatchUpdate
+            v-if="visibleBatchUpdate"
+            :data="current"
+            @change="saveChange"
+        />
+    </j-spin>
 </template>
 <script lang="ts" setup name="PointPage">
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage } from '@/utils/comm';
-import { queryPoint } from '@/api/data-collect/collector';
+import {
+    queryPoint,
+    batchDeletePoint,
+    removePoint,
+    readPoint,
+} from '@/api/data-collect/collector';
 import { message } from 'ant-design-vue';
 import { useMenuStore } from 'store/menu';
 import PointCardBox from './components/PointCardBox/index.vue';
-import { colorMap, getState } from '../data.ts';
+import WritePoint from './components/WritePoint/index.vue';
+import BatchUpdate from './components/BatchUpdate/index.vue';
 import SaveModBus from './Save/SaveModBus.vue';
+import SaveOPCUA from './Save/SaveOPCUA.vue';
+import { colorMap, getState } from '../data.ts';
+import { cloneDeep } from 'lodash-es';
 
 const props = defineProps({
     data: {
@@ -164,9 +221,14 @@ const params = ref<Record<string, any>>({});
 const opcImage = getImage('/DataCollect/device-opcua.png');
 const modbusImage = getImage('/DataCollect/device-modbus.png');
 const visibleSaveModBus = ref(false);
+const visibleSaveOPCUA = ref(false);
+const visibleWritePoint = ref(false);
+const visibleBatchUpdate = ref(false);
 const current = ref({});
 const accessModesOption = ref();
 const _selectedRowKeys = ref<string[]>([]);
+
+const spinning = ref(false);
 
 const accessModesMODBUS_TCP = [
     {
@@ -178,11 +240,6 @@ const accessModesMODBUS_TCP = [
         value: 'write',
     },
 ];
-
-const accessModesOPC_UA = accessModesMODBUS_TCP.concat({
-    label: '订阅',
-    value: 'subscribe',
-});
 
 const columns = [
     {
@@ -256,81 +313,54 @@ const columns = [
     },
 ];
 
-// const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
-//     if (!data) return [];
-//     const state = data.state.value;
-//     const stateText = state === 'enabled' ? '禁用' : '启用';
-//     const actions = [
-//         {
-//             key: 'update',
-//             text: '编辑',
-//             tooltip: {
-//                 title: '编辑',
-//             },
-//             icon: 'EditOutlined',
-//             onClick: () => {
-//                 handlEdit(data.id);
-//             },
-//         },
-//         {
-//             key: 'action',
-//             text: stateText,
-//             tooltip: {
-//                 title: stateText,
-//             },
-//             icon: state === 'enabled' ? 'StopOutlined' : 'CheckCircleOutlined',
-//             popConfirm: {
-//                 title: `确认${stateText}?`,
-//                 onConfirm: async () => {
-//                     let res =
-//                         state === 'enabled'
-//                             ? await disable(data.id)
-//                             : await enalbe(data.id);
-//                     if (res.success) {
-//                         message.success('操作成功');
-//                         tableRef.value?.reload();
-//                     } else {
-//                         message.error('操作失败！');
-//                     }
-//                 },
-//             },
-//         },
-//         {
-//             key: 'delete',
-//             text: '删除',
-//             disabled: state === 'enabled',
-//             tooltip: {
-//                 title: state === 'enabled' ? '正常的流媒体不能删除' : '删除',
-//             },
-//             popConfirm: {
-//                 title: '确认删除?',
-//                 onConfirm: async () => {
-//                     const res = await remove(data.id);
-//                     if (res.success) {
-//                         message.success('操作成功');
-//                         tableRef.value.reload();
-//                     } else {
-//                         message.error('操作失败！');
-//                     }
-//                 },
-//             },
-//             icon: 'DeleteOutlined',
-//         },
-//     ];
-//     return actions;
-// };
-
 const handlAdd = () => {
     visibleSaveModBus.value = true;
     current.value = {
-        treeId: props.data.id,
+        collectorId: props.data.id,
+        provider: props.data?.provider || 'MODBUS_TCP',
     };
 };
-const handlEdit = (id: string) => {
-    // menuStory.jumpPage(`media/Stream/Detail`, { id }, { view: false });
+const handlEdit = (data: Object) => {
+    if (data?.provider === 'OPC_UA') {
+        visibleSaveOPCUA.value = true;
+    } else {
+        visibleSaveModBus.value = true;
+    }
+    current.value = cloneDeep(data);
 };
-const handlEye = (id: string) => {
-    // menuStory.jumpPage(`media/Stream/Detail`, { id }, { view: true });
+const handlDelete = async (data: string | undefined) => {
+    spinning.value = true;
+    const res = !data
+        ? await batchDeletePoint(_selectedRowKeys.value)
+        : await removePoint(data as string);
+    if (res.status === 200) {
+        cancelSelect();
+        tableRef.value?.reload();
+        message.success('操作成功');
+    }
+    spinning.value = false;
+};
+
+const handlBatchUpdate = () => {
+    const dataSet = new Set(_selectedRowKeys.value);
+    const dataMap = new Map();
+    tableRef?.value?._dataSource.forEach((i) => {
+        dataSet.has(i.id) && dataMap.set(i.id, i);
+    });
+    current.value = [...dataMap.values()];
+    visibleBatchUpdate.value = true;
+};
+const clickEdit = async (data: object) => {
+    visibleWritePoint.value = true;
+    current.value = cloneDeep(data);
+};
+const clickRedo = async (data: object) => {
+    const res = await readPoint(data?.collectorId, [data?.id]);
+    if (res.status === 200) {
+        cancelSelect();
+        tableRef.value?.reload();
+        message.success('操作成功');
+    }
 };
 
 const getQuantity = (item: Partial<Record<string, any>>) => {
@@ -345,17 +375,18 @@ const getScaleFactor = (item: Partial<Record<string, any>>) => {
     const { scaleFactor } = item.configuration?.codec?.configuration || '';
     return !!scaleFactor ? scaleFactor + '(缩放因子)' : '';
 };
-
 const getRight1 = (item: Partial<Record<string, any>>) => {
     return !!getQuantity(item) || getAddress(item) || getScaleFactor(item);
 };
-
 const getText = (item: Partial<Record<string, any>>) => {
     return (item?.accessModes || []).map((i) => i?.text).join(',');
 };
 const getInterval = (item: Partial<Record<string, any>>) => {
     const { interval } = item.configuration || '';
     return !!interval ? '采集频率' + interval + 'ms' : '';
+};
+const getAccessModes = (item: Partial<Record<string, any>>) => {
+    return item?.accessModes?.map((i) => i?.value);
 };
 
 const getaccessModesOption = () => {
@@ -369,10 +400,13 @@ const getaccessModesOption = () => {
 
 const saveChange = (value: object) => {
     visibleSaveModBus.value = false;
+    visibleSaveOPCUA.value = false;
+    visibleWritePoint.value = false;
+    visibleBatchUpdate.value = false;
     current.value = {};
     if (value) {
-        handleSearch(params.value);
-        // message.success('操作成功');
+        tableRef.value?.reload();
+        message.success('操作成功');
     }
 };
 
@@ -404,22 +438,10 @@ watch(
                           label: '订阅',
                           value: 'subscribe',
                       });
-
-            params.value = {
-                terms: [
-                    {
-                        terms: [
-                            {
-                                column: 'collectorId',
-                                value: value.id,
-                            },
-                        ],
-                    },
-                ],
-            };
+            tableRef?.value?.reload();
         }
     },
-    { deep: true, immediate: true },
+    { deep: true },
 );
 
 /**
@@ -435,9 +457,11 @@ const handleSearch = (e: any) => {
     min-width: 480px;
     a {
         color: #474747;
+        z-index: 1;
     }
     a:hover {
         color: #315efb;
+        z-index: 1;
     }
     .card-box-title {
         font-size: 18px;
@@ -459,7 +483,10 @@ const handleSearch = (e: any) => {
             height: 68px;
             padding-right: 20px;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
+            a {
+                margin-left: 10px;
+            }
         }
         .card-box-content-right {
             flex: 0.8;
