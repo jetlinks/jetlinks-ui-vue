@@ -294,9 +294,12 @@ const getActions = (
                 data.state.value === 'notActive' ||
                 data.provider === 'fixed-media',
             icon: 'SyncOutlined',
-            onClick: () => {
-                // updateChannel()
-                console.log('updateChannel: ', data);
+            onClick: async () => {
+                const res = await DeviceApi.updateChannels(data.id);
+                if (res.success) {
+                    message.success('通道更新成功');
+                    listRef.value?.reload();
+                }
             },
         },
         {
