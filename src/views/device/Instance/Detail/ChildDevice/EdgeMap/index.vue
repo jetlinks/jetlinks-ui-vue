@@ -174,7 +174,7 @@ const form = ref();
 const filterOption = (input: string, option: any) => {
     return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
-const { productList } = defineProps(['productList']);
+const  props = defineProps(['productList']);
 const _emit = defineEmits(['close']);
 const instanceStore = useInstanceStore();
 let _metadata = ref();
@@ -279,7 +279,7 @@ const onSave = async () => {
                 });
                 const formData = {
                     ...form.value,
-                    productName: productList.find(
+                    productName: props.productList.find(
                         (item: any) => item.id === form.value?.productId,
                     ).name,
                     parentId: instanceStore.current.id,
@@ -319,7 +319,7 @@ const showModal = async () => {
     if (form.value) {
         const formData = {
             ...form.value,
-            productName: productList.find(
+            productName: props.productList.find(
                 (item: any) => item.id === form.value?.productId,
             ).name,
             parentId: instanceStore.current.id,

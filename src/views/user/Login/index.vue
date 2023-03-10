@@ -1,6 +1,6 @@
 <template>
     <div>
-        <a-spin :spinning="loading" :delay="500">
+        <j-spin :spinning="loading" :delay="500">
             <div class="container">
                 <div class="left">
                     <img
@@ -32,13 +32,13 @@
                                 {{ basis.title || SystemConst.SYSTEM_NAME }}
                             </div>
                             <div class="main">
-                                <a-form
+                                <j-form
                                     layout="vertical"
                                     :model="form"
                                     class="login-form"
                                     @finish="onFinish"
                                 >
-                                    <a-form-item
+                                    <j-form-item
                                         label="账号"
                                         name="username"
                                         :rules="[
@@ -48,13 +48,13 @@
                                             },
                                         ]"
                                     >
-                                        <a-input
+                                        <j-input
                                             v-model:value="form.username"
                                             placeholder="请输入账号"
                                             :maxlength="64"
-                                        ></a-input>
-                                    </a-form-item>
-                                    <a-form-item
+                                        ></j-input>
+                                    </j-form-item>
+                                    <j-form-item
                                         label="密码"
                                         name="password"
                                         :rules="[
@@ -64,13 +64,13 @@
                                             },
                                         ]"
                                     >
-                                        <a-input-password
+                                        <j-input-password
                                             v-model:value="form.password"
                                             placeholder="请输入密码"
                                             :maxlength="64"
-                                        ></a-input-password>
-                                    </a-form-item>
-                                    <a-form-item
+                                        ></j-input-password>
+                                    </j-form-item>
+                                    <j-form-item
                                         v-if="codeConfig"
                                         class="verifyCode"
                                         label="验证码"
@@ -82,7 +82,7 @@
                                             },
                                         ]"
                                     >
-                                        <a-input
+                                        <j-input
                                             v-model:value="form.verifyCode"
                                             autocomplete="off"
                                             :maxlength="64"
@@ -96,13 +96,13 @@
                                                     />
                                                 </div>
                                             </template>
-                                        </a-input>
-                                    </a-form-item>
-                                    <a-form-item
+                                        </j-input>
+                                    </j-form-item>
+                                    <j-form-item
                                         name="remember"
                                         style="text-align: left"
                                     >
-                                        <a-checkbox
+                                        <j-checkbox
                                             v-model:checked="form.remember"
                                             @change="
                                                 () =>
@@ -111,10 +111,10 @@
                                                             ? -1
                                                             : 3600000)
                                             "
-                                            >记住我</a-checkbox
+                                            >记住我</j-checkbox
                                         >
-                                    </a-form-item>
-                                    <a-form-item>
+                                    </j-form-item>
+                                    <j-form-item>
                                         <j-button
                                             :loading="loading"
                                             type="primary"
@@ -124,14 +124,14 @@
                                         >
                                             登录
                                         </j-button>
-                                    </a-form-item>
-                                </a-form>
+                                    </j-form-item>
+                                </j-form>
                                 <div class="other">
-                                    <a-divider plain>
+                                    <j-divider plain>
                                         <div class="other-text">
                                             其他方式登录
                                         </div>
-                                    </a-divider>
+                                    </j-divider>
                                     <div class="other-button">
                                         <j-button
                                             v-for="(item, index) in bindings"
@@ -173,7 +173,7 @@
                     </div>
                 </div>
             </div>
-        </a-spin>
+        </j-spin>
     </div>
 </template>
 

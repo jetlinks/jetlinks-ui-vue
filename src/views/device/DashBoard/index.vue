@@ -28,8 +28,7 @@
                             :chartXData="barChartXData"
                             :chartYData="barChartYData"
                         ></BarChart>  -->
-                        <Charts :options="onlineOptions"></Charts>
-                    </TopCard
+                        <Charts :options="onlineOptions"></Charts> </TopCard
                 ></a-col>
                 <a-col :span="6"
                     ><TopCard
@@ -54,7 +53,7 @@
                             </template>
                         </Guide>
                         <div class="message-chart">
-                           <Charts :options="devMegOptions"></Charts>
+                            <Charts :options="devMegOptions"></Charts>
                         </div>
                     </div>
                 </a-col>
@@ -74,7 +73,7 @@
 </template>
 <script lang="ts" setup>
 import TimeSelect from './components/TimeSelect.vue';
-import Charts from './components/Charts.vue'
+import Charts from './components/Charts.vue';
 import Guide from './components/Guide.vue';
 import {
     productCount,
@@ -86,7 +85,8 @@ import encodeQuery from '@/utils/encodeQuery';
 import { getImage } from '@/utils/comm';
 import type { Footer } from '@/views/device/DashBoard/typings';
 import TopCard from '@/views/device/DashBoard/components/TopCard.vue';
-import Amap from './components/Amap.vue'
+import { useMenuStore } from '@/store/menu';
+import Amap from './components/Amap.vue';
 let productTotal = ref(0);
 let productFooter = ref<Footer[]>([
     {
@@ -133,6 +133,7 @@ let messageMaxChartYData = ref<number>();
 let onlineOptions = ref<any>({});
 let TodayDevOptions = ref<any>({});
 let devMegOptions = ref<any>({});
+const menuStore = useMenuStore();
 const quickBtnList = [
     { label: '昨日', value: 'yesterday' },
     { label: '近一周', value: 'week' },
@@ -140,54 +141,60 @@ const quickBtnList = [
     { label: '近一年', value: 'year' },
 ];
 const getProductData = () => {
-    productCount().then((res) => {
-        if (res.status == 200) {
-            productTotal.value = res.result;
-        }
-    });
-    productCount({
-        terms: [
-            {
-                column: 'state',
-                value: '1',
-            },
-        ],
-    }).then((res) => {
-        if (res.status == 200) {
-            productFooter.value[0].value = res.result;
-        }
-    });
-    productCount({
-        terms: [
-            {
-                column: 'state',
-                value: '0',
-            },
-        ],
-    }).then((res) => {
-        if (res.status == 200) {
-            productFooter.value[1].value = res.result;
-        }
-    });
+    if (menuStore.hasMenu('device/Product')) {
+        productCount().then((res) => {
+            if (res.status == 200) {
+                productTotal.value = res.result;
+            }
+        });
+        productCount({
+            terms: [
+                {
+                    column: 'state',
+                    value: '1',
+                },
+            ],
+        }).then((res) => {
+            if (res.status == 200) {
+                productFooter.value[0].value = res.result;
+            }
+        });
+        productCount({
+            terms: [
+                {
+                    column: 'state',
+                    value: '0',
+                },
+            ],
+        }).then((res) => {
+            if (res.status == 200) {
+                productFooter.value[1].value = res.result;
+            }
+        });
+    }
 };
 getProductData();
 const getDeviceData = () => {
-    deviceCount().then((res) => {
-        if (res.status == 200) {
-            deviceTotal.value = res.result;
-        }
-    });
-    deviceCount(encodeQuery({ terms: { state: 'online' } })).then((res) => {
-        if (res.status == 200) {
-            deviceFooter.value[0].value = res.result;
-            deviceOnline.value = res.result;
-        }
-    });
-    deviceCount(encodeQuery({ terms: { state: 'offline' } })).then((res) => {
-        if (res.status == 200) {
-            deviceFooter.value[1].value = res.result;
-        }
-    });
+    if (menuStore.hasMenu('device/Instance')) {
+        deviceCount().then((res) => {
+            if (res.status == 200) {
+                deviceTotal.value = res.result;
+            }
+        });
+        deviceCount(encodeQuery({ terms: { state: 'online' } })).then((res) => {
+            if (res.status == 200) {
+                deviceFooter.value[0].value = res.result;
+                deviceOnline.value = res.result;
+            }
+        });
+        deviceCount(encodeQuery({ terms: { state: 'offline' } })).then(
+            (res) => {
+                if (res.status == 200) {
+                    deviceFooter.value[1].value = res.result;
+                }
+            },
+        );
+    }
 };
 getDeviceData();
 const getOnline = () => {
@@ -213,163 +220,167 @@ const getOnline = () => {
                 .reverse();
             const y = res.result.map((item: any) => item.data.value);
             const onlineYdata = y;
-            onlineYdata.reverse()
-            setOnlineChartOpition(x,onlineYdata);
+            onlineYdata.reverse();
+            setOnlineChartOpition(x, onlineYdata);
             deviceFooter.value[0].value = y?.[1];
         }
     });
 };
-const setOnlineChartOpition = (x:Array<any>,y:Array<number>):void=>{
+const setOnlineChartOpition = (x: Array<any>, y: Array<number>): void => {
     onlineOptions.value = {
-            xAxis: {
-                type: 'category',
-                data: x,
-                show: false,
-            },
-            yAxis: {
-                type: 'value',
-                show: false,
-            },
-            grid: {
-                top: '5%',
-                bottom: 0,
-            },
-            tooltip: {
-                trigger: 'axis',
-                axisPointer: {
-                    type: 'shadow',
-                },
-            },
-            series: [
-                {
-                    name: '在线数',
-                    data: y,
-                    type: 'bar',
-                    showBackground: true,
-                    itemStyle: {
-                        color: '#D3ADF7',
-                    },
-                },
-            ],
-        };
-}
-const setTodayDevChartOption = (x:Array<any>,y:Array<number>):void =>{
-    TodayDevOptions = {
-            tooltip: {
-                trigger: 'axis',
-                axisPointer: {
-                    type: 'shadow',
-                },
-            },
-            xAxis: {
-                type: 'category',
-                boundaryGap: false,
-                show: false,
-                data:x
-            },
-            yAxis: {
-                type: 'value',
-                show: false,
-            },
-            grid: {
-                top: '2%',
-                bottom: 0,
-            },
-            series: [
-                {
-                    name: '消息量',
-                    data: y,
-                    type: 'line',
-                    smooth: true, // 是否平滑曲线
-                    symbolSize: 0, // 拐点大小
-                    color: '#F29B55',
-                    areaStyle: {
-                        color: {
-                            type: 'linear',
-                            x: 0,
-                            y: 0,
-                            x2: 0,
-                            y2: 1,
-                            colorStops: [
-                                {
-                                    offset: 0,
-                                    color: '#FBBB87', // 100% 处的颜色
-                                },
-                                {
-                                    offset: 1,
-                                    color: '#FFFFFF', //   0% 处的颜色
-                                },
-                            ],
-                            global: false, // 缺省为 false
-                        },
-                    },
-                },
-            ],
-        };
-}
-const setDevMesChartOption = (x:Array<any>,y:Array<number>,maxY:number):void =>{
-    devMegOptions.value = {
         xAxis: {
-          type: 'category',
-          boundaryGap: false,
-          data: x,
+            type: 'category',
+            data: x,
+            show: false,
         },
         yAxis: {
-          type: 'value',
-        },
-        tooltip: {
-          trigger: 'axis',
-          formatter: '{b0}<br />{a0}: {c0}',
-          // formatter: '{b0}<br />{a0}: {c0}<br />{a1}: {c1}%'
+            type: 'value',
+            show: false,
         },
         grid: {
-          top: '2%',
-          bottom: '5%',
-          left: maxY > 100000 ? '90px' : '50px',
-          right: '50px',
+            top: '5%',
+            bottom: 0,
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow',
+            },
         },
         series: [
-          {
-            name: '消息量',
-            data: y,
-            type: 'bar',
-            // type: 'line',
-            // smooth: true,
-            color: '#597EF7',
-            barWidth: '30%',
-            // areaStyle: {
-            //   color: {
-            //     type: 'linear',
-            //     x: 0,
-            //     y: 0,
-            //     x2: 0,
-            //     y2: 1,
-            //     colorStops: [
-            //       {
-            //         offset: 0,
-            //         color: '#685DEB', // 100% 处的颜色
-            //       },
-            //       {
-            //         offset: 1,
-            //         color: '#FFFFFF', //   0% 处的颜色
-            //       },
-            //     ],
-            //     global: false, // 缺省为 false
-            //   },
-            // },
-          },
-          {
-            name: '占比',
-            data: y,
-            // data: percentageY,
-            type: 'line',
-            smooth: true,
-            symbolSize: 0, // 拐点大小
-            color: '#96ECE3',
-          },
+            {
+                name: '在线数',
+                data: y,
+                type: 'bar',
+                showBackground: true,
+                itemStyle: {
+                    color: '#D3ADF7',
+                },
+            },
         ],
-      }
-}
+    };
+};
+const setTodayDevChartOption = (x: Array<any>, y: Array<number>): void => {
+    TodayDevOptions = {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow',
+            },
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            show: false,
+            data: x,
+        },
+        yAxis: {
+            type: 'value',
+            show: false,
+        },
+        grid: {
+            top: '2%',
+            bottom: 0,
+        },
+        series: [
+            {
+                name: '消息量',
+                data: y,
+                type: 'line',
+                smooth: true, // 是否平滑曲线
+                symbolSize: 0, // 拐点大小
+                color: '#F29B55',
+                areaStyle: {
+                    color: {
+                        type: 'linear',
+                        x: 0,
+                        y: 0,
+                        x2: 0,
+                        y2: 1,
+                        colorStops: [
+                            {
+                                offset: 0,
+                                color: '#FBBB87', // 100% 处的颜色
+                            },
+                            {
+                                offset: 1,
+                                color: '#FFFFFF', //   0% 处的颜色
+                            },
+                        ],
+                        global: false, // 缺省为 false
+                    },
+                },
+            },
+        ],
+    };
+};
+const setDevMesChartOption = (
+    x: Array<any>,
+    y: Array<number>,
+    maxY: number,
+): void => {
+    devMegOptions.value = {
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: x,
+        },
+        yAxis: {
+            type: 'value',
+        },
+        tooltip: {
+            trigger: 'axis',
+            formatter: '{b0}<br />{a0}: {c0}',
+            // formatter: '{b0}<br />{a0}: {c0}<br />{a1}: {c1}%'
+        },
+        grid: {
+            top: '2%',
+            bottom: '5%',
+            left: maxY > 100000 ? '90px' : '50px',
+            right: '50px',
+        },
+        series: [
+            {
+                name: '消息量',
+                data: y,
+                type: 'bar',
+                // type: 'line',
+                // smooth: true,
+                color: '#597EF7',
+                barWidth: '30%',
+                // areaStyle: {
+                //   color: {
+                //     type: 'linear',
+                //     x: 0,
+                //     y: 0,
+                //     x2: 0,
+                //     y2: 1,
+                //     colorStops: [
+                //       {
+                //         offset: 0,
+                //         color: '#685DEB', // 100% 处的颜色
+                //       },
+                //       {
+                //         offset: 1,
+                //         color: '#FFFFFF', //   0% 处的颜色
+                //       },
+                //     ],
+                //     global: false, // 缺省为 false
+                //   },
+                // },
+            },
+            {
+                name: '占比',
+                data: y,
+                // data: percentageY,
+                type: 'line',
+                smooth: true,
+                symbolSize: 0, // 拐点大小
+                color: '#96ECE3',
+            },
+        ],
+    };
+};
 getOnline();
 //今日设备消息量
 const getDevice = () => {
@@ -427,7 +438,7 @@ const getDevice = () => {
             );
             const x = today.map((item: any) => item.data.timeString).reverse();
             const y = today.map((item: any) => item.data.value).reverse();
-            setTodayDevChartOption(x,y);
+            setTodayDevChartOption(x, y);
         }
     });
 };
@@ -452,7 +463,7 @@ const getEcharts = (data: any) => {
         _time = '1M';
         format = 'yyyy年-M月';
     }
-    
+
     dashboard([
         {
             dashboard: 'device',
@@ -468,7 +479,7 @@ const getEcharts = (data: any) => {
                 to: data.end,
             },
         },
-    ]).then((res:any) => {
+    ]).then((res: any) => {
         if (res.status === 200) {
             const x = res.result
                 .map((item: any) =>
@@ -478,23 +489,27 @@ const getEcharts = (data: any) => {
                 )
                 .reverse();
             const y = res.result.map((item: any) => item.data.value).reverse();
-            const maxY = Math.max.apply(null, messageChartYData.value.length ? messageChartYData.value : [0]);
-            setDevMesChartOption(x,y,maxY);
+            const maxY = Math.max.apply(
+                null,
+                messageChartYData.value.length ? messageChartYData.value : [0],
+            );
+            setDevMesChartOption(x, y, maxY);
         }
     });
 };
 </script>
 <style lang="less" scoped>
-.message-card,.device-position{
+.message-card,
+.device-position {
     margin-top: 24px;
     padding: 24px;
     background-color: white;
 }
 .message-chart {
     width: 100%;
-    height: 400px;   
+    height: 400px;
 }
-.amap-box{
+.amap-box {
     height: 500px;
     width: 100%;
 }
