@@ -14,7 +14,7 @@
             <PermissionButton
                 type="primary"
                 class="add-btn"
-                :uhasPermission="`${permission}:add`"
+                :hasPermission="`${permission}:add`"
                 @click="openDialog()"
             >
                 新增
@@ -31,7 +31,7 @@
                 <span>{{ name }}</span>
                 <span class="func-btns" @click="(e) => e.stopPropagation()">
                     <PermissionButton
-                        :uhasPermission="`${permission}:update`"
+                        :hasPermission="`${permission}:update`"
                         type="link"
                         :tooltip="{
                             title: '编辑',
@@ -41,7 +41,7 @@
                         <AIcon type="EditOutlined" />
                     </PermissionButton>
                     <PermissionButton
-                        :uhasPermission="`${permission}:add`"
+                        :hasPermission="`${permission}:add`"
                         type="link"
                         :tooltip="{
                             title: '新增子组织',
@@ -58,7 +58,7 @@
                     </PermissionButton>
                     <PermissionButton
                         type="link"
-                        :uhasPermission="`${permission}:delete`"
+                        :hasPermission="`${permission}:delete`"
                         :tooltip="{ title: '删除' }"
                         :popConfirm="{
                             title: `确定要删除吗`,
@@ -103,7 +103,7 @@ const treeMap = new Map(); // 数据的map版本
 const treeData = ref<any[]>([]); // 展示的数据
 const selectedKeys = ref<string[]>([]); // 当前选中的项
 
-function getTree() {
+function getTree(cb?: Function) {
     loading.value = true;
     const params = {
         paging: false,
@@ -121,6 +121,7 @@ function getTree() {
             sourceTree.value = resp.result; // 报存源数据
             handleTreeMap(resp.result); // 将树形结构转换为map结构
             treeData.value = resp.result; // 第一次不用进行过滤
+            cb && cb();
         })
         .finally(() => {
             loading.value = false;
@@ -202,15 +203,10 @@ const openDialog = (row: any = {}) => {
 };
 init();
 function init() {
-    getTree();
+    getTree(save ? openDialog : undefined);
     watch(selectedKeys, (n) => {
         emits('change', n[0]);
     });
-    if (save) {
-        nextTick(() => {
-            openDialog();
-        });
-    }
 }
 </script>
 
