@@ -1693,7 +1693,7 @@ const Status = defineComponent({
                 />
             )}
             {
-                bindParentVisible && (
+                bindParentVisible.value && (
                     <BindParentDevice
                         data={device.value}
                         onCancel={() => {

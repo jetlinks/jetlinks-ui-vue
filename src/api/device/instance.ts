@@ -100,7 +100,7 @@ export const deviceImport = (productId: string, fileUrl: string, autoDeploy: boo
  * @param type 文件类型
  * @returns 
  */
-export const deviceExport = (productId: string, type: string) => `${BASE_API_PATH}/device-instance${!!productId ? '/' + productId : ''}/export.${type}`
+export const deviceExport = (productId: string, type: string) => `${BASE_API_PATH}/device-instance${!!productId ? `/${productId}` : ''}/export.${type}`
 
 /**
  * 验证设备ID是否重复

@@ -23,11 +23,12 @@
                         :tab="i.tab"
                     />
                 </j-tabs>
-                <JEmpty v-else style="margin: 250px 0" />
+                <JEmpty v-else style="margin: 180px 0" />
             </div>
             <div class="property-box-right">
                 <Event v-if="type === 'event'" :data="data" />
-                <Property v-else :data="properties" />
+                <Property v-else-if="type === 'property'" :data="properties" />
+                <JEmpty v-else style="margin: 220px 0" />
             </div>
         </div>
     </j-card>
@@ -96,6 +97,13 @@ const onSearch = () => {
         tabList.value = _.cloneDeep(li)
     } else {
         tabList.value = _.cloneDeep(arr)
+    }
+    const dt = tabList.value?.[0]
+    if (dt) {
+        data.value = dt
+        type.value = dt.type;
+    } else {
+        type.value = ''
     }
 };
 const tabChange = (key: string) => {

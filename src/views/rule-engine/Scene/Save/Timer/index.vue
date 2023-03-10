@@ -13,17 +13,16 @@
 import { useSceneStore } from '@/store/scene';
 import Action from '../action/index.vue';
 import { storeToRefs } from 'pinia';
-import { ActionsType } from '@/components/Table';
+import { ActionsType } from '@/views/rule-engine/Scene/typings';
 
 const sceneStore = useSceneStore();
 const { data } = storeToRefs(sceneStore);
 
-const onActionAdd = (_data: ActionsType) => {
-  console.log(_data)
-    // if (data?.branches && _data) {
-    //     const newThen = [...data?.branches?.[0].then, data];
-    //     data.branches[0].then = newThen;
-    // }
+const onActionAdd = (_data: any) => {
+    if (data.value?.branches && _data) {
+      data?.value.branches?.[0].then.push(_data)
+      console.log(data?.value.branches?.[0].then)
+    }
 };
 
 const onActionUpdate = (_data: ActionsType, type: boolean) => {
