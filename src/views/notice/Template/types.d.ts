@@ -60,6 +60,7 @@ export type TemplateFormData = {
         templateCode?: string;
         ttsCode?: string;
         // message?: string;
+        ttsmessage?: string;
         playTimes?: number;
         calledShowNumbers?: string;
         calledNumber?: string;
