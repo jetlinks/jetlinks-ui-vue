@@ -5,9 +5,9 @@
     v-model:visible='visible'
     @visibleChange='visibleChange'
   >
-    <div>
+    <div @click.prevent='visible = true'>
       <slot :label='label'>
-        <div class='dropdown-button value' @click.prevent='visible = true'>
+        <div class='dropdown-button value'>
             <AIcon v-if='!!icon' :type='icon' />
             {{ label }}
         </div>
@@ -30,7 +30,7 @@
               <DropdownMenus
                 v-if='["select","enum", "boolean"].includes(item.component)'
                 :options='["metric", "upper"].includes(item.key) ?  metricOption : options'
-                @change='onSelect'
+                @click='onSelect'
               />
               <div
                 v-else-if='item.component === "tree"'
@@ -122,7 +122,8 @@ const valueItemChange = (e: string) => {
   emit('select', e)
 }
 
-const sonSelect = (e: string, option: any) => {
+const onSelect = (e: string, option: any) => {
+  console.log(e, option)
   visible.value = false
   label.value = option.label
   emit('update:value', e)

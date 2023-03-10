@@ -82,6 +82,7 @@ const handleParamsData = (data: any[]): any[] => {
     return {
       ...item,
       key: item.column,
+      disabled: !!item.children,
       children: handleParamsData(item.children)
     }
   }) || []

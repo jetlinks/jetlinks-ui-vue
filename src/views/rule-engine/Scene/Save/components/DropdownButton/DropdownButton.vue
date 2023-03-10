@@ -135,11 +135,10 @@ const timeSelect = (v: string) => {
   emit('select', v)
 }
 
-const menuSelect = (v: any) => {
-  const option = getOption(props.options, props.value, props.valueName)
-  selectValue.value  = v.key
+const menuSelect = (v: string, option: any) => {
+  selectValue.value  = v
   visible.value = false
-  emit('update:value', v.key)
+  emit('update:value', v)
   emit('select', option)
 }
 
