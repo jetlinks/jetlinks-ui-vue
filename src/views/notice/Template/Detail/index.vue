@@ -526,6 +526,7 @@
                             </j-form-item>
                             <j-form-item
                                 v-if="formData.template.templateType === 'tts'"
+                                v-bind="validateInfos['template.ttsmessage']"
                             >
                                 <template #label>
                                     <span>
@@ -541,8 +542,7 @@
                                     </span>
                                 </template>
                                 <j-textarea
-                                    v-model:value="formData.template.message"
-                                    show-count
+                                    v-model:value="formData.template.ttsmessage"
                                     :rows="5"
                                     placeholder="内容中的变量将用于阿里云语音验证码"
                                 />
@@ -840,7 +840,8 @@ const resetPublicFiles = () => {
             formData.value.template.templateType = 'tts';
             formData.value.template.templateCode = '';
             formData.value.template.ttsCode = '';
-            formData.value.template.message = '';
+            // formData.value.template.message = '';
+            formData.value.template.ttsmessage = '';
             formData.value.template.playTimes = 1;
             formData.value.template.calledShowNumbers = '';
             formData.value.template.calledNumber = '';
@@ -910,26 +911,29 @@ const formRules = ref({
     // 阿里云语音
     'template.templateType': [{ required: true, message: '请选择类型' }],
     'template.templateCode': [{ required: true, message: '请输入模板ID' }],
+    'template.calledShowNumbers': [
+        {
+            trigger: 'change',
+            validator(_rule: Rule, value: string) {
+                if (!value) return Promise.resolve();
+                if (!phoneRegEx(value)) return Promise.reject('请输入有效号码');
+                return Promise.resolve();
+            },
+        },
+    ],
     // 短信
     'template.code': [{ required: true, message: '请选择模板' }],
     'template.signName': [{ required: true, message: '请输入签名' }],
     // webhook
     description: [{ max: 200, message: '最多可输入200个字符' }],
     'template.message': [
-        { required: true, message: '请输入' },
+        {
+            required: true,
+            message: '请输入',
+        },
         { max: 500, message: '最多可输入500个字符' },
     ],
-    'template.calledShowNumbers': [
-        {
-            trigger: 'blur',
-            validator(_rule: Rule, value: string) {
-                if (!phoneRegEx(value)) {
-                    return Promise.reject('请输入有效号码');
-                }
-                return Promise.resolve();
-            },
-        },
-    ],
+    'template.ttsmessage': [{ max: 500, message: '最多可输入500个字符' }],
 });
 
 const { resetFields, validate, validateInfos, clearValidate } = useForm(
@@ -1033,6 +1037,7 @@ const variableReg = () => {
  * 钉钉机器人 消息类型选择改变
  */
 const handleMessageTypeChange = () => {
+    if (formData.value.type !== 'dingTalk') return;
     delete formData.value.template.markdown;
     delete formData.value.template.link;
     delete formData.value.template.text;
@@ -1159,6 +1164,13 @@ const getSignsList = async () => {
  */
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
+    // 变量列表存在, 且存在空值
+    if (
+        formData.value.variableDefinitions.length &&
+        formData.value.variableDefinitions.some((s: any) => !s.name)
+    )
+        return;
+    // 邮件没有配置字段
     if (formData.value.type === 'email') delete formData.value.configId;
     if (formData.value.template.messageType === 'markdown')
         delete formData.value.template.link;
@@ -1169,9 +1181,16 @@ const handleSubmit = () => {
     setTimeout(() => {
         validate()
             .then(async () => {
-                if (formData.value.provider === 'ttsCode')
+                if (formData.value.provider === 'aliyun') {
                     formData.value.template.ttsCode =
                         formData.value.template.templateCode;
+                    // 语音message字段与其他类型的message字段重名, 但语音不需要必填验证
+                    // 取别名ttsmessage, 验证通过之后, 赋值回message字段, 并删除别名字段
+                    formData.value.template.message =
+                        formData.value.template.ttsmessage;
+                    delete formData.value.template.ttsmessage;
+                }
+
                 btnLoading.value = true;
                 let res;
                 if (!formData.value.id) {

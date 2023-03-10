@@ -156,6 +156,8 @@ watch(
     (val) => {
         if (val) {
             getDepartment();
+        } else {
+            dataSource.value = [];
         }
     },
 );
@@ -357,19 +359,19 @@ const getTableData = () => {
                 const bindUser = bindUsers.find(
                     (f: any) => f.thirdPartyUserId === deptUser.id,
                 );
-                if (bindUser) {
-                    unBindUser = unBindUsers.find(
-                        (f: any) => f.id === bindUser.userId,
-                    );
-                }
+                // if (bindUser) {
+                //     unBindUser = unBindUsers.find(
+                //         (f: any) => f.id === bindUser.userId,
+                //     );
+                // }
                 dataSource.value.push({
                     thirdPartyUserId: deptUser.id,
                     thirdPartyUserName: deptUser.name,
-                    bindId: bindUser?.userId,
-                    userId: unBindUser?.id,
+                    bindId: bindUser?.id,
+                    userId: bindUser?.userId,
                     userName: unBindUser
                         ? `${unBindUser.name}(${unBindUser.username})`
-                        : '',
+                        : bindUser?.providerName,
                     status: {
                         text: bindUser?.providerName ? '已绑定' : '未绑定',
                         value: bindUser?.providerName ? 'success' : 'error',

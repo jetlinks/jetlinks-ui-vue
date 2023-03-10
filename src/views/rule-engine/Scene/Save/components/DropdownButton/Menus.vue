@@ -7,13 +7,13 @@
 </template>
 
 <script lang='ts' setup name='DropdownMenus'>
-import { isBoolean } from 'lodash-es'
+import { isBoolean, isUndefined } from 'lodash-es'
 import { getOption } from '../DropdownButton/util'
 
 type ValueType = string| number | boolean
 type Emits = {
   (e: 'update:value', value: ValueType): void
-  (e: 'click', data: any): void
+  (e: 'click', value: string, data: any): void
 }
 
 const props = defineProps({
@@ -32,29 +32,39 @@ const emit = defineEmits<Emits>()
 const myOptions = computed(() => {
   return props.options.map((item: any) => {
     let _label = item.label || item.name
-    if (isBoolean(item.value)) {
-      _label = item.value === true ? '是' : '否'
+    let _value = isUndefined(item.value) ? item.id : item.value
+    if (isBoolean(_value)) {
+      _label = _value === true ? '是' : '否'
+      _value = String(_value)
     }
     return {
       ...item,
       label: _label,
-      value: item.value || item.id,
+      value: _value
     }
   })
 })
 
 const myValue = ref(props.value)
 
+const handleBoolean = (key: string) => {
+  return key === 'false' ? false : true
+}
+
 const click = (e: any) => {
-  const option = getOption(myOptions.value, e.key)
-  myValue.value = e.key
-  emit('update:value', e.key)
-  emit('click', {
-    key: e.key,
+  const _key = ['true', 'false'].includes(e.key) ? handleBoolean(e.key) : e.key
+  const option = getOption(myOptions.value, _key)
+  myValue.value = _key
+  emit('update:value', _key)
+  emit('click', _key, {
+    key: _key,
     ...option
   })
 }
 
+watch(() => props.value, () => {
+  myValue.value = props.value
+}, { immediate: true})
 </script>
 
 <style scoped lang='less'>

@@ -11,10 +11,26 @@
                 <span v-if="column.dataIndex === 'id'">
                     {{ record[column.dataIndex] }}
                 </span>
-                <j-input
-                    v-if="column.dataIndex === 'name'"
-                    v-model:value="record.name"
-                />
+                <template v-if="column.dataIndex === 'name'">
+                    <j-input
+                        v-model:value="record.name"
+                        :class="
+                            !record.name || record.name.length > 64
+                                ? 'has-error'
+                                : ''
+                        "
+                    />
+                    <!-- antd useForm 无table表单校验 手动添加校验 -->
+                    <div
+                        class="error-text"
+                        v-show="!record.name || record.name.length > 64"
+                    >
+                        <span v-show="!record.name"> 该字段是必填字段 </span>
+                        <span v-show="record.name.length > 64">
+                            最多可输入64个字符
+                        </span>
+                    </div>
+                </template>
                 <j-select
                     v-if="column.dataIndex === 'type'"
                     v-model:value="record.type"
@@ -91,7 +107,7 @@ const columns = [
     {
         title: '名称',
         dataIndex: 'name',
-        // width: 160,
+        width: 160,
     },
     {
         title: '类型',
@@ -133,4 +149,20 @@ const handleTypeChange = (record: IVariable) => {
 };
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.table-wrapper {
+    .has-error {
+        border-color: rgba(255, 77, 79);
+        &:focus {
+            border-color: rgba(255, 120, 117);
+            box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.2);
+            border-right-width: 1px !important;
+            outline: 0;
+        }
+    }
+    .error-text {
+        color: rgba(255, 77, 79);
+        font-size: 12px;
+    }
+}
+</style>

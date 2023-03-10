@@ -52,6 +52,7 @@ import EdgeMap from '../EdgeMap/index.vue';
 import { useInstanceStore } from '@/store/instance';
 import { storeToRefs } from 'pinia';
 import { provide } from 'vue';
+import { getEdgeMap, removeEdgeMap } from '@/api/device/instance';
 const instanceStore = useInstanceStore();
 const { current } = storeToRefs(instanceStore);
 const props = defineProps(['childData']);
@@ -89,18 +90,71 @@ const selectChange = (e: any) => {
 };
 watchEffect(() => {
     if (props.childData?.id) {
+        current.value.parentId = props.childData.id;
+        form.name = props.childData?.name;
+        form.productId = props.childData?.productId;
+        if (props.childData.deriveMetadata) {
+            const metadata = JSON.parse(
+                props.childData?.deriveMetadata || {},
+            )?.properties?.map((item: any) => ({
+                metadataId: item.id,
+                metadataName: `${item.name}(${item.id})`,
+                metadataType: 'property',
+                name: item.name,
+            }));
+            if (metadata && metadata.length !== 0) {
+                getEdgeMap(current.value.id, {
+                    deviceId: props.childData.id,
+                    query: {},
+                }).then((res) => {
+                    if (res.status === 200) {
+                        // console.log(res.result)
+                        //合并物模型
+                        const array = res.result[0]?.reduce(
+                            (x: any, y: any) => {
+                                const metadataId = metadata.find(
+                                    (item: any) =>
+                                        item.metadataId === y.metadataId,
+                                );
+                                if (metadataId) {
+                                    Object.assign(metadataId, y);
+                                } else {
+                                    x.push(y);
+                                }
+                                return x;
+                            },
+                            metadata,
+                        );
+                        //删除物模型
+                        const items = array.filter(
+                            (item: any) => item.metadataName,
+                        );
+                        current.value.metadata = items;
+                        const delList = array
+                            .filter((a: any) => !a.metadataName)
+                            .map((b: any) => b.id);
+                        //删除后解绑
+                        if (delList && delList.length !== 0) {
+                            removeEdgeMap(current.value.id, {
+                                deviceId: props.childData.id,
+                                idList: [...delList],
+                            });
+                        }
+                    }
+                });
+            }
+        }
         visible.value = true;
     }
 });
-watchEffect(() => {});
 
 const validate = async () => {
-   return  formRef.value.validateFields();
+    return formRef.value.validateFields();
 };
-provide('validate',validate);
-const comeBack = () =>{
+provide('validate', validate);
+const comeBack = () => {
     emit('closeChildSave');
-}
+};
 </script>
 <style lang="less" scoped>
 </style>

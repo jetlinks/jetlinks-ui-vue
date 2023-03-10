@@ -40,10 +40,8 @@
         icon='icon-canshu'
         placeholder='参数值'
         :options='valueOptions'
-        :tabsOptions='[
-          { label: "手动输入", component: "input", key: "fixed" },
-          { label: "指标值", component: "time", key: "manual" }
-        ]'
+        :metricOption='metricOption'
+        :tabsOptions='tabsOptions'
         v-model:value='paramsValue.value.value'
         v-model:source='paramsValue.value.source'
       />
@@ -52,10 +50,8 @@
         icon='icon-canshu'
         placeholder='参数值'
         :options='valueOptions'
-        :tabsOptions='[
-          { label: "手动输入", component: "time", key: "fixed" },
-          { label: "指标值", component: "input", key: "manual" },
-        ]'
+        :metricOption='metricOption'
+        :tabsOptions='tabsOptions'
         v-model:value='paramsValue.value.value'
         v-model:source='paramsValue.value.source'
       />
@@ -80,6 +76,16 @@ import ParamsDropdown, { DoubleParamsDropdown } from '../ParamsDropdown'
 import { inject } from 'vue'
 import { ContextKey } from './util'
 
+type Emit = {
+  (e: 'update:value', data: TermsType): void
+}
+
+type TabsOption = {
+  label: string;
+  key: string;
+  component: string
+}
+
 const props = defineProps({
   isFirst: {
     type: Boolean,
@@ -98,7 +104,7 @@ const props = defineProps({
     default: () => ({
       column: '',
       type: '',
-      termType: undefined,
+      termType: 'eq',
       value: {
         source: 'fixed',
         value: undefined
@@ -106,6 +112,8 @@ const props = defineProps({
     })
   }
 })
+
+const emit = defineEmits<Emit>()
 
 const paramsValue = reactive<TermsType>({
   column: props.value.column,
@@ -115,21 +123,56 @@ const paramsValue = reactive<TermsType>({
 })
 
 const showDelete = ref(false)
-const columnOptions: any = inject(ContextKey)
-const options = ref<any>([])
+const columnOptions: any = inject(ContextKey) //
+const termTypeOptions = ref<Array<{ id: string, name: string}>>([]) // 条件值
+const valueOptions = ref<any[]>([]) // 默认手动输入下拉
+const metricOption = ref<any[]>([])  // 根据termType获取对应指标值
+const tabsOptions = ref<Array<TabsOption>>([{ label: '手动输入', key: 'manual', component: 'string' }])
+let metricsCacheOption: any[] = [] // 缓存指标值
 
-const termTypeOptions = computed(() => {
+const handOptionByColumn = (option: any) => {
+  if (option) {
+    termTypeOptions.value = option.termTypes || []
+    metricsCacheOption = option.metrics || []
+    tabsOptions.value.length = 1
+    tabsOptions.value[0].component = option.dataType
+
+    if (option.metrics && option.metrics.length) {
+      tabsOptions.value.push(
+        { label: '指标值', key: 'metric', component: 'select' }
+      )
+    }
+
+    if (option.dataType === 'boolean') {
+      valueOptions.value = [
+        { label: '是', value: true },
+        { label: '否', value: false },
+      ]
+    } else if(option.dataType === 'enum') {
+      valueOptions.value = option.options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || []
+    } else{
+      valueOptions.value = option.options || []
+    }
+  } else {
+    termTypeOptions.value = []
+    metricsCacheOption = []
+    valueOptions.value = []
+  }
+}
+
+watchEffect(() => {
   const option = getOption(columnOptions.value, paramsValue.column, 'column')
-  return option && Object.keys(option).length ? option.termTypes : []
-})
-
-const tabsOptions = computed(() => {
-  // 获取当前value对应的option
-  return []
+  handOptionByColumn(option)
 })
 
 const showDouble = computed(() => {
-  return paramsValue.termType ? ['nbtw', 'btw', 'in', 'nin'].includes(paramsValue.termType) : false
+  const isRange = paramsValue.termType ? ['nbtw', 'btw', 'in', 'nin'].includes(paramsValue.termType) : false
+  if (metricsCacheOption.length) {
+    metricOption.value = metricsCacheOption.filter(item => isRange ? item.range : !item.range)
+  } else {
+    metricOption.value = []
+  }
+  return isRange
 })
 
 const mouseover = () => {
@@ -145,11 +188,20 @@ const mouseout = () => {
 }
 
 const columnSelect = () => {
-
+  paramsValue.termType = 'eq'
+  paramsValue.value = {
+    source: tabsOptions.value[0].key,
+    value: undefined
+  }
+  emit('update:value', { ...paramsValue })
 }
 
 const termsTypeSelect = () => {
-
+  paramsValue.value = {
+    source: tabsOptions.value[0].key,
+    value: undefined
+  }
+  emit('update:value', { ...paramsValue })
 }
 
 const termAdd = () => {
@@ -159,10 +211,6 @@ const termAdd = () => {
 const onDelete = () => {
 
 }
-
-const valueOptions = computed(() => {
-  return []
-})
 
 nextTick(() => {
   Object.assign(paramsValue, props.value)

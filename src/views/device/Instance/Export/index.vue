@@ -51,7 +51,6 @@
 import { queryNoPagingPost } from '@/api/device/product';
 import { downloadFile } from '@/utils/utils';
 import encodeQuery from '@/utils/encodeQuery';
-import { BASE_API_PATH } from '@/utils/variable';
 import { deviceExport } from '@/api/device/instance';
 
 const emit = defineEmits(['close']);

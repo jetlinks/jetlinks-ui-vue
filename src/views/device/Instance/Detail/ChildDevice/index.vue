@@ -123,7 +123,7 @@ import { usePermissionStore } from '@/store/permission';
 import SaveChild from './SaveChild/index.vue';
 
 const instanceStore = useInstanceStore();
-const { detail } = storeToRefs(instanceStore);
+const { detail  } = storeToRefs(instanceStore);
 const router = useRouter();
 const childVisible = ref(false);
 const permissionStore = usePermissionStore();

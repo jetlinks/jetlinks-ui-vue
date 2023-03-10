@@ -9,7 +9,7 @@
           <template #title>
             <div class="edit-title" style="display: flex; justify-content: space-between; align-items: center;">
               <div style="width: 150px;">配置参数</div>
-              <AIcon type="CloseOutlined" @click="handleClose" />
+              <div @click="handleClose"><AIcon type="CloseOutlined" /></div>
             </div>
           </template>
           <template #content>
@@ -40,8 +40,8 @@
           </div>
         </j-popover>
       </div>
-      <div class="item-right">
-        <AIcon type="DeleteOutlined" @click="handleDelete(index)" />
+      <div class="item-right" @click="handleDelete(index)">
+        <AIcon type="DeleteOutlined" />
       </div>
     </div>
     <j-button type="dashed" block @click="handleAdd">
@@ -96,6 +96,7 @@ const handleDelete = (index: number) => {
   _value.value.splice(index, 1)
 }
 const handleClose = () => {
+  console.log(editIndex.value)
   editIndex.value = -1
 }
 const handleAdd = () => {
