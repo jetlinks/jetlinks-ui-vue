@@ -1,7 +1,5 @@
-import { useMetadataStore } from "@/store/metadata";
 import { Rule } from "ant-design-vue/es/form";
 
-const metadataStore = useMetadataStore()
 export const validateEnum = async (_rule: Rule, val: Record<any, any>[]) => {
   if (val.length === 0) return Promise.reject(new Error('请配置枚举项'));
   const flag = val.every((item) => {
@@ -13,8 +11,8 @@ export const validateEnum = async (_rule: Rule, val: Record<any, any>[]) => {
   return Promise.resolve();
 }
 
-export const validateArray = async (_rule: Rule, val: Record<any, any>, title = '元素配置') => {
-  if (!val) return Promise.reject(new Error(`请输入${title}`));
+export const validateArray = async (_rule: Rule, val: Record<any, any>) => {
+  if (!val) return Promise.reject(new Error(`请输入元素配置`));
   await validateValueType(_rule, val)
   return Promise.resolve();
 }
