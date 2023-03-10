@@ -30,7 +30,7 @@ export interface uploaderType {
     iconTypes: Array<string>,
     beforeLogoUpload: (file: UploadProps['beforeUpload']) => void
     handleChangeLogo: (info: UploadChangeParam) => void
-    beforeBackUpload: (file: UploadProps['beforeUpload']) => void
+    beforeBackUpload?: (file: UploadProps['beforeUpload']) => void
     changeBackUpload: (info: UploadChangeParam) => void
     beforeIconUpload: (file: UploadProps['beforeUpload']) => void
     changeIconUpload: (info: UploadChangeParam) => void
