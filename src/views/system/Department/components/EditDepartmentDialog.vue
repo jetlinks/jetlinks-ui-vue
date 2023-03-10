@@ -3,7 +3,7 @@
         visible
         :title="title"
         width="520px"
-        @cancel="emits('update:visible',false)"
+        @cancel="emits('update:visible', false)"
         @ok="confirm"
         class="edit-dialog-container"
         cancelText="取消"
@@ -16,7 +16,7 @@
                     v-model:value="form.data.parentId"
                     style="width: 100%"
                     placeholder="请选择上级组织"
-                    :tree-data="props.treeData"
+                    :tree-data="treeData"
                     :field-names="{ value: 'id' }"
                 >
                     <template #title="{ name }"> {{ name }} </template>
@@ -80,6 +80,42 @@ const confirm = () => {
         })
         .finally(() => (loading.value = false));
 };
+
+const treeData = computed(() => {
+    if (!props.data.id) return props.treeData;
+    const result = cloneDeep(props.treeData) as treeType[];
+    const me = findItemById(result, props.data.id) as treeType;
+    me.disabled = true;
+    me.children && me.children.length > 0 && filterTree(me.children);
+    return result;
+});
+/**
+ * 在给定的树中通过id匹配
+ * @param node 
+ * @param id 
+ */
+const findItemById = (node: treeType[], id: string): treeType | null => {
+    let result = null;
+    for (const item of node) {
+        if (item.id === id) return item;
+        else if (item.children && item.children.length > 0) {
+            result = findItemById(item.children, id);
+            if (result) return result;
+        }
+    }
+    return null;
+};
+/**
+ * 将此树下的所有节点禁用
+ * @param treeNode 
+ */
+const filterTree = (treeNode: treeType[]) => {
+    if (treeNode.length < 1) return;
+    treeNode.forEach((item) => {
+        item.disabled = true;
+        item.children && item.children.length > 0 && filterTree(item.children);
+    });
+};
 // 表单相关
 const formRef = ref<FormInstance>();
 const form = reactive({
@@ -124,6 +160,14 @@ const form = reactive({
 });
 form.init();
 
+type treeType = {
+    id: string;
+    parentId?: string;
+    name: string;
+    sortIndex: string | number;
+    children?: treeType[];
+    disabled?: boolean;
+};
 type formType = {
     id?: string;
     parentId?: string;

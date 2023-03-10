@@ -194,8 +194,9 @@ const openDialog = (row: any = {}) => {
         if (row.parentId) {
             childrens = row.children;
         } else childrens = treeData.value;
+        const indexs = childrens.length > 0 ? childrens?.map((item) => item.sortIndex) :[0]
         sortIndex =
-            Math.max(...(childrens?.map((item) => item.sortIndex) || [0])) + 1;
+            Math.max(...indexs) + 1;
     }
 
     dialog.selectItem = { ...row, sortIndex };
