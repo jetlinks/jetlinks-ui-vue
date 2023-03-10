@@ -3,7 +3,7 @@
     <template #title>
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <div style="width: 150px;">配置元素</div>
-        <AIcon type="CloseOutlined" @click="visible = false" />
+        <div @click="visible = false"><AIcon type="CloseOutlined" /></div>
       </div>
     </template>
     <template #content>
@@ -55,7 +55,7 @@ const _value = computed({
 const visible = ref(false)
 
 onMounted(() => {
-  emit('update:value', { extends: {}, ...props.value })
+  emit('update:value', { expands: {}, ...props.value })
 })
 </script>
 <style lang="less" scoped>
