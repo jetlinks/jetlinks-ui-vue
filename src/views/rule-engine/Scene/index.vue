@@ -121,7 +121,7 @@
     </page-container>
 </template>
 
-<script setup lang='ts'>
+<script setup lang='ts' name='Scene'>
 import SaveModal from './Save/save.vue';
 import type { SceneItem } from './typings';
 import { useMenuStore } from 'store/menu';

@@ -55,6 +55,9 @@ const click = (e: any) => {
   })
 }
 
+watch(() => props.value, () => {
+  myValue.value = props.value
+}, { immediate: true})
 </script>
 
 <style scoped lang='less'>

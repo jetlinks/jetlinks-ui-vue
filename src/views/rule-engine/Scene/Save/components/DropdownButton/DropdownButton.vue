@@ -1,8 +1,17 @@
 <template>
-  <j-dropdown class='scene-select' trigger='click'>
-    <div :class='dropdownButtonClass'>
-      <AIcon v-if='!!icon' :type='icon' />
-      {{ label }}
+  <j-dropdown
+    class='scene-select'
+    trigger='click'
+    v-model:visible='visible'
+    @visibleChange='visibleChange'
+  >
+    <div @click.prevent='visible = true'>
+      <slot :label='label'>
+        <div :class='dropdownButtonClass' >
+            <AIcon v-if='!!icon' :type='icon' />
+            {{ label }}
+        </div>
+      </slot>
     </div>
     <template #overlay>
       <div class='scene-select-content'>
@@ -18,7 +27,7 @@
             :type='component'
             @change='timeSelect'
           />
-          <div v-else>
+          <div style='min-width: 400px' v-else>
             <j-tree
               :selectedKeys='selectValue ? [selectValue] : []'
               :treeData='options'
@@ -89,20 +98,18 @@ const props = defineProps({
   component: {
     type: String,
     default: 'select' // 'select' | 'treeSelect'
-  }
+  },
 })
 
 const emit = defineEmits<Emit>()
 
 const label = ref<LabelType>(props.placeholder)
 const selectValue = ref(props.value)
-const flatMapTree = new Map()
+const visible = ref(false)
 
-const LabelStyle = computed(() => {
-  return {
-    color: selectValue.value ? '#' : '#'
-  }
-})
+const visibleChange = (v: boolean) => {
+  visible.value = v
+}
 
 const dropdownButtonClass = computed(() => ({
   'dropdown-button': true,
@@ -112,24 +119,34 @@ const dropdownButtonClass = computed(() => ({
   'type': props.type === 'type',
 }))
 
-const treeSelect = (v: any) => {
-
+const treeSelect = (v: any, option: any) => {
+  const node = option.node
+  visible.value = false
+  label.value = node.fullname || node.name
+  selectValue.value = v[0]
+  emit('update:value', node[props.valueName])
+  emit('select', node)
 }
 
 const timeSelect = (v: string) => {
+  selectValue.value = v
+  visible.value = false
   emit('update:value', v)
   emit('select', v)
 }
 
 const menuSelect = (v: any) => {
   const option = getOption(props.options, props.value, props.valueName)
+  selectValue.value  = v.key
+  visible.value = false
   emit('update:value', v.key)
   emit('select', option)
 }
 
 watchEffect(() => {
   const option = getOption(props.options, props.value, props.valueName)
-  if (option && Object.keys(option).length) {
+  selectValue.value = props.value
+  if (option) {
     label.value = option[props.labelName] || option.name
   } else {
     label.value = props.value || props.placeholder
