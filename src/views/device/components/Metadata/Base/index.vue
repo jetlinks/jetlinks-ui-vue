@@ -38,22 +38,20 @@
       </template>
       <template v-if="column.dataIndex === 'action'">
         <j-space>
-          <PermissionButton :uhas-permission="`${permission}:update`" type="link" key="edit" style="padding: 0"
+          <PermissionButton :has-permission="`${permission}:update`" type="link" key="edit" style="padding: 0"
             :udisabled="operateLimits('updata', type)" @click="handleEditClick(record)" :tooltip="{
               title: operateLimits('updata', type) ? '当前的存储方式不支持编辑' : '编辑',
             }">
             <AIcon type="EditOutlined" />
           </PermissionButton>
-          <PermissionButton :uhas-permission="`${permission}:delete`" type="link" key="delete" style="padding: 0"
+          <PermissionButton :has-permission="`${permission}:delete`" type="link" key="delete" style="padding: 0"
             :pop-confirm="{
               title: '确认删除？', onConfirm: async () => {
                 await removeItem(record);
               },
-            }"
-            :tooltip="{
-              title: '删除',
-            }"
-          >
+            }" :tooltip="{
+  title: '删除',
+}">
             <AIcon type="DeleteOutlined" />
           </PermissionButton>
         </j-space>
@@ -69,13 +67,9 @@ import { useProductStore } from '@/store/product'
 import { useMetadataStore } from '@/store/metadata'
 import PermissionButton from '@/components/PermissionButton/index.vue'
 import { TablePaginationConfig, message } from 'ant-design-vue/es'
-import { SystemConst } from '@/utils/consts'
-import { Store } from 'jetlinks-store'
 import { asyncUpdateMetadata, removeMetadata } from '../metadata'
 import { detail } from '@/api/device/instance'
 import Edit from './Edit/index.vue'
-// import { detail } from '@/api/device/instance'
-// import { detail as productDetail } from '@/api/device/product'
 interface Props {
   type: MetadataType;
   target: 'product' | 'device';
@@ -134,10 +128,6 @@ const handleSearch = (searchValue: string) => {
   }
 }
 
-onMounted(() => {
-
-})
-
 const refreshMetadata = () => {
   loading.value = true
   // const res = target === 'product'
@@ -188,11 +178,18 @@ const handleEditClick = (record: MetadataItem) => {
 }
 
 const resetMetadata = async () => {
+  // const { id } = route.params
+  // const resp = await detail(id as string);
+  // if (resp.status === 200) {
+  //   instanceStore.setCurrent(resp?.result || []);
+  // }
   const { id } = route.params
-  const resp = await detail(id as string);
-  if (resp.status === 200) {
-    instanceStore.setCurrent(resp?.result || []);
+  if (target === 'device') {
+    instanceStore.refresh(id as string)
+  } else {
+    productStore.refresh(id as string)
   }
+  metadataStore.set('importMetadata', true)
 };
 
 const removeItem = async (record: MetadataItem) => {
@@ -203,7 +200,7 @@ const removeItem = async (record: MetadataItem) => {
   const result = await asyncUpdateMetadata(target, _currentData);
   if (result.status === 200) {
     message.success('操作成功！');
-    Store.set(SystemConst.REFRESH_METADATA_TABLE, true);
+    // Store.set(SystemConst.REFRESH_METADATA_TABLE, true);
     metadataStore.model.edit = false;
     metadataStore.model.item = {};
     resetMetadata();
