@@ -1,11 +1,11 @@
 <template>
-    <!-- <j-advanced-search
+    <j-advanced-search
         :columns="columns"
         type="simple"
         @search="handleSearch"
         class="search"
         target="scene-trigger-device-device"
-    /> -->
+    />
     <a-divider style="margin: 0" />
     <j-pro-table
         ref="actionRef"

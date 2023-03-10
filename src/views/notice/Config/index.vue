@@ -257,9 +257,7 @@ const columns = [
  * @param params
  */
 const handleSearch = (e: any) => {
-    console.log('handleSearch:', e);
     params.value = e;
-    console.log('params.value: ', params.value);
 };
 
 /**

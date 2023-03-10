@@ -122,7 +122,6 @@ const jumpStep = async (val: number) => {
     if (val === 0) {
         current.value = val;
     } else if (val === 1) {
-        console.log(formModel)
         if (formModel.notifyType) {
             current.value = val;
         } else {

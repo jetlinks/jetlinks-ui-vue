@@ -1,6 +1,6 @@
 <template>
   <j-form-item :name="name.concat(['script'])">
-    <f-rule-editor v-model:value="value.script" :id="id"></f-rule-editor>
+    <f-rule-editor v-model:value="value.script" :id="id" :virtualRule="value"></f-rule-editor>
   </j-form-item>
   <template v-if="showWindow">
     <j-form-item label="规则配置" :name="name.concat(['isVirtualRule'])">

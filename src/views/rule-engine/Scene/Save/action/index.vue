@@ -23,7 +23,11 @@
                             type="serial"
                             :branchesName="props.name"
                             :parallel="false"
-                            :actions="serialArray.length ? serialArray[0].actions : []"
+                            :actions="
+                                serialArray.length ? serialArray[0].actions : []
+                            "
+                            @add="onAdd"
+                            @delete="onDelete"
                         />
                     </div>
                 </a-collapse-panel>
@@ -41,7 +45,11 @@
                             type="parallel"
                             :branchesName="props.name"
                             :parallel="true"
-                            :actions="parallelArray.length ? parallelArray[0].actions : []"
+                            :actions="
+                                parallelArray.length
+                                    ? parallelArray[0].actions
+                                    : []
+                            "
                             @add="onAdd"
                             @delete="onDelete"
                         />
@@ -57,6 +65,7 @@ import ShakeLimit from '../components/ShakeLimit/index.vue';
 import { List } from './ListItem';
 import { BranchesThen } from '../../typings';
 import { PropType } from 'vue';
+import { randomString } from '@/utils/utils';
 
 interface ActionsProps {
     name: number;
@@ -73,13 +82,15 @@ const props = defineProps({
     openShakeLimit: Boolean,
 });
 
+const emit = defineEmits(['update', 'add']);
+
 const shakeLimit = ref({
-    enabled: false
+    enabled: false,
 });
 const activeKeys = ref<string[]>(['1']);
 const parallelArray = ref<BranchesThen[]>([]);
 const serialArray = ref<BranchesThen[]>([]);
-const lock = ref<boolean>(false)
+const lock = ref<boolean>(false);
 
 watch(
     () => props.thenOptions,
@@ -96,8 +107,8 @@ watch(
             parallelArray.value.length &&
             (!serialArray.value.length || !isSerialActions)
         ) {
-            activeKeys.value = ['2']
-            lock.value = true
+            activeKeys.value = ['2'];
+            lock.value = true;
         }
 
         //TODO 回传数据
@@ -109,11 +120,37 @@ watch(
 );
 
 const onDelete = (_key: string) => {
-    console.log(_key)
-}
-const onAdd = (data: any) => {
-    console.log(data)
-}
+    const aIndex = unref(serialArray)[0].actions?.findIndex(
+        (aItem) => aItem.key === _key,
+    );
+    if (aIndex !== -1) {
+        serialArray.value[0].actions?.splice(aIndex, 1);
+        emit('update', serialArray[0], false);
+    }
+};
+const onAdd = (actionItem: any) => {
+    const newParallelArray = [...parallelArray.value];
+    if (newParallelArray.length) {
+        const indexOf = newParallelArray[0].actions?.findIndex(
+            (aItem) => aItem.key === actionItem.key,
+        );
+        if (indexOf !== -1) {
+            newParallelArray[0].actions.splice(indexOf, 1, actionItem);
+        } else {
+            newParallelArray[0].actions.push(actionItem);
+        }
+        parallelArray.value = [...newParallelArray];
+        console.log(parallelArray.value);
+        emit('update', newParallelArray[0], true);
+    } else {
+        actionItem.key = randomString();
+        emit('add', {
+            parallel: true,
+            key: randomString(),
+            actions: [actionItem],
+        });
+    }
+};
 </script>
 
 <style lang="less" scoped>

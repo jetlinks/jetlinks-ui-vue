@@ -1,13 +1,16 @@
 <template>
     <page-container>
         <div class="notification-subscription-container">
-            <Search :columns="columns" @search="query.search" />
+            <j-advanced-search
+                :columns="columns"
+                @search="(params:any)=>queryParams = {...params}"
+            />
             <j-pro-table
                 ref="tableRef"
                 :columns="columns"
                 :request="getNoticeList_api"
                 model="TABLE"
-                :params="query.params.value"
+                :params="queryParams"
                 :defaultParams="{
                     sorts: [{ name: 'notifyTime', order: 'desc' }],
                 }"
@@ -105,7 +108,7 @@ import EditDialog from './components/EditDialog.vue';
 import {
     getNoticeList_api,
     changeStatus_api,
-    remove_api
+    remove_api,
 } from '@/api/account/notificationSubscription';
 import { rowType } from './typing';
 import { message } from 'ant-design-vue';
@@ -147,19 +150,14 @@ const columns = [
         key: 'action',
         ellipsis: true,
         scopedSlots: true,
-        width: '200px'
+        width: '200px',
     },
 ];
-const query = {
-    params: ref({}),
-    search: (params: object) => {
-        query.params.value = {...params};
-    },
-};
+const queryParams = ref({});
 const dialogVisible = ref<boolean>(false);
 const tableRef = ref();
 const table = {
-    seletctRow: ref<rowType>(),
+    seletctRow: ref<any>({}),
     edit: (row?: rowType) => {
         table.seletctRow = {
             ...(row || ({} as any)),
@@ -176,12 +174,12 @@ const table = {
         });
     },
     delete: (row: rowType) => {
-        remove_api(row.id as string).then(resp=>{
-            if(resp.status === 200) {
-                message.success('操作成功！')
-                table.refresh()
-            }else message.warning('操作失败！')
-        })
+        remove_api(row.id as string).then((resp) => {
+            if (resp.status === 200) {
+                message.success('操作成功！');
+                table.refresh();
+            } else message.warning('操作失败！');
+        });
     },
     refresh: () => {
         tableRef.value && tableRef.value.reload();

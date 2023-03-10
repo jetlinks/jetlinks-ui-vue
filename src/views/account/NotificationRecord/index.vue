@@ -1,14 +1,17 @@
 <template>
     <page-container>
         <div class="notification-record-container">
-            <Search :columns="columns" @search="query.search" />
+            <j-advanced-search
+                :columns="columns"
+                @search="(params:any)=>queryParams = {...params}"
+            />
 
             <j-pro-table
                 ref="tableRef"
                 :columns="columns"
                 :request="getList_api"
                 model="TABLE"
-                :params="query.params.value"
+                :params="queryParams"
                 :defaultParams="{
                     'sorts[0].name': 'notifyTime',
                     'sorts[0].order': 'desc',
@@ -52,8 +55,8 @@
                                         ? '标为未读'
                                         : '标为已读',
                             }"
-                        >1
-                            <AIcon type="ReadIconOutlined" />
+                            >
+                            <AIcon type="icon-a-PIZHU1" />
                         </PermissionButton>
                         <PermissionButton
                             type="link"
@@ -158,15 +161,10 @@ const columns = [
         key: 'action',
         ellipsis: true,
         scopedSlots: true,
-        width:'200px'
+        width: '200px',
     },
 ];
-const query = {
-    params: ref({}),
-    search: (params: object) => {
-        query.params.value = { ...params };
-    },
-};
+const queryParams = ref({});
 
 const tableRef = ref();
 const table = {

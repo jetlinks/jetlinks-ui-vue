@@ -1,6 +1,5 @@
 <template>
   <Editor key="simple" @change="change" v-model:value="_value" :id="id" />
-  {{ _value }}
   <Advance v-if="ruleEditorStore.state.model === 'advance'" v-model:value="_value" :model="ruleEditorStore.state.model"
     :virtualRule="virtualRule" :id="id" @change="change" />
 </template>

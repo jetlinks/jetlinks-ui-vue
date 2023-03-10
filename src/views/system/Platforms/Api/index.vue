@@ -3,7 +3,7 @@
         <div class="top">
             <slot name="top" />
         </div>
-        <j-row :gutter="24">
+        <j-row :gutter="24" class="content">
             <j-col
                 :span="24"
                 v-if="props.showTitle"
@@ -151,11 +151,16 @@ function init() {
 
 <style lang="less" scoped>
 .api-page-container {
-    .tree-content {
-        padding-bottom: 30px;
-        height: calc(100vh - 230px);
-        overflow-y: auto;
-        border-right: 1px solid #e9e9e9;
+    .content {
+        background-color: #fff;
+        padding: 24px;
+        margin: 0 !important;
+        .tree-content {
+            padding-bottom: 30px;
+            height: calc(100vh - 230px);
+            overflow-y: auto;
+            border-right: 1px solid #e9e9e9;
+        }
     }
 }
 </style>

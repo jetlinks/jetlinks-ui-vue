@@ -12,8 +12,7 @@ export type DropdownButtonOptions = {
 export type TabsOption = {
   label: string;
   key: string;
-  component: string,
-  options: DropdownButtonOptions[]
+  component: string
 }
 type ValueArrayType = [string, number]
 export type ValueType = string | number | undefined | ValueArrayType
@@ -44,6 +43,10 @@ export const defaultSetting = {
     default: 'fixed'
   },
   options: {
+    type: Array as PropType<Array<DropdownButtonOptions>>,
+    default: () => []
+  },
+  metricOption: {
     type: Array as PropType<Array<DropdownButtonOptions>>,
     default: () => []
   },

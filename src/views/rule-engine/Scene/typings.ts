@@ -187,7 +187,7 @@ export type TriggerType = {
 };
 
 export interface TermsVale {
-  source: keyof typeof Source;
+  source: string;
   /** 手动输入值,source为 manual 时不能为空 */
   value?: Record<string, any> | any[];
   /** 指标值,source为 metric 时不能为空 */

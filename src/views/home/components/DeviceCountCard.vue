@@ -26,13 +26,19 @@ const { jumpPage } = useMenuStore();
 const projectNum = ref(0);
 const deviceNum = ref(0);
 
+const menuPermission = useMenuStore().hasPermission;
 const getData = () => {
-    getDeviceCount_api().then((resp: any) => {
-        deviceNum.value = resp.result;
-    });
-    getProductCount_api({}).then((resp: any) => {
-        projectNum.value = resp.result;
-    });
+    // 有产品菜单权限则获取数据
+    menuPermission('device/Product') &&
+        getDeviceCount_api().then((resp: any) => {
+            deviceNum.value = resp.result;
+        });
+
+    // 有设备菜单权限则获取数据
+    menuPermission('device/Instance') &&
+        getProductCount_api({}).then((resp: any) => {
+            projectNum.value = resp.result;
+        });
 };
 getData();
 </script>

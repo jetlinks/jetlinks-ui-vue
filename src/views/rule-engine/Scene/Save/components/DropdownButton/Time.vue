@@ -62,7 +62,7 @@ const change = (e: string) => {
 }
 </script>
 
-<style lang='less'>
+<style lang='less' scoped>
 .dropdown-time-picker {
   >div{
     position: relative !important;
@@ -85,5 +85,9 @@ const change = (e: string) => {
   .ant-picker-panel-container {
     box-shadow: unset;
   }
+}
+
+.wrapper{
+  display: none;
 }
 </style>
