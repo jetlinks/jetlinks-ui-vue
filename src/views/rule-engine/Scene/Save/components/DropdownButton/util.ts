@@ -26,8 +26,8 @@ export const getComponent = (type: string): string => {
 }
 
 export const getOption = (data: any[], value?: string | number | boolean, key: string = 'name'): DropdownButtonOptions | any => {
-  let option = {}
-  if (!value) return option
+  let option
+  if (value === undefined && value === null) return option
   for (let i = 0; i < data.length; i++) {
     const item = data[i]
     if (item[key] === value) {
@@ -35,7 +35,9 @@ export const getOption = (data: any[], value?: string | number | boolean, key: s
       break
     } else if (item.children && item.children.length){
       option = getOption(item.children, value, key)
-      if (option) break
+      if (option) {
+        break
+      }
     }
   }
   return option

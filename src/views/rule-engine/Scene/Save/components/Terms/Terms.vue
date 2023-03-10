@@ -77,11 +77,22 @@ const rules = [{
   }
 }]
 
+const handleParamsData = (data: any[]): any[] => {
+  return data?.map(item => {
+    return {
+      ...item,
+      key: item.column,
+      disabled: !!item.children,
+      children: handleParamsData(item.children)
+    }
+  }) || []
+}
+
 const queryColumn = (dataModel: FormModelType) => {
   const cloneDevice = cloneDeep(dataModel)
   cloneDevice.branches = cloneDevice.branches?.filter(item => !!item)
   getParseTerm(cloneDevice).then(res => {
-      columnOptions.value = res.result
+      columnOptions.value = handleParamsData(res.result as any[])
   })
 }
 

@@ -5,9 +5,13 @@
     v-model:visible='visible'
     @visibleChange='visibleChange'
   >
-    <div class='dropdown-button value' @click.prevent='visible = true'>
-      <AIcon v-if='!!icon' :type='icon' />
-      {{ label }}
+    <div @click.prevent='visible = true'>
+      <slot :label='label'>
+        <div class='dropdown-button value'>
+            <AIcon v-if='!!icon' :type='icon' />
+            {{ label }}
+        </div>
+      </slot>
     </div>
     <template #overlay>
       <div class='scene-select-content'>
@@ -24,32 +28,36 @@
                 @change='timeChange'
               />
               <DropdownMenus
-                v-if='["metric","enum", "boolean"].includes(item.component)'
-                :options='options'
-                @change='onSelect'
+                v-if='["select","enum", "boolean"].includes(item.component)'
+                :options='["metric", "upper"].includes(item.key) ?  metricOption : options'
+                @click='onSelect'
               />
+              <div
+                v-else-if='item.component === "tree"'
+                style='min-width: 400px'
+              >
+                <j-tree
+                  :selectedKeys='myValue ? [myValue] : []'
+                  :treeData='item.key === "upper" ?  metricOption : options'
+                  @select='treeSelect'
+                  :height='450'
+                  :virtual='true'
+                >
+                  <template #title="{ name, description }">
+                    <j-space>
+                      {{ name }}
+                      <span v-if='description' class='tree-title-description'>{{ description }}</span>
+                    </j-space>
+                  </template>
+                </j-tree>
+              </div>
               <ValueItem
-                v-else-if='valueItemKey.includes(item.component)'
+                v-else
                 v-model:modelValue='myValue'
                 :itemType='getComponent(item.component)'
-                :options='options'
+                :options='item.key === "upper" ?  metricOption : options'
                 @change='valueItemChange'
               />
-              <j-tree
-                v-else
-                :selectedKeys='myValue ? [myValue] : []'
-                :treeData='options'
-                @select='treeSelect'
-                :height='450'
-                :virtual='true'
-              >
-                <template #title="{ name, description }">
-                  <j-space>
-                    {{ name }}
-                    <span v-if='description' class='tree-title-description'>{{ description }}</span>
-                  </j-space>
-                </template>
-              </j-tree>
             </div>
           </j-tab-pane>
         </j-tabs>
@@ -101,10 +109,9 @@ const updateValue = () => {
 }
 
 const treeSelect = (e: any) => {
-  console.log('treeSelect', e)
   visible.value = false
   label.value = e.fullname || e.name
-  emit('update:value', e.id)
+  emit('update:value', e[props.valueName])
   emit('select', e)
 }
 
@@ -115,7 +122,8 @@ const valueItemChange = (e: string) => {
   emit('select', e)
 }
 
-const sonSelect = (e: string, option: any) => {
+const onSelect = (e: string, option: any) => {
+  console.log(e, option)
   visible.value = false
   label.value = option.label
   emit('update:value', e)
@@ -133,14 +141,16 @@ const visibleChange = (v: boolean) => {
   visible.value = v
 }
 
-watch([props.options, props.value], () => {
+watchEffect(() => {
   const option = getOption(props.options, props.value as string, props.valueName) // 回显label值
-  if (option && Object.keys(option).length) {
+  myValue.value = props.value
+  mySource.value = props.source
+  if (option) {
     label.value = option[props.labelName] || option.name
   } else {
     label.value = props.value || props.placeholder
   }
-}, { immediate: true })
+})
 
 </script>
 
