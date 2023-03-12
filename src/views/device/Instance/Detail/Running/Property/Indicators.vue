@@ -109,7 +109,9 @@ const loading = ref<boolean>(false);
 const instanceStore = useInstanceStore();
 const formRef = ref();
 
-const modelRef = reactive({
+const modelRef = reactive<{
+    metrics: any[]
+}>({
     metrics: [],
 });
 

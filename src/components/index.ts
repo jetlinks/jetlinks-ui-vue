@@ -1,5 +1,5 @@
 import type { App } from 'vue'
-import AIcon from './AIcon'
+// import AIcon from './AIcon'
 import PermissionButton from './PermissionButton/index.vue'
 import JTable from './Table/index'
 import TitleComponent from "./TitleComponent/index.vue";
@@ -10,11 +10,12 @@ import NormalUpload from './NormalUpload/index.vue'
 import FileFormat from './FileFormat/index.vue'
 import JProUpload from './JUpload/index.vue'
 import { BasicLayoutPage, BlankLayoutPage } from './Layout'
-import { PageContainer } from 'jetlinks-ui-components'
+import { PageContainer, AIcon } from 'jetlinks-ui-components'
 import Ellipsis from './Ellipsis/index.vue'
 import JEmpty from './Empty/index.vue'
 import AMapComponent from './AMapComponent/index.vue'
 import PathSimplifier from './AMapComponent/PathSimplifier.vue'
+import ValueItem from './ValueItem/index.vue'
 
 export default  {
     install(app: App) {
@@ -35,5 +36,6 @@ export default  {
             .component('JEmpty', JEmpty)
             .component('AMapComponent', AMapComponent)
             .component('PathSimplifier', PathSimplifier)
+            .component('ValueItem', ValueItem)
     }
 }

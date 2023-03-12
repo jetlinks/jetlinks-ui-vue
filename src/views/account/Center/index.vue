@@ -8,10 +8,15 @@
                         style="width: 350px; justify-content: center"
                     >
                         <img
+                            v-if="userInfo.avatar"
                             :src="userInfo.avatar"
                             style="width: 140px; border-radius: 70px"
                             alt=""
                         />
+                        <div class="default-avatar" v-else>
+                            <AIcon type="UserOutlined" />
+                        </div>
+
                         <div
                             style="
                                 width: 100%;
@@ -29,6 +34,7 @@
                                 }"
                                 :action="`${BASE_API_PATH}/file/static`"
                                 @change="upload.changeBackUpload"
+                                :beforeUpload="upload.beforeUpload"
                             >
                                 <j-button>
                                     <AIcon type="UploadOutlined" />
@@ -51,11 +57,17 @@
                         </div>
                         <div class="info-card">
                             <p>注册时间</p>
-                            <p>{{ moment(userInfo.createTime).format('YYYY-MM-DD HH:mm:ss') }}</p>
+                            <p>
+                                {{
+                                    moment(userInfo.createTime).format(
+                                        'YYYY-MM-DD HH:mm:ss',
+                                    )
+                                }}
+                            </p>
                         </div>
                         <div class="info-card">
                             <p>电话</p>
-                            <p>{{ userInfo.telephone }}</p>
+                            <p>{{ userInfo.telephone || '-' }}</p>
                         </div>
                         <div class="info-card">
                             <p>姓名</p>
@@ -117,7 +129,7 @@
                             type="link"
                             @click="editPasswordVisible = true"
                         >
-                            <AIcon type="EditOutlined" style="color: #1d39c4;" />
+                            <AIcon type="EditOutlined" style="color: #1d39c4" />
                         </PermissionButton>
                     </span>
                 </div>
@@ -205,7 +217,7 @@
             <EditInfoDialog
                 v-if="editInfoVisible"
                 v-model:visible="editInfoVisible"
-                :data="{...userInfo}"
+                :data="{ ...userInfo }"
                 @ok="getUserInfo"
             />
             <EditPasswordDialog
@@ -277,6 +289,15 @@ const upload = reactive({
             message.error('logo上传失败，请稍后再试');
         }
     },
+    beforeUpload: ({ size, type }: File) => {
+        const imageTypes = ['jpg', 'png', 'jfif', 'pjp', 'pjpeg', 'jpeg'];
+        const typeBool =
+            imageTypes.filter((typeStr) => type.includes(typeStr)).length > 0;
+        const sizeBool = size < 4 * 1024 * 1024;
+
+        (typeBool && sizeBool) || message.error('请上传正确格式的图片');
+        return typeBool && sizeBool;
+    },
 });
 // 首页视图
 const isApiUser = ref<boolean>();
@@ -346,7 +367,7 @@ function getViews() {
     background-color: #f0f2f5;
     min-height: 100vh;
     .card {
-        margin: 24px;
+        margin: 16px 0;
         padding: 24px;
         background-color: #fff;
         position: relative;
@@ -370,6 +391,18 @@ function getViews() {
             flex-wrap: wrap;
             .content-item {
                 margin-right: 24px;
+
+                .default-avatar {
+                    background-color: #ccc;
+                    color: #fff;
+                    border-radius: 50%;
+                    font-size: 70px;
+                    width: 140px;
+                    height: 140px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
                 .info-card {
                     width: 25%;
 

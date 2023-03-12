@@ -26,7 +26,7 @@ import { notification } from 'ant-design-vue';
 import { changeStatus_api } from '@/api/account/notificationRecord';
 import { useUserInfo } from '@/store/userInfo';
 
-const updateCount = computed(()=>useUserInfo().$state.alarmUpdateCount);
+const updateCount = computed(() => useUserInfo().$state.alarmUpdateCount);
 
 const total = ref(0);
 const list = ref<any[]>([]);
@@ -50,10 +50,20 @@ const subscribeNotice = () => {
 const getList = () => {
     loading.value = true;
     const params = {
-        'terms[0].column': 'state',
-        'terms[0].value': 'unread',
         'sorts[0].name': 'notifyTime',
         'sorts[0].order': 'desc',
+        terms: [
+            {
+                terms: [
+                    {
+                        type: 'or',
+                        value: 'unread',
+                        termType: 'eq',
+                        column: 'state',
+                    },
+                ],
+            },
+        ],
     };
     getList_api(params)
         .then((resp: any) => {

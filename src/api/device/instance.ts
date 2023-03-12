@@ -85,7 +85,7 @@ export const batchDeleteDevice = (data: string[]) => server.put(`/device-instanc
  */
 export const deviceTemplateDownload = (productId: string, type: string) => `${BASE_API_PATH}/device-instance/${productId}/template.${type}`
 
-export const templateDownload = (productId: string, type: string) => server.get(`/device-instance/${productId}/template.${type}`,{},{responseType: 'blob'})
+export const templateDownload = (productId: string, type: string) => server.get(`/device-instance/${productId}/template.${type}`, {}, { responseType: 'blob' })
 /**
  * 设备导入
  * @param productId 产品id
@@ -100,7 +100,7 @@ export const deviceImport = (productId: string, fileUrl: string, autoDeploy: boo
  * @param type 文件类型
  * @returns 
  */
-export const deviceExport = (productId: string, type: string) => `${BASE_API_PATH}/device-instance${!!productId ? '/' + productId : ''}/export.${type}`
+export const deviceExport = (productId: string, type: string) => `${BASE_API_PATH}/device-instance${!!productId ? `/${productId}` : ''}/export.${type}`
 
 /**
  * 验证设备ID是否重复
@@ -244,6 +244,22 @@ export const unbindBatchDevice = (deviceId: string, data: Record<string, any>) =
  * @returns 
  */
 export const bindDevice = (deviceId: string, data: Record<string, any>) => server.post(`/device/gateway/${deviceId}/bind`, data)
+
+/**
+ * 获取产品列表
+ * @param data
+ */
+export const getProductListNoPage = (data: any) => server.post('/device/product/_query/no-paging?paging=false', data)
+
+/**
+ * 修改设备
+ */
+export const editDevice = (parmas: any) => server.patch('/device-instance', parmas)
+
+/**
+ * 新增设备
+ */
+export const addDevice = (params: any) => server.post("/device-instance", params)
 
 /**
  * 设备接入网关状态
@@ -504,14 +520,14 @@ export const productCode = (productId: string) => server.get(`/device/transparen
  * @param productId 
  * @returns 
  */
-export const saveProductCode = (productId: string,data: Record<string, unknown>) => server.post(`/device/transparent-codec/${productId}`,data)
+export const saveProductCode = (productId: string, data: Record<string, unknown>) => server.post(`/device/transparent-codec/${productId}`, data)
 /**
  * 获取设备解析规则
  * @param productId 
  * @param deviceId 
  * @returns 
  */
-export const deviceCode = (productId: string,deviceId:string) => server.get(`device/transparent-codec/${productId}/${deviceId}`)
+export const deviceCode = (productId: string, deviceId: string) => server.get(`device/transparent-codec/${productId}/${deviceId}`)
 /**
  * 保存设备解析规则
  * @param productId 
@@ -520,13 +536,13 @@ export const deviceCode = (productId: string,deviceId:string) => server.get(`dev
  * @param data 
  * @returns 
  */
-export const saveDeviceCode = (productId: string,deviceId:string,data: Record<string, unknown>) => server.post(`/device/transparent-codec/${productId}/${deviceId}`,data)
+export const saveDeviceCode = (productId: string, deviceId: string, data: Record<string, unknown>) => server.post(`/device/transparent-codec/${productId}/${deviceId}`, data)
 /**
  * 编码测试
  * @param data 
  * @returns 
  */
-export const testCode = (data: Record<string, unknown>) => server.post(`/device/transparent-codec/decode-test`,data)
+export const testCode = (data: Record<string, unknown>) => server.post(`/device/transparent-codec/decode-test`, data)
 /**
  * 删除设备解析规则
  * @param productId 

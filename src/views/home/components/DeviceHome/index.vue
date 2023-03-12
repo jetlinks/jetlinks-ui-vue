@@ -1,27 +1,42 @@
 <template>
     <div class="device-home-container">
-        <a-row :gutter="24">
-            <a-col :span="14">
+        <j-row :gutter="24">
+            <j-col :span="14">
                 <BootCard :cardData="deviceBootConfig" cardTitle="物联网引导" />
-            </a-col>
-            <a-col :span="10">
+            </j-col>
+            <j-col :span="10">
                 <DeviceCountCard />
-            </a-col>
-        </a-row>
-        <a-row>
+            </j-col>
+        </j-row>
+        <j-row>
             <PlatformPicCard />
-        </a-row>
-        <a-row>
+        </j-row>
+        <j-row>
             <StepCard
                 cardTitle="设备接入推荐步骤"
                 tooltip="不同的设备因为通信协议的不同，存在接入步骤的差异"
                 :dataList="deviceStepDetails"
             />
-        </a-row>
-    </div> 
+        </j-row>
+
+        <div class="dialog">
+            <ProductChooseDialog
+                v-if="productDialogVisible"
+                v-model:visible="productDialogVisible"
+                @confirm="(id:string)=>jumpPage('device/Product/Detail', { id, tab: 'Device'})"
+            />
+            <DeviceChooseDialog
+                v-if="deviceDialogVisible"
+                v-model:visible="deviceDialogVisible"
+                @confirm="(id:string)=>jumpPage('device/Instance/Detail', { id })"
+            />
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts" name="deviceHome">
+import ProductChooseDialog from '../dialogs/ProductChooseDialog.vue';
+import DeviceChooseDialog from '../dialogs/DeviceChooseDialog.vue';
 import BootCard from '../BootCard.vue';
 import DeviceCountCard from '../DeviceCountCard.vue';
 import PlatformPicCard from '../PlatformPicCard.vue';
@@ -29,6 +44,7 @@ import StepCard from '../StepCard.vue';
 
 import { usePermissionStore } from '@/store/permission';
 import { bootConfig, recommendList } from '../../typing';
+import { useMenuStore } from '@/store/menu';
 
 // 按钮权限控制
 const hasPermission = usePermissionStore().hasPermission;
@@ -39,6 +55,11 @@ const devicePermission = (action: string) =>
 const rulePermission = (action: string) =>
     hasPermission(`rule-engine/Instance:${action}`);
 
+const { jumpPage } = useMenuStore();
+
+const productDialogVisible = ref(false);
+const deviceDialogVisible = ref(false);
+
 const deviceBootConfig: bootConfig[] = [
     {
         english: 'STEP1',
@@ -46,7 +67,7 @@ const deviceBootConfig: bootConfig[] = [
         link: 'device/Product',
         auth: productPermission('add'),
         params: {
-            type: 'add',
+            save: true,
         },
     },
     {
@@ -64,7 +85,7 @@ const deviceBootConfig: bootConfig[] = [
         link: 'rule-engine/Instance',
         auth: rulePermission('add'),
         params: {
-            type: 'add',
+            save: true,
         },
     },
 ];
@@ -77,7 +98,7 @@ const deviceStepDetails: recommendList[] = [
         linkUrl: 'device/Product',
         auth: productPermission('add'),
         params: {
-            type: 'add',
+            save: true,
         },
     },
     {
@@ -87,7 +108,9 @@ const deviceStepDetails: recommendList[] = [
         iconUrl: '/images/home/bottom-1.png',
         linkUrl: 'device/Product/Detail',
         auth: productPermission('update'),
-        dialogTag: 'accessMethod',
+        onClick: () => {
+            productDialogVisible.value = true;
+        },
     },
     {
         title: '添加测试设备',
@@ -105,8 +128,9 @@ const deviceStepDetails: recommendList[] = [
             '对添加的测试设备进行功能调试，验证能否连接到平台，设备功能是否配置正确。',
         iconUrl: '/images/home/bottom-2.png',
         linkUrl: 'device/Instance/Detail',
-        auth: true,
-        dialogTag: 'funcTest',
+        onClick: () => {
+            deviceDialogVisible.value = true;
+        },
     },
     {
         title: '批量添加设备',

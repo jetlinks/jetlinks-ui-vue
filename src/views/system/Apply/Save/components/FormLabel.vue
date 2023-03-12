@@ -2,10 +2,10 @@
     <div class="form-label-container">
         <span class="text">{{ props.text }}</span>
         <span class="required" v-show="props.required">*</span>
-        <a-tooltip>
+        <j-tooltip>
             <template #title>{{ props.tooltip }}</template>
             <AIcon type="QuestionCircleOutlined" class="icon" />
-        </a-tooltip>
+        </j-tooltip>
     </div>
 </template>
 

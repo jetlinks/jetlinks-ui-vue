@@ -16,7 +16,7 @@
             :gridColumn="3"
         >
             <template #headerTitle>
-                <a-space>
+                <j-space>
                     <PermissionButton
                         type="primary"
                         @click="handleAdd"
@@ -34,7 +34,7 @@
                             导入
                         </PermissionButton>
                     </a-upload>
-                    <a-popconfirm
+                    <j-popconfirm
                         title="确认导出？"
                         ok-text="确定"
                         cancel-text="取消"
@@ -43,8 +43,8 @@
                         <PermissionButton hasPermission="notice/Config:export">
                             导出
                         </PermissionButton>
-                    </a-popconfirm>
-                </a-space>
+                    </j-popconfirm>
+                </j-space>
             </template>
             <template #card="slotProps">
                 <CardBox
@@ -67,39 +67,39 @@
                         <h3 class="card-item-content-title">
                             {{ slotProps.name }}
                         </h3>
-                        <a-row>
-                            <a-col :span="12">
+                        <j-row>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">
                                     通知方式
                                 </div>
                                 <div>
                                     {{ getMethodTxt(slotProps.type) }}
                                 </div>
-                            </a-col>
-                            <a-col :span="12">
+                            </j-col>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">说明</div>
                                 <Ellipsis>
                                     {{ slotProps.description }}
                                 </Ellipsis>
-                            </a-col>
-                        </a-row>
+                            </j-col>
+                        </j-row>
                     </template>
                     <template #actions="item">
-                        <a-tooltip
+                        <j-tooltip
                             v-bind="item.tooltip"
                             :title="item.disabled && item.tooltip.title"
                         >
-                            <a-dropdown
+                            <j-dropdown
                                 placement="bottomRight"
                                 v-if="item.key === 'others'"
                             >
-                                <a-button>
+                                <j-button>
                                     <AIcon :type="item.icon" />
                                     <span>{{ item.text }}</span>
-                                </a-button>
+                                </j-button>
                                 <template #overlay>
-                                    <a-menu>
-                                        <a-menu-item
+                                    <j-menu>
+                                        <j-menu-item
                                             v-for="(o, i) in item.children"
                                             :key="i"
                                         >
@@ -113,10 +113,10 @@
                                                 </template>
                                                 <span>{{ o.text }}</span>
                                             </PermissionButton>
-                                        </a-menu-item>
-                                    </a-menu>
+                                        </j-menu-item>
+                                    </j-menu>
                                 </template>
-                            </a-dropdown>
+                            </j-dropdown>
                             <j-popconfirm
                                 v-else-if="item.key === 'delete'"
                                 v-bind="item.popConfirm"
@@ -143,12 +143,12 @@
                                     <span>{{ item.text }}</span>
                                 </PermissionButton>
                             </template>
-                        </a-tooltip>
+                        </j-tooltip>
                     </template>
                 </CardBox>
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
+                <j-space :size="16">
                     <template
                         v-for="i in getActions(slotProps, 'table')"
                         :key="i.key"
@@ -167,7 +167,7 @@
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
                     </template>
-                </a-space>
+                </j-space>
             </template>
         </JProTable>
 
@@ -257,9 +257,7 @@ const columns = [
  * @param params
  */
 const handleSearch = (e: any) => {
-    console.log('handleSearch:', e);
     params.value = e;
-    console.log('params.value: ', params.value);
 };
 
 /**

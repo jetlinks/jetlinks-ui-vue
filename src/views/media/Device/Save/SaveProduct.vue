@@ -1,5 +1,5 @@
 <template>
-    <a-modal
+    <j-modal
         v-model:visible="_vis"
         title="快速添加"
         cancelText="取消"
@@ -9,38 +9,38 @@
         :confirmLoading="btnLoading"
         width="660px"
     >
-        <a-form layout="vertical">
-            <a-form-item label="产品名称" v-bind="validateInfos.name">
-                <a-input
+        <j-form layout="vertical">
+            <j-form-item label="产品名称" v-bind="validateInfos.name">
+                <j-input
                     v-model:value="formData.name"
                     placeholder="请输入名称"
                 />
-            </a-form-item>
+            </j-form-item>
             <template v-if="channel === 'gb28181-2016' && formData.accessId">
-                <a-form-item
+                <j-form-item
                     label="接入密码"
                     v-bind="validateInfos['configuration.access_pwd']"
                 >
-                    <a-input-password
+                    <j-input-password
                         v-model:value="formData.configuration.access_pwd"
                         placeholder="请输入接入密码"
                     />
-                </a-form-item>
-                <a-form-item label="流传输模式">
-                    <a-select
+                </j-form-item>
+                <j-form-item label="流传输模式">
+                    <j-select
                         v-model:value="formData.configuration.stream_mode"
                         placeholder="请选择流传输模式"
                         :options="streamMode"
                     />
-                </a-form-item>
+                </j-form-item>
             </template>
-            <a-form-item label="接入网关" v-bind="validateInfos.accessId">
+            <j-form-item label="接入网关" v-bind="validateInfos.accessId">
                 <div class="gateway-box">
                     <div v-if="!gatewayList.length">
                         暂无数据，请先
-                        <a-button type="link">
+                        <j-button type="link">
                             添加{{ providerType[props.channel] }} 接入网关
-                        </a-button>
+                        </j-button>
                     </div>
                     <div
                         class="gateway-item"
@@ -71,32 +71,34 @@
                                     {{ item.name }}
                                 </h3>
                                 <div class="desc">{{ item.description }}</div>
-                                <a-row v-if="props.channel === 'gb28181-2016'">
-                                    <a-col :span="12">
+                                <j-row v-if="props.channel === 'gb28181-2016'">
+                                    <j-col :span="12">
                                         {{ item.channelInfo?.name }}
-                                    </a-col>
-                                    <a-col :span="12">
+                                    </j-col>
+                                    <j-col :span="12">
                                         {{ item.protocolDetail.name }}
-                                    </a-col>
-                                    <a-col :span="12">
+                                    </j-col>
+                                    <j-col :span="12">
                                         <p
                                             v-for="(i, idx) in item.channelInfo
                                                 ?.addresses"
                                             :key="`${i.address}_address${idx}`"
                                         >
-                                            <a-badge
-                                                :text="i.address"
-                                                :color="
-                                                    i.health === -1
-                                                        ? 'red'
-                                                        : 'green'
-                                                "
-                                            />
+                                            <Ellipsis>
+                                                <j-badge
+                                                    :text="i.address"
+                                                    :color="
+                                                        i.health === -1
+                                                            ? 'red'
+                                                            : 'green'
+                                                    "
+                                                />
+                                            </Ellipsis>
                                         </p>
-                                    </a-col>
-                                </a-row>
-                                <a-row v-else>
-                                    <a-col :span="24">
+                                    </j-col>
+                                </j-row>
+                                <j-row v-else>
+                                    <j-col :span="24">
                                         <div class="subtitle">
                                             {{ item.protocolDetail.name }}
                                         </div>
@@ -105,15 +107,15 @@
                                                 item.protocolDetail.description
                                             }}
                                         </p>
-                                    </a-col>
-                                </a-row>
+                                    </j-col>
+                                </j-row>
                             </template>
                         </CardBox>
                     </div>
                 </div>
-            </a-form-item>
-        </a-form>
-    </a-modal>
+            </j-form-item>
+        </j-form>
+    </j-modal>
 </template>
 
 <script setup lang="ts">
@@ -263,6 +265,7 @@ const handleCancel = () => {
     text-align: center;
     .gateway-item {
         padding: 16px;
+        text-align: left;
         .card-item-content-title,
         .desc,
         .subtitle {

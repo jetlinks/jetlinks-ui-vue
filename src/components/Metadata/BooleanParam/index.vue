@@ -1,35 +1,35 @@
 <template>
   <div class="boolean-param">
-    <a-row :gutter="4">
-      <a-col :span="12">
-        <a-form-item label=" " :name="name.concat(['trueText'])" :rules="[
+    <j-row :gutter="4">
+      <j-col :span="12">
+        <j-form-item label=" " :name="name.concat(['trueText'])" :rules="[
           { required: true, message: '请输入trueText' },
         ]">
-          <a-input v-model:value="value.trueText" placeholder="trueText" size="small" />
-        </a-form-item>
-      </a-col>
-      <a-col :span="12">
-        <a-form-item label="-" :name="name.concat(['trueValue'])" :rules="[
+          <j-input v-model:value="value.trueText" placeholder="trueText" size="small" />
+        </j-form-item>
+      </j-col>
+      <j-col :span="12">
+        <j-form-item label="-" :name="name.concat(['trueValue'])" :rules="[
           { required: true, message: '请输入trueValue' },
         ]">
-          <a-input v-model:value="value.trueValue" placeholder="trueValue" size="small"/>
-        </a-form-item>
-      </a-col>
-      <a-col :span="12">
-        <a-form-item label=" " :name="name.concat(['falseText'])" :rules="[
+          <j-input v-model:value="value.trueValue" placeholder="trueValue" size="small"/>
+        </j-form-item>
+      </j-col>
+      <j-col :span="12">
+        <j-form-item label=" " :name="name.concat(['falseText'])" :rules="[
           { required: true, message: '请输入falseText' },
         ]">
-          <a-input v-model:value="value.falseText" placeholder="falseText" size="small" />
-        </a-form-item>
-      </a-col>
-      <a-col :span="12">
-        <a-form-item label="-" :name="name.concat(['falseValue'])" :rules="[
+          <j-input v-model:value="value.falseText" placeholder="falseText" size="small" />
+        </j-form-item>
+      </j-col>
+      <j-col :span="12">
+        <j-form-item label="-" :name="name.concat(['falseValue'])" :rules="[
           { required: true, message: '请输入falseValue' },
         ]">
-          <a-input v-model:value="value.falseValue" placeholder="falseValue" size="small" />
-        </a-form-item>
-      </a-col>
-    </a-row>
+          <j-input v-model:value="value.falseValue" placeholder="falseValue" size="small" />
+        </j-form-item>
+      </j-col>
+    </j-row>
   </div>
 </template>
 <script setup lang="ts" name="BooleanParam">

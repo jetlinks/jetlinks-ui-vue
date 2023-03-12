@@ -7,6 +7,15 @@
             :options="options"
             allowClear
             style="width: 100%"
+            @change='selectChange'
+        />
+        <j-time-picker
+          v-else-if="typeMap.get(itemType) === 'time'"
+          v-model:value="myValue"
+          allowClear
+          format="HH:mm:ss"
+          style="width: 100%"
+          @change='timeChange'
         />
         <j-date-picker
             v-else-if="typeMap.get(itemType) === 'date'"
@@ -16,20 +25,23 @@
             lang="cn"
             format="YYYY-MM-DD HH:mm:ss"
             style="width: 100%"
+            @change='dateChange'
         />
         <j-input-number
             v-else-if="typeMap.get(itemType) === 'inputNumber'"
             v-model:value="myValue"
             allowClear
             style="width: 100%"
+            @change='inputChange'
         />
         <j-input
             allowClear
             v-else-if="typeMap.get(itemType) === 'object'"
             v-model:value="myValue"
+            @change='inputChange'
         >
             <template #addonAfter>
-                <form-outlined @click="modalVis = true" />
+                <AIcon type="FormOutlined" @click="modalVis = true" />
             </template>
         </j-input>
         <GeoComponent
@@ -50,7 +62,7 @@
                     :showUploadList="false"
                     @change="handleFileChange"
                 >
-                    <cloud-upload-outlined />
+                    <AIcon type="CloudUploadOutlined" />
                 </j-upload>
             </template>
         </j-input>
@@ -60,6 +72,7 @@
             type="text"
             v-model:value="myValue"
             style="width: 100%"
+            @change='inputChange'
         />
 
         <!-- 代码编辑器弹窗 -->
@@ -92,6 +105,7 @@ import { FILE_UPLOAD } from '@/api/comm';
 
 type Emits = {
     (e: 'update:modelValue', data: string | number | boolean): void;
+    (e: 'change', data: any, item?: any): void;
 };
 const emit = defineEmits<Emits>();
 
@@ -169,6 +183,23 @@ const handleFileChange = (info: UploadChangeParam<UploadFile<any>>) => {
         emit('update:modelValue', url);
     }
 };
+
+const selectChange = (e: string, option: any) => {
+  emit('change', e, option)
+}
+
+const timeChange = (e: any) => {
+  emit('change', e)
+}
+
+const inputChange = (e: any) => {
+  emit('change', e.target.value)
+}
+
+const dateChange = (e: any) => {
+  emit('change', e)
+}
+
 </script>
 
 <style lang="less" scoped></style>

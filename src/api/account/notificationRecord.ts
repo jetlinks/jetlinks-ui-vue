@@ -1,7 +1,7 @@
 import server from '@/utils/request'
 
 // 获取记录列表
-export const getList_api = (data:object): any =>server.get(`/notifications/_query`,encodeParams(data))
+export const getList_api = (data:object): any =>server.post(`/notifications/_query`,data)
 // 修改记录状态
 export const changeStatus_api = (type:'_read'|'_unread',data:string[]): any =>server.post(`/notifications/${type}`,data)
 

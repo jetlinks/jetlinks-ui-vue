@@ -1,13 +1,13 @@
 <template>
     <page-container>
-        <a-card class="save-container">
-            <a-row :gutter="24">
-                <a-col :span="14">
+        <div class="save-container">
+            <j-row :gutter="24">
+                <j-col :span="14">
                     <EditForm @change-apply-type="chengeType" />
-                </a-col>
-                <a-col :span="10"><Does :type="rightType" /></a-col>
-            </a-row>
-        </a-card>
+                </j-col>
+                <j-col :span="10"><Does :type="rightType" /></j-col>
+            </j-row>
+        </div>
     </page-container>
 </template>
 
@@ -21,3 +21,10 @@ const chengeType = (newType: applyType) => {
     rightType.value = newType;
 };
 </script>
+
+<style lang="less" scoped>
+.save-container {
+    background-color: #fff;
+    padding: 24px;
+}
+</style>

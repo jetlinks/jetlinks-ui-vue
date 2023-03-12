@@ -77,6 +77,7 @@ const iconKeys = [
     'CloudDownloadOutlined',
     'PauseCircleOutlined',,
     'FormOutlined',
+    'EyeInvisibleOutlined',
 ]
 
 const Icon = (props: {type: string}) => {

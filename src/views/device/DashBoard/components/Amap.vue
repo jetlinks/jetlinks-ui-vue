@@ -1,19 +1,46 @@
 <template>
     <div style="width: 100%; height: 400px">
-        <el-amap 
-        >
-        </el-amap>
+        <AmapComponent>
+            <el-amap-label-marker
+                v-for="i in point"
+                :key="i"
+                :position="i.geometry.coordinates"
+                :text="{
+                    content: i.properties.deviceName,
+                    direction: 'right',
+                    style: {
+                        fontSize: 15,
+                        fillColor: '#fff',
+                        strokeColor: 'rgba(255,0,0,0.5)',
+                        strokeWidth: 2,
+                        padding: [3, 10],
+                        backgroundColor: 'yellow',
+                        borderColor: '#ccc',
+                        borderWidth: 3,
+                    },
+                }"
+                :icon="{
+                    image: 'https://a.amap.com/jsapi_demos/static/images/poi-marker.png',
+                    anchor: 'bottom-center',
+                    size: [25, 34],
+                    clipOrigin: [459, 92],
+                    clipSize: [50, 68],
+                }"
+                >123</el-amap-label-marker
+            >
+        </AmapComponent>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { initAMapApiLoader } from '@vuemap/vue-amap';
-import '@vuemap/vue-amap/dist/style.css';
-initAMapApiLoader({
-    // key: '95fa72137f4263f8e64ae01f766ad09c',
-    key: 'a0415acfc35af15f10221bfa5a6850b4',
-    securityJsCode: 'cae6108ec3dd222f946d1a7237c78be0',
-});
+import AmapComponent from '@/components/AMapComponent/index.vue';
+import { getGo } from '@/api/device/dashboard';
+let point = ref();
+const getMapData = async () => {
+    const res = await getGo({});
+    point.value = res.result?.features;
+};
+getMapData();
 </script>
 <style scoped>
 </style>

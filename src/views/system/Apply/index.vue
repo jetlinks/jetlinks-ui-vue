@@ -1,7 +1,10 @@
 <template>
     <page-container>
         <div class="apply-container">
-            <Search :columns="columns" @search="search" />
+            <j-advanced-search
+                :columns="columns"
+                @search="(params:any)=>queryParams = {...params}"
+            />
 
             <j-pro-table
                 ref="tableRef"
@@ -10,7 +13,7 @@
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
-                :params="params"
+                :params="queryParams"
                 :gridColumn="3"
             >
                 <template #headerTitle>
@@ -53,8 +56,8 @@
                             <h3 class="card-item-content-title">
                                 {{ slotProps.name }}
                             </h3>
-                            <a-row>
-                                <a-col :span="12">
+                            <j-row>
+                                <j-col :span="12">
                                     <div class="card-item-content-text">
                                         类型
                                     </div>
@@ -65,45 +68,45 @@
                                             )
                                         }}
                                     </div>
-                                </a-col>
-                                <a-col :span="12">
+                                </j-col>
+                                <j-col :span="12">
                                     <div class="card-item-content-text">
                                         说明
                                     </div>
                                     <div>{{ slotProps.description }}</div>
-                                </a-col>
-                            </a-row>
+                                </j-col>
+                            </j-row>
                         </template>
                         <template #actions="item">
-                            <a-tooltip
+                            <j-tooltip
                                 v-bind="item.tooltip"
                                 :title="item.disabled && item.tooltip.title"
                             >
-                                <a-dropdown
+                                <j-dropdown
                                     placement="bottomRight"
                                     v-if="item.key === 'others'"
                                 >
-                                    <a-button>
+                                    <j-button>
                                         <AIcon :type="item.icon" />
                                         <span>{{ item.text }}</span>
-                                    </a-button>
+                                    </j-button>
                                     <template #overlay>
-                                        <a-menu>
-                                            <a-menu-item
+                                        <j-menu>
+                                            <j-menu-item
                                                 v-for="(o, i) in item.children"
                                                 :key="i"
                                             >
-                                                <a-button
+                                                <j-button
                                                     type="link"
                                                     @click="o.onClick"
                                                 >
                                                     <AIcon :type="o.icon" />
                                                     <span>{{ o.text }}</span>
-                                                </a-button>
-                                            </a-menu-item>
-                                        </a-menu>
+                                                </j-button>
+                                            </j-menu-item>
+                                        </j-menu>
                                     </template>
-                                </a-dropdown>
+                                </j-dropdown>
                                 <PermissionButton
                                     v-else
                                     :uhasPermission="item.permission"
@@ -117,7 +120,7 @@
                                         item.text
                                     }}</span>
                                 </PermissionButton>
-                            </a-tooltip>
+                            </j-tooltip>
                         </template>
 
                         <template #mark>
@@ -144,7 +147,7 @@
                     ></BadgeStatus>
                 </template>
                 <template #action="slotProps">
-                    <a-space :size="16">
+                    <j-space :size="16">
                         <PermissionButton
                             v-for="i in table.getActions(slotProps, 'table')"
                             :uhasPermission="i.permission"
@@ -156,12 +159,18 @@
                         >
                             <AIcon :type="i.icon" />
                         </PermissionButton>
-                    </a-space>
+                    </j-space>
                 </template>
             </j-pro-table>
         </div>
         <div class="dialogs">
-            <MenuDialog ref="dialogRef" mode="edit" />
+            <MenuDialog
+                v-if="dialogVisible"
+                v-model:visible="dialogVisible"
+                :id="selectId"
+                :provider="selectProvider"
+                mode="edit"
+            />
         </div>
     </page-container>
 </template>
@@ -263,11 +272,9 @@ const columns = [
         scopedSlots: true,
     },
 ];
-const params = ref({});
-const search = (newParams: any) => (params.value = { ...newParams });
+const queryParams = ref({});
 
 const tableRef = ref();
-const dialogRef = ref();
 const table = {
     refresh: () => {
         tableRef.value.reload();
@@ -359,8 +366,9 @@ const table = {
                 },
                 icon: 'MenuUnfoldOutlined',
                 onClick: () => {
-                    dialogRef.value &&
-                        dialogRef.value.openDialog(data.id, data.provider);
+                    selectId.value = data.id;
+                    selectProvider.value = data.provider;
+                    dialogVisible.value = true;
                 },
             });
         // 有api操作权限
@@ -415,6 +423,9 @@ const table = {
         return typeOptions.find((item) => item.value === val)?.label;
     },
 };
+const dialogVisible = ref(false);
+const selectId = ref<string>('');
+const selectProvider = ref<any>('');
 </script>
 
 <style lang="less" scoped>

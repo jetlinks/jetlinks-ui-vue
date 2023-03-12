@@ -1,6 +1,6 @@
 <!-- 视频设备 - 播放 -->
 <template>
-    <a-modal
+    <j-modal
         v-model:visible="_vis"
         title="播放"
         cancelText="取消"
@@ -33,17 +33,17 @@
             />
         </div>
         <div class="media-live-tool">
-            <a-radio-group
+            <j-radio-group
                 v-model:value="mediaType"
                 button-style="solid"
                 @change="mediaStart"
             >
-                <a-radio-button value="mp4">MP4</a-radio-button>
-                <a-radio-button value="flv">FLV</a-radio-button>
-                <a-radio-button value="m3u8">HLS</a-radio-button>
-            </a-radio-group>
+                <j-radio-button value="mp4">MP4</j-radio-button>
+                <j-radio-button value="flv">FLV</j-radio-button>
+                <j-radio-button value="m3u8">HLS</j-radio-button>
+            </j-radio-group>
         </div>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script setup lang="ts">

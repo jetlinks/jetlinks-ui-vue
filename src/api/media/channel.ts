@@ -16,6 +16,9 @@ export default {
     // 删除
     del: (id: string) => server.remove(`/media/channel/${id}`),
 
+    // 查询树形数据
+    queryTree: (id: string, data?: any) => server.post(`/media/device/${id}/catalog/_query/tree`, data),
+
     // ========== 视频播放 ==========
     // 开始直播
     ptzStart: (deviceId: string, channelId: string, type: string) =>

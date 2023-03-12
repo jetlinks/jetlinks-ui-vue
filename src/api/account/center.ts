@@ -15,7 +15,7 @@ export const unBind_api = (appId: string) => server.post(`/application/sso/${app
  * @param type 类型
  * @param name 值
  */
-export const validateField_api =  (type: 'username' | 'password', name: string) => server.post(`/user/${type}/_validate`,name,{
+export const validateField_api =  (type: 'username' | 'password', name: string) => server.post(`/user/${type}/_validate`,name,{},{
     headers: {
         'Content-Type': 'text/plain'
     }
@@ -24,7 +24,7 @@ export const validateField_api =  (type: 'username' | 'password', name: string) 
  * 校验旧密码是否正确
  * @param password 旧密码
  */
-export const checkOldPassword_api = (password:string) => server.post(`/user/me/password/_validate`,password,{
+export const checkOldPassword_api = (password:string) => server.post(`/user/me/password/_validate`,password,{},{
     headers: {
         'Content-Type': 'text/plain'
     }

@@ -7,7 +7,7 @@ export const getUserType_api = () => server.get(`/user/detail/types`);
 export const getUserList_api = (data: object) => server.post(`/user/detail/_query`, data);
 
 // 校验字段合法性
-export const validateField_api = (type: 'username' | 'password', name: string) => server.post(`/user/${type}/_validate`, name, {
+export const validateField_api = (type: 'username' | 'password', name: string) => server.post(`/user/${type}/_validate`, name,{}, {
     headers: {
         'Content-Type': 'text/plain'
     }
@@ -25,7 +25,7 @@ export const addUser_api = (data: object) => server.post(`/user/detail/_create`,
 // 更新用户
 export const updateUser_api = (data: any) => server.put(`/user/detail/${data.id}/_update`, data);
 // 更新密码
-export const updatePassword_api = (data: { id: string, password: string }) => server.post(`/user/${data.id}/password/_reset`, data.password, {
+export const updatePassword_api = (data: { id: string, password: string }) => server.post(`/user/${data.id}/password/_reset`, data.password,{}, {
     headers: {
         'Content-Type': 'text/plain'
     }

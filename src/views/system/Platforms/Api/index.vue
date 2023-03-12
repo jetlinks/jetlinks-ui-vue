@@ -3,14 +3,15 @@
         <div class="top">
             <slot name="top" />
         </div>
-        <a-row :gutter="24" style="background-color: #fff; padding: 20px;margin: 0;">
-            <a-col
+        <j-row :gutter="24" class="content">
+            <j-col
                 :span="24"
                 v-if="props.showTitle"
                 style="font-size: 16px; margin-bottom: 48px"
-                >API文档</a-col
             >
-            <a-col :span="5">
+                API文档
+            </j-col>
+            <j-col :span="5" class="tree-content">
                 <LeftTree
                     @select="treeSelect"
                     :mode="props.mode"
@@ -18,8 +19,8 @@
                     :filter-array="treeFilter"
                     :code="props.code"
                 />
-            </a-col>
-            <a-col :span="19">
+            </j-col>
+            <j-col :span="19">
                 <HomePage v-show="showHome" />
                 <div class="url-page" v-show="!showHome">
                     <ChooseApi
@@ -35,26 +36,29 @@
                         class="api-details"
                         v-if="selectedApi.url && tableData.length > 0"
                     >
-                        <a-button
+                        <j-button
                             @click="selectedApi = initSelectedApi"
                             style="margin-bottom: 24px"
-                            >返回</a-button
+                            >返回</j-button
                         >
-                        <a-tabs v-model:activeKey="activeKey" type="card">
-                            <a-tab-pane key="does" tab="文档">
+                        <j-tabs v-model:activeKey="activeKey" type="card">
+                            <j-tab-pane key="does" tab="文档">
                                 <ApiDoes
                                     :select-api="selectedApi"
                                     :schemas="schemas"
                                 />
-                            </a-tab-pane>
-                            <a-tab-pane key="test" tab="调试">
-                                <ApiTest :select-api="selectedApi" />
-                            </a-tab-pane>
-                        </a-tabs>
+                            </j-tab-pane>
+                            <j-tab-pane key="test" tab="调试">
+                                <ApiTest
+                                    :select-api="selectedApi"
+                                    :schemas="schemas"
+                                />
+                            </j-tab-pane>
+                        </j-tabs>
                     </div>
                 </div>
-            </a-col>
-        </a-row>
+            </j-col>
+        </j-row>
     </div>
 </template>
 
@@ -76,7 +80,7 @@ const props = defineProps<{
     mode: modeType;
     showTitle?: boolean;
     hasHome?: boolean;
-    code?: string
+    code?: string;
 }>();
 const showHome = ref<boolean>(Boolean(props.hasHome));
 const tableData = ref([]);
@@ -127,7 +131,7 @@ function init() {
         getApiGranted_api(props.code as string).then((resp) => {
             selectedKeys.value = resp.result as string[];
             selectSourceKeys.value = [...(resp.result as string[])];
-        })
+        });
     } else if (props.mode === 'api') {
         apiOperations_api().then((resp) => {
             selectedKeys.value = resp.result as string[];
@@ -138,12 +142,25 @@ function init() {
         activeKey.value = 'does';
         selectedApi.value = initSelectedApi;
     });
+    watch(
+        () => selectedApi.value.url,
+        () => (activeKey.value = 'does'),
+    );
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .api-page-container {
-    height: 100%;
-    background-color: transparent;
+    .content {
+        background-color: #fff;
+        padding: 24px;
+        margin: 0 !important;
+        .tree-content {
+            padding-bottom: 30px;
+            height: calc(100vh - 230px);
+            overflow-y: auto;
+            border-right: 1px solid #e9e9e9;
+        }
+    }
 }
 </style>

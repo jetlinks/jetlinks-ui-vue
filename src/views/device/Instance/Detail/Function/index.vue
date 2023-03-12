@@ -1,6 +1,6 @@
 <template>
-    <a-card>
-        <a-empty
+    <j-card>
+        <j-empty
             v-if="!metadata || (metadata && !metadata.functions.length)"
             style="margin-top: 50px"
         >
@@ -9,15 +9,15 @@
                 <!-- <a @click="emits('onJump', 'Metadata')">物模型属性功能</a> -->
                 <a @click="onJump">物模型属性功能</a>
             </template>
-        </a-empty>
+        </j-empty>
         <template v-else>
-            <a-tabs v-model:activeKey="activeKey">
-                <a-tab-pane key="Simple" tab="精简模式" />
-                <a-tab-pane key="Advance" tab="高级模式" />
-            </a-tabs>
+            <j-tabs v-model:activeKey="activeKey">
+                <j-tab-pane key="Simple" tab="精简模式" />
+                <j-tab-pane key="Advance" tab="高级模式" />
+            </j-tabs>
             <component :is="tabs[activeKey]" />
         </template>
-    </a-card>
+    </j-card>
 </template>
 
 <script setup lang="ts">

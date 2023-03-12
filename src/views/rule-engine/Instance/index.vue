@@ -116,6 +116,9 @@
                                 @click="i.onClick"
                                 type="link"
                                 style="padding: 0px"
+                                :hasPermission="
+                                    'rule-engine/Instance:' + i.key
+                                "
                             >
                                 <template #icon
                                     ><AIcon :type="i.icon"

@@ -1,48 +1,54 @@
 <template>
-  <a-form-item :label="title" :name="name.concat(['type'])" :rules="[
-    metadataStore.model.type !== 'functions' ? { required: true, message: `请选择${title}` } : {},
+  <j-form-item :label="title" :name="name.concat(['type'])" :rules="[
+    required ? { required: true, message: `请选择${title}` } : {},
   ]">
-    <a-select v-model:value="_value.type" :options="metadataStore.model.type === 'events' ? eventDataTypeList : _dataTypeList" size="small" @change="changeType"></a-select>
-  </a-form-item>
-  <a-form-item label="单位" :name="name.concat(['unit'])" v-if="['int', 'float', 'long', 'double'].includes(_value.type)">
+    <j-select v-model:value="_value.type"
+      :options="onlyObject ? eventDataTypeList : _dataTypeList" size="small"
+      @change="changeType"></j-select>
+  </j-form-item>
+  <j-form-item label="单位" :name="name.concat(['unit'])" v-if="['int', 'float', 'long', 'double'].includes(_value.type)">
     <InputSelect v-model:value="_value.unit" :options="unit.unitOptions" size="small"></InputSelect>
-  </a-form-item>
-  <a-form-item label="精度" :name="name.concat(['scale'])" v-if="['float', 'double'].includes(_value.type)">
-    <a-input-number v-model:value="_value.scale" size="small" :min="0" :max="2147483647" :precision="0" :default-value="2"
-      style="width: 100%"></a-input-number>
-  </a-form-item>
-  <a-form-item label="布尔值" name="booleanConfig" v-if="['boolean'].includes(_value.type)">
+  </j-form-item>
+  <j-form-item label="精度" :name="name.concat(['scale'])" v-if="['float', 'double'].includes(_value.type)">
+    <j-input-number v-model:value="_value.scale" size="small" :min="0" :max="2147483647" :precision="0"
+      style="width: 100%"></j-input-number>
+  </j-form-item>
+  <j-form-item label="布尔值" name="booleanConfig" v-if="['boolean'].includes(_value.type)">
     <BooleanParam :name="name" v-model:value="_value"></BooleanParam>
-  </a-form-item>
-  <a-form-item label="枚举项" :name="name.concat(['elements'])" v-if="['enum'].includes(_value.type)" :rules="[
-    { required: true, message: '请配置枚举项' }
+  </j-form-item>
+  <j-form-item label="枚举项" :name="name.concat(['elements'])" v-if="['enum'].includes(_value.type)" :rules="[
+    { required: true, validator: validateEnum }
   ]">
     <EnumParam v-model:value="_value.elements" :name="name.concat(['elements'])"></EnumParam>
-  </a-form-item>
-  <a-form-item :name="name.concat(['expands', 'maxLength'])" v-if="['string', 'password'].includes(_value.type)">
+  </j-form-item>
+  <j-form-item :name="name.concat(['expands', 'maxLength'])" v-if="['string', 'password'].includes(_value.type)">
     <template #label>
-      <a-space>
+      <j-space>
         最大长度
-        <a-tooltip title="字节">
+        <j-tooltip title="字节">
           <question-circle-outlined style="color: rgb(136, 136, 136); font-size: 12px;" />
-        </a-tooltip>
-      </a-space>
+        </j-tooltip>
+      </j-space>
     </template>
-    <a-input-number v-model:value="_value.expands.maxLength" size="small" :max="2147483647" :min="1" :precision="0"
-      style="width: 100%;"></a-input-number>
-  </a-form-item>
-  <a-form-item label="元素配置" :name="name.concat(['elementType'])" v-if="['array'].includes(_value.type)">
+    <j-input-number v-model:value="_value.expands.maxLength" size="small" :max="2147483647" :min="1" :precision="0"
+      style="width: 100%;"></j-input-number>
+  </j-form-item>
+  <j-form-item label="元素配置" :name="name.concat(['elementType'])" v-if="['array'].includes(_value.type)" :rules="[
+    { validator: validateArray }
+  ]">
     <ArrayParam v-model:value="_value.elementType" :name="name.concat(['elementType'])"></ArrayParam>
-  </a-form-item>
-  <a-form-item label="JSON对象" :name="name.concat(['properties'])" v-if="['object'].includes(_value.type)" :rules="[]">
+  </j-form-item>
+  <j-form-item label="JSON对象" :name="name.concat(['properties'])" v-if="['object'].includes(_value.type)" :rules="[
+    { validator: (_rule: Rule, val: Record<any, any>[]) => validateJson(_rule, val, 'JSON对象') }
+  ]">
     <JsonParam v-model:value="_value.properties" :name="name.concat(['properties'])"></JsonParam>
-  </a-form-item>
-  <a-form-item label="文件类型" :name="name.concat(['fileType'])" v-if="['file'].includes(_value.type)" initialValue="url"
+  </j-form-item>
+  <j-form-item label="文件类型" :name="name.concat(['fileType'])" v-if="['file'].includes(_value.type)" initialValue="url"
     :rules="[
       { required: true, message: '请选择文件类型' },
     ]">
-    <a-select v-model:value="_value.fileType" :options="FileTypeList" size="small"></a-select>
-  </a-form-item>
+    <j-select v-model:value="_value.fileType" :options="FileTypeList" size="small"></j-select>
+  </j-form-item>
 </template>
 <script lang="ts" setup mame="BaseForm">
 import { DataTypeList, FileTypeList } from '@/views/device/data';
@@ -56,6 +62,8 @@ import EnumParam from '@/components/Metadata/EnumParam/index.vue'
 import ArrayParam from '@/components/Metadata/ArrayParam/index.vue'
 import JsonParam from '@/components/Metadata/JsonParam/index.vue'
 import { useMetadataStore } from '@/store/metadata';
+import { validateEnum, validateArray, validateJson } from './validator'
+import { Rule } from 'ant-design-vue/es/form';
 
 type ValueType = Record<any, any>;
 const props = defineProps({
@@ -73,8 +81,16 @@ const props = defineProps({
     required: true
   },
   title: {
-    String,
+    type: String,
     default: '数据类型'
+  },
+  required: {
+    type: Boolean,
+    default: true
+  },
+  onlyObject: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -84,15 +100,8 @@ interface Emits {
 }
 const emit = defineEmits<Emits>()
 
-// emit('update:value', { extends: {}, ...props.value })
-
 const metadataStore = useMetadataStore()
-// const _value = computed({
-//   get: () => props.value,
-//   set: val => {
-//     emit('update:value', val)
-//   }
-// })
+
 const _value = ref<ValueType>({})
 watchEffect(() => {
   _value.value = props.value || {
@@ -107,7 +116,7 @@ watch(_value,
   { deep: true, immediate: true })
 
 onMounted(() => {
-  if (metadataStore.model.type === 'events') {
+  if (props.onlyObject) {
     _value.value = {
       type: 'object',
       expands: {}
@@ -140,8 +149,30 @@ const eventDataTypeList = [
 ]
 
 const changeType = (val: SelectValue) => {
+  if (['float', 'double'].includes(_value.value.type) && _value.value.scale === undefined) {
+    _value.value.scale = 2
+  }
   emit('changeType', val as string)
 }
+
+// const rules = ref({
+//   type: [
+//     metadataStore.model.type !== 'functions' ? { required: true, message: `请选择${props.title}` } : {},
+//   ],
+//   elements: [
+//     { required: true, validator: validateEnum, message: '请配置枚举项' }
+//   ],
+//   elementType: [
+//     { validator: validateArray, message: '请输入元素配置' }
+//   ],
+//   properties: [
+//     { validator: validateJson, message: '请输入配置参数' }
+//   ],
+//   fileType: [
+//     { required: true, message: '请选择文件类型' },
+//   ]
+// })
+
 </script>
 <style lang="less" scoped>
 :deep(.ant-form-item-label) {

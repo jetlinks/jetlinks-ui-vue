@@ -1,5 +1,5 @@
 <template>
-    <a-modal
+    <j-modal
         v-model:visible="_vis"
         title="调试"
         cancelText="取消"
@@ -8,34 +8,34 @@
         @cancel="handleCancel"
         :confirmLoading="btnLoading"
     >
-        <a-form ref="formRef" layout="vertical" :model="formData">
-            <a-form-item
+        <j-form ref="formRef" layout="vertical" :model="formData">
+            <j-form-item
                 label="通知模版"
                 name="templateId"
                 :rules="{ required: true, message: '该字段为必填字段' }"
             >
-                <a-select
+                <j-select
                     v-model:value="formData.templateId"
                     placeholder="请选择通知模版"
                     @change="getTemplateDetail"
                 >
-                    <a-select-option
+                    <j-select-option
                         v-for="(item, index) in templateList"
                         :key="index"
                         :value="item.id"
                     >
                         {{ item.name }}
-                    </a-select-option>
-                </a-select>
-            </a-form-item>
-            <a-form-item
+                    </j-select-option>
+                </j-select>
+            </j-form-item>
+            <j-form-item
                 label="变量"
                 v-if="
                     formData.templateDetailTable &&
                     formData.templateDetailTable.length
                 "
             >
-                <a-table
+                <j-table
                     row-key="id"
                     :columns="columns"
                     :data-source="formData.templateDetailTable"
@@ -49,24 +49,43 @@
                             <span>{{ record[column.dataIndex] }}</span>
                         </template>
                         <template v-else>
-                            <a-form-item
+                            <j-form-item
                                 :name="['templateDetailTable', index, 'value']"
                                 :rules="{
-                                    required: true,
+                                    required: record.required,
                                     message: '该字段为必填字段',
                                 }"
                             >
+                                <ToUser
+                                    v-if="record.type === 'user'"
+                                    v-model:toUser="record.value"
+                                    :type="data.type"
+                                    :config-id="data.id"
+                                />
+                                <ToOrg
+                                    v-else-if="record.type === 'org'"
+                                    :type="data.type"
+                                    :config-id="data.id"
+                                    v-model:toParty="record.value"
+                                />
+                                <ToTag
+                                    v-else-if="record.type === 'tag'"
+                                    :type="data.type"
+                                    :config-id="data.id"
+                                    v-model:toTag="record.value"
+                                />
                                 <ValueItem
+                                    v-else
                                     v-model:modelValue="record.value"
                                     :itemType="record.type"
                                 />
-                            </a-form-item>
+                            </j-form-item>
                         </template>
                     </template>
-                </a-table>
-            </a-form-item>
-        </a-form>
-    </a-modal>
+                </j-table>
+            </j-form-item>
+        </j-form>
+    </j-modal>
 </template>
 
 <script setup lang="ts">
@@ -77,6 +96,10 @@ import type {
     IVariableDefinitions,
 } from '@/views/notice/Template/types';
 import { message } from 'ant-design-vue';
+
+import ToUser from '@/views/notice/Template/Detail/components/ToUser.vue';
+import ToOrg from '@/views/notice/Template/Detail/components/ToOrg.vue';
+import ToTag from '@/views/notice/Template/Detail/components/ToTag.vue';
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
@@ -128,6 +151,7 @@ const getTemplateDetail = async () => {
     formData.value.templateDetailTable = result.variableDefinitions.map(
         (m: any) => ({
             ...m,
+            type: m.expands ? m.expands.businessType : m.type,
             value: undefined,
         }),
     );

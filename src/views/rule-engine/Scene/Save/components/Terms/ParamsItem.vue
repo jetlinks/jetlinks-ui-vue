@@ -16,8 +16,11 @@
       @mouseout='mouseout'
     >
       <DropdownButton
-        :options='options'
+        :options='columnOptions'
+        icon='icon-zhihangdongzuoxie-1'
         type='column'
+        value-name='column'
+        label-name='fullName'
         placeholder='请选择参数'
         v-model:value='paramsValue.column'
         component='treeSelect'
@@ -26,18 +29,37 @@
       <DropdownButton
         :options='termTypeOptions'
         type="termType"
+        value-name='id'
+        label-name='name'
         placeholder="操作符"
-        v-model:value='paramsValue.termsType'
+        v-model:value='paramsValue.termType'
         @select='termsTypeSelect'
       />
-      <termplate v-if='showDouble'>
-
-      </termplate>
+      <DoubleParamsDropdown
+        v-if='showDouble'
+        icon='icon-canshu'
+        placeholder='参数值'
+        :options='valueOptions'
+        :metricOption='metricOption'
+        :tabsOptions='tabsOptions'
+        v-model:value='paramsValue.value.value'
+        v-model:source='paramsValue.value.source'
+      />
+      <ParamsDropdown
+        v-else
+        icon='icon-canshu'
+        placeholder='参数值'
+        :options='valueOptions'
+        :metricOption='metricOption'
+        :tabsOptions='tabsOptions'
+        v-model:value='paramsValue.value.value'
+        v-model:source='paramsValue.value.source'
+      />
       <j-popconfirm title='确认删除？' @confirm='onDelete'>
         <div v-show='showDelete' class='button-delete'> <AIcon type='CloseOutlined' /></div>
       </j-popconfirm>
     </div>
-    <div class='term-add' @click.stop='termAdd'>
+    <div class='term-add' @click.stop='termAdd' v-if='isLast'>
       <div class='terms-content'>
         <AIcon type='PlusOutlined' style='font-size: 12px' />
       </div>
@@ -48,9 +70,21 @@
 <script setup lang='ts' name='ParamsItem'>
 import type { PropType } from 'vue'
 import type { TermsType } from '@/views/rule-engine/Scene/typings'
-import DropdownButton from '../DropdownButton.vue'
+import DropdownButton from '../DropdownButton'
+import { getOption } from '../DropdownButton/util'
+import ParamsDropdown, { DoubleParamsDropdown } from '../ParamsDropdown'
 import { inject } from 'vue'
 import { ContextKey } from './util'
+
+type Emit = {
+  (e: 'update:value', data: TermsType): void
+}
+
+type TabsOption = {
+  label: string;
+  key: string;
+  component: string
+}
 
 const props = defineProps({
   isFirst: {
@@ -70,37 +104,75 @@ const props = defineProps({
     default: () => ({
       column: '',
       type: '',
-      termsType: undefined,
-      value: undefined
+      termType: 'eq',
+      value: {
+        source: 'fixed',
+        value: undefined
+      }
     })
   }
 })
 
+const emit = defineEmits<Emit>()
+
 const paramsValue = reactive<TermsType>({
-  column: '',
-  type: '',
-  termType: undefined,
-  value: undefined
+  column: props.value.column,
+  type: props.value.type,
+  termType: props.value.termType,
+  value: props.value.value
 })
 
 const showDelete = ref(false)
-const columnOptions = inject(ContextKey)
+const columnOptions: any = inject(ContextKey) //
+const termTypeOptions = ref<Array<{ id: string, name: string}>>([]) // 条件值
+const valueOptions = ref<any[]>([]) // 默认手动输入下拉
+const metricOption = ref<any[]>([])  // 根据termType获取对应指标值
+const tabsOptions = ref<Array<TabsOption>>([{ label: '手动输入', key: 'manual', component: 'string' }])
+let metricsCacheOption: any[] = [] // 缓存指标值
 
-const options = computed(() => {
-  function handleOptions() {
+const handOptionByColumn = (option: any) => {
+  if (option) {
+    termTypeOptions.value = option.termTypes || []
+    metricsCacheOption = option.metrics || []
+    tabsOptions.value.length = 1
+    tabsOptions.value[0].component = option.dataType
 
+    if (option.metrics && option.metrics.length) {
+      tabsOptions.value.push(
+        { label: '指标值', key: 'metric', component: 'select' }
+      )
+    }
+
+    if (option.dataType === 'boolean') {
+      valueOptions.value = [
+        { label: '是', value: true },
+        { label: '否', value: false },
+      ]
+    } else if(option.dataType === 'enum') {
+      valueOptions.value = option.options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || []
+    } else{
+      valueOptions.value = option.options || []
+    }
+  } else {
+    termTypeOptions.value = []
+    metricsCacheOption = []
+    valueOptions.value = []
   }
+}
 
-  return []
-})
-
-const termTypeOptions = computed(() => {
-
-  return []
+watchEffect(() => {
+  const option = getOption(columnOptions.value, paramsValue.column, 'column')
+  handOptionByColumn(option)
 })
 
 const showDouble = computed(() => {
-  return paramsValue.termType ? ['nbtw', 'btw', 'in', 'nin'].includes(paramsValue.termType) : false
+  const isRange = paramsValue.termType ? ['nbtw', 'btw', 'in', 'nin'].includes(paramsValue.termType) : false
+  if (metricsCacheOption.length) {
+    metricOption.value = metricsCacheOption.filter(item => isRange ? item.range : !item.range)
+  } else {
+    metricOption.value = []
+  }
+  return isRange
 })
 
 const mouseover = () => {
@@ -116,11 +188,20 @@ const mouseout = () => {
 }
 
 const columnSelect = () => {
-
+  paramsValue.termType = 'eq'
+  paramsValue.value = {
+    source: tabsOptions.value[0].key,
+    value: undefined
+  }
+  emit('update:value', { ...paramsValue })
 }
 
 const termsTypeSelect = () => {
-
+  paramsValue.value = {
+    source: tabsOptions.value[0].key,
+    value: undefined
+  }
+  emit('update:value', { ...paramsValue })
 }
 
 const termAdd = () => {
@@ -131,7 +212,7 @@ const onDelete = () => {
 
 }
 
-onMounted(() => {
+nextTick(() => {
   Object.assign(paramsValue, props.value)
 })
 

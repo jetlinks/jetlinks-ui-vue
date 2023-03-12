@@ -16,7 +16,7 @@
             :gridColumn="3"
         >
             <template #headerTitle>
-                <a-space>
+                <j-space>
                     <PermissionButton
                         type="primary"
                         @click="handleAdd"
@@ -36,7 +36,7 @@
                             导入
                         </PermissionButton>
                     </a-upload>
-                    <a-popconfirm
+                    <j-popconfirm
                         title="确认导出？"
                         ok-text="确定"
                         cancel-text="取消"
@@ -47,8 +47,8 @@
                         >
                             导出
                         </PermissionButton>
-                    </a-popconfirm>
-                </a-space>
+                    </j-popconfirm>
+                </j-space>
             </template>
             <template #card="slotProps">
                 <CardBox
@@ -71,22 +71,22 @@
                         <h3 class="card-item-content-title">
                             {{ slotProps.name }}
                         </h3>
-                        <a-row>
-                            <a-col :span="12">
+                        <j-row>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">
                                     通知方式
                                 </div>
                                 <div>
                                     {{ getMethodTxt(slotProps.type) }}
                                 </div>
-                            </a-col>
-                            <a-col :span="12">
+                            </j-col>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">说明</div>
                                 <Ellipsis>
                                     {{ slotProps.description }}
                                 </Ellipsis>
-                            </a-col>
-                        </a-row>
+                            </j-col>
+                        </j-row>
                     </template>
                     <template #actions="item">
                         <PermissionButton
@@ -119,7 +119,7 @@
                 </span>
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
+                <j-space :size="16">
                     <template
                         v-for="i in getActions(slotProps, 'table')"
                         :key="i.key"
@@ -138,7 +138,7 @@
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
                     </template>
-                </a-space>
+                </j-space>
             </template>
         </JProTable>
 

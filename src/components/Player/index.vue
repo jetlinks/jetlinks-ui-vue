@@ -11,7 +11,7 @@
         :muted="'muted' in props ? props.muted !== false : true"
         :hide-big-play-button="true"
         :poster="props.poster || ''"
-        :timeout="props.timeout || 20"
+        :timeout="props.timeout || 30"
         :video-url="url || ''"
         @play="props.onPlay"
         @pause="props.onPause"

@@ -6,7 +6,7 @@
             v-for="(item, index) in fileList"
             :key="index"
         >
-            <a-input v-model:value="item.name">
+            <j-input v-model:value="item.name">
                 <template #addonAfter>
                     <a-upload
                         name="file"
@@ -20,14 +20,14 @@
                         <upload-outlined />
                     </a-upload>
                 </template>
-            </a-input>
+            </j-input>
             <delete-outlined
                 @click="handleDelete(item.id)"
                 style="cursor: pointer"
             />
         </div>
 
-        <a-button
+        <j-button
             type="dashed"
             @click="handleAdd"
             style="width: 100%; margin-top: 5px"
@@ -36,7 +36,7 @@
                 <plus-outlined />
             </template>
             添加
-        </a-button>
+        </j-button>
     </div>
 </template>
 

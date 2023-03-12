@@ -1,21 +1,21 @@
 <template>
     <div class="wrapper">
         <div class="tips">
-            <a-space>
+            <j-space>
                 <AIcon type="QuestionCircleOutlined" />
                 <span>精简模式下参数只支持输入框的方式录入</span>
-            </a-space>
+            </j-space>
         </div>
-        <a-tabs v-model="activeKey" tab-position="left">
-            <a-tab-pane
+        <j-tabs v-model="activeKey" tab-position="left">
+            <j-tab-pane
                 v-for="func in newFunctions"
                 :key="func.id"
                 :tab="func.name"
             >
-                <a-row :gutter="30">
-                    <a-col :span="15">
-                        <a-form :ref="`${func.id}Ref`" :model="func">
-                            <a-table
+                <j-row :gutter="30">
+                    <j-col :span="15">
+                        <j-form :ref="`${func.id}Ref`" :model="func">
+                            <j-table
                                 :columns="columns"
                                 :data-source="func.table"
                                 :pagination="false"
@@ -26,7 +26,7 @@
                                         v-if="column.dataIndex === 'type'"
                                     >
                                         <span>{{ record.type }}</span>
-                                        <a-tooltip
+                                        <j-tooltip
                                             v-if="record.type === 'object'"
                                         >
                                             <template slot="title">
@@ -40,12 +40,12 @@
                                                     cursor: 'help',
                                                 }"
                                             />
-                                        </a-tooltip>
+                                        </j-tooltip>
                                     </template>
                                     <template
                                         v-if="column.dataIndex === 'value'"
                                     >
-                                        <a-form-item
+                                        <j-form-item
                                             :name="['table', index, 'value']"
                                             :rules="{
                                                 required: true,
@@ -82,37 +82,37 @@
                                                         : undefined
                                                 "
                                             />
-                                        </a-form-item>
+                                        </j-form-item>
                                     </template>
                                 </template>
-                            </a-table>
-                        </a-form>
+                            </j-table>
+                        </j-form>
                         <div class="editor-btn">
-                            <a-space>
-                                <a-button
+                            <j-space>
+                                <j-button
                                     type="primary"
                                     @click="handleExecute(func)"
                                 >
                                     执行
-                                </a-button>
-                                <a-button
+                                </j-button>
+                                <j-button
                                     type="default"
                                     @click="handleClear(func)"
                                 >
                                     清空
-                                </a-button>
-                            </a-space>
+                                </j-button>
+                            </j-space>
                         </div>
-                    </a-col>
-                    <a-col :span="9">
+                    </j-col>
+                    <j-col :span="9">
                         <h6>执行结果：</h6>
                         <span class="execute-result">
                             {{ func.executeResult }}
                         </span>
-                    </a-col>
-                </a-row>
-            </a-tab-pane>
-        </a-tabs>
+                    </j-col>
+                </j-row>
+            </j-tab-pane>
+        </j-tabs>
     </div>
 </template>
 

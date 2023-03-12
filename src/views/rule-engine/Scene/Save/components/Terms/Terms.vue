@@ -56,7 +56,8 @@ const sceneStore = useSceneStore()
 const { data } = storeToRefs(sceneStore)
 
 const open = ref(false)
-const columnOptions = ref<any[]>([])
+const columnOptions = ref<any>([])
+
 
 provide(ContextKey, columnOptions)
 
@@ -76,11 +77,22 @@ const rules = [{
   }
 }]
 
+const handleParamsData = (data: any[]): any[] => {
+  return data?.map(item => {
+    return {
+      ...item,
+      key: item.column,
+      disabled: !!item.children,
+      children: handleParamsData(item.children)
+    }
+  }) || []
+}
+
 const queryColumn = (dataModel: FormModelType) => {
   const cloneDevice = cloneDeep(dataModel)
   cloneDevice.branches = cloneDevice.branches?.filter(item => !!item)
   getParseTerm(cloneDevice).then(res => {
-      columnOptions.value = res as any
+      columnOptions.value = handleParamsData(res.result as any[])
   })
 }
 
@@ -89,12 +101,12 @@ const addBranches = () => {
 }
 
 const branchesDelete = (index: number) => {
-  if ((data as FormModelType).branches?.length === 2) {
-    (data as FormModelType).branches?.splice(index, 1, null as any)
+  if (data.value.branches?.length === 2) {
+    data.value.branches?.splice(index, 1, null as any)
   } else {
-    (data as FormModelType).branches?.splice(index, 1)
+    data.value.branches?.splice(index, 1)
   }
-  (data as FormModelType).options?.when?.splice(index, 1)
+  data.value.options?.when?.splice(index, 1)
 }
 
 const branchesDeleteAll = () => {
@@ -102,15 +114,16 @@ const branchesDeleteAll = () => {
 }
 
 watchEffect(() => {
-  if ((data as FormModelType).trigger?.device) {
-    queryColumn((data as FormModelType))
+  console.log(data.value.trigger, data.value.trigger?.device)
+  if (data.value.trigger?.device) {
+    queryColumn(data.value)
   }
 })
 
 watchEffect(() => {
   open.value = !(
-    (data as FormModelType).branches &&
-    (data as FormModelType).branches?.length === 1
+    data.value.branches &&
+    data.value.branches?.length === 1
   )
 })
 

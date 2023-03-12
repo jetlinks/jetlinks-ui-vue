@@ -25,13 +25,13 @@
                 instanceStore.current.deviceType?.text
             }}</j-descriptions-item>
             <j-descriptions-item label="固件版本">{{
-                instanceStore.current.firmwareInfo?.version
+                instanceStore.current?.firmwareInfo?.version
             }}</j-descriptions-item>
             <j-descriptions-item label="连接协议">{{
-                instanceStore.current?.protocolName
+                instanceStore.current?.transport
             }}</j-descriptions-item>
             <j-descriptions-item label="消息协议">{{
-                instanceStore.current.transport
+                instanceStore.current.protocolName
             }}</j-descriptions-item>
             <j-descriptions-item label="创建时间">{{
                 instanceStore.current.createTime

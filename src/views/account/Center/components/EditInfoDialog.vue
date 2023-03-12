@@ -5,6 +5,7 @@
         @ok="handleOk"
         width="770px"
         @cancel="emits('update:visible', false)"
+        :confirmLoading="loading"
     >
         <j-form :model="form" layout="vertical" ref="formRef">
             <j-row :gutter="24">
@@ -12,7 +13,10 @@
                     <j-form-item
                         label="姓名"
                         name="name"
-                        :rules="[{ required: true, message: '姓名必填' }]"
+                        :rules="[
+                            { required: true, message: '姓名必填' },
+                            { max: 64, message: '最多可输入64个字符' },
+                        ]"
                     >
                         <j-input
                             v-model:value="form.name"
@@ -56,7 +60,16 @@
             </j-row>
             <j-row :gutter="24">
                 <j-col :span="12">
-                    <j-form-item label="手机号">
+                    <j-form-item
+                        label="手机号"
+                        name="telephone"
+                        :rules="[
+                            {
+                                pattern: /^1[3456789]\d{9}$/,
+                                message: '请输入正确手机号',
+                            },
+                        ]"
+                    >
                         <j-input
                             v-model:value="form.telephone"
                             placeholder="请输入手机号"
@@ -64,7 +77,11 @@
                     </j-form-item>
                 </j-col>
                 <j-col :span="12">
-                    <j-form-item label="邮箱">
+                    <j-form-item
+                        label="邮箱"
+                        name="email"
+                        :rules="[{ type: 'email',message:'邮箱不是一个有效的email' }]"
+                    >
                         <j-input
                             v-model:value="form.email"
                             placeholder="请输入邮箱"
@@ -87,17 +104,19 @@ const props = defineProps<{
     visible: boolean;
     data: userInfoType;
 }>();
+const loading = ref(false)
 const form = ref(props.data);
 const formRef = ref<FormInstance>();
 const handleOk = () => {
     formRef.value?.validate().then(() => {
+        loading.value = true
         updateMeInfo_api(form.value).then((resp) => {
             if (resp.status === 200) {
                 message.success('保存成功');
                 emits('ok');
                 emits('update:visible', false);
             }
-        });
+        }).finally(()=>loading.value = false)
     });
 };
 </script>

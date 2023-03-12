@@ -1,5 +1,5 @@
 <template>
-    <dic class="step-container">
+    <div class="step-container">
         <h5 class="title">
             <span style="margin-right: 12px">{{ props.cardTitle }}</span>
             <j-tooltip placement="top">
@@ -19,27 +19,12 @@
                 <div class="box-details">{{ item.details }}</div>
             </div>
         </div>
-
-        <div class="dialogs">
-            <ProductChooseDialog
-                v-if="productDialogVisible"
-                v-model:visible="productDialogVisible"
-                @confirm="againJumpPage"
-            />
-            <DeviceChooseDialog
-                v-if="deviceDialogVisible"
-                v-model:visible="deviceDialogVisible"
-                @confirm="againJumpPage"
-            />
-        </div>
-    </dic>
+    </div>
 </template>
 
 <script setup lang="ts">
 import { PropType } from 'vue';
 import { message } from 'ant-design-vue';
-import ProductChooseDialog from './dialogs/ProductChooseDialog.vue';
-import DeviceChooseDialog from './dialogs/DeviceChooseDialog.vue';
 import { recommendList } from '../typing';
 import { useMenuStore } from '@/store/menu';
 
@@ -51,33 +36,10 @@ const props = defineProps({
     dataList: Array as PropType<recommendList[]>,
 });
 
-let selectRow: recommendList | rowType = {
-    params: {},
-    linkUrl: '',
-};
 // 跳转页面
 const jumpPage = (row: recommendList) => {
-    if (!row.auth) return message.warning('暂无权限，请联系管理员');
-    selectRow = row; // 二次跳转需要使用
-    if (row.dialogTag == 'accessMethod')
-        return (productDialogVisible.value = true);
-    else if (row.dialogTag === 'funcTest')
-        return (deviceDialogVisible.value = true);
-    else if (row.linkUrl) {
-        _jumpPage(row.linkUrl, row.params);
-    }
-};
-// 弹窗返回后的二次跳转
-const againJumpPage = (id: string) => {
-    _jumpPage(selectRow.linkUrl, { id });
-};
-
-const productDialogVisible = ref(false);
-const deviceDialogVisible = ref(false);
-
-type rowType = {
-    params: object;
-    linkUrl: string;
+    if (row.auth === false) return message.warning('暂无权限，请联系管理员');
+    row.onClick ? row.onClick(row) : _jumpPage(row.linkUrl, row.params);
 };
 </script>
 

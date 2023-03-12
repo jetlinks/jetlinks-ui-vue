@@ -1,5 +1,5 @@
 <template>
-    <Search
+    <j-advanced-search
         :columns="columns"
         type="simple"
         target="action-notice-config"
