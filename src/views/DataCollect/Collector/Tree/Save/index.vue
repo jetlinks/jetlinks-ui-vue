@@ -201,7 +201,6 @@ const onSubmit = () => {
             };
 
             loading.value = true;
-
             const response = !id
                 ? await save(params)
                 : await update(id, { ...props.data, ...params });
@@ -237,6 +236,10 @@ const getChannelNoPaging = async () => {
     }));
 };
 getChannelNoPaging();
+
+const filterOption = (input: string, option: any) => {
+    return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+};
 
 watch(
     () => formData.value.channelId,

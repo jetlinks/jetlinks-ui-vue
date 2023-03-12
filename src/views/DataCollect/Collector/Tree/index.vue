@@ -19,7 +19,7 @@
                 新增采集器
             </PermissionButton>
         </div>
-        <a-spin :spinning="spinning">
+        <j-spin :spinning="spinning">
             <a-tree
                 :tree-data="defualtDataSource"
                 v-model:selected-keys="selectedKeys"
@@ -92,7 +92,7 @@
                 </template>
             </a-tree>
             <j-empty v-else description="暂无数据" />
-        </a-spin>
+        </j-spin>
         <Save v-if="visible" :data="current" @change="saveChange" />
     </div>
 </template>

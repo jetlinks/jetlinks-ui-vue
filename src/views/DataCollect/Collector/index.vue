@@ -5,7 +5,7 @@
                 <Tree @change="changeTree" />
             </div>
             <div class="right">
-                <Point :data="data"></Point>
+                <Point v-if="!!data" :data="data" />
             </div>
         </div>
     </page-container>
@@ -32,7 +32,6 @@ const changeTree = (row: any) => {
     .left {
         width: 300px;
         border-right: 1px #eeeeee solid;
-        // padding: 10px;
         margin: 10px;
     }
     .right {
