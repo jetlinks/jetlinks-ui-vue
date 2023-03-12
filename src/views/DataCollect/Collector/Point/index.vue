@@ -13,19 +13,7 @@
             :gridColumn="2"
             :gridColumns="[1, 2]"
             :request="queryPoint"
-            :defaultParams="{
-                sorts: [{ name: 'id', order: 'desc' }],
-                terms: [
-                    {
-                        terms: [
-                            {
-                                column: 'collectorId',
-                                value: props.data.id,
-                            },
-                        ],
-                    },
-                ],
-            }"
+            :defaultParams="defaultParams"
             :params="params"
             :rowSelection="{
                 selectedRowKeys: _selectedRowKeys,
@@ -36,12 +24,23 @@
             <template #headerTitle>
                 <j-space>
                     <PermissionButton
+                        v-if="data?.provider !== 'OPC_UA'"
                         type="primary"
                         @click="handlAdd"
                         hasPermission="DataCollect/Collector:add"
                     >
                         <template #icon><AIcon type="PlusOutlined" /></template>
-                        {{ data?.provider === 'OPC_UA' ? '扫描' : '新增点位' }}
+                        新增点位
+                    </PermissionButton>
+
+                    <PermissionButton
+                        v-if="data?.provider === 'OPC_UA'"
+                        type="primary"
+                        @click="handlScan"
+                        hasPermission="DataCollect/Collector:add"
+                    >
+                        <template #icon><AIcon type="PlusOutlined" /></template>
+                        扫描
                     </PermissionButton>
                     <j-dropdown v-if="data?.provider === 'OPC_UA'">
                         <j-button
@@ -168,29 +167,29 @@
             </template>
         </j-pro-table>
         <SaveModBus
-            v-if="visibleSaveModBus"
+            v-if="visible.saveModBus"
             :data="current"
             @change="saveChange"
         />
         <SaveOPCUA
-            v-if="visibleSaveOPCUA"
+            v-if="visible.saveOPCUA"
             :data="current"
             @change="saveChange"
         />
         <WritePoint
-            v-if="visibleWritePoint"
+            v-if="visible.writePoint"
             :data="current"
             @change="saveChange"
         />
         <BatchUpdate
-            v-if="visibleBatchUpdate"
+            v-if="visible.batchUpdate"
             :data="current"
             @change="saveChange"
         />
+        <Scan v-if="visible.scan" :data="current" @change="saveChange" />
     </j-spin>
 </template>
 <script lang="ts" setup name="PointPage">
-import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage } from '@/utils/comm';
 import {
     queryPoint,
@@ -205,6 +204,7 @@ import WritePoint from './components/WritePoint/index.vue';
 import BatchUpdate from './components/BatchUpdate/index.vue';
 import SaveModBus from './Save/SaveModBus.vue';
 import SaveOPCUA from './Save/SaveOPCUA.vue';
+import Scan from './Scan/index.vue';
 import { colorMap, getState } from '../data.ts';
 import { cloneDeep } from 'lodash-es';
 
@@ -220,15 +220,34 @@ const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const opcImage = getImage('/DataCollect/device-opcua.png');
 const modbusImage = getImage('/DataCollect/device-modbus.png');
-const visibleSaveModBus = ref(false);
-const visibleSaveOPCUA = ref(false);
-const visibleWritePoint = ref(false);
-const visibleBatchUpdate = ref(false);
+const visible = reactive({
+    saveModBus: false,
+    saveOPCUA: false,
+    writePoint: false,
+    batchUpdate: false,
+    scan: false,
+});
 const current = ref({});
 const accessModesOption = ref();
 const _selectedRowKeys = ref<string[]>([]);
 
 const spinning = ref(false);
+const collectorId = ref(props.data.id);
+
+const defaultParams = ref({
+    sorts: [{ name: 'id', order: 'desc' }],
+    terms: [
+        {
+            terms: [
+                {
+                    column: 'collectorId',
+                    value: collectorId.value,
+                    // value: '1610517928766550016', //测试
+                },
+            ],
+        },
+    ],
+});
 
 const accessModesMODBUS_TCP = [
     {
@@ -314,21 +333,21 @@ const columns = [
 ];
 
 const handlAdd = () => {
-    visibleSaveModBus.value = true;
+    visible.saveModBus = true;
     current.value = {
-        collectorId: props.data.id,
+        collectorId: collectorId.value,
         provider: props.data?.provider || 'MODBUS_TCP',
     };
 };
 const handlEdit = (data: Object) => {
     if (data?.provider === 'OPC_UA') {
-        visibleSaveOPCUA.value = true;
+        visible.saveOPCUA = true;
     } else {
-        visibleSaveModBus.value = true;
+        visible.saveModBus = true;
     }
     current.value = cloneDeep(data);
 };
-const handlDelete = async (data: string | undefined) => {
+const handlDelete = async (data: string | undefined = undefined) => {
     spinning.value = true;
     const res = !data
         ? await batchDeletePoint(_selectedRowKeys.value)
@@ -340,7 +359,6 @@ const handlDelete = async (data: string | undefined) => {
     }
     spinning.value = false;
 };
-
 const handlBatchUpdate = () => {
     const dataSet = new Set(_selectedRowKeys.value);
     const dataMap = new Map();
@@ -348,10 +366,14 @@ const handlBatchUpdate = () => {
         dataSet.has(i.id) && dataMap.set(i.id, i);
     });
     current.value = [...dataMap.values()];
-    visibleBatchUpdate.value = true;
+    visible.batchUpdate = true;
+};
+const handlScan = () => {
+    visible.scan = true;
+    current.value = cloneDeep(props.data);
 };
 const clickEdit = async (data: object) => {
-    visibleWritePoint.value = true;
+    visible.writePoint = true;
     current.value = cloneDeep(data);
 };
 const clickRedo = async (data: object) => {
@@ -389,20 +411,10 @@ const getAccessModes = (item: Partial<Record<string, any>>) => {
     return item?.accessModes?.map((i) => i?.value);
 };
 
-const getaccessModesOption = () => {
-    return props.data?.provider !== 'MODBUS_TCP'
-        ? accessModesMODBUS_TCP.concat({
-              label: '订阅',
-              value: 'subscribe',
-          })
-        : accessModesMODBUS_TCP;
-};
-
 const saveChange = (value: object) => {
-    visibleSaveModBus.value = false;
-    visibleSaveOPCUA.value = false;
-    visibleWritePoint.value = false;
-    visibleBatchUpdate.value = false;
+    for (let key in visible) {
+        visible[key] = false;
+    }
     current.value = {};
     if (value) {
         tableRef.value?.reload();
@@ -438,10 +450,12 @@ watch(
                           label: '订阅',
                           value: 'subscribe',
                       });
-            tableRef?.value?.reload();
+            defaultParams.value.terms[0].terms[0].value = value.id;
+            // defaultParams.value.terms[0].terms[0].value = '1610517928766550016'; //测试
+            tableRef?.value?.reload && tableRef?.value?.reload();
         }
     },
-    { deep: true },
+    { immediate: true, deep: true },
 );
 
 /**

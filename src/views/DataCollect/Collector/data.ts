@@ -117,27 +117,65 @@ export const OPCUARules = {
             message: '最多可输入64个字符',
         },
     ],
-
     type: [
         {
             required: true,
             message: '请选择数据类型',
         },
     ],
-
     accessModes: [
         {
             required: true,
             message: '请选择访问类型',
         },
     ],
-
     interval: [
         {
             required: true,
             message: '请输入采集频率',
         },
     ],
-
     description: [{ max: 200, message: '最多可输入200个字符' }],
 };
+
+export const FormTableColumns = [
+    {
+        title: '名称',
+        dataIndex: 'name',
+        key: 'name',
+        width: 200,
+        fixed: 'left',
+    },
+    {
+        title: 'nodeId',
+        dataIndex: 'id',
+        key: 'id',
+        ellipsis: true,
+    },
+    {
+        title: '访问类型',
+        dataIndex: 'accessModes',
+        key: 'accessModes',
+        width: 300,
+    },
+    {
+        title: '采集频率',
+        key: 'interval',
+        dataIndex: 'interval',
+        width: 280,
+    },
+    {
+        title: '只推送变化的数据',
+        key: 'features',
+        dataIndex: 'features',
+        width: 200,
+    },
+    {
+        title: '操作',
+        key: 'action',
+        dataIndex: 'action',
+
+        fixed: 'right',
+        width: 80,
+    },
+];
