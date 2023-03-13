@@ -1,6 +1,6 @@
 <template>
     <j-modal v-model:visible="_vis" title="通知记录" :footer="null" width="70%">
-        <j-advanced-search
+        <pro-search
             type="simple"
             :columns="columns"
             @search="handleSearch"

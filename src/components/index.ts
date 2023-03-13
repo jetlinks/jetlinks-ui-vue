@@ -5,7 +5,7 @@ import JTable from './Table/index'
 import TitleComponent from "./TitleComponent/index.vue";
 import Form from './Form';
 import CardBox from './CardBox/index.vue';
-// import Search from './Search'
+import Search from './Search'
 import NormalUpload from './NormalUpload/index.vue'
 import FileFormat from './FileFormat/index.vue'
 import JProUpload from './JUpload/index.vue'
@@ -25,7 +25,7 @@ export default  {
             .component('TitleComponent', TitleComponent)
             .component('Form', Form)
             .component('CardBox', CardBox)
-            // .component('Search', Search)
+            .component('ProSearch', Search)
             .component('NormalUpload', NormalUpload)
             .component('FileFormat', FileFormat)
             .component('JProUpload', JProUpload)

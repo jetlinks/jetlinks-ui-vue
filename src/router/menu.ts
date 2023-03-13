@@ -8,7 +8,7 @@ export const AccountMenu = {
     meta: {
         title: '个人中心',
         icon: '',
-        hideInMenu: false
+        hideInMenu: true
     },
     children: [
         {

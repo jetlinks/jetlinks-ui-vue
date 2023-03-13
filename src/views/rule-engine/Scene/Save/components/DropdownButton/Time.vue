@@ -19,6 +19,7 @@
       :format='myFormat'
       :valueFormat='myFormat'
       :getPopupContainer='getPopupContainer'
+      popupClassName='manual-time-picker-popup'
       @change='change'
     />
   </div>
@@ -62,7 +63,7 @@ const change = (e: string) => {
 }
 </script>
 
-<style lang='less' scoped>
+<style lang='less'>
 .dropdown-time-picker {
   >div{
     position: relative !important;
@@ -79,6 +80,9 @@ const change = (e: string) => {
     width: 100%;
     .ant-picker-panel {
       width: 100%
+    }
+    .ant-picker-footer {
+      border-bottom: 0px;
     }
   }
 
