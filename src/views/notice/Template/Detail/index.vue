@@ -1034,6 +1034,15 @@ watch(
     },
     { deep: true },
 );
+// 模板内容变量提取
+watch(
+    () => formData.value.template.ttsmessage,
+    (val) => {
+        if (!val) return;
+        variableReg();
+    },
+    { deep: true },
+);
 // webhook请求体变量提取
 watch(
     () => formData.value.template.body,
@@ -1060,6 +1069,8 @@ const spliceStr = () => {
         variableFieldsStr += formData.value.template.subject as string;
     if (formData.value.provider === 'http')
         variableFieldsStr += formData.value.template.body as string;
+    if (formData.value.provider === 'aliyun')
+        variableFieldsStr += formData.value.template.ttsmessage as string;
     // console.log('variableFieldsStr: ', variableFieldsStr);
     return variableFieldsStr || '';
 };
