@@ -1,6 +1,6 @@
 <template>
     <j-card>
-        <j-advanced-search
+        <pro-search
             :columns="columns"
             target="device-instance-log"
             @search="handleSearch"

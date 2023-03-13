@@ -191,14 +191,16 @@ watch(
     () => route.params.id,
     (newId) => {
         if (newId) {
-            instanceStore.tabActiveKey = 'Info';
-            instanceStore.refresh(newId as string);
-
+            instanceStore.refresh(String(newId));
             getStatus(String(newId));
         }
     },
     { immediate: true, deep: true },
 );
+
+onMounted(() => {
+    instanceStore.tabActiveKey = history.state?.params?.tab || 'Info'
+})
 
 const onBack = () => {
     menuStory.jumpPage('device/Instance');
@@ -282,7 +284,7 @@ watchEffect(() => {
             tab: 'OPC UA',
         });
     }
-    if (instanceStore.current.deviceType?.value === 'gateway') {
+    if (instanceStore.current.deviceType?.value === 'gateway' && !keys.includes('ChildDevice')) {
         // 产品类型为网关的情况下才显示此模块
         list.value.push({
             key: 'ChildDevice',
