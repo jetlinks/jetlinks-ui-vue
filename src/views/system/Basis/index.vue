@@ -12,7 +12,6 @@
                         <j-form-item label="系统名称" name="title">
                             <j-input
                                 v-model:value="formValue.title"
-                                :maxlength="64"
                                 placeholder="请输入系统名称"
                             />
                         </j-form-item>
@@ -43,7 +42,7 @@
                                 placeholder="请输入高德API Key"
                             />
                         </j-form-item>
-                        <j-form-item name="'base-path'">
+                        <j-form-item name="base-path">
                             <template #label>
                                 <span>base-path</span>
                                 <j-tooltip title="系统后台访问的url">
@@ -221,7 +220,7 @@
                                         :action="action"
                                         :headers="headers"
                                         :beforeUpload="
-                                            uploader.beforeBackUpload
+                                            uploader.beforeLogoUpload
                                         "
                                         :showUploadList="false"
                                         @change="uploader.changeBackUpload"
@@ -286,7 +285,7 @@
 </template>
 
 <script setup lang="ts" name="Basis">
-import { formType, uploaderType } from './index';
+import { formType, uploaderType } from './typing';
 import { getImage } from '@/utils/comm.ts';
 import { message } from 'ant-design-vue';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
@@ -312,7 +311,16 @@ const form = reactive<formType>({
         title: [
             {
                 required: true,
-                message: '请选择本地地址',
+                message: '名称必填',
+                trigger: 'blur',
+            },
+            {
+                max: 64,
+                message: '最多可输入64个字符',
+            },
+            {
+                max: 64,
+                message: '最多可输入64个字符',
                 trigger: 'blur',
             },
         ],
@@ -411,21 +419,34 @@ const form = reactive<formType>({
 const { formValue, rulesFrom } = toRefs(form);
 
 const uploader: uploaderType = {
-    imageTypes: ['image/jpeg', 'image/png'],
+    imageTypes: ['jpg', 'jpeg', 'png', 'jfif', 'pjp', 'pjpeg'],
     iconTypes: ['image/x-icon'],
     // logo格式校验
-    beforeLogoUpload: (file) => {
-        const isType = uploader.imageTypes.includes(file.type);
-        if (!isType) {
+    beforeLogoUpload: ({ size, type }: File) => {
+        const typeBool =
+            uploader.imageTypes.filter((typeStr) => type.includes(typeStr))
+                .length > 0;
+        const sizeBool = size / 1024 / 1024 < 4;
+
+        if (!typeBool) {
             message.error(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`);
-            return false;
+        } else if (!sizeBool) {
+            message.error(`图片大小必须小于4M`);
         }
-        const isSize = file.size / 1024 / 1024 < 4;
-        if (!isSize) {
-            message.error(`图片大小必须小于${4}M`);
-        }
-        return isType && isSize;
+        return typeBool && sizeBool;
     },
+    // 浏览器页签格式校验
+    beforeIconUpload: (file) => {
+        const typeBool = uploader.iconTypes.includes(file.type);
+        const sizeBool = file.size / 1024 / 1024 < 1;
+        if (!typeBool) {
+            message.error(`请上传ico格式的图片`);
+        } else if (!sizeBool) {
+            message.error(`图片大小必须小于${1}M`);
+        }
+        return typeBool && sizeBool;
+    },
+
     // logo上传改变事件
     handleChangeLogo: (info) => {
         if (info.file.status === 'uploading') {
@@ -435,63 +456,32 @@ const uploader: uploaderType = {
             form.logoLoading = false;
             form.formValue.logo = info.file.response?.result;
         } else if (info.file.status === 'error') {
-            console.log(info.file);
             form.logoLoading = false;
             message.error('系统logo上传失败，请稍后再试');
         }
     },
-    // 背景图片上传之前
-    beforeBackUpload: (file) => {
-        const isType = uploader.imageTypes.includes(file.type);
-        if (!isType) {
-            message.error(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`);
-            return false;
-        }
-        const isSize = file.size / 1024 / 1024 < 4;
-        if (!isSize) {
-            message.error(`图片大小必须小于${4}M`);
-        }
-        return isType && isSize;
-    },
-    // 背景图片发生改变
+    // 背景上传改变事件
     changeBackUpload: (info) => {
         if (info.file.status === 'uploading') {
             form.backLoading = true;
         } else if (info.file.status === 'done') {
-            console.log(info);
-
             info.file.url = info.file.response?.result;
             form.backLoading = false;
             form.formValue.backgroud = info.file.response?.result;
         } else if (info.file.status === 'error') {
-            console.log(info.file);
             form.logoLoading = false;
             message.error('背景图上传失败，请稍后再试');
         }
     },
-    // 上传之前
-    beforeIconUpload: (file) => {
-        const isType = uploader.iconTypes.includes(file.type);
-        if (!isType) {
-            message.error(`请上传ico格式的图片`);
-            return false;
-        }
-        const isSize = file.size / 1024 / 1024 < 1;
-        if (!isSize) {
-            message.error(`图片大小必须小于${1}M`);
-        }
-        return isType && isSize;
-    },
-    // 图标发生改变
+    // 浏览器页签上传改变事件
     changeIconUpload: (info) => {
         if (info.file.status === 'uploading') {
             form.iconLoading = true;
         } else if (info.file.status === 'done') {
             info.file.url = info.file.response?.result;
-            form.iconLoading = true;
+            form.iconLoading = false;
             form.formValue.ico = info.file.response?.result;
         } else if (info.file.status === 'error') {
-            console.log(info.file);
             form.logoLoading = false;
             message.error('浏览器页签上传失败，请稍后再试');
         }

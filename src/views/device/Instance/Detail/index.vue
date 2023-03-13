@@ -9,7 +9,9 @@
             <div>
                 <div style="display: flex; align-items: center">
                     <AIcon type="ArrowLeftOutlined" @click="onBack" />
-                    <div style="margin-left: 20px">{{ instanceStore.current.name }}</div>
+                    <div style="margin-left: 20px">
+                        {{ instanceStore.current.name }}
+                    </div>
                     <j-divider type="vertical" />
                     <j-space>
                         <j-badge
@@ -79,7 +81,7 @@
                         <j-descriptions-item label="所属产品">
                             <PermissionButton
                                 type="link"
-                                style="margin-top: -5px; padding: 0"  
+                                style="margin-top: -5px; padding: 0"
                                 @click="jumpProduct"
                                 hasPermission="device/Product:view"
                             >
@@ -116,8 +118,8 @@ import Function from './Function/index.vue';
 import Modbus from './Modbus/index.vue';
 import OPCUA from './OPCUA/index.vue';
 import EdgeMap from './EdgeMap/index.vue';
-import Parsing from './Parsing/index.vue'
-import Log from './Log/index.vue'
+import Parsing from './Parsing/index.vue';
+import Log from './Log/index.vue';
 import { _deploy, _disconnect } from '@/api/device/instance';
 import { message } from 'jetlinks-ui-components';
 import { getImage } from '@/utils/comm';
@@ -150,16 +152,12 @@ const list = ref([
         tab: '物模型',
     },
     {
-        key: 'Log',
-        tab: '日志管理',
-    },
-    {
         key: 'Function',
         tab: '设备功能',
     },
     {
-        key: 'ChildDevice',
-        tab: '子设备',
+        key: 'Log',
+        tab: '日志管理',
     },
 ]);
 
@@ -174,7 +172,7 @@ const tabs = {
     OPCUA,
     EdgeMap,
     Parsing,
-    Log
+    Log,
 };
 
 const getStatus = (id: string) => {
@@ -256,6 +254,17 @@ watchEffect(() => {
         });
     }
     if (
+        instanceStore.current.features?.find(
+            (item: any) => item.id === 'transparentCodec',
+        ) &&
+        !keys.includes('Parsing')
+    ) {
+        list.value.push({
+            key: 'Parsing',
+            tab: '数据解析',
+        });
+    }
+    if (
         instanceStore.current.protocol === 'modbus-tcp' &&
         !keys.includes('Modbus')
     ) {
@@ -273,6 +282,13 @@ watchEffect(() => {
             tab: 'OPC UA',
         });
     }
+    if (instanceStore.current.deviceType?.value === 'gateway') {
+        // 产品类型为网关的情况下才显示此模块
+        list.value.push({
+            key: 'ChildDevice',
+            tab: '子设备',
+        });
+    }
     if (
         instanceStore.current.accessProvider === 'edge-child-device' &&
         instanceStore.current.parentId &&
@@ -281,15 +297,6 @@ watchEffect(() => {
         list.value.push({
             key: 'EdgeMap',
             tab: '边缘端映射',
-        });
-    }
-    if (
-        instanceStore.current.features?.find((item: any) => item.id === 'transparentCodec') && 
-        !keys.includes('Parsing')
-    ) {
-        list.value.push({
-            key: 'Parsing',
-            tab: '数据解析',
         });
     }
 });

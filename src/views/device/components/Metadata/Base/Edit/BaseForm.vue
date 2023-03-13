@@ -31,11 +31,11 @@
       </j-radio-group>
     </j-form-item>
     <j-form-item label="输入参数" name="inputs" :rules="[
-      { required: true, message: '请输入输入参数' },
+      { required: true, validator: (_rule: Rule, val: Record<any, any>[]) => validateJson(_rule, val, '输入参数') },
     ]">
       <JsonParam v-model:value="value.inputs" :name="['inputs']"></JsonParam>
     </j-form-item>
-    <value-type-form :name="['output']" v-model:value="value.output" key="function" title="输出参数"></value-type-form>
+    <value-type-form :name="['output']" v-model:value="value.output" key="function" title="输出参数" :required="false"></value-type-form>
   </template>
   <template v-if="modelType === 'events'">
     <j-form-item label="级别" :name="['expands', 'level']" :rules="[
@@ -43,12 +43,12 @@
     ]">
       <j-select v-model:value="value.expands.level" :options="EventLevel" size="small"></j-select>
     </j-form-item>
-    <value-type-form :name="['valueType']" v-model:value="value.valueType" key="function" title="输出参数"></value-type-form>
+    <value-type-form :name="['valueType']" v-model:value="value.valueType" key="function" title="输出参数" only-object></value-type-form>
   </template>
   <template v-if="modelType === 'tags'">
     <value-type-form :name="['valueType']" v-model:value="value.valueType" key="property" title="数据类型"></value-type-form>
-    <j-form-item label="读写类型" :name="['expands', 'type']" :rules="[
-      { required: true, message: '请选择读写类型' },
+    <j-form-item label="标签类型" :name="['expands', 'type']" :rules="[
+      { required: true, message: '请选择标签类型' },
     ]">
       <j-select v-model:value="value.expands.type" :options="ExpandsTypeList" mode="multiple" size="small"></j-select>
     </j-form-item>
@@ -68,6 +68,8 @@ import { getMetadataConfig } from '@/api/device/product'
 import JsonParam from '@/components/Metadata/JsonParam/index.vue'
 import { EventLevel, ExpandsTypeList } from '@/views/device/data';
 import { useMetadataStore } from '@/store/metadata';
+import { validateJson } from './validator';
+import { Rule } from 'ant-design-vue/es/form';
 
 const props = defineProps({
   type: {

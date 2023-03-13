@@ -52,11 +52,30 @@
                             <j-form-item
                                 :name="['templateDetailTable', index, 'value']"
                                 :rules="{
-                                    required: true,
+                                    required: record.required,
                                     message: '该字段为必填字段',
                                 }"
                             >
+                                <ToUser
+                                    v-if="record.type === 'user'"
+                                    v-model:toUser="record.value"
+                                    :type="data.type"
+                                    :config-id="data.id"
+                                />
+                                <ToOrg
+                                    v-else-if="record.type === 'org'"
+                                    :type="data.type"
+                                    :config-id="data.id"
+                                    v-model:toParty="record.value"
+                                />
+                                <ToTag
+                                    v-else-if="record.type === 'tag'"
+                                    :type="data.type"
+                                    :config-id="data.id"
+                                    v-model:toTag="record.value"
+                                />
                                 <ValueItem
+                                    v-else
                                     v-model:modelValue="record.value"
                                     :itemType="record.type"
                                 />
@@ -77,6 +96,10 @@ import type {
     IVariableDefinitions,
 } from '@/views/notice/Template/types';
 import { message } from 'ant-design-vue';
+
+import ToUser from '@/views/notice/Template/Detail/components/ToUser.vue';
+import ToOrg from '@/views/notice/Template/Detail/components/ToOrg.vue';
+import ToTag from '@/views/notice/Template/Detail/components/ToTag.vue';
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
@@ -128,6 +151,7 @@ const getTemplateDetail = async () => {
     formData.value.templateDetailTable = result.variableDefinitions.map(
         (m: any) => ({
             ...m,
+            type: m.expands ? m.expands.businessType : m.type,
             value: undefined,
         }),
     );

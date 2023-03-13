@@ -11,6 +11,7 @@
             :params="queryParams"
             :rowSelection="{
                 selectedRowKeys: table._selectedRowKeys.value,
+                onChange:(keys:string[])=>table._selectedRowKeys.value = [...keys]
             }"
             :columns="columns"
             @cancelSelect="table.cancelSelect"
@@ -145,7 +146,7 @@
                             </a-dropdown>
                             <PermissionButton
                                 v-else
-                                :uhasPermission="item.permission"
+                                :hasPermission="item.permission"
                                 :tooltip="item.tooltip"
                                 :pop-confirm="item.popConfirm"
                                 @click="item.onClick"
@@ -157,23 +158,6 @@
                                 }}</span>
                             </PermissionButton>
                         </a-tooltip>
-
-                        <!-- <PermissionButton
-                            :uhasPermission="`${permission}:assert`"
-                            @click="() => table.clickEdit(slotProps)"
-                        >
-                            <AIcon type="EditOutlined" />
-                        </PermissionButton>
-
-                        <PermissionButton
-                            :uhasPermission="`${permission}:bind`"
-                            :popConfirm="{
-                                title: `是否解除绑定`,
-                                onConfirm: () => table.clickUnBind(slotProps),
-                            }"
-                        >
-                            <AIcon type="DisconnectOutlined" />
-                        </PermissionButton> -->
                     </template>
                 </CardBox>
             </template>
@@ -199,7 +183,7 @@
                 <a-space :size="16">
                     <PermissionButton
                         v-for="i in table.getActions(slotProps, 'table')"
-                        :uhasPermission="i.permission"
+                        :hasPermission="i.permission"
                         type="link"
                         :tooltip="i?.tooltip"
                         :pop-confirm="i.popConfirm"
@@ -334,7 +318,7 @@ const tableRef = ref();
 const table = {
     _selectedRowKeys: ref<string[]>([]),
     selectedRows: [] as any[],
-    permissionList: ref<dictType>([]),
+    permissionList: ref<any[]>([]),
 
     init: () => {
         table.getPermissionDict();
@@ -354,14 +338,14 @@ const table = {
         else
             return [
                 {
-                    permission: true,
+                    permission: `${permission}:assert`,
                     key: 'edit',
                     tooltip: { title: '编辑' },
                     icon: 'EditOutlined',
                     onClick: () => table.clickEdit(data),
                 },
                 {
-                    permission: true,
+                    permission: `${permission}:assert`,
                     key: 'unbind',
                     tooltip: { title: '解除绑定' },
                     popConfirm: {

@@ -11,21 +11,10 @@
             :model="formData"
             name="basic"
             autocomplete="off"
+            :rules="ModBusRules"
+            ref="formRef"
         >
-            <j-form-item
-                label="点位名称"
-                name="name"
-                :rules="[
-                    {
-                        required: true,
-                        message: '请输入点位名称',
-                    },
-                    {
-                        max: 64,
-                        message: '最多可输入64个字符',
-                    },
-                ]"
-            >
+            <j-form-item label="点位名称" name="name">
                 <j-input
                     placeholder="请输入点位名称"
                     v-model:value="formData.name"
@@ -34,12 +23,7 @@
             <j-form-item
                 label="功能码"
                 :name="['configuration', 'function']"
-                :rules="[
-                    {
-                        required: true,
-                        message: '请选择功能码',
-                    },
-                ]"
+                :rules="ModBusRules.function"
             >
                 <j-select
                     style="width: 100%"
@@ -57,18 +41,11 @@
             </j-form-item>
             <j-form-item
                 label="地址"
-                :name="['configuration', 'parameter', 'address']"
+                :name="['pointKey']"
                 :rules="[
+                    ...ModBusRules.pointKey,
                     {
-                        required: true,
-                        message: '请输入地址',
-                    },
-                    {
-                        pattern: regOnlyNumber,
-                        message: '请输入0-255之间的正整数',
-                    },
-                    {
-                        validator: checkAddress,
+                        validator: checkPointKey,
                         trigger: 'blur',
                     },
                 ]"
@@ -76,7 +53,7 @@
                 <j-input-number
                     style="width: 100%"
                     placeholder="请输入地址"
-                    v-model:value="formData.configuration.parameter.address"
+                    v-model:value="formData.pointKey"
                     :min="0"
                     :max="255"
                 />
@@ -84,16 +61,7 @@
             <j-form-item
                 label="寄存器数量"
                 :name="['configuration', 'parameter', 'quantity']"
-                :rules="[
-                    {
-                        required: true,
-                        message: '请输入寄存器数量',
-                    },
-                    {
-                        pattern: regOnlyNumber,
-                        message: '请输入1-255之间的正整数',
-                    },
-                ]"
+                :rules="ModBusRules.quantity"
             >
                 <j-input-number
                     style="width: 100%"
@@ -104,12 +72,14 @@
                 />
             </j-form-item>
             <j-form-item
+                v-if="formData.configuration.function === 'HoldingRegisters'"
                 label="数据类型"
                 :name="['configuration', 'codec', 'provider']"
                 :rules="[
+                    ...ModBusRules.provider,
                     {
-                        required: true,
-                        message: '请选择数据类型',
+                        validator: checkProvider,
+                        trigger: 'change',
                     },
                 ]"
             >
@@ -131,31 +101,18 @@
                     'configuration',
                     'scaleFactor',
                 ]"
-                :rules="[
-                    {
-                        required: true,
-                        message: '请输入缩放因子',
-                    },
-                ]"
+                :rules="ModBusRules.scaleFactor"
             >
-                <j-input
+                <j-input-number
+                    style="width: 100%"
                     placeholder="请输入缩放因子"
                     v-model:value="
                         formData.configuration.codec.configuration.scaleFactor
                     "
                 />
             </j-form-item>
-            <j-form-item
-                label="访问类型"
-                :name="['accessModes']"
-                :rules="[
-                    {
-                        required: true,
-                        message: '请选择访问类型',
-                    },
-                ]"
-            >
-                <RadioCard
+            <j-form-item label="访问类型" name="accessModes">
+                <!-- <RadioCard
                     layout="horizontal"
                     :checkStyle="true"
                     :options="[
@@ -163,42 +120,36 @@
                         { label: '写', value: 'write' },
                     ]"
                     v-model="formData.accessModes"
-                />
-                <!-- <j-card-select
+                /> -->
+                <j-checkbox-group
                     v-model:value="formData.accessModes"
                     :options="[
-                        {
-                            label: '读',
-                            value: 'read',
-                            iconUrl:
-                                'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-                        },
-                        {
-                            label: '写',
-                            value: 'write',
-                            iconUrl:
-                                'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-                        },
+                        { label: '读', value: 'read' },
+                        { label: '写', value: 'write' },
                     ]"
-                    multiple
-                /> -->
+                />
             </j-form-item>
 
-            <!-- <j-form-item label="非标准协议写入配置" :name="['nspwc']"> -->
-            <j-form-item :name="['nspwc']">
-                <span>非标准协议写入配置</span>
+            <j-form-item
+                :name="['nspwc']"
+                v-if="
+                    formData.accessModes?.includes('write') &&
+                    formData.configuration.function === 'HoldingRegisters'
+                "
+            >
+                <span style="margin-right: 10px">非标准协议写入配置</span>
                 <j-switch v-model:checked="formData.nspwc" />
             </j-form-item>
 
             <j-form-item
+                v-if="
+                    !!formData.nspwc &&
+                    formData.accessModes?.includes('write') &&
+                    formData.configuration.function === 'HoldingRegisters'
+                "
                 label="是否写入数据区长度"
                 :name="['configuration', 'parameter', 'writeByteCount']"
-                :rules="[
-                    {
-                        required: true,
-                        message: '请选择是否写入数据区长度',
-                    },
-                ]"
+                :rules="ModBusRules.writeByteCount"
             >
                 <RadioCard
                     layout="horizontal"
@@ -211,14 +162,14 @@
                 />
             </j-form-item>
             <j-form-item
+                v-if="
+                    !!formData.nspwc &&
+                    formData.accessModes?.includes('write') &&
+                    formData.configuration.function === 'HoldingRegisters'
+                "
                 label="自定义数据区长度（byte）"
                 :name="['configuration', 'parameter', 'byteCount']"
-                :rules="[
-                    {
-                        required: true,
-                        message: '请输入自定义数据区长度（byte）',
-                    },
-                ]"
+                :rules="ModBusRules.byteCount"
             >
                 <j-input
                     placeholder="请输入自定义数据区长度（byte）"
@@ -229,9 +180,10 @@
                 label="采集频率"
                 :name="['configuration', 'interval']"
                 :rules="[
+                    ...ModBusRules.interval,
                     {
-                        required: true,
-                        message: '请输入采集频率',
+                        validator: checkLength,
+                        trigger: 'change',
                     },
                 ]"
             >
@@ -240,6 +192,7 @@
                     placeholder="请输入采集频率"
                     v-model:value="formData.configuration.interval"
                     :min="1"
+                    addon-after="ms"
                 />
             </j-form-item>
 
@@ -279,22 +232,16 @@
     </j-modal>
 </template>
 <script lang="ts" setup>
-import { Form } from 'ant-design-vue';
 import {
-    save,
-    update,
+    savePointBatch,
+    updatePoint,
     _validateField,
     queryCodecProvider,
 } from '@/api/data-collect/collector';
-import { Store } from 'jetlinks-store';
-
-const loading = ref(false);
-const useForm = Form.useForm;
-const channelListAll = ref();
-const channelList = ref();
-const visibleEndian = ref(false);
-const visibleUnitId = ref(false);
-const providerList = ref([]);
+import { ModBusRules, checkProviderData } from '../../data.ts';
+import type { FormInstance } from 'ant-design-vue';
+import { Rule } from 'ant-design-vue/lib/form';
+import { cloneDeep, isArray } from 'lodash-es';
 
 const props = defineProps({
     data: {
@@ -304,104 +251,71 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['change']);
+const loading = ref(false);
+const providerList = ref([]);
+const formRef = ref<FormInstance>();
 
 const id = props.data.id;
-const treeId = props.data.treeId;
+const collectorId = props.data.collectorId;
+const provider = props.data.provider;
+const oldPointKey = props.data.pointKey;
 
 const formData = ref({
     name: '',
     configuration: {
         function: undefined,
-        interval: '',
+        interval: 3000,
         parameter: {
-            address: '',
-            quantity: '',
+            quantity: 1,
             writeByteCount: '',
-            byteCount: '',
+            byteCount: 2,
+            address: '',
         },
         codec: {
-            provider: '',
+            provider: undefined,
             configuration: {
-                scaleFactor: '',
+                scaleFactor: 1,
             },
         },
     },
-    accessModes: undefined,
-    nspwc: '',
-    byte: '',
-    features: '',
+    pointKey: '',
+    accessModes: [],
+    nspwc: false,
+    features: [],
     description: '',
 });
 
-const regOnlyNumber = new RegExp(/^\d+$/);
+const onSubmit = async () => {
+    const data = await formRef.value?.validate();
 
-const checkAddress = (_rule: Rule, value: string): Promise<any> =>
-    new Promise(async (resolve, reject) => {
-        if (value) {
-            const res = await _validateField(props.data.treeId, {
-                pointKey: value,
-            });
-            return res.result.passed ? resolve('') : reject(res.result.reason);
-        }
-    });
+    delete data?.nspwc;
+    const { codec } = data?.configuration;
 
-// const { resetFields, validate, validateInfos } = useForm(
-//     formData,
-//     reactive({
-//         channelId: [
-//             { required: true, message: '请选择所属通道', trigger: 'blur' },
-//         ],
-//         name: [
-//             { required: true, message: '请输入采集器名称', trigger: 'blur' },
-//             { max: 64, message: '最多可输入64个字符' },
-//         ],
-//         'configuration.unitId': [
-//             { required: true, message: '请输入从机地址', trigger: 'blur' },
-//             {
-//                 pattern: regOnlyNumber,
-//                 message: '请输入0-255之间的正整数',
-//             },
-//         ],
-//         'circuitBreaker.type': [
-//             { required: true, message: '请选择处理方式', trigger: 'blur' },
-//         ],
-//         'configuration.endian': [
-//             { required: true, message: '请选择高低位切换', trigger: 'blur' },
-//         ],
-//         description: [{ max: 200, message: '最多可输入200个字符' }],
-//     }),
-// );
-const onSubmit = () => {
-    // validate()
-    //     .then(async (res) => {
-    //         const { provider, name } = channelListAll.value.find(
-    //             (item) => item.id === formData.value.channelId,
-    //         );
-    //         const params = {
-    //             ...toRaw(formData.value),
-    //             provider,
-    //             channelName: name,
-    //         };
-    //         loading.value = true;
-    //         const response = !id
-    //             ? await save(params)
-    //             : await update(id, { ...props.data, ...params });
-    //         if (response.status === 200) {
-    //             emit('change', true);
-    //         }
-    //         loading.value = false;
-    //     })
-    //     .catch((err) => {
-    //         loading.value = false;
-    //     });
+    if (data?.configuration.function !== 'HoldingRegisters') {
+        codec.provider = 'int8';
+    }
+    const params = {
+        ...props.data,
+        ...data,
+        provider,
+        collectorId,
+    };
+
+    // address是多余字段，但是react版本上使用到了这个字段
+    params.configuration.parameter = {
+        ...params.configuration.parameter,
+        address: data?.pointKey,
+    };
+
+    loading.value = true;
+    const response = !id
+        ? await savePointBatch(params)
+        : await updatePoint(id, { ...props.data, ...params });
+    if (response.status === 200) {
+        emit('change', true);
+    }
+    loading.value = false;
 };
-
-const getTypeTooltip = (value: string) =>
-    value === 'LowerFrequency'
-        ? '连续20次异常，降低连接频率至原有频率的1/10（重试间隔不超过1分钟），故障处理后自动恢复至设定连接频率'
-        : value === 'Break'
-        ? '连续10分钟异常，停止采集数据进入熔断状态，设备重新启用后恢复采集状态'
-        : '忽略异常，保持原采集频率超时时间为5s';
 
 const handleOk = () => {
     onSubmit();
@@ -410,19 +324,42 @@ const handleCancel = () => {
     emit('change', false);
 };
 
-// const getChannelNoPaging = async () => {
-//     channelListAll.value = Store.get('channelListAll');
-//     channelList.value = channelListAll.value.map((item) => ({
-//         value: item.id,
-//         label: item.name,
-//     }));
-// };
-// getChannelNoPaging();
+const checkLength = (_rule: Rule, value: string): Promise<any> =>
+    new Promise(async (resolve, reject) => {
+        if (value) {
+            return String(value).length > 64
+                ? reject('最多可输入64个字符')
+                : resolve('');
+        }
+    });
+
+const checkProvider = (_rule: Rule, value: string): Promise<any> =>
+    new Promise(async (resolve, reject) => {
+        if (value) {
+            const { quantity } = formData.value.configuration.parameter;
+            return checkProviderData[value] > Number(quantity) * 2
+                ? reject('数据类型长度需 <= 寄存器数量 * 2')
+                : resolve('');
+        }
+    });
+
+const checkPointKey = (_rule: Rule, value: string): Promise<any> =>
+    new Promise(async (resolve, reject) => {
+        if (value) {
+            if (Number(oldPointKey) === Number(value)) return resolve('');
+            const res = await _validateField(collectorId, {
+                pointKey: value,
+            });
+            return res.result.passed ? resolve('') : reject(res.result.reason);
+        }
+    });
+
+const filterOption = (input: string, option: any) => {
+    return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+};
 
 const getProviderList = async () => {
     const res = await queryCodecProvider();
-    console.log(222, res.result);
-
     providerList.value = res.result
         .filter((i) => i.id !== 'property')
         .map((item) => ({
@@ -432,20 +369,31 @@ const getProviderList = async () => {
 };
 getProviderList();
 
-// watch(
-//     () => formData.value.channelId,
-//     (value) => {
-//         const dt = channelListAll.value.find((item) => item.id === value);
-//         visibleUnitId.value = visibleEndian.value =
-//             dt?.provider && dt?.provider === 'MODBUS_TCP';
-//     },
-//     { deep: true },
-// );
-
+watch(
+    () => formData.value.configuration.parameter.quantity,
+    (value) => {
+        formData.value.configuration.parameter.byteCount = Number(value) * 2;
+    },
+    { immediate: true, deep: true },
+);
 watch(
     () => props.data,
     (value) => {
-        if (value.id) formData.value = value;
+        if (value.id && value.provider === 'MODBUS_TCP') {
+            const _value = cloneDeep(value);
+            const { writeByteCount, byteCount } =
+                _value.configuration.parameter;
+            formData.value = _value;
+            if (!!_value.accessModes[0]?.value) {
+                formData.value.accessModes = value.accessModes.map(
+                    (i) => i.value,
+                );
+            }
+            if (!!_value.features[0]?.value) {
+                formData.value.features = value.features.map((i) => i.value);
+            }
+            formData.value.nspwc = !!writeByteCount || !!byteCount;
+        }
     },
     { immediate: true, deep: true },
 );

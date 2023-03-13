@@ -1,0 +1,217 @@
+<template lang="">
+    <j-modal title="编辑" :visible="true" width="700px" @cancel="handleCancel">
+        <j-form
+            class="form"
+            layout="vertical"
+            :model="formData"
+            name="basic"
+            autocomplete="off"
+            :rules="OPCUARules"
+            ref="formRef"
+        >
+            <j-form-item label="点位名称" name="name">
+                <j-input
+                    placeholder="请输入点位名称"
+                    v-model:value="formData.name"
+                />
+            </j-form-item>
+            <j-form-item label="数据类型" :name="['configuration', 'type']">
+                <j-select
+                    style="width: 100%"
+                    v-model:value="formData.configuration.type"
+                    :options="[
+                        { value: 'Number', label: '数值类型' },
+                        { value: 'DateTime', label: '时间类型' },
+                        { value: 'Array', label: '数组类型' },
+                        { value: 'String', label: '文本类型' },
+                        { value: 'Boolean', label: '布尔' },
+                    ]"
+                    placeholder="请选择数据类型"
+                    allowClear
+                    show-search
+                    :filter-option="filterOption"
+                />
+            </j-form-item>
+
+            <j-form-item label="访问类型" name="accessModes">
+                <j-checkbox-group
+                    v-model:value="formData.accessModes"
+                    :options="[
+                        { label: '读', value: 'read' },
+                        { label: '写', value: 'write' },
+                        { label: '订阅', value: 'subscribe' },
+                    ]"
+                />
+            </j-form-item>
+            <j-form-item
+                label="采集频率"
+                :name="['configuration', 'interval']"
+                :rules="[
+                    ...OPCUARules.interval,
+                    {
+                        validator: checkLength,
+                        trigger: 'change',
+                    },
+                ]"
+            >
+                <j-input-number
+                    style="width: 100%"
+                    placeholder="请输入采集频率"
+                    v-model:value="formData.configuration.interval"
+                    :min="1"
+                    addon-after="ms"
+                />
+            </j-form-item>
+
+            <a-form-item label="" :name="['features']">
+                <a-checkbox-group v-model:value="formData.features">
+                    <a-checkbox value="changedOnly" name="type"
+                        >只推送变化的数据</a-checkbox
+                    >
+                </a-checkbox-group>
+            </a-form-item>
+
+            <j-form-item label="说明" :name="['description']">
+                <j-textarea
+                    placeholder="请输入说明"
+                    v-model:value="formData.description"
+                    :maxlength="200"
+                    :rows="3"
+                    showCount
+                />
+            </j-form-item>
+        </j-form>
+        <template #footer>
+            <j-button key="back" @click="handleCancel">取消</j-button>
+            <PermissionButton
+                key="submit"
+                type="primary"
+                :loading="loading"
+                @click="handleOk"
+                style="margin-left: 8px"
+                :hasPermission="`DataCollect/Collector:${
+                    id ? 'update' : 'add'
+                }`"
+            >
+                确认
+            </PermissionButton>
+        </template>
+    </j-modal>
+</template>
+<script lang="ts" setup>
+import {
+    savePoint,
+    updatePoint,
+    _validateField,
+} from '@/api/data-collect/collector';
+import { OPCUARules, checkProviderData } from '../../data.ts';
+import type { FormInstance } from 'ant-design-vue';
+import { Rule } from 'ant-design-vue/lib/form';
+import { cloneDeep } from 'lodash-es';
+
+const props = defineProps({
+    data: {
+        type: Object,
+        default: () => {},
+    },
+});
+
+const emit = defineEmits(['change']);
+const loading = ref(false);
+const providerList = ref([]);
+const formRef = ref<FormInstance>();
+
+const id = props.data.id;
+const collectorId = props.data.collectorId;
+const provider = props.data.provider;
+
+const formData = ref({
+    name: '',
+    configuration: {
+        type: undefined,
+        interval: 3000,
+    },
+    accessModes: [],
+    features: [],
+    description: '',
+});
+
+const onSubmit = async () => {
+    const data = await formRef.value?.validate();
+
+    const params = {
+        ...props.data,
+        ...data,
+        provider,
+        collectorId,
+    };
+
+    loading.value = true;
+    const response = !id
+        ? await savePoint(params)
+        : await updatePoint(id, { ...props.data, ...params });
+    if (response.status === 200) {
+        emit('change', true);
+    }
+    loading.value = false;
+};
+
+const handleOk = () => {
+    onSubmit();
+};
+const handleCancel = () => {
+    emit('change', false);
+};
+
+const checkLength = (_rule: Rule, value: string): Promise<any> =>
+    new Promise(async (resolve, reject) => {
+        if (value) {
+            return String(value).length > 64
+                ? reject('最多可输入64个字符')
+                : resolve('');
+        }
+    });
+
+const filterOption = (input: string, option: any) => {
+    return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+};
+
+watch(
+    () => props.data,
+    (value) => {
+        if (value.id && value.provider === 'OPC_UA') {
+            const _value = cloneDeep(value);
+            formData.value = _value;
+            if (!!_value.accessModes[0]?.value) {
+                formData.value.accessModes = value.accessModes.map(
+                    (i) => i.value,
+                );
+            }
+            if (!!_value.features[0]?.value) {
+                formData.value.features = value.features.map((i) => i.value);
+            }
+        }
+    },
+    { immediate: true, deep: true },
+);
+</script>
+
+<style lang="less" scoped>
+.form {
+    .form-radio-button {
+        width: 148px;
+        height: 80px;
+        padding: 0;
+        img {
+            width: 100%;
+            height: 100%;
+        }
+    }
+    .form-upload-button {
+        margin-top: 10px;
+    }
+    .form-submit {
+        background-color: @primary-color !important;
+    }
+}
+</style>

@@ -393,11 +393,11 @@ const formRules = ref({
     // webhook
     'configuration.url': [
         { required: true, message: '请输入Webhook' },
-        {
-            pattern:
-                /^(((ht|f)tps?):\/\/)?([^!@#$%^&*?.\s-]([^!@#$%^&*?.\s]{0,63}[^!@#$%^&*?.\s])?\.)+[j-z]{2,6}\/?/,
-            message: 'Webhook需要是一个合法的URL',
-        },
+        // {
+        //     pattern:
+        //         /^(((ht|f)tps?):\/\/)?([^!@#$%^&*?.\s-]([^!@#$%^&*?.\s]{0,63}[^!@#$%^&*?.\s])?\.)+[j-z]{2,6}\/?/,
+        //     message: 'Webhook需要是一个合法的URL',
+        // },
     ],
     description: [{ max: 200, message: '最多可输入200个字符' }],
 });

@@ -16,13 +16,7 @@
                     <j-form-item
                         name="name"
                         label="姓名"
-                        :rules="[
-                            { required: true, message: '请输入姓名' },
-                            {
-                                max: 64,
-                                message: '最多可输入64个字符',
-                            },
-                        ]"
+                        :rules="[{ required: true, message: '请输入姓名' }]"
                     >
                         <j-input
                             v-model:value="form.data.name"
@@ -35,7 +29,7 @@
                         name="username"
                         label="用户名"
                         :rules="[
-                            { required: true },
+                            { required: true, message: '' },
                             {
                                 validator: form.rules.checkUserName,
                                 trigger: 'blur',
@@ -56,7 +50,7 @@
                         name="password"
                         label="密码"
                         :rules="[
-                            { required: true },
+                            { required: true, message: '' },
                             {
                                 validator: form.rules.checkPassword,
                                 trigger: 'blur',
@@ -76,10 +70,10 @@
                         name="confirmPassword"
                         label="确认密码"
                         :rules="[
-                            { required: true, message: '请输入8~64位的密码' },
+                            { required: true, message: '' },
                             {
                                 validator: form.rules.checkAgainPassword,
-                                trigger: 'change',
+                                trigger: 'blur',
                             },
                         ]"
                     >
@@ -91,7 +85,6 @@
                     </j-form-item>
                 </j-col>
             </j-row>
-            <!-- 还差页面权限 -->
             <j-row :gutter="24" v-if="form.IsShow('add', 'edit')">
                 <j-col :span="12">
                     <j-form-item name="roleIdList" label="角色" class="flex">
@@ -104,9 +97,8 @@
                         ></j-select>
 
                         <PermissionButton
-                            :uhasPermission="`${rolePermission}:update`"
+                            :hasPermission="`${rolePermission}:add`"
                             @click="form.clickAddItem('roleIdList', 'Role')"
-                            class="add-item"
                         >
                             <AIcon type="PlusOutlined" />
                         </PermissionButton>
@@ -128,9 +120,10 @@
                             </template>
                         </j-tree-select>
                         <PermissionButton
-                            :uhasPermission="`${deptPermission}:update`"
-                            @click="form.clickAddItem('roleIdList', 'Role')"
-                            class="add-item"
+                            :hasPermission="`${deptPermission}:add`"
+                            @click="
+                                form.clickAddItem('orgIdList', 'Department')
+                            "
                         >
                             <AIcon type="PlusOutlined" />
                         </PermissionButton>
@@ -235,7 +228,6 @@ const form = reactive({
     rules: {
         checkUserName: (_rule: Rule, value: string): Promise<any> =>
             new Promise((resolve, reject) => {
-                console.log(_rule);
                 if (props.type === 'edit') return resolve('');
 
                 if (!value) return reject('请输入用户名');
@@ -248,7 +240,7 @@ const form = reactive({
             }),
         checkPassword: (_rule: Rule, value: string): Promise<any> =>
             new Promise((resolve, reject) => {
-                if (!value) return reject('请输入8~64位的密码');
+                if (!value) return reject('请输入密码');
                 else if (value.length > 64) return reject('最多可输入64个字符');
                 else if (value.length < 8) return reject('密码不能少于8位');
                 validateField_api('password', value).then((resp: any) => {
@@ -258,7 +250,7 @@ const form = reactive({
                 });
             }),
         checkAgainPassword: (_rule: Rule, value: string): Promise<any> => {
-            if (!value) return Promise.reject('');
+            if (!value) return Promise.reject('请输入8~64位的密码');
             return value === form.data.password
                 ? Promise.resolve()
                 : Promise.reject('两次密码输入不一致');
@@ -385,6 +377,15 @@ type optionType = {
                 display: flex;
                 .ant-select {
                     flex: 1;
+                }
+                .ant-tooltip-disabled-compatible-wrapper {
+                    .ant-btn {
+                        color: rgba(0, 0, 0, 0.25);
+                        border-color: #d9d9d9;
+                        background: #f5f5f5;
+                        text-shadow: none;
+                        box-shadow: none;
+                    }
                 }
                 .ant-btn {
                     width: 32px;

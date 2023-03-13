@@ -1,10 +1,6 @@
 <template>
     <div class="card">
-        <div
-            class="card-warp"
-            :class="{ active: active ? 'active' : '' }"
-            @click="handleClick"
-        >
+        <div class="card-warp" :class="{ active: active ? 'active' : '' }">
             <div class="card-content">
                 <div class="card-header">
                     <div class="card-header-left">
@@ -15,7 +11,11 @@
                     </div>
                 </div>
 
-                <div style="display: flex">
+                <div
+                    class="card-item"
+                    style="display: flex"
+                    @click="handleClick"
+                >
                     <!-- 图片 -->
                     <div class="card-item-avatar">
                         <slot name="img"> </slot>
@@ -169,7 +169,7 @@ const handleClick = () => {
         border: 1px solid #e6e6e6;
 
         &:hover {
-            cursor: pointer;
+            // cursor: pointer;
             box-shadow: 0 0 24px rgba(#000, 0.1);
 
             .card-mask {
@@ -214,6 +214,9 @@ const handleClick = () => {
                 align-items: center;
             }
 
+            .card-item {
+                cursor: pointer;
+            }
             .card-item-avatar {
                 margin-right: 16px;
             }

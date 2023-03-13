@@ -26,7 +26,7 @@
                             :actions="
                                 serialArray.length ? serialArray[0].actions : []
                             "
-                            @add="onAdd"
+                            @add="(_item) => onAdd(_item, false)"
                             @delete="onDelete"
                         />
                     </div>
@@ -50,7 +50,7 @@
                                     ? parallelArray[0].actions
                                     : []
                             "
-                            @add="onAdd"
+                            @add="(_item) => onAdd(_item, true)"
                             @delete="onDelete"
                         />
                     </div>
@@ -98,6 +98,8 @@ watch(
         parallelArray.value = newVal.filter((item) => item.parallel);
         serialArray.value = newVal.filter((item) => !item.parallel);
 
+        console.log(parallelArray.value, serialArray.value, '123')
+
         const isSerialActions = serialArray.value.some((item) => {
             return !!item.actions.length;
         });
@@ -128,7 +130,7 @@ const onDelete = (_key: string) => {
         emit('update', serialArray[0], false);
     }
 };
-const onAdd = (actionItem: any) => {
+const onAdd = (actionItem: any, _parallel: boolean) => {
     const newParallelArray = [...parallelArray.value];
     if (newParallelArray.length) {
         const indexOf = newParallelArray[0].actions?.findIndex(
@@ -140,12 +142,11 @@ const onAdd = (actionItem: any) => {
             newParallelArray[0].actions.push(actionItem);
         }
         parallelArray.value = [...newParallelArray];
-        console.log(parallelArray.value);
-        emit('update', newParallelArray[0], true);
+        emit('update', newParallelArray[0], _parallel);
     } else {
         actionItem.key = randomString();
         emit('add', {
-            parallel: true,
+            parallel: _parallel,
             key: randomString(),
             actions: [actionItem],
         });

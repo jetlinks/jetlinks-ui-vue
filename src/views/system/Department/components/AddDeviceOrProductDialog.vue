@@ -36,6 +36,7 @@
             :params="query.params.value"
             :rowSelection="{
                 selectedRowKeys: table._selectedRowKeys.value,
+                onChange: pageChange
             }"
             @cancelSelect="table.cancelSelect"
         >
@@ -420,6 +421,9 @@ const table: any = {
     },
 };
 table.init();
+const pageChange = ()=>{
+    console.log(1111,table._selectedRowKeys.value);
+}
 </script>
 
 <style lang="less" scoped>

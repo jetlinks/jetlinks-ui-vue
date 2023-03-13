@@ -1,7 +1,10 @@
 <template>
     <page-container>
         <div class="user-container">
-            <j-advanced-search :columns="columns" @search="(params:any)=>queryParams = {...params}" />
+            <j-advanced-search
+                :columns="columns"
+                @search="(params:any)=>queryParams = {...params}"
+            />
 
             <j-pro-table
                 ref="tableRef"
@@ -15,7 +18,7 @@
             >
                 <template #headerTitle>
                     <PermissionButton
-                        :uhasPermission="`${permission}:add`"
+                        :hasPermission="`${permission}:add`"
                         type="primary"
                         @click="table.openDialog('add')"
                     >
@@ -38,7 +41,7 @@
                 <template #action="slotProps">
                     <j-space :size="16">
                         <PermissionButton
-                            :uhasPermission="`${permission}:update`"
+                            :hasPermission="`${permission}:update`"
                             type="link"
                             :tooltip="{
                                 title: '编辑',
@@ -48,7 +51,7 @@
                             <AIcon type="EditOutlined" />
                         </PermissionButton>
                         <PermissionButton
-                            :uhasPermission="`${permission}:action`"
+                            :hasPermission="`${permission}:action`"
                             type="link"
                             :tooltip="{
                                 title: `${slotProps.status ? '禁用' : '启用'}`,
@@ -64,7 +67,7 @@
                             <play-circle-outlined v-else />
                         </PermissionButton>
                         <PermissionButton
-                            :uhasPermission="`${permission}:update`"
+                            :hasPermission="`${permission}:update`"
                             type="link"
                             :tooltip="{
                                 title: '重置密码',
@@ -75,7 +78,7 @@
                         </PermissionButton>
                         <PermissionButton
                             type="link"
-                            :uhasPermission="`${permission}:delete`"
+                            :hasPermission="`${permission}:delete`"
                             :tooltip="{
                                 title: slotProps.status
                                     ? '请先禁用，再删除'
@@ -133,7 +136,6 @@ const columns = [
         dataIndex: 'username',
         key: 'username',
         ellipsis: true,
-        fixed: 'left',
         search: {
             type: 'string',
         },
@@ -143,7 +145,6 @@ const columns = [
         dataIndex: 'type',
         key: 'type',
         ellipsis: true,
-        fixed: 'left',
         search: {
             type: 'select',
             options: () =>
@@ -186,7 +187,6 @@ const columns = [
         dataIndex: 'telephone',
         key: 'telephone',
         ellipsis: true,
-        fixed: 'left',
         search: {
             type: 'string',
         },
@@ -196,7 +196,6 @@ const columns = [
         dataIndex: 'email',
         key: 'email',
         ellipsis: true,
-        fixed: 'left',
         search: {
             type: 'string',
         },
@@ -205,10 +204,11 @@ const columns = [
         title: '操作',
         dataIndex: 'action',
         key: 'action',
+        fixed: 'right',
         scopedSlots: true,
     },
 ];
-const queryParams = ({});
+const queryParams = ref({});
 
 const tableRef = ref<Record<string, any>>({}); // 表格实例
 const table = {

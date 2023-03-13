@@ -9,18 +9,20 @@
           <template #title>
             <div class="edit-title" style="display: flex; justify-content: space-between; align-items: center;">
               <div style="width: 150px;">枚举项配置</div>
-              <AIcon type="CloseOutlined" @click="handleClose" />
+              <div @click="handleClose"><AIcon type="CloseOutlined" /></div>
             </div>
           </template>
           <template #content>
             <div class="ant-form-vertical">
               <j-form-item label="Value" :name="name.concat([index, 'value'])" :rules="[
                 { required: true, message: '请输入Value' },
+                { max: 64, message: '最多可输入64个字符' },
               ]">
                 <j-input v-model:value="_value[index].value" size="small"></j-input>
               </j-form-item>
               <j-form-item label="Text" :name="name.concat([index, 'text'])" :rules="[
                 { required: true, message: '请输入Text' },
+                { max: 64, message: '最多可输入64个字符' },
               ]">
                 <j-input v-model:value="_value[index].text" size="small"></j-input>
               </j-form-item>

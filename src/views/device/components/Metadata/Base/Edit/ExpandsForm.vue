@@ -3,14 +3,14 @@
     { required: true, message: '请选择来源' },
   ]">
     <j-select v-model:value="_value.source" :options="PropertySource" size="small"
-      :disabled="metadataStore.model.action === 'edit'"></j-select>
+      :disabled="metadataStore.model.action === 'edit'" @change="changeSource"></j-select>
   </j-form-item>
   <virtual-rule-param v-if="_value.source === 'rule'" v-model:value="_value.virtualRule"
     :name="name.concat(['virtualRule'])" :id="id" :showWindow="_value.source === 'rule'"></virtual-rule-param>
   <j-form-item label="读写类型" :name="name.concat(['type'])" :rules="[
     { required: true, message: '请选择读写类型' },
   ]">
-    <j-select v-model:value="_value.type" :options="ExpandsTypeList" mode="multiple" size="small"></j-select>
+    <j-select v-model:value="_value.type" :options="ExpandsTypeList" mode="multiple" size="small" :disabled="['manual', 'rule'].includes(_value.source)"></j-select>
   </j-form-item>
   <j-form-item label="其他配置" v-if="config.length > 0">
     <j-form-item v-for="(item, index) in config" :key="index">
@@ -98,6 +98,16 @@ const validateMetrics = (value: Record<any, any>[]) => {
     return Promise.reject(new Error('请输入指标配置'));
   }
   return Promise.resolve();
+}
+
+const changeSource = (val: string) => {
+  if (val === 'manual') {
+    _value.value.type = ['write']
+  } else if (val === 'rule') {
+    _value.value.type = ['report']
+  } else {
+    _value.value.type = []
+  }
 }
 
 </script>
