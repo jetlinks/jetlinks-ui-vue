@@ -1,8 +1,8 @@
 <template>
     <page-container>
         <div class="DashBoardBox">
-            <a-row :gutter="24">
-                <a-col :span="6">
+            <j-row :gutter="24">
+                <j-col :span="6">
                     <TopCard
                         title="今日告警"
                         :value="state.today"
@@ -10,33 +10,33 @@
                     >
                         <Charts :options="state.fifteenOptions"></Charts>
                     </TopCard>
-                </a-col>
-                <a-col :span="6">
+                </j-col>
+                <j-col :span="6">
                     <TopCard
                         title="告警配置"
                         :value="state.config"
                         :footer="alarmState"
                         :img="getImage('/device/device-number.png')"
                     ></TopCard>
-                </a-col>
-                <a-col :span="12">
+                </j-col>
+                <j-col :span="12">
                     <NewAlarm :alarm-list="state.alarmList"></NewAlarm>
-                </a-col>
-            </a-row>
-            <a-row :gutter="24">
-                <a-col :span="24">
+                </j-col>
+            </j-row>
+            <j-row :gutter="24">
+                <j-col :span="24">
                     <div class="alarm-card">
                         <Guide>
                             <template #title>
                                 <span style="margin-right: 24px">告警统计</span>
-                                <a-select
+                                <j-select
                                     style="width: 40%"
                                     v-model:value="queryCodition.targetType"
                                     :options="
                                         isNoCommunity ? selectOpt1 : selectOpt2
                                     "
                                     @change="selectChange"
-                                ></a-select>
+                                ></j-select>
                             </template>
                             <template #extra>
                                 <TimeSelect
@@ -63,13 +63,13 @@
                                     </li>
                                 </ul>
                                 <div v-else class="empty-body">
-                                    <a-empty  :image="Empty.PRESENTED_IMAGE_SIMPLE"></a-empty>
+                                    <j-empty  :image="Empty.PRESENTED_IMAGE_SIMPLE"></j-empty>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </a-col>
-            </a-row>
+                </j-col>
+            </j-row>
         </div>
     </page-container>
 </template>
