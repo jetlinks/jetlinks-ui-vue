@@ -1,7 +1,7 @@
 <!-- 充值管理 -->
 <template>
     <page-container>
-        <Search :columns="columns" target="recharge-search" @search="handleSearch" />
+        <pro-search :columns="columns" target="recharge-search" @search="handleSearch" />
         <j-pro-table ref="rechargeRef" :columns="columns" :request="queryRechargeList" model="TABLE"
             :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }" :params="params">
             <template #headerTitle>

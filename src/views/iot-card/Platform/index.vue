@@ -1,7 +1,7 @@
 <!-- 平台对接 -->
 <template>
     <page-container>
-        <Search :columns="columns" target="platform-search" @search="handleSearch" />
+        <pro-search :columns="columns" target="platform-search" @search="handleSearch" />
         <j-pro-table ref="platformRef" :columns="columns" :request="queryList"
             :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }" :params="params" :gridColumn="3">
             <template #headerTitle>

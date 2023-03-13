@@ -1,7 +1,7 @@
 <!-- 操作记录 -->
 <template>
     <page-container>
-        <Search
+        <pro-search
             :columns="columns"
             target="record-search"
             @search="handleSearch"

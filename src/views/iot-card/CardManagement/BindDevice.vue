@@ -3,7 +3,7 @@
     <j-modal :maskClosable="false" width="1100px" :visible="true" title="选择设备" okText="确定" cancelText="取消" @ok="handleOk"
         @cancel="handleCancel" :confirmLoading="btnLoading">
         <div style="margin-top: 10px">
-            <Search :columns="columns" target="iot-card-bind-device" @search="handleSearch" type="simple" />
+            <pro-search :columns="columns" target="iot-card-bind-device" @search="handleSearch" type="simple" />
             <j-pro-table ref="bindDeviceRef" :columns="columns" :request="queryUnbounded" model="TABLE" :defaultParams="{
                 sorts: [{ name: 'createTime', order: 'desc' }],
             }" :rowSelection="{
