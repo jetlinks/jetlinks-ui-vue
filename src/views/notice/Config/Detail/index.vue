@@ -125,16 +125,56 @@
                                 v-bind="validateInfos['configuration.host']"
                             >
                                 <j-space>
-                                    <j-input
+                                    <j-auto-complete
                                         v-model:value="
                                             formData.configuration.host
                                         "
                                         placeholder="请输入服务器地址"
+                                        style="width: 180px"
+                                        :options="[
+                                            {
+                                                label: 'smtp.163.com',
+                                                value: 'smtp.163.com',
+                                            },
+                                            {
+                                                label: 'pop.163.com',
+                                                value: 'pop.163.com',
+                                            },
+                                            {
+                                                label: 'smtp.exmail.qq.com',
+                                                value: 'smtp.exmail.qq.com',
+                                            },
+                                            {
+                                                label: 'pop.exmail.qq.com',
+                                                value: 'pop.exmail.qq.com',
+                                            },
+                                            {
+                                                label: 'smtp.qq.com',
+                                                value: 'smtp.qq.com',
+                                            },
+                                            {
+                                                label: 'pop.qq.com',
+                                                value: 'pop.qq.com',
+                                            },
+                                            {
+                                                label: 'smtpdm.aliyun.com',
+                                                value: 'smtpdm.aliyun.com',
+                                            },
+                                            {
+                                                label: 'smtp.126.com',
+                                                value: 'smtp.126.com',
+                                            },
+                                            {
+                                                label: 'pop.126.com',
+                                                value: 'pop.126.com',
+                                            },
+                                        ]"
                                     />
                                     <j-input-number
                                         v-model:value="
                                             formData.configuration.port
                                         "
+                                        :precision="0"
                                         :min="1"
                                         :max="65535"
                                     />
@@ -384,7 +424,10 @@ const formRules = ref({
     ],
     // 邮件
     'configuration.host': [{ required: true, message: '请输入服务器地址' }],
-    'configuration.sender': [{ required: true, message: '请输入发件人' }],
+    'configuration.sender': [
+        { required: true, message: '请输入发件人' },
+        { max: 64, message: '最多可输入64个字符' },
+    ],
     'configuration.username': [
         { required: true, message: '请输入用户名' },
         { max: 64, message: '最多可输入64个字符' },

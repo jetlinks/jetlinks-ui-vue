@@ -26,7 +26,7 @@
                     </PermissionButton>
                     <a-upload
                         name="file"
-                        accept="json"
+                        accept=".json"
                         :showUploadList="false"
                         :before-upload="beforeUpload"
                     >

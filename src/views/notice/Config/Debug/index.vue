@@ -132,6 +132,8 @@ const getTemplateList = async () => {
     };
     const { result } = await ConfigApi.getTemplate(params, props.data.id);
     templateList.value = result;
+    formData.value.templateId = result[0]?.id as string;
+    getTemplateDetail()
 };
 
 watch(
