@@ -45,7 +45,14 @@
                     <j-form-item
                         :name="['shareConfig', 'url']"
                         label="URL"
-                        :rules="[{ required: true, message: '请输入URL' }]"
+                        :rules="[
+                            {
+                                required: true,
+                                message: '请输入URL',
+                                trigger: 'change',
+                            },
+                            { validator: form.checkUrl, trigger: 'blur' },
+                        ]"
                     >
                         <j-input
                             v-model:value="form.data.shareConfig.url"
@@ -183,6 +190,7 @@ import {
     saveDataSource_api,
 } from '@/api/system/dataSource';
 import { FormInstance, message } from 'ant-design-vue';
+import { Rule } from 'ant-design-vue/lib/form';
 import type { dictItemType, optionItemType, sourceItemType } from '../typing';
 
 const emits = defineEmits(['confirm', 'update:visible']);
@@ -218,6 +226,15 @@ const form = reactive({
 
     typeOptions: [] as optionItemType[],
 
+    checkUrl: (_rule: Rule, value: string): Promise<any> => {
+        if (!value) return Promise.reject('请输入URL');
+        const arr = value.split(':');
+        if (arr?.[0] === 'jdbc' || arr?.[0] === 'r2dbc') {
+            return Promise.resolve();
+        } else {
+            return Promise.reject('请输入正确的URL');
+        }
+    },
     getTypeOption: () => {
         getDataTypeDict_api().then((resp: any) => {
             const result = resp.result as dictItemType[];
