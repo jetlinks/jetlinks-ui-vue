@@ -62,7 +62,7 @@
                     :showUploadList="false"
                     @change="handleFileChange"
                 >
-                    <AIcon type="CloudUploadOutlined" />
+                    <AIcon type="UploadOutlined" />
                 </j-upload>
             </template>
         </j-input>

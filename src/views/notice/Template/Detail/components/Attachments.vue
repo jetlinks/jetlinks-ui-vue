@@ -6,7 +6,7 @@
             v-for="(item, index) in fileList"
             :key="index"
         >
-            <j-input v-model:value="item.name">
+            <j-input v-model:value="item.name" @change="emitEvents">
                 <template #addonAfter>
                     <a-upload
                         name="file"

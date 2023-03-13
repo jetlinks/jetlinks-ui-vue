@@ -353,7 +353,9 @@
                                     placeholder="请输入标题"
                                 />
                             </j-form-item>
-                            <j-form-item>
+                            <j-form-item
+                                v-bind="validateInfos['template.sendTo']"
+                            >
                                 <template #label>
                                     <span>
                                         收件人
@@ -369,9 +371,8 @@
                                 </template>
                                 <j-select
                                     mode="tags"
-                                    :options="[]"
                                     v-model:value="formData.template.sendTo"
-                                    placeholder="请选择收件人"
+                                    placeholder="请输入收件人邮箱,多个收件人用换行分隔"
                                 />
                             </j-form-item>
                             <j-form-item>
@@ -459,7 +460,13 @@
                                     </j-form-item>
                                 </j-col>
                                 <j-col :span="12">
-                                    <j-form-item>
+                                    <j-form-item
+                                        v-bind="
+                                            validateInfos[
+                                                'template.calledNumber'
+                                            ]
+                                        "
+                                    >
                                         <template #label>
                                             <span>
                                                 被叫号码
@@ -507,7 +514,9 @@
                                     placeholder="请输入被叫显号"
                                 />
                             </j-form-item>
-                            <j-form-item>
+                            <j-form-item
+                                v-bind="validateInfos['template.playTimes']"
+                            >
                                 <template #label>
                                     <span>
                                         播放次数
@@ -519,9 +528,10 @@
                                         </j-tooltip>
                                     </span>
                                 </template>
-                                <j-input
+                                <j-input-number
                                     v-model:value="formData.template.playTimes"
                                     placeholder="请输入播放次数"
+                                    style="width: 100%"
                                 />
                             </j-form-item>
                             <j-form-item
@@ -694,7 +704,6 @@
                                 </template>
                                 <j-textarea
                                     v-model:value="formData.template.message"
-                                    :maxlength="200"
                                     :rows="5"
                                     :disabled="formData.type === 'sms'"
                                     placeholder="变量格式:${name};
@@ -896,28 +905,75 @@ const formRules = ref({
     'template.agentId': [{ required: true, message: '请输入agentId' }],
     'template.messageType': [{ required: true, message: '请选择消息类型' }],
     'template.markdown.title': [
-        { required: true, message: '请输入标题' },
-        { max: 64, message: '最多可输入64个字符' },
+        { required: true, message: '请输入标题', trigger: 'change' },
+        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
     ],
     'template.link.title': [
-        { required: true, message: '请输入标题' },
-        { max: 64, message: '最多可输入64个字符' },
+        { required: true, message: '请输入标题', trigger: 'change' },
+        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
     ],
     // 'template.url': [{ required: true, message: '请输入WebHook' }],
     // 微信
     // 'template.agentId': [{ required: true, message: '请输入agentId' }],
     // 邮件
-    'template.subject': [{ required: true, message: '请输入标题' }],
+    'template.subject': [
+        { required: true, message: '请输入标题' },
+        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
+    ],
+    'template.sendTo': [
+        {
+            trigger: 'change',
+            validator(_rule: Rule, value: string[]) {
+                const regEmail =
+                    /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+                let error;
+                if (value) {
+                    value.some((item: string) => {
+                        if (!regEmail.test(item)) {
+                            error = item;
+                            return true;
+                        }
+                        return false;
+                    });
+                }
+                if (error)
+                    return Promise.reject(error ? `${error}邮件格式错误` : '');
+                else return Promise.resolve();
+            },
+        },
+    ],
     // 阿里云语音
     'template.templateType': [{ required: true, message: '请选择类型' }],
     'template.templateCode': [{ required: true, message: '请输入模板ID' }],
-    'template.calledShowNumbers': [
+    'template.calledNumber': [
+        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
         {
             trigger: 'change',
             validator(_rule: Rule, value: string) {
                 if (!value) return Promise.resolve();
                 if (!phoneRegEx(value)) return Promise.reject('请输入有效号码');
                 return Promise.resolve();
+            },
+        },
+    ],
+    'template.calledShowNumbers': [
+        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
+        {
+            trigger: 'change',
+            validator(_rule: Rule, value: string) {
+                if (!value) return Promise.resolve();
+                if (!phoneRegEx(value)) return Promise.reject('请输入有效号码');
+                return Promise.resolve();
+            },
+        },
+    ],
+    'template.playTimes': [
+        {
+            trigger: 'change',
+            validator(_rule: Rule, value: number) {
+                if (value < 1 || value > 3)
+                    return Promise.reject('仅支持1～3次');
+                else return Promise.resolve();
             },
         },
     ],
@@ -929,9 +985,9 @@ const formRules = ref({
     'template.message': [
         {
             required: true,
-            message: '请输入',
+            message: '请输入模板内容',
         },
-        { max: 500, message: '最多可输入500个字符' },
+        { max: 500, message: '最多可输入500个字符', trigger: 'change' },
     ],
     'template.ttsmessage': [{ max: 500, message: '最多可输入500个字符' }],
 });
