@@ -174,7 +174,6 @@ export const FormTableColumns = [
         title: '操作',
         key: 'action',
         dataIndex: 'action',
-
         fixed: 'right',
         width: 80,
     },

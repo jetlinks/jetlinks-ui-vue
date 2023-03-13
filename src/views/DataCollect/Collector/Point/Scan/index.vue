@@ -71,7 +71,6 @@ const handleOk = async () => {
             accessModes: item.accessModes?.value || [],
         };
     });
-    console.log(1112, props.data, data, list);
     const resp = await savePointBatch([...list]);
     if (resp.status === 200) {
         emit('change', true);

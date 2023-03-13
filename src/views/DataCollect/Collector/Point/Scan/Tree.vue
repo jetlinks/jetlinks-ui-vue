@@ -5,21 +5,15 @@
             <j-checkbox v-model:checked="isSelected">隐藏已有节点</j-checkbox>
         </div>
         <j-spin :spinning="spinning">
+    
             <a-tree
-                v-model:checkedKeys="checkedKeys"
-                :tree-data="treeData"
-                default-expand-all
-                checkable
-                @check="onCheck"
-                :height="600"
-            >
-                <!-- <a-tree
                 :load-data="onLoadData"
                 :tree-data="treeData"
                 v-model:checkedKeys="checkedKeys"
                 checkable
                 @check="onCheck"
-            > -->
+                :height="650"
+            >
                 <template #title="{ name, key }">
                     <span
                         :class="[
@@ -57,7 +51,7 @@ const props = defineProps({
 const emits = defineEmits(['change']);
 
 // const channelId = '1610517801347788800'; //测试
-const channelId = props.data?.channelId; 
+const channelId = props.data?.channelId;
 
 const checkedKeys = ref<string[]>([]);
 const selectKeys = ref<string[]>([]);

@@ -3,7 +3,7 @@
         <j-table
             :dataSource="modelRef.dataSource"
             :columns="FormTableColumns"
-            :scroll="{ x: 1100, y: 500 }"
+            :scroll="{ x: 1100, y: 550 }"
         >
             <template #bodyCell="{ column: { dataIndex }, record, index }">
                 <template v-if="dataIndex === 'name'">
@@ -151,14 +151,14 @@
                 </template>
 
                 <template v-if="dataIndex === 'action'">
-                    <a-tooltip title="删除">
-                        <a-popconfirm
+                    <j-tooltip title="删除">
+                        <j-popconfirm
                             title="确认删除"
                             @confirm="clickDelete(record.id)"
                         >
-                            <AIcon type="DeleteOutlined" />
-                        </a-popconfirm>
-                    </a-tooltip>
+                            <a><AIcon type="DeleteOutlined" /></a>
+                        </j-popconfirm>
+                    </j-tooltip>
                 </template>
             </template>
         </j-table>
