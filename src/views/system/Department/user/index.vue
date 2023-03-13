@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Search :columns="columns" @search="(p:any)=>params = p" />
+        <j-advanced-search :columns="columns" @search="(p:any)=>params = p" />
 
         <j-pro-table
             ref="tableRef"
@@ -17,7 +17,7 @@
             <template #headerTitle>
                 <PermissionButton
                     type="primary"
-                    :uhasPermission="`${permission}:bind-user`"
+                    :hasPermission="`${permission}:bind-user`"
                     @click="dialogVisible = true"
                     style="margin-right: 15px"
                 >
@@ -27,7 +27,7 @@
                     style="display: inline-block; width: 12px; height: 1px"
                 ></div>
                 <PermissionButton
-                    :uhasPermission="`${permission}:bind`"
+                    :hasPermission="`${permission}:bind`"
                     :popConfirm="{
                         title: `是否解除绑定`,
                         onConfirm: () => table.unBind(),
@@ -50,7 +50,7 @@
                 <j-space :size="16">
                     <PermissionButton
                         type="link"
-                        :uhasPermission="`${permission}:bind`"
+                        :hasPermission="`${permission}:bind`"
                         :popConfirm="{
                             title: `是否解除绑定`,
                             onConfirm: () => table.unBind(slotProps),

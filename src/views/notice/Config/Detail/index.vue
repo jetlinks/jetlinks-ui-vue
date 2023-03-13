@@ -135,11 +135,14 @@
                                         v-model:value="
                                             formData.configuration.port
                                         "
+                                        :min="1"
+                                        :max="65535"
                                     />
                                     <j-checkbox
-                                        v-model:value="
+                                        v-model:checked="
                                             formData.configuration.ssl
                                         "
+                                        @change="handleSslChange"
                                     >
                                         开启SSL
                                     </j-checkbox>
@@ -408,7 +411,6 @@ const { resetFields, validate, validateInfos, clearValidate } = useForm(
 );
 
 const getDetail = async () => {
-  console.log('getDetail', route)
     if (route.params.id === ':id') return;
     const res = await configApi.detail(route.params.id as string);
     // formData.value = res.result;
@@ -436,6 +438,12 @@ const handleProviderChange = () => {
     formData.value.configuration =
         CONFIG_FIELD_MAP[formData.value.type][formData.value.provider];
     resetPublicFiles();
+};
+
+const handleSslChange = () => {
+    formData.value.configuration.port = formData.value.configuration.ssl
+        ? 465
+        : 25;
 };
 
 /**

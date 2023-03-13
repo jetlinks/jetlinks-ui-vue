@@ -18,13 +18,7 @@
                     },
                 ]"
             >
-                <!-- <j-card-select
-                    v-model:value="formModel.type"
-                    :options="options"
-                    type="horizontal"
-                    float="right"
-                /> -->
-                <a-radio-group v-model:value="formModel.type" :options="options" />
+                <CardSelect v-model:value="formModel.type" :options="options"/>
             </a-form-item>
             <ActionTypeComponent
                 v-bind="props"
@@ -46,6 +40,7 @@ import { PropType } from 'vue';
 import { ActionsType } from '../../../typings';
 import ActionTypeComponent from './ActionTypeComponent.vue';
 import { randomString } from '@/utils/utils';
+import CardSelect from '../../components/CardSelect.vue'
 
 const props = defineProps({
     branchesName: {

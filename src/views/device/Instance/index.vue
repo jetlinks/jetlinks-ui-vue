@@ -252,6 +252,7 @@
         @close="operationVisible = false"
         :api="api"
         :type="type"
+        @save="onRefresh"
     />
     <Save
         v-if="visible"
@@ -314,6 +315,7 @@ const columns = [
         key: 'id',
         search: {
             type: 'string',
+            defaultTermType: 'eq'
         },
     },
     {
@@ -322,6 +324,7 @@ const columns = [
         key: 'name',
         search: {
             type: 'string',
+            first: true
         },
     },
     {
@@ -389,6 +392,7 @@ const columns = [
         hideInTable: true,
         search: {
             type: 'select',
+            rename: 'productId$product-info',
             options: () =>
                 new Promise((resolve) => {
                     getProviders().then((resp: any) => {

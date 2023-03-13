@@ -20,6 +20,10 @@ export const getComponent = (type: string): string => {
       return 'date'
     case 'tree':
       return 'tree'
+    case 'file':
+      return 'file'
+    case 'geoPoint':
+      return 'geoPoint'
     default:
       return 'input'
   }
@@ -33,7 +37,7 @@ export const getOption = (data: any[], value?: string | number | boolean, key: s
     if (item[key] === value) {
       option = data[i]
       break
-    } else if (item.children && item.children.length){
+    } else if (item.children && item.children.length) {
       option = getOption(item.children, value, key)
       if (option) {
         break

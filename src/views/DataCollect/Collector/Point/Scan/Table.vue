@@ -1,0 +1,274 @@
+<template>
+    <j-form style="width: 80%" ref="formTableRef" :model="modelRef">
+        <j-table
+            :dataSource="modelRef.dataSource"
+            :columns="FormTableColumns"
+            :scroll="{ x: 1100, y: 500 }"
+        >
+            <template #bodyCell="{ column: { dataIndex }, record, index }">
+                <template v-if="dataIndex === 'name'">
+                    <a-form-item
+                        :name="['dataSource', index, 'name']"
+                        :rules="[
+                            {
+                                required: true,
+                                message: '请输入',
+                            },
+                        ]"
+                    >
+                        <j-input
+                            v-model:value="record[dataIndex]"
+                            placeholder="请输入"
+                            allowClear
+                        ></j-input>
+                    </a-form-item>
+                </template>
+                <template v-if="dataIndex === 'id'">
+                    <a-form-item :name="['dataSource', index, 'id']">
+                        <j-input v-model:value="record[dataIndex]" disabled>
+                        </j-input>
+                    </a-form-item>
+                </template>
+
+                <template v-if="dataIndex === 'accessModes'">
+                    <a-form-item
+                        class="form-item"
+                        :name="['dataSource', index, 'accessModes', 'value']"
+                        :rules="[
+                            {
+                                required: true,
+                                message: '请选择',
+                            },
+                        ]"
+                    >
+                        <j-select
+                            style="width: 75%"
+                            v-model:value="record[dataIndex].value"
+                            placeholder="请选择"
+                            allowClear
+                            mode="multiple"
+                            :filter-option="filterOption"
+                            :options="[
+                                { label: '读', value: 'read' },
+                                { label: '写', value: 'write' },
+                                { label: '订阅', value: 'subscribe' },
+                            ]"
+                            :disabled="index !== 0 && record[dataIndex].check"
+                            @change="changeValue(index, dataIndex)"
+                        >
+                        </j-select>
+                        <j-checkbox
+                            style="margin-left: 5px"
+                            v-if="index !== 0"
+                            v-model:checked="record[dataIndex].check"
+                            @click="changeCheckbox(index, dataIndex)"
+                            >同上</j-checkbox
+                        >
+                    </a-form-item>
+                </template>
+                <template v-if="dataIndex === 'interval'">
+                    <a-form-item
+                        class="form-item"
+                        :name="[
+                            'dataSource',
+                            index,
+                            'configuration',
+                            'interval',
+                            'value',
+                        ]"
+                        :rules="[
+                            {
+                                required: true,
+                                message: '请输入',
+                            },
+                        ]"
+                    >
+                        <j-input
+                            style="width: 70%"
+                            v-model:value="
+                                record.configuration[dataIndex].value
+                            "
+                            placeholder="请输入"
+                            allowClear
+                            addon-after="ms"
+                            :disabled="
+                                index !== 0 &&
+                                record.configuration[dataIndex].check
+                            "
+                            @blur="changeValue(index, dataIndex)"
+                        ></j-input>
+                        <j-checkbox
+                            style="margin-left: 5px"
+                            v-show="index !== 0"
+                            v-model:checked="
+                                record.configuration[dataIndex].check
+                            "
+                            @click="changeCheckbox(index, dataIndex)"
+                            >同上</j-checkbox
+                        >
+                    </a-form-item>
+                </template>
+                <template v-if="dataIndex === 'features'">
+                    <a-form-item
+                        class="form-item"
+                        :name="['dataSource', index, 'features', 'value']"
+                        :rules="[
+                            {
+                                required: true,
+                                message: '请选择',
+                            },
+                        ]"
+                    >
+                        <j-select
+                            style="width: 50%"
+                            v-model:value="record[dataIndex].value"
+                            placeholder="请选择"
+                            allowClear
+                            :filter-option="filterOption"
+                            :options="[
+                                {
+                                    label: '是',
+                                    value: true,
+                                },
+                                {
+                                    label: '否',
+                                    value: false,
+                                },
+                            ]"
+                            :disabled="index !== 0 && record[dataIndex].check"
+                            @change="changeValue(index, dataIndex)"
+                        >
+                        </j-select>
+
+                        <j-checkbox
+                            style="margin-left: 5px"
+                            v-show="index !== 0"
+                            v-model:checked="record[dataIndex].check"
+                            @click="changeCheckbox(index, dataIndex)"
+                            >同上</j-checkbox
+                        >
+                    </a-form-item>
+                </template>
+
+                <template v-if="dataIndex === 'action'">
+                    <a-tooltip title="删除">
+                        <a-popconfirm
+                            title="确认删除"
+                            @confirm="clickDelete(record.id)"
+                        >
+                            <AIcon type="DeleteOutlined" />
+                        </a-popconfirm>
+                    </a-tooltip>
+                </template>
+            </template>
+        </j-table>
+    </j-form>
+</template>
+
+<script lang="ts" setup>
+import { FormTableColumns } from '../../data';
+const props = defineProps({
+    data: {
+        type: Array,
+        default: () => [],
+    },
+});
+const emits = defineEmits(['change']);
+
+const formTableRef = ref();
+const defaultType = ['accessModes', 'interval', 'features'];
+const modelRef = reactive({
+    dataSource: [],
+});
+
+const filterOption = (input: string, option: any) => {
+    return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+};
+
+const clickDelete = (value: string) => {
+    emits('change', value);
+};
+
+const getTargetData = (index: number, type: string) => {
+    const { dataSource } = modelRef;
+    const Interval = type === 'interval';
+    return !Interval
+        ? dataSource[index][type]
+        : dataSource[index].configuration[type];
+};
+
+const changeValue = (index: number, type: string) => {
+    const { dataSource } = modelRef;
+    const originData = getTargetData(index, type);
+    for (let i = index + 1; i < dataSource.length; i++) {
+        const targetType = getTargetData(i, type);
+        if (!targetType.check) return;
+        targetType.value = originData.value;
+    }
+};
+
+const changeCheckbox = (index: number, type: string) => {
+    // console.log(1, getTargetData(index, type).check,getTargetData(index, type));
+    //如果不使用setTimeout，会导致值更新不及时
+    setTimeout(() => {
+        // console.log(2, getTargetData(index, type).check,getTargetData(index, type));
+        let startIndex = 0;
+        const { dataSource } = modelRef;
+        const currentCheck = getTargetData(index, type).check;
+        if (!currentCheck) return;
+        for (let i = index; i >= 0; i--) {
+            const preDatCheck = getTargetData(i, type).check;
+            if (!preDatCheck) {
+                startIndex = i;
+                break;
+            }
+        }
+        const originData = getTargetData(startIndex, type);
+        for (let i = startIndex; i < dataSource.length - 1; i++) {
+            const targetType = getTargetData(i + 1, type);
+            if (!targetType.check) return;
+            targetType.value = originData.value;
+        }
+    }, 0);
+};
+
+const validate = () => {
+    return new Promise((res, rej) => {
+        formTableRef.value
+            .validate()
+            .then(() => {
+                res(modelRef.dataSource);
+            })
+            .catch((err: any) => {
+                rej(err);
+            });
+    });
+};
+defineExpose({
+    validate,
+});
+watch(
+    () => props.data,
+    (value, preValue) => {
+        modelRef.dataSource = value;
+
+        // 有新增时同上数据
+        const vlength = value.length,
+            plength = preValue.length;
+        if (plength !== 0 && plength < vlength) {
+            defaultType.forEach((type) => {
+                vlength === 2
+                    ? changeValue(0, type)
+                    : changeCheckbox(vlength - 1, type);
+            });
+        }
+    },
+    { deep: true },
+);
+</script>
+
+<style lang="less" scoped>
+.form-item {
+    display: flex;
+}
+</style>

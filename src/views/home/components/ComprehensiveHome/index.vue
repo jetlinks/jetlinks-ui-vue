@@ -76,7 +76,7 @@ const deviceBootConfig: bootConfig[] = [
     {
         english: 'STEP1',
         label: '创建产品',
-        link: '/iot/device/Product',
+        link: 'device/Product',
         auth: productPermission('add'),
         image: '/images/home/guide-home1.png',
         params: {
@@ -86,7 +86,7 @@ const deviceBootConfig: bootConfig[] = [
     {
         english: 'STEP2',
         label: '创建设备',
-        link: '/iot/device/Instance',
+        link: 'device/Instance',
         auth: devicePermission('add'),
         image: '/images/home/guide-home1.png',
         params: {
@@ -96,7 +96,7 @@ const deviceBootConfig: bootConfig[] = [
     {
         english: 'STEP3',
         label: '规则引擎',
-        link: '/iot/rule-engine/Instance',
+        link: 'rule-engine/Instance',
         auth: rulePermission('add'),
         image: '/images/home/guide-home3.png',
         params: {

@@ -1,0 +1,240 @@
+<template>
+    <div class="tree-content">
+        <div class="tree-header">
+            <div>数据源</div>
+            <j-checkbox v-model:checked="isSelected">隐藏已有节点</j-checkbox>
+        </div>
+        <j-spin :spinning="spinning">
+            <a-tree
+                v-model:checkedKeys="checkedKeys"
+                :tree-data="treeData"
+                default-expand-all
+                checkable
+                @check="onCheck"
+                :height="600"
+            >
+                <!-- <a-tree
+                :load-data="onLoadData"
+                :tree-data="treeData"
+                v-model:checkedKeys="checkedKeys"
+                checkable
+                @check="onCheck"
+            > -->
+                <template #title="{ name, key }">
+                    <span
+                        :class="[
+                            selectKeys.includes(key)
+                                ? 'tree-selected'
+                                : 'tree-title',
+                        ]"
+                    >
+                        {{ name }}
+                    </span>
+                </template>
+            </a-tree>
+        </j-spin>
+    </div>
+</template>
+
+<script lang="ts" setup>
+import type { TreeProps } from 'ant-design-vue';
+import {
+    scanOpcUAList,
+    queryPointNoPaging,
+} from '@/api/data-collect/collector';
+import { cloneDeep } from 'lodash-es';
+
+const props = defineProps({
+    data: {
+        type: Array,
+        default: () => [],
+    },
+    unSelectKeys: {
+        type: String,
+        default: '',
+    },
+});
+const emits = defineEmits(['change']);
+
+// const channelId = '1610517801347788800'; //测试
+const channelId = props.data?.channelId; 
+
+const checkedKeys = ref<string[]>([]);
+const selectKeys = ref<string[]>([]);
+const spinning = ref(false);
+
+const isSelected = ref(false);
+const treeData = ref<TreeProps['treeData']>();
+const treeAllData = ref<TreeProps['treeData']>();
+
+const onLoadData = (node: any) =>
+    new Promise<void>(async (resolve) => {
+        if ((node?.children && node.children?.length) || !node?.folder) {
+            resolve();
+            return;
+        }
+        const resp = await scanOpcUAList({
+            id: channelId,
+            nodeId: node.key,
+        });
+        if (resp.status === 200) {
+            const list = resp.result.map((item: any) => {
+                return {
+                    ...item,
+                    key: item.id,
+                    title: item.name,
+                    disabled: item?.folder,
+                    isLeaf: !item?.folder,
+                };
+            });
+
+            treeAllData.value = updateTreeData(
+                cloneDeep(treeAllData.value),
+                node.key,
+                [...list],
+            );
+        }
+        resolve();
+    });
+
+const handleData = (arr: any[]): any[] => {
+    const data = arr.filter((item) => {
+        return (
+            (isSelected && !selectKeys.value.includes(item.id)) || !isSelected
+        );
+    });
+    return data.map((item) => {
+        if (item.children && item.children?.length) {
+            return {
+                ...item,
+                children: handleData(item.children),
+            };
+        } else {
+            return item;
+        }
+    });
+};
+
+const onCheck = (checkedKeys, info) => {
+    const one: any = { ...info.node };
+    const list: any = [];
+    const last: any = list.length ? list[list.length - 1] : undefined;
+    if (list.map((i: any) => i?.id).includes(one.id)) {
+        return;
+    }
+    const item = {
+        features: {
+            value: last
+                ? last?.features?.value
+                : (one?.features || []).includes('changedOnly'),
+            check: true,
+        },
+        id: one?.id || '',
+        name: one?.name || '',
+        accessModes: {
+            value: last ? last?.accessModes?.value : one?.accessModes || [],
+            check: true,
+        },
+        configuration: {
+            ...one?.configuration,
+            interval: {
+                value: last
+                    ? last?.configuration?.interval?.value
+                    : one?.configuration?.interval || 3000,
+                check: true,
+            },
+            nodeId: one?.id,
+        },
+    };
+    emits('change', item, info.checked);
+};
+
+const updateTreeData = (list: any[], key: string, children: any[]): any[] => {
+    const arr = list.map((node) => {
+        if (node.key === key) {
+            return {
+                ...node,
+                children,
+            };
+        }
+        if (node?.children && node?.children?.length) {
+            return {
+                ...node,
+                children: updateTreeData(node.children, key, children),
+            };
+        }
+        return node;
+    });
+    return arr;
+};
+
+const getPoint = async () => {
+    spinning.value = true;
+    const res = await queryPointNoPaging();
+    if (res.status === 200) {
+        selectKeys.value = res.result.map((item: any) => item.pointKey);
+    }
+    spinning.value = false;
+};
+getPoint();
+
+const getScanOpcUAList = async () => {
+    const res = await scanOpcUAList({ id: channelId });
+    treeAllData.value = res.result.map((item: any) => ({
+        ...item,
+        key: item.id,
+        title: item.name,
+        disabled: item?.folder || false,
+    }));
+};
+getScanOpcUAList();
+
+watch(
+    () => isSelected.value,
+    (value) => {
+        if (value) {
+            treeData.value = handleData(treeAllData.value);
+        } else {
+            treeData.value = treeAllData.value;
+        }
+    },
+    { deep: true },
+);
+watch(
+    () => treeAllData.value,
+    (value) => {
+        if (isSelected.value) {
+            treeData.value = handleData(value);
+        } else {
+            treeData.value = value;
+        }
+    },
+    { deep: true },
+);
+
+watch(
+    () => props.unSelectKeys,
+    (value) => {
+        checkedKeys.value = checkedKeys.value.filter((i) => i !== value);
+    },
+    { deep: true },
+);
+</script>
+
+<style lang="less" scoped>
+.tree-content {
+    padding: 16px;
+    padding-left: 0;
+    .tree-header {
+        margin-bottom: 16px;
+        display: flex;
+        justify-content: space-between;
+    }
+    .tree-selected {
+        color: #1d39c4;
+    }
+    .tree-title {
+        color: black;
+    }
+}
+</style>
