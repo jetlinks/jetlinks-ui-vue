@@ -19,7 +19,7 @@
                 </div>
             </div>
             <div class="right">
-                <j-advanced-search
+                <pro-search
                     type="simple"
                     :columns="columns"
                     target="product"
