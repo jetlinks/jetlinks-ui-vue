@@ -1,12 +1,12 @@
 <!--产品分类 -->
 <template>
-    <a-card class="product-category">
-        <Search
+    <page-container>
+        <pro-search
             :columns="query.columns"
             target="category"
             @search="handleSearch"
         />
-        <JTable
+        <JProTable
             ref="tableRef"
             :columns="table.columns"
             :dataSource="dataSource"
@@ -25,46 +25,38 @@
             :loading="tableLoading"
         >
             <template #headerTitle>
-                <a-button type="primary" @click="add"
-                    ><plus-outlined />新增</a-button
+                <PermissionButton
+                    type="primary"
+                    @click="add"
+                    hasPermission="device/Category:add"
                 >
+                    <template #icon><AIcon type="PlusOutlined" /></template>
+                    新增
+                </PermissionButton>
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
-                    <a-tooltip
+                <j-space :size="16">
+                    <template
                         v-for="i in getActions(slotProps, 'table')"
                         :key="i.key"
-                        v-bind="i.tooltip"
                     >
-                        <a-popconfirm
-                            v-if="i.popConfirm"
-                            v-bind="i.popConfirm"
+                        <PermissionButton
                             :disabled="i.disabled"
-                        >
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-popconfirm>
-                        <a-button
-                            style="padding: 0"
+                            :popConfirm="i.popConfirm"
+                            :hasPermission="'device/Category:' + i.key"
+                            :tooltip="{
+                                ...i.tooltip,
+                            }"
+                            @click="i.onClick"
                             type="link"
-                            v-else
-                            @click="i.onClick && i.onClick(slotProps)"
+                            style="padding: 0px"
                         >
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-button>
-                    </a-tooltip>
-                </a-space>
+                            <template #icon><AIcon :type="i.icon" /></template>
+                        </PermissionButton>
+                    </template>
+                </j-space>
             </template>
-        </JTable>
+        </JProTable>
         <!-- 新增和编辑弹窗 -->
         <ModifyModal
             ref="modifyRef"
@@ -74,7 +66,7 @@
             :isChild="isChild"
             @refresh="refresh"
         />
-    </a-card>
+    </page-container>
 </template>
 <script lang="ts" name="Category" setup>
 import { queryTree, deleteTree } from '@/api/device/category';
@@ -146,6 +138,7 @@ const getTableData = async () => {
     if (res.status === 200) {
         dataSource.value = res.result;
     }
+    tableLoading.value = false;
 };
 getTableData();
 /**
@@ -168,7 +161,7 @@ const getActions = (
     if (!data) return [];
     const actions = [
         {
-            key: 'edit',
+            key: 'update',
             text: '编辑',
             tooltip: {
                 title: '编辑',
@@ -238,8 +231,8 @@ const table = reactive({
         },
         {
             title: '说明',
-            dataIndex: 'describe',
-            key: 'describe',
+            dataIndex: 'description',
+            key: 'description',
         },
         {
             title: '操作',

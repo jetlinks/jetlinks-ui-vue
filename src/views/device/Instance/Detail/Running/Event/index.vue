@@ -1,5 +1,5 @@
 <template>
-    <j-advanced-search class="search" type="simple" :columns="columns" target="device-instance-running-events" @search="handleSearch" />
+    <pro-search class="search" type="simple" :columns="columns" target="device-instance-running-events" @search="handleSearch" />
     <JProTable
         ref="eventsRef"
         :columns="columns"

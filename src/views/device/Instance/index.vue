@@ -1,6 +1,6 @@
 <template>
     <page-container>
-        <j-advanced-search
+        <pro-search
             :columns="columns"
             target="device-instance"
             @search="handleSearch"
@@ -289,6 +289,7 @@ import { queryTree } from '@/api/device/category';
 import { useMenuStore } from '@/store/menu';
 import type { ActionsType } from './typings';
 import dayjs from 'dayjs';
+import { throttle } from 'lodash-es';
 
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -315,7 +316,7 @@ const columns = [
         key: 'id',
         search: {
             type: 'string',
-            defaultTermType: 'eq'
+            defaultTermType: 'eq',
         },
     },
     {
@@ -324,7 +325,7 @@ const columns = [
         key: 'name',
         search: {
             type: 'string',
-            first: true
+            first: true,
         },
     },
     {
@@ -523,6 +524,12 @@ const paramsFormat = (
         });
     }
 };
+
+onMounted(() => {
+    if(history.state?.params?.type === 'add'){
+        handleAdd()
+    }
+})
 
 const handleParams = (config: Record<string, any>) => {
     const _terms: Record<string, any> = {};
