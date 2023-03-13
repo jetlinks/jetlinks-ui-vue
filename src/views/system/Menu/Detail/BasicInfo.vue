@@ -57,8 +57,12 @@
                                 label="编码"
                                 name="code"
                                 :rules="[
-                                    { required: true, message: '请输入编码' },
-                                    { max: 64, message: '最多可输入64个字符' },
+                                    { required: true, message: '' },
+                                    { max: 64, message: '' },
+                                    {
+                                        validator: form.checkCode,
+                                        trigger: 'blur',
+                                    },
                                 ]"
                             >
                                 <j-input v-model:value="form.data.code" />
@@ -228,7 +232,9 @@ import {
     getMenuInfo_api,
     saveMenuInfo_api,
     addMenuInfo_api,
+    validCode_api,
 } from '@/api/system/menu';
+import { Rule } from 'ant-design-vue/lib/form';
 
 const permission = 'system/Menu';
 // 路由
@@ -260,18 +266,18 @@ const form = reactive({
     treeData: [], // 关联菜单
     assetsType: [] as assetType[], // 资产类型
     saveLoading: false,
+    sourceCode: '', // 原本的code
 
     init: () => {
         // 获取菜单详情
         routeParams.id &&
             getMenuInfo_api(routeParams.id).then((resp: any) => {
-                console.log(1111);
-
                 form.data = {
                     ...(resp.result as formType),
                     accessSupport:
                         resp.result?.accessSupport?.value || 'unsupported',
                 };
+                form.sourceCode = resp.result.code
             });
         // 获取关联菜单
         getMenuTree_api({ paging: false }).then((resp: any) => {
@@ -284,6 +290,20 @@ const form = reactive({
                 value: item.id,
             }));
         });
+    },
+    checkCode: async (_rule: Rule, value: string): Promise<any> => {
+        if (!value) return Promise.reject('请输入编码');
+        else if (value.length > 64) return Promise.reject('最多可输入64个字符');
+        // 编辑时不校验原本的编码
+        else if (routeParams.id && value === form.sourceCode) return Promise.resolve('');
+        else {
+            const resp: any = await validCode_api({
+                code: value,
+                owner: 'iot',
+            });
+            if (resp.result.passed) return Promise.resolve();
+            else return Promise.reject('该编码重复');
+        }
     },
     clickSave: () => {
         if (!basicFormRef || !permissFormRef) return;
