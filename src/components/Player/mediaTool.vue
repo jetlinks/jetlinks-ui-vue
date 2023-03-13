@@ -7,28 +7,36 @@
                 @mousedown="emit('onMouseDown', 'UP')"
                 @mouseup="emit('onMouseUp', 'UP')"
             >
-                <AIcon class="direction-icon" type="CaretUpOutlined" />
+                <div class="direction-icon">
+                    <AIcon type="CaretUpOutlined" />
+                </div>
             </div>
             <div
                 class="direction-item right"
                 @mousedown="emit('onMouseDown', 'RIGHT')"
                 @mouseup="emit('onMouseUp', 'RIGHT')"
             >
-                <AIcon class="direction-icon" type="CaretRightOutlined" />
+                <div class="direction-icon">
+                    <AIcon type="CaretRightOutlined" />
+                </div>
             </div>
             <div
                 class="direction-item left"
                 @mousedown="emit('onMouseDown', 'LEFT')"
                 @mouseup="emit('onMouseUp', 'LEFT')"
             >
-                <AIcon class="direction-icon" type="CaretLeftOutlined" />
+                <div class="direction-icon">
+                    <AIcon type="CaretLeftOutlined" />
+                </div>
             </div>
             <div
                 class="direction-item down"
                 @mousedown="emit('onMouseDown', 'DOWN')"
                 @mouseup="emit('onMouseUp', 'DOWN')"
             >
-                <AIcon class="direction-icon" type="CaretDownOutlined" />
+                <div class="direction-icon">
+                    <AIcon type="CaretDownOutlined" />
+                </div>
             </div>
             <div class="direction-audio">
                 <!-- <AIcon type="AudioOutlined" /> -->

@@ -96,7 +96,6 @@ const handleDelete = (index: number) => {
   _value.value.splice(index, 1)
 }
 const handleClose = () => {
-  console.log(editIndex.value)
   editIndex.value = -1
 }
 const handleAdd = () => {

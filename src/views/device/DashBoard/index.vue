@@ -336,7 +336,7 @@ const setDevMesChartOption = (
         grid: {
             top: '2%',
             bottom: '5%',
-            left: maxY > 100000 ? '90px' : '50px',
+            left: maxY > 100000 ? '90px' : '60px',
             right: '50px',
         },
         series: [

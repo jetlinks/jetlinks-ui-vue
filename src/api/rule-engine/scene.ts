@@ -24,3 +24,5 @@ export const _execute = (id: string) => server.post(`/scene/${id}/_execute`);
 export const queryBuiltInParams = (data: any, params?: any) => server.post(`/scene/parse-variables`, data, params);
 
 export const getParseTerm = (data: Record<string, any>) => server.post(`/scene/parse-term-column`, data)
+
+export const queryAlarmList = (data: Record<string, any>) => server.post(`/alarm/config/_query/`, data)

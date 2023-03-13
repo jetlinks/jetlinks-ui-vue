@@ -1,6 +1,6 @@
 <template>
     <page-container>
-        <j-advanced-search
+        <pro-search
             :columns="columns"
             target="notice-config"
             @search="handleSearch"
@@ -26,7 +26,7 @@
                     </PermissionButton>
                     <a-upload
                         name="file"
-                        accept="json"
+                        accept=".json"
                         :showUploadList="false"
                         :before-upload="beforeUpload"
                     >

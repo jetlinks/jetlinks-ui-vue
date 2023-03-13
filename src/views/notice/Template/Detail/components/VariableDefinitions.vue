@@ -55,7 +55,7 @@
                             yyyy-MM-dd
                         </j-select-option>
                         <j-select-option value="yyyy-MM-dd HH:mm:ss">
-                            yyyy-MM-dd HH:mm:ss
+                            <Ellipsis>yyyy-MM-dd HH:mm:ss</Ellipsis>
                         </j-select-option>
                     </j-select>
                     <j-input
@@ -143,7 +143,7 @@ const handleTypeChange = (record: IVariable) => {
             record.format = 'timestamp';
             break;
         case 'double':
-            record.format = '%.0f';
+            record.format = '%.xf';
             break;
     }
 };

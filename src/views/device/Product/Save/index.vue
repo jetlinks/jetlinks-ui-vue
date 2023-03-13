@@ -1,6 +1,6 @@
 <!-- 新增、编辑产品 -->
 <template>
-    <a-modal
+    <j-modal
         :title="props.title"
         :maskClosable="false"
         destroy-on-close
@@ -14,18 +14,18 @@
         :confirmLoading="loading"
     >
         <div style="margin-top: 10px">
-            <a-form
+            <j-form
                 :layout="'vertical'"
                 :model="form"
                 :rules="rules"
                 ref="formRef"
             >
-                <a-row type="flex">
-                    <a-col flex="180px">
-                        <a-form-item name="photoUrl">
+                <j-row type="flex">
+                    <j-col flex="180px">
+                        <j-form-item name="photoUrl">
                             <JUpload v-model="form.photoUrl" />
-                        </a-form-item>
-                        <!-- <a-form-item>
+                        </j-form-item>
+                        <!-- <j-form-item>
                             <div class="upload-image-warp-logo">
                                 <div class="upload-image-border-logo">
                                     <a-upload
@@ -89,37 +89,37 @@
                                     </div>
                                 </div>
                             </div>
-                        </a-form-item> -->
-                    </a-col>
-                    <a-col flex="auto">
-                        <a-form-item name="id">
+                        </j-form-item> -->
+                    </j-col>
+                    <j-col flex="auto">
+                        <j-form-item name="id">
                             <template #label>
-                                <span>ID</span>
-                                <a-tooltip
+                                <j-tooltip
                                     title="若不填写，系统将自动生成唯一ID"
                                 >
+                                    <span>ID</span>
                                     <AIcon
                                         type="QuestionCircleOutlined"
                                         style="margin-left: 2px"
                                     />
-                                </a-tooltip>
+                                </j-tooltip>
                             </template>
-                            <a-input
+                            <j-input
                                 v-model:value="form.id"
                                 placeholder="请输入ID"
                                 :disabled="disabled"
                             />
-                        </a-form-item>
-                        <a-form-item label="名称" name="name">
-                            <a-input
+                        </j-form-item>
+                        <j-form-item label="名称" name="name">
+                            <j-input
                                 v-model:value="form.name"
                                 placeholder="请输入名称"
                             />
-                        </a-form-item>
-                    </a-col>
-                </a-row>
-                <a-form-item label="产品分类" name="classifiedId">
-                    <a-tree-select
+                        </j-form-item>
+                    </j-col>
+                </j-row>
+                <j-form-item label="产品分类" name="classifiedId">
+                    <j-tree-select
                         showSearch
                         v-model:value="form.classifiedId"
                         placeholder="请选择产品分类"
@@ -131,40 +131,40 @@
                         "
                     >
                         <template> </template>
-                    </a-tree-select>
-                </a-form-item>
-                <a-form-item label="设备类型" name="deviceType">
-                    <a-radio-group
+                    </j-tree-select>
+                </j-form-item>
+                <j-form-item label="设备类型" name="deviceType">
+                    <j-radio-group
                         v-model:value="form.deviceType"
                         style="width: 100%"
                         @change="changeValue"
                     >
-                        <a-row :span="24" :gutter="10">
-                            <a-col
+                        <j-row :span="24" :gutter="10">
+                            <j-col
                                 :span="8"
                                 v-for="item in deviceList"
                                 :key="item.value"
                             >
                                 <div class="button-style">
-                                    <a-radio-button
+                                    <j-radio-button
                                         :value="item.value"
                                         style="height: 100%; width: 100%"
                                         :disabled="disabled"
                                     >
                                         <div class="card-content">
-                                            <a-row :gutter="20">
-                                                <a-col :span="10">
+                                            <j-row :gutter="20">
+                                                <j-col :span="10">
                                                     <!-- 图片 -->
                                                     <div class="img-style">
                                                         <img :src="item.logo" />
                                                     </div>
-                                                </a-col>
-                                                <a-col :span="14">
+                                                </j-col>
+                                                <j-col :span="14">
                                                     <span class="card-style">
                                                         {{ item.label }}
                                                     </span>
-                                                </a-col>
-                                            </a-row>
+                                                </j-col>
+                                            </j-row>
 
                                             <!-- 勾选 -->
                                             <div
@@ -179,21 +179,21 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </a-radio-button>
+                                    </j-radio-button>
                                 </div>
-                            </a-col>
-                        </a-row>
-                    </a-radio-group>
-                </a-form-item>
-                <a-form-item label="说明" name="describe">
-                    <a-textarea
+                            </j-col>
+                        </j-row>
+                    </j-radio-group>
+                </j-form-item>
+                <j-form-item label="说明" name="describe">
+                    <j-textarea
                         v-model:value="form.describe"
                         placeholder="请输入说明"
                     />
-                </a-form-item>
-            </a-form>
+                </j-form-item>
+            </j-form>
         </div>
-    </a-modal>
+    </j-modal>
     <DialogTips ref="dialogRef" />
 </template>
 
@@ -275,6 +275,7 @@ const form = reactive({
  */
 const validateInput = async (_rule: Rule, value: string) => {
     if (value) {
+        console.log(value.split('').length);
         if (!isInput(value)) {
             return Promise.reject('请输入英文或者数字或者-或者_');
         } else {
@@ -302,8 +303,14 @@ const validateDeviceType = async (_rule: Rule, value: string) => {
     }
 };
 const rules = reactive({
-    id: [{ validator: validateInput, trigger: 'blur' }],
-    name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+    id: [
+        { validator: validateInput, trigger: 'blur' },
+        { max: 64, message: '最多可输入64位字符', trigger: 'change' },
+    ],
+    name: [
+        { required: true, message: '请输入名称', trigger: 'blur' },
+        { max: 64, message: '最多可输入64位字符', trigger: 'change' },
+    ],
     deviceType: [
         {
             required: true,

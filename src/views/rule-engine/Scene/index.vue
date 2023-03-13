@@ -1,6 +1,6 @@
 <template>
     <page-container>
-        <j-advanced-search :columns="columns" target="scene" @search="handleSearch" />
+        <pro-search :columns="columns" target="scene" @search="handleSearch" />
         <JProTable
             ref="sceneRef"
             :columns="columns"

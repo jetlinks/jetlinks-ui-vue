@@ -1,6 +1,6 @@
 <template>
     <page-container>
-        <j-advanced-search
+        <pro-search
             :columns="columns"
             target="northbound-aliyun"
             @search="handleSearch"
@@ -50,13 +50,17 @@
                                 <div class="card-item-content-text">
                                     网桥产品
                                 </div>
-                                <div>{{ slotProps?.bridgeProductName }}</div>
+                                <Ellipsis>
+                                    <div>{{ slotProps?.bridgeProductName }}</div>
+                                </Ellipsis>
                             </j-col>
                             <j-col :span="12">
                                 <div class="card-item-content-text">
                                     <label>说明</label>
                                 </div>
-                                <div>{{ slotProps?.description }}</div>
+                                <Ellipsis>
+                                    <div>{{ slotProps?.description }}</div>
+                                </Ellipsis>
                             </j-col>
                         </j-row>
                     </template>

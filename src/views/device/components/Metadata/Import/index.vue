@@ -164,7 +164,6 @@ const beforeUpload: UploadProps['beforeUpload'] = file => {
 }
 const fileChange = (info: UploadChangeParam) => {
   if (info.file.status === 'done') {
-    console.log(info)
     const { response } = info.file
     if (response.status === 200) {
       formModel.upload = response.result

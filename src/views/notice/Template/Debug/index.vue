@@ -12,7 +12,7 @@
             <j-form-item
                 label="通知配置"
                 name="configId"
-                :rules="{ required: true, message: '该字段为必填字段' }"
+                :rules="{ required: true, message: '请选择通知配置' }"
             >
                 <j-select
                     v-model:value="formData.configId"
