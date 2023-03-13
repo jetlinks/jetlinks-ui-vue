@@ -87,7 +87,6 @@ const productStore = useProductStore()
 
 const getData = async (id?: string) => {
   const metadata = productStore.current.metadata || '{}';
-  console.log('metadata', metadata)
   const _properties = JSON.parse(metadata).properties || [] as PropertyMetadata[]
   const properties = {
     id: 'property',

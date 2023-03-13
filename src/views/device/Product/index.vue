@@ -1,6 +1,6 @@
 <template>
     <page-container>
-        <Search
+        <pro-search
             :columns="query.columns"
             target="product-manage"
             @search="handleSearch"
@@ -64,7 +64,7 @@
                         </slot>
                     </template>
                     <template #content>
-                        <Ellipsis
+                        <Ellipsis style="width: calc(100% - 100px)"
                             ><span
                                 @click.stop="handleView(slotProps.id)"
                                 style="font-weight: 600; font-size: 16px"
@@ -72,64 +72,30 @@
                                 {{ slotProps.name }}
                             </span></Ellipsis
                         >
-                        <a-row>
-                            <a-col :span="12">
+                        <j-row>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">
                                     设备类型
                                 </div>
                                 <div>{{ slotProps?.deviceType?.text }}</div>
-                            </a-col>
-                            <a-col :span="12">
+                            </j-col>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">
                                     接入方式
                                 </div>
                                 <Ellipsis
                                     ><div>
-                                        {{ slotProps?.accessName }}
+                                        {{
+                                            slotProps?.accessName
+                                                ? slotProps?.accessName
+                                                : '未接入'
+                                        }}
                                     </div></Ellipsis
                                 >
-                            </a-col>
-                        </a-row>
+                            </j-col>
+                        </j-row>
                     </template>
                     <template #actions="item">
-                        <!-- <a-tooltip
-                            v-bind="item.tooltip"
-                            :title="item.disabled && item.tooltip.title"
-                        >
-                            <a-popconfirm
-                                v-if="item.popConfirm"
-                                v-bind="item.popConfirm"
-                                :disabled="item.disabled"
-                                okText="确定"
-                                cancelText="取消"
-                            >
-                                <a-button :disabled="item.disabled">
-                                    <AIcon
-                                        type="DeleteOutlined"
-                                        v-if="item.key === 'delete'"
-                                    />
-                                    <template v-else>
-                                        <AIcon :type="item.icon" />
-                                        <span>{{ item?.text }}</span>
-                                    </template>
-                                </a-button>
-                            </a-popconfirm>
-                            <template v-else>
-                                <a-button
-                                    :disabled="item.disabled"
-                                    @click="item.onClick"
-                                >
-                                    <AIcon
-                                        type="DeleteOutlined"
-                                        v-if="item.key === 'delete'"
-                                    />
-                                    <template v-else>
-                                        <AIcon :type="item.icon" />
-                                        <span>{{ item?.text }}</span>
-                                    </template>
-                                </a-button>
-                            </template>
-                        </a-tooltip> -->
                         <PermissionButton
                             :disabled="item.disabled"
                             :popConfirm="item.popConfirm"
@@ -152,7 +118,7 @@
                 </CardBox>
             </template>
             <template #state="slotProps">
-                <a-badge
+                <j-badge
                     :text="slotProps.state === 1 ? '正常' : '禁用'"
                     :status="statusMap.get(slotProps.state)"
                 />
@@ -161,39 +127,7 @@
                 <a>{{ slotProps.id }}</a>
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
-                    <!-- <a-tooltip
-                        v-for="i in getActions(slotProps)"
-                        :key="i.key"
-                        v-bind="i.tooltip"
-                    >
-                        <a-popconfirm
-                            v-if="i.popConfirm"
-                            v-bind="i.popConfirm"
-                            okText="确定"
-                            cancelText="取消"
-                        >
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-popconfirm>
-                        <a-button
-                            style="padding: 0"
-                            type="link"
-                            v-else
-                            @click="i.onClick && i.onClick(slotProps)"
-                        >
-                            <a-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></a-button>
-                        </a-button>
-                    </a-tooltip> -->
+                <j-space :size="16">
                     <template
                         v-for="i in getActions(slotProps, 'table')"
                         :key="i.key"
@@ -212,7 +146,7 @@
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
                     </template>
-                </a-space>
+                </j-space>
             </template>
         </JProTable>
         <!-- 新增、编辑 -->
@@ -249,11 +183,11 @@ import { omit } from 'lodash-es';
 import { typeOptions } from '@/components/Search/util';
 import Save from './Save/index.vue';
 import { useMenuStore } from 'store/menu';
+import { useRoute } from 'vue-router';
 /**
  * 表格数据
  */
 const menuStory = useMenuStore();
-const router = useRouter();
 const isAdd = ref<number>(0);
 const title = ref<string>('');
 const params = ref<Record<string, any>>({});
@@ -673,6 +607,12 @@ const saveRef = ref();
 const handleSearch = (e: any) => {
     params.value = e;
 };
+const route = useRoute();
+onMounted(() => {
+    if(history.state?.params?.save){
+        add();
+    }
+});
 </script>
 
 <style lang="less" scoped>

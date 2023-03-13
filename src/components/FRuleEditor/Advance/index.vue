@@ -45,7 +45,6 @@ const handleCancel = () => {
   emit('change', 'simple')
 }
 const handleOk = () => {
-  console.log(_value.value)
   emit('update:value', _value.value)
   emit('change', 'simple')
 }

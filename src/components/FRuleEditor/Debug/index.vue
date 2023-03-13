@@ -185,7 +185,6 @@ const getProperty = () => {
     label: item.name,
     value: item.id,
   }));
-  console.log(options.value)
 }
 getProperty()
 </script>

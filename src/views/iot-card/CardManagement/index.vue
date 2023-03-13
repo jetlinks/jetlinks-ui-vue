@@ -1,7 +1,7 @@
 <!-- 物联卡管理 -->
 <template>
     <page-container>
-        <Search :columns="columns" target="iot-card-management-search" @search="handleSearch" />
+        <pro-search :columns="columns" target="iot-card-management-search" @search="handleSearch" />
         <j-pro-table ref="cardManageRef" :columns="columns" :request="query"
             :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }" :rowSelection="{
                 selectedRowKeys: _selectedRowKeys,

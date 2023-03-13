@@ -116,9 +116,7 @@
                                 @click="i.onClick"
                                 type="link"
                                 style="padding: 0px"
-                                :hasPermission="
-                                    'rule-engine/Instance:' + i.key
-                                "
+                                :hasPermission="'rule-engine/Instance:' + i.key"
                             >
                                 <template #icon
                                     ><AIcon :type="i.icon"
@@ -306,11 +304,11 @@ const getActions = (
     return actions;
 };
 const add = () => {
-    current.value = {
-        name:'',
-        description:''
-    },
-    visiable.value = true
+    (current.value = {
+        name: '',
+        description: '',
+    }),
+        (visiable.value = true);
 };
 /**
  * 刷新数据
@@ -326,9 +324,14 @@ const openRuleEditor = (item: any) => {
         `/${SystemConst.API_BASE}/rule-editor/index.html#flow/${item.id}`,
     );
 };
-const closeSave = () =>{
+const closeSave = () => {
     visiable.value = false;
-}
+};
+onMounted(() => {
+    if (history.state?.params) {
+        add();
+    }
+});
 </script>
 <style scoped>
 </style>
