@@ -10,18 +10,18 @@
             :gridColumn="2"
             :params="queryParams"
             :rowSelection="{
-                selectedRowKeys: table._selectedRowKeys.value,
-                onChange:(keys:string[])=>table._selectedRowKeys.value = [...keys]
+                selectedRowKeys: tableData._selectedRowKeys,
+                onChange:(keys:string[])=>tableData._selectedRowKeys = [...keys],
+                onSelectNone: table.cancelSelect
             }"
             :columns="columns"
-            @cancelSelect="table.cancelSelect"
         >
             <template #headerTitle>
                 <j-space>
                     <PermissionButton
                         :uhasPermission="`${permission}:assert`"
                         type="primary"
-                        @click="table.clickAdd"
+                        @click="dialogs.addShow = true"
                     >
                         <AIcon type="PlusOutlined" />资产分配
                     </PermissionButton>
@@ -62,9 +62,7 @@
                     :value="slotProps"
                     :actions="table.getActions(slotProps, 'card')"
                     v-bind="slotProps"
-                    :active="
-                        table._selectedRowKeys.value.includes(slotProps.id)
-                    "
+                    :active="tableData._selectedRowKeys.includes(slotProps.id)"
                     @click="table.onSelectChange"
                     :status="slotProps.state?.value"
                     :statusText="slotProps.state?.text"
@@ -105,7 +103,7 @@
                                     class="card-item-content-value"
                                 >
                                     {{
-                                        table.permissionList.value.length &&
+                                        tableData.permissionList.length &&
                                         table.getPermissLabel(
                                             slotProps.permission,
                                         )
@@ -164,7 +162,7 @@
 
             <template #permission="slotProps">
                 {{
-                    table.permissionList.value.length &&
+                    tableData.permissionList.length &&
                     table.getPermissLabel(slotProps.permission)
                 }}
             </template>
@@ -202,7 +200,7 @@
                 v-model:visible="dialogs.addShow"
                 :query-columns="columns"
                 :parent-id="props.parentId"
-                :all-permission="table.permissionList.value"
+                :all-permission="tableData.permissionList"
                 asset-type="product"
                 @confirm="table.addConfirm"
             />
@@ -212,7 +210,7 @@
                 :ids="dialogs.selectIds"
                 :permission-list="dialogs.permissList"
                 :parent-id="props.parentId"
-                :all-permission="table.permissionList.value"
+                :all-permission="tableData.permissionList"
                 asset-type="product"
                 @confirm="table.refresh"
             />
@@ -315,11 +313,12 @@ const columns = [
 const queryParams = ref({});
 
 const tableRef = ref();
-const table = {
-    _selectedRowKeys: ref<string[]>([]),
+const tableData = reactive({
+    _selectedRowKeys: [] as string[],
     selectedRows: [] as any[],
-    permissionList: ref<any[]>([]),
-
+    permissionList: [] as any[],
+});
+const table = {
     init: () => {
         table.getPermissionDict();
         watch(
@@ -360,12 +359,12 @@ const table = {
     // 获取权限数据字典
     getPermissionDict: () => {
         getPermissionDict_api().then((resp: any) => {
-            table.permissionList.value = resp.result;
+            tableData.permissionList = resp.result;
         });
     },
     // 获取权限名称
     getPermissLabel: (values: string[]) => {
-        const permissionList = table.permissionList.value;
+        const permissionList = tableData.permissionList;
         if (permissionList.length < 1 || values.length < 1) return '';
         const result = values.map(
             (key) => permissionList.find((item: any) => item.id === key)?.name,
@@ -374,21 +373,22 @@ const table = {
     },
     // 选中
     onSelectChange: (row: any) => {
-        const selectedRowKeys = table._selectedRowKeys.value;
+        const selectedRowKeys = tableData._selectedRowKeys;
         const index = selectedRowKeys.indexOf(row.id);
 
         if (index === -1) {
             selectedRowKeys.push(row.id);
-            table.selectedRows.push(row);
+            tableData.selectedRows.push(row);
         } else {
             selectedRowKeys.splice(index, 1);
-            table.selectedRows.splice(index, 1);
+            tableData.selectedRows.splice(index, 1);
         }
     },
     // 取消全选
     cancelSelect: () => {
-        table._selectedRowKeys.value = [];
-        table.selectedRows = [];
+        console.log(1111);
+        tableData._selectedRowKeys = [];
+        tableData.selectedRows = [];
     },
     // 获取并整理数据
     getData: (params: object, parentId: string) =>
@@ -444,8 +444,6 @@ const table = {
         }),
     // 整理参数并获取数据
     requestFun: async (oParams: any) => {
-        table._selectedRowKeys.value = [];
-        table.selectedRows = [];
         if (props.parentId) {
             const params = {
                 ...oParams,
@@ -486,21 +484,18 @@ const table = {
             };
         }
     },
-    clickAdd: () => {
-        dialogs.addShow = true;
-    },
     clickEdit: (row?: any) => {
-        const ids = row ? [row.id] : [...table._selectedRowKeys.value];
+        const ids = row ? [row.id] : [...tableData._selectedRowKeys];
 
-        if (row || table.selectedRows.length === 1) {
+        if (row || tableData.selectedRows.length === 1) {
             const permissionList =
-                row?.permission || table.selectedRows[0].permission;
+                row?.permission || tableData.selectedRows[0].permission;
             dialogs.selectIds = ids;
             dialogs.permissList = permissionList;
             dialogs.editShow = true;
             return;
-        } else if (table.selectedRows.length === 0) return;
-        const permissionList = table.selectedRows.map(
+        } else if (tableData.selectedRows.length === 0) return;
+        const permissionList = tableData.selectedRows.map(
             (item) => item.permission,
         );
         const mixPermissionList = intersection(...permissionList) as string[];
@@ -510,7 +505,7 @@ const table = {
         dialogs.editShow = true;
     },
     clickUnBind: (row?: any) => {
-        const ids = row ? [row.id] : [...table._selectedRowKeys.value];
+        const ids = row ? [row.id] : [...tableData._selectedRowKeys];
         if (ids.length < 1) return message.warning('请勾选需要解绑的数据');
         const params = [
             {
