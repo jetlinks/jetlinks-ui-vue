@@ -1,11 +1,11 @@
 <template>
     <page-container>
         <div>
-            <Search
+            <pro-search
                 :columns="columns"
                 target="device-instance"
                 @search="handleSearch"
-            ></Search>
+            />
             <JProTable
                 :columns="columns"
                 :request="queryList"
@@ -160,7 +160,7 @@
                                 style="padding: 0px"
                                 :hasPermission="
                                     'rule-engine/Alarm/Configuration:' +
-                                    item.key
+                                    i.key
                                 "
                             >
                                 <template #icon

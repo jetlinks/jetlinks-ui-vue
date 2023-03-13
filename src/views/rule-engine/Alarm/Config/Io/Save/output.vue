@@ -1,5 +1,5 @@
 <template>
-    <a-modal
+    <j-modal
         :maskClosable="false"
         width="45vw"
         title="编辑"
@@ -9,15 +9,15 @@
         cancelText="取消"
         okText="确定"
     >
-        <a-form layout="vertical" :model="outputData">
-            <a-form-item label="状态">
-                <a-switch
+        <j-form layout="vertical" :model="outputData" ref="formRef">
+            <j-form-item label="状态">
+                <j-switch
                     checked-children="启用"
                     un-checked-children="启用"
                     v-model:checked="outputData.status"
-                ></a-switch>
-            </a-form-item>
-            <a-form-item
+                ></j-switch>
+            </j-form-item>
+            <j-form-item
                 v-if="outputData.status"
                 label="kafka地址"
                 name="address"
@@ -32,12 +32,12 @@
                     },
                 ]"
             >
-                <a-input
+                <j-input
                     v-model:value="outputData.address"
                     placeholder="请输入kafka地址"
-                ></a-input>
-            </a-form-item>
-            <a-form-item
+                ></j-input>
+            </j-form-item>
+            <j-form-item
                 v-if="outputData.status"
                 label="topic"
                 name="topic"
@@ -52,16 +52,17 @@
                     },
                 ]"
             >
-                <a-input v-model:value="outputData.topic"></a-input>
-            </a-form-item>
-        </a-form>
-    </a-modal>
+                <j-input v-model:value="outputData.topic"></j-input>
+            </j-form-item>
+        </j-form>
+    </j-modal>
 </template>
 
 <script lang="ts" setup>
 import { Form } from 'ant-design-vue';
 import { saveOutputData } from '@/api/rule-engine/config';
 import { message } from 'ant-design-vue/es';
+const formRef = ref();
 const useForm = Form.useForm;
 const Myprops = defineProps({
     data: {
@@ -84,23 +85,25 @@ const close = () => {
     emit('closeModel');
 };
 const save = () => {
-    saveOutputData({
-        config: {
-            sourceType: 'kafka',
+    formRef.value.validateFields().then(() => {
+        saveOutputData({
             config: {
-                ...outputData,
-                state: outputData?.status ? 'enabled' : 'disable',
+                sourceType: 'kafka',
+                config: {
+                    ...outputData,
+                    state: outputData?.status ? 'enabled' : 'disable',
+                },
             },
-        },
-        state: outputData?.status ? 'enabled' : 'disable',
-        id: Myprops?.data?.data?.id,
-        sourceType: 'kafka',
-        exchangeType: 'producer',
-    }).then((res) => {
-        if (res.status === 200) {
-            message.success('操作成功');
-            emit('saveSuc');
-        }
+            state: outputData?.status ? 'enabled' : 'disable',
+            id: Myprops?.data?.data?.id,
+            sourceType: 'kafka',
+            exchangeType: 'producer',
+        }).then((res) => {
+            if (res.status === 200) {
+                message.success('操作成功');
+                emit('saveSuc');
+            }
+        });
     });
 };
 const emit = defineEmits(['closeModel', 'saveSuc']);

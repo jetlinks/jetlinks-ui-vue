@@ -1,10 +1,10 @@
 <template>
     <page-container :tabList="list" @tabChange="onTabChange" :tabActiveKey="tab">
         <div v-if="tab=='config'">
-            <a-row :gutter="24">
-                <a-col :span="14">
+            <j-row :gutter="24">
+                <j-col :span="14">
                     <div class="alarm-level">
-                        <a-card
+                        <j-card
                             :headStyle="{ borderBottom: 'none', padding: 0 }"
                             :bodyStyle="{ padding: 0 }"
                             :bordered="false"
@@ -27,24 +27,24 @@
                                     <span>{{ `级别${i + 1}` }}</span>
                                 </div>
                                 <div>
-                                    <a-input
+                                    <j-input
                                         type="text"
                                         v-model:value="item.title"
                                         :maxlength="64"
-                                    ></a-input>
+                                    ></j-input>
                                 </div>
                             </div>
-                        </a-card>
-                        <!-- <a-button
+                        </j-card>
+                        <!-- <j-button
                             type="primary"
                             size="middle"
                             @click="handleSaveLevel"
-                            >保存</a-button
+                            >保存</j-button
                         > -->
                         <PermissionButton type="primary" size="middle" @click="handleSaveLevel" hasPermission="rule-engine/Alarm/Config:update">保存</PermissionButton>
                     </div>
-                </a-col>
-                <a-col :span="10">
+                </j-col>
+                <j-col :span="10">
                     <div class="description">
                         <h1>功能说明</h1>
                         <div>
@@ -53,8 +53,8 @@
                         <div>2、告警级别将会在告警配置中被引用。</div>
                         <div>3、最多可配置5个级别。</div>
                     </div>
-                </a-col>
-            </a-row>
+                </j-col>
+            </j-row>
         </div>
         <Io v-else></Io>
     </page-container>

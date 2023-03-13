@@ -181,7 +181,7 @@ const close = () => {
 
 watchEffect(()=>{
     current.value = details.value;
-    if(route.query.detail && details.value){
+    if(history.state?.params.detail && details.value){
         visiable.value = true;
     }
 })

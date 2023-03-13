@@ -1,6 +1,6 @@
 <template>
     <div class="new-alarm">
-        <div class="title">最新警告</div>
+        <div class="title">最新告警</div>
         <div v-if="alarmList.length" class="new-alarm-items">
             <ul>
                 <li v-for="item in alarmList.slice(0, 3)" :key="item">
