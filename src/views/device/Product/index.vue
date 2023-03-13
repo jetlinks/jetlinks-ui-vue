@@ -1,6 +1,6 @@
 <template>
     <page-container>
-        <j-advanced-search
+        <pro-search
             :columns="query.columns"
             target="product-manage"
             @search="handleSearch"
@@ -64,7 +64,7 @@
                         </slot>
                     </template>
                     <template #content>
-                        <Ellipsis style="width:calc(100% - 100px)"
+                        <Ellipsis style="width: calc(100% - 100px)"
                             ><span
                                 @click.stop="handleView(slotProps.id)"
                                 style="font-weight: 600; font-size: 16px"
@@ -85,7 +85,11 @@
                                 </div>
                                 <Ellipsis
                                     ><div>
-                                        {{ slotProps?.accessName ? slotProps?.accessName : '未接入' }}
+                                        {{
+                                            slotProps?.accessName
+                                                ? slotProps?.accessName
+                                                : '未接入'
+                                        }}
                                     </div></Ellipsis
                                 >
                             </j-col>
@@ -179,11 +183,11 @@ import { omit } from 'lodash-es';
 import { typeOptions } from '@/components/Search/util';
 import Save from './Save/index.vue';
 import { useMenuStore } from 'store/menu';
+import { useRoute } from 'vue-router';
 /**
  * 表格数据
  */
 const menuStory = useMenuStore();
-const router = useRouter();
 const isAdd = ref<number>(0);
 const title = ref<string>('');
 const params = ref<Record<string, any>>({});
@@ -603,6 +607,12 @@ const saveRef = ref();
 const handleSearch = (e: any) => {
     params.value = e;
 };
+const route = useRoute();
+onMounted(() => {
+    if(history.state?.params?.save){
+        add();
+    }
+});
 </script>
 
 <style lang="less" scoped>

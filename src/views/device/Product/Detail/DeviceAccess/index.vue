@@ -276,7 +276,7 @@
         @ok="submitData"
         @cancel="cancel"
     >
-        <j-advanced-search
+        <pro-search
             :columns="query.columns"
             target="deviceModal"
             @search="search"
@@ -589,9 +589,9 @@ const search = (e: any) => {
 //引导页数据
 const steps = [
     {
-        element: '.device-detail-metadata',
+        element: '#rc-tabs-0-tab-Metadata',
         popover: {
-            className: 'driver',
+            id: 'driver',
             title: `<div id='title'>配置物模型</div><div id='guide'>1/3</div>`,
             description: `配置产品物模型，实现设备在云端的功能描述。`,
             position: 'bottom',
@@ -1042,7 +1042,7 @@ const submitDevice = async () => {
     const result: any = {};
     flatObj(values, result);
     const { storePolicy, ...extra } = result;
-    console.log({...extra});
+    console.log({ ...extra });
     const id = productStore.current?.id;
     const resp = await modify(id || '', {
         id: id,

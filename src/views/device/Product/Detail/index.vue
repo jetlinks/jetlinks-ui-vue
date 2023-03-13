@@ -43,11 +43,15 @@
             </div>
             <div style="padding-top: 10px">
                 <j-descriptions size="small" :column="4">
-                    <j-descriptions-item label="设备数量">{{
-                        productStore.current?.count
-                            ? productStore.current?.count
-                            : 0
-                    }}</j-descriptions-item>
+                    <j-descriptions-item
+                        label="设备数量"
+                        style="cursor: pointer"
+                        ><span @click="jumpDevice">{{
+                            productStore.current?.count
+                                ? productStore.current?.count
+                                : 0
+                        }}</span></j-descriptions-item
+                    >
                 </j-descriptions>
             </div>
         </template>
@@ -103,6 +107,8 @@ import {
 import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 import encodeQuery from '@/utils/encodeQuery';
+import { useMenuStore } from '@/store/menu';
+const menuStory = useMenuStore();
 
 const route = useRoute();
 const checked = ref<boolean>(true);
@@ -220,8 +226,26 @@ const getProtocol = async () => {
         }
     }
 };
+/**
+ * 详情页跳转到设备页
+ */
+const jumpDevice = () => {
+    console.log(productStore.current?.id);
+    const searchParams = {
+        column: 'productId',
+        termType: 'eq',
+        value: productStore.current?.id,
+    };
+    menuStory.jumpPage('device/Instance',{},{
+        target: 'device-instance',
+        q: JSON.stringify({ terms: [{ terms: [{searchParams}] }] }),
+    });
+};
 onMounted(() => {
     getProtocol();
+    if(history.state?.params?.tab){
+        productStore.tabActiveKey = history.state?.params?.tab
+    }
 });
 </script>
 <style scoped lang="less">
