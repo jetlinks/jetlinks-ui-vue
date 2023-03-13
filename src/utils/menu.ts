@@ -151,7 +151,6 @@ const extraRouteObj = {
 const resolveComponent = (name: any) => {
   const importPage = pagesComponent[`../views/${name}/index.vue`];
   if (!importPage) {
-    console.warn(`Unknown page ${name}. Is it located under Pages with a .vue extension?`)
     return undefined
   } else {
     const res = () => importPage()
@@ -201,7 +200,52 @@ const findDetailRoutes = (routes: any[]): any[] => {
   return newRoutes
 }
 
-export function filterAsnycRouter(asyncRouterMap: any, parentCode = '', level = 1): { menusData: any, silderMenus: any } {
+export const findCodeRoute = (asyncRouterMap: any[]) => {
+  const routeMeta = {}
+
+  function findChildren (data: any[], code: string = '') {
+    data.forEach(route => {
+      routeMeta[route.code] = {
+        path: route.url || route.path,
+        title: route.meta?.title || route.name,
+        parentName: code,
+        buttons: route.buttons?.map((b: any) => b.id) || []
+      }
+      const detail = findDetailRouteItem(route.code, route.url)
+      if (detail) {
+        routeMeta[(detail as MenuItem).code] = {
+          path: detail.url,
+          title: detail.name,
+          parentName: route.code,
+          buttons: detail.buttons?.map((b: any) => b.id) || []
+        }
+      }
+
+      const otherRoutes = extraRouteObj[route.code]
+      if (otherRoutes) {
+        otherRoutes.children.map((item: any) => {
+          const _code = `${route.code}/${item.code}`
+          routeMeta[_code] = {
+            path: `${route.url}/${item.code}`,
+            title: item.name,
+            parentName: route.code,
+            buttons: item.buttons?.map((b: any) => b.id) || []
+          }
+        })
+      }
+
+      if (route.children) {
+        findChildren(route.children, route.code)
+      }
+    })
+  }
+
+  findChildren(asyncRouterMap)
+
+  return routeMeta
+}
+
+export function filterAsyncRouter(asyncRouterMap: any, parentCode = '', level = 1): { menusData: any, silderMenus: any} {
   const _asyncRouterMap = cloneDeep(asyncRouterMap)
   const menusData: any[] = []
   const silderMenus: any[] = []
@@ -224,7 +268,7 @@ export function filterAsnycRouter(asyncRouterMap: any, parentCode = '', level = 
     route.children = findDetailRoutes(route.children)
     if (route.children && route.children.length) {
       // TODO 查看是否具有详情页
-      const { menusData: _menusData, silderMenus: _silderMenus } = filterAsnycRouter(route.children, `${parentCode}/${route.code}`, level + 1)
+      const { menusData: _menusData, silderMenus: _silderMenus } = filterAsyncRouter(route.children, `${parentCode}/${route.code}`, level + 1)
       _route.children = _menusData
       silder.children = _silderMenus
       const showChildren = _route.children.some((r: any) => !r.meta.hideInMenu)
@@ -251,6 +295,6 @@ export function filterAsnycRouter(asyncRouterMap: any, parentCode = '', level = 
   })
   return {
     menusData,
-    silderMenus
+    silderMenus,
   }
 }

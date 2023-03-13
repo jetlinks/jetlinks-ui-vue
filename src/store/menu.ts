@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { queryOwnThree } from '@/api/system/menu'
-import { filterAsnycRouter, MenuItem } from '@/utils/menu'
+import { filterAsyncRouter, findCodeRoute, MenuItem } from '@/utils/menu'
 import { isArray } from 'lodash-es'
 import { usePermissionStore } from './permission'
 import router from '@/router'
@@ -33,6 +33,8 @@ type MenuStateType = {
   menus: {
     [key: string]: {
       buttons?: string[]
+      title: string
+      parentName: string
       path: string
     }
   }
@@ -98,24 +100,15 @@ export const useMenuStore = defineStore({
         if (resp.success) {
           const permission = usePermissionStore()
           permission.permissions = {}
-          const { menusData, silderMenus } = filterAsnycRouter(resp.result)
-          this.menus = {}
-          const handleMenuItem = (menu: any) => {
-            if (isArray(menu)) {
-              menu.forEach(menuItem => {
-                this.menus[menuItem.name] = {
-                  path: menuItem.path,
-                  buttons: menuItem.meta.buttons
-                }
-                permission.permissions[menuItem.name] = menuItem.meta.buttons
-                if (menuItem.children && menuItem.children.length) {
-                  handleMenuItem(menuItem.children)
-                }
-              })
+          const { menusData, silderMenus } = filterAsyncRouter(resp.result)
+          this.menus = findCodeRoute([...resp.result, AccountMenu])
+          Object.keys(this.menus).forEach((item) => {
+            const _item = this.menus[item]
+            if (_item.buttons?.length) {
+              permission.permissions[item] = _item.buttons
             }
-          }
+          })
 
-          handleMenuItem(menusData)
           menusData.push({
             path: '/',
             redirect: menusData[0]?.path,
@@ -124,10 +117,7 @@ export const useMenuStore = defineStore({
             }
           })
           menusData.push(AccountMenu)
-          silderMenus.push(AccountMenu)
           this.siderMenus = silderMenus
-          console.log('menusData', menusData)
-          console.log('silderMenus', silderMenus)
           res(menusData)
         }
       })

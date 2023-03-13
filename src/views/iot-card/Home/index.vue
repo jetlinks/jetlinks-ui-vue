@@ -95,6 +95,7 @@ import { queryFlow, list } from '@/api/iot-card/home';
 import * as echarts from 'echarts';
 import { useMenuStore } from '@/store/menu';
 import { usePermissionStore } from '@/store/permission';
+import { message } from 'jetlinks-ui-components'
 
 const { proxy } = <any>getCurrentInstance();
 
@@ -178,11 +179,10 @@ const pieChartData = ref<any[]>([
 ]);
 
 const jumpPage = (data: GuideItemProps) => {
-    // if (data.url && data.auth) {
-    //     router.push({ path: `${data.url}`, ...data.param });
-    // } else {
-    //     message.warning('暂无权限，请联系管理员');
-    // }
+    if (!data.auth){
+        message.warning('暂无权限，请联系管理员');
+        return
+    }
     if (data.key === 'EQUIPMENT') {
         menuStory.jumpPage(data.url, { id: 'add' });
     } else {
