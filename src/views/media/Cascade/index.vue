@@ -1,6 +1,6 @@
 <template>
     <page-container>
-        <j-advanced-search
+        <pro-search
             :columns="columns"
             target="media-cascade"
             @search="handleSearch"

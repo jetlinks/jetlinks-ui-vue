@@ -37,6 +37,10 @@ type MenuStateType = {
     }
   }
   siderMenus: MenuItem[]
+  params: {
+    key: string
+    params: Record<string, any>
+  }
 }
 
 
@@ -44,6 +48,10 @@ export const useMenuStore = defineStore({
   id: 'menu',
   state: (): MenuStateType => ({
     menus: {},
+    params: {
+      key: '',
+      params: {}
+    },
     siderMenus: []
   }),
   getters: {
