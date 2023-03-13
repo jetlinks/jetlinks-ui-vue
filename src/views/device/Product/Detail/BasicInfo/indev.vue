@@ -23,8 +23,8 @@
 
             <a-descriptions-item label="接入方式">
                 <a-button type="link" @click="changeTables">{{
-                    productStore.current.transportProtocol
-                        ? productStore.current.transportProtocol
+                    productStore.current.accessName
+                        ? productStore.current.accessName
                         : '配置接入方式'
                 }}</a-button>
             </a-descriptions-item>

@@ -10,60 +10,75 @@
                 <div style="display: flex; align-items: center">
                     <div>{{ productStore.current.name }}</div>
                     <div style="margin: -5px 0 0 20px">
-                        <a-popconfirm
+                        <j-popconfirm
                             title="确认禁用"
                             @confirm="handleUndeploy"
                             v-if="productStore.current.state === 1"
                             okText="确定"
                             cancelText="取消"
                         >
-                            <a-switch
+                            <j-switch
                                 :checked="productStore.current.state === 1"
                                 checked-children="正常"
                                 un-checked-children="禁用"
                             />
-                        </a-popconfirm>
-                        <a-popconfirm
+                        </j-popconfirm>
+                        <j-popconfirm
                             title="确认启用"
                             @confirm="handleDeploy"
                             v-if="productStore.current.state === 0"
                             okText="确定"
                             cancelText="取消"
                         >
-                            <a-switch
+                            <j-switch
                                 :unCheckedValue="
                                     productStore.current.state === 0
                                 "
                                 checked-children="正常"
                                 un-checked-children="禁用"
                             />
-                        </a-popconfirm>
+                        </j-popconfirm>
                     </div>
                 </div>
             </div>
             <div style="padding-top: 10px">
-                <a-descriptions size="small" :column="4">
-                    <a-descriptions-item label="设备数量">{{
+                <j-descriptions size="small" :column="4">
+                    <j-descriptions-item label="设备数量">{{
                         productStore.current?.count
                             ? productStore.current?.count
                             : 0
-                    }}</a-descriptions-item>
-                </a-descriptions>
+                    }}</j-descriptions-item>
+                </j-descriptions>
             </div>
         </template>
         <template #extra>
-            <a-popconfirm
-                title="确认应用配置"
-                @confirm="handleCofig"
-                okText="确定"
-                cancelText="取消"
-            >
-                <a-button
-                    :disabled="productStore.current.state === 0"
-                    type="primary"
-                    >应用配置</a-button
+            <!-- <j-popconfirm
+                    title="确认应用配置"
+                    @confirm="handleCofig"
+                    okText="确定"
+                    cancelText="取消"
                 >
-            </a-popconfirm>
+                    <j-button
+                        :disabled="productStore.current.state === 0"
+                        type="primary"
+                        >应用配置</j-button
+                    >
+                </j-popconfirm> -->
+            <PermissionButton
+                type="primary"
+                :popConfirm="{
+                    title: `确定应用配置?`,
+                    onConfirm: handleConfig,
+                }"
+                :disabled="productStore.current?.state === 0"
+                :tooltip="
+                    productStore.current?.state === 0
+                        ? { title: '请先启用产品' }
+                        : undefined
+                "
+                hasPermission="device/Product:update"
+                >应用配置</PermissionButton
+            >
         </template>
         <component
             :is="tabs[productStore.tabActiveKey]"
@@ -123,7 +138,7 @@ const tabs = {
     Info,
     Metadata,
     Device,
-    DataAnalysis
+    DataAnalysis,
 };
 
 watch(
@@ -189,7 +204,7 @@ const handleUndeploy = async () => {
  */
 const getProtocol = async () => {
     if (productStore.current?.messageProtocol) {
-        const res:any = await getProtocolDetail(
+        const res: any = await getProtocolDetail(
             productStore.current?.messageProtocol,
         );
         if (res.status === 200) {
@@ -205,9 +220,9 @@ const getProtocol = async () => {
         }
     }
 };
-onMounted(()=>{
+onMounted(() => {
     getProtocol();
-})
+});
 </script>
 <style scoped lang="less">
 .ant-switch-loading,
