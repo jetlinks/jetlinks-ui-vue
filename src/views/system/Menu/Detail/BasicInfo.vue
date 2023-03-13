@@ -45,8 +45,8 @@
                                 label="名称"
                                 name="name"
                                 :rules="[
-                                    { required: true, message: '请输入名称' },
-                                    { max: 64, message: '最多可输入64个字符' },
+                                    { required: true, message: '请输入名称',trigger: 'change', },
+                                    { max: 64, message: '最多可输入64个字符', trigger: 'change', },
                                 ]"
                             >
                                 <j-input v-model:value="form.data.name" />
@@ -57,8 +57,8 @@
                                 label="编码"
                                 name="code"
                                 :rules="[
-                                    { required: true, message: '' },
-                                    { max: 64, message: '' },
+                                    { required: true, message: '请输入编码', trigger: 'change', },
+                                    { max: 64, message: '最多可输入64个字符', trigger: 'change', },
                                     {
                                         validator: form.checkCode,
                                         trigger: 'blur',
