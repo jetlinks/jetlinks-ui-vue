@@ -22,3 +22,7 @@ export const rdbTree_api = (id: string) => server.get(`/datasource/rdb/${id}/tab
 export const rdbTables_api = (id: string,key:string) => server.get(`/datasource/rdb/${id}/table/${key}`);
 // 保存表格
 export const saveTable_api = (id: string,data:object) => server.patch(`/datasource/rdb/${id}/table`,data);
+/**
+ * 删除已保存的行
+ */
+export const delSaveRow_api = (datasourceId: string, table: string, data: any) => server.post(`/datasource/rdb/${datasourceId}/table/${table}/drop-column`,data);

@@ -11,8 +11,9 @@
             :params="queryParams"
             :rowSelection="{
                 selectedRowKeys: table._selectedRowKeys.value,
+                onChange:(keys:string[])=>table._selectedRowKeys.value = [...keys],
+                onSelectNone: table.cancelSelect
             }"
-            @cancelSelect="table.cancelSelect"
             :columns="columns"
         >
             <template #headerTitle>
@@ -425,8 +426,6 @@ const table = {
         }),
     // 整理参数并获取数据
     requestFun: async (oParams: any) => {
-        table._selectedRowKeys.value = [];
-        table.selectedRows = [];
         if (props.parentId) {
             const params = {
                 ...oParams,

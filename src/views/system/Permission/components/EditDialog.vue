@@ -12,7 +12,16 @@
             <j-form-item
                 name="id"
                 :rules="[
-                    { required: true, message: '请输入标识(ID)' },
+                    {
+                        required: true,
+                        message: '请输入标识(ID)',
+                        trigger: 'change',
+                    },
+                    {
+                        max: 64,
+                        message: '最多可输入64个字符',
+                        trigger: 'change',
+                    },
                     { validator: form.rules.idCheck, trigger: 'blur' },
                 ]"
                 class="question-item"
@@ -33,19 +42,23 @@
                 <j-input
                     v-model:value="form.data.id"
                     placeholder="请输入标识(ID)"
-                    :maxlength="64"
                     :disabled="dialogTitle === '编辑'"
                 />
             </j-form-item>
             <j-form-item
                 name="name"
                 label="名称"
-                :rules="[{ required: true, message: '请输入名称' }]"
+                :rules="[
+                    { required: true, message: '请输入名称' },
+                    {
+                        max: 64,
+                        message: '最多可输入64个字符',
+                    },
+                ]"
             >
                 <j-input
                     v-model:value="form.data.name"
                     placeholder="请输入名称"
-                    :maxlength="64"
                 />
             </j-form-item>
         </j-form>
@@ -146,16 +159,17 @@ const form = reactive({
     },
     rules: {
         // 校验标识是否可用
-        idCheck: (_rule: Rule, id: string, cb: Function) => {
-            if (props.data.id) return cb();
-            else if (!id) return cb('请输入标识(ID)');
-            checkId_api({ id })
-                .then((resp: any) => {
-                    if (resp.status === 200 && !resp.result.passed)
-                        cb(resp.result.reason);
-                    else cb();
-                })
-                .catch(() => cb('验证失败'));
+        idCheck: async (_rule: Rule, id: string): Promise<any> => {
+            if (!id) return Promise.reject('请输入标识(ID)');
+            else if (id.length > 64)
+                return Promise.reject('最多可输入64个字符');
+            else if (props.data.id && props.data.id === form.data.id)
+                return Promise.resolve();
+            else {
+                const resp: any = await checkId_api({ id });
+                if (resp.result.passed) return Promise.resolve();
+                else return Promise.reject(resp.result.reason);
+            }
         },
     },
     submit: () => {

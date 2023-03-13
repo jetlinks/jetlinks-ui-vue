@@ -1,5 +1,5 @@
 <template>
-    <a-modal
+    <j-modal
         visible
         title="新增"
         width="670px"
@@ -7,29 +7,31 @@
         @ok="confirm"
         :confirm-loading="loading"
     >
-        <a-form ref="formRef" :model="form" layout="vertical">
-            <a-form-item
+        <j-form ref="formRef" :model="form" layout="vertical">
+            <j-form-item
                 name="name"
                 label="名称"
-                :rules="[{ required: true, message: '请输入名称' }]"
+                :rules="[
+                    { required: true, message: '请输入名称' },
+                    { max: 64, message: '最多可输入64个字符' },
+                ]"
             >
-                <a-input
+                <j-input
                     v-model:value="form.name"
                     placeholder="请输入角色名称"
                     allow-clear
-                    :maxlength="64"
                 />
-            </a-form-item>
-            <a-form-item name="name" label="说明">
-                <a-textarea
+            </j-form-item>
+            <j-form-item name="name" label="说明">
+                <j-textarea
                     v-model:value="form.description"
                     placeholder="请输入说明"
                     allow-clear
                     :maxlength="200"
                 />
-            </a-form-item>
-        </a-form>
-    </a-modal>
+            </j-form-item>
+        </j-form>
+    </j-modal>
 </template>
 
 <script setup lang="ts">

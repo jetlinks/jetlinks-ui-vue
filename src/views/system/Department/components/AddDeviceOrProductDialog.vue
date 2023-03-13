@@ -32,13 +32,13 @@
             ref="tableRef"
             :request="table.requestFun"
             :gridColumn="2"
-            model="CARD"
             :params="query.params.value"
             :rowSelection="{
                 selectedRowKeys: table._selectedRowKeys.value,
-                onChange: pageChange
+                onChange: selectRow,
             }"
             @cancelSelect="table.cancelSelect"
+            :columns="columns"
         >
             <template #card="slotProps">
                 <CardBox
@@ -99,6 +99,30 @@
                         </a-row>
                     </template>
                 </CardBox>
+            </template>
+
+            <template #permission="slotProps">
+                <div
+                    style="cursor: pointer"
+                    class="card-item-content-value"
+                    @click="(e) => e.stopPropagation()"
+                >
+                    <a-checkbox-group
+                        v-model:value="slotProps.selectPermissions"
+                        :options="slotProps.permissionList"
+                    />
+                </div>
+            </template>
+            <template #state="slotProps">
+                <BadgeStatus
+                    :status="slotProps.state.value"
+                    :text="slotProps.state.text"
+                    :statusNames="{
+                        online: 'success',
+                        offline: 'error',
+                        notActive: 'warning',
+                    }"
+                ></BadgeStatus>
             </template>
         </j-pro-table>
     </a-modal>
@@ -162,6 +186,9 @@ const options = computed(() =>
     })),
 );
 
+const columns = props.queryColumns.filter(
+    (item) => item.dataIndex !== 'action',
+);
 const query = {
     columns: [
         {
@@ -369,8 +396,6 @@ const table: any = {
         }),
     // 整理参数并获取数据
     requestFun: async (oParams: any) => {
-        table._selectedRowKeys.value = [];
-        table.selectedRows = [];
         if (props.parentId) {
             const terms = [
                 {
@@ -421,9 +446,11 @@ const table: any = {
     },
 };
 table.init();
-const pageChange = ()=>{
-    console.log(1111,table._selectedRowKeys.value);
-}
+const selectRow = (keys:string[], rows:any[]) => {
+    const okRows = rows.filter(item=>!!item.permissionList.find((permiss:any)=>permiss.value === 'share'));
+    table.selectedRows = okRows;
+    table._selectedRowKeys.value = okRows.map(item=>item.id)
+};
 </script>
 
 <style lang="less" scoped>

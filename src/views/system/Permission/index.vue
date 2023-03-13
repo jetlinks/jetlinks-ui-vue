@@ -17,7 +17,7 @@
                 <template #headerTitle>
                     <PermissionButton
                         type="primary"
-                        :uhasPermission="`${permission}:add`"
+                        :hasPermission="`${permission}:add`"
                         @click="table.openDialog(undefined)"
                     >
                         <AIcon type="PlusOutlined" />新增
@@ -27,7 +27,7 @@
                         <template #overlay>
                             <j-menu>
                                 <j-menu-item>
-                                    <j-upload
+                                    <a-upload
                                         name="file"
                                         action="#"
                                         accept=".json"
@@ -44,11 +44,11 @@
                                         >
                                             导入
                                         </PermissionButton>
-                                    </j-upload>
+                                    </a-upload>
                                 </j-menu-item>
                                 <j-menu-item>
                                     <PermissionButton
-                                        :uhasPermission="`${permission}:export`"
+                                        :hasPermission="`${permission}:export`"
                                         :popConfirm="{
                                             title: `确认导出？`,
                                             onConfirm: () =>
@@ -86,7 +86,7 @@
                         </PermissionButton>
 
                         <PermissionButton
-                            :uhasPermission="`${permission}:action`"
+                            :hasPermission="`${permission}:action`"
                             type="link"
                             :popConfirm="{
                                 title: `确定要${
@@ -108,7 +108,7 @@
                         </PermissionButton>
 
                         <PermissionButton
-                            :uhasPermission="`${permission}:delete`"
+                            :hasPermission="`${permission}:delete`"
                             type="link"
                             :tooltip="{
                                 title: slotProps.status

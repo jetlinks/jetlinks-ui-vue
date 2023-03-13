@@ -21,7 +21,6 @@
                 <j-input
                     v-model:value="form.data.name"
                     placeholder="请输入名称"
-                    :maxlength="64"
                 />
             </j-form-item>
             <j-form-item
@@ -36,7 +35,6 @@
                 <j-input
                     v-model:value="form.data.relation"
                     placeholder="请输入标识"
-                    :maxlength="64"
                     :disabled="!!form.data.id"
                 />
             </j-form-item>
@@ -51,12 +49,14 @@
                         <j-select
                             v-model:value="form.data.objectType"
                             :disabled="!!form.data.id"
+                            @change="() => (form.data.targetType = undefined)"
                         >
                             <j-select-option
                                 v-for="item in form.objectList"
                                 :value="item.id"
-                                >{{ item.name }}</j-select-option
                             >
+                                {{ item.name }}.
+                            </j-select-option>
                         </j-select>
                     </j-form-item>
                 </j-col>
@@ -73,17 +73,14 @@
                             <j-select-option
                                 v-for="item in targetList"
                                 :value="item.id"
-                                >{{ item.name }}</j-select-option
                             >
+                                {{ item.name }}
+                            </j-select-option>
                         </j-select>
                     </j-form-item>
                 </j-col>
             </j-row>
-            <j-form-item
-                name="description"
-                label="说明"
-                :rules="[{ max: 200, message: '最多可输入200个字符' }]"
-            >
+            <j-form-item name="description" label="说明">
                 <j-textarea
                     v-model:value="form.data.description"
                     placeholder="请输入说明"
@@ -134,7 +131,8 @@ const form = reactive({
     data: props.data,
     rules: {
         checkRelation: (_rule: Rule, value: string): any => {
-            if (!value) return '';
+            if (!value) return Promise.reject('');
+            else if (value.length > 64) return Promise.reject('');
             const reg = new RegExp('^[0-9a-zA-Z_\\\\-]+$');
 
             return reg.test(value)
@@ -172,7 +170,7 @@ type formType = {
     name: string;
     relation: string;
     objectType: string;
-    targetType: string;
+    targetType: string | undefined;
     description: string;
     id?: string;
 };

@@ -33,5 +33,6 @@ export type dbColumnType = {
     notnull: boolean,
     comment: string,
     name: string,
-    scale?:number
+    scale?:number,
+    index?:number
 }
