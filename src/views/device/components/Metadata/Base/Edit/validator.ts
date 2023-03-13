@@ -39,7 +39,6 @@ export const validateIdName = async (_rule: Rule, val: Record<any, any>) => {
 }
 
 export const validateValueType = async (_rule: Rule, val: Record<any, any>, title = '数据类型') => {
-  console.log(val)
   if (!val) return Promise.reject(new Error('请输入元素配置'));
   if (!val?.type) {
     return Promise.reject(new Error(`请选择${title}`))
