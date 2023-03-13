@@ -19,7 +19,7 @@
                 <template #headerTitle>
                     <PermissionButton
                         type="primary"
-                        :uhasPermission="`${permission}:add`"
+                        :hasPermission="`${permission}:add`"
                         @click="table.openDialog(undefined)"
                     >
                         <AIcon type="PlusOutlined" />新增
@@ -28,7 +28,7 @@
                 <template #action="slotProps">
                     <j-space :size="16">
                         <PermissionButton
-                            :uhasPermission="`${permission}:update`"
+                            :hasPermission="`${permission}:update`"
                             type="link"
                             :tooltip="{
                                 title: '编辑',
@@ -39,7 +39,7 @@
                         </PermissionButton>
 
                         <PermissionButton
-                            :uhasPermission="`${permission}:delete`"
+                            :hasPermission="`${permission}:delete`"
                             type="link"
                             :tooltip="{ title: '删除' }"
                             :popConfirm="{
