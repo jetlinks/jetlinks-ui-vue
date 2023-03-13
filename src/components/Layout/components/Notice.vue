@@ -18,11 +18,11 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="tsx">
 import { getList_api } from '@/api/account/notificationRecord';
 import NoticeInfo from './NoticeInfo.vue';
 import { getWebSocket } from '@/utils/websocket';
-import { notification } from 'ant-design-vue';
+import { notification, Button } from 'ant-design-vue';
 import { changeStatus_api } from '@/api/account/notificationRecord';
 import { useUserInfo } from '@/store/userInfo';
 
@@ -38,12 +38,40 @@ const subscribeNotice = () => {
         .subscribe((resp: any) => {
             total.value += 1;
             notification.open({
-                message: 'Notification Title',
-                description:
-                    'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
+                message: resp?.payload?.topicName,
+                description: () => (
+                    <div
+                        class="ellipsis"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                            changeStatus_api('_read', [resp.id]);
+                        }}
+                    >
+                        {resp?.payload?.message}
+                    </div>
+                ),
                 onClick: () => {
                     changeStatus_api('_read', [resp.id]);
                 },
+                key: resp.payload.id,
+                btn: (
+                    <Button
+                        type="primary"
+                        size="small"
+                        onClick={() => {
+                            changeStatus_api('_read', [resp.id]).then(
+                                (resp: any) => {
+                                    if (resp.status === 200) {
+                                        notification.close(resp.payload.id);
+                                        getList();
+                                    }
+                                },
+                            );
+                        }}
+                    >
+                        标记已读
+                    </Button>
+                ),
             });
         });
 };
