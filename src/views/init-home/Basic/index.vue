@@ -59,7 +59,7 @@
                         <j-form-item label="系统logo">
                             <div class="upload-image-warp-logo">
                                 <div class="upload-image-border-logo">
-                                    <a-upload
+                                    <j-upload
                                         name="file"
                                         :action="FILE_UPLOAD"
                                         :headers="headers"
@@ -109,7 +109,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </a-upload>
+                                    </j-upload>
                                     <div v-if="logoLoading">
                                         <div class="upload-loading-mask">
                                             <LoadingOutlined
@@ -138,7 +138,7 @@
                             </template>
                             <div class="upload-image-warp-logo">
                                 <div class="upload-image-border-logo">
-                                    <a-upload
+                                    <j-upload
                                         name="file"
                                         :action="FILE_UPLOAD"
                                         :headers="headers"
@@ -183,7 +183,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </a-upload>
+                                    </j-upload>
                                 </div>
                             </div>
 
@@ -197,7 +197,7 @@
                 <j-form-item label="登录背景图">
                     <div class="upload-image-warp-back">
                         <div class="upload-image-border-back">
-                            <a-upload
+                            <j-upload
                                 name="file"
                                 :action="FILE_UPLOAD"
                                 :headers="headers"
@@ -242,7 +242,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </a-upload>
+                            </j-upload>
                         </div>
                     </div>
                     <div class="upload-tips">支持4M以内的图片:支持jpg、png</div>

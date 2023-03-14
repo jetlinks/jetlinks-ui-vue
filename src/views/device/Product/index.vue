@@ -24,7 +24,7 @@
                         <template #icon><AIcon type="PlusOutlined" /></template>
                         新增
                     </PermissionButton>
-                    <a-upload
+                    <j-upload
                         name="file"
                         accept=".json"
                         :showUploadList="false"
@@ -33,7 +33,7 @@
                         <PermissionButton hasPermission="device/Product:import"
                             >导入</PermissionButton
                         >
-                    </a-upload>
+                    </j-upload>
                 </j-space>
             </template>
             <template #deviceType="slotProps">

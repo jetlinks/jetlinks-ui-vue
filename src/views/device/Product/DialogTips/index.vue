@@ -1,6 +1,6 @@
 <!-- 产品保存成功后的提示框 -->
 <template>
-    <a-modal
+    <j-modal
         :maskClosable="false"
         destroy-on-close
         v-model:visible="visible"
@@ -12,7 +12,7 @@
             <span>产品创建成功</span>
         </template>
         <template #footer>
-            <a-button @click="cancel">关闭</a-button>
+            <j-button @click="cancel">关闭</j-button>
         </template>
         <div class="product-tips">
             <div style="display: flex">
@@ -43,7 +43,7 @@
                 进入设备列表页面，点击批量导入设备，批量添加同一产品下的设备
             </div>
         </div>
-    </a-modal>
+    </j-modal>
 </template>
 <script lang="ts" setup name="DialogTips">
 import { getImage } from '@/utils/comm.ts';

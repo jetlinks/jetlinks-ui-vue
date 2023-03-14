@@ -6,18 +6,18 @@
             @click="handleClick"
         >
             <div class="card-content">
-                <a-row :gutter="20">
-                    <a-col :span="10">
+                <j-row :gutter="20">
+                    <j-col :span="10">
                         <!-- 图片 -->
                         <div class="card-item-avatar">
                             <slot name="img"> </slot>
                         </div>
-                    </a-col>
-                    <a-col :span="14">
+                    </j-col>
+                    <j-col :span="14">
                         <!-- 内容 -->
                         <slot name="content"></slot>
-                    </a-col>
-                </a-row>
+                    </j-col>
+                </j-row>
 
                 <!-- 勾选 -->
                 <div v-if="active" class="checked-icon">
