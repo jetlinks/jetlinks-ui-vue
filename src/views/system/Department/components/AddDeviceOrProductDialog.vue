@@ -9,7 +9,7 @@
         visible
     >
         <h5 class="row">
-            <exclamation-circle-outlined style="margin-right: 6px" />
+            <AIcon type="ExclamationCircleOutlined" style="margin-right: 6px" />
             只能分配有“共享”权限的资产数据
         </h5>
 
@@ -132,7 +132,6 @@
 </template>
 
 <script setup lang="ts">
-import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { getImage } from '@/utils/comm';
 import { uniq, intersection } from 'lodash-es';
 import {

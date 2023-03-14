@@ -7,7 +7,7 @@
             class="search-input"
         >
             <template #suffix>
-                <search-outlined />
+                <AIcon type="SearchOutlined" />
             </template>
         </j-input>
         <div class="add-btn">
@@ -89,7 +89,6 @@ import { debounce, cloneDeep, omit } from 'lodash-es';
 import { ArrayToTree } from '@/utils/utils';
 import EditDepartmentDialog from './EditDepartmentDialog.vue';
 
-import { SearchOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 
 const permission = 'system/Department';
