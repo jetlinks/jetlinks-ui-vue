@@ -458,8 +458,6 @@ const getDetail = async () => {
     const res = await configApi.detail(route.params.id as string);
     // formData.value = res.result;
     Object.assign(formData.value, res.result);
-    // console.log('res.result: ', res.result);
-    // console.log('formData.value: ', formData.value);
 };
 getDetail();
 
@@ -537,7 +535,6 @@ const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
     validate()
         .then(async () => {
-            // console.log('formData.value: ', formData.value);
             btnLoading.value = true;
             let res;
             if (!formData.value.id) {
@@ -545,7 +542,6 @@ const handleSubmit = () => {
             } else {
                 res = await configApi.update(formData.value);
             }
-            // console.log('res: ', res);
             if (res?.success) {
                 message.success('保存成功');
                 router.back();

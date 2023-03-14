@@ -155,12 +155,8 @@
 <script setup lang="ts">
 import TemplateApi from '@/api/notice/template';
 import type { ActionsType } from '@/components/Table/index.vue';
-// import { getImage, LocalStore } from '@/utils/comm';
 import { message } from 'ant-design-vue';
-// import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
-
 import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
-
 import Debug from './Debug/index.vue';
 import Log from './Log/index.vue';
 import { downloadObject } from '@/utils/utils';

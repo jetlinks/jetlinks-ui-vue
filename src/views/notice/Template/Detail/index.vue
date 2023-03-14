@@ -1082,7 +1082,7 @@ const spliceStr = () => {
         variableFieldsStr += formData.value.template.body as string;
     if (formData.value.provider === 'aliyun')
         variableFieldsStr += formData.value.template.ttsmessage as string;
-    // console.log('variableFieldsStr: ', variableFieldsStr);
+
     return variableFieldsStr || '';
 };
 
@@ -1139,7 +1139,6 @@ const handleMessageTypeChange = () => {
         };
     }
     formData.value.variableDefinitions = [];
-    // formData.value.template.message = '';
 };
 
 /**
@@ -1150,7 +1149,6 @@ const getDetail = async () => {
         const res = await templateApi.detail(route.params.id as string);
         // formData.value = res.result;
         Object.assign(formData.value, res.result);
-        // console.log('formData.value: ', formData.value);
     }
 };
 getDetail();
@@ -1185,8 +1183,7 @@ const handleTypeChange = () => {
 const handleProviderChange = () => {
     formData.value.template =
         TEMPLATE_FIELD_MAP[formData.value.type][formData.value.provider];
-    // console.log('formData.value: ', formData.value);
-    // console.log('formData.value.template: ', formData.value.template);
+
     getConfigList();
     resetPublicFiles();
 };
@@ -1254,7 +1251,6 @@ const handleSubmit = () => {
         delete formData.value.template.link;
     if (formData.value.template.messageType === 'link')
         delete formData.value.template.markdown;
-    // console.log('formData.value: ', formData.value);
     // 提交必填验证无法通过, 实际已有值, 问题未知, 暂时解决方法: 延迟验证
     setTimeout(() => {
         validate()
@@ -1270,13 +1266,11 @@ const handleSubmit = () => {
                 }
 
                 btnLoading.value = true;
-                let res;
-                if (!formData.value.id) {
-                    res = await templateApi.save(formData.value);
-                } else {
-                    res = await templateApi.update(formData.value);
-                }
-                // console.log('res: ', res);
+
+                const res = formData.value.id
+                    ? await templateApi.update(formData.value)
+                    : await templateApi.save(formData.value);
+
                 if (res?.success) {
                     message.success('保存成功');
                     router.back();
@@ -1290,14 +1284,4 @@ const handleSubmit = () => {
             });
     }, 200);
 };
-
-// test
-// watch(
-//     () => formData.value,
-//     (val) => {
-//         console.log('formData.value: ', val);
-//     },
-//     { deep: true },
-// );
-// test
 </script>
