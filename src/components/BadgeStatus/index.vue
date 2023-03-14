@@ -1,12 +1,13 @@
 <template>
     <j-badge
-        :status="statusNames ? statusNames[status] : 'default'"
+        :color="_color"
         :text="text"
     ></j-badge>
 </template>
 
 <script setup lang="ts">
 // import { StatusColorEnum } from '@/utils/consts.ts';
+import { getHexColor } from './color'
 const props = defineProps({
     text: {
         type: String,
@@ -26,6 +27,18 @@ const props = defineProps({
      *   0: 'error'
      * }
      */
-    statusNames: { type: Object },
+    statusNames: {
+      type: Object,
+      default: () => ({
+        'success': 'success',
+        'warning': 'warning',
+        'error': 'error',
+        'default': 'default',
+      })
+    },
 });
+
+const _color = computed(() => {
+  return getHexColor(props.statusNames[props.status], 1)
+})
 </script>

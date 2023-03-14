@@ -54,7 +54,7 @@
               <ValueItem
                 v-else
                 v-model:modelValue='myValue'
-                :itemType='getComponent(item.component)'
+                :itemType='item.component'
                 :options='item.key === "upper" ?  metricOption : options'
                 @change='valueItemChange'
               />

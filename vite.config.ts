@@ -12,12 +12,13 @@ import * as path from 'path'
 import monacoEditorPlugin from 'vite-plugin-monaco-editor';
 // import { JetlinksVueResolver } from 'jetlinks-ui-components/lib/plugin/resolve'
 import { JetlinksVueResolver } from './plugin/jetlinks'
+import { optimizeDeps } from './plugin/optimize'
 import copy from 'rollup-plugin-copy';
-
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode}) => {
   const env: Partial<ImportMetaEnv> = loadEnv(mode, process.cwd());
+
   return {
       base: './',
       resolve: {
@@ -53,6 +54,7 @@ export default defineConfig(({ mode}) => {
           vue(),
           monacoEditorPlugin({}),
           vueJsx(),
+          optimizeDeps(),
           Components({
               resolvers: [JetlinksVueResolver({ importStyle: 'less' }), VueAmapResolver()],
               directoryAsNamespace: true
@@ -110,6 +112,9 @@ export default defineConfig(({ mode}) => {
                   javascriptEnabled: true,
               }
           }
+      },
+      optimizeDeps: {
+          include: ['pinia', 'vue-router', 'axios', 'lodash-es', '@vueuse/core', 'echarts'],
       }
   }
 })
