@@ -1,5 +1,5 @@
 <template>
-    <a-modal
+    <j-modal
         title="告警处理"
         okText="确定"
         cancelText="取消"
@@ -9,18 +9,18 @@
         destroyOnClose
         :confirmLoading="loading"
     >
-        <a-form :rules="rules" layout="vertical" ref="formRef" :model="form">
-            <a-form-item label="处理结果" name="describe">
-                <a-textarea
+        <j-form :rules="rules" layout="vertical" ref="formRef" :model="form">
+            <j-form-item label="处理结果" name="describe">
+                <j-textarea
                     :rows="8"
                     :maxlength="200"
                     showCount
                     placeholder="请输入处理结果"
                     v-model:value="form.describe"
-                ></a-textarea>
-            </a-form-item>
-        </a-form>
-    </a-modal>
+                ></j-textarea>
+            </j-form-item>
+        </j-form>
+    </j-modal>
 </template>
 
 <script lang="ts" setup>
@@ -64,6 +64,7 @@ const handleSave = () => {
             });
             if (res.status === 200) {
                 onlyMessage('操作成功！');
+                emit('closeSolve');
             } else {
                 onlyMessage('操作失败！', 'error');
             }

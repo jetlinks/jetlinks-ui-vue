@@ -1,11 +1,11 @@
 <template>
     <page-container>
         <div>
-            <Search
+            <pro-search
                 :columns="query.columns"
                 target="device-instance"
                 @search="handleSearch"
-            ></Search>
+            />
             <JProTable
                 :columns="columns"
                 :request="queryList"
@@ -53,15 +53,15 @@
                                     {{ slotProps.name }}
                                 </span>
                             </Ellipsis>
-                            <a-row>
-                                <a-col :span="12">
+                            <j-row>
+                                <j-col :span="12">
                                     <Ellipsis>
                                         <div>
                                             {{ slotProps.description }}
                                         </div>
                                     </Ellipsis>
-                                </a-col>
-                            </a-row>
+                                </j-col>
+                            </j-row>
                         </template>
                         <template #actions="item">
                             <PermissionButton
@@ -88,7 +88,7 @@
                     </CardBox>
                 </template>
                 <template #state="slotProps">
-                    <a-badge
+                    <j-badge
                         :text="
                             slotProps.state?.value === 'started'
                                 ? '正常'
@@ -102,7 +102,7 @@
                     />
                 </template>
                 <template #action="slotProps">
-                    <a-space :size="16">
+                    <j-space :size="16">
                         <template
                             v-for="i in getActions(slotProps, 'table')"
                             :key="i.key"
@@ -123,7 +123,7 @@
                                 /></template>
                             </PermissionButton>
                         </template>
-                    </a-space>
+                    </j-space>
                 </template>
             </JProTable>
             <!-- 新增、编辑 -->

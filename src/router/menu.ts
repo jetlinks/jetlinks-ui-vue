@@ -5,6 +5,7 @@ export const AccountMenu = {
     component: () => import('@/components/Layout/BasicLayoutPage.vue'),
     redirect: '/account/center',
     name: 'account',
+    code: 'account',
     meta: {
         title: '个人中心',
         icon: '',
@@ -14,6 +15,7 @@ export const AccountMenu = {
         {
             path: '/account/center',
             name: 'account/center',
+            code: 'account/center',
             meta: {
                 title: '基本设置',
                 icon: '',
@@ -24,6 +26,7 @@ export const AccountMenu = {
         {
             path: '/account/NotificationSubscription',
             name: 'account/NotificationSubscription',
+            code: 'account/NotificationSubscription',
             meta: {
                 title: '通知订阅',
                 icon: '',
@@ -34,6 +37,7 @@ export const AccountMenu = {
         {
             path: '/account/NotificationRecord',
             name: 'account/NotificationRecord',
+            code: 'account/NotificationRecord',
             meta: {
                 title: '通知记录',
                 icon: '',

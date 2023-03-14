@@ -1,5 +1,5 @@
 <template>
-    <a-modal
+    <j-modal
         visible
         title="新增"
         okText="确定"
@@ -8,7 +8,7 @@
         @cancel="closeModal"
         @ok="saveCorrelation"
     >
-        <Search :columns="columns" @search="handleSearch"></Search>
+        <pro-search :columns="columns" @search="handleSearch"/>
         <div style="height: 500px; overflow-y: auto">
             <JProTable
                 model="CARD"
@@ -78,7 +78,7 @@
                 </template>
             </JProTable>
         </div>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script lang="ts" setup>
@@ -213,7 +213,7 @@ const saveCorrelation = async () => {
         const list = _selectedRowKeys.value.map((item: any) => {
             return {
                 alarmId: props.id,
-                releId: item,
+                ruleId: item,
             };
         });
         const res = await bindScene([...list]);
