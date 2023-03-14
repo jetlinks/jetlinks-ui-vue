@@ -56,8 +56,8 @@
                                     {{ slotProps.name }}
                                 </span>
                             </Ellipsis>
-                            <a-row>
-                                <a-col :span="12">
+                            <j-row>
+                                <j-col :span="12">
                                     <div class="content-des-title">
                                         关联场景联动
                                     </div>
@@ -66,8 +66,8 @@
                                             {{ (slotProps?.scene || []).map((item: any) => item?.name).join(',') || '' }}
                                         </div></Ellipsis
                                     >
-                                </a-col>
-                                <a-col :span="12">
+                                </j-col>
+                                <j-col :span="12">
                                     <div class="content-des-title">
                                         告警级别
                                     </div>
@@ -75,8 +75,8 @@
                                         {{ (Store.get('default-level') || []).find((item: any) => item?.level === slotProps.level)?.title ||
             slotProps.level }}
                                     </div>
-                                </a-col>
-                            </a-row>
+                                </j-col>
+                            </j-row>
                         </template>
                         <template #actions="item">
                             <PermissionButton
@@ -109,7 +109,7 @@
                     <span>{{ map[slotProps.targetType] }}</span>
                 </template>
                 <template #level="slotProps">
-                    <a-tooltip
+                    <j-tooltip
                         placement="topLeft"
                         :title="(Store.get('default-level') || []).find((item: any) => item?.level === slotProps.level)?.title ||
             slotProps.level"
@@ -118,7 +118,7 @@
                             {{ (Store.get('default-level') || []).find((item: any) => item?.level === slotProps.level)?.title ||
             slotProps.level }}
                         </div>
-                    </a-tooltip>
+                    </j-tooltip>
                 </template>
                 <template #sceneId="slotProps">
                     <span
@@ -126,7 +126,7 @@
                     >
                 </template>
                 <template #state="slotProps">
-                    <a-badge
+                    <j-badge
                         :text="
                             slotProps.state?.value === 'enabled'
                                 ? '正常'
@@ -140,7 +140,7 @@
                     />
                 </template>
                 <template #action="slotProps">
-                    <a-space :size="16">
+                    <j-space :size="16">
                         <template
                             v-for="i in getActions(slotProps, 'table')"
                             :key="i.key"
@@ -168,7 +168,7 @@
                                 /></template>
                             </PermissionButton>
                         </template>
-                    </a-space>
+                    </j-space>
                 </template>
             </JProTable>
         </div>

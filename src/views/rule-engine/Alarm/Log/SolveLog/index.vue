@@ -1,5 +1,5 @@
 <template>
-    <a-modal
+    <j-modal
         visible
         title="处理记录"
         :width="1200"
@@ -8,11 +8,11 @@
         @ok="clsoeModal"
         @cancel="clsoeModal"
     >
-        <Search
+        <pro-search
             :columns="columns"
             target="bind-channel"
             @search="handleSearch"
-        ></Search>
+        />
         <JProTable
             model="TABLE"
             :columns="columns"
@@ -48,7 +48,7 @@
                 </span>
             </template>
         </JProTable>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script lang="ts" setup>
