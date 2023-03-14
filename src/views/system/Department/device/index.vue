@@ -154,7 +154,7 @@
                 ></BadgeStatus>
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
+                <j-space :size="16">
                     <PermissionButton
                         v-for="i in table.getActions(slotProps, 'table')"
                         :uhasPermission="i.permission"
@@ -166,7 +166,7 @@
                     >
                         <AIcon :type="i.icon" />
                     </PermissionButton>
-                </a-space>
+                </j-space>
             </template>
         </j-pro-table>
 

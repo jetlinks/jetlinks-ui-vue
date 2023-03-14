@@ -1,5 +1,5 @@
 <template>
-    <a-modal
+    <j-modal
         class="add-device-or-product-dialog-container"
         title="绑定"
         width="1440px"
@@ -15,7 +15,7 @@
 
         <div class="row">
             <span style="margin-right: 8px">批量配置</span>
-            <a-switch
+            <j-switch
                 v-model:checked="bulkBool"
                 checked-children="开"
                 un-checked-children="关"
@@ -23,7 +23,7 @@
             />
         </div>
         <div v-show="bulkBool">
-            <a-checkbox-group v-model:value="bulkList" :options="options" />
+            <j-checkbox-group v-model:value="bulkList" :options="options" />
         </div>
 
         <pro-search
@@ -72,8 +72,8 @@
                         <h3 class="card-item-content-title">
                             {{ slotProps.name }}
                         </h3>
-                        <a-row>
-                            <a-col :span="12">
+                        <j-row>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">ID</div>
                                 <div
                                     style="cursor: pointer"
@@ -81,8 +81,8 @@
                                 >
                                     {{ slotProps.id }}
                                 </div>
-                            </a-col>
-                            <a-col :span="12">
+                            </j-col>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">
                                     资产权限
                                 </div>
@@ -91,15 +91,15 @@
                                     class="card-item-content-value"
                                     @click="(e) => e.stopPropagation()"
                                 >
-                                    <a-checkbox-group
+                                    <j-checkbox-group
                                         v-model:value="
                                             slotProps.selectPermissions
                                         "
                                         :options="slotProps.permissionList"
                                     />
                                 </div>
-                            </a-col>
-                        </a-row>
+                            </j-col>
+                        </j-row>
                     </template>
                 </CardBox>
             </template>
@@ -110,7 +110,7 @@
                     class="card-item-content-value"
                     @click="(e) => e.stopPropagation()"
                 >
-                    <a-checkbox-group
+                    <j-checkbox-group
                         v-model:value="slotProps.selectPermissions"
                         :options="slotProps.permissionList"
                     />
@@ -128,7 +128,7 @@
                 ></BadgeStatus>
             </template>
         </j-pro-table>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script setup lang="ts">

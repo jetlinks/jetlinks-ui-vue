@@ -28,7 +28,7 @@
             <DeviceChooseDialog
                 v-if="deviceDialogVisible"
                 v-model:visible="deviceDialogVisible"
-                @confirm="(id:string)=>jumpPage('device/Instance/Detail', { id })"
+                @confirm="(id:string)=>jumpPage('device/Instance/Detail', { id, tab: 'Diagnose' })"
             />
         </div>
     </div>
