@@ -1,10 +1,10 @@
 <template>
     <page-container>
-        <Search
+        <pro-search
             :columns="columns"
             target="alarm-log-detail"
             @search="handleSearch"
-        ></Search>
+        />
         <JProTable
             :columns="columns"
             model="TABLE"
@@ -19,7 +19,7 @@
                 moment(slotProps.alarmTime).format('YYYY-MM-DD HH:mm:ss')
             }}</template>
             <template #action="slotProps">
-                <a-space
+                <j-space
                     ><template
                         v-for="i in getActions(slotProps, 'table')"
                         :key="i.key"
@@ -37,7 +37,7 @@
                             <template #icon><AIcon :type="i.icon"/></template>
                         </PermissionButton>
                     </template>
-                </a-space>
+                </j-space>
             </template>
         </JProTable>
         <Info v-if="visiable"  :data="current" @close="close"/>

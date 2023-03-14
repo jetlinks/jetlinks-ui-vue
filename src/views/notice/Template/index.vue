@@ -110,14 +110,19 @@
                     </template>
                 </CardBox>
             </template>
-            <template #bodyCell="{ column, text, record }">
-                <span v-if="column.dataIndex === 'type'">
-                    {{ getMethodTxt(record.type) }}
-                </span>
-                <span v-if="column.dataIndex === 'provider'">
-                    {{ getProviderTxt(record.type, record.provider) }}
+            <template #type="slotProps">
+                <span> {{ getMethodTxt(slotProps.type) }}</span>
+            </template>
+            <template #provider="slotProps">
+                <span>
+                    {{ getProviderTxt(slotProps.type, slotProps.provider) }}
                 </span>
             </template>
+            <!-- <template #description="slotProps">
+                <Ellipsis>
+                    {{ slotProps.description }}
+                </Ellipsis>
+            </template> -->
             <template #action="slotProps">
                 <j-space :size="16">
                     <template
@@ -150,12 +155,8 @@
 <script setup lang="ts">
 import TemplateApi from '@/api/notice/template';
 import type { ActionsType } from '@/components/Table/index.vue';
-// import { getImage, LocalStore } from '@/utils/comm';
 import { message } from 'ant-design-vue';
-// import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
-
 import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
-
 import Debug from './Debug/index.vue';
 import Log from './Log/index.vue';
 import { downloadObject } from '@/utils/utils';
@@ -210,6 +211,8 @@ const columns = [
         title: '说明',
         dataIndex: 'description',
         key: 'description',
+        scopedSlots: true,
+        ellipsis: true,
         search: {
             type: 'string',
         },

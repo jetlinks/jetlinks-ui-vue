@@ -1,27 +1,27 @@
 <template>
     <div>
-        <a-form layout="vertical" :rules="rule" :model="form" ref="formRef">
-            <a-row :gutter="24">
-                <a-col :span="12">
-                    <a-form-item label="名称" name="name">
-                        <a-input
+        <j-form layout="vertical" :rules="rule" :model="form" ref="formRef">
+            <j-row :gutter="24">
+                <j-col :span="12">
+                    <j-form-item label="名称" name="name">
+                        <j-input
                             placeholder="请输入名称"
                             v-model:value="form.name"
-                        ></a-input> </a-form-item
-                ></a-col>
-                <a-col :span="12">
-                    <a-form-item label="类型" name="targetType">
-                        <a-select
+                        ></j-input> </j-form-item
+                ></j-col>
+                <j-col :span="12">
+                    <j-form-item label="类型" name="targetType">
+                        <j-select
                             :options="options"
                             v-model:value="form.targetType"
                             :disabled="selectDisable"
-                        ></a-select>
-                    </a-form-item>
-                </a-col>
-            </a-row>
-            <a-form-item label="级别" name="level">
-                <a-radio-group v-model:value="form.level">
-                    <a-radio-button
+                        ></j-select>
+                    </j-form-item>
+                </j-col>
+            </j-row>
+            <j-form-item label="级别" name="level">
+                <j-radio-group v-model:value="form.level">
+                    <j-radio-button
                         v-for="(item, index) in levelOption"
                         :key="index"
                         :value="item.value"
@@ -40,14 +40,14 @@
                                 alt=""
                             />{{ item.label }}
                         </div>
-                    </a-radio-button>
-                </a-radio-group>
-            </a-form-item>
-            <a-form-item label="说明" name="description">
-                <a-textarea v-model:value="form.description"></a-textarea>
-            </a-form-item>
+                    </j-radio-button>
+                </j-radio-group>
+            </j-form-item>
+            <j-form-item label="说明" name="description">
+                <j-textarea v-model:value="form.description"></j-textarea>
+            </j-form-item>
             <PermissionButton type="primary" @click="handleSave" :hasPermission="['rule-engine/Alarm/Configuration:add','rule-engine/Alarm/Configuration:update']">保存</PermissionButton>
-        </a-form>
+        </j-form>
     </div>
 </template>
 
@@ -178,7 +178,7 @@ const handleSave = async () => {
             const res = await save(form);
             loading.value = false;
             if (res.status === 200) {
-                message.success('操作成功');
+                message.success('操作成功,请配置关联的场景联动');
                 menuStory.jumpPage(
                     'rule-engine/Alarm/Configuration/Save',
                     {},

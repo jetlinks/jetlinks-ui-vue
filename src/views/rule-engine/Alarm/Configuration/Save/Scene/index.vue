@@ -10,12 +10,12 @@
         ref="actionRef"
     >
         <template #headerTitle>
-            <a-space>
+            <j-space>
                 <PermissionButton type="primary" @click="showModal" hasPermission="rule-engine/Alarm/Configuration:add">
                     <template #icon><AIcon type="PlusOutlined" /></template>
                     新增
                 </PermissionButton>
-            </a-space>
+            </j-space>
         </template>
         <template #card="slotProps">
             <SceneCard

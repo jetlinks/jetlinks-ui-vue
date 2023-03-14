@@ -1,29 +1,29 @@
 <template>
     <div class="alarm-log-card">
-        <Search
+        <pro-search
             :columns="columns"
             target="alarm-log"
             v-if="['all', 'detail'].includes(props.type)"
             @search="search"
-        ></Search>
-        <Search
+        />
+        <pro-search
             :columns="produtCol"
             target="alarm-log"
             v-if="['product', 'other'].includes(props.type)"
             @search="search"
-        ></Search>
-        <Search
+        />
+        <pro-search
             :columns="deviceCol"
             target="alarm-log"
             v-if="props.type === 'device'"
             @search="search"
-        ></Search>
-        <Search
+        />
+        <pro-search
             :columns="orgCol"
             target="alarm-log"
             v-if="props.type === 'org'"
             @search="search"
-        ></Search>
+        />
         <JProTable
             :columns="columns"
             :request="handleSearch"
@@ -31,6 +31,7 @@
             :gridColumns="[1, 1, 2]"
             :gridColumn="2"
             model="CARD"
+            ref="tableRef"
         >
             <template #card="slotProps">
                 <CardBox
@@ -52,8 +53,8 @@
                                 {{ slotProps.alarmName }}
                             </span>
                         </Ellipsis>
-                        <a-row :gutter="24">
-                            <a-col :span="8">
+                        <j-row :gutter="24">
+                            <j-col :span="8">
                                 <div class="content-des-title">
                                     {{ titleMap.get(slotProps.targetType) }}
                                 </div>
@@ -62,8 +63,8 @@
                                         {{ slotProps?.targetName }}
                                     </div></Ellipsis
                                 >
-                            </a-col>
-                            <a-col :span="8">
+                            </j-col>
+                            <j-col :span="8">
                                 <div class="content-des-title">
                                     最近告警时间
                                 </div>
@@ -76,17 +77,17 @@
                                         }}
                                     </div></Ellipsis
                                 >
-                            </a-col>
-                            <a-col :span="8">
+                            </j-col>
+                            <j-col :span="8">
                                 <div class="content-des-title">状态</div>
-                                <a-badge
+                                <j-badge
                                     :status="
                                         slotProps.state.value === 'warning'
                                             ? 'error'
                                             : 'default'
                                     "
                                 >
-                                </a-badge
+                                </j-badge
                                 ><span
                                     :style="
                                         slotProps.state.value === 'warning'
@@ -96,8 +97,8 @@
                                 >
                                     {{ slotProps.state.text }}
                                 </span>
-                            </a-col>
-                        </a-row>
+                            </j-col>
+                        </j-row>
                     </template>
                     <template #actions="item">
                         <PermissionButton
@@ -105,7 +106,6 @@
                                 item.key === 'solve' &&
                                 slotProps.state.value === 'normal'
                             "
-                            :popConfirm="item.popConfirm"
                             :tooltip="{
                                 ...item.tooltip,
                             }"
@@ -152,11 +152,11 @@ import { Store } from 'jetlinks-store';
 import moment from 'moment';
 import type { ActionsType } from '@/components/Table';
 import SolveComponent from '../SolveComponent/index.vue';
-import SolveLog from '../SolveLog/index.vue'
+import SolveLog from '../SolveLog/index.vue';
 import { useMenuStore } from '@/store/menu';
 import { usePermissionStore } from '@/store/permission';
 const menuStory = useMenuStore();
-
+const tableRef = ref();
 const alarmStore = useAlarmStore();
 const { data } = storeToRefs(alarmStore);
 const getDefaulitLevel = () => {
@@ -339,7 +339,7 @@ watchEffect(() => {
             },
         ];
     }
-    if(props.type === 'all'){
+    if (props.type === 'all') {
         params.value.terms = [];
     }
 });
@@ -347,24 +347,20 @@ watchEffect(() => {
 const search = (data: any) => {
     params.value.terms = [...data?.terms];
     if (props.type !== 'all' && !props.id) {
-        params.value.terms.push(
-            {
-                termType: 'eq',
-                column: 'targetType',
-                value: props.type,
-                type: 'and',
-            },
-        );
+        params.value.terms.push({
+            termType: 'eq',
+            column: 'targetType',
+            value: props.type,
+            type: 'and',
+        });
     }
     if (props.id) {
-        params.value.terms.push (
-            {
-                termType: 'eq',
-                column: 'alarmConfigId',
-                value: props.id,
-                type: 'and',
-            },
-        );
+        params.value.terms.push({
+            termType: 'eq',
+            column: 'alarmConfigId',
+            value: props.id,
+            type: 'and',
+        });
     }
 };
 
@@ -381,17 +377,19 @@ const getActions = (
                 title: '告警处理',
             },
             icon: 'ToolOutlined',
-            onClick: () =>{
+            onClick: () => {
                 data.value.current = currentData;
                 data.value.solveVisible = true;
             },
-            popConfirm:{
-                title:  !usePermissionStore().hasPermission('rule-engine/Alarm/Log:action')
-          ? '暂无权限，请联系管理员'
-          : data.state?.value === 'normal'
-          ? '无告警'
-          : ''
-            }
+            // popConfirm: {
+            //     title: !usePermissionStore().hasPermission(
+            //         'rule-engine/Alarm/Log:action',
+            //     )
+            //         ? '暂无权限，请联系管理员'
+            //         : data.state?.value === 'normal'
+            //         ? '无告警'
+            //         : '',
+            // },
         },
         {
             key: 'log',
@@ -400,9 +398,11 @@ const getActions = (
                 title: '告警日志',
             },
             icon: 'FileOutlined',
-            onClick: () =>{
-                menuStory.jumpPage(`rule-engine/Alarm/Log/Detail`,{id:currentData.id});
-            }
+            onClick: () => {
+                menuStory.jumpPage(`rule-engine/Alarm/Log/Detail`, {
+                    id: currentData.id,
+                });
+            },
         },
         {
             key: 'detail',
@@ -411,10 +411,10 @@ const getActions = (
                 title: '处理记录',
             },
             icon: 'FileTextOutlined',
-            onClick:() =>{
+            onClick: () => {
                 data.value.current = currentData;
                 data.value.logVisible = true;
-            }
+            },
         },
     ];
     return actions;
@@ -422,15 +422,16 @@ const getActions = (
 /**
  * 关闭告警日志
  */
-const closeSolve = () =>{
+const closeSolve = () => {
     data.value.solveVisible = false;
-}
+    tableRef.value.reload(params.value);
+};
 /**
  * 关闭处理记录
  */
-const closeLog = () =>{
+const closeLog = () => {
     data.value.logVisible = false;
-}
+};
 </script>
 <style lang="less" scoped>
 </style>

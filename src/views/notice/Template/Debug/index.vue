@@ -50,34 +50,50 @@
                         <template v-else>
                             <j-form-item
                                 :name="['templateDetailTable', index, 'value']"
-                                :rules="{
-                                    required: record.required,
-                                    message: '该字段为必填字段',
-                                }"
+                                :rules="[
+                                    {
+                                        required: record.required,
+                                        message: '该字段为必填字段',
+                                    },
+                                    ...record.otherRules,
+                                ]"
                             >
-                                <ToUser
-                                    v-if="record.type === 'user'"
-                                    v-model:toUser="record.value"
-                                    :type="data.type"
-                                    :config-id="formData.configId"
-                                />
-                                <ToOrg
-                                    v-else-if="record.type === 'org'"
-                                    :type="data.type"
-                                    :config-id="formData.configId"
-                                    v-model:toParty="record.value"
-                                />
-                                <ToTag
-                                    v-else-if="record.type === 'tag'"
-                                    :type="data.type"
-                                    :config-id="formData.configId"
-                                    v-model:toTag="record.value"
-                                />
-                                <ValueItem
-                                    v-else
-                                    v-model:modelValue="record.value"
-                                    :itemType="record.type"
-                                />
+                                <template
+                                    v-if="
+                                        data.type === 'dingTalk' ||
+                                        data.type === 'weixin'
+                                    "
+                                >
+                                    <ToUser
+                                        v-if="record.type === 'user'"
+                                        v-model:toUser="record.value"
+                                        :type="data.type"
+                                        :config-id="formData.configId"
+                                    />
+                                    <ToOrg
+                                        v-else-if="record.type === 'org'"
+                                        :type="data.type"
+                                        :config-id="formData.configId"
+                                        v-model:toParty="record.value"
+                                    />
+                                    <ToTag
+                                        v-else-if="record.type === 'tag'"
+                                        :type="data.type"
+                                        :config-id="formData.configId"
+                                        v-model:toTag="record.value"
+                                    />
+                                    <ValueItem
+                                        v-else
+                                        v-model:modelValue="record.value"
+                                        :itemType="record.type"
+                                    />
+                                </template>
+                                <template v-else>
+                                    <ValueItem
+                                        v-model:modelValue="record.value"
+                                        :itemType="record.type"
+                                    />
+                                </template>
                             </j-form-item>
                         </template>
                     </template>
@@ -100,6 +116,8 @@ import { message } from 'ant-design-vue';
 import ToUser from '../Detail/components/ToUser.vue';
 import ToOrg from '../Detail/components/ToOrg.vue';
 import ToTag from '../Detail/components/ToTag.vue';
+import type { Rule } from 'ant-design-vue/es/form';
+import { phoneRegEx } from '@/utils/validate';
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
@@ -154,8 +172,28 @@ const getTemplateDetail = async () => {
     formData.value.templateDetailTable = result.variableDefinitions.map(
         (m: any) => ({
             ...m,
-            type: m.expands ? m.expands.businessType : m.type,
+            type: m.expands?.businessType ? m.expands.businessType : m.type,
             value: undefined,
+            // 电话字段校验
+            otherRules:
+                m.id === 'calledNumber' || m.id === 'phoneNumber'
+                    ? [
+                          {
+                              max: 64,
+                              message: '最多可输入64个字符',
+                              trigger: 'change',
+                          },
+                          {
+                              trigger: 'change',
+                              validator(_rule: Rule, value: string) {
+                                  if (!value) return Promise.resolve();
+                                  if (!phoneRegEx(value))
+                                      return Promise.reject('请输入有效号码');
+                                  return Promise.resolve();
+                              },
+                          },
+                      ]
+                    : '',
         }),
     );
 };

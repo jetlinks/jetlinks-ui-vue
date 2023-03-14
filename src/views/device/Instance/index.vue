@@ -289,7 +289,6 @@ import { queryTree } from '@/api/device/category';
 import { useMenuStore } from '@/store/menu';
 import type { ActionsType } from './typings';
 import dayjs from 'dayjs';
-import { throttle } from 'lodash-es';
 
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});

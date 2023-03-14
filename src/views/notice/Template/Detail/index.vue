@@ -85,7 +85,7 @@
                                 >
                                     <template #label>
                                         <span>
-                                            AgentID
+                                            AgentId
                                             <j-tooltip title="应用唯一标识">
                                                 <AIcon
                                                     type="QuestionCircleOutlined"
@@ -98,7 +98,7 @@
                                         v-model:value="
                                             formData.template.agentId
                                         "
-                                        placeholder="请输入AppSecret"
+                                        placeholder="请输入AgentId"
                                     />
                                 </j-form-item>
                                 <j-row :gutter="10">
@@ -271,7 +271,7 @@
                                 </template>
                                 <j-input
                                     v-model:value="formData.template.agentId"
-                                    placeholder="请输入agentId"
+                                    placeholder="请输入AgentId"
                                 />
                             </j-form-item>
                             <j-row :gutter="10">
@@ -664,7 +664,6 @@
                                     <j-radio :value="false">自定义</j-radio>
                                 </j-radio-group>
                                 <j-textarea
-                                    v-model:value="formData.template.body"
                                     placeholder="请求体中的数据来自于发送通知时指定的所有变量"
                                     v-if="formData.template.contextAsBody"
                                     disabled
@@ -896,28 +895,33 @@ watch(
 const formRules = ref({
     type: [{ required: true, message: '请选择通知方式' }],
     name: [
-        { required: true, message: '请输入名称' },
+        { required: true, message: '请输入名称', trigger: 'blur' },
         { max: 64, message: '最多可输入64个字符' },
     ],
     provider: [{ required: true, message: '请选择类型' }],
-    configId: [{ required: true, message: '请选择绑定配置' }],
+    configId: [{ required: true, message: '请选择绑定配置', trigger: 'blur' }],
     // 钉钉
-    'template.agentId': [{ required: true, message: '请输入agentId' }],
-    'template.messageType': [{ required: true, message: '请选择消息类型' }],
+    'template.agentId': [
+        { required: true, message: '请输入AgentId', trigger: 'blur' },
+        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
+    ],
+    'template.messageType': [
+        { required: true, message: '请选择消息类型', trigger: 'blur' },
+    ],
     'template.markdown.title': [
-        { required: true, message: '请输入标题', trigger: 'change' },
+        { required: true, message: '请输入标题', trigger: 'blur' },
         { max: 64, message: '最多可输入64个字符', trigger: 'change' },
     ],
     'template.link.title': [
-        { required: true, message: '请输入标题', trigger: 'change' },
+        { required: true, message: '请输入标题', trigger: 'blur' },
         { max: 64, message: '最多可输入64个字符', trigger: 'change' },
     ],
     // 'template.url': [{ required: true, message: '请输入WebHook' }],
     // 微信
-    // 'template.agentId': [{ required: true, message: '请输入agentId' }],
+    // 'template.agentId': [{ required: true, message: '请输入AgentId' }],
     // 邮件
     'template.subject': [
-        { required: true, message: '请输入标题' },
+        { required: true, message: '请输入标题', trigger: 'blur' },
         { max: 64, message: '最多可输入64个字符', trigger: 'change' },
     ],
     'template.sendTo': [
@@ -944,7 +948,9 @@ const formRules = ref({
     ],
     // 阿里云语音
     'template.templateType': [{ required: true, message: '请选择类型' }],
-    'template.templateCode': [{ required: true, message: '请输入模板ID' }],
+    'template.templateCode': [
+        { required: true, message: '请输入模板ID', trigger: 'blur' },
+    ],
     'template.calledNumber': [
         { max: 64, message: '最多可输入64个字符', trigger: 'change' },
         {
@@ -978,14 +984,19 @@ const formRules = ref({
         },
     ],
     // 短信
-    'template.code': [{ required: true, message: '请选择模板' }],
-    'template.signName': [{ required: true, message: '请输入签名' }],
+    'template.code': [
+        { required: true, message: '请选择模板', trigger: 'blur' },
+    ],
+    'template.signName': [
+        { required: true, message: '请输入签名', trigger: 'blur' },
+    ],
     // webhook
     description: [{ max: 200, message: '最多可输入200个字符' }],
     'template.message': [
         {
             required: true,
             message: '请输入模板内容',
+            trigger: 'blur',
         },
         { max: 500, message: '最多可输入500个字符', trigger: 'change' },
     ],
@@ -1071,7 +1082,7 @@ const spliceStr = () => {
         variableFieldsStr += formData.value.template.body as string;
     if (formData.value.provider === 'aliyun')
         variableFieldsStr += formData.value.template.ttsmessage as string;
-    // console.log('variableFieldsStr: ', variableFieldsStr);
+
     return variableFieldsStr || '';
 };
 
@@ -1128,7 +1139,6 @@ const handleMessageTypeChange = () => {
         };
     }
     formData.value.variableDefinitions = [];
-    // formData.value.template.message = '';
 };
 
 /**
@@ -1139,7 +1149,6 @@ const getDetail = async () => {
         const res = await templateApi.detail(route.params.id as string);
         // formData.value = res.result;
         Object.assign(formData.value, res.result);
-        // console.log('formData.value: ', formData.value);
     }
 };
 getDetail();
@@ -1174,8 +1183,7 @@ const handleTypeChange = () => {
 const handleProviderChange = () => {
     formData.value.template =
         TEMPLATE_FIELD_MAP[formData.value.type][formData.value.provider];
-    // console.log('formData.value: ', formData.value);
-    // console.log('formData.value.template: ', formData.value.template);
+
     getConfigList();
     resetPublicFiles();
 };
@@ -1243,7 +1251,6 @@ const handleSubmit = () => {
         delete formData.value.template.link;
     if (formData.value.template.messageType === 'link')
         delete formData.value.template.markdown;
-    // console.log('formData.value: ', formData.value);
     // 提交必填验证无法通过, 实际已有值, 问题未知, 暂时解决方法: 延迟验证
     setTimeout(() => {
         validate()
@@ -1259,13 +1266,11 @@ const handleSubmit = () => {
                 }
 
                 btnLoading.value = true;
-                let res;
-                if (!formData.value.id) {
-                    res = await templateApi.save(formData.value);
-                } else {
-                    res = await templateApi.update(formData.value);
-                }
-                // console.log('res: ', res);
+
+                const res = formData.value.id
+                    ? await templateApi.update(formData.value)
+                    : await templateApi.save(formData.value);
+
                 if (res?.success) {
                     message.success('保存成功');
                     router.back();
@@ -1279,14 +1284,4 @@ const handleSubmit = () => {
             });
     }, 200);
 };
-
-// test
-// watch(
-//     () => formData.value,
-//     (val) => {
-//         console.log('formData.value: ', val);
-//     },
-//     { deep: true },
-// );
-// test
 </script>

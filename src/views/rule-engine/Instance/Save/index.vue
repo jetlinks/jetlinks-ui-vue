@@ -1,5 +1,5 @@
 <template>
-    <a-modal
+    <j-modal
         :maskClosable="false"
         width="650px"
         destroyOnClose
@@ -12,30 +12,30 @@
         :confirmLoading="loading"
     >
         <div style="margin-top: 10px">
-            <a-form
+            <j-form
                 :layout="'vertical'"
                 ref="formRef"
                 :rules="rules"
                 :model="modelRef"
             >
-                <a-form-item label="名称" name="name">
-                    <a-input
+                <j-form-item label="名称" name="name">
+                    <j-input
                         v-model:value="modelRef.name"
                         placeholder="请输入名称"
                     />
-                </a-form-item>
-                <a-form-item label="说明" name="describe">
-                    <a-textarea
+                </j-form-item>
+                <j-form-item label="说明" name="describe">
+                    <j-textarea
                         v-model:value="modelRef.description"
                         placeholder="请输入说明"
                         showCount
                         :maxlength="200"
                         :rows="4"
                     />
-                </a-form-item>
-            </a-form>
+                </j-form-item>
+            </j-form>
         </div>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script lang="ts" setup>
