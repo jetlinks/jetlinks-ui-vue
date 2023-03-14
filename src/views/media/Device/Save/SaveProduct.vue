@@ -20,33 +20,35 @@
                     placeholder="请输入名称"
                 />
             </j-form-item>
-            <template v-for="(item, index) in extendFormItem" :key="index">
-                <j-form-item
-                    :name="item.name"
-                    :label="item.label"
-                    :rules="{
-                        required: item.required,
-                        message: item.message,
-                        trigger: 'change',
-                    }"
-                >
-                    <j-select
-                        v-if="item.type === 'enum'"
-                        v-model:value="formData[item.name[0]][item.name[1]]"
-                        :options="item.options"
-                        :placeholder="item.message"
-                    />
-                    <j-input-password
-                        v-else-if="item.type === 'password'"
-                        v-model:value="formData[item.name[0]][item.name[1]]"
-                        :placeholder="item.message"
-                    />
-                    <j-input
-                        v-else
-                        v-model:value="formData[item.name[0]][item.name[1]]"
-                        :placeholder="item.message"
-                    />
-                </j-form-item>
+            <template v-if="deviceType !== 'gateway'">
+                <template v-for="(item, index) in extendFormItem" :key="index">
+                    <j-form-item
+                        :name="item.name"
+                        :label="item.label"
+                        :rules="{
+                            required: item.required,
+                            message: item.message,
+                            trigger: 'change',
+                        }"
+                    >
+                        <j-select
+                            v-if="item.type === 'enum'"
+                            v-model:value="formData[item.name[0]][item.name[1]]"
+                            :options="item.options"
+                            :placeholder="item.message"
+                        />
+                        <j-input-password
+                            v-else-if="item.type === 'password'"
+                            v-model:value="formData[item.name[0]][item.name[1]]"
+                            :placeholder="item.message"
+                        />
+                        <j-input
+                            v-else
+                            v-model:value="formData[item.name[0]][item.name[1]]"
+                            :placeholder="item.message"
+                        />
+                    </j-form-item>
+                </template>
             </template>
             <j-form-item
                 label="接入网关"
@@ -147,6 +149,7 @@ type Emits = {
     (e: 'update:visible', data: boolean): void;
     (e: 'update:productId', data: string): void;
     (e: 'close'): void;
+    (e: 'save', data: Record<string, any>): void;
 };
 const emit = defineEmits<Emits>();
 
@@ -154,6 +157,7 @@ const props = defineProps({
     visible: { type: Boolean, default: false },
     productId: { type: String, default: '' },
     channel: { type: String, default: '' },
+    deviceType: { type: String, default: 'device' },
 });
 
 const _vis = computed({
@@ -186,12 +190,12 @@ const handleClick = async (e: any) => {
     formData.value.accessId = e.id;
     formData.value.accessName = e.name;
     formData.value.accessProvider = e.provider;
-    formData.value.messageProtocol = e.provider;
+    formData.value.messageProtocol = e.protocolDetail.id;
     formData.value.protocolName = e.protocolDetail.name;
     formData.value.transportProtocol = e.transport;
 
     const { result } = await DeviceApi.getConfiguration(
-        props.channel,
+        e.protocol,
         e.transport,
     );
 
@@ -233,7 +237,7 @@ const formData = ref({
         access_pwd: '',
         stream_mode: 'UDP',
     },
-    deviceType: 'device',
+    deviceType: props.deviceType,
     messageProtocol: '',
     name: '',
     protocolName: '',
@@ -256,6 +260,7 @@ const handleOk = () => {
                     res.result.id,
                 );
                 if (deployResp.success) {
+                    emit('save', {...res.result})
                     message.success('操作成功');
                     handleCancel();
                 }

@@ -145,6 +145,9 @@ const extraRouteObj = {
       { code: 'Save', name: '详情' },
     ],
   },
+  'edge/Device': {
+    children: [{ code: 'Remote', name: '远程控制' }],
+  },
 };
 
 
