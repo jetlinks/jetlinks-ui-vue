@@ -85,7 +85,7 @@
                                 >
                                     <template #label>
                                         <span>
-                                            AgentID
+                                            AgentId
                                             <j-tooltip title="应用唯一标识">
                                                 <AIcon
                                                     type="QuestionCircleOutlined"
@@ -98,7 +98,7 @@
                                         v-model:value="
                                             formData.template.agentId
                                         "
-                                        placeholder="请输入AppSecret"
+                                        placeholder="请输入AgentId"
                                     />
                                 </j-form-item>
                                 <j-row :gutter="10">
@@ -271,7 +271,7 @@
                                 </template>
                                 <j-input
                                     v-model:value="formData.template.agentId"
-                                    placeholder="请输入agentId"
+                                    placeholder="请输入AgentId"
                                 />
                             </j-form-item>
                             <j-row :gutter="10">
@@ -664,7 +664,6 @@
                                     <j-radio :value="false">自定义</j-radio>
                                 </j-radio-group>
                                 <j-textarea
-                                    v-model:value="formData.template.body"
                                     placeholder="请求体中的数据来自于发送通知时指定的所有变量"
                                     v-if="formData.template.contextAsBody"
                                     disabled
@@ -902,7 +901,10 @@ const formRules = ref({
     provider: [{ required: true, message: '请选择类型' }],
     configId: [{ required: true, message: '请选择绑定配置' }],
     // 钉钉
-    'template.agentId': [{ required: true, message: '请输入agentId' }],
+    'template.agentId': [
+        { required: true, message: '请输入AgentId' },
+        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
+    ],
     'template.messageType': [{ required: true, message: '请选择消息类型' }],
     'template.markdown.title': [
         { required: true, message: '请输入标题', trigger: 'change' },
@@ -914,7 +916,7 @@ const formRules = ref({
     ],
     // 'template.url': [{ required: true, message: '请输入WebHook' }],
     // 微信
-    // 'template.agentId': [{ required: true, message: '请输入agentId' }],
+    // 'template.agentId': [{ required: true, message: '请输入AgentId' }],
     // 邮件
     'template.subject': [
         { required: true, message: '请输入标题' },
