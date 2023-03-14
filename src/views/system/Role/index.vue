@@ -1,9 +1,10 @@
 <template>
     <page-container>
         <div class="role-container">
-            <j-advanced-search
+            <pro-search
                 :columns="columns"
-                @search="(params:any)=>queryParams = params"
+                target="category"
+                @search="(params:any)=>queryParams = {...params}"
             />
 
             <j-pro-table

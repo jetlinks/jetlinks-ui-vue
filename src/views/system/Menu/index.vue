@@ -1,8 +1,9 @@
 <template>
     <page-container>
         <div class="menu-container">
-            <j-advanced-search
+            <pro-search
                 :columns="columns"
+                target="category"
                 @search="(params:any)=>queryParams = {...params}"
             />
 
@@ -202,7 +203,7 @@ const table = reactive({
     },
     addChildren: (row: any) => {
         const sortIndex = row?.children?.length || 0;
-        
+
         router.push(
             `/system/Menu/detail/:id?pid=${row.id}&basePath=${
                 row.url || ''

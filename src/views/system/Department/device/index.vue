@@ -1,8 +1,9 @@
 <template>
     <div class="product-container">
-        <j-advanced-search
+        <pro-search
             :columns="columns"
-            @search="(params:any) => (queryParams = params)"
+            target="category"
+            @search="(params:any)=>queryParams = {...params}"
         />
         <j-pro-table
             ref="tableRef"

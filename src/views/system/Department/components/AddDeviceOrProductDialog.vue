@@ -26,13 +26,16 @@
             <a-checkbox-group v-model:value="bulkList" :options="options" />
         </div>
 
-        <Search :columns="props.queryColumns" @search="query.search" />
-
+        <pro-search
+            :columns="props.queryColumns"
+            target="category"
+            @search="(params:any)=>queryParams = {...params}"
+        />
         <j-pro-table
             ref="tableRef"
             :request="table.requestFun"
             :gridColumn="2"
-            :params="query.params.value"
+            :params="queryParams"
             :rowSelection="{
                 selectedRowKeys: table._selectedRowKeys.value,
                 onChange: selectRow,
@@ -189,58 +192,8 @@ const options = computed(() =>
 const columns = props.queryColumns.filter(
     (item) => item.dataIndex !== 'action',
 );
-const query = {
-    columns: [
-        {
-            title: 'ID',
-            dataIndex: 'id',
-            key: 'id',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-            },
-        },
-        {
-            title: '名称',
-            dataIndex: 'name',
-            key: 'name',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-            },
-        },
-        {
-            title: '状态',
-            dataIndex: 'state',
-            key: 'state',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'select',
-                options: [
-                    {
-                        label: '在线',
-                        value: 'online',
-                    },
-                    {
-                        label: '离线',
-                        value: 'offline',
-                    },
-                    {
-                        label: '禁用',
-                        value: 'notActive',
-                    },
-                ],
-            },
-        },
-    ],
-    params: ref({}),
-    search: (params: any) => {
-        query.params.value = params;
-    },
-};
+
+const queryParams = ref({});
 const table: any = {
     _selectedRowKeys: ref<string[]>([]), // 选中项的id
     backRowKeys: [] as string[], // 旧选中项的id
