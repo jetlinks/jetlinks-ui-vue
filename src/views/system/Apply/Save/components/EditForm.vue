@@ -1738,7 +1738,6 @@ function changeBackUpload(info: UploadChangeParam<UploadFile<any>>) {
     if (info.file.status === 'uploading') {
         form.uploadLoading = true;
     } else if (info.file.status === 'done') {
-        console.log(info);
 
         info.file.url = info.file.response?.result;
         form.uploadLoading = false;
@@ -1748,9 +1747,6 @@ function changeBackUpload(info: UploadChangeParam<UploadFile<any>>) {
         form.uploadLoading = false;
         message.error('logo上传失败，请稍后再试');
     }
-}
-function test(...args: any[]) {
-    console.log('test:', args);
 }
 function clearNullProp(obj: object) {
     if (typeof obj !== 'object') return;
@@ -1799,6 +1795,17 @@ function clearNullProp(obj: object) {
                 padding: 0 15px;
                 box-sizing: content-box;
                 margin-right: 20px;
+                color: #000;
+
+                &.ant-radio-button-wrapper-disabled {
+                    opacity: .5;
+                }
+
+                &.ant-radio-button-wrapper-checked {
+                    background-color: #fff;
+                    border: 1px solid #1d39c4;
+                    opacity: 1;
+                }
 
                 > :last-child {
                     width: 100%;

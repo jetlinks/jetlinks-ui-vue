@@ -271,6 +271,8 @@ const columns = [
         dataIndex: 'action',
         key: 'action',
         scopedSlots: true,
+        width:'200px',
+        fixed:'right'
     },
 ];
 const queryParams = ref({});

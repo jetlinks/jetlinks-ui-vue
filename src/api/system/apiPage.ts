@@ -24,3 +24,12 @@ export const addOperations_api = (data:object) => server.patch(`/application/ope
  * 删除可授权的接口ID
  */
 export const delOperations_api = (data:object) => server.remove(`/application/operations/_batch`,{},{data});
+
+/**
+ * 赋权-选中/取消选中api
+ * @param id 
+ * @param type 
+ * @param data 
+ * @returns 
+ */
+export const updateOperations_api = (code:string,type:'_add'| '_delete', data: object) => server.post(`/application/${code}/grant/${type}`, data);
