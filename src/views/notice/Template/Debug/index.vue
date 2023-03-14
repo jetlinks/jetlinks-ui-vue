@@ -172,11 +172,11 @@ const getTemplateDetail = async () => {
     formData.value.templateDetailTable = result.variableDefinitions.map(
         (m: any) => ({
             ...m,
-            type: m.expands ? m.expands.businessType : m.type,
+            type: m.expands?.businessType ? m.expands.businessType : m.type,
             value: undefined,
             // 电话字段校验
             otherRules:
-                m.id === 'calledNumber'
+                m.id === 'calledNumber' || m.id === 'phoneNumber'
                     ? [
                           {
                               max: 64,

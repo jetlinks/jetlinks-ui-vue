@@ -55,7 +55,7 @@
             allowClear
         >
             <template #addonAfter>
-                <j-upload
+                <a-upload
                     name="file"
                     :action="FILE_UPLOAD"
                     :headers="headers"
@@ -63,7 +63,7 @@
                     @change="handleFileChange"
                 >
                     <AIcon type="UploadOutlined" />
-                </j-upload>
+                </a-upload>
             </template>
         </j-input>
         <j-input

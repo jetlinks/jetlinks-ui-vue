@@ -155,11 +155,11 @@
                     {{ getProviderTxt(slotProps.type, slotProps.provider) }}
                 </span>
             </template>
-            <template #description="slotProps">
+            <!-- <template #description="slotProps">
                 <Ellipsis>
                     {{ slotProps.description }}
                 </Ellipsis>
-            </template>
+            </template> -->
             <template #action="slotProps">
                 <j-space :size="16">
                     <template
@@ -256,6 +256,7 @@ const columns = [
         dataIndex: 'description',
         key: 'description',
         scopedSlots: true,
+        ellipsis: true,
         search: {
             type: 'string',
         },
