@@ -34,65 +34,72 @@
                     <j-empty v-if="!deptTreeData.length" />
                 </j-col>
                 <j-col :span="20">
-                    <JProTable
+                    <j-button type="primary" @click="handleAutoBind">
+                        自动绑定
+                    </j-button>
+                    <JTable
                         ref="tableRef"
                         :columns="columns"
                         :dataSource="dataSource"
                         :loading="tableLoading"
-                        model="table"
-                        noPagination
+                        :pagination="{
+                            total: dataSource.length,
+                            current: current,
+                            pageSize: pageSize,
+                            pageSizeOptions: ['12', '24', '48', '96'],
+                            showSizeChanger: true,
+                            showTotal: (total: number, range: number) => `第 ${range[0]} - ${range[1]} 条/总共 ${total} 条`,
+                        }"
+                        @change="handleTableChange"
                     >
-                        <template #headerTitle>
-                            <j-button type="primary" @click="handleAutoBind">
-                                自动绑定
-                            </j-button>
-                        </template>
-                        <template #status="slotProps">
-                            <j-space>
-                                <j-badge
-                                    :status="slotProps.status.value"
-                                    :text="slotProps.status.text"
-                                ></j-badge>
-                            </j-space>
-                        </template>
-                        <template #action="slotProps">
-                            <j-space :size="16">
-                                <j-tooltip
-                                    v-for="i in getActions(slotProps, 'table')"
-                                    :key="i.key"
-                                    v-bind="i.tooltip"
-                                >
-                                    <j-popconfirm
-                                        v-if="i.popConfirm"
-                                        v-bind="i.popConfirm"
-                                        :disabled="i.disabled"
+                        <template #bodyCell="{ column, record, index }">
+                            <template v-if="column.dataIndex === 'status'">
+                                <j-space>
+                                    <j-badge
+                                        :status="record.status.value"
+                                        :text="record.status.text"
+                                    ></j-badge>
+                                </j-space>
+                            </template>
+                            <template v-if="column.dataIndex === 'action'">
+                                <j-space :size="16">
+                                    <j-tooltip
+                                        v-for="i in getActions(record, 'table')"
+                                        :key="i.key"
+                                        v-bind="i.tooltip"
                                     >
-                                        <j-button
+                                        <j-popconfirm
+                                            v-if="i.popConfirm"
+                                            v-bind="i.popConfirm"
                                             :disabled="i.disabled"
+                                        >
+                                            <j-button
+                                                :disabled="i.disabled"
+                                                style="padding: 0"
+                                                type="link"
+                                                ><AIcon :type="i.icon"
+                                            /></j-button>
+                                        </j-popconfirm>
+                                        <j-button
                                             style="padding: 0"
                                             type="link"
-                                            ><AIcon :type="i.icon"
-                                        /></j-button>
-                                    </j-popconfirm>
-                                    <j-button
-                                        style="padding: 0"
-                                        type="link"
-                                        v-else
-                                        @click="
-                                            i.onClick && i.onClick(slotProps)
-                                        "
-                                    >
-                                        <j-button
-                                            :disabled="i.disabled"
-                                            style="padding: 0"
-                                            type="link"
-                                            ><AIcon :type="i.icon"
-                                        /></j-button>
-                                    </j-button>
-                                </j-tooltip>
-                            </j-space>
+                                            v-else
+                                            @click="
+                                                i.onClick && i.onClick(record)
+                                            "
+                                        >
+                                            <j-button
+                                                :disabled="i.disabled"
+                                                style="padding: 0"
+                                                type="link"
+                                                ><AIcon :type="i.icon"
+                                            /></j-button>
+                                        </j-button>
+                                    </j-tooltip>
+                                </j-space>
+                            </template>
                         </template>
-                    </JProTable>
+                    </JTable>
                 </j-col>
             </j-row>
         </j-modal>
@@ -184,22 +191,9 @@ const getDepartment = async () => {
         );
     }
 
-    // deptTreeData.value = arrayToTree(_result, _result[0]?.parentId);
     deptTreeData.value = _result;
     deptId.value = _result[0]?.id;
 };
-
-/**
- * 扁平数据转树形结构
- */
-// const arrayToTree = (arr: any, pid: string | number) => {
-//     return arr
-//         .filter((item: any) => item.parentId === pid)
-//         .map((item: any) => ({
-//             ...item,
-//             children: arrayToTree(arr, item.id),
-//         }));
-// };
 
 /**
  * 部门点击
@@ -230,6 +224,7 @@ const columns = [
     },
     {
         title: '操作',
+        dataIndex: 'action',
         key: 'action',
         scopedSlots: true,
     },
@@ -285,7 +280,7 @@ const handleAutoBind = () => {
                 thirdPartyUserId: i.thirdPartyUserId,
             };
         });
-    // console.log('arr: ', arr);
+
     configApi.dingTalkBindUser(arr, props.data.id).then(() => {
         message.success('操作成功');
         getTableData();
@@ -346,8 +341,8 @@ const dataSource = ref<any>([]);
 const tableLoading = ref(false);
 const getTableData = () => {
     tableLoading.value = true;
-    Promise.all<any>([getDeptUsers(), getBindUsers(), getAllUsers()]).then(
-        (res) => {
+    Promise.all<any>([getDeptUsers(), getBindUsers(), getAllUsers()])
+        .then((res) => {
             dataSource.value = [];
             const [deptUsers, bindUsers, unBindUsers] = res;
             (deptUsers || []).forEach((deptUser: any) => {
@@ -379,9 +374,20 @@ const getTableData = () => {
                 });
             });
             // console.log('dataSource.value: ', dataSource.value);
-        },
-    );
-    tableLoading.value = false;
+        })
+        .finally(() => {
+            tableLoading.value = false;
+        });
+};
+
+/**
+ * 前端分页
+ */
+const current = ref(1);
+const pageSize = ref(12);
+const handleTableChange = (pagination: any) => {
+    current.value = pagination.current;
+    pageSize.value = pagination.pageSize;
 };
 
 watch(
@@ -475,5 +481,8 @@ const handleCancel = () => {
 .model-body {
     height: 600px;
     overflow-y: auto;
+    &:deep(.ant-pagination-item) {
+        display: none;
+    }
 }
 </style>

@@ -11,7 +11,7 @@ export const getComponent = (type: string): string => {
     case 'long':
     case 'float':
     case 'double':
-      return 'number'
+      return type
     case 'metric':
     case 'enum':
     case 'boolean':
