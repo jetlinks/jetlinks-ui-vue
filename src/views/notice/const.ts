@@ -82,7 +82,7 @@ export const MSG_TYPE = {
     ],
     email: [
         {
-            label: 'email',
+            label: '邮件',
             value: 'embedded',
             logo: getImage('/notice/email.png'),
         },
