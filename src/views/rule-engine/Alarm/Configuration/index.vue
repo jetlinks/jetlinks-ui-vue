@@ -80,10 +80,6 @@
                         </template>
                         <template #actions="item">
                             <PermissionButton
-                                v-if="
-                                    item.key != 'tigger' ||
-                                    slotProps.sceneTriggerType == 'manual'
-                                "
                                 :disabled="item.disabled"
                                 :popConfirm="item.popConfirm"
                                 :tooltip="{ ...item.tootip }"
@@ -146,10 +142,6 @@
                             :key="i.key"
                         >
                             <PermissionButton
-                                v-if="
-                                    i.key != 'tigger' ||
-                                    slotProps.sceneTriggerType == 'manual'
-                                "
                                 :disabled="i.disabled"
                                 :popConfirm="i.popConfirm"
                                 :tooltip="{
@@ -439,7 +431,9 @@ const getActions = (
             icon: 'DeleteOutlined',
         },
     ];
-    return actions;
+    return actions.filter((item)=>
+        item.key != 'tigger' || data.sceneTriggerType == 'manual'
+    );
 };
 const add = () => {
     menuStory.jumpPage('rule-engine/Alarm/Configuration/Save');

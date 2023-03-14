@@ -202,6 +202,7 @@ const handleSearch = async () => {
         metadataType: 'property',
         name: item.name,
     }));
+    console.log(metadata);
     if (_metadata && _metadata.length) {
         const resp: any = await getEdgeMap(instanceStore.current?.parentId || '', {
             deviceId: instanceStore.current.id,
