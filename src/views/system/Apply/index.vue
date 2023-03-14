@@ -1,8 +1,9 @@
 <template>
     <page-container>
         <div class="apply-container">
-            <j-advanced-search
+            <pro-search
                 :columns="columns"
+                target="category"
                 @search="(params:any)=>queryParams = {...params}"
             />
 
@@ -270,6 +271,8 @@ const columns = [
         dataIndex: 'action',
         key: 'action',
         scopedSlots: true,
+        width:'200px',
+        fixed:'right'
     },
 ];
 const queryParams = ref({});

@@ -25,10 +25,11 @@ const props = defineProps({
     overflow: hidden;
     background-color: #fff;
     border-bottom: 1px solid #2f54eb;
-
+    height: 458px;
     .bj {
         display: block;
         width: 100%;
+        height: 100%;
     }
 
     .title {

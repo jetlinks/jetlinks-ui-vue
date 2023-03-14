@@ -6,7 +6,7 @@
             <!-- 已登录-绑定三方账号 -->
             <template v-if="!token">
                 <div class="info">
-                    <a-card style="width: 280px">
+                    <j-card style="width: 280px">
                         <template #title>
                             <div class="info-head">
                                 <img :src="getImage('/bind/Rectangle.png')" />
@@ -18,9 +18,9 @@
                             <p>账号：admin</p>
                             <p>用户名：超级管理员</p>
                         </div>
-                    </a-card>
+                    </j-card>
                     <img :src="getImage('/bind/Vector.png')" />
-                    <a-card style="width: 280px">
+                    <j-card style="width: 280px">
                         <template #title>
                             <div class="info-head">
                                 <img :src="getImage('/bind/Rectangle.png')" />
@@ -37,11 +37,11 @@
                             <p>用户名：-</p>
                             <p>名称：{{ accountInfo?.name || '-' }}</p>
                         </div>
-                    </a-card>
+                    </j-card>
                 </div>
                 <div class="btn">
-                    <a-button type="primary" @click="handleBind"
-                        >立即绑定</a-button
+                    <j-button type="primary" @click="handleBind"
+                        >立即绑定</j-button
                     >
                 </div>
             </template>
@@ -60,30 +60,30 @@
                         你已通过微信授权,完善以下登录信息即可以完成绑定
                     </div>
                     <div class="login-form">
-                        <a-form layout="vertical">
-                            <a-form-item
+                        <j-form layout="vertical">
+                            <j-form-item
                                 label="账户"
                                 v-bind="validateInfos.username"
                             >
-                                <a-input
+                                <j-input
                                     v-model:value="formData.username"
                                     placeholder="请输入账户"
                                 />
-                            </a-form-item>
-                            <a-form-item
+                            </j-form-item>
+                            <j-form-item
                                 label="密码"
                                 v-bind="validateInfos.password"
                             >
-                                <a-input-password
+                                <j-input-password
                                     v-model:value="formData.password"
                                     placeholder="请输入密码"
                                 />
-                            </a-form-item>
-                            <a-form-item
+                            </j-form-item>
+                            <j-form-item
                                 label="验证码"
                                 v-bind="validateInfos.verifyCode"
                             >
-                                <a-input
+                                <j-input
                                     v-model:value="formData.verifyCode"
                                     placeholder="请输入验证码"
                                 >
@@ -94,18 +94,18 @@
                                             style="cursor: pointer"
                                         />
                                     </template>
-                                </a-input>
-                            </a-form-item>
-                            <a-form-item>
-                                <a-button
+                                </j-input>
+                            </j-form-item>
+                            <j-form-item>
+                                <j-button
                                     type="primary"
                                     @click="handleLoginBind"
                                     style="width: 100%"
                                 >
                                     登录并绑定账户
-                                </a-button>
-                            </a-form-item>
-                        </a-form>
+                                </j-button>
+                            </j-form-item>
+                        </j-form>
                     </div>
                 </div>
             </template>

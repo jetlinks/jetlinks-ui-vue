@@ -1,12 +1,11 @@
 <template>
   <div class='dropdown-time-picker'>
     <j-time-picker
-      v-if='type === "time"'
+      v-if='!_type'
       open
-      class='manual-time-picker'
       v-model:value='myValue'
+      class='manual-time-picker'
       :format='myFormat'
-      :valueFormat='myFormat'
       :getPopupContainer='getPopupContainer'
       popupClassName='manual-time-picker-popup'
       @change='change'
@@ -17,7 +16,6 @@
       class='manual-time-picker'
       v-model:value='myValue'
       :format='myFormat'
-      :valueFormat='myFormat'
       :getPopupContainer='getPopupContainer'
       popupClassName='manual-time-picker-popup'
       @change='change'
@@ -26,7 +24,7 @@
 </template>
 
 <script setup lang='ts' name='DropdownTime'>
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 
 type Emit = {
   (e: 'update:value', value: string) : void
@@ -44,23 +42,26 @@ const props = defineProps({
   },
   format: {
     type: String,
-    default: ''
+    default: undefined
   }
 })
 
 const emit = defineEmits<Emit>()
 const myFormat = props.format || ( props.type === 'time' ? 'HH:mm:ss' : 'YYYY-MM-DD HH:mm:ss')
-const myValue = ref(props.value || dayjs(new Date()).format(myFormat))
+const myValue = ref<Dayjs>(dayjs(props.value || new Date(), myFormat))
 
 const getPopupContainer = (trigger: HTMLElement) => {
   return trigger?.parentNode || document.body
 }
 
-const change = (e: string) => {
-  myValue.value = e
-  emit('update:value', e)
-  emit('change', e)
+const change = (e: Dayjs) => {
+  emit('update:value', e.format(myFormat))
+  emit('change', e.format(myFormat))
 }
+
+const _type = computed(() => {
+  return props.value?.includes('-')
+})
 </script>
 
 <style lang='less'>

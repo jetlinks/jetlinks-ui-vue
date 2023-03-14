@@ -12,7 +12,7 @@
     >
         <j-form ref="formRef" :model="form.data" layout="vertical">
             <j-form-item name="parentId" label="上级组织">
-                <a-tree-select
+                <j-tree-select
                     v-model:value="form.data.parentId"
                     style="width: 100%"
                     placeholder="请选择上级组织"
@@ -20,7 +20,7 @@
                     :field-names="{ value: 'id' }"
                 >
                     <template #title="{ name }"> {{ name }} </template>
-                </a-tree-select>
+                </j-tree-select>
             </j-form-item>
             <j-form-item
                 name="name"

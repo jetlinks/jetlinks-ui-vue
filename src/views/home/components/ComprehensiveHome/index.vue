@@ -13,8 +13,8 @@
                 <j-row :gutter="24">
                     <j-col :span="12"><DeviceCountCard /></j-col>
                     <j-col :span="12"><BasicCountCard /></j-col>
-                    <j-col :span="24" style="margin-top: 24px">
-                        <PlatformPicCard image="/images/home/content1.png" />
+                    <j-col :span="24" style="margin-top: 24px;">
+                        <PlatformPicCard image="/images/home/content1.svg" />
                     </j-col>
                 </j-row>
             </j-col>
@@ -41,7 +41,7 @@
             <DeviceChooseDialog
                 v-if="deviceDialogVisible"
                 v-model:visible="deviceDialogVisible"
-                @confirm="(id:string)=>jumpPage('device/Instance/Detail', { id })"
+                @confirm="(id:string)=>jumpPage('device/Instance/Detail', { id, tab: 'Diagnose' })"
             />
         </div>
     </div>
@@ -157,7 +157,7 @@ const deviceStepDetails: recommendList[] = [
         linkUrl: 'device/Instance',
         auth: devicePermission('import'),
         params: {
-            import: true,
+            type: 'import'
         },
     },
 ];
@@ -175,7 +175,7 @@ const opsBootConfig: bootConfig[] = [
         label: '日志排查',
         link: 'Log',
         params: {
-            key: 'system',
+            tab: 'system',
         },
         image: '/images/home/guide-home5.png',
     },
@@ -220,7 +220,7 @@ const opsStepDetails: recommendList[] = [
         iconUrl: '/images/home/bottom-5.png',
         linkUrl: 'Log',
         params: {
-            key: 'system',
+            tab: 'system',
         },
     },
 ];

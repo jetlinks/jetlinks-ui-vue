@@ -148,7 +148,9 @@ const requestCard = reactive<tableCardType>({
             return (requestCard.tableData = props.selectApi.parameters);
         const schema =
             props.selectApi.requestBody.content['application/json'].schema;
-        const schemaName = (schema.$ref || schema.items.$ref)?.split('/').pop();
+        const _ref = schema.$ref || schema?.items?.$ref;
+        if(!_ref) return; // schema不是Java中的类的话则不进行解析，直接结束
+        const schemaName = _ref?.split('/').pop();
         const type = schema.type || '';
         const tableData = findData(schemaName);
         if (type === 'array') {

@@ -11,7 +11,7 @@
                 <template #url="slotProps">
                     <span
                         style="color: #1d39c4; cursor: pointer"
-                        @click="jump(slotProps)"
+                        @click="emits('update:clickApi', slotProps)"
                         >{{ slotProps.url }}</span
                     >
                 </template>
@@ -25,18 +25,28 @@
 </template>
 
 <script setup lang="ts">
-import { addOperations_api, delOperations_api } from '@/api/system/apiPage';
+import {
+    addOperations_api,
+    delOperations_api,
+    updateOperations_api,
+} from '@/api/system/apiPage';
 import { message } from 'ant-design-vue';
 import { modeType } from '../typing';
-const emits = defineEmits(['update:clickApi', 'update:selectedRowKeys']);
+const emits = defineEmits([
+    'refresh',
+    'update:clickApi',
+    'update:selectedRowKeys',
+    'update:changedApis',
+]);
 const props = defineProps<{
     tableData: any[];
     clickApi: any;
     selectedRowKeys: string[];
     sourceKeys: string[];
     mode: modeType;
+    changedApis: any; // 产生变化的api项
 }>();
-
+const code = useRoute().query.code as string;
 const columns = [
     {
         title: 'API',
@@ -52,13 +62,20 @@ const columns = [
 ];
 const rowSelection = {
     onSelect: (record: any) => {
+        const targetId = record.id;
         let newKeys = [...props.selectedRowKeys];
 
-        if (props.selectedRowKeys.includes(record.id)) {
-            newKeys = newKeys.filter((id) => id !== record.id);
-        } else newKeys.push(record.id);
+        if (props.selectedRowKeys.includes(targetId)) {
+            newKeys = newKeys.filter((id) => id !== targetId);
+        } else newKeys.push(targetId);
 
         emits('update:selectedRowKeys', newKeys);
+        if (props.mode === 'appManger') {
+            emits('update:changedApis', {
+                ...props.changedApis,
+                [record.id]: record,
+            });
+        }
     },
     selectedRowKeys: ref<string[]>([]),
 };
@@ -73,13 +90,30 @@ const save = () => {
         removeKeys.length &&
             delOperations_api(removeKeys)
                 .finally(() => addOperations_api(addKeys))
-                .then(() => message.success('操作成功'));
+                .then(() => {
+                    message.success('操作成功');
+                    emits('refresh')
+                });
+    } else if (props.mode === 'appManger') {
+        const removeItems = removeKeys.map((key) => ({
+            id: key,
+            permissions: props.changedApis[key]?.security,
+        }));
+        const addItems = addKeys.map((key) => ({
+            id: key,
+            permissions: props.changedApis[key]?.security,
+        }));
+        Promise.all([
+            updateOperations_api(code, '_delete', { operations: removeItems }),
+            updateOperations_api(code, '_add', { operations: addItems }),
+        ]).then((resps) => {
+            if (resps[0].status === 200 && resps[1].status === 200) {
+                message.success('操作成功');
+                emits('refresh');
+            }
+        });
     }
 };
-const jump = (row: any) => {
-    emits('update:clickApi', row);
-};
-
 watch(
     () => props.selectedRowKeys,
     (n) => {

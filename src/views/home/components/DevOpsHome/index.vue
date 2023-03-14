@@ -39,7 +39,7 @@ const opsBootConfig: bootConfig[] = [
         label: '日志排查',
         link: 'Log',
         params: {
-            key: 'system',
+            tab: 'system',
         },
     },
     {
@@ -83,7 +83,7 @@ const opsStepDetails: recommendList[] = [
         iconUrl: '/images/home/bottom-5.png',
         linkUrl: 'Log',
         params: {
-            key: 'system',
+            tab: 'system',
         },
     },
 ];

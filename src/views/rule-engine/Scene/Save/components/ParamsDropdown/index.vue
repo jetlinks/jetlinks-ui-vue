@@ -28,7 +28,7 @@
                 @change='timeChange'
               />
               <DropdownMenus
-                v-if='["select","enum", "boolean"].includes(item.component)'
+                v-else-if='["select","enum", "boolean"].includes(item.component)'
                 :options='["metric", "upper"].includes(item.key) ?  metricOption : options'
                 @click='onSelect'
               />
@@ -54,7 +54,7 @@
               <ValueItem
                 v-else
                 v-model:modelValue='myValue'
-                :itemType='getComponent(item.component)'
+                :itemType='item.component'
                 :options='item.key === "upper" ?  metricOption : options'
                 @change='valueItemChange'
               />

@@ -178,6 +178,8 @@ const handleClick = async () => {
                         _emits('save');
                     }
                 }
+            } else {
+                message.error('暂无对应属性的映射');
             }
         }
     }

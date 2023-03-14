@@ -6,9 +6,14 @@
         @ok="confirm"
         @cancel="emits('update:visible', false)"
     >
-        <j-advanced-search
+        <!-- <j-advanced-search
             :columns="columns"
             type="simple"
+            @search="(params:any)=>queryParams = {...params}"
+        /> -->
+        <pro-search
+            :columns="columns"
+            target="simple"
             @search="(params:any)=>queryParams = {...params}"
         />
 
@@ -35,7 +40,7 @@ import { message } from 'ant-design-vue';
 const emits = defineEmits(['refresh', 'update:visible']);
 const props = defineProps<{
     visible: boolean;
-    roleId: string
+    roleId: string;
 }>();
 
 const columns = [
@@ -85,15 +90,13 @@ const confirm = () => {
     if (selectedRowKeys.value.length < 1) {
         message.error('请至少选择一项');
     } else {
-        bindUser_api(props.roleId, selectedRowKeys.value).then(
-            (resp) => {
-                if (resp.status === 200) {
-                    message.success('操作成功');
-                    emits('refresh');
-                    emits('update:visible', false);
-                }
-            },
-        );
+        bindUser_api(props.roleId, selectedRowKeys.value).then((resp) => {
+            if (resp.status === 200) {
+                message.success('操作成功');
+                emits('refresh');
+                emits('update:visible', false);
+            }
+        });
     }
 };
 </script>

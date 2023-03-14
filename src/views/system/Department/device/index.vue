@@ -1,8 +1,9 @@
 <template>
     <div class="product-container">
-        <j-advanced-search
+        <pro-search
             :columns="columns"
-            @search="(params:any) => (queryParams = params)"
+            target="category"
+            @search="(params:any)=>queryParams = {...params}"
         />
         <j-pro-table
             ref="tableRef"
@@ -153,7 +154,7 @@
                 ></BadgeStatus>
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
+                <j-space :size="16">
                     <PermissionButton
                         v-for="i in table.getActions(slotProps, 'table')"
                         :uhasPermission="i.permission"
@@ -165,7 +166,7 @@
                     >
                         <AIcon :type="i.icon" />
                     </PermissionButton>
-                </a-space>
+                </j-space>
             </template>
         </j-pro-table>
 

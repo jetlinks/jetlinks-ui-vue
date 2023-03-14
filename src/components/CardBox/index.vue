@@ -29,7 +29,9 @@
                 <div
                     v-if="showStatus"
                     class="card-state"
-                    :class="statusNames ? statusNames[status] : ''"
+                    :style='{
+                      backgroundColor: getHexColor(statusNames[status])
+                    }'
                 >
                     <div class="card-state-content">
                         <BadgeStatus
@@ -68,9 +70,10 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name='CardBox'>
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
-import type { ActionsType } from '@/components/Table/index.vue';
+import { getHexColor } from '../BadgeStatus/color'
+import type { ActionsType } from '@/components/Table';
 import { PropType } from 'vue';
 
 type EmitProps = {
