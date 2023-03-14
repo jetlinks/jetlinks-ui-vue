@@ -1,6 +1,6 @@
 <!-- 参数类型输入组件 -->
 <template>
-    <div class="wrapper">
+    <div class="value-item-warp">
         <j-select
             v-if="typeMap.get(itemType) === 'select'"
             v-model:value="myValue"
@@ -55,7 +55,7 @@
             allowClear
         >
             <template #addonAfter>
-                <j-upload
+                <a-upload
                     name="file"
                     :action="FILE_UPLOAD"
                     :headers="headers"
@@ -63,7 +63,7 @@
                     @change="handleFileChange"
                 >
                     <AIcon type="UploadOutlined" />
-                </j-upload>
+                </a-upload>
             </template>
         </j-input>
         <j-input
@@ -92,7 +92,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name='ValueItem'>
 import { PropType } from 'vue';
 import { UploadChangeParam, UploadFile } from 'ant-design-vue';
 import { DefaultOptionType } from 'ant-design-vue/lib/select';
@@ -102,6 +102,7 @@ import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { LocalStore } from '@/utils/comm';
 import { ItemData, ITypes } from './types';
 import { FILE_UPLOAD } from '@/api/comm';
+import { Upload } from 'jetlinks-ui-components'
 
 type Emits = {
     (e: 'update:modelValue', data: string | number | boolean): void;

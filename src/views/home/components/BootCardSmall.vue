@@ -1,8 +1,6 @@
 <template>
-    <a-card class="boot-card-container" :bordered="false">
-        <template #title>
-            <h5 class="title">{{ cardTitle }}</h5>
-        </template>
+    <div class="boot-card-container">
+        <h5 class="title">{{ cardTitle }}</h5>
         <div class="box">
             <div
                 class="box-item"
@@ -23,7 +21,7 @@
                 </div>
             </div>
         </div>
-    </a-card>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -46,9 +44,8 @@ const jumpPage = (item: bootConfig) => {
 
 <style lang="less" scoped>
 .boot-card-container {
-    :deep(.ant-card-body) {
-        padding-top: 0;
-    }
+    background-color: #fff;
+    padding: 24px 12px;
     .title {
         position: relative;
         z-index: 2;

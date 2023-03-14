@@ -21,7 +21,7 @@
             </PermissionButton>
         </div>
 
-        <a-tree
+        <jTree
             :tree-data="treeData"
             v-model:selected-keys="selectedKeys"
             :fieldNames="{ key: 'id' }"
@@ -69,7 +69,7 @@
                     </PermissionButton>
                 </span>
             </template>
-        </a-tree>
+        </jTree>
 
         <!-- 编辑弹窗 -->
         <EditDepartmentDialog

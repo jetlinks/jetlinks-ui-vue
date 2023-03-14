@@ -1,12 +1,15 @@
 <template>
     <div>
-        <j-advanced-search :columns="columns" @search="(p:any)=>params = p" />
-
+        <pro-search
+            :columns="columns"
+            target="category"
+            @search="(params:any)=>queryParams = {...params}"
+        />
         <j-pro-table
             ref="tableRef"
             :columns="columns"
             :request="table.requestFun"
-            :params="params"
+            :params="queryParams"
             :rowSelection="{
                 selectedRowKeys: table._selectedRowKeys,
                 onChange: table.onSelectChange,
@@ -137,7 +140,7 @@ const columns = [
     },
 ];
 // 搜索参数
-const params = ref({});
+const queryParams = ref({});
 
 // 表格
 const tableRef = ref<Record<string, any>>({}); // 表格实例

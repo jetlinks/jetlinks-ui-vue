@@ -95,6 +95,7 @@
                     </j-button>
                 </div>
                 <MonacoEditor
+                    v-if="refStr"
                     v-model:modelValue="requestBody.code"
                     style="height: 300px; width: 100%"
                     theme="vs"
@@ -125,6 +126,8 @@ const props = defineProps<{
     selectApi: apiDetailsType;
     schemas: any;
 }>();
+const responsesContent = ref({});
+const editorRef = ref();
 const formRef = ref<FormInstance>();
 const requestBody = reactive({
     tableColumns: [
@@ -178,8 +181,16 @@ const paramsTable = computed(() => {
     return requestBody.params.paramsTable.slice(startIndex, endIndex);
 });
 
-const responsesContent = ref({});
-const editorRef = ref()
+let schema: any = {};
+const refStr = ref('');
+
+const init = () => {
+    if (!props.selectApi.requestBody) return;
+    schema = props.selectApi.requestBody.content['application/json'].schema;
+    refStr.value = schema.$ref || schema?.items?.$ref;
+};
+init();
+
 const send = () => {
     if (paramsTable.value.length)
         formRef.value &&
@@ -210,10 +221,10 @@ const _send = () => {
         ...urlParams,
     };
     server[methodObj[methodName]](url, params).then((resp: any) => {
-        if (Object.keys(params).length === 0){
-
+        // 如果用户没填写参数且有body的情况下，给用户展示请求示例
+        if (Object.keys(params).length === 0 && refStr.value) {
             requestBody.code = JSON.stringify(getDefaultParams());
-            editorRef.value?.editorFormat()
+            editorRef.value?.editorFormat();
         }
         responsesContent.value = resp;
     });
@@ -224,9 +235,8 @@ const _send = () => {
  */
 function getDefaultParams() {
     if (!props.selectApi.requestBody) return {};
-    const schema =
-        props.selectApi.requestBody.content['application/json'].schema;
-    const schemaName = (schema.$ref || schema.items.$ref)?.split('/').pop();
+    if (!refStr.value) return ''; // schema不是Java中的类的话则不进行解析，直接结束
+    const schemaName = refStr.value?.split('/').pop() as string;
     const type = schema.type || '';
     const tableData = findData(schemaName);
     if (type === 'array') {
