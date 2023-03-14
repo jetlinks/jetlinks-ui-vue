@@ -114,7 +114,7 @@ export default defineConfig(({ mode}) => {
           }
       },
       optimizeDeps: {
-          include: ['pinia', 'vue-router', 'axios', 'lodash-es', '@vueuse/core', 'echarts'],
+          include: ['pinia', 'vue-router', 'axios', 'lodash-es', '@vueuse/core', 'echarts', 'dayjs'],
       }
   }
 })

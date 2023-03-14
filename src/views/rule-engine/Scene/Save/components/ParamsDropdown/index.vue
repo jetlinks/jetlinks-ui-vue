@@ -28,7 +28,7 @@
                 @change='timeChange'
               />
               <DropdownMenus
-                v-if='["select","enum", "boolean"].includes(item.component)'
+                v-else-if='["select","enum", "boolean"].includes(item.component)'
                 :options='["metric", "upper"].includes(item.key) ?  metricOption : options'
                 @click='onSelect'
               />

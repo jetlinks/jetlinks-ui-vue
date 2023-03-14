@@ -5,6 +5,7 @@
     :request='saveSearchHistory'
     :historyRequest='getSearchHistory'
     :columns='columns'
+    :class='props.class'
     @search='searchSubmit'
   />
 </template> 
