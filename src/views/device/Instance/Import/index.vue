@@ -84,7 +84,8 @@ watch(
                     column: 'accessProvider',
                     value: props?.type
                 }
-            ]
+            ],
+            sorts: [{ name: 'createTime', order: 'desc' }]
         }).then((resp) => {
             if (resp.status === 200) {
                 productList.value = resp.result as Record<string, any>[];

@@ -110,13 +110,18 @@
                     </template>
                 </CardBox>
             </template>
-            <template #bodyCell="{ column, text, record }">
-                <span v-if="column.dataIndex === 'type'">
-                    {{ getMethodTxt(record.type) }}
+            <template #type="slotProps">
+                <span> {{ getMethodTxt(slotProps.type) }}</span>
+            </template>
+            <template #provider="slotProps">
+                <span>
+                    {{ getProviderTxt(slotProps.type, slotProps.provider) }}
                 </span>
-                <span v-if="column.dataIndex === 'provider'">
-                    {{ getProviderTxt(record.type, record.provider) }}
-                </span>
+            </template>
+            <template #description="slotProps">
+                <Ellipsis>
+                    {{ slotProps.description }}
+                </Ellipsis>
             </template>
             <template #action="slotProps">
                 <j-space :size="16">
@@ -210,6 +215,7 @@ const columns = [
         title: '说明',
         dataIndex: 'description',
         key: 'description',
+        scopedSlots: true,
         search: {
             type: 'string',
         },

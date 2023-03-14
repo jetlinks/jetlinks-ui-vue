@@ -149,6 +149,7 @@
         :channel="'official-edge-gateway'"
         @close="onClose"
         :deviceType="'gateway'"
+        @save="onSave"
     />
 </template>
 
@@ -234,6 +235,10 @@ const handleCancel = () => {
 const onClose = () => {
     visible.value = false;
 };
+
+const onSave = (_data: any) => {
+    productList.value.push(_data)
+}
 
 const handleSave = () => {
     formRef.value

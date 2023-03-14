@@ -328,7 +328,7 @@ const getActions = (
             },
             icon: 'ControlOutlined',
             onClick: () => {
-                message.error('暂未开发');
+                menuStory.jumpPage('edge/Device/Remote', { id: data.id });
             },
         },
         {
