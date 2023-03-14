@@ -392,53 +392,53 @@ const formRules = ref({
     provider: [{ required: true, message: '请选择类型' }],
     // 钉钉
     'configuration.appKey': [
-        { required: true, message: '请输入AppKey' },
-        { max: 64, message: '最多可输入64个字符' },
+        { required: true, message: '请输入AppKey', trigger: 'blur' },
+        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
     ],
     'configuration.appSecret': [
-        { required: true, message: '请输入AppSecret' },
-        { max: 64, message: '最多可输入64个字符' },
+        { required: true, message: '请输入AppSecret', trigger: 'blur' },
+        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
     ],
     // 'configuration.url': [{ required: true, message: '请输入WebHook' }],
     // 微信
     'configuration.corpId': [
-        { required: true, message: '请输入corpId' },
+        { required: true, message: '请输入corpId', trigger: 'blur' },
         { max: 64, message: '最多可输入64个字符' },
     ],
     'configuration.corpSecret': [
-        { required: true, message: '请输入corpSecret' },
+        { required: true, message: '请输入corpSecret', trigger: 'blur' },
         { max: 64, message: '最多可输入64个字符' },
     ],
     // 阿里云语音/短信
     'configuration.regionId': [
-        { required: true, message: '请输入RegionId' },
+        { required: true, message: '请输入RegionId', trigger: 'blur' },
         { max: 64, message: '最多可输入64个字符' },
     ],
     'configuration.accessKeyId': [
-        { required: true, message: '请输入AccessKeyId' },
+        { required: true, message: '请输入AccessKeyId', trigger: 'blur' },
         { max: 64, message: '最多可输入64个字符' },
     ],
     'configuration.secret': [
-        { required: true, message: '请输入Secret' },
+        { required: true, message: '请输入Secret', trigger: 'blur' },
         { max: 64, message: '最多可输入64个字符' },
     ],
     // 邮件
-    'configuration.host': [{ required: true, message: '请输入服务器地址' }],
+    'configuration.host': [{ required: true, message: '请输入服务器地址', trigger: 'blur' }],
     'configuration.sender': [
-        { required: true, message: '请输入发件人' },
+        { required: true, message: '请输入发件人', trigger: 'blur' },
         { max: 64, message: '最多可输入64个字符' },
     ],
     'configuration.username': [
-        { required: true, message: '请输入用户名' },
+        { required: true, message: '请输入用户名', trigger: 'blur' },
         { max: 64, message: '最多可输入64个字符' },
     ],
     'configuration.password': [
-        { required: true, message: '请输入密码' },
+        { required: true, message: '请输入密码', trigger: 'blur' },
         { max: 64, message: '最多可输入64个字符' },
     ],
     // webhook
     'configuration.url': [
-        { required: true, message: '请输入Webhook' },
+        { required: true, message: '请输入Webhook', trigger: 'blur' },
         // {
         //     pattern:
         //         /^(((ht|f)tps?):\/\/)?([^!@#$%^&*?.\s-]([^!@#$%^&*?.\s]{0,63}[^!@#$%^&*?.\s])?\.)+[j-z]{2,6}\/?/,
