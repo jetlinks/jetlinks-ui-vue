@@ -8,7 +8,7 @@
         >
             <j-input v-model:value="item.name" @change="emitEvents">
                 <template #addonAfter>
-                    <a-upload
+                    <j-upload
                         name="file"
                         :action="FILE_UPLOAD"
                         :headers="{
@@ -18,7 +18,7 @@
                         @change="(e) => handleChange(e, item.id)"
                     >
                         <upload-outlined />
-                    </a-upload>
+                    </j-upload>
                 </template>
             </j-input>
             <delete-outlined

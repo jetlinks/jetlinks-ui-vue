@@ -24,7 +24,7 @@
                     >
                         新增
                     </PermissionButton>
-                    <a-upload
+                    <j-upload
                         name="file"
                         accept=".json"
                         :showUploadList="false"
@@ -33,7 +33,7 @@
                         <PermissionButton hasPermission="notice/Config:import">
                             导入
                         </PermissionButton>
-                    </a-upload>
+                    </j-upload>
                     <j-popconfirm
                         title="确认导出？"
                         ok-text="确定"
