@@ -15,17 +15,17 @@
     </div>
     <template #overlay>
       <div class='scene-select-content'>
-        <template v-if='options.length'>
+        <DropdownTimePicker
+          v-if='["date","time"].includes(component)'
+          :type='component'
+          @change='timeSelect'
+        />
+        <template v-else-if='options.length'>
           <drop-menus
             v-if='component === "select"'
             :value='selectValue'
             :options='options'
             @click='menuSelect'
-          />
-          <DropdownTimePicker
-            v-else-if='["date","time"].includes(component)'
-            :type='component'
-            @change='timeSelect'
           />
           <div style='min-width: 400px' v-else>
             <j-tree
