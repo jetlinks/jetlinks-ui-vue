@@ -24,7 +24,7 @@
                                 margin-top: 20px;
                             "
                         >
-                            <a-upload
+                            <j-upload
                                 v-model:file-list="upload.fileList"
                                 accept=".jpg,.png,.jfif,.pjp,.pjpeg,.jpeg"
                                 :maxCount="1"
@@ -40,7 +40,7 @@
                                     <AIcon type="UploadOutlined" />
                                     更换头像
                                 </j-button>
-                            </a-upload>
+                            </j-upload>
                         </div>
                     </div>
                     <div

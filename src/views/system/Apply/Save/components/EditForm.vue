@@ -1000,7 +1000,7 @@
                             />
                         </j-form-item>
                         <j-form-item label="logo">
-                            <a-upload
+                            <j-upload
                                 v-model:file-list="form.fileList"
                                 accept=".jpg,.png,.jfif,.pjp,.pjpeg,.jpeg"
                                 :maxCount="1"
@@ -1036,7 +1036,7 @@
                                         点击上传图片
                                     </div>
                                 </div>
-                            </a-upload>
+                            </j-upload>
                         </j-form-item>
 
                         <j-form-item
