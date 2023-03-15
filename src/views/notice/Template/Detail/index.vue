@@ -1012,7 +1012,10 @@ const { resetFields, validate, validateInfos, clearValidate } = useForm(
 watch(
     () => formData.value.template.markdown?.title,
     (val) => {
-        if (!val) return;
+        if (!val) {
+            formData.value.variableDefinitions = [];
+            return;
+        }
         variableReg();
     },
     { deep: true },
@@ -1021,7 +1024,10 @@ watch(
 watch(
     () => formData.value.template.link?.title,
     (val) => {
-        if (!val) return;
+        if (!val) {
+            formData.value.variableDefinitions = [];
+            return;
+        }
         variableReg();
     },
     { deep: true },
@@ -1030,7 +1036,10 @@ watch(
 watch(
     () => formData.value.template.subject,
     (val) => {
-        if (!val) return;
+        if (!val) {
+            formData.value.variableDefinitions = [];
+            return;
+        }
         variableReg();
     },
     { deep: true },
@@ -1040,7 +1049,10 @@ watch(
 watch(
     () => formData.value.template.message,
     (val) => {
-        if (!val) return;
+        if (!val) {
+            formData.value.variableDefinitions = [];
+            return;
+        }
         variableReg();
     },
     { deep: true },
@@ -1049,7 +1061,10 @@ watch(
 watch(
     () => formData.value.template.ttsmessage,
     (val) => {
-        if (!val) return;
+        if (!val) {
+            formData.value.variableDefinitions = [];
+            return;
+        }
         variableReg();
     },
     { deep: true },
@@ -1058,7 +1073,10 @@ watch(
 watch(
     () => formData.value.template.body,
     (val) => {
-        if (!val) return;
+        if (!val) {
+            formData.value.variableDefinitions = [];
+            return;
+        }
         variableReg();
     },
     { deep: true },
@@ -1162,7 +1180,10 @@ const getConfigList = async () => {
         { column: 'type$IN', value: formData.value.type },
         { column: 'provider', value: formData.value.provider },
     ];
-    const { result } = await templateApi.getConfig({ terms });
+    const { result } = await templateApi.getConfig({
+        terms,
+        sorts: [{ name: 'createTime', order: 'desc' }],
+    });
     configList.value = result;
 };
 
