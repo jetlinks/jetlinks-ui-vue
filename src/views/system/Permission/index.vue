@@ -76,7 +76,7 @@
                 <template #action="slotProps">
                     <j-space :size="16">
                         <PermissionButton
-                            :uhasPermission="`${permission}:update`"
+                            :hasPermission="`${permission}:update`"
                             type="link"
                             :tooltip="{
                                 title: '编辑',

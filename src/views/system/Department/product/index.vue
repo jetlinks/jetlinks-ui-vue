@@ -20,7 +20,7 @@
             <template #headerTitle>
                 <j-space>
                     <PermissionButton
-                        :uhasPermission="`${permission}:assert`"
+                        :hasPermission="`${permission}:assert`"
                         type="primary"
                         @click="dialogs.addShow = true"
                     >
@@ -32,7 +32,7 @@
                             <j-menu>
                                 <j-menu-item>
                                     <PermissionButton
-                                        :uhasPermission="`${permission}:bind`"
+                                        :hasPermission="`${permission}:bind`"
                                         :popConfirm="{
                                             title: `是否批量解除绑定`,
                                             onConfirm: () =>
@@ -46,7 +46,7 @@
                                 </j-menu-item>
                                 <j-menu-item>
                                     <PermissionButton
-                                        :uhasPermission="`${permission}:assert`"
+                                        :hasPermission="`${permission}:assert`"
                                         @click="() => table.clickEdit()"
                                     >
                                         <AIcon type="EditOutlined" />批量编辑

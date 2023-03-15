@@ -714,7 +714,7 @@
                             placeholder="请选中角色"
                         ></j-select>
                         <PermissionButton
-                            :uhasPermission="`${rolePermission}:update`"
+                            :hasPermission="`${rolePermission}:update`"
                             type="link"
                             @click="
                                 clickAddItem(
@@ -755,7 +755,7 @@
                             </template>
                         </j-tree-select>
                         <PermissionButton
-                            :uhasPermission="`${deptPermission}:update`"
+                            :hasPermission="`${deptPermission}:update`"
                             type="link"
                             @click="
                                 clickAddItem(
@@ -1297,7 +1297,7 @@
                                 placeholder="请选中角色"
                             ></j-select>
                             <PermissionButton
-                                :uhasPermission="`${rolePermission}:update`"
+                                :hasPermission="`${rolePermission}:update`"
                                 type="link"
                                 @click="
                                     clickAddItem(
@@ -1332,7 +1332,7 @@
                                 </template>
                             </j-tree-select>
                             <PermissionButton
-                                :uhasPermission="`${deptPermission}:update`"
+                                :hasPermission="`${deptPermission}:update`"
                                 type="link"
                                 @click="
                                     clickAddItem(

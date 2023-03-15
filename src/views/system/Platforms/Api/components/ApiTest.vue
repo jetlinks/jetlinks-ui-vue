@@ -66,7 +66,7 @@
                                 <template v-else-if="column.key === 'action'">
                                     <PermissionButton
                                         type="link"
-                                        :uhasPermission="`{permission}:delete`"
+                                        :hasPermission="`{permission}:delete`"
                                         :popConfirm="{
                                             title: `确定删除`,
                                             onConfirm: () =>

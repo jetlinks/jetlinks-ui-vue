@@ -20,7 +20,7 @@
                 <template #headerTitle>
                     <PermissionButton
                         type="primary"
-                        :uhasPermission="`${permission}:add`"
+                        :hasPermission="`${permission}:add`"
                         @click="table.openDialog({})"
                     >
                         <AIcon type="PlusOutlined" />新增
@@ -47,7 +47,7 @@
                 <template #action="slotProps">
                     <j-space :size="16">
                         <PermissionButton
-                            :uhasPermission="`${permission}:update`"
+                            :hasPermission="`${permission}:update`"
                             type="link"
                             :tooltip="{
                                 title: '编辑',
@@ -57,7 +57,7 @@
                             <AIcon type="EditOutlined" />
                         </PermissionButton>
                         <PermissionButton
-                            :uhasPermission="`${permission}:manage`"
+                            :hasPermission="`${permission}:manage`"
                             type="link"
                             :tooltip="{
                                 title:
@@ -81,7 +81,7 @@
                             <AIcon type="icon-ziyuankuguanli" />
                         </PermissionButton>
                         <PermissionButton
-                            :uhasPermission="`${permission}:action`"
+                            :hasPermission="`${permission}:action`"
                             type="link"
                             :popConfirm="{
                                 title: `确定要${
@@ -109,7 +109,7 @@
                         </PermissionButton>
 
                         <PermissionButton
-                            :uhasPermission="`${permission}:delete`"
+                            :hasPermission="`${permission}:delete`"
                             type="link"
                             :tooltip="{
                                 title: table.getRowStatus(slotProps)

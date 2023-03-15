@@ -97,7 +97,7 @@
                 </template>
                 <template #action="slotProps">
                     <PermissionButton
-                        :uhasPermission="`{permission}:delete`"
+                        :hasPermission="`{permission}:delete`"
                         type="link"
                         :tooltip="{ title: '删除' }"
                         :popConfirm="{

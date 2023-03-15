@@ -203,7 +203,7 @@
 
             <PermissionButton
                 type="primary"
-                :uhasPermission="`${permission}:update`"
+                :hasPermission="`${permission}:update`"
                 @click="form.clickSave"
             >
                 保存
