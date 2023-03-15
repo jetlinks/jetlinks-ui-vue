@@ -2,7 +2,7 @@
     <div>
         <TitleComponent data="基本信息">
             <template #extra>
-                <j-button @click="comeBack">返回</j-button>
+                <j-button @click="comeBack" style="margin-left: 10px;">返回</j-button>
             </template>
         </TitleComponent>
         <j-form layout="vertical" :model="form" ref="formRef">
@@ -39,7 +39,10 @@
             </j-row>
             <j-row :gutter="24" v-if="visible">
                 <j-col :span="24"
-                    ><EdgeMap :productList="productList" @close="comeBack"
+                    ><EdgeMap
+                        :productList="productList"
+                        @close="comeBack"
+                        @getEdgeMap="getEdgeMapData"
                 /></j-col>
             </j-row>
         </j-form>
@@ -64,67 +67,80 @@ const formRef = ref();
 const emit = defineEmits(['closeChildSave']);
 const productList = ref();
 const visible = ref(false);
+/**
+ * 获取产品列表
+ */
 const getProductList = async () => {
     const res = await getProductListNoPage({
         terms: [{ column: 'accessProvider', value: 'edge-child-device' }],
     });
     if (res.status === 200) {
         productList.value = res.result;
-        if (props.childData?.id) {
-            current.value.parentId = props.childData.id;
-            form.name = props.childData?.name;
-            form.productId = props.childData?.productId;
-            selectChange(form.productId);
-            if (current.value.metadata) {
-                const metadata = current.value.metadata;
-                if (metadata && metadata.length !== 0) {
-                    getEdgeMap(current.value.id, {
-                        deviceId: props.childData.id,
-                        query: {},
-                    }).then((res) => {
-                        if (res.status === 200) {
-                            // console.log(res.result)
-                            //合并物模型
-                            const array = res.result[0]?.reduce(
-                                (x: any, y: any) => {
-                                    const metadataId = metadata.find(
-                                        (item: any) =>
-                                            item.metadataId === y.metadataId,
-                                    );
-                                    if (metadataId) {
-                                        Object.assign(metadataId, y);
-                                    } else {
-                                        x.push(y);
-                                    }
-                                    return x;
-                                },
-                                metadata,
-                            );
-                            //删除物模型
-                            const items = array.filter(
-                                (item: any) => item.metadataName,
-                            );
-                            current.value.metadata = items;
-                            const delList = array
-                                .filter((a: any) => !a.metadataName)
-                                .map((b: any) => b.id);
-                            //删除后解绑
-                            if (delList && delList.length !== 0) {
-                                removeEdgeMap(current.value.id, {
-                                    deviceId: props.childData.id,
-                                    idList: [...delList],
-                                });
-                            }
-                        }
-                    });
-                }
-            }
-            visible.value = true;
-        } else {
-            current.value.parentId = '';
-        }
+        getEdgeMapData();
     }
 };
+/**
+ * 获取映射数据
+ */
+const getEdgeMapData = () => {
+    if (props.childData?.id) {
+        current.value.parentId = props.childData.id; 
+        form.name = props.childData?.name;
+        form.productId = props.childData?.productId;
+        selectChange(form.productId);
+        if (current.value.metadata) {
+            const metadata = current.value.metadata;
+            if (metadata && metadata.length !== 0) {
+                getEdgeMap(current.value.id, {
+                    deviceId: props.childData.id,
+                    query: {},
+                }).then((res) => {
+                    if (res.status === 200) {
+                        // console.log(res.result)
+                        //合并物模型
+                        const array = res.result[0]?.reduce(
+                            (x: any, y: any) => {
+                                const metadataId = metadata.find(
+                                    (item: any) =>
+                                        item.metadataId === y.metadataId,
+                                );
+                                if (metadataId) {
+                                    Object.assign(metadataId, y);
+                                } else {
+                                    x.push(y);
+                                }
+                                return x;
+                            },
+                            metadata,
+                        );
+                        //删除物模型
+                        const items = array.filter(
+                            (item: any) => item.metadataName,
+                        );
+                        current.value.metadata = items;
+                        const delList = array
+                            .filter((a: any) => !a.metadataName)
+                            .map((b: any) => b.id);
+                        //删除后解绑
+                        if (delList && delList.length !== 0) {
+                            removeEdgeMap(current.value.id, {
+                                deviceId: props.childData.id,
+                                idList: [...delList],
+                            });
+                        }
+                    }
+                });
+            }
+        }
+        visible.value = true;
+    } else {
+        current.value.parentId = '';
+    }
+};
+/**
+ * 根据产品id获取对应映射列表
+ * @param e 产品id
+ */
 const selectChange = (e: any) => {
     if (e) {
         visible.value = true;
