@@ -13,19 +13,21 @@
 import templateApi from '@/api/notice/template';
 
 type Emits = {
-    (e: 'update:toTag', data: string): void;
+    (e: 'update:toTag', data: string | undefined): void;
 };
+type Props = {
+    toTag: string | undefined;
+    type: string | undefined;
+    configId: string | undefined;
+}
+
 const emit = defineEmits<Emits>();
 
-const props = defineProps({
-    toTag: { type: String, default: '' },
-    type: { type: String, default: '' },
-    configId: { type: String, default: '' },
-});
+const props = defineProps<Props>();
 
 const _value = computed({
     get: () => props.toTag,
-    set: (val: string) => emit('update:toTag', val),
+    set: (val: string | undefined) => emit('update:toTag', val),
 });
 
 const options = ref([]);

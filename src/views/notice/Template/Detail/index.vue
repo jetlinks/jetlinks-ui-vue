@@ -820,49 +820,49 @@ const resetPublicFiles = () => {
     formData.value.template = {};
     switch (formData.value.provider) {
         case 'dingTalkMessage':
-            formData.value.template.agentId = '';
-            formData.value.template.message = '';
-            formData.value.template.departmentIdList = '';
-            formData.value.template.userIdList = '';
+            formData.value.template.agentId = undefined;
+            formData.value.template.message = undefined;
+            formData.value.template.departmentIdList = undefined;
+            formData.value.template.userIdList = undefined;
             break;
         case 'dingTalkRobotWebHook':
-            formData.value.template.message = '';
+            formData.value.template.message = undefined;
             formData.value.template.messageType = 'markdown';
-            formData.value.template.markdown = { text: '', title: '' };
+            formData.value.template.markdown = { text: undefined, title: undefined };
             break;
         case 'corpMessage':
-            formData.value.template.agentId = '';
-            formData.value.template.message = '';
-            formData.value.template.toParty = '';
-            formData.value.template.toUser = '';
-            formData.value.template.toTag = '';
+            formData.value.template.agentId = undefined;
+            formData.value.template.message = undefined;
+            formData.value.template.toParty = undefined;
+            formData.value.template.toUser = undefined;
+            formData.value.template.toTag = undefined;
             break;
         case 'embedded':
-            formData.value.template.subject = '';
-            formData.value.template.message = '';
-            formData.value.template.text = '';
+            formData.value.template.subject = undefined;
+            formData.value.template.message = undefined;
+            formData.value.template.text = undefined;
             formData.value.template.sendTo = [];
             formData.value.template.attachments = [];
             break;
         case 'aliyun':
             formData.value.template.templateType = 'tts';
-            formData.value.template.templateCode = '';
-            formData.value.template.ttsCode = '';
-            // formData.value.template.message = '';
-            formData.value.template.ttsmessage = '';
+            formData.value.template.templateCode = undefined;
+            formData.value.template.ttsCode = undefined;
+            // formData.value.template.message = undefined;
+            formData.value.template.ttsmessage = undefined;
             formData.value.template.playTimes = 1;
-            formData.value.template.calledShowNumbers = '';
-            formData.value.template.calledNumber = '';
+            formData.value.template.calledShowNumbers = undefined;
+            formData.value.template.calledNumber = undefined;
             break;
         case 'aliyunSms':
-            formData.value.template.code = '';
-            formData.value.template.message = '';
-            formData.value.template.phoneNumber = '';
-            formData.value.template.signName = '';
+            formData.value.template.code = undefined;
+            formData.value.template.message = undefined;
+            formData.value.template.phoneNumber = undefined;
+            formData.value.template.signName = undefined;
             break;
         case 'http':
             formData.value.template.contextAsBody = true;
-            formData.value.template.body = '';
+            formData.value.template.body = undefined;
             break;
     }
 
