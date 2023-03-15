@@ -1,12 +1,12 @@
 <template>
-    <a-card>
+    <j-card>
         <SaveChild
             v-if="childVisible"
             @close-child-save="closeChildSave"
             :childData="_current"
         />
         <div v-else>
-            <Search
+            <pro-search
                 :columns="columns"
                 target="child-device"
                 @search="handleSearch"
@@ -76,7 +76,7 @@
                     }}
                 </template>
                 <template #state="slotProps">
-                    <a-badge
+                    <j-badge
                         :text="slotProps.state.text"
                         :status="statusMap.get(slotProps.state.value)"
                     />
@@ -108,7 +108,7 @@
             </JProTable>
             <BindChildDevice v-if="visible" @change="closeBindDevice" />
         </div>
-    </a-card>
+    </j-card>
 </template>
 
 <script setup lang="ts">

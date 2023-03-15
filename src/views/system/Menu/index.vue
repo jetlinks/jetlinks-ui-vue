@@ -18,7 +18,7 @@
                 <template #headerTitle>
                     <PermissionButton
                         type="primary"
-                        :uhasPermission="`${permission}:add`"
+                        :hasPermission="`${permission}:add`"
                         @click="table.toDetails({})"
                     >
                         <AIcon type="PlusOutlined" />新增
@@ -51,7 +51,7 @@
 
                         <PermissionButton
                             type="link"
-                            :uhasPermission="`${permission}:add`"
+                            :hasPermission="`${permission}:add`"
                             :tooltip="{ title: '新增子菜单' }"
                             @click="table.addChildren(slotProps)"
                         >
@@ -59,7 +59,7 @@
                         </PermissionButton>
                         <PermissionButton
                             type="link"
-                            :uhasPermission="`${permission}:delete`"
+                            :hasPermission="`${permission}:delete`"
                             :tooltip="{ title: '删除' }"
                             :popConfirm="{
                                 title: `是否删除该菜单`,

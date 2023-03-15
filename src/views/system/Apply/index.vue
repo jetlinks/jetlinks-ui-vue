@@ -20,7 +20,7 @@
                 <template #headerTitle>
                     <div style="display: flex; align-items: center">
                         <PermissionButton
-                            :uhasPermission="`${permission}:add`"
+                            :hasPermission="`${permission}:add`"
                             type="primary"
                             @click="() => table.toSave()"
                         >
@@ -110,7 +110,7 @@
                                 </j-dropdown>
                                 <PermissionButton
                                     v-else
-                                    :uhasPermission="item.permission"
+                                    :hasPermission="item.permission"
                                     :tooltip="item.tooltip"
                                     :pop-confirm="item.popConfirm"
                                     @click="item.onClick"
@@ -151,7 +151,7 @@
                     <j-space :size="16">
                         <PermissionButton
                             v-for="i in table.getActions(slotProps, 'table')"
-                            :uhasPermission="i.permission"
+                            :hasPermission="i.permission"
                             type="link"
                             :tooltip="i.tooltip"
                             :pop-confirm="i.popConfirm"
