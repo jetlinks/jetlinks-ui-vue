@@ -37,6 +37,7 @@
                     allowClear
                     show-search
                     :filter-option="filterOption"
+                    @change="changeFunction"
                 />
             </j-form-item>
             <j-form-item
@@ -69,6 +70,7 @@
                     v-model:value="formData.configuration.parameter.quantity"
                     :min="1"
                     :max="255"
+                    @blur="changeQuantity"
                 />
             </j-form-item>
             <j-form-item
@@ -112,16 +114,9 @@
                 />
             </j-form-item>
             <j-form-item label="访问类型" name="accessModes">
-                <!-- <RadioCard
-                    layout="horizontal"
-                    :checkStyle="true"
-                    :options="[
-                        { label: '读', value: 'read' },
-                        { label: '写', value: 'write' },
-                    ]"
-                    v-model="formData.accessModes"
-                /> -->
-                <j-checkbox-group
+                <j-card-select
+                    multiple
+                    :showImage="false"
                     v-model:value="formData.accessModes"
                     :options="[
                         { label: '读', value: 'read' },
@@ -129,7 +124,6 @@
                     ]"
                 />
             </j-form-item>
-
             <j-form-item
                 :name="['nspwc']"
                 v-if="
@@ -140,7 +134,6 @@
                 <span style="margin-right: 10px">非标准协议写入配置</span>
                 <j-switch v-model:checked="formData.nspwc" />
             </j-form-item>
-
             <j-form-item
                 v-if="
                     !!formData.nspwc &&
@@ -151,14 +144,16 @@
                 :name="['configuration', 'parameter', 'writeByteCount']"
                 :rules="ModBusRules.writeByteCount"
             >
-                <RadioCard
-                    layout="horizontal"
-                    :checkStyle="true"
+                <j-card-select
+                    :showImage="false"
+                    v-model:value="
+                        formData.configuration.parameter.writeByteCount
+                    "
                     :options="[
                         { label: '是', value: true },
                         { label: '否', value: false },
                     ]"
-                    v-model="formData.configuration.parameter.writeByteCount"
+                    @change="changeWriteByteCount"
                 />
             </j-form-item>
             <j-form-item
@@ -187,11 +182,10 @@
                     },
                 ]"
             >
-                <j-input-number
+                <j-input
                     style="width: 100%"
                     placeholder="请输入采集频率"
                     v-model:value="formData.configuration.interval"
-                    :min="1"
                     addon-after="ms"
                 />
             </j-form-item>
@@ -240,8 +234,8 @@ import {
 } from '@/api/data-collect/collector';
 import { ModBusRules, checkProviderData } from '../../data.ts';
 import type { FormInstance } from 'ant-design-vue';
-import { Rule } from 'ant-design-vue/lib/form';
-import { cloneDeep, isArray } from 'lodash-es';
+import type { Rule } from 'ant-design-vue/lib/form';
+import { cloneDeep } from 'lodash-es';
 
 const props = defineProps({
     data: {
@@ -285,9 +279,8 @@ const formData = ref({
     description: '',
 });
 
-const onSubmit = async () => {
+const handleOk = async () => {
     const data = await formRef.value?.validate();
-
     delete data?.nspwc;
     const { codec } = data?.configuration;
 
@@ -309,19 +302,27 @@ const onSubmit = async () => {
 
     loading.value = true;
     const response = !id
-        ? await savePointBatch(params)
-        : await updatePoint(id, { ...props.data, ...params });
-    if (response.status === 200) {
-        emit('change', true);
-    }
+        ? await savePointBatch(params).catch(() => {})
+        : await updatePoint(id, { ...props.data, ...params }).catch(() => {});
+    emit('change', response?.status === 200);
     loading.value = false;
 };
 
-const handleOk = () => {
-    onSubmit();
-};
 const handleCancel = () => {
     emit('change', false);
+};
+
+const changeQuantity = () => {
+    if (formData.value.configuration.function === 'HoldingRegisters') {
+        formRef.value?.validate();
+    }
+};
+const changeWriteByteCount = (value: Array<string>) => {
+    formData.value.configuration.parameter.writeByteCount = value[0];
+};
+const changeFunction = (value: string) => {
+    formData.value.accessModes =
+        value === 'DiscreteInputs' ? ['read'] : ['read', 'write'];
 };
 
 const checkLength = (_rule: Rule, value: string): Promise<any> =>
@@ -347,10 +348,10 @@ const checkPointKey = (_rule: Rule, value: string): Promise<any> =>
     new Promise(async (resolve, reject) => {
         if (value) {
             if (Number(oldPointKey) === Number(value)) return resolve('');
-            const res = await _validateField(collectorId, {
+            const res: any = await _validateField(collectorId, {
                 pointKey: value,
             });
-            return res.result.passed ? resolve('') : reject(res.result.reason);
+            return res.result?.passed ? resolve('') : reject(res.result.reason);
         }
     });
 
@@ -359,10 +360,10 @@ const filterOption = (input: string, option: any) => {
 };
 
 const getProviderList = async () => {
-    const res = await queryCodecProvider();
+    const res: any = await queryCodecProvider();
     providerList.value = res.result
-        .filter((i) => i.id !== 'property')
-        .map((item) => ({
+        .filter((i: any) => i.id !== 'property')
+        .map((item: any) => ({
             value: item.id,
             label: item.name,
         }));
@@ -386,11 +387,13 @@ watch(
             formData.value = _value;
             if (!!_value.accessModes[0]?.value) {
                 formData.value.accessModes = value.accessModes.map(
-                    (i) => i.value,
+                    (i: any) => i.value,
                 );
             }
             if (!!_value.features[0]?.value) {
-                formData.value.features = value.features.map((i) => i.value);
+                formData.value.features = value.features.map(
+                    (i: any) => i.value,
+                );
             }
             formData.value.nspwc = !!writeByteCount || !!byteCount;
         }
@@ -399,22 +402,4 @@ watch(
 );
 </script>
 
-<style lang="less" scoped>
-.form {
-    .form-radio-button {
-        width: 148px;
-        height: 80px;
-        padding: 0;
-        img {
-            width: 100%;
-            height: 100%;
-        }
-    }
-    .form-upload-button {
-        margin-top: 10px;
-    }
-    .form-submit {
-        background-color: @primary-color !important;
-    }
-}
-</style>
+<style lang="less" scoped></style>

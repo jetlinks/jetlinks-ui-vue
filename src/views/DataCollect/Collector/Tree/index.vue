@@ -20,12 +20,13 @@
             </PermissionButton>
         </div>
         <j-spin :spinning="spinning">
-            <a-tree
+            <j-tree
                 :tree-data="defualtDataSource"
                 v-model:selected-keys="selectedKeys"
                 :fieldNames="{ key: 'id' }"
                 v-if="defualtDataSource[0].children.length !== 0"
                 :height="600"
+                defaultExpandAll
             >
                 <template #title="{ name, data }">
                     <Ellipsis class="tree-left-title">
@@ -90,7 +91,7 @@
                         </PermissionButton>
                     </span>
                 </template>
-            </a-tree>
+            </j-tree>
             <j-empty v-else description="暂无数据" />
         </j-spin>
         <Save v-if="visible" :data="current" @change="saveChange" />
@@ -121,13 +122,13 @@ const emits = defineEmits(['change']);
 const route = useRoute();
 const channelId = route.query?.channelId;
 const spinning = ref(false);
-const selectedKeys = ref([]);
+const selectedKeys: any = ref([]);
 const searchValue = ref();
 const visible = ref(false);
 const current = ref({});
 const collectorAll = ref();
 
-const defualtDataSource = ref([
+const defualtDataSource: any = ref([
     {
         id: '*',
         name: '全部',
@@ -164,7 +165,7 @@ const handlEdit = (data: object) => {
     visible.value = true;
 };
 
-const handlUpdate = async (data: object) => {
+const handlUpdate = async (data: any) => {
     const state = data?.state?.value;
     const resp = await update(data?.id, {
         state: state !== 'disabled' ? 'disabled' : 'enabled',
@@ -210,7 +211,7 @@ const handleSearch = async (value: string) => {
         !!value && (params.value = value);
     }
     spinning.value = true;
-    const res = await queryCollector(params.value);
+    const res: any = await queryCollector(params.value);
     if (res.status === 200) {
         defualtDataSource.value[0].children = res.result;
         collectorAll.value = res.result;
@@ -232,11 +233,14 @@ onMounted(() => {
     getChannelNoPaging();
 });
 
-watch(selectedKeys, (n) => {
-    const key = _.isArray(n) ? n[0] : n;
-    const row = collectorAll.value.find((i) => i.id === key);
-    emits('change', row);
-});
+watch(
+    () => selectedKeys.value,
+    (n) => {
+        const key = _.isArray(n) ? n[0] : n;
+        const row = collectorAll.value.find((i: any) => i.id === key);
+        emits('change', row);
+    },
+);
 
 watch(
     () => searchValue.value,
@@ -249,7 +253,7 @@ watch(
 <style lang="less" scoped>
 .tree-container {
     padding-right: 24px;
-
+    width: 300px;
     .add-btn {
         margin: 10px 0;
 

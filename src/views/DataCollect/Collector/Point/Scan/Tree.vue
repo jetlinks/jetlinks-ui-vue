@@ -5,14 +5,14 @@
             <j-checkbox v-model:checked="isSelected">隐藏已有节点</j-checkbox>
         </div>
         <j-spin :spinning="spinning">
-    
             <a-tree
+                v-if="!!treeData"
                 :load-data="onLoadData"
                 :tree-data="treeData"
                 v-model:checkedKeys="checkedKeys"
                 checkable
                 @check="onCheck"
-                :height="650"
+                :height="600"
             >
                 <template #title="{ name, key }">
                     <span
@@ -26,6 +26,7 @@
                     </span>
                 </template>
             </a-tree>
+            <j-empty v-else />
         </j-spin>
     </div>
 </template>
@@ -50,7 +51,6 @@ const props = defineProps({
 });
 const emits = defineEmits(['change']);
 
-// const channelId = '1610517801347788800'; //测试
 const channelId = props.data?.channelId;
 
 const checkedKeys = ref<string[]>([]);
@@ -67,12 +67,12 @@ const onLoadData = (node: any) =>
             resolve();
             return;
         }
-        const resp = await scanOpcUAList({
+        const resp: any = await scanOpcUAList({
             id: channelId,
             nodeId: node.key,
         });
         if (resp.status === 200) {
-            const list = resp.result.map((item: any) => {
+            const list: any = resp.result.map((item: any) => {
                 return {
                     ...item,
                     key: item.id,
@@ -91,13 +91,13 @@ const onLoadData = (node: any) =>
         resolve();
     });
 
-const handleData = (arr: any[]): any[] => {
-    const data = arr.filter((item) => {
+const handleData = (arr: any): any[] => {
+    const data = arr.filter((item: any) => {
         return (
             (isSelected && !selectKeys.value.includes(item.id)) || !isSelected
         );
     });
-    return data.map((item) => {
+    return data.map((item: any) => {
         if (item.children && item.children?.length) {
             return {
                 ...item,
@@ -109,7 +109,7 @@ const handleData = (arr: any[]): any[] => {
     });
 };
 
-const onCheck = (checkedKeys, info) => {
+const onCheck = (checkedKeys: any, info: any) => {
     const one: any = { ...info.node };
     const list: any = [];
     const last: any = list.length ? list[list.length - 1] : undefined;
@@ -143,8 +143,8 @@ const onCheck = (checkedKeys, info) => {
     emits('change', item, info.checked);
 };
 
-const updateTreeData = (list: any[], key: string, children: any[]): any[] => {
-    const arr = list.map((node) => {
+const updateTreeData = (list: any, key: string, children: any[]): any[] => {
+    const arr = list.map((node: any) => {
         if (node.key === key) {
             return {
                 ...node,
@@ -164,44 +164,41 @@ const updateTreeData = (list: any[], key: string, children: any[]): any[] => {
 
 const getPoint = async () => {
     spinning.value = true;
-    const res = await queryPointNoPaging();
+    const res: any = await queryPointNoPaging();
     if (res.status === 200) {
         selectKeys.value = res.result.map((item: any) => item.pointKey);
     }
+    getScanOpcUAList();
     spinning.value = false;
 };
 getPoint();
 
 const getScanOpcUAList = async () => {
-    const res = await scanOpcUAList({ id: channelId });
+    spinning.value = true;
+    const res: any = await scanOpcUAList({ id: channelId });
     treeAllData.value = res.result.map((item: any) => ({
         ...item,
         key: item.id,
         title: item.name,
         disabled: item?.folder || false,
     }));
+    spinning.value = false;
 };
-getScanOpcUAList();
+// getScanOpcUAList();
 
 watch(
     () => isSelected.value,
     (value) => {
-        if (value) {
-            treeData.value = handleData(treeAllData.value);
-        } else {
-            treeData.value = treeAllData.value;
-        }
+        treeData.value = value
+            ? handleData(treeAllData.value)
+            : treeAllData.value;
     },
     { deep: true },
 );
 watch(
     () => treeAllData.value,
     (value) => {
-        if (isSelected.value) {
-            treeData.value = handleData(value);
-        } else {
-            treeData.value = value;
-        }
+        treeData.value = isSelected.value ? handleData(value) : value;
     },
     { deep: true },
 );

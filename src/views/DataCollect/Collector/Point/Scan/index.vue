@@ -33,7 +33,6 @@
 import type { FormInstance } from 'ant-design-vue';
 import { savePointBatch } from '@/api/data-collect/collector';
 import { Rule } from 'ant-design-vue/lib/form';
-import { cloneDeep } from 'lodash';
 
 import Table from './Table.vue';
 import Tree from './Tree.vue';
@@ -55,8 +54,8 @@ const tableDataMap = new Map();
 const unSelectKeys = ref();
 
 const handleOk = async () => {
-    loading.value = true;
-    const data = await formTableRef.value?.validate();
+    const data: any = await formTableRef.value?.validate().catch(() => {});
+    if (!data) return;
     const list = data.map((item: any) => {
         return {
             name: item.name,
@@ -71,10 +70,9 @@ const handleOk = async () => {
             accessModes: item.accessModes?.value || [],
         };
     });
-    const resp = await savePointBatch([...list]);
-    if (resp.status === 200) {
-        emit('change', true);
-    }
+    loading.value = true;
+    const resp = await savePointBatch([...list]).catch(() => {});
+    emit('change', resp?.status === 200);
     loading.value = false;
 };
 const handleCancel = () => {

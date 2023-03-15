@@ -5,7 +5,10 @@
                 <Tree @change="changeTree" />
             </div>
             <div class="right">
-                <Point v-if="!!data" :data="data" />
+                <j-spin :spinning="spinning">
+                    <Point v-if="!!data" :data="data" />
+                    <j-empty style="margin-top: 20%" v-else />
+                </j-spin>
             </div>
         </div>
     </page-container>
@@ -16,9 +19,11 @@ import Tree from './Tree/index.vue';
 import Point from './Point/index.vue';
 
 const data = ref();
+const spinning = ref(true);
 
 const changeTree = (row: any) => {
     data.value = row;
+    spinning.value = false;
 };
 </script>
 
@@ -29,6 +34,7 @@ const changeTree = (row: any) => {
     padding: 14px;
     display: flex;
     min-height: calc(100vh - 180px);
+    width: 100%;
     .left {
         width: 300px;
         border-right: 1px #eeeeee solid;

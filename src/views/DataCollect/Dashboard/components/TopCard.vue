@@ -44,7 +44,6 @@ const props = defineProps({
 .top-card {
     display: flex;
     flex-direction: column;
-    // height: 200px;
     padding: 24px;
     background-color: #fff;
     border: 1px solid #e0e4e8;

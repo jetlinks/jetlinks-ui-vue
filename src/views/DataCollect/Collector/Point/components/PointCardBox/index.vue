@@ -78,8 +78,7 @@
 </template>
 
 <script setup lang="ts">
-import BadgeStatus from '@/components/BadgeStatus/index.vue';
-import type { ActionsType } from '@/components/Table/index.vue';
+import type { ActionsType } from '@/components/Table/index';
 import { PropType } from 'vue';
 
 type EmitProps = {
@@ -146,19 +145,20 @@ const handleClick = () => {
         width: 44px;
         height: 44px;
         color: #fff;
-        background-color: red;
         background-color: #2f54eb;
         transform: rotate(-45deg);
 
         > div {
             position: relative;
             height: 100%;
+            right: -2px;
+            bottom: -4px;
             transform: rotate(45deg);
 
             > span {
                 position: absolute;
-                top: 6px;
-                left: 6px;
+                // top: 6px;
+                // left: 6px;
                 font-size: 12px;
             }
         }
