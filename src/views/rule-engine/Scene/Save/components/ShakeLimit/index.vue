@@ -7,9 +7,9 @@
             style="margin-right: 12px"
         />
         <template v-if="shakeLimit.enabled">
-            <j-input-number :min="1" :max="100" :precision="0" size="small" v-model:value="shakeLimit.time" style="width: 32px" />
+            <j-input-number :min="1" :max="100" :precision="0" size="small" v-model:value="shakeLimit.time" style="width: 38px" />
             <span>秒内发送</span>
-            <j-input-number :min="1" :max="100" :precision="0" size="small" v-model:value="shakeLimit.threshold" style="width: 32px" />
+            <j-input-number :min="1" :max="100" :precision="0" size="small" v-model:value="shakeLimit.threshold" style="width: 38px" />
             <span>次及以上时，处理</span>
             <j-radio-group :options="alarmFirstOptions" optionType="button" v-model:value="shakeLimit.alarmFirst" size="small" />
         </template>
@@ -55,8 +55,7 @@ const shakeLimit = reactive<ShakeLimitType>({
 Object.assign(shakeLimit, props.value)
 
 watch(() => shakeLimit, () => {
-    const cloneValue = cloneDeep(shakeLimit)
-    emit('update:value', cloneValue)
+    emit('update:value', {...shakeLimit})
 }, {
     deep: true
 })

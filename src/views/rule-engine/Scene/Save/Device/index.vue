@@ -15,7 +15,6 @@
       </AddButton>
     </a-form-item>
     <Terms />
-    <Action />
     <AddModel v-if='visible' @cancel='visible = false' @save='save' :value='data.trigger.device' :options='data.options.trigger' />
   </div>
 </template>

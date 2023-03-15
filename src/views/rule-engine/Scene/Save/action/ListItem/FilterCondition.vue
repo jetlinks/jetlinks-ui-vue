@@ -67,14 +67,14 @@
   </div>
 </template>
 
-<script setup lang='ts' name='ParamsItem'>
+<script setup lang='ts' name='FilterCondition'>
 import type { PropType } from 'vue'
 import type { TermsType } from '@/views/rule-engine/Scene/typings'
-import DropdownButton from '../DropdownButton'
-import { getOption } from '../DropdownButton/util'
-import ParamsDropdown, { DoubleParamsDropdown } from '../ParamsDropdown'
+import DropdownButton from '../../components/DropdownButton'
+import { getOption } from '../../components/DropdownButton/util'
+import ParamsDropdown, { DoubleParamsDropdown } from '../../components/ParamsDropdown'
 import { inject } from 'vue'
-import { ContextKey } from './util'
+import { ContextKey } from '../../components/Terms/util'
 import { useSceneStore } from 'store/scene'
 import { storeToRefs } from 'pinia';
 
@@ -116,7 +116,7 @@ const props = defineProps({
     type: Number,
     default: 0
   },
-  whenName: {
+  thenName: {
     type: Number,
     default: 0
   },
@@ -147,14 +147,15 @@ const showDelete = ref(false)
 const columnOptions: any = inject(ContextKey) //
 const termTypeOptions = ref<Array<{ id: string, name: string}>>([]) // 条件值
 const valueOptions = ref<any[]>([]) // 默认手动输入下拉
-const metricOption = ref<any[]>([])  // 根据termType获取对应指标值
-const tabsOptions = ref<Array<TabsOption>>([{ label: '手动输入', key: 'manual', component: 'string' }])
-let metricsCacheOption: any[] = [] // 缓存指标值
+const metricOption = ref<any[]>([])  //
+const tabsOptions = ref<Array<TabsOption>>([{ label: '内置参数', key: 'upper', component: 'tree' }])
+// { label: '手动输入', key: 'fixed', component: 'string' },
+
 
 const handOptionByColumn = (option: any) => {
   if (option) {
     termTypeOptions.value = option.termTypes || []
-    metricsCacheOption = option.metrics || []
+    metricOption.value = option.metrics || []
     tabsOptions.value.length = 1
     tabsOptions.value[0].component = option.dataType
 
@@ -176,7 +177,7 @@ const handOptionByColumn = (option: any) => {
     }
   } else {
     termTypeOptions.value = []
-    metricsCacheOption = []
+    metricOption.value = []
     valueOptions.value = []
   }
 }
@@ -188,8 +189,8 @@ watchEffect(() => {
 
 const showDouble = computed(() => {
   const isRange = paramsValue.termType ? ['nbtw', 'btw', 'in', 'nin'].includes(paramsValue.termType) : false
-  if (metricsCacheOption.length) {
-    metricOption.value = metricsCacheOption.filter(item => isRange ? item.range : !item.range)
+  if (metricOption.value.length) {
+    metricOption.value = metricOption.value.filter(item => isRange ? item.range : !item.range)
   } else {
     metricOption.value = []
   }
@@ -236,17 +237,16 @@ const termAdd = () => {
     type: 'and',
     key: `params_${new Date().getTime()}`
   }
-  formModel.value.branches?.[props.branchName]?.when?.[props.whenName]?.terms?.push(terms)
+  formModel.value.branches?.[props.branchName]?.then?.[props.thenName]?.actions?.[props.name].terms?.push(terms)
 }
 
 const onDelete = () => {
-  formModel.value.branches?.[props.branchName]?.when?.[props.whenName]?.terms?.splice(props.name, 1)
+  formModel.value.branches?.[props.branchName]?.then?.[props.thenName]?.actions?.[props.name].terms?.splice(props.name, 1)
 }
 
 nextTick(() => {
   Object.assign(paramsValue, props.value)
 })
-
 </script>
 
 <style scoped>

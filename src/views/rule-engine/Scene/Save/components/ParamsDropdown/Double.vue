@@ -6,6 +6,7 @@
     :icon='icon'
     :placeholder='placeholder'
     :tabs-options='tabsOptions'
+    :metricOptions='metricOptions'
     @select='onSelect'
   />
   <ParamsDropdown
@@ -14,6 +15,7 @@
     :icon='icon'
     :placeholder='placeholder'
     :tabs-options='tabsOptions'
+    :metricOptions='metricOptions'
     :options='options'
     @select='onSelect'
   />

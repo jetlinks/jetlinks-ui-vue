@@ -5,7 +5,7 @@
                 :parallel="parallel"
                 :data="item"
                 :branchesName="branchesName"
-                :branchGroup="parallel ? 1 : 0"
+                :thenName="thenName"
                 :name="index"
                 :type="type"
                 :isLast="index === actions.length - 1"
@@ -25,7 +25,7 @@
             @cancel="onCancel"
             :parallel="parallel"
             :name="actions.length"
-            :branchGroup="parallel ? 1 : 0"
+            :branchGroup="thenName"
             @save="onSave"
             :branchesName="branchesName"
         />
@@ -38,6 +38,11 @@ import { ActionsType, ParallelType } from '../../../typings';
 import Modal from '../Modal/index.vue';
 import Item from './Item.vue';
 import { pick } from 'lodash';
+import { useSceneStore } from '@/store/scene';
+import { storeToRefs } from 'pinia';
+
+const sceneStore = useSceneStore();
+const { data: _data } = storeToRefs(sceneStore);
 
 interface ListProps {
     branchesName: number;
@@ -47,7 +52,10 @@ interface ListProps {
 }
 
 const props = defineProps({
-    branchesName: Number,
+    branchesName: {
+      type: Number,
+      default: 0
+    },
     type: {
         type: String as PropType<ListProps['type']>,
         default: 'serial',
@@ -62,6 +70,10 @@ const props = defineProps({
 const emit = defineEmits(['delete', 'add']);
 
 const visible = ref<boolean>(false);
+
+const thenName = computed(() => {
+  return _data.value.branches![props.branchesName].then.findIndex(item => item.parallel === props.parallel)
+})
 
 const onAdd = () => {
     visible.value = true;
