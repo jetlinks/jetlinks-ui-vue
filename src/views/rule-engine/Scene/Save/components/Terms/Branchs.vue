@@ -49,9 +49,16 @@
         </div>
       </div>
       <div class='actions-branches'>
-        <j-form-item></j-form-item>
+        <j-form-item
+          :name='["branches", name, "then"]'
+          :rules='rules'
+        >
+          <Action
+            :openShakeLimit="true"
+            :thenOptions='FormModel.branches[name].then'
+          />
+        </j-form-item>
       </div>
-
     </div>
   </div>
 </template>
@@ -62,6 +69,7 @@ import type { ActionBranchesProps } from '@/views/rule-engine/Scene/typings'
 import TermsItem from './TermsItem.vue'
 import { storeToRefs } from 'pinia';
 import { useSceneStore } from 'store/scene'
+import Action from '../../action/index.vue'
 
 const sceneStore = useSceneStore()
 const { data: FormModel } = storeToRefs(sceneStore)
@@ -148,6 +156,18 @@ const optionsClass = computed(() => {
     error: error
   }
 })
+
+const rules = [{
+  validator(_: string, value: any) {
+    if (!value || (value && !value.length)) {
+      return Promise.reject('至少配置一个执行动作')
+    } else {
+      const isActions = value.some((item: any) => item.actions && item.actions.length)
+      return isActions ? Promise.resolve() : Promise.reject('至少配置一个执行动作');
+    }
+    return Promise.resolve();
+  }
+}]
 
 </script>
 
