@@ -1,5 +1,5 @@
 <template>
-    <j-advanced-search
+    <pro-search
         :columns="columns"
         type="simple"
         target="action-notice-template"
@@ -19,8 +19,8 @@
             :gridColumn="2"
             :rowSelection="{
                 selectedRowKeys: _selectedRowKeys,
+                onChange: onSelectChange,
             }"
-            @cancelSelect="cancelSelect"
         >
             <template #card="slotProps">
                 <CardBox
@@ -48,22 +48,22 @@
                                 {{ slotProps.name }}
                             </span>
                         </Ellipsis>
-                        <a-row>
-                            <a-col :span="12">
+                        <j-row>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">
                                     通知方式
                                 </div>
                                 <div>
                                     {{ getMethodTxt(slotProps.type) }}
                                 </div>
-                            </a-col>
-                            <a-col :span="12">
+                            </j-col>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">说明</div>
                                 <Ellipsis>
                                     {{ slotProps.description }}
                                 </Ellipsis>
-                            </a-col>
-                        </a-row>
+                            </j-col>
+                        </j-row>
                     </template>
                 </CardBox>
             </template>
@@ -85,7 +85,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['update:value']);
+const emit = defineEmits(['update:value', 'change']);
 
 const getLogo = (type: string, provider: string) => {
     return MSG_TYPE[type].find((f: any) => f.value === provider)?.logo;
@@ -129,13 +129,14 @@ const handleSearch = (_params: any) => {
     params.value = _params;
 };
 
-const cancelSelect = () => {
-    _selectedRowKeys.value = [];
-};
-
 const handleClick = (dt: any) => {
     _selectedRowKeys.value = [dt.id];
     emit('update:value', dt.id);
+    emit('change', { templateName: dt?.name });
+};
+
+const onSelectChange = (keys: string[]) => {
+    _selectedRowKeys.value = [...keys];
 };
 
 const handleData = async (e: any) => {
@@ -178,8 +179,7 @@ watch(
 <style lang="less" scoped>
 .search {
     margin-bottom: 0;
-    padding-right: 0px;
-    padding-left: 0px;
+    padding: 0;
 }
 
 .logo {

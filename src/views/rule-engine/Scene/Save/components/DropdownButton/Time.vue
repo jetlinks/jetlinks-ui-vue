@@ -1,7 +1,7 @@
 <template>
   <div class='dropdown-time-picker'>
     <j-time-picker
-      v-if='!_type'
+      v-if='type === "time"'
       open
       v-model:value='myValue'
       class='manual-time-picker'
@@ -59,9 +59,6 @@ const change = (e: Dayjs) => {
   emit('change', e.format(myFormat))
 }
 
-const _type = computed(() => {
-  return props.value?.includes('-')
-})
 </script>
 
 <style lang='less'>

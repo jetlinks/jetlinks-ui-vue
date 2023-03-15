@@ -23,7 +23,7 @@
             <div class='select-box-content'>
               <DropdownTimePicker
                 v-if='["time","date"].includes(item.component)'
-                :type='item.component'
+                type='time'
                 v-model:value='myValue'
                 @change='timeChange'
               />

@@ -26,20 +26,28 @@
         </j-popconfirm>
 
         <j-form-item
-          v-for='(item, index) in data.terms'
+          v-for='(item, index) in termsData'
           :key='item.key'
           :name='["branches", branchName, "when", whenName, "terms", index]'
         >
           <ParamsItem
             v-model:value='formModel.branches[branchName].when[whenName].terms[index]'
             :isFirst='index === 0'
-            :isLast='index === data.terms.length - 1'
+            :isLast='index === termsData.length - 1'
+            :showDeleteBtn='termsData.length !== 1'
             :name='index'
+            :termsName='name'
+            :whenName='whenName'
+            :branchName='branchName'
             @change='paramsChange'
-            @delete='paramsDelete'
-            @add='paramsAdd'
           />
         </j-form-item>
+      </div>
+      <div class='terms-group-add' @click='addTerms' v-if='isLast'>
+        <div class='terms-content'>
+          <AIcon type='PlusOutlined' />
+          <span>分组</span>
+        </div>
       </div>
     </div>
   </div>
@@ -61,6 +69,14 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
+  isLast: {
+    type: Boolean,
+    default: true
+  },
+  showDeleteBtn: {
+    type: Boolean,
+    default: true
+  },
   data: {
     type: Object as PropType<TermsType>,
     default: () => ({
@@ -72,6 +88,10 @@ const props = defineProps({
   class: {
     type: String,
     default: ''
+  },
+  name: {
+    type: Number,
+    default: 0
   },
   branchName: {
     type: Number,
@@ -85,36 +105,48 @@ const props = defineProps({
 
 const showDelete = ref(false)
 
+const termsData = computed(() => {
+  return props.data.terms
+})
+
 const mouseover = () => {
-  if (props.whenName !== 0){
+  if (props.showDeleteBtn){
     showDelete.value = true
   }
 }
 
 const mouseout = () => {
-  if (props.whenName !== 0){
+  if (props.showDeleteBtn){
     showDelete.value = false
   }
 }
 
 const onDelete = () => {
-
-}
-
-const onDeleteAll = () => {
-
+  formModel.value.branches?.[props.branchName]?.when?.splice(props.name, 1)
 }
 
 const paramsChange = () => {
 
 }
 
-const paramsDelete = () => {
-
-}
-
-const paramsAdd = () => {
-
+const addTerms = () => {
+  const terms = {
+    type: 'and',
+    terms: [
+      {
+        column: undefined,
+        value: {
+          source: 'fixed',
+          value: undefined
+        },
+        termType: undefined,
+        key: 'params_1',
+        type: 'and',
+      }
+    ],
+    key: `terms_${new Date().getTime()}`
+  }
+  formModel.value.branches?.[props.branchName]?.when?.push(terms)
 }
 
 </script>

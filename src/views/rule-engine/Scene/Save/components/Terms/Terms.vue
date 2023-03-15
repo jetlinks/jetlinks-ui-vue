@@ -97,7 +97,19 @@ const queryColumn = (dataModel: FormModelType) => {
 }
 
 const addBranches = () => {
-
+  const branchesItem = {
+    when: [],
+    key: `branches_${new Date().getTime()}`,
+    shakeLimit: {
+      enabled: false,
+      time: 1,
+      threshold: 1,
+      alarmFirst: false,
+    },
+    then: [],
+  }
+  const lastIndex = data.value.branches!.length - 1 || 0
+  data.value.branches?.splice(lastIndex, 1, branchesItem)
 }
 
 const branchesDelete = (index: number) => {

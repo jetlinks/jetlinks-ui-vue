@@ -1,6 +1,6 @@
 <template>
     <div>
-        <a-form :layout="'vertical'" ref="formRef" :model="modelRef">
+        <j-form :layout="'vertical'" ref="formRef" :model="modelRef">
             <j-row>
                 <j-col :span="11">
                     <j-form-item
@@ -40,7 +40,7 @@
                     </j-form-item>
                 </j-col>
             </j-row>
-        </a-form>
+        </j-form>
     </div>
 </template>
 
