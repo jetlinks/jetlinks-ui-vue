@@ -3860,7 +3860,7 @@
   "version" "0.0.3"
 
 "jetlinks-ui-components@^1.0.5":
-  "integrity" "sha512-u1jqTyBWHB+b/NOKimucxNMYxet6g9Hi/I30T1VNWGq+x/Gf2zjz8dJoxjUcLW+9t/yjG6opWUE8Z8NWQRp3Eg=="
+  "integrity" "sha512-zrMe/4PjtWNCQtlP6kNLA7hVyQ7ftPSgivQZp8TGcpbUMOU/IYyCLQ0+VoWcqEopTSt1zEzEazodR4EjEzv7pQ=="
   "resolved" "http://47.108.170.157:9013/jetlinks-ui-components/-/jetlinks-ui-components-1.0.5.tgz"
   "version" "1.0.5"
   dependencies:
