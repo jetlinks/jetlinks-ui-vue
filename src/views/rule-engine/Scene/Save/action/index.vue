@@ -8,8 +8,8 @@
             />
         </div>
         <div class="actions-warp">
-            <a-collapse v-model:activeKey="activeKeys">
-                <a-collapse-panel key="1">
+            <j-collapse v-model:activeKey="activeKeys">
+                <j-collapse-panel key="1">
                     <template #header>
                         <span>
                             串行
@@ -27,11 +27,11 @@
                                 serialArray.length ? serialArray[0].actions : []
                             "
                             @add="(_item) => onAdd(_item, false)"
-                            @delete="onDelete"
+                            @delete="(_key) => onDelete(_key, false)"
                         />
                     </div>
-                </a-collapse-panel>
-                <a-collapse-panel key="2">
+                </j-collapse-panel>
+                <j-collapse-panel key="2">
                     <template #header>
                         <span>
                             并行
@@ -51,11 +51,11 @@
                                     : []
                             "
                             @add="(_item) => onAdd(_item, true)"
-                            @delete="onDelete"
+                            @delete="(_key) => onDelete(_key, true)"
                         />
                     </div>
-                </a-collapse-panel>
-            </a-collapse>
+                </j-collapse-panel>
+            </j-collapse>
         </div>
     </div>
 </template>
@@ -98,8 +98,6 @@ watch(
         parallelArray.value = newVal.filter((item) => item.parallel);
         serialArray.value = newVal.filter((item) => !item.parallel);
 
-        console.log(parallelArray.value, serialArray.value, '123')
-
         const isSerialActions = serialArray.value.some((item) => {
             return !!item.actions.length;
         });
@@ -121,28 +119,39 @@ watch(
     },
 );
 
-const onDelete = (_key: string) => {
-    const aIndex = unref(serialArray)[0].actions?.findIndex(
+const onDelete = (_key: string, _parallel: boolean) => {
+    const newArray = _parallel ? [...parallelArray.value] : [...serialArray.value];
+    const aIndex = newArray[0].actions?.findIndex(
         (aItem) => aItem.key === _key,
     );
     if (aIndex !== -1) {
-        serialArray.value[0].actions?.splice(aIndex, 1);
-        emit('update', serialArray[0], false);
+        if(_parallel){
+            parallelArray.value[0].actions?.splice(aIndex, 1);
+            emit('update', parallelArray.value[0], _parallel);
+        } else {
+            serialArray.value[0].actions?.splice(aIndex, 1);
+            emit('update', serialArray.value[0], _parallel);
+        }
+        
     }
 };
 const onAdd = (actionItem: any, _parallel: boolean) => {
-    const newParallelArray = [...parallelArray.value];
-    if (newParallelArray.length) {
-        const indexOf = newParallelArray[0].actions?.findIndex(
+    const newArray = _parallel ? [...parallelArray.value] : [...serialArray.value];
+    if (newArray.length) {
+        const indexOf = newArray[0].actions?.findIndex(
             (aItem) => aItem.key === actionItem.key,
         );
         if (indexOf !== -1) {
-            newParallelArray[0].actions.splice(indexOf, 1, actionItem);
+            newArray[0].actions.splice(indexOf, 1, actionItem);
         } else {
-            newParallelArray[0].actions.push(actionItem);
+            newArray[0].actions.push(actionItem);
         }
-        parallelArray.value = [...newParallelArray];
-        emit('update', newParallelArray[0], _parallel);
+        if(_parallel){
+            parallelArray.value = [...newArray];
+        } else {
+            serialArray.value = [...newArray];
+        }
+        emit('update', newArray[0], _parallel);
     } else {
         actionItem.key = randomString();
         emit('add', {

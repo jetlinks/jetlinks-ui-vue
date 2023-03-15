@@ -144,7 +144,7 @@
 </template>
   
 <script lang="ts" setup>
-import { queryNoPagingPost } from '@/api/device/product';
+import { queryGatewayList, queryNoPagingPost } from '@/api/device/product';
 import { queryTree } from '@/api/device/category';
 import { message } from 'jetlinks-ui-components';
 import { ActionsType } from '@/views/device/Instance/typings';
@@ -256,6 +256,26 @@ const columns = [
                 new Promise((resolve) => {
                     queryTree({ paging: false }).then((resp: any) => {
                         resolve(resp.result);
+                    });
+                }),
+        },
+    },
+    {
+        key: 'productId$product-info',
+        dataIndex: 'productId$product-info',
+        title: '接入方式',
+        hideInTable: true,
+        search: {
+            type: 'select',
+            options: () =>
+                new Promise((resolve) => {
+                    queryGatewayList({}).then((resp: any) => {
+                        resolve(
+                            resp.result.map((item: any) => ({
+                                label: item.name,
+                                value: `accessId is ${item.id}`,
+                            })),
+                        );
                     });
                 }),
         },

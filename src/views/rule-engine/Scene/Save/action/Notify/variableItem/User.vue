@@ -1,83 +1,87 @@
 <template>
-    <a-input-group compact>
-        <a-select
+    <j-input-group compact>
+        <j-select
             style="width: 120px"
             v-model:value="mySource"
             @change="sourceChange"
         >
-            <a-select-option key="5" value="relation">
+            <j-select-option key="5" value="relation">
                 平台用户
-            </a-select-option>
-            <a-select-option
+            </j-select-option>
+            <j-select-option
                 v-if="notifyType === 'dingTalk'"
                 key="1"
                 value="fixed"
             >
                 钉钉用户
-            </a-select-option>
-            <a-select-option
+            </j-select-option>
+            <j-select-option
                 v-else-if="notifyType === 'weixin'"
                 key="2"
                 value="fixed"
             >
                 微信用户
-            </a-select-option>
-            <a-select-option
+            </j-select-option>
+            <j-select-option
                 v-else-if="notifyType === 'email'"
                 key="3"
                 value="fixed"
             >
                 固定邮箱
-            </a-select-option>
-            <a-select-option v-else key="4" value="fixed">
+            </j-select-option>
+            <j-select-option v-else key="4" value="fixed">
                 固定号码
-            </a-select-option>
-        </a-select>
-        <a-tree-select
+            </j-select-option>
+        </j-select>
+        <j-tree-select
             v-if="source === 'relation'"
             style="width: calc(100% - 120px)"
             placeholder="请选择收信人"
-            @select="treeSelect"
+            @select="(key, node) => onChange(source, key, false, node?.relation, node.name)"
             :tree-data="treeData"
+            :multiple="['email'].includes(notifyType)"
             :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
             :value="relationData"
-        />
-        <a-select
-            style="width: calc(100% - 120px)"
-            v-else-if="['dingTalk', 'weixin'].includes(notifyType)"
-            placeholder="请选择收信人"
-            :value="value?.value"
-            @change="(val) => onChange(val)"
         >
-            <a-select-option
-                v-for="item in relationList"
-                :key="item.id"
-                :value="item.id"
-                >{{ item.name }}</a-select-option
-            >
-        </a-select>
-        <a-input
-            style="width: calc(100% - 120px)"
-            v-else-if="['email'].includes(notifyType)"
-            placeholder="请输入固定邮箱"
-            :value="value?.value"
-            :multiple="true"
-            @change="(e) => onChange(e.target.value)"
-        ></a-input>
-        <a-input
-            style="width: calc(100% - 120px)"
-            v-else-if="['sms', 'voice'].includes(notifyType)"
-            placeholder="请输入固定号码"
-            :value="value?.value"
-            @change="(e) => onChange(e.target.value)"
-        ></a-input>
-    </a-input-group>
+            <template #title="{ key, username, title }">
+                <div style="display: flex; justify-content: space-between; margin-right: 10px;" v-if="key !== 'p1' && key !== 'p2'">{{ title }} <span style="color: #cfcfcf;">{{ username }}</span></div>
+                <span v-else>{{ title }}</span>
+            </template>
+        </j-tree-select>
+        <template v-else>
+            <j-select
+                style="width: calc(100% - 120px)"
+                v-if="['dingTalk', 'weixin'].includes(notifyType)"
+                placeholder="请选择收信人"
+                :value="value?.value"
+                showSearch
+                @change="(val, option) => onChange(source, val, false, option?.label || option?.name)"
+                :options="relationList"
+            />
+            <j-select
+                style="width: calc(100% - 120px)"
+                v-else-if="['email'].includes(notifyType)"
+                placeholder="请输入收件人邮箱,多个收件人用换行分隔"
+                :value="value?.value"
+                mode="tags"
+                @change="(val) => onChange(source, val, false, Array.isArray(val) ? val.join(',') : val)"
+            />
+            <j-input
+                style="width: calc(100% - 120px)"
+                v-else-if="['sms', 'voice'].includes(notifyType)"
+                placeholder="请输入固定号码"
+                :value="value?.value"
+                @change="(e) => onChange(source, e.target.value, false, e.target.value)"
+            ></j-input>
+        </template>
+    </j-input-group>
 </template>
 
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia';
 import { useSceneStore } from '@/store/scene';
 import NoticeApi from '@/api/notice/config';
+import { unionBy } from 'lodash-es';
 
 const sceneStore = useSceneStore();
 const { data } = storeToRefs(sceneStore);
@@ -93,7 +97,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['update:value']);
+const emit = defineEmits(['update:value', 'change']);
 
 const notifyType = computed(() => {
     return props.notify?.notifyType;
@@ -142,6 +146,7 @@ const treeData = ref<any[]>([
     },
 ]);
 const mySource = ref<string>('relation');
+const labelMap = new Map();
 
 const getRelationUsers = async (notifyType: string, notifierId: string) => {
     let resp = undefined;
@@ -151,7 +156,12 @@ const getRelationUsers = async (notifyType: string, notifierId: string) => {
         resp = await NoticeApi.queryWechatUsers(notifierId);
     }
     if (resp && resp.status === 200) {
-        relationList.value = resp.result;
+        relationList.value = unionBy(resp.result, 'id').map((item: any) => {
+            return {
+                value: item.id,
+                label: item.name,
+            };
+        });
     }
 };
 
@@ -206,43 +216,72 @@ const getUser = async (_source: string, triggerType: string) => {
     treeData.value = newTree;
 };
 
-const treeSelect = (val: string, _data: any) => {
-    const obj = {
-        source: source.value,
-        relation: {}
-    };
-    if (_data?.isRelation) {
-        obj.relation = {
-            objectType: 'device',
-            objectSource: {
-                source: 'upper',
-                upperKey: 'scene.deviceId',
-            },
-            related: {
-                objectType: 'user',
-                relation: val,
-            },
-        };
-    } else {
-        obj.relation = {
-            objectType: 'user',
-            objectId: val,
-        };
-    }
-    emit('update:value', obj);
-};
-
 const sourceChange = (v: any) => {
     emit('update:value', {
         source: v,
     });
 };
 
-const onChange = (val: any) => {
-    emit('update:value', {
-        source: source.value,
-        value: val,
-    });
+const getObj = (
+    _source: string = 'fixed',
+    _value?: string | string[],
+    isRelation?: boolean,
+) => {
+    const obj: any = {
+        source: _source,
+    };
+    if (_source === 'relation') {
+        if (isRelation) {
+            obj.relation = {
+                objectType: 'device',
+                objectSource: {
+                    source: 'upper',
+                    upperKey: 'deviceId',
+                },
+                related: {
+                    objectType: 'user',
+                    relation: _value,
+                },
+            };
+        } else {
+            obj.relation = {
+                objectType: 'user',
+                objectId: _value,
+            };
+        }
+    } else {
+        obj.value = _value;
+    }
+    return obj;
+};
+
+const onChange = (
+    _source: string = 'fixed',
+    _value?: string | string[],
+    isRelation?: boolean,
+    _name?: string,
+) => {
+    let _values: any = undefined;
+    const _names: string[] = [_name || ''];
+    if (Array.isArray(_value)) {
+        if (props?.notify?.notifyType === 'email') {
+            if (isRelation) {
+                const arr = _value.map((item) => {
+                    const _item = labelMap.get(item);
+                    _names.push(_item?.name || '');
+                    return getObj('relation', item, _item?.relation);
+                });
+                _values = arr;
+            } else {
+                _values = getObj(_source, _value, false);
+            }
+        }
+    } else {
+        _values = getObj(_source, _value, isRelation);
+    }
+    console.log(_values, '_values')
+    emit('update:value', _values);
+    emit('change', { sendTo: _names.filter((item) => !!item).join(',') });
 };
 
 watch(

@@ -8,17 +8,17 @@
         :maskClosable="false"
     >
         <div class="steps-steps">
-            <a-steps :current="current" size="small" @change="onChange">
-                <a-step title="通知方式" key="way" />
-                <a-step title="通知配置" key="config" />
-                <a-step title="通知模板" key="template" />
-                <a-step title="模板变量" key="variable" />
-            </a-steps>
+            <j-steps :current="current" size="small" @change="onChange">
+                <j-step title="通知方式" key="way" />
+                <j-step title="通知配置" key="config" />
+                <j-step title="通知模板" key="template" />
+                <j-step title="模板变量" key="variable" />
+            </j-steps>
         </div>
         <div class="steps-content">
-            <a-form ref="actionForm" :model="formModel" layout="vertical">
+            <j-form ref="actionForm" :model="formModel" layout="vertical">
                 <template v-if="current === 0">
-                    <a-form-item
+                    <j-form-item
                         label="应用"
                         name="notifyType"
                         :rules="[
@@ -28,38 +28,45 @@
                             },
                         ]"
                     >
-                        <NotifyWay v-model:value="formModel.notifyType" />
-                    </a-form-item>
+                        <NotifyWay
+                            v-model:value="formModel.notifyType"
+                            @change="(val) => onValChange(val, 'notifyType')"
+                        />
+                    </j-form-item>
                 </template>
                 <template v-if="current === 1">
-                    <a-form-item name="notifierId">
+                    <j-form-item name="notifierId">
                         <NotifyConfig
                             v-model:value="formModel.notifierId"
                             :notifyType="formModel.notifyType"
+                            @change="(val) => onValChange(val, 'notifierId')"
                         />
-                    </a-form-item>
+                    </j-form-item>
                 </template>
                 <template v-if="current === 2">
-                    <a-form-item name="templateId">
+                    <j-form-item name="templateId">
                         <NotifyTemplate
                             v-model:value="formModel.templateId"
                             :notifierId="formModel.notifierId"
+                            @change="(val) => onValChange(val, 'templateId')"
                         />
-                    </a-form-item>
+                    </j-form-item>
                 </template>
                 <template v-if="current === 3">
-                    <a-form-item name="variables">
+                    <j-form-item name="variables">
                         <VariableDefinitions
                             :variableDefinitions="variable"
-                            v-model:value="formModel.variables"
+                            :value="formModel.variables"
                             :notify="formModel"
+                            @change="(val) => onValChange(val, 'variables')"
+                            ref="variableRef"
                         />
-                    </a-form-item>
+                    </j-form-item>
                 </template>
-            </a-form>
+            </j-form>
         </div>
         <template #footer>
-            <a-space>
+            <j-space>
                 <j-button v-if="current === 0" @click="onCancel">取消</j-button>
                 <j-button v-if="current > 0" @click="prev">上一步</j-button>
                 <j-button v-if="current < 3" type="primary" @click="next"
@@ -68,7 +75,7 @@
                 <j-button v-if="current === 3" type="primary" @click="onOk"
                     >确定</j-button
                 >
-            </a-space>
+            </j-space>
         </template>
     </j-modal>
 </template>
@@ -90,6 +97,7 @@ const props = defineProps({
     },
     options: {
         type: Object,
+        default: () => {},
     },
     name: {
         type: Number,
@@ -106,9 +114,11 @@ const formModel = reactive({
     notifierId: '',
     templateId: '',
     variables: {},
+    options: {},
 });
 
 const variable = ref([]);
+const variableRef = ref();
 
 watch(
     () => props.value,
@@ -117,6 +127,27 @@ watch(
     },
     { deep: true, immediate: true },
 );
+
+watchEffect(() => {
+    formModel.options = props.options || {};
+});
+
+const onValChange = (val: any, type: string) => {
+    if (type === 'notifyType') {
+        formModel.templateId = '';
+        formModel.variables = [];
+        formModel.notifierId = '';
+    } else if (type === 'notifierId') {
+        formModel.templateId = '';
+        formModel.variables = [];
+    } else if (type === 'templateId') {
+        formModel.variables = [];
+    }
+    formModel.options = {
+        ...unref(formModel.options),
+        ...val,
+    };
+};
 
 const jumpStep = async (val: number) => {
     if (val === 0) {
@@ -134,7 +165,6 @@ const jumpStep = async (val: number) => {
             onlyMessage('请选择通知配置', 'error');
         }
     } else if (val === 3) {
-        formModel.templateId = '1628943618904956928';
         if (formModel.templateId) {
             const resp = await Template.getTemplateDetail(formModel.templateId);
             if (resp.status === 200) {
@@ -162,8 +192,11 @@ const next = async () => {
 const onCancel = () => {
     emit('cancel');
 };
-const onOk = () => {
-    emit('save');
+const onOk = async () => {
+    const _data = await variableRef.value.onSave();
+    formModel.variables = _data;
+    const { options, ...extra } = formModel;
+    emit('save', { ...extra }, { ...options });
 };
 </script>
 

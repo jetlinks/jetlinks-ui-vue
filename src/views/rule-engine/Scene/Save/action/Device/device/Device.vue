@@ -1,12 +1,12 @@
 <template>
-    <j-advanced-search
+    <pro-search
         :columns="columns"
         type="simple"
         @search="handleSearch"
         class="search"
         target="scene-trigger-device-device"
     />
-    <a-divider style="margin: 0" />
+    <j-divider style="margin: 0" />
     <j-pro-table
         ref="actionRef"
         model="CARD"
@@ -153,7 +153,7 @@ const deviceQuery = (p: any) => {
     if (props.value) {
         sorts.push({
             name: 'id',
-            value: props.value,
+            value: props.value[0]?.value,
         });
     }
     sorts.push({ name: 'createTime', order: 'desc' });

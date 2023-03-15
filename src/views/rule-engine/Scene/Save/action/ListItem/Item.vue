@@ -19,17 +19,17 @@
                     v-if="data?.executor === 'alarm'"
                 >
                     <template v-if="data?.alarm?.mode === 'trigger'">
-                        满足条件后将触发<a-button
+                        满足条件后将触发<j-button style="padding: 0;"
                             type="link"
                             @click.stop="triggerVisible = true"
-                            >关联此场景的告警</a-button
+                            >关联此场景的告警</j-button
                         >
                     </template>
                     <template v-else>
-                        满足条件后将解除<a-button
+                        满足条件后将解除<j-button style="padding: 0;"
                             type="link"
                             @click.stop="triggerVisible = true"
-                            >关联此场景的告警</a-button
+                            >关联此场景的告警</j-button
                         >
                     </template>
                 </div>
@@ -308,14 +308,14 @@
                         </div>
                     </template>
                 </div>
-                <a-button v-else @click="onAdd">点击配置执行动作</a-button>
+                <j-button v-else @click="onAdd">点击配置执行动作</j-button>
             </div>
             <div class="item-number">{{ name + 1 }}</div>
-            <a-popconfirm title="确认删除？" @confirm="onDelete">
+            <j-popconfirm title="确认删除？" @confirm="onDelete">
                 <div class="item-delete">
                     <AIcon type="DeleteOutlined" />
                 </div>
-            </a-popconfirm>
+            </j-popconfirm>
         </div>
         <template v-if="!isLast && type === 'serial'">
             <div class="actions-item-filter-warp">
