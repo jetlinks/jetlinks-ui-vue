@@ -4,7 +4,7 @@
             <span>执行</span>
             <ShakeLimit
                 v-if="props.openShakeLimit"
-                v-model:value="shakeLimit"
+                v-model:value="FormModel.branches[name].shakeLimit"
             />
         </div>
         <div class="actions-warp">
@@ -21,7 +21,7 @@
                     <div class="actions-list">
                         <List
                             type="serial"
-                            :branchesName="props.name"
+                            :branchesName="name"
                             :parallel="false"
                             :actions="
                                 serialArray.length ? serialArray[0].actions : []
@@ -43,7 +43,7 @@
                     <div class="actions-list">
                         <List
                             type="parallel"
-                            :branchesName="props.name"
+                            :branchesName="name"
                             :parallel="true"
                             :actions="
                                 parallelArray.length
@@ -63,30 +63,32 @@
 <script lang="ts" setup>
 import ShakeLimit from '../components/ShakeLimit/index.vue';
 import { List } from './ListItem';
-import { BranchesThen } from '../../typings';
+import { BranchesThen } from '../../typings'
 import { PropType } from 'vue';
 import { randomString } from '@/utils/utils';
+import { storeToRefs } from 'pinia';
+import { useSceneStore } from 'store/scene'
 
-interface ActionsProps {
-    name: number;
-    openShakeLimit?: boolean;
-    thenOptions: BranchesThen[];
-}
+const sceneStore = useSceneStore()
+const { data: FormModel } = storeToRefs(sceneStore)
 
 const props = defineProps({
-    name: Number,
+    name: {
+      type: Number,
+      default: 0
+    },
     thenOptions: {
-        type: Array as PropType<ActionsProps['thenOptions']>,
+        type: Array as PropType<BranchesThen[]>,
         default: () => [],
     },
-    openShakeLimit: Boolean,
+    openShakeLimit: {
+      type: Boolean,
+      default: false
+    },
 });
 
 const emit = defineEmits(['update', 'add']);
 
-const shakeLimit = ref({
-    enabled: false,
-});
 const activeKeys = ref<string[]>(['1']);
 const parallelArray = ref<BranchesThen[]>([]);
 const serialArray = ref<BranchesThen[]>([]);
@@ -110,8 +112,6 @@ watch(
             activeKeys.value = ['2'];
             lock.value = true;
         }
-
-        //TODO 回传数据
     },
     {
         deep: true,
@@ -120,46 +120,31 @@ watch(
 );
 
 const onDelete = (_key: string, _parallel: boolean) => {
-    const newArray = _parallel ? [...parallelArray.value] : [...serialArray.value];
-    const aIndex = newArray[0].actions?.findIndex(
-        (aItem) => aItem.key === _key,
-    );
-    if (aIndex !== -1) {
-        if(_parallel){
-            parallelArray.value[0].actions?.splice(aIndex, 1);
-            emit('update', parallelArray.value[0], _parallel);
-        } else {
-            serialArray.value[0].actions?.splice(aIndex, 1);
-            emit('update', serialArray.value[0], _parallel);
-        }
-        
-    }
+  const thenName = props.thenOptions.findIndex(item => item.parallel === _parallel)
+  const actionIndex = FormModel.value.branches?.[props.name].then?.[thenName].actions.findIndex(item => item.key === _key)
+  if (actionIndex !== -1) {
+    FormModel.value.branches?.[props.name].then?.[thenName].actions.splice(actionIndex!, 1)
+  }
 };
+
 const onAdd = (actionItem: any, _parallel: boolean) => {
-    const newArray = _parallel ? [...parallelArray.value] : [...serialArray.value];
-    if (newArray.length) {
-        const indexOf = newArray[0].actions?.findIndex(
-            (aItem) => aItem.key === actionItem.key,
-        );
-        if (indexOf !== -1) {
-            newArray[0].actions.splice(indexOf, 1, actionItem);
-        } else {
-            newArray[0].actions.push(actionItem);
-        }
-        if(_parallel){
-            parallelArray.value = [...newArray];
-        } else {
-            serialArray.value = [...newArray];
-        }
-        emit('update', newArray[0], _parallel);
+  const thenName = props.thenOptions.findIndex(item => item.parallel === _parallel)
+  if (thenName !== -1) { // 编辑
+    const cacheAction =  props.thenOptions[thenName].actions
+    const indexOf = cacheAction?.findIndex(item => item.key === actionItem.key) || -1
+    if (indexOf !== -1) {
+      FormModel.value.branches?.[props.name].then?.[thenName].actions.splice(indexOf, 1, actionItem)
     } else {
-        actionItem.key = randomString();
-        emit('add', {
-            parallel: _parallel,
-            key: randomString(),
-            actions: [actionItem],
-        });
+      FormModel.value.branches?.[props.name].then?.[thenName].actions.push(actionItem)
     }
+  } else { // 新增
+    const newThenItem = {
+      parallel: _parallel,
+      key: randomString(),
+      actions: [actionItem]
+    }
+    FormModel.value.branches?.[props.name].then.push(newThenItem)
+  }
 };
 </script>
 

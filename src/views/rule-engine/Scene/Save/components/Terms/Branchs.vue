@@ -54,6 +54,7 @@
           :rules='rules'
         >
           <Action
+            :name='name'
             :openShakeLimit="true"
             :thenOptions='FormModel.branches[name].then'
           />

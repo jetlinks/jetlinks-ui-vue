@@ -65,8 +65,6 @@ const change = (e: boolean) => {
   open.value = e
 }
 
-
-
 const handleParamsData = (data: any[]): any[] => {
   return data?.map(item => {
     return {

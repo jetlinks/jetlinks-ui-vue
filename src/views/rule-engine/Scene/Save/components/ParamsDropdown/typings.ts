@@ -46,10 +46,6 @@ export const defaultSetting = {
     type: Array as PropType<Array<DropdownButtonOptions>>,
     default: () => []
   },
-  metricOption: {
-    type: Array as PropType<Array<DropdownButtonOptions>>,
-    default: () => []
-  },
   metricOptions: { // 指标值
     type: Array as PropType<Array<DropdownButtonOptions>>,
     default: () => []
