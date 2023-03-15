@@ -33,7 +33,17 @@
                     >
                 </j-range-picker>
             </div>
-            <div ref="chartRef" style="width: 100%; height: 300px"></div>
+            <div>
+                <j-empty
+                    v-if="isEmpty"
+                    style="height: 200px; margin-top: 100px"
+                />
+                <div
+                    v-else
+                    ref="chartRef"
+                    style="width: 100%; height: 300px"
+                ></div>
+            </div>
         </div>
     </j-spin>
 </template>
@@ -50,26 +60,27 @@ import {
     areaStyleCpu,
     typeDataLine,
 } from './tool.ts';
+import { DataType } from '../typings';
 
 const chartRef = ref<Record<string, any>>({});
 const loading = ref(false);
-const data = ref({
+const data = ref<DataType>({
     type: 'hour',
     time: [null, null],
 });
-
+const isEmpty = ref(false);
 const pickerTimeChange = () => {
     data.value.type = undefined;
 };
 
-const getCPUEcharts = async (val) => {
+const getCPUEcharts = async (val: any) => {
     loading.value = true;
-    const res = await dashboard(defulteParamsData('cpu', val));
+    const res: any = await dashboard(defulteParamsData('cpu', val));
     if (res.success) {
         const _cpuOptions = {};
         const _cpuXAxis = new Set();
         if (res.result?.length) {
-            res.result.forEach((item) => {
+            res.result.forEach((item: any) => {
                 const value = item.data.value;
                 const nodeID = item.data.clusterNodeId;
                 _cpuXAxis.add(
@@ -84,15 +95,18 @@ const getCPUEcharts = async (val) => {
                     Number(value.cpuSystemUsage).toFixed(2),
                 );
             });
+            handleCpuOptions(_cpuOptions, [..._cpuXAxis.keys()]);
+        } else {
+            handleCpuOptions([], []);
+            isEmpty.value = true;
         }
-        handleCpuOptions(_cpuOptions, [..._cpuXAxis.keys()]);
     }
     setTimeout(() => {
         loading.value = false;
     }, 300);
 };
 
-const setOptions = (optionsData, key) => ({
+const setOptions = (optionsData: any, key: string) => ({
     data: arrayReverse(optionsData[key]),
     name: key,
     type: 'line',
@@ -101,8 +115,9 @@ const setOptions = (optionsData, key) => ({
     areaStyle: areaStyleCpu,
 });
 
-const handleCpuOptions = (optionsData, xAxis) => {
-    const chart = chartRef.value;
+const handleCpuOptions = (optionsData: any, xAxis: any) => {
+    if (optionsData.length === 0 && xAxis.length === 0) return;
+    const chart: any = chartRef.value;
     if (chart) {
         const myChart = echarts.init(chart);
         const dataKeys = Object.keys(optionsData);
@@ -114,7 +129,7 @@ const handleCpuOptions = (optionsData, xAxis) => {
             },
             tooltip: {
                 trigger: 'axis',
-                valueFormatter: (value) => `${value}%`,
+                valueFormatter: (value: any) => `${value}%`,
             },
             yAxis: {
                 type: 'value',

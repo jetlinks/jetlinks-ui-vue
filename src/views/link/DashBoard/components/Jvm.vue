@@ -33,7 +33,17 @@
                     >
                 </j-range-picker>
             </div>
-            <div ref="chartRef" style="width: 100%; height: 300px"></div>
+            <div>
+                <j-empty
+                    v-if="isEmpty"
+                    style="height: 200px; margin-top: 100px"
+                />
+                <div
+                    v-else
+                    ref="chartRef"
+                    style="width: 100%; height: 300px"
+                ></div>
+            </div>
         </div>
     </j-spin>
 </template>
@@ -50,26 +60,27 @@ import {
     areaStyleJvm,
     defulteParamsData,
 } from './tool.ts';
+import { DataType } from '../typings';
 
 const chartRef = ref<Record<string, any>>({});
 const loading = ref(false);
-const data = ref({
+const data = ref<DataType>({
     type: 'hour',
     time: [null, null],
 });
-
+const isEmpty = ref(false);
 const pickerTimeChange = () => {
     data.value.type = undefined;
 };
 
-const getJVMEcharts = async (val) => {
+const getJVMEcharts = async (val: any) => {
     loading.value = true;
-    const res = await dashboard(defulteParamsData('jvm', val));
+    const res: any = await dashboard(defulteParamsData('jvm', val));
     if (res.success) {
         const _jvmOptions = {};
         const _jvmXAxis = new Set();
         if (res.result?.length) {
-            res.result.forEach((item) => {
+            res.result.forEach((item: any) => {
                 const value = item.data.value;
                 const memoryJvmHeapFree = value.memoryJvmHeapFree;
                 const memoryJvmHeapTotal = value.memoryJvmHeapTotal;
@@ -90,15 +101,18 @@ const getJVMEcharts = async (val) => {
                 );
                 _jvmOptions[nodeID].push(_value);
             });
+            handleJVMOptions(_jvmOptions, [..._jvmXAxis.keys()]);
+        } else {
+            handleJVMOptions([], []);
+            isEmpty.value = true;
         }
-        handleJVMOptions(_jvmOptions, [..._jvmXAxis.keys()]);
     }
     setTimeout(() => {
         loading.value = false;
     }, 300);
 };
 
-const setOptions = (optionsData, key) => ({
+const setOptions = (optionsData: any, key: string) => ({
     data: arrayReverse(optionsData[key]),
     name: key,
     type: 'line',
@@ -106,8 +120,9 @@ const setOptions = (optionsData, key) => ({
     symbol: 'none',
     areaStyle: areaStyleJvm,
 });
-const handleJVMOptions = (optionsData, xAxis) => {
-    const chart = chartRef.value;
+const handleJVMOptions = (optionsData: any, xAxis: any) => {
+    if (optionsData.length === 0 && xAxis.length === 0) return;
+    const chart: any = chartRef.value;
     if (chart) {
         const myChart = echarts.init(chart);
         const dataKeys = Object.keys(optionsData);
