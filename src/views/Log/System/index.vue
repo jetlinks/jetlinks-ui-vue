@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Search :columns="columns" target="search" @search="handleSearch" />
+        <pro-search :columns="columns" target="search" @search="handleSearch" />
         <j-pro-table
             ref="tableRef"
             model="TABLE"
@@ -105,7 +105,7 @@
     </j-modal>
 </template>
 <script lang="ts" setup name="SystemLog">
-import type { ActionsType } from '@/components/Table/index.vue';
+import type { ActionsType } from '@/components/Table/index';
 import type { SystemLogItem } from '../typings';
 import { querySystem } from '@/api/link/log';
 import moment from 'moment';
@@ -196,7 +196,20 @@ const columns = [
     },
 ];
 
-const descriptionsData = ref<SystemLogItem>();
+const descriptionsData = ref<SystemLogItem>({
+    id: '',
+    threadName: '',
+    createTime: 0,
+    className: '',
+    level: '',
+    message: '',
+    exceptionStack: '',
+    context: '',
+    lineNumber: 0,
+    methodName: '',
+    name: '',
+    threadId: '',
+});
 const visible = ref<boolean>(false);
 
 const handleOk = (e: MouseEvent) => {
