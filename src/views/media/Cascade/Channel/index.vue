@@ -176,6 +176,7 @@ const columns = [
         key: 'name',
         search: {
             type: 'string',
+            first: true,
         },
     },
     {

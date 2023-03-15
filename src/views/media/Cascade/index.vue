@@ -180,12 +180,14 @@ const columns = [
         title: '通道数量',
         dataIndex: 'count',
         key: 'count',
+        width: 100,
     },
     {
         title: '状态',
         dataIndex: 'status',
         key: 'status',
         scopedSlots: true,
+        width: 100,
         search: {
             type: 'select',
             options: [
@@ -202,6 +204,7 @@ const columns = [
         dataIndex: 'onlineStatus',
         key: 'onlineStatus',
         scopedSlots: true,
+        width: 100,
         search: {
             type: 'select',
             options: [

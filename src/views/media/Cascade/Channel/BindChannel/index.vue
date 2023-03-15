@@ -115,6 +115,7 @@ const columns = [
         key: 'name',
         search: {
             type: 'string',
+            first: true,
         },
     },
     {
@@ -159,7 +160,6 @@ const params = ref<Record<string, any>>({});
  */
 const handleSearch = (e: any) => {
     params.value = e;
-    console.log('params.value: ', params.value);
 };
 
 const listRef = ref();
@@ -194,7 +194,10 @@ const getSetRowKey = (selectedRows: any[]) =>
 
 const loading = ref(false);
 const handleSave = async () => {
-    if (!_selectedRowKeys.value.length) message.error('请勾选数据');
+    if (!_selectedRowKeys.value.length) {
+        message.error('请勾选数据');
+        return;
+    }
     loading.value = true;
     const resp = await CascadeApi.bindChannel(
         route.query.id as string,
