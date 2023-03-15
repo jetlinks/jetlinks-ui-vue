@@ -1,7 +1,11 @@
 <template>
     <page-container>
         <div>
-            <Search :columns="columns" target="search" @search="handleSearch" />
+            <pro-search
+                :columns="columns"
+                target="search"
+                @search="handleSearch"
+            />
 
             <j-pro-table
                 ref="tableRef"
@@ -297,8 +301,6 @@ const getActions = (
                     if (res.success) {
                         message.success('操作成功');
                         tableRef.value?.reload();
-                    } else {
-                        message.error('操作失败！');
                     }
                 },
             },
@@ -318,8 +320,6 @@ const getActions = (
                     if (res.success) {
                         message.success('操作成功');
                         tableRef.value.reload();
-                    } else {
-                        message.error('操作失败！');
                     }
                 },
             },
@@ -361,8 +361,8 @@ const getDetails = (slotProps: Partial<Record<string, any>>) => {
 };
 
 const getSupports = async () => {
-    const res = await supports();
-    options.value = res.result.map((item) => ({
+    const res: any = await supports();
+    options.value = res.result.map((item: any) => ({
         value: item.id,
         label: item.name,
     }));
