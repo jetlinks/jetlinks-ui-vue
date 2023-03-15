@@ -237,18 +237,10 @@ const handleSearch = (e: any) => {
 const lastValueFrom = async (params: any) => {
     const res = await CascadeApi.list(params);
     res.result.data.forEach(async (item: any) => {
-        const resp = await queryChannelCount(item.id);
+        const resp = await CascadeApi.queryBindChannel(item.id, {});
         item.count = resp.result.total;
     });
     return res;
-};
-
-/**
- * 查询通道数量
- * @param id
- */
-const queryChannelCount = async (id: string) => {
-    return await CascadeApi.queryBindChannel(id, {});
 };
 
 /**

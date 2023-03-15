@@ -17,8 +17,8 @@
                                             message: '请输入名称',
                                         },
                                         {
-                                            max: 84,
-                                            message: '最多可输入84个字符',
+                                            max: 64,
+                                            message: '最多可输入64个字符',
                                         },
                                     ]"
                                 >
@@ -238,6 +238,7 @@
                                                 v-model:value="formData.host"
                                                 placeholder="请选择IP地址"
                                                 :options="allList"
+                                                @change="setPorts"
                                             />
                                         </j-col>
                                         <j-col :span="10">
@@ -301,7 +302,7 @@
                                     <j-radio-group
                                         button-style="solid"
                                         v-model:value="formData.transport"
-                                        @change="setPorts"
+                                        @change="handleTransportChange"
                                     >
                                         <j-radio-button value="UDP">
                                             UDP
@@ -616,19 +617,29 @@ const getAllList = async () => {
     allList.value = result.map((m: any) => ({
         label: m.host,
         value: m.host,
+        ...m,
     }));
     setPorts();
 };
 getAllList();
 
+const handleTransportChange = () => {
+    formData.value.host = undefined;
+    formData.value.port = undefined;
+    setPorts();
+};
 /**
- * 传输协议改变, 获取对应的端口
+ * 获取端口
  */
 const allListPorts = ref([]);
 const setPorts = () => {
-    allListPorts.value = allList.value.find(
-        (f: any) => f.host === formData.value.host,
-    )?.ports[formData.value.transport || ''];
+    if (!formData.value.host) return;
+    allListPorts.value = allList.value
+        .find((f: any) => f.host === formData.value.host)
+        ?.ports[formData.value.transport || '']?.map((m: string) => ({
+            label: m,
+            value: m,
+        }));
 };
 
 /**

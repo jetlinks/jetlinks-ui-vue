@@ -3,13 +3,15 @@
         <div class="top-card-content">
             <div class="content-left">
                 <div class="content-left-title">
-                    <span>{{ title }}</span>
-                    <j-tooltip placement="top" v-if="tooltip">
-                        <template #title>
-                            <span>{{ tooltip }}</span>
-                        </template>
-                        <AIcon type="QuestionCircleOutlined" />
-                    </j-tooltip>
+                    <j-space>
+                        <span>{{ title }}</span>
+                        <j-tooltip placement="top" v-if="tooltip">
+                            <template #title>
+                                <span>{{ tooltip }}</span>
+                            </template>
+                            <AIcon type="QuestionCircleOutlined" />
+                        </j-tooltip>
+                    </j-space>
                 </div>
                 <div class="content-left-value">{{ value }}</div>
             </div>
