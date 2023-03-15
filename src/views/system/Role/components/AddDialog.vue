@@ -64,7 +64,7 @@ const confirm = () => {
                     // @ts-ignore
                     window?.onSaveSuccess(resp.result.id);
                     window.close();
-                } else jumpPage(`system/Role/detail`, { id: resp.result.id });
+                } else jumpPage(`system/Role/Detail`, { id: resp.result.id });
             }
         })
         .finally(() => (loading.value = false));
