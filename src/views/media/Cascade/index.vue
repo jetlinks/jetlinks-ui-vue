@@ -141,7 +141,7 @@
 
 <script setup lang="ts">
 import CascadeApi from '@/api/media/cascade';
-import type { ActionsType } from '@/components/Table/index.vue';
+import type { ActionsType } from '@/views/device/Instance/typings';
 import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 import Publish from './Publish/index.vue';

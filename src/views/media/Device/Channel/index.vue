@@ -114,7 +114,7 @@
 
 <script setup lang="ts">
 import ChannelApi from '@/api/media/channel';
-import type { ActionsType } from '@/components/Table/index.vue';
+import type { ActionsType } from '@/views/device/Instance/typings';
 import { useMenuStore } from 'store/menu';
 import { message } from 'ant-design-vue';
 import Save from './Save.vue';

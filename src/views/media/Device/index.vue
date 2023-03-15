@@ -120,7 +120,7 @@
 
 <script setup lang="ts">
 import DeviceApi from '@/api/media/device';
-import type { ActionsType } from '@/components/Table/index.vue';
+import type { ActionsType } from '@/views/device/Instance/typings';
 import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 import { PROVIDER_OPTIONS } from '@/views/media/Device/const';

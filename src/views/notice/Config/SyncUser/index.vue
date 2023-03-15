@@ -1,3 +1,4 @@
+<!-- 同步用户 -->
 <template>
     <div>
         <j-modal
@@ -134,9 +135,8 @@
 <script setup lang="ts" name="SyncUser">
 import configApi from '@/api/notice/config';
 import { PropType } from 'vue';
-import moment from 'moment';
-import { Modal, message } from 'ant-design-vue';
-import type { ActionsType } from '@/components/Table/index.vue';
+import { message } from 'ant-design-vue';
+import type { ActionsType } from '@/views/device/Instance/typings';
 import { Form } from 'ant-design-vue';
 
 const useForm = Form.useForm;
