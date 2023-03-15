@@ -1,5 +1,5 @@
 <template>
-    <a-spin :spinning="loading" v-if="_metadata">
+    <a-spin :spinning="loading" v-if="_metadata.length">
         <a-card :bordered="false">
             <template #title>
                 <TitleComponent data="点位映射"></TitleComponent>
@@ -7,7 +7,7 @@
             <template #extra>
                 <a-space>
                     <a-button @click="showModal">批量映射</a-button>
-                    <a-button type="primary" @click="onSave">保存</a-button>
+                    <a-button type="primary" @click="onSave">保存并应用</a-button>
                 </a-space>
             </template>
             <a-form ref="formRef" :model="modelRef">
@@ -114,7 +114,7 @@
         />
     </a-spin>
     <a-card v-else>
-        <JEmpty description="暂无数据，请配置物模型" style="margin: 10% 0" />
+    <JEmpty description="暂无数据，请配置物模型" style="margin: 10% 0" />
     </a-card>
 </template>
 
@@ -174,7 +174,7 @@ const form = ref();
 const filterOption = (input: string, option: any) => {
     return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
-const  props = defineProps(['productList']);
+const props = defineProps(['productList']);
 const _emit = defineEmits(['close']);
 const instanceStore = useInstanceStore();
 let _metadata = ref();
@@ -203,31 +203,33 @@ const getChannel = async () => {
 
 const handleSearch = async () => {
     loading.value = true;
-    modelRef.dataSource = _metadata;
     getChannel();
-    if (_metadata && _metadata.length) {
-        const resp: any = await getEdgeMap(instanceStore.current?.orgId || '', {
-            deviceId: instanceStore.current.id,
-            query: {},
-        }).catch(() => {
-            modelRef.dataSource = _metadata;
-            loading.value = false;
-        });
-        if (resp.status === 200) {
-            const array = resp.result?.[0].reduce((x: any, y: any) => {
-                const metadataId = _metadata.find(
-                    (item: any) => item.metadataId === y.metadataId,
-                );
-                if (metadataId) {
-                    Object.assign(metadataId, y);
-                } else {
-                    x.push(y);
-                }
-                return x;
-            }, _metadata);
-            modelRef.dataSource = array;
-        }
-    }
+    modelRef.dataSource = _metadata.value;
+    console.log(modelRef.dataSource);
+    // if (_metadata.value && _metadata.value.length) {
+    //     console.log(1234);
+    //     const resp: any = await getEdgeMap(instanceStore.current?.orgId || '', {
+    //         deviceId: instanceStore.current.id,
+    //         query: {},
+    //     }).catch(() => {
+    //         modelRef.dataSource = _metadata;
+    //         loading.value = false;
+    //     });
+    //     if (resp.status === 200) {
+    //         const array = resp.result?.[0].reduce((x: any, y: any) => {
+    //             const metadataId = _metadata.find(
+    //                 (item: any) => item.metadataId === y.metadataId,
+    //             );
+    //             if (metadataId) {
+    //                 Object.assign(metadataId, y);
+    //             } else {
+    //                 x.push(y);
+    //             }
+    //             return x;
+    //         }, _metadata);
+    //         modelRef.dataSource = array;
+    //     }
+    // }
     loading.value = false;
 };
 
@@ -251,17 +253,13 @@ const onPatchBind = () => {
     visible.value = false;
     _emit('close');
 };
-
-onMounted(() => {
-    handleSearch();
-});
-
 watchEffect(() => {
     if (instanceStore.current?.metadata) {
         _metadata.value = instanceStore.current?.metadata;
     } else {
         _metadata.value = {};
     }
+    handleSearch();
 });
 const onSave = async () => {
     form.value = await validate();

@@ -125,16 +125,56 @@
                                 v-bind="validateInfos['configuration.host']"
                             >
                                 <j-space>
-                                    <j-input
+                                    <j-auto-complete
                                         v-model:value="
                                             formData.configuration.host
                                         "
                                         placeholder="请输入服务器地址"
+                                        style="width: 180px"
+                                        :options="[
+                                            {
+                                                label: 'smtp.163.com',
+                                                value: 'smtp.163.com',
+                                            },
+                                            {
+                                                label: 'pop.163.com',
+                                                value: 'pop.163.com',
+                                            },
+                                            {
+                                                label: 'smtp.exmail.qq.com',
+                                                value: 'smtp.exmail.qq.com',
+                                            },
+                                            {
+                                                label: 'pop.exmail.qq.com',
+                                                value: 'pop.exmail.qq.com',
+                                            },
+                                            {
+                                                label: 'smtp.qq.com',
+                                                value: 'smtp.qq.com',
+                                            },
+                                            {
+                                                label: 'pop.qq.com',
+                                                value: 'pop.qq.com',
+                                            },
+                                            {
+                                                label: 'smtpdm.aliyun.com',
+                                                value: 'smtpdm.aliyun.com',
+                                            },
+                                            {
+                                                label: 'smtp.126.com',
+                                                value: 'smtp.126.com',
+                                            },
+                                            {
+                                                label: 'pop.126.com',
+                                                value: 'pop.126.com',
+                                            },
+                                        ]"
                                     />
                                     <j-input-number
                                         v-model:value="
                                             formData.configuration.port
                                         "
+                                        :precision="0"
                                         :min="1"
                                         :max="65535"
                                     />
@@ -352,50 +392,53 @@ const formRules = ref({
     provider: [{ required: true, message: '请选择类型' }],
     // 钉钉
     'configuration.appKey': [
-        { required: true, message: '请输入AppKey' },
-        { max: 64, message: '最多可输入64个字符' },
+        { required: true, message: '请输入AppKey', trigger: 'blur' },
+        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
     ],
     'configuration.appSecret': [
-        { required: true, message: '请输入AppSecret' },
-        { max: 64, message: '最多可输入64个字符' },
+        { required: true, message: '请输入AppSecret', trigger: 'blur' },
+        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
     ],
     // 'configuration.url': [{ required: true, message: '请输入WebHook' }],
     // 微信
     'configuration.corpId': [
-        { required: true, message: '请输入corpId' },
+        { required: true, message: '请输入corpId', trigger: 'blur' },
         { max: 64, message: '最多可输入64个字符' },
     ],
     'configuration.corpSecret': [
-        { required: true, message: '请输入corpSecret' },
+        { required: true, message: '请输入corpSecret', trigger: 'blur' },
         { max: 64, message: '最多可输入64个字符' },
     ],
     // 阿里云语音/短信
     'configuration.regionId': [
-        { required: true, message: '请输入RegionId' },
+        { required: true, message: '请输入RegionId', trigger: 'blur' },
         { max: 64, message: '最多可输入64个字符' },
     ],
     'configuration.accessKeyId': [
-        { required: true, message: '请输入AccessKeyId' },
+        { required: true, message: '请输入AccessKeyId', trigger: 'blur' },
         { max: 64, message: '最多可输入64个字符' },
     ],
     'configuration.secret': [
-        { required: true, message: '请输入Secret' },
+        { required: true, message: '请输入Secret', trigger: 'blur' },
         { max: 64, message: '最多可输入64个字符' },
     ],
     // 邮件
-    'configuration.host': [{ required: true, message: '请输入服务器地址' }],
-    'configuration.sender': [{ required: true, message: '请输入发件人' }],
+    'configuration.host': [{ required: true, message: '请输入服务器地址', trigger: 'blur' }],
+    'configuration.sender': [
+        { required: true, message: '请输入发件人', trigger: 'blur' },
+        { max: 64, message: '最多可输入64个字符' },
+    ],
     'configuration.username': [
-        { required: true, message: '请输入用户名' },
+        { required: true, message: '请输入用户名', trigger: 'blur' },
         { max: 64, message: '最多可输入64个字符' },
     ],
     'configuration.password': [
-        { required: true, message: '请输入密码' },
+        { required: true, message: '请输入密码', trigger: 'blur' },
         { max: 64, message: '最多可输入64个字符' },
     ],
     // webhook
     'configuration.url': [
-        { required: true, message: '请输入Webhook' },
+        { required: true, message: '请输入Webhook', trigger: 'blur' },
         // {
         //     pattern:
         //         /^(((ht|f)tps?):\/\/)?([^!@#$%^&*?.\s-]([^!@#$%^&*?.\s]{0,63}[^!@#$%^&*?.\s])?\.)+[j-z]{2,6}\/?/,
@@ -415,8 +458,6 @@ const getDetail = async () => {
     const res = await configApi.detail(route.params.id as string);
     // formData.value = res.result;
     Object.assign(formData.value, res.result);
-    // console.log('res.result: ', res.result);
-    // console.log('formData.value: ', formData.value);
 };
 getDetail();
 
@@ -494,7 +535,6 @@ const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
     validate()
         .then(async () => {
-            // console.log('formData.value: ', formData.value);
             btnLoading.value = true;
             let res;
             if (!formData.value.id) {
@@ -502,7 +542,6 @@ const handleSubmit = () => {
             } else {
                 res = await configApi.update(formData.value);
             }
-            // console.log('res: ', res);
             if (res?.success) {
                 message.success('保存成功');
                 router.back();

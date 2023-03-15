@@ -76,8 +76,6 @@ const save = reactive({
       const type = metadataStore.model.type
       const _detail: ProductItem | DeviceInstance = props.type === 'device' ? instanceStore.detail : productStore.current
       const _metadata = JSON.parse(_detail?.metadata || '{}')
-      console.log(_metadata)
-      console.log(type)
       const list = (_metadata[type] as any[]) || []
       if (formValue.id) {
         if (metadataStore.model.action === 'add' && list.some(item => item.id === formValue.id)) {

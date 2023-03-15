@@ -54,7 +54,7 @@
     </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name='JProUpload'>
 import { message, UploadChangeParam, UploadProps } from 'ant-design-vue';
 import { FILE_UPLOAD } from '@/api/comm';
 import { TOKEN_KEY } from '@/utils/variable';

@@ -343,6 +343,11 @@
                 @cancel="onPropsCancel"
             />
         </template>
+        <TriggerAlarm
+            :id="_data.id"
+            v-if="triggerVisible"
+            @close="triggerVisible = false"
+        />
     </div>
 </template>
 
@@ -353,6 +358,12 @@ import { PropType } from 'vue';
 import { ActionsType, ParallelType } from '../../../typings';
 import Modal from '../Modal/index.vue';
 import ActionTypeComponent from '../Modal/ActionTypeComponent.vue';
+import TriggerAlarm from '../TriggerAlarm/index.vue';
+import { useSceneStore } from '@/store/scene';
+import { storeToRefs } from 'pinia';
+
+const sceneStore = useSceneStore();
+const { data: _data } = storeToRefs(sceneStore);
 
 const props = defineProps({
     branchesName: {
@@ -438,8 +449,8 @@ const onAdd = () => {
 };
 
 const onType = (_type: string) => {
-    actionType.value = _type
-}
+    actionType.value = _type;
+};
 
 const onPropsOk = (data: ActionsType, options?: any) => {
     emit('update', data, options);

@@ -164,9 +164,11 @@ import {
     rdbTree_api,
     rdbTables_api,
     saveTable_api,
+    delSaveRow_api,
 } from '@/api/system/dataSource';
 import { FormInstance, message } from 'ant-design-vue';
 import { DataNode } from 'ant-design-vue/lib/tree';
+import { cloneDeep } from 'lodash';
 import type { dbColumnType, dictItemType, sourceItemType } from '../typing';
 
 const id = useRoute().query.id as string;
@@ -292,7 +294,9 @@ const table = reactive({
 
     getTabelData: (key: string) => {
         rdbTables_api(id, key).then((resp: any) => {
-            table.data = resp.result.columns;
+            table.data = resp.result.columns.map(
+                (item: object, index: number) => ({ ...item, index }),
+            );
         });
     },
     addRow: () => {
@@ -307,9 +311,11 @@ const table = reactive({
         table.data.push(initData);
     },
     clickSave: () => {
+        const columns = cloneDeep(table.data);
+        columns.forEach((item) => delete item.index);
         const params = {
             name: leftData.selectedKeys[0],
-            columns: table.data,
+            columns,
         };
         saveTable_api(id, params).then((resp) => {
             if (resp.status === 200) {
@@ -318,7 +324,15 @@ const table = reactive({
             }
         });
     },
-    clickDel: (row: any) => {},
+    clickDel: (row: any) => {
+        if (row.scale !== undefined) {
+            delSaveRow_api(id, leftData.selectedKeys[0], [row.name]).then(
+                (resp: any) => {
+                    if (resp.status === 200) table.data.splice(row.index, 1);
+                },
+            );
+        } else table.data.splice(row.index, 1);
+    },
 });
 
 const addFormRef = ref<FormInstance>();

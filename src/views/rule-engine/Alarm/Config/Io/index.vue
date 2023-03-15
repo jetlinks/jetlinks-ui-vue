@@ -1,16 +1,16 @@
 <template>
     <div>
-        <a-row :gutter="24">
-            <a-col :span="14">
+        <j-row :gutter="24">
+            <j-col :span="14">
                 <div class="alarmFlow-left">
-                    <a-card
+                    <j-card
                         :head-style="{ borderBottom: 'none', height: '30px' }"
                         :bordered="false"
                     >
                         <template #title>
                             <div class="alarmTitle">
                                 <span>告警数据输出</span>
-                                <a-tooltip
+                                <j-tooltip
                                     title="将告警数据输出到其他第三方系统"
                                 >
                                     <AIcon
@@ -20,7 +20,7 @@
                                             line-height: 35px;
                                         "
                                     />
-                                </a-tooltip>
+                                </j-tooltip>
 
                                 <PermissionButton
                                     type="link"
@@ -33,16 +33,16 @@
                                 </PermissionButton>
                             </div>
                         </template>
-                        <a-descriptions
+                        <j-descriptions
                             bordered
                             :labelStyle="{ width: 112 + 'px' }"
                             :contentStyle="{ minWidth: 100 + 'px' }"
                             :column="2"
                         >
-                            <a-descriptions-item
+                            <j-descriptions-item
                                 label="kafka地址"
                                 :content-style="{ minWidth: '200px' }"
-                                ><a-badge
+                                ><j-badge
                                     :status="
                                         output?.running ? 'success' : 'error'
                                     "
@@ -50,31 +50,31 @@
                                         output?.data?.config?.config?.address ||
                                         ''
                                     "
-                                ></a-badge
-                            ></a-descriptions-item>
-                            <a-descriptions-item label="topic">{{
+                                ></j-badge
+                            ></j-descriptions-item>
+                            <j-descriptions-item label="topic">{{
                                 output?.data?.config?.config?.topic || ''
-                            }}</a-descriptions-item>
-                            <a-descriptions-item label="状态" :span="2"
-                                ><a-badge
+                            }}</j-descriptions-item>
+                            <j-descriptions-item label="状态" :span="2"
+                                ><j-badge
                                     :status="
                                         output?.data?.state?.value === 'enabled'
                                             ? 'success'
                                             : 'error'
                                     "
                                     :text="output?.data?.state?.text || ''"
-                                ></a-badge
-                            ></a-descriptions-item>
-                        </a-descriptions>
-                    </a-card>
-                    <a-card
+                                ></j-badge
+                            ></j-descriptions-item>
+                        </j-descriptions>
+                    </j-card>
+                    <j-card
                         :head-style="{ borderBottom: 'none', height: '30px' }"
                         :bordered="false"
                     >
                         <template #title>
                             <div class="alarmTitle">
                                 <span>告警处理结果输入</span>
-                                <a-tooltip title="接收第三方系统处理的告警结果">
+                                <j-tooltip title="接收第三方系统处理的告警结果">
                                     <AIcon
                                         type="QuestionCircleOutlined"
                                         style="
@@ -82,7 +82,7 @@
                                             line-height: 35px;
                                         "
                                     />
-                                </a-tooltip>
+                                </j-tooltip>
                                 <PermissionButton
                                     type="link"
                                     @click="showInput"
@@ -93,14 +93,14 @@
                                 ></PermissionButton>
                             </div>
                         </template>
-                        <a-descriptions
+                        <j-descriptions
                             bordered
                             :labelStyle="{ width: 112 + 'px' }"
                             :contentStyle="{ minWidth: 150 + 'px' }"
                             :column="2"
                         >
-                            <a-descriptions-item label="kafka地址"
-                                ><a-badge
+                            <j-descriptions-item label="kafka地址"
+                                ><j-badge
                                     :status="
                                         input?.running ? 'success' : 'error'
                                     "
@@ -108,34 +108,34 @@
                                         input?.data?.config?.config?.address ||
                                         ''
                                     "
-                                ></a-badge
-                            ></a-descriptions-item>
-                            <a-descriptions-item label="topic">{{
+                                ></j-badge
+                            ></j-descriptions-item>
+                            <j-descriptions-item label="topic">{{
                                 input?.data?.config?.config?.topic || ''
-                            }}</a-descriptions-item>
-                            <a-descriptions-item label="状态" :span="2"
-                                ><a-badge
+                            }}</j-descriptions-item>
+                            <j-descriptions-item label="状态" :span="2"
+                                ><j-badge
                                     :status="
                                         input?.data?.state?.value === 'enabled'
                                             ? 'success'
                                             : 'error'
                                     "
                                     :text="input?.data?.state?.text || ''"
-                                ></a-badge
-                            ></a-descriptions-item>
-                        </a-descriptions>
-                    </a-card>
+                                ></j-badge
+                            ></j-descriptions-item>
+                        </j-descriptions>
+                    </j-card>
                 </div>
-            </a-col>
-            <a-col :span="10">
+            </j-col>
+            <j-col :span="10">
                 <div class="alarmFlow-right">
                     <div class="doc">
                         <h1>功能图示</h1>
                         <div class="image">
-                            <a-image
+                            <j-image
                                 width="100%"
                                 :src="getImage('/alarm/io.png')"
-                            ></a-image>
+                            ></j-image>
                         </div>
                         <h1>功能说明</h1>
                         <div>
@@ -143,11 +143,11 @@
                         </div>
                         <h2>输出参数</h2>
                         <div>
-                            <a-table
+                            <j-table
                                 :dataSource="outputData"
                                 :pagination="false"
                                 :columns="outputColumns"
-                            ></a-table>
+                            ></j-table>
                         </div>
                         <h2>示例</h2>
                         <div v-html="markdownOutputText" class="code"></div>
@@ -156,18 +156,18 @@
                         </div>
                         <h2>订阅参数</h2>
                         <div>
-                            <a-table
+                            <j-table
                                 :dataSource="subData"
                                 :pagination="false"
                                 :columns="subColumns"
-                            ></a-table>
+                            ></j-table>
                         </div>
                         <h2>示例</h2>
                         <div class="code" v-html="markdownSubText"></div>
                     </div>
                 </div>
-            </a-col>
-        </a-row>
+            </j-col>
+        </j-row>
         <InputSave
             :data="input"
             v-if="inputVisible"

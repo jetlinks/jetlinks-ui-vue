@@ -1,8 +1,9 @@
 <template>
     <page-container>
         <div class="menu-container">
-            <j-advanced-search
+            <pro-search
                 :columns="columns"
+                target="category"
                 @search="(params:any)=>queryParams = {...params}"
             />
 
@@ -74,7 +75,7 @@
     </page-container>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Menu">
 import PermissionButton from '@/components/PermissionButton/index.vue';
 
 import { getMenuTree_api, delMenuInfo_api } from '@/api/system/menu';
@@ -201,10 +202,12 @@ const table = reactive({
         };
     },
     addChildren: (row: any) => {
+        const sortIndex = row?.children?.length || 0;
+
         router.push(
             `/system/Menu/detail/:id?pid=${row.id}&basePath=${
                 row.url || ''
-            }&sortIndex=${row.children.length + 1}`,
+            }&sortIndex=${sortIndex + 1}`,
         );
     },
     // 跳转至详情页

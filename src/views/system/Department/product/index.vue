@@ -1,7 +1,8 @@
 <template>
     <div class="product-container">
-        <j-advanced-search
+        <pro-search
             :columns="columns"
+            target="category"
             @search="(params:any)=>queryParams = {...params}"
         />
         <j-pro-table
@@ -113,35 +114,35 @@
                         </j-row>
                     </template>
                     <template #actions="item">
-                        <a-tooltip
+                        <j-tooltip
                             v-bind="item.tooltip"
                             :title="item.disabled && item.tooltip.title"
                         >
-                            <a-dropdown
+                            <j-dropdown
                                 placement="bottomRight"
                                 v-if="item.key === 'others'"
                             >
-                                <a-button>
+                                <j-button>
                                     <AIcon :type="item.icon" />
                                     <span>{{ item.text }}</span>
-                                </a-button>
+                                </j-button>
                                 <template #overlay>
-                                    <a-menu>
-                                        <a-menu-item
+                                    <j-menu>
+                                        <j-menu-item
                                             v-for="(o, i) in item.children"
                                             :key="i"
                                         >
-                                            <a-button
+                                            <j-button
                                                 type="link"
                                                 @click="o.onClick"
                                             >
                                                 <AIcon :type="o.icon" />
                                                 <span>{{ o.text }}</span>
-                                            </a-button>
-                                        </a-menu-item>
-                                    </a-menu>
+                                            </j-button>
+                                        </j-menu-item>
+                                    </j-menu>
                                 </template>
-                            </a-dropdown>
+                            </j-dropdown>
                             <PermissionButton
                                 v-else
                                 :hasPermission="item.permission"
@@ -155,7 +156,7 @@
                                     item.text
                                 }}</span>
                             </PermissionButton>
-                        </a-tooltip>
+                        </j-tooltip>
                     </template>
                 </CardBox>
             </template>
@@ -178,7 +179,7 @@
                 ></BadgeStatus>
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
+                <j-space :size="16">
                     <PermissionButton
                         v-for="i in table.getActions(slotProps, 'table')"
                         :hasPermission="i.permission"
@@ -190,7 +191,7 @@
                     >
                         <AIcon :type="i.icon" />
                     </PermissionButton>
-                </a-space>
+                </j-space>
             </template>
         </j-pro-table>
 
@@ -286,6 +287,7 @@ const columns = [
         dataIndex: 'state',
         key: 'state',
         ellipsis: true,
+        width: '80px',
         search: {
             type: 'select',
             options: [

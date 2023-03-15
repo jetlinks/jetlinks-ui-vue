@@ -21,6 +21,7 @@
       "layouts/*": ["./src/layouts/*"],
       "store/*": ["./src/store/*"],
       "style/*": ["./src/style/*"],
+      "jetlinks-ui-components/es": ["./node_modules/jetlinks-ui-components/es/*"]
     },
     "types": ["ant-design-vue/typings/global", "vite/client"],
     "suppressImplicitAnyIndexErrors": true

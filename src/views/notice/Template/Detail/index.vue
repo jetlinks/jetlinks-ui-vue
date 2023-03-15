@@ -85,7 +85,7 @@
                                 >
                                     <template #label>
                                         <span>
-                                            AgentID
+                                            AgentId
                                             <j-tooltip title="应用唯一标识">
                                                 <AIcon
                                                     type="QuestionCircleOutlined"
@@ -98,7 +98,7 @@
                                         v-model:value="
                                             formData.template.agentId
                                         "
-                                        placeholder="请输入AppSecret"
+                                        placeholder="请输入AgentId"
                                     />
                                 </j-form-item>
                                 <j-row :gutter="10">
@@ -271,7 +271,7 @@
                                 </template>
                                 <j-input
                                     v-model:value="formData.template.agentId"
-                                    placeholder="请输入agentId"
+                                    placeholder="请输入AgentId"
                                 />
                             </j-form-item>
                             <j-row :gutter="10">
@@ -353,7 +353,9 @@
                                     placeholder="请输入标题"
                                 />
                             </j-form-item>
-                            <j-form-item>
+                            <j-form-item
+                                v-bind="validateInfos['template.sendTo']"
+                            >
                                 <template #label>
                                     <span>
                                         收件人
@@ -369,9 +371,8 @@
                                 </template>
                                 <j-select
                                     mode="tags"
-                                    :options="[]"
                                     v-model:value="formData.template.sendTo"
-                                    placeholder="请选择收件人"
+                                    placeholder="请输入收件人邮箱,多个收件人用换行分隔"
                                 />
                             </j-form-item>
                             <j-form-item>
@@ -459,7 +460,13 @@
                                     </j-form-item>
                                 </j-col>
                                 <j-col :span="12">
-                                    <j-form-item>
+                                    <j-form-item
+                                        v-bind="
+                                            validateInfos[
+                                                'template.calledNumber'
+                                            ]
+                                        "
+                                    >
                                         <template #label>
                                             <span>
                                                 被叫号码
@@ -507,7 +514,9 @@
                                     placeholder="请输入被叫显号"
                                 />
                             </j-form-item>
-                            <j-form-item>
+                            <j-form-item
+                                v-bind="validateInfos['template.playTimes']"
+                            >
                                 <template #label>
                                     <span>
                                         播放次数
@@ -519,9 +528,10 @@
                                         </j-tooltip>
                                     </span>
                                 </template>
-                                <j-input
+                                <j-input-number
                                     v-model:value="formData.template.playTimes"
                                     placeholder="请输入播放次数"
+                                    style="width: 100%"
                                 />
                             </j-form-item>
                             <j-form-item
@@ -654,7 +664,6 @@
                                     <j-radio :value="false">自定义</j-radio>
                                 </j-radio-group>
                                 <j-textarea
-                                    v-model:value="formData.template.body"
                                     placeholder="请求体中的数据来自于发送通知时指定的所有变量"
                                     v-if="formData.template.contextAsBody"
                                     disabled
@@ -694,7 +703,6 @@
                                 </template>
                                 <j-textarea
                                     v-model:value="formData.template.message"
-                                    :maxlength="200"
                                     :rows="5"
                                     :disabled="formData.type === 'sms'"
                                     placeholder="变量格式:${name};
@@ -887,31 +895,64 @@ watch(
 const formRules = ref({
     type: [{ required: true, message: '请选择通知方式' }],
     name: [
-        { required: true, message: '请输入名称' },
+        { required: true, message: '请输入名称', trigger: 'blur' },
         { max: 64, message: '最多可输入64个字符' },
     ],
     provider: [{ required: true, message: '请选择类型' }],
-    configId: [{ required: true, message: '请选择绑定配置' }],
+    configId: [{ required: true, message: '请选择绑定配置', trigger: 'blur' }],
     // 钉钉
-    'template.agentId': [{ required: true, message: '请输入agentId' }],
-    'template.messageType': [{ required: true, message: '请选择消息类型' }],
+    'template.agentId': [
+        { required: true, message: '请输入AgentId', trigger: 'blur' },
+        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
+    ],
+    'template.messageType': [
+        { required: true, message: '请选择消息类型', trigger: 'blur' },
+    ],
     'template.markdown.title': [
-        { required: true, message: '请输入标题' },
-        { max: 64, message: '最多可输入64个字符' },
+        { required: true, message: '请输入标题', trigger: 'blur' },
+        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
     ],
     'template.link.title': [
-        { required: true, message: '请输入标题' },
-        { max: 64, message: '最多可输入64个字符' },
+        { required: true, message: '请输入标题', trigger: 'blur' },
+        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
     ],
     // 'template.url': [{ required: true, message: '请输入WebHook' }],
     // 微信
-    // 'template.agentId': [{ required: true, message: '请输入agentId' }],
+    // 'template.agentId': [{ required: true, message: '请输入AgentId' }],
     // 邮件
-    'template.subject': [{ required: true, message: '请输入标题' }],
+    'template.subject': [
+        { required: true, message: '请输入标题', trigger: 'blur' },
+        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
+    ],
+    'template.sendTo': [
+        {
+            trigger: 'change',
+            validator(_rule: Rule, value: string[]) {
+                const regEmail =
+                    /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+                let error;
+                if (value) {
+                    value.some((item: string) => {
+                        if (!regEmail.test(item)) {
+                            error = item;
+                            return true;
+                        }
+                        return false;
+                    });
+                }
+                if (error)
+                    return Promise.reject(error ? `${error}邮件格式错误` : '');
+                else return Promise.resolve();
+            },
+        },
+    ],
     // 阿里云语音
     'template.templateType': [{ required: true, message: '请选择类型' }],
-    'template.templateCode': [{ required: true, message: '请输入模板ID' }],
-    'template.calledShowNumbers': [
+    'template.templateCode': [
+        { required: true, message: '请输入模板ID', trigger: 'blur' },
+    ],
+    'template.calledNumber': [
+        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
         {
             trigger: 'change',
             validator(_rule: Rule, value: string) {
@@ -921,17 +962,43 @@ const formRules = ref({
             },
         },
     ],
+    'template.calledShowNumbers': [
+        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
+        {
+            trigger: 'change',
+            validator(_rule: Rule, value: string) {
+                if (!value) return Promise.resolve();
+                if (!phoneRegEx(value)) return Promise.reject('请输入有效号码');
+                return Promise.resolve();
+            },
+        },
+    ],
+    'template.playTimes': [
+        {
+            trigger: 'change',
+            validator(_rule: Rule, value: number) {
+                if (value < 1 || value > 3)
+                    return Promise.reject('仅支持1～3次');
+                else return Promise.resolve();
+            },
+        },
+    ],
     // 短信
-    'template.code': [{ required: true, message: '请选择模板' }],
-    'template.signName': [{ required: true, message: '请输入签名' }],
+    'template.code': [
+        { required: true, message: '请选择模板', trigger: 'blur' },
+    ],
+    'template.signName': [
+        { required: true, message: '请输入签名', trigger: 'blur' },
+    ],
     // webhook
     description: [{ max: 200, message: '最多可输入200个字符' }],
     'template.message': [
         {
             required: true,
-            message: '请输入',
+            message: '请输入模板内容',
+            trigger: 'blur',
         },
-        { max: 500, message: '最多可输入500个字符' },
+        { max: 500, message: '最多可输入500个字符', trigger: 'change' },
     ],
     'template.ttsmessage': [{ max: 500, message: '最多可输入500个字符' }],
 });
@@ -978,6 +1045,15 @@ watch(
     },
     { deep: true },
 );
+// 模板内容变量提取
+watch(
+    () => formData.value.template.ttsmessage,
+    (val) => {
+        if (!val) return;
+        variableReg();
+    },
+    { deep: true },
+);
 // webhook请求体变量提取
 watch(
     () => formData.value.template.body,
@@ -1004,7 +1080,9 @@ const spliceStr = () => {
         variableFieldsStr += formData.value.template.subject as string;
     if (formData.value.provider === 'http')
         variableFieldsStr += formData.value.template.body as string;
-    // console.log('variableFieldsStr: ', variableFieldsStr);
+    if (formData.value.provider === 'aliyun')
+        variableFieldsStr += formData.value.template.ttsmessage as string;
+
     return variableFieldsStr || '';
 };
 
@@ -1061,7 +1139,6 @@ const handleMessageTypeChange = () => {
         };
     }
     formData.value.variableDefinitions = [];
-    // formData.value.template.message = '';
 };
 
 /**
@@ -1072,7 +1149,6 @@ const getDetail = async () => {
         const res = await templateApi.detail(route.params.id as string);
         // formData.value = res.result;
         Object.assign(formData.value, res.result);
-        // console.log('formData.value: ', formData.value);
     }
 };
 getDetail();
@@ -1107,8 +1183,7 @@ const handleTypeChange = () => {
 const handleProviderChange = () => {
     formData.value.template =
         TEMPLATE_FIELD_MAP[formData.value.type][formData.value.provider];
-    // console.log('formData.value: ', formData.value);
-    // console.log('formData.value.template: ', formData.value.template);
+
     getConfigList();
     resetPublicFiles();
 };
@@ -1176,7 +1251,6 @@ const handleSubmit = () => {
         delete formData.value.template.link;
     if (formData.value.template.messageType === 'link')
         delete formData.value.template.markdown;
-    // console.log('formData.value: ', formData.value);
     // 提交必填验证无法通过, 实际已有值, 问题未知, 暂时解决方法: 延迟验证
     setTimeout(() => {
         validate()
@@ -1192,13 +1266,11 @@ const handleSubmit = () => {
                 }
 
                 btnLoading.value = true;
-                let res;
-                if (!formData.value.id) {
-                    res = await templateApi.save(formData.value);
-                } else {
-                    res = await templateApi.update(formData.value);
-                }
-                // console.log('res: ', res);
+
+                const res = formData.value.id
+                    ? await templateApi.update(formData.value)
+                    : await templateApi.save(formData.value);
+
                 if (res?.success) {
                     message.success('保存成功');
                     router.back();
@@ -1212,14 +1284,4 @@ const handleSubmit = () => {
             });
     }, 200);
 };
-
-// test
-// watch(
-//     () => formData.value,
-//     (val) => {
-//         console.log('formData.value: ', val);
-//     },
-//     { deep: true },
-// );
-// test
 </script>

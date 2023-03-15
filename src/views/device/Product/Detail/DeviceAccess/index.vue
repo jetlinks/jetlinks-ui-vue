@@ -1,24 +1,30 @@
 <!-- 设备接入 -->
 <template>
-    <a-card style="min-height: 100%">
+    <j-card style="min-height: 100%">
         <div v-if="productStore.current.accessId === undefined || null">
-            <a-empty :image="simpleImage">
+            <j-empty :image="simpleImage">
                 <template #description>
-                    <span v-if="permissionStore.hasPermission('device/Product:update')">
-                        请先<a-button type="link" @click="showModal"
-                            >选择</a-button
+                    <span
+                        v-if="
+                            permissionStore.hasPermission(
+                                'device/Product:update',
+                            )
+                        "
+                    >
+                        请先<j-button type="link" @click="showModal"
+                            >选择</j-button
                         >设备接入网关，用以提供设备接入能力
                     </span>
                     <span v-else>暂无权限，请联系管理员</span>
                 </template>
-            </a-empty>
+            </j-empty>
         </div>
         <div v-else>
-            <a-row :gutter="24">
-                <a-col :span="12">
+            <j-row :gutter="24">
+                <j-col :span="12">
                     <Title data="接入方式">
                         <template #extra>
-                            <a-tooltip
+                            <j-tooltip
                                 :title="
                                     productStore.current?.count &&
                                     productStore.current?.count > 0
@@ -26,7 +32,7 @@
                                         : ''
                                 "
                             >
-                                <a-button
+                                <j-button
                                     style="margin: 0 0 0 20px"
                                     size="small"
                                     :disabled="
@@ -35,9 +41,9 @@
                                     "
                                     type="primary"
                                     @click="showDevice"
-                                    >更换</a-button
+                                    >更换</j-button
                                 >
-                            </a-tooltip>
+                            </j-tooltip>
                         </template>
                     </Title>
                     <div>
@@ -71,13 +77,13 @@
                                 v-for="item in access?.channelInfo?.addresses"
                                 :key="item.address"
                             >
-                                <a-badge
+                                <j-badge
                                     :color="
                                         item.health === -1 ? 'red' : 'green'
                                     "
                                     :text="item.address"
                                 >
-                                </a-badge>
+                                </j-badge>
                             </div>
                         </div>
                         <div v-else>{{ '暂无连接信息' }}</div>
@@ -88,95 +94,100 @@
                         class="config"
                     >
                         <template #extra>
-                            <a-tooltip
+                            <j-tooltip
                                 title="此配置来自于产品接入方式所选择的协议"
                             >
                                 <AIcon
                                     type="QuestionCircleOutlined"
                                     style="margin-left: 2px"
                                 />
-                            </a-tooltip>
+                            </j-tooltip>
                         </template>
                     </Title>
-                    <a-form
+                    <j-form
                         ref="formRef"
                         :model="formData.data"
                         layout="vertical"
                     >
-                        <div v-for="item in metadata.properties" :key="item">
-                            <a-form-item
-                                :label="item.name"
-                                :rules="[
-                                    {
-                                        required:
-                                            !!item?.type?.expands?.required,
-                                        message: `${
-                                            item.type.type === 'enum'
-                                                ? '请选择'
-                                                : '请输入'
-                                        }${item.name}`,
-                                    },
-                                ]"
+                        <j-form-item
+                            :name="item.property"
+                            v-for="item in metadata.properties"
+                            :key="item"
+                            :label="item.name"
+                            :rules="[
+                                {
+                                    required: !!item?.type?.expands?.required,
+                                    message: `${
+                                        item.type.type === 'enum'
+                                            ? '请选择'
+                                            : '请输入'
+                                    }${item.name}`,
+                                },
+                            ]"
+                        >
+                            <j-input
+                                placeholder="请输入"
+                                v-if="item.type.type === 'string'"
+                                v-model:value="formData.data[item.property]"
+                            ></j-input>
+                            <j-input-password
+                                placeholder="请输入"
+                                v-if="item.type.type === 'password'"
+                                v-model:value="formData.data[item.property]"
+                            ></j-input-password>
+                            <j-select
+                                placeholder="请选择"
+                                v-if="item.type.type === 'enum'"
+                                v-model:value="formData.data[item.name]"
                             >
-                                <a-input
-                                    placeholder="请输入"
-                                    v-if="item.type.type === 'string'"
-                                    v-model:value="formData.data[item.name]"
-                                ></a-input>
-                                <a-input-password
-                                    placeholder="请输入"
-                                    v-if="item.type.type === 'password'"
-                                    v-model:value="formData.data[item.name]"
-                                ></a-input-password>
-                                <a-select
-                                    placeholder="请选择"
-                                    v-if="item.type.type === 'enum'"
-                                    v-model:value="formData.data[item.name]"
+                                <j-select-option
+                                    v-for="el in item?.type?.type === 'enum' &&
+                                    item?.type?.elements
+                                        ? item?.type?.elements
+                                        : []"
+                                    :key="el"
+                                    :value="el.value"
                                 >
-                                    <a-select-option
-                                        v-for="el in item?.type?.type ===
-                                            'enum' && item?.type?.elements
-                                            ? item?.type?.elements
-                                            : []"
-                                        :key="el"
-                                        :value="el.value"
-                                    >
-                                        {{ el.text }}
-                                    </a-select-option>
-                                </a-select>
-                            </a-form-item>
-                        </div>
-                    </a-form>
+                                    {{ el.text }}
+                                </j-select-option>
+                            </j-select>
+                        </j-form-item>
+                    </j-form>
                     <Title data="存储策略">
                         <template #extra>
-                            <a-tooltip
+                            <j-tooltip
                                 title="若修改存储策略,需要手动做数据迁移,平台只能搜索最新存储策略中的数据"
                             >
                                 <AIcon
                                     type="QuestionCircleOutlined"
                                     style="margin-left: 2px"
                                 />
-                            </a-tooltip>
+                            </j-tooltip>
                         </template>
                     </Title>
-                    <a-form layout="vertical">
-                        <a-form-item>
-                            <a-select
+                    <j-form layout="vertical">
+                        <j-form-item>
+                            <j-select
                                 ref="select"
                                 v-model:value="form.storePolicy"
                             >
-                                <a-select-option
+                                <j-select-option
                                     v-for="(item, index) in storageList"
                                     :key="index"
                                     :value="item.id"
-                                    >{{ item.name }}</a-select-option
+                                    >{{ item.name }}</j-select-option
                                 >
-                            </a-select>
-                        </a-form-item>
-                    </a-form>
-                    <PermissionButton type="primary" @click="submitDevice" hasPermission="device/Instance:update">保存</PermissionButton>
-                </a-col>
-                <a-col
+                            </j-select>
+                        </j-form-item>
+                    </j-form>
+                    <PermissionButton
+                        type="primary"
+                        @click="submitDevice"
+                        hasPermission="device/Instance:update"
+                        >保存</PermissionButton
+                    >
+                </j-col>
+                <j-col
                     :span="12"
                     v-if="config?.routes && config?.routes?.length > 0"
                 >
@@ -191,7 +202,7 @@
                                         : 'URL信息'
                                 }}
                             </div>
-                            <a-table
+                            <j-table
                                 :columns="
                                     config.id === 'MQTT'
                                         ? columnsMQTT
@@ -203,14 +214,14 @@
                             >
                                 <template #bodyCell="{ text, column, record }">
                                     <template v-if="column.key === 'topic'">
-                                        <a-tooltip
+                                        <j-tooltip
                                             placement="topLeft"
                                             :title="text"
                                         >
                                             <div class="ellipsis-style">
                                                 {{ text }}
                                             </div>
-                                        </a-tooltip>
+                                        </j-tooltip>
                                     </template>
                                     <template v-if="column.key === 'stream'">
                                         <div>{{ getStream(record) }}</div>
@@ -218,45 +229,45 @@
                                     <template
                                         v-if="column.key === 'description'"
                                     >
-                                        <a-tooltip
+                                        <j-tooltip
                                             placement="topLeft"
                                             :title="text"
                                         >
                                             <div class="ellipsis-style">
                                                 {{ text }}
                                             </div>
-                                        </a-tooltip>
+                                        </j-tooltip>
                                     </template>
                                     <template v-if="column.key === 'address'">
-                                        <a-tooltip
+                                        <j-tooltip
                                             placement="topLeft"
                                             :title="text"
                                         >
                                             <div class="ellipsis-style">
                                                 {{ text }}
                                             </div>
-                                        </a-tooltip>
+                                        </j-tooltip>
                                     </template>
                                     <template v-if="column.key === 'example'">
-                                        <a-tooltip
+                                        <j-tooltip
                                             placement="topLeft"
                                             :title="text"
                                         >
                                             <div class="ellipsis-style">
                                                 {{ text }}
                                             </div>
-                                        </a-tooltip>
+                                        </j-tooltip>
                                     </template>
                                 </template>
-                            </a-table>
+                            </j-table>
                         </div>
                     </div>
-                </a-col>
-            </a-row>
+                </j-col>
+            </j-row>
         </div>
-    </a-card>
+    </j-card>
     <!-- 选择设备 -->
-    <a-modal
+    <j-modal
         title="设备接入配置"
         :visible="visible"
         width="1200px"
@@ -265,16 +276,16 @@
         @ok="submitData"
         @cancel="cancel"
     >
-        <Search
+        <pro-search
             :columns="query.columns"
             target="deviceModal"
             @search="search"
         />
         <JProTable
-            :columns="columns"
+            :columns="query.columns"
             :request="queryList"
             ref="tableRef"
-            modal="card"
+            model="CARD"
             :defaultParams="{
                 ...temp,
                 sorts: [
@@ -288,8 +299,8 @@
             :gridColumns="[2]"
         >
             <template #headerTitle>
-                <a-button type="primary" @click="add"
-                    ><plus-outlined />新增</a-button
+                <j-button type="primary" @click="add"
+                    ><plus-outlined />新增</j-button
                 >
             </template>
             <template #deviceType="slotProps">
@@ -314,22 +325,35 @@
                         </slot>
                     </template>
                     <template #content>
-                        <h3 style="font-weight: 600">
-                            {{ slotProps.name }}
-                        </h3>
-                        <a-row>
-                            <a-col :span="12">
+                        <Ellipsis style="width: calc(100% - 100px)">
+                            <h3 style="font-weight: 600">
+                                {{ slotProps.name }}
+                            </h3>
+                        </Ellipsis>
+                        <j-row>
+                            <j-col :span="12" v-if="slotProps.channelInfo">
                                 <div class="card-item-content-text">
-                                    设备类型
+                                    {{ slotProps.channelInfo?.name }}
                                 </div>
-                                <div>直连设备</div>
-                            </a-col>
-                        </a-row>
+                                <div>
+                                    {{
+                                        slotProps.channelInfo?.addresses
+                                            ? slotProps.channelInfo
+                                                  ?.addresses[0].address
+                                            : ''
+                                    }}
+                                </div>
+                            </j-col>
+                            <j-col :span="12">
+                                <div class="card-item-content-text">协议</div>
+                                <div>{{ slotProps.protocolDetail?.name }}</div>
+                            </j-col>
+                        </j-row>
                     </template>
                 </CardBox>
             </template>
             <template #state="slotProps">
-                <a-badge
+                <j-badge
                     :text="slotProps.state === 1 ? '正常' : '禁用'"
                     :status="statusMap.get(slotProps.state)"
                 />
@@ -338,13 +362,13 @@
                 <a>{{ slotProps.id }}</a>
             </template>
         </JProTable>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script lang="ts" setup>
 import { useProductStore } from '@/store/product';
 import { ConfigMetadata } from '@/views/device/Product/typings';
-import { Empty, message } from 'ant-design-vue';
+import { Empty, FormItem, message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 import Title from '../Title/index.vue';
 import { usePermissionStore } from '@/store/permission';
@@ -370,6 +394,9 @@ import Driver from 'driver.js';
 import 'driver.js/dist/driver.min.css';
 import { marked } from 'marked';
 import type { FormInstance, TableColumnType } from 'ant-design-vue';
+import { useMenuStore } from '@/store/menu';
+const formRef = ref();
+const menuStore = useMenuStore();
 const permissionStore = usePermissionStore();
 const render = new marked.Renderer();
 marked.setOptions({
@@ -396,7 +423,6 @@ const current = ref({
         name: productStore.current?.protocolName,
     },
 });
-
 //存储数据
 const form = reactive<Record<string, any>>({
     storePolicy: 'default-row' || productStore.current?.storePolicy || '',
@@ -442,15 +468,14 @@ const query = reactive({
         },
         {
             title: '网关类型',
-            key: 'accessProvider',
-            dataIndex: 'accessProvider',
+            key: 'provider',
+            dataIndex: 'provider',
             search: {
                 type: 'select',
                 options: async () => {
                     return new Promise((res) => {
                         getProviders().then((resp: any) => {
                             listData.value = [];
-                            // const list = () => {
                             if (isNoCommunity) {
                                 listData.value = (resp?.result || []).map(
                                     (item: any) => ({
@@ -489,19 +514,19 @@ const query = reactive({
                 options: [
                     {
                         label: '正常',
-                        value: 1,
+                        value: 'enabled',
                     },
                     {
                         label: '禁用',
-                        value: 0,
+                        value: 'disabled',
                     },
                 ],
             },
         },
         {
             title: '说明',
-            key: 'describe',
-            dataIndex: 'describe',
+            key: 'description',
+            dataIndex: 'description',
             search: {
                 type: 'string',
             },
@@ -564,9 +589,9 @@ const search = (e: any) => {
 //引导页数据
 const steps = [
     {
-        element: '.device-detail-metadata',
+        element: '#rc-tabs-0-tab-Metadata',
         popover: {
-            className: 'driver',
+            id: 'driver',
             title: `<div id='title'>配置物模型</div><div id='guide'>1/3</div>`,
             description: `配置产品物模型，实现设备在云端的功能描述。`,
             position: 'bottom',
@@ -820,7 +845,6 @@ const getStream = (record: any) => {
  * 查询接入方式
  */
 const queryAccessDetail = async (id: string) => {
-    console.log(id, 'id');
     const res = await queryList({
         terms: [
             {
@@ -896,7 +920,6 @@ const getProviderList = async () => {
  * 提交设备数据
  */
 const submitData = async () => {
-    console.log(current.value, 'vvv');
     if (current.value) {
         const obj: any = {
             ...productStore.current,
@@ -938,7 +961,6 @@ const submitData = async () => {
             ? await updateDevice(obj)
             : await saveDevice(obj);
         if (resp.status === 200) {
-            console.log(productStore.current?.id, 'productStore.current?.id');
             detail(productStore.current?.id || '').then((res) => {
                 if (res.status === 200) {
                     productStore.current = { ...res.result };
@@ -1015,10 +1037,12 @@ const getData = async () => {
  * 保存设备接入
  */
 const submitDevice = async () => {
+    const res = await formRef.value.validate();
     const values = { storePolicy: form.storePolicy, ...formData.data };
     const result: any = {};
     flatObj(values, result);
     const { storePolicy, ...extra } = result;
+    console.log({ ...extra });
     const id = productStore.current?.id;
     const resp = await modify(id || '', {
         id: id,
@@ -1047,6 +1071,13 @@ const flatObj = (obj: any, result: any) => {
     });
 };
 const getDetailInfo = () => {};
+
+const add = () => {
+    const url = menuStore.hasMenu('link/AccessConfig/Detail');
+    if (url) {
+        window.open(`${origin}/#${url}`);
+    }
+};
 /**
  * 初始化
  */

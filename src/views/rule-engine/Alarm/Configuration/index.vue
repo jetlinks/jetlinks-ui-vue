@@ -1,11 +1,11 @@
 <template>
     <page-container>
         <div>
-            <Search
+            <pro-search
                 :columns="columns"
                 target="device-instance"
                 @search="handleSearch"
-            ></Search>
+            />
             <JProTable
                 :columns="columns"
                 :request="queryList"
@@ -56,8 +56,8 @@
                                     {{ slotProps.name }}
                                 </span>
                             </Ellipsis>
-                            <a-row>
-                                <a-col :span="12">
+                            <j-row>
+                                <j-col :span="12">
                                     <div class="content-des-title">
                                         关联场景联动
                                     </div>
@@ -66,8 +66,8 @@
                                             {{ (slotProps?.scene || []).map((item: any) => item?.name).join(',') || '' }}
                                         </div></Ellipsis
                                     >
-                                </a-col>
-                                <a-col :span="12">
+                                </j-col>
+                                <j-col :span="12">
                                     <div class="content-des-title">
                                         告警级别
                                     </div>
@@ -75,15 +75,11 @@
                                         {{ (Store.get('default-level') || []).find((item: any) => item?.level === slotProps.level)?.title ||
             slotProps.level }}
                                     </div>
-                                </a-col>
-                            </a-row>
+                                </j-col>
+                            </j-row>
                         </template>
                         <template #actions="item">
                             <PermissionButton
-                                v-if="
-                                    item.key != 'tigger' ||
-                                    slotProps.sceneTriggerType == 'manual'
-                                "
                                 :disabled="item.disabled"
                                 :popConfirm="item.popConfirm"
                                 :tooltip="{ ...item.tootip }"
@@ -109,7 +105,7 @@
                     <span>{{ map[slotProps.targetType] }}</span>
                 </template>
                 <template #level="slotProps">
-                    <a-tooltip
+                    <j-tooltip
                         placement="topLeft"
                         :title="(Store.get('default-level') || []).find((item: any) => item?.level === slotProps.level)?.title ||
             slotProps.level"
@@ -118,7 +114,7 @@
                             {{ (Store.get('default-level') || []).find((item: any) => item?.level === slotProps.level)?.title ||
             slotProps.level }}
                         </div>
-                    </a-tooltip>
+                    </j-tooltip>
                 </template>
                 <template #sceneId="slotProps">
                     <span
@@ -126,7 +122,7 @@
                     >
                 </template>
                 <template #state="slotProps">
-                    <a-badge
+                    <j-badge
                         :text="
                             slotProps.state?.value === 'enabled'
                                 ? '正常'
@@ -140,16 +136,12 @@
                     />
                 </template>
                 <template #action="slotProps">
-                    <a-space :size="16">
+                    <j-space :size="16">
                         <template
                             v-for="i in getActions(slotProps, 'table')"
                             :key="i.key"
                         >
                             <PermissionButton
-                                v-if="
-                                    i.key != 'tigger' ||
-                                    slotProps.sceneTriggerType == 'manual'
-                                "
                                 :disabled="i.disabled"
                                 :popConfirm="i.popConfirm"
                                 :tooltip="{
@@ -160,7 +152,7 @@
                                 style="padding: 0px"
                                 :hasPermission="
                                     'rule-engine/Alarm/Configuration:' +
-                                    item.key
+                                    i.key
                                 "
                             >
                                 <template #icon
@@ -168,7 +160,7 @@
                                 /></template>
                             </PermissionButton>
                         </template>
-                    </a-space>
+                    </j-space>
                 </template>
             </JProTable>
         </div>
@@ -439,7 +431,9 @@ const getActions = (
             icon: 'DeleteOutlined',
         },
     ];
-    return actions;
+    return actions.filter((item)=>
+        item.key != 'tigger' || data.sceneTriggerType == 'manual'
+    );
 };
 const add = () => {
     menuStory.jumpPage('rule-engine/Alarm/Configuration/Save');

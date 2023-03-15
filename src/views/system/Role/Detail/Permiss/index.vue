@@ -2,19 +2,26 @@
     <div class="role-permiss-container">
         <section class="card">
             <h5>基本信息</h5>
-            <j-form ref="formRef" class="basic-form" :model="form.data" layout="vertical">
+            <j-form
+                ref="formRef"
+                class="basic-form"
+                :model="form.data"
+                layout="vertical"
+            >
                 <j-form-item
                     name="name"
                     label="名称"
-                    :rules="[{ required: true, message: '请输入名称' }]"
+                    :rules="[
+                        { required: true, message: '请输入名称' },
+                        { max: 64, message: '最多可输入64个字符' },
+                    ]"
                 >
                     <j-input
                         v-model:value="form.data.name"
                         placeholder="请输入角色名称"
-                        :maxlength="64"
                     />
                 </j-form-item>
-                <j-form-item name="name" label="说明">
+                <j-form-item label="说明">
                     <j-textarea
                         v-model:value="form.data.description"
                         placeholder="请输入说明"
@@ -33,7 +40,7 @@
                 type="primary"
                 :disabled="form.loading"
                 @click="form.clickSave"
-                style="margin-top: 24px;"
+                style="margin-top: 24px"
                 >保存</j-button
             >
         </section>
@@ -113,6 +120,13 @@ form.getForm();
         }
 
         .basic-form {
+            :deep(.ant-form-item-required) {
+                padding-right: 12px;
+
+                &::before{
+                    right: 0;
+                }
+            }
             .ant-form-item {
                 display: block;
                 width: 60%;

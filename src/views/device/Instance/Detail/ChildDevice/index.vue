@@ -3,7 +3,7 @@
         <SaveChild
             v-if="childVisible"
             @close-child-save="closeChildSave"
-            :childData="current"
+            :childData="_current"
         />
         <div v-else>
             <Search
@@ -43,7 +43,7 @@
                             "
                             hasPermission="device/Instance:update"
                             @click="
-                                current = {};
+                                _current = {};
                                 childVisible = true;
                             "
                             >新增并绑定</PermissionButton
@@ -123,7 +123,7 @@ import { usePermissionStore } from '@/store/permission';
 import SaveChild from './SaveChild/index.vue';
 
 const instanceStore = useInstanceStore();
-const { detail  } = storeToRefs(instanceStore);
+const { detail } = storeToRefs(instanceStore);
 const router = useRouter();
 const childVisible = ref(false);
 const permissionStore = usePermissionStore();
@@ -139,7 +139,7 @@ const childDeviceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const _selectedRowKeys = ref<string[]>([]);
 const visible = ref<boolean>(false);
-const current = ref({});
+const _current = ref({});
 
 const columns = [
     {
@@ -252,7 +252,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
             icon: 'EditOutlined',
             onClick: () => {
-                current.value = data;
+                _current.value = data;
                 childVisible.value = true;
             },
         },

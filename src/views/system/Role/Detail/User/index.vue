@@ -1,7 +1,8 @@
 <template>
     <div class="role-user-container">
-        <j-advanced-search
+        <pro-search
             :columns="columns"
+            target="category"
             @search="(params:any)=>queryParams = {...params}"
         />
 

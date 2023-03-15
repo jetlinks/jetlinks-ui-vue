@@ -26,7 +26,7 @@
                     </PermissionButton>
                     <a-upload
                         name="file"
-                        accept="json"
+                        accept=".json"
                         :showUploadList="false"
                         :before-upload="beforeUpload"
                     >
@@ -147,6 +147,19 @@
                     </template>
                 </CardBox>
             </template>
+            <template #type="slotProps">
+                <span> {{ getMethodTxt(slotProps.type) }}</span>
+            </template>
+            <template #provider="slotProps">
+                <span>
+                    {{ getProviderTxt(slotProps.type, slotProps.provider) }}
+                </span>
+            </template>
+            <!-- <template #description="slotProps">
+                <Ellipsis>
+                    {{ slotProps.description }}
+                </Ellipsis>
+            </template> -->
             <template #action="slotProps">
                 <j-space :size="16">
                     <template
@@ -205,6 +218,7 @@ const columns = [
         title: '配置名称',
         dataIndex: 'name',
         key: 'name',
+        width: 100,
         search: {
             type: 'string',
         },
@@ -214,6 +228,7 @@ const columns = [
         dataIndex: 'type',
         key: 'type',
         scopedSlots: true,
+        width: 100,
         search: {
             type: 'select',
             options: NOTICE_METHOD,
@@ -227,6 +242,7 @@ const columns = [
         dataIndex: 'provider',
         key: 'provider',
         scopedSlots: true,
+        width: 200,
         search: {
             type: 'select',
             options: providerList,
@@ -239,6 +255,8 @@ const columns = [
         title: '说明',
         dataIndex: 'description',
         key: 'description',
+        scopedSlots: true,
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -271,6 +289,14 @@ const getLogo = (type: string, provider: string) => {
  */
 const getMethodTxt = (type: string) => {
     return NOTICE_METHOD.find((f) => f.value === type)?.label;
+};
+/**
+ * 根据类型展示对应文案
+ * @param type
+ * @param provider
+ */
+const getProviderTxt = (type: string, provider: string) => {
+    return MSG_TYPE[type].find((f: any) => f.value === provider)?.label;
 };
 
 /**

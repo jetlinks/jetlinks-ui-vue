@@ -1,9 +1,10 @@
 <template>
     <page-container>
-        <a-card class="role-container">
-            <j-advanced-search
+        <div class="role-container">
+            <pro-search
                 :columns="columns"
-                @search="(params:any)=>queryParams = params"
+                target="category"
+                @search="(params:any)=>queryParams = {...params}"
             />
 
             <j-pro-table
@@ -12,6 +13,12 @@
                 :request="getRoleList_api"
                 model="TABLE"
                 :params="queryParams"
+                :defaultParams="{
+                    sorts: [
+                        { name: 'createTime', order: 'desc' },
+                        { name: 'id', order: 'desc' },
+                    ],
+                }"
             >
                 <template #headerTitle>
                     <PermissionButton
@@ -24,7 +31,7 @@
                 </template>
 
                 <template #action="slotProps">
-                    <a-space :size="16">
+                    <j-space :size="16">
                         <PermissionButton
                             :uhasPermission="`${permission}:update`"
                             type="link"
@@ -46,12 +53,12 @@
                         >
                             <AIcon type="DeleteOutlined" />
                         </PermissionButton>
-                    </a-space>
+                    </j-space>
                 </template>
             </j-pro-table>
 
             <AddDialog v-if="dialogVisible" v-model:visible="dialogVisible" />
-        </a-card>
+        </div>
     </page-container>
 </template>
 

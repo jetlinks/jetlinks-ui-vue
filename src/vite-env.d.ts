@@ -1,6 +1,7 @@
 interface ImportMetaEnv {
     readonly VITE_APP_BASE_API: string;
     readonly VITE_APP_WS_URL: string;
+    readonly MODE: string;
 }
 
 interface ImportMeta {

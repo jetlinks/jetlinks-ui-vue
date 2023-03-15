@@ -7,7 +7,7 @@
             class="search-input"
         >
             <template #suffix>
-                <search-outlined />
+                <AIcon type="SearchOutlined" />
             </template>
         </j-input>
         <div class="add-btn">
@@ -21,7 +21,7 @@
             </PermissionButton>
         </div>
 
-        <a-tree
+        <jTree
             :tree-data="treeData"
             v-model:selected-keys="selectedKeys"
             :fieldNames="{ key: 'id' }"
@@ -69,7 +69,7 @@
                     </PermissionButton>
                 </span>
             </template>
-        </a-tree>
+        </jTree>
 
         <!-- 编辑弹窗 -->
         <EditDepartmentDialog
@@ -89,7 +89,6 @@ import { debounce, cloneDeep, omit } from 'lodash-es';
 import { ArrayToTree } from '@/utils/utils';
 import EditDepartmentDialog from './EditDepartmentDialog.vue';
 
-import { SearchOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 
 const permission = 'system/Department';

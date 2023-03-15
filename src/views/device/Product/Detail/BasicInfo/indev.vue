@@ -1,7 +1,7 @@
 <!-- 配置信息 -->
 <template>
-    <a-card style="min-height: 100%">
-        <a-descriptions bordered>
+    <j-card style="min-height: 100%">
+        <j-descriptions bordered>
             <template #title>
                 <div style="display: flex">
                     <h3>配置信息</h3>
@@ -11,35 +11,35 @@
                 </div>
             </template>
 
-            <a-descriptions-item label="ID">{{
+            <j-descriptions-item label="ID">{{
                 productStore.current.id
-            }}</a-descriptions-item>
-            <a-descriptions-item label="产品分类">{{
+            }}</j-descriptions-item>
+            <j-descriptions-item label="产品分类">{{
                 productStore.current.classifiedName
-            }}</a-descriptions-item>
-            <a-descriptions-item label="设备类型">{{
+            }}</j-descriptions-item>
+            <j-descriptions-item label="设备类型">{{
                 productStore.current.deviceType?.text
-            }}</a-descriptions-item>
+            }}</j-descriptions-item>
 
-            <a-descriptions-item label="接入方式">
-                <a-button type="link" @click="changeTables">{{
-                    productStore.current.transportProtocol
-                        ? productStore.current.transportProtocol
+            <j-descriptions-item label="接入方式">
+                <j-button type="link" @click="changeTables">{{
+                    productStore.current.accessName
+                        ? productStore.current.accessName
                         : '配置接入方式'
-                }}</a-button>
-            </a-descriptions-item>
-            <a-descriptions-item label="创建时间">{{
+                }}</j-button>
+            </j-descriptions-item>
+            <j-descriptions-item label="创建时间">{{
                 moment(productStore.current.createTime).format('YYYY-MM-DD HH:mm:ss')
-            }}</a-descriptions-item>
-            <a-descriptions-item label="更新时间">{{
+            }}</j-descriptions-item>
+            <j-descriptions-item label="更新时间">{{
                 moment(productStore.current.modifyTime).format('YYYY-MM-DD HH:mm:ss')
-            }}</a-descriptions-item>
+            }}</j-descriptions-item>
 
-            <a-descriptions-item label="说明" :span="3">
+            <j-descriptions-item label="说明" :span="3">
                 {{ productStore.current.describe }}
-            </a-descriptions-item>
-        </a-descriptions>
-    </a-card>
+            </j-descriptions-item>
+        </j-descriptions>
+    </j-card>
     <!-- 编辑 -->
     <Save ref="saveRef" :isAdd="isAdd" :title="title" />
 </template>

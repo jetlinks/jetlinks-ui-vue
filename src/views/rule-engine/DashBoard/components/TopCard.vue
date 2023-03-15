@@ -4,12 +4,12 @@
             <div class="content-left">
                 <div class="content-left-title">
                     <span>{{ title }}</span>
-                    <a-tooltip placement="top" v-if="tooltip">
+                    <j-tooltip placement="top" v-if="tooltip">
                         <template #title>
                             <span>{{ tooltip }}</span>
                         </template>
                         <AIcon type="QuestionCircleOutlined" />
-                    </a-tooltip>
+                    </j-tooltip>
                 </div>
                 <div class="content-left-value">{{ value }}</div>
             </div>
@@ -23,7 +23,7 @@
         <div class="top-card-footer">
             <template v-for="(item, index) in footer" :key="index">
                 <span v-if="!item.status">{{ item.title }}</span>
-                <a-badge v-else :text="item.title" :status="item.status" />
+                <j-badge v-else :text="item.title" :status="item.status" />
                 <div class="footer-item-value">{{ item.value }}</div>
             </template>
         </div>

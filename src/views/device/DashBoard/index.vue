@@ -1,24 +1,24 @@
 <template>
     <page-container>
         <div class="DashBoardBox">
-            <a-row :gutter="24">
-                <a-col :span="6">
+            <j-row :gutter="24">
+                <j-col :span="6">
                     <TopCard
                         title="产品数量"
                         :img="getImage('/device/device-product.png')"
                         :footer="productFooter"
                         :value="productTotal"
                     ></TopCard>
-                </a-col>
-                <a-col :span="6">
+                </j-col>
+                <j-col :span="6">
                     <TopCard
                         title="设备数量"
                         :img="getImage('/device/device-number.png')"
                         :footer="deviceFooter"
                         :value="deviceTotal"
                     ></TopCard
-                ></a-col>
-                <a-col :span="6"
+                ></j-col>
+                <j-col :span="6"
                     ><TopCard
                         title="当前在线"
                         :footer="onlineFooter"
@@ -29,18 +29,18 @@
                             :chartYData="barChartYData"
                         ></BarChart>  -->
                         <Charts :options="onlineOptions"></Charts> </TopCard
-                ></a-col>
-                <a-col :span="6"
+                ></j-col>
+                <j-col :span="6"
                     ><TopCard
                         title="今日设备信息量"
                         :footer="messageFooter"
                         :value="dayMessage"
                     >
                         <Charts :options="TodayDevOptions"></Charts> </TopCard
-                ></a-col>
-            </a-row>
-            <a-row :gutter="24">
-                <a-col :span="24">
+                ></j-col>
+            </j-row>
+            <j-row :gutter="24">
+                <j-col :span="24">
                     <div class="message-card">
                         <Guide title="设备消息">
                             <template #extra>
@@ -56,18 +56,18 @@
                             <Charts :options="devMegOptions"></Charts>
                         </div>
                     </div>
-                </a-col>
-            </a-row>
-            <a-row :span="24">
-                <a-col :span="24">
+                </j-col>
+            </j-row>
+            <j-row :span="24">
+                <j-col :span="24">
                     <div class="device-position">
                         <Guide title="设备分布"></Guide>
                         <div class="device-map">
                             <Amap></Amap>
                         </div>
                     </div>
-                </a-col>
-            </a-row>
+                </j-col>
+            </j-row>
         </div>
     </page-container>
 </template>
@@ -336,7 +336,7 @@ const setDevMesChartOption = (
         grid: {
             top: '2%',
             bottom: '5%',
-            left: maxY > 100000 ? '90px' : '50px',
+            left: maxY > 100000 ? '90px' : '60px',
             right: '50px',
         },
         series: [

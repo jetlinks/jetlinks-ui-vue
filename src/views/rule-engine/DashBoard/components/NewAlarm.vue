@@ -1,6 +1,6 @@
 <template>
     <div class="new-alarm">
-        <div class="title">最新警告</div>
+        <div class="title">最新告警</div>
         <div v-if="alarmList.length" class="new-alarm-items">
             <ul>
                 <li v-for="item in alarmList.slice(0, 3)" :key="item">
@@ -16,22 +16,22 @@
                             }}
                         </div>
                         <div class="new-alarm-item-content">
-                            <a-tooltip
+                            <j-tooltip
                                 :title="item.alarmName"
                                 placement="topLeft"
                             >
                                 <a @click="()=>{return jumpDetail(item)}">{{ item.alarmName }}</a>
-                            </a-tooltip>
+                            </j-tooltip>
                         </div>
                         <div class="new-alarm-item-state">
-                            <a-badge
+                            <j-badge
                                 :status="
                                     item.state?.value === 'warning'
                                         ? 'error'
                                         : 'default'
                                 "
                             >
-                            </a-badge>
+                            </j-badge>
                             <span
                                 :class="
                                     item.state?.value === 'warning'
@@ -55,7 +55,7 @@
             </ul>
         </div>
         <div v-else class="empty-body">
-            <a-empty :image="Empty.PRESENTED_IMAGE_SIMPLE"></a-empty>
+            <j-empty :image="Empty.PRESENTED_IMAGE_SIMPLE"></j-empty>
         </div>
     </div>
 </template>
@@ -73,7 +73,7 @@ const props = defineProps({
 });
 const menuStore = useMenuStore();
 const jumpDetail = (item:any) =>{
-    menuStore.jumpPage(`rule-engine/Alarm/Log/Detail`,{id:item.id},{detail:true});
+    menuStore.jumpPage(`rule-engine/Alarm/Log/Detail`,{id:item.id,detail:true});
 }
 </script>
 <style scoped lang="less">

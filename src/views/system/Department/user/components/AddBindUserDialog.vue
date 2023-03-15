@@ -9,13 +9,17 @@
         @ok="confirm"
         @cancel="emits('update:visible', false)"
     >
-        <Search :columns="query.columns" @search="query.search" />
+        <pro-search
+            :columns="columns"
+            target="category"
+            @search="(params:any)=>queryParams = {...params}"
+        />
         <div class="table">
             <j-pro-table
                 ref="tableRef"
-                :columns="table.columns"
+                :columns="columns"
                 :request="table.requestFun"
-                :params="query.params"
+                :params="queryParams"
                 :rowSelection="{
                     selectedRowKeys: table._selectedRowKeys,
                     onChange: table.onSelectChange,
@@ -57,47 +61,28 @@ const confirm = () => {
     }
 };
 
-const query = {
-    columns: [
-        {
-            title: '姓名',
-            dataIndex: 'name',
-            key: 'name',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-            },
+const columns = [
+    {
+        title: '姓名',
+        dataIndex: 'name',
+        key: 'name',
+        ellipsis: true,
+        search: {
+            type: 'string',
         },
-        {
-            title: '用户名',
-            dataIndex: 'username',
-            key: 'username',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-            },
-        },
-    ],
-    params: ref({}),
-    search: (params: any) => {
-        query.params.value = params;
     },
-};
+    {
+        title: '用户名',
+        dataIndex: 'username',
+        key: 'username',
+        ellipsis: true,
+        search: {
+            type: 'string',
+        },
+    },
+];
+const queryParams = ref({});
 const table = reactive({
-    columns: [
-        {
-            title: '姓名',
-            dataIndex: 'name',
-            key: 'name',
-        },
-        {
-            title: '用户名',
-            dataIndex: 'username',
-            key: 'username',
-        },
-    ],
     _selectedRowKeys: [] as string[],
 
     requestFun: async (oParams: any) => {

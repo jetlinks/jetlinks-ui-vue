@@ -1,5 +1,5 @@
 <template>
-    <a-modal
+    <j-modal
         class="add-device-or-product-dialog-container"
         title="绑定"
         width="1440px"
@@ -9,13 +9,13 @@
         visible
     >
         <h5 class="row">
-            <exclamation-circle-outlined style="margin-right: 6px" />
+            <AIcon type="ExclamationCircleOutlined" style="margin-right: 6px" />
             只能分配有“共享”权限的资产数据
         </h5>
 
         <div class="row">
             <span style="margin-right: 8px">批量配置</span>
-            <a-switch
+            <j-switch
                 v-model:checked="bulkBool"
                 checked-children="开"
                 un-checked-children="关"
@@ -23,22 +23,25 @@
             />
         </div>
         <div v-show="bulkBool">
-            <a-checkbox-group v-model:value="bulkList" :options="options" />
+            <j-checkbox-group v-model:value="bulkList" :options="options" />
         </div>
 
-        <Search :columns="props.queryColumns" @search="query.search" />
-
+        <pro-search
+            :columns="props.queryColumns"
+            target="category"
+            @search="(params:any)=>queryParams = {...params}"
+        />
         <j-pro-table
             ref="tableRef"
             :request="table.requestFun"
             :gridColumn="2"
-            model="CARD"
-            :params="query.params.value"
+            :params="queryParams"
             :rowSelection="{
                 selectedRowKeys: table._selectedRowKeys.value,
-                onChange: pageChange
+                onChange: selectRow,
             }"
             @cancelSelect="table.cancelSelect"
+            :columns="columns"
         >
             <template #card="slotProps">
                 <CardBox
@@ -69,8 +72,8 @@
                         <h3 class="card-item-content-title">
                             {{ slotProps.name }}
                         </h3>
-                        <a-row>
-                            <a-col :span="12">
+                        <j-row>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">ID</div>
                                 <div
                                     style="cursor: pointer"
@@ -78,8 +81,8 @@
                                 >
                                     {{ slotProps.id }}
                                 </div>
-                            </a-col>
-                            <a-col :span="12">
+                            </j-col>
+                            <j-col :span="12">
                                 <div class="card-item-content-text">
                                     资产权限
                                 </div>
@@ -88,24 +91,47 @@
                                     class="card-item-content-value"
                                     @click="(e) => e.stopPropagation()"
                                 >
-                                    <a-checkbox-group
+                                    <j-checkbox-group
                                         v-model:value="
                                             slotProps.selectPermissions
                                         "
                                         :options="slotProps.permissionList"
                                     />
                                 </div>
-                            </a-col>
-                        </a-row>
+                            </j-col>
+                        </j-row>
                     </template>
                 </CardBox>
             </template>
+
+            <template #permission="slotProps">
+                <div
+                    style="cursor: pointer"
+                    class="card-item-content-value"
+                    @click="(e) => e.stopPropagation()"
+                >
+                    <j-checkbox-group
+                        v-model:value="slotProps.selectPermissions"
+                        :options="slotProps.permissionList"
+                    />
+                </div>
+            </template>
+            <template #state="slotProps">
+                <BadgeStatus
+                    :status="slotProps.state.value"
+                    :text="slotProps.state.text"
+                    :statusNames="{
+                        online: 'success',
+                        offline: 'error',
+                        notActive: 'warning',
+                    }"
+                ></BadgeStatus>
+            </template>
         </j-pro-table>
-    </a-modal>
+    </j-modal>
 </template>
 
 <script setup lang="ts">
-import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { getImage } from '@/utils/comm';
 import { uniq, intersection } from 'lodash-es';
 import {
@@ -162,58 +188,11 @@ const options = computed(() =>
     })),
 );
 
-const query = {
-    columns: [
-        {
-            title: 'ID',
-            dataIndex: 'id',
-            key: 'id',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-            },
-        },
-        {
-            title: '名称',
-            dataIndex: 'name',
-            key: 'name',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-            },
-        },
-        {
-            title: '状态',
-            dataIndex: 'state',
-            key: 'state',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'select',
-                options: [
-                    {
-                        label: '在线',
-                        value: 'online',
-                    },
-                    {
-                        label: '离线',
-                        value: 'offline',
-                    },
-                    {
-                        label: '禁用',
-                        value: 'notActive',
-                    },
-                ],
-            },
-        },
-    ],
-    params: ref({}),
-    search: (params: any) => {
-        query.params.value = params;
-    },
-};
+const columns = props.queryColumns.filter(
+    (item) => item.dataIndex !== 'action',
+);
+
+const queryParams = ref({});
 const table: any = {
     _selectedRowKeys: ref<string[]>([]), // 选中项的id
     backRowKeys: [] as string[], // 旧选中项的id
@@ -369,8 +348,6 @@ const table: any = {
         }),
     // 整理参数并获取数据
     requestFun: async (oParams: any) => {
-        table._selectedRowKeys.value = [];
-        table.selectedRows = [];
         if (props.parentId) {
             const terms = [
                 {
@@ -421,9 +398,11 @@ const table: any = {
     },
 };
 table.init();
-const pageChange = ()=>{
-    console.log(1111,table._selectedRowKeys.value);
-}
+const selectRow = (keys:string[], rows:any[]) => {
+    const okRows = rows.filter(item=>!!item.permissionList.find((permiss:any)=>permiss.value === 'share'));
+    table.selectedRows = okRows;
+    table._selectedRowKeys.value = okRows.map(item=>item.id)
+};
 </script>
 
 <style lang="less" scoped>

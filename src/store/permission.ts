@@ -3,11 +3,12 @@ import { defineStore } from "pinia";
 export const usePermissionStore = defineStore({
   id: 'permission',
   state: () => ({
-    permissions: {} as {[key: string]: string},
+    permissions: {} as {[key: string]: string[]},
   }),
   getters:  {
     check(state) {
       return (permissionCode: string) => {
+
         if (!permissionCode) {
           return true
         }
@@ -16,6 +17,7 @@ export const usePermissionStore = defineStore({
         }
         const code = permissionCode.split(":")[0]
         const value = permissionCode.split(":")[1]
+
         const _buttonArray = state.permissions[code]
         if (!_buttonArray) {
           return false

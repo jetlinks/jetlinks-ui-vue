@@ -1,6 +1,6 @@
 <template>
     <page-container>
-        <j-advanced-search
+        <pro-search
             :columns="columns"
             target="northbound-dueros"
             @search="handleSearch"
@@ -48,13 +48,17 @@
                         <j-row>
                             <j-col :span="12">
                                 <div class="card-item-content-text">产品</div>
-                                <div>{{ slotProps?.productName }}</div>
+                                <Ellipsis>
+                                    <div>{{ slotProps?.productName }}</div>
+                                </Ellipsis>
                             </j-col>
                             <j-col :span="12">
                                 <div class="card-item-content-text">
                                     设备类型
                                 </div>
-                                <div>{{ slotProps?.applianceType?.text }}</div>
+                                <Ellipsis>
+                                    <div>{{ slotProps?.applianceType?.text }}</div>
+                                </Ellipsis>
                             </j-col>
                         </j-row>
                     </template>

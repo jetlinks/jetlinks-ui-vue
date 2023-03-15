@@ -1,6 +1,6 @@
 <!-- 新增编辑弹窗 -->
 <template>
-    <a-modal
+    <j-modal
         :title="props.title"
         :maskClosable="false"
         destroy-on-close
@@ -11,38 +11,38 @@
         cancelText="取消"
         v-bind="layout"
     >
-        <a-form
+        <j-form
             layout="vertical"
             ref="formRef"
             :rules="rules"
             :model="formModel"
         >
-            <a-form-item label="名称" name="name">
-                <a-input
+            <j-form-item label="名称" name="name">
+                <j-input
                     v-model:value="formModel.name"
                     :maxlength="64"
                     placeholder="请输入名称"
                 />
-            </a-form-item>
-            <a-form-item label="排序" name="sortIndex">
-                <a-input-number
+            </j-form-item>
+            <j-form-item label="排序" name="sortIndex">
+                <j-input-number
                     style="width: 100%"
                     id="inputNumber"
                     v-model:value="formModel.sortIndex"
                     :min="1"
                     placeholder="请输入排序"
                 />
-            </a-form-item>
-            <a-form-item label="说明">
-                <a-textarea
+            </j-form-item>
+            <j-form-item label="说明">
+                <j-textarea
                     v-model:value="formModel.description"
                     show-count
                     :maxlength="200"
                     placeholder="请输入说明"
                 />
-            </a-form-item>
-        </a-form>
-    </a-modal>
+            </j-form-item>
+        </j-form>
+    </j-modal>
 </template>
 <script setup lang="ts" name="modifyModal">
 import { PropType } from 'vue';
@@ -111,20 +111,20 @@ const submitData = async () => {
             if (props.isChild === 1) {
                 addParams.value = {
                     ...formModel.value,
-                    sortIndex:
-                        childArr.value[childArr.value.length - 1].sortIndex + 1,
+                    // sortIndex:
+                        // childArr.value[childArr.value.length - 1].sortIndex + 1,
                     parentId: addObj.value.id,
                 };
             } else if (props.isChild === 2) {
                 addParams.value = {
                     parentId: addObj.value.id,
                     ...formModel.value,
-                    sortIndex: 1,
+                    // sortIndex: 1,
                 };
             } else if (props.isChild === 3) {
                 addParams.value = {
                     ...formModel.value,
-                    sortIndex: arr.value[arr.value.length - 1].sortIndex + 1,
+                    // sortIndex: arr.value[arr.value.length - 1].sortIndex + 1,
                 };
             }
             const res = await saveTree(addParams.value);

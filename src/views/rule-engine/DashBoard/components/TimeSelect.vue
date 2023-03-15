@@ -1,21 +1,21 @@
 <template>
     <div>
-        <a-radio-group
+        <j-radio-group
             v-if="quickBtn"
             default-value="today"
             button-style="solid"
             v-model:value="radioValue"
             @change="(e) => handleBtnChange(e.target.value)"
         >
-            <a-radio-button
+            <j-radio-button
                 v-for="item in quickBtnList"
                 :key="item.value"
                 :value="item.value"
             >
                 {{ item.label }}
-            </a-radio-button>
-        </a-radio-group>
-        <a-range-picker
+            </j-radio-button>
+        </j-radio-group>
+        <j-range-picker
             format="YYYY-MM-DD HH:mm:ss"
             valueFormat="YYYY-MM-DD HH:mm:ss"
             style="margin-left: 12px"
@@ -23,7 +23,7 @@
             v-model:value="rangeVal"
             :allowClear="false"
         >
-        </a-range-picker>
+        </j-range-picker>
     </div>
 </template>
 

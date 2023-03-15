@@ -9,32 +9,52 @@
         :confirmLoading="btnLoading"
         width="660px"
     >
-        <j-form layout="vertical">
-            <j-form-item label="产品名称" v-bind="validateInfos.name">
+        <j-form ref="formRef" :model="formData" layout="vertical">
+            <j-form-item
+                label="产品名称"
+                name="name"
+                :rules="{ required: true, message: '请输入产品名称' }"
+            >
                 <j-input
                     v-model:value="formData.name"
                     placeholder="请输入名称"
                 />
             </j-form-item>
-            <template v-if="channel === 'gb28181-2016' && formData.accessId">
-                <j-form-item
-                    label="接入密码"
-                    v-bind="validateInfos['configuration.access_pwd']"
-                >
-                    <j-input-password
-                        v-model:value="formData.configuration.access_pwd"
-                        placeholder="请输入接入密码"
-                    />
-                </j-form-item>
-                <j-form-item label="流传输模式">
-                    <j-select
-                        v-model:value="formData.configuration.stream_mode"
-                        placeholder="请选择流传输模式"
-                        :options="streamMode"
-                    />
-                </j-form-item>
+            <template v-if="deviceType !== 'gateway'">
+                <template v-for="(item, index) in extendFormItem" :key="index">
+                    <j-form-item
+                        :name="item.name"
+                        :label="item.label"
+                        :rules="{
+                            required: item.required,
+                            message: item.message,
+                            trigger: 'change',
+                        }"
+                    >
+                        <j-select
+                            v-if="item.type === 'enum'"
+                            v-model:value="formData[item.name[0]][item.name[1]]"
+                            :options="item.options"
+                            :placeholder="item.message"
+                        />
+                        <j-input-password
+                            v-else-if="item.type === 'password'"
+                            v-model:value="formData[item.name[0]][item.name[1]]"
+                            :placeholder="item.message"
+                        />
+                        <j-input
+                            v-else
+                            v-model:value="formData[item.name[0]][item.name[1]]"
+                            :placeholder="item.message"
+                        />
+                    </j-form-item>
+                </template>
             </template>
-            <j-form-item label="接入网关" v-bind="validateInfos.accessId">
+            <j-form-item
+                label="接入网关"
+                name="accessId"
+                :rules="{ required: true, message: '请选择接入网关' }"
+            >
                 <div class="gateway-box">
                     <div v-if="!gatewayList.length">
                         暂无数据，请先
@@ -119,20 +139,17 @@
 </template>
 
 <script setup lang="ts">
-import { Form, message } from 'ant-design-vue';
-import { PropType } from 'vue';
-import { streamMode } from '@/views/media/Device/const';
+import { message } from 'ant-design-vue';
 import DeviceApi from '@/api/media/device';
 import { getImage } from '@/utils/comm';
 import { gatewayType } from '@/views/media/Device/typings';
 import { providerType } from '../const';
 
-const useForm = Form.useForm;
-
 type Emits = {
     (e: 'update:visible', data: boolean): void;
     (e: 'update:productId', data: string): void;
     (e: 'close'): void;
+    (e: 'save', data: Record<string, any>): void;
 };
 const emit = defineEmits<Emits>();
 
@@ -140,6 +157,7 @@ const props = defineProps({
     visible: { type: Boolean, default: false },
     productId: { type: String, default: '' },
     channel: { type: String, default: '' },
+    deviceType: { type: String, default: 'device' },
 });
 
 const _vis = computed({
@@ -166,20 +184,36 @@ const getGatewayList = async () => {
  * @param e
  */
 const _selectedRowKeys = ref<string[]>([]);
+const extendFormItem = ref<any[]>();
 const handleClick = async (e: any) => {
     _selectedRowKeys.value = [e.id];
     formData.value.accessId = e.id;
     formData.value.accessName = e.name;
     formData.value.accessProvider = e.provider;
-    formData.value.messageProtocol = e.provider;
+    formData.value.messageProtocol = e.protocolDetail.id;
     formData.value.protocolName = e.protocolDetail.name;
     formData.value.transportProtocol = e.transport;
 
     const { result } = await DeviceApi.getConfiguration(
-        props.channel,
+        e.protocol,
         e.transport,
     );
-    console.log('result: ', result);
+
+    extendFormItem.value = result.properties.map((item: any) => ({
+        name: ['configuration', item.property],
+        label: item.name,
+        type: item.type?.type,
+        value: item.type.expands?.defaultValue,
+        options: item.type.elements?.map((e: any) => ({
+            label: e.text,
+            value: e.value,
+        })),
+        required: !!item.type.expands?.required,
+        message:
+            item.type?.type === 'enum'
+                ? `请选择${item.name}`
+                : `请输入${item.name}`,
+    }));
 };
 
 watch(
@@ -187,10 +221,6 @@ watch(
     (val) => {
         if (val) {
             getGatewayList();
-
-            formRules.value['configuration.access_pwd'][0].required =
-                props.channel === 'gb28181-2016';
-            validate();
         } else {
             emit('close');
         }
@@ -198,6 +228,7 @@ watch(
 );
 
 // 表单数据
+const formRef = ref();
 const formData = ref({
     accessId: '',
     accessName: '',
@@ -206,32 +237,20 @@ const formData = ref({
         access_pwd: '',
         stream_mode: 'UDP',
     },
-    deviceType: 'device',
+    deviceType: props.deviceType,
     messageProtocol: '',
     name: '',
     protocolName: '',
     transportProtocol: '',
 });
 
-// 验证规则
-const formRules = ref({
-    name: [{ required: true, message: '请输入产品名称' }],
-    'configuration.access_pwd': [{ required: true, message: '请输入接入密码' }],
-    accessId: [{ required: true, message: '请选择接入网关' }],
-});
-
-const { resetFields, validate, validateInfos, clearValidate } = useForm(
-    formData.value,
-    formRules.value,
-);
-
 /**
  * 提交
  */
 const btnLoading = ref(false);
 const handleOk = () => {
-    // console.log('formData.value: ', formData.value);
-    validate()
+    formRef.value
+        ?.validate()
         .then(async () => {
             btnLoading.value = true;
             const res = await DeviceApi.saveProduct(formData.value);
@@ -241,20 +260,21 @@ const handleOk = () => {
                     res.result.id,
                 );
                 if (deployResp.success) {
+                    emit('save', {...res.result})
                     message.success('操作成功');
                     handleCancel();
                 }
             }
             btnLoading.value = false;
         })
-        .catch((err) => {
+        .catch((err: any) => {
             console.log('err: ', err);
         });
 };
 
 const handleCancel = () => {
     _vis.value = false;
-    resetFields();
+    formRef.value.resetFields();
 };
 </script>
 

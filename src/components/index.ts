@@ -8,7 +8,7 @@ import CardBox from './CardBox/index.vue';
 import Search from './Search'
 import NormalUpload from './NormalUpload/index.vue'
 import FileFormat from './FileFormat/index.vue'
-import JProUpload from './JUpload/index.vue'
+import JProUpload from './Upload/index.vue'
 import { BasicLayoutPage, BlankLayoutPage } from './Layout'
 import { PageContainer, AIcon } from 'jetlinks-ui-components'
 import Ellipsis from './Ellipsis/index.vue'

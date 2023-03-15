@@ -16,7 +16,6 @@
                     @select="treeSelect"
                     :mode="props.mode"
                     :has-home="props.hasHome"
-                    :filter-array="treeFilter"
                     :code="props.code"
                 />
             </j-col>
@@ -26,10 +25,12 @@
                     <ChooseApi
                         v-show="!selectedApi.url"
                         v-model:click-api="selectedApi"
-                        :table-data="tableData"
                         v-model:selectedRowKeys="selectedKeys"
+                        v-model:changedApis="changedApis"
+                        :table-data="tableData"
                         :source-keys="selectSourceKeys"
                         :mode="props.mode"
+                        @refresh="getSelectKeys"
                     />
 
                     <div
@@ -82,9 +83,8 @@ const props = defineProps<{
     hasHome?: boolean;
     code?: string;
 }>();
-const showHome = ref<boolean>(Boolean(props.hasHome));
+const showHome = ref<boolean>(Boolean(props.hasHome)); // 是否展示home页面
 const tableData = ref([]);
-const treeFilter = ref([]);
 const treeSelect = (node: treeNodeTpye, nodeSchemas: object = {}) => {
     if (node.key === 'home') return (showHome.value = true);
     schemas.value = nodeSchemas;
@@ -109,8 +109,8 @@ const treeSelect = (node: treeNodeTpye, nodeSchemas: object = {}) => {
     tableData.value = table;
 };
 
-const activeKey = ref<'does' | 'test'>('does');
-const schemas = ref({});
+const activeKey = ref<'does' | 'test'>('does'); 
+const schemas = ref({}); // 对应一级api相关的类
 const initSelectedApi: apiDetailsType = {
     url: '',
     method: '',
@@ -121,23 +121,14 @@ const initSelectedApi: apiDetailsType = {
 };
 const selectedApi = ref<apiDetailsType>(initSelectedApi);
 
-const selectedKeys = ref<string[]>([]); // 右侧默认勾选的项
-let selectSourceKeys = ref<string[]>([]);
+const selectedKeys = ref<string[]>([]); // 右侧勾选的项
+const selectSourceKeys = ref<string[]>([]); // 右侧原本勾选的项
+const changedApis = ref({}); // 勾选发生变化的项，以对应的id作为key
+
 init();
 
 function init() {
-    // 右侧默认选中初始化
-    if (props.mode === 'appManger') {
-        getApiGranted_api(props.code as string).then((resp) => {
-            selectedKeys.value = resp.result as string[];
-            selectSourceKeys.value = [...(resp.result as string[])];
-        });
-    } else if (props.mode === 'api') {
-        apiOperations_api().then((resp) => {
-            selectedKeys.value = resp.result as string[];
-            selectSourceKeys.value = [...(resp.result as string[])];
-        });
-    }
+    getSelectKeys();
     watch(tableData, () => {
         activeKey.value = 'does';
         selectedApi.value = initSelectedApi;
@@ -146,6 +137,24 @@ function init() {
         () => selectedApi.value.url,
         () => (activeKey.value = 'does'),
     );
+}
+
+/**
+ * 右侧api选中项
+ */
+function getSelectKeys() {
+    if (props.mode === 'appManger') {
+        getApiGranted_api(props.code as string).then((resp) => {
+            selectedKeys.value = resp.result as string[];
+            selectSourceKeys.value = [...(resp.result as string[])];
+            changedApis.value = {};
+        });
+    } else if (props.mode === 'api') {
+        apiOperations_api().then((resp) => {
+            selectedKeys.value = resp.result as string[];
+            selectSourceKeys.value = [...(resp.result as string[])];
+        });
+    }
 }
 </script>
 

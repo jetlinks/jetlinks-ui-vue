@@ -1,8 +1,9 @@
 <template>
     <div class="product-container">
-        <j-advanced-search
+        <pro-search
             :columns="columns"
-            @search="(params:any) => (queryParams = params)"
+            target="category"
+            @search="(params:any)=>queryParams = {...params}"
         />
         <j-pro-table
             ref="tableRef"
@@ -11,8 +12,9 @@
             :params="queryParams"
             :rowSelection="{
                 selectedRowKeys: table._selectedRowKeys.value,
+                onChange:(keys:string[])=>table._selectedRowKeys.value = [...keys],
+                onSelectNone: table.cancelSelect
             }"
-            @cancelSelect="table.cancelSelect"
             :columns="columns"
         >
             <template #headerTitle>
@@ -152,7 +154,7 @@
                 ></BadgeStatus>
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
+                <j-space :size="16">
                     <PermissionButton
                         v-for="i in table.getActions(slotProps, 'table')"
                         :uhasPermission="i.permission"
@@ -164,7 +166,7 @@
                     >
                         <AIcon :type="i.icon" />
                     </PermissionButton>
-                </a-space>
+                </j-space>
             </template>
         </j-pro-table>
 
@@ -425,8 +427,6 @@ const table = {
         }),
     // 整理参数并获取数据
     requestFun: async (oParams: any) => {
-        table._selectedRowKeys.value = [];
-        table.selectedRows = [];
         if (props.parentId) {
             const params = {
                 ...oParams,

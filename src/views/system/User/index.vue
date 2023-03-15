@@ -1,8 +1,9 @@
 <template>
     <page-container>
         <div class="user-container">
-            <j-advanced-search
+            <pro-search
                 :columns="columns"
+                target="category"
                 @search="(params:any)=>queryParams = {...params}"
             />
 
@@ -63,8 +64,13 @@
                                 onConfirm: () => table.changeStatus(slotProps),
                             }"
                         >
-                            <stop-outlined v-if="slotProps.status" />
-                            <play-circle-outlined v-else />
+                            <AIcon
+                                :type="
+                                    slotProps.status
+                                        ? 'StopOutlined'
+                                        : 'PlayCircleOutlined'
+                                "
+                            />
                         </PermissionButton>
                         <PermissionButton
                             :hasPermission="`${permission}:update`"
@@ -116,7 +122,6 @@ import {
     changeUserStatus_api,
     deleteUser_api,
 } from '@/api/system/user';
-import { StopOutlined, PlayCircleOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 
 const permission = 'system/User';
