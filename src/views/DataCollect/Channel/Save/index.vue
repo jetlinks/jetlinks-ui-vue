@@ -37,16 +37,15 @@
                 :name="['configuration', 'host']"
                 :rules="FormValidate.host"
             >
-                <div class="form-label">
+                <template #label>
                     Modbus主机IP
-                    <span class="form-label-required">*</span>
-                    <j-tooltip>
-                        <template #title>
-                            <p>支持ipv4、ipv6、域名</p>
-                        </template>
-                        <AIcon type="QuestionCircleOutlined" />
+                    <j-tooltip title="支持ipv4、ipv6、域名">
+                        <AIcon
+                            type="QuestionCircleOutlined"
+                            style="margin-left: 2px"
+                        />
                     </j-tooltip>
-                </div>
+                </template>
                 <j-input
                     placeholder="请输入Modbus主机IP"
                     v-model:value="formData.configuration.host"
@@ -62,7 +61,7 @@
                     style="width: 100%"
                     placeholder="请输入端口"
                     v-model:value="formData.configuration.port"
-                    :min="1"
+                    :min="0"
                     :max="65535"
                 />
             </j-form-item>
@@ -80,7 +79,7 @@
             <j-form-item
                 v-if="formData.provider === 'OPC_UA'"
                 label="安全策略"
-                :name="['configuration.securityPolicy']"
+                :name="['configuration', 'securityPolicy']"
                 :rules="FormValidate.securityPolicy"
             >
                 <j-select
@@ -96,7 +95,7 @@
             <j-form-item
                 v-if="formData.provider === 'OPC_UA'"
                 label="安全模式"
-                :name="['configuration.securityMode']"
+                :name="['configuration', 'securityMode']"
                 :rules="FormValidate.securityMode"
             >
                 <j-select
@@ -115,7 +114,7 @@
                     formData.configuration.securityMode === 'Sign'
                 "
                 label="证书"
-                :name="['configuration.certificate']"
+                :name="['configuration', 'certificate']"
                 :rules="FormValidate.certificate"
             >
                 <j-select
@@ -131,20 +130,20 @@
             <j-form-item
                 v-if="formData.provider === 'OPC_UA'"
                 label="权限认证"
-                :name="['configuration.authType']"
+                :name="['configuration', 'authType']"
                 :rules="FormValidate.authType"
             >
-                <RadioCard
-                    layout="horizontal"
-                    :checkStyle="true"
+                <j-card-select
+                    :showImage="false"
+                    v-model:value="formData.configuration.authType"
                     :options="Options['auth-types']"
-                    v-model="formData.configuration.authType"
+                    @change="changeAuthType"
                 />
             </j-form-item>
             <j-form-item
                 v-if="formData.configuration.authType === 'username'"
                 label="用户名"
-                :name="['configuration.username']"
+                :name="['configuration', 'username']"
                 :rules="FormValidate.username"
             >
                 <j-input
@@ -153,9 +152,12 @@
                 />
             </j-form-item>
             <j-form-item
-                v-if="formData.configuration.authType === 'username'"
+                v-if="
+                    formData.configuration.authType === 'username' ||
+                    formData.configuration.authType === ['username']
+                "
                 label="密码"
-                :name="['configuration.password']"
+                :name="['configuration', 'password']"
                 :rules="FormValidate.password"
             >
                 <j-input-password
@@ -226,11 +228,9 @@ const handleOk = async () => {
     const params = await formRef.value?.validate();
     loading.value = true;
     const response = !id
-        ? await save(params)
-        : await update(id, { ...props.data, ...params });
-    if (response.status === 200) {
-        emit('change', true);
-    }
+        ? await save(params).catch(() => {})
+        : await update(id, { ...props.data, ...params }).catch(() => {});
+    emit('change', response?.status === 200);
     loading.value = false;
     formRef.value?.resetFields();
 };
@@ -240,29 +240,33 @@ const handleCancel = () => {
     formRef.value?.resetFields();
 };
 
+const changeAuthType = (value: Array<string>) => {
+    formData.value.configuration.authType = value[0];
+};
+
 const filterOption = (input: string, option: any) => {
     return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
 
 const getOptionsList = async () => {
     for (let key in Options.value) {
-        const res = await queryOptionsList(key);
-        Options.value[key] = res.result.map((item) => ({
+        const res: any = await queryOptionsList(key);
+        Options.value[key] = res.result.map((item: any) => ({
             label: item?.text || item,
             value: item?.value || item,
         }));
     }
 };
 const getCertificateList = async () => {
-    const res = await queryCertificateList();
-    certificateList.value = res.result.map((item) => ({
+    const res: any = await queryCertificateList();
+    certificateList.value = res.result.map((item: any) => ({
         value: item.id,
         label: item.name,
     }));
 };
 
 const getProvidersList = async () => {
-    const resp = await getProviders();
+    const resp: any = await getProviders();
     if (resp.status === 200) {
         const list = [
             { label: 'OPC UA', value: 'OPC_UA' },
@@ -273,7 +277,9 @@ const getProvidersList = async () => {
                 (item: any) => item.id === 'modbus-tcp' || item.id === 'opc-ua',
             )
             .map((it: any) => (it?.id === 'opc-ua' ? 'OPC_UA' : 'MODBUS_TCP'));
-        const providers = list.filter((item: any) => arr.includes(item.value));
+        const providers: any = list.filter((item: any) =>
+            arr.includes(item.value),
+        );
         providersList.value = providers;
         if (arr.includes('OPC_UA')) {
             getOptionsList();
@@ -286,30 +292,10 @@ getCertificateList();
 watch(
     () => props.data,
     (value) => {
-        if (value.id) formData.value = value;
+        if (value.id) formData.value = value as FormDataType;
     },
     { immediate: true, deep: true },
 );
 </script>
 
-<style lang="less" scoped>
-.form {
-    .form-radio-button {
-        width: 148px;
-        height: 80px;
-        padding: 0;
-        img {
-            width: 100%;
-            height: 100%;
-        }
-    }
-}
-.form-label {
-    height: 30px;
-    padding-bottom: 8px;
-    .form-label-required {
-        color: red;
-        margin: 0 4px 0 -2px;
-    }
-}
-</style>
+<style lang="less" scoped></style>

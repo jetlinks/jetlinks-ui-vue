@@ -1,9 +1,9 @@
 <template>
-    <j-form style="width: 80%" ref="formTableRef" :model="modelRef">
+    <j-form class="table" ref="formTableRef" :model="modelRef">
         <j-table
             :dataSource="modelRef.dataSource"
             :columns="FormTableColumns"
-            :scroll="{ x: 1100, y: 500 }"
+            :scroll="{ x: 1000, y: 550 }"
         >
             <template #bodyCell="{ column: { dataIndex }, record, index }">
                 <template v-if="dataIndex === 'name'">
@@ -25,8 +25,11 @@
                 </template>
                 <template v-if="dataIndex === 'id'">
                     <a-form-item :name="['dataSource', index, 'id']">
-                        <j-input v-model:value="record[dataIndex]" disabled>
-                        </j-input>
+                        <j-input
+                            v-model:value="record[dataIndex]"
+                            disabled
+                            :bordered="false"
+                        ></j-input>
                     </a-form-item>
                 </template>
 
@@ -78,8 +81,12 @@
                         ]"
                         :rules="[
                             {
-                                required: true,
-                                message: '请输入',
+                                pattern: regOnlyNumber,
+                                message: '请输入0或者正整数',
+                            },
+                            {
+                                validator: checkLength,
+                                trigger: 'change',
                             },
                         ]"
                     >
@@ -98,7 +105,7 @@
                             @blur="changeValue(index, dataIndex)"
                         ></j-input>
                         <j-checkbox
-                            style="margin-left: 5px"
+                            style="margin-left: 5px; margin-top: 5px"
                             v-show="index !== 0"
                             v-model:checked="
                                 record.configuration[dataIndex].check
@@ -151,14 +158,14 @@
                 </template>
 
                 <template v-if="dataIndex === 'action'">
-                    <a-tooltip title="删除">
-                        <a-popconfirm
+                    <j-tooltip title="删除">
+                        <j-popconfirm
                             title="确认删除"
                             @confirm="clickDelete(record.id)"
                         >
-                            <AIcon type="DeleteOutlined" />
-                        </a-popconfirm>
-                    </a-tooltip>
+                            <a><AIcon type="DeleteOutlined" /></a>
+                        </j-popconfirm>
+                    </j-tooltip>
                 </template>
             </template>
         </j-table>
@@ -166,7 +173,9 @@
 </template>
 
 <script lang="ts" setup>
-import { FormTableColumns } from '../../data';
+import { FormTableColumns, regOnlyNumber } from '../../data';
+import { Rule } from 'ant-design-vue/lib/form';
+
 const props = defineProps({
     data: {
         type: Array,
@@ -177,9 +186,18 @@ const emits = defineEmits(['change']);
 
 const formTableRef = ref();
 const defaultType = ['accessModes', 'interval', 'features'];
-const modelRef = reactive({
+const modelRef: any = reactive({
     dataSource: [],
 });
+
+const checkLength = (_rule: Rule, value: string): Promise<any> =>
+    new Promise(async (resolve, reject) => {
+        if (value) {
+            return String(value).length > 64
+                ? reject('最多可输入64个字符')
+                : resolve('');
+        }
+    });
 
 const filterOption = (input: string, option: any) => {
     return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
@@ -268,6 +286,7 @@ watch(
 </script>
 
 <style lang="less" scoped>
+.table {}
 .form-item {
     display: flex;
 }

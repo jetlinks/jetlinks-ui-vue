@@ -1,5 +1,4 @@
 import moment from 'moment';
-import * as echarts from 'echarts';
 
 const getParams = (dt: any) => {
     switch (dt.type) {
@@ -54,7 +53,7 @@ const getParams = (dt: any) => {
     }
 };
 
-export const getTimeByType = (type) => {
+export const getTimeByType = (type: string) => {
     switch (type) {
         case 'hour':
             return moment().subtract(1, 'hours');
@@ -69,7 +68,7 @@ export const getTimeByType = (type) => {
     }
 };
 
-export const pointParams = (data) => [
+export const pointParams = (data: any) => [
     {
         dashboard: 'collector',
         object: 'pointData',
@@ -121,7 +120,7 @@ export const defaultParams = {
     ],
 };
 
-export const statusData = ref([
+export const statusData = [
     [
         {
             type: 'channel',
@@ -152,4 +151,4 @@ export const statusData = ref([
             total: 0,
         },
     ],
-]);
+];

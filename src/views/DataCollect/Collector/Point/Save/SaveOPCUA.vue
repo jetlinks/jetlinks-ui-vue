@@ -34,7 +34,9 @@
             </j-form-item>
 
             <j-form-item label="访问类型" name="accessModes">
-                <j-checkbox-group
+                <j-card-select
+                    multiple
+                    :showImage="false"
                     v-model:value="formData.accessModes"
                     :options="[
                         { label: '读', value: 'read' },
@@ -54,15 +56,13 @@
                     },
                 ]"
             >
-                <j-input-number
+                <j-input
                     style="width: 100%"
                     placeholder="请输入采集频率"
                     v-model:value="formData.configuration.interval"
-                    :min="1"
                     addon-after="ms"
                 />
             </j-form-item>
-
             <a-form-item label="" :name="['features']">
                 <a-checkbox-group v-model:value="formData.features">
                     <a-checkbox value="changedOnly" name="type"
@@ -70,7 +70,6 @@
                     >
                 </a-checkbox-group>
             </a-form-item>
-
             <j-form-item label="说明" :name="['description']">
                 <j-textarea
                     placeholder="请输入说明"
@@ -104,7 +103,7 @@ import {
     updatePoint,
     _validateField,
 } from '@/api/data-collect/collector';
-import { OPCUARules, checkProviderData } from '../../data.ts';
+import { OPCUARules } from '../../data.ts';
 import type { FormInstance } from 'ant-design-vue';
 import { Rule } from 'ant-design-vue/lib/form';
 import { cloneDeep } from 'lodash-es';
@@ -118,7 +117,6 @@ const props = defineProps({
 
 const emit = defineEmits(['change']);
 const loading = ref(false);
-const providerList = ref([]);
 const formRef = ref<FormInstance>();
 
 const id = props.data.id;
@@ -136,9 +134,8 @@ const formData = ref({
     description: '',
 });
 
-const onSubmit = async () => {
+const handleOk = async () => {
     const data = await formRef.value?.validate();
-
     const params = {
         ...props.data,
         ...data,
@@ -148,17 +145,12 @@ const onSubmit = async () => {
 
     loading.value = true;
     const response = !id
-        ? await savePoint(params)
-        : await updatePoint(id, { ...props.data, ...params });
-    if (response.status === 200) {
-        emit('change', true);
-    }
+        ? await savePoint(params).catch(() => {})
+        : await updatePoint(id, { ...props.data, ...params }).catch(() => {});
+    emit('change', response?.status === 200);
     loading.value = false;
 };
 
-const handleOk = () => {
-    onSubmit();
-};
 const handleCancel = () => {
     emit('change', false);
 };
@@ -180,15 +172,17 @@ watch(
     () => props.data,
     (value) => {
         if (value.id && value.provider === 'OPC_UA') {
-            const _value = cloneDeep(value);
+            const _value: any = cloneDeep(value);
             formData.value = _value;
             if (!!_value.accessModes[0]?.value) {
                 formData.value.accessModes = value.accessModes.map(
-                    (i) => i.value,
+                    (i: any) => i.value,
                 );
             }
             if (!!_value.features[0]?.value) {
-                formData.value.features = value.features.map((i) => i.value);
+                formData.value.features = value.features.map(
+                    (i: any) => i.value,
+                );
             }
         }
     },

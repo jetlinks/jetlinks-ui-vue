@@ -7,7 +7,6 @@
                 </div>
                 <div class="right">
                     <j-radio-group
-                        default-value="a"
                         button-style="solid"
                         style="margin-right: 10px"
                         v-model:value="data.time.type"
@@ -31,9 +30,7 @@
                     </j-range-picker>
                 </div>
             </div>
-            <div>
-                <div ref="chartRef" style="width: 100%; height: 350px"></div>
-            </div>
+            <div ref="chartRef" style="width: 100%; height: 350px"></div>
         </div>
     </j-spin>
 </template>
@@ -63,9 +60,9 @@ const pickerTimeChange = (
     data.value.time.type = undefined;
 };
 
-const getEcharts = async (val) => {
+const getEcharts = async (val: any) => {
     loading.value = true;
-    const resp = await dashboard(pointParams(val));
+    const resp: any = await dashboard(pointParams(val));
     if (resp.success) {
         const x = resp.result
             .map((item: any) => item.data.timeString)
@@ -79,7 +76,7 @@ const getEcharts = async (val) => {
 };
 
 const handleOptions = (x = [], y = []) => {
-    const chart = chartRef.value;
+    const chart: any = chartRef.value;
     if (chart) {
         const myChart = echarts.init(chart);
         const options = {
@@ -117,7 +114,7 @@ const handleOptions = (x = [], y = []) => {
 watch(
     () => data.value.time.type,
     (value) => {
-        data.value.time.end = Date.parse(new Date());
+        data.value.time.end = Date.parse(Date());
         data.value.time.start = Date.parse(getTimeByType(value));
     },
     { immediate: true, deep: true },

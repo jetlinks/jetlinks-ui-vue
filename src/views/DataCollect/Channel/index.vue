@@ -1,7 +1,11 @@
 <template>
     <page-container>
         <div>
-            <Search :columns="columns" target="search" @search="handleSearch" />
+            <pro-search
+                :columns="columns"
+                target="search"
+                @search="handleSearch"
+            />
 
             <j-pro-table
                 ref="tableRef"
@@ -134,7 +138,6 @@ import _ from 'lodash';
 const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
-const options = ref([]);
 const visible = ref(false);
 const current = ref({});
 

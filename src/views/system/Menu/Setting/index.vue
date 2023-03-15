@@ -1,7 +1,7 @@
 <template>
     <div class="setting-container">
         <h5 class="top">
-            <exclamation-circle-outlined />
+            <AIcon type="ExclamationCircleOutlined" />
             <span style="padding-left: 12px"
                 >基于系统源代码中的菜单数据，配置系统菜单。</span
             >
@@ -17,7 +17,7 @@
                             <template #title
                                 >根据系统代码自动读取的菜单数据</template
                             >
-                            <question-circle-outlined />
+                            <AIcon type="QuestionCircleOutlined" />
                         </j-tooltip>
                     </div>
                     <div class="title-func">
@@ -36,7 +36,10 @@
                         placeholder="请输入菜单名称"
                     >
                         <template #prefix>
-                            <search-outlined style="color: #b3b3b3" />
+                            <AIcon
+                                type="SearchOutlined"
+                                style="color: #b3b3b3"
+                            />
                         </template>
                     </j-input>
                     <j-tree
@@ -63,7 +66,7 @@
                             <template #title
                                 >菜单管理页面配置的菜单数据</template
                             >
-                            <question-circle-outlined />
+                            <AIcon type="QuestionCircleOutlined" />
                         </j-tooltip>
                     </div>
                 </div>
@@ -74,7 +77,10 @@
                         placeholder="请输入菜单名称"
                     >
                         <template #prefix>
-                            <search-outlined style="color: #b3b3b3" />
+                            <AIcon
+                                type="SearchOutlined"
+                                style="color: #b3b3b3"
+                            />
                         </template>
                     </j-input>
                     <j-tree
@@ -103,7 +109,7 @@
                                             style="padding: 0"
                                             type="link"
                                         >
-                                            <close-outlined />
+                                            <AIcon type="CloseOutlined" />
                                         </j-button>
                                     </j-tooltip>
                                 </j-popconfirm>
@@ -114,7 +120,7 @@
             </div>
         </div>
 
-        <j-button type="primary" style="margin-top: 24px;">保存</j-button>
+        <j-button type="primary" style="margin-top: 24px">保存</j-button>
 
         <div class="dialogs">
             <j-modal
@@ -131,13 +137,6 @@
 </template>
 
 <script setup lang="ts" name="MenuSetting">
-import {
-    ExclamationCircleOutlined,
-    QuestionCircleOutlined,
-    SearchOutlined,
-    CloseOutlined,
-} from '@ant-design/icons-vue';
-
 import { getMenuTree_api } from '@/api/system/menu';
 import { getSystemPermission as getSystemPermission_api } from '@/api/initHome';
 import { filterMenu, getKeys, loop } from './utils';
