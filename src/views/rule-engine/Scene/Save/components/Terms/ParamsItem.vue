@@ -75,6 +75,11 @@ import { getOption } from '../DropdownButton/util'
 import ParamsDropdown, { DoubleParamsDropdown } from '../ParamsDropdown'
 import { inject } from 'vue'
 import { ContextKey } from './util'
+import { useSceneStore } from 'store/scene'
+import { storeToRefs } from 'pinia';
+
+const sceneStore = useSceneStore()
+const { data: formModel } = storeToRefs(sceneStore)
 
 type Emit = {
   (e: 'update:value', data: TermsType): void
@@ -95,7 +100,23 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
+  showDeleteBtn: {
+    type: Boolean,
+    default: true
+  },
   name: {
+    type: Number,
+    default: 0
+  },
+  termsName: {
+    type: Number,
+    default: 0
+  },
+  branchName: {
+    type: Number,
+    default: 0
+  },
+  whenName: {
     type: Number,
     default: 0
   },
@@ -176,13 +197,13 @@ const showDouble = computed(() => {
 })
 
 const mouseover = () => {
-  if (props.name !== 0){
+  if (props.showDeleteBtn){
     showDelete.value = true
   }
 }
 
 const mouseout = () => {
-  if (props.name !== 0){
+  if (props.showDeleteBtn){
     showDelete.value = false
   }
 }
@@ -205,11 +226,21 @@ const termsTypeSelect = () => {
 }
 
 const termAdd = () => {
-
+  const terms = {
+    column: undefined,
+    value: {
+      source: 'fixed',
+      value: undefined
+    },
+    termType: undefined,
+    type: 'and',
+    key: `params_${new Date().getTime()}`
+  }
+  formModel.value.branches?.[props.branchName]?.when?.[props.whenName]?.terms?.push(terms)
 }
 
 const onDelete = () => {
-
+  formModel.value.branches?.[props.branchName]?.when?.[props.whenName]?.terms?.splice(props.name, 1)
 }
 
 nextTick(() => {

@@ -19,19 +19,23 @@
       >
         <j-popconfirm
           title='该操作将清空其它所有否则条件，确认删除？'
-          placement='topRight'
+          placement="topRight"
           @confirm='onDeleteAll'
         >
-          <AIcon type='CloseOutlined' v-show='showDelete' />
+          <div class='terms-params-delete' v-show='showDelete'>
+            <AIcon type='CloseOutlined' />
+          </div>
         </j-popconfirm>
 
         <div class='actions-terms-list-content'>
           <template v-if='showWhen'>
             <TermsItem
-              v-for='(item, index) in data.when'
+              v-for='(item, index) in whenData'
               :key='item.key'
+              :name='index'
+              :showDeleteBtn='whenData.length !== 1'
               :isFirst='index === 0'
-              :isLast='index === data.when.length -1'
+              :isLast='index === whenData.length -1'
               :branchName='name'
               :whenName='index'
               :data='item'
@@ -92,6 +96,10 @@ const showWhen = computed(() => {
   return props.data.when.length
 })
 
+const whenData = computed(() => {
+  return props.data.when
+})
+
 const onDelete = () => {
 
 }
@@ -101,19 +109,36 @@ const onDeleteAll = () => {
 }
 
 const mouseover = () => {
-  if (props.isFirst && props.data.when.length){
+  if (!props.isFirst){
     showDelete.value = true
   }
 }
 
 const mouseout = () => {
-  if (props.isFirst && props.data.when.length){
+  if (!props.isFirst){
     showDelete.value = false
   }
 }
 
 const addWhen = () => {
-
+  const whenItem = {
+    key: `when_${new Date().getTime()}`,
+    type: 'and',
+    terms: [
+      {
+        column: undefined,
+        value: {
+          source: 'fixed',
+          value: undefined
+        },
+        termType: undefined,
+        key: 'params_1',
+        type: 'and',
+      }
+    ]
+  }
+  FormModel.value.branches?.[props.name].when.push(whenItem)
+  FormModel.value.branches?.push(null)
 }
 
 const optionsClass = computed(() => {
