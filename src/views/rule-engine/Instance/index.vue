@@ -245,6 +245,9 @@ const getActions = (
                 title: '查看',
             },
             icon: 'EyeOutlined',
+            onClick: () => {
+                openRuleEditor(data);
+            }
         },
         {
             key: 'action',

@@ -13,19 +13,22 @@
 import templateApi from '@/api/notice/template';
 
 type Emits = {
-    (e: 'update:toParty', data: string): void;
+    (e: 'update:toParty', data: string | undefined): void;
 };
+
+type Props = {
+    toParty: string | undefined;
+    type: string | undefined;
+    configId: string | undefined;
+}
+
 const emit = defineEmits<Emits>();
 
-const props = defineProps({
-    toParty: { type: String, default: '' },
-    type: { type: String, default: '' },
-    configId: { type: String, default: '' },
-});
+const props = defineProps<Props>();
 
 const _value = computed({
     get: () => props.toParty,
-    set: (val: string) => emit('update:toParty', val),
+    set: (val: string | undefined) => emit('update:toParty', val),
 });
 const typeObj = {
     weixin: 'wechat',

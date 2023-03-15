@@ -94,42 +94,42 @@ export const MSG_TYPE = {
 export const CONFIG_FIELD_MAP = {
     dingTalk: {
         dingTalkMessage: {
-            appKey: '',
-            appSecret: '',
+            appKey: undefined,
+            appSecret: undefined,
         },
         dingTalkRobotWebHook: {
-            url: '',
+            url: undefined,
         }
     },
     weixin: {
         corpMessage: {
-            corpId: '',
-            corpSecret: '',
+            corpId: undefined,
+            corpSecret: undefined,
         },
         // officialMessage: {},
     },
     email: {
         embedded: {
-            host: '',
+            host: undefined,
             port: 25,
             ssl: false,
-            sender: '',
-            username: '',
-            password: '',
+            sender: undefined,
+            username: undefined,
+            password: undefined,
         }
     },
     voice: {
         aliyun: {
-            regionId: '',
-            accessKeyId: '',
-            secret: '',
+            regionId: undefined,
+            accessKeyId: undefined,
+            secret: undefined,
         }
     },
     sms: {
         aliyunSms: {
-            regionId: '',
-            accessKeyId: '',
-            secret: '',
+            regionId: undefined,
+            accessKeyId: undefined,
+            secret: undefined,
         }
     },
     webhook: {
@@ -145,69 +145,69 @@ export const CONFIG_FIELD_MAP = {
 export const TEMPLATE_FIELD_MAP = {
     dingTalk: {
         dingTalkMessage: {
-            agentId: '',
-            message: '',
-            departmentIdList: '',
-            userIdList: ''
+            agentId: undefined,
+            message: undefined,
+            departmentIdList: undefined,
+            userIdList: undefined
         },
         dingTalkRobotWebHook: {
-            message: '',
+            message: undefined,
             messageType: 'markdown',
             markdown: {
-                text: '',
-                title: '',
+                text: undefined,
+                title: undefined,
             },
             link: {
-                title: '',
-                picUrl: '',
-                messageUrl: '',
-                text: '',
+                title: undefined,
+                picUrl: undefined,
+                messageUrl: undefined,
+                text: undefined,
             },
         }
     },
     weixin: {
         corpMessage: {
-            agentId: '',
-            message: '',
-            toParty: '',
-            toUser: '',
-            toTag: '',
+            agentId: undefined,
+            message: undefined,
+            toParty: undefined,
+            toUser: undefined,
+            toTag: undefined,
         },
         officialMessage: {},
     },
     email: {
         embedded: {
-            subject: '',
+            subject: undefined,
             sendTo: [],
             attachments: [],
-            message: '',
-            text: '',
+            message: undefined,
+            text: undefined,
         }
     },
     voice: {
         aliyun: {
             templateType: 'tts',
-            templateCode: '',
-            ttsCode: '',
-            // message: '',
-            ttsmessage: '',
+            templateCode: undefined,
+            ttsCode: undefined,
+            // message: undefined,
+            ttsmessage: undefined,
             playTimes: 1,
-            calledShowNumbers: '',
-            calledNumber: '',
+            calledShowNumbers: undefined,
+            calledNumber: undefined,
         }
     },
     sms: {
         aliyunSms: {
-            code: '',
-            message: '',
-            phoneNumber: '',
-            signName: '',
+            code: undefined,
+            message: undefined,
+            phoneNumber: undefined,
+            signName: undefined,
         }
     },
     webhook: {
         http: {
             contextAsBody: true,
-            body: ''
+            body: undefined
         }
     },
 };

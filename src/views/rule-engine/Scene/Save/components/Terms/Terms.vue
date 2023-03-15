@@ -32,13 +32,13 @@
         </div>
       </template>
     </template>
-    <j-form-item
-      v-else
-      :name='["branches", 0, "then"]'
-      :rules='rules'
-    >
-
-    </j-form-item>
+<!--    <j-form-item-->
+<!--      v-else-->
+<!--      :name='["branches", 0, "then"]'-->
+<!--      :rules='rules'-->
+<!--    >-->
+<!--      -->
+<!--    </j-form-item>-->
   </div>
 </template>
 
@@ -64,18 +64,6 @@ provide(ContextKey, columnOptions)
 const change = (e: boolean) => {
   open.value = e
 }
-
-const rules = [{
-  validator(_: string, value: any) {
-    if (!value || (value && !value.length)) {
-      return Promise.reject('至少配置一个执行动作')
-    } else {
-      const isActions = value.some((item: any) => item.actions && item.actions.length)
-      return isActions ? Promise.resolve() : Promise.reject('至少配置一个执行动作');
-    }
-    return Promise.resolve();
-  }
-}]
 
 const handleParamsData = (data: any[]): any[] => {
   return data?.map(item => {

@@ -13,19 +13,21 @@
 import templateApi from '@/api/notice/template';
 
 type Emits = {
-    (e: 'update:toUser', data: string): void;
+    (e: 'update:toUser', data: string | undefined): void;
 };
+type Props = {
+    toUser: string | undefined;
+    type: string | undefined;
+    configId: string | undefined;
+}
+
 const emit = defineEmits<Emits>();
 
-const props = defineProps({
-    toUser: { type: String, default: '' },
-    type: { type: String, default: '' },
-    configId: { type: String, default: '' },
-});
+const props = defineProps<Props>();
 
 const _value = computed({
     get: () => props.toUser,
-    set: (val: string) => emit('update:toUser', val),
+    set: (val: string | undefined) => emit('update:toUser', val),
 });
 
 const typeObj = {
