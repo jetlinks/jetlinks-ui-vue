@@ -31,7 +31,7 @@
                     :options="[
                         { label: '01线圈寄存器', value: 'Coils' },
                         { label: '03保存寄存器', value: 'HoldingRegisters' },
-                        { label: '04输入寄存器', value: 'DiscreteInputs' },
+                        { label: '04输入寄存器', value: 'InputRegisters' },
                     ]"
                     placeholder="请选择所功能码"
                     allowClear
@@ -74,7 +74,10 @@
                 />
             </j-form-item>
             <j-form-item
-                v-if="formData.configuration.function === 'HoldingRegisters'"
+                v-if="
+                    formData.configuration.function === 'HoldingRegisters' ||
+                    formData.configuration.function === 'InputRegisters'
+                "
                 label="数据类型"
                 :name="['configuration', 'codec', 'provider']"
                 :rules="[
@@ -246,7 +249,8 @@ const props = defineProps({
 
 const emit = defineEmits(['change']);
 const loading = ref(false);
-const providerList = ref([]);
+const providerListAll: any = ref([]);
+const providerList: any = ref([]);
 const formRef = ref<FormInstance>();
 
 const id = props.data.id;
@@ -322,7 +326,7 @@ const changeWriteByteCount = (value: Array<string>) => {
 };
 const changeFunction = (value: string) => {
     formData.value.accessModes =
-        value === 'DiscreteInputs' ? ['read'] : ['read', 'write'];
+        value === 'InputRegisters' ? ['read'] : ['read', 'write'];
 };
 
 const checkLength = (_rule: Rule, value: string): Promise<any> =>
@@ -361,7 +365,7 @@ const filterOption = (input: string, option: any) => {
 
 const getProviderList = async () => {
     const res: any = await queryCodecProvider();
-    providerList.value = res.result
+    providerListAll.value = res.result
         .filter((i: any) => i.id !== 'property')
         .map((item: any) => ({
             value: item.id,
@@ -378,10 +382,22 @@ watch(
     { immediate: true, deep: true },
 );
 watch(
+    () => formData.value.configuration.function,
+    (value) => {
+        providerList.value =
+            value === 'HoldingRegisters'
+                ? providerListAll.value
+                : providerListAll.value.filter(
+                      (item: any) => item.value !== 'bool',
+                  );
+    },
+    { deep: true },
+);
+watch(
     () => props.data,
     (value) => {
         if (value.id && value.provider === 'MODBUS_TCP') {
-            const _value = cloneDeep(value);
+            const _value: any = cloneDeep(value);
             const { writeByteCount, byteCount } =
                 _value.configuration.parameter;
             formData.value = _value;
