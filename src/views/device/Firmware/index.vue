@@ -62,7 +62,7 @@
     </page-container>
 </template>
 <script lang="ts" setup name="FirmwarePage">
-import type { ActionsType } from '@/components/Table/index.vue';
+import type { ActionsType } from '@/components/Table/index';
 import { query, queryProduct, remove } from '@/api/device/firmware';
 import { message } from 'ant-design-vue';
 import moment from 'moment';

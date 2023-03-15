@@ -19,7 +19,9 @@
             ref="formRef"
         >
             <j-form-item label="访问类型" name="accessModes">
-                <j-checkbox-group
+                <j-card-select
+                    multiple
+                    :showImage="false"
                     v-model:value="formData.accessModes"
                     :options="[
                         { label: '读', value: 'read' },
@@ -28,7 +30,19 @@
                     ]"
                 />
             </j-form-item>
-            <j-form-item :name="['interval']">
+            <j-form-item
+                :name="['interval']"
+                :rules="[
+                    {
+                        pattern: regOnlyNumber,
+                        message: '请输入0或者正整数',
+                    },
+                    {
+                        validator: checkLength,
+                        trigger: 'change',
+                    },
+                ]"
+            >
                 <template #label>
                     <span>
                         采集频率
@@ -40,11 +54,10 @@
                         </j-tooltip>
                     </span>
                 </template>
-                <j-input-number
+                <j-input
                     style="width: 100%"
                     placeholder="请输入采集频率"
                     v-model:value="formData.interval"
-                    :min="1"
                     addon-after="ms"
                 />
             </j-form-item>
@@ -77,6 +90,7 @@ import type { FormInstance } from 'ant-design-vue';
 import { savePointBatch } from '@/api/data-collect/collector';
 import { Rule } from 'ant-design-vue/lib/form';
 import { cloneDeep } from 'lodash';
+import { regOnlyNumber } from '../../../data';
 
 const props = defineProps({
     data: {
@@ -104,8 +118,8 @@ const checkLength = (_rule: Rule, value: string): Promise<any> =>
         }
     });
 
-const onSubmit = async () => {
-    const data = await formRef.value?.validate();
+const handleOk = async () => {
+    const data: any = await formRef.value?.validate();
     const { accessModes, features, interval } = data;
     const ischange =
         accessModes.length !== 0 || features.length !== 0 || !!interval;
@@ -123,19 +137,14 @@ const onSubmit = async () => {
             }
         });
         loading.value = true;
-        const response = await savePointBatch(params);
-        if (response.status === 200) {
-            emit('change', true);
-        }
+        const response = await savePointBatch(params).catch(() => {});
+        emit('change', response?.status === 200);
         loading.value = false;
     } else {
         emit('change', true);
     }
 };
 
-const handleOk = () => {
-    onSubmit();
-};
 const handleCancel = () => {
     emit('change', false);
 };

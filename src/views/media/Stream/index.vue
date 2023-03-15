@@ -137,7 +137,7 @@
     </page-container>
 </template>
 <script lang="ts" setup name="StreamPage">
-import type { ActionsType } from '@/components/Table/index.vue';
+import type { ActionsType } from '@/components/Table/index';
 import { getImage } from '@/utils/comm';
 import { query, remove, disable, enalbe } from '@/api/media/stream';
 import { message } from 'ant-design-vue';

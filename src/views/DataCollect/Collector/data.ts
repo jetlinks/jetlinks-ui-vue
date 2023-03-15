@@ -17,7 +17,7 @@ export const getState = (record: any) => {
     }
 };
 
-const regOnlyNumber = new RegExp(/^\d+$/);
+export const regOnlyNumber = new RegExp(/^\d+$/);
 
 export const checkProviderData = {
     int8: 1,
@@ -93,13 +93,17 @@ export const ModBusRules = {
     byteCount: [
         {
             required: true,
-            message: '请输入自定义数据区长度（byte）',
+            message: '请输入自定义数据区长度(byte)',
         },
     ],
     interval: [
         {
             required: true,
             message: '请输入采集频率',
+        },
+        {
+            pattern: regOnlyNumber,
+            message: '请输入0或者正整数',
         },
     ],
 
@@ -134,8 +138,29 @@ export const OPCUARules = {
             required: true,
             message: '请输入采集频率',
         },
+        {
+            pattern: regOnlyNumber,
+            message: '请输入0或者正整数',
+        },
     ],
     description: [{ max: 200, message: '最多可输入200个字符' }],
+};
+
+export const LeftTreeRules = {
+    channelId: [{ required: true, message: '请选择所属通道', trigger: 'blur' }],
+    name: [
+        { required: true, message: '请输入采集器名称', trigger: 'blur' },
+        { max: 64, message: '最多可输入64个字符' },
+    ],
+    unitId: [
+        { required: true, message: '请输入从机地址', trigger: 'blur' },
+        {
+            pattern: regOnlyNumber,
+            message: '请输入0-255之间的正整数',
+        },
+    ],
+    type: [{ required: true, message: '请选择处理方式', trigger: 'blur' }],
+    endian: [{ required: true, message: '请选择高低位切换', trigger: 'blur' }],
 };
 
 export const FormTableColumns = [
@@ -162,7 +187,7 @@ export const FormTableColumns = [
         title: '采集频率',
         key: 'interval',
         dataIndex: 'interval',
-        width: 280,
+        width: 260,
     },
     {
         title: '只推送变化的数据',
@@ -174,7 +199,6 @@ export const FormTableColumns = [
         title: '操作',
         key: 'action',
         dataIndex: 'action',
-
         fixed: 'right',
         width: 80,
     },

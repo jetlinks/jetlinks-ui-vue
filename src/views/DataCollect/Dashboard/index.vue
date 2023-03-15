@@ -28,11 +28,11 @@ import { queryCount } from '@/api/data-collect/dashboard';
 import { defaultParams, statusData } from './tool';
 
 const getNumberData = () => {
-    statusData.value.forEach(async (item) => {
+    statusData.forEach(async (item: any) => {
         const res = await queryCount(item[0].type, {});
         const resp = await queryCount(item[0].type, defaultParams);
-        item[0].total = res.result || 0;
-        item[0].value = resp.result || 0;
+        item[0].total = res?.result || 0;
+        item[0].value = resp?.result || 0;
     });
 };
 getNumberData();

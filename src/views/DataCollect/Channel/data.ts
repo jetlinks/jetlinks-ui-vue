@@ -1,5 +1,6 @@
 import { validateField } from '@/api/data-collect/channel';
 import { FormDataType } from './type.d';
+import type { Rule } from 'ant-design-vue/lib/form';
 
 export const FormState: FormDataType = {
     name: '',
@@ -44,7 +45,7 @@ export const TiTlePermissionButtonStyle = {
     overflow: 'hidden',
     'text-overflow': 'ellipsis',
     'white-space': 'nowrap',
-    width: 'calc(100%-100px)',
+    width: 'calc(100%-150px)',
     // width: '60%',
 };
 
@@ -61,10 +62,8 @@ export const regDomain = new RegExp(
 );
 export const checkEndpoint = (_rule: Rule, value: string): Promise<any> =>
     new Promise(async (resolve, reject) => {
-        if (value) {
-            const res = await validateField(value);
-            return res.result.passed ? resolve('') : reject(res.result.reason);
-        }
+        const res = await validateField(value);
+        return res.result.passed ? resolve('') : reject(res.result.reason);
     });
 export const FormValidate = {
     name: [
@@ -89,7 +88,7 @@ export const FormValidate = {
         },
         {
             pattern: regOnlyNumber,
-            message: '请输入1-65535之间的正整数',
+            message: '请输入0-65535之间的正整数',
         },
     ],
 
@@ -100,7 +99,7 @@ export const FormValidate = {
         },
         {
             validator: checkEndpoint,
-            trigger: 'blur',
+            // trigger: 'blur',
         },
     ],
 
@@ -139,3 +138,70 @@ export const FormValidate = {
 
     description: [{ max: 200, message: '最多可输入200个字符' }],
 };
+export const columns = [
+    {
+        title: '通道名称',
+        dataIndex: 'name',
+        key: 'name',
+        ellipsis: true,
+        fixed: 'left',
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '通讯协议',
+        dataIndex: 'provider',
+        key: 'provider',
+        ellipsis: true,
+        search: {
+            type: 'select',
+            options: [
+                { label: 'OPC_UA', value: 'OPC_UA' },
+                { label: 'MODBUS_TCP', value: 'MODBUS_TCP' },
+            ],
+        },
+    },
+    {
+        title: '状态',
+        dataIndex: 'state',
+        key: 'state',
+        ellipsis: true,
+        scopedSlots: true,
+        search: {
+            type: 'select',
+            options: [
+                { label: '正常', value: 'enabled' },
+                { label: '禁用', value: 'disabled' },
+            ],
+        },
+    },
+    {
+        title: '运行状态',
+        dataIndex: 'runningState',
+        key: 'runningState',
+        ellipsis: true,
+        scopedSlots: true,
+        search: {
+            type: 'select',
+            options: [
+                { label: '运行中', value: 'running' },
+                { label: '部分错误', value: 'partialError' },
+                { label: '错误', value: 'failed' },
+            ],
+        },
+    },
+    {
+        title: '说明',
+        dataIndex: 'description',
+        key: 'description',
+        ellipsis: true,
+    },
+    {
+        title: '操作',
+        key: 'action',
+        fixed: 'right',
+        width: 200,
+        scopedSlots: true,
+    },
+];

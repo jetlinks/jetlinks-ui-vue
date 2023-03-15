@@ -130,7 +130,7 @@ const loading = ref(false);
 const formRef = ref<FormInstance>();
 
 const collectorId = props.data.collectorId;
-const pointId = props.data.id;
+const pointId: string = props.data.id;
 
 const formData = ref({
     value: '',
@@ -140,23 +140,18 @@ const onChange = (value: Dayjs, dateString: string) => {
     formData.value.value = dateString;
 };
 
-const onSubmit = async () => {
+const handleOk = async () => {
     const data = await formRef.value?.validate();
-    const params = {
+    const params: any = {
         ...data,
         pointId,
     };
     loading.value = true;
-    const response = await writePoint(collectorId, [params]);
-    if (response.status === 200) {
-        emit('change', true);
-    }
+    const response = await writePoint(collectorId, [params]).catch(() => {});
+    emit('change', response?.status === 200);
     loading.value = false;
 };
 
-const handleOk = () => {
-    onSubmit();
-};
 const handleCancel = () => {
     emit('change', false);
 };

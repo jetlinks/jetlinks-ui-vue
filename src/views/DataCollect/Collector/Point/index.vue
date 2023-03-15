@@ -1,11 +1,6 @@
 <template>
     <j-spin :spinning="spinning">
-        <j-advanced-search
-            :columns="columns"
-            target="search"
-            @search="handleSearch"
-        />
-
+        <pro-search :columns="columns" target="search" @search="handleSearch" />
         <j-pro-table
             ref="tableRef"
             model="CARD"
@@ -77,6 +72,16 @@
                         </template>
                     </j-dropdown>
                 </j-space>
+                <div
+                    v-if="data?.provider === 'OPC_UA'"
+                    style="margin-top: 15px"
+                >
+                    <j-checkbox
+                        v-model:checked="checkAll"
+                        @change="onCheckAllChange"
+                        >全选</j-checkbox
+                    >
+                </div>
             </template>
             <template #card="slotProps">
                 <PointCardBox
@@ -98,18 +103,14 @@
                     </template>
                     <template #action>
                         <div class="card-box-action">
-                            <a>
-                                <j-popconfirm
-                                    title="确定删除？"
-                                    @confirm="handlDelete(slotProps.id)"
-                                >
-                                    <AIcon type="DeleteOutlined" />
-                                </j-popconfirm>
-                            </a>
-                            <a
-                                ><AIcon
-                                    @click="handlEdit(slotProps)"
-                                    type="FormOutlined"
+                            <j-popconfirm
+                                title="确定删除？"
+                                @confirm="handlDelete(slotProps.id)"
+                            >
+                                <a><AIcon type="DeleteOutlined" /></a>
+                            </j-popconfirm>
+                            <a @click="handlEdit(slotProps)"
+                                ><AIcon type="FormOutlined"
                             /></a>
                         </div>
                     </template>
@@ -125,28 +126,62 @@
                     <template #content>
                         <div class="card-box-content">
                             <div class="card-box-content-left">
-                                <span>--</span>
-                                <a
-                                    v-if="
-                                        getAccessModes(slotProps).includes(
-                                            'write',
-                                        )
-                                    "
-                                    ><AIcon
+                                <div class="card-box-content-left-1">
+                                    <div
+                                        class="ard-box-content-left-1-title"
+                                        v-if="propertyValue.has(slotProps.id)"
+                                    >
+                                        <j-ellipsis style="max-width: 150px">
+                                            {{
+                                                propertyValue.get(slotProps.id)
+                                                    ?.parseData[0] || 0
+                                            }}({{
+                                                propertyValue.get(slotProps.id)
+                                                    ?.dataType
+                                            }})
+                                        </j-ellipsis>
+                                    </div>
+                                    <span v-else>--</span>
+                                    <a
+                                        v-if="
+                                            getAccessModes(slotProps).includes(
+                                                'write',
+                                            )
+                                        "
                                         @click.stop="clickEdit(slotProps)"
-                                        type="EditOutlined"
-                                /></a>
-                                <a
-                                    v-if="
-                                        getAccessModes(slotProps).includes(
-                                            'read',
-                                        )
-                                    "
-                                    ><AIcon
+                                        ><AIcon type="EditOutlined"
+                                    /></a>
+                                    <a
+                                        v-if="
+                                            getAccessModes(slotProps).includes(
+                                                'read',
+                                            )
+                                        "
                                         @click.stop="clickRedo(slotProps)"
-                                        type="RedoOutlined"
-                                /></a>
+                                        ><AIcon type="RedoOutlined"
+                                    /></a>
+                                </div>
+                                <div
+                                    v-if="propertyValue.has(slotProps.id)"
+                                    class="card-box-content-right-2"
+                                >
+                                    <p>
+                                        {{
+                                            propertyValue.get(slotProps.id)
+                                                ?.hex || ''
+                                        }}
+                                    </p>
+                                    <p>
+                                        {{
+                                            moment(
+                                                propertyValue.get(slotProps.id)
+                                                    ?.timestamp,
+                                            ).format('YYYY-MM-DD HH:mm:ss')
+                                        }}
+                                    </p>
+                                </div>
                             </div>
+
                             <div class="card-box-content-right">
                                 <div
                                     v-if="getRight1(slotProps)"
@@ -198,7 +233,6 @@ import {
     readPoint,
 } from '@/api/data-collect/collector';
 import { message } from 'ant-design-vue';
-import { useMenuStore } from 'store/menu';
 import PointCardBox from './components/PointCardBox/index.vue';
 import WritePoint from './components/WritePoint/index.vue';
 import BatchUpdate from './components/BatchUpdate/index.vue';
@@ -207,6 +241,9 @@ import SaveOPCUA from './Save/SaveOPCUA.vue';
 import Scan from './Scan/index.vue';
 import { colorMap, getState } from '../data.ts';
 import { cloneDeep } from 'lodash-es';
+import { getWebSocket } from '@/utils/websocket';
+import { map } from 'rxjs/operators';
+import moment from 'moment';
 
 const props = defineProps({
     data: {
@@ -215,7 +252,6 @@ const props = defineProps({
     },
 });
 
-const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const opcImage = getImage('/DataCollect/device-opcua.png');
@@ -227,10 +263,10 @@ const visible = reactive({
     batchUpdate: false,
     scan: false,
 });
-const current = ref({});
+const current: any = ref({});
 const accessModesOption = ref();
 const _selectedRowKeys = ref<string[]>([]);
-
+const checkAll = ref(false);
 const spinning = ref(false);
 const collectorId = ref(props.data.id);
 
@@ -242,7 +278,6 @@ const defaultParams = ref({
                 {
                     column: 'collectorId',
                     value: collectorId.value,
-                    // value: '1610517928766550016', //测试
                 },
             ],
         },
@@ -332,6 +367,9 @@ const columns = [
     },
 ];
 
+const subRef = ref();
+const propertyValue = ref(new Map());
+
 const handlAdd = () => {
     visible.saveModBus = true;
     current.value = {
@@ -339,7 +377,7 @@ const handlAdd = () => {
         provider: props.data?.provider || 'MODBUS_TCP',
     };
 };
-const handlEdit = (data: Object) => {
+const handlEdit = (data: any) => {
     if (data?.provider === 'OPC_UA') {
         visible.saveOPCUA = true;
     } else {
@@ -347,12 +385,12 @@ const handlEdit = (data: Object) => {
     }
     current.value = cloneDeep(data);
 };
-const handlDelete = async (data: string | undefined = undefined) => {
+const handlDelete = async (id: string | undefined = undefined) => {
     spinning.value = true;
-    const res = !data
-        ? await batchDeletePoint(_selectedRowKeys.value)
-        : await removePoint(data as string);
-    if (res.status === 200) {
+    const res = !id
+        ? await batchDeletePoint(_selectedRowKeys.value).catch(() => {})
+        : await removePoint(id as string).catch(() => {});
+    if (res?.status === 200) {
         cancelSelect();
         tableRef.value?.reload();
         message.success('操作成功');
@@ -360,9 +398,13 @@ const handlDelete = async (data: string | undefined = undefined) => {
     spinning.value = false;
 };
 const handlBatchUpdate = () => {
+    if (_selectedRowKeys.value.length === 0) {
+        message.warn('请先选择');
+        return;
+    }
     const dataSet = new Set(_selectedRowKeys.value);
     const dataMap = new Map();
-    tableRef?.value?._dataSource.forEach((i) => {
+    tableRef?.value?._dataSource.forEach((i: any) => {
         dataSet.has(i.id) && dataMap.set(i.id, i);
     });
     current.value = [...dataMap.values()];
@@ -376,7 +418,7 @@ const clickEdit = async (data: object) => {
     visible.writePoint = true;
     current.value = cloneDeep(data);
 };
-const clickRedo = async (data: object) => {
+const clickRedo = async (data: any) => {
     const res = await readPoint(data?.collectorId, [data?.id]);
     if (res.status === 200) {
         cancelSelect();
@@ -401,14 +443,14 @@ const getRight1 = (item: Partial<Record<string, any>>) => {
     return !!getQuantity(item) || getAddress(item) || getScaleFactor(item);
 };
 const getText = (item: Partial<Record<string, any>>) => {
-    return (item?.accessModes || []).map((i) => i?.text).join(',');
+    return (item?.accessModes || []).map((i: any) => i?.text).join(',');
 };
 const getInterval = (item: Partial<Record<string, any>>) => {
     const { interval } = item.configuration || '';
     return !!interval ? '采集频率' + interval + 'ms' : '';
 };
 const getAccessModes = (item: Partial<Record<string, any>>) => {
-    return item?.accessModes?.map((i) => i?.value);
+    return item?.accessModes?.map((i: any) => i?.value);
 };
 
 const saveChange = (value: object) => {
@@ -431,32 +473,93 @@ const cancelSelect = () => {
 };
 
 const handleClick = (dt: any) => {
+    if (props.data?.provider !== 'OPC_UA') return;
     if (_selectedRowKeys.value.includes(dt.id)) {
         const _index = _selectedRowKeys.value.findIndex((i) => i === dt.id);
         _selectedRowKeys.value.splice(_index, 1);
+        checkAll.value = false;
     } else {
         _selectedRowKeys.value = [..._selectedRowKeys.value, dt.id];
+        if (
+            _selectedRowKeys.value.length === tableRef.value?._dataSource.length
+        ) {
+            checkAll.value = true;
+        }
     }
 };
+
+const subscribeProperty = (value: any) => {
+    const list = value.map((item: any) => item.id);
+    const id = `collector-${props.data?.channelId || 'channel'}-${
+        props.data?.id || 'point'
+    }-data-${list.join('-')}`;
+    const topic = `/collector/${props.data?.channelId || '*'}/${
+        props.data?.id || '*'
+    }/data`;
+    subRef.value = getWebSocket(id, topic, {
+        pointId: list.join(','),
+    })
+        ?.pipe(map((res: any) => res.payload))
+        .subscribe((payload: any) => {
+            propertyValue.value.set(payload.pointId, payload);
+        });
+};
+
+const onCheckAllChange = (e: any) => {
+    if (e.target.checked) {
+        _selectedRowKeys.value = [
+            ...tableRef.value?._dataSource.map((i: any) => i.id),
+        ];
+    } else {
+        cancelSelect();
+        checkAll.value = false;
+    }
+};
+
+watch(
+    () => tableRef?.value?._dataSource,
+    (value) => {
+        if (value.length !== 0) {
+            subscribeProperty(value);
+        }
+        cancelSelect();
+        checkAll.value = false;
+    },
+);
+watch(
+    () => _selectedRowKeys.value,
+    (value) => {
+        if (value.length === 0) {
+            checkAll.value = false;
+        }
+    },
+);
 
 watch(
     () => props.data,
     (value) => {
         if (!!value) {
             accessModesOption.value =
-                value.provider === 'MODBUS_TCP'
+                value?.provider === 'MODBUS_TCP'
                     ? accessModesMODBUS_TCP
                     : accessModesMODBUS_TCP.concat({
                           label: '订阅',
                           value: 'subscribe',
                       });
             defaultParams.value.terms[0].terms[0].value = value.id;
-            // defaultParams.value.terms[0].terms[0].value = '1610517928766550016'; //测试
             tableRef?.value?.reload && tableRef?.value?.reload();
+            cancelSelect();
+            checkAll.value = false;
         }
     },
     { immediate: true, deep: true },
 );
+
+onUnmounted(() => {
+    if (subRef.value) {
+        subRef.value?.unsubscribe();
+    }
+});
 
 /**
  * 搜索
@@ -489,15 +592,22 @@ const handleSearch = (e: any) => {
         font-size: 20px;
     }
     .card-box-content {
-        margin-top: 10px;
+        margin-top: 20px;
         display: flex;
         .card-box-content-left {
-            flex: 0.2;
+            max-width: 220px;
             border-right: 1px solid #e0e4e8;
             height: 68px;
-            padding-right: 20px;
-            display: flex;
-            justify-content: flex-start;
+            padding-right: 10px;
+            .card-box-content-left-1 {
+                display: flex;
+                justify-content: flex-start;
+                .card-box-content-left-1-title {
+                    color: #000;
+                    font-size: 20px;
+                    opacity: 0.85;
+                }
+            }
             a {
                 margin-left: 10px;
             }
