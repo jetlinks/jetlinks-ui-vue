@@ -1,12 +1,12 @@
 <template>
-    <a-input
+    <j-input
         allowClear
         placeholder="请上传文件"
         v-model:value="url"
         @change="onChange"
     >
         <template #addonAfter>
-            <a-upload
+            <j-upload
                 name="file"
                 :showUploadList="false"
                 :accept="'image/jpeg,image/png'"
@@ -23,9 +23,9 @@
                     <AIcon type="PlusOutlined" v-else />
                     上传附件
                 </j-button>
-            </a-upload>
+            </j-upload>
         </template>
-    </a-input>
+    </j-input>
 </template>
 
 <script lang="ts" setup>

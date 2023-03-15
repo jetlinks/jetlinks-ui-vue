@@ -15,13 +15,16 @@
                 </template>
                 <template v-else>
                     <ParamsDropdown
-                        icon="icon-canshu"
                         placeholder="请选择"
                         :options="[]"
                         :tabsOptions="tabOptions"
                         :metricOption="upperOptions(record.valueType)"
                         v-model:value="record.value"
-                    />
+                    >
+                        <template v-slot="{label}">
+                            <j-input :value="label" />
+                        </template>
+                    </ParamsDropdown>
                 </template>
             </div>
         </template>

@@ -1,5 +1,5 @@
 <template>
-    <a-spin :spinning="loading">
+    <j-spin :spinning="loading">
         <div class="notify-type-warp" :class="{ disabled: disabled }">
             <div
                 :key="item.id"
@@ -14,7 +14,7 @@
                 <div class="notify-type-item-title">{{item.label}}</div>
             </div>
         </div>
-    </a-spin>
+    </j-spin>
 </template>
 
 <script lang="ts" setup>
@@ -40,7 +40,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['update:value']);
+const emit = defineEmits(['update:value', 'change']);
 
 const loading = ref<boolean>(false);
 const notifyType = ref('');
@@ -57,6 +57,7 @@ watch(
 const onSelect = (val: string) => {
     if (!props.disabled) {
         emit('update:value', val);
+        emit('change', val);
     }
 };
 

@@ -22,10 +22,10 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['update:value']);
+const emit = defineEmits(['update:value', 'change']);
 
 const tagsList = ref<any[]>([]);
-const keys = ref<string>('');
+const keys = ref<string | undefined>(undefined);
 
 const getDepartment = async (id: string) => {
     const resp = await TemplateApi.getTags(id);
@@ -37,9 +37,9 @@ const getDepartment = async (id: string) => {
 watch(
     () => props.value,
     (newVal) => {
-        keys.value = newVal || ''
+        keys.value = newVal || undefined
     },
-    { deep: true, immediate: true },
+    { immediate: true },
 );
 
 watch(
@@ -52,12 +52,12 @@ watch(
     { deep: true, immediate: true },
 );
 
-const onChange = (key: string, label: string[]) => {
-    // TODO 回显label的问题
+const onChange = (key: string, option: any) => {
     emit('update:value', {
         source: 'fixed',
         value: key,
     });
+    emit('change', option ? option?.label : '')
 };
 </script>
 

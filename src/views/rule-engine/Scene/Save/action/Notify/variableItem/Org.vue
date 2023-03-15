@@ -26,7 +26,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['update:value']);
+const emit = defineEmits(['update:value', 'change']);
 
 const departmentTree = ref<any[]>([]);
 const keys = ref<any[]>([]);
@@ -68,6 +68,7 @@ const onChange = (key: string[], label: string[]) => {
         source: 'fixed',
         value: key,
     });
+    emit('change', label)
 };
 </script>
 

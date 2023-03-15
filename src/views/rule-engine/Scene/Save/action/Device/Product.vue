@@ -1,12 +1,12 @@
 <template>
-    <j-advanced-search
+    <pro-search
         :columns="columns"
         type="simple"
         @search="handleSearch"
         class="search"
         target="scene-trigger-device-product"
     />
-    <a-divider style="margin: 0" />
+    <j-divider style="margin: 0" />
     <j-pro-table
         ref="actionRef"
         model="CARD"
@@ -48,16 +48,16 @@
                             </span>
                         </Ellipsis>
                     </div>
-                    <a-row>
-                        <a-col :span="12">
+                    <j-row>
+                        <j-col :span="12">
                             <div class="card-item-content-text">设备类型</div>
                             <Ellipsis>{{ slotProps.deviceType?.text }}</Ellipsis>
-                        </a-col>
-                        <a-col :span="12">
+                        </j-col>
+                        <j-col :span="12">
                             <div class="card-item-content-text">接入方式</div>
                             <Ellipsis>{{ slotProps?.accessName || '未接入' }}</Ellipsis>
-                        </a-col>
-                    </a-row>
+                        </j-col>
+                    </j-row>
                 </template>
             </CardBox>
         </template>

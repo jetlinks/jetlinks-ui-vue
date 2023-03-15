@@ -1,6 +1,6 @@
 <template>
-    <a-input-group compact>
-        <a-select
+    <j-input-group compact>
+        <j-select
             :options="[
                 { label: '手动输入', value: 'fixed' },
                 { label: '内置参数', value: 'upper' },
@@ -10,22 +10,22 @@
             @change="sourceChange"
         />
         <template v-if="source === 'upper'">
-            <a-tree-select
+            <j-tree-select
                 v-model:value="upperKey"
                 :treeData="builtInList"
                 placeholder="请选择参数"
                 style="width: calc(100% - 120px)"
             >
                 <template #title="{ name, description }">
-                    <a-space>
+                    <j-space>
                         {{ name }}
                         <span style="color: grey; margin-left: 5px">{{ description }}</span>
-                    </a-space>
+                    </j-space>
                 </template>
-            </a-tree-select>
+            </j-tree-select>
         </template>
         <template v-else>
-            <a-date-picker
+            <j-date-picker
                 :value="value.value"
                 allowClear
                 format="YYYY-MM-DD HH:mm:ss"
@@ -33,7 +33,7 @@
                 v-if="item.type === 'date'"
                 @change="(_, dateString) => itemOnChange(dateString)"
             />
-            <a-input-number
+            <j-input-number
                 :value="value.value"
                 allowClear
                 style="width: calc(100% - 120px)"
@@ -41,7 +41,7 @@
                 :placeholder="`请输入${item.name}`"
                 @change="itemOnChange"
             />
-            <a-input
+            <j-input
                 :value="value.value"
                 allowClear
                 style="width: calc(100% - 120px)"
@@ -50,7 +50,7 @@
                 @change="(e) => itemOnChange(e.target.value)"
             />
         </template>
-    </a-input-group>
+    </j-input-group>
 </template>
 
 <script lang="ts" setup>

@@ -7,8 +7,8 @@
         @ok="onOk"
         :maskClosable="false"
     >
-        <a-form ref="actionForm" :model="formModel" layout="vertical">
-            <a-form-item
+        <j-form ref="actionForm" :model="formModel" layout="vertical">
+            <j-form-item
                 label="类型"
                 name="type"
                 :rules="[
@@ -19,7 +19,7 @@
                 ]"
             >
                 <CardSelect v-model:value="formModel.type" :options="options"/>
-            </a-form-item>
+            </j-form-item>
             <ActionTypeComponent
                 v-bind="props"
                 v-if="!!actionType"
@@ -27,7 +27,7 @@
                 @save="onPropsOk"
                 @cancel="onPropsCancel"
             />
-        </a-form>
+        </j-form>
     </j-modal>
 </template>
 

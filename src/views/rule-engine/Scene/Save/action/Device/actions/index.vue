@@ -1,6 +1,6 @@
 <template>
     <div>
-        <a-form :layout="'vertical'" ref="formRef" :model="modelRef">
+        <j-form :layout="'vertical'" ref="formRef" :model="modelRef">
             <j-form-item
                 :name="['message', 'messageType']"
                 label="动作类型"
@@ -67,7 +67,7 @@
                     :builtInList="builtInList"
                 />
             </template>
-        </a-form>
+        </j-form>
     </div>
 </template>
 
@@ -211,6 +211,7 @@ watch(
 watch(
     () => props.values?.message,
     (newVal) => {
+        console.log(newVal)
         if (newVal?.messageType) {
             modelRef.message = newVal;
             if (newVal.messageType === 'INVOKE_FUNCTION' && newVal.functionId) {

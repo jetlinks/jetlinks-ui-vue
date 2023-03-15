@@ -1,17 +1,17 @@
 <template>
     <div class="shakeLimit">
-        <a-switch
+        <j-switch
             checkedChildren="开启防抖"
             unCheckedChildren="关闭防抖"
             v-model:checked="shakeLimit.enabled"
             style="margin-right: 12px"
         />
         <template v-if="shakeLimit.enabled">
-            <a-input-number :min="1" :max="100" :precision="0" size="small" v-model:value="shakeLimit.time" style="width: 32px" />
+            <j-input-number :min="1" :max="100" :precision="0" size="small" v-model:value="shakeLimit.time" style="width: 32px" />
             <span>秒内发送</span>
-            <a-input-number :min="1" :max="100" :precision="0" size="small" v-model:value="shakeLimit.threshold" style="width: 32px" />
+            <j-input-number :min="1" :max="100" :precision="0" size="small" v-model:value="shakeLimit.threshold" style="width: 32px" />
             <span>次及以上时，处理</span>
-            <a-radio-group :options="alarmFirstOptions" optionType="button" v-model:value="shakeLimit.alarmFirst" size="small" />
+            <j-radio-group :options="alarmFirstOptions" optionType="button" v-model:value="shakeLimit.alarmFirst" size="small" />
         </template>
     </div>
 </template>
