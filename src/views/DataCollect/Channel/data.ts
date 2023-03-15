@@ -63,7 +63,7 @@ export const regDomain = new RegExp(
 );
 export const checkEndpoint = (_rule: Rule, value: string): Promise<any> =>
     new Promise(async (resolve, reject) => {
-        const res = await validateField(value);
+        const res: any = await validateField(value);
         return res.result.passed ? resolve('') : reject(res.result.reason);
     });
 export const FormValidate = {

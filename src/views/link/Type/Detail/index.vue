@@ -1147,8 +1147,10 @@ const saveData = async () => {
 
     loading.value = true;
     const resp =
-        id === ':id' ? await save(params) : await update({ ...params, id });
-    if (resp.status === 200) {
+        id === ':id'
+            ? await save(params).catch(() => {})
+            : await update({ ...params, id }).catch(() => {});
+    if (resp?.status === 200) {
         message.success('操作成功！');
         history.back();
     }

@@ -190,22 +190,4 @@ watch(
 );
 </script>
 
-<style lang="less" scoped>
-.form {
-    .form-radio-button {
-        width: 148px;
-        height: 80px;
-        padding: 0;
-        img {
-            width: 100%;
-            height: 100%;
-        }
-    }
-    .form-upload-button {
-        margin-top: 10px;
-    }
-    .form-submit {
-        background-color: @primary-color !important;
-    }
-}
-</style>
+<style lang="less" scoped></style>
