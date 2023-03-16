@@ -10,7 +10,7 @@
             <template #headerTitle>
                 <PermissionButton
                     type="primary"
-                    :uhasPermission="`${permission}:update`"
+                    :hasPermission="`${permission}:update`"
                     @click="openDialog('新增', {})"
                 >
                     <AIcon type="PlusOutlined" />新增

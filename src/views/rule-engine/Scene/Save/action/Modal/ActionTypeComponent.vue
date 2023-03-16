@@ -4,7 +4,7 @@
             <Device v-bind="props" :value="data?.device" @cancel="onCancel" @save="onPropsOk" :thenName="branchesName" />
         </template>
         <template v-else-if="actionType === 'notify'">
-            <Notify v-bind="props" :value="data?.notify" @cancel="onCancel" @save="onPropsOk" />
+            <Notify :options="data?.options" :value="data?.notify" @cancel="onCancel" @save="onPropsOk" />
         </template>
         <template v-else-if="actionType === 'delay'">
             <Delay :value="data?.delay" @cancel="onCancel" @save="onPropsOk" />
@@ -55,7 +55,7 @@ const onPropsOk = (data: any, options: any) => {
         type: props.actionType,
         executor: props.actionType,
         key: props?.data?.key || `${props.actionType}_${new Date().getTime()}`,
-        device: {
+        [props.actionType]: {
             ...data,
         },
     };

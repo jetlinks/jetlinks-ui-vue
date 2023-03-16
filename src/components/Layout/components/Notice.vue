@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="tsx">
-import { getList_api } from '@/api/account/notificationRecord';
+import { getListByUnRead_api } from '@/api/account/notificationRecord';
 import NoticeInfo from './NoticeInfo.vue';
 import { getWebSocket } from '@/utils/websocket';
 import { notification, Button } from 'ant-design-vue';
@@ -93,7 +93,7 @@ const getList = () => {
             },
         ],
     };
-    getList_api(params)
+    getListByUnRead_api(params)
         .then((resp: any) => {
             list.value = resp.result.data;
             total.value = resp.result.total;

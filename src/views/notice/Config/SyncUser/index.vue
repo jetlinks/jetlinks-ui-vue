@@ -1,3 +1,4 @@
+<!-- 同步用户 -->
 <template>
     <div>
         <j-modal
@@ -46,8 +47,9 @@
                             total: dataSource.length,
                             current: current,
                             pageSize: pageSize,
-                            pageSizeOptions: ['12', '24', '48', '96'],
+                            pageSizeOptions: ['5', '10', '20', '50', '100'],
                             showSizeChanger: true,
+                            hideOnSinglePage: true,
                             showTotal: (total: number, range: number) => `第 ${range[0]} - ${range[1]} 条/总共 ${total} 条`,
                         }"
                         @change="handleTableChange"
@@ -133,9 +135,8 @@
 <script setup lang="ts" name="SyncUser">
 import configApi from '@/api/notice/config';
 import { PropType } from 'vue';
-import moment from 'moment';
-import { Modal, message } from 'ant-design-vue';
-import type { ActionsType } from '@/components/Table/index.vue';
+import { message } from 'ant-design-vue';
+import type { ActionsType } from '@/views/device/Instance/typings';
 import { Form } from 'ant-design-vue';
 
 const useForm = Form.useForm;
@@ -384,7 +385,7 @@ const getTableData = () => {
  * 前端分页
  */
 const current = ref(1);
-const pageSize = ref(12);
+const pageSize = ref(5);
 const handleTableChange = (pagination: any) => {
     current.value = pagination.current;
     pageSize.value = pagination.pageSize;

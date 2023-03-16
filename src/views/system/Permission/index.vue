@@ -28,7 +28,7 @@
                         <template #overlay>
                             <j-menu>
                                 <j-menu-item>
-                                    <a-upload
+                                    <j-upload
                                         name="file"
                                         action="#"
                                         accept=".json"
@@ -45,7 +45,7 @@
                                         >
                                             导入
                                         </PermissionButton>
-                                    </a-upload>
+                                    </j-upload>
                                 </j-menu-item>
                                 <j-menu-item>
                                     <PermissionButton
@@ -76,7 +76,7 @@
                 <template #action="slotProps">
                     <j-space :size="16">
                         <PermissionButton
-                            :uhasPermission="`${permission}:update`"
+                            :hasPermission="`${permission}:update`"
                             type="link"
                             :tooltip="{
                                 title: '编辑',

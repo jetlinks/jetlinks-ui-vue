@@ -53,9 +53,10 @@
             v-model:value="myValue"
             placeholder="请输入图片链接"
             allowClear
+            @change='inputChange'
         >
             <template #addonAfter>
-                <a-upload
+                <j-upload
                     name="file"
                     :action="FILE_UPLOAD"
                     :headers="headers"
@@ -63,7 +64,7 @@
                     @change="handleFileChange"
                 >
                     <AIcon type="UploadOutlined" />
-                </a-upload>
+                </j-upload>
             </template>
         </j-input>
         <j-input
@@ -182,6 +183,7 @@ const handleFileChange = (info: UploadChangeParam<UploadFile<any>>) => {
         const url = info.file.response?.result;
         myValue.value = url;
         emit('update:modelValue', url);
+        emit('change', url);
     }
 };
 

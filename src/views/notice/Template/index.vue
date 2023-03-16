@@ -1,3 +1,4 @@
+<!-- 通知模板 -->
 <template>
     <page-container>
         <pro-search
@@ -24,7 +25,7 @@
                     >
                         新增
                     </PermissionButton>
-                    <a-upload
+                    <j-upload
                         name="file"
                         accept=".json"
                         :showUploadList="false"
@@ -35,7 +36,7 @@
                         >
                             导入
                         </PermissionButton>
-                    </a-upload>
+                    </j-upload>
                     <j-popconfirm
                         title="确认导出？"
                         ok-text="确定"
@@ -154,7 +155,7 @@
 
 <script setup lang="ts">
 import TemplateApi from '@/api/notice/template';
-import type { ActionsType } from '@/components/Table/index.vue';
+import type { ActionsType } from '@/views/device/Instance/typings';
 import { message } from 'ant-design-vue';
 import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
 import Debug from './Debug/index.vue';

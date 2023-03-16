@@ -23,7 +23,7 @@
                 <j-row type="flex">
                     <j-col flex="180px">
                         <j-form-item name="photoUrl">
-                            <JUpload v-model="form.photoUrl" />
+                            <Upload v-model="form.photoUrl" />
                         </j-form-item>
                         <!-- <j-form-item>
                             <div class="upload-image-warp-logo">

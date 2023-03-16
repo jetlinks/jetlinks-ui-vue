@@ -22,12 +22,8 @@
                     ><TopCard
                         title="当前在线"
                         :footer="onlineFooter"
-                        :value="onlineToday"
+                        :value="deviceOnline"
                     >
-                        <!-- <BarChart
-                            :chartXData="barChartXData"
-                            :chartYData="barChartYData"
-                        ></BarChart>  -->
                         <Charts :options="onlineOptions"></Charts> </TopCard
                 ></j-col>
                 <j-col :span="6"
@@ -140,6 +136,9 @@ const quickBtnList = [
     { label: '近一月', value: 'month' },
     { label: '近一年', value: 'year' },
 ];
+/**
+ * 获取产品数量
+ */
 const getProductData = () => {
     if (menuStore.hasMenu('device/Product')) {
         productCount().then((res) => {
@@ -174,6 +173,9 @@ const getProductData = () => {
     }
 };
 getProductData();
+/**
+ * 获取设备数量
+ */
 const getDeviceData = () => {
     if (menuStore.hasMenu('device/Instance')) {
         deviceCount().then((res) => {
@@ -197,6 +199,9 @@ const getDeviceData = () => {
     }
 };
 getDeviceData();
+/**
+ * 获取在线数量
+ */
 const getOnline = () => {
     dashboard([
         {
@@ -222,7 +227,8 @@ const getOnline = () => {
             const onlineYdata = y;
             onlineYdata.reverse();
             setOnlineChartOpition(x, onlineYdata);
-            deviceFooter.value[0].value = y?.[1];
+            onlineFooter.value[0].value = y?.[1];
+            console.log(res.result);
         }
     });
 };

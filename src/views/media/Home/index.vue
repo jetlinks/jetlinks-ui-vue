@@ -44,6 +44,7 @@
                 :columns="columns"
                 :request="deviceApi.list"
                 :defaultParams="{
+                    pageSize: 10,
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
                 :params="params"
@@ -56,7 +57,14 @@
                         deviceItem = record;
                     }
                 }"
+                :pagination="{
+                    showSizeChanger: true,
+                    pageSizeOptions: ['10', '20', '50', '100'],
+                }"
             >
+                <template #channelNumber="slotProps">
+                    <span>{{ slotProps.channelNumber || 0 }}</span>
+                </template>
                 <template #state="slotProps">
                     <a-space>
                         <a-badge
@@ -160,12 +168,14 @@ const columns = [
         key: 'name',
         search: {
             type: 'string',
+            first: true,
         },
     },
     {
         title: '通道数量',
         dataIndex: 'channelNumber',
         key: 'channelNumber',
+        scopedSlots: true,
     },
     {
         title: '状态',

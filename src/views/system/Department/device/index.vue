@@ -20,7 +20,7 @@
             <template #headerTitle>
                 <j-space>
                     <PermissionButton
-                        :uhasPermission="`${permission}:assert`"
+                        :hasPermission="`${permission}:assert`"
                         type="primary"
                         @click="table.clickAdd"
                     >
@@ -32,7 +32,7 @@
                             <j-menu>
                                 <j-menu-item>
                                     <PermissionButton
-                                        :uhasPermission="`${permission}:bind`"
+                                        :hasPermission="`${permission}:bind`"
                                         :popConfirm="{
                                             title: `是否批量解除绑定`,
                                             onConfirm: () =>
@@ -46,7 +46,7 @@
                                 </j-menu-item>
                                 <j-menu-item>
                                     <PermissionButton
-                                        :uhasPermission="`${permission}:assert`"
+                                        :hasPermission="`${permission}:assert`"
                                         @click="table.clickEdit()"
                                     >
                                         <AIcon type="EditOutlined" />批量编辑
@@ -117,14 +117,14 @@
                     </template>
                     <template #actions>
                         <PermissionButton
-                            :uhasPermission="`${permission}:assert`"
+                            :hasPermission="`${permission}:assert`"
                             @click="table.clickEdit(slotProps)"
                         >
                             <AIcon type="EditOutlined" />
                         </PermissionButton>
 
                         <PermissionButton
-                            :uhasPermission="`${permission}:bind`"
+                            :hasPermission="`${permission}:bind`"
                             :popConfirm="{
                                 title: `是否解除绑定`,
                                 onConfirm: () => table.clickUnBind(slotProps),
@@ -157,7 +157,7 @@
                 <j-space :size="16">
                     <PermissionButton
                         v-for="i in table.getActions(slotProps, 'table')"
-                        :uhasPermission="i.permission"
+                        :hasPermission="i.permission"
                         type="link"
                         :tooltip="i?.tooltip"
                         :pop-confirm="i.popConfirm"

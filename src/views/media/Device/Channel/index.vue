@@ -28,13 +28,18 @@
 
                 <JProTable
                     ref="listRef"
+                    model="table"
                     :columns="columns"
                     :request="(e:any) => ChannelApi.list(e, route?.query.id as string)"
                     :defaultParams="{
+                        pageSize: 10,
                         sorts: [{ name: 'notifyTime', order: 'desc' }],
                     }"
                     :params="params"
-                    model="table"
+                    :pagination="{
+                        showSizeChanger: true,
+                        pageSizeOptions: ['10', '20', '50', '100'],
+                    }"
                 >
                     <template #headerTitle>
                         <j-tooltip
@@ -109,7 +114,7 @@
 
 <script setup lang="ts">
 import ChannelApi from '@/api/media/channel';
-import type { ActionsType } from '@/components/Table/index.vue';
+import type { ActionsType } from '@/views/device/Instance/typings';
 import { useMenuStore } from 'store/menu';
 import { message } from 'ant-design-vue';
 import Save from './Save.vue';
@@ -136,6 +141,7 @@ const columns = [
         key: 'name',
         search: {
             type: 'string',
+            first: true,
         },
     },
     {

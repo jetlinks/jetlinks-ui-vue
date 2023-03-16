@@ -23,39 +23,49 @@
             <div class='select-box-content'>
               <DropdownTimePicker
                 v-if='["time","date"].includes(item.component)'
-                :type='item.component'
+                type='time'
                 v-model:value='myValue'
                 @change='timeChange'
               />
-              <DropdownMenus
+              <template
                 v-else-if='["select","enum", "boolean"].includes(item.component)'
-                :options='["metric", "upper"].includes(item.key) ?  metricOption : options'
-                @click='onSelect'
-              />
-              <div
-                v-else-if='item.component === "tree"'
-                style='min-width: 400px'
               >
-                <j-tree
-                  :selectedKeys='myValue ? [myValue] : []'
-                  :treeData='item.key === "upper" ?  metricOption : options'
-                  @select='treeSelect'
-                  :height='450'
-                  :virtual='true'
-                >
-                  <template #title="{ name, description }">
-                    <j-space>
-                      {{ name }}
-                      <span v-if='description' class='tree-title-description'>{{ description }}</span>
-                    </j-space>
-                  </template>
-                </j-tree>
-              </div>
+                <DropdownMenus
+                  v-if='(["metric", "upper"].includes(item.key) ?  metricOptions : options).length'
+                  :options='["metric", "upper"].includes(item.key) ?  metricOptions : options'
+                  @click='onSelect'
+                />
+                <div class='scene-select-empty' v-else>
+                  <j-empty />
+                </div>
+              </template>
+              <template v-else-if='item.component === "tree"'>
+                <div style='min-width: 400px' v-if='(item.key === "upper" ?  metricOptions : options).length'>
+                  <j-tree
+                    :selectedKeys='myValue ? [myValue] : []'
+                    :treeData='item.key === "upper" ?  metricOptions : options'
+                    @select='treeSelect'
+                    :height='450'
+                    :virtual='true'
+                  >
+                    <template #title="{ name, description }">
+                      <j-space>
+                        {{ name }}
+                        <span v-if='description' class='tree-title-description'>{{ description }}</span>
+                      </j-space>
+                    </template>
+                  </j-tree>
+                </div>
+                <div class='scene-select-empty' v-else>
+                  <j-empty />
+                </div>
+              </template>
+
               <ValueItem
                 v-else
                 v-model:modelValue='myValue'
                 :itemType='item.component'
-                :options='item.key === "upper" ?  metricOption : options'
+                :options='item.key === "upper" ?  metricOptions : options'
                 @change='valueItemChange'
               />
             </div>
@@ -72,8 +82,6 @@ import type { ValueType } from './typings'
 import { defaultSetting } from './typings'
 import { DropdownMenus, DropdownTimePicker} from '../DropdownButton'
 import { getComponent, getOption } from '../DropdownButton/util'
-
-const valueItemKey = ['int', 'int','long','float','double','string', 'password']
 
 type Emit = {
   (e: 'update:value', data: ValueType): void

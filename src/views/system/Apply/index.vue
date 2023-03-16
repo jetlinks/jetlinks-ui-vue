@@ -20,7 +20,7 @@
                 <template #headerTitle>
                     <div style="display: flex; align-items: center">
                         <PermissionButton
-                            :uhasPermission="`${permission}:add`"
+                            :hasPermission="`${permission}:add`"
                             type="primary"
                             @click="() => table.toSave()"
                         >
@@ -110,7 +110,7 @@
                                 </j-dropdown>
                                 <PermissionButton
                                     v-else
-                                    :uhasPermission="item.permission"
+                                    :hasPermission="item.permission"
                                     :tooltip="item.tooltip"
                                     :pop-confirm="item.popConfirm"
                                     @click="item.onClick"
@@ -151,7 +151,7 @@
                     <j-space :size="16">
                         <PermissionButton
                             v-for="i in table.getActions(slotProps, 'table')"
-                            :uhasPermission="i.permission"
+                            :hasPermission="i.permission"
                             type="link"
                             :tooltip="i.tooltip"
                             :pop-confirm="i.popConfirm"
@@ -190,7 +190,7 @@ import { useMenuStore } from '@/store/menu';
 import { message } from 'ant-design-vue';
 
 const menuStory = useMenuStore();
-const permission = 'system/User';
+const permission = 'system/Apply';
 const typeOptions = [
     {
         label: '内部独立应用',
@@ -312,7 +312,7 @@ const table = {
 
         const result = [
             {
-                permission: true,
+                permission: `${permission}:update`,
                 key: 'edit',
                 text: '编辑',
                 tooltip: {
@@ -322,7 +322,7 @@ const table = {
                 onClick: () => table.toSave(data.id),
             },
             {
-                permission: true,
+                permission: `${permission}:update`,
                 key: 'action',
                 text: disabled ? '禁用' : '启用',
                 tooltip: {
@@ -335,7 +335,7 @@ const table = {
                 icon: disabled ? 'StopOutlined' : 'PlayCircleOutlined',
             },
             {
-                permission: true,
+                permission: `${permission}:delete`,
                 key: 'delete',
                 text: '删除',
                 tooltip: {
@@ -348,7 +348,7 @@ const table = {
                 disabled,
                 icon: 'DeleteOutlined',
             },
-        ] as ActionsType[];
+        ] as any[];
         const otherServers = data.integrationModes.map(
             (item: any) => item.value as string,
         );
@@ -356,12 +356,12 @@ const table = {
             key: 'others',
             text: '其他',
             icon: 'EllipsisOutlined',
-            children: [] as ActionsType[],
+            children: [] as any[],
         };
         // 有集成菜单权限
         if (otherServers.includes('page'))
             others.children?.push({
-                permission: true,
+                permission: [`${permission}:add`,`${permission}:update`],
                 key: 'page',
                 text: '集成菜单',
                 tooltip: {
@@ -378,7 +378,7 @@ const table = {
         if (otherServers.includes('apiServer'))
             others.children?.push(
                 {
-                    permission: true,
+                    permission: [`${permission}:add`,`${permission}:update`],
                     key: 'empowerment',
                     text: '赋权',
                     tooltip: {
@@ -394,7 +394,7 @@ const table = {
                     },
                 },
                 {
-                    permission: true,
+                    permission: [`${permission}:add`,`${permission}:update`],
                     key: 'viewApi',
                     text: '查看API',
                     tooltip: {

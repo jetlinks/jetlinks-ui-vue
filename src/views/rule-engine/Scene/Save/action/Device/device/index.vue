@@ -1,6 +1,6 @@
 <template>
     <div>
-        <a-form :layout="'vertical'" ref="formRef" :model="modelRef">
+        <j-form :layout="'vertical'" ref="formRef" :model="modelRef">
             <j-form-item
                 name="selector"
                 label="选择方式"
@@ -64,16 +64,16 @@
                     :fieldNames="{ label: 'name', value: 'id' }"
                 >
                     <template #title="{ name, description }">
-                        <a-space>
+                        <j-space>
                             {{ name }}
                             <span style="color: grey; margin-left: 5px">{{
                                 description
                             }}</span>
-                        </a-space>
+                        </j-space>
                     </template>
                 </j-tree-select>
             </j-form-item>
-        </a-form>
+        </j-form>
     </div>
 </template>
 

@@ -7,7 +7,7 @@
         @ok="onOk"
         :maskClosable="false"
     >
-        <a-input-number
+        <j-input-number
             style="max-width: 220px"
             placeholder="请输入时间"
             v-model:value="_value"
@@ -16,7 +16,7 @@
             :max="6535"
         >
             <template #addonAfter>
-                <a-select
+                <j-select
                     :options="[
                         { label: '秒', value: 'seconds' },
                         { label: '分', value: 'minutes' },
@@ -25,7 +25,7 @@
                     v-model:value="unit"
                 />
             </template>
-        </a-input-number>
+        </j-input-number>
     </j-modal>
 </template>
 

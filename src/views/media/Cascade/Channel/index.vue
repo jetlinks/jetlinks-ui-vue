@@ -1,12 +1,7 @@
 <!-- 国标级联-通道列表 -->
 <template>
     <page-container>
-        <pro-search
-            type="simple"
-            :columns="columns"
-            target="media"
-            @search="handleSearch"
-        />
+        <pro-search :columns="columns" target="media" @search="handleSearch" />
 
         <JProTable
             ref="listRef"
@@ -14,6 +9,7 @@
             :columns="columns"
             :request="(e:any) => CascadeApi.queryBindChannel(route?.query.id as string, e)"
             :defaultParams="{
+                pageSize: 10,
                 sorts: [{ name: 'name', order: 'desc' }],
             }"
             :params="params"
@@ -23,6 +19,10 @@
                 onSelectAll: onSelectAllChange,
             }"
             @cancelSelect="_selectedRowKeys = []"
+            :pagination="{
+                showSizeChanger: true,
+                pageSizeOptions: ['10', '20', '50', '100'],
+            }"
         >
             <template #headerTitle>
                 <h3>通道列表</h3>
@@ -50,9 +50,9 @@
                     </j-space>
                 </j-tooltip>
             </template>
-            <template #gbChannelId="slotProps">
+            <template #channelId="slotProps">
                 <j-space>
-                    <Ellipsis>
+                    <Ellipsis style="width: 150px">
                         {{ slotProps.gbChannelId }}
                     </Ellipsis>
                     <j-popover
@@ -73,6 +73,7 @@
                                 <j-input
                                     v-model:value="gbID"
                                     @change="validField(slotProps)"
+                                    placeholder="请输入国标ID"
                                 />
                                 <div
                                     class="error"
@@ -152,7 +153,7 @@
 
 <script setup lang="ts">
 import CascadeApi from '@/api/media/cascade';
-import type { ActionsType } from '@/components/Table/index.vue';
+import type { ActionsType } from '@/views/device/Instance/typings';
 import { message } from 'ant-design-vue';
 import BindChannel from './BindChannel/index.vue';
 
@@ -175,12 +176,13 @@ const columns = [
         key: 'name',
         search: {
             type: 'string',
+            first: true,
         },
     },
     {
         title: '国标ID',
-        dataIndex: 'gbChannelId',
-        key: 'gbChannelId',
+        dataIndex: 'channelId',
+        key: 'channelId',
         scopedSlots: true,
         headerCell: 'gbChannelIdHeader', // 表头单元格插槽
         search: {
@@ -204,7 +206,7 @@ const columns = [
         },
     },
     {
-        title: '状态',
+        title: '在线状态',
         dataIndex: 'status',
         key: 'status',
         scopedSlots: true,

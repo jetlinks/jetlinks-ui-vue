@@ -714,7 +714,7 @@
                             placeholder="请选中角色"
                         ></j-select>
                         <PermissionButton
-                            :uhasPermission="`${rolePermission}:update`"
+                            :hasPermission="`${rolePermission}:update`"
                             type="link"
                             @click="
                                 clickAddItem(
@@ -755,7 +755,7 @@
                             </template>
                         </j-tree-select>
                         <PermissionButton
-                            :uhasPermission="`${deptPermission}:update`"
+                            :hasPermission="`${deptPermission}:update`"
                             type="link"
                             @click="
                                 clickAddItem(
@@ -1000,7 +1000,7 @@
                             />
                         </j-form-item>
                         <j-form-item label="logo">
-                            <a-upload
+                            <j-upload
                                 v-model:file-list="form.fileList"
                                 accept=".jpg,.png,.jfif,.pjp,.pjpeg,.jpeg"
                                 :maxCount="1"
@@ -1036,7 +1036,7 @@
                                         点击上传图片
                                     </div>
                                 </div>
-                            </a-upload>
+                            </j-upload>
                         </j-form-item>
 
                         <j-form-item
@@ -1297,7 +1297,7 @@
                                 placeholder="请选中角色"
                             ></j-select>
                             <PermissionButton
-                                :uhasPermission="`${rolePermission}:update`"
+                                :hasPermission="`${rolePermission}:update`"
                                 type="link"
                                 @click="
                                     clickAddItem(
@@ -1332,7 +1332,7 @@
                                 </template>
                             </j-tree-select>
                             <PermissionButton
-                                :uhasPermission="`${deptPermission}:update`"
+                                :hasPermission="`${deptPermission}:update`"
                                 type="link"
                                 @click="
                                     clickAddItem(

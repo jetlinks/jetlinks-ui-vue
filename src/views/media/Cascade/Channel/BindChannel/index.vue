@@ -10,12 +10,7 @@
         @cancel="_vis = false"
         :confirmLoading="loading"
     >
-        <pro-search
-            type="simple"
-            :columns="columns"
-            target="media"
-            @search="handleSearch"
-        />
+        <pro-search :columns="columns" target="media" @search="handleSearch" />
 
         <JProTable
             ref="listRef"
@@ -23,6 +18,7 @@
             :columns="columns"
             :request="CascadeApi.queryChannelList"
             :defaultParams="{
+                pageSize: 10,
                 sorts: [{ name: 'name', order: 'desc' }],
                 terms: [
                     {
@@ -46,6 +42,10 @@
                 onSelectAll: onSelectAllChange,
             }"
             @cancelSelect="_selectedRowKeys = []"
+            :pagination="{
+                showSizeChanger: true,
+                pageSizeOptions: ['10', '20', '50', '100'],
+            }"
         >
             <template #headerTitle>
                 <h3>通道列表</h3>
@@ -96,6 +96,7 @@ watch(
     () => _vis.value,
     (val) => {
         if (val) handleSearch({ terms: [] });
+        else _selectedRowKeys.value = [];
     },
 );
 
@@ -114,6 +115,7 @@ const columns = [
         key: 'name',
         search: {
             type: 'string',
+            first: true,
         },
     },
     {
@@ -158,7 +160,6 @@ const params = ref<Record<string, any>>({});
  */
 const handleSearch = (e: any) => {
     params.value = e;
-    console.log('params.value: ', params.value);
 };
 
 const listRef = ref();
@@ -193,7 +194,10 @@ const getSetRowKey = (selectedRows: any[]) =>
 
 const loading = ref(false);
 const handleSave = async () => {
-    if (!_selectedRowKeys.value.length) message.error('请勾选数据');
+    if (!_selectedRowKeys.value.length) {
+        message.error('请勾选数据');
+        return;
+    }
     loading.value = true;
     const resp = await CascadeApi.bindChannel(
         route.query.id as string,

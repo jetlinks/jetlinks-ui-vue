@@ -42,7 +42,7 @@ export default {
     // 不分页-列表
     queryListNoPaging: (data: any) => post(`/notifier/config/_query/no-paging?paging=false`, data),
     // 
-    queryDingTalkUsers: (id: string) => get<any>(`/notifier/dingtalk/corp/${id}/users?sorts[0].name='name'&sorts[0].order=asc`),
+    queryDingTalkUsers: (id: string) => get<any>(`/notifier/dingtalk/corp/${id}/users?sorts[0].name="name"&sorts[0].order=asc`),
     // 
-    queryWechatUsers: (id: string) => get<any>(`/notifier/wechat/corp/${id}/users?sorts[0].name='name'&sorts[0].order=asc`),
+    queryWechatUsers: (id: string) => get<any>(`/notifier/wechat/corp/${id}/users?sorts[0].name="name"&sorts[0].order=asc`),
 }

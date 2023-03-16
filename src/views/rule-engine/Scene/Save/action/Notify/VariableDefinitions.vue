@@ -1,11 +1,11 @@
 <template>
-    <a-form
+    <j-form
         v-if="variableDefinitions.length"
         :layout="'vertical'"
         ref="formRef"
         :model="modelRef"
     >
-        <a-form-item
+        <j-form-item
             :name="`${item?.id}`"
             :label="item?.name"
             v-for="item in variableDefinitions"
@@ -14,7 +14,7 @@
             :rules="[
                 {
                     validator: (_rule, value) => checkValue(_rule, value, item),
-                    trigger: 'change',
+                    trigger: ['change', 'blur']
                 },
             ]"
         >
@@ -27,23 +27,25 @@
                 :notify="notify"
                 v-else-if="getType(item) === 'org'"
                 v-model:value="modelRef[item.id]"
+                @change="(val) => onChange(val, 'org')"
             />
             <Tag
                 :notify="notify"
                 v-else-if="getType(item) === 'tag'"
                 v-model:value="modelRef[item.id]"
+                @change="(val) => onChange(val, 'tag')"
             />
             <InputFile
                 v-else-if="getType(item) === 'file'"
                 v-model:value="modelRef[item.id]"
             />
-            <a-input
+            <j-input
                 v-else-if="getType(item) === 'link'"
                 v-model:value="modelRef[item.id]"
             />
             <BuildIn v-else :item="item" v-model:value="modelRef[item.id]" />
-        </a-form-item>
-    </a-form>
+        </j-form-item>
+    </j-form>
 </template>
 
 <script lang="ts" setup>
@@ -68,6 +70,8 @@ const props = defineProps({
         default: () => {},
     },
 });
+
+const emit = defineEmits(['update:value', 'change']);
 
 const formRef = ref();
 
@@ -111,14 +115,14 @@ const checkValue = (_rule: any, value: any, item: any) => {
                 }
             }
         }
-    } else if (value.source === 'fixed' && !value.value) {
+    } else if (value?.source === 'fixed' && !value.value) {
         return Promise.reject(new Error('请输入' + item.name));
-    } else if (value.source === 'relation' && !value.value && !value.relation) {
+    } else if (value?.source === 'relation' && !value.value && !value.relation) {
         return Promise.reject(new Error('请选择' + item.name));
-    } else if (value.source === 'upper' && !value.upperKey) {
+    } else if (value?.source === 'upper' && !value.upperKey) {
         return Promise.reject(new Error('请选择' + item.name));
     } else if (type === 'user') {
-        if (props.notify.notifyType === 'email') {
+        if (props.notify.notifyType === 'email' && value?.source !== 'relation') {
             if (Array.isArray(value.value)) {
                 if (!value.value.length) {
                     return Promise.reject(new Error('请输入收件人'));
@@ -139,7 +143,7 @@ const checkValue = (_rule: any, value: any, item: any) => {
         }
         if (
             props.notify.notifyType &&
-            ['sms', 'voice'].includes(props?.notify?.notifyType)
+            ['sms', 'voice'].includes(props?.notify?.notifyType) && value?.source !== 'relation'
         ) {
             const reg = /^[1][3-9]\d{9}$/;
             if (!reg.test(value.value)) {
@@ -151,4 +155,21 @@ const checkValue = (_rule: any, value: any, item: any) => {
     }
     return Promise.resolve();
 };
+
+const onChange = (val: any, type: any) => {
+    if (type === 'org') {
+        emit('change', { orgName: val.join(',') });
+    } else if (type === 'tag') {
+        emit('change', { tagName: val });
+    }
+};
+
+const onSave = () =>
+    new Promise((resolve) => {
+        formRef.value.validate().then(async (_data: any) => {
+            resolve(_data);
+        });
+    });
+
+defineExpose({ onSave });
 </script>

@@ -149,8 +149,8 @@ const columns = [
     },
     {
         title: '说明',
-        dataIndex: 'describe',
-        key: 'describe',
+        dataIndex: 'description',
+        key: 'description',
         search: {
             type: 'string',
         },

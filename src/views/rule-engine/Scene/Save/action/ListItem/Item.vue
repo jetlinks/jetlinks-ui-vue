@@ -19,17 +19,17 @@
                     v-if="data?.executor === 'alarm'"
                 >
                     <template v-if="data?.alarm?.mode === 'trigger'">
-                        满足条件后将触发<a-button
+                        满足条件后将触发<j-button style="padding: 0;"
                             type="link"
                             @click.stop="triggerVisible = true"
-                            >关联此场景的告警</a-button
+                            >关联此场景的告警</j-button
                         >
                     </template>
                     <template v-else>
-                        满足条件后将解除<a-button
+                        满足条件后将解除<j-button style="padding: 0;"
                             type="link"
                             @click.stop="triggerVisible = true"
-                            >关联此场景的告警</a-button
+                            >关联此场景的告警</j-button
                         >
                     </template>
                 </div>
@@ -308,26 +308,36 @@
                         </div>
                     </template>
                 </div>
-                <a-button v-else @click="onAdd">点击配置执行动作</a-button>
+                <j-button v-else @click="onAdd">点击配置执行动作</j-button>
             </div>
             <div class="item-number">{{ name + 1 }}</div>
-            <a-popconfirm title="确认删除？" @confirm="onDelete">
+            <j-popconfirm title="确认删除？" @confirm="onDelete">
                 <div class="item-delete">
                     <AIcon type="DeleteOutlined" />
                 </div>
-            </a-popconfirm>
+            </j-popconfirm>
         </div>
         <template v-if="!isLast && type === 'serial'">
-            <div class="actions-item-filter-warp">
-                <!-- filter-border -->
-                满足此条件后执行后续动作
+            <div :class='["actions-item-filter-warp", termsOptions.length ? "filter-border" : ""]'>
+              <template v-if='termsOptions.length'>
+                <div class='actions-item-filter-warp-tip'>
+                  满足此条件后执行后续动作
+                </div>
+                <div class='actions-item-filter-overflow'>
+
+                </div>
+              </template>
+              <div v-else class='filter-add-button'>
+                <AIcon type='PlusOutlined' style='padding-right: 4px;' />
+                <span>添加过滤条件</span>
+              </div>
             </div>
         </template>
         <!-- 编辑 -->
         <template v-if="visible">
             <Modal
                 :name="name"
-                :branchGroup="branchGroup"
+                :branchGroup="thenName"
                 :branchesName="branchesName"
                 :data="data"
                 @cancel="onClose"
@@ -352,7 +362,6 @@
 </template>
 
 <script lang="ts" setup>
-import { getImage } from '@/utils/comm';
 import { isBoolean } from 'lodash-es';
 import { PropType } from 'vue';
 import { ActionsType, ParallelType } from '../../../typings';
@@ -361,6 +370,7 @@ import ActionTypeComponent from '../Modal/ActionTypeComponent.vue';
 import TriggerAlarm from '../TriggerAlarm/index.vue';
 import { useSceneStore } from '@/store/scene';
 import { storeToRefs } from 'pinia';
+import { iconMap, itemNotifyIconMap, typeIconMap } from './util'
 
 const sceneStore = useSceneStore();
 const { data: _data } = storeToRefs(sceneStore);
@@ -370,9 +380,9 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
-    branchGroup: {
-        type: Number,
-        default: 0,
+    thenName: {
+      type: Number,
+      default: 0,
     },
     name: {
         type: Number,
@@ -397,36 +407,16 @@ const props = defineProps({
 
 const emit = defineEmits(['delete', 'update']);
 
-const iconMap = new Map();
-iconMap.set('trigger', getImage('/scene/action-bind-icon.png'));
-iconMap.set('notify', getImage('/scene/action-notify-icon.png'));
-iconMap.set('device', getImage('/scene/action-device-icon.png'));
-iconMap.set('relieve', getImage('/scene/action-unbind-icon.png'));
-iconMap.set('delay', getImage('/scene/action-delay-icon.png'));
-
-const itemNotifyIconMap = new Map();
-itemNotifyIconMap.set(
-    'dingTalk',
-    getImage('/scene/notify-item-img/dingtalk.png'),
-);
-itemNotifyIconMap.set('weixin', getImage('/scene/notify-item-img/weixin.png'));
-itemNotifyIconMap.set('email', getImage('/scene/notify-item-img/email.png'));
-itemNotifyIconMap.set('voice', getImage('/scene/notify-item-img/voice.png'));
-itemNotifyIconMap.set('sms', getImage('/scene/notify-item-img/sms.png'));
-itemNotifyIconMap.set(
-    'webhook',
-    getImage('/scene/notify-item-img/webhook.png'),
-);
-
-const typeIconMap = {
-    READ_PROPERTY: 'icon-zhihangdongzuodu',
-    INVOKE_FUNCTION: 'icon-zhihangdongzuoxie-1',
-    WRITE_PROPERTY: 'icon-zhihangdongzuoxie',
-};
-
 const visible = ref<boolean>(false);
 const triggerVisible = ref<boolean>(false);
 const actionType = ref('');
+
+const termsOptions = computed(() => {
+  if (!props.parallel) { // 串行
+    return _data.value.branches![props.branchesName].then?.[props.thenName].actions?.[props.name].terms || []
+  }
+  return []
+})
 
 const onDelete = () => {
     emit('delete');
@@ -463,6 +453,7 @@ const onPropsOk = (data: ActionsType, options?: any) => {
 const onPropsCancel = () => {
     actionType.value = '';
 };
+
 </script>
 
 <style lang="less" scoped>
@@ -582,12 +573,32 @@ const onPropsCancel = () => {
         border-radius: 2px;
     }
 
+    .actions-item-filter-warp-tip {
+      position: absolute;
+      top: 0;
+      left: 16px;
+      z-index: 2;
+      color: rgba(0, 0, 0, 0.55);
+      font-weight: 800;
+      font-size: 14px;
+      line-height: 1;
+      background-color: #fff;
+      transform: translateY(-50%);
+    }
+
     .actions-item-filter-overflow {
         display: flex;
         padding-top: 4px;
         overflow-x: auto;
         overflow-y: visible;
         row-gap: 16px;
+    }
+
+    .filter-add-button{
+      width: 100%;
+      color: rgba(0, 0, 0, 0.3);
+      text-align: center;
+      cursor: pointer;
     }
 
     .terms-params {

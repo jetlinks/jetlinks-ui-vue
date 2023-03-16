@@ -141,7 +141,7 @@
 
 <script setup lang="ts">
 import CascadeApi from '@/api/media/cascade';
-import type { ActionsType } from '@/components/Table/index.vue';
+import type { ActionsType } from '@/views/device/Instance/typings';
 import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 import Publish from './Publish/index.vue';
@@ -180,12 +180,14 @@ const columns = [
         title: '通道数量',
         dataIndex: 'count',
         key: 'count',
+        width: 100,
     },
     {
         title: '状态',
         dataIndex: 'status',
         key: 'status',
         scopedSlots: true,
+        width: 100,
         search: {
             type: 'select',
             options: [
@@ -202,6 +204,7 @@ const columns = [
         dataIndex: 'onlineStatus',
         key: 'onlineStatus',
         scopedSlots: true,
+        width: 100,
         search: {
             type: 'select',
             options: [
@@ -237,18 +240,10 @@ const handleSearch = (e: any) => {
 const lastValueFrom = async (params: any) => {
     const res = await CascadeApi.list(params);
     res.result.data.forEach(async (item: any) => {
-        const resp = await queryChannelCount(item.id);
+        const resp = await CascadeApi.queryBindChannel(item.id, {});
         item.count = resp.result.total;
     });
     return res;
-};
-
-/**
- * 查询通道数量
- * @param id
- */
-const queryChannelCount = async (id: string) => {
-    return await CascadeApi.queryBindChannel(id, {});
 };
 
 /**

@@ -53,9 +53,8 @@ const props = defineProps({
 const productList = ref<Record<string, any>[]>([]);
 const loading = ref<boolean>(false);
 const formRef = ref();
-let id = ref<string>();
 const modelRef = ref();
-modelRef.value = props.data
+modelRef.value = {...props.data};
 const rules = {
     name: [
         {
