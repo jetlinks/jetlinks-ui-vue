@@ -92,6 +92,23 @@
                     </template>
                 </CardBox>
             </template>
+
+            <template #channelNumber="slotProps">
+                {{ slotProps.channelNumber || 0 }}
+            </template>
+            <template #provider="slotProps">
+                {{ providerType[slotProps.provider] }}
+            </template>
+            <template #state="slotProps">
+                <j-badge
+                    :text="slotProps.state?.text"
+                    :status="
+                        slotProps.state?.value === 'online'
+                            ? 'success'
+                            : 'error'
+                    "
+                />
+            </template>
             <template #action="slotProps">
                 <j-space :size="16">
                     <template
@@ -139,6 +156,8 @@ const columns = [
         title: 'ID',
         dataIndex: 'id',
         key: 'id',
+        width: 200,
+        fixed: 'left',
         search: {
             type: 'string',
         },
@@ -169,6 +188,8 @@ const columns = [
         title: '通道数量',
         dataIndex: 'channelNumber',
         key: 'channelNumber',
+        scopedSlots: true,
+        width: 100,
     },
     {
         title: '厂商',
@@ -182,7 +203,7 @@ const columns = [
         title: '产品名称',
         dataIndex: 'productId',
         key: 'productId',
-        scopedSlots: true,
+        // scopedSlots: true,
         search: {
             type: 'select',
             options: () =>
@@ -215,6 +236,7 @@ const columns = [
         dataIndex: 'state',
         key: 'state',
         scopedSlots: true,
+        width: 100,
         search: {
             type: 'select',
             options: [
@@ -325,7 +347,8 @@ const getActions = (
             key: 'delete',
             text: '删除',
             tooltip: {
-                title: '在线设备无法删除',
+                title:
+                    data.state.value === 'online' ? '在线设备无法删除' : '删除',
             },
             disabled: data.state.value === 'online',
             popConfirm: {
