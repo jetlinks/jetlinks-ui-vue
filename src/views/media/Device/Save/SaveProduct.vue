@@ -13,7 +13,13 @@
             <j-form-item
                 label="产品名称"
                 name="name"
-                :rules="{ required: true, message: '请输入产品名称' }"
+                :rules="[
+                    { required: true, message: '请输入产品名称' },
+                    {
+                        max: 64,
+                        message: '最多输入64个字符',
+                    },
+                ]"
             >
                 <j-input
                     v-model:value="formData.name"
@@ -25,11 +31,17 @@
                     <j-form-item
                         :name="item.name"
                         :label="item.label"
-                        :rules="{
-                            required: item.required,
-                            message: item.message,
-                            trigger: 'change',
-                        }"
+                        :rules="[
+                            {
+                                required: item.required,
+                                message: item.message,
+                                trigger: 'change',
+                            },
+                            {
+                                max: 64,
+                                message: '最多输入64个字符',
+                            },
+                        ]"
                     >
                         <j-select
                             v-if="item.type === 'enum'"
@@ -260,7 +272,7 @@ const handleOk = () => {
                     res.result.id,
                 );
                 if (deployResp.success) {
-                    emit('save', {...res.result})
+                    emit('save', { ...res.result });
                     message.success('操作成功');
                     handleCancel();
                 }

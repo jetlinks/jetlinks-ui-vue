@@ -76,6 +76,9 @@
                         :rules="[
                             { required: true, message: '请输入视频地址' },
                             { max: 128, message: '最多可输入128个字符' },
+                            {
+                                validator: validateUrl,
+                            },
                         ]"
                     >
                         <template #label>
@@ -237,7 +240,7 @@ watch(
  * @param _rule
  * @param value
  */
-let validateChannelId = async (_rule: Rule, value: string) => {
+const validateChannelId = async (_rule: Rule, value: string) => {
     // ID非必填, 没有输入ID时, 不校验ID是否存在
     if (!value) return;
     const { result } = await ChannelApi.validateField({
@@ -250,6 +253,21 @@ let validateChannelId = async (_rule: Rule, value: string) => {
     } else {
         return Promise.resolve();
     }
+};
+
+/**
+ * 校验视频地址
+ * @param _rule
+ * @param value
+ */
+const validateUrl = async (_rule: Rule, value: string) => {
+    console.log('value: ', value);
+    const reg = /(http|https|rtsp|rtmp):\/\/([\w.]+\/?)\S*/;
+    return new Promise((resolve, reject) => {
+        reg.test(value) || !value
+            ? resolve('')
+            : reject('请输入正确的视频地址');
+    });
 };
 
 /**

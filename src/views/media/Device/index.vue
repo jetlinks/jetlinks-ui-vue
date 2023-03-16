@@ -328,7 +328,7 @@ const getActions = (
                         ? '设备已离线'
                         : data.state.value === 'notActive'
                         ? '设备已禁用'
-                        : '',
+                        : '更新通道',
             },
             disabled:
                 data.state.value === 'offline' ||
