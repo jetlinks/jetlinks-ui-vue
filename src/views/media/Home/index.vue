@@ -25,7 +25,7 @@
         <!-- 选择设备 -->
         <j-modal
             title="选择设备"
-            width="800px"
+            width="850px"
             v-model:visible="visible"
             :maskClosable="false"
             :destroyOnClose="true"
@@ -57,6 +57,7 @@
                         deviceItem = record;
                     }
                 }"
+                :alertRender="false"
                 :pagination="{
                     showSizeChanger: true,
                     pageSizeOptions: ['10', '20', '50', '100'],
@@ -160,6 +161,7 @@ const columns = [
         key: 'id',
         search: {
             type: 'string',
+            defaultTermType: 'eq',
         },
     },
     {
