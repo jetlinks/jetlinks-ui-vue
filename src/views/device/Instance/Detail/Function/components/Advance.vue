@@ -8,7 +8,7 @@
             >
                 <j-row :gutter="30">
                     <j-col :span="15">
-                        <MonacoEditor
+                        <JMonacoEditor
                             :ref="`monacoEditor${func.id}`"
                             v-model="func.json"
                             theme="vs-dark"
