@@ -446,6 +446,11 @@ const termsOptions = computed(() => {
 });
 
 const onDelete = () => {
+    if (props.name !== 0 && !props.parallel) { // 清空上一个串行执行动作中的options.termsColumns和terms
+      _data.value.branches![props.branchesName].then[props.thenName].actions[props.name - 1].options!.termsColumns = []
+      _data.value.branches![props.branchesName].then[props.thenName].actions[props.name - 1].options!.terms = []
+      _data.value.branches![props.branchesName].then[props.thenName].actions[props.name - 1].terms = []
+    }
     emit('delete');
 };
 
@@ -453,11 +458,16 @@ const onClose = () => {
     visible.value = false;
 };
 
-const onSave = (data: ActionsType, options?: any) => {
-    emit('update', data, options);
-    // setTimeout(() => {
-    //     getParams();
-    // }, 10);
+const onSave = (data: ActionsType, options: any) => {
+    const { key, terms } = _data.value.branches![props.branchesName].then?.[props.thenName].actions?.[props.name]
+    const actionItem: ActionsType = {
+      ...data,
+      options,
+      key,
+      terms
+    }
+    _data.value.branches![props.branchesName].then[props.thenName].actions.splice(props.name, 1, actionItem)
+
     visible.value = false;
 };
 

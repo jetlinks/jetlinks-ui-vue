@@ -27,7 +27,7 @@ export const getParams = (params: Params, sceneModel: FormModelType): Promise<an
 /**
  * @param params
  */
-export const useParams = (params: Params, effect: any[] = []) => {
+export const useParams = (params: Params) => {
   const sceneStore = useSceneStore()
   const { data: formModel } = storeToRefs(sceneStore)
   const columnOptions = ref<any[]>([])
@@ -38,7 +38,7 @@ export const useParams = (params: Params, effect: any[] = []) => {
   }
 
   watchEffect(() => {
-    if (effect[0]) {
+    if (formModel.value.branches![params.branch].then[params.branchGroup].actions[params.action]) {
       handleParams()
     }
   })

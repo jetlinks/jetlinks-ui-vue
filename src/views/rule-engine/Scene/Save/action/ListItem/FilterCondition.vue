@@ -82,6 +82,7 @@ import ParamsDropdown, { DoubleParamsDropdown } from '../../components/ParamsDro
 import { inject } from 'vue'
 import { useSceneStore } from 'store/scene'
 import { storeToRefs } from 'pinia';
+import { flattenDeep, set } from 'lodash-es'
 
 const sceneStore = useSceneStore()
 const { data: formModel } = storeToRefs(sceneStore)
@@ -207,12 +208,32 @@ const mouseout = () => {
   }
 }
 
-const columnSelect = () => {
+const handleOptionsColumnsValue = (termsColumns: any[], _options: any) => {
+  formModel.value.branches![props.branchName].then[props.thenName].actions[props.name].options!.termsColumns = termsColumns
+  const flatten = new Set(flattenDeep(termsColumns))
+  let newColumns = [...flatten.values()]
+  if (_options?.otherColumns) {
+    newColumns = [..._options?.otherColumns, ...newColumns]
+  }
+  formModel.value.branches![props.branchName].then[props.thenName].actions[props.name].options!.columns = newColumns
+}
+
+const columnSelect = (e: any) => {
   paramsValue.termType = 'eq'
   paramsValue.value = {
     source: tabsOptions.value[0].key,
     value: undefined
   }
+
+  const columns = e.metadata === true ? [e.column] : []
+  const _options = formModel.value.branches![props.branchName].then[props.thenName].actions[props.actionName].options
+  const termsColumns = _options?.termsColumns || []
+  set(
+    termsColumns,
+    [props.termsName, props.name],
+    columns
+  )
+  handleOptionsColumnsValue(termsColumns, _options)
   emit('update:value', { ...paramsValue })
 }
 
@@ -245,6 +266,14 @@ const termAdd = () => {
 
 const onDelete = () => {
   formModel.value.branches?.[props.branchName]?.then?.[props.thenName]?.actions?.[props.actionName].terms?.[props.termsName].terms?.splice(props.name, 1)
+  const _options = formModel.value.branches![props.branchName].then[props.thenName].actions[props.name].options
+  const termsColumns = _options?.termsColumns || []
+  set(
+    termsColumns,
+    [props.termsName, props.name],
+    []
+  )
+  handleOptionsColumnsValue(termsColumns, _options)
 }
 
 nextTick(() => {

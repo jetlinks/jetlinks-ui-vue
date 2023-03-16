@@ -130,13 +130,14 @@ const onDelete = (_key: string, _parallel: boolean) => {
 const onAdd = (actionItem: any, _parallel: boolean) => {
   const thenName = props.thenOptions.findIndex(item => item.parallel === _parallel)
   if (thenName !== -1) { // 编辑
-    const cacheAction =  props.thenOptions[thenName].actions
-    const indexOf = cacheAction?.findIndex(item => item.key === actionItem.key) || -1
-    if (indexOf !== -1) {
-      FormModel.value.branches?.[props.name].then?.[thenName].actions.splice(indexOf, 1, actionItem)
-    } else {
-      FormModel.value.branches?.[props.name].then?.[thenName].actions.push(actionItem)
-    }
+    // const cacheAction =  props.thenOptions[thenName].actions
+    // const indexOf = cacheAction?.findIndex(item => item.key === actionItem.key) || -1
+    // if (indexOf !== -1) {
+    //   FormModel.value.branches?.[props.name].then?.[thenName].actions.splice(indexOf, 1, actionItem)
+    // } else {
+    //   FormModel.value.branches?.[props.name].then?.[thenName].actions.push(actionItem)
+    // }
+    FormModel.value.branches?.[props.name].then?.[thenName].actions.push(actionItem)
   } else { // 新增
     const newThenItem = {
       parallel: _parallel,

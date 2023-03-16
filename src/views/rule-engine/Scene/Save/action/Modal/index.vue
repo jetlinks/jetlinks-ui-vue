@@ -131,7 +131,8 @@ const onOk = () => {
             emit(
                 'save',
                 {
-                    ...props.data,
+                    // ...props.data,
+                    key: props.data.key,
                     executor: 'alarm',
                     alarm: { mode: values.type },
                 },
