@@ -7,7 +7,7 @@
         target="scene-trigger-device-device"
     />
     <j-divider style="margin: 0" />
-    <j-pro-table
+    <JProTable
         ref="actionRef"
         model="CARD"
         :columns="columns"
@@ -62,7 +62,7 @@
                 </template>
             </CardBox>
         </template>
-    </j-pro-table>
+    </JProTable>
 </template>
   
   <script setup lang='ts' name='Product'>
@@ -180,7 +180,6 @@ watchEffect(() => {
   <style scoped lang='less'>
 .search {
     margin-bottom: 0;
-    padding-right: 0px;
-    padding-left: 0px;
+    padding: 0 0 24px 0;
 }
 </style>

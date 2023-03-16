@@ -7,41 +7,31 @@
         :pagination="false"
     >
         <template #bodyCell="{ column, text, record }">
-            <div>
-                <template
-                    v-if="['valueType', 'name'].includes(column.dataIndex)"
-                >
-                    <span>{{ text }}</span>
-                </template>
-                <template v-else>
-                    <ParamsDropdown
-                        placeholder="请选择"
-                        :options="[]"
-                        :tabsOptions="tabOptions"
-                        :metricOption="upperOptions(record.valueType)"
-                        v-model:value="record.value"
-                    >
-                        <template v-slot="{label}">
-                            <j-input :value="label" />
-                        </template>
-                    </ParamsDropdown>
-                </template>
-            </div>
+            <template v-if="column.dataIndex === 'name'">
+                <span>{{ text }}</span>
+            </template>
+            <template v-else-if="column.dataIndex === 'valueType'">
+                <span>{{ record.valueType.type }}</span>
+            </template>
+            <template v-else>
+                <FunctionItem
+                    :builtInList="builtInList"
+                    @change="onChange"
+                    :source="record.source"
+                    :data="record"
+                    v-model:value="record.value"
+                />
+            </template>
         </template>
     </j-table>
 </template>
 
 <script lang="ts" setup>
 import { PropType } from 'vue';
-import ParamsDropdown from '../../../components/ParamsDropdown';
-
-type Emits = {
-    (e: 'update:modelValue', data: Record<string, any>[]): void;
-};
-const _emit = defineEmits<Emits>();
+import FunctionItem from './FunctionItem.vue';
 
 const _props = defineProps({
-    modelValue: {
+    value: {
         type: Array as PropType<Record<string, any>[]>,
         default: () => undefined,
     },
@@ -49,20 +39,13 @@ const _props = defineProps({
         type: Array,
         default: () => [],
     },
+    functions: {
+        type: Array,
+        default: () => [],
+    },
 });
 
-const tabOptions = [
-    {
-        label: '手动输入',
-        component: 'string',
-        key: 'fixed',
-    },
-    {
-        label: '内置参数',
-        component: 'tree',
-        key: 'upper',
-    },
-];
+const emit = defineEmits(['update:value']);
 
 const columns = [
     {
@@ -82,33 +65,29 @@ const columns = [
     },
 ];
 
-const dataSource = computed({
-    get: () => {
-        return _props.modelValue || [];
-    },
-    set: (val: any) => {
-        _emit('update:modelValue', val);
-    },
+const dataSource = ref<any[]>([]);
+
+watchEffect(() => {
+    const list = (_props.functions || []).map((item: any) => {
+        const _item = _props.value?.find((i) => i.name === item?.id) || {};
+        return {
+            ...item,
+            ..._item,
+            name: item.name,
+        };
+    });
+    dataSource.value = list;
 });
 
-const filterParamsData = (type?: string, data?: any[]): any[] => {
-    if (type && data) {
-        return data.filter((item) => {
-            if (item.children) {
-                const _children = filterParamsData(type, item.children);
-                item.children = _children;
-                return _children.length ? true : false;
-            } else if (item.type === type) {
-                //   optionMap.current.set(item.id, item);
-                return true;
-            }
-            return false;
-        });
-    }
-    return data || [];
-};
-
-const upperOptions = (_type: string) => {
-    return filterParamsData(_type, _props?.builtInList) || [];
+const onChange = () => {
+    const arr = [...dataSource.value].map((item) => {
+        return {
+            name: item.id,
+            source: item.source,
+            upperKey: item.upperKey || item.value,
+            value: item.value,
+        };
+    });
+    emit('update:value', arr);
 };
 </script>

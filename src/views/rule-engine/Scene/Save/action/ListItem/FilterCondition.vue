@@ -19,7 +19,7 @@
         :options='columnOptions'
         icon='icon-zhihangdongzuoxie-1'
         type='column'
-        value-name='column'
+        value-name='id'
         label-name='fullName'
         placeholder='请选择参数'
         v-model:value='paramsValue.column'
@@ -144,7 +144,7 @@ const paramsValue = reactive<TermsType>({
 })
 
 const showDelete = ref(false)
-const columnOptions: any = inject(ContextKey) //
+const columnOptions: any = inject('filter-params') //
 const termTypeOptions = ref<Array<{ id: string, name: string}>>([]) // 条件值
 const valueOptions = ref<any[]>([]) // 默认手动输入下拉
 const metricOption = ref<any[]>([])  //
@@ -183,7 +183,8 @@ const handOptionByColumn = (option: any) => {
 }
 
 watchEffect(() => {
-  const option = getOption(columnOptions.value, paramsValue.column, 'column')
+  const option = getOption(columnOptions.value, paramsValue.column, 'id')
+  console.log(option)
   handOptionByColumn(option)
 })
 

@@ -4,6 +4,7 @@
     :type='type'
     :request='saveSearchHistory'
     :historyRequest='getSearchHistory'
+    :deleteRequest='deleteSearchHistory'
     :columns='columns'
     :class='props.class'
     @search='searchSubmit'
@@ -13,7 +14,7 @@
 <script setup lang='ts' name='ProSearch'>
 import { PropType } from 'vue'
 import { JColumnsProps } from 'components/Table/types'
-import { saveSearchHistory, getSearchHistory } from '@/api/comm'
+import { saveSearchHistory, getSearchHistory, deleteSearchHistory } from '@/api/comm'
 
 interface Emit {
   (e: 'search', data: any): void

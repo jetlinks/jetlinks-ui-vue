@@ -125,6 +125,7 @@ import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
 import { providerType } from './const';
+import encodeQuery from '@/utils/encodeQuery';
 
 import { useMenuStore } from 'store/menu';
 
@@ -153,14 +154,14 @@ const columns = [
     },
     {
         title: '接入方式',
-        dataIndex: 'type',
-        key: 'type',
+        dataIndex: 'provider',
+        key: 'provider',
         scopedSlots: true,
         search: {
             type: 'select',
             options: PROVIDER_OPTIONS,
             handleValue: (v: any) => {
-                return '123';
+                return v;
             },
         },
     },
@@ -184,12 +185,28 @@ const columns = [
         scopedSlots: true,
         search: {
             type: 'select',
-            options: [
-                { label: '固定地址', value: 'fixed-media' },
-                { label: 'GB/T28181', value: 'gb28181-2016' },
-            ],
+            options: () =>
+                new Promise((resolve) => {
+                    DeviceApi.getProductList(
+                        encodeQuery({
+                            terms: {
+                                messageProtocol$in: [
+                                    'gb28181-2016',
+                                    'fixed-media',
+                                ],
+                            },
+                        }),
+                    ).then((resp: any) => {
+                        resolve(
+                            resp.result.map((pItem: any) => ({
+                                label: pItem.name,
+                                value: pItem.id,
+                            })),
+                        );
+                    });
+                }),
             handleValue: (v: any) => {
-                return '123';
+                return v;
             },
         },
     },
@@ -206,7 +223,7 @@ const columns = [
                 { label: '在线', value: 'online' },
             ],
             handleValue: (v: any) => {
-                return '123';
+                return v;
             },
         },
     },

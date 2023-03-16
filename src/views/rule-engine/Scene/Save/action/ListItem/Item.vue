@@ -324,7 +324,15 @@
                   满足此条件后执行后续动作
                 </div>
                 <div class='actions-item-filter-overflow'>
-
+                  <FilterGroup
+                    v-for='(item, index) in termsOptions'
+                    :branchName='branchesName'
+                    :thenName='thenName'
+                    :actionName='name'
+                    :name='index'
+                    :isLast='index === termsOptions.length - 1'
+                    :isFirst='index === 0'
+                  />
                 </div>
               </template>
               <div v-else class='filter-add-button'>
@@ -371,6 +379,7 @@ import TriggerAlarm from '../TriggerAlarm/index.vue';
 import { useSceneStore } from '@/store/scene';
 import { storeToRefs } from 'pinia';
 import { iconMap, itemNotifyIconMap, typeIconMap } from './util'
+import FilterGroup from './FilterGroup.vue'
 
 const sceneStore = useSceneStore();
 const { data: _data } = storeToRefs(sceneStore);
@@ -453,6 +462,12 @@ const onPropsOk = (data: ActionsType, options?: any) => {
 const onPropsCancel = () => {
     actionType.value = '';
 };
+
+watch(() => props.data, () => {
+  if (props.data) {
+
+  }
+}, { immediate: true, deep: true})
 
 </script>
 
@@ -615,27 +630,31 @@ const onPropsCancel = () => {
             align-items: baseline;
         }
 
-        .terms-params-content {
-            position: relative;
-            display: flex;
-            background-color: #fafafa;
-            border: unset;
-            row-gap: 16px;
-
-            .terms-params-item {
-                display: flex;
-                align-items: center;
-            }
-
-            .ant-form-item {
-                margin-bottom: 8px;
-                &:not(:first-child) {
-                    .ant-form-item-explain-error {
-                        padding-left: 80px !important;
-                    }
-                }
-            }
-        }
+        //.terms-params-content {
+        //    position: relative;
+        //    display: flex;
+        //    background-color: #fafafa;
+        //    border: unset;
+        //    row-gap: 16px;
+        //
+        //    &.no-border {
+        //      border: none;
+        //    }
+        //
+        //    .terms-params-item {
+        //        display: flex;
+        //        align-items: center;
+        //    }
+        //
+        //    .ant-form-item {
+        //        margin-bottom: 8px;
+        //        &:not(:first-child) {
+        //            .ant-form-item-explain-error {
+        //                padding-left: 80px !important;
+        //            }
+        //        }
+        //    }
+        //}
 
         .term-type-warp {
             // display: inline-block;

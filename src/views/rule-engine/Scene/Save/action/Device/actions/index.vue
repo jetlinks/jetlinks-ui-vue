@@ -22,7 +22,6 @@
                         showSearch
                         placeholder="请选择功能"
                         v-model:value="modelRef.message.functionId"
-                        @change="(val) => onFunctionChange(val, [])"
                     >
                         <j-select-option
                             v-for="item in metadata?.functions || []"
@@ -37,7 +36,11 @@
                     :name="['message', 'inputs']"
                     :rules="[{ required: true, message: '请输入功能值' }]"
                 >
-                    <EditTable v-model:modelValue="modelRef.message.inputs" :builtInList="builtInList" />
+                    <EditTable
+                        :functions="functions"
+                        v-model:value="modelRef.message.inputs"
+                        :builtInList="builtInList"
+                    />
                 </j-form-item>
             </template>
             <template v-else-if="deviceMessageType === 'READ_PROPERTY'">
@@ -79,7 +82,7 @@ import EditTable from './EditTable.vue';
 import WriteProperty from './WriteProperty.vue';
 import { queryBuiltInParams } from '@/api/rule-engine/scene';
 import { useSceneStore } from '@/store/scene';
-import { storeToRefs } from 'pinia'
+import { storeToRefs } from 'pinia';
 
 const sceneStore = useSceneStore();
 const { data } = storeToRefs(sceneStore);
@@ -149,22 +152,31 @@ const deviceMessageType = computed(() => {
 
 const builtInList = ref<any[]>([]);
 
-const onFunctionChange = (val: string, values?: any[]) => {
+const functions = computed(() => {
     const _item = (metadata.value?.functions || []).find((item: any) => {
-        return val === item.id;
+        return modelRef.message?.functionId === item.id;
     });
-    const list = (_item?.inputs || []).map((item: any) => {
-        const _a = values?.find((i) => i.name === item.id);
-        return {
-            id: item.id,
-            value: _a?.value,
-            valueType: item?.valueType?.type,
-            ..._a,
-            name: item.name,
-        };
+    return _item?.inputs || [];
+});
+
+const _property = computed(() => {
+    const _item = (metadata.value?.properties || []).find((item: any) => {
+        if (deviceMessageType.value === 'WRITE_PROPERTY') {
+            return (
+                Object.keys(modelRef.message.properties || {})?.[0] === item.id
+            );
+        }
+        return modelRef.message?.properties === item.id;
     });
-    modelRef.message.inputs = list;
-};
+    return _item;
+});
+
+const _function = computed(() => {
+    const _item = (metadata.value?.functions || []).find((item: any) => {
+        return modelRef.message?.functionId === item.id;
+    });
+    return _item;
+});
 
 const onMessageTypeChange = (val: string) => {
     if (['WRITE_PROPERTY', 'INVOKE_FUNCTION'].includes(val)) {
@@ -175,22 +187,18 @@ const onMessageTypeChange = (val: string) => {
         };
         queryBuiltInParams(unref(data), _params).then((res: any) => {
             if (res.status === 200) {
-                builtInList.value = res.result
+                builtInList.value = res.result;
             }
         });
     }
 };
 
 watch(
-    () => [
-        props.values?.productDetail,
-        props.values.selectorValues,
-        props.values?.selector,
-    ],
-    ([newVal1, newVal2, newVal3]) => {
-        if (newVal1?.id) {
-            if (newVal3?.selector === 'fixed') {
-                const id = newVal2?.[0]?.value;
+    () => props.values,
+    (newVal) => {
+        if (newVal?.productDetail?.id) {
+            if (newVal?.selector === 'fixed') {
+                const id = newVal?.selectorValues?.[0]?.value;
                 if (id) {
                     detail(id).then((resp) => {
                         if (resp.status === 200) {
@@ -201,7 +209,9 @@ watch(
                     });
                 }
             } else {
-                metadata.value = JSON.parse(newVal1?.metadata || '{}');
+                metadata.value = JSON.parse(
+                    newVal?.productDetail?.metadata || '{}',
+                );
             }
         }
     },
@@ -211,24 +221,36 @@ watch(
 watch(
     () => props.values?.message,
     (newVal) => {
-        console.log(newVal)
         if (newVal?.messageType) {
             modelRef.message = newVal;
-            if (newVal.messageType === 'INVOKE_FUNCTION' && newVal.functionId) {
-                onFunctionChange(newVal.functionId, newVal?.inputs);
+            if (newVal.messageType === 'READ_PROPERTY') {
+                modelRef.message.properties = newVal.properties?.[0];
             }
-            onMessageTypeChange(newVal.messageType)
+            onMessageTypeChange(newVal.messageType);
         }
     },
-    { deep: true, immediate: true },
+    { immediate: true },
 );
 
 const onFormSave = () => {
     return new Promise((resolve, reject) => {
         formRef.value
             .validate()
-            .then(async (_data: any) => {
-                resolve(_data);
+            .then((_data: any) => {
+                // 处理三种情况的值的格式
+                const _properties = _data.message.properties || modelRef.message.properties
+                const obj = {
+                    message: {
+                        ...modelRef.message,
+                        ..._data.message,
+                        properties: _data.message.messageType === 'READ_PROPERTY' ? [_properties] : _properties,
+                        propertiesName:
+                            deviceMessageType.value === 'INVOKE_FUNCTION'
+                                ? _function.value?.name
+                                : _property.value?.name,
+                    },
+                }
+                resolve(obj);
             })
             .catch((err: any) => {
                 reject(err);
