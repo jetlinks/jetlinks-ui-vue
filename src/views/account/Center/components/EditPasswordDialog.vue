@@ -25,13 +25,13 @@
                 label="密码"
                 name="newPassword"
                 :rules="[
-                    { required: true,message:'请输入密码' },
+                    { required: true, message: '请输入密码' },
                     { validator: checkMothods.new, trigger: 'blur' },
                 ]"
             >
                 <j-input-password
                     v-model:value="form.newPassword"
-                    placeholder="请输入姓名"
+                    placeholder="请输入密码"
                 />
             </j-form-item>
             <j-form-item
@@ -44,7 +44,7 @@
             >
                 <j-input-password
                     v-model:value="form.confirmPassword"
-                    placeholder="请输入姓名"
+                    placeholder="请再次输入密码"
                 />
             </j-form-item>
         </j-form>
@@ -64,7 +64,7 @@ const emits = defineEmits(['ok', 'update:visible']);
 const props = defineProps<{
     visible: boolean;
 }>();
-const loading = ref(false)
+const loading = ref(false);
 const formRef = ref<FormInstance>();
 const form = ref<formType>({
     oldPassword: '',
@@ -102,7 +102,9 @@ const checkMothods = {
     },
     confirm: async (_rule: Rule, value: string) => {
         if (!value) return Promise.reject();
-
+        else if (form.value.newPassword && value !== form.value.newPassword) {
+            formRef.value?.validate('newPassword');
+        }
         try {
             const resp: any = await validateField_api('password', value);
             if (resp.status === 200 && !resp.result.passed)
@@ -116,18 +118,20 @@ const checkMothods = {
 
 const handleOk = () => {
     formRef.value?.validate().then(() => {
-        loading.value = true
+        loading.value = true;
         const params = {
             oldPassword: form.value.oldPassword,
             newPassword: form.value.newPassword,
         };
-        updateMepsd_api(params).then((resp) => {
-            if (resp.status === 200) {
-                message.success('保存成功');
-                emits('ok');
-                emits('update:visible', false);
-            }
-        }).finally(()=>loading.value = false)
+        updateMepsd_api(params)
+            .then((resp) => {
+                if (resp.status === 200) {
+                    message.success('保存成功');
+                    emits('ok');
+                    emits('update:visible', false);
+                }
+            })
+            .finally(() => (loading.value = false));
     });
 };
 console.clear();
