@@ -49,7 +49,7 @@ import { getWebSocket } from '@/utils/websocket';
 import { map } from 'rxjs/operators';
 
 const serverId = ref();
-const serverNodeOptions = ref([]);
+const serverNodeOptions = ref<Array<any>>([]);
 const topValues = ref({
     cpu: 0,
     jvm: 0,
@@ -73,7 +73,7 @@ const getData = () => {
         interval: '1s',
         agg: 'avg',
     })
-        .pipe(map((res) => res.payload))
+        .pipe(map((res: any) => res.payload))
         .subscribe((payload) => {
             const {
                 value: { cpu, memory, disk },
@@ -103,9 +103,9 @@ const getData = () => {
 };
 
 onMounted(() => {
-    serverNode().then((resp) => {
+    serverNode().then((resp: any) => {
         if (resp.success) {
-            serverNodeOptions.value = resp.result.map((item) => ({
+            serverNodeOptions.value = resp.result.map((item: any) => ({
                 label: item.name,
                 value: item.id,
             }));

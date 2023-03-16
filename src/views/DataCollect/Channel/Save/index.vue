@@ -109,10 +109,7 @@
                 />
             </j-form-item>
             <j-form-item
-                v-if="
-                    formData.configuration.securityMode === 'SignAndEncrypt' ||
-                    formData.configuration.securityMode === 'Sign'
-                "
+                v-if="isSecurityMode"
                 label="证书"
                 :name="['configuration', 'certificate']"
                 :rules="FormValidate.certificate"
@@ -141,7 +138,7 @@
                 />
             </j-form-item>
             <j-form-item
-                v-if="formData.configuration.authType === 'username'"
+                v-if="isAuthType"
                 label="用户名"
                 :name="['configuration', 'username']"
                 :rules="FormValidate.username"
@@ -152,10 +149,7 @@
                 />
             </j-form-item>
             <j-form-item
-                v-if="
-                    formData.configuration.authType === 'username' ||
-                    formData.configuration.authType === ['username']
-                "
+                v-if="isAuthType"
                 label="密码"
                 :name="['configuration', 'password']"
                 :rules="FormValidate.password"
@@ -201,6 +195,7 @@ import {
 import { FormValidate, FormState } from '../data';
 import type { FormInstance } from 'ant-design-vue';
 import type { FormDataType } from '../type.d';
+import { isArray } from 'lodash-es';
 
 const props = defineProps({
     data: {
@@ -243,6 +238,18 @@ const handleCancel = () => {
 const changeAuthType = (value: Array<string>) => {
     formData.value.configuration.authType = value[0];
 };
+const isAuthType = computed(() => {
+    const { authType } = formData.value.configuration;
+    return isArray(authType)
+        ? authType[0] === 'username'
+        : authType === 'username';
+});
+const isSecurityMode = computed(() => {
+    const { securityMode } = formData.value.configuration;
+    return securityMode === 'SignAndEncrypt' || securityMode === 'Sign'
+        ? true
+        : false;
+});
 
 const filterOption = (input: string, option: any) => {
     return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
@@ -251,18 +258,22 @@ const filterOption = (input: string, option: any) => {
 const getOptionsList = async () => {
     for (let key in Options.value) {
         const res: any = await queryOptionsList(key);
-        Options.value[key] = res.result.map((item: any) => ({
-            label: item?.text || item,
-            value: item?.value || item,
-        }));
+        if (res.status === 200) {
+            Options.value[key] = res.result.map((item: any) => ({
+                label: item?.text || item,
+                value: item?.value || item,
+            }));
+        }
     }
 };
 const getCertificateList = async () => {
     const res: any = await queryCertificateList();
-    certificateList.value = res.result.map((item: any) => ({
-        value: item.id,
-        label: item.name,
-    }));
+    if (res.status === 200) {
+        certificateList.value = res.result.map((item: any) => ({
+            label: item.name,
+            value: item.id,
+        }));
+    }
 };
 
 const getProvidersList = async () => {

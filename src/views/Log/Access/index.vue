@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Search :columns="columns" target="search" @search="handleSearch" />
+        <pro-search :columns="columns" target="search" @search="handleSearch" />
         <j-pro-table
             ref="tableRef"
             model="TABLE"
@@ -94,7 +94,7 @@
             <j-descriptions-item label="请求耗时">
                 {{
                     descriptionsData?.responseTime -
-                    descriptionsData?.requestTime +
+                    descriptionsData?.responseTime +
                     'ms'
                 }}
             </j-descriptions-item>
@@ -115,11 +115,10 @@
     </j-modal>
 </template>
 <script lang="ts" setup name="AccessLog">
-import type { ActionsType } from '@/components/Table/index.vue';
+import type { ActionsType } from '@/components/Table/index';
 import type { AccessLogItem } from '../typings';
 import { queryAccess } from '@/api/link/log';
 import moment from 'moment';
-
 import { modifySearchColumnValue } from '@/utils/comm';
 
 const tableRef = ref<Record<string, any>>({});
@@ -214,7 +213,19 @@ const columns = [
     },
 ];
 
-const descriptionsData = ref<AccessLogItem>();
+const descriptionsData = ref({
+    url: '',
+    httpMethod: '',
+    action: '',
+    target: '',
+    method: '',
+    ip: '',
+    requestTime: 0,
+    responseTime: 0,
+    httpHeaders: '',
+    parameters: '',
+    exception: '',
+});
 const visible = ref<boolean>(false);
 
 const handleOk = (e: MouseEvent) => {
