@@ -149,6 +149,7 @@ const termTypeOptions = ref<Array<{ id: string, name: string}>>([]) // 条件值
 const valueOptions = ref<any[]>([]) // 默认手动输入下拉
 const metricOption = ref<any[]>([])  // 根据termType获取对应指标值
 const tabsOptions = ref<Array<TabsOption>>([{ label: '手动输入', key: 'manual', component: 'string' }])
+const arrayParamsKey = ['nbtw', 'btw', 'in', 'nin']
 let metricsCacheOption: any[] = [] // 缓存指标值
 
 const handOptionByColumn = (option: any) => {
@@ -187,7 +188,7 @@ watchEffect(() => {
 })
 
 const showDouble = computed(() => {
-  const isRange = paramsValue.termType ? ['nbtw', 'btw', 'in', 'nin'].includes(paramsValue.termType) : false
+  const isRange = paramsValue.termType ? arrayParamsKey.includes(paramsValue.termType) : false
   if (metricsCacheOption.length) {
     metricOption.value = metricsCacheOption.filter(item => isRange ? item.range : !item.range)
   } else {
@@ -217,10 +218,11 @@ const columnSelect = () => {
   emit('update:value', { ...paramsValue })
 }
 
-const termsTypeSelect = () => {
+const termsTypeSelect = (e: { key: string }) => {
+  const value = arrayParamsKey.includes(e.key) ? [ undefined, undefined ] : undefined
   paramsValue.value = {
     source: tabsOptions.value[0].key,
-    value: undefined
+    value: value
   }
   emit('update:value', { ...paramsValue })
 }

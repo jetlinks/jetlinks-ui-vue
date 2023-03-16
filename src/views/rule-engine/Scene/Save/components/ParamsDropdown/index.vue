@@ -81,7 +81,7 @@ import ValueItem from '@/components/ValueItem/index.vue'
 import type { ValueType } from './typings'
 import { defaultSetting } from './typings'
 import { DropdownMenus, DropdownTimePicker} from '../DropdownButton'
-import { getComponent, getOption } from '../DropdownButton/util'
+import { getOption } from '../DropdownButton/util'
 
 type Emit = {
   (e: 'update:value', data: ValueType): void
@@ -109,29 +109,26 @@ nextTick(() => {
 const tabsChange = (e: string) => {
   mySource.value = e
   myValue.value = undefined
-}
-
-const updateValue = () => {
   emit('update:source', mySource.value)
-  emit('update:value', myValue.value)
+  emit('update:value', undefined)
+  emit('select', {})
 }
 
-const treeSelect = (e: any) => {
+const treeSelect = (v: any, option: any) => {
+  const node = option.node
   visible.value = false
-  label.value = e.fullname || e.name
-  emit('update:value', e[props.valueName])
-  emit('select', e)
+  label.value = node.fullname || node.name
+  emit('update:value', node[props.valueName])
+  emit('select', node)
 }
 
 const valueItemChange = (e: string) => {
-  console.log('valueItemSelect', e)
   label.value = e
   emit('update:value', e)
   emit('select', e)
 }
 
 const onSelect = (e: string, option: any) => {
-  console.log(e, option)
   visible.value = false
   label.value = option.label
   emit('update:value', e)
@@ -150,7 +147,8 @@ const visibleChange = (v: boolean) => {
 }
 
 watchEffect(() => {
-  const option = getOption(props.options, props.value as string, props.valueName) // 回显label值
+  const _options = props.source === 'upper' ? props.metricOptions : props.options
+  const option = getOption(_options, props.value as string, props.valueName) // 回显label值
   myValue.value = props.value
   mySource.value = props.source
   if (option) {

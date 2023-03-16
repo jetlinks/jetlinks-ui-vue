@@ -39,21 +39,27 @@
         v-if='showDouble'
         icon='icon-canshu'
         placeholder='参数值'
+        value-name='id'
+        label-name='name'
         :options='valueOptions'
-        :metricOptions='metricOption'
+        :metricOptions='columnOptions'
         :tabsOptions='tabsOptions'
         v-model:value='paramsValue.value.value'
         v-model:source='paramsValue.value.source'
+        @select='valueSelect'
       />
       <ParamsDropdown
         v-else
         icon='icon-canshu'
         placeholder='参数值'
+        value-name='id'
+        label-name='name'
         :options='valueOptions'
-        :metricOptions='metricOption'
+        :metricOptions='columnOptions'
         :tabsOptions='tabsOptions'
         v-model:value='paramsValue.value.value'
         v-model:source='paramsValue.value.source'
+        @select='valueSelect'
       />
       <j-popconfirm title='确认删除？' @confirm='onDelete'>
         <div v-show='showDelete' class='button-delete'> <AIcon type='CloseOutlined' /></div>
@@ -74,7 +80,6 @@ import DropdownButton from '../../components/DropdownButton'
 import { getOption } from '../../components/DropdownButton/util'
 import ParamsDropdown, { DoubleParamsDropdown } from '../../components/ParamsDropdown'
 import { inject } from 'vue'
-import { ContextKey } from '../../components/Terms/util'
 import { useSceneStore } from 'store/scene'
 import { storeToRefs } from 'pinia';
 
@@ -112,11 +117,15 @@ const props = defineProps({
     type: Number,
     default: 0
   },
-  branchName: {
+  actionName: {
     type: Number,
     default: 0
   },
   thenName: {
+    type: Number,
+    default: 0
+  },
+  branchName: {
     type: Number,
     default: 0
   },
@@ -147,24 +156,19 @@ const showDelete = ref(false)
 const columnOptions: any = inject('filter-params') //
 const termTypeOptions = ref<Array<{ id: string, name: string}>>([]) // 条件值
 const valueOptions = ref<any[]>([]) // 默认手动输入下拉
-const metricOption = ref<any[]>([])  //
-const tabsOptions = ref<Array<TabsOption>>([{ label: '内置参数', key: 'upper', component: 'tree' }])
-// { label: '手动输入', key: 'fixed', component: 'string' },
+const arrayParamsKey = ['nbtw', 'btw', 'in', 'nin']
 
+const tabsOptions = ref<Array<TabsOption>>(
+  [
+    { label: '手动输入', key: 'fixed', component: 'string' },
+    { label: '内置参数', key: 'upper', component: 'tree' }
+  ]
+)
 
 const handOptionByColumn = (option: any) => {
   if (option) {
     termTypeOptions.value = option.termTypes || []
-    metricOption.value = option.metrics || []
-    tabsOptions.value.length = 1
     tabsOptions.value[0].component = option.dataType
-
-    if (option.metrics && option.metrics.length) {
-      tabsOptions.value.push(
-        { label: '指标值', key: 'metric', component: 'select' }
-      )
-    }
-
     if (option.dataType === 'boolean') {
       valueOptions.value = [
         { label: '是', value: true },
@@ -177,24 +181,17 @@ const handOptionByColumn = (option: any) => {
     }
   } else {
     termTypeOptions.value = []
-    metricOption.value = []
     valueOptions.value = []
   }
 }
 
 watchEffect(() => {
   const option = getOption(columnOptions.value, paramsValue.column, 'id')
-  console.log(option)
   handOptionByColumn(option)
 })
 
 const showDouble = computed(() => {
-  const isRange = paramsValue.termType ? ['nbtw', 'btw', 'in', 'nin'].includes(paramsValue.termType) : false
-  if (metricOption.value.length) {
-    metricOption.value = metricOption.value.filter(item => isRange ? item.range : !item.range)
-  } else {
-    metricOption.value = []
-  }
+  const isRange = paramsValue.termType ? arrayParamsKey.includes(paramsValue.termType) : false
   return isRange
 })
 
@@ -219,11 +216,16 @@ const columnSelect = () => {
   emit('update:value', { ...paramsValue })
 }
 
-const termsTypeSelect = () => {
+const termsTypeSelect = (e: { key: string }) => {
+  const value = arrayParamsKey.includes(e.key) ? [ undefined, undefined ] : undefined
   paramsValue.value = {
     source: tabsOptions.value[0].key,
-    value: undefined
+    value: value
   }
+  emit('update:value', { ...paramsValue })
+}
+
+const valueSelect = () => {
   emit('update:value', { ...paramsValue })
 }
 
@@ -238,11 +240,11 @@ const termAdd = () => {
     type: 'and',
     key: `params_${new Date().getTime()}`
   }
-  formModel.value.branches?.[props.branchName]?.then?.[props.thenName]?.actions?.[props.name].terms?.push(terms)
+  formModel.value.branches?.[props.branchName]?.then?.[props.thenName]?.actions?.[props.actionName].terms?.[props.termsName].terms?.push(terms)
 }
 
 const onDelete = () => {
-  formModel.value.branches?.[props.branchName]?.then?.[props.thenName]?.actions?.[props.name].terms?.splice(props.name, 1)
+  formModel.value.branches?.[props.branchName]?.then?.[props.thenName]?.actions?.[props.actionName].terms?.[props.termsName].terms?.splice(props.name, 1)
 }
 
 nextTick(() => {

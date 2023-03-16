@@ -47,7 +47,7 @@ import { storeToRefs } from 'pinia';
 import { useSceneStore } from 'store/scene'
 import { cloneDeep } from 'lodash-es'
 import { provide } from 'vue'
-import { ContextKey } from './util'
+import { ContextKey, handleParamsData } from './util'
 import { getParseTerm } from '@/api/rule-engine/scene'
 import type { FormModelType } from '@/views/rule-engine/Scene/typings'
 import Branches from './Branchs.vue'
@@ -63,17 +63,6 @@ provide(ContextKey, columnOptions)
 
 const change = (e: boolean) => {
   open.value = e
-}
-
-const handleParamsData = (data: any[]): any[] => {
-  return data?.map(item => {
-    return {
-      ...item,
-      key: item.column,
-      disabled: !!item.children,
-      children: handleParamsData(item.children)
-    }
-  }) || []
 }
 
 const queryColumn = (dataModel: FormModelType) => {

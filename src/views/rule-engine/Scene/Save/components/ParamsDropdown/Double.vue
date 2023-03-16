@@ -2,6 +2,8 @@
   <ParamsDropdown
     v-model:value='myValue[0]'
     v-model:source='mySource'
+    :valueName='valueName'
+    :labelName='labelName'
     :options='options'
     :icon='icon'
     :placeholder='placeholder'
@@ -12,6 +14,8 @@
   <ParamsDropdown
     v-model:value='myValue[1]'
     v-model:source='mySource'
+    :valueName='valueName'
+    :labelName='labelName'
     :icon='icon'
     :placeholder='placeholder'
     :tabs-options='tabsOptions'
