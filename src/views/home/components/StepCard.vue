@@ -38,7 +38,9 @@ const props = defineProps({
 
 // 跳转页面
 const jumpPage = (row: recommendList) => {
-    if (row.auth === false) return message.warning('暂无权限，请联系管理员');
+    if (row.auth === false) {
+        return message.warning('暂无权限，请联系管理员');
+    }
     row.onClick ? row.onClick(row) : _jumpPage(row.linkUrl, row.params);
 };
 </script>

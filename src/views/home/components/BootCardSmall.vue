@@ -37,8 +37,11 @@ const { cardData, cardTitle } = toRefs(props);
 const { jumpPage: _jumpPage } = useMenuStore();
 
 const jumpPage = (item: bootConfig) => {
-    if (item.auth === undefined || item.auth) _jumpPage(item.link, item.params);
-    else message.warning('暂无权限，请联系管理员');
+    if (item.auth === undefined || item.auth) {
+        _jumpPage(item.link, item.params);
+    } else {
+        message.warning('暂无权限，请联系管理员');
+    }
 };
 </script>
 

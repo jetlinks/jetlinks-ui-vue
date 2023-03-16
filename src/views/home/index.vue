@@ -1,6 +1,6 @@
 <template>
     <page-container>
-        <div class="iot-home-container" v-loading="loading">
+        <div class="iot-home-container">
             <InitHome v-if="currentView === 'init'" @refresh="setCurrentView" />
             <DeviceHome v-else-if="currentView === 'device'" />
             <DevOpsHome v-else-if="currentView === 'ops'" />
@@ -54,25 +54,26 @@ import { getMe_api, getView_api } from '@/api/home';
 import { getAppInfo_api } from '@/api/system/apply';
 
 const currentView = ref<string>('');
-const loading = ref<boolean>(true);
 const clientId = useUserInfo().$state.userInfos.id;
 const secureKey = ref<string>('');
 const showKey = ref(false);
 // 获取选择的视图
 const setCurrentView = () => {
-    getView_api().then((resp: any) => {
-        if (resp.status === 200) {
-            if (resp.result) {
-                if (resp.result.username === 'admin')
-                    currentView.value = 'comprehensive';
-                else currentView.value = resp.result?.content;
-            } else currentView.value = 'init';
+    getView_api().then(({ status, result }: any) => {
+        if (status === 200) {
+            currentView.value = 'init';
+            if (result) {
+                currentView.value =
+                    result.username === 'admin'
+                        ? 'comprehensive'
+                        : result?.content;
+            }
         }
     });
 };
 
 if (isNoCommunity) {
-    // 判断是否是api用户   是则跳转  否则获取选中的视图
+    // 判断是否是api用户   不是则获取选中的视图
     getMe_api().then((resp: any) => {
         if (resp && resp.status === 200) {
             const isApiUser = resp.result.dimensions.find(
@@ -85,10 +86,14 @@ if (isNoCommunity) {
                 getAppInfo_api(clientId).then((resp: any) => {
                     secureKey.value = resp.result.apiServer.secureKey;
                 });
-            } else setCurrentView();
+            } else {
+                setCurrentView();
+            }
         }
     });
-} else setCurrentView();
+} else {
+    setCurrentView();
+}
 </script>
 
 <style lang="less" scoped>
