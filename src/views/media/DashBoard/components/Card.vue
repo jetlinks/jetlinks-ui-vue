@@ -1,5 +1,5 @@
 <template>
-    <div class="wrapper">
+    <div class="card-wrapper">
         <div class="card-header">
             <div class="title">{{ title }}</div>
             <div class="tools">
@@ -156,7 +156,7 @@ watch(
 </script>
 
 <style scoped lang="less">
-.wrapper {
+.card-wrapper {
     padding: 24px;
     background-color: #fff;
     .card-header {
