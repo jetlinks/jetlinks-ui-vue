@@ -1,50 +1,59 @@
 <template>
-    <div>
-        <j-form :layout="'vertical'" ref="formRef" :model="modelRef">
-            <j-row>
-                <j-col :span="11">
-                    <j-form-item
-                        :name="['message', 'properties']"
-                        label="读取属性"
-                        :rules="[{ required: true, message: '请选择读取属性' }]"
+    <j-form
+        :layout="'vertical'"
+        ref="propertyFormRef"
+        :model="propertyModelRef"
+    >
+        <j-row :gutter="24">
+            <j-col :span="12">
+                <j-form-item
+                    name="properties"
+                    label="读取属性"
+                    :rules="[{ required: true, message: '请选择读取属性' }]"
+                >
+                    <j-select
+                        showSearch
+                        placeholder="请选择属性"
+                        v-model:value="propertyModelRef.properties"
+                        @change="onChange"
                     >
-                        <j-select
-                            showSearch
-                            placeholder="请选择属性"
-                            v-model:value="modelRef.properties"
+                        <j-select-option
+                            v-for="item in metadata?.properties || []"
+                            :value="item?.id"
+                            :key="item?.id"
+                            >{{ item?.name }}</j-select-option
                         >
-                            <j-select-option
-                                v-for="item in metadata?.properties || []"
-                                :value="item?.id"
-                                :key="item?.id"
-                                >{{ item?.name }}</j-select-option
-                            >
-                        </j-select>
-                    </j-form-item>
-                </j-col>
-                <j-col :span="2"></j-col>
-                <j-col :span="11">
-                    <j-form-item
-                        :name="['message', 'propertiesValue']"
-                        label="属性值"
-                        :rules="[{ required: true, message: '请选择' }]"
+                    </j-select>
+                </j-form-item>
+            </j-col>
+            <j-col :span="12" v-if="propertyModelRef.properties">
+                <j-form-item
+                    name="propertiesValue"
+                    label="属性值"
+                    :rules="[{ required: true, message: '请选择' }]"
+                >
+                    <ParamsDropdown
+                        placeholder="请选择"
+                        :options="handleOptions"
+                        :tabsOptions="tabOptions"
+                        :metricOption="upperOptions"
+                        v-model:value="propertyModelRef.propertiesValue"
+                        v-model:source="propertyModelRef.source"
+                        @change="onValueChange"
                     >
-                        <ParamsDropdown
-                            icon="icon-canshu"
-                            placeholder="请选择"
-                            :options="[]"
-                            :tabsOptions="tabOptions"
-                            :metricOption="upperOptions(getType)"
-                            v-model:value="modelRef.propertiesValue"
-                        />
-                    </j-form-item>
-                </j-col>
-            </j-row>
-        </j-form>
-    </div>
+                        <template v-slot="{ label }">
+                            <j-input :value="label" />
+                        </template>
+                    </ParamsDropdown>
+                </j-form-item>
+            </j-col>
+        </j-row>
+    </j-form>
 </template>
 
 <script lang="ts" setup>
+import ParamsDropdown from '../../../components/ParamsDropdown';
+import { handleParamsData } from './index';
 const props = defineProps({
     value: {
         type: Object,
@@ -60,37 +69,44 @@ const props = defineProps({
     },
     builtInList: {
         type: Array,
-        default: () => []
+        default: () => [],
     },
 });
 
-const formRef = ref();
+const emit = defineEmits(['update:value']);
 
-const modelRef = reactive({
-    properties: '',
-    propertiesValue: '',
-    source: '',
+const propertyFormRef = ref();
+
+const propertyModelRef = reactive({
+    properties: undefined,
+    propertiesValue: undefined,
+    source: 'fixed',
 });
 
-const tabOptions = [
-    {
-        label: '手动输入',
-        component: 'string',
-        key: 'fixed',
-    },
-    {
-        label: '内置参数',
-        component: 'tree',
-        key: 'upper',
-    },
-];
 const getType = computed(() => {
-    return props.metadata.properties.find((item: any) => item.id === modelRef.properties)?.valueType?.type
-})
+    return props.metadata.properties.find(
+        (item: any) => item.id === propertyModelRef.properties,
+    );
+});
+
+const tabOptions = computed(() => {
+    return [
+        {
+            label: '手动输入',
+            component: getType.value?.valueType?.type,
+            key: 'fixed',
+        },
+        {
+            label: '内置参数',
+            component: 'tree',
+            key: 'upper',
+        },
+    ];
+});
 
 const filterParamsData = (type?: string, data?: any[]): any[] => {
     if (type && data) {
-        return data.filter((item) => {
+        const list = data.filter((item) => {
             if (item.children) {
                 const _children = filterParamsData(type, item.children);
                 item.children = _children;
@@ -101,40 +117,74 @@ const filterParamsData = (type?: string, data?: any[]): any[] => {
             }
             return false;
         });
+        return handleParamsData(list);
     }
     return data || [];
 };
 
-const upperOptions = (type: string) => {
-    return filterParamsData(type, props?.builtInList) || []
-}
+const upperOptions = computed(() => {
+    return filterParamsData(getType.value?.valueType?.type, props?.builtInList);
+});
+
+const handleOptions = computed(() => {
+    const _item = getType.value?.valueType;
+    const _type = _item?.type;
+    if (_type === 'boolean') {
+        return [
+            {
+                label: _item.trueText,
+                value: _item.trueValue,
+            },
+            {
+                label: _item.falseText,
+                value: _item.falseValue,
+            },
+        ];
+    }
+    if (_type === 'enum') {
+        return _item?.elements.map((i: any) => {
+            return {
+                label: i.text,
+                value: i.value,
+            };
+        });
+    }
+    return [];
+});
+
+const onChange = () => {
+    propertyModelRef.propertiesValue = undefined;
+    propertyModelRef.source = 'fixed'
+    emit('update:value', {
+        [`${propertyModelRef.properties}`]: {
+            value: propertyModelRef?.propertiesValue,
+            source: propertyModelRef?.source,
+        },
+    });
+};
+
+const onValueChange = () => {
+    const obj = {
+        [`${propertyModelRef.properties}`]: {
+            value: propertyModelRef?.propertiesValue,
+            source: propertyModelRef?.source,
+        },
+    }
+    emit('update:value', obj);
+};
 
 watch(
     () => props.value,
     (newVal) => {
-        const _keys = Object.keys(newVal)?.[0];
-        if (_keys) {
-            (modelRef.properties = _keys),
-                (modelRef.propertiesValue = newVal[_keys]?.value);
-            modelRef.source = newVal[_keys]?.source;
+        if (newVal) {
+            const _keys = Object.keys(newVal)?.[0];
+            if (_keys) {
+                propertyModelRef.properties = _keys as any;
+                propertyModelRef.propertiesValue = newVal[_keys]?.value;
+                propertyModelRef.source = newVal[_keys]?.source;
+            }
         }
     },
     { deep: true, immediate: true },
 );
-
-const onFormSave = () => {
-    return new Promise((resolve, reject) => {
-        formRef.value
-            .validate()
-            .then(async (_data: any) => {
-                // 处理回传数据
-                resolve(_data);
-            })
-            .catch((err: any) => {
-                reject(err);
-            });
-    });
-};
-
-defineExpose({ onFormSave });
 </script>

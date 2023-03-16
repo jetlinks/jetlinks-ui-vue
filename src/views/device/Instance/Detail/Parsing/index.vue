@@ -25,7 +25,7 @@
                 </div>
                 <div>
                     脚本语言:
-                    <j-select :defaultValue="'JavaScript'" style="width: 200;margin-left: 5px;">
+                    <j-select :defaultValue="'JavaScript'" style="width: 200px;margin-left: 5px;">
                         <j-select-option value="JavaScript">JavaScript(ECMAScript 5)</j-select-option>
                     </j-select>
                     <AIcon type="ExpandOutlined" style="margin-left: 20px;" @click="toggle" />
@@ -52,8 +52,7 @@
                             <template v-if="instanceStore.current.transport === 'MQTT'">
                                 <div style="margin-right: 5px;">Topic:</div>
                                 <j-auto-complete placeholder="请输入Topic" style="width: 300px" :options="topicList"
-                                    :allowClear="true" :filterOption="(inputValue: any, option: any) =>
-                                        option!.value.indexOf(inputValue) !== -1" v-model:value="topic" />
+                                    :allowClear="true" :filterOption="filterOption" v-model:value="topic" />
                             </template>
                             <template v-else>
                                 <div style="margin-right: 5px;">URL:</div>
@@ -134,6 +133,7 @@ const resStyle = computed(() => (isBoolean(resultValue.value.success) ? {
 } : {
     'margin-top': '10px',
 }))
+const filterOption =  (inputValue: any, option: any) => option!.value.indexOf(inputValue) !== -1
 
 const isDisabled = computed(() => simulation.value === '')
 
