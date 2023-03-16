@@ -1,7 +1,7 @@
 export interface ConfigurationType {
     parserType: string | undefined;
     port: string | undefined;
-    host: string | undefined;;
+    host: string | undefined;
     publicPort: string;
     publicHost: string;
     remoteHost: string;

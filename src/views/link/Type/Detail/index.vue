@@ -44,21 +44,17 @@
                                 name="shareCluster"
                                 :rules="Rules.shareCluster"
                             >
-                                <div class="form-label">
+                                <template #label>
                                     集群
-                                    <span class="form-label-required">*</span>
-                                    <j-tooltip>
-                                        <template #title>
-                                            <p>
-                                                共享配置:集群下所有节点共用同一配置
-                                            </p>
-                                            <p>
-                                                独立配置:集群下不同节点使用不同配置
-                                            </p>
-                                        </template>
-                                        <AIcon type="QuestionCircleOutlined" />
+                                    <j-tooltip
+                                        title="共享配置:集群下所有节点共用同一配置,独立配置:集群下不同节点使用不同配置"
+                                    >
+                                        <AIcon
+                                            type="QuestionCircleOutlined"
+                                            style="margin-left: 2px"
+                                        />
                                     </j-tooltip>
-                                </div>
+                                </template>
                                 <j-radio-group
                                     v-model:value="formData.shareCluster"
                                     button-style="solid"
@@ -78,7 +74,6 @@
                             </j-form-item>
                         </j-col>
                     </j-row>
-
                     <j-form
                         ref="formRef2"
                         layout="vertical"
@@ -113,14 +108,9 @@
                                                     index,
                                                     'serverId',
                                                 ]"
+                                                label="节点名称"
+                                                :rules="Rules.serverId"
                                             >
-                                                <div class="form-label">
-                                                    节点名称
-                                                    <span
-                                                        class="form-label-required"
-                                                        >*</span
-                                                    >
-                                                </div>
                                                 <j-select
                                                     v-model:value="
                                                         cluster.serverId
@@ -159,24 +149,19 @@
                                                 ]"
                                                 :rules="Rules.host"
                                             >
-                                                <div class="form-label">
+                                                <template #label>
                                                     本地地址
-                                                    <span
-                                                        class="form-label-required"
-                                                        >*</span
+                                                    <j-tooltip
+                                                        title="绑定到服务器上的网卡地址,绑定到所有网卡:0.0.0.0"
                                                     >
-                                                    <j-tooltip>
-                                                        <template #title>
-                                                            <p>
-                                                                绑定到服务器上的网卡地址,绑定到所有网卡:0.0.0.0
-                                                            </p>
-                                                        </template>
                                                         <AIcon
                                                             type="QuestionCircleOutlined"
+                                                            style="
+                                                                margin-left: 2px;
+                                                            "
                                                         />
                                                     </j-tooltip>
-                                                </div>
-
+                                                </template>
                                                 <j-select
                                                     v-model:value="
                                                         cluster.configuration
@@ -220,23 +205,19 @@
                                                 ]"
                                                 :rules="Rules.port"
                                             >
-                                                <div class="form-label">
+                                                <template #label>
                                                     本地端口
-                                                    <span
-                                                        class="form-label-required"
-                                                        >*</span
+                                                    <j-tooltip
+                                                        title="监听指定端口的请求"
                                                     >
-                                                    <j-tooltip>
-                                                        <template #title>
-                                                            <p>
-                                                                监听指定端口的请求
-                                                            </p>
-                                                        </template>
                                                         <AIcon
                                                             type="QuestionCircleOutlined"
+                                                            style="
+                                                                margin-left: 2px;
+                                                            "
                                                         />
                                                     </j-tooltip>
-                                                </div>
+                                                </template>
                                                 <j-select
                                                     v-model:value="
                                                         cluster.configuration
@@ -273,23 +254,19 @@
                                                 ]"
                                                 :rules="Rules.publicHost"
                                             >
-                                                <div class="form-label">
+                                                <template #label>
                                                     公网地址
-                                                    <span
-                                                        class="form-label-required"
-                                                        >*</span
+                                                    <j-tooltip
+                                                        title="对外提供访问的地址,内网环境时填写服务器的内网IP地址"
                                                     >
-                                                    <j-tooltip>
-                                                        <template #title>
-                                                            <p>
-                                                                对外提供访问的地址,内网环境时填写服务器的内网IP地址
-                                                            </p>
-                                                        </template>
                                                         <AIcon
                                                             type="QuestionCircleOutlined"
+                                                            style="
+                                                                margin-left: 2px;
+                                                            "
                                                         />
                                                     </j-tooltip>
-                                                </div>
+                                                </template>
                                                 <j-input
                                                     v-model:value="
                                                         cluster.configuration
@@ -318,24 +295,19 @@
                                                 ]"
                                                 :rules="Rules.publicPort"
                                             >
-                                                <div class="form-label">
+                                                <template #label>
                                                     公网端口
-                                                    <span
-                                                        class="form-label-required"
-                                                        >*</span
+                                                    <j-tooltip
+                                                        title="对外提供访问的端口"
                                                     >
-                                                    <j-tooltip>
-                                                        <template #title>
-                                                            <p>
-                                                                对外提供访问的端口
-                                                            </p>
-                                                        </template>
                                                         <AIcon
                                                             type="QuestionCircleOutlined"
+                                                            style="
+                                                                margin-left: 2px;
+                                                            "
                                                         />
                                                     </j-tooltip>
-                                                </div>
-
+                                                </template>
                                                 <j-input-number
                                                     style="width: 100%"
                                                     placeholder="请输入端口"
@@ -365,15 +337,8 @@
                                                     'remoteHost',
                                                 ]"
                                                 :rules="Rules.remoteHost"
+                                                label="远程地址"
                                             >
-                                                <div class="form-label">
-                                                    远程地址
-                                                    <span
-                                                        class="form-label-required"
-                                                        >*</span
-                                                    >
-                                                </div>
-
                                                 <j-input
                                                     placeholder="请输入远程地址"
                                                     v-model:value="
@@ -517,19 +482,19 @@
                                                 ]"
                                                 :rules="Rules.topicPrefix"
                                             >
-                                                <div class="form-label">
+                                                <template #label>
                                                     订阅前缀
-                                                    <j-tooltip>
-                                                        <template #title>
-                                                            <p>
-                                                                当连接的服务为EMQ时,可能需要使用共享的订阅前缀,如:$queue或$share
-                                                            </p>
-                                                        </template>
+                                                    <j-tooltip
+                                                        title="当连接的服务为EMQ时,可能需要使用共享的订阅前缀,如:$queue或$share"
+                                                    >
                                                         <AIcon
                                                             type="QuestionCircleOutlined"
+                                                            style="
+                                                                margin-left: 2px;
+                                                            "
                                                         />
                                                     </j-tooltip>
-                                                </div>
+                                                </template>
                                                 <j-input
                                                     v-model:value="
                                                         cluster.configuration
@@ -558,23 +523,19 @@
                                                 ]"
                                                 :rules="Rules.maxMessageSize"
                                             >
-                                                <div class="form-label">
+                                                <template #label>
                                                     最大消息长度
-                                                    <span
-                                                        class="form-label-required"
-                                                        >*</span
+                                                    <j-tooltip
+                                                        title="单次收发消息的最大长度,单位:字节;设置过大可能会影响性能"
                                                     >
-                                                    <j-tooltip>
-                                                        <template #title>
-                                                            <p>
-                                                                单次收发消息的最大长度,单位:字节;设置过大可能会影响性能
-                                                            </p>
-                                                        </template>
                                                         <AIcon
                                                             type="QuestionCircleOutlined"
+                                                            style="
+                                                                margin-left: 2px;
+                                                            "
                                                         />
                                                     </j-tooltip>
-                                                </div>
+                                                </template>
                                                 <j-input-number
                                                     style="width: 100%"
                                                     v-model:value="
@@ -691,23 +652,19 @@
                                                 ]"
                                                 :rules="Rules.parserType"
                                             >
-                                                <div class="form-label">
+                                                <template #label>
                                                     粘拆包规则
-                                                    <span
-                                                        class="form-label-required"
-                                                        >*</span
+                                                    <j-tooltip
+                                                        title="处理TCP粘拆包的方式"
                                                     >
-                                                    <j-tooltip>
-                                                        <template #title>
-                                                            <p>
-                                                                处理TCP粘拆包的方式
-                                                            </p>
-                                                        </template>
                                                         <AIcon
                                                             type="QuestionCircleOutlined"
+                                                            style="
+                                                                margin-left: 2px;
+                                                            "
                                                         />
                                                     </j-tooltip>
-                                                </div>
+                                                </template>
                                                 <j-select
                                                     style="width: 48.5%"
                                                     v-model:value="
@@ -1037,7 +994,7 @@ import {
     UDPList,
 } from '../data';
 import { cloneDeep } from 'lodash-es';
-import type { FormData2Type } from '../type';
+import type { FormData2Type, FormDataType } from '../type';
 import { Store } from 'jetlinks-store';
 import MonacoEditor from '@/components/MonacoEditor/index.vue';
 
@@ -1051,8 +1008,9 @@ const formRef1 = ref<FormInstance>();
 const formRef2 = ref<FormInstance>();
 const shareCluster = ref(true);
 
-const formData = ref(FormStates);
-
+const formData = ref<FormDataType>({
+    ...FormStates,
+});
 const hostOptionsIndex: any = ref([]);
 const clustersListIndex: any = ref([]);
 const typeOptions = ref([]);
@@ -1088,7 +1046,7 @@ const filterPortOption = (input: string, option: any) => {
     return JSON.stringify(option.label).indexOf(input) >= 0;
 };
 
-const filterConfigByType = (data, type: string) => {
+const filterConfigByType = (data: any, type: string) => {
     let _temp = type;
     if (TCPList.includes(type)) {
         _temp = 'TCP';
@@ -1096,12 +1054,12 @@ const filterConfigByType = (data, type: string) => {
         _temp = 'UDP';
     }
     // 只保留ports 包含type的数据
-    const _config = data?.filter((item) => {
+    const _config = data?.filter((item: any) => {
         return Object.keys(item.ports).includes(_temp);
     });
 
     // 只保留ports的type数据
-    return _config?.map((i) => {
+    return _config?.map((i: any) => {
         i.ports = i.ports[_temp];
         return i;
     });
@@ -1112,8 +1070,8 @@ const getPortOptions = (portOptions: object, index = 0) => {
     const type = formData.value.type;
     const host = dynamicValidateForm.cluster[index].configuration.host;
     const _port = filterConfigByType(cloneDeep(portOptions), type);
-    const _host = _port.find((item) => item.host === host);
-    portOptionsIndex.value[index] = _host?.ports?.map((p) => ({
+    const _host = _port.find((item: any) => item.host === host);
+    portOptionsIndex.value[index] = _host?.ports?.map((p: any) => ({
         label: p,
         value: p,
     }));
@@ -1137,11 +1095,11 @@ const updateClustersListIndex = () => {
     const { cluster } = dynamicValidateForm;
     const filters = cluster?.map((item) => item.serverId);
     const newConfigRef = Store.get('configRef')?.filter(
-        (item) => !filters.includes(item.clusterNodeId),
+        (item: any) => !filters.includes(item.clusterNodeId),
     );
     cluster.forEach((item, index) => {
         !item.serverId &&
-            (clustersListIndex.value[index] = newConfigRef?.map((i) => ({
+            (clustersListIndex.value[index] = newConfigRef?.map((i: any) => ({
                 value: i.clusterNodeId,
                 lable: i.clusterNodeId,
             })));
@@ -1153,9 +1111,9 @@ const changeServerId = (value: string | undefined, index: number) => {
     configuration.host = undefined;
     configuration.port = undefined;
     const checked = cloneDeep(portOptionsConst).find(
-        (i) => i.clusterNodeId === value,
+        (i: any) => i.clusterNodeId === value,
     );
-    const checkedHost = [{ value: checked.host, lable: checked.host }];
+    const checkedHost = [{ value: checked?.host, lable: checked?.host }];
     hostOptionsIndex.value[index] = checked ? checkedHost : [];
     updateClustersListIndex();
 };
@@ -1167,7 +1125,7 @@ const changeHost = (
     const { configuration } = dynamicValidateForm.cluster[index];
     configuration.port = undefined;
     const checked = cloneDeep(portOptionsConst).find(
-        (i) => i.clusterNodeId === serverId && i.host === value,
+        (i: any) => i.clusterNodeId === serverId && i.host === value,
     );
     checked && getPortOptions([checked], index);
 };
@@ -1189,8 +1147,10 @@ const saveData = async () => {
 
     loading.value = true;
     const resp =
-        id === ':id' ? await save(params) : await update({ ...params, id });
-    if (resp.status === 200) {
+        id === ':id'
+            ? await save(params).catch(() => {})
+            : await update({ ...params, id }).catch(() => {});
+    if (resp?.status === 200) {
         message.success('操作成功！');
         history.back();
     }
@@ -1198,19 +1158,23 @@ const saveData = async () => {
 };
 
 const getSupports = async () => {
-    const res = await supports();
-    typeOptions.value = res.result.map((item) => ({
-        label: item.name,
-        value: item.id,
-    }));
+    const res: any = await supports();
+    if (res.status === 200) {
+        typeOptions.value = res.result.map((item: any) => ({
+            label: item.name,
+            value: item.id,
+        }));
+    }
 };
 
 const getCertificates = async () => {
-    const resp = await certificates();
-    certIdOptions.value = resp.result.map((i) => ({
-        value: i.id,
-        label: i.name,
-    }));
+    const resp: any = await certificates();
+    if (resp.status === 200) {
+        certIdOptions.value = resp.result.map((i: any) => ({
+            value: i.id,
+            label: i.name,
+        }));
+    }
 };
 
 const getResourcesCurrent = () => {
@@ -1227,18 +1191,21 @@ const getDetail = () => {
     if (id !== ':id') {
         loading.value = true;
         detail(id).then((resp) => {
-            const result = resp.result;
-            const { configuration, cluster } = result;
-            formData.value = { ...result };
-            shareCluster.value = result.shareCluster;
-            activeKey.value = ['1'];
-            if (result.shareCluster) {
-                dynamicValidateForm.cluster[0].configuration = configuration;
-            } else {
-                dynamicValidateForm.cluster = cluster;
+            if (resp.status === 200) {
+                const result: any = resp.result;
+                const { configuration, cluster } = result;
+                formData.value = { ...result };
+                shareCluster.value = result.shareCluster;
+                activeKey.value = ['1'];
+                if (result.shareCluster) {
+                    dynamicValidateForm.cluster[0].configuration =
+                        configuration;
+                } else {
+                    dynamicValidateForm.cluster = cluster;
+                }
             }
-            loading.value = false;
         });
+        loading.value = false;
     }
 };
 
@@ -1258,7 +1225,7 @@ watch(
             updateClustersListIndex();
         }
     },
-    { deep: true },
+    { deep: true, immediate: true },
 );
 
 watch(
@@ -1296,36 +1263,12 @@ watch(
 .container {
     width: 70%;
     min-height: 400px;
-    .card-item {
-        padding-right: 5px;
-        max-height: 480px;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
-    .card-last {
-        padding-right: 5px;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
 }
 .footer {
     width: 100%;
     margin-top: 24px;
 }
 
-.form-item1 {
-    border: 1px solid #d9d9d9;
-    padding: 10px;
-    margin-bottom: 20px;
-}
-.form-label {
-    height: 30px;
-    padding-bottom: 8px;
-    .form-label-required {
-        color: red;
-        margin: 0 4px 0 -2px;
-    }
-}
 .collapse {
     margin-bottom: 20px;
 }

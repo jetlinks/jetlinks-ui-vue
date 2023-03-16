@@ -32,7 +32,7 @@
                             v-for="item in networkList"
                             :key="item.id"
                         >
-                            <access-card
+                            <AccessCard
                                 @checkedChange="checkedChange"
                                 :checked="networkCurrent"
                                 :data="{
@@ -84,7 +84,7 @@
                                         </j-tooltip>
                                     </div>
                                 </template>
-                            </access-card>
+                            </AccessCard>
                         </j-col>
                     </j-row>
                     <j-empty v-else description="暂无数据" />
@@ -139,36 +139,34 @@
                     <j-row :gutter="[24, 24]">
                         <j-col :span="12">
                             <title-component data="基本信息" />
-                            <div>
-                                <j-form
-                                    ref="formRef"
-                                    :model="formData"
-                                    layout="vertical"
+                            <j-form
+                                ref="formRef"
+                                :model="formData"
+                                layout="vertical"
+                            >
+                                <j-form-item
+                                    label="名称"
+                                    v-bind="validateInfos.name"
                                 >
-                                    <j-form-item
-                                        label="名称"
-                                        v-bind="validateInfos.name"
-                                    >
-                                        <j-input
-                                            v-model:value="formData.name"
-                                            allowClear
-                                            placeholder="请输入名称"
-                                        />
-                                    </j-form-item>
-                                    <j-form-item
-                                        label="说明"
-                                        v-bind="validateInfos.description"
-                                    >
-                                        <j-textarea
-                                            placeholder="请输入说明"
-                                            :rows="4"
-                                            v-model:value="formData.description"
-                                            show-count
-                                            :maxlength="200"
-                                        />
-                                    </j-form-item>
-                                </j-form>
-                            </div>
+                                    <j-input
+                                        v-model:value="formData.name"
+                                        allowClear
+                                        placeholder="请输入名称"
+                                    />
+                                </j-form-item>
+                                <j-form-item
+                                    label="说明"
+                                    v-bind="validateInfos.description"
+                                >
+                                    <j-textarea
+                                        placeholder="请输入说明"
+                                        :rows="4"
+                                        v-model:value="formData.description"
+                                        show-count
+                                        :maxlength="200"
+                                    />
+                                </j-form-item>
+                            </j-form>
                         </j-col>
                         <j-col :span="12">
                             <div class="config-right">
@@ -256,9 +254,7 @@
                                                     'stream'
                                                 "
                                             >
-                                                <span>{{
-                                                    getStream(record)
-                                                }}</span>
+                                                {{ getStream(record) }}
                                             </template>
                                         </template>
                                     </j-table>
@@ -359,7 +355,7 @@ const stepCurrent = ref(0);
 const steps = ref(['网络组件', '消息协议', '完成']);
 const networkList: any = ref([]);
 const allNetworkList: any = ref([]);
-const procotolList = ref([]);
+const procotolList: any = ref([]);
 const allProcotolList = ref([]);
 const networkCurrent: any = ref('');
 const procotolCurrent: any = ref('');
@@ -390,11 +386,12 @@ const queryNetworkList = async (id: string, include: string, data = {}) => {
     );
     if (resp.status === 200) {
         networkList.value = resp.result;
+        allNetworkList.value = resp.result;
     }
 };
 
 const queryProcotolList = async (id: string, params = {}) => {
-    const resp = await getProtocolList(ProtocolMapping.get(id), {
+    const resp: any = await getProtocolList(ProtocolMapping.get(id), {
         ...params,
         'sorts[0].name': 'createTime',
         'sorts[0].order': 'desc',
@@ -407,12 +404,12 @@ const queryProcotolList = async (id: string, params = {}) => {
 
 const addNetwork = () => {
     const url = menuStory.menus['link/Type/Detail']?.path;
-    const tab = window.open(
+    const tab: any = window.open(
         `${window.location.origin + window.location.pathname}#${url}?type=${
             NetworkTypeMapping.get(props.provider?.id) || ''
         }`,
     );
-    tab.onTabSaveSuccess = (value) => {
+    tab.onTabSaveSuccess = (value: any) => {
         if (value.success) {
             networkCurrent.value = value.result.id;
             queryNetworkList(props.provider?.id, networkCurrent.value || '');
@@ -422,10 +419,10 @@ const addNetwork = () => {
 
 const addProcotol = () => {
     const url = menuStory.menus['link/Protocol']?.path;
-    const tab = window.open(
+    const tab: any = window.open(
         `${window.location.origin + window.location.pathname}#${url}?save=true`,
     );
-    tab.onTabSaveSuccess = (value) => {
+    tab.onTabSaveSuccess = (value: any) => {
         if (value.success) {
             procotolCurrent.value = value.result?.id;
             queryProcotolList(props.provider?.id);
@@ -434,15 +431,17 @@ const addProcotol = () => {
 };
 
 const getNetworkCurrent = () =>
-    networkList.value.find((i) => i.id === networkCurrent) &&
-    (networkList.value.find((i) => i.id === networkCurrent).addresses || [])
-        .length > 0;
+    networkList.value.find((i: any) => i.id === networkCurrent) &&
+    (
+        networkList.value.find((i: any) => i.id === networkCurrent).addresses ||
+        []
+    ).length > 0;
 const getNetworkCurrentData = () =>
     getNetworkCurrent()
-        ? networkList.value.find((i) => i.id === networkCurrent).addresses
+        ? networkList.value.find((i: any) => i.id === networkCurrent).addresses
         : [];
 
-const getColor = (i) => (i.health === -1 ? 'red' : 'green');
+const getColor = (i: any) => (i.health === -1 ? 'red' : 'green');
 
 const getStream = (record: any) => {
     let stream = '';
@@ -457,15 +456,15 @@ const checkedChange = (id: string) => {
 };
 
 const networkSearch = (value: string) => {
-    if (value) {
-        networkList.value = allNetworkList.value.filter(
-            (i: any) =>
-                i.name &&
-                i.name.toLocaleLowerCase().includes(value.toLocaleLowerCase()),
-        );
-    } else {
-        networkList.value = allNetworkList.value;
-    }
+    networkList.value = value
+        ? allNetworkList.value.filter(
+              (i: any) =>
+                  i.name &&
+                  i.name
+                      .toLocaleLowerCase()
+                      .includes(value.toLocaleLowerCase()),
+          )
+        : allNetworkList.value;
 };
 const procotolChange = (id: string) => {
     if (!props.data.id) {
@@ -474,17 +473,15 @@ const procotolChange = (id: string) => {
 };
 
 const procotolSearch = (value: string) => {
-    if (value) {
-        const list = allProcotolList.value.filter((i: any) => {
-            return (
-                i.name &&
-                i.name.toLocaleLowerCase().includes(value.toLocaleLowerCase())
-            );
-        });
-        procotolList.value = list;
-    } else {
-        procotolList.value = allProcotolList.value;
-    }
+    procotolList.value = value
+        ? allProcotolList.value.filter(
+              (i: any) =>
+                  i.name &&
+                  i.name
+                      .toLocaleLowerCase()
+                      .includes(value.toLocaleLowerCase()),
+          )
+        : allProcotolList.value;
 };
 
 const saveData = () => {
@@ -538,8 +535,6 @@ const next = async () => {
                     : await getChildConfigView(procotolCurrent.value);
             if (resp.status === 200) {
                 config.value = resp.result;
-                console.log(222, config.value);
-
                 current.value = current.value + 1;
                 const Group = {
                     title: '分组',
@@ -567,8 +562,8 @@ const next = async () => {
                         return obj;
                     },
                 };
-                columnsMQTT.value = [Group, ...ColumnsMQTT];
-                columnsHTTP.value = [Group, ...ColumnsHTTP];
+                columnsMQTT.value = [Group, ...ColumnsMQTT] as TableColumnType;
+                columnsHTTP.value = [Group, ...ColumnsHTTP] as TableColumnType;
             }
         }
     }

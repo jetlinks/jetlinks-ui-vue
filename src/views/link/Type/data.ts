@@ -135,6 +135,12 @@ export const Rules = {
             message: '请选择集群',
         },
     ],
+    serverId: [
+        {
+            required: true,
+            message: '请选择节点名称',
+        },
+    ],
     host: [
         {
             required: true,
@@ -304,6 +310,7 @@ export const Rules = {
 
 export const TiTlePermissionButtonStyle = {
     padding: 0,
+    'max-width': 'calc(100% - 90px)',
     color: ' #1890ff !important',
     'font-weight': 700,
     'font-size': '16px',

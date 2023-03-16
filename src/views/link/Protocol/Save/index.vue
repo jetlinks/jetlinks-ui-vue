@@ -11,25 +11,45 @@
             :model="formData"
             name="basic"
             autocomplete="off"
+            ref="formRef"
         >
-            <j-form-item label="名称" v-bind="validateInfos.name">
+            <j-form-item
+                label="名称"
+                name="name"
+                :rules="[
+                    { required: true, message: '请输入名称', trigger: 'blur' },
+                    { max: 64, message: '最多可输入64个字符' },
+                ]"
+            >
                 <j-input
                     placeholder="请输入名称"
                     v-model:value="formData.name"
                 />
             </j-form-item>
-            <j-form-item label="类型" v-bind="validateInfos.type">
-                <RadioCard
+            <j-form-item
+                label="类型"
+                name="type"
+                :rules="[
+                    { required: true, message: '请选择类型', trigger: 'blur' },
+                ]"
+            >
+                <j-card-select
                     :disabled="!!id"
-                    layout="horizontal"
-                    :checkStyle="true"
+                    v-model:value="formData.type"
                     :options="options"
-                    v-model="formData.type"
+                    @change="changeType"
                 />
             </j-form-item>
             <j-form-item
                 label="文件地址"
-                v-bind="validateInfos['configuration.location']"
+                :name="['configuration', 'location']"
+                :rules="[
+                    {
+                        required: true,
+                        message: '请输入文件地址',
+                        trigger: 'blur',
+                    },
+                ]"
             >
                 <j-input
                     v-if="formData.type === 'local'"
@@ -41,7 +61,7 @@
                     v-model:modelValue="formData.configuration.location"
                 />
             </j-form-item>
-            <j-form-item label="说明" v-bind="validateInfos.description">
+            <j-form-item label="说明" name="description">
                 <j-textarea
                     placeholder="请输入说明"
                     v-model:value="formData.description"
@@ -67,16 +87,16 @@
     </j-modal>
 </template>
 <script lang="ts" setup>
-import { message, Form } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
-import type { UploadChangeParam } from 'ant-design-vue';
+import type { UploadChangeParam, FormInstance } from 'ant-design-vue';
 import FileUpload from './FileUpload.vue';
 import { save, update } from '@/api/link/protocol';
+import { FormDataType } from '../type.d';
 
 const loading = ref(false);
 const fileLoading = ref(false);
-const useForm = Form.useForm;
-
+const formRef = ref<FormInstance>();
 const props = defineProps({
     data: {
         type: Object,
@@ -91,16 +111,16 @@ const options = [
     {
         label: 'Jar',
         value: 'jar',
-        logo: getImage('/jar.png'),
+        iconUrl: getImage('/jar.png'),
     },
     {
         label: 'Local',
         value: 'local',
-        logo: getImage('/local.png'),
+        iconUrl: getImage('/local.png'),
     },
 ];
 
-const formData = ref({
+const formData = ref<FormDataType>({
     type: 'jar',
     name: '',
     configuration: {
@@ -108,38 +128,20 @@ const formData = ref({
     },
     description: '',
 });
+const changeType = (value: Array<string>) => {
+    formData.value.type = value[0];
+};
 
-const { resetFields, validate, validateInfos } = useForm(
-    formData,
-    reactive({
-        type: [{ required: true, message: '请选择类型', trigger: 'blur' }],
-        name: [
-            { required: true, message: '请输入名称', trigger: 'blur' },
-            { max: 64, message: '最多可输入64个字符' },
-        ],
-        'configuration.location': [
-            { required: true, message: '请输入文件地址', trigger: 'blur' },
-        ],
-        description: [{ max: 200, message: '最多可输入200个字符' }],
-    }),
-);
-const onSubmit = () => {
-    validate()
-        .then(async (res) => {
-            const params = toRaw(formData.value);
-
-            loading.value = true;
-            const response = !id
-                ? await save(params)
-                : await update({ ...props.data, ...params });
-            if (response.status === 200) {
-                emit('change', true);
-            }
-            loading.value = false;
-        })
-        .catch((err) => {
-            loading.value = false;
-        });
+const onSubmit = async () => {
+    const data: any = await formRef.value?.validate();
+    loading.value = true;
+    const response = !id
+        ? await save(data).catch(() => {})
+        : await update({ ...props.data, ...data }).catch(() => {});
+    if (response?.status === 200) {
+        emit('change', response?.status === 200);
+    }
+    loading.value = false;
 };
 
 const handleChange = (info: UploadChangeParam) => {
@@ -168,7 +170,12 @@ watch(
 watch(
     () => props.data,
     (value) => {
-        if (value.id) formData.value = value;
+        if (value.id) {
+            formData.value = value as FormDataType;
+            if (!!value.type[0]?.value) {
+                formData.value.type = value.type.map((i: any) => i.value);
+            }
+        }
     },
     { immediate: true, deep: true },
 );

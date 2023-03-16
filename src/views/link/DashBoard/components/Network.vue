@@ -43,7 +43,15 @@
                 </div>
             </div>
             <div>
-                <div ref="chartRef" style="width: 100%; height: 350px"></div>
+                <j-empty
+                    v-if="isEmpty"
+                    style="height: 250px; margin-top: 100px"
+                />
+                <div
+                    v-else
+                    ref="chartRef"
+                    style="width: 100%; height: 350px"
+                ></div>
             </div>
         </div>
     </j-spin>
@@ -59,33 +67,34 @@ import {
 } from './tool.ts';
 import moment from 'moment';
 import * as echarts from 'echarts';
+import { DataType } from '../typings.d';
 
 const chartRef = ref<Record<string, any>>({});
 const loading = ref(false);
-const data = ref({
+const data = ref<DataType>({
     type: 'bytesRead',
     time: {
-        type: 'today',
+        type: 'hour',
         time: [null, null],
     },
 });
-
+const isEmpty = ref(false);
 const pickerTimeChange = () => {
     data.value.time.type = undefined;
 };
 
-const getNetworkEcharts = async (val) => {
+const getNetworkEcharts = async (val: any) => {
     loading.value = true;
-    const resp = await dashboard(networkParams(val));
+    const resp: any = await dashboard(networkParams(val));
     if (resp.success) {
         const _networkOptions = {};
         const _networkXAxis = new Set();
         if (resp.result.length) {
-            resp.result.forEach((item) => {
+            resp.result.forEach((item: any) => {
                 const value = item.data.value;
-                const _data = [];
+                const _data: Array<any> = [];
                 const nodeID = item.data.clusterNodeId;
-                value.forEach((item) => {
+                value.forEach((item: any) => {
                     _data.push(item.value);
                     _networkXAxis.add(item.timeString);
                 });
@@ -98,13 +107,14 @@ const getNetworkEcharts = async (val) => {
             handleNetworkOptions(_networkOptions, [..._networkXAxis.keys()]);
         } else {
             handleNetworkOptions([], []);
+            isEmpty.value = true;
         }
     }
     setTimeout(() => {
         loading.value = false;
     }, 300);
 };
-const networkValueRender = (obj) => {
+const networkValueRender = (obj: any) => {
     const { value } = obj;
     let _data = '';
     if (value >= 1024 && value < 1024 * 1024) {
@@ -117,7 +127,7 @@ const networkValueRender = (obj) => {
     return `${obj?.axisValueLabel}<br />${obj?.marker}${obj?.seriesName}:     ${_data}`;
 };
 
-const setOptions = (data, key) => ({
+const setOptions = (data: any, key: string) => ({
     data: data[key]._data, // .map((item) => Number((item / 1024 / 1024).toFixed(2))),
     name: key,
     type: 'line',
@@ -125,8 +135,9 @@ const setOptions = (data, key) => ({
     areaStyle,
 });
 
-const handleNetworkOptions = (optionsData, xAxis) => {
-    const chart = chartRef.value;
+const handleNetworkOptions = (optionsData: any, xAxis: any) => {
+    if (optionsData.length === 0 && xAxis.length === 0) return;
+    const chart: any = chartRef.value;
     if (chart) {
         const myChart = echarts.init(chart);
         const dataKeys = Object.keys(optionsData);
@@ -145,7 +156,7 @@ const handleNetworkOptions = (optionsData, xAxis) => {
             },
             tooltip: {
                 trigger: 'axis',
-                formatter: (_value) => networkValueRender(_value[0]),
+                formatter: (_value: any) => networkValueRender(_value[0]),
             },
             color: ['#979AFF'],
             series: dataKeys.length
