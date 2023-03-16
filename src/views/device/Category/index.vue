@@ -9,8 +9,10 @@
         <JProTable
             ref="tableRef"
             :columns="table.columns"
-            :dataSource="dataSource"
+            :request="queryTree"
             model="TABLE"
+            type="TREE"
+            :scroll="{ y: 550 }"
             :defaultParams="{
                 paging: false,
                 sorts: [
@@ -21,7 +23,7 @@
                     },
                 ],
             }"
-            :params="query.params"
+            :params="params"
             :loading="tableLoading"
         >
             <template #headerTitle>
@@ -118,38 +120,13 @@ const query = reactive({
             scopedSlots: true,
         },
     ],
-    params: {
-        paging: false,
-        sorts: [
-            { name: 'sortIndex', order: 'asc' },
-            {
-                name: 'createTime',
-                order: 'desc',
-            },
-        ],
-    },
 });
-/**
- * 查询树形列表
- */
-const getTableData = async () => {
-    tableLoading.value = true;
-    const res = await queryTree(query.params);
-    if (res.status === 200) {
-        dataSource.value = res.result;
-    }
-    tableLoading.value = false;
-};
-getTableData();
+let params = ref();
 /**
  * 搜索
  */
 const handleSearch = (e: any) => {
-    query.params = {
-        ...query.params,
-        ...e,
-    };
-    getTableData();
+    params.value = e 
 };
 /**
  * 操作栏按钮
@@ -200,6 +177,9 @@ const getActions = (
         {
             key: 'delete',
             text: '删除',
+            tooltip: {
+                title: '删除',
+            },
             popConfirm: {
                 title: '确认删除?',
                 okText: ' 确定',
@@ -208,7 +188,7 @@ const getActions = (
                     const resp = await deleteTree(data.id);
                     if (resp.status === 200) {
                         message.success('操作成功！');
-                        getTableData();
+                        tableRef.value.reload();
                     } else {
                         message.error('操作失败！');
                     }
@@ -227,20 +207,20 @@ const table = reactive({
             dataIndex: 'name',
             key: 'name',
             ellipsis: true,
-            width:600
+            width: 600,
         },
         {
             title: '排序',
             dataIndex: 'sortIndex',
             key: 'sortIndex',
             scopedSlots: true,
-            width:200
+            width: 200,
         },
         {
             title: '说明',
             dataIndex: 'description',
             key: 'description',
-            width:700
+            width: 700,
         },
         {
             title: '操作',
@@ -265,7 +245,7 @@ const table = reactive({
      * 刷新表格数据
      */
     refresh: () => {
-        getTableData();
+        tableRef.value.reload();
     },
 });
 const { add, columns, refresh } = toRefs(table);

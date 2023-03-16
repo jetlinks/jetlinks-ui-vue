@@ -123,9 +123,6 @@
                     :status="statusMap.get(slotProps.state)"
                 />
             </template>
-            <template #id="slotProps">
-                <a>{{ slotProps.id }}</a>
-            </template>
             <template #action="slotProps">
                 <j-space :size="16">
                     <template

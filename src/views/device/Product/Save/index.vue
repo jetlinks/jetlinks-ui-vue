@@ -23,73 +23,15 @@
                 <j-row type="flex">
                     <j-col flex="180px">
                         <j-form-item name="photoUrl">
-                            <Upload v-model="form.photoUrl" />
+                            <j-pro-upload
+                                v-model="form.photoUrl"
+                                :accept="
+                                    imageTypes && imageTypes.length
+                                        ? imageTypes.toString()
+                                        : ''
+                                "
+                            />
                         </j-form-item>
-                        <!-- <j-form-item>
-                            <div class="upload-image-warp-logo">
-                                <div class="upload-image-border-logo">
-                                    <a-upload
-                                        name="file"
-                                        :action="FILE_UPLOAD"
-                                        :headers="headers"
-                                        :showUploadList="false"
-                                        :beforeUpload="beforeUpload"
-                                        @change="handleChange"
-                                        :accept="
-                                            imageTypes && imageTypes.length
-                                                ? imageTypes.toString()
-                                                : ''
-                                        "
-                                    >
-                                        <div class="upload-image-content-logo">
-                                            <div
-                                                class="loading-logo"
-                                                v-if="logoLoading"
-                                            >
-                                                <LoadingOutlined
-                                                    style="font-size: 28px"
-                                                />
-                                            </div>
-                                            <div
-                                                class="upload-image"
-                                                v-if="photoValue"
-                                                :style="
-                                                    photoValue
-                                                        ? `background-image: url(${photoValue});`
-                                                        : ''
-                                                "
-                                            ></div>
-                                            <div
-                                                v-if="photoValue"
-                                                class="upload-image-mask"
-                                            >
-                                                点击修改
-                                            </div>
-                                            <div v-else>
-                                                <div v-if="logoLoading">
-                                                    <LoadingOutlined
-                                                        style="font-size: 28px"
-                                                    />
-                                                </div>
-                                                <div v-else>
-                                                    <PlusOutlined
-                                                        style="font-size: 28px"
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a-upload>
-                                    <div v-if="logoLoading">
-                                        <div class="upload-loading-mask">
-                                            <LoadingOutlined
-                                                v-if="logoLoading"
-                                                style="font-size: 28px"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </j-form-item> -->
                     </j-col>
                     <j-col flex="auto">
                         <j-form-item name="id">
@@ -186,8 +128,11 @@
                         </j-row>
                     </j-radio-group>
                 </j-form-item>
-                <j-form-item label="说明" name="describe">
+                <j-form-item label="说明" name="description">
                     <j-textarea
+                        :maxlength="200"
+                        showCount
+                        :auto-size="{ minRows: 4, maxRows: 5 }"
                         v-model:value="form.describe"
                         placeholder="请输入说明"
                     />
@@ -318,6 +263,9 @@ const rules = reactive({
             validator: validateDeviceType,
             trigger: 'blur',
         },
+    ],
+    description: [
+        { max: 200, message: '最多可输入200位字符', trigger: 'blur' },
     ],
 });
 
