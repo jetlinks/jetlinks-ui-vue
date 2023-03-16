@@ -29,7 +29,7 @@
                 v-else-if="current === 1"
                 :name="name"
                 :parallel="parallel"
-                :branchGroup="branchGroup"
+                :branchesName="branchesName"
                 :thenName="thenName"
                 :values="DeviceModel"
                 @save="onDeviceSave"
@@ -38,7 +38,7 @@
             <Action
                 v-else-if="current === 2"
                 :name="name"
-                :branchGroup="branchGroup"
+                :branchesName="branchesName"
                 :thenName="thenName"
                 :values="DeviceModel"
                 ref="actionRef"
@@ -91,7 +91,7 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
-    branchGroup: {
+    branchesName: {
         type: Number,
         default: 0,
     },
@@ -132,18 +132,18 @@ const onCancel = () => {
 
 const onSave = (_data: any) => {
     const item: any = {
-      selector: DeviceModel.selector,
-      source: DeviceModel.source,
-      selectorValues: DeviceModel.selectorValues,
-      productId: DeviceModel.productId,
-      message: _data.message,
+        selector: DeviceModel.selector,
+        source: DeviceModel.source,
+        selectorValues: DeviceModel.selectorValues,
+        productId: DeviceModel.productId,
+        message: _data.message,
     };
     //处理按变量
     if (DeviceModel.selector === 'variable') {
-      item.selector = 'fixed';
+        item.selector = 'fixed';
     }
     if (DeviceModel.selector === 'relation') {
-      item.upperKey = 'scene.deviceId';
+        item.upperKey = 'scene.deviceId';
     }
     const _options: any = {
         name: '-', //设备名称
@@ -158,7 +158,8 @@ const onSave = (_data: any) => {
         columns: [],
         otherColumns: [],
     };
-    _options.name = DeviceModel.deviceDetail?.name || DeviceModel.selectorValues?.[0]?.name;
+    _options.name =
+        DeviceModel.deviceDetail?.name || DeviceModel.selectorValues?.[0]?.name;
     const _type = _data.message.messageType;
     if (_type === 'INVOKE_FUNCTION') {
         _options.type = '执行';
@@ -183,7 +184,14 @@ const onSave = (_data: any) => {
         }
     }
     if (_options.selector === 'tag') {
-        _options.tagList = DeviceModel.tagList.map((it) => ({
+        // const arr = _data.map((item: any) => {
+        //     return {
+        //         column: item.name,
+        //         type: item.type,
+        //         value: item.value,
+        //     };
+        // });
+        _options.taglist = DeviceModel.tagList.map((it) => ({
             name: it.column || it.name,
             type: it.type ? (it.type === 'and' ? '并且' : '或者') : '',
             value: it.value,
@@ -205,10 +213,8 @@ const save = async (step?: number) => {
         if (deviceRef.value) {
             await deviceRef.value?.onFormSave();
             current.value = 2;
-        } else {
-            if(DeviceModel.selector === 'fixed' && DeviceModel.selectorValues?.length){
-                current.value = 2;
-            }
+        } else if (DeviceModel.selectorValues.length) {
+            current.value = 2;
         }
     } else {
         if (actionRef.value) {
@@ -233,7 +239,7 @@ const prev = () => {
 const saveClick = () => save();
 
 const onDeviceSave = (_data: any, _detail: any, obj?: any) => {
-    Object.assign(DeviceModel, {..._data, ...obj});
+    Object.assign(DeviceModel, { ..._data, ...obj });
     DeviceModel.deviceDetail = _detail;
 };
 
@@ -245,6 +251,28 @@ watch(
             detail(newValue.productId).then((resp) => {
                 if (resp.status === 200) {
                     DeviceModel.productDetail = resp.result;
+                    if (
+                        DeviceModel.selector === 'tag' &&
+                        DeviceModel.selectorValues[0]?.value
+                    ) {
+                        const metadata = JSON.parse(
+                            DeviceModel.productDetail?.metadata || '{}',
+                        );
+                        const tags = metadata.tags || [];
+                        const arr = DeviceModel.selectorValues[0]?.value
+                            .filter((item: any) => !!item.value)
+                            .map((item: any) => {
+                                return {
+                                    column:
+                                        tags.find(
+                                            (i: any) => i.id === item.column,
+                                        )?.name || item.column,
+                                    type: item.type,
+                                    value: item.value,
+                                };
+                            });
+                        DeviceModel.tagList = arr;
+                    }
                 }
             });
         }

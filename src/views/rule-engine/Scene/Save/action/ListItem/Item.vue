@@ -19,14 +19,16 @@
                     v-if="data?.executor === 'alarm'"
                 >
                     <template v-if="data?.alarm?.mode === 'trigger'">
-                        满足条件后将触发<j-button style="padding: 0;"
+                        满足条件后将触发<j-button
+                            style="padding: 0"
                             type="link"
                             @click.stop="triggerVisible = true"
                             >关联此场景的告警</j-button
                         >
                     </template>
                     <template v-else>
-                        满足条件后将解除<j-button style="padding: 0;"
+                        满足条件后将解除<j-button
+                            style="padding: 0"
                             type="link"
                             @click.stop="triggerVisible = true"
                             >关联此场景的告警</j-button
@@ -278,10 +280,16 @@
                             />
                             {{ data?.options?.type }}
                             <span
-                                v-for="i in data?.options?.taglist || []"
+                                v-for="(i, _index) in data?.options?.taglist ||
+                                []"
                                 :key="i.value"
                             >
-                                {{ i.type }}
+                                {{
+                                    _index !== 0 &&
+                                    _index !==
+                                        (data?.options?.taglist || []).length &&
+                                    i.type
+                                }}
                                 {{ i.name }}为{{ i.value }}
                             </span>
                             的{{ data?.options?.productName }}
@@ -318,28 +326,33 @@
             </j-popconfirm>
         </div>
         <template v-if="!isLast && type === 'serial'">
-            <div :class='["actions-item-filter-warp", termsOptions.length ? "filter-border" : ""]'>
-              <template v-if='termsOptions.length'>
-                <div class='actions-item-filter-warp-tip'>
-                  满足此条件后执行后续动作
+            <div
+                :class="[
+                    'actions-item-filter-warp',
+                    termsOptions.length ? 'filter-border' : '',
+                ]"
+            >
+                <template v-if="termsOptions.length">
+                    <div class="actions-item-filter-warp-tip">
+                        满足此条件后执行后续动作
+                    </div>
+                    <div class="actions-item-filter-overflow">
+                        <FilterGroup
+                            v-for="(item, index) in termsOptions"
+                            :key="item.key"
+                            :branchName="branchesName"
+                            :thenName="thenName"
+                            :actionName="name"
+                            :name="index"
+                            :isLast="index === termsOptions.length - 1"
+                            :isFirst="index === 0"
+                        />
+                    </div>
+                </template>
+                <div v-else class="filter-add-button">
+                    <AIcon type="PlusOutlined" style="padding-right: 4px" />
+                    <span>添加过滤条件</span>
                 </div>
-                <div class='actions-item-filter-overflow'>
-                  <FilterGroup
-                    v-for='(item, index) in termsOptions'
-                    :key='item.key'
-                    :branchName='branchesName'
-                    :thenName='thenName'
-                    :actionName='name'
-                    :name='index'
-                    :isLast='index === termsOptions.length - 1'
-                    :isFirst='index === 0'
-                  />
-                </div>
-              </template>
-              <div v-else class='filter-add-button'>
-                <AIcon type='PlusOutlined' style='padding-right: 4px;' />
-                <span>添加过滤条件</span>
-              </div>
             </div>
         </template>
         <!-- 编辑 -->
@@ -379,8 +392,8 @@ import ActionTypeComponent from '../Modal/ActionTypeComponent.vue';
 import TriggerAlarm from '../TriggerAlarm/index.vue';
 import { useSceneStore } from '@/store/scene';
 import { storeToRefs } from 'pinia';
-import { iconMap, itemNotifyIconMap, typeIconMap } from './util'
-import FilterGroup from './FilterGroup.vue'
+import { iconMap, itemNotifyIconMap, typeIconMap } from './util';
+import FilterGroup from './FilterGroup.vue';
 
 const sceneStore = useSceneStore();
 const { data: _data } = storeToRefs(sceneStore);
@@ -391,8 +404,8 @@ const props = defineProps({
         default: 0,
     },
     thenName: {
-      type: Number,
-      default: 0,
+        type: Number,
+        default: 0,
     },
     name: {
         type: Number,
@@ -422,11 +435,15 @@ const triggerVisible = ref<boolean>(false);
 const actionType = ref('');
 
 const termsOptions = computed(() => {
-  if (!props.parallel) { // 串行
-    return _data.value.branches![props.branchesName].then?.[props.thenName].actions?.[props.name].terms || []
-  }
-  return []
-})
+    if (!props.parallel) {
+        // 串行
+        return (
+            _data.value.branches![props.branchesName].then?.[props.thenName]
+                .actions?.[props.name].terms || []
+        );
+    }
+    return [];
+});
 
 const onDelete = () => {
     emit('delete');
@@ -464,12 +481,14 @@ const onPropsCancel = () => {
     actionType.value = '';
 };
 
-watch(() => props.data, () => {
-  if (props.data) {
-
-  }
-}, { immediate: true, deep: true})
-
+watch(
+    () => props.data,
+    () => {
+        if (props.data) {
+        }
+    },
+    { immediate: true, deep: true },
+);
 </script>
 
 <style lang="less" scoped>
@@ -590,16 +609,16 @@ watch(() => props.data, () => {
     }
 
     .actions-item-filter-warp-tip {
-      position: absolute;
-      top: 0;
-      left: 16px;
-      z-index: 2;
-      color: rgba(0, 0, 0, 0.55);
-      font-weight: 800;
-      font-size: 14px;
-      line-height: 1;
-      background-color: #fff;
-      transform: translateY(-50%);
+        position: absolute;
+        top: 0;
+        left: 16px;
+        z-index: 2;
+        color: rgba(0, 0, 0, 0.55);
+        font-weight: 800;
+        font-size: 14px;
+        line-height: 1;
+        background-color: #fff;
+        transform: translateY(-50%);
     }
 
     .actions-item-filter-overflow {
@@ -610,11 +629,11 @@ watch(() => props.data, () => {
         row-gap: 16px;
     }
 
-    .filter-add-button{
-      width: 100%;
-      color: rgba(0, 0, 0, 0.3);
-      text-align: center;
-      cursor: pointer;
+    .filter-add-button {
+        width: 100%;
+        color: rgba(0, 0, 0, 0.3);
+        text-align: center;
+        cursor: pointer;
     }
 
     .terms-params {

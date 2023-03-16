@@ -36,10 +36,10 @@
                         placeholder="请选择"
                         :options="handleOptions"
                         :tabsOptions="tabOptions"
-                        :metricOption="upperOptions"
+                        :metricOptions="upperOptions"
                         v-model:value="propertyModelRef.propertiesValue"
                         v-model:source="propertyModelRef.source"
-                        @change="onValueChange"
+                        @select="onValueChange"
                     >
                         <template v-slot="{ label }">
                             <j-input :value="label" />

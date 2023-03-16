@@ -279,7 +279,6 @@ const onChange = (
     } else {
         _values = getObj(_source, _value, isRelation);
     }
-    console.log(_values, '_values')
     emit('update:value', _values);
     emit('change', { sendTo: _names.filter((item) => !!item).join(',') });
 };

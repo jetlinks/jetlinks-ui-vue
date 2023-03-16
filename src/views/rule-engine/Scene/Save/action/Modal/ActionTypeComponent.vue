@@ -1,7 +1,7 @@
 <template>
     <div>
         <template v-if="actionType === 'device'">
-            <Device v-bind="props" :value="data?.device" @cancel="onCancel" @save="onPropsOk" :thenName="branchesName" />
+            <Device v-bind="props" :value="data?.device" @cancel="onCancel" @save="onPropsOk" />
         </template>
         <template v-else-if="actionType === 'notify'">
             <Notify :options="data?.options" :value="data?.notify" @cancel="onCancel" @save="onPropsOk" />
@@ -24,7 +24,7 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
-    branchGroup: {
+    thenName: {
         type: Number,
         default: 0,
     },
