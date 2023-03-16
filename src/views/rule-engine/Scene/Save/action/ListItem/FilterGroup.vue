@@ -42,7 +42,7 @@
           />
         </j-form-item>
       </div>
-      <div v-if='isLast' class='terms-group-add'>
+      <div v-if='isLast' class='terms-group-add' @click='addTerms'>
         <div class='terms-content'>
           <AIcon type='PlusOutlined' style='font-size: 12px;padding-right: 4px;' />
           <span>分组</span>
@@ -53,21 +53,19 @@
 </template>
 
 <script setup lang='ts' name='FilterGroup'>
-import { storeToRefs } from 'pinia';
+import { storeToRefs } from 'pinia'
 import { useSceneStore } from 'store/scene'
 import DropdownButton from '../../components/DropdownButton'
 import FilterItem from './FilterCondition.vue'
 import { isArray } from 'lodash-es'
-import { queryBuiltInParams } from '@/api/rule-engine/scene'
 import { provide } from 'vue'
+import { randomString } from '@/utils/utils'
+import { useParams } from '@/views/rule-engine/Scene/Save/util'
 
 const sceneStore = useSceneStore()
 const { data: formModel } = storeToRefs(sceneStore)
 
-const columnOptions = ref<any>([])
 
-
-provide('filter-params', columnOptions)
 
 const props = defineProps({
   isFirst: {
@@ -100,6 +98,16 @@ const props = defineProps({
   }
 })
 
+const { columnOptions } = useParams({
+  branch: props.branchName,
+  branchGroup: props.thenName,
+  action: props.actionName
+}, [
+  formModel.value.branches![props.branchName].then[props.thenName].actions[props.actionName]
+])
+
+provide('filter-params', columnOptions)
+
 const termsOptions = computed(() => {
   return formModel.value.branches![props.branchName].then[props.thenName].actions[props.actionName].terms?.[props.name].terms
 })
@@ -114,66 +122,80 @@ const mouseout = () => {
   showDelete.value = false
 }
 
-const onDelete = () => {
+const addTerms = () => {
+  const item: any = {
+    type: 'and',
+    key: randomString(),
+    terms: [
+      {
+        column: undefined,
+        value: {
+          type: 'fixed',
+          value: undefined
+        },
+        termType: undefined,
+        type: 'and',
+        key: randomString()
+      }
+    ]
+  }
 
+  formModel.value
+    .branches![props.branchName]
+    .then[props.thenName]
+    .actions[props.actionName]
+    .terms?.push(item)
 }
 
-const getParams = () => {
-  const params = {
-    branch: props.branchName,
-    branchGroup: props.thenName,
-    action: props.actionName
-  }
-  const data = formModel.value.branches!.filter(item => !!item)
-  queryBuiltInParams({
-    ...formModel.value,
-    branches: data,
-  }, params).then(res => {
-    if (res.success) {
-      columnOptions.value = res.result
-    }
-  })
+const onDelete = () => {
+  formModel.value
+    .branches![props.branchName]
+    .then[props.thenName]
+    .actions[props.actionName]
+    .terms?.splice(props.name, 1)
 }
 
 const rules = [
   {
     validator(_: any, v?: Record<string, any>) {
-      // console.log('-----v',v)
+      console.log('-----v',v)
       if (v !== undefined) {
         if (!Object.keys(v).length) {
-          return Promise.reject(new Error('该数据已发生变更，请重新配置'));
+          return Promise.reject(new Error('该数据已发生变更，请重新配置'))
         }
         if (!v.column) {
-          return Promise.reject(new Error('请选择参数'));
+          return Promise.reject(new Error('请选择参数'))
         }
 
         if (!v.termType) {
-          return Promise.reject(new Error('请选择操作符'));
+          return Promise.reject(new Error('请选择操作符'))
         }
 
         if (v.value === undefined) {
-          return Promise.reject(new Error('请选择或输入参数值'));
+          return Promise.reject(new Error('请选择或输入参数值'))
         } else {
           if (
             isArray(v.value.value) &&
             v.value.value.some((_v: any) => _v === undefined)
           ) {
-            return Promise.reject(new Error('请选择或输入参数值'));
+            return Promise.reject(new Error('请选择或输入参数值'))
           } else if (v.value.value === undefined) {
-            return Promise.reject(new Error('请选择或输入参数值'));
+            return Promise.reject(new Error('请选择或输入参数值'))
           }
         }
       } else {
-        return Promise.reject(new Error('请选择参数'));
+        return Promise.reject(new Error('请选择参数'))
       }
-      return Promise.resolve();
-    },
-  },
+      return Promise.resolve()
+    }
+  }
 ]
 
-nextTick(() => {
-  getParams()
-})
+// watchEffect(() => {
+//   if (formModel.value.branches![props.branchName].then[props.thenName].actions[props.actionName]) {
+//     getParams()
+//   }
+// })
 
 </script>
 

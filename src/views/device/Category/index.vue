@@ -10,7 +10,7 @@
             ref="tableRef"
             :columns="table.columns"
             :dataSource="dataSource"
-            model="table"
+            model="TABLE"
             :defaultParams="{
                 paging: false,
                 sorts: [
@@ -35,7 +35,7 @@
                 </PermissionButton>
             </template>
             <template #action="slotProps">
-                <j-space :size="16">
+                <j-space>
                     <template
                         v-for="i in getActions(slotProps, 'table')"
                         :key="i.key"
@@ -222,23 +222,31 @@ const getActions = (
 
 const table = reactive({
     columns: [
-        { title: '名称', dataIndex: 'name', key: 'name' },
+        {
+            title: '名称',
+            dataIndex: 'name',
+            key: 'name',
+            ellipsis: true,
+            width:600
+        },
         {
             title: '排序',
             dataIndex: 'sortIndex',
             key: 'sortIndex',
             scopedSlots: true,
+            width:200
         },
         {
             title: '说明',
             dataIndex: 'description',
             key: 'description',
+            width:700
         },
         {
             title: '操作',
             key: 'action',
             fixed: 'right',
-            width: 250,
+            ellipsis: true,
             scopedSlots: true,
         },
     ],

@@ -52,7 +52,9 @@ const props = defineProps<{
 
 // 弹窗控制
 const confirm = () => {
-    if (selectedKeys.value.length < 1) return message.warn('请选择设备');
+    if (selectedKeys.value.length < 1) {
+        return message.warn('请选择设备');
+    }
     emits('confirm', selectedKeys.value[0]);
     emits('update:visible', false);
 };

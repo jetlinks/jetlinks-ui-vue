@@ -630,32 +630,6 @@ watch(() => props.data, () => {
             align-items: baseline;
         }
 
-        //.terms-params-content {
-        //    position: relative;
-        //    display: flex;
-        //    background-color: #fafafa;
-        //    border: unset;
-        //    row-gap: 16px;
-        //
-        //    &.no-border {
-        //      border: none;
-        //    }
-        //
-        //    .terms-params-item {
-        //        display: flex;
-        //        align-items: center;
-        //    }
-        //
-        //    .ant-form-item {
-        //        margin-bottom: 8px;
-        //        &:not(:first-child) {
-        //            .ant-form-item-explain-error {
-        //                padding-left: 80px !important;
-        //            }
-        //        }
-        //    }
-        //}
-
         .term-type-warp {
             // display: inline-block;
             width: 50px;

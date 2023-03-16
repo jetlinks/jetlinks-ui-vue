@@ -202,7 +202,7 @@ const columns = [
         scopedSlots: true,
     },
     {
-        title: '名称',
+        title: '产品名称',
         dataIndex: 'name',
         key: 'name',
     },

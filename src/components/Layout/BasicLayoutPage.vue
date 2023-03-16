@@ -14,7 +14,7 @@
             >
               {{ slotProps.route.breadcrumbName }}
             </a>
-            <span v-else >{{ slotProps.route.breadcrumbName }}</span>
+            <span v-else style='cursor: pointer' >{{ slotProps.route.breadcrumbName }}</span>
         </template>
         <template #rightContentRender>
             <div class="right-content">
