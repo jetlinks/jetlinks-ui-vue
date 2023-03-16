@@ -326,6 +326,7 @@
                 <div class='actions-item-filter-overflow'>
                   <FilterGroup
                     v-for='(item, index) in termsOptions'
+                    :key='item.key'
                     :branchName='branchesName'
                     :thenName='thenName'
                     :actionName='name'

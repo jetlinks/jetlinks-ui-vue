@@ -26,6 +26,7 @@
         </j-popconfirm>
         <j-form-item
           v-for='(item, index) in termsOptions'
+          :key='item.key'
           :name='["branches", branchName, "then", thenName, "actions", actionName, "terms", name, "terms", index]'
           :rules='rules'
         >
