@@ -86,8 +86,8 @@
             @cancel="modalVis = false"
             @ok="handleItemModalSubmit"
         >
-            <div style="width: 100%; height: 400px">
-                <MonacoEditor v-model:modelValue="objectValue" />
+            <div style="width: 100%; height: 300px">
+                <JMonacoEditor v-model:modelValue="objectValue" />
             </div>
         </j-modal>
     </div>
@@ -97,7 +97,6 @@
 import { PropType } from 'vue';
 import { UploadChangeParam, UploadFile } from 'ant-design-vue';
 import { DefaultOptionType } from 'ant-design-vue/lib/select';
-import MonacoEditor from '@/components/MonacoEditor/index.vue';
 import GeoComponent from '@/components/GeoComponent/index.vue';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { LocalStore } from '@/utils/comm';
