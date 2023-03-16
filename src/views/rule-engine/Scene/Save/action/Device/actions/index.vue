@@ -52,7 +52,7 @@
                     <j-select
                         showSearch
                         placeholder="请选择属性"
-                        v-model:value="modelRef.message.properties"
+                        v-model:value="modelRef.message.properties[0]"
                     >
                         <j-select-option
                             v-for="item in metadata?.properties || []"
@@ -80,9 +80,9 @@ import TopCard from '../device/TopCard.vue';
 import { detail } from '@/api/device/instance';
 import EditTable from './EditTable.vue';
 import WriteProperty from './WriteProperty.vue';
-import { queryBuiltInParams } from '@/api/rule-engine/scene';
 import { useSceneStore } from '@/store/scene';
 import { storeToRefs } from 'pinia';
+import { getParams } from '../../../util'
 
 const sceneStore = useSceneStore();
 const { data } = storeToRefs(sceneStore);
@@ -121,7 +121,7 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
-    branchGroup: {
+    branchesName: {
         type: Number,
         default: 0,
     },
@@ -131,7 +131,7 @@ const formRef = ref();
 
 const modelRef = reactive({
     message: {
-        messageType: undefined,
+        messageType: 'INVOKE_FUNCTION',
         functionId: undefined,
         properties: undefined,
         inputs: [],
@@ -166,7 +166,7 @@ const _property = computed(() => {
                 Object.keys(modelRef.message.properties || {})?.[0] === item.id
             );
         }
-        return modelRef.message?.properties === item.id;
+        return modelRef.message?.properties?.[0] === item.id;
     });
     return _item;
 });
@@ -178,18 +178,26 @@ const _function = computed(() => {
     return _item;
 });
 
+const queryBuiltIn = async () => {
+    const _params = {
+        branch: props.thenName,
+        branchGroup: props.branchesName,
+        action: props.name - 1,
+    };
+    const _data = await getParams(_params, unref(data));
+    builtInList.value = _data
+};
+
 const onMessageTypeChange = (val: string) => {
-    if (['WRITE_PROPERTY', 'INVOKE_FUNCTION'].includes(val)) {
-        const _params = {
-            branch: props.thenName,
-            branchGroup: props.branchGroup,
-            action: props.name - 1,
-        };
-        queryBuiltInParams(unref(data), _params).then((res: any) => {
-            if (res.status === 200) {
-                builtInList.value = res.result;
-            }
-        });
+    const flag = ['WRITE_PROPERTY', 'INVOKE_FUNCTION'].includes(val)
+    modelRef.message = {
+        messageType: val,
+        functionId: undefined,
+        properties:(flag ? undefined : []) as any,
+        inputs: [],
+    };
+    if (flag) {
+        queryBuiltIn();
     }
 };
 
@@ -223,10 +231,9 @@ watch(
     (newVal) => {
         if (newVal?.messageType) {
             modelRef.message = newVal;
-            if (newVal.messageType === 'READ_PROPERTY') {
-                modelRef.message.properties = newVal.properties?.[0];
+            if (['WRITE_PROPERTY', 'INVOKE_FUNCTION'].includes(newVal.messageType)) {
+                queryBuiltIn();
             }
-            onMessageTypeChange(newVal.messageType);
         }
     },
     { immediate: true },
@@ -238,18 +245,16 @@ const onFormSave = () => {
             .validate()
             .then((_data: any) => {
                 // 处理三种情况的值的格式
-                const _properties = _data.message.properties || modelRef.message.properties
                 const obj = {
                     message: {
                         ...modelRef.message,
                         ..._data.message,
-                        properties: _data.message.messageType === 'READ_PROPERTY' ? [_properties] : _properties,
                         propertiesName:
                             deviceMessageType.value === 'INVOKE_FUNCTION'
                                 ? _function.value?.name
                                 : _property.value?.name,
                     },
-                }
+                };
                 resolve(obj);
             })
             .catch((err: any) => {

@@ -30,7 +30,7 @@
         <j-col :span="8">
             <div class="right-log">
                 <TitleComponent data="日志" />
-                <div :style="{ marginTop: '10px' }">
+                <div class="right-log-box">
                     <template v-if="logList.length">
                         <Log
                             v-for="item in logList"
@@ -38,7 +38,9 @@
                             :key="item.key"
                         />
                     </template>
-                    <j-empty v-else />
+                    <div v-else class="right-log-box-empty">
+                        <j-empty />
+                    </div>
                 </div>
             </div>
         </j-col>
@@ -187,8 +189,21 @@ onUnmounted(() => {
     padding-left: 20px;
     border-left: 1px solid rgba(0, 0, 0, 0.09);
     overflow: hidden;
-    max-height: 600px;
+    height: 100%;
     overflow-y: auto;
     min-height: 400px;
+
+    .right-log-box {
+        padding-top: 10px;
+        height: calc(100% - 40px);
+        width: 100%;
+        .right-log-box-empty {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
 }
 </style>

@@ -7,7 +7,7 @@
         :pagination="false"
     >
         <template #bodyCell="{ column, text, record }">
-            <div style="width: 280px">
+            <div>
                 <template v-if="['valueType', 'name'].includes(column.dataIndex)">
                     <span>{{ text }}</span>
                 </template>

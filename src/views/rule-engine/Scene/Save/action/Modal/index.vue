@@ -47,7 +47,7 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
-    branchGroup: {
+    thenName: {
         type: Number,
         default: 0,
     },

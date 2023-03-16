@@ -30,7 +30,10 @@
                 name="selectorValues"
                 :rules="[{ required: true, message: '请选择关系' }]"
             >
-                <RelationSelect @change="onRelationChange" v-model:value="modelRef.selectorValues" />
+                <RelationSelect
+                    @change="onRelationChange"
+                    v-model:value="modelRef.selectorValues"
+                />
             </j-form-item>
             <j-form-item
                 v-else-if="modelRef.selector === 'tag'"
@@ -75,12 +78,13 @@
 import { useSceneStore } from '@/store/scene';
 import TopCard from './TopCard.vue';
 import { storeToRefs } from 'pinia';
-import { queryBuiltInParams } from '@/api/rule-engine/scene';
 import { getImage } from '@/utils/comm';
 import NoticeApi from '@/api/notice/config';
 import Device from './Device.vue';
 import Tag from './Tag.vue';
-import RelationSelect from './RelationSelect.vue'
+import RelationSelect from './RelationSelect.vue';
+import { getParams } from '../../../util';
+import { handleParamsData } from '../../../components/Terms/util';
 
 const props = defineProps({
     values: {
@@ -95,7 +99,7 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
-    branchGroup: {
+    branchesName: {
         type: Number,
         default: 0,
     },
@@ -185,15 +189,18 @@ const filterTree = (nodes: any[]) => {
 const sourceChangeEvent = async () => {
     const _params = {
         branch: props.thenName,
-        branchGroup: props.branchGroup,
+        branchGroup: props.branchesName,
         action: props.name - 1,
     };
-    const resp = await queryBuiltInParams(unref(data), _params);
-    if (resp.status === 200) {
-        const array = filterTree(resp.result as any[]);
-        //判断相同产品才有按变量
-        // if (props.formProductId === DeviceModel.productId)// TODO
-        builtInList.value = [] // array;
+    //判断相同产品才有按变量
+    const productId =
+        data.value?.branches?.[props.branchesName].then?.[props.thenName]
+            ?.actions?.[props.name > 0 ? props.name - 1 : 0]?.device?.productId;
+    if (productId === props.values?.productDetail?.id) {
+        const _data = await getParams(_params, unref(data));
+        builtInList.value = handleParamsData(filterTree(_data), 'id');
+    } else {
+        builtInList.value = [];
     }
 };
 
@@ -277,16 +284,13 @@ const onTagChange = (val: any[], arr: any[]) => {
         modelRef.deviceId = 'deviceId';
         modelRef.source = 'fixed';
     }
-    if (arr) {
-        tagList.value = arr;
-    }
-    emits('save', unref(modelRef), {}, {tagList: tagList.value});
+    emits('save', unref(modelRef), {}, arr ? { tagList: arr } : {});
 };
 
 const onVariableChange = (val: any, node: any) => {
     modelRef.deviceId = val;
-    emits('save', unref(modelRef), node);
     modelRef.selectorValues = [{ value: val, name: node.description }] as any;
+    emits('save', unref(modelRef), node);
 };
 
 watchEffect(() => {
