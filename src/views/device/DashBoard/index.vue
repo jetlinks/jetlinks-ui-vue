@@ -228,7 +228,6 @@ const getOnline = () => {
             onlineYdata.reverse();
             setOnlineChartOpition(x, onlineYdata);
             onlineFooter.value[0].value = y?.[1];
-            console.log(res.result);
         }
     });
 };

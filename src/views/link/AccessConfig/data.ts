@@ -95,39 +95,29 @@ const ColumnsMQTT = [
 ];
 
 const ColumnsHTTP = [
-    // {
-    //     title: '分组',
-    //     dataIndex: 'group',
-    //     key: 'group',
-    //     ellipsis: true,
-    //     width: 100,
-    //     scopedSlots: { customRender: 'group' },
-    // },
     {
         title: '地址',
         dataIndex: 'address',
         key: 'address',
         ellipsis: true,
-        // scopedSlots: { customRender: 'address' },
     },
     {
         title: '示例',
         dataIndex: 'example',
         key: 'example',
         ellipsis: true,
-        // scopedSlots: { customRender: 'example' },
     },
     {
         title: '说明',
         dataIndex: 'description',
         key: 'description',
         ellipsis: true,
-        // scopedSlots: { customRender: 'description' },
     },
 ];
 
 const TiTlePermissionButtonStyle = {
     padding: 0,
+    'max-width': 'calc(100% - 90px)',
     color: ' #1890ff !important',
     'font-weight': 700,
     'font-size': '16px',

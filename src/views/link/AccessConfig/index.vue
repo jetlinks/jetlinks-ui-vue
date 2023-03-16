@@ -1,7 +1,11 @@
 <template>
     <page-container>
         <div>
-            <Search :columns="columns" target="search" @search="handleSearch" />
+            <pro-search
+                :columns="columns"
+                target="search"
+                @search="handleSearch"
+            />
 
             <j-pro-table
                 ref="tableRef"
@@ -16,18 +20,14 @@
                 :params="params"
             >
                 <template #headerTitle>
-                    <j-space>
-                        <PermissionButton
-                            type="primary"
-                            @click="handlAdd"
-                            hasPermission="link/AccessConfig:add"
-                        >
-                            <template #icon
-                                ><AIcon type="PlusOutlined"
-                            /></template>
-                            新增
-                        </PermissionButton>
-                    </j-space>
+                    <PermissionButton
+                        type="primary"
+                        @click="handlAdd"
+                        hasPermission="link/AccessConfig:add"
+                    >
+                        <template #icon><AIcon type="PlusOutlined" /></template>
+                        新增
+                    </PermissionButton>
                 </template>
                 <template #card="slotProps">
                     <CardBox

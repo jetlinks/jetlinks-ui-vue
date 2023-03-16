@@ -55,14 +55,14 @@ import { getProviders, detail } from '@/api/link/accessConfig';
 const route = useRoute();
 const id = route.params.id as string;
 
-const dataSource = ref([]);
+const dataSource: any = ref([]);
 const type = ref(false);
 const loading = ref(true);
 const provider = ref({});
 const data = ref({});
 const showType = ref('');
 
-const goProviders = (param: object) => {
+const goProviders = (param: any) => {
     showType.value = param.type;
     provider.value = param;
     type.value = false;
@@ -80,7 +80,7 @@ const getTypeList = (result: Record<string, any>) => {
     const cloud: any[] = [];
     const channel: any[] = [];
     const edge: any[] = [];
-    result.map((item) => {
+    result.map((item: any) => {
         if (item.id === 'fixed-media' || item.id === 'gb28181-2016') {
             item.type = 'media';
             media.push(item);
@@ -138,33 +138,32 @@ const getTypeList = (result: Record<string, any>) => {
 };
 
 const queryProviders = async () => {
-    const resp = await getProviders();
+    const resp: any = await getProviders();
     if (resp.status === 200) {
         dataSource.value = getTypeList(resp.result);
         // dataSource.value = getTypeList(resp.result)[0].list.filter(
         //     (item) => item.name !== '插件设备接入',
         // );
-        console.log(111, dataSource.value);
     }
 };
 
 const getProvidersData = async () => {
     if (id !== ':id') {
-        getProviders().then((response) => {
+        getProviders().then((response: any) => {
             if (response.status === 200) {
                 const list = getTypeList(response.result);
                 dataSource.value = list.filter(
-                    (item) =>
+                    (item: any) =>
                         item.channel === 'network' ||
                         item.channel === 'child-device',
                 );
-                detail(id).then((resp) => {
+                detail(id).then((resp: any) => {
                     if (resp.status === 200) {
                         const dt = response.result.find(
-                            (item) => item?.id === resp.result.provider,
+                            (item: any) => item?.id === resp.result.provider,
                         );
 
-                        response.result.forEach((item) => {
+                        response.result.forEach((item: any) => {
                             if (item.id === resp.result.provider) {
                                 resp.result.type = item.type;
                                 showType.value = item.type;

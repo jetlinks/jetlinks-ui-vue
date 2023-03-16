@@ -39,6 +39,7 @@ export const updateStatus = {
 
 export const TiTlePermissionButtonStyle = {
     padding: 0,
+    'max-width': 'calc(100% - 90px)',
     color: ' #1890ff !important',
     'font-weight': 700,
     'font-size': '16px',
@@ -62,7 +63,7 @@ export const regDomain = new RegExp(
 );
 export const checkEndpoint = (_rule: Rule, value: string): Promise<any> =>
     new Promise(async (resolve, reject) => {
-        const res = await validateField(value);
+        const res: any = await validateField(value);
         return res.result.passed ? resolve('') : reject(res.result.reason);
     });
 export const FormValidate = {
