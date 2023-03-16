@@ -30,13 +30,7 @@
                 name="selectorValues"
                 :rules="[{ required: true, message: '请选择关系' }]"
             >
-                <j-select
-                    placeholder="请选择关系"
-                    v-model:value="modelRef.selectorValues"
-                    :options="relationList"
-                    show-search
-                    @change="onRelationChange"
-                />
+                <RelationSelect @change="onRelationChange" v-model:value="modelRef.selectorValues" />
             </j-form-item>
             <j-form-item
                 v-else-if="modelRef.selector === 'tag'"
@@ -86,6 +80,7 @@ import { getImage } from '@/utils/comm';
 import NoticeApi from '@/api/notice/config';
 import Device from './Device.vue';
 import Tag from './Tag.vue';
+import RelationSelect from './RelationSelect.vue'
 
 const props = defineProps({
     values: {
@@ -130,7 +125,6 @@ const modelRef = reactive({
 const list = ref<any[]>([]);
 const builtInList = ref<any[]>([]);
 const tagList = ref<any[]>([]);
-const relationList = ref<any[]>([]);
 
 const TypeList = [
     {
@@ -199,25 +193,8 @@ const sourceChangeEvent = async () => {
         const array = filterTree(resp.result as any[]);
         //判断相同产品才有按变量
         // if (props.formProductId === DeviceModel.productId)// TODO
-        builtInList.value = array;
+        builtInList.value = [] // array;
     }
-};
-
-const queryRelationList = () => {
-    NoticeApi.getRelationUsers({
-        paging: false,
-        sorts: [{ name: 'createTime', order: 'desc' }],
-        terms: [{ termType: 'eq', column: 'objectTypeName', value: '设备' }],
-    }).then((resp) => {
-        if (resp.status === 200) {
-            relationList.value = (resp.result as any[]).map((item) => {
-                return {
-                    label: item.name,
-                    value: item.relation,
-                };
-            });
-        }
-    });
 };
 
 const filterType = async () => {
@@ -266,11 +243,8 @@ const filterType = async () => {
     }
 };
 
-const onSelectorChange = (val: string) => {
+const onSelectorChange = () => {
     modelRef.selectorValues = undefined;
-    if (val === 'relation') {
-        queryRelationList();
-    }
 };
 
 const onDeviceChange = (_detail: any) => {
@@ -306,7 +280,7 @@ const onTagChange = (val: any[], arr: any[]) => {
     if (arr) {
         tagList.value = arr;
     }
-    emits('save', unref(modelRef), {});
+    emits('save', unref(modelRef), {}, {tagList: tagList.value});
 };
 
 const onVariableChange = (val: any, node: any) => {

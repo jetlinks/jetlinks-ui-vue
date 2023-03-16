@@ -154,23 +154,23 @@ const onSave = (_data: any) => {
         productName: DeviceModel.productDetail.name,
         relationName: DeviceModel.relationName,
         triggerName: data.value.options?.trigger?.name || '触发设备',
-        taglist: [],
+        tagList: [],
         columns: [],
         otherColumns: [],
     };
-    _options.name = DeviceModel.deviceDetail?.name;
+    _options.name = DeviceModel.deviceDetail?.name || DeviceModel.selectorValues?.[0]?.name;
     const _type = _data.message.messageType;
     if (_type === 'INVOKE_FUNCTION') {
         _options.type = '执行';
-        _options.properties = DeviceModel.propertiesName;
+        _options.properties = _data.message.propertiesName;
     }
     if (_type === 'READ_PROPERTY') {
         _options.type = '读取';
-        _options.properties = DeviceModel.propertiesName;
+        _options.properties = _data.message.propertiesName;
     }
     if (_type === 'WRITE_PROPERTY') {
         _options.type = '设置';
-        _options.properties = DeviceModel.propertiesName;
+        _options.properties = _data.message.propertiesName;
         _options.propertiesValue =
             typeof DeviceModel.propertiesValue === 'object'
                 ? JSON.stringify(DeviceModel.propertiesValue)
@@ -183,7 +183,7 @@ const onSave = (_data: any) => {
         }
     }
     if (_options.selector === 'tag') {
-        _options.taglist = DeviceModel.tagList.map((it) => ({
+        _options.tagList = DeviceModel.tagList.map((it) => ({
             name: it.column || it.name,
             type: it.type ? (it.type === 'and' ? '并且' : '或者') : '',
             value: it.value,
@@ -205,6 +205,10 @@ const save = async (step?: number) => {
         if (deviceRef.value) {
             await deviceRef.value?.onFormSave();
             current.value = 2;
+        } else {
+            if(DeviceModel.selector === 'fixed' && DeviceModel.selectorValues?.length){
+                current.value = 2;
+            }
         }
     } else {
         if (actionRef.value) {
@@ -228,8 +232,8 @@ const prev = () => {
 
 const saveClick = () => save();
 
-const onDeviceSave = (_data: any, _detail: any) => {
-    Object.assign(DeviceModel, _data);
+const onDeviceSave = (_data: any, _detail: any, obj?: any) => {
+    Object.assign(DeviceModel, {..._data, ...obj});
     DeviceModel.deviceDetail = _detail;
 };
 
