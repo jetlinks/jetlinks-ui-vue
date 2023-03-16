@@ -151,7 +151,6 @@ watch(
     () => route.params.id,
     (newId) => {
         if (newId) {
-            console.log(newId);
             productStore.tabActiveKey = 'Info';
             productStore.refresh(newId as string);
         }
@@ -230,7 +229,7 @@ const getProtocol = async () => {
  * 详情页跳转到设备页
  */
 const jumpDevice = () => {
-    console.log(productStore.current?.id);
+    // console.log(productStore.current?.id);
     const searchParams = {
         column: 'productId',
         termType: 'eq',

@@ -395,7 +395,7 @@ const submitData = () => {
                     message.success('保存成功！');
                     visible.value = false;
                     emit('success');
-                    dialogRef.value.show(form.id);
+                    dialogRef.value.show(res.result.id);
                 } else {
                     message.error('操作失败');
                 }
