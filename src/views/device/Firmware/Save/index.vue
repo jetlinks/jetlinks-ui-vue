@@ -78,7 +78,16 @@
                     </j-form-item>
                 </j-col>
                 <j-col :span="12"
-                    ><j-form-item label="签名" v-bind="validateInfos.sign">
+                    ><j-form-item v-bind="validateInfos.sign">
+                        <template #label>
+                            签名
+                            <j-tooltip title="请输入本地文件进行签名加密后的值">
+                                <AIcon
+                                    type="QuestionCircleOutlined"
+                                    style="margin-left: 2px"
+                                />
+                            </j-tooltip>
+                        </template>
                         <j-input
                             placeholder="请输入签名"
                             v-model:value="formData.sign" /></j-form-item
@@ -148,14 +157,14 @@
                                         title="确认删除吗？"
                                         ok-text="确认"
                                         cancel-text="取消"
-                                        @confirm="removeUser(propertie)"
+                                        @confirm="removeList(propertie)"
                                     >
                                         <AIcon type="DeleteOutlined" />
                                     </j-popconfirm>
                                 </j-form-item>
                             </div>
                             <j-form-item class="formRef-form-item-add">
-                                <j-button type="dashed" block @click="addUser">
+                                <j-button type="dashed" block @click="addList">
                                     <AIcon type="PlusOutlined" />
                                     添加
                                 </j-button>
@@ -198,13 +207,13 @@ const dynamicValidateForm = reactive<{ properties: Properties[] }>({
     properties: [],
 });
 
-const removeUser = (item: Properties) => {
+const removeList = (item: Properties) => {
     let index = dynamicValidateForm.properties.indexOf(item);
     if (index !== -1) {
         dynamicValidateForm.properties.splice(index, 1);
     }
 };
-const addUser = () => {
+const addList = () => {
     dynamicValidateForm.properties.push({
         id: '',
         value: '',
@@ -226,8 +235,9 @@ const props = defineProps({
 const emit = defineEmits(['change']);
 
 const id = props.data.id;
+const VersionOrder = props.data.versionOrder;
 
-const formData = ref({
+const formData: any = ref({
     name: '',
     productId: undefined,
     version: '',
@@ -239,7 +249,7 @@ const formData = ref({
     description: '',
 });
 
-const extraValue = ref({});
+const extraValue: any = ref({});
 
 const validatorSign = async (_: Record<string, any>, value: string) => {
     const { signMethod, url } = formData.value;
@@ -252,18 +262,16 @@ const validatorSign = async (_: Record<string, any>, value: string) => {
     }
 };
 const validatorVersionOrder = async (_: Record<string, any>, value: string) => {
-    const { signMethod, productId } = formData.value;
-    if (value && !!signMethod && productId) {
-        const res = await validateVersion(productId, value);
-        if (res.status === 200) {
-            if (id && props.data.versionOrder === value) {
-                formData.value.versionOrder = '';
-            } else {
-                Promise.reject(res.result ? ['版本序号已存在'] : '');
+    if (id && VersionOrder === value) {
+        return Promise.resolve();
+    } else {
+        const { signMethod, productId } = formData.value;
+        if (value && !!signMethod && productId) {
+            const res = await validateVersion(productId, value);
+            if (res.status === 200) {
+                Promise.reject(res.result ? '版本序号已存在' : '');
             }
         }
-    } else {
-        return Promise.resolve();
     }
 };
 
@@ -278,7 +286,6 @@ const { resetFields, validate, validateInfos } = useForm(
         version: [
             { required: true, message: '请输入版本号' },
             { max: 64, message: '最多可输入64个字符', trigger: 'change' },
-            { validator: validatorVersionOrder, trigger: 'blur' },
         ],
         versionOrder: [
             { required: true, message: '请输入版本序号' },
@@ -298,13 +305,13 @@ const filterOption = (input: string, option: any) => {
     return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
 
-const onSubmit = async () => {
-    const { properties } = await formRef.value?.validate();
+const handleOk = async () => {
+    const { properties }: any = await formRef.value?.validate();
 
     validate()
-        .then(async (res) => {
-            const product = productOptions.value.find(
-                (item) => item?.value === res.productId,
+        .then(async (res: any) => {
+            const product: any = productOptions.value.find(
+                (item: any) => item?.value === res.productId,
             );
             const productName = product?.label || props.data?.url;
             const size = extraValue.value?.length || props.data?.size;
@@ -317,9 +324,9 @@ const onSubmit = async () => {
             };
             loading.value = true;
             const response = !id
-                ? await save(params)
-                : await update({ ...props.data, ...params });
-            if (response.status === 200) {
+                ? await save(params).catch(() => {})
+                : await update({ ...props.data, ...params }).catch(() => {});
+            if (response?.status === 200) {
                 message.success('操作成功');
                 emit('change', true);
             }
@@ -330,9 +337,6 @@ const onSubmit = async () => {
         });
 };
 
-const handleOk = () => {
-    onSubmit();
-};
 const handleCancel = () => {
     emit('change', false);
 };
@@ -347,8 +351,8 @@ onMounted(() => {
         paging: false,
         terms: [{ column: 'state', value: 1 }],
         sorts: [{ name: 'createTime', order: 'desc' }],
-    }).then((resp) => {
-        productOptions.value = resp.result.map((item) => ({
+    }).then((resp: any) => {
+        productOptions.value = resp.result.map((item: any) => ({
             value: item.id,
             label: item.name,
         }));
