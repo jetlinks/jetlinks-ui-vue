@@ -316,15 +316,10 @@ const getBindUsers = async () => {
  * 获取所有用户未绑定的用户
  */
 const allUserList = ref([]);
-const getAllUsers = async () => {
+const getAllUsers = async (terms?: any) => {
     const params = {
         paging: false,
-        terms: [
-            {
-                column: `id$user-third$${props.data.type}_${props.data.provider}$not`,
-                value: props.data.id,
-            },
-        ],
+        terms,
     };
     const { result } = await configApi.getPlatformUsers(params);
     allUserList.value = result.map((m: any) => ({
@@ -355,11 +350,11 @@ const getTableData = () => {
                 const bindUser = bindUsers.find(
                     (f: any) => f.thirdPartyUserId === deptUser.id,
                 );
-                // if (bindUser) {
-                //     unBindUser = unBindUsers.find(
-                //         (f: any) => f.id === bindUser.userId,
-                //     );
-                // }
+                if (bindUser) {
+                    unBindUser = unBindUsers.find(
+                        (f: any) => f.id === bindUser.userId,
+                    );
+                }
                 dataSource.value.push({
                     thirdPartyUserId: deptUser.id,
                     thirdPartyUserName: deptUser.name,
@@ -422,7 +417,12 @@ const handleBind = (row: any) => {
     bindVis.value = true;
     // formData.value = row;
     Object.assign(formData.value, row);
-    getAllUsers();
+    getAllUsers([
+        {
+            column: `id$user-third$${props.data.type}_${props.data.provider}$not`,
+            // value: props.data.id,
+        },
+    ]);
 };
 
 /**

@@ -125,6 +125,7 @@
                         placeholder="请选择产品分类"
                         :tree-data="treeList"
                         @change="valueChange"
+                        allow-clear
                         :fieldNames="{ label: 'name', value: 'id' }"
                         :filterTreeNode="
                             (v, option) => filterSelectNode(v, option)

@@ -93,7 +93,13 @@ const formModel = ref<formState>({
     description: '',
 });
 const rules = ref({
-    name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+    name: [
+        { required: true, message: '请输入名称', trigger: 'blur' },
+        {
+            max: 64,
+            message: '最多可输入64个字符',
+        },
+    ],
     sortIndex: [{ required: true, message: '请输入排序', trigger: 'blur' }],
 });
 const visible = ref(false);
@@ -112,7 +118,7 @@ const submitData = async () => {
                 addParams.value = {
                     ...formModel.value,
                     // sortIndex:
-                        // childArr.value[childArr.value.length - 1].sortIndex + 1,
+                    // childArr.value[childArr.value.length - 1].sortIndex + 1,
                     parentId: addObj.value.id,
                 };
             } else if (props.isChild === 2) {

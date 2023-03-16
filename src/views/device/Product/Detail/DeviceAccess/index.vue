@@ -269,7 +269,8 @@
     <!-- 选择设备 -->
     <j-modal
         title="设备接入配置"
-        :visible="visible"
+        v-if="visible"
+        visible
         width="1200px"
         okText="确定"
         cancelText="取消"
@@ -280,6 +281,7 @@
             :columns="query.columns"
             target="deviceModal"
             @search="search"
+            type='simple'
         />
         <JProTable
             :columns="query.columns"
@@ -442,6 +444,7 @@ const showModal = () => {
  * 关闭弹窗
  */
 const cancel = () => {
+    queryParams.value = {};
     visible.value = false;
 };
 /**
@@ -968,6 +971,7 @@ const submitData = async () => {
                     message.success('操作成功！');
                 }
                 visible.value = false;
+                queryParams.value = {};
             });
         }
     } else {
