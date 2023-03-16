@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { BranchesType, FormModelType, SceneItem } from '@/views/rule-engine/Scene/typings'
+import type { FormModelType, SceneItem } from '@/views/rule-engine/Scene/typings'
 import { detail } from '@/api/rule-engine/scene'
 import { cloneDeep, isArray } from 'lodash-es'
 import { randomString } from '@/utils/utils'

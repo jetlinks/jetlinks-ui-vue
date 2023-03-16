@@ -94,12 +94,13 @@
                         <AIcon type="PlusOutlined" />新增
                     </j-button>
                 </div>
-                <MonacoEditor
+                <j-monaco-editor
                     v-if="refStr"
-                    v-model:modelValue="requestBody.code"
-                    style="height: 300px; width: 100%"
-                    theme="vs"
                     ref="editorRef"
+                    language="json"
+                    style="height: 100%"
+                    theme="vs"
+                    v-model:modelValue="requestBody.code"
                 />
             </div>
         </div>
@@ -115,7 +116,6 @@
 <script setup lang="ts">
 import { JsonViewer } from 'vue3-json-viewer';
 import 'vue3-json-viewer/dist/index.css';
-import MonacoEditor from '@/components/MonacoEditor/index.vue';
 import type { apiDetailsType } from '../typing';
 import InputCard from './InputCard.vue';
 import { cloneDeep, toLower } from 'lodash';

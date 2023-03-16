@@ -214,7 +214,7 @@ defineExpose({ saveBtn });
 
 <style lang="less" scoped>
 .function {
-    padding: 15px;
+    padding: 24px 15px 0 15px;
     background-color: #e7eaec;
 }
 </style>

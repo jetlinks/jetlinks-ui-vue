@@ -15,6 +15,7 @@
                                 :checkStyle="true"
                                 :disabled="!!route.query.id"
                                 v-model="formData.channel"
+                                @change="formData.productId = undefined"
                             />
                         </j-form-item>
                         <j-row :gutter="24">
@@ -264,7 +265,7 @@ const formData = ref({
     name: '',
     channel: 'gb28181-2016',
     photoUrl: getImage('/device-media.png'),
-    productId: '',
+    productId: undefined,
     others: {
         access_pwd: '',
     },

@@ -61,7 +61,7 @@
                         </j-button>
                         <j-button
                             danger
-                            v-if="tagData.length > 1"
+                            v-if="tagList.length > 1"
                             style="padding: 0 8px"
                             @click="deleteItem(index)"
                         >
@@ -109,6 +109,7 @@ const addItem = () => {
 
 const deleteItem = (_index: number) => {
     tagList.value.splice(_index, 1);
+    onValueChange();
 };
 
 const onTypeSelect = (key: any, _index: number) => {
@@ -168,26 +169,23 @@ watch(
 );
 
 const onValueChange = () => {
-    const newValue = tagList.value
-        .filter((item) => !!item.value)
-        .map((item: any) => {
-            return {
-                column: item.id,
-                type: item.type,
-                value: item.value,
-            };
-        });
-    const arr = newValue
-        .filter((item) => !!item.value)
-        .map((item: any) => {
-            return {
-                column: item.name,
-                type: item.type,
-                value: item.value,
-            };
-        });
+    const _data = tagList.value.filter((item) => !!item.value);
+    const newValue = _data.map((item: any) => {
+        return {
+            column: item.id,
+            type: item.type,
+            value: item.value,
+        };
+    });
+    const arr = _data.map((item: any) => {
+        return {
+            column: item.name,
+            type: item.type,
+            value: item.value,
+        };
+    });
     emits('update:value', [{ value: newValue, name: '标签' }]);
-    emits('change', [{ value: newValue, name: '标签' }], undefined);
+    emits('change', [{ value: newValue, name: '标签' }], arr);
 };
 </script>
 

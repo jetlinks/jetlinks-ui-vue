@@ -114,10 +114,7 @@
                 <h3>修改密码</h3>
                 <div class="content">
                     <div class="content" style="align-items: flex-end">
-                        <lock-outlined
-                            style="color: #1d39c4; font-size: 70px"
-                        />
-                        <!-- <AIcon type="LockOutlined" /> -->
+                        <AIcon type="LockOutlined" style="color: #1d39c4; font-size: 70px" />
                         <span
                             style="margin-left: 5px; color: rgba(0, 0, 0, 0.55)"
                             >安全性高的密码可以使帐号更安全。建议您定期更换密码,设置一个包含字母,符号或数字中至少两项且长度超过8位的密码</span
@@ -232,7 +229,6 @@
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import EditInfoDialog from './components/EditInfoDialog.vue';
 import EditPasswordDialog from './components/EditPasswordDialog.vue';
-import { LockOutlined } from '@ant-design/icons-vue';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { LocalStore, getImage } from '@/utils/comm';
 import { message, UploadChangeParam, UploadFile } from 'ant-design-vue';
@@ -247,7 +243,7 @@ import { isNoCommunity } from '@/utils/utils';
 import { userInfoType } from './typing';
 
 const permission = 'system/User';
-const userInfo = ref<userInfoType>({});
+const userInfo = ref<userInfoType>({} as any);
 // 第三方账号
 const bindList = ref<any[]>([]);
 const bindIcon = {

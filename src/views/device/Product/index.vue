@@ -123,9 +123,6 @@
                     :status="statusMap.get(slotProps.state)"
                 />
             </template>
-            <template #id="slotProps">
-                <a>{{ slotProps.id }}</a>
-            </template>
             <template #action="slotProps">
                 <j-space :size="16">
                     <template
@@ -202,7 +199,7 @@ const columns = [
         scopedSlots: true,
     },
     {
-        title: '名称',
+        title: '产品名称',
         dataIndex: 'name',
         key: 'name',
     },

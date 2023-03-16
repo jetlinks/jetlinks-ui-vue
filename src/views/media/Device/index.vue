@@ -13,7 +13,7 @@
                 sorts: [{ name: 'createTime', order: 'desc' }],
             }"
             :params="params"
-            :gridColumn="3"
+            :gridColumn="2"
         >
             <template #headerTitle>
                 <PermissionButton
@@ -92,6 +92,23 @@
                     </template>
                 </CardBox>
             </template>
+
+            <template #channelNumber="slotProps">
+                {{ slotProps.channelNumber || 0 }}
+            </template>
+            <template #provider="slotProps">
+                {{ providerType[slotProps.provider] }}
+            </template>
+            <template #state="slotProps">
+                <j-badge
+                    :text="slotProps.state?.text"
+                    :status="
+                        slotProps.state?.value === 'online'
+                            ? 'success'
+                            : 'error'
+                    "
+                />
+            </template>
             <template #action="slotProps">
                 <j-space :size="16">
                     <template
@@ -125,6 +142,7 @@ import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
 import { providerType } from './const';
+import encodeQuery from '@/utils/encodeQuery';
 
 import { useMenuStore } from 'store/menu';
 
@@ -138,6 +156,8 @@ const columns = [
         title: 'ID',
         dataIndex: 'id',
         key: 'id',
+        width: 200,
+        fixed: 'left',
         search: {
             type: 'string',
         },
@@ -153,14 +173,14 @@ const columns = [
     },
     {
         title: '接入方式',
-        dataIndex: 'type',
-        key: 'type',
+        dataIndex: 'provider',
+        key: 'provider',
         scopedSlots: true,
         search: {
             type: 'select',
             options: PROVIDER_OPTIONS,
             handleValue: (v: any) => {
-                return '123';
+                return v;
             },
         },
     },
@@ -168,6 +188,8 @@ const columns = [
         title: '通道数量',
         dataIndex: 'channelNumber',
         key: 'channelNumber',
+        scopedSlots: true,
+        width: 100,
     },
     {
         title: '厂商',
@@ -181,15 +203,31 @@ const columns = [
         title: '产品名称',
         dataIndex: 'productId',
         key: 'productId',
-        scopedSlots: true,
+        // scopedSlots: true,
         search: {
             type: 'select',
-            options: [
-                { label: '固定地址', value: 'fixed-media' },
-                { label: 'GB/T28181', value: 'gb28181-2016' },
-            ],
+            options: () =>
+                new Promise((resolve) => {
+                    DeviceApi.getProductList(
+                        encodeQuery({
+                            terms: {
+                                messageProtocol$in: [
+                                    'gb28181-2016',
+                                    'fixed-media',
+                                ],
+                            },
+                        }),
+                    ).then((resp: any) => {
+                        resolve(
+                            resp.result.map((pItem: any) => ({
+                                label: pItem.name,
+                                value: pItem.id,
+                            })),
+                        );
+                    });
+                }),
             handleValue: (v: any) => {
-                return '123';
+                return v;
             },
         },
     },
@@ -198,6 +236,7 @@ const columns = [
         dataIndex: 'state',
         key: 'state',
         scopedSlots: true,
+        width: 100,
         search: {
             type: 'select',
             options: [
@@ -206,7 +245,7 @@ const columns = [
                 { label: '在线', value: 'online' },
             ],
             handleValue: (v: any) => {
-                return '123';
+                return v;
             },
         },
     },
@@ -308,7 +347,8 @@ const getActions = (
             key: 'delete',
             text: '删除',
             tooltip: {
-                title: '在线设备无法删除',
+                title:
+                    data.state.value === 'online' ? '在线设备无法删除' : '删除',
             },
             disabled: data.state.value === 'online',
             popConfirm: {

@@ -2,7 +2,7 @@
     <div class="request-table-container">
         <j-table
             :columns="columns"
-            :datj-source="tableData"
+            :data-source="tableData"
             :pagination="false"
             size="small"
             bordered

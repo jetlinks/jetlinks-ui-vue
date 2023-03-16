@@ -20,9 +20,8 @@
             </div>
             <div class="right">
                 <pro-search
-                    type="simple"
                     :columns="columns"
-                    target="product"
+                    target="channel"
                     @search="handleSearch"
                 />
 

@@ -13,7 +13,7 @@
                 <j-row :gutter="24">
                     <j-col :span="12"><DeviceCountCard /></j-col>
                     <j-col :span="12"><BasicCountCard /></j-col>
-                    <j-col :span="24" style="margin-top: 24px;">
+                    <j-col :span="24" style="margin-top: 24px">
                         <PlatformPicCard image="/images/home/content1.svg" />
                     </j-col>
                 </j-row>
@@ -157,7 +157,7 @@ const deviceStepDetails: recommendList[] = [
         linkUrl: 'device/Instance',
         auth: devicePermission('import'),
         params: {
-            type: 'import'
+            type: 'import',
         },
     },
 ];
@@ -227,17 +227,4 @@ const opsStepDetails: recommendList[] = [
 
 const productDialogVisible = ref(false);
 const deviceDialogVisible = ref(false);
-
-
-
-// 设备管理-产品---新增弹窗  {save:true}
-// 设备管理-产品-产品详情---设备接入标签页 {id: 'xxxx', tab:'xxx'}
-// 规则引擎-规则编排---新增弹窗 {save: true}
-
-
-// 设备管理-设备---新增弹窗
-// 设备管理-设备---导入弹窗
-// 设备管理-设备-设备详情---设备诊断标签页
-
-// 运维管理-日志管理---系统日志标签页
 </script>

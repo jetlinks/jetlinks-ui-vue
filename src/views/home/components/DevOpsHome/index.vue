@@ -46,9 +46,6 @@ const opsBootConfig: bootConfig[] = [
         english: 'STEP3',
         label: '实时监控',
         link: 'link/DashBoard',
-        params: {
-            type: 'add',
-        },
     },
 ];
 const opsStepDetails: recommendList[] = [

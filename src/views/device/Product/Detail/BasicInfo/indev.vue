@@ -41,19 +41,21 @@
         </j-descriptions>
     </j-card>
     <!-- 编辑 -->
-    <Save ref="saveRef" :isAdd="isAdd" :title="title" />
+    <Save ref="saveRef" :isAdd="isAdd" :title="title"  @success="refresh"/>
 </template>
 
 <script lang="ts" setup>
 import { useProductStore } from '@/store/product';
 import Save from '../../Save/index.vue';
 import moment from 'moment';
+import { useRoute } from 'vue-router';
 import {
     EditOutlined,
     DeleteOutlined,
     PlusOutlined,
 } from '@ant-design/icons-vue';
 const productStore = useProductStore();
+const route = useRoute();
 const saveRef = ref();
 const isAdd = ref(2);
 const title = ref('编辑');
@@ -69,4 +71,10 @@ const editConfig = () => {
 const changeTables = () => {
     productStore.tabActiveKey = 'Device';
 };
+/**
+ * 修改成功刷新
+ */
+const refresh = () =>{
+    productStore.refresh(route.params.id as string);
+}
 </script>

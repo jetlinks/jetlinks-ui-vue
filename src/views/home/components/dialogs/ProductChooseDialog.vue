@@ -46,8 +46,8 @@ const form = ref({
 
 const productList = ref<[productItem] | []>([]);
 const getOptions = () => {
-    getProductList_api().then((resp: any) => {
-        productList.value = resp.result
+    getProductList_api().then(({ result }: any) => {
+        productList.value = result
             .filter((i: any) => !i?.accessId)
             .map((item: { name: any; id: any }) => ({
                 label: item.name,

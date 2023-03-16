@@ -89,6 +89,10 @@ const props: JUploadProps = defineProps({
         type: String,
         default: '',
     },
+    accept:{
+        type:Array,
+        default:()=>[],
+    }
 });
 
 const loading = ref<boolean>(false);

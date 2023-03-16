@@ -1,10 +1,11 @@
 <!-- 新增编辑弹窗 -->
 <template>
     <j-modal
+        v-if="visible"
         :title="props.title"
         :maskClosable="false"
         destroy-on-close
-        v-model:visible="visible"
+        visible
         @ok="submitData"
         @cancel="close"
         okText="确定"
@@ -93,7 +94,13 @@ const formModel = ref<formState>({
     description: '',
 });
 const rules = ref({
-    name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+    name: [
+        { required: true, message: '请输入名称', trigger: 'blur' },
+        {
+            max: 64,
+            message: '最多可输入64个字符',
+        },
+    ],
     sortIndex: [{ required: true, message: '请输入排序', trigger: 'blur' }],
 });
 const visible = ref(false);
@@ -111,20 +118,20 @@ const submitData = async () => {
             if (props.isChild === 1) {
                 addParams.value = {
                     ...formModel.value,
-                    // sortIndex:
-                        // childArr.value[childArr.value.length - 1].sortIndex + 1,
+                    sortIndex:
+                        childArr.value[childArr.value.length - 1].sortIndex + 1,
                     parentId: addObj.value.id,
                 };
             } else if (props.isChild === 2) {
                 addParams.value = {
                     parentId: addObj.value.id,
                     ...formModel.value,
-                    // sortIndex: 1,
+                    sortIndex: 1,
                 };
             } else if (props.isChild === 3) {
                 addParams.value = {
                     ...formModel.value,
-                    // sortIndex: arr.value[arr.value.length - 1].sortIndex + 1,
+                    sortIndex: arr.value[arr.value.length - 1].sortIndex + 1,
                 };
             }
             const res = await saveTree(addParams.value);
@@ -157,7 +164,7 @@ const submitData = async () => {
 /**
  * 显示弹窗
  */
-const show = (row: any) => {
+const show = async (row: any) => {
     //新增
     if (props.isAdd === 0) {
         if (props.isChild === 1) {
@@ -173,6 +180,7 @@ const show = (row: any) => {
                 visible.value = true;
             }
         } else if (props.isChild === 3) {
+            const res = await getTableData();
             arr.value = listData.value.sort(compare('sortIndex'));
             if (arr.value.length > 0) {
                 formModel.value = {
@@ -244,7 +252,6 @@ const close = () => {
     visible.value = false;
     resetFields();
 };
-getTableData();
 //监听项目ID
 watch([() => props.isAdd], () => {}, { immediate: false, deep: true });
 defineExpose({

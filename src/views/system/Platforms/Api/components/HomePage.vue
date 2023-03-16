@@ -98,11 +98,11 @@
                 <div>
                     <p>使用和签名相同的算法(不需要对响应结果排序)</p>
                     <div>
-                        <MonacoEditor
-                            style="width: 100%; height: 620px"
-                            theme="vs-dark"
+                        <j-monaco-editor
                             language="java"
-                            v-model="javaStr1"
+                            style="height: 370px"
+                            theme="vs-dark"
+                            v-model:modelValue="javaStr1"
                         />
                     </div>
                 </div>
@@ -119,20 +119,20 @@
             <h3>添加 SDK 依赖</h3>
             <div class="h3-text">将以下Maven依赖加入到pom.xml文件中</div>
             <div>
-                <MonacoEditor
-                    style="width: 100%; height: 100px"
-                    theme="vs-dark"
-                    v-model="javaStr2"
+                <j-monaco-editor
                     language="java"
+                    style="height: 370px"
+                    theme="vs-dark"
+                    v-model:modelValue="javaStr2"
                 />
             </div>
             <h3>SDK 客户端的初始化和请求方式</h3>
             <div>
-                <MonacoEditor
-                    style="width: 100%; height: 370px"
-                    theme="vs-dark"
-                    v-model="javaStr"
+                <j-monaco-editor
                     language="java"
+                    style="height: 370px"
+                    theme="vs-dark"
+                    v-model:modelValue="javaStr"
                 />
             </div>
         </div>
@@ -141,7 +141,6 @@
 
 <script setup lang="ts">
 import { getImage } from '@/utils/comm';
-import MonacoEditor from '@/components/MonacoEditor/index.vue';
 
 const data = [
     {

@@ -238,6 +238,8 @@ watch(
  * @param value
  */
 let validateChannelId = async (_rule: Rule, value: string) => {
+    // ID非必填, 没有输入ID时, 不校验ID是否存在
+    if (!value) return;
     const { result } = await ChannelApi.validateField({
         deviceId: route.query.id,
         channelId: value,

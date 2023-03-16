@@ -206,6 +206,17 @@ const findDetailRoutes = (routes: any[]): any[] => {
 export const findCodeRoute = (asyncRouterMap: any[]) => {
   const routeMeta = {}
 
+  function getDetail( code: string, url: string) {
+    const detail = findDetailRouteItem(code, url)
+    if (!detail) return
+    routeMeta[(detail as MenuItem).code] = {
+      path: detail.url,
+      title: detail.name,
+      parentName: code,
+      buttons: detail.buttons?.map((b: any) => b.id) || []
+    }
+  }
+
   function findChildren (data: any[], code: string = '') {
     data.forEach(route => {
       routeMeta[route.code] = {
@@ -214,28 +225,23 @@ export const findCodeRoute = (asyncRouterMap: any[]) => {
         parentName: code,
         buttons: route.buttons?.map((b: any) => b.id) || []
       }
-      const detail = findDetailRouteItem(route.code, route.url)
-      if (detail) {
-        routeMeta[(detail as MenuItem).code] = {
-          path: detail.url,
-          title: detail.name,
-          parentName: route.code,
-          buttons: detail.buttons?.map((b: any) => b.id) || []
-        }
-      }
-
       const otherRoutes = extraRouteObj[route.code]
+
       if (otherRoutes) {
         otherRoutes.children.map((item: any) => {
           const _code = `${route.code}/${item.code}`
+          const url = `${route.url}/${item.code}`
           routeMeta[_code] = {
             path: `${route.url}/${item.code}`,
             title: item.name,
             parentName: route.code,
             buttons: item.buttons?.map((b: any) => b.id) || []
           }
+          getDetail(_code, url)
         })
       }
+
+      getDetail(route.code, route.url)
 
       if (route.children) {
         findChildren(route.children, route.code)
