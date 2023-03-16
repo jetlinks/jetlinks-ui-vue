@@ -1,7 +1,11 @@
 <template>
     <page-container>
         <div>
-            <Search :columns="columns" target="search" @search="handleSearch" />
+            <pro-search
+                :columns="columns"
+                target="search"
+                @search="handleSearch"
+            />
 
             <j-pro-table
                 ref="tableRef"
@@ -211,8 +215,6 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                     if (res.success) {
                         message.success('操作成功');
                         tableRef.value?.reload();
-                    } else {
-                        message.error('操作失败！');
                     }
                 },
             },
@@ -231,8 +233,6 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                     if (res.success) {
                         message.success('操作成功');
                         tableRef.value.reload();
-                    } else {
-                        message.error('操作失败！');
                     }
                 },
             },

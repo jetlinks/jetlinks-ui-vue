@@ -1,19 +1,17 @@
-
-export interface Configuration = {
-    secret: string,
-    apiHost: string,
-    apiPort: number,
-    rtpIp: string,
-    rtpPort: number,
-    dynamicRtpPort: boolean,
-    dynamicRtpPortRange?: array,
-    dynamicRtpPortRange0?: number,
-    dynamicRtpPortRange1?: number,
-};
-export type FormDataType = {
+export interface Configuration {
+    secret: string;
+    apiHost: string;
+    apiPort: number | string;
+    rtpIp: string | string;
+    rtpPort: number | string;
+    dynamicRtpPort: boolean;
+    dynamicRtpPortRange?: array<any>;
+    dynamicRtpPortRange0?: number | string | undefined;
+    dynamicRtpPortRange1?: number | string | undefined;
+}
+export interface FormDataType {
     name: string;
-    provider: undefined;
+    provider: string | undefined;
     configuration: Configuration;
     id?: string;
-};
-
+}

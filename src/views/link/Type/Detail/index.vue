@@ -779,14 +779,15 @@
                                                         height: 400px;
                                                     "
                                                 >
-                                                    <MonacoEditor
+                                                    <j-monaco-editor
                                                         theme="vs"
-                                                        v-model:modelValue="
+                                                        v-model:value="
                                                             cluster
                                                                 .configuration
                                                                 .parserConfiguration
                                                                 .script
                                                         "
+                                                        language="javascript"
                                                     />
                                                 </div>
                                             </j-form-item>
@@ -998,7 +999,6 @@ import {
 import { cloneDeep } from 'lodash-es';
 import type { FormData2Type, FormDataType } from '../type';
 import { Store } from 'jetlinks-store';
-import MonacoEditor from '@/components/MonacoEditor/index.vue';
 
 const route = useRoute();
 const NetworkType = route.query.type as string;
