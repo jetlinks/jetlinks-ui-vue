@@ -260,14 +260,17 @@ function menuChange(
     // 更新选中状态
     if (row.buttons && row.buttons.length > 0) setStatus(row, 'buttons');
     else setStatus(row, 'children');
+
     // 更新数据权限
-    if (row.selectAccesses !== undefined) {
-        if (!row.granted) {
+    if (row.accessSupport && row.accessSupport.value === 'support') {
+        // 如果当前数据权限已有值，且菜单权限没有被选中或被半选   则清空对应的数据权限
+        if (row.selectAccesses && !row.granted && !row.indeterminate)
             row.selectAccesses = '';
-        } else if (row.selectAccesses === '') {
+        // 如果当前数据权限没有值，且菜单权限有被选中或者是被半选   则将数据权限变为默认值'creator'
+        else if (!row.selectAccesses && (row.granted || row.indeterminate))
             row.selectAccesses = 'creator';
-        }
     }
+
     // 更新上层节点的状态
     if (row.parentId) {
         // 找到对应的父节点  判断该父节点的选中状态为 全选中/部分选中/未选中
@@ -401,3 +404,11 @@ type tableItemType = {
     assetAccesses?: any[];
 };
 </script>
+
+<style lang="less" scoped>
+.permiss-tree-container {
+    :deep(.ant-checkbox-wrapper) {
+        margin-left: 0;
+    }
+}
+</style>
