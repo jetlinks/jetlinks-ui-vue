@@ -29,23 +29,17 @@
                                                 },
                                             ]"
                                         >
-                                            <div class="form-label">
+                                            <template #label>
                                                 接口地址
-                                                <span
-                                                    class="form-label-required"
-                                                    >*</span
+                                                <j-tooltip
+                                                    title="同步物联网平台设备数据到OneNet"
                                                 >
-                                                <j-tooltip>
-                                                    <template #title>
-                                                        <p>
-                                                            同步物联网平台设备数据到OneNet
-                                                        </p>
-                                                    </template>
                                                     <AIcon
                                                         type="QuestionCircleOutlined"
+                                                        style="margin-left: 2px"
                                                     />
                                                 </j-tooltip>
-                                            </div>
+                                            </template>
                                             <j-input
                                                 disabled
                                                 v-model:value="
@@ -95,23 +89,17 @@
                                                 },
                                             ]"
                                         >
-                                            <div class="form-label">
+                                            <template #label>
                                                 通知Token
-                                                <span
-                                                    class="form-label-required"
-                                                    >*</span
+                                                <j-tooltip
+                                                    title="接收OneNet推送的Token地址"
                                                 >
-                                                <j-tooltip>
-                                                    <template #title>
-                                                        <p>
-                                                            接收OneNet推送的Token地址
-                                                        </p>
-                                                    </template>
                                                     <AIcon
                                                         type="QuestionCircleOutlined"
+                                                        style="margin-left: 2px"
                                                     />
                                                 </j-tooltip>
-                                            </div>
+                                            </template>
                                             <j-input
                                                 v-model:value="
                                                     formState.validateToken
@@ -131,20 +119,17 @@
                                                 },
                                             ]"
                                         >
-                                            <div class="form-label">
+                                            <template #label>
                                                 aesKey
-                                                <j-tooltip>
-                                                    <template #title>
-                                                        <p>
-                                                            OneNet
-                                                            端生成的消息加密key
-                                                        </p>
-                                                    </template>
+                                                <j-tooltip
+                                                    title="OneNet端生成的消息加密key"
+                                                >
                                                     <AIcon
                                                         type="QuestionCircleOutlined"
+                                                        style="margin-left: 2px"
                                                     />
                                                 </j-tooltip>
-                                            </div>
+                                            </template>
                                             <j-input
                                                 v-model:value="formState.aesKey"
                                                 placeholder="请输入aesKey"
@@ -171,86 +156,88 @@
                                 </j-row> </j-form
                         ></j-col>
                         <j-col :span="8">
-                            <div class="doc">
-                                <h1>操作指引：</h1>
-                                <div>
-                                    1、OneNet端创建产品、设备，并配置HTTP推送
-                                </div>
-                                <div>
-                                    2、IOT端创建类型为OneNet的设备接入网关
-                                </div>
-                                <div>
-                                    3、IOT端创建产品，选中接入方式为OneNet类型的设备接入网关，填写Master-APIkey（OneNet端的产品Key）
-                                </div>
-                                <div class="image">
-                                    <j-image width="100%" :src="img5" />
-                                </div>
-                                <div>
-                                    4、IOT端添加设备，在设备实例页面为每一台设备设置唯一的IMEI、IMSI码（需与OneNet平台中的值一致）
-                                </div>
-                                <div class="image">
-                                    <j-image width="100%" :src="img6" />
-                                </div>
-                                <h1>HTTP推送配置说明</h1>
-                                <div class="image">
-                                    <j-image width="100%" :src="img" />
-                                </div>
-                                <div>
-                                    HTTP推送配置路径：应用开发&gt;数据推送
-                                </div>
-                                <j-descriptions
-                                    bordered
-                                    size="small"
-                                    :column="1"
-                                    :labelStyle="{ width: '100px' }"
-                                >
-                                    <j-descriptions-item label="参数"
-                                        >说明</j-descriptions-item
+                            <j-scrollbar height="500">
+                                <div class="doc">
+                                    <h1>操作指引：</h1>
+                                    <div>
+                                        1、OneNet端创建产品、设备，并配置HTTP推送
+                                    </div>
+                                    <div>
+                                        2、IOT端创建类型为OneNet的设备接入网关
+                                    </div>
+                                    <div>
+                                        3、IOT端创建产品，选中接入方式为OneNet类型的设备接入网关，填写Master-APIkey（OneNet端的产品Key）
+                                    </div>
+                                    <div class="image">
+                                        <j-image width="100%" :src="img5" />
+                                    </div>
+                                    <div>
+                                        4、IOT端添加设备，在设备实例页面为每一台设备设置唯一的IMEI、IMSI码（需与OneNet平台中的值一致）
+                                    </div>
+                                    <div class="image">
+                                        <j-image width="100%" :src="img6" />
+                                    </div>
+                                    <h1>HTTP推送配置说明</h1>
+                                    <div class="image">
+                                        <j-image width="100%" :src="img" />
+                                    </div>
+                                    <div>
+                                        HTTP推送配置路径：应用开发&gt;数据推送
+                                    </div>
+                                    <j-descriptions
+                                        bordered
+                                        size="small"
+                                        :column="1"
+                                        :labelStyle="{ width: '100px' }"
                                     >
-                                    <j-descriptions-item label="实例名称"
-                                        >推送实例的名称</j-descriptions-item
-                                    >
-                                    <j-descriptions-item label="推送地址">
-                                        用于接收OneNet推送设备数据的地址物联网平台地址:
-                                        <div style="word-wrap: break-word">
-                                            {{
-                                                `${origin}/api/one-net/${randomString()}/notify`
-                                            }}
-                                        </div>
-                                    </j-descriptions-item>
-                                    <j-descriptions-item label="Token">
-                                        自定义token,可用于验证请求是否来自OneNet
-                                    </j-descriptions-item>
-                                    <j-descriptions-item label="消息加密">
-                                        采用AES加密算法对推送的数据进行数据加密，AesKey为加密秘钥
-                                    </j-descriptions-item>
-                                </j-descriptions>
+                                        <j-descriptions-item label="参数"
+                                            >说明</j-descriptions-item
+                                        >
+                                        <j-descriptions-item label="实例名称"
+                                            >推送实例的名称</j-descriptions-item
+                                        >
+                                        <j-descriptions-item label="推送地址">
+                                            用于接收OneNet推送设备数据的地址物联网平台地址:
+                                            <div style="word-wrap: break-word">
+                                                {{
+                                                    `${origin}/api/one-net/${randomString()}/notify`
+                                                }}
+                                            </div>
+                                        </j-descriptions-item>
+                                        <j-descriptions-item label="Token">
+                                            自定义token,可用于验证请求是否来自OneNet
+                                        </j-descriptions-item>
+                                        <j-descriptions-item label="消息加密">
+                                            采用AES加密算法对推送的数据进行数据加密，AesKey为加密秘钥
+                                        </j-descriptions-item>
+                                    </j-descriptions>
 
-                                <h1>设备接入网关配置说明</h1>
-                                <j-descriptions
-                                    bordered
-                                    size="small"
-                                    :column="1"
-                                    :labelStyle="{ width: '100px' }"
-                                >
-                                    <j-descriptions-item label="参数"
-                                        >说明</j-descriptions-item
+                                    <h1>设备接入网关配置说明</h1>
+                                    <j-descriptions
+                                        bordered
+                                        size="small"
+                                        :column="1"
+                                        :labelStyle="{ width: '100px' }"
                                     >
-                                    <j-descriptions-item label="apiKey"
-                                        >OneNet平台中具体产品的Key</j-descriptions-item
-                                    >
-                                    <j-descriptions-item label="通知Token">
-                                        填写OneNet数据推送配置中设置的Token
-                                    </j-descriptions-item>
-                                    <j-descriptions-item label="aesKey">
-                                        若OneNet数据推送配置了消息加密，此处填写OneNet端数据推送配置中设置的aesKey
-                                    </j-descriptions-item>
-                                </j-descriptions>
-                                <h1>其他说明</h1>
-                                <div>
-                                    1.在IOT端启用设备时，若OneNet平台没有与之对应的设备，则将在OneNet端自动创建新设备
+                                        <j-descriptions-item label="参数"
+                                            >说明</j-descriptions-item
+                                        >
+                                        <j-descriptions-item label="apiKey"
+                                            >OneNet平台中具体产品的Key</j-descriptions-item
+                                        >
+                                        <j-descriptions-item label="通知Token">
+                                            填写OneNet数据推送配置中设置的Token
+                                        </j-descriptions-item>
+                                        <j-descriptions-item label="aesKey">
+                                            若OneNet数据推送配置了消息加密，此处填写OneNet端数据推送配置中设置的aesKey
+                                        </j-descriptions-item>
+                                    </j-descriptions>
+                                    <h1>其他说明</h1>
+                                    <div>
+                                        1.在IOT端启用设备时，若OneNet平台没有与之对应的设备，则将在OneNet端自动创建新设备
+                                    </div>
                                 </div>
-                            </div>
+                            </j-scrollbar>
                         </j-col>
                     </j-row>
                 </div>
@@ -278,8 +265,12 @@
                         新增
                     </PermissionButton>
                 </div>
-                <div class="card-item">
-                    <j-row :gutter="[24, 24]" v-if="procotolList.length > 0">
+                <j-scrollbar height="500">
+                    <j-row
+                        :gutter="[24, 24]"
+                        v-if="procotolList.length > 0"
+                        style="margin-right: 10px"
+                    >
                         <j-col
                             :span="8"
                             v-for="item in procotolList"
@@ -294,7 +285,7 @@
                         </j-col>
                     </j-row>
                     <j-empty v-else description="暂无数据" />
-                </div>
+                </j-scrollbar>
             </div>
         </div>
         <div v-if="current === 2" class="card-last">
@@ -463,26 +454,24 @@ const formData = ref<Form>({
 const current = ref(0);
 const stepCurrent = ref(0);
 const steps = ref(['接入配置', '消息协议', '完成']);
-const procotolList = ref([]);
+const procotolList: any = ref([]);
 const allProcotolList = ref([]);
-const procotolCurrent = ref('');
+const procotolCurrent: any = ref('');
 
 const procotolChange = (id: string) => {
     procotolCurrent.value = id;
 };
 
 const procotolSearch = (value: string) => {
-    if (value) {
-        const list = allProcotolList.value.filter((i) => {
-            return (
-                i.name &&
-                i.name.toLocaleLowerCase().includes(value.toLocaleLowerCase())
-            );
-        });
-        procotolList.value = list;
-    } else {
-        procotolList.value = allProcotolList.value;
-    }
+    procotolList.value = value
+        ? allProcotolList.value.filter(
+              (i: any) =>
+                  i.name &&
+                  i.name
+                      .toLocaleLowerCase()
+                      .includes(value.toLocaleLowerCase()),
+          )
+        : allProcotolList.value;
 };
 
 const saveData = async () => {
@@ -513,7 +502,7 @@ const saveData = async () => {
 };
 
 const queryProcotolList = async (id: string, params = {}) => {
-    const resp = await getProtocolList(ProtocolMapping.get(id), {
+    const resp: any = await getProtocolList(ProtocolMapping.get(id), {
         ...params,
         'sorts[0].name': 'createTime',
         'sorts[0].order': 'desc',
@@ -526,10 +515,10 @@ const queryProcotolList = async (id: string, params = {}) => {
 
 const addProcotol = () => {
     const url = menuStory.menus['link/Protocol']?.path;
-    const tab = window.open(
+    const tab: any = window.open(
         `${window.location.origin + window.location.pathname}#${url}?save=true`,
     );
-    tab.onTabSaveSuccess = (value) => {
+    tab.onTabSaveSuccess = (value: any) => {
         if (value.success) {
             procotolCurrent.value = value.result?.id;
             queryProcotolList(props.provider?.id);
@@ -587,12 +576,6 @@ watch(
 }
 .steps-box {
     min-height: 400px;
-    .card-item {
-        padding-right: 5px;
-        max-height: 480px;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
     .card-last {
         padding-right: 5px;
         overflow-y: auto;

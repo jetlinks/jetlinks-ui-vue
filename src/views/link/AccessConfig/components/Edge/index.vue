@@ -29,14 +29,18 @@
                         新增
                     </PermissionButton>
                 </div>
-                <div class="card-item">
-                    <j-row :gutter="[24, 24]" v-if="networkList.length > 0">
+                <j-scrollbar height="500">
+                    <j-row
+                        :gutter="[24, 24]"
+                        v-if="networkList.length > 0"
+                        style="margin-right: 10px"
+                    >
                         <j-col
                             :span="8"
                             v-for="item in networkList"
                             :key="item.id"
                         >
-                            <access-card
+                            <AccessCard
                                 @checkedChange="checkedChange"
                                 :checked="networkCurrent"
                                 :data="{
@@ -96,11 +100,11 @@
                                         </j-tooltip>
                                     </div>
                                 </template>
-                            </access-card>
+                            </AccessCard>
                         </j-col>
                     </j-row>
                     <j-empty v-else description="暂无数据" />
-                </div>
+                </j-scrollbar>
             </div>
         </div>
         <div
@@ -250,9 +254,9 @@ const formRef = ref<FormInstance>();
 const current = ref(0);
 const stepCurrent = ref(0);
 const steps = ref(['网络组件', '完成']);
-const networkCurrent = ref('');
-const networkList = ref([]);
-const allNetworkList = ref([]);
+const networkCurrent: any = ref('');
+const networkList: any = ref([]);
+const allNetworkList: any = ref([]);
 
 const onFinish = async (values: any) => {
     const providerId = props.provider.id;
@@ -288,15 +292,15 @@ const queryNetworkList = async (id: string, include: string, data = {}) => {
 };
 
 const networkSearch = (value: string) => {
-    if (value) {
-        networkList.value = allNetworkList.value.filter(
-            (i: any) =>
-                i.name &&
-                i.name.toLocaleLowerCase().includes(value.toLocaleLowerCase()),
-        );
-    } else {
-        networkList.value = allNetworkList.value;
-    }
+    networkList.value = value
+        ? allNetworkList.value.filter(
+              (i: any) =>
+                  i.name &&
+                  i.name
+                      .toLocaleLowerCase()
+                      .includes(value.toLocaleLowerCase()),
+          )
+        : allNetworkList.value;
 };
 
 const saveData = async () => {
@@ -306,12 +310,12 @@ const saveData = async () => {
 
 const addNetwork = () => {
     const url = menuStory.menus['link/Type/Detail']?.path;
-    const tab = window.open(
+    const tab: any = window.open(
         `${window.location.origin + window.location.pathname}#${url}?type=${
             NetworkTypeMapping.get(props.provider?.id) || ''
         }`,
     );
-    tab.onTabSaveSuccess = (value) => {
+    tab.onTabSaveSuccess = (value: any) => {
         if (value.success) {
             networkCurrent.value = value.result.id;
             queryNetworkList(props.provider?.id, networkCurrent.value || '');
@@ -364,12 +368,6 @@ watch(
 }
 .steps-box {
     min-height: 400px;
-    .card-item {
-        padding-right: 5px;
-        max-height: 480px;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
     .card-last {
         padding-right: 5px;
         overflow-y: auto;
@@ -405,9 +403,6 @@ watch(
 }
 .config-right {
     padding: 20px;
-    // color: rgba(0, 0, 0, 0.8);
-    // background: rgba(0, 0, 0, 0.04);
-
     .config-right-item {
         margin-bottom: 10px;
 

@@ -48,7 +48,7 @@ const checkedChange = (id: string) => {
     overflow: hidden;
     background: url('/public/images/access.png') no-repeat;
     background-size: 100% 100%;
-    min-height: 105px;
+    height: 120px;
 
     .title {
         width: calc(100% - 88px);
@@ -94,7 +94,6 @@ const checkedChange = (id: string) => {
         position: relative;
         color: #2f54eb;
         border-color: #2f54eb;
-
         .checked-icon {
             display: block;
         }

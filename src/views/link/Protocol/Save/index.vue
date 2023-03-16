@@ -135,11 +135,17 @@ const changeType = (value: Array<string>) => {
 const onSubmit = async () => {
     const data: any = await formRef.value?.validate();
     loading.value = true;
-    const response = !id
+    const response: any = !id
         ? await save(data).catch(() => {})
         : await update({ ...props.data, ...data }).catch(() => {});
     if (response?.status === 200) {
         emit('change', response?.status === 200);
+        if ((window as any).onTabSaveSuccess) {
+            if (response.result?.id) {
+                (window as any).onTabSaveSuccess(response);
+                setTimeout(() => window.close(), 300);
+            }
+        }
     }
     loading.value = false;
 };

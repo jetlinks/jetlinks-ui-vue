@@ -36,6 +36,7 @@
                                     show-search
                                     :filter-option="filterOption"
                                     @change="changeType"
+                                    :disabled="!!NetworkType"
                                 />
                             </j-form-item>
                         </j-col>
@@ -981,6 +982,7 @@ import {
     resourcesCurrent,
     supports,
     certificates,
+    start,
 } from '@/api/link/type';
 import {
     FormStates,
@@ -1146,13 +1148,21 @@ const saveData = async () => {
         : { ...formData.value, ...formRef2Data };
 
     loading.value = true;
-    const resp =
+    const resp: any =
         id === ':id'
             ? await save(params).catch(() => {})
             : await update({ ...params, id }).catch(() => {});
     if (resp?.status === 200) {
         message.success('操作成功！');
         history.back();
+        if ((window as any).onTabSaveSuccess) {
+            if (resp.result?.id) {
+                start(resp.result?.id).then(() => {
+                    (window as any).onTabSaveSuccess(resp);
+                    setTimeout(() => window.close(), 300);
+                });
+            }
+        }
     }
     loading.value = false;
 };

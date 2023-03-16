@@ -71,24 +71,17 @@
                                 },
                             ]"
                         >
-                            <div>
+                            <template #label>
                                 集群
-                                <span style="color: red; margin: 0 4px 0 -2px"
-                                    >*</span
+                                <j-tooltip
+                                    title="共享配置:集群下所有节点共用同一配置,独立配置:集群下不同节点使用不同配置"
                                 >
-                                <j-tooltip>
-                                    <template #title>
-                                        <p>
-                                            共享配置:集群下所有节点共用同一配置
-                                        </p>
-                                        <p>
-                                            独立配置:集群下不同节点使用不同配置
-                                        </p>
-                                    </template>
-                                    <AIcon type="QuestionCircleOutlined" />
+                                    <AIcon
+                                        type="QuestionCircleOutlined"
+                                        style="margin-left: 2px"
+                                    />
                                 </j-tooltip>
-                            </div>
-
+                            </template>
                             <j-radio-group
                                 v-model:value="formState.shareCluster"
                             >
@@ -218,20 +211,26 @@
                                         :header="`#${index + 1}.节点`"
                                     >
                                         <template #extra>
-                                            <AIcon type="DeleteOutlined" />
+                                            <AIcon
+                                                @click="removeCluster(cluster)"
+                                                type="DeleteOutlined"
+                                            />
                                         </template>
                                         <j-row :gutter="[24, 24]">
                                             <j-col :span="8">
                                                 <j-form-item
+                                                    label="节点名称"
                                                     :name="[
                                                         'cluster',
                                                         index,
                                                         'clusterNodeId',
                                                     ]"
+                                                    :rules="{
+                                                        required: true,
+                                                        message:
+                                                            '请选择节点名称',
+                                                    }"
                                                 >
-                                                    <div class="form-label">
-                                                        节点名称
-                                                    </div>
                                                     <j-select
                                                         v-model:value="
                                                             cluster.clusterNodeId
@@ -527,22 +526,22 @@ import { getResourcesCurrent, getClusters } from '@/api/link/accessConfig';
 import { update, save } from '@/api/link/accessConfig';
 
 interface Form2 {
-    clusterNodeId: string;
-    port: string;
-    host: string;
-    publicPort: string;
-    publicHost: string;
+    clusterNodeId: string | undefined;
+    port: string | undefined;
+    host: string | undefined;
+    publicPort: string | undefined;
+    publicHost: string | undefined;
     id: number;
 }
 interface FormState {
-    domain: string;
-    sipId: string;
+    domain: string | undefined;
+    sipId: string | undefined;
     shareCluster: boolean;
     hostPort: {
-        port: string;
-        host: string;
-        publicPort: string;
-        publicHost: string;
+        port: string | undefined;
+        host: string | undefined;
+        publicPort: string | undefined;
+        publicHost: string | undefined;
     };
 }
 
@@ -576,14 +575,14 @@ const formData = ref({
     description: '',
 });
 let formState = ref<FormState>({
-    domain: '',
-    sipId: '',
+    domain: undefined,
+    sipId: undefined,
     shareCluster: true,
     hostPort: {
-        port: '',
+        port: undefined,
         host: '0.0.0.0',
-        publicPort: '',
-        publicHost: '',
+        publicPort: undefined,
+        publicHost: undefined,
     },
 });
 
@@ -610,11 +609,11 @@ const removeCluster = (item: Form2) => {
 const addCluster = () => {
     const id = Date.now();
     dynamicValidateForm.cluster.push({
-        clusterNodeId: '',
-        port: '',
-        host: '',
-        publicPort: '',
-        publicHost: '',
+        clusterNodeId: undefined,
+        port: undefined,
+        host: undefined,
+        publicPort: undefined,
+        publicHost: undefined,
         id,
     });
     activeKey.value = [...activeKey.value, id.toString()];
@@ -665,16 +664,7 @@ const saveData = () => {
             id === ':id' ? await save(params) : await update({ ...params, id });
         if (resp.status === 200) {
             message.success('操作成功！');
-            // if (params.get('save')) {
-            // if ((window as any).onTabSaveSuccess) {
-            //   if (resp.result) {
-            //     (window as any).onTabSaveSuccess(resp.result);
-            //     setTimeout(() => window.close(), 300);
-            //   }
-            // }
-            //   } else {
             history.back();
-            //   }
         }
     });
 };
@@ -709,14 +699,14 @@ onMounted(() => {
     getResourcesCurrent().then((resp) => {
         if (resp.status === 200) {
             sipListConst = resp.result;
-            sipListOption.value = sipListConst.map((i) => ({
+            sipListOption.value = sipListConst.map((i: any) => ({
                 value: i.host,
                 label: i.host,
             }));
 
             sipList.value = sipListConst
-                .find((i) => i.host === '0.0.0.0')
-                ?.portList.map((i) => {
+                .find((i: any) => i.host === '0.0.0.0')
+                ?.portList.map((i: any) => {
                     return {
                         value: JSON.stringify({
                             host: '0.0.0.0',
@@ -728,9 +718,9 @@ onMounted(() => {
         }
     });
 
-    getClusters().then((resp) => {
+    getClusters().then((resp: any) => {
         if (resp.status === 200) {
-            const list = resp.result.map((i) => ({
+            const list = resp.result.map((i: any) => ({
                 value: i.id,
                 label: i.name,
             }));
