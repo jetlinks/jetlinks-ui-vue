@@ -49,7 +49,7 @@
                             <j-input
                                 v-model:value="form.id"
                                 placeholder="请输入ID"
-                                :disabled="disabled"
+                                :disabled="idDisabled"
                             />
                         </j-form-item>
                         <j-form-item label="名称" name="name">
@@ -149,6 +149,7 @@ import { Form } from 'ant-design-vue';
 import { getImage } from '@/utils/comm.ts';
 import { message } from 'ant-design-vue';
 import DialogTips from '../DialogTips/index.vue';
+import { useProductStore } from '@/store/product';
 import { filterTreeSelectNode, filterSelectNode } from '@/utils/comm';
 import { FILE_UPLOAD } from '@/api/comm';
 import { isInput } from '@/utils/regular';
@@ -159,7 +160,7 @@ import {
     CheckOutlined,
     DeleteOutlined,
 } from '@ant-design/icons-vue';
-
+const productStore = useProductStore();
 const emit = defineEmits(['success']);
 const props = defineProps({
     title: {
@@ -178,6 +179,7 @@ const visible = ref<boolean>(false);
 const logoLoading = ref<boolean>(false);
 const formRef = ref();
 const disabled = ref<boolean>(false);
+const idDisabled = ref<boolean>(false);
 const useForm = Form.useForm;
 const _selectedRowKeys = ref([]);
 const photoValue = ref('/images/device-product.png');
@@ -296,6 +298,7 @@ watch(
  */
 const show = (data: any) => {
     if (props.isAdd === 2) {
+        productStore.refresh(data.id);
         form.name = data.name;
         form.classifiedId = data.classifiedId;
         form.classifiedName = data.classifiedName;
@@ -303,7 +306,8 @@ const show = (data: any) => {
         form.deviceType = data.deviceType.value;
         form.describe = form.describe;
         form.id = data.id;
-        disabled.value = true;
+        disabled.value = productStore.current?.accessId ? true : false;
+        idDisabled.value = true;
     } else if (props.isAdd === 1) {
         form.name = '';
         form.classifiedId = '';
@@ -313,6 +317,7 @@ const show = (data: any) => {
         form.describe = undefined;
         form.id = undefined;
         disabled.value = false;
+        disabled.vlaue = false;
     }
     visible.value = true;
 };

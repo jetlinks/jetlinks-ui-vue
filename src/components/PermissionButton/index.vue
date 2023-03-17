@@ -40,7 +40,7 @@
       </j-button>
     </template>
   </template>
-  <j-tooltip v-else title="没有权限">
+  <j-tooltip v-else title="暂无权限，请联系管理员">
     <slot v-if="noButton"></slot>
     <j-button v-else v-bind="props" :disabled="_isPermission" :style="props.style">
       <slot></slot>

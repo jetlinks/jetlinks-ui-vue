@@ -53,7 +53,7 @@
                                 >
                                     <j-input
                                         v-model:value="formData.id"
-                                        placeholder="请输入"
+                                        placeholder="请输入ID"
                                         :disabled="!!route.query.id"
                                     />
                                 </j-form-item>

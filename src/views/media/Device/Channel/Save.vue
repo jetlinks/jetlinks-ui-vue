@@ -317,9 +317,14 @@ watch(
     () => _vis.value,
     (val) => {
         if (!val) {
-            formRef.value.resetFields();
+            formRef.value?.resetFields(); // resetFields没有生效
             // 以下字段非表单所填, 重置字段需手动置空
-            formData.value.id = undefined;
+            Object.keys(formData.value).forEach((key: string) => {
+                if (key === 'id') formData.value.id = undefined;
+                else if (key === 'deviceId')
+                    formData.value.deviceId = route.query.id;
+                else formData.value[key] = '';
+            });
         }
     },
 );

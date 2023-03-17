@@ -78,7 +78,12 @@
                                 ...item.tooltip,
                             }"
                             @click="item.onClick"
-                            :hasPermission="'media/Device:' + item.key"
+                            :hasPermission="
+                                'media/Device:' +
+                                (item.key !== 'updateChannel'
+                                    ? item.key
+                                    : 'update')
+                            "
                         >
                             <AIcon
                                 type="DeleteOutlined"
@@ -124,7 +129,10 @@
                             @click="i.onClick"
                             type="link"
                             style="padding: 0px"
-                            :hasPermission="'media/Device:' + i.key"
+                            :hasPermission="
+                                'media/Device:' +
+                                (i.key !== 'updateChannel' ? i.key : 'update')
+                            "
                         >
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
@@ -318,7 +326,7 @@ const getActions = (
             },
         },
         {
-            key: 'view', // updateChannel
+            key: 'updateChannel',
             text: '更新通道',
             tooltip: {
                 title:
@@ -366,6 +374,8 @@ const getActions = (
             icon: 'DeleteOutlined',
         },
     ];
-    return actions;
+    return data.provider === 'fixed-media'
+        ? actions.filter((f: any) => f.key !== 'updateChannel')
+        : actions;
 };
 </script>
