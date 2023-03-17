@@ -67,8 +67,8 @@
                     <span>{{ slotProps.channelNumber || 0 }}</span>
                 </template>
                 <template #state="slotProps">
-                    <a-space>
-                        <a-badge
+                    <j-space>
+                        <j-badge
                             :status="
                                 slotProps.state.value === 'online'
                                     ? 'success'
@@ -76,7 +76,7 @@
                             "
                             :text="slotProps.state.text"
                         />
-                    </a-space>
+                    </j-space>
                 </template>
             </JProTable>
         </j-modal>

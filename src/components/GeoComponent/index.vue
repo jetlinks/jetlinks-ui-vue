@@ -1,12 +1,12 @@
 <!-- 坐标点拾取组件 -->
 <template>
     <div class="page-container">
-        <a-input allowClear v-model:value="inputPoint">
+        <j-input allowClear v-model:value="inputPoint">
             <template #addonAfter>
                 <environment-outlined @click="modalVis = true" />
             </template>
-        </a-input>
-        <a-modal
+        </j-input>
+        <j-modal
             title="地理位置"
             ok-text="确认"
             cancel-text="取消"
@@ -28,7 +28,7 @@
                 </el-amap>
                 {{ mapPoint }}
             </div>
-        </a-modal>
+        </j-modal>
     </div>
 </template>
 

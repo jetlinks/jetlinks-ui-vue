@@ -15,87 +15,91 @@
                     <j-radio-button :value="0">全屏</j-radio-button>
                 </j-radio-group>
                 <div class="screen-tool-save">
-                    <j-tooltip title="可保存分屏配置记录">
-                        <AIcon type="QuestionCircleOutlined" />
-                    </j-tooltip>
-                    <j-popover
-                        v-model:visible="visible"
-                        trigger="click"
-                        title="分屏名称"
-                    >
-                        <template #content>
-                            <j-form
-                                ref="formRef"
-                                :model="formData"
-                                layout="vertical"
-                            >
-                                <j-form-item
-                                    name="name"
-                                    :rules="[
-                                        {
-                                            required: true,
-                                            message: '请输入名称',
-                                        },
-                                        {
-                                            max: 64,
-                                            message: '最多可输入64个字符',
-                                        },
-                                    ]"
-                                >
-                                    <j-textarea v-model:value="formData.name" />
-                                </j-form-item>
-                                <j-button
-                                    type="primary"
-                                    @click="saveHistory"
-                                    :loading="loading"
-                                    style="width: 100%; margin-top: 16px"
-                                >
-                                    保存
-                                </j-button>
-                            </j-form>
-                        </template>
-                        <j-dropdown-button
-                            type="primary"
-                            @click="visible = true"
+                    <j-space>
+                        <j-tooltip title="可保存分屏配置记录">
+                            <AIcon type="QuestionCircleOutlined" />
+                        </j-tooltip>
+                        <j-popover
+                            v-model:visible="visible"
+                            trigger="click"
+                            title="分屏名称"
                         >
-                            保存
-                            <template #overlay>
-                                <j-menu>
-                                    <j-empty
-                                        v-if="!historyList.length"
-                                        description="暂无数据"
-                                    />
-                                    <j-menu-item
-                                        v-for="(item, index) in historyList"
-                                        :key="`his${index}`"
-                                        @click="handleHistory(item)"
+                            <template #content>
+                                <j-form
+                                    ref="formRef"
+                                    :model="formData"
+                                    layout="vertical"
+                                >
+                                    <j-form-item
+                                        name="name"
+                                        :rules="[
+                                            {
+                                                required: true,
+                                                message: '请输入名称',
+                                            },
+                                            {
+                                                max: 64,
+                                                message: '最多可输入64个字符',
+                                            },
+                                        ]"
                                     >
-                                        <j-space>
-                                            <span>{{ item.name }}</span>
-                                            <j-popconfirm
-                                                title="确认删除?"
-                                                ok-text="确认"
-                                                cancel-text="取消"
-                                                @confirm="(e: any) => {
-                                                    e?.stopPropagation();
-                                                    deleteHistory(item.key);
-                                                }
-                                                "
-                                            >
-                                                <AIcon
-                                                    type="DeleteOutlined"
-                                                    @click="
-                                                        (e:any) =>
-                                                            e?.stopPropagation()
-                                                    "
-                                                />
-                                            </j-popconfirm>
-                                        </j-space>
-                                    </j-menu-item>
-                                </j-menu>
+                                        <j-textarea
+                                            v-model:value="formData.name"
+                                        />
+                                    </j-form-item>
+                                    <j-button
+                                        type="primary"
+                                        @click="saveHistory"
+                                        :loading="loading"
+                                        style="width: 100%; margin-top: 16px"
+                                    >
+                                        保存
+                                    </j-button>
+                                </j-form>
                             </template>
-                        </j-dropdown-button>
-                    </j-popover>
+                            <j-dropdown-button
+                                type="primary"
+                                @click="visible = true"
+                            >
+                                保存
+                                <template #overlay>
+                                    <j-menu>
+                                        <j-empty
+                                            v-if="!historyList.length"
+                                            description="暂无数据"
+                                        />
+                                        <j-menu-item
+                                            v-for="(item, index) in historyList"
+                                            :key="`his${index}`"
+                                            @click="handleHistory(item)"
+                                        >
+                                            <j-space>
+                                                <span>{{ item.name }}</span>
+                                                <j-popconfirm
+                                                    title="确认删除?"
+                                                    ok-text="确认"
+                                                    cancel-text="取消"
+                                                    @confirm="(e: any) => {
+                                                        e?.stopPropagation();
+                                                        deleteHistory(item.key);
+                                                    }
+                                                    "
+                                                >
+                                                    <AIcon
+                                                        type="DeleteOutlined"
+                                                        @click="
+                                                            (e:any) =>
+                                                                e?.stopPropagation()
+                                                        "
+                                                    />
+                                                </j-popconfirm>
+                                            </j-space>
+                                        </j-menu-item>
+                                    </j-menu>
+                                </template>
+                            </j-dropdown-button>
+                        </j-popover>
+                    </j-space>
                 </div>
             </div>
             <!-- 播放器 -->
