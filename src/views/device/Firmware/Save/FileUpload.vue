@@ -53,7 +53,7 @@ const handleChange = async (info: UploadChangeParam) => {
     if (info.file.status === 'done') {
         loading.value = false;
         const result = info.file.response?.result;
-        const api: any = await querySystemApi(['paths']);
+        const api: any = await querySystemApi(['paths']); // todo base-path在pinia获取系统配置的
         const path = api.result[0]?.properties
             ? api.result[0]?.properties['base-path']
             : '';
