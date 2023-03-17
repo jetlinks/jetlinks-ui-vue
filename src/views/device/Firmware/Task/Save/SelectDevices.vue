@@ -233,10 +233,15 @@ const handleOk = () => {
     visible.value = false;
 };
 
-const updateSelect = (selectedRowKeys: T[]) =>
-    selectedRowKeys
+const updateSelect = (selectedRowKeys: T[]) => {
+    let selectedRowLabel: any = selectedRowKeys
         .map((item) => checkAllDataMap.has(item) && checkAllDataMap.get(item))
         .toString();
+    if (selectedRowLabel === 'false') {
+        selectedRowLabel = selectedRowKeys;
+    }
+    return selectedRowLabel;
+};
 
 const onVisible = () => {
     !props.data.view && (visible.value = true);
@@ -258,6 +263,7 @@ onMounted(() => {
                 if (props.data.id) {
                     checkLable.value = updateSelect(props.data.deviceId);
                     emit('update:modelValue', props.data.deviceId);
+                    console.log(111, checkLable.value, props.data.deviceId);
                 }
             }
         },

@@ -74,6 +74,7 @@ import _ from 'lodash';
 import Save from './Save/index.vue';
 import { useMenuStore } from 'store/menu';
 import type { FormDataType } from './type';
+import { onlyMessage } from '@/utils/comm';
 
 const menuStory = useMenuStore();
 
@@ -233,7 +234,7 @@ const saveChange = (value: FormDataType) => {
     visible.value = false;
     current.value = {};
     if (value) {
-        message.success('操作成功');
+        onlyMessage('操作成功', 'success');
         tableRef.value.reload();
     }
 };
@@ -241,7 +242,7 @@ const saveChange = (value: FormDataType) => {
 const handlDelete = async (id: string) => {
     const res = await remove(id);
     if (res.success) {
-        message.success('操作成功');
+        onlyMessage('操作成功', 'success');
         tableRef.value.reload();
     }
 };

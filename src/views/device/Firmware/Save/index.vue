@@ -201,6 +201,7 @@ import {
 } from '@/api/device/firmware';
 import type { FormInstance } from 'ant-design-vue';
 import type { Properties } from '../type';
+import { onlyMessage } from '@/utils/comm';
 
 const formRef = ref<FormInstance>();
 const dynamicValidateForm = reactive<{ properties: Properties[] }>({
@@ -327,7 +328,9 @@ const handleOk = async () => {
                 ? await save(params).catch(() => {})
                 : await update({ ...props.data, ...params }).catch(() => {});
             if (response?.status === 200) {
-                message.success('操作成功');
+                // message.success('操作成功');
+                onlyMessage('操作成功', 'success');
+
                 emit('change', true);
             }
             loading.value = false;
