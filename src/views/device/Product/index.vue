@@ -132,7 +132,7 @@
                         <PermissionButton
                             :disabled="i.disabled"
                             :popConfirm="i.popConfirm"
-                            :hasPermission="'device/Product:' + i.key"
+                            :hasPermission="i.key === 'view' ? true : 'device/Product:' + i.key"
                             :tooltip="{
                                 ...i.tooltip,
                             }"
