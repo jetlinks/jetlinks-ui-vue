@@ -271,21 +271,31 @@ const getActions = (
 /**
  * 自动绑定
  */
-const handleAutoBind = () => {
-    const arr = dataSource.value
-        .filter((item: any) => item.userId && item.status.value === 'error')
-        .map((i: any) => {
-            return {
-                userId: i.userId,
-                providerName: i.userName,
-                thirdPartyUserId: i.thirdPartyUserId,
-            };
-        });
+const handleAutoBind = async () => {
+    await getTableData([
+        {
+            column: `id$user-third$${props.data.type}_${props.data.provider}$not`,
+        },
+    ]);
+    const params = dataSource.value
+        .filter((f: any) => f.userId && f.status.value === 'error')
+        .map((m: any) => ({
+            userId: m.userId,
+            providerName: m.thirdPartyUserName,
+            thirdPartyUserId: m.thirdPartyUserId,
+        }));
 
-    configApi.dingTalkBindUser(arr, props.data.id).then(() => {
-        message.success('操作成功');
-        getTableData();
-    });
+    if (props.data.type === 'dingTalk') {
+        configApi.dingTalkBindUser(params, props.data.id).then(() => {
+            message.success('操作成功');
+            getTableData();
+        });
+    } else if (props.data.type === 'weixin') {
+        configApi.weChatBindUser(params, props.data.id).then(() => {
+            message.success('操作成功');
+            getTableData();
+        });
+    }
 };
 
 /**
@@ -335,9 +345,9 @@ const getAllUsers = async (terms?: any) => {
  */
 const dataSource = ref<any>([]);
 const tableLoading = ref(false);
-const getTableData = () => {
+const getTableData = (terms?: any) => {
     tableLoading.value = true;
-    Promise.all<any>([getDeptUsers(), getBindUsers(), getAllUsers()])
+    Promise.all<any>([getDeptUsers(), getBindUsers(), getAllUsers(terms)])
         .then((res) => {
             dataSource.value = [];
             const [deptUsers, bindUsers, unBindUsers] = res;
@@ -359,7 +369,7 @@ const getTableData = () => {
                     thirdPartyUserId: deptUser.id,
                     thirdPartyUserName: deptUser.name,
                     bindId: bindUser?.id,
-                    userId: bindUser?.userId,
+                    userId: unBindUser?.id,
                     userName: unBindUser
                         ? `${unBindUser.name}(${unBindUser.username})`
                         : bindUser?.providerName,
@@ -420,7 +430,6 @@ const handleBind = (row: any) => {
     getAllUsers([
         {
             column: `id$user-third$${props.data.type}_${props.data.provider}$not`,
-            // value: props.data.id,
         },
     ]);
 };
