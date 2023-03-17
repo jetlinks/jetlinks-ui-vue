@@ -22,7 +22,7 @@
         @cancel="handleCancel"
         @ok="handleOk"
     >
-        <Search
+        <pro-search
             :columns="columns"
             target="search"
             @search="handleSearch"
@@ -44,6 +44,7 @@
         >
             <template #headerTitle>
                 <j-checkbox
+                    v-if="checkAllData.length !== 0"
                     v-model:checked="state.checkAll"
                     :indeterminate="state.indeterminate"
                     @change="onCheckAllChange"
@@ -194,7 +195,11 @@ const onCheckAllChange = (e: any) => {
     _selectedRowKeys.value = state.checkedList;
 };
 
-const onSelectChange = (record: T[], selected: boolean, selectedRows: T[]) => {
+const onSelectChange = (
+    record: T[any],
+    selected: boolean,
+    selectedRows: T[any],
+) => {
     _selectedRowKeys.value = selected
         ? [...getSetRowKey(selectedRows)]
         : _selectedRowKeys.value.filter((item: T) => item !== record?.id);

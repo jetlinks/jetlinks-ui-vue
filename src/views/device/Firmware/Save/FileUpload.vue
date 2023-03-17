@@ -53,7 +53,7 @@ const handleChange = async (info: UploadChangeParam) => {
     if (info.file.status === 'done') {
         loading.value = false;
         const result = info.file.response?.result;
-        const api = await querySystemApi(['paths']);
+        const api: any = await querySystemApi(['paths']);
         const path = api.result[0]?.properties
             ? api.result[0]?.properties['base-path']
             : '';
@@ -88,6 +88,8 @@ watch(
 .upload-box {
     :deep(.ant-btn) {
         width: 110px;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
     }
     .upload-text {
         margin: 0 10px;
