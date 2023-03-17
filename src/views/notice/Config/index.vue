@@ -50,9 +50,9 @@
             <template #card="slotProps">
                 <CardBox
                     :showStatus="false"
+                    :statusNames="{}"
                     :value="slotProps"
                     :actions="getActions(slotProps, 'card')"
-                    v-bind="slotProps"
                 >
                     <template #img>
                         <slot name="img">
