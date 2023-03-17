@@ -193,13 +193,13 @@
                 />
             </j-form-item>
 
-            <a-form-item label="" :name="['features']">
-                <a-checkbox-group v-model:value="formData.features">
-                    <a-checkbox value="changedOnly" name="type"
-                        >只推送变化的数据</a-checkbox
+            <j-form-item label="" :name="['features']">
+                <j-checkbox-group v-model:value="formData.features">
+                    <j-checkbox value="changedOnly" name="type"
+                        >只推送变化的数据</j-checkbox
                     >
-                </a-checkbox-group>
-            </a-form-item>
+                </j-checkbox-group>
+            </j-form-item>
 
             <j-form-item label="说明" :name="['description']">
                 <j-textarea

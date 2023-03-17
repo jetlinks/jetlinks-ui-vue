@@ -1,6 +1,6 @@
 <template>
     <div class="tree-container">
-        <a-input-search
+        <j-input-search
             v-model:value="searchValue"
             style="margin-bottom: 8px"
             placeholder="请输入"
