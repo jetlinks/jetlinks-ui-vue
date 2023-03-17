@@ -25,7 +25,7 @@
                     <div class="tool-item">刷新</div>
                     <div class="tool-item" @click.stop="handleReset">重置</div>
                 </div>
-                <LivePlayer :url="url" :protocol="mediaType" autoplay />
+                <LivePlayer :live="true" :url="url" :protocol="mediaType" autoplay />
             </div>
             <MediaTool
                 @onMouseDown="handleMouseDown"

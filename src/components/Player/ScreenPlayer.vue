@@ -131,7 +131,7 @@
                             >
                                 刷新
                             </div>
-                            <LivePlayer :url="item.url" autoplay />
+                            <LivePlayer :live="true" :url="item.url" autoplay />
                         </div>
                     </template>
                 </div>
