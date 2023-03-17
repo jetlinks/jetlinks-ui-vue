@@ -54,12 +54,23 @@
                         </template>
                         <template #content>
                             <div class="card-item-content">
-                                <h3
-                                    @click="handlEye(slotProps.id)"
-                                    class="card-item-content-title card-item-content-title-a"
+                                <Ellipsis
+                                    style="
+                                        width: calc(100% - 100px);
+                                        margin-bottom: 10px;
+                                        color: #2f54eb;
+                                    "
                                 >
-                                    {{ slotProps.name }}
-                                </h3>
+                                    <span
+                                        style="
+                                            font-size: 16px;
+                                            font-weight: 600;
+                                        "
+                                        @click.stop="handlEye(slotProps.id)"
+                                    >
+                                        {{ slotProps.name }}
+                                    </span>
+                                </Ellipsis>
                                 <j-row class="card-item-content-box">
                                     <j-col
                                         :span="8"
@@ -276,14 +287,6 @@ const handleSearch = (e: any) => {
 .card-item-content {
     min-height: 100px;
 
-    .card-item-content-title-a {
-        // color: #000 !important;
-        font-weight: 700;
-        font-size: 16px;
-        overflow: hidden; //超出的文本隐藏
-        text-overflow: ellipsis; //溢出用省略号显示
-        white-space: nowrap; //溢出不换行
-    }
     .card-item-content-box {
         min-height: 50px;
     }

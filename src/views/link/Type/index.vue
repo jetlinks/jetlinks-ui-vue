@@ -52,14 +52,23 @@
                         </template>
                         <template #content>
                             <div class="card-item-content">
-                                <PermissionButton
-                                    type="link"
-                                    @click="handlEye(slotProps.id)"
-                                    hasPermission="link/Type:view"
-                                    :style="TiTlePermissionButtonStyle"
+                                <Ellipsis
+                                    style="
+                                        width: calc(100% - 100px);
+                                        margin-bottom: 10px;
+                                        color: #2f54eb;
+                                    "
                                 >
-                                    {{ slotProps.name }}
-                                </PermissionButton>
+                                    <span
+                                        style="
+                                            font-size: 16px;
+                                            font-weight: 600;
+                                        "
+                                        @click.stop="handlEye(slotProps.id)"
+                                    >
+                                        {{ slotProps.name }}
+                                    </span>
+                                </Ellipsis>
                                 <j-row class="card-item-content-box">
                                     <j-col :span="12">
                                         <div class="card-item-content-text">
@@ -166,7 +175,6 @@ import type { ActionsType } from '@/components/Table/index';
 import { getImage } from '@/utils/comm';
 import { supports, query, remove, start, shutdown } from '@/api/link/type';
 import { onlyMessage } from '@/utils/comm';
-import { TiTlePermissionButtonStyle } from './data';
 import { useMenuStore } from 'store/menu';
 
 const menuStory = useMenuStore();

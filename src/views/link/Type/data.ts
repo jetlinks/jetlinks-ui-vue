@@ -307,14 +307,3 @@ export const Rules = {
         },
     ],
 };
-
-export const TiTlePermissionButtonStyle = {
-    padding: 0,
-    'max-width': 'calc(100% - 90px)',
-    color: ' #1890ff !important',
-    'font-weight': 700,
-    'font-size': '16px',
-    overflow: 'hidden',
-    'text-overflow': 'ellipsis',
-    'white-space': 'nowrap',
-};

@@ -37,19 +37,6 @@ export const updateStatus = {
     },
 };
 
-export const TiTlePermissionButtonStyle = {
-    padding: 0,
-    'max-width': 'calc(100% - 90px)',
-    color: ' #1890ff !important',
-    'font-weight': 700,
-    'font-size': '16px',
-    overflow: 'hidden',
-    'text-overflow': 'ellipsis',
-    'white-space': 'nowrap',
-    width: 'calc(100%-150px)',
-    // width: '60%',
-};
-
 export const regOnlyNumber = new RegExp(/^\d+$/);
 
 export const regIP = new RegExp(
