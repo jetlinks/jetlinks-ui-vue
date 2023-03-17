@@ -11,7 +11,6 @@
                 :isLast="index === actions.length - 1"
                 :options="item.options"
                 @delete="_delete(item.key || '')"
-                @update="(data, options) => _update(data, options, item)"
             />
         </template>
         <div class="actions-add-list" :class="{ 'border': props.actions.length }">
@@ -37,7 +36,6 @@ import { PropType } from 'vue';
 import { ActionsType, ParallelType } from '../../../typings';
 import Modal from '../Modal/index.vue';
 import Item from './Item.vue';
-import { pick } from 'lodash';
 import { useSceneStore } from '@/store/scene';
 import { storeToRefs } from 'pinia';
 
@@ -98,9 +96,7 @@ const _delete = (_key: string) => {
   emit('delete', _key)
 }
 
-const _update = (data: ActionsType, options: any, item: any) => {
-  const olData = pick(item, ['terms']);
-  emit('add', {...olData, ...data, options})
+const _update = () => {
   visible.value = false
 }
 </script>

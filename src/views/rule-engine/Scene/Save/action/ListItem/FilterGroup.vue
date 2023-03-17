@@ -58,15 +58,13 @@ import { storeToRefs } from 'pinia'
 import { useSceneStore } from 'store/scene'
 import DropdownButton from '../../components/DropdownButton'
 import FilterItem from './FilterCondition.vue'
-import { isArray } from 'lodash-es'
+import { flattenDeep, isArray, set } from 'lodash-es'
 import { provide } from 'vue'
 import { randomString } from '@/utils/utils'
 import { useParams } from '@/views/rule-engine/Scene/Save/util'
 
 const sceneStore = useSceneStore()
 const { data: formModel } = storeToRefs(sceneStore)
-
-
 
 const props = defineProps({
   isFirst: {
@@ -103,9 +101,7 @@ const { columnOptions } = useParams({
   branch: props.branchName,
   branchGroup: props.thenName,
   action: props.actionName
-}, [
-  formModel.value.branches![props.branchName].then[props.thenName].actions[props.actionName]
-])
+})
 
 provide('filter-params', columnOptions)
 
@@ -121,6 +117,16 @@ const mouseover = () => {
 
 const mouseout = () => {
   showDelete.value = false
+}
+
+const handleOptionsColumnsValue = (termsColumns: any[], _options: any) => {
+  formModel.value.branches![props.branchName].then[props.thenName].actions[props.name].options!.termsColumns = termsColumns
+  const flatten = new Set(flattenDeep(termsColumns))
+  let newColumns = [...flatten.values()]
+  if (_options?.otherColumns) {
+    newColumns = [..._options?.otherColumns, ...newColumns]
+  }
+  formModel.value.branches![props.branchName].then[props.thenName].actions[props.name].options!.columns = newColumns
 }
 
 const addTerms = () => {
@@ -154,6 +160,13 @@ const onDelete = () => {
     .then[props.thenName]
     .actions[props.actionName]
     .terms?.splice(props.name, 1)
+
+  const _options = formModel.value.branches![props.branchName].then[props.thenName].actions[props.actionName].options
+  const termsColumns = _options?.termsColumns || []
+  if (_options?.termsColumns) {
+    termsColumns.splice(props.name, 1)
+    handleOptionsColumnsValue(termsColumns, _options)
+  }
 }
 
 const rules = [

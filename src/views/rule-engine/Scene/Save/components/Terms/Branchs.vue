@@ -1,5 +1,5 @@
 <template>
-  <div :class='["actions-terms-warp", props.class]'>
+  <div :class='["actions-terms-warp", isFirst ? "first-children" : ""]'>
     <div class='actions-terms-title'>
       {{ isFirst ? '当' : '否则' }}
     </div>

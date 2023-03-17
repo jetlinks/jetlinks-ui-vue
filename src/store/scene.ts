@@ -94,8 +94,8 @@ export const useSceneStore = defineStore('scene', () => {
         const branchesLength = branches.length;
         if (
           triggerType === 'device' &&
-          ((branchesLength === 1 && !!branches[0]?.when?.length) || // 有一组数据并且when有值
-            (branchesLength > 1 && !branches[branchesLength - 1]?.when?.length)) // 有多组否则数据，并且最后一组when有值
+          ((branchesLength === 1 && branches[0]?.when?.length) || // 有一组数据并且when有值
+            (branchesLength > 1 && branches[branchesLength - 1]?.when?.length)) // 有多组否则数据，并且最后一组when有值
         ) {
           branches.push(null);
         }

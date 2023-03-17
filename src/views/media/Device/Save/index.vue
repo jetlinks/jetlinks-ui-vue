@@ -4,10 +4,14 @@
         <j-card>
             <j-row :gutter="24">
                 <j-col :span="12">
-                    <j-form layout="vertical">
+                    <j-form ref="formRef" :model="formData" layout="vertical">
                         <j-form-item
                             label="接入方式"
-                            v-bind="validateInfos.channel"
+                            name="channel"
+                            :rules="{
+                                required: true,
+                                message: '请选择接入方式',
+                            }"
                         >
                             <RadioCard
                                 layout="horizontal"
@@ -15,7 +19,7 @@
                                 :checkStyle="true"
                                 :disabled="!!route.query.id"
                                 v-model="formData.channel"
-                                @change="formData.productId = undefined"
+                                @change="handleChannelChange"
                             />
                         </j-form-item>
                         <j-row :gutter="24">
@@ -28,7 +32,24 @@
                             <j-col :span="16">
                                 <j-form-item
                                     label="ID"
-                                    v-bind="validateInfos.id"
+                                    name="id"
+                                    :rules="[
+                                        {
+                                            required:
+                                                formData.channel ===
+                                                'gb28181-2016',
+                                            message: '请输入ID',
+                                        },
+                                        {
+                                            max: 64,
+                                            message: '最多输入64个字符',
+                                        },
+                                        {
+                                            pattern: /^[a-zA-Z0-9_\-]+$/,
+                                            message:
+                                                '请输入英文或者数字或者-或者_',
+                                        },
+                                    ]"
                                 >
                                     <j-input
                                         v-model:value="formData.id"
@@ -38,18 +59,32 @@
                                 </j-form-item>
                                 <j-form-item
                                     label="设备名称"
-                                    v-bind="validateInfos.name"
+                                    name="name"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请输入设备名称',
+                                        },
+                                        {
+                                            max: 64,
+                                            message: '最多可输入64个字符',
+                                        },
+                                    ]"
                                 >
                                     <j-input
                                         v-model:value="formData.name"
-                                        placeholder="请输入名称"
+                                        placeholder="请输入设备名称"
                                     />
                                 </j-form-item>
                             </j-col>
                         </j-row>
                         <j-form-item
                             label="所属产品"
-                            v-bind="validateInfos.productId"
+                            name="productId"
+                            :rules="{
+                                required: true,
+                                message: '请选择所属产品',
+                            }"
                         >
                             <j-row :gutter="[0, 10]">
                                 <j-col :span="!!route.query.id ? 24 : 22">
@@ -79,7 +114,17 @@
                         </j-form-item>
                         <j-form-item
                             label="接入密码"
-                            v-bind="validateInfos['others.access_pwd']"
+                            :name="['others', 'access_pwd']"
+                            :rules="[
+                                {
+                                    required: true,
+                                    message: '请输入接入密码',
+                                },
+                                {
+                                    max: 64,
+                                    message: '最多可输入64个字符',
+                                },
+                            ]"
                             v-if="formData.channel === 'gb28181-2016'"
                         >
                             <j-input-password
@@ -90,7 +135,11 @@
                         <template v-if="!!route.query.id">
                             <j-form-item
                                 label="流传输模式"
-                                v-bind="validateInfos.streamMode"
+                                name="streamMode"
+                                :rules="{
+                                    required: true,
+                                    message: '请选择流传输模式',
+                                }"
                             >
                                 <j-radio-group
                                     button-style="solid"
@@ -246,18 +295,14 @@
 
 <script setup lang="ts">
 import { getImage } from '@/utils/comm';
-import { Form } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
-
 import DeviceApi from '@/api/media/device';
-
 import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
 import type { ProductType } from '@/views/media/Device/typings';
 import SaveProduct from './SaveProduct.vue';
 
 const router = useRouter();
 const route = useRoute();
-const useForm = Form.useForm;
 
 // 表单数据
 const formData = ref({
@@ -266,10 +311,10 @@ const formData = ref({
     channel: 'gb28181-2016',
     photoUrl: getImage('/device-media.png'),
     productId: undefined,
+    description: '',
     others: {
         access_pwd: '',
     },
-    description: '',
     // 编辑字段
     streamMode: 'UDP',
     manufacturer: '',
@@ -277,50 +322,9 @@ const formData = ref({
     firmware: '',
 });
 
-// 验证规则
-const formRules = ref({
-    id: [
-        {
-            required: true,
-            message: '请输入ID',
-        },
-        { max: 64, message: '最多输入64个字符' },
-        {
-            pattern: /^[j-zA-Z0-9_\-]+$/,
-            message: '请输入英文或者数字或者-或者_',
-        },
-    ],
-    name: [
-        { required: true, message: '请输入名称' },
-        { max: 64, message: '最多可输入64个字符' },
-    ],
-    productId: [{ required: true, message: '请选择所属产品' }],
-    channel: [{ required: true, message: '请选择接入方式' }],
-    'others.access_pwd': [{ required: true, message: '请输入接入密码' }],
-    description: [{ max: 200, message: '最多可输入200个字符' }],
-    streamMode: [{ required: true, message: '请选择流传输模式' }],
-});
-
-watch(
-    () => formData.value.channel,
-    (val) => {
-        formRules.value['id'][0].required = val === 'gb28181-2016';
-        formRules.value['others.access_pwd'][0].required =
-            val === 'gb28181-2016';
-        validate();
-        getProductList();
-    },
-);
-
-const { resetFields, validate, validateInfos, clearValidate } = useForm(
-    formData.value,
-    formRules.value,
-);
-
-const clearValid = () => {
-    setTimeout(() => {
-        clearValidate();
-    }, 200);
+const handleChannelChange = () => {
+    formData.value.productId = undefined;
+    getProductList();
 };
 
 /**
@@ -328,7 +332,6 @@ const clearValid = () => {
  */
 const productList = ref<ProductType[]>([]);
 const getProductList = async () => {
-    // console.log('formData.productId: ', formData.value.productId);
     const params = {
         paging: false,
         sorts: [{ name: 'createTime', order: 'desc' }],
@@ -352,12 +355,8 @@ const saveProductVis = ref(false);
  */
 const getDetail = async () => {
     const res = await DeviceApi.detail(route.query.id as string);
-    // console.log('res: ', res);
-    // formData.value = res.result;
     Object.assign(formData.value, res.result);
     formData.value.channel = res.result.provider;
-
-    console.log('formData.value: ', formData.value);
 };
 
 onMounted(() => {
@@ -368,23 +367,51 @@ onMounted(() => {
  * 表单提交
  */
 const btnLoading = ref<boolean>(false);
+const formRef = ref();
 const handleSubmit = () => {
-    // console.log('formData.value: ', formData.value);
-    validate()
+    const {
+        others,
+        id,
+        streamMode,
+        manufacturer,
+        model,
+        firmware,
+        ...extraParams
+    } = formData.value;
+    let params: any;
+    if (formData.value.channel === 'fixed-media') {
+        // 固定地址
+        params = !id
+            ? extraParams
+            : { id, streamMode, manufacturer, model, firmware, ...extraParams };
+    } else {
+        // 国标
+        params = !id
+            ? { others, id, ...extraParams }
+            : {
+                  others,
+                  id,
+                  streamMode,
+                  manufacturer,
+                  model,
+                  firmware,
+                  ...extraParams,
+              };
+    }
+
+    formRef.value
+        ?.validate()
         .then(async () => {
             btnLoading.value = true;
-            let res;
-            if (!route.query.id) {
-                res = await DeviceApi.save(formData.value);
-            } else {
-                res = await DeviceApi.update(formData.value);
-            }
+            const res = !route.query.id
+                ? await DeviceApi.save(params)
+                : await DeviceApi.update(params);
             if (res?.success) {
                 message.success('保存成功');
                 router.back();
             }
         })
-        .catch((err) => {
+        .catch((err: any) => {
             console.log('err: ', err);
         })
         .finally(() => {
