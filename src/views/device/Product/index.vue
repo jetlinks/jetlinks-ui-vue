@@ -395,7 +395,7 @@ const beforeUpload = (file: any) => {
             }
             return true;
         } catch {
-            message.error('请上传json格式文件');
+            // message.error('请上传json格式文件');
         }
         return true;
     };
