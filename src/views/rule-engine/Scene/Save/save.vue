@@ -1,5 +1,5 @@
 <template>
-  <a-modal
+  <j-modal
     visible
     :title='title'
     :width='750'
@@ -8,13 +8,13 @@
     @cancel='emit("close")'
     @ok='handleOk'
   >
-    <a-form
+    <j-form
       layout='vertical'
       name='scene-save'
       ref="formRef"
       :model='formModel'
     >
-      <a-form-item
+      <j-form-item
         name='name'
         label='名称'
         :rules="[
@@ -22,17 +22,17 @@
           { max: 64, message: '最多输入64个字符' }
         ]"
       >
-        <a-input v-model:value='formModel.name' placeholder='请输入名称' />
-      </a-form-item>
-      <a-form-item
+        <j-input v-model:value='formModel.name' placeholder='请输入名称' />
+      </j-form-item>
+      <j-form-item
         :name='["trigger", "type"]'
         label='触发方式'
         :rules="[{ required: true, message: '请选择触发方式' }]"
       >
         <TriggerWay v-model:modelValue='formModel.trigger.type' :disabled='disabled' />
-      </a-form-item>
-    </a-form>
-  </a-modal>
+      </j-form-item>
+    </j-form>
+  </j-modal>
 </template>
 
 <script setup lang='ts'>

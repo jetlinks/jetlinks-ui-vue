@@ -10,11 +10,11 @@
           {{ keyByLabel[data.triggerType] }}
         </div>
       </div>
-      <a-form ref='sceneForm' :model='data' :colon='false' layout='vertical'>
+      <j-form ref='sceneForm' :model='data' :colon='false' layout='vertical'>
         <Device v-if='data.triggerType === "device"' />
         <Manual v-else-if='data.triggerType === "manual"' />
         <Timer v-else-if='data.triggerType === "timer"' />
-      </a-form>
+      </j-form>
       <PermissionButton
         type='primary'
         hasPermission='rule-engine/Scene:update'

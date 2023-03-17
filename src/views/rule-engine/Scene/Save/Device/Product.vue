@@ -6,7 +6,7 @@
     class='search'
     target="scene-triggrt-device-device"
   />
-  <a-divider style='margin: 0' />
+  <j-divider style='margin: 0' />
   <j-pro-table
     ref='actionRef'
     model='CARD'
@@ -42,14 +42,14 @@
               </span>
             </Ellipsis>
           </div>
-          <a-row>
-            <a-col :span="12">
+          <j-row>
+            <j-col :span="12">
               <div class="card-item-content-text">
                 设备类型
               </div>
               <div>直连设备</div>
-            </a-col>
-          </a-row>
+            </j-col>
+          </j-row>
         </template>
       </CardBox>
     </template>

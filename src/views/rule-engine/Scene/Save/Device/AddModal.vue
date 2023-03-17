@@ -1,23 +1,23 @@
 <template>
-  <a-modal
+  <j-modal
     title='触发规则'
     visible
     :width='820'
     @click='save'
     @cancel='cancel'
   >
-    <a-steps :current='addModel.stepNumber' @change='stepChange'>
-      <a-step>
+    <j-steps :current='addModel.stepNumber' @change='stepChange'>
+      <j-step>
         <template #title>选择产品</template>
-      </a-step>
-      <a-step>
+      </j-step>
+      <j-step>
         <template #title>选择设备</template>
-      </a-step>
-      <a-step>
+      </j-step>
+      <j-step>
         <template #title>触发类型</template>
-      </a-step>
-    </a-steps>
-    <a-divider style='margin-bottom: 0px' />
+      </j-step>
+    </j-steps>
+    <j-divider style='margin-bottom: 0px' />
     <div class='steps-content'>
       <Product
         v-if='addModel.stepNumber === 0'
@@ -42,13 +42,13 @@
     </div>
     <template #footer>
       <div class='steps-action'>
-        <a-button v-if='addModel.stepNumber === 0' @click='cancel'>取消</a-button>
-        <a-button v-else @click='prev'>上一步</a-button>
-        <a-button type='primary' v-if='addModel.stepNumber < 2' @click='saveClick'>下一步</a-button>
-        <a-button type='primary' v-else @click='saveClick'>确定</a-button>
+        <j-button v-if='addModel.stepNumber === 0' @click='cancel'>取消</j-button>
+        <j-button v-else @click='prev'>上一步</j-button>
+        <j-button type='primary' v-if='addModel.stepNumber < 2' @click='saveClick'>下一步</j-button>
+        <j-button type='primary' v-else @click='saveClick'>确定</j-button>
       </div>
     </template>
-  </a-modal>
+  </j-modal>
 </template>
 
 <script setup lang='ts' name='AddModel'>

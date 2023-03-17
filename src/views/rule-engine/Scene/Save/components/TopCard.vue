@@ -12,9 +12,9 @@
     >
       <div class='way-item-title'>
         <span class='label'>{{ item.label }}</span>
-        <a-popover v-if='item.tip' :content='item.tip'>
+        <j-popover v-if='item.tip' :content='item.tip'>
           <AIcon type='QuestionCircleOutlined' class='icon' />
-        </a-popover>
+        </j-popover>
       </div>
       <div class='way-item-image'>
         <img
