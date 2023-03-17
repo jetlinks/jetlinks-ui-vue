@@ -144,7 +144,7 @@
 import type { ActionsType } from '@/components/Table/index';
 import { getImage } from '@/utils/comm';
 import { query, remove, disable, enalbe } from '@/api/media/stream';
-import { message } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 import { useMenuStore } from 'store/menu';
 
 const menuStory = useMenuStore();
@@ -213,7 +213,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                             ? await disable(data.id)
                             : await enalbe(data.id);
                     if (res.success) {
-                        message.success('操作成功');
+                        onlyMessage('操作成功', 'success');
                         tableRef.value?.reload();
                     }
                 },
@@ -231,7 +231,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                 onConfirm: async () => {
                     const res = await remove(data.id);
                     if (res.success) {
-                        message.success('操作成功');
+                        onlyMessage('操作成功', 'success');
                         tableRef.value.reload();
                     }
                 },

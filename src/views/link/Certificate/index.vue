@@ -60,7 +60,7 @@
 <script lang="ts" setup name="CertificatePage">
 import type { ActionsType } from '@/components/Table/index';
 import { query, remove } from '@/api/link/certificate';
-import { message } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 import { useMenuStore } from 'store/menu';
 
 const menuStory = useMenuStore();
@@ -175,7 +175,7 @@ const handlEdit = (id: string) => {
 const handlDelete = async (id: string) => {
     const res = await remove(id);
     if (res.success) {
-        message.success('操作成功');
+        onlyMessage('操作成功', 'success');
         tableRef.value.reload();
     }
 };

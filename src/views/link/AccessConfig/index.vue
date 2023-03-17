@@ -174,7 +174,7 @@ import {
     undeploy,
     deploy,
 } from '@/api/link/accessConfig';
-import { message } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 import { useMenuStore } from 'store/menu';
 import { TiTlePermissionButtonStyle } from './data';
 
@@ -281,10 +281,8 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                             : await deploy(data.id);
 
                     if (res.success) {
-                        message.success('操作成功');
+                        onlyMessage('操作成功', 'success');
                         tableRef.value?.reload();
-                    } else {
-                        message.error('操作失败！');
                     }
                 },
             },
@@ -301,10 +299,8 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                 onConfirm: async () => {
                     const res = await remove(data.id);
                     if (res.success) {
-                        message.success('操作成功');
+                        onlyMessage('操作成功', 'success');
                         tableRef.value.reload();
-                    } else {
-                        message.error('操作失败！');
                     }
                 },
             },
@@ -314,7 +310,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
 };
 
 const getProvidersList = async () => {
-    const res = await getProviders();
+    const res: any = await getProviders();
     providersList.value = res.result;
 };
 getProvidersList();

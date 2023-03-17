@@ -138,7 +138,7 @@
 import type { ActionsType } from '@/components/Table/index';
 import { getImage } from '@/utils/comm';
 import { list, remove } from '@/api/link/protocol';
-import { message } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 import Save from './Save/index.vue';
 import _ from 'lodash';
 
@@ -230,10 +230,8 @@ const getActions = (
                 onConfirm: async () => {
                     const res = await remove(data.id);
                     if (res.success) {
-                        message.success('操作成功');
+                        onlyMessage('操作成功', 'success');
                         tableRef.value.reload();
-                    } else {
-                        message.error('操作失败！');
                     }
                 },
             },
@@ -256,7 +254,7 @@ const saveChange = (value: object) => {
     visible.value = false;
     current.value = {};
     if (value) {
-        message.success('操作成功');
+        onlyMessage('操作成功', 'success');
         tableRef.value.reload();
     }
 };

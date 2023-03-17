@@ -328,7 +328,6 @@ const handleOk = async () => {
                 ? await save(params).catch(() => {})
                 : await update({ ...props.data, ...params }).catch(() => {});
             if (response?.status === 200) {
-                // message.success('操作成功');
                 onlyMessage('操作成功', 'success');
 
                 emit('change', true);

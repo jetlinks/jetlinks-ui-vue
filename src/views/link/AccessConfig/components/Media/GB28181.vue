@@ -520,10 +520,11 @@
 </template>
 
 <script lang="ts" setup name="AccessNetwork">
-import { message, Form } from 'ant-design-vue';
+import { Form } from 'ant-design-vue';
 import type { FormInstance } from 'ant-design-vue';
 import { getResourcesCurrent, getClusters } from '@/api/link/accessConfig';
 import { update, save } from '@/api/link/accessConfig';
+import { onlyMessage } from '@/utils/comm';
 
 interface Form2 {
     clusterNodeId: string | undefined;
@@ -663,7 +664,7 @@ const saveData = () => {
         const resp =
             id === ':id' ? await save(params) : await update({ ...params, id });
         if (resp.status === 200) {
-            message.success('操作成功！');
+            onlyMessage('操作成功', 'success');
             history.back();
         }
     });

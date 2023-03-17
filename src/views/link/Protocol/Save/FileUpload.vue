@@ -28,7 +28,7 @@
 import { LocalStore } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import { PROTOCOL_UPLOAD, querySystemApi } from '@/api/link/protocol';
-import { message } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 import type { UploadChangeParam, UploadProps } from 'ant-design-vue';
 import { notification as Notification } from 'ant-design-vue';
 
@@ -48,7 +48,7 @@ const beforeUpload: UploadProps['beforeUpload'] = (file) => {
     const arr = file.name.split('.');
     const isFile = ['jar', 'zip'].includes(arr[arr.length - 1]); // file.type === 'application/zip' || file.type === 'application/javj-archive'
     if (!isFile) {
-        message.error('请上传.zip.jar格式的文件');
+        onlyMessage('请上传.zip.jar格式的文件', 'error');
         loading.value = false;
     }
     return isFile;
@@ -63,7 +63,7 @@ const handleChange = async (info: UploadChangeParam) => {
             ? api.result[0]?.properties['base-path']
             : '';
         const f = `${path}/file/${result.id}?accessKey=${result.others.accessKey}`;
-        message.success('上传成功！');
+        onlyMessage('上传成功！', 'success');
         value.value = f;
         emit('update:modelValue', f);
         emit('change', f);

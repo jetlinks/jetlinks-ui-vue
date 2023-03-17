@@ -32,8 +32,8 @@
 import { LocalStore } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import { FIRMWARE_UPLOAD, querySystemApi } from '@/api/device/firmware';
-import { message } from 'ant-design-vue';
-import type { UploadChangeParam, UploadProps } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
+import type { UploadChangeParam } from 'ant-design-vue';
 import { notification as Notification } from 'ant-design-vue';
 
 const emit = defineEmits(['update:modelValue', 'update:extraValue', 'change']);
@@ -58,7 +58,7 @@ const handleChange = async (info: UploadChangeParam) => {
             ? api.result[0]?.properties['base-path']
             : '';
         const f = `${path}/file/${result.id}?accessKey=${result.others.accessKey}`;
-        message.success('上传成功！');
+        onlyMessage('上传成功！', 'success');
         fileValue.value = f;
         emit('update:modelValue', f);
         emit('update:extraValue', result);

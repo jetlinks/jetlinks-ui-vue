@@ -165,7 +165,7 @@
 import type { ActionsType } from '@/components/Table/index';
 import { getImage } from '@/utils/comm';
 import { supports, query, remove, start, shutdown } from '@/api/link/type';
-import { message } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 import { TiTlePermissionButtonStyle } from './data';
 import { useMenuStore } from 'store/menu';
 
@@ -299,7 +299,7 @@ const getActions = (
                             ? await shutdown(data.id)
                             : await start(data.id);
                     if (res.success) {
-                        message.success('操作成功');
+                        onlyMessage('操作成功', 'success');
                         tableRef.value?.reload();
                     }
                 },
@@ -318,7 +318,7 @@ const getActions = (
                 onConfirm: async () => {
                     const res = await remove(data.id);
                     if (res.success) {
-                        message.success('操作成功');
+                        onlyMessage('操作成功', 'success');
                         tableRef.value.reload();
                     }
                 },

@@ -334,10 +334,10 @@ import {
     ColumnsHTTP,
 } from '../../data';
 import AccessCard from '../AccessCard/index.vue';
-import { message, Form } from 'ant-design-vue';
+import { Form } from 'ant-design-vue';
 import type { FormInstance, TableColumnType } from 'ant-design-vue';
-import Markdown from 'vue3-markdown-it';
 import { useMenuStore } from 'store/menu';
+import { onlyMessage } from '@/utils/comm';
 
 const menuStory = useMenuStore();
 function generateUUID() {
@@ -528,7 +528,7 @@ const saveData = () => {
                     ? await save(params)
                     : await update({ ...params, id });
             if (resp.status === 200) {
-                message.success('操作成功！');
+                onlyMessage('操作成功', 'success');
                 history.back();
             }
         })
@@ -538,14 +538,14 @@ const saveData = () => {
 const next = async () => {
     if (current.value === 0) {
         if (!networkCurrent.value) {
-            message.error('请选择网络组件！');
+            onlyMessage('请选择网络组件！', 'error');
         } else {
             queryProcotolList(props.provider.id);
             current.value = current.value + 1;
         }
     } else if (current.value === 1) {
         if (!procotolCurrent.value) {
-            message.error('请选择消息协议！');
+            onlyMessage('请选择消息协议！', 'error');
         } else {
             const resp =
                 type !== 'child-device'

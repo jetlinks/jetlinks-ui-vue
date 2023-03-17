@@ -125,7 +125,7 @@
 import type { ActionsType } from '@/components/Table/index';
 import { getImage } from '@/utils/comm';
 import { query, remove, update } from '@/api/data-collect/channel';
-import { message } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 import {
     TiTlePermissionButtonStyle,
     StatusColorEnum,
@@ -240,7 +240,7 @@ const getActions = (
                 onConfirm: async () => {
                     const res = await update(data.id, updateStatus[state]);
                     if (res.success) {
-                        message.success('操作成功');
+                        onlyMessage('操作成功', 'success');
                         tableRef.value?.reload();
                     }
                 },
@@ -259,7 +259,7 @@ const getActions = (
                 onConfirm: async () => {
                     const res = await remove(data.id);
                     if (res.success) {
-                        message.success('操作成功');
+                        onlyMessage('操作成功', 'success');
                         tableRef.value.reload();
                     }
                 },
@@ -286,7 +286,7 @@ const saveChange = (value: object) => {
     visible.value = false;
     current.value = {};
     if (value) {
-        message.success('操作成功');
+        onlyMessage('操作成功', 'success');
         tableRef.value.reload();
     }
 };
