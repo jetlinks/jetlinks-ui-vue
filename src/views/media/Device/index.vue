@@ -104,6 +104,9 @@
             <template #provider="slotProps">
                 {{ providerType[slotProps.provider] }}
             </template>
+            <template #productId="slotProps">
+                {{ getProductName(slotProps.productId) }}
+            </template>
             <template #state="slotProps">
                 <j-badge
                     :text="slotProps.state?.text"
@@ -214,7 +217,7 @@ const columns = [
         title: '产品名称',
         dataIndex: 'productId',
         key: 'productId',
-        // scopedSlots: true,
+        scopedSlots: true,
         search: {
             type: 'select',
             options: () =>
@@ -404,5 +407,26 @@ const getActions = (
                 : actions;
     }
     return acts;
+};
+
+const productList = ref<any[]>([]);
+const getProductList = () => {
+    DeviceApi.getProductList(
+        encodeQuery({
+            terms: {
+                messageProtocol$in: ['gb28181-2016', 'fixed-media'],
+            },
+        }),
+    ).then((resp: any) => {
+        productList.value = resp.result.map((pItem: any) => ({
+            label: pItem.name,
+            value: pItem.id,
+        }));
+    });
+};
+getProductList();
+
+const getProductName = (pid: string) => {
+    return productList.value.find((f: any) => f.value === pid)?.label;
 };
 </script>

@@ -91,11 +91,14 @@
                                         v-model:value="formData.productId"
                                         placeholder="请选择所属产品"
                                         :disabled="!!route.query.id"
+                                        showSearch
+                                        @change="handleProductChange"
                                     >
                                         <j-select-option
                                             v-for="(item, index) in productList"
                                             :key="index"
                                             :value="item.id"
+                                            :label="item.name"
                                         >
                                             {{ item.name }}
                                         </j-select-option>
@@ -344,6 +347,12 @@ const getProductList = async () => {
 };
 getProductList();
 
+const handleProductChange = () => {
+    formData.value.others.access_pwd =
+        productList.value.find((f: any) => f.id === formData.value.productId)
+            ?.configuration.access_pwd || '';
+};
+
 /**
  * 新增产品
  */
@@ -407,7 +416,7 @@ const handleSubmit = () => {
                 : await DeviceApi.update(params);
             if (res?.success) {
                 message.success('保存成功');
-                router.back();
+                history.back();
             }
         })
         .catch((err: any) => {
