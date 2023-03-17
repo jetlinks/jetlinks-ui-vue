@@ -589,6 +589,7 @@ const search = (e: any) => {
     };
 };
 
+const stepsRef = reactive({current:0})
 //引导页数据
 const steps = [
     {
@@ -673,19 +674,19 @@ const driver = new Driver({
     nextBtnText: '下一步',
     prevBtnText: '上一步',
     onNext: () => {
-        // ref.current = ref.current + 1;
+        stepsRef.current = stepsRef.current + 1;
     },
     onPrevious: () => {
-        // ref.current = ref.current - 1;
+        stepsRef.current = stepsRef.current - 1;
     },
     onReset: () => {
-        // if (ref.current !== 3) {
-        //   guide({
-        //     name: 'guide',
-        //     content: 'skip',
-        //   });
-        // }
-        // ref.current = 0;
+        if (stepsRef.current !== 3) {
+          guide({
+            name: 'guide',
+            content: 'skip',
+          });
+        }
+        stepsRef.current = 0;
     },
 });
 
@@ -695,16 +696,20 @@ const driver1 = new Driver({
     closeBtnText: '不再提示',
     nextBtnText: '下一步',
     prevBtnText: '上一步',
-    onNext: () => {},
-    onPrevious: () => {},
+    onNext: () => {
+        stepsRef.current = stepsRef.current + 1;
+    },
+    onPrevious: () => {
+        stepsRef.current = stepsRef.current - 1;
+    },
     onReset: () => {
-        // if (ref.current !== 4) {
-        //   // guide({
-        //   //   name: 'guide',
-        //   //   content: 'skip',
-        //   // });
-        // }
-        // ref.current = 0;
+        if (stepsRef.current !== 4) {
+          guide({
+            name: 'guide',
+            content: 'skip',
+          });
+        }
+        stepsRef.current = 0;
     },
 });
 
@@ -969,9 +974,11 @@ const submitData = async () => {
                     productStore.current = { ...res.result };
                     access.value = res.result;
                     message.success('操作成功！');
+                    getData();
                 }
                 visible.value = false;
                 queryParams.value = {};
+                
             });
         }
     } else {
@@ -1085,11 +1092,11 @@ const add = () => {
 /**
  * 初始化
  */
-watchEffect(() => {
-    if (productStore.current?.accessId) {
-        getData();
-    }
-});
+// watchEffect(() => {
+//     if (productStore.current?.accessId) {
+//         getData();
+//     }
+// });
 </script>
 <style lang="less" scoped>
 :deep(

@@ -76,6 +76,7 @@ import type { ActionsType } from '@/components/Table/index.vue';
 import ModifyModal from './components/modifyModal/index.vue';
 import type { TableColumnType, TableProps } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
+const expandedRowKeys = ref<any>([]);
 const tableRef = ref<Record<string, any>>({});
 const modifyRef = ref();
 const dataSource = ref<any>([]);
@@ -126,7 +127,7 @@ let params = ref();
  * 搜索
  */
 const handleSearch = (e: any) => {
-    params.value = e 
+    params.value = e;
 };
 /**
  * 操作栏按钮

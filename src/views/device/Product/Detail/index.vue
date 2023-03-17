@@ -151,6 +151,7 @@ watch(
     () => route.params.id,
     (newId) => {
         if (newId) {
+            productStore.reSet();
             productStore.tabActiveKey = 'Info';
             productStore.refresh(newId as string);
         }
