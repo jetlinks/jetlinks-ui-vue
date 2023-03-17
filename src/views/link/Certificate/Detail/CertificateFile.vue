@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts" name="CertificateFile">
-import { message } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 import type { UploadChangeParam } from 'ant-design-vue';
 import { LocalStore } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
@@ -54,7 +54,7 @@ const loading = ref(false);
 const handleChange = (info: UploadChangeParam) => {
     loading.value = true;
     if (info.file.status === 'done') {
-        message.success('上传成功！');
+        onlyMessage('上传成功！', 'success');
         const result = info.file.response?.result;
         keystoreBase64.value = result;
         loading.value = false;

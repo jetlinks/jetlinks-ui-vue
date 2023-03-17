@@ -251,7 +251,7 @@ import {
     removePoint,
     readPoint,
 } from '@/api/data-collect/collector';
-import { message } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 import PointCardBox from './components/PointCardBox/index.vue';
 import WritePoint from './components/WritePoint/index.vue';
 import BatchUpdate from './components/BatchUpdate/index.vue';
@@ -412,13 +412,13 @@ const handlDelete = async (id: string | undefined = undefined) => {
     if (res?.status === 200) {
         cancelSelect();
         tableRef.value?.reload();
-        message.success('操作成功');
+        onlyMessage('操作成功', 'success');
     }
     spinning.value = false;
 };
 const handlBatchUpdate = () => {
     if (_selectedRowKeys.value.length === 0) {
-        message.warn('请先选择');
+        onlyMessage('请先选择', 'warning');
         return;
     }
     const dataSet = new Set(_selectedRowKeys.value);
@@ -442,7 +442,7 @@ const clickRedo = async (data: any) => {
     if (res.status === 200) {
         cancelSelect();
         tableRef.value?.reload();
-        message.success('操作成功');
+        onlyMessage('操作成功', 'success');
     }
 };
 
@@ -479,7 +479,7 @@ const saveChange = (value: object) => {
     current.value = {};
     if (value) {
         tableRef.value?.reload();
-        message.success('操作成功');
+        onlyMessage('操作成功', 'success');
     }
 };
 

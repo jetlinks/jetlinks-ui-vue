@@ -394,7 +394,7 @@
 </template>
 
 <script lang="ts" setup name="AccessCloudOneNet">
-import { message } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 import type { FormInstance } from 'ant-design-vue';
 import { update, save, getProtocolList } from '@/api/link/accessConfig';
 import AccessCard from '../AccessCard/index.vue';
@@ -496,7 +496,7 @@ const saveData = async () => {
               });
 
     if (resp.status === 200) {
-        message.success('操作成功！');
+        onlyMessage('操作成功', 'success');
         history.back();
     }
 };
@@ -533,7 +533,7 @@ const next = async () => {
         current.value = current.value + 1;
     } else if (current.value === 1) {
         if (!procotolCurrent.value) {
-            message.error('请选择消息协议！');
+            onlyMessage('请选择消息协议！', 'error');
         } else {
             current.value = current.value + 1;
         }

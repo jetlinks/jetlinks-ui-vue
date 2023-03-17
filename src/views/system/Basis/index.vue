@@ -292,6 +292,7 @@ import { LocalStore } from '@/utils/comm';
 
 import { save_api, getDetails_api } from '@/api/system/basis';
 import { usePermissionStore } from '@/store/permission';
+import { useSystem } from '@/store/system';
 
 const action = `${BASE_API_PATH}/file/static`;
 const headers = { [TOKEN_KEY]: LocalStore.get(TOKEN_KEY) };
@@ -302,9 +303,9 @@ const form = reactive<formType>({
         headerTheme: 'light',
         apiKey: '',
         'base-path': `${window.location.origin}/api`,
-        logo: '/public/logo.png',
-        ico: '/public/favicon.ico',
-        backgroud: '/public/images/login.png',
+        logo: '',
+        ico: '',
+        backgroud: '',
     },
     rulesFrom: {
         title: [
@@ -337,31 +338,18 @@ const form = reactive<formType>({
     iconLoading: false, // 页签加载状态
     saveLoading: false,
     getDetails: () => {
-        const params = ['front', 'amap', 'paths'];
-        getDetails_api(params).then((resp: any) => {
-            const basis = resp.result?.filter(
-                (item: any) => item.scope === 'front',
-            );
-            const api = resp.result?.filter(
-                (item: any) => item.scope === 'amap',
-            );
-            const basePath = resp.result?.filter(
-                (item: any) => item.scope === 'paths',
-            );
-            form.formValue = {
-                ...basis[0].properties,
-                apiKey: api[0].properties.apiKey,
-                'base-path': basePath[0].properties['base-path'],
-                logo: form.formValue.logo || '/public/logo.png',
-                ico: form.formValue.ico || '/public/favicon.ico',
-                backgroud:
-                    form.formValue.backgroud || '/public/images/login.png',
-            };
-            // localStorage.setItem(
-            //     SystemConst.AMAP_KEY,
-            //     api[0].properties.apiKey,
-            // );
-        });
+        const configInfo = useSystem().$state.configInfo;
+        const basis = configInfo.find((item: any) => item.scope === 'front');
+        const api = configInfo.find((item: any) => item.scope === 'amap');
+        const basePath = configInfo.find((item: any) => item.scope === 'paths');
+        form.formValue = {
+            ...basis.properties,
+            apiKey: api.properties.apiKey,
+            'base-path': basePath.properties['base-path'],
+            logo: basis.properties.logo || '/public/logo.png',
+            ico: basis.properties.ico || '/public/favicon.ico',
+            backgroud: basis.properties.backgroud || '/public/images/login.png',
+        };
     },
     clickSave: () => {
         const hasPermission = usePermissionStore().hasPermission;

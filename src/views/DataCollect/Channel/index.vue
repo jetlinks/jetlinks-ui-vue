@@ -45,15 +45,16 @@
                         </template>
                         <template #content>
                             <div class="card-item-content">
-                                <PermissionButton
-                                    type="link"
-                                    @click="handlEye(slotProps.id)"
-                                    hasPermission="DataCollect/Collector:view"
-                                    :style="TiTlePermissionButtonStyle"
-                                >
-                                    {{ slotProps.name }}
-                                </PermissionButton>
-
+                                <Ellipsis style="width: calc(100% - 100px)">
+                                    <span
+                                        style="
+                                            font-size: 16px;
+                                            font-weight: 600;
+                                        "
+                                    >
+                                        {{ slotProps.name }}
+                                    </span>
+                                </Ellipsis>
                                 <j-row class="card-item-content-box">
                                     <j-col :span="12">
                                         <div class="card-item-content-text">
@@ -125,12 +126,8 @@
 import type { ActionsType } from '@/components/Table/index';
 import { getImage } from '@/utils/comm';
 import { query, remove, update } from '@/api/data-collect/channel';
-import { message } from 'ant-design-vue';
-import {
-    TiTlePermissionButtonStyle,
-    StatusColorEnum,
-    updateStatus,
-} from './data';
+import { onlyMessage } from '@/utils/comm';
+import { StatusColorEnum, updateStatus } from './data';
 import { useMenuStore } from 'store/menu';
 import Save from './Save/index.vue';
 import _ from 'lodash';
@@ -240,7 +237,7 @@ const getActions = (
                 onConfirm: async () => {
                     const res = await update(data.id, updateStatus[state]);
                     if (res.success) {
-                        message.success('操作成功');
+                        onlyMessage('操作成功', 'success');
                         tableRef.value?.reload();
                     }
                 },
@@ -259,7 +256,7 @@ const getActions = (
                 onConfirm: async () => {
                     const res = await remove(data.id);
                     if (res.success) {
-                        message.success('操作成功');
+                        onlyMessage('操作成功', 'success');
                         tableRef.value.reload();
                     }
                 },
@@ -279,14 +276,11 @@ const handlEdit = (data: object) => {
     current.value = _.cloneDeep(data);
     visible.value = true;
 };
-const handlEye = (id: string) => {
-    menuStory.jumpPage(`DataCollect/Collector`, {}, { channelId: id });
-};
 const saveChange = (value: object) => {
     visible.value = false;
     current.value = {};
     if (value) {
-        message.success('操作成功');
+        onlyMessage('操作成功', 'success');
         tableRef.value.reload();
     }
 };
