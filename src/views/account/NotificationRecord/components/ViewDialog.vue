@@ -91,8 +91,6 @@ const getLevelLabel = (id: number) => {
         .label {
             background-color: #fafafa;
         }
-        .value {
-        }
     }
 }
 </style>
