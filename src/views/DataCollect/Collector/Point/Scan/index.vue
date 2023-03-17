@@ -56,7 +56,7 @@ const unSelectKeys = ref();
 const handleOk = async () => {
     const data: any = await formTableRef.value?.validate().catch(() => {});
     if (!data) return;
-    const list = data.map((item: any) => {
+    const list: any = data.map((item: any) => {
         return {
             name: item.name,
             provider: 'OPC_UA',
