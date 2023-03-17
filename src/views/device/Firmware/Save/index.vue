@@ -269,7 +269,7 @@ const validatorVersionOrder = async (_: Record<string, any>, value: string) => {
         if (value && !!signMethod && productId) {
             const res = await validateVersion(productId, value);
             if (res.status === 200) {
-                Promise.reject(res.result ? '版本序号已存在' : '');
+                return Promise.reject(res.result ? '版本序号已存在' : '');
             }
         }
     }

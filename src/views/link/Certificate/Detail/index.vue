@@ -25,7 +25,6 @@
                                 </j-radio-button>
                             </j-radio-group>
                         </j-form-item>
-
                         <j-form-item
                             label="证书名称"
                             v-bind="validateInfos.name"
@@ -154,9 +153,9 @@ const onSubmit = () => {
             loading.value = true;
             const response =
                 id === ':id'
-                    ? await save(params)
-                    : await update({ ...params, id });
-            if (response.status === 200) {
+                    ? await save(params).catch(() => {})
+                    : await update({ ...params, id }).catch(() => {});
+            if (response?.status === 200) {
                 message.success('操作成功');
                 router.push('/iot/link/certificate');
             }
@@ -180,9 +179,9 @@ const handleChange = (info: UploadChangeParam) => {
 const detail = async (id: string) => {
     if (id !== ':id') {
         loading.value = true;
-        const res = await queryDetail(id);
+        const res: any = await queryDetail(id);
         if (res.success) {
-            const result = res.result as FormDataType;
+            const result: any = res.result;
             const type = result.type.value as TypeObjType;
             formData.value = {
                 ...result,
@@ -206,12 +205,6 @@ detail(id);
             width: 100%;
             height: 100%;
         }
-    }
-    .form-upload-button {
-        margin-top: 10px;
-    }
-    .form-submit {
-        background-color: @primary-color !important;
     }
 }
 
