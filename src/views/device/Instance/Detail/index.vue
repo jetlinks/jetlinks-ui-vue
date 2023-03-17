@@ -8,20 +8,25 @@
         <template #title>
             <div>
                 <div style="display: flex; align-items: center">
-                    <AIcon type="ArrowLeftOutlined" @click="onBack" />
-                    <div style="margin-left: 20px">
+                    <j-button @click="onBack" size="small">返回</j-button>
+                    <div style="margin-left: 20px; font-size: 24px">
                         {{ instanceStore.current.name }}
                     </div>
                     <j-divider type="vertical" />
                     <j-space>
-                        <j-badge
-                            :text="instanceStore.current.state?.text"
-                            :status="
-                                statusMap.get(
-                                    instanceStore.current.state?.value,
-                                )
-                            "
-                        />
+                        <span
+                            style="font-size: 14px; color: rgba(0, 0, 0, 0.85)"
+                        >
+                            状态：
+                            <j-badge
+                                :status="
+                                    statusMap.get(
+                                        instanceStore.current.state?.value,
+                                    )
+                                "
+                            />
+                            {{ instanceStore.current.state?.text }}
+                        </span>
                         <PermissionButton
                             v-if="
                                 instanceStore.current.state?.value ===
@@ -73,7 +78,7 @@
                         </j-tooltip>
                     </j-space>
                 </div>
-                <div style="padding-top: 10px">
+                <div style="padding-top: 24px">
                     <j-descriptions size="small" :column="4">
                         <j-descriptions-item label="ID">{{
                             instanceStore.current.id
@@ -199,8 +204,8 @@ watch(
 );
 
 onMounted(() => {
-    instanceStore.tabActiveKey = history.state?.params?.tab || 'Info'
-})
+    instanceStore.tabActiveKey = history.state?.params?.tab || 'Info';
+});
 
 const onBack = () => {
     menuStory.jumpPage('device/Instance');
@@ -284,7 +289,10 @@ watchEffect(() => {
             tab: 'OPC UA',
         });
     }
-    if (instanceStore.current.deviceType?.value === 'gateway' && !keys.includes('ChildDevice')) {
+    if (
+        instanceStore.current.deviceType?.value === 'gateway' &&
+        !keys.includes('ChildDevice')
+    ) {
         // 产品类型为网关的情况下才显示此模块
         list.value.push({
             key: 'ChildDevice',

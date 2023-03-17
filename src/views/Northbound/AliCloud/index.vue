@@ -27,11 +27,12 @@
             <template #card="slotProps">
                 <CardBox
                     :value="slotProps"
+                    @click="handleView(slotProps.id)"
                     :actions="getActions(slotProps, 'card')"
                     :status="slotProps.state?.value"
                     :statusText="slotProps.state?.text"
                     :statusNames="{
-                        enabled: 'success',
+                        enabled: 'processing',
                         disabled: 'error',
                     }"
                 >
@@ -39,19 +40,20 @@
                         <img :src="getImage('/northbound/aliyun.png')" />
                     </template>
                     <template #content>
-                        <h3
-                            class="card-item-content-title"
-                            @click.stop="handleView(slotProps.id)"
-                        >
-                            {{ slotProps.name }}
-                        </h3>
-                        <j-row>
+                        <Ellipsis style="width: calc(100% - 100px)">
+                            <span style="font-size: 16px; font-weight: 600">
+                                {{ slotProps.name }}
+                            </span>
+                        </Ellipsis>
+                        <j-row style="margin-top: 15px">
                             <j-col :span="12">
                                 <div class="card-item-content-text">
                                     网桥产品
                                 </div>
                                 <Ellipsis>
-                                    <div>{{ slotProps?.bridgeProductName }}</div>
+                                    <div>
+                                        {{ slotProps?.bridgeProductName }}
+                                    </div>
                                 </Ellipsis>
                             </j-col>
                             <j-col :span="12">
@@ -85,9 +87,13 @@
                 </CardBox>
             </template>
             <template #state="slotProps">
-                <j-badge
+                <BadgeStatus
+                    :status="slotProps.state?.value"
                     :text="slotProps.state?.text"
-                    :status="statusMap.get(slotProps.state?.value)"
+                    :statusNames="{
+                        enabled: 'processing',
+                        disabled: 'error',
+                    }"
                 />
             </template>
             <template #action="slotProps">
@@ -100,7 +106,7 @@
                             :disabled="i.disabled"
                             :popConfirm="i.popConfirm"
                             :tooltip="i.tooltip"
-                            style="padding: 0px"
+                            style="padding: 0 5px"
                             @click="i.onClick"
                             type="link"
                             :hasPermission="'Northbound/AliCloud:' + i.key"
@@ -116,19 +122,16 @@
 
 <script setup lang="ts">
 import { query, _undeploy, _deploy, _delete } from '@/api/northbound/alicloud';
-import type { ActionsType } from '@/views/device/Instance/typings'
+import type { ActionsType } from '@/views/device/Instance/typings';
 import { getImage } from '@/utils/comm';
 import { message } from 'jetlinks-ui-components';
 import { useMenuStore } from 'store/menu';
+import BadgeStatus from '@/components/BadgeStatus/index.vue';
 
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 
 const menuStory = useMenuStore();
-
-const statusMap = new Map();
-statusMap.set('enabled', 'success');
-statusMap.set('disabled', 'error');
 
 const columns = [
     {
@@ -151,6 +154,7 @@ const columns = [
         title: '说明',
         dataIndex: 'description',
         key: 'description',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -172,7 +176,7 @@ const columns = [
         title: '操作',
         key: 'action',
         fixed: 'right',
-        width: 250,
+        width: 200,
         scopedSlots: true,
     },
 ];
