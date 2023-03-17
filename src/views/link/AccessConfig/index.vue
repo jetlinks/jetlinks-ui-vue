@@ -53,15 +53,23 @@
                         </template>
                         <template #content>
                             <div class="card-item-content">
-                                <PermissionButton
-                                    type="link"
-                                    @click="handlEye(slotProps.id)"
-                                    hasPermission="link/AccessConfig:view"
-                                    :style="TiTlePermissionButtonStyle"
+                                <Ellipsis
+                                    style="
+                                        width: calc(100% - 100px);
+                                        margin-bottom: 10px;
+                                        color: #2f54eb;
+                                    "
                                 >
-                                    {{ slotProps.name }}
-                                </PermissionButton>
-
+                                    <span
+                                        style="
+                                            font-size: 16px;
+                                            font-weight: 600;
+                                        "
+                                        @click.stop="handlEye(slotProps.id)"
+                                    >
+                                        {{ slotProps.name }}
+                                    </span>
+                                </Ellipsis>
                                 <j-row class="card-item-content-box">
                                     <j-col
                                         :span="12"
@@ -174,9 +182,8 @@ import {
     undeploy,
     deploy,
 } from '@/api/link/accessConfig';
-import { message } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 import { useMenuStore } from 'store/menu';
-import { TiTlePermissionButtonStyle } from './data';
 
 const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
@@ -281,10 +288,8 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                             : await deploy(data.id);
 
                     if (res.success) {
-                        message.success('操作成功');
+                        onlyMessage('操作成功', 'success');
                         tableRef.value?.reload();
-                    } else {
-                        message.error('操作失败！');
                     }
                 },
             },
@@ -301,10 +306,8 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                 onConfirm: async () => {
                     const res = await remove(data.id);
                     if (res.success) {
-                        message.success('操作成功');
+                        onlyMessage('操作成功', 'success');
                         tableRef.value.reload();
-                    } else {
-                        message.error('操作失败！');
                     }
                 },
             },
@@ -314,7 +317,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
 };
 
 const getProvidersList = async () => {
-    const res = await getProviders();
+    const res: any = await getProviders();
     providersList.value = res.result;
 };
 getProvidersList();
@@ -372,15 +375,6 @@ const handleSearch = (e: any) => {
 
 .card-item-content {
     min-height: 100px;
-
-    .card-item-content-title-a {
-        color: #1890ff !important;
-        font-weight: 700;
-        font-size: 16px;
-        overflow: hidden; //超出的文本隐藏
-        text-overflow: ellipsis; //溢出用省略号显示
-        white-space: nowrap; //溢出不换行
-    }
     .card-item-content-box {
         min-height: 50px;
     }

@@ -51,7 +51,7 @@
                         <h3 class="card-item-content-title">
                             {{ slotProps.name }}
                         </h3>
-                        <p>通道数量：{{ slotProps.count }}</p>
+                        <p>通道数量：{{ slotProps.count || 0 }}</p>
                         <Ellipsis>
                             <j-badge
                                 :text="`sip:${slotProps.sipConfigs[0]?.sipId}@${slotProps.sipConfigs[0]?.hostAndPort}`"
@@ -90,6 +90,9 @@
             </template>
             <template #publicHost="slotProps">
                 {{ slotProps.sipConfigs[0]?.publicHost }}
+            </template>
+            <template #count="slotProps">
+                {{ slotProps.count || 0 }}
             </template>
             <template #status="slotProps">
                 <j-badge
@@ -180,6 +183,7 @@ const columns = [
         title: '通道数量',
         dataIndex: 'count',
         key: 'count',
+        scopedSlots: true,
         width: 100,
     },
     {

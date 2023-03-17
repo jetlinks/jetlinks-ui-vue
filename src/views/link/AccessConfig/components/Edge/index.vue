@@ -208,7 +208,7 @@
 </template>
 
 <script lang="ts" setup name="AccessEdge">
-import { message } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 import type { FormInstance } from 'ant-design-vue';
 import { update, save, getNetworkList } from '@/api/link/accessConfig';
 import {
@@ -270,7 +270,7 @@ const onFinish = async (values: any) => {
     const resp =
         id === ':id' ? await save(params) : await update({ ...params, id });
     if (resp.status === 200) {
-        message.success('操作成功！');
+        onlyMessage('操作成功', 'success');
         history.back();
     }
 };
@@ -325,7 +325,7 @@ const addNetwork = () => {
 
 const next = async () => {
     if (!networkCurrent.value) {
-        message.error('请选择网络组件！');
+        onlyMessage('请选择网络组件！', 'error');
     } else {
         current.value = current.value + 1;
     }

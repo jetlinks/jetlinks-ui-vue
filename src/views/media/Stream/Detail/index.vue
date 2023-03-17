@@ -263,7 +263,7 @@
 </template>
 
 <script lang="ts" setup name="StreamDetail">
-import { message } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 import { queryProviders, queryDetail, save, update } from '@/api/media/stream';
 import type { FormInstance } from 'ant-design-vue';
 
@@ -316,7 +316,7 @@ const onSubmit = async () => {
     const response =
         id === ':id' ? await save(params) : await update({ ...params, id });
     if (response.status === 200) {
-        message.success('操作成功');
+        onlyMessage('操作成功', 'success');
         router.push('/iot/link/Stream');
     }
     loading.value = false;

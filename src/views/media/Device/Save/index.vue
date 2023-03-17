@@ -24,9 +24,8 @@
                         </j-form-item>
                         <j-row :gutter="24">
                             <j-col :span="8">
-                                <JUpload
+                                <JProUpload
                                     v-model:modelValue="formData.photoUrl"
-                                    :bgImage="formData.photoUrl"
                                 />
                             </j-col>
                             <j-col :span="16">

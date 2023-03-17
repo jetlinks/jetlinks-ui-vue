@@ -101,12 +101,13 @@
 </template>
 
 <script lang="ts" setup name="CertificateDetail">
-import { message, Form } from 'ant-design-vue';
+import { Form } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 import CertificateFile from './CertificateFile.vue';
 import type { UploadChangeParam } from 'ant-design-vue';
 import { save, update, queryDetail } from '@/api/link/certificate';
 import { FormDataType, TypeObjType } from '../type';
+import { onlyMessage } from '@/utils/comm';
 
 const router = useRouter();
 const route = useRoute();
@@ -156,7 +157,7 @@ const onSubmit = () => {
                     ? await save(params).catch(() => {})
                     : await update({ ...params, id }).catch(() => {});
             if (response?.status === 200) {
-                message.success('操作成功');
+                onlyMessage('操作成功', 'success');
                 router.push('/iot/link/certificate');
             }
             loading.value = false;
@@ -169,7 +170,7 @@ const onSubmit = () => {
 const handleChange = (info: UploadChangeParam) => {
     fileLoading.value = true;
     if (info.file.status === 'done') {
-        message.success('上传成功！');
+        onlyMessage('上传成功！', 'success');
         const result = info.file.response?.result;
         formData.value.configs.cert = result;
         fileLoading.value = false;

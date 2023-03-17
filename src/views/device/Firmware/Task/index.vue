@@ -54,7 +54,7 @@
 <script lang="ts" setup name="TaskPage">
 import type { ActionsType } from '@/components/Table/index';
 import { task, startTask, stopTask } from '@/api/device/firmware';
-import { message } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 import Save from './Save/index.vue';
 import { useMenuStore } from 'store/menu';
 
@@ -179,7 +179,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             onClick: async () => {
                 const res = await stopTask(data.id);
                 if (res.success) {
-                    message.success('操作成功');
+                    onlyMessage('操作成功', 'success');
                     tableRef.value.reload();
                 }
             },
@@ -195,7 +195,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             onClick: async () => {
                 const res = await startTask(data.id, ['canceled']);
                 if (res.success) {
-                    message.success('操作成功');
+                    onlyMessage('操作成功', 'success');
                     tableRef.value.reload();
                 }
             },
@@ -223,7 +223,7 @@ const saveChange = (value: boolean) => {
     visible.value = false;
     current.value = {};
     if (value) {
-        message.success('操作成功');
+        onlyMessage('操作成功', 'success');
         tableRef.value.reload();
     }
 };
