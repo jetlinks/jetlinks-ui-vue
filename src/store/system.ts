@@ -1,14 +1,17 @@
 import { defineStore } from 'pinia';
 import { systemVersion } from '@/api/comm'
 import { useMenuStore } from './menu'
+import { getDetails_api } from '@/api/system/basis';
 
 export const useSystem = defineStore('system', {
   state: () => ({
-    isCommunity: false
+    isCommunity: false,
+    configInfo: [] as any[]
   }),
   actions: {
     getSystemVersion(): Promise<any[]> {
-      return new Promise(async(res, rej) => {
+      this.getSystemConfig();
+      return new Promise(async (res, rej) => {
         const resp = await systemVersion()
         if (resp.success && resp.result) {
           const isCommunity = resp.result.edition === 'community'
@@ -18,6 +21,12 @@ export const useSystem = defineStore('system', {
           const menuData: any[] = await menu.queryMenuTree(isCommunity)
           res(menuData)
         }
+      })
+    },
+    getSystemConfig() {
+      const params = ['front', 'amap', 'paths'];
+      getDetails_api(params).then(({ status, result }: any) => {
+        this.configInfo = status === 200 ? [...result] : [];
       })
     }
   }
