@@ -1,4 +1,4 @@
-<template lang="">
+<template>
     <j-modal
         title="批量编辑"
         :visible="true"
@@ -6,9 +6,8 @@
         @cancel="handleCancel"
     >
         <div class="sizeText">
-            将批量修改{{
-                data.length
-            }}条数据的访问类型、采集频率、只推送变化的数据
+            将批量修改
+            {{ data.length }} 条数据的访问类型、采集频率、只推送变化的数据
         </div>
         <j-form
             class="form"
@@ -62,13 +61,13 @@
                 />
             </j-form-item>
 
-            <a-form-item label="" :name="['features']">
-                <a-checkbox-group v-model:value="formData.features">
-                    <a-checkbox value="changedOnly" name="type"
-                        >只推送变化的数据</a-checkbox
+            <j-form-item :name="['features']">
+                <j-checkbox-group v-model:value="formData.features">
+                    <j-checkbox value="changedOnly" name="type"
+                        >只推送变化的数据</j-checkbox
                     >
-                </a-checkbox-group>
-            </a-form-item>
+                </j-checkbox-group>
+            </j-form-item>
         </j-form>
         <template #footer>
             <j-button key="back" @click="handleCancel">取消</j-button>
@@ -119,7 +118,7 @@ const checkLength = (_rule: Rule, value: string): Promise<any> =>
     });
 
 const handleOk = async () => {
-    const data: any = await formRef.value?.validate();
+    const data = cloneDeep(formData.value);
     const { accessModes, features, interval } = data;
     const ischange =
         accessModes.length !== 0 || features.length !== 0 || !!interval;

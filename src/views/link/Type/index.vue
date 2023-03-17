@@ -52,14 +52,23 @@
                         </template>
                         <template #content>
                             <div class="card-item-content">
-                                <PermissionButton
-                                    type="link"
-                                    @click="handlEye(slotProps.id)"
-                                    hasPermission="link/Type:view"
-                                    :style="TiTlePermissionButtonStyle"
+                                <Ellipsis
+                                    style="
+                                        width: calc(100% - 100px);
+                                        margin-bottom: 10px;
+                                        color: #2f54eb;
+                                    "
                                 >
-                                    {{ slotProps.name }}
-                                </PermissionButton>
+                                    <span
+                                        style="
+                                            font-size: 16px;
+                                            font-weight: 600;
+                                        "
+                                        @click.stop="handlEye(slotProps.id)"
+                                    >
+                                        {{ slotProps.name }}
+                                    </span>
+                                </Ellipsis>
                                 <j-row class="card-item-content-box">
                                     <j-col :span="12">
                                         <div class="card-item-content-text">
@@ -165,8 +174,7 @@
 import type { ActionsType } from '@/components/Table/index';
 import { getImage } from '@/utils/comm';
 import { supports, query, remove, start, shutdown } from '@/api/link/type';
-import { message } from 'ant-design-vue';
-import { TiTlePermissionButtonStyle } from './data';
+import { onlyMessage } from '@/utils/comm';
 import { useMenuStore } from 'store/menu';
 
 const menuStory = useMenuStore();
@@ -299,7 +307,7 @@ const getActions = (
                             ? await shutdown(data.id)
                             : await start(data.id);
                     if (res.success) {
-                        message.success('操作成功');
+                        onlyMessage('操作成功', 'success');
                         tableRef.value?.reload();
                     }
                 },
@@ -318,7 +326,7 @@ const getActions = (
                 onConfirm: async () => {
                     const res = await remove(data.id);
                     if (res.success) {
-                        message.success('操作成功');
+                        onlyMessage('操作成功', 'success');
                         tableRef.value.reload();
                     }
                 },

@@ -90,7 +90,7 @@
 </template>
 
 <script lang="ts" setup name="AccessChannel">
-import { message } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 import { update, save } from '@/api/link/accessConfig';
 import { ProtocolMapping } from '../../data';
 
@@ -131,7 +131,7 @@ const onFinish = async (values: any) => {
     const resp =
         id === ':id' ? await save(params) : await update({ ...params, id });
     if (resp.status === 200) {
-        message.success('操作成功！');
+        onlyMessage('操作成功', 'success');
         history.back();
     }
 };

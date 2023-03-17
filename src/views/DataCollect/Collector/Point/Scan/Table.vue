@@ -7,7 +7,7 @@
         >
             <template #bodyCell="{ column: { dataIndex }, record, index }">
                 <template v-if="dataIndex === 'name'">
-                    <a-form-item
+                    <j-form-item
                         :name="['dataSource', index, 'name']"
                         :rules="[
                             {
@@ -21,20 +21,20 @@
                             placeholder="请输入"
                             allowClear
                         ></j-input>
-                    </a-form-item>
+                    </j-form-item>
                 </template>
                 <template v-if="dataIndex === 'id'">
-                    <a-form-item :name="['dataSource', index, 'id']">
+                    <j-form-item :name="['dataSource', index, 'id']">
                         <j-input
                             v-model:value="record[dataIndex]"
                             disabled
                             :bordered="false"
                         ></j-input>
-                    </a-form-item>
+                    </j-form-item>
                 </template>
 
                 <template v-if="dataIndex === 'accessModes'">
-                    <a-form-item
+                    <j-form-item
                         class="form-item"
                         :name="['dataSource', index, 'accessModes', 'value']"
                         :rules="[
@@ -67,10 +67,10 @@
                             @click="changeCheckbox(index, dataIndex)"
                             >同上</j-checkbox
                         >
-                    </a-form-item>
+                    </j-form-item>
                 </template>
                 <template v-if="dataIndex === 'interval'">
-                    <a-form-item
+                    <j-form-item
                         class="form-item"
                         :name="[
                             'dataSource',
@@ -113,10 +113,10 @@
                             @click="changeCheckbox(index, dataIndex)"
                             >同上</j-checkbox
                         >
-                    </a-form-item>
+                    </j-form-item>
                 </template>
                 <template v-if="dataIndex === 'features'">
-                    <a-form-item
+                    <j-form-item
                         class="form-item"
                         :name="['dataSource', index, 'features', 'value']"
                         :rules="[
@@ -154,7 +154,7 @@
                             @click="changeCheckbox(index, dataIndex)"
                             >同上</j-checkbox
                         >
-                    </a-form-item>
+                    </j-form-item>
                 </template>
 
                 <template v-if="dataIndex === 'action'">

@@ -40,16 +40,21 @@
                         </template>
                         <template #content>
                             <div class="card-item-content">
-                                <j-tooltip>
-                                    <template #title>
-                                        {{ slotProps.name }}
-                                    </template>
-                                    <h3
-                                        class="card-item-content-title card-item-content-title-a"
+                                <Ellipsis
+                                    style="
+                                        width: calc(100% - 100px);
+                                        margin-bottom: 10px;
+                                    "
+                                >
+                                    <span
+                                        style="
+                                            font-size: 16px;
+                                            font-weight: 600;
+                                        "
                                     >
                                         {{ slotProps.name }}
-                                    </h3>
-                                </j-tooltip>
+                                    </span>
+                                </Ellipsis>
                                 <j-row class="card-item-content-box">
                                     <j-col
                                         :span="12"
@@ -138,7 +143,7 @@
 import type { ActionsType } from '@/components/Table/index';
 import { getImage } from '@/utils/comm';
 import { list, remove } from '@/api/link/protocol';
-import { message } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 import Save from './Save/index.vue';
 import _ from 'lodash';
 
@@ -230,10 +235,8 @@ const getActions = (
                 onConfirm: async () => {
                     const res = await remove(data.id);
                     if (res.success) {
-                        message.success('操作成功');
+                        onlyMessage('操作成功', 'success');
                         tableRef.value.reload();
-                    } else {
-                        message.error('操作失败！');
                     }
                 },
             },
@@ -256,7 +259,7 @@ const saveChange = (value: object) => {
     visible.value = false;
     current.value = {};
     if (value) {
-        message.success('操作成功');
+        onlyMessage('操作成功', 'success');
         tableRef.value.reload();
     }
 };
@@ -293,14 +296,6 @@ const handleSearch = (e: any) => {
 .card-item-content {
     min-height: 100px;
 
-    .card-item-content-title-a {
-        color: #000 !important;
-        font-weight: 700;
-        font-size: 16px;
-        overflow: hidden; //超出的文本隐藏
-        text-overflow: ellipsis; //溢出用省略号显示
-        white-space: nowrap; //溢出不换行
-    }
     .card-item-content-box {
         min-height: 50px;
     }

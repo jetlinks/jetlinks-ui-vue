@@ -55,7 +55,11 @@
                 </div>
             </div>
 
-            <Search :columns="columns" target="search" @search="handleSearch" />
+            <pro-search
+                :columns="columns"
+                target="search"
+                @search="handleSearch"
+            />
             <j-pro-table
                 ref="tableRef"
                 model="TABLE"
@@ -129,6 +133,7 @@ import { getImage } from '@/utils/comm';
 import moment from 'moment';
 import { cloneDeep } from 'lodash-es';
 import Save from './Save.vue';
+import { onlyMessage } from '@/utils/comm';
 
 const tableRef = ref<Record<string, any>>({});
 const route = useRoute();
@@ -313,7 +318,7 @@ const handlEye = (data: string) => {
 const handlTry = async (id: string) => {
     const res = await startOneTask([id]);
     if (res.success) {
-        message.success('操作成功');
+        onlyMessage('操作成功', 'success');
         tableRef.value.reload();
     }
 };
@@ -324,7 +329,7 @@ const saveChange = (value: boolean) => {
 const confirm = async (e: MouseEvent) => {
     const res = await startTask(taskId, ['failed']);
     if (res.success) {
-        message.success('操作成功');
+        onlyMessage('操作成功', 'success');
         handleRefresh('failed');
         tableRef.value.reload();
     }

@@ -85,8 +85,7 @@
 </template>
 
 <script lang="ts" setup name="AccessMedia">
-import { message, Form } from 'ant-design-vue';
-import type { FormInstance } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 import GB28181 from './GB28181.vue';
 import { update, save } from '@/api/link/accessConfig';
 
@@ -125,7 +124,7 @@ const onFinish = async (values: any) => {
     const resp =
         id === ':id' ? await save(params) : await update({ ...params, id });
     if (resp.status === 200) {
-        message.success('操作成功！');
+        onlyMessage('操作成功', 'success');
         history.back();
     }
 };

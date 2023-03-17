@@ -1,6 +1,6 @@
 <template>
     <div class="tree-container">
-        <a-input-search
+        <j-input-search
             v-model:value="searchValue"
             style="margin-bottom: 8px"
             placeholder="请输入"
@@ -106,7 +106,7 @@ import {
     remove,
 } from '@/api/data-collect/collector';
 import Save from './Save/index.vue';
-import { message } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 import { Store } from 'jetlinks-store';
 import _ from 'lodash';
 import { colorMap, getState } from '../data.ts';
@@ -173,14 +173,14 @@ const handlUpdate = async (data: any) => {
     });
     if (resp.status === 200) {
         handleSearch(params.value);
-        message.success('操作成功');
+        onlyMessage('操作成功', 'success');
     }
 };
 const handlDelete = async (id: string) => {
     const resp = await remove(id);
     if (resp.status === 200) {
         handleSearch(params.value);
-        message.success('操作成功');
+        onlyMessage('操作成功', 'success');
     }
 };
 
@@ -189,11 +189,11 @@ const saveChange = (value: object) => {
     current.value = {};
     if (value) {
         handleSearch(params.value);
-        message.success('操作成功');
+        onlyMessage('操作成功', 'success');
     }
 };
 
-const handleSearch = async (value: string) => {
+const handleSearch = async (value: any) => {
     if (!searchValue.value && !value) {
         params.value = _.cloneDeep(defualtParams);
     } else if (!!searchValue.value) {

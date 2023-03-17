@@ -5,7 +5,7 @@
             <j-checkbox v-model:checked="isSelected">隐藏已有节点</j-checkbox>
         </div>
         <j-spin :spinning="spinning">
-            <a-tree
+            <j-tree
                 v-if="!!treeData"
                 :load-data="onLoadData"
                 :tree-data="treeData"
@@ -25,7 +25,7 @@
                         {{ name }}
                     </span>
                 </template>
-            </a-tree>
+            </j-tree>
             <j-empty v-else />
         </j-spin>
     </div>

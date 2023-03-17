@@ -87,7 +87,7 @@
     </j-modal>
 </template>
 <script lang="ts" setup>
-import { message } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 import { getImage } from '@/utils/comm';
 import type { UploadChangeParam, FormInstance } from 'ant-design-vue';
 import FileUpload from './FileUpload.vue';
@@ -153,7 +153,7 @@ const onSubmit = async () => {
 const handleChange = (info: UploadChangeParam) => {
     fileLoading.value = true;
     if (info.file.status === 'done') {
-        message.success('上传成功！');
+        onlyMessage('上传成功！', 'success');
         const result = info.file.response?.result;
         formData.value.configuration.location = result;
         fileLoading.value = false;
