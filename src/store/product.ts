@@ -29,5 +29,9 @@ export const useProductStore = defineStore({
     setTabActiveKey(key: string) {
       this.tabActiveKey = key
     },
+    reSet(){
+      this.current = {} as ProductItem
+      this.detail = {} as ProductItem
+    }
   }
 })

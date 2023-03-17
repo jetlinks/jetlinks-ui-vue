@@ -171,7 +171,8 @@
                                                     >
                                                         <j-select-option
                                                             v-for="i in getTypesActions(
-                                                                item.action || ''
+                                                                item.action ||
+                                                                    '',
                                                             )"
                                                             :key="i.id"
                                                             :value="i.id"
@@ -321,7 +322,8 @@
                                                     >
                                                         <j-select-option
                                                             v-for="i in getDuerOSProperties(
-                                                                item.source || '',
+                                                                item.source ||
+                                                                    '',
                                                             )"
                                                             :key="i.id"
                                                             :value="i.id"
@@ -410,7 +412,10 @@
                             type="primary"
                             :loading="loading"
                             @click="saveBtn"
-                            :hasPermission="['Northbound/DuerOS:add', 'Northbound/DuerOS:update']"
+                            :hasPermission="[
+                                'Northbound/DuerOS:add',
+                                'Northbound/DuerOS:update',
+                            ]"
                         >
                             保存
                         </PermissionButton>
@@ -626,12 +631,11 @@ const saveBtn = async () => {
                 loading.value = true;
                 const resp = await savePatch(data).finally(() => {
                     loading.value = false;
-                })
+                });
                 if (resp.status === 200) {
                     message.success('操作成功！');
                     formRef.value.resetFields();
                     menuStory.jumpPage('Northbound/DuerOS');
-
                 }
             }
         })

@@ -6,6 +6,18 @@
             @click="handleClick"
         >
             <div class="card-content">
+                <div
+                    class="card-content-bg1"
+                    :style="{
+                        background: getBackgroundColor(statusNames[status]),
+                    }"
+                ></div>
+                <div
+                    class="card-content-bg2"
+                    :style="{
+                        background: getBackgroundColor(statusNames[status]),
+                    }"
+                ></div>
                 <div style="display: flex">
                     <!-- 图片 -->
                     <div class="card-item-avatar">
@@ -17,21 +29,19 @@
                         <slot name="content"></slot>
                     </div>
                 </div>
-
                 <!-- 勾选 -->
                 <div v-if="active" class="checked-icon">
                     <div>
                         <AIcon type="CheckOutlined" />
                     </div>
                 </div>
-
                 <!-- 状态 -->
                 <div
                     v-if="showStatus"
                     class="card-state"
-                    :style='{
-                      backgroundColor: getHexColor(statusNames[status])
-                    }'
+                    :style="{
+                        backgroundColor: getHexColor(statusNames[status]),
+                    }"
                 >
                     <div class="card-state-content">
                         <BadgeStatus
@@ -72,7 +82,7 @@
 
 <script setup lang="ts" name='CardBox'>
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
-import { getHexColor } from '../BadgeStatus/color'
+import color, { getHexColor } from '../BadgeStatus/color';
 import type { ActionsType } from '@/components/Table';
 import { PropType } from 'vue';
 
@@ -122,6 +132,15 @@ const props = defineProps({
         default: false,
     },
 });
+
+const getBackgroundColor = (code: string) => {
+    const _color = color[code] || color.default;
+    return `linear-gradient(
+                188.4deg,
+                rgba(${_color}, 0.03) 22.94%,
+                rgba(${_color}, 0) 94.62%
+            )`;
+};
 
 const handleClick = () => {
     emit('click', props.value);
@@ -257,6 +276,33 @@ const handleClick = () => {
             }
         }
 
+        .card-content-bg1 {
+            position: absolute;
+            right: -5%;
+            height: 100%;
+            width: 44.65%;
+            top: 0;
+            background: linear-gradient(
+                188.4deg,
+                rgba(229, 0, 18, 0.03) 22.94%,
+                rgba(229, 0, 18, 0) 94.62%
+            );
+            transform: skewX(-15deg);
+        }
+
+        .card-content-bg2 {
+            position: absolute;
+            right: -5%;
+            height: 100%;
+            width: calc(44.65% + 34px);
+            top: 0;
+            background: linear-gradient(
+                188.4deg,
+                rgba(229, 0, 18, 0.03) 22.94%,
+                rgba(229, 0, 18, 0) 94.62%
+            );
+            transform: skewX(-15deg);
+        }
         .card-mask {
             position: absolute;
             top: 0;
@@ -268,7 +314,7 @@ const handleClick = () => {
             width: 100%;
             height: 100%;
             color: #fff;
-            background-color: rgba(#000, .5);
+            background-color: rgba(#000, 0.5);
             visibility: hidden;
             cursor: pointer;
             transition: all 0.3s;

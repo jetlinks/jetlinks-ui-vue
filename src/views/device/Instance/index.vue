@@ -143,7 +143,7 @@
                     :status="slotProps.state?.value"
                     :statusText="slotProps.state?.text"
                     :statusNames="{
-                        online: 'success',
+                        online: 'processing',
                         offline: 'error',
                         notActive: 'warning',
                     }"
@@ -202,9 +202,14 @@
                 </CardBox>
             </template>
             <template #state="slotProps">
-                <j-badge
+                <BadgeStatus
+                    :status="slotProps.state?.value"
                     :text="slotProps.state?.text"
-                    :status="statusMap.get(slotProps.state?.value)"
+                    :statusNames="{
+                        online: 'processing',
+                        offline: 'error',
+                        notActive: 'warning',
+                    }"
                 />
             </template>
             <template #createTime="slotProps">
@@ -226,7 +231,7 @@
                             }"
                             @click="i.onClick"
                             type="link"
-                            style="padding: 0px"
+                            style="padding: 0 5px"
                             :hasPermission="'device/Instance:' + i.key"
                         >
                             <template #icon><AIcon :type="i.icon" /></template>
@@ -289,6 +294,7 @@ import { queryTree } from '@/api/device/category';
 import { useMenuStore } from '@/store/menu';
 import type { ActionsType } from './typings';
 import dayjs from 'dayjs';
+import BadgeStatus from '@/components/BadgeStatus/index.vue';
 
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -302,11 +308,6 @@ const api = ref<string>('');
 const type = ref<string>('');
 
 const menuStory = useMenuStore();
-
-const statusMap = new Map();
-statusMap.set('online', 'success');
-statusMap.set('offline', 'error');
-statusMap.set('notActive', 'warning');
 
 const columns = [
     {
@@ -479,6 +480,7 @@ const columns = [
         title: '说明',
         dataIndex: 'describe',
         key: 'describe',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -487,7 +489,7 @@ const columns = [
         title: '操作',
         key: 'action',
         fixed: 'right',
-        width: 250,
+        width: 200,
         scopedSlots: true,
     },
 ];
@@ -525,10 +527,10 @@ const paramsFormat = (
 };
 
 onMounted(() => {
-    if(history.state?.params?.type === 'add'){
-        handleAdd()
+    if (history.state?.params?.type === 'add') {
+        handleAdd();
     }
-})
+});
 
 const handleParams = (config: Record<string, any>) => {
     const _terms: Record<string, any> = {};

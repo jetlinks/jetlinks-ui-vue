@@ -1,12 +1,12 @@
 
 const color = {
-  'processing': '64, 169, 255',
-  'error': '247, 79, 70',
-  'success': '74, 234, 220',
-  'warning': '250, 178, 71',
-  'default': '63, 73, 96'
+  'processing': '9, 46, 231',
+  'error': '229, 0, 18',
+  'success': '36, 178, 118',
+  'warning': '255, 144, 0',
+  'default': '102, 102, 102'
 }
-export const getHexColor = (code: string, pe: number = 0.3) => {
+export const getHexColor = (code: string, pe: number = 0.1) => {
   const _color = color[code] || color.default
   if (code === 'default') {
     pe = 0.1
