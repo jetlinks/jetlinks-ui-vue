@@ -32,13 +32,6 @@
         </div>
       </template>
     </template>
-<!--    <j-form-item-->
-<!--      v-else-->
-<!--      :name='["branches", 0, "then"]'-->
-<!--      :rules='rules'-->
-<!--    >-->
-<!--      -->
-<!--    </j-form-item>-->
   </div>
 </template>
 

@@ -132,7 +132,7 @@ const firmwareId = route.query.id;
 const productId = route.query.productId;
 const view = props.data.view;
 
-const formData = ref({
+const formData: any = ref({
     name: '',
     mode: undefined,
     responseTimeoutSeconds: '',
@@ -187,8 +187,8 @@ onMounted(() => {
         paging: false,
         terms: [{ column: 'state', value: 1 }],
         sorts: [{ name: 'createTime', order: 'desc' }],
-    }).then((resp) => {
-        productOptions.value = resp.result.map((item) => ({
+    }).then((resp: any) => {
+        productOptions.value = resp.result.map((item: any) => ({
             value: item.id,
             label: item.name,
         }));

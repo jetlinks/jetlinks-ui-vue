@@ -81,17 +81,17 @@
                                 },
                             ]"
                         >
-                            <div class="form-label">
+                            <template #label>
                                 API Host
-                                <span class="form-label-required">*</span>
-                                <j-tooltip>
-                                    <template #title>
-                                        <p>调用流媒体接口时请求的服务地址</p>
-                                    </template>
-                                    <AIcon type="QuestionCircleOutlined" />
+                                <j-tooltip
+                                    title="调用流媒体接口时请求的服务地址"
+                                >
+                                    <AIcon
+                                        type="QuestionCircleOutlined"
+                                        style="margin-left: 2px"
+                                    />
                                 </j-tooltip>
-                            </div>
-
+                            </template>
                             <j-input
                                 placeholder="请输入API Host"
                                 v-model:value="formData.configuration.apiHost"
@@ -135,19 +135,17 @@
                                 },
                             ]"
                         >
-                            <div class="form-label">
+                            <template #label>
                                 RTP IP
-                                <span class="form-label-required">*</span>
-                                <j-tooltip>
-                                    <template #title>
-                                        <p>
-                                            视频设备将流推送到该IP地址下，部分设备仅支持IP地址，建议全是用IP地址
-                                        </p>
-                                    </template>
-                                    <AIcon type="QuestionCircleOutlined" />
+                                <j-tooltip
+                                    title="视频设备将流推送到该IP地址下，部分设备仅支持IP地址，建议全是用IP地址"
+                                >
+                                    <AIcon
+                                        type="QuestionCircleOutlined"
+                                        style="margin-left: 2px"
+                                    />
                                 </j-tooltip>
-                            </div>
-
+                            </template>
                             <j-input
                                 placeholder="请输入RTP IP"
                                 v-model:value="formData.configuration.rtpIp"
@@ -250,7 +248,6 @@
                         <j-form-item>
                             <j-button
                                 v-if="view === 'false'"
-                                class="form-submit"
                                 html-type="submit"
                                 type="primary"
                                 @click.prevent="onSubmit"
@@ -302,7 +299,7 @@ const formData = ref<FormDataType>({
 });
 
 const onSubmit = async () => {
-    let data = await formRef.value?.validate();
+    let data: any = await formRef.value?.validate();
     let params = { ...data };
     const { configuration } = data;
     if (configuration.dynamicRtpPort) {
@@ -327,8 +324,8 @@ const onSubmit = async () => {
 
 const detail = async (id: string) => {
     loading.value = true;
-    const resp = await queryProviders();
-    options.value = resp.result.map((item) => ({
+    const resp: any = await queryProviders();
+    options.value = resp.result.map((item: any) => ({
         value: item.id,
         label: item.name,
     }));
@@ -368,9 +365,6 @@ watch(
 
 <style lang="less" scoped>
 .form {
-    .form-submit {
-        background-color: @primary-color !important;
-    }
     .form-item-checked {
         padding: 0;
         padding-top: 35px;
@@ -381,10 +375,6 @@ watch(
     .form-label {
         height: 30px;
         padding-bottom: 8px;
-        .form-label-required {
-            color: red !important;
-            margin: 0 4px 0 -2px;
-        }
     }
 }
 </style>

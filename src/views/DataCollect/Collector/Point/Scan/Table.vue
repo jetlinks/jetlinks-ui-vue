@@ -225,9 +225,9 @@ const changeValue = (index: number, type: string) => {
     }
 };
 
-const changeCheckbox = (index: number, type: string) => {
+const changeCheckbox = async (index: number, type: string) => {
     // console.log(1, getTargetData(index, type).check,getTargetData(index, type));
-    //如果不使用setTimeout，会导致值更新不及时
+    //Dom未更新完成，需要用 setTimeout 或者 await nextTick() 处理
     setTimeout(() => {
         // console.log(2, getTargetData(index, type).check,getTargetData(index, type));
         let startIndex = 0;
@@ -235,8 +235,8 @@ const changeCheckbox = (index: number, type: string) => {
         const currentCheck = getTargetData(index, type).check;
         if (!currentCheck) return;
         for (let i = index; i >= 0; i--) {
-            const preDatCheck = getTargetData(i, type).check;
-            if (!preDatCheck) {
+            const preDataCheck = getTargetData(i, type).check;
+            if (!preDataCheck) {
                 startIndex = i;
                 break;
             }

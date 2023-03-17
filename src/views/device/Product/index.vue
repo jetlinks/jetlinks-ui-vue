@@ -103,7 +103,7 @@
                                 ...item.tooltip,
                             }"
                             @click="item.onClick"
-                            :hasPermission="'device/Product:' + item.key"
+                            :hasPermission="item.key ==='view' ? true : 'device/Product:' + item.key"
                         >
                             <AIcon
                                 type="DeleteOutlined"
@@ -197,40 +197,52 @@ const columns = [
         dataIndex: 'id',
         key: 'id',
         scopedSlots: true,
+        width:200,
+        ellipsis: true,
     },
     {
         title: '产品名称',
         dataIndex: 'name',
         key: 'name',
+        width:220,
+        ellipsis: true,
     },
     {
         title: '接入方式',
         dataIndex: 'accessName',
         key: 'accessName',
+        width:220,
+        ellipsis: true,
     },
     {
         title: '设备类型',
         dataIndex: 'deviceType',
         key: 'deviceType',
         scopedSlots: true,
+        ellipsis: true,
+        width:120,
     },
     {
         title: '状态',
         dataIndex: 'state',
         key: 'state',
         scopedSlots: true,
+        ellipsis: true,
+        width:90,
     },
     {
         title: '说明',
         dataIndex: 'describe',
         key: 'describe',
+        ellipsis: true,
     },
     {
         title: '操作',
         key: 'action',
         fixed: 'right',
-        width: 250,
+        width: 200,
         scopedSlots: true,
+        ellipsis: true,
     },
 ];
 
@@ -383,7 +395,7 @@ const beforeUpload = (file: any) => {
             }
             return true;
         } catch {
-            message.error('请上传json格式文件');
+            // message.error('请上传json格式文件');
         }
         return true;
     };

@@ -108,50 +108,52 @@
                                 </j-row> </j-form
                         ></j-col>
                         <j-col :span="8">
-                            <div class="doc">
-                                <h1>操作指引：</h1>
-                                <div>
-                                    1、CTWing端创建产品、设备，以及一个第三方应用
-                                </div>
-                                <div>
-                                    2、CTWing端配置产品/设备/分组级订阅，订阅方URL地址请填写:
-                                    <div style="word-wrap: break-word">
-                                        {{
-                                            `${origin}/api/ctwing/${randomString()}/notify`
-                                        }}
+                            <j-scrollbar height="500">
+                                <div class="doc">
+                                    <h1>操作指引：</h1>
+                                    <div>
+                                        1、CTWing端创建产品、设备，以及一个第三方应用
+                                    </div>
+                                    <div>
+                                        2、CTWing端配置产品/设备/分组级订阅，订阅方URL地址请填写:
+                                        <div style="word-wrap: break-word">
+                                            {{
+                                                `${origin}/api/ctwing/${randomString()}/notify`
+                                            }}
+                                        </div>
+                                    </div>
+                                    <div class="image">
+                                        <j-image width="100%" :src="img1" />
+                                    </div>
+                                    <div>
+                                        3、IOT端创建类型为CTWing的设备接入网关
+                                    </div>
+                                    <div>
+                                        4、IOT端创建产品，选中接入方式为CTWing,填写CTWing平台中的产品ID、Master-APIkey。
+                                    </div>
+                                    <div class="image">
+                                        <j-image width="100%" :src="img2" />
+                                    </div>
+                                    <div>
+                                        5、IOT端添加设备，为每一台设备设置唯一的IMEI（需与CTWing平台中填写的值一致）
+                                    </div>
+                                    <div class="image">
+                                        <j-image width="100%" :src="img3" />
+                                    </div>
+                                    <h1>设备接入网关配置说明</h1>
+                                    <div>
+                                        1.请将CTWing的AEP平台-应用管理中的App
+                                        Key和App Secret复制到当前页面
+                                    </div>
+                                    <div class="image">
+                                        <j-image width="100%" :src="img4" />
+                                    </div>
+                                    <h1>其他说明</h1>
+                                    <div>
+                                        1.在IOT端启用设备时，若CTWing平台没有与之对应的设备，则将在CTWing端自动创建新设备
                                     </div>
                                 </div>
-                                <div class="image">
-                                    <j-image width="100%" :src="img1" />
-                                </div>
-                                <div>
-                                    3、IOT端创建类型为CTWing的设备接入网关
-                                </div>
-                                <div>
-                                    4、IOT端创建产品，选中接入方式为CTWing,填写CTWing平台中的产品ID、Master-APIkey。
-                                </div>
-                                <div class="image">
-                                    <j-image width="100%" :src="img2" />
-                                </div>
-                                <div>
-                                    5、IOT端添加设备，为每一台设备设置唯一的IMEI（需与CTWing平台中填写的值一致）
-                                </div>
-                                <div class="image">
-                                    <j-image width="100%" :src="img3" />
-                                </div>
-                                <h1>设备接入网关配置说明</h1>
-                                <div>
-                                    1.请将CTWing的AEP平台-应用管理中的App
-                                    Key和App Secret复制到当前页面
-                                </div>
-                                <div class="image">
-                                    <j-image width="100%" :src="img4" />
-                                </div>
-                                <h1>其他说明</h1>
-                                <div>
-                                    1.在IOT端启用设备时，若CTWing平台没有与之对应的设备，则将在CTWing端自动创建新设备
-                                </div>
-                            </div>
+                            </j-scrollbar>
                         </j-col>
                     </j-row>
                 </div>
@@ -179,8 +181,12 @@
                         新增
                     </PermissionButton>
                 </div>
-                <div class="card-item">
-                    <j-row :gutter="[24, 24]" v-if="procotolList.length > 0">
+                <j-scrollbar height="500">
+                    <j-row
+                        :gutter="[24, 24]"
+                        v-if="procotolList.length > 0"
+                        style="margin-right: 10px"
+                    >
                         <j-col
                             :span="8"
                             v-for="item in procotolList"
@@ -195,7 +201,7 @@
                         </j-col>
                     </j-row>
                     <j-empty v-else description="暂无数据" />
-                </div>
+                </j-scrollbar>
             </div>
         </div>
         <div v-if="current === 2" class="card-last">
@@ -362,26 +368,24 @@ const formData = ref<Form>({
 const current = ref(0);
 const stepCurrent = ref(0);
 const steps = ref(['接入配置', '消息协议', '完成']);
-const procotolList = ref([]);
+const procotolList: any = ref([]);
 const allProcotolList = ref([]);
-const procotolCurrent = ref('');
+const procotolCurrent: any = ref('');
 
 const procotolChange = (id: string) => {
     procotolCurrent.value = id;
 };
 
 const procotolSearch = (value: string) => {
-    if (value) {
-        const list = allProcotolList.value.filter((i) => {
-            return (
-                i.name &&
-                i.name.toLocaleLowerCase().includes(value.toLocaleLowerCase())
-            );
-        });
-        procotolList.value = list;
-    } else {
-        procotolList.value = allProcotolList.value;
-    }
+    procotolList.value = value
+        ? allProcotolList.value.filter(
+              (i: any) =>
+                  i.name &&
+                  i.name
+                      .toLocaleLowerCase()
+                      .includes(value.toLocaleLowerCase()),
+          )
+        : allProcotolList.value;
 };
 
 const saveData = async () => {
@@ -411,7 +415,7 @@ const saveData = async () => {
 };
 
 const queryProcotolList = async (id: string, params = {}) => {
-    const resp = await getProtocolList(ProtocolMapping.get(id), {
+    const resp: any = await getProtocolList(ProtocolMapping.get(id), {
         ...params,
         'sorts[0].name': 'createTime',
         'sorts[0].order': 'desc',
@@ -424,10 +428,10 @@ const queryProcotolList = async (id: string, params = {}) => {
 
 const addProcotol = () => {
     const url = menuStory.menus['link/Protocol']?.path;
-    const tab = window.open(
+    const tab: any = window.open(
         `${window.location.origin + window.location.pathname}#${url}?save=true`,
     );
-    tab.onTabSaveSuccess = (value) => {
+    tab.onTabSaveSuccess = (value: any) => {
         if (value.success) {
             procotolCurrent.value = value.result?.id;
             queryProcotolList(props.provider?.id);
@@ -486,12 +490,7 @@ watch(
 }
 .steps-box {
     min-height: 400px;
-    .card-item {
-        padding-right: 5px;
-        max-height: 480px;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
+
     .card-last {
         padding-right: 5px;
         overflow-y: auto;

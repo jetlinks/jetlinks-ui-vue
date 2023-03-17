@@ -6,7 +6,6 @@
                 target="search"
                 @search="handleSearch"
             />
-
             <j-pro-table
                 ref="tableRef"
                 model="CARD"
@@ -353,6 +352,12 @@ const handleSearch = (e: any) => {
 };
 </script>
 <style lang="less" scoped>
+.table {
+    max-height: 700px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
 .tableCardDisabled {
     width: 100%;
     background: url('/images/access-config-diaabled.png') no-repeat;

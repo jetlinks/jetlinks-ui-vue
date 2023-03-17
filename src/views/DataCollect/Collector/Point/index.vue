@@ -1,206 +1,225 @@
 <template>
     <j-spin :spinning="spinning">
         <pro-search :columns="columns" target="search" @search="handleSearch" />
-        <j-pro-table
-            ref="tableRef"
-            model="CARD"
-            :columns="columns"
-            :gridColumn="2"
-            :gridColumns="[1, 2]"
-            :request="queryPoint"
-            :defaultParams="defaultParams"
-            :params="params"
-            :rowSelection="{
-                selectedRowKeys: _selectedRowKeys,
-                onChange: onSelectChange,
-            }"
-            @cancelSelect="cancelSelect"
-        >
-            <template #headerTitle>
-                <j-space>
-                    <PermissionButton
-                        v-if="data?.provider !== 'OPC_UA'"
-                        type="primary"
-                        @click="handlAdd"
-                        hasPermission="DataCollect/Collector:add"
-                    >
-                        <template #icon><AIcon type="PlusOutlined" /></template>
-                        新增点位
-                    </PermissionButton>
+        <j-scrollbar height="680">
+            <j-pro-table
+                ref="tableRef"
+                model="CARD"
+                :columns="columns"
+                :gridColumn="2"
+                :gridColumns="[1, 2]"
+                :request="queryPoint"
+                :defaultParams="defaultParams"
+                :params="params"
+                :rowSelection="{
+                    selectedRowKeys: _selectedRowKeys,
+                    onChange: onSelectChange,
+                }"
+                @cancelSelect="cancelSelect"
+            >
+                <template #headerTitle>
+                    <j-space>
+                        <PermissionButton
+                            v-if="data?.provider !== 'OPC_UA'"
+                            type="primary"
+                            @click="handlAdd"
+                            hasPermission="DataCollect/Collector:add"
+                        >
+                            <template #icon
+                                ><AIcon type="PlusOutlined"
+                            /></template>
+                            新增点位
+                        </PermissionButton>
 
-                    <PermissionButton
+                        <PermissionButton
+                            v-if="data?.provider === 'OPC_UA'"
+                            type="primary"
+                            @click="handlScan"
+                            hasPermission="DataCollect/Collector:add"
+                        >
+                            <template #icon
+                                ><AIcon type="PlusOutlined"
+                            /></template>
+                            扫描
+                        </PermissionButton>
+                        <j-dropdown v-if="data?.provider === 'OPC_UA'">
+                            <j-button
+                                >批量操作 <AIcon type="DownOutlined"
+                            /></j-button>
+                            <template #overlay>
+                                <j-menu>
+                                    <j-menu-item>
+                                        <PermissionButton
+                                            hasPermission="DataCollect/Collector:update"
+                                            @click="handlBatchUpdate()"
+                                        >
+                                            <template #icon
+                                                ><AIcon type="FormOutlined"
+                                            /></template>
+                                            编辑
+                                        </PermissionButton>
+                                    </j-menu-item>
+                                    <j-menu-item>
+                                        <PermissionButton
+                                            hasPermission="DataCollect/Collector:delete"
+                                            :popConfirm="{
+                                                title: `确定删除？`,
+                                                onConfirm: () => handlDelete(),
+                                            }"
+                                        >
+                                            <template #icon
+                                                ><AIcon type="EditOutlined"
+                                            /></template>
+                                            删除
+                                        </PermissionButton>
+                                    </j-menu-item>
+                                </j-menu>
+                            </template>
+                        </j-dropdown>
+                    </j-space>
+                    <div
                         v-if="data?.provider === 'OPC_UA'"
-                        type="primary"
-                        @click="handlScan"
-                        hasPermission="DataCollect/Collector:add"
+                        style="margin-top: 15px"
                     >
-                        <template #icon><AIcon type="PlusOutlined" /></template>
-                        扫描
-                    </PermissionButton>
-                    <j-dropdown v-if="data?.provider === 'OPC_UA'">
-                        <j-button
-                            >批量操作 <AIcon type="DownOutlined"
-                        /></j-button>
-                        <template #overlay>
-                            <j-menu>
-                                <j-menu-item>
-                                    <PermissionButton
-                                        hasPermission="DataCollect/Collector:update"
-                                        @click="handlBatchUpdate()"
-                                    >
-                                        <template #icon
-                                            ><AIcon type="FormOutlined"
-                                        /></template>
-                                        编辑
-                                    </PermissionButton>
-                                </j-menu-item>
-                                <j-menu-item>
-                                    <PermissionButton
-                                        hasPermission="DataCollect/Collector:delete"
-                                        :popConfirm="{
-                                            title: `确定删除？`,
-                                            onConfirm: () => handlDelete(),
-                                        }"
-                                    >
-                                        <template #icon
-                                            ><AIcon type="EditOutlined"
-                                        /></template>
-                                        删除
-                                    </PermissionButton>
-                                </j-menu-item>
-                            </j-menu>
+                        <j-checkbox
+                            v-model:checked="checkAll"
+                            @change="onCheckAllChange"
+                            >全选</j-checkbox
+                        >
+                    </div>
+                </template>
+                <template #card="slotProps">
+                    <PointCardBox
+                        :showStatus="true"
+                        :value="slotProps"
+                        @click="handleClick"
+                        :active="_selectedRowKeys.includes(slotProps.id)"
+                        class="card-box"
+                        :status="getState(slotProps).value"
+                        :statusText="getState(slotProps)?.text"
+                        :statusNames="Object.fromEntries(colorMap.entries())"
+                    >
+                        <template #title>
+                            <slot name="title">
+                                <div class="card-box-title">
+                                    {{ slotProps.name }}
+                                </div>
+                            </slot>
                         </template>
-                    </j-dropdown>
-                </j-space>
-                <div
-                    v-if="data?.provider === 'OPC_UA'"
-                    style="margin-top: 15px"
-                >
-                    <j-checkbox
-                        v-model:checked="checkAll"
-                        @change="onCheckAllChange"
-                        >全选</j-checkbox
-                    >
-                </div>
-            </template>
-            <template #card="slotProps">
-                <PointCardBox
-                    :showStatus="true"
-                    :value="slotProps"
-                    @click="handleClick"
-                    :active="_selectedRowKeys.includes(slotProps.id)"
-                    class="card-box"
-                    :status="getState(slotProps).value"
-                    :statusText="getState(slotProps)?.text"
-                    :statusNames="Object.fromEntries(colorMap.entries())"
-                >
-                    <template #title>
-                        <slot name="title">
-                            <div class="card-box-title">
-                                {{ slotProps.name }}
+                        <template #action>
+                            <div class="card-box-action">
+                                <j-popconfirm
+                                    title="确定删除？"
+                                    @confirm="handlDelete(slotProps.id)"
+                                >
+                                    <a><AIcon type="DeleteOutlined" /></a>
+                                </j-popconfirm>
+                                <a @click="handlEdit(slotProps)"
+                                    ><AIcon type="FormOutlined"
+                                /></a>
                             </div>
-                        </slot>
-                    </template>
-                    <template #action>
-                        <div class="card-box-action">
-                            <j-popconfirm
-                                title="确定删除？"
-                                @confirm="handlDelete(slotProps.id)"
-                            >
-                                <a><AIcon type="DeleteOutlined" /></a>
-                            </j-popconfirm>
-                            <a @click="handlEdit(slotProps)"
-                                ><AIcon type="FormOutlined"
-                            /></a>
-                        </div>
-                    </template>
-                    <template #img>
-                        <img
-                            :src="
-                                slotProps.provider === 'OPC_UA'
-                                    ? opcImage
-                                    : modbusImage
-                            "
-                        />
-                    </template>
-                    <template #content>
-                        <div class="card-box-content">
-                            <div class="card-box-content-left">
-                                <div class="card-box-content-left-1">
+                        </template>
+                        <template #img>
+                            <img
+                                :src="
+                                    slotProps.provider === 'OPC_UA'
+                                        ? opcImage
+                                        : modbusImage
+                                "
+                            />
+                        </template>
+                        <template #content>
+                            <div class="card-box-content">
+                                <div class="card-box-content-left">
+                                    <div class="card-box-content-left-1">
+                                        <div
+                                            class="ard-box-content-left-1-title"
+                                            v-if="
+                                                propertyValue.has(slotProps.id)
+                                            "
+                                        >
+                                            <j-ellipsis
+                                                style="max-width: 150px"
+                                            >
+                                                {{
+                                                    propertyValue.get(
+                                                        slotProps.id,
+                                                    )?.parseData[0] || 0
+                                                }}({{
+                                                    propertyValue.get(
+                                                        slotProps.id,
+                                                    )?.dataType
+                                                }})
+                                            </j-ellipsis>
+                                        </div>
+                                        <span v-else>--</span>
+                                        <a
+                                            v-if="
+                                                getAccessModes(
+                                                    slotProps,
+                                                ).includes('write')
+                                            "
+                                            @click.stop="clickEdit(slotProps)"
+                                            ><AIcon type="EditOutlined"
+                                        /></a>
+                                        <a
+                                            v-if="
+                                                getAccessModes(
+                                                    slotProps,
+                                                ).includes('read')
+                                            "
+                                            @click.stop="clickRedo(slotProps)"
+                                            ><AIcon type="RedoOutlined"
+                                        /></a>
+                                    </div>
                                     <div
-                                        class="ard-box-content-left-1-title"
                                         v-if="propertyValue.has(slotProps.id)"
+                                        class="card-box-content-right-2"
                                     >
-                                        <j-ellipsis style="max-width: 150px">
+                                        <p>
                                             {{
                                                 propertyValue.get(slotProps.id)
-                                                    ?.parseData[0] || 0
-                                            }}({{
-                                                propertyValue.get(slotProps.id)
-                                                    ?.dataType
-                                            }})
-                                        </j-ellipsis>
+                                                    ?.hex || ''
+                                            }}
+                                        </p>
+                                        <p>
+                                            {{
+                                                moment(
+                                                    propertyValue.get(
+                                                        slotProps.id,
+                                                    )?.timestamp,
+                                                ).format('YYYY-MM-DD HH:mm:ss')
+                                            }}
+                                        </p>
                                     </div>
-                                    <span v-else>--</span>
-                                    <a
-                                        v-if="
-                                            getAccessModes(slotProps).includes(
-                                                'write',
-                                            )
-                                        "
-                                        @click.stop="clickEdit(slotProps)"
-                                        ><AIcon type="EditOutlined"
-                                    /></a>
-                                    <a
-                                        v-if="
-                                            getAccessModes(slotProps).includes(
-                                                'read',
-                                            )
-                                        "
-                                        @click.stop="clickRedo(slotProps)"
-                                        ><AIcon type="RedoOutlined"
-                                    /></a>
                                 </div>
-                                <div
-                                    v-if="propertyValue.has(slotProps.id)"
-                                    class="card-box-content-right-2"
-                                >
-                                    <p>
-                                        {{
-                                            propertyValue.get(slotProps.id)
-                                                ?.hex || ''
-                                        }}
-                                    </p>
-                                    <p>
-                                        {{
-                                            moment(
-                                                propertyValue.get(slotProps.id)
-                                                    ?.timestamp,
-                                            ).format('YYYY-MM-DD HH:mm:ss')
-                                        }}
-                                    </p>
-                                </div>
-                            </div>
 
-                            <div class="card-box-content-right">
-                                <div
-                                    v-if="getRight1(slotProps)"
-                                    class="card-box-content-right-1"
-                                >
-                                    <span>{{ getQuantity(slotProps) }}</span>
-                                    <span>{{ getAddress(slotProps) }}</span>
-                                    <span>{{ getScaleFactor(slotProps) }}</span>
-                                </div>
-                                <div class="card-box-content-right-2">
-                                    <span>{{ getText(slotProps) }}</span>
-                                    <span>{{ getInterval(slotProps) }}</span>
+                                <div class="card-box-content-right">
+                                    <div
+                                        v-if="getRight1(slotProps)"
+                                        class="card-box-content-right-1"
+                                    >
+                                        <span>{{
+                                            getQuantity(slotProps)
+                                        }}</span>
+                                        <span>{{ getAddress(slotProps) }}</span>
+                                        <span>{{
+                                            getScaleFactor(slotProps)
+                                        }}</span>
+                                    </div>
+                                    <div class="card-box-content-right-2">
+                                        <span>{{ getText(slotProps) }}</span>
+                                        <span>{{
+                                            getInterval(slotProps)
+                                        }}</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </template>
-                </PointCardBox>
-            </template>
-        </j-pro-table>
+                        </template>
+                    </PointCardBox>
+                </template>
+            </j-pro-table>
+        </j-scrollbar>
         <SaveModBus
             v-if="visible.saveModBus"
             :data="current"

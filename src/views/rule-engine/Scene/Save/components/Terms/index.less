@@ -49,15 +49,7 @@
 .actions-terms {
   .actions-terms-warp {
     display: flex;
-    //width: 66.66%;
     margin-bottom: 24px;
-
-    &.first-children {
-      width: 100%;
-      .actions-branches {
-        width: 66.66%;
-      }
-    }
 
     &.first-children,
     &:last-child {
@@ -202,6 +194,7 @@
 
 
     .button-delete {
+
       .deleteBtn();
     }
   }
@@ -212,4 +205,21 @@
   }
 }
 
+@minWidth: 75%;
+
+@media (min-width: 1600px) {
+  .actions-terms {
+    .actions-terms-warp {
+      width: @minWidth;
+
+      &.first-children {
+        width: 100%;
+
+        .actions-branches {
+          width: calc(@minWidth - 12px);
+        }
+      }
+    }
+  }
+}
 

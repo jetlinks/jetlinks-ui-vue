@@ -1,63 +1,63 @@
 <template>
-    <div class="actions">
-        <div class="actions-title">
-            <span>执行</span>
-            <ShakeLimit
-                v-if="props.openShakeLimit"
-                v-model:value="FormModel.branches[name].shakeLimit"
-            />
-        </div>
-        <div class="actions-warp">
-            <j-collapse v-model:activeKey="activeKeys">
-                <j-collapse-panel key="1">
-                    <template #header>
-                        <span>
-                            串行
-                            <span class="panel-tip">
-                                按顺序依次执行动作，适用于基于动作输出参数，判断是否执行后续动作的场景
-                            </span>
-                        </span>
-                    </template>
-                    <div class="actions-list">
-                        <List
-                            type="serial"
-                            :branchesName="name"
-                            :parallel="false"
-                            :actions="
-                                serialArray.length ? serialArray[0].actions : []
-                            "
-                            @add="(_item) => onAdd(_item, false)"
-                            @delete="(_key) => onDelete(_key, false)"
-                        />
-                    </div>
-                </j-collapse-panel>
-                <j-collapse-panel key="2">
-                    <template #header>
-                        <span>
-                            并行
-                            <span class="panel-tip">
-                                同时执行所有动作，适用于不需要关注执行动作先后顺序和结果的场景
-                            </span>
-                        </span>
-                    </template>
-                    <div class="actions-list">
-                        <List
-                            type="parallel"
-                            :branchesName="name"
-                            :parallel="true"
-                            :actions="
-                                parallelArray.length
-                                    ? parallelArray[0].actions
-                                    : []
-                            "
-                            @add="(_item) => onAdd(_item, true)"
-                            @delete="(_key) => onDelete(_key, true)"
-                        />
-                    </div>
-                </j-collapse-panel>
-            </j-collapse>
-        </div>
+  <div class="actions">
+    <div class="actions-title">
+      <span>执行</span>
+      <ShakeLimit
+        v-if="props.openShakeLimit"
+        v-model:value="FormModel.branches[name].shakeLimit"
+      />
     </div>
+    <div class="actions-warp">
+      <j-collapse v-model:activeKey="activeKeys">
+        <j-collapse-panel key="1">
+          <template #header>
+                          <span>
+                              串行
+                              <span class="panel-tip">
+                                  按顺序依次执行动作，适用于基于动作输出参数，判断是否执行后续动作的场景
+                              </span>
+                          </span>
+          </template>
+          <div class="actions-list">
+            <List
+              type="serial"
+              :branchesName="name"
+              :parallel="false"
+              :actions="
+                                  serialArray.length ? serialArray[0].actions : []
+                              "
+              @add="(_item) => onAdd(_item, false)"
+              @delete="(_key) => onDelete(_key, false)"
+            />
+          </div>
+        </j-collapse-panel>
+        <j-collapse-panel key="2">
+          <template #header>
+                          <span>
+                              并行
+                              <span class="panel-tip">
+                                  同时执行所有动作，适用于不需要关注执行动作先后顺序和结果的场景
+                              </span>
+                          </span>
+          </template>
+          <div class="actions-list">
+            <List
+              type="parallel"
+              :branchesName="name"
+              :parallel="true"
+              :actions="
+                                  parallelArray.length
+                                      ? parallelArray[0].actions
+                                      : []
+                              "
+              @add="(_item) => onAdd(_item, true)"
+              @delete="(_key) => onDelete(_key, true)"
+            />
+          </div>
+        </j-collapse-panel>
+      </j-collapse>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>

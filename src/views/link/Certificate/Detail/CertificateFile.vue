@@ -1,39 +1,35 @@
 <template>
     <j-spin :spinning="loading">
-        <div>
-            <j-textarea
-                :rows="4"
-                @change="textChange"
-                v-model:value="keystoreBase64"
-                :placeholder="placeholder"
-            />
-            <j-upload
-                accept=".pem"
-                listType="text"
-                :action="NETWORK_CERTIFICATE_UPLOAD"
-                :headers="{
-                    [TOKEN_KEY]: LocalStore.get(TOKEN_KEY),
-                }"
-                :showUploadList="false"
-                @change="handleChange"
+        <j-textarea
+            :rows="4"
+            @change="textChange"
+            v-model:value="keystoreBase64"
+            :placeholder="placeholder"
+        />
+        <j-upload
+            accept=".pem"
+            listType="text"
+            :action="NETWORK_CERTIFICATE_UPLOAD"
+            :headers="{
+                [TOKEN_KEY]: LocalStore.get(TOKEN_KEY),
+            }"
+            :showUploadList="false"
+            @change="handleChange"
+        >
+            <j-button style="margin-top: 10px">
+                <AIcon type="UploadOutlined" />
+                上传文件</j-button
             >
-                <j-button style="margin-top: 10px">
-                    <upload-outlined />
-                    上传文件</j-button
-                >
-            </j-upload>
-        </div>
+        </j-upload>
     </j-spin>
 </template>
 
 <script setup lang="ts" name="CertificateFile">
-import { UploadOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import type { UploadChangeParam } from 'ant-design-vue';
 import { LocalStore } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import { NETWORK_CERTIFICATE_UPLOAD } from '@/api/link/certificate';
-import type { UploadProps } from 'ant-design-vue';
 
 const emit = defineEmits(['update:modelValue', 'change']);
 

@@ -1,7 +1,11 @@
 <template>
     <page-container>
         <div>
-            <Search :columns="columns" target="search" @search="handleSearch" />
+            <pro-search
+                :columns="columns"
+                target="search"
+                @search="handleSearch"
+            />
             <j-pro-table
                 ref="tableRef"
                 model="TABLE"
@@ -246,11 +250,12 @@ onMounted(() => {
     queryProduct({
         paging: false,
         sorts: [{ name: 'name', order: 'desc' }],
-    }).then((resp) => {
-        const list = resp.result.filter((it) => {
+        terms: [{ column: 'state', value: 1 }], // 不传参会报错，暂时查询启用状态的，后期会改查全部 todo
+    }).then((resp: any) => {
+        const list = resp.result.filter((it: any) => {
             return _.map(it?.features || [], 'id').includes('supportFirmware');
         });
-        productOptions.value = list.map((item) => ({
+        productOptions.value = list.map((item: any) => ({
             label: item.name,
             value: item.id,
         }));

@@ -25,8 +25,12 @@
                         新增
                     </PermissionButton>
                 </div>
-                <div class="card-item">
-                    <j-row :gutter="[24, 24]" v-if="networkList.length > 0">
+                <j-scrollbar height="480">
+                    <j-row
+                        :gutter="[24, 24]"
+                        v-if="networkList.length > 0"
+                        style="margin-right: 10px"
+                    >
                         <j-col
                             :span="8"
                             v-for="item in networkList"
@@ -88,7 +92,7 @@
                         </j-col>
                     </j-row>
                     <j-empty v-else description="暂无数据" />
-                </div>
+                </j-scrollbar>
             </div>
             <div class="steps-box" v-else-if="current === 1">
                 <div class="alert">
@@ -111,8 +115,12 @@
                         新增
                     </PermissionButton>
                 </div>
-                <div class="card-item">
-                    <j-row :gutter="[24, 24]" v-if="procotolList.length > 0">
+                <j-scrollbar height="480">
+                    <j-row
+                        :gutter="[24, 24]"
+                        v-if="procotolList.length > 0"
+                        style="margin-right: 10px"
+                    >
                         <j-col
                             :span="8"
                             v-for="item in procotolList"
@@ -127,7 +135,7 @@
                         </j-col>
                     </j-row>
                     <j-empty v-else description="暂无数据" />
-                </div>
+                </j-scrollbar>
             </div>
             <div class="steps-box" v-else>
                 <div
@@ -169,97 +177,111 @@
                             </j-form>
                         </j-col>
                         <j-col :span="12">
-                            <div class="config-right">
-                                <div class="config-right-item">
-                                    <div class="config-right-item-title">
-                                        接入方式
+                            <j-scrollbar height="600">
+                                <div class="config-right">
+                                    <div class="config-right-item">
+                                        <div class="config-right-item-title">
+                                            接入方式
+                                        </div>
+                                        <div class="config-right-item-context">
+                                            {{ provider.name }}
+                                        </div>
+                                        <div class="config-right-item-context">
+                                            {{ provider.description }}
+                                        </div>
                                     </div>
-                                    <div class="config-right-item-context">
-                                        {{ provider.name }}
-                                    </div>
-                                    <div class="config-right-item-context">
-                                        {{ provider.description }}
-                                    </div>
-                                </div>
-                                <div class="config-right-item">
-                                    <div class="config-right-item-title">
-                                        消息协议
-                                    </div>
-                                    <div class="config-right-item-context">
-                                        {{
-                                            procotolList.find(
-                                                (i) => i.id === procotolCurrent,
-                                            ).name
-                                        }}
-                                    </div>
-                                    <div
-                                        class="config-right-item-context"
-                                        v-if="config.document"
-                                    >
-                                        <Markdown :source="config.document" />
-                                    </div>
-                                </div>
-                                <div
-                                    class="config-right-item"
-                                    v-if="getNetworkCurrent()"
-                                >
-                                    <div class="config-right-item-title">
-                                        网络组件
-                                    </div>
-                                    <div
-                                        v-for="i in getNetworkCurrentData()"
-                                        :key="i.address"
-                                    >
-                                        <j-badge
-                                            :color="getColor(i)"
-                                            :text="i.address"
-                                        />
-                                    </div>
-                                </div>
-                                <div
-                                    class="config-right-item"
-                                    v-if="
-                                        config.routes &&
-                                        config.routes.length > 0
-                                    "
-                                >
-                                    <div class="config-right-item-title">
-                                        {{
-                                            data.provider ===
-                                                'mqtt-server-gateway' ||
-                                            data.provider ===
-                                                'mqtt-client-gateway'
-                                                ? 'topic'
-                                                : 'URL信息'
-                                        }}
-                                    </div>
-                                    <j-table
-                                        :pagination="false"
-                                        :rowKey="generateUUID()"
-                                        :datj-source="config.routes || []"
-                                        bordered
-                                        :columns="
-                                            config.id === 'MQTT'
-                                                ? columnsMQTT
-                                                : columnsHTTP
-                                        "
-                                        :scroll="{ y: 300 }"
-                                    >
-                                        <template
-                                            #bodyCell="{ column, text, record }"
+                                    <div class="config-right-item">
+                                        <div class="config-right-item-title">
+                                            消息协议
+                                        </div>
+                                        <div class="config-right-item-context">
+                                            {{
+                                                procotolList.find(
+                                                    (i: any) =>
+                                                        i.id ===
+                                                        procotolCurrent,
+                                                ).name
+                                            }}
+                                        </div>
+                                        <div
+                                            class="config-right-item-context"
+                                            v-if="config.document"
                                         >
-                                            <template
-                                                v-if="
-                                                    column.dataIndex ===
-                                                    'stream'
+                                            <Markdown
+                                                :source="config.document"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="config-right-item"
+                                        v-if="getNetworkCurrent()"
+                                    >
+                                        <div class="config-right-item-title">
+                                            网络组件
+                                        </div>
+                                        <div
+                                            v-for="i in getNetworkCurrentData()"
+                                            :key="i.address"
+                                        >
+                                            <j-badge
+                                                :color="getColor(i)"
+                                                :text="i.address"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="config-right-item"
+                                        v-if="
+                                            config.routes &&
+                                            config.routes.length > 0
+                                        "
+                                    >
+                                        <div class="config-right-item-title">
+                                            {{
+                                                data.provider ===
+                                                    'mqtt-server-gateway' ||
+                                                data.provider ===
+                                                    'mqtt-client-gateway'
+                                                    ? 'topic'
+                                                    : 'URL信息'
+                                            }}
+                                        </div>
+                                        <j-scrollbar height="200">
+                                            <j-table
+                                                :pagination="false"
+                                                :rowKey="generateUUID()"
+                                                :data-source="
+                                                    config.routes || []
                                                 "
+                                                bordered
+                                                :columns="
+                                                    config.id === 'MQTT'
+                                                        ? columnsMQTT
+                                                        : columnsHTTP
+                                                "
+                                                :scroll="{ y: 300 }"
                                             >
-                                                {{ getStream(record) }}
-                                            </template>
-                                        </template>
-                                    </j-table>
+                                                <template
+                                                    #bodyCell="{
+                                                        column,
+                                                        text,
+                                                        record,
+                                                    }"
+                                                >
+                                                    <template
+                                                        v-if="
+                                                            column.dataIndex ===
+                                                            'stream'
+                                                        "
+                                                    >
+                                                        {{ getStream(record) }}
+                                                    </template>
+                                                </template>
+                                            </j-table>
+                                        </j-scrollbar>
+                                    </div>
                                 </div>
-                            </div>
+                            </j-scrollbar>
                         </j-col>
                     </j-row>
                 </div>
@@ -444,6 +466,8 @@ const getNetworkCurrentData = () =>
 const getColor = (i: any) => (i.health === -1 ? 'red' : 'green');
 
 const getStream = (record: any) => {
+    console.log(222, record);
+
     let stream = '';
     if (record.upstream && record.downstream) stream = '上行、下行';
     else if (record.upstream) stream = '上行';
@@ -493,19 +517,16 @@ const saveData = () => {
                 protocol: procotolCurrent.value,
                 channel: 'network', // 网络组件
                 channelId: networkCurrent.value,
+                provider: props.provider.id,
+                transport:
+                    props.provider?.id === 'child-device'
+                        ? 'Gateway'
+                        : ProtocolMapping.get(props.provider.id),
             };
             const resp =
                 id === ':id'
                     ? await save(params)
-                    : await update({
-                          ...params,
-                          id,
-                          provider: props.provider.id,
-                          transport:
-                              props.provider?.id === 'child-device'
-                                  ? 'Gateway'
-                                  : ProtocolMapping.get(props.provider.id),
-                      });
+                    : await update({ ...params, id });
             if (resp.status === 200) {
                 message.success('操作成功！');
                 history.back();
@@ -549,7 +570,6 @@ const next = async () => {
                             rowSpan: 0,
                         };
                         const list = config.value?.routes || [];
-
                         const arr = list.filter(
                             (res: any) => res.group === record.group,
                         );
@@ -558,7 +578,6 @@ const next = async () => {
                             rowIndex === 0 ||
                             list[rowIndex - 1].group !== record.group;
                         isRowIndex && (obj.rowSpan = arr.length);
-
                         return obj;
                     },
                 };
@@ -629,12 +648,6 @@ watch(
 }
 .steps-box {
     min-height: 400px;
-    .card-item {
-        padding-right: 5px;
-        max-height: 480px;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
     .card-last {
         padding-right: 5px;
         overflow-y: auto;
