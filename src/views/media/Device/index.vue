@@ -131,7 +131,10 @@
                             style="padding: 0px"
                             :hasPermission="
                                 'media/Device:' +
-                                (i.key !== 'updateChannel' ? i.key : 'update')
+                                (i.key !== 'updateChannel' &&
+                                i.key !== 'viewDevice'
+                                    ? i.key
+                                    : 'update')
                             "
                         >
                             <template #icon><AIcon :type="i.icon" /></template>
@@ -326,6 +329,17 @@ const getActions = (
             },
         },
         {
+            key: 'viewDevice',
+            text: '查看',
+            tooltip: {
+                title: '查看',
+            },
+            icon: 'EyeOutlined',
+            onClick: () => {
+                menuStory.jumpPage('device/Instance/Detail', { id: data.id });
+            },
+        },
+        {
             key: 'updateChannel',
             text: '更新通道',
             tooltip: {
@@ -374,8 +388,21 @@ const getActions = (
             icon: 'DeleteOutlined',
         },
     ];
-    return data.provider === 'fixed-media'
-        ? actions.filter((f: any) => f.key !== 'updateChannel')
-        : actions;
+
+    let acts: any = [];
+    if (type === 'card') {
+        // 卡片不展示查看按钮
+        const tempActs = actions.filter((f: any) => f.key !== 'viewDevice');
+        acts =
+            data.provider === 'fixed-media'
+                ? tempActs.filter((f: any) => f.key !== 'updateChannel')
+                : tempActs;
+    } else {
+        acts =
+            data.provider === 'fixed-media'
+                ? actions.filter((f: any) => f.key !== 'updateChannel')
+                : actions;
+    }
+    return acts;
 };
 </script>
