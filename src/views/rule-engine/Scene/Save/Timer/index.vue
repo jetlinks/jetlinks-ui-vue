@@ -1,5 +1,6 @@
 <template>
-    <div>
+    <div class='timer'>
+        <Timer ref='timerRef' v-model:value='data.trigger.timer' />
         <Action
             :thenOptions="data.branches ? data?.branches[0].then : []"
             :name="0"
@@ -13,6 +14,7 @@
 import { useSceneStore } from '@/store/scene';
 import Action from '../action/index.vue';
 import { storeToRefs } from 'pinia';
+import Timer from '../components/Timer'
 
 const sceneStore = useSceneStore();
 const { data } = storeToRefs(sceneStore);

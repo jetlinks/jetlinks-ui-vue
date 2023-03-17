@@ -14,6 +14,10 @@
         <Device v-if='data.triggerType === "device"' />
         <Manual v-else-if='data.triggerType === "manual"' />
         <Timer v-else-if='data.triggerType === "timer"' />
+        <j-form-item>
+          <j-text-area
+          />
+        </j-form-item>
       </j-form>
       <PermissionButton
         type='primary'
