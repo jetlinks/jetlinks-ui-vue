@@ -121,6 +121,7 @@ import InputCard from './InputCard.vue';
 import { cloneDeep, toLower } from 'lodash';
 import { FormInstance } from 'ant-design-vue';
 import server from '@/utils/request';
+import { findData, getCodeText } from '../utils';
 
 const props = defineProps<{
     selectApi: apiDetailsType;
@@ -238,91 +239,16 @@ function getDefaultParams() {
     if (!refStr.value) return ''; // schema不是Java中的类的话则不进行解析，直接结束
     const schemaName = refStr.value?.split('/').pop() as string;
     const type = schema.type || '';
-    const tableData = findData(schemaName);
-    if (type === 'array') {
-        return [getCodeText(tableData, 3)];
-    } else return getCodeText(tableData, 3);
-}
+    const tableData = findData(props.schemas, schemaName);
 
-function findData(schemaName: string) {
-    const schemas = toRaw(props.schemas);
-    const basicType = ['string', 'integer', 'boolean'];
-
-    if (!schemaName || !schemas[schemaName]) {
-        return [];
-    }
-    const result: schemaObjType[] = [];
-    const schema = schemas[schemaName];
-    Object.entries(schema.properties).forEach((item: [string, any]) => {
-        const paramsType =
-            item[1].type ||
-            (item[1].$ref && item[1].$ref.split('/').pop()) ||
-            (item[1].items && item[1].items.$ref.split('/').pop()) ||
-            '';
-        const schemaObj: schemaObjType = {
-            paramsName: item[0],
-            paramsType,
-            desc: item[1].description || '',
-        };
-        if (!basicType.includes(paramsType))
-            schemaObj.children = findData(paramsType);
-        result.push(schemaObj);
-    });
-
-    return result;
-}
-function getCodeText(arr: schemaObjType[], level: number): object {
-    const result = {};
-    const schemas = toRaw(props.schemas);
-    arr.forEach((item) => {
-        switch (item.paramsType) {
-            case 'string':
-                result[item.paramsName] = '';
-                break;
-            case 'integer':
-                result[item.paramsName] = 0;
-                break;
-            case 'boolean':
-                result[item.paramsName] = true;
-                break;
-            case 'array':
-                result[item.paramsName] = [];
-                break;
-            case 'object':
-                result[item.paramsName] = '';
-                break;
-            default: {
-                const properties = schemas[item.paramsType]
-                    .properties as object;
-                const newArr = Object.entries(properties).map(
-                    (item: [string, any]) => ({
-                        paramsName: item[0],
-                        paramsType: level
-                            ? (item[1].$ref && item[1].$ref.split('/').pop()) ||
-                              (item[1].items &&
-                                  item[1].items.$ref.split('/').pop()) ||
-                              item[1].type ||
-                              ''
-                            : item[1].type,
-                    }),
-                );
-                result[item.paramsName] = getCodeText(newArr, level - 1);
-            }
-        }
-    });
-
-    return result;
+    return type === 'array'
+        ? [getCodeText(props.schemas, tableData, 3)]
+        : getCodeText(props.schemas, tableData, 3);
 }
 
 type requestObj = {
     name: string;
     value: string;
-};
-type schemaObjType = {
-    paramsName: string;
-    paramsType: string;
-    desc?: string;
-    children?: schemaObjType[];
 };
 </script>
 
