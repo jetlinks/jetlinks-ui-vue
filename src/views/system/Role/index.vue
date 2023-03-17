@@ -38,7 +38,11 @@
                             :tooltip="{
                                 title: '编辑',
                             }"
-                            @click="table.clickEdit(slotProps)"
+                            @click="
+                                jumpPage(`system/Role/Detail`, {
+                                    id: slotProps.id,
+                                })
+                            "
                         >
                             <AIcon type="EditOutlined" />
                         </PermissionButton>
@@ -48,7 +52,7 @@
                             :tooltip="{ title: '删除' }"
                             :popConfirm="{
                                 title: `确定要删除吗`,
-                                onConfirm: () => table.clickDel(slotProps),
+                                onConfirm: () => clickDel(slotProps),
                             }"
                         >
                             <AIcon type="DeleteOutlined" />
@@ -72,7 +76,6 @@ import { useMenuStore } from '@/store/menu';
 const permission = 'system/Role';
 const { jumpPage } = useMenuStore();
 
-const addDialogRef = ref(); // 新增弹窗实例
 const isSave = !!useRoute().query.save;
 
 const columns = [
@@ -115,22 +118,14 @@ const columns = [
 ];
 const queryParams = ref({});
 // 表格
-const tableRef = ref<Record<string, any>>({});
-const table = {
-    clickAdd: () => {
-        addDialogRef.value.openDialog(true, {});
-    },
-    clickDel: (row: any) => {
-        delRole_api(row.id).then((resp: any) => {
-            if (resp.status === 200) {
-                tableRef.value?.reload();
-                message.success('操作成功!');
-            }
-        });
-    },
-    clickEdit: ({ id }: { id: string }) => {
-        jumpPage(`system/Role/Detail`, { id });
-    },
+const tableRef = ref<Record<string, any>>();
+const clickDel = (row: any) => {
+    delRole_api(row.id).then((resp: any) => {
+        if (resp.status === 200) {
+            tableRef.value?.reload();
+            message.success('操作成功!');
+        }
+    });
 };
 const dialogVisible = ref(isSave);
 </script>

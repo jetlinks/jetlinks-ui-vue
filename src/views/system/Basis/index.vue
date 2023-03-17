@@ -3,7 +3,7 @@
         <div class="basis-container">
             <j-form
                 layout="vertical"
-                ref="formBasicRef"
+                ref="formRef"
                 :rules="rulesFrom"
                 :model="formValue"
             >
@@ -73,9 +73,7 @@
                                                 @change="
                                                     uploader.handleChangeLogo
                                                 "
-                                                :accept="
-                                                    uploader.imageTypes.toString()
-                                                "
+                                                :accept="uploader.imageTypes"
                                             >
                                                 <div
                                                     class="upload-image-content-logo"
@@ -130,7 +128,9 @@
                                     <div class="upload-tips">
                                         推荐尺寸200*200
                                     </div>
-                                    <div class="upload-tips">支持jpg,png</div>
+                                    <div class="upload-tips">
+                                        支持jpg,png,jfif,pjp,pjpeg,jpeg
+                                    </div>
                                 </j-form-item>
                             </j-col>
                             <j-col>
@@ -163,9 +163,7 @@
                                                 @change="
                                                     uploader.changeIconUpload
                                                 "
-                                                :accept="
-                                                    uploader.imageTypes.toString()
-                                                "
+                                                :accept="uploader.iconTypes"
                                             >
                                                 <div
                                                     class="upload-image-content-logo"
@@ -224,7 +222,7 @@
                                         "
                                         :showUploadList="false"
                                         @change="uploader.changeBackUpload"
-                                        :accept="uploader.imageTypes.toString()"
+                                        :accept="uploader.imageTypes"
                                     >
                                         <div class="upload-image-content-back">
                                             <div
@@ -260,7 +258,8 @@
                                 </div>
                             </div>
                             <div class="upload-tips">
-                                支持4M以内的图片:支持jpg、png
+                                支持4M以内的图片:
+                                支持jpg,png,jfif,pjp,pjpeg,jpeg
                             </div>
                             <div class="upload-tips">建议尺寸1400x1080</div>
                         </j-form-item>
@@ -293,35 +292,30 @@ import { LocalStore } from '@/utils/comm';
 
 import { save_api, getDetails_api } from '@/api/system/basis';
 import { usePermissionStore } from '@/store/permission';
+import { useSystem } from '@/store/system';
 
-const action = ref<string>(`${BASE_API_PATH}/file/static`);
-const headers = ref({ [TOKEN_KEY]: LocalStore.get(TOKEN_KEY) });
-const formBasicRef = ref();
+const action = `${BASE_API_PATH}/file/static`;
+const headers = { [TOKEN_KEY]: LocalStore.get(TOKEN_KEY) };
+const formRef = ref();
 const form = reactive<formType>({
     formValue: {
         title: '',
         headerTheme: 'light',
         apiKey: '',
         'base-path': `${window.location.origin}/api`,
-        logo: '/public/logo.png',
-        ico: '/public/favicon.ico',
-        backgroud: '/public/images/login.png',
+        logo: '',
+        ico: '',
+        backgroud: '',
     },
     rulesFrom: {
         title: [
             {
                 required: true,
                 message: '名称必填',
-                trigger: 'blur',
             },
             {
                 max: 64,
                 message: '最多可输入64个字符',
-            },
-            {
-                max: 64,
-                message: '最多可输入64个字符',
-                trigger: 'blur',
             },
         ],
         headerTheme: [
@@ -344,40 +338,23 @@ const form = reactive<formType>({
     iconLoading: false, // 页签加载状态
     saveLoading: false,
     getDetails: () => {
-        const params = ['front', 'amap', 'paths'];
-        getDetails_api(params).then((resp: any) => {
-            console.log(resp);
-
-            const basis = resp.result?.filter(
-                (item: any) => item.scope === 'front',
-            );
-            const api = resp.result?.filter(
-                (item: any) => item.scope === 'amap',
-            );
-            const basePath = resp.result?.filter(
-                (item: any) => item.scope === 'paths',
-            );
-            console.log();
-
-            form.formValue = {
-                ...basis[0].properties,
-                apiKey: api[0].properties.apiKey,
-                'base-path': basePath[0].properties['base-path'],
-                logo: form.formValue.logo || '/public/logo.png',
-                ico: form.formValue.ico || '/public/favicon.ico',
-                backgroud:
-                    form.formValue.backgroud || '/public/images/login.png',
-            };
-            // localStorage.setItem(
-            //     SystemConst.AMAP_KEY,
-            //     api[0].properties.apiKey,
-            // );
-        });
+        const configInfo = useSystem().$state.configInfo;
+        const basis = configInfo.find((item: any) => item.scope === 'front');
+        const api = configInfo.find((item: any) => item.scope === 'amap');
+        const basePath = configInfo.find((item: any) => item.scope === 'paths');
+        form.formValue = {
+            ...basis.properties,
+            apiKey: api.properties.apiKey,
+            'base-path': basePath.properties['base-path'],
+            logo: basis.properties.logo || '/public/logo.png',
+            ico: basis.properties.ico || '/public/favicon.ico',
+            backgroud: basis.properties.backgroud || '/public/images/login.png',
+        };
     },
     clickSave: () => {
         const hasPermission = usePermissionStore().hasPermission;
         if (hasPermission(`system/Basis:update`)) {
-            formBasicRef.value.validate().then(() => {
+            formRef.value.validate().then(() => {
                 form.saveLoading = true;
                 const params = [
                     {
@@ -419,7 +396,14 @@ const form = reactive<formType>({
 const { formValue, rulesFrom } = toRefs(form);
 
 const uploader: uploaderType = {
-    imageTypes: ['jpg', 'jpeg', 'png', 'jfif', 'pjp', 'pjpeg'],
+    imageTypes: [
+        'image/jpg',
+        'image/jpeg',
+        'image/png',
+        'image/jfif',
+        'image/pjp',
+        'image/pjpeg',
+    ],
     iconTypes: ['image/x-icon'],
     // logo格式校验
     beforeLogoUpload: ({ size, type }: File) => {
@@ -427,7 +411,6 @@ const uploader: uploaderType = {
             uploader.imageTypes.filter((typeStr) => type.includes(typeStr))
                 .length > 0;
         const sizeBool = size / 1024 / 1024 < 4;
-
         if (!typeBool) {
             message.error(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`);
         } else if (!sizeBool) {

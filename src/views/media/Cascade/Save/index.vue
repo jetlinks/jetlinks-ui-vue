@@ -726,7 +726,7 @@ const handleSubmit = () => {
     // console.log('formData.value: ', formData.value);
     formRef.value
         .validate()
-        .then(async () => {
+        .then(() => {
             const {
                 id,
                 cascadeName,
@@ -750,16 +750,14 @@ const handleSubmit = () => {
                 ],
             };
             btnLoading.value = true;
-            const res = formData.value.id
-                ? await CascadeApi.update(params)
-                : await CascadeApi.save(params);
-            btnLoading.value = false;
-            if (res.success) {
-                message.success('操作成功');
-                router.back();
-            } else {
-                message.error('操作失败');
-            }
+            CascadeApi[id ? 'update' : 'save'](params)
+                .then(() => {
+                    message.success('操作成功');
+                    router.back();
+                })
+                .finally(() => {
+                    btnLoading.value = false;
+                });
         })
         .catch((err: any) => {
             console.log('err: ', err);

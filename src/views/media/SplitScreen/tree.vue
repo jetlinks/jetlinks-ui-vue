@@ -43,8 +43,8 @@ interface DataNode {
 
 /**
  * 点击节点
- * @param _ 
- * @param param1 
+ * @param _
+ * @param param1
  */
 const onSelect = (_: any, { node }: any) => {
     emit('onSelect', { dId: node.deviceId, cId: node.channelId });
@@ -68,23 +68,25 @@ const treeData = ref<any[]>([]);
 const getDeviceList = async () => {
     const res = await cascadeApi.getMediaTree({ paging: false });
     if (res.success) {
-        treeData.value = res.result.map((m: any) => {
-            const extra: any = {};
-            extra.isLeaf = isLeaf(m);
-            return {
-                ...m,
-                ...extra,
-            };
-        });
+        treeData.value = res.result
+            .sort((a: any, b: any) => a.createTime - b.createTime)
+            .map((m: any) => {
+                const extra: any = {};
+                extra.isLeaf = isLeaf(m);
+                return {
+                    ...m,
+                    ...extra,
+                };
+            });
     }
 };
 getDeviceList();
 
 /**
  * 更新数据
- * @param list 
- * @param key 
- * @param children 
+ * @param list
+ * @param key
+ * @param children
  */
 const updateTreeData = (
     list: DataNode[],
@@ -146,7 +148,7 @@ const getChildren = (key: any, params: any): Promise<any> => {
 
 /**
  * 异步加载子节点数据
- * @param param0 
+ * @param param0
  */
 const onLoadData = ({ key, children }: any): Promise<void> => {
     return new Promise(async (resolve) => {
