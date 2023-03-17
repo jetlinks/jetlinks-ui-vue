@@ -334,6 +334,7 @@ const submitData = () => {
     formRef.value
         .validate()
         .then(async () => {
+            console.log(form);
             // 新增
             if (props.isAdd === 1) {
                 if (form.id === '') {

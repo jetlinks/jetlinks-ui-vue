@@ -26,11 +26,10 @@ interface AMapProps {
     class?: string;
     AMapUI?: string | boolean;
 }
-const amapKey = localStorage.getItem('amap_key') || 'a0415acfc35af15f10221bfa5a6850b4';
+const amapKey = localStorage.getItem('amap_key')
 
 initAMapApiLoader({
     key: amapKey || '',
-    securityJsCode: 'cae6108ec3dd222f946d1a7237c78be0',
 });
 
 const props = defineProps({

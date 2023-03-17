@@ -220,6 +220,7 @@ const table = reactive({
             title: '说明',
             dataIndex: 'description',
             key: 'description',
+            ellipsis: true,
             width: 700,
         },
         {
