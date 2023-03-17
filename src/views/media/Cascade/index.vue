@@ -241,13 +241,17 @@ const handleSearch = (e: any) => {
  * 处理表格数据
  * @param params
  */
-const lastValueFrom = async (params: any) => {
-    const res = await CascadeApi.list(params);
-    res.result.data.forEach(async (item: any) => {
-        const resp = await CascadeApi.queryBindChannel(item.id, {});
-        item.count = resp.result.total;
+const lastValueFrom = (params: any) => {
+    return new Promise(async (resolve) => {
+        const res = await CascadeApi.list(params);
+        res.result.data.forEach(async (item: any) => {
+            const resp = await CascadeApi.queryBindChannel(item.id, {});
+            item.count = resp.result.total;
+        });
+        setTimeout(() => {
+            resolve(res);
+        }, 1000);
     });
-    return res;
 };
 
 /**
