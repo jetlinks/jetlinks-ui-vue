@@ -17,8 +17,8 @@ export const validateArray = async (_rule: Rule, val: Record<any, any>) => {
   return Promise.resolve();
 }
 
-export const validateJson = async (_rule: Rule, val: Record<any, any>[], title = '配置参数') => {
-  if (!val || val.length === 0) {
+export const validateJson = async (_rule: Rule, val: Record<any, any>[], title = '配置参数', required = true) => {
+  if (required && (!val || val.length === 0)) {
     return Promise.reject(new Error(`请输入${title}`));
   }
   for (let item of val) {

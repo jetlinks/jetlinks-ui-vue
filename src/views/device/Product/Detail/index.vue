@@ -87,6 +87,7 @@
         <component
             :is="tabs[productStore.tabActiveKey]"
             :class="productStore.tabActiveKey === 'Metadata' ? 'metedata' : ''"
+            v-bind="{ type: 'product' }"
         />
     </page-container>
 </template>

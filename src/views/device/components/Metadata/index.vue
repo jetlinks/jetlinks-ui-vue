@@ -2,7 +2,7 @@
   <j-card>
     <div class='device-detail-metadata' style="position: relative;">
       <div class="tips">
-        <j-tooltip :title="instanceStore.detail?.independentMetadata && type === 'device'
+        <j-tooltip v-if="type === 'device'" :title="instanceStore.detail?.independentMetadata && type === 'device'
         ? '该设备已脱离产品物模型，修改产品物模型对该设备无影响'
         : '设备会默认继承产品的物模型，修改设备物模型后将脱离产品物模型'">
           <div class="ellipsis">
@@ -41,7 +41,7 @@
           <BaseMetadata :target="type" type="tags" :permission="permission" />
         </j-tab-pane>
       </j-tabs>
-      <Import v-model:visible="visible" :type="type" @close="visible = false" />
+      <Import v-if="visible" v-model:visible="visible" :type="type" @close="visible = false" />
       <Cat v-model:visible="cat" @close="cat = false" :type="type" />
     </div>
   </j-card>

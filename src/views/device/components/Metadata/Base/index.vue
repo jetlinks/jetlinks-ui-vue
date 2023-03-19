@@ -39,7 +39,7 @@
       <template v-if="column.dataIndex === 'action'">
         <j-space>
           <PermissionButton :has-permission="`${permission}:update`" type="link" key="edit" style="padding: 0"
-            :udisabled="operateLimits('updata', type)" @click="handleEditClick(record)" :tooltip="{
+            :disabled="operateLimits('updata', type)" @click="handleEditClick(record)" :tooltip="{
               title: operateLimits('updata', type) ? '当前的存储方式不支持编辑' : '编辑',
             }">
             <AIcon type="EditOutlined" />
@@ -68,7 +68,6 @@ import { useMetadataStore } from '@/store/metadata'
 import PermissionButton from '@/components/PermissionButton/index.vue'
 import { TablePaginationConfig, message } from 'ant-design-vue/es'
 import { asyncUpdateMetadata, removeMetadata } from '../metadata'
-import { detail } from '@/api/device/instance'
 import Edit from './Edit/index.vue'
 interface Props {
   type: MetadataType;
@@ -153,6 +152,9 @@ const handleAddClick = () => {
   metadataStore.set('item', undefined)
   metadataStore.set('type', type)
   metadataStore.set('action', 'add')
+  if (props.target === 'device' && !instanceStore.detail?.independentMetadata) {
+    message.warning('修改物模型后会脱离产品物模型')
+  }
 }
 
 const limitsMap = new Map<string, any>();
@@ -172,7 +174,7 @@ const handleEditClick = (record: MetadataItem) => {
   metadataStore.model.item = record;
   metadataStore.model.type = type;
   metadataStore.model.action = 'edit';
-  if (!instanceStore.detail?.independentMetadata && props.target === 'device') {
+  if (props.target === 'device' && !instanceStore.detail?.independentMetadata) {
     message.warning('修改物模型后会脱离产品物模型');
   }
 }

@@ -31,7 +31,7 @@
       </j-radio-group>
     </j-form-item>
     <j-form-item label="输入参数" name="inputs" :rules="[
-      { required: true, validator: (_rule: Rule, val: Record<any, any>[]) => validateJson(_rule, val, '输入参数') },
+      { validator: (_rule: Rule, val: Record<any, any>[]) => validateJson(_rule, val, '输入参数', false) },
     ]">
       <JsonParam v-model:value="value.inputs" :name="['inputs']"></JsonParam>
     </j-form-item>
