@@ -15,7 +15,12 @@
         <Manual v-else-if='data.triggerType === "manual"' />
         <Timer v-else-if='data.triggerType === "timer"' />
         <j-form-item>
-          <j-text-area
+          <j-textarea
+              v-model:value="data.description"
+              placeholder=''
+              :rows="4"
+              show-count
+              :maxLength="200"
           />
         </j-form-item>
       </j-form>
