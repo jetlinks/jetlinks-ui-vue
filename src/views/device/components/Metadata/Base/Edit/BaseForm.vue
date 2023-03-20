@@ -33,7 +33,7 @@
     <j-form-item label="输入参数" name="inputs" :rules="[
       { validator: (_rule: Rule, val: Record<any, any>[]) => validateJson(_rule, val, '输入参数', false) },
     ]">
-      <JsonParam v-model:value="value.inputs" :name="['inputs']"></JsonParam>
+      <JsonParam v-model:value="value.inputs" :name="['inputs']" :is-sub="false"></JsonParam>
     </j-form-item>
     <value-type-form :name="['output']" v-model:value="value.output" key="function" title="输出参数" :required="false"></value-type-form>
   </template>

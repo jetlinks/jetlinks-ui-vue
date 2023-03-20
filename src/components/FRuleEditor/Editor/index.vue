@@ -8,34 +8,34 @@
         </span>
         <span>
           <a-dropdown>
+            <!-- <AIcon type="MoreOutline" /> -->
             <more-outlined />
             <template #overlay>
-              <a-menu>
-                <a-menu-item v-for="item in symbolList.filter((t: SymbolType, i: number) => i > 6)" :key="item.key"
+              <j-menu>
+                <j-menu-item v-for="item in symbolList.filter((t: SymbolType, i: number) => i > 6)" :key="item.key"
                   @click="addOperatorValue(item.value)">
                   {{ item.value }}
-                </a-menu-item>
-              </a-menu>
+                </j-menu-item>
+              </j-menu>
             </template>
           </a-dropdown>
         </span>
       </div>
       <div class="right">
         <span v-if="mode !== 'advance'">
-          <a-tooltip :title="!id ? '请先输入标识' : '设置属性规则'">
-            <fullscreen-outlined :class="!id ? 'disabled' : ''" @click="fullscreenClick" />
-          </a-tooltip>
+          <j-tooltip :title="!id ? '请先输入标识' : '设置属性规则'">
+            <AIcon type="FullscreenOutlined" :class="!id ? 'disabled' : ''" @click="fullscreenClick" />
+            <!-- <fullscreen-outlined :class="!id ? 'disabled' : ''" @click="fullscreenClick" /> -->
+          </j-tooltip>
         </span>
       </div>
     </div>
     <div class="editor">
-      <MonacoEditor v-if="loading" v-model:model-value="_value" theme="vs" ref="editor" />
+      <JMonacoEditor v-if="loading" v-model:model-value="_value" theme="vs" ref="editor" lang="javascript"/>
     </div>
   </div>
 </template>
 <script setup lang="ts" name="Editor">
-import { FullscreenOutlined, MoreOutlined } from '@ant-design/icons-vue';
-import MonacoEditor from '@/components/MonacoEditor/index.vue';
 
 interface Props {
   mode?: 'advance' | 'simple';
