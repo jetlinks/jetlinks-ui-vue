@@ -2,7 +2,7 @@
   <div class='device'>
     <j-form-item
       :rules='rules'
-      name='device'
+      :name='["trigger", "device"]'
     >
       <template #label>
         <TitleComponent data='触发规则' style='font-size: 14px;' />
@@ -13,9 +13,9 @@
       >
         <Title :options='data.options.trigger' />
       </AddButton>
+      <AddModel v-if='visible' @cancel='visible = false' @save='save' :value='data.trigger.device' :options='data.options.trigger' />
     </j-form-item>
     <Terms />
-    <AddModel v-if='visible' @cancel='visible = false' @save='save' :value='data.trigger.device' :options='data.options.trigger' />
   </div>
 </template>
 
@@ -27,6 +27,7 @@ import AddButton from '../components/AddButton.vue'
 import Title from '../components/Title.vue'
 import Terms from '../components/Terms'
 import type { TriggerDevice } from '@/views/rule-engine/Scene/typings'
+
 
 const sceneStore = useSceneStore()
 const { data } = storeToRefs(sceneStore)
@@ -45,6 +46,7 @@ const rules = [{
 const save = (device: TriggerDevice, options: Record<string, any>) => {
   data.value.trigger!.device = device
   data.value.options!.trigger = options
+  visible.value = false
 }
 
 </script>

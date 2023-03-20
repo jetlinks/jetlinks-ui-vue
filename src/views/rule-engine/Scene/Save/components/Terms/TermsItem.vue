@@ -29,6 +29,7 @@
           v-for='(item, index) in termsData'
           :key='item.key'
           :name='["branches", branchName, "when", whenName, "terms", index]'
+          :rules='rules'
         >
           <ParamsItem
             v-model:value='formModel.branches[branchName].when[whenName].terms[index]'
@@ -60,6 +61,7 @@ import DropdownButton from '../DropdownButton'
 import { storeToRefs } from 'pinia';
 import { useSceneStore } from 'store/scene'
 import ParamsItem from './ParamsItem.vue'
+import { isArray } from 'lodash-es'
 
 const sceneStore = useSceneStore()
 const { data: formModel } = storeToRefs(sceneStore)
@@ -102,6 +104,41 @@ const props = defineProps({
     default: 0
   }
 })
+
+const rules = [
+  {
+    validator(_: any, v: any) {
+      if (v !== undefined) {
+        if (!Object.keys(v).length) {
+          return Promise.reject(new Error('该数据已发生变更，请重新配置'));
+        }
+        if (!v.column) {
+          return Promise.reject(new Error('请选择参数'));
+        }
+
+        if (!v.termType) {
+          return Promise.reject(new Error('请选择操作符'));
+        }
+
+        if (v.value === undefined) {
+          return Promise.reject(new Error('请选择或输入参数值'));
+        } else {
+          if (
+            isArray(v.value.value) &&
+            v.value.value.some((_v: any) => _v === undefined)
+          ) {
+            return Promise.reject(new Error('请选择或输入参数值'));
+          } else if (v.value.value === undefined) {
+            return Promise.reject(new Error('请选择或输入参数值'));
+          }
+        }
+      } else {
+        return Promise.reject(new Error('请选择参数'));
+      }
+      return Promise.resolve();
+    },
+  }
+]
 
 const showDelete = ref(false)
 

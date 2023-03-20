@@ -44,6 +44,7 @@
         :tabsOptions='tabsOptions'
         v-model:value='paramsValue.value.value'
         v-model:source='paramsValue.value.source'
+        @select='valueSelect'
       />
       <ParamsDropdown
         v-else
@@ -54,6 +55,7 @@
         :tabsOptions='tabsOptions'
         v-model:value='paramsValue.value.value'
         v-model:source='paramsValue.value.source'
+        @select='valueSelect'
       />
       <j-popconfirm title='确认删除？' @confirm='onDelete'>
         <div v-show='showDelete' class='button-delete'> <AIcon type='CloseOutlined' /></div>
@@ -77,9 +79,11 @@ import { inject } from 'vue'
 import { ContextKey } from './util'
 import { useSceneStore } from 'store/scene'
 import { storeToRefs } from 'pinia';
+import { Form } from 'jetlinks-ui-components'
 
 const sceneStore = useSceneStore()
 const { data: formModel } = storeToRefs(sceneStore)
+const formItemContext = Form.useInjectFormItemContext();
 
 type Emit = {
   (e: 'update:value', data: TermsType): void
@@ -216,6 +220,7 @@ const columnSelect = () => {
     value: undefined
   }
   emit('update:value', { ...paramsValue })
+  formItemContext.onFieldChange()
 }
 
 const termsTypeSelect = (e: { key: string }) => {
@@ -225,6 +230,11 @@ const termsTypeSelect = (e: { key: string }) => {
     value: value
   }
   emit('update:value', { ...paramsValue })
+  formItemContext.onFieldChange()
+}
+
+const valueSelect = () => {
+  formItemContext.onFieldChange()
 }
 
 const termAdd = () => {
@@ -247,6 +257,7 @@ const onDelete = () => {
 
 nextTick(() => {
   Object.assign(paramsValue, props.value)
+  formItemContext.onFieldChange()
 })
 
 </script>
