@@ -98,7 +98,7 @@ const emit = defineEmits<EmitProps>();
 const props = defineProps({
     value: {
         type: Object as PropType<Record<string, any>>,
-        default: () => {},
+        default: () => ({}),
     },
     showStatus: {
         type: Boolean,
@@ -118,6 +118,7 @@ const props = defineProps({
     },
     statusNames: {
         type: Object,
+        default:()=>({'default':'default'})
     },
     actions: {
         type: Array as PropType<TableActionsType[]>,
