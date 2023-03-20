@@ -152,6 +152,9 @@ const changeType = (val: SelectValue) => {
   if (['float', 'double'].includes(_value.value.type) && _value.value.scale === undefined) {
     _value.value.scale = 2
   }
+  if (['file'].includes(val as string)) {
+    _value.value.fileType = _value.value.fileType || 'url'
+  }
   emit('changeType', val as string)
 }
 

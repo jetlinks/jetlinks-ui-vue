@@ -13,7 +13,7 @@
           <j-form-item label="说明" :name="name.concat(['description'])" :rules="[
             { max: 200, message: '最多可输入200个字符' },
           ]">
-            <j-textarea v-model:value="_value.description" size="small"></j-textarea>
+            <j-textarea v-model:value="_value.description" size="small" placeholder="请输入说明"></j-textarea>
           </j-form-item>
         </div>
       </div>

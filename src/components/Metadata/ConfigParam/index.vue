@@ -1,24 +1,25 @@
 <template>
-  <j-popover placement="left" trigger="click">
-    <template #title>
-      <div class="edit-title" style="display: flex; justify-content: space-between; align-items: center;">
-        <div style="width: 150px;">{{ config.name }}</div>
-      </div>
-    </template>
-    <template #content>
-      <div style="max-width: 400px;" class="ant-form-vertical">
-        <j-form-item v-for="item in config.properties" :name="name.concat([item.property])" :label="item.name">
-          <j-select v-model:value="value[item.property]" :options="item.type?.elements?.map((e: { 'text': string, 'value': string }) => ({
-            label: e.text,
-            value: e.value,
-          }))" size="small"></j-select>
-        </j-form-item>
-      </div>
-    </template>
-    <j-button type="dashed" block>
-      存储配置<AIcon type="EditOutlined" class="item-icon"/>
-    </j-button>
-  </j-popover>
+  <j-button type="dashed" block>
+    <j-popover placement="left" trigger="click">
+      <template #title>
+        <div class="edit-title" style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="width: 150px;">{{ config.name }}</div>
+        </div>
+      </template>
+      <template #content>
+        <div style="max-width: 400px;" class="ant-form-vertical">
+          <j-form-item v-for="item in config.properties" :name="name.concat([item.property])" :label="item.name">
+            <j-select v-model:value="value[item.property]" :options="item.type?.elements?.map((e: { 'text': string, 'value': string }) => ({
+              label: e.text,
+              value: e.value,
+            }))" size="small" :placeholder="`请输入${item.name}`"></j-select>
+          </j-form-item>
+        </div>
+      </template>
+      存储配置
+      <AIcon type="EditOutlined" class="item-icon" />
+    </j-popover>
+  </j-button>
 </template>
 <script setup lang="ts" name="ConfigParam">
 import { PropType } from 'vue';
@@ -30,7 +31,7 @@ const props = defineProps({
     default: () => ({})
   },
   name: {
-    type: Array as PropType<(string| number)[]>,
+    type: Array as PropType<(string | number)[]>,
     default: () => ([]),
     required: true
   },
@@ -57,15 +58,17 @@ const props = defineProps({
   color: rgb(136, 136, 136);
   font-size: 12px;
 }
+
 :deep(.ant-form-item-label) {
   >label {
     font-size: 12px;
   }
 }
+
 :deep(.ant-select) {
   font-size: 12px;
 }
+
 :deep(input) {
   height: 22px;
-}
-</style>
+}</style>

@@ -3,16 +3,16 @@
     <template v-if="['int', 'long', 'double', 'float'].includes(type)">
       <template v-if="value.range">
         <j-input-number v-model:value="value.value[0]" :max="value.value[1]" size="small"
-          style="width: 100%;"></j-input-number>
+          style="width: 100%;" placeholder="请输入"></j-input-number>
         ~
         <j-input-number v-model:value="value.value[1]" :min="value.value[0]" size="small"
-          style="width: 100%;"></j-input-number>
+          style="width: 100%;" placeholder="请输入"></j-input-number>
       </template>
-      <j-input-number v-else v-model:value="value.value" size="small" style="width: 100%;"></j-input-number>
+      <j-input-number v-else v-model:value="value.value" size="small" style="width: 100%;" placeholder="请输入"></j-input-number>
     </template>
     <template v-else-if="type === 'date'">
-      <j-range-picker v-if="value.range" show-time v-model:value="value.value" size="small" />
-      <j-date-picker v-else show-time v-model:value="value.value" size="small" />
+      <j-range-picker v-if="value.range" show-time v-model:value="value.value" size="small" placeholder="请输入"/>
+      <j-date-picker v-else show-time v-model:value="value.value" size="small" placeholder="请输入"/>
     </template>
     <template v-else-if="type === 'boolean'">
       <j-select v-model:value="value.value[0]" :options="list" size="small" placeholder="请选择"></j-select>
@@ -57,7 +57,7 @@ const props = defineProps({
   }
 })
 
-Form.useInjectFormItemContext()
+// Form.useInjectFormItemContext()
 
 const changeChecked = (e: CheckboxChangeEvent) => {
   if (e.target.checked) {

@@ -6,7 +6,7 @@
         {{ `#${index + 1}.` }}
       </div>
       <div class="item-middle item-editable">
-        <j-popover :visible="editIndex === index" placement="top" @visible-change="change" trigger="click">
+        <j-popover :visible="editIndex === index" placement="left" @visible-change="change" trigger="click">
           <template #title>
             <div class="edit-title" style="display: flex; justify-content: space-between; align-items: center;">
               <div style="width: 150px;">配置参数</div>
@@ -24,13 +24,13 @@
                     message: 'ID只能由数字、字母、下划线、中划线组成',
                   },
                 ]">
-                  <j-input v-model:value="_value[index].id" size="small"></j-input>
+                  <j-input v-model:value="_value[index].id" size="small" placeholder="请输入标识"></j-input>
                 </j-form-item>
                 <j-form-item label="名称" :name="name.concat([index, 'name'])" :rules="[
                   { required: true, message: '请输入名称' },
                   { max: 64, message: '最多可输入64个字符' },
                 ]">
-                  <j-input v-model:value="_value[index].name" size="small"></j-input>
+                  <j-input v-model:value="_value[index].name" size="small" placeholder="请输入名称"></j-input>
                 </j-form-item>
                 <j-form-item label="指标值" :name="name.concat([index, 'value'])" :rules="[
                   { required: true, validator: () => validateIndicator(_value[index]), message: '请输入指标值' }
@@ -41,7 +41,7 @@
             </div>
           </template>
           <div class="item-edit" @click="handleEdit(index)">
-            {{ item.name || '配置参数' }}
+            <Ellipsis>{{ item.name || '配置参数' }}</Ellipsis>
             <AIcon type="EditOutlined" class="item-icon" />
           </div>
         </j-popover>
@@ -118,7 +118,7 @@ const validateIndicator = (value: any) => {
       return Promise.reject(new Error('请输入指标值'));
     }
   } else {
-    if (value?.value === '' || value?.value === undefined) {
+    if (!value?.value) {
       return Promise.reject(new Error('请输入指标值'));
     }
   }
@@ -151,6 +151,10 @@ const change = (visible: boolean) => {
     // }
     .item-edit {
       cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 240px;
     }
 
     .item-icon {

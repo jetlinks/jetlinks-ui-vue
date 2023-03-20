@@ -7,9 +7,8 @@
           {{ item.value }}
         </span>
         <span>
-          <a-dropdown>
-            <!-- <AIcon type="MoreOutline" /> -->
-            <more-outlined />
+          <j-dropdown>
+            <AIcon type="MoreOutlined" />
             <template #overlay>
               <j-menu>
                 <j-menu-item v-for="item in symbolList.filter((t: SymbolType, i: number) => i > 6)" :key="item.key"
@@ -18,14 +17,13 @@
                 </j-menu-item>
               </j-menu>
             </template>
-          </a-dropdown>
+          </j-dropdown>
         </span>
       </div>
       <div class="right">
         <span v-if="mode !== 'advance'">
           <j-tooltip :title="!id ? '请先输入标识' : '设置属性规则'">
             <AIcon type="FullscreenOutlined" :class="!id ? 'disabled' : ''" @click="fullscreenClick" />
-            <!-- <fullscreen-outlined :class="!id ? 'disabled' : ''" @click="fullscreenClick" /> -->
           </j-tooltip>
         </span>
       </div>

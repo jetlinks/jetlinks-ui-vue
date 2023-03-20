@@ -16,7 +16,7 @@
       <Edit v-if="metadataStore.model.edit" :type="target" :tabs="type" @refresh="refreshMetadata"></Edit>
     </div>
   </div>
-  <a-table :loading="loading" :data-source="data" :columns="columns" row-key="id" model="TABLE" size="small"
+  <j-table :loading="loading" :data-source="data" :columns="columns" row-key="id" model="TABLE" size="small"
     :pagination="pagination">
     <template #bodyCell="{ column, record }">
       <template v-if="column.dataIndex === 'level'">
@@ -57,7 +57,7 @@
         </j-space>
       </template>
     </template>
-  </a-table>
+  </j-table>
 </template>
 <script setup lang="ts" name="BaseMetadata">
 import type { MetadataItem, MetadataType } from '@/views/device/Product/typings'
@@ -69,6 +69,7 @@ import PermissionButton from '@/components/PermissionButton/index.vue'
 import { TablePaginationConfig, message } from 'ant-design-vue/es'
 import { asyncUpdateMetadata, removeMetadata } from '../metadata'
 import Edit from './Edit/index.vue'
+import { ColumnProps } from 'ant-design-vue/es/table'
 interface Props {
   type: MetadataType;
   target: 'product' | 'device';
@@ -97,13 +98,12 @@ const expandsType = ref({
   write: '写',
   report: '上报',
 });
-const actions = [
+const actions: ColumnProps[] = [
   {
     title: '操作',
     align: 'left',
     width: 200,
     dataIndex: 'action',
-    scopedSlots: true,
   },
 ];
 const pagination = {
@@ -215,6 +215,6 @@ const removeItem = async (record: MetadataItem) => {
 .table-header {
   display: flex;
   justify-content: space-between;
-  padding: 16px 0;
+  padding: 16px;
 }
 </style>
