@@ -5,6 +5,18 @@
             <j-row :gutter="[24, 24]">
                 <j-col :span="12" v-for="item in items.list" :key="item.id">
                     <div class="provider">
+                        <div
+                            class="card-content-bg1"
+                            :style="{
+                                background: getBackgroundColor(),
+                            }"
+                        ></div>
+                        <div
+                            class="card-content-bg2"
+                            :style="{
+                                background: getBackgroundColor(),
+                            }"
+                        ></div>
                         <div class="box">
                             <div class="left">
                                 <div class="images">
@@ -47,6 +59,14 @@ const props = defineProps({
 
 const emit = defineEmits(['onClick']);
 
+const getBackgroundColor = () => {
+    return `linear-gradient(
+                188.4deg,
+                rgba(9, 46, 231, 0.03) 22.94%,
+                rgba(9, 46, 231, 0) 94.62%
+            )`;
+};
+
 const click = (value: object) => {
     emit('onClick', value);
 };
@@ -61,10 +81,11 @@ const click = (value: object) => {
 .provider {
     position: relative;
     width: 100%;
-    padding: 20px;
-    background: url('/public/images/access/background.png') no-repeat;
+    padding: 24px;
+    // background: url('/public/images/access/background.png') no-repeat;
     background-size: 100% 100%;
     border: 1px solid #e6e6e6;
+    overflow: hidden;
 
     &::before {
         position: absolute;
@@ -84,6 +105,33 @@ const click = (value: object) => {
         box-shadow: 0 0 24px rgba(#000, 0.1);
     }
 }
+.card-content-bg1 {
+    position: absolute;
+    right: -5%;
+    height: 100%;
+    width: 44.65%;
+    top: 0;
+    background: linear-gradient(
+        188.4deg,
+        rgba(229, 0, 18, 0.03) 22.94%,
+        rgba(229, 0, 18, 0) 94.62%
+    );
+    transform: skewX(-15deg);
+}
+
+.card-content-bg2 {
+    position: absolute;
+    right: -5%;
+    height: 100%;
+    width: calc(44.65% + 34px);
+    top: 0;
+    background: linear-gradient(
+        188.4deg,
+        rgba(229, 0, 18, 0.03) 22.94%,
+        rgba(229, 0, 18, 0) 94.62%
+    );
+    transform: skewX(-15deg);
+}
 
 .box {
     display: flex;
@@ -92,31 +140,40 @@ const click = (value: object) => {
     width: 100%;
     .left {
         display: flex;
-        width: calc(100% - 70px);
+        width: calc(100% - 100px);
         .images {
-            width: 64px;
-            height: 64px;
+            width: 88px;
+            height: 88px;
 
             img {
-                width: 100%;
+                width: 88px;
+                height: 88px;
             }
         }
 
         .context {
-            width: calc(100% - 84px);
-            margin: 10px;
+            width: calc(100% - 88px);
+            margin: 8px;
+            margin-left: 24px;
 
             .title {
-                font-weight: 600;
+                font-style: normal;
+                font-weight: 800;
+                font-size: 18px;
+                line-height: 22px;
+                color: rgba(0, 0, 0, 0.85);
+                opacity: 0.85;
             }
 
             .desc {
                 width: 100%;
-                margin-top: 10px;
-                overflow: hidden;
-                color: rgba(0, 0, 0, 0.55);
+                margin-top: 24px;
+                font-style: normal;
                 font-weight: 400;
-                font-size: 13px;
+                font-size: 12px;
+                line-height: 20px;
+                color: #666666;
+                overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
             }

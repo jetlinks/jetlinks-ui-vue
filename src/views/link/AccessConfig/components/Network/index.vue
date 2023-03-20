@@ -26,11 +26,7 @@
                     </PermissionButton>
                 </div>
                 <j-scrollbar height="480">
-                    <j-row
-                        :gutter="[24, 24]"
-                        v-if="networkList.length > 0"
-                        style="margin-right: 10px"
-                    >
+                    <j-row :gutter="[24, 24]" v-if="networkList.length > 0">
                         <j-col
                             :span="8"
                             v-for="item in networkList"
@@ -62,7 +58,7 @@
                                                     class="item"
                                                 >
                                                     <j-badge
-                                                        :color="getColor(i)"
+                                                        :status="getColor(i)"
                                                     />{{ i.address }}
                                                 </div>
                                             </div>
@@ -74,7 +70,7 @@
                                                 class="item"
                                             >
                                                 <j-badge
-                                                    :color="getColor(i)"
+                                                    :status="getColor(i)"
                                                     :text="i.address"
                                                 />
                                                 <span
@@ -115,12 +111,8 @@
                         新增
                     </PermissionButton>
                 </div>
-                <j-scrollbar height="480">
-                    <j-row
-                        :gutter="[24, 24]"
-                        v-if="procotolList.length > 0"
-                        style="margin-right: 10px"
-                    >
+                <j-scrollbar height="480" style="padding-right: 8px">
+                    <j-row :gutter="[24, 24]" v-if="procotolList.length > 0">
                         <j-col
                             :span="8"
                             v-for="item in procotolList"
@@ -177,24 +169,20 @@
                             </j-form>
                         </j-col>
                         <j-col :span="12">
-                            <j-scrollbar height="600">
-                                <div class="config-right">
-                                    <div class="config-right-item">
-                                        <div class="config-right-item-title">
-                                            接入方式
-                                        </div>
-                                        <div class="config-right-item-context">
+                            <j-scrollbar height="580">
+                                <div class="doc">
+                                    <div>
+                                        <h1>接入方式</h1>
+                                        <p>
                                             {{ provider.name }}
-                                        </div>
-                                        <div class="config-right-item-context">
+                                        </p>
+                                        <p>
                                             {{ provider.description }}
-                                        </div>
+                                        </p>
                                     </div>
-                                    <div class="config-right-item">
-                                        <div class="config-right-item-title">
-                                            消息协议
-                                        </div>
-                                        <div class="config-right-item-context">
+                                    <div>
+                                        <h1>消息协议</h1>
+                                        <p>
                                             {{
                                                 procotolList.find(
                                                     (i: any) =>
@@ -202,41 +190,32 @@
                                                         procotolCurrent,
                                                 ).name
                                             }}
-                                        </div>
-                                        <div
-                                            class="config-right-item-context"
-                                            v-if="config.document"
-                                        >
+                                        </p>
+                                        <p v-if="config.document">
                                             <Markdown
                                                 :source="config.document"
                                             />
-                                        </div>
+                                        </p>
                                     </div>
-                                    <div
-                                        class="config-right-item"
-                                        v-if="getNetworkCurrent()"
-                                    >
-                                        <div class="config-right-item-title">
-                                            网络组件
-                                        </div>
-                                        <div
+                                    <div v-if="getNetworkCurrent()">
+                                        <h1>网络组件</h1>
+                                        <p
                                             v-for="i in getNetworkCurrentData()"
                                             :key="i.address"
                                         >
                                             <j-badge
-                                                :color="getColor(i)"
+                                                :status="getColor(i)"
                                                 :text="i.address"
                                             />
-                                        </div>
+                                        </p>
                                     </div>
                                     <div
-                                        class="config-right-item"
                                         v-if="
                                             config.routes &&
                                             config.routes.length > 0
                                         "
                                     >
-                                        <div class="config-right-item-title">
+                                        <h1>
                                             {{
                                                 data.provider ===
                                                     'mqtt-server-gateway' ||
@@ -245,8 +224,8 @@
                                                     ? 'topic'
                                                     : 'URL信息'
                                             }}
-                                        </div>
-                                        <j-scrollbar height="200">
+                                        </h1>
+                                        <j-scrollbar height="400">
                                             <j-table
                                                 :pagination="false"
                                                 :rowKey="generateUUID()"
@@ -463,7 +442,7 @@ const getNetworkCurrentData = () =>
         ? networkList.value.find((i: any) => i.id === networkCurrent).addresses
         : [];
 
-const getColor = (i: any) => (i.health === -1 ? 'red' : 'green');
+const getColor = (i: any) => (i.health === -1 ? 'error' : 'processing');
 
 const getStream = (record: any) => {
     console.log(222, record);

@@ -36,7 +36,7 @@
                         :status="slotProps.state.value"
                         :statusText="slotProps.state.text"
                         :statusNames="{
-                            enabled: 'success',
+                            enabled: 'processing',
                             disabled: 'error',
                         }"
                     >
@@ -143,10 +143,14 @@
                     </j-space>
                 </template>
                 <template #state="slotProps">
-                    <j-badge
+                    <BadgeStatus
                         :text="slotProps.state.text"
-                        :status="statusMap.get(slotProps.state.value)"
-                    />
+                        :status="slotProps.state.value"
+                        :statusNames="{
+                            enabled: 'processing',
+                            disabled: 'error',
+                        }"
+                    ></BadgeStatus>
                 </template>
                 <template #shareCluster="slotProps">
                     {{
@@ -171,15 +175,16 @@ import { getImage } from '@/utils/comm';
 import { supports, query, remove, start, shutdown } from '@/api/link/type';
 import { onlyMessage } from '@/utils/comm';
 import { useMenuStore } from 'store/menu';
+import BadgeStatus from '@/components/BadgeStatus/index.vue';
 
 const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const options = ref([]);
 
-const statusMap = new Map();
-statusMap.set('enabled', 'success');
-statusMap.set('disabled', 'error');
+// const statusMap = new Map();
+// statusMap.set('enabled', 'processing');
+// statusMap.set('disabled', 'error');
 
 const columns = [
     {
