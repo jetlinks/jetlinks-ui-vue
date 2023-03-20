@@ -2,13 +2,13 @@ import type { Rule } from 'ant-design-vue/es/form';
 
 /**基本信息表单 */
 export interface formValueType {
-    title: string; // 系统名称
-    headerTheme: string; // 主题色
-    apiKey: string; // 高德 API key
-    'base-path': string; // 系统后台访问的URL
-    logo:string,
-    ico:string,
-    backgroud:string
+    title: string | undefined; // 系统名称
+    headerTheme: string | undefined; // 主题色
+    apiKey: string | undefined; // 高德 API key
+    'base-path': string | undefined; // 系统后台访问的URL
+    logo: string | undefined;
+    ico: string | undefined;
+    backgroud: string | undefined;
 }
 
 export interface formType {
@@ -34,4 +34,21 @@ export interface uploaderType {
     changeBackUpload: (info: UploadChangeParam) => void
     beforeIconUpload: (file: UploadProps['beforeUpload']) => void
     changeIconUpload: (info: UploadChangeParam) => void
+}
+
+export type PathType = {
+    'base-path': string;
+    'sso-bind': string;
+    'sso-redirect': string;
+    'sso-token-set': string;
+}
+
+export type AMapKey = {
+    apiKey: string;
+}
+
+export type ConfigInfoType = {
+    paths: PathType;
+    amap: AMapKey;
+    front: formValueType;
 }

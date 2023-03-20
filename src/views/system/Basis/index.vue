@@ -293,6 +293,7 @@ import { LocalStore } from '@/utils/comm';
 import { save_api } from '@/api/system/basis';
 import { usePermissionStore } from '@/store/permission';
 import { useSystem } from '@/store/system';
+import { settingDetail } from '@/api/login';
 
 const action = `${BASE_API_PATH}/file/static`;
 const headers = { [TOKEN_KEY]: LocalStore.get(TOKEN_KEY) };
@@ -337,18 +338,19 @@ const form = reactive<formType>({
     backLoading: false, // 背景图加载状态
     iconLoading: false, // 页签加载状态
     saveLoading: false,
-    getDetails: () => {
-        const configInfo = useSystem().$state.configInfo;
-        const basis = configInfo.find((item: any) => item.scope === 'front');
-        const api = configInfo.find((item: any) => item.scope === 'amap');
-        const basePath = configInfo.find((item: any) => item.scope === 'paths');
+    getDetails: async () => {
+        const system = useSystem();
+        await system.getSystemConfig();
+        await settingDetail('front');
+        const configInfo = system.$state.configInfo;
         form.formValue = {
-            ...basis.properties,
-            apiKey: api.properties.apiKey,
-            'base-path': basePath.properties['base-path'],
-            logo: basis.properties.logo || '/public/logo.png',
-            ico: basis.properties.ico || '/public/favicon.ico',
-            backgroud: basis.properties.backgroud || '/public/images/login.png',
+            title: configInfo.front?.title,
+            headerTheme: configInfo.front?.headerTheme,
+            logo: configInfo.front?.logo || '/public/logo.png',
+            ico: configInfo.front?.ico || '/public/favicon.ico',
+            backgroud: configInfo.front?.backgroud || '/public/images/login.png',
+            apiKey: configInfo.amap?.apiKey,
+            "base-path": configInfo.paths?.['base-path']
         };
     },
     clickSave: () => {
