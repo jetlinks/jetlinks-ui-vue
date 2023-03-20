@@ -141,6 +141,7 @@ const list = ref([
     {
         key: 'Metadata',
         tab: '物模型',
+        class:'objectModel'
     },
     {
         key: 'Device',
