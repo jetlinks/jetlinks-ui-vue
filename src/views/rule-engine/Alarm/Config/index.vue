@@ -64,7 +64,7 @@
 import { getImage } from '@/utils/comm';
 import { queryLevel, saveLevel } from '@/api/rule-engine/config';
 import { LevelItem } from './typing';
-import { message } from 'ant-design-vue/es';
+import { message } from 'jetlinks-ui-components';
 import Io from './Io/index.vue'
 const list = ref([
     {

@@ -148,7 +148,7 @@ import {
 } from '@/api/rule-engine/instance';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage } from '@/utils/comm';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import Save from './Save/index.vue';
 import { SystemConst } from '@/utils/consts';
 const params = ref<Record<string, any>>({});

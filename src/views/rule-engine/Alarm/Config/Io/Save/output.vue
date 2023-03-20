@@ -59,9 +59,8 @@
 </template>
 
 <script lang="ts" setup>
-import { Form } from 'ant-design-vue';
 import { saveOutputData } from '@/api/rule-engine/config';
-import { message } from 'ant-design-vue/es';
+import { Form, message } from 'jetlinks-ui-components';
 const formRef = ref();
 const useForm = Form.useForm;
 const Myprops = defineProps({

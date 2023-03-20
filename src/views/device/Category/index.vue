@@ -75,8 +75,7 @@
 import { queryTree, deleteTree } from '@/api/device/category';
 import type { ActionsType } from '@/components/Table/index.vue';
 import ModifyModal from './components/modifyModal/index.vue';
-import type { TableColumnType, TableProps } from 'ant-design-vue';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 const expandedRowKeys = ref<any>([]);
 const tableRef = ref<Record<string, any>>({});
 const modifyRef = ref();

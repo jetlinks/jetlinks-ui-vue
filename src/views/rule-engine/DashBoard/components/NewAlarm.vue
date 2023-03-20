@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Empty } from 'ant-design-vue';
+import { Empty } from 'jetlinks-ui-components';
 import { getImage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import moment from 'moment';

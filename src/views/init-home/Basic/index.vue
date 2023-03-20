@@ -255,7 +255,7 @@
 <script setup lang="ts">
 import { modalState, formState, logoState } from '../data/interface';
 import { getImage } from '@/utils/comm.ts';
-import { Form } from 'ant-design-vue';
+import { Form,  message } from 'jetlinks-ui-components';
 import { FILE_UPLOAD } from '@/api/comm';
 import {
     getSystemPermission,
@@ -274,8 +274,6 @@ import {
     deployDevice,
     saveInit,
 } from '@/api/initHome';
-import { ValidateErrorEntity } from 'ant-design-vue/es/form/interface';
-import { message } from 'ant-design-vue';
 import { LocalStore } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import { SystemConst } from '@/utils/consts'
@@ -362,7 +360,7 @@ const saveBasicInfo = () =>{
                 resolve(false);
             }
         })
-        .catch((error: ValidateErrorEntity<formState>) => {
+        .catch(() => {
             resolve(false);
         });
 })

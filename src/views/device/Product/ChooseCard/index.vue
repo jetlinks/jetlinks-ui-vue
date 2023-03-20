@@ -22,7 +22,7 @@
                 <!-- 勾选 -->
                 <div v-if="active" class="checked-icon">
                     <div>
-                        <CheckOutlined />
+                        <AIcon type="CheckOutlined"></AIcon>
                     </div>
                 </div>
             </div>
@@ -31,11 +31,6 @@
 </template>
 
 <script setup lang="ts">
-import {
-    SearchOutlined,
-    CheckOutlined,
-    DeleteOutlined,
-} from '@ant-design/icons-vue';
 import { StatusColorEnum } from '@/utils/consts.ts';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { PropType } from 'vue';

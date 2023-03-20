@@ -56,7 +56,7 @@ import { getTargetTypes, save, detail } from '@/api/rule-engine/configuration';
 import { queryLevel } from '@/api/rule-engine/config';
 import { query } from '@/api/rule-engine/scene';
 import { getImage } from '@/utils/comm';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { useMenuStore } from '@/store/menu';
 import { useRoute } from 'vue-router';
 import { useAlarmConfigurationStore } from '@/store/alarm';
