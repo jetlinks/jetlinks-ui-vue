@@ -40,7 +40,6 @@
             :termsName='name'
             :whenName='whenName'
             :branchName='branchName'
-            @change='paramsChange'
           />
         </j-form-item>
       </div>
@@ -108,7 +107,7 @@ const props = defineProps({
 const rules = [
   {
     validator(_: any, v: any) {
-      if (v !== undefined) {
+      if (v !== undefined && !v.error) {
         if (!Object.keys(v).length) {
           return Promise.reject(new Error('该数据已发生变更，请重新配置'));
         }
@@ -160,10 +159,6 @@ const mouseout = () => {
 
 const onDelete = () => {
   formModel.value.branches?.[props.branchName]?.when?.splice(props.name, 1)
-}
-
-const paramsChange = () => {
-
 }
 
 const addTerms = () => {

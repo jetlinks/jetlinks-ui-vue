@@ -202,6 +202,7 @@ export type TermsType = {
   options?: any[];
   terms?: TermsType[];
   key?: string;
+  error?: boolean
 };
 
 export type PlatformRelation = {

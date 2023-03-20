@@ -240,7 +240,7 @@ const save = async (step?: number) => {
       optionsCache.value.action = typeData.action
       const _options = handleOptions(typeData.data);
       const data = {
-        operator: typeData.data,
+        operation: typeData.data,
         selector: addModel.selector,
         selectorValues: addModel.selectorValues,
         productId: addModel.productId

@@ -141,10 +141,10 @@ const props = defineProps({
 const emit = defineEmits<Emit>()
 
 const paramsValue = reactive<TermsType>({
-  column: props.value.column,
-  type: props.value.type,
-  termType: props.value.termType,
-  value: props.value.value
+  column: props.value?.column,
+  type: props.value?.type,
+  termType: props.value?.termType,
+  value: props.value?.value
 })
 
 const showDelete = ref(false)
@@ -187,8 +187,18 @@ const handOptionByColumn = (option: any) => {
 }
 
 watchEffect(() => {
-  const option = getOption(columnOptions.value, paramsValue.column, 'column')
-  handOptionByColumn(option)
+  if (!props.value.error && props.value.column) { // 新增不查找option
+    const option = getOption(columnOptions.value, paramsValue.column, 'column')
+    if (option) {
+      handOptionByColumn(option)
+    } else {
+      emit('update:value', {
+        ...props.value,
+        error: true
+      })
+      formItemContext.onFieldChange()
+    }
+  }
 })
 
 const showDouble = computed(() => {
@@ -257,7 +267,6 @@ const onDelete = () => {
 
 nextTick(() => {
   Object.assign(paramsValue, props.value)
-  formItemContext.onFieldChange()
 })
 
 </script>

@@ -234,7 +234,7 @@
                     @click="onType('device')"
                 >
                     <template v-if="data?.device?.selector === 'fixed'">
-                        <div>
+                        <div style='display: flex; align-items: center;'>
                             <AIcon
                                 :type="
                                     typeIconMap[
@@ -248,13 +248,16 @@
                             }}</span>
                             <AIcon
                                 type="icon-mubiao"
-                                style="padding-right: 2px"
+                                style="padding:0 4px"
                             />
+                          <Ellipsis style='max-width: 200px;margin-right: 12px;'>
+                            {{data?.options?.name}}
+                          </Ellipsis>
+                          <Ellipsis style='max-width: 400px;'>
+                            {{data?.options?.properties}}
+                          </Ellipsis>
                             {{
-                                `${data?.options?.name} ${
-                                    data?.options?.properties
-                                } 
-                                ${
+                                `${
                                     (
                                         isBoolean(
                                             data?.options?.propertiesValue,

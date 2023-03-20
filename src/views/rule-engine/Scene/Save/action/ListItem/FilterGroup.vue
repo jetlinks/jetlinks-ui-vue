@@ -58,7 +58,7 @@ import { storeToRefs } from 'pinia'
 import { useSceneStore } from 'store/scene'
 import DropdownButton from '../../components/DropdownButton'
 import FilterItem from './FilterCondition.vue'
-import { flattenDeep, isArray, set } from 'lodash-es'
+import { flattenDeep, isArray } from 'lodash-es'
 import { provide } from 'vue'
 import { randomString } from '@/utils/utils'
 import { useParams } from '@/views/rule-engine/Scene/Save/util'
@@ -172,7 +172,7 @@ const onDelete = () => {
 const rules = [
   {
     validator(_: any, v?: Record<string, any>) {
-      if (v !== undefined) {
+      if (v !== undefined && !v.error) {
         if (!Object.keys(v).length) {
           return Promise.reject(new Error('该数据已发生变更，请重新配置'))
         }

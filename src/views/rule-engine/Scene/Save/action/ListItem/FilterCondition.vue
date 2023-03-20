@@ -83,6 +83,7 @@ import { inject } from 'vue'
 import { useSceneStore } from 'store/scene'
 import { storeToRefs } from 'pinia';
 import { flattenDeep, set } from 'lodash-es'
+import { Form } from 'jetlinks-ui-components'
 
 const sceneStore = useSceneStore()
 const { data: formModel } = storeToRefs(sceneStore)
@@ -152,7 +153,7 @@ const paramsValue = reactive<TermsType>({
   termType: props.value.termType,
   value: props.value.value
 })
-
+const formItemContext = Form.useInjectFormItemContext()
 const showDelete = ref(false)
 const columnOptions: any = inject('filter-params') //
 const termTypeOptions = ref<Array<{ id: string, name: string}>>([]) // 条件值
@@ -187,8 +188,18 @@ const handOptionByColumn = (option: any) => {
 }
 
 watchEffect(() => {
-  const option = getOption(columnOptions.value, paramsValue.column, 'id')
-  handOptionByColumn(option)
+  if (!props.value.error && props.value.column) { // 新增不查找option
+    const option = getOption(columnOptions.value, paramsValue.column, 'id')
+    if (option) {
+      handOptionByColumn(option)
+    } else {
+      emit('update:value', {
+        ...props.value,
+        error: true
+      })
+      formItemContext.onFieldChange()
+    }
+  }
 })
 
 const showDouble = computed(() => {
@@ -235,6 +246,7 @@ const columnSelect = (e: any) => {
   )
   handleOptionsColumnsValue(termsColumns, _options)
   emit('update:value', { ...paramsValue })
+  formItemContext.onFieldChange()
 }
 
 const termsTypeSelect = (e: { key: string }) => {
@@ -244,10 +256,12 @@ const termsTypeSelect = (e: { key: string }) => {
     value: value
   }
   emit('update:value', { ...paramsValue })
+  formItemContext.onFieldChange()
 }
 
 const valueSelect = () => {
   emit('update:value', { ...paramsValue })
+  formItemContext.onFieldChange()
 }
 
 const termAdd = () => {
