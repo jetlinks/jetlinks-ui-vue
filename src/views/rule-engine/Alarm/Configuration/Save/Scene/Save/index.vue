@@ -8,7 +8,7 @@
         @cancel="closeModal"
         @ok="saveCorrelation"
     >
-        <pro-search :columns="columns" @search="handleSearch"/>
+        <pro-search :columns="columns" @search="handleSearch" />
         <div style="height: 500px; overflow-y: auto">
             <JProTable
                 model="CARD"
@@ -30,7 +30,7 @@
                 :params="params"
             >
                 <template #card="slotProps">
-                    <SceneCard
+                    <CardBox
                         :value="slotProps"
                         :status="slotProps.state?.value"
                         :statusText="slotProps.state?.text"
@@ -59,22 +59,22 @@
                                 :src="typeMap.get(slotProps.triggerType)?.img"
                             />
                         </template>
-                        <template #title>
+                        <template #content>
                             <Ellipsis style="width: calc(100% - 100px)">
                                 <span style="font-size: 16px; font-weight: 600">
                                     {{ slotProps.name }}
                                 </span>
                             </Ellipsis>
-                        </template>
-                        <template #subTitle>
                             <Ellipsis :lineClamp="2">
-                                说明：{{
-                                    slotProps?.description ||
-                                    typeMap.get(slotProps.triggerType)?.tip
-                                }}
+                                <div class="subTitle">
+                                    说明：{{
+                                        slotProps?.description ||
+                                        typeMap.get(slotProps.triggerType)?.tip
+                                    }}
+                                </div>
                             </Ellipsis>
                         </template>
-                    </SceneCard>
+                    </CardBox>
                 </template>
             </JProTable>
         </div>
@@ -84,7 +84,6 @@
 <script lang="ts" setup>
 import { query } from '@/api/rule-engine/scene';
 import { bindScene } from '@/api/rule-engine/configuration';
-import SceneCard from '@/views/rule-engine/Scene/SceneCard.vue';
 import { getImage } from '@/utils/comm';
 import { message } from 'ant-design-vue';
 const columns = [
@@ -204,7 +203,7 @@ log();
 const handleSearch = (e: any) => {
     params.value = e;
 };
-const emit = defineEmits(['closeSave','saveScene']);
+const emit = defineEmits(['closeSave', 'saveScene']);
 /**
  * 保存选中关联场景
  */
