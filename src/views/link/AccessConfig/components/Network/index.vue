@@ -111,7 +111,7 @@
                         新增
                     </PermissionButton>
                 </div>
-                <j-scrollbar height="480" style="padding-right: 8px">
+                <j-scrollbar height="480">
                     <j-row :gutter="[24, 24]" v-if="procotolList.length > 0">
                         <j-col
                             :span="8"
@@ -171,32 +171,25 @@
                         <j-col :span="12">
                             <j-scrollbar height="580">
                                 <div class="doc">
-                                    <div>
-                                        <h1>接入方式</h1>
-                                        <p>
-                                            {{ provider.name }}
-                                        </p>
-                                        <p>
-                                            {{ provider.description }}
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <h1>消息协议</h1>
-                                        <p>
-                                            {{
-                                                procotolList.find(
-                                                    (i: any) =>
-                                                        i.id ===
-                                                        procotolCurrent,
-                                                ).name
-                                            }}
-                                        </p>
-                                        <p v-if="config.document">
-                                            <Markdown
-                                                :source="config.document"
-                                            />
-                                        </p>
-                                    </div>
+                                    <h1>接入方式</h1>
+                                    <p>
+                                        {{ provider.name }}
+                                    </p>
+                                    <p>
+                                        {{ provider.description }}
+                                    </p>
+                                    <h1>消息协议</h1>
+                                    <p>
+                                        {{
+                                            procotolList.find(
+                                                (i: any) =>
+                                                    i.id === procotolCurrent,
+                                            ).name
+                                        }}
+                                    </p>
+                                    <p v-if="config.document">
+                                        <Markdown :source="config.document" />
+                                    </p>
                                     <div v-if="getNetworkCurrent()">
                                         <h1>网络组件</h1>
                                         <p
@@ -238,7 +231,7 @@
                                                         ? columnsMQTT
                                                         : columnsHTTP
                                                 "
-                                                :scroll="{ y: 300 }"
+                                                :scroll="{ y: 400 }"
                                             >
                                                 <template
                                                     #bodyCell="{
@@ -445,8 +438,6 @@ const getNetworkCurrentData = () =>
 const getColor = (i: any) => (i.health === -1 ? 'error' : 'processing');
 
 const getStream = (record: any) => {
-    console.log(222, record);
-
     let stream = '';
     if (record.upstream && record.downstream) stream = '上行、下行';
     else if (record.upstream) stream = '上行';
@@ -623,7 +614,7 @@ watch(
 
 <style lang="less" scoped>
 .steps-content {
-    margin: 20px;
+    margin-top: 20px;
 }
 .steps-box {
     min-height: 400px;
@@ -636,7 +627,6 @@ watch(
 .steps-action {
     width: 100%;
     margin-top: 24px;
-    margin-left: 20px;
 }
 .alert {
     height: 40px;
@@ -662,27 +652,6 @@ watch(
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
-    }
-}
-
-.config-right {
-    padding: 20px;
-    color: rgba(0, 0, 0, 0.8);
-    background: rgba(0, 0, 0, 0.04);
-
-    .config-right-item {
-        margin-bottom: 10px;
-
-        .config-right-item-title {
-            width: 100%;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .config-right-item-context {
-            margin: 5px 0;
-            color: rgba(0, 0, 0, 0.8);
-        }
     }
 }
 </style>

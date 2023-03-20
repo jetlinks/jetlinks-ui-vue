@@ -37,7 +37,7 @@
                         :status="slotProps.state.value"
                         :statusText="slotProps.state.text"
                         :statusNames="{
-                            enabled: 'success',
+                            enabled: 'processing',
                             disabled: 'error',
                         }"
                     >
