@@ -112,7 +112,8 @@
                             style="padding: 0 5px"
                             @click="i.onClick"
                             type="link"
-                            :hasPermission="'Northbound/DuerOS:' + i.key"
+                            :danger="i.key === 'delete'"
+                            :hasPermission="i.key === 'view' ? true : 'Northbound/DuerOS:' + i.key"
                         >
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>

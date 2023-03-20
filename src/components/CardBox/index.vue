@@ -5,7 +5,14 @@
             :class="{ active: active ? 'active' : '' }"
             @click="handleClick"
         >
-            <div class="card-content">
+            <div class="card-type" v-if="slots.type">
+                <div class="card-type-text"><slot name="type"></slot></div>
+            </div>
+            <div
+                class="card-content"
+                :class="{'card-content-top-line': !slots.type}"
+                :style="{ paddingTop: slots.type ? '40px' : '30px' }"
+            >
                 <div
                     class="card-content-bg1"
                     :style="{
@@ -94,6 +101,7 @@ type EmitProps = {
 type TableActionsType = Partial<ActionsType>;
 
 const emit = defineEmits<EmitProps>();
+const slots = useSlots();
 
 const props = defineProps({
     value: {
@@ -180,6 +188,7 @@ const handleClick = () => {
     .card-warp {
         position: relative;
         border: 1px solid #e6e6e6;
+        overflow: hidden;
 
         &:hover {
             cursor: pointer;
@@ -195,24 +204,28 @@ const handleClick = () => {
             border: 1px solid #2f54eb;
         }
 
+        .card-type {
+            position: absolute;
+            top: 0;
+            left: -15px;
+            height: 32px;
+            padding: 0 30px;
+            color: rgba(0, 0, 0, 0.65);
+            line-height: 32px;
+            background-color: rgba(0, 0, 0, 0.06);
+            transform: skewX(-45deg);
+            .card-type-text {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transform: skewX(45deg);
+            }
+        }
+
         .card-content {
             position: relative;
             padding: 30px 12px 16px 30px;
             overflow: hidden;
-
-            &::before {
-                position: absolute;
-                top: 0;
-                left: 30px + 10px;
-                display: block;
-                width: 15%;
-                min-width: 64px;
-                height: 2px;
-                background-image: url('/images/rectangle.png');
-                background-repeat: no-repeat;
-                background-size: 100% 100%;
-                content: ' ';
-            }
 
             .card-item-avatar {
                 margin-right: 16px;
@@ -273,6 +286,22 @@ const handleClick = () => {
             :deep(.card-item-content-text) {
                 color: rgba(0, 0, 0, 0.75);
                 font-size: 12px;
+            }
+        }
+
+        .card-content-top-line {
+            &::before {
+                position: absolute;
+                top: 0;
+                left: 30px + 10px;
+                display: block;
+                width: 15%;
+                min-width: 64px;
+                height: 2px;
+                background-image: url('/images/rectangle.png');
+                background-repeat: no-repeat;
+                background-size: 100% 100%;
+                content: ' ';
             }
         }
 

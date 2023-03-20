@@ -21,13 +21,14 @@
                 </j-space>
             </template>
             <template #card="slotProps">
-                <SceneCard
+                <CardBox
                     :value="slotProps"
+                    @click="handleView(slotProps.id, slotProps.triggerType)"
                     :actions="getActions(slotProps, 'card')"
                     :status="slotProps.state?.value"
                     :statusText="slotProps.state?.text"
                     :statusNames="{
-                        started: 'success',
+                        started: 'processing',
                         disable: 'error',
                     }"
                 >
@@ -45,22 +46,19 @@
                     <template #img>
                         <img :src="typeMap.get(slotProps.triggerType)?.img" />
                     </template>
-                    <template #title>
+                    <template #content>
                         <Ellipsis style="width: calc(100% - 100px)">
-                            <span
-                                style="font-size: 16px; font-weight: 600"
-                                @click.stop="handleView(slotProps.id, slotProps.triggerType)"
-                            >
+                            <span style="font-size: 16px; font-weight: 600">
                                 {{ slotProps.name }}
                             </span>
                         </Ellipsis>
-                    </template>
-                    <template #subTitle>
                         <Ellipsis :lineClamp="2">
-                            说明：{{
-                                slotProps?.description ||
-                                typeMap.get(slotProps.triggerType)?.tip
-                            }}
+                            <div class="subTitle">
+                                说明：{{
+                                    slotProps?.description ||
+                                    typeMap.get(slotProps.triggerType)?.tip
+                                }}
+                            </div>
                         </Ellipsis>
                     </template>
                     <template #actions="item">
@@ -83,15 +81,19 @@
                             </template>
                         </PermissionButton>
                     </template>
-                </SceneCard>
+                </CardBox>
             </template>
             <template #triggerType="slotProps">
                 {{ typeMap.get(slotProps.triggerType)?.text }}
             </template>
             <template #state="slotProps">
-                <j-badge
+                <BadgeStatus
+                    :status="slotProps.state?.value"
                     :text="slotProps.state?.text"
-                    :status="statusMap.get(slotProps.state?.value)"
+                    :statusNames="{
+                        enabled: 'processing',
+                        disabled: 'error',
+                    }"
                 />
             </template>
             <template #action="slotProps">
@@ -108,8 +110,9 @@
                             }"
                             @click="i.onClick"
                             type="link"
-                            style="padding: 0px"
-                            :hasPermission="'rule-engine/Scene:' + i.key"
+                            :danger="i.key === 'delete'"
+                            style="padding: 0 5px"
+                            :hasPermission="i.key === 'view' ? true : 'rule-engine/Scene:' + i.key"
                         >
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
@@ -130,6 +133,7 @@ import { message } from 'ant-design-vue';
 import type { ActionsType } from '@/components/Table';
 import { getImage } from '@/utils/comm';
 import SceneCard from './SceneCard.vue';
+import BadgeStatus from '@/components/BadgeStatus/index.vue';
 
 const menuStory = useMenuStore();
 const visible = ref<boolean>(false);
@@ -183,7 +187,7 @@ const columns = [
                 return {
                     label: item[1]?.text,
                     value: item[0],
-                }
+                };
             }),
         },
     },
@@ -202,6 +206,7 @@ const columns = [
     {
         dataIndex: 'description',
         title: '说明',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -211,7 +216,7 @@ const columns = [
         title: '操作',
         key: 'action',
         fixed: 'right',
-        width: 250,
+        width: 200,
         scopedSlots: true,
     },
 ];
@@ -309,15 +314,15 @@ const getActions = (
             popConfirm: {
                 title: '',
                 onConfirm: async () => {
-                    const resp = await _execute(data.id)
+                    const resp = await _execute(data.id);
                     if (resp.status === 200) {
                         message.success('操作成功！');
                         sceneRef.value?.reload();
                     } else {
                         message.error('操作失败！');
                     }
-                }
-            }
+                },
+            },
         };
         actions.splice(1, 0, _item);
     }
@@ -374,4 +379,9 @@ const handleView = (id: string, triggerType: string) => {
 </script>
 
 <style scoped>
+.subTitle {
+    color: rgba(0, 0, 0, 0.65);
+    font-size: 14px;
+    margin-top: 10px;
+}
 </style>

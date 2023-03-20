@@ -41,7 +41,7 @@
                     :status="slotProps.state?.value"
                     :statusText="slotProps.state?.text"
                     :statusNames="{
-                        online: 'success',
+                        online: 'processing',
                         offline: 'error',
                         notActive: 'warning',
                     }"
@@ -100,9 +100,14 @@
                 </CardBox>
             </template>
             <template #state="slotProps">
-                <j-badge
+                <BadgeStatus
+                    :status="slotProps.state?.value"
                     :text="slotProps.state?.text"
-                    :status="statusMap.get(slotProps.state?.value)"
+                    :statusNames="{
+                        online: 'processing',
+                        offline: 'error',
+                        notActive: 'warning',
+                    }"
                 />
             </template>
             <template #createTime="slotProps">
@@ -125,7 +130,8 @@
                             @click="i.onClick"
                             type="link"
                             style="padding: 0 5px"
-                            :hasPermission="'edge/Device:' + i.key"
+                            :danger="i.key === 'delete'"
+                            :hasPermission="i.key === 'view' ? true : 'edge/Device:' + i.key"
                         >
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
@@ -155,6 +161,7 @@ import { query, _delete, _deploy, _undeploy } from '@/api/device/instance';
 import { restPassword } from '@/api/edge/device';
 import Save from './Save/index.vue';
 import Import from '@/views/device/Instance/Import/index.vue';
+import BadgeStatus from '@/components/BadgeStatus/index.vue';
 
 const menuStory = useMenuStore();
 
