@@ -18,59 +18,66 @@
             </j-space>
         </template>
         <template #card="slotProps">
-            <SceneCard
-                :value="slotProps"
-                @click="handleClick"
-                :actions="getActions(slotProps, 'card')"
-                :status="slotProps.state?.value"
-                :statusText="slotProps.state?.text"
-                :statusNames="{
-                    started: 'success',
-                    disable: 'error',
-                }"
-            >
-                <template #type>
-                    <span
-                        ><img
-                            :height="16"
-                            :src="typeMap.get(slotProps.triggerType)?.icon"
-                            style="margin-right: 5px"
-                        />{{ typeMap.get(slotProps.triggerType)?.text }}</span
-                    >
-                </template>
-                <template #img>
-                    <img :src="typeMap.get(slotProps.triggerType)?.img" />
-                </template>
-                <template #title>
-                    <Ellipsis style="width: calc(100% - 100px)">
-                        <span style="font-size: 16px; font-weight: 600">
-                            {{ slotProps.name }}
-                        </span>
-                    </Ellipsis>
-                </template>
-                <template #subTitle>
-                    <Ellipsis :lineClamp="2">
-                        说明：{{
-                            slotProps?.description ||
-                            typeMap.get(slotProps.triggerType)?.tip
-                        }}
-                    </Ellipsis>
-                </template>
-                <template #actions="item">
-                    <PermissionButton
-                        :disabled="item.disabled"
-                        :popConfirm="item.popConfirm"
-                        :tooltip="{
-                            ...item.tooltip,
-                        }"
-                        @click="item.onClick"
-                        :hasPermission="'rule-engine/Alarm/Configuration:'+item.key"
-                    >
-                        <AIcon :type="item.icon" />
-                        <span>{{ item?.text }}</span>
-                    </PermissionButton>
-                </template>
-            </SceneCard>
+            <CardBox
+                    :value="slotProps"
+                    :actions="getActions(slotProps, 'card')"
+                    :status="slotProps.state?.value"
+                    :statusText="slotProps.state?.text"
+                    :statusNames="{
+                        started: 'processing',
+                        disable: 'error',
+                    }"
+                >
+                    <template #type>
+                        <span
+                            ><img
+                                :height="16"
+                                :src="typeMap.get(slotProps.triggerType)?.icon"
+                                style="margin-right: 5px"
+                            />{{
+                                typeMap.get(slotProps.triggerType)?.text
+                            }}</span
+                        >
+                    </template>
+                    <template #img>
+                        <img :src="typeMap.get(slotProps.triggerType)?.img" />
+                    </template>
+                    <template #content>
+                        <Ellipsis style="width: calc(100% - 100px)">
+                            <span style="font-size: 16px; font-weight: 600">
+                                {{ slotProps.name }}
+                            </span>
+                        </Ellipsis>
+                        <Ellipsis :lineClamp="2">
+                            <div class="subTitle">
+                                说明：{{
+                                    slotProps?.description ||
+                                    typeMap.get(slotProps.triggerType)?.tip
+                                }}
+                            </div>
+                        </Ellipsis>
+                    </template>
+                    <template #actions="item">
+                        <PermissionButton
+                            :disabled="item.disabled"
+                            :popConfirm="item.popConfirm"
+                            :tooltip="{
+                                ...item.tooltip,
+                            }"
+                            @click="item.onClick"
+                            :hasPermission="'rule-engine/Scene:' + item.key"
+                        >
+                            <AIcon
+                                type="DeleteOutlined"
+                                v-if="item.key === 'delete'"
+                            />
+                            <template v-else>
+                                <AIcon :type="item.icon" />
+                                <span>{{ item?.text }}</span>
+                            </template>
+                        </PermissionButton>
+                    </template>
+                </CardBox>
         </template>
     </JProTable>
     <Save
