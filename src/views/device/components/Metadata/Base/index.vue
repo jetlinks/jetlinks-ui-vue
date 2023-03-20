@@ -116,14 +116,14 @@ const pagination = {
   size: 'small',
 } as TablePaginationConfig
 const columns = computed(() => MetadataMapping.get(type)!.concat(actions))
-const items = computed(() => JSON.parse((target === 'product' ? productStore.current?.metadata : instanceStore.current.metadata) || '{}') as MetadataItem[])
+const items = computed(() => JSON.parse((target === 'product' ? productStore.current?.metadata : instanceStore.current.metadata) || '{}'))
 const searchValue = ref<string>()
 const handleSearch = (searchValue: string) => {
   if (searchValue) {
-    const arr = items.value.filter(item => item.name!.indexOf(searchValue) > -1).sort((a, b) => b?.sortsIndex - a?.sortsIndex)
+    const arr = items.value[type].filter((item: MetadataItem) => item.name!.indexOf(searchValue) > -1).sort((a: MetadataItem, b: MetadataItem) => b?.sortsIndex - a?.sortsIndex)
     data.value = arr
   } else {
-    data.value = items.value
+    data.value = items.value[type]
   }
 }
 

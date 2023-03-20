@@ -40,7 +40,7 @@
           </template>
         </j-input>
       </j-form-item>
-      <j-form-item v-bind="validateInfos.import" v-if="formModel.metadataType === 'script'">
+      <j-form-item v-bind="validateInfos.import" v-if="(type === 'device' || formModel.type === 'import') && formModel.metadataType === 'script'">
         <template #label>
           <j-space>
             物模型
