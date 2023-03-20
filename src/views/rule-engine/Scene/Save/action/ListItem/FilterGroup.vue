@@ -172,7 +172,6 @@ const onDelete = () => {
 const rules = [
   {
     validator(_: any, v?: Record<string, any>) {
-      console.log('-----v',v)
       if (v !== undefined) {
         if (!Object.keys(v).length) {
           return Promise.reject(new Error('该数据已发生变更，请重新配置'))

@@ -23,7 +23,7 @@
           @deleteAll='branchesDeleteAll'
         />
         <div v-else class='actions-terms-warp' :style='{ marginTop: data.branches.length === 2 ? 0 : 24 }'>
-          <div class='actions-terms-title' style='padding: 0'>
+          <div class='actions-terms-title' style='padding: 0;margin-bottom: 24px;'>
             否则
           </div>
           <div class='actions-terms-options no-when'>
@@ -43,11 +43,10 @@ import { provide } from 'vue'
 import { ContextKey, handleParamsData } from './util'
 import { getParseTerm } from '@/api/rule-engine/scene'
 import type { FormModelType } from '@/views/rule-engine/Scene/typings'
-import Branches from './Branchs.vue'
+import Branches from './Branches.vue'
 
 const sceneStore = useSceneStore()
 const { data } = storeToRefs(sceneStore)
-
 const open = ref(false)
 const columnOptions = ref<any>([])
 
@@ -96,7 +95,6 @@ const branchesDeleteAll = () => {
 }
 
 watchEffect(() => {
-  console.log(data.value.trigger, data.value.trigger?.device)
   if (data.value.trigger?.device) {
     queryColumn(data.value)
   }

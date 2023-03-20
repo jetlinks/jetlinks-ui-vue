@@ -349,7 +349,7 @@
                         />
                     </div>
                 </template>
-                <div v-else class="filter-add-button">
+                <div v-else class="filter-add-button" @click='addFilterParams'>
                     <AIcon type="PlusOutlined" style="padding-right: 4px" />
                     <span>添加过滤条件</span>
                 </div>
@@ -394,6 +394,7 @@ import { useSceneStore } from '@/store/scene';
 import { storeToRefs } from 'pinia';
 import { iconMap, itemNotifyIconMap, typeIconMap } from './util';
 import FilterGroup from './FilterGroup.vue';
+import { randomString } from '@/utils/utils'
 
 const sceneStore = useSceneStore();
 const { data: _data } = storeToRefs(sceneStore);
@@ -470,6 +471,30 @@ const onSave = (data: ActionsType, options: any) => {
 
     visible.value = false;
 };
+
+const addFilterParams = () => {
+  const item: any = {
+    type: 'and',
+    key: randomString(),
+    terms: [
+      {
+        column: undefined,
+        value: {
+          type: 'fixed',
+          value: undefined
+        },
+        termType: undefined,
+        type: 'and',
+        key: randomString()
+      }
+    ]
+  }
+  if (_data.value.branches![props.branchesName].then[props.thenName].actions[props.name].terms) {
+    _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].terms!.push(item)
+  } else {
+    _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].terms = [item]
+  }
+}
 
 const onAdd = () => {
     visible.value = true;

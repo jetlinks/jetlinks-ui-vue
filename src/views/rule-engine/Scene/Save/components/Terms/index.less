@@ -131,10 +131,14 @@
 
     .ant-form-item {
       margin-bottom: 8px;
-      &:not(:first-child) {
+      &:not(:nth-child(2)) {
         .ant-form-item-explain-error {
           padding-left: 80px !important;
         }
+      }
+
+      &.ant-form-item-has-error {
+        margin-bottom: 0;
       }
     }
   }

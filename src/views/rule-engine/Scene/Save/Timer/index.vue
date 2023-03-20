@@ -79,6 +79,7 @@ const onActionUpdate = (_data: any, type: boolean) => {
 const save = (_data: OperationTimer, options: Record<string, any>) => {
   data.value.trigger!.timer = _data
   data.value.options!.trigger = options
+  visible.value = false
 }
 </script>
 

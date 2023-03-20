@@ -56,7 +56,7 @@
           <Action
             :name='name'
             :openShakeLimit="true"
-            :thenOptions='FormModel.branches[name].then'
+            :thenOptions='FormModel.branches[name]?.then'
           />
         </j-form-item>
       </div>
@@ -64,7 +64,7 @@
   </div>
 </template>
 
-<script lang='ts' setup name='Branchs'>
+<script lang='ts' setup name='Branches'>
 import type { PropType } from 'vue'
 import type { ActionBranchesProps } from '@/views/rule-engine/Scene/typings'
 import TermsItem from './TermsItem.vue'
