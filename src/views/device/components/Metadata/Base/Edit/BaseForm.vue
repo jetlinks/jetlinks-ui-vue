@@ -7,13 +7,13 @@
       message: 'ID只能由数字、字母、下划线、中划线组成',
     },
   ]">
-    <j-input v-model:value="value.id" size="small" @change="asyncOtherConfig" :disabled="metadataStore.model.action === 'edit'"></j-input>
+    <j-input v-model:value="value.id" size="small" @change="asyncOtherConfig" :disabled="metadataStore.model.action === 'edit'" placeholder="请输入标识"></j-input>
   </j-form-item>
   <j-form-item label="名称" name="name" :rules="[
     { required: true, message: '请输入名称' },
     { max: 64, message: '最多可输入64个字符' },
   ]">
-    <j-input v-model:value="value.name" size="small"></j-input>
+    <j-input v-model:value="value.name" size="small" placeholder="请输入名称"></j-input>
   </j-form-item>
   <template v-if="modelType === 'properties'">
     <value-type-form :name="['valueType']" v-model:value="value.valueType" key="property" title="数据类型"
@@ -41,7 +41,7 @@
     <j-form-item label="级别" :name="['expands', 'level']" :rules="[
       { required: true, message: '请选择级别' },
     ]">
-      <j-select v-model:value="value.expands.level" :options="EventLevel" size="small"></j-select>
+      <j-select v-model:value="value.expands.level" :options="EventLevel" size="small" placeholder="请选择级别"></j-select>
     </j-form-item>
     <value-type-form :name="['valueType']" v-model:value="value.valueType" key="function" title="输出参数" only-object></value-type-form>
   </template>
@@ -50,13 +50,13 @@
     <j-form-item label="标签类型" :name="['expands', 'type']" :rules="[
       { required: true, message: '请选择标签类型' },
     ]">
-      <j-select v-model:value="value.expands.type" :options="ExpandsTypeList" mode="multiple" size="small"></j-select>
+      <j-select v-model:value="value.expands.type" :options="ExpandsTypeList" mode="multiple" size="small" placeholder="请选择标签类型"></j-select>
     </j-form-item>
   </template>
   <j-form-item label="说明" name="description" :rules="[
     { max: 200, message: '最多可输入200个字符' },
   ]">
-    <j-textarea v-model:value="value.description" size="small"></j-textarea>
+    <j-textarea v-model:value="value.description" size="small" placeholder="请输入说明"></j-textarea>
   </j-form-item>
 </template>
 <script setup lang="ts" name="BaseForm">
