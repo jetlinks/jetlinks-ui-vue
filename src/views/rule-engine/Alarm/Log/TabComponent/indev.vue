@@ -43,6 +43,14 @@
                             (i) => i.level === slotProps.level,
                         )?.title || slotProps.level
                     "
+                    :status="slotProps.level"
+                    :statusNames="{
+                        1: 'level1',
+                        2: 'level2',
+                        3: 'level3',
+                        4: 'level4',
+                        5: 'level5',
+                    }"
                 >
                     <template #img>
                         <img :src="imgMap.get(slotProps.targetType)" alt="" />
@@ -80,14 +88,14 @@
                             </j-col>
                             <j-col :span="8">
                                 <div class="content-des-title">状态</div>
-                                <j-badge
-                                    :status="
-                                        slotProps.state.value === 'warning'
-                                            ? 'error'
-                                            : 'default'
-                                    "
+                                <BadgeStatus
+                                    :status="slotProps.state.value"
+                                    :statusName="{
+                                        warning: 'warning',
+                                        normal: 'default',
+                                    }"
                                 >
-                                </j-badge
+                                </BadgeStatus
                                 ><span
                                     :style="
                                         slotProps.state.value === 'warning'
@@ -184,14 +192,6 @@ titleMap.set('product', '产品');
 titleMap.set('device', '设备');
 titleMap.set('other', '其他');
 titleMap.set('org', '组织');
-
-const colorMap = new Map();
-colorMap.set(1, '#E50012');
-colorMap.set(2, '#FF9457');
-colorMap.set(3, '#FABD47');
-colorMap.set(4, '#999999');
-colorMap.set(5, '#C4C4C4');
-
 const columns = [
     {
         title: '名称',

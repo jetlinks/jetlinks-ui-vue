@@ -37,7 +37,7 @@
                         :active="_selectedRowKeys.includes(slotProps.id)"
                         @click="handleClick"
                         :statusNames="{
-                            started: 'success',
+                            started: 'processing',
                             disable: 'error',
                         }"
                     >

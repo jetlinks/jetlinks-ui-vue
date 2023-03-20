@@ -266,7 +266,7 @@ onMounted(() => {
     cursor: not-allowed;
 }
 .productDetailHead {
-    width: 50%;
+    max-width: 50%;
     overflow: hidden;
     white-space: nowrap;
     overflow: hidden;
