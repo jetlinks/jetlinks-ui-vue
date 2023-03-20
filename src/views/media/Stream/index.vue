@@ -35,11 +35,6 @@
                         :value="slotProps"
                         :actions="getActions(slotProps)"
                         v-bind="slotProps"
-                        :class="
-                            slotProps.state.value === 'disabled'
-                                ? 'tableCardDisabled'
-                                : 'tableCardEnabled'
-                        "
                         :status="slotProps.state.value"
                         :statusText="slotProps.state.text"
                         :statusNames="{
@@ -272,18 +267,6 @@ const handleSearch = (e: any) => {
 };
 </script>
 <style lang="less" scoped>
-.tableCardDisabled {
-    width: 100%;
-    background: url('/images/access-config-diaabled.png') no-repeat;
-    background-size: 100% 100%;
-}
-
-.tableCardEnabled {
-    width: 100%;
-    background: url('/images/access-config-enabled.png') no-repeat;
-    background-size: 100% 100%;
-}
-
 .card-item-content {
     min-height: 100px;
 

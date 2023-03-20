@@ -310,15 +310,6 @@ const handleSearch = (e: any) => {
 <style lang="less" scoped>
 .card-item-content {
     min-height: 100px;
-
-    .card-item-content-title-a {
-        // color: #000 !important;
-        font-weight: 700;
-        font-size: 16px;
-        overflow: hidden; //超出的文本隐藏
-        text-overflow: ellipsis; //溢出用省略号显示
-        white-space: nowrap; //溢出不换行
-    }
     .card-item-content-box {
         min-height: 50px;
     }
