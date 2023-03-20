@@ -1,5 +1,5 @@
 <template>
-    <div class="wrapper">
+    <div class="advance-wrapper">
         <j-tabs v-model="activeKey" tab-position="left">
             <j-tab-pane
                 v-for="func in newFunctions"
@@ -129,7 +129,7 @@ const handleClear = (func: any) => {
 </script>
 
 <style lang="less" scoped>
-.wrapper {
+.advance-wrapper {
     .editor-btn {
         display: flex;
         justify-content: flex-end;

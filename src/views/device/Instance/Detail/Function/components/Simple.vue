@@ -1,5 +1,5 @@
 <template>
-    <div class="wrapper">
+    <div class="simple-wrapper">
         <div class="tips">
             <j-space>
                 <AIcon type="QuestionCircleOutlined" />
@@ -239,7 +239,7 @@ const handleClear = (func: any) => {
 :deep(.ant-form-item-with-help .ant-form-item-explain) {
     min-height: 0;
 }
-.wrapper {
+.simple-wrapper {
     .tips {
         margin-bottom: 10px;
     }

@@ -12,14 +12,10 @@
         </j-empty>
         <template v-else>
             <j-tabs v-model:activeKey="activeKey">
-                <j-tab-pane key="Simple" tab="精简模式">
-                    <Simple />
-                </j-tab-pane>
-                <j-tab-pane key="Advance" tab="高级模式">
-                    <Advance />
-                </j-tab-pane>
+                <j-tab-pane key="Simple" tab="精简模式" />
+                <j-tab-pane key="Advance" tab="高级模式" />
             </j-tabs>
-            <!-- <component :is="tabs[activeKey]" /> -->
+            <component :is="tabs[activeKey]" />
         </template>
     </j-card>
 </template>
