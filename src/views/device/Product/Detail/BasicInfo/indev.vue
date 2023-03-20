@@ -11,12 +11,12 @@
                 </div>
             </template>
 
-            <j-descriptions-item label="ID">{{
-                productStore.current.id
-            }}</j-descriptions-item>
-            <j-descriptions-item label="产品分类">{{
-                productStore.current.classifiedName
-            }}</j-descriptions-item>
+            <j-descriptions-item label="ID">
+                <Ellipsis>{{ productStore.current.id }}</Ellipsis>
+            </j-descriptions-item>
+            <j-descriptions-item label="产品分类">
+                <Ellipsis>{{ productStore.current.classifiedName }}</Ellipsis>
+            </j-descriptions-item>
             <j-descriptions-item label="设备类型">{{
                 productStore.current.deviceType?.text
             }}</j-descriptions-item>
@@ -29,10 +29,14 @@
                 }}</j-button>
             </j-descriptions-item>
             <j-descriptions-item label="创建时间">{{
-                moment(productStore.current.createTime).format('YYYY-MM-DD HH:mm:ss')
+                moment(productStore.current.createTime).format(
+                    'YYYY-MM-DD HH:mm:ss',
+                )
             }}</j-descriptions-item>
             <j-descriptions-item label="更新时间">{{
-                moment(productStore.current.modifyTime).format('YYYY-MM-DD HH:mm:ss')
+                moment(productStore.current.modifyTime).format(
+                    'YYYY-MM-DD HH:mm:ss',
+                )
             }}</j-descriptions-item>
 
             <j-descriptions-item label="说明" :span="3">
@@ -41,7 +45,7 @@
         </j-descriptions>
     </j-card>
     <!-- 编辑 -->
-    <Save ref="saveRef" :isAdd="isAdd" :title="title"  @success="refresh"/>
+    <Save ref="saveRef" :isAdd="isAdd" :title="title" @success="refresh" />
 </template>
 
 <script lang="ts" setup>
@@ -74,7 +78,7 @@ const changeTables = () => {
 /**
  * 修改成功刷新
  */
-const refresh = () =>{
+const refresh = () => {
     productStore.refresh(route.params.id as string);
-}
+};
 </script>

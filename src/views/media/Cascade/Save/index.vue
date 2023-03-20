@@ -239,6 +239,7 @@
                                                 placeholder="请选择IP地址"
                                                 :options="allList"
                                                 @change="setPorts"
+                                                showSearch
                                             />
                                         </j-col>
                                         <j-col :span="10">
@@ -766,5 +767,5 @@ const handleSubmit = () => {
 </script>
 
 <style lang="less" scoped>
-@import './index.less';
+// @import './index.less';
 </style>

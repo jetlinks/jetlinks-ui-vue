@@ -11,21 +11,24 @@
     >
         <template #headerTitle>
             <j-space>
-                <PermissionButton type="primary" @click="showModal" hasPermission="rule-engine/Alarm/Configuration:add">
+                <PermissionButton
+                    type="primary"
+                    @click="showModal"
+                    hasPermission="rule-engine/Alarm/Configuration:add"
+                >
                     <template #icon><AIcon type="PlusOutlined" /></template>
                     新增
                 </PermissionButton>
             </j-space>
         </template>
         <template #card="slotProps">
-            <SceneCard
+            <CardBox
                 :value="slotProps"
-                @click="handleClick"
                 :actions="getActions(slotProps, 'card')"
                 :status="slotProps.state?.value"
                 :statusText="slotProps.state?.text"
                 :statusNames="{
-                    started: 'success',
+                    started: 'processing',
                     disable: 'error',
                 }"
             >
@@ -41,19 +44,19 @@
                 <template #img>
                     <img :src="typeMap.get(slotProps.triggerType)?.img" />
                 </template>
-                <template #title>
+                <template #content>
                     <Ellipsis style="width: calc(100% - 100px)">
                         <span style="font-size: 16px; font-weight: 600">
                             {{ slotProps.name }}
                         </span>
                     </Ellipsis>
-                </template>
-                <template #subTitle>
                     <Ellipsis :lineClamp="2">
-                        说明：{{
-                            slotProps?.description ||
-                            typeMap.get(slotProps.triggerType)?.tip
-                        }}
+                        <div class="subTitle">
+                            说明：{{
+                                slotProps?.description ||
+                                typeMap.get(slotProps.triggerType)?.tip
+                            }}
+                        </div>
                     </Ellipsis>
                 </template>
                 <template #actions="item">
@@ -64,13 +67,19 @@
                             ...item.tooltip,
                         }"
                         @click="item.onClick"
-                        :hasPermission="'rule-engine/Alarm/Configuration:'+item.key"
+                        :hasPermission="'rule-engine/Scene:' + item.key"
                     >
-                        <AIcon :type="item.icon" />
-                        <span>{{ item?.text }}</span>
+                        <AIcon
+                            type="DeleteOutlined"
+                            v-if="item.key === 'delete'"
+                        />
+                        <template v-else>
+                            <AIcon :type="item.icon" />
+                            <span>{{ item?.text }}</span>
+                        </template>
                     </PermissionButton>
                 </template>
-            </SceneCard>
+            </CardBox>
         </template>
     </JProTable>
     <Save
@@ -86,7 +95,6 @@
 import { query } from '@/api/rule-engine/scene';
 import { unbindScene } from '@/api/rule-engine/configuration';
 import { useRoute } from 'vue-router';
-import SceneCard from '@/views/rule-engine/Scene/SceneCard.vue';
 import type { ActionsType } from '@/components/Table';
 import { getImage } from '@/utils/comm';
 import { message } from 'ant-design-vue/es';
@@ -166,10 +174,10 @@ const showModal = () => {
 const closeSave = () => {
     visible.value = false;
 };
-const saveSuccess = () =>{
+const saveSuccess = () => {
     visible.value = false;
     actionRef.value.reload();
-}
+};
 </script>
 <style lang="less" scoped>
 </style>

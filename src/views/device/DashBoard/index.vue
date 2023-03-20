@@ -54,11 +54,11 @@
                     </div>
                 </j-col>
             </j-row>
-            <j-row :span="24">
+            <j-row :span="24" v-if="AmapKey">
                 <j-col :span="24">
                     <div class="device-position">
                         <Guide title="设备分布"></Guide>
-                        <div class="device-map">
+                        <div class="device-map" >
                             <Amap></Amap>
                         </div>
                     </div>
@@ -83,6 +83,7 @@ import type { Footer } from '@/views/device/DashBoard/typings';
 import TopCard from '@/views/device/DashBoard/components/TopCard.vue';
 import { useMenuStore } from '@/store/menu';
 import Amap from './components/Amap.vue';
+let AmapKey = localStorage.getItem('amap_key');
 let productTotal = ref(0);
 let productFooter = ref<Footer[]>([
     {

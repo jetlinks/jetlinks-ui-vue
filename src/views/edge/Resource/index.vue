@@ -19,7 +19,7 @@
                     :status="slotProps.state?.value"
                     :statusText="slotProps.state?.text"
                     :statusNames="{
-                        enabled: 'success',
+                        enabled: 'processing',
                         disabled: 'error',
                     }"
                 >
@@ -81,9 +81,13 @@
                 </CardBox>
             </template>
             <template #state="slotProps">
-                <j-badge
+                <BadgeStatus
+                    :status="slotProps.state?.value"
                     :text="slotProps.state?.text"
-                    :status="statusMap.get(slotProps.state?.value)"
+                    :statusNames="{
+                        enabled: 'processing',
+                        disabled: 'error',
+                    }"
                 />
             </template>
             <template #sourceId="slotProps">
@@ -115,7 +119,8 @@
                             @click="i.onClick"
                             type="link"
                             style="padding: 0 5px"
-                            :hasPermission="'edge/Resource:' + i.key"
+                            :danger="i.key === 'delete'"
+                            :hasPermission="i.key === 'view' ? true : 'edge/Resource:' + i.key"
                         >
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
@@ -147,13 +152,14 @@ import dayjs from 'dayjs';
 import { query, _delete, _start, _stop } from '@/api/edge/resource';
 import Save from './Save/index.vue';
 import Issue from './Issue/index.vue';
+import BadgeStatus from '@/components/BadgeStatus/index.vue';
 
 const menuStory = useMenuStore();
 
 const defaultParams = { sorts: [{ name: 'createTime', order: 'desc' }] };
 
 const statusMap = new Map();
-statusMap.set('enabled', 'success');
+statusMap.set('enabled', 'processing');
 statusMap.set('disabled', 'error');
 
 const options = [

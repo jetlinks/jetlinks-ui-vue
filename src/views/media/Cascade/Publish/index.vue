@@ -74,12 +74,13 @@ watch(
 /**
  * 推送
  */
-const successCount = ref(0);
-const failCount = ref(0);
-const flag = ref(false);
+const successCount = ref<number>(0);
+const failCount = ref<number>(0);
+const flag = ref<boolean>(false);
 const errMessage = ref<any[]>([]);
 const errStr = computed(() => JSON.stringify(errMessage.value));
 const publish = () => {
+    successCount.value = 0;
     const activeAPI = `${BASE_API_PATH}/media/gb28181-cascade/${
         props.data.id
     }/bindings/publish?:X_Access_Token=${LocalStore.get(TOKEN_KEY)}`;

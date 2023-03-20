@@ -117,6 +117,7 @@
                                 type="link"
                                 style="padding: 0px"
                                 :hasPermission="'rule-engine/Instance:' + i.key"
+                                :danger="i.key === 'delete'"
                             >
                                 <template #icon
                                     ><AIcon :type="i.icon"
@@ -247,7 +248,7 @@ const getActions = (
             icon: 'EyeOutlined',
             onClick: () => {
                 openRuleEditor(data);
-            }
+            },
         },
         {
             key: 'action',

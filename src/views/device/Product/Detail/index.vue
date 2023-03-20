@@ -8,7 +8,14 @@
         <template #title>
             <div>
                 <div style="display: flex; align-items: center">
-                    <div>{{ productStore.current.name }}</div>
+                    <a-tooltip>
+                        <template #title>{{
+                            productStore.current.name
+                        }}</template>
+                        <div class="productDetailHead">
+                            {{ productStore.current.name }}
+                        </div>
+                    </a-tooltip>
                     <div style="margin: -5px 0 0 20px">
                         <j-popconfirm
                             title="确认禁用"
@@ -237,15 +244,19 @@ const jumpDevice = () => {
         termType: 'eq',
         value: productStore.current?.id,
     };
-    menuStory.jumpPage('device/Instance',{},{
-        target: 'device-instance',
-        q: JSON.stringify({ terms: [{ terms: [{searchParams}] }] }),
-    });
+    menuStory.jumpPage(
+        'device/Instance',
+        {},
+        {
+            target: 'device-instance',
+            q: JSON.stringify({ terms: [{ terms: [{ searchParams }] }] }),
+        },
+    );
 };
 onMounted(() => {
     getProtocol();
-    if(history.state?.params?.tab){
-        productStore.tabActiveKey = history.state?.params?.tab
+    if (history.state?.params?.tab) {
+        productStore.tabActiveKey = history.state?.params?.tab;
     }
 });
 </script>
@@ -253,5 +264,12 @@ onMounted(() => {
 .ant-switch-loading,
 .ant-switch-disabled {
     cursor: not-allowed;
+}
+.productDetailHead {
+    max-width: 50%;
+    overflow: hidden;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 </style>

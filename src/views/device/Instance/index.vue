@@ -232,7 +232,8 @@
                             @click="i.onClick"
                             type="link"
                             style="padding: 0 5px"
-                            :hasPermission="'device/Instance:' + i.key"
+                            :danger="i.key === 'delete'"
+                            :hasPermission="i.key === 'view' ? true : 'device/Instance:' + i.key"
                         >
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>

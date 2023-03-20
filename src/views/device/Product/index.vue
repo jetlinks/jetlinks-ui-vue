@@ -48,7 +48,7 @@
                     :status="slotProps.state"
                     :statusText="slotProps.state === 1 ? '正常' : '禁用'"
                     :statusNames="{
-                        1: 'success',
+                        1: 'processing',
                         0: 'error',
                     }"
                 >
@@ -118,9 +118,13 @@
                 </CardBox>
             </template>
             <template #state="slotProps">
-                <j-badge
+                <BadgeStatus
                     :text="slotProps.state === 1 ? '正常' : '禁用'"
-                    :status="statusMap.get(slotProps.state)"
+                    :status="slotProps.state"
+                    :statusNames="{
+                        1: 'processing',
+                        0: 'error',
+                    }"
                 />
             </template>
             <template #action="slotProps">
@@ -139,6 +143,7 @@
                             @click="i.onClick"
                             type="link"
                             style="padding: 0px"
+                            :danger="i.key === 'delete'"
                         >
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
@@ -188,9 +193,6 @@ const menuStory = useMenuStore();
 const isAdd = ref<number>(0);
 const title = ref<string>('');
 const params = ref<Record<string, any>>({});
-const statusMap = new Map();
-statusMap.set(1, 'success');
-statusMap.set(0, 'error');
 const columns = [
     {
         title: 'ID',

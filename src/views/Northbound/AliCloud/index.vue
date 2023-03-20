@@ -109,7 +109,8 @@
                             style="padding: 0 5px"
                             @click="i.onClick"
                             type="link"
-                            :hasPermission="'Northbound/AliCloud:' + i.key"
+                            :danger="i.key === 'delete'"
+                            :hasPermission="i.key === 'view' ? true : 'Northbound/AliCloud:' + i.key"
                         >
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
