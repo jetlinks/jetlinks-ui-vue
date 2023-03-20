@@ -598,7 +598,13 @@
                                     </j-form-item>
                                 </j-col>
                                 <j-col :span="12">
-                                    <j-form-item>
+                                    <j-form-item
+                                        v-bind="
+                                            validateInfos[
+                                                'template.phoneNumber'
+                                            ]
+                                        "
+                                    >
                                         <template #label>
                                             <span>
                                                 收信人
@@ -828,7 +834,10 @@ const resetPublicFiles = () => {
         case 'dingTalkRobotWebHook':
             formData.value.template.message = undefined;
             formData.value.template.messageType = 'markdown';
-            formData.value.template.markdown = { text: undefined, title: undefined };
+            formData.value.template.markdown = {
+                text: undefined,
+                title: undefined,
+            };
             break;
         case 'corpMessage':
             formData.value.template.agentId = undefined;
@@ -989,6 +998,17 @@ const formRules = ref({
     ],
     'template.signName': [
         { required: true, message: '请输入签名', trigger: 'blur' },
+    ],
+    'template.phoneNumber': [
+        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
+        {
+            trigger: 'change',
+            validator(_rule: Rule, value: string) {
+                if (!value) return Promise.resolve();
+                if (!phoneRegEx(value)) return Promise.reject('该字段不是有效的手机号');
+                return Promise.resolve();
+            },
+        },
     ],
     // webhook
     description: [{ max: 200, message: '最多可输入200个字符' }],
