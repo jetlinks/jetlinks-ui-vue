@@ -9,7 +9,7 @@
                 <div style="display: flex; align-items: center">
                     <!-- <j-button @click="onBack" size="small">返回</j-button> -->
                     <div style="font-size: 24px">
-                        {{ instanceStore.current.name }}
+                        {{ instanceStore.current?.name }}
                     </div>
                     <j-divider type="vertical" />
                     <j-space>
@@ -20,15 +20,15 @@
                             <j-badge
                                 :status="
                                     statusMap.get(
-                                        instanceStore.current.state?.value,
+                                        instanceStore.current?.state?.value,
                                     )
                                 "
                             />
-                            {{ instanceStore.current.state?.text }}
+                            {{ instanceStore.current?.state?.text }}
                         </span>
                         <PermissionButton
                             v-if="
-                                instanceStore.current.state?.value ===
+                                instanceStore.current?.state?.value ===
                                 'notActive'
                             "
                             type="link"
@@ -43,7 +43,7 @@
                         </PermissionButton>
                         <PermissionButton
                             v-if="
-                                instanceStore.current.state?.value === 'online'
+                                instanceStore.current?.state?.value === 'online'
                             "
                             type="link"
                             style="margin-top: -5px; padding: 0 20px"
@@ -64,7 +64,7 @@
                             "
                             :title="
                                 instanceStore.current?.features?.find(
-                                    (item) => item.id === 'selfManageState',
+                                    (item) => item?.id === 'selfManageState',
                                 )
                                     ? '该设备的在线状态与父设备(网关设备)保持一致'
                                     : '该设备在线状态由设备自身运行状态决定，不继承父设备（网关设备）的在线状态'
@@ -80,7 +80,7 @@
                 <div style="padding-top: 24px">
                     <j-descriptions size="small" :column="4">
                         <j-descriptions-item label="ID">{{
-                            instanceStore.current.id
+                            instanceStore.current?.id
                         }}</j-descriptions-item>
                         <j-descriptions-item label="所属产品">
                             <PermissionButton
@@ -89,7 +89,7 @@
                                 @click="jumpProduct"
                                 hasPermission="device/Product:view"
                             >
-                                {{ instanceStore.current.productName }}
+                                {{ instanceStore.current?.productName }}
                             </PermissionButton>
                         </j-descriptions-item>
                     </j-descriptions>
@@ -192,11 +192,12 @@ const getStatus = (id: string) => {
 };
 
 watch(
-    () => route.params.id,
+    () => route.params?.id,
     (newId) => {
         if (newId) {
             instanceStore.refresh(String(newId));
             getStatus(String(newId));
+            instanceStore.tabActiveKey = 'Info'
         }
     },
     { immediate: true, deep: true },
@@ -215,43 +216,43 @@ const onTabChange = (e: string) => {
 };
 
 const handleAction = async () => {
-    if (instanceStore.current.id) {
-        const resp = await _deploy(instanceStore.current.id);
+    if (instanceStore.current?.id) {
+        const resp = await _deploy(instanceStore.current?.id);
         if (resp.status === 200) {
             message.success('操作成功！');
-            instanceStore.refresh(instanceStore.current.id);
+            instanceStore.refresh(instanceStore.current?.id);
         }
     }
 };
 
 const handleDisconnect = async () => {
-    if (instanceStore.current.id) {
-        const resp = await _disconnect(instanceStore.current.id);
+    if (instanceStore.current?.id) {
+        const resp = await _disconnect(instanceStore.current?.id);
         if (resp.status === 200) {
             message.success('操作成功！');
-            instanceStore.refresh(instanceStore.current.id);
+            instanceStore.refresh(instanceStore.current?.id);
         }
     }
 };
 
 const handleRefresh = async () => {
-    if (instanceStore.current.id) {
-        await instanceStore.refresh(instanceStore.current.id);
+    if (instanceStore.current?.id) {
+        await instanceStore.refresh(instanceStore.current?.id);
         message.success('操作成功');
     }
 };
 
 const jumpProduct = () => {
     menuStory.jumpPage('device/Product/Detail', {
-        id: instanceStore.current.productId,
+        id: instanceStore.current?.productId,
     });
 };
 
 watchEffect(() => {
     const keys = list.value.map((i) => i.key);
     if (
-        instanceStore.current.protocol &&
-        !['modbus-tcp', 'opc-ua'].includes(instanceStore.current.protocol) &&
+        instanceStore.current?.protocol &&
+        !['modbus-tcp', 'opc-ua'].includes(instanceStore.current?.protocol) &&
         !keys.includes('Diagnose')
     ) {
         list.value.push({
@@ -260,8 +261,8 @@ watchEffect(() => {
         });
     }
     if (
-        instanceStore.current.features?.find(
-            (item: any) => item.id === 'transparentCodec',
+        instanceStore.current?.features?.find(
+            (item: any) => item?.id === 'transparentCodec',
         ) &&
         !keys.includes('Parsing')
     ) {
@@ -271,7 +272,7 @@ watchEffect(() => {
         });
     }
     if (
-        instanceStore.current.protocol === 'modbus-tcp' &&
+        instanceStore.current?.protocol === 'modbus-tcp' &&
         !keys.includes('Modbus')
     ) {
         list.value.push({
@@ -280,7 +281,7 @@ watchEffect(() => {
         });
     }
     if (
-        instanceStore.current.protocol === 'opc-ua' &&
+        instanceStore.current?.protocol === 'opc-ua' &&
         !keys.includes('OPCUA')
     ) {
         list.value.push({
@@ -289,7 +290,7 @@ watchEffect(() => {
         });
     }
     if (
-        instanceStore.current.deviceType?.value === 'gateway' &&
+        instanceStore.current?.deviceType?.value === 'gateway' &&
         !keys.includes('ChildDevice')
     ) {
         // 产品类型为网关的情况下才显示此模块
@@ -299,8 +300,8 @@ watchEffect(() => {
         });
     }
     if (
-        instanceStore.current.accessProvider === 'edge-child-device' &&
-        instanceStore.current.parentId &&
+        instanceStore.current?.accessProvider === 'edge-child-device' &&
+        instanceStore.current?.parentId &&
         !keys.includes('EdgeMap')
     ) {
         list.value.push({
