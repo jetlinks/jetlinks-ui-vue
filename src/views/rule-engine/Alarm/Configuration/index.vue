@@ -39,7 +39,7 @@
                         :status="slotProps.state?.value"
                         :statusText="slotProps.state?.text"
                         :statusNames="{
-                            enabled: 'success',
+                            enabled: 'processing',
                             disabled: 'error',
                         }"
                     >
@@ -122,17 +122,17 @@
                     >
                 </template>
                 <template #state="slotProps">
-                    <j-badge
+                    <BadgeStatus
                         :text="
                             slotProps.state?.value === 'enabled'
                                 ? '正常'
                                 : '禁用'
                         "
-                        :status="
-                            slotProps.state?.value === 'enabled'
-                                ? 'success'
-                                : 'error'
-                        "
+                        :status="slotProps.state?.value"
+                        :statusNames="{
+                            enabled: 'processing',
+                            disabled: 'error',
+                        }"
                     />
                 </template>
                 <template #action="slotProps">
@@ -196,6 +196,8 @@ const columns = [
         search: {
             type: 'string',
         },
+        width: 220,
+        ellipsis: true,
     },
     {
         title: '类型',
@@ -223,6 +225,7 @@ const columns = [
                 },
             ],
         },
+        width: 100,
     },
     {
         title: '告警级别',
@@ -244,6 +247,8 @@ const columns = [
                 return [];
             },
         },
+        width: 200,
+        ellipsis: true,
     },
     {
         title: '关联场景联动',
@@ -267,6 +272,8 @@ const columns = [
                 return [];
             },
         },
+        width: 220,
+        ellipsis: true,
     },
     {
         title: '状态',
@@ -286,6 +293,7 @@ const columns = [
                 },
             ],
         },
+        width: 90,
     },
     {
         title: '说明',
@@ -294,6 +302,7 @@ const columns = [
         search: {
             type: 'string',
         },
+        ellipsis: true,
     },
     {
         title: '操作',

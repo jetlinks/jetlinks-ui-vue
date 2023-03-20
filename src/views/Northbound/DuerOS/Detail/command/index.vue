@@ -28,6 +28,7 @@
                 </j-form-item>
             </j-col>
             <j-col
+                class="inputs"
                 :span="
                     modelRef.messageType === 'READ_PROPERTY' ||
                     actionType === 'latestData'
@@ -68,6 +69,7 @@
             </j-col>
             <j-col
                 :span="12"
+                class="inputs"
                 v-if="
                     modelRef.messageType === 'WRITE_PROPERTY' &&
                     actionType === 'command'
@@ -84,11 +86,11 @@
                     <ValueItem
                         v-model:modelValue="modelRef.message.value"
                         :itemType="
-                            property.type || property.valueType?.type || 'int'
+                            property.valueType?.type || property.type || 'int'
                         "
                         :options="
                             property.valueType?.type === 'enum'
-                                ? (property?.dataType?.elements || []).map(
+                                ? (property?.valueType?.elements || []).map(
                                       (item) => {
                                           return {
                                               label: item?.text,
@@ -190,8 +192,20 @@ const modelRef = reactive({
         properties: undefined,
         functionId: undefined,
         inputs: [],
+        value: undefined
     },
 });
+
+const property = ref<any>({});
+
+const onPropertyChange = (val: string) => {
+    if (val) {
+        const _item = props.metadata?.properties.find(
+            (item: any) => item.id === val,
+        );
+        property.value = _item || {};
+    }
+};
 
 watch(
     () => props.modelValue,
@@ -208,8 +222,6 @@ watch(
     },
 );
 
-const property = ref<any>({});
-
 const funcChange = (val: string) => {
     if (val) {
         const arr =
@@ -224,15 +236,6 @@ const funcChange = (val: string) => {
             };
         });
         modelRef.message.inputs = list;
-    }
-};
-
-const onPropertyChange = (val: string) => {
-    if (val) {
-        const _item = props.metadata?.properties.find(
-            (item: any) => item.id === val,
-        );
-        property.value = _item?.[0] || {};
     }
 };
 

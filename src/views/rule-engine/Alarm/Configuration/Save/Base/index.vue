@@ -44,7 +44,7 @@
                 </j-radio-group>
             </j-form-item>
             <j-form-item label="说明" name="description">
-                <j-textarea v-model:value="form.description"></j-textarea>
+                <j-textarea v-model:value="form.description" showCount :maxlength="200"></j-textarea>
             </j-form-item>
             <PermissionButton type="primary" @click="handleSave" :hasPermission="['rule-engine/Alarm/Configuration:add','rule-engine/Alarm/Configuration:update']">保存</PermissionButton>
         </j-form>

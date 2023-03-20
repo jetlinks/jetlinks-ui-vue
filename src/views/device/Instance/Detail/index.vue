@@ -1,15 +1,14 @@
 <template>
     <page-container
         :tabList="list"
-        @back="onBack"
         :tabActiveKey="instanceStore.tabActiveKey"
         @tabChange="onTabChange"
     >
         <template #title>
             <div>
                 <div style="display: flex; align-items: center">
-                    <j-button @click="onBack" size="small">返回</j-button>
-                    <div style="margin-left: 20px; font-size: 24px">
+                    <!-- <j-button @click="onBack" size="small">返回</j-button> -->
+                    <div style="font-size: 24px">
                         {{ instanceStore.current.name }}
                     </div>
                     <j-divider type="vertical" />
@@ -207,9 +206,9 @@ onMounted(() => {
     instanceStore.tabActiveKey = history.state?.params?.tab || 'Info';
 });
 
-const onBack = () => {
-    menuStory.jumpPage('device/Instance');
-};
+// const onBack = () => {
+//     menuStory.jumpPage('device/Instance');
+// };
 
 const onTabChange = (e: string) => {
     instanceStore.tabActiveKey = e;

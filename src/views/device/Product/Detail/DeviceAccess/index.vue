@@ -317,7 +317,7 @@
                     :status="slotProps.state.value"
                     :statusText="slotProps.state.text"
                     :statusNames="{
-                        enabled: 'success',
+                        enabled: 'processing',
                         disabled: 'error',
                     }"
                 >
@@ -1009,6 +1009,7 @@ const submitDevice = async () => {
     });
     if (resp.status === 200) {
         message.success('操作成功！');
+        productStore.current!.storePolicy = storePolicy
         if ((window as any).onTabSaveSuccess) {
             if (resp.result) {
                 (window as any).onTabSaveSuccess(resp);
