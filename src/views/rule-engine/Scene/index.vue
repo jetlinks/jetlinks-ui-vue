@@ -132,7 +132,6 @@ import { query, _delete, _action, _execute } from '@/api/rule-engine/scene';
 import { message } from 'ant-design-vue';
 import type { ActionsType } from '@/components/Table';
 import { getImage } from '@/utils/comm';
-import SceneCard from './SceneCard.vue';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
 
 const menuStory = useMenuStore();
