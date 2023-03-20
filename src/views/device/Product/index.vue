@@ -139,6 +139,7 @@
                             @click="i.onClick"
                             type="link"
                             style="padding: 0px"
+                            :danger="i.key === 'delete'"
                         >
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>

@@ -151,9 +151,9 @@
                                 type="link"
                                 style="padding: 0px"
                                 :hasPermission="
-                                    'rule-engine/Alarm/Configuration:' +
-                                    i.key
+                                    'rule-engine/Alarm/Configuration:' + i.key
                                 "
+                                :danger="i.key === 'delete'"
                             >
                                 <template #icon
                                     ><AIcon :type="i.icon"
@@ -431,8 +431,8 @@ const getActions = (
             icon: 'DeleteOutlined',
         },
     ];
-    return actions.filter((item)=>
-        item.key != 'tigger' || data.sceneTriggerType == 'manual'
+    return actions.filter(
+        (item) => item.key != 'tigger' || data.sceneTriggerType == 'manual',
     );
 };
 const add = () => {
