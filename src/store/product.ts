@@ -15,19 +15,26 @@ export const useProductStore = defineStore({
       this.current = current
       this.detail = current
     },
-    async refresh(id: string) {
+    async getDetail(id: string) {
       const resp = await detail(id)
-      const res = await getDeviceNumber(encodeQuery({ terms: { productId: id } }))
       if(resp.status === 200){
         this.current = resp.result
         this.detail = resp.result
-        if(res.status === 200){
-          this.current.count = res.result
-        }
+      }
+    },
+    async refresh(id: string) {
+      this.getDetail(id)
+      const res = await getDeviceNumber(encodeQuery({ terms: { productId: id } }))
+      if(res.status === 200){
+        this.current.count = res.result
       }
     },
     setTabActiveKey(key: string) {
       this.tabActiveKey = key
     },
+    reSet(){
+      this.current = {} as ProductItem
+      this.detail = {} as ProductItem
+    }
   }
 })

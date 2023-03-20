@@ -1,11 +1,11 @@
 <template>
-  <a-row :gutter='[24]'>
-    <a-col :span='10'>
-      <a-form-item
+  <j-row :gutter='[24]'>
+    <j-col :span='10'>
+      <j-form-item
         name='readProperties'
         :rules="[{ required: true, message: '请选择属性' }]"
       >
-        <a-select
+        <j-select
           show-search
           mode='multiple'
           max-tag-count='responsive'
@@ -16,12 +16,12 @@
           :filter-option='filterSelectNode'
           @change='change'
         />
-      </a-form-item>
-    </a-col>
-    <a-col :span='14'>
-      <a-form-item>定时读取所选属性值</a-form-item>
-    </a-col>
-  </a-row>
+      </j-form-item>
+    </j-col>
+    <j-col :span='14'>
+      <j-form-item>定时读取所选属性值</j-form-item>
+    </j-col>
+  </j-row>
 </template>
 
 <script setup lang='ts' name='ReadProperties'>

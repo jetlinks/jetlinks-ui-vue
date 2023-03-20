@@ -3709,6 +3709,18 @@ jetlinks-ui-components@^1.0.4:
     lodash-es "^4.17.21"
     monaco-editor "^0.35.0"
 
+jetlinks-ui-components@^1.0.5:
+  version "1.0.5"
+  resolved "http://47.108.170.157:9013/jetlinks-ui-components/-/jetlinks-ui-components-1.0.5.tgz#0c4999d28c96c11ce266c5c9706cc895010450dc"
+  integrity sha512-buCf4mWJ8cUyn+12nRRLIr25MwG60nxqWH4pZidKy/npNKt5WQXLV8PmHmf04z0xpJUnW5yY3C7QBkYoAkSgVw==
+  dependencies:
+    "@vueuse/core" "^9.12.0"
+    ant-design-vue "^3.2.15"
+    colorpicker-v3 "^2.10.2"
+    jetlinks-ui-components "^1.0.4"
+    lodash-es "^4.17.21"
+    monaco-editor "^0.35.0"
+
 js-cookie@^3.0.1:
   version "3.0.1"
   resolved "https://registry.npmjs.org/js-cookie/-/js-cookie-3.0.1.tgz"

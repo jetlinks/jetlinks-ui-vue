@@ -1,4 +1,5 @@
 import { isArray } from 'lodash-es'
+import type { OperationTimer } from "@/views/rule-engine/Scene/typings";
 export const numberToString = {
   1: '星期一',
   2: '星期二',
@@ -50,3 +51,41 @@ export const continuousValue: continuousValueFn = (data, type) => {
   }
   return newArray;
 };
+
+type TimerOption = {
+  when?: string
+  time?: string
+  extraTime?: string
+}
+
+export const handleTimerOptions = (timer: OperationTimer):TimerOption => {
+  let when = '每天'
+  let time = undefined
+  let extraTime = undefined
+
+  if (timer.trigger === 'cron') {
+    time = timer.cron
+    return { time }
+  }
+
+  if (timer.when?.length) {
+    when = timer!.trigger === 'week' ? '每周' : '每月';
+    const whenStrArr = continuousValue(timer.when! || [], timer!.trigger);
+    const whenStrArr3 = whenStrArr.splice(0, 3);
+    when += whenStrArr3.join('、');
+    when += `等${timer.when!.length}天`;
+  }
+
+  if (timer.once) {
+    time = timer.once.time + ' 执行1次';
+  } else if (timer.period) {
+    time = timer.period.from + '-' + timer.period.to;
+    extraTime = `每${timer.period.every}${timeUnitEnum[timer.period.unit]}执行1次`;
+  }
+
+  return {
+    when,
+    time,
+    extraTime
+  }
+}

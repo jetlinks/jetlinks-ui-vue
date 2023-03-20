@@ -56,7 +56,7 @@
                     :showStatus="false"
                     :value="slotProps"
                     :actions="getActions(slotProps, 'card')"
-                    v-bind="slotProps"
+                    :statusNames="{}"
                 >
                     <template #img>
                         <slot name="img">

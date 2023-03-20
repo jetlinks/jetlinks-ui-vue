@@ -91,6 +91,16 @@ import 'vue3-json-viewer/dist/index.css';
 import type { apiDetailsType } from '../typing';
 import InputCard from './InputCard.vue';
 import { PropType } from 'vue';
+import { findData, getCodeText } from '../utils';
+
+type cardType = {
+    columns: object[];
+    tableData: any[];
+    codeText?: any;
+    activeKey?: string;
+    getData: Function;
+};
+
 
 const props = defineProps({
     selectApi: {
@@ -104,14 +114,8 @@ const props = defineProps({
 });
 const { selectApi } = toRefs(props);
 
-type tableCardType = {
-    columns: object[];
-    tableData: any[];
-    codeText?: any;
-    activeKey?: any;
-    getData?: any;
-};
-const requestCard = reactive<tableCardType>({
+
+const requestCard = reactive<cardType>({
     columns: [
         {
             title: '参数名',
@@ -149,16 +153,16 @@ const requestCard = reactive<tableCardType>({
         const schema =
             props.selectApi.requestBody.content['application/json'].schema;
         const _ref = schema.$ref || schema?.items?.$ref;
-        if(!_ref) return; // schema不是Java中的类的话则不进行解析，直接结束
+        if (!_ref) return; // schema不是Java中的类的话则不进行解析，直接结束
+
         const schemaName = _ref?.split('/').pop();
         const type = schema.type || '';
-        const tableData = findData(schemaName);
-        if (type === 'array') {
-            requestCard.codeText = [getCodeText(tableData, 3)];
-        } else requestCard.codeText = getCodeText(tableData, 3);
-        // console.clear();
-        // console.log(schemaName, tableData);
+        const tableData = findData(props.schemas, schemaName);
 
+        requestCard.codeText =
+            type === 'array'
+                ? [getCodeText(props.schemas, tableData, 3)]
+                : getCodeText(props.schemas, tableData, 3);
         requestCard.tableData = [
             {
                 name: schemaName[0].toLowerCase() + schemaName.substring(1),
@@ -176,7 +180,7 @@ const requestCard = reactive<tableCardType>({
         ];
     },
 });
-const responseStatusCard = reactive<tableCardType>({
+const responseStatusCard = reactive<cardType>({
     activeKey: '',
     columns: [
         {
@@ -220,7 +224,7 @@ const tabs = computed(() =>
         .map((item: any) => item.code + '')
         .filter((code: string) => code !== '400'),
 );
-const respParamsCard = reactive<tableCardType>({
+const respParamsCard = reactive<cardType>({
     columns: [
         {
             title: '参数名称',
@@ -242,9 +246,8 @@ const respParamsCard = reactive<tableCardType>({
             (item: any) => item.code === code,
         )?.schema;
 
-        const tableData = findData(schemaName);
-        respParamsCard.codeText = getCodeText(tableData, 3);
-
+        const tableData = findData(props.schemas, schemaName);
+        respParamsCard.codeText = getCodeText(props.schemas, tableData, 3);
         respParamsCard.tableData = tableData;
     },
 });
@@ -258,95 +261,18 @@ const getContent = (data: any) => {
 onMounted(() => {
     requestCard.getData();
     responseStatusCard.getData();
-});
-watch(
-    () => props.selectApi,
-    () => {
-        requestCard.getData();
-        responseStatusCard.getData();
-    },
-);
+    watch(
+        () => props.selectApi,
+        () => {
+            requestCard.getData();
+            responseStatusCard.getData();
+        },
+    );
 
-watch([() => responseStatusCard.activeKey, () => props.selectApi], (n) => {
-    n[0] && respParamsCard.getData(n[0]);
-});
-
-function findData(schemaName: string) {
-    const schemas = toRaw(props.schemas);
-    const basicType = ['string', 'integer', 'boolean'];
-
-    if (!schemaName || !schemas[schemaName]) {
-        return [];
-    }
-    const result: schemaObjType[] = [];
-    const schema = schemas[schemaName];
-    Object.entries(schema.properties).forEach((item: [string, any]) => {
-        const paramsType =
-            item[1].type ||
-            (item[1].$ref && item[1].$ref.split('/').pop()) ||
-            (item[1].items && item[1].items.$ref.split('/').pop()) ||
-            '';
-        const schemaObj: schemaObjType = {
-            paramsName: item[0],
-            paramsType,
-            desc: item[1].description || '',
-        };
-        if (!basicType.includes(paramsType))
-            schemaObj.children = findData(paramsType);
-        result.push(schemaObj);
+    watch([() => responseStatusCard.activeKey, () => props.selectApi], (n) => {
+        n[0] && respParamsCard.getData(n[0]);
     });
-
-    return result;
-}
-function getCodeText(arr: schemaObjType[], level: number): object {
-    const result = {};
-    const schemas = toRaw(props.schemas);
-    arr.forEach((item) => {
-        switch (item.paramsType) {
-            case 'string':
-                result[item.paramsName] = '';
-                break;
-            case 'integer':
-                result[item.paramsName] = 0;
-                break;
-            case 'boolean':
-                result[item.paramsName] = true;
-                break;
-            case 'array':
-                result[item.paramsName] = [];
-                break;
-            case 'object':
-                result[item.paramsName] = '';
-                break;
-            default: {
-                const properties = schemas[item.paramsType]
-                    .properties as object;
-                const newArr = Object.entries(properties).map(
-                    (item: [string, any]) => ({
-                        paramsName: item[0],
-                        paramsType: level
-                            ? (item[1].$ref && item[1].$ref.split('/').pop()) ||
-                              (item[1].items &&
-                                  item[1].items.$ref.split('/').pop()) ||
-                              item[1].type ||
-                              ''
-                            : item[1].type,
-                    }),
-                );
-                result[item.paramsName] = getCodeText(newArr, level - 1);
-            }
-        }
-    });
-
-    return result;
-}
-
-type schemaObjType = {
-    paramsName: string;
-    paramsType: string;
-    desc?: string;
-    children?: schemaObjType[];
-};
+});
 </script>
 
 <style lang="less" scoped>

@@ -30,3 +30,10 @@ export type apiDetailsType = {
  * home：应用管理-查看菜单，第三方首页
  */
 export type modeType = 'api'| 'appManger' | 'home'
+
+export type schemaObjType = {
+    paramsName: string;
+    paramsType: string;
+    desc?: string;
+    children?: schemaObjType[];
+};

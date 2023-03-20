@@ -87,6 +87,7 @@
         <component
             :is="tabs[productStore.tabActiveKey]"
             :class="productStore.tabActiveKey === 'Metadata' ? 'metedata' : ''"
+            v-bind="{ type: 'product' }"
         />
     </page-container>
 </template>
@@ -151,6 +152,7 @@ watch(
     () => route.params.id,
     (newId) => {
         if (newId) {
+            productStore.reSet();
             productStore.tabActiveKey = 'Info';
             productStore.refresh(newId as string);
         }

@@ -5,7 +5,7 @@
         <AIcon type="MenuOutlined" class="item-drag item-icon" />
       </div>
       <div class="item-middle item-editable">
-        <j-popover :visible="editIndex === index" placement="top">
+        <j-popover :visible="editIndex === index" placement="left">
           <template #title>
             <div class="edit-title" style="display: flex; justify-content: space-between; align-items: center;">
               <div style="width: 150px;">枚举项配置</div>

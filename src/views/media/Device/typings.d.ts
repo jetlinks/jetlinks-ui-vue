@@ -23,6 +23,11 @@ export type DeviceItem = {
     transport: string;
 } & BaseItem;
 
+type configuration = {
+    access_pwd: string;
+    stream_mode: string;
+}
+
 export type ProductType = {
     accessId: string;
     accessName: string;
@@ -42,6 +47,7 @@ export type ProductType = {
     protocolName: string;
     state: number;
     transportProtocol: string;
+    configuration: configuration;
 }
 
 

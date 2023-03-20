@@ -1,12 +1,12 @@
 <template>
-  <a-form
+  <j-form
     ref='timerForm'
     :model='formModel'
     layout='vertical'
     :colon='false'
   >
-    <a-form-item name='trigger'>
-      <a-radio-group
+    <j-form-item name='trigger'>
+      <j-radio-group
         v-model:value='formModel.trigger'
         :options='[
           { label: "按周", value: "week" },
@@ -16,8 +16,8 @@
         option-type='button'
         button-style='solid'
       />
-    </a-form-item>
-    <a-form-item v-if='showCron' name='cron' :rules="[
+    </j-form-item>
+    <j-form-item v-if='showCron' name='cron' :rules="[
       { max: 64, message: '最多可输入64个字符' },
       {
         validator: async (_, v) => {
@@ -32,14 +32,14 @@
         }
       }
     ]">
-      <a-input placeholder='corn表达式' v-model:value='formModel.cron' />
-    </a-form-item>
+      <j-input placeholder='corn表达式' v-model:value='formModel.cron' />
+    </j-form-item>
     <template v-else>
-      <a-form-item name='when'>
+      <j-form-item name='when'>
         <WhenOption v-model:value='formModel.when' :type='formModel.trigger' />
-      </a-form-item>
-      <a-form-item name='mod'>
-        <a-radio-group
+      </j-form-item>
+      <j-form-item name='mod'>
+        <j-radio-group
           v-model:value='formModel.mod'
           :options='[
           { label: "周期执行", value: "period" },
@@ -48,18 +48,18 @@
           option-type='button'
           button-style='solid'
         />
-      </a-form-item>
+      </j-form-item>
     </template>
-    <a-space v-if='showOnce' style='display: flex;gap: 24px'>
-      <a-form-item :name="['once', 'time']">
-        <a-time-picker valueFormat='HH:mm:ss' v-model:value='formModel.once.time' style='width: 100%'
+    <j-space v-if='showOnce' style='display: flex;gap: 24px'>
+      <j-form-item :name="['once', 'time']">
+        <j-time-picker valueFormat='HH:mm:ss' v-model:value='formModel.once.time' style='width: 100%'
                        format='HH:mm:ss' />
-      </a-form-item>
-      <a-form-item> 执行一次</a-form-item>
-    </a-space>
-    <a-space v-if='showPeriod' style='display: flex;gap: 24px'>
-      <a-form-item>
-        <a-time-range-picker
+      </j-form-item>
+      <j-form-item> 执行一次</j-form-item>
+    </j-space>
+    <j-space v-if='showPeriod' style='display: flex;gap: 24px'>
+      <j-form-item>
+        <j-time-range-picker
           valueFormat='HH:mm:ss'
           :value='[
             formModel.period.from,
@@ -70,13 +70,13 @@
                   formModel.period.to = v[1]
               }'
         />
-      </a-form-item>
-      <a-form-item>每</a-form-item>
-      <a-form-item
+      </j-form-item>
+      <j-form-item>每</j-form-item>
+      <j-form-item
         :name='["period", "every"]'
         :rules='[{ required: true, message: "请输入时间" }]'
       >
-        <a-input-number
+        <j-input-number
           placeholder='请输入时间'
           style='max-width: 170px'
           :precision='0'
@@ -85,7 +85,7 @@
           v-model:value='formModel.period.every'
         >
           <template #addonAfter>
-            <a-select
+            <j-select
               v-model:value='formModel.period.unit'
               :options='[
                 { label: "秒", value: "seconds" },
@@ -94,11 +94,11 @@
               ]'
             />
           </template>
-        </a-input-number>
-      </a-form-item>
-      <a-form-item>执行一次</a-form-item>
-    </a-space>
-  </a-form>
+        </j-input-number>
+      </j-form-item>
+      <j-form-item>执行一次</j-form-item>
+    </j-space>
+  </j-form>
 </template>
 
 <script setup lang='ts' name='Timer'>

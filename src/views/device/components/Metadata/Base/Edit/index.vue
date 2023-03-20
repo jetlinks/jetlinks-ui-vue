@@ -2,7 +2,7 @@
   <j-drawer :mask-closable="false" width="25vw" visible :title="`${title}-${typeMapping[metadataStore.model.type]}`"
     @close="close" destroy-on-close :z-index="1000" placement="right">
     <template #extra>
-      <j-button :loading="save.loading" type="primary" @click="save.saveMetadata">保存</j-button>
+      <j-button :loading="save.loading" type="primary" @click="() => save.saveMetadata()">保存</j-button>
     </template>
     <j-form ref="formRef" :model="form.model" layout="vertical">
       <BaseForm :model-type="metadataStore.model.type" :type="type" v-model:value="form.model"></BaseForm>
@@ -98,7 +98,7 @@ const save = reactive({
       }
       const _data = updateMetadata(type, [formValue], _detail, updateStore)
       const result = await asyncUpdateMetadata(props.type, _data)
-      if (result.status === 200) {
+      if (result.success) {
         if ((window as any).onTabSaveSuccess) {
           if (result) {
             (window as any).onTabSaveSuccess(result);
@@ -113,7 +113,16 @@ const save = reactive({
           }
           // Store.set(SystemConst.REFRESH_METADATA_TABLE, true);
           if (deploy) {
-            _deploy(id as string)
+            const res = await _deploy(id as string)
+            if (res.success) {
+              save.resetMetadata();
+              message.success({
+                key: 'metadata',
+                content: '操作成功！',
+              });
+            } else {
+              message.error('操作失败！');
+            }
             // Store.set('product-deploy', deploy);
           } else {
             save.resetMetadata();

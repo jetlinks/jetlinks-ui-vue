@@ -2,7 +2,7 @@
   <j-form-item :label="title" :name="name.concat(['type'])" :rules="[
     required ? { required: true, message: `请选择${title}` } : {},
   ]">
-    <j-select v-model:value="_value.type"
+    <j-select v-model:value="_value.type" :disabled="onlyObject"
       :options="onlyObject ? eventDataTypeList : _dataTypeList" size="small"
       @change="changeType"></j-select>
   </j-form-item>
@@ -124,7 +124,7 @@ onMounted(() => {
   }
 })
 
-const unit = {
+const unit = reactive({
   unitOptions: [] as DefaultOptionType[],
   getUnit: () => {
     getUnit().then(resp => {
@@ -137,7 +137,7 @@ const unit = {
       unit.unitOptions = _data;
     })
   },
-}
+})
 unit.getUnit()
 
 const _dataTypeList = computed(() => props.isSub ? DataTypeList.filter(item => item.value !== 'array' && item.value !== 'object') : DataTypeList)

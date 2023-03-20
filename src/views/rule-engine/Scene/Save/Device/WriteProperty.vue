@@ -1,12 +1,12 @@
 <template>
-  <a-form ref='writeForm' :model='formModel' layout='vertical' :colon='false'>
-    <a-row :futter='[24, 24]'>
-      <a-col :span='10'>
-        <a-form-item
+  <j-form ref='writeForm' :model='formModel' layout='vertical' :colon='false'>
+    <j-row :futter='[24, 24]'>
+      <j-col :span='10'>
+        <j-form-item
           name='reportKey'
           :rules="[{ required: true, message: '请输入修改值' }]"
         >
-          <a-select
+          <j-select
             showSearch
             style='width: 100%'
             placeholder='请选择属性'
@@ -15,22 +15,22 @@
             :filter-option='filterSelectNode'
             @change='change'
           />
-        </a-form-item>
-      </a-col>
-      <a-col :span='14'>
+        </j-form-item>
+      </j-col>
+      <j-col :span='14'>
         <span style='line-height: 32px;padding-left: 24px'>
           定时调用所选属性
         </span>
-      </a-col>
-      <a-col :span='24' v-if='showTable'>
+      </j-col>
+      <j-col :span='24' v-if='showTable'>
         <FunctionCall
           :value='_value'
           :data='callDataOptions'
           @change='callDataChange'
         />
-      </a-col>
-    </a-row>
-  </a-form>
+      </j-col>
+    </j-row>
+  </j-form>
 </template>
 
 <script setup lang='ts' name='WriteProperties'>

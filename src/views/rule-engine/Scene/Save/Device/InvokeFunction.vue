@@ -1,12 +1,12 @@
 <template>
-  <a-form ref='invokeForm' :model='formModel' layout='vertical' :colon='false'>
-    <a-row :gutter='24'>
-      <a-col :span='10'>
-        <a-form-item
+  <j-form ref='invokeForm' :model='formModel' layout='vertical' :colon='false'>
+    <j-row :gutter='24'>
+      <j-col :span='10'>
+        <j-form-item
           name='functionId'
           :rules="[{ required: true, message: '请选择功能' }]"
         >
-          <a-select
+          <j-select
             showSearch
             allowClear
             v-model:value='formModel.functionId'
@@ -16,20 +16,20 @@
             :filterOption='filterSelectNode'
             @select='onSelect'
           />
-        </a-form-item>
-      </a-col>
-      <a-col :span='14'>
-        <a-form-item>定时调用所选功能</a-form-item>
-      </a-col>
-      <a-col :span='24'>
+        </j-form-item>
+      </j-col>
+      <j-col :span='14'>
+        <j-form-item>定时调用所选功能</j-form-item>
+      </j-col>
+      <j-col :span='24'>
         <FunctionCall
           :value='_value'
           :data='functionData'
           @change='callDataChange'
         />
-      </a-col>
-    </a-row>
-  </a-form>
+      </j-col>
+    </j-row>
+  </j-form>
 </template>
 
 <script setup lang='ts' name='InvokeFunction'>

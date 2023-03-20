@@ -131,7 +131,7 @@ export const saveProductMetadata = (data: Record<string, unknown>) => server.pat
  * @param data 查询条件
  * @returns
  */
-export const getDeviceNumber = (params:any) => server.get('/device-instance/_count', params)
+export const getDeviceNumber = (params:any) => server.get<number>('/device-instance/_count', params)
 
 /**
  * 获取协议详情

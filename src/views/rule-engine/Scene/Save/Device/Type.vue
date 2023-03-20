@@ -1,7 +1,7 @@
 <template>
   <div class='type'>
-    <a-form ref='typeForm' :model='formModel' layout='vertical' :colon='false'>
-      <a-form-item
+    <j-form ref='typeForm' :model='formModel' layout='vertical' :colon='false'>
+      <j-form-item
         required
         label='触发类型'
       >
@@ -10,7 +10,7 @@
           :options='topOptions'
           v-model:value='formModel.operator'
         />
-      </a-form-item>
+      </j-form-item>
       <template v-if='showTimer'>
         <Timer ref='timerRef' v-model:value='formModel.timer' />
       </template>
@@ -27,12 +27,12 @@
         v-model:action='optionCache.action'
         :properties='writeProperties'
       />
-      <a-form-item
+      <j-form-item
         v-if='showReportEvent'
         name='eventId'
         :rules="[{ required: true, message: '请选择事件' }]"
       >
-        <a-select
+        <j-select
           v-model:value='formModel.eventId'
           :filter-option='filterSelectNode'
           :options='eventOptions'
@@ -40,7 +40,7 @@
           style='width: 100%'
           @select='eventSelect'
         />
-      </a-form-item>
+      </j-form-item>
       <template v-if='showInvokeFunction'>
         <InvokeFunction
           ref='invokeRef'
@@ -49,7 +49,7 @@
           :functions='functionOptions'
         />
       </template>
-    </a-form>
+    </j-form>
   </div>
 </template>
 

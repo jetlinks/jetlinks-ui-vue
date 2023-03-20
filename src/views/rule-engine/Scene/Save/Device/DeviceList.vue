@@ -6,7 +6,7 @@
     class='search'
     target="scene-triggrt-device-device"
   />
-  <a-divider style='margin: 0' />
+  <j-divider style='margin: 0' />
   <j-pro-table
     ref='actionRef'
     model='CARD'
@@ -43,20 +43,20 @@
                 {{ slotProps.name }}
               </span>
           </Ellipsis>
-          <a-row>
-            <a-col :span="12">
+          <j-row>
+            <j-col :span="12">
               <div class="card-item-content-text">
                 设备类型
               </div>
               <div>{{ slotProps.deviceType?.text }}</div>
-            </a-col>
-            <a-col :span="12">
+            </j-col>
+            <j-col :span="12">
               <div class="card-item-content-text">
                 产品名称
               </div>
               <div>{{ slotProps.productName }}</div>
-            </a-col>
-          </a-row>
+            </j-col>
+          </j-row>
         </template>
       </CardBox>
     </template>
@@ -172,7 +172,6 @@ const handleClick = (detail: any) => {
       value: detail.id
     })
   }
-  console.log('cloneRowKeys', cloneRowKeys)
   emit('update', cloneRowKeys)
 }
 

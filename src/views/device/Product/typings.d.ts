@@ -47,9 +47,9 @@ export type ConfigProperty = {
 };
 
 export type ConfigMetadata = {
-  name: string;
-  description: string;
-  scopes: any[];
+  name?: string;
+  description?: string;
+  scopes?: any[];
   properties: ConfigProperty[];
 };
 

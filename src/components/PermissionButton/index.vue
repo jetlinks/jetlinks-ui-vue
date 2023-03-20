@@ -83,7 +83,7 @@ const props = defineProps({
     type: Object as PropType<PopconfirmProps>,
   },
   hasPermission: {
-    type: String || Array,
+    type: String || Array || Boolean,
   },
   style: {
     type: Object as PropType<CSSProperties>
@@ -96,7 +96,7 @@ const props = defineProps({
 const permissionStore = usePermissionStore()
 
 const isPermission = computed(() => {
-  if (!props.hasPermission) {
+  if (!props.hasPermission || props.hasPermission === true) {
     return true
   }
   return permissionStore.hasPermission(props.hasPermission)

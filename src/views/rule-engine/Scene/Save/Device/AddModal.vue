@@ -1,23 +1,23 @@
 <template>
-  <a-modal
+  <j-modal
     title='触发规则'
     visible
     :width='820'
     @click='save'
     @cancel='cancel'
   >
-    <a-steps :current='addModel.stepNumber' @change='stepChange'>
-      <a-step>
+    <j-steps :current='addModel.stepNumber' @change='stepChange'>
+      <j-step>
         <template #title>选择产品</template>
-      </a-step>
-      <a-step>
+      </j-step>
+      <j-step>
         <template #title>选择设备</template>
-      </a-step>
-      <a-step>
+      </j-step>
+      <j-step>
         <template #title>触发类型</template>
-      </a-step>
-    </a-steps>
-    <a-divider style='margin-bottom: 0px' />
+      </j-step>
+    </j-steps>
+    <j-divider style='margin-bottom: 0px' />
     <div class='steps-content'>
       <Product
         v-if='addModel.stepNumber === 0'
@@ -42,13 +42,13 @@
     </div>
     <template #footer>
       <div class='steps-action'>
-        <a-button v-if='addModel.stepNumber === 0' @click='cancel'>取消</a-button>
-        <a-button v-else @click='prev'>上一步</a-button>
-        <a-button type='primary' v-if='addModel.stepNumber < 2' @click='saveClick'>下一步</a-button>
-        <a-button type='primary' v-else @click='saveClick'>确定</a-button>
+        <j-button v-if='addModel.stepNumber === 0' @click='cancel'>取消</j-button>
+        <j-button v-else @click='prev'>上一步</j-button>
+        <j-button type='primary' v-if='addModel.stepNumber < 2' @click='saveClick'>下一步</j-button>
+        <j-button type='primary' v-else @click='saveClick'>确定</j-button>
       </div>
     </template>
-  </a-modal>
+  </j-modal>
 </template>
 
 <script setup lang='ts' name='AddModel'>
@@ -59,7 +59,7 @@ import { detail as deviceDetail } from '@/api/device/instance'
 import Product from './Product.vue'
 import DeviceSelect from './DeviceSelect.vue'
 import Type from './Type.vue'
-import { continuousValue, timeUnitEnum } from '@/views/rule-engine/Scene/Save/components/Timer/util'
+import {continuousValue, handleTimerOptions, timeUnitEnum} from '@/views/rule-engine/Scene/Save/components/Timer/util'
 
 type Emit = {
   (e: 'cancel'): void
@@ -161,46 +161,50 @@ const handleOptions = (data: TriggerDeviceOptions) => {
 
   if (data.timer) {
     const _timer = data.timer;
-    if (_timer.trigger === 'cron') {
-      _options.time = _timer.cron;
-    } else {
-      // console.log('continuousValue', continuousValue(_timer.when! || [], _timer!.trigger))
-      let whenStr = '每天';
-      if (_timer.when!.length) {
-        whenStr = _timer!.trigger === 'week' ? '每周' : '每月';
-        const whenStrArr = continuousValue(_timer.when! || [], _timer!.trigger);
-        const whenStrArr3 = whenStrArr.splice(0, 3);
-        whenStr += whenStrArr3.join('、');
-        whenStr += `等${_timer.when!.length}天`;
-      }
-      _options.when = whenStr;
-      if (_timer.once) {
-        _options.time = _timer.once.time + ' 执行1次';
-      } else if (_timer.period) {
-        _options.time = _timer.period.from + '-' + _timer.period.to;
-        _options.extraTime = `每${_timer.period.every}${timeUnitEnum[_timer.period.unit]}执行1次`;
-      }
-    }
-
-    if (data.operator === 'online') {
-      _options.type = '上线';
-      _options.action = '';
-      _options.typeIcon = 'icon-a-Group4713';
-    }
-
-    if (data.operator === 'offline') {
-      _options.type = '离线';
-      _options.action = '';
-      _options.typeIcon = 'icon-a-Group4892';
-    }
-
-    if (data.operator === 'reportProperty') {
-      _options.type = '属性上报';
-      _options.action = '';
-      _options.typeIcon = 'icon-file-upload-outline';
-    }
-    return _options;
+    const { time, extraTime, when } = handleTimerOptions(_timer)
+    _options.when = when;
+    _options.time = time;
+    _options.extraTime = extraTime;
+    // if (_timer.trigger === 'cron') {
+    //   _options.time = _timer.cron;
+    // } else {
+    //   // console.log('continuousValue', continuousValue(_timer.when! || [], _timer!.trigger))
+    //   let whenStr = '每天';
+    //   if (_timer.when!.length) {
+    //     whenStr = _timer!.trigger === 'week' ? '每周' : '每月';
+    //     const whenStrArr = continuousValue(_timer.when! || [], _timer!.trigger);
+    //     const whenStrArr3 = whenStrArr.splice(0, 3);
+    //     whenStr += whenStrArr3.join('、');
+    //     whenStr += `等${_timer.when!.length}天`;
+    //   }
+    //   _options.when = whenStr;
+    //   if (_timer.once) {
+    //     _options.time = _timer.once.time + ' 执行1次';
+    //   } else if (_timer.period) {
+    //     _options.time = _timer.period.from + '-' + _timer.period.to;
+    //     _options.extraTime = `每${_timer.period.every}${timeUnitEnum[_timer.period.unit]}执行1次`;
+    //   }
+    // }
   }
+
+  if (data.operator === 'online') {
+    _options.type = '上线';
+    _options.action = '';
+    _options.typeIcon = 'icon-a-Group4713';
+  }
+
+  if (data.operator === 'offline') {
+    _options.type = '离线';
+    _options.action = '';
+    _options.typeIcon = 'icon-a-Group4892';
+  }
+
+  if (data.operator === 'reportProperty') {
+    _options.type = '属性上报';
+    _options.action = '';
+    _options.typeIcon = 'icon-file-upload-outline';
+  }
+  return _options;
 }
 
 const prev = () => {

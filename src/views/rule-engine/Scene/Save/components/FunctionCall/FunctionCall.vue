@@ -12,7 +12,7 @@
       </template>
       <template v-if='column.dataIndex === "type"'>
         {{ record.type }}
-        <a-tooltip
+        <j-tooltip
           v-if="record.type === 'object'"
         >
           <template slot="title">
@@ -26,7 +26,7 @@
                cursor: 'help',
             }"
           />
-        </a-tooltip>
+        </j-tooltip>
       </template>
       <template v-if='column.dataIndex === "value"'>
         <ValueItem

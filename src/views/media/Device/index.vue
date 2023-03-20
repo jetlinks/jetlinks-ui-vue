@@ -104,6 +104,9 @@
             <template #provider="slotProps">
                 {{ providerType[slotProps.provider] }}
             </template>
+            <template #productId="slotProps">
+                {{ getProductName(slotProps.productId) }}
+            </template>
             <template #state="slotProps">
                 <j-badge
                     :text="slotProps.state?.text"
@@ -131,7 +134,10 @@
                             style="padding: 0px"
                             :hasPermission="
                                 'media/Device:' +
-                                (i.key !== 'updateChannel' ? i.key : 'update')
+                                (i.key !== 'updateChannel' &&
+                                i.key !== 'viewDevice'
+                                    ? i.key
+                                    : 'update')
                             "
                         >
                             <template #icon><AIcon :type="i.icon" /></template>
@@ -211,7 +217,7 @@ const columns = [
         title: '产品名称',
         dataIndex: 'productId',
         key: 'productId',
-        // scopedSlots: true,
+        scopedSlots: true,
         search: {
             type: 'select',
             options: () =>
@@ -326,6 +332,17 @@ const getActions = (
             },
         },
         {
+            key: 'viewDevice',
+            text: '查看',
+            tooltip: {
+                title: '查看',
+            },
+            icon: 'EyeOutlined',
+            onClick: () => {
+                menuStory.jumpPage('device/Instance/Detail', { id: data.id });
+            },
+        },
+        {
             key: 'updateChannel',
             text: '更新通道',
             tooltip: {
@@ -374,8 +391,42 @@ const getActions = (
             icon: 'DeleteOutlined',
         },
     ];
-    return data.provider === 'fixed-media'
-        ? actions.filter((f: any) => f.key !== 'updateChannel')
-        : actions;
+
+    let acts: any = [];
+    if (type === 'card') {
+        // 卡片不展示查看按钮
+        const tempActs = actions.filter((f: any) => f.key !== 'viewDevice');
+        acts =
+            data.provider === 'fixed-media'
+                ? tempActs.filter((f: any) => f.key !== 'updateChannel')
+                : tempActs;
+    } else {
+        acts =
+            data.provider === 'fixed-media'
+                ? actions.filter((f: any) => f.key !== 'updateChannel')
+                : actions;
+    }
+    return acts;
+};
+
+const productList = ref<any[]>([]);
+const getProductList = () => {
+    DeviceApi.getProductList(
+        encodeQuery({
+            terms: {
+                messageProtocol$in: ['gb28181-2016', 'fixed-media'],
+            },
+        }),
+    ).then((resp: any) => {
+        productList.value = resp.result.map((pItem: any) => ({
+            label: pItem.name,
+            value: pItem.id,
+        }));
+    });
+};
+getProductList();
+
+const getProductName = (pid: string) => {
+    return productList.value.find((f: any) => f.value === pid)?.label;
 };
 </script>

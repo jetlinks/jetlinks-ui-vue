@@ -1,6 +1,6 @@
 <template>
   <div class='device'>
-    <a-form-item
+    <j-form-item
       :rules='rules'
       name='device'
     >
@@ -13,7 +13,7 @@
       >
         <Title :options='data.options.trigger' />
       </AddButton>
-    </a-form-item>
+    </j-form-item>
     <Terms />
     <AddModel v-if='visible' @cancel='visible = false' @save='save' :value='data.trigger.device' :options='data.options.trigger' />
   </div>
@@ -25,7 +25,6 @@ import { useSceneStore } from '@/store/scene'
 import AddModel from './AddModal.vue'
 import AddButton from '../components/AddButton.vue'
 import Title from '../components/Title.vue'
-import Action from '../action/index.vue'
 import Terms from '../components/Terms'
 import type { TriggerDevice } from '@/views/rule-engine/Scene/typings'
 

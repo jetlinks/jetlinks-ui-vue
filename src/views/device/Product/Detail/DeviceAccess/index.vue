@@ -374,6 +374,7 @@ import { Empty, FormItem, message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 import Title from '../Title/index.vue';
 import { usePermissionStore } from '@/store/permission';
+import { steps, steps1 } from './util'
 import './index.less';
 import {
     getProviders,
@@ -412,7 +413,7 @@ const visible = ref<boolean>(false);
 const listData = ref<string[]>([]);
 const access = ref({});
 const config = ref<any>({});
-const metadata = ref<ConfigMetadata[]>([]);
+const metadata = ref<ConfigMetadata>({ properties: [] });
 const dataSource = ref<string[]>([]);
 const storageList = ref<any[]>([]);
 const markdownToHtml = shallowRef('');
@@ -589,74 +590,8 @@ const search = (e: any) => {
     };
 };
 
-//引导页数据
-const steps = [
-    {
-        element: '#rc-tabs-0-tab-Metadata',
-        popover: {
-            id: 'driver',
-            title: `<div id='title'>配置物模型</div><div id='guide'>1/3</div>`,
-            description: `配置产品物模型，实现设备在云端的功能描述。`,
-            position: 'bottom',
-        },
-    },
-    {
-        element: '.ant-switch',
-        popover: {
-            className: 'driver',
-            title: `<div id='title'>启用产品</div><div id='guide'>2/3</div>`,
-            description: '启用产品后，可在产品下新增设备。',
-            position: 'bottom',
-        },
-    },
-    {
-        element: '.ant-descriptions-item-label',
-        popover: {
-            className: 'driver',
-            title: `<div id='title'>添加设备</div><div id='guide'>3/3</div>`,
-            description: '添加设备，并连接到平台。',
-            position: 'bottom',
-        },
-    },
-];
-const steps1 = [
-    {
-        element: '.config',
-        popover: {
-            className: 'driver',
-            title: `<div id='title'>填写配置</div><div id='guide'>1/4</div>`,
-            description: `填写设备接入所需的配置参数。`,
-            position: 'right',
-        },
-    },
-    {
-        element: '#rc-tabs-0-tab-Metadata',
-        popover: {
-            className: 'driver',
-            title: `<div id='title'>配置物模型</div><div id='guide'>2/4</div>`,
-            description: `配置产品物模型，实现设备在云端的功能描述。`,
-            position: 'bottom',
-        },
-    },
-    {
-        element: '.ant-switch',
-        popover: {
-            className: 'driver',
-            title: `<div id='title'>启用产品</div><div id='guide'>3/4</div>`,
-            description: '启用产品后，可在产品下新增设备。',
-            position: 'bottom',
-        },
-    },
-    {
-        element: '.ant-descriptions-item-label',
-        popover: {
-            className: 'driver',
-            title: `<div id='title'>添加设备</div><div id='guide'>4/4</div>`,
-            description: '添加设备，并连接到平台。',
-            position: 'bottom',
-        },
-    },
-];
+const stepsRef = reactive({current:0})
+
 /**
  * 保存引导页数据
  */
@@ -673,19 +608,19 @@ const driver = new Driver({
     nextBtnText: '下一步',
     prevBtnText: '上一步',
     onNext: () => {
-        // ref.current = ref.current + 1;
+        stepsRef.current = stepsRef.current + 1;
     },
     onPrevious: () => {
-        // ref.current = ref.current - 1;
+        stepsRef.current = stepsRef.current - 1;
     },
     onReset: () => {
-        // if (ref.current !== 3) {
-        //   guide({
-        //     name: 'guide',
-        //     content: 'skip',
-        //   });
-        // }
-        // ref.current = 0;
+        if (stepsRef.current !== 3) {
+          guide({
+            name: 'guide',
+            content: 'skip',
+          });
+        }
+        stepsRef.current = 0;
     },
 });
 
@@ -695,16 +630,20 @@ const driver1 = new Driver({
     closeBtnText: '不再提示',
     nextBtnText: '下一步',
     prevBtnText: '上一步',
-    onNext: () => {},
-    onPrevious: () => {},
+    onNext: () => {
+        stepsRef.current = stepsRef.current + 1;
+    },
+    onPrevious: () => {
+        stepsRef.current = stepsRef.current - 1;
+    },
     onReset: () => {
-        // if (ref.current !== 4) {
-        //   // guide({
-        //   //   name: 'guide',
-        //   //   content: 'skip',
-        //   // });
-        // }
-        // ref.current = 0;
+        if (stepsRef.current !== 4) {
+          guide({
+            name: 'guide',
+            content: 'skip',
+          });
+        }
+        stepsRef.current = 0;
     },
 });
 
@@ -865,11 +804,11 @@ const queryAccessDetail = async (id: string) => {
 /**
  * 查询协议信息
  */
-const getConfigDetail = async (
+const getConfigDetail = (
     messageProtocol: string,
     transportProtocol: string,
 ) => {
-    const res = await getConfigView(messageProtocol, transportProtocol).then(
+    getConfigView(messageProtocol, transportProtocol).then(
         (resp) => {
             if (resp.status === 200) {
                 config.value = resp.result;
@@ -960,10 +899,12 @@ const submitData = async () => {
                 obj.metadata = JSON.stringify(mdata);
             }
         }
+        // 保存或者更新设备接入
         const resp: any = obj.id
             ? await updateDevice(obj)
             : await saveDevice(obj);
         if (resp.status === 200) {
+
             detail(productStore.current?.id || '').then((res) => {
                 if (res.status === 200) {
                     productStore.current = { ...res.result };
@@ -972,7 +913,9 @@ const submitData = async () => {
                 }
                 visible.value = false;
                 queryParams.value = {};
+                
             });
+          getData(obj.accessId);
         }
     } else {
         message.error('请选择接入方式');
@@ -989,47 +932,58 @@ const modifyArray = (oldData: any[], newData: any[]) => {
     });
 };
 /**
+ *
+ */
+const getGuide = async (isDriver1: boolean = false) => {
+  const res: any = await productGuide();
+  if (res.result && res.result?.content === 'skip') {
+    return;
+  } else {
+    if (isDriver1) {
+      driver1.defineSteps(steps1);
+      driver1.start();
+    } else {
+      driver.defineSteps(steps);
+      driver.start();
+    }
+  }
+}
+/**
  * 查询保存数据信息
  */
-const getData = async () => {
-    if (productStore.current?.accessId) {
-        if (productStore.current?.id) {
-            getConfigMetadata(productStore.current?.id).then(
-                async (resp: any) => {
-                    metadata.value =
-                        (resp?.result[0] as ConfigMetadata[]) || [];
-                    const res: any = await productGuide();
-                    if (res.result && res.result?.content === 'skip') {
-                        return;
-                    } else {
-                        if (resp.result && resp.result.length > 0) {
-                            driver1.defineSteps(steps1);
-                            driver1.start();
-                        } else {
-                            driver.defineSteps(steps);
-                            driver.start();
-                        }
-                    }
-                },
-            );
+const getData = async (accessId?: string) => {
+    const _accessId = accessId || productStore.current?.accessId
+    if (productStore.current?.id) {
+      getConfigMetadata(productStore.current?.id).then((resp: any) => {
+        metadata.value = resp?.result[0] as ConfigMetadata || { properties: [] };
+        if (accessId) { // 切换接入方式之后获取是否显示引导
+          getGuide(!resp?.result.length) //
         }
-        queryAccessDetail(productStore.current?.accessId);
-        getConfigDetail(
-            productStore.current?.messageProtocol || '',
-            productStore.current?.transportProtocol || '',
-        );
-        getProviders().then((resp) => {
-            if (resp.status === 200) {
-                dataSource.value = resp.result;
-            }
-        });
-    } else {
-        if (productStore.current?.id) {
-            getConfigMetadata(productStore.current?.id).then((resp: any) => {
-                metadata.value = resp?.result[0] as ConfigMetadata[];
-            });
-        }
+      });
     }
+    if (_accessId) { // 有设备接入
+      // const metadataResp = await getConfigMetadata(productStore.current!.id)
+      // if (metadataResp.success) {
+      //   metadata.value = (metadataResp.result?.[0] as ConfigMetadata[]) || [];
+      // }
+      queryAccessDetail(_accessId);
+      getConfigDetail(
+        productStore.current?.messageProtocol || '',
+        productStore.current?.transportProtocol || '',
+      );
+      getProviders().then((resp) => {
+        if (resp.status === 200) {
+          dataSource.value = resp.result;
+        }
+      });
+    }
+    // else {
+    //   if (productStore.current?.id) {
+    //     getConfigMetadata(productStore.current?.id).then((resp: any) => {
+    //       metadata.value = resp?.result[0] as ConfigMetadata[];
+    //     });
+    //   }
+    // }
     getStoragList().then((resp: any) => {
         if (resp.status === 200) {
             storageList.value = resp.result;
@@ -1086,10 +1040,14 @@ const add = () => {
  * 初始化
  */
 watchEffect(() => {
-    if (productStore.current?.accessId) {
-        getData();
-    }
-});
+  if (productStore.current?.storePolicy) {
+    form.storePolicy = productStore.current!.storePolicy
+  }
+})
+
+nextTick(() => {
+  getData();
+})
 </script>
 <style lang="less" scoped>
 :deep(

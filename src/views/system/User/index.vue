@@ -92,7 +92,7 @@
                             }"
                             :popConfirm="{
                                 title: `确认删除`,
-                                onConfirm: () => table.clickDel(slotProps),
+                                onConfirm: () => table.clickDel(slotProps.id),
                             }"
                             :disabled="slotProps.status"
                         >
@@ -223,10 +223,10 @@ const table = {
         dialog.type = type;
         dialog.visible = true;
     },
-    changeStatus: (row: any) => {
+    changeStatus: ({ id, status }: any) => {
         const params = {
-            id: row.id,
-            status: row.status === 0 ? 1 : 0,
+            status: status === 0 ? 1 : 0,
+            id,
         };
         changeUserStatus_api(params).then(() => {
             message.success('操作成功');
@@ -234,8 +234,8 @@ const table = {
         });
     },
     // 删除
-    clickDel: (row: any) => {
-        deleteUser_api(row.id).then(() => {
+    clickDel: (id: string) => {
+        deleteUser_api(id).then(() => {
             message.success('操作成功');
             table.refresh();
         });

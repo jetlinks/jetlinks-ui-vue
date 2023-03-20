@@ -6,7 +6,7 @@
     class='search'
     target="scene-triggrt-device-category"
   />
-  <a-divider style='margin: 0' />
+  <j-divider style='margin: 0' />
   <j-pro-table
     ref="instanceRef"
     model='TABLE'

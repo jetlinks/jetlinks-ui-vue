@@ -22,10 +22,18 @@
                                 : '停止录像'
                         }}
                     </div>
-                    <div class="tool-item">刷新</div>
+                    <div class="tool-item" @click.stop="handleRefresh">
+                        刷新
+                    </div>
                     <div class="tool-item" @click.stop="handleReset">重置</div>
                 </div>
-                <LivePlayer :live="true" :url="url" :protocol="mediaType" autoplay />
+                <LivePlayer
+                    ref="player"
+                    :live="true"
+                    :url="url"
+                    :protocol="mediaType"
+                    autoplay
+                />
             </div>
             <MediaTool
                 @onMouseDown="handleMouseDown"
@@ -70,6 +78,8 @@ const _vis = computed({
     set: (val) => emit('update:visible', val),
 });
 
+// 播放器
+const player = ref();
 // 视频地址
 const url = ref('');
 // 视频类型
@@ -124,6 +134,13 @@ const handleRecord = async () => {
             isRecord.value = 0;
         }
     }
+};
+
+/**
+ * 刷新
+ */
+const handleRefresh = () => {
+    player.value.play();
 };
 
 /**

@@ -290,7 +290,7 @@ import { message } from 'ant-design-vue';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { LocalStore } from '@/utils/comm';
 
-import { save_api, getDetails_api } from '@/api/system/basis';
+import { save_api } from '@/api/system/basis';
 import { usePermissionStore } from '@/store/permission';
 import { useSystem } from '@/store/system';
 
