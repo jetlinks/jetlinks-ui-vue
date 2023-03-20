@@ -15,8 +15,7 @@
             :params="params"
             :rowSelection="{
                 selectedRowKeys: _selectedRowKeys,
-                onSelect: onSelectChange,
-                onSelectAll: onSelectAllChange,
+                onChange: onSelectChange,
             }"
             @cancelSelect="_selectedRowKeys = []"
             :pagination="{
@@ -242,32 +241,9 @@ const listRef = ref();
 const _selectedRowKeys = ref<string[]>([]);
 const bindVis = ref(false);
 
-const onSelectChange = (
-    record: any[],
-    selected: boolean,
-    selectedRows: any[],
-) => {
-    _selectedRowKeys.value = selected
-        ? [...getSetRowKey(selectedRows)]
-        : _selectedRowKeys.value.filter((item: any) => item !== record?.id);
+const onSelectChange = (keys: string[]) => {
+    _selectedRowKeys.value = [...keys];
 };
-const onSelectAllChange = (
-    selected: boolean,
-    selectedRows: any[],
-    changeRows: any[],
-) => {
-    const unRowsKeys = getSelectedRowsKey(changeRows);
-    _selectedRowKeys.value = selected
-        ? [...getSetRowKey(selectedRows)]
-        : _selectedRowKeys.value
-              .concat(unRowsKeys)
-              .filter((item) => !unRowsKeys.includes(item));
-};
-const getSelectedRowsKey = (selectedRows: any[]) =>
-    selectedRows.map((item) => item?.id).filter((i) => !!i);
-
-const getSetRowKey = (selectedRows: any[]) =>
-    new Set([..._selectedRowKeys.value, ...getSelectedRowsKey(selectedRows)]);
 
 /**
  * 表格操作按钮

@@ -69,7 +69,7 @@ const getDeviceList = async () => {
     const res = await cascadeApi.getMediaTree({ paging: false });
     if (res.success) {
         treeData.value = res.result
-            .sort((a: any, b: any) => a.createTime - b.createTime)
+            .sort((a: any, b: any) => b.createTime - a.createTime)
             .map((m: any) => {
                 const extra: any = {};
                 extra.isLeaf = isLeaf(m);
