@@ -14,10 +14,14 @@
         <Device v-if='data.triggerType === "device"' />
         <Manual v-else-if='data.triggerType === "manual"' />
         <Timer v-else-if='data.triggerType === "timer"' />
-        <j-form-item>
+        <j-form-item
+        >
+          <template #label>
+            <TitleComponent data='说明' style='font-size: 14px;' />
+          </template>
           <j-textarea
               v-model:value="data.description"
-              placeholder=''
+              placeholder='请输入说明'
               :rows="4"
               show-count
               :maxLength="200"
@@ -27,6 +31,8 @@
       <PermissionButton
         type='primary'
         hasPermission='rule-engine/Scene:update'
+        :loading='loading'
+        @click='save'
       >
         保存
       </PermissionButton>
@@ -42,14 +48,31 @@ import { keyByLabel } from '../typings'
 import Device from './Device/index.vue'
 import Manual from './Manual/index.vue'
 import Timer from './Timer/index.vue'
+import { modify } from '@/api/rule-engine/scene'
+import { useMenuStore } from '@/store/menu'
+import { message } from 'jetlinks-ui-components'
 
 const sceneStore = useSceneStore()
+const menuStore = useMenuStore()
 const { data } = storeToRefs(sceneStore)
 const { getDetail } = sceneStore
 
 const route = useRoute();
+const sceneForm = ref()
 const loading = ref(false)
-console.log('data',data)
+
+const save = async () => {
+  const formData = await sceneForm.value.validateFields()
+  if (formData) {
+    loading.value = true
+    const resp = await modify(data.value.id!, data.value).then(res => res)
+    loading.value = false
+    if (resp.success) {
+      menuStore.jumpPage('rule-engine/Scene')
+      message.success('操作成功')
+    }
+  }
+}
 
 getDetail(route.query.id as string)
 

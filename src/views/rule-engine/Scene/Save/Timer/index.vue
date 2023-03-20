@@ -33,13 +33,13 @@
     </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name='SceneSaveTimer'>
 import { useSceneStore } from '@/store/scene';
 import { storeToRefs } from 'pinia';
 import Action from '../action/index.vue';
 import AddModel from './AddModal.vue'
 import AddButton from '../components/AddButton.vue'
-import type { OperationTimer } from '@/views/rule-engine/Scene/typings'
+import type { OperationTimer, BranchesThen } from '@/views/rule-engine/Scene/typings'
 
 const sceneStore = useSceneStore();
 const { data } = storeToRefs(sceneStore);
@@ -55,7 +55,7 @@ const rules = [{
 }]
 
 const actionRules = [{
-  validator(_, v) {
+  validator(_: any, v?: BranchesThen[]) {
     if (!v || (v && !v.length)) {
       return Promise.reject('至少配置一个执行动作');
     }
@@ -76,8 +76,8 @@ const onActionUpdate = (_data: any, type: boolean) => {
     }
 };
 
-const save = (data: OperationTimer, options: Record<string, any>) => {
-  data.value.trigger!.timer = data
+const save = (_data: OperationTimer, options: Record<string, any>) => {
+  data.value.trigger!.timer = _data
   data.value.options!.trigger = options
 }
 </script>
