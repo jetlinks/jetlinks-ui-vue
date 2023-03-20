@@ -18,7 +18,7 @@
       <j-tabs @change="handleConvertMetadata" destroy-inactive-tab-pane>
         <j-tab-pane v-for="item in codecs" :key="item.id" :tab="item.name">
           <div class="cat-panel">
-            <MonacoEditor v-model="value" theme="vs" style="height: 100%"></MonacoEditor>
+            <JMonacoEditor v-model="value" theme="vs" style="height: 100%" lang="javascript"></JMonacoEditor>
           </div>
         </j-tab-pane>
       </j-tabs>

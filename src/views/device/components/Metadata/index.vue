@@ -2,7 +2,7 @@
   <j-card>
     <div class='device-detail-metadata' style="position: relative;">
       <div class="tips">
-        <j-tooltip v-if="type === 'device'" :title="instanceStore.detail?.independentMetadata && type === 'device'
+        <j-tooltip :title="instanceStore.detail?.independentMetadata && type === 'device'
         ? '该设备已脱离产品物模型，修改产品物模型对该设备无影响'
         : '设备会默认继承产品的物模型，修改设备物模型后将脱离产品物模型'">
           <div class="ellipsis">
@@ -84,11 +84,11 @@ const resetMetadata = async () => {
 <style scoped lang="less">
 .device-detail-metadata {
   .tips {
-    width: calc(100% - 670px);
+    // width: calc(100% - 670px);
     position: absolute;
     top: 12px;
     z-index: 1;
-    margin-left: 380px;
+    margin-left: 420px;
     font-weight: 100;
   }
 

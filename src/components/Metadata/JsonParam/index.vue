@@ -30,7 +30,7 @@
               ]">
                 <j-input v-model:value="_value[index].name" size="small"></j-input>
               </j-form-item>
-              <value-type-form v-model:value="_value[index].valueType" :name="name.concat([index, 'valueType'])" isSub
+              <value-type-form v-model:value="_value[index].valueType" :name="name.concat([index, 'valueType'])" :isSub="isSub"
                 key="json_sub"></value-type-form>
             </div>
           </template>
@@ -69,6 +69,10 @@ const props = defineProps({
   name: {
     type: Array as PropType<(string | number)[]>,
     default: () => ([])
+  },
+  isSub: {
+    type: Boolean,
+    default: true
   }
 })
 

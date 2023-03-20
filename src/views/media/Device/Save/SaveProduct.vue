@@ -234,6 +234,8 @@ watch(
         if (val) {
             getGatewayList();
         } else {
+            _selectedRowKeys.value = []
+            extendFormItem.value = []
             emit('close');
         }
     },
