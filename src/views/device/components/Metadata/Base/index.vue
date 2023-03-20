@@ -44,7 +44,7 @@
             }">
             <AIcon type="EditOutlined" />
           </PermissionButton>
-          <PermissionButton :has-permission="`${permission}:delete`" type="link" key="delete" style="padding: 0"
+          <PermissionButton :has-permission="`${permission}:delete`" type="link" key="delete" style="padding: 0" danger
             :pop-confirm="{
               title: '确认删除？', onConfirm: async () => {
                 await removeItem(record);

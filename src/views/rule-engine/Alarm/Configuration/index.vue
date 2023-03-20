@@ -179,7 +179,7 @@ import {
 import { queryLevel } from '@/api/rule-engine/config';
 import { Store } from 'jetlinks-store';
 import type { ActionsType } from '@/components/Table/index.vue';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { getImage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import encodeQuery from '@/utils/encodeQuery';

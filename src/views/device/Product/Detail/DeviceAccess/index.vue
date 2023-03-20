@@ -370,7 +370,7 @@
 <script lang="ts" setup>
 import { useProductStore } from '@/store/product';
 import { ConfigMetadata } from '@/views/device/Product/typings';
-import { Empty, FormItem, message } from 'ant-design-vue';
+import { Empty, message } from 'jetlinks-ui-components';
 import { getImage } from '@/utils/comm';
 import Title from '../Title/index.vue';
 import { usePermissionStore } from '@/store/permission';
@@ -396,7 +396,7 @@ const productStore = useProductStore();
 import Driver from 'driver.js';
 import 'driver.js/dist/driver.min.css';
 import { marked } from 'marked';
-import type { FormInstance, TableColumnType } from 'ant-design-vue';
+import type {  TableColumnType } from 'ant-design-vue';
 import { useMenuStore } from '@/store/menu';
 const formRef = ref();
 const menuStore = useMenuStore();

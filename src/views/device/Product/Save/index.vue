@@ -147,7 +147,7 @@
 import { category } from '@/api/device/product';
 import { Form } from 'ant-design-vue';
 import { getImage } from '@/utils/comm.ts';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import DialogTips from '../DialogTips/index.vue';
 import { useProductStore } from '@/store/product';
 import { filterTreeSelectNode, filterSelectNode } from '@/utils/comm';

@@ -17,13 +17,22 @@
         <div class="product-tips">
             <div style="display: flex">
                 <div class="product-icon">
-                    <check-circle-outlined class="icon-style" />
+                    <AIcon
+                        type="CheckCircleOutlined"
+                        class="icon-style"
+                    ></AIcon>
                 </div>
                 <div class="product-title">产品创建成功</div>
             </div>
             <div style="display: flex">
                 <div class="product-id">产品ID: {{ idValue }}</div>
-                <div class="product-btn" @click="showDetail" style="cursor: pointer;">查看详情</div>
+                <div
+                    class="product-btn"
+                    @click="showDetail"
+                    style="cursor: pointer"
+                >
+                    查看详情
+                </div>
             </div>
             <div>接下来推荐操作:</div>
             <div class="product-main">1、配置产品接入方式</div>
@@ -48,7 +57,6 @@
 <script lang="ts" setup name="DialogTips">
 import { getImage } from '@/utils/comm.ts';
 import { useProductStore } from '@/store/product';
-import { CheckCircleOutlined } from '@ant-design/icons-vue';
 import { useMenuStore } from '@/store/menu';
 const visible = ref<boolean>(false);
 const productStore = useProductStore();
@@ -72,12 +80,11 @@ const show = (id: string) => {
  * 查看详情
  */
 const showDetail = () => {
-    menuStore.jumpPage('device/Product/Detail',{id:idValue.value})
+    menuStore.jumpPage('device/Product/Detail', { id: idValue.value });
 };
 defineExpose({
     show: show,
 });
-
 </script>
 <style lang="less" scoped>
 .product-tips {

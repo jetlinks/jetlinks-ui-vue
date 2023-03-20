@@ -41,7 +41,7 @@
 <script lang="ts" setup>
 import { saveRule, modify } from '@/api/rule-engine/instance';
 import { getImage } from '@/utils/comm';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 const emit = defineEmits(['success', 'closeSave']);
 const props = defineProps({

@@ -186,11 +186,6 @@
 <script lang="ts" setup>
 import InputSave from './Save/input.vue';
 import OutputSave from './save/output.vue';
-import {
-    EditOutlined,
-    DeleteOutlined,
-    PlusOutlined,
-} from '@ant-design/icons-vue';
 import { getDataExchange } from '@/api/rule-engine/config';
 import { getImage } from '@/utils/comm';
 import { marked } from 'marked';

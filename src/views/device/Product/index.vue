@@ -160,12 +160,7 @@
 import server from '@/utils/request';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage } from '@/utils/comm';
-import {
-    EditOutlined,
-    DeleteOutlined,
-    PlusOutlined,
-} from '@ant-design/icons-vue';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import {
     getProviders,
     category,
