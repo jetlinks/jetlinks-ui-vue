@@ -96,7 +96,7 @@ const branchesDeleteAll = () => {
 
 watchEffect(() => {
   if (data.value.trigger?.device) {
-    queryColumn(data.value)
+    queryColumn({ trigger: data.value.trigger })
   }
 })
 
