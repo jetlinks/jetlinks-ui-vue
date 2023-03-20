@@ -1,4 +1,4 @@
-import './index.less';
+// import './index.less';
 import { Image } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 
