@@ -335,6 +335,7 @@ const columns = [
         key: 'productName',
         search: {
             type: 'select',
+            rename: 'productId',
             options: () =>
                 new Promise((resolve) => {
                     queryNoPagingPost({ paging: false }).then((resp: any) => {

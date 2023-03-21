@@ -47,7 +47,7 @@
 </template>
 <script setup lang="ts" name="modifyModal">
 import { PropType } from 'vue';
-import { Form, message } from 'ant-design-vue';
+import { Form, message } from 'jetlinks-ui-components';
 import { queryTree, saveTree, updateTree } from '@/api/device/category';
 import { ValidateErrorEntity } from 'ant-design-vue/es/form/interface';
 import { list } from '@/api/iot-card/home';

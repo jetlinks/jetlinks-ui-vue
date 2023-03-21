@@ -571,6 +571,7 @@ const getTypes = async () => {
 };
 
 const getDuerOSProperties = (val: string) => {
+    console.log(val)
     const arr = modelRef.propertyMappings.map((item) => item?.source) || [];
     const checked = _.cloneDeep(arr);
     const _index = checked.findIndex((i) => i === val);
@@ -672,6 +673,7 @@ watch(
                 _data.applianceType = _data?.applianceType?.value;
             }
             Object.assign(modelRef, _data);
+            console.log(modelRef.propertyMappings)
         }
     },
     { immediate: true, deep: true },

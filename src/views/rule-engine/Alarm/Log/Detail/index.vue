@@ -49,7 +49,7 @@ import { detail, queryHistoryList } from '@/api/rule-engine/log';
 import { useRoute } from 'vue-router';
 import moment from 'moment';
 import type { ActionsType } from '@/components/Table/index.vue';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { useAlarmStore } from '@/store/alarm';
 import Info from './info.vue';
 import { storeToRefs } from 'pinia';

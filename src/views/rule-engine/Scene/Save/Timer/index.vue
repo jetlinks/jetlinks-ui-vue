@@ -14,15 +14,17 @@
           <Title :options='data.options.trigger' />
         </AddButton>
       </j-form-item>
-      <j-form-item
-        :rules="actionRules"
-        :name="['branches', 0, 'then']"
-      >
-        <Action
+      <div class='actions-branches-item' >
+        <j-form-item
+          :rules="actionRules"
+          :name="['branches', 0, 'then']"
+        >
+          <Action
             :thenOptions="data.branches ? data?.branches[0].then : []"
             :name="0"
-        />
-      </j-form-item>
+          />
+        </j-form-item>
+      </div>
       <AddModel
         v-if="visible"
         @cancel='visible = false'
@@ -79,6 +81,7 @@ const onActionUpdate = (_data: any, type: boolean) => {
 const save = (_data: OperationTimer, options: Record<string, any>) => {
   data.value.trigger!.timer = _data
   data.value.options!.trigger = options
+  visible.value = false
 }
 </script>
 

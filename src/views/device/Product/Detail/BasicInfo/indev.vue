@@ -6,7 +6,7 @@
                 <div style="display: flex">
                     <h3>配置信息</h3>
                     <div style="margin: 0 0px 0 15px; color: #1d39c4">
-                        <edit-outlined @click="editConfig" />
+                        <AIcon type="EditOutlined"/>
                     </div>
                 </div>
             </template>
@@ -53,11 +53,6 @@ import { useProductStore } from '@/store/product';
 import Save from '../../Save/index.vue';
 import moment from 'moment';
 import { useRoute } from 'vue-router';
-import {
-    EditOutlined,
-    DeleteOutlined,
-    PlusOutlined,
-} from '@ant-design/icons-vue';
 const productStore = useProductStore();
 const route = useRoute();
 const saveRef = ref();

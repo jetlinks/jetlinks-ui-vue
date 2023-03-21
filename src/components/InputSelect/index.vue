@@ -1,5 +1,5 @@
 <template>
-  <a-select v-model:value="_value" mode="tags" :options="options" :size="size" @change="change"></a-select>
+  <a-select v-model:value="_value" mode="tags" :options="options" :size="size" @change="change" placeholder="请选择单位"></a-select>
 </template>
 <script setup lang="ts" name="InputSelect">
 import { SizeType } from 'ant-design-vue/es/config-provider';

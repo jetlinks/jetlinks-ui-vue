@@ -1,30 +1,30 @@
 <template>
   <div class="operator-box">
-    <a-input-search @search="search" allow-clear placeholder="搜索关键字" />
+    <j-input-search @search="search" allow-clear placeholder="搜索关键字" />
     <div class="tree">
-      <a-tree @select="selectTree" :field-names="{ title: 'name', key: 'id', }" auto-expand-parent
+      <j-tree @select="selectTree" :field-names="{ title: 'name', key: 'id', }" auto-expand-parent
         :tree-data="data">
         <template #title="node">
           <div class="node">
             <div>{{ node.name }}</div>
             <div :class="node.children?.length > 0 ? 'parent' : 'add'">
-              <a-popover v-if="node.type === 'property'" placement="right" title="请选择使用值">
+              <j-popover v-if="node.type === 'property'" placement="right" title="请选择使用值">
                 <template #content>
-                  <a-space direction="vertical">
-                    <a-tooltip placement="right" title="实时值为空时获取上一有效值补齐，实时值不为空则使用实时值">
-                      <a-button type="text" @click="recentClick(node)">
+                  <j-space direction="vertical">
+                    <j-tooltip placement="right" title="实时值为空时获取上一有效值补齐，实时值不为空则使用实时值">
+                      <j-button type="text" @click="recentClick(node)">
                         $recent实时值
-                      </a-button>
-                    </a-tooltip>
-                    <a-tooltip placement="right" title="实时值的上一有效值">
-                      <a-button @click="lastClick(node)" type="text">
+                      </j-button>
+                    </j-tooltip>
+                    <j-tooltip placement="right" title="实时值的上一有效值">
+                      <j-button @click="lastClick(node)" type="text">
                         上一值
-                      </a-button>
-                    </a-tooltip>
-                  </a-space>
+                      </j-button>
+                    </j-tooltip>
+                  </j-space>
                 </template>
                 <a>添加</a>
-              </a-popover>
+              </j-popover>
 
               <a v-else @click="addClick(node)">
                 添加
@@ -32,7 +32,7 @@
             </div>
           </div>
         </template>
-      </a-tree>
+      </j-tree>
     </div>
     <div class="explain">
       <Markdown :source="item?.description || ''"></Markdown>

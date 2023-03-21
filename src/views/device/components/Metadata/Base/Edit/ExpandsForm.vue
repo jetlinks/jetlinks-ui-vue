@@ -19,9 +19,17 @@
   </j-form-item>
   <j-form-item
     v-if="type === 'product' && ['int', 'float', 'double', 'long', 'date', 'string', 'boolean'].includes(valueType.type)"
-    label="指标配置" :name="name.concat(['metrics'])" :rules="[
+    :name="name.concat(['metrics'])" :rules="[
       { validator: () => validateMetrics(_value.metrics), message: '请输入指标配置' }
     ]">
+    <template #label>
+      <j-space>
+        指标配置
+        <j-tooltip title="场景联动页面可引用指标配置作为触发条件">
+              <AIcon type="QuestionCircleOutlined" style="color: rgb(136, 136, 136); font-size: 12px;"/>
+            </j-tooltip>
+      </j-space>
+    </template>
     <metrics-param v-model:value="_value.metrics" :type="valueType.type" :enum="valueType"
       :name="name.concat(['metrics'])"></metrics-param>
   </j-form-item>

@@ -281,7 +281,7 @@
             :columns="query.columns"
             target="deviceModal"
             @search="search"
-            type='simple'
+            type="simple"
         />
         <JProTable
             :columns="query.columns"
@@ -370,11 +370,11 @@
 <script lang="ts" setup>
 import { useProductStore } from '@/store/product';
 import { ConfigMetadata } from '@/views/device/Product/typings';
-import { Empty, FormItem, message } from 'ant-design-vue';
+import { Empty, message } from 'jetlinks-ui-components';
 import { getImage } from '@/utils/comm';
 import Title from '../Title/index.vue';
 import { usePermissionStore } from '@/store/permission';
-import { steps, steps1 } from './util'
+import { steps, steps1 } from './util';
 import './index.less';
 import {
     getProviders,
@@ -396,7 +396,7 @@ const productStore = useProductStore();
 import Driver from 'driver.js';
 import 'driver.js/dist/driver.min.css';
 import { marked } from 'marked';
-import type { FormInstance, TableColumnType } from 'ant-design-vue';
+import type { TableColumnType } from 'ant-design-vue';
 import { useMenuStore } from '@/store/menu';
 const formRef = ref();
 const menuStore = useMenuStore();
@@ -590,7 +590,7 @@ const search = (e: any) => {
     };
 };
 
-const stepsRef = reactive({current:0})
+const stepsRef = reactive({ current: 0 });
 
 /**
  * 保存引导页数据
@@ -615,10 +615,10 @@ const driver = new Driver({
     },
     onReset: () => {
         if (stepsRef.current !== 3) {
-          guide({
-            name: 'guide',
-            content: 'skip',
-          });
+            guide({
+                name: 'guide',
+                content: 'skip',
+            });
         }
         stepsRef.current = 0;
     },
@@ -638,10 +638,10 @@ const driver1 = new Driver({
     },
     onReset: () => {
         if (stepsRef.current !== 4) {
-          guide({
-            name: 'guide',
-            content: 'skip',
-          });
+            guide({
+                name: 'guide',
+                content: 'skip',
+            });
         }
         stepsRef.current = 0;
     },
@@ -808,44 +808,42 @@ const getConfigDetail = (
     messageProtocol: string,
     transportProtocol: string,
 ) => {
-    getConfigView(messageProtocol, transportProtocol).then(
-        (resp) => {
-            if (resp.status === 200) {
-                config.value = resp.result;
-                const Group = {
-                    title: '分组',
-                    dataIndex: 'group',
-                    key: 'group',
-                    ellipsis: true,
-                    align: 'center',
-                    width: 100,
-                    customCell: (record: any, rowIndex: number) => {
-                        const obj = {
-                            children: record,
-                            rowSpan: 0,
-                        };
-                        const list = config.value?.routes || [];
+    getConfigView(messageProtocol, transportProtocol).then((resp) => {
+        if (resp.status === 200) {
+            config.value = resp.result;
+            const Group = {
+                title: '分组',
+                dataIndex: 'group',
+                key: 'group',
+                ellipsis: true,
+                align: 'center',
+                width: 100,
+                customCell: (record: any, rowIndex: number) => {
+                    const obj = {
+                        children: record,
+                        rowSpan: 0,
+                    };
+                    const list = config.value?.routes || [];
 
-                        const arr = list.filter(
-                            (res: any) => res.group === record.group,
-                        );
+                    const arr = list.filter(
+                        (res: any) => res.group === record.group,
+                    );
 
-                        const isRowIndex =
-                            rowIndex === 0 ||
-                            list[rowIndex - 1].group !== record.group;
-                        isRowIndex && (obj.rowSpan = arr.length);
+                    const isRowIndex =
+                        rowIndex === 0 ||
+                        list[rowIndex - 1].group !== record.group;
+                    isRowIndex && (obj.rowSpan = arr.length);
 
-                        return obj;
-                    },
-                };
-                columnsMQTT.value = [Group, ...ColumnsMQTT];
-                columnsHTTP.value = [Group, ...ColumnsHTTP];
-                if (config.value?.document) {
-                    markdownToHtml.value = marked(config.value.document);
-                }
+                    return obj;
+                },
+            };
+            columnsMQTT.value = [Group, ...ColumnsMQTT];
+            columnsHTTP.value = [Group, ...ColumnsHTTP];
+            if (config.value?.document) {
+                markdownToHtml.value = marked(config.value.document);
             }
-        },
-    );
+        }
+    });
 };
 
 /**
@@ -904,7 +902,6 @@ const submitData = async () => {
             ? await updateDevice(obj)
             : await saveDevice(obj);
         if (resp.status === 200) {
-
             detail(productStore.current?.id || '').then((res) => {
                 if (res.status === 200) {
                     productStore.current = { ...res.result };
@@ -913,9 +910,8 @@ const submitData = async () => {
                 }
                 visible.value = false;
                 queryParams.value = {};
-                
             });
-          getData(obj.accessId);
+            getData(obj.accessId);
         }
     } else {
         message.error('请选择接入方式');
@@ -935,47 +931,51 @@ const modifyArray = (oldData: any[], newData: any[]) => {
  *
  */
 const getGuide = async (isDriver1: boolean = false) => {
-  const res: any = await productGuide();
-  if (res.result && res.result?.content === 'skip') {
-    return;
-  } else {
-    if (isDriver1) {
-      driver1.defineSteps(steps1);
-      driver1.start();
+    const res: any = await productGuide();
+    if (res.result && res.result?.content === 'skip') {
+        return;
     } else {
-      driver.defineSteps(steps);
-      driver.start();
+        if (isDriver1) {
+            driver1.defineSteps(steps1);
+            driver1.start();
+        } else {
+            driver.defineSteps(steps);
+            driver.start();
+        }
     }
-  }
-}
+};
 /**
  * 查询保存数据信息
  */
 const getData = async (accessId?: string) => {
-    const _accessId = accessId || productStore.current?.accessId
+    const _accessId = accessId || productStore.current?.accessId;
     if (productStore.current?.id) {
-      getConfigMetadata(productStore.current?.id).then((resp: any) => {
-        metadata.value = resp?.result[0] as ConfigMetadata || { properties: [] };
-        if (accessId) { // 切换接入方式之后获取是否显示引导
-          getGuide(!resp?.result.length) //
-        }
-      });
+        getConfigMetadata(productStore.current?.id).then((resp: any) => {
+            metadata.value = (resp?.result[0] as ConfigMetadata) || {
+                properties: [],
+            };
+            if (accessId) {
+                // 切换接入方式之后获取是否显示引导
+                getGuide(resp?.result.length); //
+            }
+        });
     }
-    if (_accessId) { // 有设备接入
-      // const metadataResp = await getConfigMetadata(productStore.current!.id)
-      // if (metadataResp.success) {
-      //   metadata.value = (metadataResp.result?.[0] as ConfigMetadata[]) || [];
-      // }
-      queryAccessDetail(_accessId);
-      getConfigDetail(
-        productStore.current?.messageProtocol || '',
-        productStore.current?.transportProtocol || '',
-      );
-      getProviders().then((resp) => {
-        if (resp.status === 200) {
-          dataSource.value = resp.result;
-        }
-      });
+    if (_accessId) {
+        // 有设备接入
+        // const metadataResp = await getConfigMetadata(productStore.current!.id)
+        // if (metadataResp.success) {
+        //   metadata.value = (metadataResp.result?.[0] as ConfigMetadata[]) || [];
+        // }
+        queryAccessDetail(_accessId);
+        getConfigDetail(
+            productStore.current?.messageProtocol || '',
+            productStore.current?.transportProtocol || '',
+        );
+        getProviders().then((resp) => {
+            if (resp.status === 200) {
+                dataSource.value = resp.result;
+            }
+        });
     }
     // else {
     //   if (productStore.current?.id) {
@@ -1009,7 +1009,7 @@ const submitDevice = async () => {
     });
     if (resp.status === 200) {
         message.success('操作成功！');
-        productStore.current!.storePolicy = storePolicy
+        productStore.current!.storePolicy = storePolicy;
         if ((window as any).onTabSaveSuccess) {
             if (resp.result) {
                 (window as any).onTabSaveSuccess(resp);
@@ -1041,14 +1041,14 @@ const add = () => {
  * 初始化
  */
 watchEffect(() => {
-  if (productStore.current?.storePolicy) {
-    form.storePolicy = productStore.current!.storePolicy
-  }
-})
+    if (productStore.current?.storePolicy) {
+        form.storePolicy = productStore.current!.storePolicy;
+    }
+});
 
 nextTick(() => {
-  getData();
-})
+    getData();
+});
 </script>
 <style lang="less" scoped>
 :deep(

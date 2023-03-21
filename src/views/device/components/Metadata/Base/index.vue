@@ -16,7 +16,7 @@
       <Edit v-if="metadataStore.model.edit" :type="target" :tabs="type" @refresh="refreshMetadata"></Edit>
     </div>
   </div>
-  <a-table :loading="loading" :data-source="data" :columns="columns" row-key="id" model="TABLE" size="small"
+  <j-table :loading="loading" :data-source="data" :columns="columns" row-key="id" model="TABLE" size="small"
     :pagination="pagination">
     <template #bodyCell="{ column, record }">
       <template v-if="column.dataIndex === 'level'">
@@ -44,7 +44,7 @@
             }">
             <AIcon type="EditOutlined" />
           </PermissionButton>
-          <PermissionButton :has-permission="`${permission}:delete`" type="link" key="delete" style="padding: 0"
+          <PermissionButton :has-permission="`${permission}:delete`" type="link" key="delete" style="padding: 0" danger
             :pop-confirm="{
               title: '确认删除？', onConfirm: async () => {
                 await removeItem(record);
@@ -57,7 +57,7 @@
         </j-space>
       </template>
     </template>
-  </a-table>
+  </j-table>
 </template>
 <script setup lang="ts" name="BaseMetadata">
 import type { MetadataItem, MetadataType } from '@/views/device/Product/typings'
@@ -69,6 +69,7 @@ import PermissionButton from '@/components/PermissionButton/index.vue'
 import { TablePaginationConfig, message } from 'ant-design-vue/es'
 import { asyncUpdateMetadata, removeMetadata } from '../metadata'
 import Edit from './Edit/index.vue'
+import { ColumnProps } from 'ant-design-vue/es/table'
 interface Props {
   type: MetadataType;
   target: 'product' | 'device';
@@ -97,13 +98,12 @@ const expandsType = ref({
   write: '写',
   report: '上报',
 });
-const actions = [
+const actions: ColumnProps[] = [
   {
     title: '操作',
     align: 'left',
     width: 200,
     dataIndex: 'action',
-    scopedSlots: true,
   },
 ];
 const pagination = {
@@ -116,14 +116,14 @@ const pagination = {
   size: 'small',
 } as TablePaginationConfig
 const columns = computed(() => MetadataMapping.get(type)!.concat(actions))
-const items = computed(() => JSON.parse((target === 'product' ? productStore.current?.metadata : instanceStore.current.metadata) || '{}') as MetadataItem[])
+const items = computed(() => JSON.parse((target === 'product' ? productStore.current?.metadata : instanceStore.current.metadata) || '{}'))
 const searchValue = ref<string>()
 const handleSearch = (searchValue: string) => {
   if (searchValue) {
-    const arr = items.value.filter(item => item.name!.indexOf(searchValue) > -1).sort((a, b) => b?.sortsIndex - a?.sortsIndex)
+    const arr = items.value[type].filter((item: MetadataItem) => item.name!.indexOf(searchValue) > -1).sort((a: MetadataItem, b: MetadataItem) => b?.sortsIndex - a?.sortsIndex)
     data.value = arr
   } else {
-    data.value = items.value
+    data.value = items.value[type]
   }
 }
 
@@ -215,6 +215,6 @@ const removeItem = async (record: MetadataItem) => {
 .table-header {
   display: flex;
   justify-content: space-between;
-  padding: 16px 0;
+  padding: 16px;
 }
 </style>

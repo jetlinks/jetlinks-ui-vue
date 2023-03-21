@@ -2,7 +2,7 @@
 <template>
     <page-container>
         <pro-search :columns="columns" target="iot-card-management-search" @search="handleSearch" />
-        <j-pro-table ref="cardManageRef" :columns="columns" :request="query"
+        <j-pro-table :scroll="{x: 1366}" ref="cardManageRef" :columns="columns" :request="query"
             :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }" :rowSelection="{
                 selectedRowKeys: _selectedRowKeys,
                 onChange: onSelectChange,
@@ -89,7 +89,7 @@
                 <CardBox :value="slotProps" @click="handleClick" :actions="getActions(slotProps, 'card')" v-bind="slotProps"
                     :active="_selectedRowKeys.includes(slotProps.id)" :status="slotProps.cardStateType.value"
                     :statusText="slotProps.cardStateType.text" :statusNames="{
-                        using: 'success',
+                        using: 'processing',
                         toBeActivated: 'default',
                         deactivate: 'error',
                     }">
@@ -114,12 +114,13 @@
                                 <div>{{ slotProps.cardType.text }}</div>
                             </j-col>
                             <j-col :span="6">
-                                <div class="card-item-content-text">提醒</div>
-                                <!-- <div>{{ slotProps.cardType.text }}</div> -->
+                                <div class="card-item-content-text">绑定设备</div>
+                                <div>{{ slotProps.deviceName }}</div>
                             </j-col>
                         </j-row>
                         <j-divider style="margin: 12px 0" />
-                        <div v-if="slotProps.usedFlow === 0">
+                        <div class="content-bottom">
+                            <div v-if="slotProps.usedFlow === 0">
                             <span class="flow-text">
                                 {{ slotProps.totalFlow }}
                             </span>
@@ -130,7 +131,7 @@
                             <div class="progress-text">
                                 <div>
                                     {{
-                                        slotProps.totalFlow - slotProps.usedFlow
+                                        (slotProps.usedFlow / slotProps.totalFlow * 100).toFixed(2)
                                     }}
                                     %
                                 </div>
@@ -138,9 +139,8 @@
                                     总共 {{ slotProps.totalFlow }} M
                                 </div>
                             </div>
-                            <j-progress :strokeColor="'#ADC6FF'" :showInfo="false" :percent="
-                                slotProps.totalFlow - slotProps.usedFlow
-                            " />
+                            <j-progress :strokeColor="'#ADC6FF'" :showInfo="false" :percent="slotProps.usedFlow / slotProps.totalFlow * 100" />
+                        </div>
                         </div>
                     </template>
                     <template #actions="item">
@@ -226,12 +226,20 @@
                 {{ slotProps.cardType.text }}
             </template>
             <template #cardStateType="slotProps">
-                {{ slotProps.cardStateType.text }}
+                <BadgeStatus
+                    :status="slotProps.cardStateType?.value"
+                    :text="slotProps.cardStateType?.text"
+                    :statusNames="{
+                        using: 'processing',
+                        toBeActivated: 'default',
+                        deactivate: 'error',
+                    }"
+                />
             </template>
             <template #activationDate="slotProps">
                 {{
                     slotProps.activationDate
-                    ? moment(slotProps.activationDate).format(
+                    ? dayjs(slotProps.activationDate).format(
                         'YYYY-MM-DD HH:mm:ss',
                     )
                     : ''
@@ -240,7 +248,7 @@
             <template #updateTime="slotProps">
                 {{
                     slotProps.updateTime
-                    ? moment(slotProps.updateTime).format(
+                    ? dayjs(slotProps.updateTime).format(
                         'YYYY-MM-DD HH:mm:ss',
                     )
                     : ''
@@ -274,7 +282,7 @@
 
 <script setup lang="ts">
 import type { ActionsType } from '@/components/Table';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import {
     query,
     queryPlatformNoPage,
@@ -297,6 +305,8 @@ import Import from './Import.vue';
 import Export from './Export.vue';
 import Save from './Save.vue';
 import { useMenuStore } from 'store/menu'
+import BadgeStatus from '@/components/BadgeStatus/index.vue';
+
 const router = useRouter();
 const menuStory = useMenuStore()
 const cardManageRef = ref<Record<string, any>>({});
@@ -316,7 +326,7 @@ const columns = [
         title: '卡号',
         dataIndex: 'id',
         key: 'id',
-        width: 300,
+        width: 200,
         ellipsis: true,
         fixed: 'left',
         search: {
@@ -737,6 +747,10 @@ const handelRemove = async () => {
 </script>
 
 <style scoped lang="less">
+
+.content-bottom {
+    height: 45px;
+}
 .flow-text {
     font-size: 20px;
     font-weight: 600;

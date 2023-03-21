@@ -4,14 +4,14 @@
   ]">
     <j-select v-model:value="_value.type" :disabled="onlyObject"
       :options="onlyObject ? eventDataTypeList : _dataTypeList" size="small"
-      @change="changeType"></j-select>
+      @change="changeType" :placeholder="`请选择${title}`"></j-select>
   </j-form-item>
   <j-form-item label="单位" :name="name.concat(['unit'])" v-if="['int', 'float', 'long', 'double'].includes(_value.type)">
     <InputSelect v-model:value="_value.unit" :options="unit.unitOptions" size="small"></InputSelect>
   </j-form-item>
   <j-form-item label="精度" :name="name.concat(['scale'])" v-if="['float', 'double'].includes(_value.type)">
     <j-input-number v-model:value="_value.scale" size="small" :min="0" :max="2147483647" :precision="0"
-      style="width: 100%"></j-input-number>
+      style="width: 100%" placeholder="请输入精度"></j-input-number>
   </j-form-item>
   <j-form-item label="布尔值" name="booleanConfig" v-if="['boolean'].includes(_value.type)">
     <BooleanParam :name="name" v-model:value="_value"></BooleanParam>
@@ -26,12 +26,13 @@
       <j-space>
         最大长度
         <j-tooltip title="字节">
-          <question-circle-outlined style="color: rgb(136, 136, 136); font-size: 12px;" />
+          <AIcon type="QuestionCircleOutlined" style="color: rgb(136, 136, 136); font-size: 12px;" />
+          <!-- <question-circle-outlined style="color: rgb(136, 136, 136); font-size: 12px;" /> -->
         </j-tooltip>
       </j-space>
     </template>
     <j-input-number v-model:value="_value.expands.maxLength" size="small" :max="2147483647" :min="1" :precision="0"
-      style="width: 100%;"></j-input-number>
+      style="width: 100%;" placeholder="请输入最大长度"></j-input-number>
   </j-form-item>
   <j-form-item label="元素配置" :name="name.concat(['elementType'])" v-if="['array'].includes(_value.type)" :rules="[
     { validator: validateArray }
@@ -47,7 +48,7 @@
     :rules="[
       { required: true, message: '请选择文件类型' },
     ]">
-    <j-select v-model:value="_value.fileType" :options="FileTypeList" size="small"></j-select>
+    <j-select v-model:value="_value.fileType" :options="FileTypeList" size="small" placeholder="请选择文件类型"></j-select>
   </j-form-item>
 </template>
 <script lang="ts" setup mame="BaseForm">
@@ -151,6 +152,9 @@ const eventDataTypeList = [
 const changeType = (val: SelectValue) => {
   if (['float', 'double'].includes(_value.value.type) && _value.value.scale === undefined) {
     _value.value.scale = 2
+  }
+  if (['file'].includes(val as string)) {
+    _value.value.fileType = _value.value.fileType || 'url'
   }
   emit('changeType', val as string)
 }

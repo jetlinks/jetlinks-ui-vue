@@ -59,10 +59,12 @@ import { detail as deviceDetail } from '@/api/device/instance'
 import Product from './Product.vue'
 import DeviceSelect from './DeviceSelect.vue'
 import Type from './Type.vue'
-import {continuousValue, handleTimerOptions, timeUnitEnum} from '@/views/rule-engine/Scene/Save/components/Timer/util'
+import { handleTimerOptions } from '@/views/rule-engine/Scene/Save/components/Timer/util'
+import { Form } from 'jetlinks-ui-components'
 
 type Emit = {
   (e: 'cancel'): void
+  (e: 'change', data: TriggerDevice): void
   (e: 'save', data: TriggerDevice, options: Record<string, any>): void
 }
 
@@ -76,6 +78,7 @@ interface AddModelType extends Omit<TriggerDevice, 'selectorValues'> {
   metadata: metadataType,
   operator: TriggerDeviceOptions
 }
+const formItemContext = Form.useInjectFormItemContext();
 
 const emit = defineEmits<Emit>()
 const typeRef = ref()
@@ -165,26 +168,6 @@ const handleOptions = (data: TriggerDeviceOptions) => {
     _options.when = when;
     _options.time = time;
     _options.extraTime = extraTime;
-    // if (_timer.trigger === 'cron') {
-    //   _options.time = _timer.cron;
-    // } else {
-    //   // console.log('continuousValue', continuousValue(_timer.when! || [], _timer!.trigger))
-    //   let whenStr = '每天';
-    //   if (_timer.when!.length) {
-    //     whenStr = _timer!.trigger === 'week' ? '每周' : '每月';
-    //     const whenStrArr = continuousValue(_timer.when! || [], _timer!.trigger);
-    //     const whenStrArr3 = whenStrArr.splice(0, 3);
-    //     whenStr += whenStrArr3.join('、');
-    //     whenStr += `等${_timer.when!.length}天`;
-    //   }
-    //   _options.when = whenStr;
-    //   if (_timer.once) {
-    //     _options.time = _timer.once.time + ' 执行1次';
-    //   } else if (_timer.period) {
-    //     _options.time = _timer.period.from + '-' + _timer.period.to;
-    //     _options.extraTime = `每${_timer.period.every}${timeUnitEnum[_timer.period.unit]}执行1次`;
-    //   }
-    // }
   }
 
   if (data.operator === 'online') {
@@ -257,12 +240,13 @@ const save = async (step?: number) => {
       optionsCache.value.action = typeData.action
       const _options = handleOptions(typeData.data);
       const data = {
-        operator: typeData.data,
+        operation: typeData.data,
         selector: addModel.selector,
         selectorValues: addModel.selectorValues,
         productId: addModel.productId
       }
       emit('save', data, _options)
+      formItemContext.onFieldChange()
     }
   }
 }

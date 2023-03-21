@@ -97,7 +97,7 @@ import { unbindScene } from '@/api/rule-engine/configuration';
 import { useRoute } from 'vue-router';
 import type { ActionsType } from '@/components/Table';
 import { getImage } from '@/utils/comm';
-import { message } from 'ant-design-vue/es';
+import { message } from 'jetlinks-ui-components';
 import Save from './save/index.vue';
 import { useAlarmConfigurationStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';

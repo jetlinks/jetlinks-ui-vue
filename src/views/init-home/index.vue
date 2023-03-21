@@ -65,33 +65,16 @@ import Basic from './Basic/index.vue';
 import Role from './Role/index.vue';
 import Menu from './Menu/index.vue';
 import InitData from './InitData/index.vue';
-import {
-    PlusOutlined,
-    ExclamationCircleOutlined,
-    LoadingOutlined,
-} from '@ant-design/icons-vue';
-
-import type {
-    FormInstance,
-    UploadChangeParam,
-    UploadProps,
-} from 'ant-design-vue';
 import { modalState, formState, logoState } from './data/interface';
 import { saveInit } from '@/api/initHome';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { FILE_UPLOAD } from '@/api/comm';
 import { LocalStore } from '@/utils/comm';
-import { message } from 'ant-design-vue';
-import { Form } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 const basicRef = ref();
 const roleRef = ref();
 const initDataRef = ref();
 const loading = ref(false);
-// const useForm = Form.useForm;
-// const { resetFields, validate, validateInfos } = useForm(
-//     modalForm.value,
-//     rulesModle.value,
-// );
 /**
  * 默认打开第一个初始菜单
  */

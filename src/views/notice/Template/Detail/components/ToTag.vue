@@ -2,7 +2,7 @@
     <j-select
         :options="options"
         @change="change"
-        placeholder="请选择标签推送，多个标签用,号分隔"
+        placeholder="请选择标签推送"
         style="width: 100%"
         :allowClear="true"
         v-model:value="_value"

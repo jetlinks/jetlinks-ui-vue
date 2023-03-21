@@ -22,15 +22,15 @@
                   message: 'ID只能由数字、字母、下划线、中划线组成',
                 },
               ]">
-                <j-input v-model:value="_value[index].id" size="small"></j-input>
+                <j-input v-model:value="_value[index].id" size="small" placeholder="请输入标识"></j-input>
               </j-form-item>
               <j-form-item label="名称" :name="name.concat([index, 'name'])" :rules="[
                 { required: true, message: '请输入名称' },
                 { max: 64, message: '最多可输入64个字符' },
               ]">
-                <j-input v-model:value="_value[index].name" size="small"></j-input>
+                <j-input v-model:value="_value[index].name" size="small" placeholder="请输入名称"></j-input>
               </j-form-item>
-              <value-type-form v-model:value="_value[index].valueType" :name="name.concat([index, 'valueType'])" isSub
+              <value-type-form v-model:value="_value[index].valueType" :name="name.concat([index, 'valueType'])" :isSub="isSub"
                 key="json_sub"></value-type-form>
             </div>
           </template>
@@ -69,6 +69,10 @@ const props = defineProps({
   name: {
     type: Array as PropType<(string | number)[]>,
     default: () => ([])
+  },
+  isSub: {
+    type: Boolean,
+    default: true
   }
 })
 

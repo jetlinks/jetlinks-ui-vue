@@ -17,8 +17,7 @@
       <j-form-item label="选择产品" v-bind="validateInfos.copy" v-if="formModel.type === 'copy'">
         <j-select :options="productList" v-model:value="formModel.copy" option-filter-prop="label"></j-select>
       </j-form-item>
-      <j-form-item label="物模型类型" v-bind="validateInfos.metadata"
-        v-if="type === 'device' || formModel.type === 'import'">
+      <j-form-item label="物模型类型" v-bind="validateInfos.metadata" v-if="type === 'device' || formModel.type === 'import'">
         <j-select v-model:value="formModel.metadata">
           <j-select-option value="jetlinks">Jetlinks物模型</j-select-option>
           <j-select-option value="alink">阿里云物模型TSL</j-select-option>
@@ -34,16 +33,23 @@
       <j-form-item label="文件上传" v-bind="validateInfos.upload" v-if="formModel.metadataType === 'file'">
         <j-input v-model:value="formModel.upload">
           <template #addonAfter>
-            <j-upload v-model:file-list="fileList" :before-upload="beforeUpload" accept=".json"
-              :show-upload-list="false" :action="FILE_UPLOAD" @change="fileChange"
-              :headers="{ 'X-Access-Token':  getToken()}">
+            <j-upload v-model:file-list="fileList" :before-upload="beforeUpload" accept=".json" :show-upload-list="false"
+              :action="FILE_UPLOAD" @change="fileChange" :headers="{ 'X-Access-Token': getToken() }">
               <AIcon type="UploadOutlined" class="upload-button" />
             </j-upload>
           </template>
         </j-input>
       </j-form-item>
-      <j-form-item label="物模型" v-bind="validateInfos.import" v-if="formModel.metadataType === 'script'">
-        <MonacoEditor v-model="formModel.import" theme="vs" style="height: 300px"></MonacoEditor>
+      <j-form-item v-bind="validateInfos.import" v-if="(type === 'device' || formModel.type === 'import') && formModel.metadataType === 'script'">
+        <template #label>
+          <j-space>
+            物模型
+            <j-tooltip title="在线编辑器中编写物模型脚本">
+              <AIcon type="QuestionCircleOutlined" style="color: rgb(136, 136, 136);"/>
+            </j-tooltip>
+          </j-space>
+        </template>
+        <JMonacoEditor v-model="formModel.import" theme="vs" style="height: 300px" lang="javascript"></JMonacoEditor>
       </j-form-item>
     </j-form>
   </j-modal>
@@ -60,7 +66,6 @@ import { useInstanceStore } from '@/store/instance'
 import { useProductStore } from '@/store/product';
 import { FILE_UPLOAD } from '@/api/comm';
 import { getToken } from '@/utils/comm';
-import MonacoEditor from '@/components/MonacoEditor/index.vue'
 import { useMetadataStore } from '@/store/metadata';
 
 const route = useRoute()
@@ -250,7 +255,7 @@ const handleImport = async () => {
           resp = await modify(id as string, params)
         }
         loading.value = false
-        if (resp.status === 200) {
+        if (resp.success) {
           if (props?.type === 'device') {
             const detail = instanceStore.current
             detail.metadata = paramsDevice
@@ -290,9 +295,10 @@ const handleImport = async () => {
     padding: 10px;
   }
 }
+
 .upload-button {
   width: 37px;
-  height: 30px; 
+  height: 30px;
   line-height: 30px;
   margin: 0 -11px;
 }

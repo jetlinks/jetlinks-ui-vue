@@ -123,7 +123,11 @@
                     </j-form-item>
                 </j-col>
                 <j-col :span="24">
-                    <j-form-item name="address" label="安装地址">
+                    <j-form-item
+                        name="address"
+                        label="安装地址"
+                        :rules="{ max: 64, message: '最多可输入64个字符' }"
+                    >
                         <j-input
                             v-model:value="formData.address"
                             placeholder="请输入安装地址"

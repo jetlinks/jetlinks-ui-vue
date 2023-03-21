@@ -85,7 +85,7 @@
 import { query } from '@/api/rule-engine/scene';
 import { bindScene } from '@/api/rule-engine/configuration';
 import { getImage } from '@/utils/comm';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 const columns = [
     {
         title: '名称',

@@ -109,7 +109,7 @@ const save = reactive({
           if (props?.type === 'device') {
             instanceStore.refresh(id as string)
           } else {
-            productStore.refresh(id as string)
+            productStore.getDetail(id as string)
           }
           // Store.set(SystemConst.REFRESH_METADATA_TABLE, true);
           if (deploy) {
@@ -125,7 +125,7 @@ const save = reactive({
             }
             // Store.set('product-deploy', deploy);
           } else {
-            save.resetMetadata();
+            // save.resetMetadata();
             message.success({
               key: 'metadata',
               content: '操作成功！',
@@ -133,9 +133,9 @@ const save = reactive({
           }
           metadataStore.set('edit', false)
           metadataStore.set('item', {})
-          if (instanceStore.detail) {
-            instanceStore.detail.independentMetadata = true;
-          }
+          // if (props?.type === 'device' && instanceStore.detail) {
+          //   instanceStore.detail.independentMetadata = true;
+          // }
         }
       } else {
         message.error('操作失败！');

@@ -1,5 +1,5 @@
 <template>
-  <a-modal :mask-closable="false" visible width="70vw" title="设置属性规则" @cancel="handleCancel" @ok="handleOk">
+  <j-modal :mask-closable="false" visible width="70vw" title="设置属性规则" @cancel="handleCancel" @ok="handleOk">
     <div class="advance-box">
         <div class="left">
           <Editor
@@ -20,7 +20,7 @@
           <Operator :id="id" @add-operator-value="addOperatorValue"/>
         </div>
       </div>
-  </a-modal>
+  </j-modal>
 </template>
 <script setup lang="ts" name="Advance">
 import Editor from '../Editor/index.vue'

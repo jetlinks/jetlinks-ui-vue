@@ -12,28 +12,28 @@
           </div>
         </div>
       </div>
-      <a-table :columns="columns" :data-source="property" :pagination="false" bordered size="small">
+      <j-table :columns="columns" :data-source="property" :pagination="false" bordered size="small">
         <template #bodyCell="{ column, record, index }">
           <template v-if="column.key === 'id'">
             <j-auto-complete :options="options" v-model:value="record.id" size="small" width="130px"/>
           </template>
           <template v-if="column.key === 'current'">
-            <a-input v-model:value="record.current" size="small"></a-input>
+            <j-input v-model:value="record.current" size="small"></j-input>
           </template>
           <template v-if="column.key === 'last'">
-            <a-input v-model:value="record.last" size="small"></a-input>
+            <j-input v-model:value="record.last" size="small"></j-input>
           </template>
           <template v-if="column.key === 'action'">
-            <delete-outlined @click="deleteItem(index)" />
+            <AIcon type="DeleteOutlined" @click="deleteItem(index)" />
           </template>
         </template>
-      </a-table>
-      <a-button type="dashed" block style="margin-top: 5px" @click="addItem">
+      </j-table>
+      <j-button type="dashed" block style="margin-top: 5px" @click="addItem">
         <template #icon>
-          <plus-outlined />
+          <AIcon type="PlusOutlined" />
         </template>
         添加条目
-      </a-button>
+      </j-button>
     </div>
     <div class="right">
       <div class="header">
@@ -57,15 +57,14 @@
         </div>
       </div>
       <div class="log">
-        <a-descriptions>
-          <a-descriptions-item v-for="item in ruleEditorStore.state.log" :label="moment(item.time).format('HH:mm:ss')"
+        <j-descriptions>
+          <j-descriptions-item v-for="item in ruleEditorStore.state.log" :label="moment(item.time).format('HH:mm:ss')"
             :key="item.time" :span="3">
-            <a-tooltip placement="top" :title="item.content">
+            <j-tooltip placement="top" :title="item.content">
               {{ item.content }}
-            </a-tooltip>
-          </a-descriptions-item>
-          ))}
-        </a-descriptions>
+            </j-tooltip>
+          </j-descriptions-item>
+        </j-descriptions>
       </div>
     </div>
   </div>

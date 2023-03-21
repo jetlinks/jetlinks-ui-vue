@@ -49,7 +49,7 @@
                             pageSize: pageSize,
                             pageSizeOptions: ['5', '10', '20', '50', '100'],
                             showSizeChanger: true,
-                            hideOnSinglePage: true,
+                            hideOnSinglePage: false,
                             showTotal: (total: number, range: number) => `第 ${range[0]} - ${range[1]} 条/总共 ${total} 条`,
                         }"
                         @change="handleTableChange"
@@ -196,11 +196,19 @@ const getDepartment = async () => {
     deptId.value = _result[0]?.id;
 };
 
+watch(
+    () => deptName.value,
+    (val: any) => {
+        if (!val) getDepartment();
+    },
+);
+
 /**
  * 部门点击
  */
 const onTreeSelect = (keys: any) => {
     deptId.value = keys[0];
+    pageSize.value = 5;
 };
 
 // 右侧表格

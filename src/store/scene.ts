@@ -33,7 +33,10 @@ export const defaultBranches = [
         terms: [
           {
             column: undefined,
-            value: undefined,
+            value: {
+              source: 'fixed',
+              value: undefined
+            },
             termType: undefined,
             key: 'params_1',
             type: 'and',
@@ -89,6 +92,8 @@ export const useSceneStore = defineStore('scene', () => {
         branches = cloneDeep(defaultBranches)
         if (triggerType === 'device') {
           branches.push(null)
+        } else {
+          branches[0].when.length = []
         }
       } else {
         const branchesLength = branches.length;

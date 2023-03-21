@@ -1,13 +1,15 @@
 <template>
-  <j-form-item
-    :rules="actionRules"
-    :name="['branches', 0, 'then']"
-  >
-    <Action
-      :thenOptions="data.branches ? data?.branches[0].then : []"
-      :name="0"
-    />
-  </j-form-item>
+  <div class='actions-branches-item'>
+    <j-form-item
+      :rules="actionRules"
+      :name="['branches', 0, 'then']"
+    >
+      <Action
+        :thenOptions="data.branches ? data?.branches[0].then : []"
+        :name="0"
+      />
+    </j-form-item>
+  </div>
 </template>
 
 <script lang="ts" setup name='SceneSaveManual'>
@@ -21,7 +23,6 @@ const { data } = storeToRefs(sceneStore);
 
 const actionRules = [{
   validator(_: any, v?: BranchesThen[]) {
-    console.log(_, v)
     if (!v || (v && !v.length) || (v && v.length && !v[0].actions.length)) {
       return Promise.reject('至少配置一个执行动作');
     }

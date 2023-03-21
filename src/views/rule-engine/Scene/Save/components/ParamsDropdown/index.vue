@@ -9,7 +9,9 @@
       <slot :label='label'>
         <div class='dropdown-button value'>
             <AIcon v-if='!!icon' :type='icon' />
-            {{ label }}
+            <Ellipsis style='max-width: 220px;'>
+              {{ label }}
+            </Ellipsis>
         </div>
       </slot>
     </div>

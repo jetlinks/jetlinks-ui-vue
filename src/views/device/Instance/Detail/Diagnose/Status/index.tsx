@@ -119,6 +119,7 @@ const Status = defineComponent({
                                                     <span>网络组件已禁用，请先
                                                         <PermissionButton
                                                             type="link"
+                                                            style="padding: 0"
                                                             hasPermission="link/Type:action"
                                                             popConfirm={{
                                                                 title: '确认启用',
@@ -288,6 +289,8 @@ const Status = defineComponent({
                                                     text={<span>设备接入网关已禁用，请先
                                                         <PermissionButton
                                                             hasPermission="link/Type:action"
+                                                            type="link"
+                                                            style="padding: 0"
                                                             popConfirm={{
                                                                 title: '确认启用',
                                                                 onConfirm: async () => {
@@ -416,6 +419,8 @@ const Status = defineComponent({
                                                     设备接入网关已禁用，请先
                                                     <PermissionButton
                                                         hasPermission="link/AccessConfig:action"
+                                                        type="link"
+                                                        style="padding: 0"
                                                         popConfirm={{
                                                             title: '确认启用',
                                                             onConfirm: async () => {
@@ -528,6 +533,8 @@ const Status = defineComponent({
                                                         网关父设备已禁用，请先
                                                         <PermissionButton
                                                             hasPermission="device/Product:action"
+                                                            type="link"
+                                                            style="padding: 0"
                                                             popConfirm={{
                                                                 title: '确认启用',
                                                                 onConfirm: async () => {
@@ -636,6 +643,8 @@ const Status = defineComponent({
                                                         产品已禁用，请
                                                         <PermissionButton
                                                             hasPermission="device/Product:action"
+                                                            type="link"
+                                                            style="padding: 0"
                                                             popConfirm={{
                                                                 title: '确认启用',
                                                                 onConfirm: async () => {
@@ -712,6 +721,8 @@ const Status = defineComponent({
                                                 设备已禁用，请
                                                 <PermissionButton
                                                     hasPermission="device/Instance:action"
+                                                    type="link"
+                                                    style="padding: 0"
                                                     popConfirm={{
                                                         title: '确认启用',
                                                         onConfirm: async () => {
@@ -1720,6 +1731,8 @@ const Status = defineComponent({
                                                                 网关父设备已禁用，请先
                                                                 <PermissionButton
                                                                     hasPermission="device/Product:action"
+                                                                    type="link"
+                                                                    style="padding: 0"
                                                                     popConfirm={{
                                                                         title: '确认启用',
                                                                         onConfirm: async () => {

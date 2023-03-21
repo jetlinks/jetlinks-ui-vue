@@ -168,6 +168,7 @@
                         :key="i.key"
                     >
                         <PermissionButton
+                            :danger="i.key === 'delete'"
                             :disabled="i.disabled"
                             :popConfirm="i.popConfirm"
                             :tooltip="{

@@ -129,9 +129,8 @@ import {
     deployDevice,
 } from '@/api/initHome';
 import { modalState } from '../data/interface';
-import { ValidateErrorEntity } from 'ant-design-vue/es/form/interface';
 import type { Rule } from 'ant-design-vue/es/form';
-import { message } from 'ant-design-vue/es';
+import { message } from 'jetlinks-ui-components';
 const formRef = ref();
 /**
  * 初始化数据状态
@@ -315,7 +314,7 @@ const saveCurrentData = () => {
                     resolve(false);
                 }
             })
-            .catch((error: ValidateErrorEntity<modalState>) => {
+            .catch(() => {
                 resolve(false);
             });
     });

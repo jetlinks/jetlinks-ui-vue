@@ -269,7 +269,7 @@
                                     v-model:value="
                                         formData.configuration.secret
                                     "
-                                    placeholder="Secret"
+                                    placeholder="请输入Secret"
                                 />
                             </j-form-item>
                         </template>
@@ -493,33 +493,33 @@ const handleSslChange = () => {
 const resetPublicFiles = () => {
     switch (formData.value.provider) {
         case 'dingTalkMessage':
-            formData.value.configuration.appKey = '';
-            formData.value.configuration.appSecret = '';
+            formData.value.configuration.appKey = undefined;
+            formData.value.configuration.appSecret = undefined;
             break;
         case 'dingTalkRobotWebHook':
-            formData.value.configuration.url = '';
+            formData.value.configuration.url = undefined;
             break;
         case 'corpMessage':
-            formData.value.configuration.corpId = '';
-            formData.value.configuration.corpSecret = '';
+            formData.value.configuration.corpId = undefined;
+            formData.value.configuration.corpSecret = undefined;
             break;
         case 'embedded':
-            formData.value.configuration.host = '';
+            formData.value.configuration.host = undefined;
             formData.value.configuration.port = 25;
             formData.value.configuration.ssl = false;
-            formData.value.configuration.sender = '';
-            formData.value.configuration.username = '';
-            formData.value.configuration.password = '';
+            formData.value.configuration.sender = undefined;
+            formData.value.configuration.username = undefined;
+            formData.value.configuration.password = undefined;
             break;
         case 'aliyun':
-            formData.value.configuration.regionId = '';
-            formData.value.configuration.accessKeyId = '';
-            formData.value.configuration.secret = '';
+            formData.value.configuration.regionId = undefined;
+            formData.value.configuration.accessKeyId = undefined;
+            formData.value.configuration.secret = undefined;
             break;
         case 'aliyunSms':
-            formData.value.configuration.regionId = '';
-            formData.value.configuration.accessKeyId = '';
-            formData.value.configuration.secret = '';
+            formData.value.configuration.regionId = undefined;
+            formData.value.configuration.accessKeyId = undefined;
+            formData.value.configuration.secret = undefined;
             break;
         case 'http':
             formData.value.configuration.url = undefined;

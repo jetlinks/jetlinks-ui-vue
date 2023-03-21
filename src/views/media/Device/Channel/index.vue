@@ -79,8 +79,10 @@
                                         :disabled="i.disabled"
                                         style="padding: 0"
                                         type="link"
-                                        ><AIcon :type="i.icon"
-                                    /></j-button>
+                                        :danger="i.key === 'delete'"
+                                    >
+                                        <AIcon :type="i.icon" />
+                                    </j-button>
                                 </j-popconfirm>
                                 <j-button
                                     style="padding: 0"
@@ -92,8 +94,9 @@
                                         :disabled="i.disabled"
                                         style="padding: 0"
                                         type="link"
-                                        ><AIcon :type="i.icon"
-                                    /></j-button>
+                                    >
+                                        <AIcon :type="i.icon" />
+                                    </j-button>
                                 </j-button>
                             </j-tooltip>
                         </j-space>

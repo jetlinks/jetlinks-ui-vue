@@ -18,13 +18,13 @@
                 { required: true, message: '请输入Value' },
                 { max: 64, message: '最多可输入64个字符' },
               ]">
-                <j-input v-model:value="_value[index].value" size="small"></j-input>
+                <j-input v-model:value="_value[index].value" size="small" placeholder="请输入Value"></j-input>
               </j-form-item>
               <j-form-item label="Text" :name="name.concat([index, 'text'])" :rules="[
                 { required: true, message: '请输入Text' },
                 { max: 64, message: '最多可输入64个字符' },
               ]">
-                <j-input v-model:value="_value[index].text" size="small"></j-input>
+                <j-input v-model:value="_value[index].text" size="small" placeholder="请输入Text"></j-input>
               </j-form-item>
             </div>
           </template>

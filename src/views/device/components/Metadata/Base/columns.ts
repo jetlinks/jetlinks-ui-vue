@@ -1,4 +1,4 @@
-import { JColumnProps } from "@/components/Table";
+import { ColumnProps } from "ant-design-vue/es/table";
 
 const SourceMap = {
   device: '设备',
@@ -12,7 +12,7 @@ const type = {
   report: '上报',
 };
 
-const BaseColumns: JColumnProps[] = [
+const BaseColumns: ColumnProps[] = [
   {
     title: '标识',
     dataIndex: 'id',
@@ -30,19 +30,17 @@ const BaseColumns: JColumnProps[] = [
   },
 ];
 
-const EventColumns: JColumnProps[] = BaseColumns.concat([
+const EventColumns: ColumnProps[] = BaseColumns.concat([
   {
     title: '事件级别',
     dataIndex: 'level',
-    scopedSlots: true,
   },
 ]);
 
-const FunctionColumns: JColumnProps[] = BaseColumns.concat([
+const FunctionColumns: ColumnProps[] = BaseColumns.concat([
   {
     title: '是否异步',
     dataIndex: 'async',
-    scopedSlots: true,
   },
   // {
   //   title: '读写类型',
@@ -51,38 +49,33 @@ const FunctionColumns: JColumnProps[] = BaseColumns.concat([
   // },
 ]);
 
-const PropertyColumns: JColumnProps[] = BaseColumns.concat([
+const PropertyColumns: ColumnProps[] = BaseColumns.concat([
   {
     title: '数据类型',
     dataIndex: 'valueType',
-    scopedSlots: true,
   },
   {
     title: '属性来源',
     dataIndex: 'source',
-    scopedSlots: true,
   },
   {
     title: '读写类型',
     dataIndex: 'type',
-    scopedSlots: true,
   },
 ]);
 
-const TagColumns: JColumnProps[] = BaseColumns.concat([
+const TagColumns: ColumnProps[] = BaseColumns.concat([
   {
     title: '数据类型',
     dataIndex: 'valueType',
-    scopedSlots: true,
   },
   {
     title: '读写类型',
     dataIndex: 'type',
-    scopedSlots: true,
   },
 ]);
 
-const MetadataMapping = new Map<string, JColumnProps[]>();
+const MetadataMapping = new Map<string, ColumnProps[]>();
 MetadataMapping.set('properties', PropertyColumns);
 MetadataMapping.set('events', EventColumns);
 MetadataMapping.set('tags', TagColumns);

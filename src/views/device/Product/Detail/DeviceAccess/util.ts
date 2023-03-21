@@ -1,9 +1,9 @@
 //引导页数据
 export const steps = [
   {
-    element: '#rc-tabs-0-tab-Metadata',
+    element: '.objectModel',
     popover: {
-      id: 'driver',
+      className: 'driver',
       title: `<div id='title'>配置物模型</div><div id='guide'>1/3</div>`,
       description: `配置产品物模型，实现设备在云端的功能描述。`,
       position: 'bottom',
@@ -40,7 +40,7 @@ export const steps1 = [
     },
   },
   {
-    element: '#rc-tabs-0-tab-Metadata',
+    element: '.objectModel',
     popover: {
       className: 'driver',
       title: `<div id='title'>配置物模型</div><div id='guide'>2/4</div>`,

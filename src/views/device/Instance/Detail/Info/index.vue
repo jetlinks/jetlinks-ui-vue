@@ -13,16 +13,16 @@
                 </PermissionButton>
             </template>
             <j-descriptions-item label="设备ID">{{
-                instanceStore.current.id
+                instanceStore.current?.id
             }}</j-descriptions-item>
             <j-descriptions-item label="产品名称">{{
-                instanceStore.current.productName
+                instanceStore.current?.productName
             }}</j-descriptions-item>
             <j-descriptions-item label="产品分类">{{
-                instanceStore.current.classifiedName
+                instanceStore.current?.classifiedName
             }}</j-descriptions-item>
             <j-descriptions-item label="设备类型">{{
-                instanceStore.current.deviceType?.text
+                instanceStore.current?.deviceType?.text
             }}</j-descriptions-item>
             <j-descriptions-item label="固件版本">{{
                 instanceStore.current?.firmwareInfo?.version
@@ -31,25 +31,25 @@
                 instanceStore.current?.transport
             }}</j-descriptions-item>
             <j-descriptions-item label="消息协议">{{
-                instanceStore.current.protocolName
+                instanceStore.current?.protocolName
             }}</j-descriptions-item>
             <j-descriptions-item label="创建时间">{{
-                instanceStore.current.createTime
-                    ? moment(instanceStore.current.createTime).format(
+                instanceStore.current?.createTime
+                    ? moment(instanceStore.current?.createTime).format(
                           'YYYY-MM-DD HH:mm:ss',
                       )
                     : ''
             }}</j-descriptions-item>
             <j-descriptions-item label="注册时间">{{
-                instanceStore.current.registerTime
-                    ? moment(instanceStore.current.registerTime).format(
+                instanceStore.current?.registerTime
+                    ? moment(instanceStore.current?.registerTime).format(
                           'YYYY-MM-DD HH:mm:ss',
                       )
                     : ''
             }}</j-descriptions-item>
             <j-descriptions-item label="最后上线时间">{{
-                instanceStore.current.onlineTime
-                    ? moment(instanceStore.current.onlineTime).format(
+                instanceStore.current?.onlineTime
+                    ? moment(instanceStore.current?.onlineTime).format(
                           'YYYY-MM-DD HH:mm:ss',
                       )
                     : ''
@@ -57,12 +57,12 @@
             <j-descriptions-item
                 label="父设备"
                 v-if="
-                    instanceStore.current.deviceType?.value === 'childrenDevice'
+                    instanceStore.current?.deviceType?.value === 'childrenDevice'
                 "
-                >{{ instanceStore.current.parentId }}</j-descriptions-item
+                >{{ instanceStore.current?.parentId }}</j-descriptions-item
             >
             <j-descriptions-item label="说明">{{
-                instanceStore.current.description
+                instanceStore.current?.description
             }}</j-descriptions-item>
         </j-descriptions>
         <Config />

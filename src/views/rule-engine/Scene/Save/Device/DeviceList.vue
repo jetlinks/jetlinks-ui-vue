@@ -75,7 +75,6 @@ type Emit = {
 }
 
 const params = ref({})
-const context = inject('SceneDeviceAddModel')
 const props = defineProps({
   rowKeys: {
     type: Array as PropType<SelectorValuesItem[]>,

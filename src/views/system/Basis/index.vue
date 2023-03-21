@@ -406,13 +406,16 @@ const uploader: uploaderType = {
         'image/pjp',
         'image/pjpeg',
     ],
+    // imageTypes: ['.jpg','.png','.jfif','.pjp','.pjpeg','.jpeg'],
     iconTypes: ['image/x-icon'],
     // logo格式校验
-    beforeLogoUpload: ({ size, type }: File) => {
+    // beforeLogoUpload: ({ size, type }: File) => {
+    beforeLogoUpload: (file: File) => {
+        console.log('file: ', file);
         const typeBool =
-            uploader.imageTypes.filter((typeStr) => type.includes(typeStr))
+            uploader.imageTypes.filter((typeStr) => file.type.includes(typeStr))
                 .length > 0;
-        const sizeBool = size / 1024 / 1024 < 4;
+        const sizeBool = file.size / 1024 / 1024 < 4;
         if (!typeBool) {
             message.error(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`);
         } else if (!sizeBool) {

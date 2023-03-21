@@ -112,7 +112,7 @@ import {
     getDeviceNumber,
     getProtocolDetail,
 } from '@/api/device/product';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { getImage } from '@/utils/comm';
 import encodeQuery from '@/utils/encodeQuery';
 import { useMenuStore } from '@/store/menu';
@@ -141,6 +141,7 @@ const list = ref([
     {
         key: 'Metadata',
         tab: '物模型',
+        class:'objectModel'
     },
     {
         key: 'Device',
