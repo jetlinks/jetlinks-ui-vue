@@ -240,7 +240,7 @@ import {
 import { intersection } from 'lodash-es';
 
 import type { dictType } from '../typing.d.ts';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 const permission = 'system/Department';
 

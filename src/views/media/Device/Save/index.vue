@@ -297,7 +297,7 @@
 
 <script setup lang="ts">
 import { getImage } from '@/utils/comm';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import DeviceApi from '@/api/media/device';
 import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
 import type { ProductType } from '@/views/media/Device/typings';

@@ -135,7 +135,7 @@
 <script setup lang="ts" name="SyncUser">
 import configApi from '@/api/notice/config';
 import { PropType } from 'vue';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import type { ActionsType } from '@/views/device/Instance/typings';
 import { Form } from 'ant-design-vue';
 

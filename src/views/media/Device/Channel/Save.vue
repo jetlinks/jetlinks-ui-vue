@@ -167,7 +167,7 @@
 <script setup lang="ts">
 import ChannelApi from '@/api/media/channel';
 import { PropType } from 'vue';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import type { Rule } from 'ant-design-vue/es/form';
 
 const route = useRoute();

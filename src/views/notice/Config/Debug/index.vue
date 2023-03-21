@@ -96,7 +96,7 @@ import type {
     TemplateFormData,
     IVariableDefinitions,
 } from '@/views/notice/Template/types';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 import ToUser from '@/views/notice/Template/Detail/components/ToUser.vue';
 import ToOrg from '@/views/notice/Template/Detail/components/ToOrg.vue';

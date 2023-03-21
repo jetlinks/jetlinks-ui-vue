@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import type { dictType, optionsType } from '../typing';
 import { updatePermission_api } from '@/api/system/department';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 const emits = defineEmits(['confirm', 'update:visible']);
 const props = defineProps<{

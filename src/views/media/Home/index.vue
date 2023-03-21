@@ -93,7 +93,7 @@ import { usePermissionStore } from '@/store/permission';
 import type { bootConfig, recommendList } from '@/views/home/typing';
 
 import deviceApi from '@/api/media/device';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 import { useMenuStore } from 'store/menu';
 

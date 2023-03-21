@@ -70,7 +70,7 @@
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import AddDialog from './components/AddDialog.vue';
 import { getRoleList_api, delRole_api } from '@/api/system/role';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { useMenuStore } from '@/store/menu';
 
 const permission = 'system/Role';

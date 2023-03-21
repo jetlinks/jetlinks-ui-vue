@@ -45,7 +45,7 @@
 
 <script setup lang="ts">
 import { ComponentInternalInstance } from 'vue';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { useInstanceStore } from '@/store/instance';
 import { execute } from '@/api/device/instance';
 

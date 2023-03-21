@@ -92,7 +92,7 @@ import { debounce, cloneDeep, omit } from 'lodash-es';
 import { ArrayToTree } from '@/utils/utils';
 import EditDepartmentDialog from './EditDepartmentDialog.vue';
 
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 const permission = 'system/Department';
 

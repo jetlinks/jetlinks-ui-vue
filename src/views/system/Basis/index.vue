@@ -286,7 +286,7 @@
 <script setup lang="ts" name="Basis">
 import { formType, uploaderType } from './typing';
 import { getImage } from '@/utils/comm.ts';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { LocalStore } from '@/utils/comm';
 

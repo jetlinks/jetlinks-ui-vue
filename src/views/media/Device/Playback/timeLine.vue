@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import type { recordsItemType } from './typings';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
