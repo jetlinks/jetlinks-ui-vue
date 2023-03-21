@@ -348,9 +348,10 @@ const form = reactive<formType>({
             headerTheme: configInfo.front?.headerTheme,
             logo: configInfo.front?.logo || '/public/logo.png',
             ico: configInfo.front?.ico || '/public/favicon.ico',
-            backgroud: configInfo.front?.backgroud || '/public/images/login.png',
+            backgroud:
+                configInfo.front?.backgroud || '/public/images/login.png',
             apiKey: configInfo.amap?.apiKey,
-            "base-path": configInfo.paths?.['base-path']
+            'base-path': configInfo.paths?.['base-path'],
         };
     },
     clickSave: () => {
@@ -398,23 +399,24 @@ const form = reactive<formType>({
 const { formValue, rulesFrom } = toRefs(form);
 
 const uploader: uploaderType = {
-    imageTypes: [
-        'image/jpg',
-        'image/jpeg',
-        'image/png',
-        'image/jfif',
-        'image/pjp',
-        'image/pjpeg',
-    ],
-    // imageTypes: ['.jpg','.png','.jfif','.pjp','.pjpeg','.jpeg'],
+    // imageTypes: [
+    //     'image/jpg',
+    //     'image/jpeg',
+    //     'image/png',
+    //     'image/jfif',
+    //     'image/pjp',
+    //     'image/pjpeg',
+    // ],
+    imageTypes: ['.jpg', '.png', '.jfif', '.pjp', '.pjpeg', '.jpeg'],
     iconTypes: ['image/x-icon'],
     // logo格式校验
     // beforeLogoUpload: ({ size, type }: File) => {
     beforeLogoUpload: (file: File) => {
         console.log('file: ', file);
         const typeBool =
-            uploader.imageTypes.filter((typeStr) => file.type.includes(typeStr))
-                .length > 0;
+            uploader.imageTypes
+                .map((m: string) => m.split('.')[1])
+                .filter((typeStr) => file.type.includes(typeStr)).length > 0;
         const sizeBool = file.size / 1024 / 1024 < 4;
         if (!typeBool) {
             message.error(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`);

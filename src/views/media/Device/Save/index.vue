@@ -362,6 +362,7 @@ const saveProductVis = ref(false);
  * 获取详情
  */
 const getDetail = async () => {
+    if (!route.query.id) return;
     const res = await DeviceApi.detail(route.query.id as string);
     Object.assign(formData.value, res.result);
     formData.value.channel = res.result.provider;
