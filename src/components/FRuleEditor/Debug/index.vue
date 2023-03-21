@@ -15,7 +15,7 @@
       <j-table :columns="columns" :data-source="property" :pagination="false" bordered size="small">
         <template #bodyCell="{ column, record, index }">
           <template v-if="column.key === 'id'">
-            <j-auto-complete :options="options" v-model:value="record.id" size="small" width="130px"/>
+            <j-auto-complete :options="options" v-model:value="record.id" size="small" style="width: 130px" />
           </template>
           <template v-if="column.key === 'current'">
             <j-input v-model:value="record.current" size="small"></j-input>
@@ -87,8 +87,6 @@ const props = defineProps({
 
 const isBeginning = ref(true)
 
-const runScriptAgain = () => { }
-
 type propertyType = {
   id?: string,
   current?: string,
@@ -154,8 +152,37 @@ const runScript = () => {
     })
   ws.value.subscribe((data: any) => {
     ruleEditorStore.state.log.push({ time: new Date().getTime(), content: JSON.stringify(data.payload) });
+    if (props.virtualRule?.type !== 'window') {
+      stopAction()
+    }
   })
 }
+
+const wsAgain = ref<any>();
+const runScriptAgain = async () => {
+  if (wsAgain.value) {
+    wsAgain.value.unsubscribe?.();
+  }
+  const metadata = productStore.current.metadata || '{}';
+  const propertiesList = JSON.parse(metadata).properties || [];
+  const _properties = property.value.map((item: any) => {
+    const _item = propertiesList.find((i: any) => i.id === item.id);
+    return { ...item, type: _item?.valueType?.type };
+  });
+
+  wsAgain.value = getWebSocket(`virtual-property-debug-${props.id}-${new Date().getTime()}`,
+    '/virtual-property-debug',
+    {
+      virtualId: `${virtualIdRef.value}-virtual-id`,
+      property: props.id,
+      virtualRule: {
+        ...props.virtualRule,
+      },
+      properties: _properties || [],
+    })
+  wsAgain.value.subscribe((data: any) => { })
+}
+
 const beginAction = () => {
   isBeginning.value = false;
   runScript();

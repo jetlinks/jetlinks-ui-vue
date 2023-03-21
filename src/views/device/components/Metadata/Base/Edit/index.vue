@@ -55,7 +55,7 @@ const close = () => {
   metadataStore.set('item', {})
 }
 
-const title = computed(() => metadataStore.model.action === 'add' ? '新增' : '修改')
+const title = computed(() => metadataStore.model.action === 'add' ? '新增' : '编辑')
 
 const form = reactive({
   model: {} as any,

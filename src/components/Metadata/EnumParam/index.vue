@@ -29,7 +29,7 @@
             </div>
           </template>
           <div class="item-edit" @click="handleEdit(index)">
-            {{ item.text || '枚举项配置' }}
+            <Ellipsis>{{ item.text || '枚举项配置' }}</Ellipsis>
             <AIcon type="EditOutlined" class="item-icon" />
           </div>
         </j-popover>
@@ -115,6 +115,10 @@ const handleAdd = () => {
     // }
     .item-edit {
       cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 240px;
     }
 
     .item-icon {

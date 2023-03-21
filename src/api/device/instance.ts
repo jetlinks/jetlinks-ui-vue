@@ -2,7 +2,7 @@ import { LocalStore } from '@/utils/comm'
 import server from '@/utils/request'
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable'
 import { DeviceInstance } from '@/views/device/Instance/typings'
-import { UnitType } from '@/views/device/Product/typings';
+import { DeviceMetadata, UnitType } from '@/views/device/Product/typings';
 
 /**
  * 删除设备物模型
@@ -17,7 +17,7 @@ export const deleteMetadata = (deviceId: string) => server.remove(`/device-insta
  * @param data 物模型
  * @returns 
  */
-export const saveMetadata = (id: string, data: string) => server.put(`/device/instance/${id}/metadata`, data)
+export const saveMetadata = (id: string, data: DeviceMetadata) => server.put(`/device/instance/${id}/metadata`, data)
 
 /**
  * 根据设备ID获取设备详情

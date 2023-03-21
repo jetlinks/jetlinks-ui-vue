@@ -208,13 +208,13 @@ const handleImport = async () => {
     if (data.metadata === 'alink') {
       const res = await convertMetadata('from', 'alink', data.import)
       if (res.status === 200) {
-        const metadata = JSON.stringify(operateLimits(res.result))
+        const metadata = operateLimits(res.result)
         if (props?.type === 'device') {
           await saveMetadata(id as string, metadata)
-          instanceStore.setCurrent(JSON.parse(metadata || '{}'))
+          // instanceStore.setCurrent(JSON.parse(metadata || '{}'))
         } else {
           await modify(id as string, { metadata: metadata })
-          productStore.setCurrent(JSON.parse(metadata || '{}'))
+          // productStore.setCurrent(JSON.parse(metadata || '{}'))
         }
         loading.value = false
         // MetadataAction.insert(JSON.parse(metadata || '{}'));
@@ -247,7 +247,7 @@ const handleImport = async () => {
           id,
           metadata: JSON.stringify(operateLimits(_object as DeviceMetadata)),
         };
-        const paramsDevice = JSON.stringify(operateLimits(_object as DeviceMetadata))
+        const paramsDevice = operateLimits(_object as DeviceMetadata)
         let resp = undefined
         if (props?.type === 'device') {
           resp = await saveMetadata(id as string, paramsDevice)
@@ -258,7 +258,7 @@ const handleImport = async () => {
         if (resp.success) {
           if (props?.type === 'device') {
             const detail = instanceStore.current
-            detail.metadata = paramsDevice
+            detail.metadata = JSON.stringify(paramsDevice)
             instanceStore.setCurrent(detail)
             message.success('导入成功')
           } else {

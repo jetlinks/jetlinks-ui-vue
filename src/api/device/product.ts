@@ -180,7 +180,7 @@ export const updateDevice = (data:any) => server.patch('/device-product',data)
 /**
  * 获取操作符
  */
-export const getOperator = () => server.get<OperatorItem>('/property-calculate-rule/description')
+export const getOperator = () => server.get<OperatorItem[]>('/property-calculate-rule/description')
 
 /**
  * 获取聚合函数列表

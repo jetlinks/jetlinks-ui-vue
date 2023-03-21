@@ -4,6 +4,7 @@
       <j-col :span="12">
         <j-form-item label=" " :name="name.concat(['trueText'])" :rules="[
           { required: true, message: '请输入trueText' },
+          { max: 64, message: '最多可输入64个字符' },
         ]">
           <j-input v-model:value="value.trueText" placeholder="trueText" size="small" />
         </j-form-item>
@@ -11,6 +12,7 @@
       <j-col :span="12">
         <j-form-item label="-" :name="name.concat(['trueValue'])" :rules="[
           { required: true, message: '请输入trueValue' },
+          { max: 64, message: '最多可输入64个字符' },
         ]">
           <j-input v-model:value="value.trueValue" placeholder="trueValue" size="small"/>
         </j-form-item>
@@ -18,6 +20,7 @@
       <j-col :span="12">
         <j-form-item label=" " :name="name.concat(['falseText'])" :rules="[
           { required: true, message: '请输入falseText' },
+          { max: 64, message: '最多可输入64个字符' },
         ]">
           <j-input v-model:value="value.falseText" placeholder="falseText" size="small" />
         </j-form-item>
@@ -25,6 +28,7 @@
       <j-col :span="12">
         <j-form-item label="-" :name="name.concat(['falseValue'])" :rules="[
           { required: true, message: '请输入falseValue' },
+          { max: 64, message: '最多可输入64个字符' },
         ]">
           <j-input v-model:value="value.falseValue" placeholder="falseValue" size="small" />
         </j-form-item>

@@ -29,7 +29,7 @@
       </div>
     </div>
     <div class="editor">
-      <JMonacoEditor v-if="loading" v-model:model-value="_value" theme="vs" ref="editor" lang="javascript"/>
+      <j-monaco-editor v-if="loading" v-model:model-value="_value" theme="vs" ref="editor" language="javascript"/>
     </div>
   </div>
 </template>

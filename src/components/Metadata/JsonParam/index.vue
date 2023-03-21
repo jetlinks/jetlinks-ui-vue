@@ -35,7 +35,7 @@
             </div>
           </template>
           <div class="item-edit" @click="handleEdit(index)">
-            {{ item.name || '配置参数' }}
+            <Ellipsis>{{ item.name || '配置参数' }}</Ellipsis>
             <AIcon type="EditOutlined" class="item-icon" />
           </div>
         </j-popover>
@@ -131,6 +131,10 @@ const handleAdd = () => {
     // }
     .item-edit {
       cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 240px;
     }
 
     .item-icon {

@@ -6,7 +6,7 @@
         :tree-data="data">
         <template #title="node">
           <div class="node">
-            <div>{{ node.name }}</div>
+            <div style="max-width: 180px"><Ellipsis>{{ node.name }}</Ellipsis></div>
             <div :class="node.children?.length > 0 ? 'parent' : 'add'">
               <j-popover v-if="node.type === 'property'" placement="right" title="请选择使用值">
                 <template #content>
@@ -107,8 +107,8 @@ const getData = async (id?: string) => {
   };
   const response = await getOperator();
   if (response.status === 200) {
-    data.value = [properties, ...response.result];
-    dataRef.value = [properties, ...response.result];
+    data.value = [properties as OperatorItem, ...response.result];
+    dataRef.value = [properties as OperatorItem, ...response.result];
   }
 };
 

@@ -1,7 +1,7 @@
 <template>
   <div class="table-header">
     <div>
-      <j-input-search v-model:value="searchValue" placeholder="请输入名称" @search="handleSearch"></j-input-search>
+      <j-input-search v-model:value="searchValue" placeholder="请输入名称" @search="handleSearch" allowClear></j-input-search>
     </div>
     <div>
       <PermissionButton type="primary" :uhas-permission="`${permission}:update`" key="add" @click="handleAddClick"
@@ -19,6 +19,15 @@
   <j-table :loading="loading" :data-source="data" :columns="columns" row-key="id" model="TABLE" size="small"
     :pagination="pagination">
     <template #bodyCell="{ column, record }">
+      <template v-if="column.dataIndex === 'id'">
+        <div style="width: 100px"><Ellipsis>{{ record.id || '-' }}</Ellipsis></div>
+      </template>
+      <template v-if="column.dataIndex === 'name'">
+        <div style="width: 200px"><Ellipsis>{{ record.name || '-' }}</Ellipsis></div>
+      </template>
+      <template v-if="column.dataIndex === 'description'">
+        <div style="width: 200px"><Ellipsis>{{ record.description || '-' }}</Ellipsis></div>
+      </template>
       <template v-if="column.dataIndex === 'level'">
         {{ levelMap[record.expands?.level] || '-' }}
       </template>
@@ -102,7 +111,7 @@ const actions: ColumnProps[] = [
   {
     title: '操作',
     align: 'left',
-    width: 200,
+    width: 80,
     dataIndex: 'action',
   },
 ];
