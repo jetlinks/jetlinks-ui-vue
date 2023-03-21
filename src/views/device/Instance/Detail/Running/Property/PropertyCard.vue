@@ -3,7 +3,11 @@
         <!-- <j-spin :spinning="loading"> -->
         <div class="card-container">
             <div class="header">
-                <div class="title">{{ _props.data.name }}</div>
+                <div class="title">
+                    <Ellipsis style="width: 100%;">
+                        {{ _props.data.name }}
+                    </Ellipsis>
+                </div>
                 <div class="extra">
                     <j-space :size="16">
                         <template v-for="i in actions" :key="i.key">
@@ -97,12 +101,9 @@ const _props = defineProps({
             .title {
                 width: 60%;
                 margin-right: 10px;
-                overflow: hidden;
                 color: rgba(0, 0, 0, 0.65);
                 font-weight: 400;
                 font-size: 12px;
-                white-space: nowrap;
-                text-overflow: ellipsis;
             }
         }
 
