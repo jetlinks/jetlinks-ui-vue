@@ -32,6 +32,18 @@
         </div>
       </template>
     </template>
+    <div v-else class='actions-branches-item'>
+      <j-form-item
+        :name='["branches", 0, "then"]'
+        :rules='thenRules'
+      >
+        <Action
+          :name='0'
+          :openShakeLimit="true"
+          :thenOptions='data.branches[0]?.then'
+        />
+      </j-form-item>
+    </div>
   </div>
 </template>
 
@@ -40,10 +52,11 @@ import { storeToRefs } from 'pinia';
 import { useSceneStore } from 'store/scene'
 import { cloneDeep } from 'lodash-es'
 import { provide } from 'vue'
-import { ContextKey, handleParamsData } from './util'
+import { ContextKey, handleParamsData, thenRules } from './util'
 import { getParseTerm } from '@/api/rule-engine/scene'
 import type { FormModelType } from '@/views/rule-engine/Scene/typings'
 import Branches from './Branches.vue'
+import Action from '../../action/index.vue'
 
 const sceneStore = useSceneStore()
 const { data } = storeToRefs(sceneStore)
@@ -55,6 +68,11 @@ provide(ContextKey, columnOptions)
 
 const change = (e: boolean) => {
   open.value = e
+  if (!e) {
+    data.value.branches!.length = 1
+  } else {
+    data.value.branches!.push(null as any)
+  }
 }
 
 const queryColumn = (dataModel: FormModelType) => {
