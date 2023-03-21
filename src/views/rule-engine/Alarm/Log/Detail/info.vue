@@ -7,7 +7,7 @@
                 props.data?.alarmConfigName
             }}</j-descriptions-item>
             <j-descriptions-item label="告警时间" :span="1">{{
-                moment(data?.alarmTime).format('YYYY-MM-DD HH:mm:ss')
+                dayjs(data?.alarmTime).format('YYYY-MM-DD HH:mm:ss')
             }}</j-descriptions-item>
             <j-descriptions-item label="告警级别" :span="1">
                 <j-tooltip
@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts" setup>
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Store } from 'jetlinks-store';
 import JsonViewer from 'vue-json-viewer';
 const props = defineProps({
