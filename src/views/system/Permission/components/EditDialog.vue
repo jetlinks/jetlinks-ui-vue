@@ -11,7 +11,10 @@
         <j-form ref="formRef" :model="form.data" layout="vertical">
             <j-form-item
                 name="id"
-                :rules="[{ validator: form.rules.idCheck, trigger: 'blur' }]"
+                :rules="[
+                    { required: true, message: '' },
+                    { validator: form.rules.idCheck, trigger: 'blur' },
+                ]"
                 class="question-item"
             >
                 <template #label>
