@@ -907,11 +907,12 @@ const submitData = async () => {
                     productStore.current = { ...res.result };
                     access.value = res.result;
                     message.success('操作成功！');
+                    getData(obj.accessId);
                 }
                 visible.value = false;
                 queryParams.value = {};
             });
-            getData(obj.accessId);
+            
         }
     } else {
         message.error('请选择接入方式');

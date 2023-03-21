@@ -83,7 +83,9 @@ import type { Footer } from '@/views/device/DashBoard/typings';
 import TopCard from '@/views/device/DashBoard/components/TopCard.vue';
 import { useMenuStore } from '@/store/menu';
 import Amap from './components/Amap.vue';
-let AmapKey = localStorage.getItem('amap_key');
+import { useSystem } from '@/store/system';
+const system = useSystem();
+const AmapKey = system.$state.configInfo.amap?.apiKey
 let productTotal = ref(0);
 let productFooter = ref<Footer[]>([
     {

@@ -163,6 +163,7 @@ watch(
             productStore.reSet();
             productStore.tabActiveKey = 'Info';
             productStore.refresh(newId as string);
+            console.log(productStore);
         }
     },
     { immediate: true, deep: true },
