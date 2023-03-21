@@ -146,7 +146,7 @@ const form = reactive({
         });
     },
     checkSort: (e: any) => {
-        const value = e.target.value.match(/^[0-9]*/)[0];
+        const value = e.target.value.match(/^[1-9]*/)[0];
         if (value) {
             form.data.sortIndex = value;
             form.beforeSortIndex = value;

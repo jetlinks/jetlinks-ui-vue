@@ -5,6 +5,7 @@
             @change="search"
             placeholder="请输入组织名称"
             class="search-input"
+            allowClear
         >
             <template #suffix>
                 <AIcon type="SearchOutlined" />
@@ -201,7 +202,7 @@ const openDialog = (row: any = {}) => {
             childrens = row.children;
         } else childrens = treeData.value;
         const indexs =
-            childrens.length > 0
+            childrens?.length > 0
                 ? childrens?.map((item) => item.sortIndex)
                 : [0];
         sortIndex = Math.max(...indexs) + 1;
