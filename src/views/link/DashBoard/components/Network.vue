@@ -33,7 +33,7 @@
                         :allowClear="false"
                         :show-time="{ format: 'HH:mm:ss' }"
                         format="YYYY-MM-DD HH:mm:ss"
-                        v-model="data.time.time"
+                        v-model:value="data.time.time"
                         @change="pickerTimeChange"
                     >
                         <template #suffixIcon
@@ -65,7 +65,7 @@ import {
     areaStyle,
     networkParams,
 } from './tool.ts';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import * as echarts from 'echarts';
 import { DataType } from '../typings.d';
 
@@ -79,7 +79,7 @@ const data = ref<DataType>({
     },
 });
 const isEmpty = ref(false);
-const pickerTimeChange = () => {
+const pickerTimeChange = (value: any) => {
     data.value.time.type = undefined;
 };
 
@@ -173,9 +173,8 @@ const handleNetworkOptions = (optionsData: any, xAxis: any) => {
 watch(
     () => data.value.time.type,
     (value) => {
-        const endTime = moment(new Date());
-        const startTime = getTimeByType(value);
-        data.value.time.time = [startTime, endTime];
+        const date = getTimeByType(value);
+        data.value.time.time = [dayjs(date), dayjs(new Date())];
     },
     { immediate: true, deep: true },
 );

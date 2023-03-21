@@ -125,6 +125,7 @@
                                 style="padding: 0px"
                                 @click="i.onClick"
                                 type="link"
+                                :danger="i.key === 'delete'"
                                 :hasPermission="'link/Protocol:' + i.key"
                             >
                                 <template #icon
@@ -160,6 +161,7 @@ const columns = [
         key: 'id',
         search: {
             type: 'string',
+            defaultTermType: 'eq',
         },
         width: 200,
         fixed: 'left',
@@ -230,6 +232,9 @@ const getActions = (
         {
             key: 'delete',
             text: '删除',
+            tooltip: {
+                title: '删除',
+            },
             popConfirm: {
                 title: '确认删除?',
                 onConfirm: async () => {
@@ -281,7 +286,6 @@ const handleSearch = (e: any) => {
 };
 </script>
 <style lang="less" scoped>
-
 .card-item-content {
     min-height: 100px;
 
