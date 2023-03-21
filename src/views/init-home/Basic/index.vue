@@ -338,7 +338,7 @@ const saveBasicInfo = () =>{
                 {
                     scope: 'amap',
                     properties: {
-                        api: form.value.apikey,
+                        apiKey: form.value.apikey,
                     },
                 },
                 {
