@@ -63,7 +63,7 @@ export const VisibleData = {
     serverId: ['MQTT_CLIENT'],
     remoteHost: ['MQTT_CLIENT'],
     remotePort: ['MQTT_CLIENT'],
-    secure: ['TCP_SERVER', 'UDP', 'COAP_SERVER'],
+    secure: ['UDP', 'COAP_SERVER'],
     username: ['MQTT_CLIENT'],
     password: ['MQTT_CLIENT'],
     topicPrefix: ['MQTT_CLIENT'],
@@ -160,7 +160,7 @@ export const Rules = {
         },
         {
             pattern: Validator.regIp || Validator.regDomain,
-            message: '请输入IP或者域名',
+            message: '请输入正确格式的域名或ip',
         },
     ],
     publicPort: [
@@ -180,7 +180,7 @@ export const Rules = {
         },
         {
             pattern: Validator.regIp || Validator.regDomain,
-            message: '请输入IP或者域名',
+            message: '请输入正确格式的域名或ip',
         },
     ],
     remotePort: [
@@ -215,7 +215,8 @@ export const Rules = {
     ],
     password: [
         {
-            required: true,
+            // required: true,
+            required: false,
             message: '请输入密码',
         },
         {

@@ -157,7 +157,7 @@
                 </template>
                 <template #shareCluster="slotProps">
                     {{
-                        slotProps.shareCluster === true
+                        slotProps.shareCluster === 'true'
                             ? '共享配置'
                             : '独立配置'
                     }}
@@ -184,10 +184,6 @@ const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const options = ref([]);
-
-// const statusMap = new Map();
-// statusMap.set('enabled', 'processing');
-// statusMap.set('disabled', 'error');
 
 const columns = [
     {
@@ -223,8 +219,8 @@ const columns = [
         search: {
             type: 'select',
             options: [
-                { label: '共享配置', value: true },
-                { label: '独立配置', value: false },
+                { label: '共享配置', value: 'true' },
+                { label: '独立配置', value: 'false' },
             ],
         },
     },
@@ -255,6 +251,9 @@ const columns = [
         dataIndex: 'description',
         key: 'description',
         ellipsis: true,
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '操作',
@@ -367,8 +366,13 @@ const getDetails = (slotProps: Partial<Record<string, any>>) => {
           ':' +
           (cluster[0].configuration.publicPort ||
               cluster[0].configuration.remotePort);
-
-    return headers + content;
+    let head = '远程:';
+    if (!!shareCluster) {
+        !!configuration.publicHost && (head = '公网:');
+    } else {
+        !!cluster[0].configuration.publicHos && (head = '公网:');
+    }
+    return head + headers + content;
 };
 
 const getSupports = async () => {
