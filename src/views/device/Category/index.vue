@@ -12,6 +12,7 @@
             :request="queryTree"
             model="TABLE"
             type="TREE"
+            v-model:expandedRowKeys="expandedRowKeys"
             :scroll="{ y: 550 }"
             :defaultParams="{
                 paging: false,
@@ -128,6 +129,7 @@ let params = ref();
  */
 const handleSearch = (e: any) => {
     params.value = e;
+    expandedRowKeys.value = []
 };
 /**
  * 操作栏按钮

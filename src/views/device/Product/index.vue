@@ -46,6 +46,7 @@
                     v-bind="slotProps"
                     :active="_selectedRowKeys.includes(slotProps.id)"
                     :status="slotProps.state"
+                    @click="handleView(slotProps.id)"
                     :statusText="slotProps.state === 1 ? '正常' : '禁用'"
                     :statusNames="{
                         1: 'processing',
@@ -66,7 +67,6 @@
                     <template #content>
                         <Ellipsis style="width: calc(100% - 100px)"
                             ><span
-                                @click.stop="handleView(slotProps.id)"
                                 style="font-weight: 600; font-size: 16px"
                             >
                                 {{ slotProps.name }}
