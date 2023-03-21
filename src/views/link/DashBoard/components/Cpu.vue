@@ -8,7 +8,7 @@
                     :allowClear="false"
                     :show-time="{ format: 'HH:mm:ss' }"
                     format="YYYY-MM-DD HH:mm:ss"
-                    v-model="data.time"
+                    v-model:value="data.time"
                 >
                     <template #suffixIcon
                         ><AIcon type="CalendarOutlined"
@@ -51,7 +51,7 @@ m
 <script lang="ts" setup name="Cpu">
 import * as echarts from 'echarts';
 import { dashboard } from '@/api/link/dashboard';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import {
     getTimeFormat,
     getTimeByType,
@@ -75,6 +75,8 @@ const pickerTimeChange = () => {
 
 const getCPUEcharts = async (val: any) => {
     loading.value = true;
+    console.log(224, val);
+
     const res: any = await dashboard(defulteParamsData('cpu', val));
     if (res.success) {
         const _cpuOptions = {};
@@ -84,10 +86,11 @@ const getCPUEcharts = async (val: any) => {
                 const value = item.data.value;
                 const nodeID = item.data.clusterNodeId;
                 _cpuXAxis.add(
-                    moment(value.timestamp).format(
+                    dayjs(value.timestamp).format(
                         getTimeFormat(data.value.type),
                     ),
                 );
+
                 if (!_cpuOptions[nodeID]) {
                     _cpuOptions[nodeID] = [];
                 }
@@ -163,10 +166,9 @@ const handleCpuOptions = (optionsData: any, xAxis: any) => {
 
 watch(
     () => data.value.type,
-    (val) => {
-        const endTime = moment(new Date());
-        const startTime = getTimeByType(val);
-        data.value.time = [startTime, endTime];
+    (value) => {
+        const date = getTimeByType(value);
+        data.value.time = [dayjs(date), dayjs(new Date())];
     },
     { immediate: true, deep: true },
 );

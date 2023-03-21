@@ -8,7 +8,7 @@
                     :allowClear="false"
                     :show-time="{ format: 'HH:mm:ss' }"
                     format="YYYY-MM-DD HH:mm:ss"
-                    v-model="data.time"
+                    v-model:value="data.time"
                 >
                     <template #suffixIcon
                         ><AIcon type="CalendarOutlined"
@@ -51,7 +51,7 @@
 <script lang="ts" setup name="Jvm">
 import * as echarts from 'echarts';
 import { dashboard } from '@/api/link/dashboard';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import {
     getTimeFormat,
     getTimeByType,
@@ -95,7 +95,7 @@ const getJVMEcharts = async (val: any) => {
                     _jvmOptions[nodeID] = [];
                 }
                 _jvmXAxis.add(
-                    moment(value.timestamp).format(
+                    dayjs(value.timestamp).format(
                         getTimeFormat(data.value.type),
                     ),
                 );
@@ -168,10 +168,9 @@ const handleJVMOptions = (optionsData: any, xAxis: any) => {
 
 watch(
     () => data.value.type,
-    (val) => {
-        const endTime = moment(new Date());
-        const startTime = getTimeByType(val);
-        data.value.time = [startTime, endTime];
+    (value) => {
+        const date = getTimeByType(value);
+        data.value.time = [dayjs(date), dayjs(new Date())];
     },
     { immediate: true, deep: true },
 );
