@@ -26,7 +26,7 @@
         :status="slotProps.state?.value"
         :statusText="slotProps.state?.text"
         :statusNames="{
-                        online: 'success',
+                        online: 'processing',
                         offline: 'error',
                         notActive: 'warning',
                     }"

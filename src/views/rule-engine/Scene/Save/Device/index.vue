@@ -27,7 +27,7 @@ import AddButton from '../components/AddButton.vue'
 import Title from '../components/Title.vue'
 import Terms from '../components/Terms'
 import type { TriggerDevice } from '@/views/rule-engine/Scene/typings'
-
+import { EventEmitter, DeviceEmitterKey } from '@/views/rule-engine/Scene/Save/util'
 
 const sceneStore = useSceneStore()
 const { data } = storeToRefs(sceneStore)
@@ -47,6 +47,7 @@ const save = (device: TriggerDevice, options: Record<string, any>) => {
   data.value.trigger!.device = device
   data.value.options!.trigger = options
   visible.value = false
+  EventEmitter.emit(DeviceEmitterKey, device)
 }
 
 </script>

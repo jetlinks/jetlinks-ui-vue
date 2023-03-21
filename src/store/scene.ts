@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { FormModelType, SceneItem } from '@/views/rule-engine/Scene/typings'
+import type { FormModelType } from '@/views/rule-engine/Scene/typings'
 import { detail } from '@/api/rule-engine/scene'
 import { cloneDeep, isArray } from 'lodash-es'
 import { randomString } from '@/utils/utils'
@@ -63,7 +63,7 @@ const defaultOptions = {
     {
       terms: [
         {
-          terms: [],
+          terms: [['','eq','','and']],
         },
       ],
     },
@@ -71,7 +71,7 @@ const defaultOptions = {
 };
 
 export const useSceneStore = defineStore('scene', () => {
-  const data = reactive<FormModelType>({
+  const data = ref<FormModelType>({
     trigger: { type: ''},
     options: defaultOptions,
     branches: defaultBranches,
@@ -84,7 +84,7 @@ export const useSceneStore = defineStore('scene', () => {
   const getDetail = async (id: string) => {
     const resp = await detail(id)
     if (resp.success) {
-      const result = resp.result as SceneItem
+      const result = resp.result as any
       const triggerType = result.triggerType
       let branches: any[] = result.branches
 
@@ -105,19 +105,30 @@ export const useSceneStore = defineStore('scene', () => {
           branches.push(null);
         }
       }
-
-      Object.assign(data, {
+      data.value = {
         ...result,
         trigger: result.trigger || {},
         branches: cloneDeep(assignmentKey(branches)),
         options: result.options ? {...defaultOptions, ...result.options } : defaultOptions,
-      })
+      }
+    }
+  }
+
+  const refresh = () => {
+    data.value = {
+      trigger: { type: ''},
+      options: cloneDeep(defaultOptions),
+      branches: cloneDeep(defaultBranches),
+      description: '',
+      name: '',
+      id: undefined
     }
   }
 
   return {
     data,
     productCache,
-    getDetail
+    getDetail,
+    refresh
   }
 })

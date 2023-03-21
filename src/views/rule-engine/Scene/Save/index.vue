@@ -55,7 +55,7 @@ import { message } from 'jetlinks-ui-components'
 const sceneStore = useSceneStore()
 const menuStore = useMenuStore()
 const { data } = storeToRefs(sceneStore)
-const { getDetail } = sceneStore
+const { getDetail, refresh } = sceneStore
 
 const route = useRoute();
 const sceneForm = ref()
@@ -75,6 +75,11 @@ const save = async () => {
 }
 
 getDetail(route.query.id as string)
+
+onUnmounted(() => {
+  console.log('scene-onUnmounted')
+  refresh?.()
+})
 
 </script>
 

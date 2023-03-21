@@ -9,6 +9,7 @@
           ]'
           type='type'
           v-model:value='formModel.branches[branchName].when[whenName].type'
+          @select='typeChange'
         />
       </div>
       <div
@@ -159,6 +160,11 @@ const mouseout = () => {
 
 const onDelete = () => {
   formModel.value.branches?.[props.branchName]?.when?.splice(props.name, 1)
+  formModel.value.options!.when[props.whenName].terms.splice(props.name, 1)
+}
+
+const typeChange = (e: any) => {
+  formModel.value.options!.when[props.whenName].terms[props.name].termType = e.label
 }
 
 const addTerms = () => {
@@ -179,6 +185,9 @@ const addTerms = () => {
     key: `terms_${new Date().getTime()}`
   }
   formModel.value.branches?.[props.branchName]?.when?.push(terms)
+  formModel.value.options!.when[props.whenName].push({
+    terms: [{ termType: '并且', terms: [['','eq','','and']]}]
+  })
 }
 
 </script>

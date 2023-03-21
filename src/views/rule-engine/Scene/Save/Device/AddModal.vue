@@ -5,6 +5,7 @@
     :width='820'
     @click='save'
     @cancel='cancel'
+    :maskClosable="false"
   >
     <j-steps :current='addModel.stepNumber' @change='stepChange'>
       <j-step>
@@ -274,5 +275,10 @@ nextTick(() => {
 </script>
 
 <style scoped>
-
+.steps-content {
+  width: 100%;
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 </style>

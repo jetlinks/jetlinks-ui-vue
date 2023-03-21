@@ -8,6 +8,7 @@
           ]'
         type='type'
         v-model:value='paramsValue.type'
+        @select='typeSelect'
       />
     </div>
     <div
@@ -223,7 +224,7 @@ const mouseout = () => {
   }
 }
 
-const columnSelect = () => {
+const columnSelect = (option: any) => {
   paramsValue.termType = 'eq'
   paramsValue.value = {
     source: tabsOptions.value[0].key,
@@ -231,9 +232,11 @@ const columnSelect = () => {
   }
   emit('update:value', { ...paramsValue })
   formItemContext.onFieldChange()
+  formModel.value.options!.when[props.whenName].terms[props.termsName].terms[props.name][0] = option.name
+  formModel.value.options!.when[props.whenName].terms[props.termsName].terms[props.name][1] = paramsValue.termType
 }
 
-const termsTypeSelect = (e: { key: string }) => {
+const termsTypeSelect = (e: { key: string, name: string }) => {
   const value = arrayParamsKey.includes(e.key) ? [ undefined, undefined ] : undefined
   paramsValue.value = {
     source: tabsOptions.value[0].key,
@@ -241,10 +244,16 @@ const termsTypeSelect = (e: { key: string }) => {
   }
   emit('update:value', { ...paramsValue })
   formItemContext.onFieldChange()
+  formModel.value.options!.when[props.whenName].terms[props.termsName].terms[props.name][1] = e.name
 }
 
-const valueSelect = () => {
+const valueSelect = (_: any, label: string, labelObj: Record<number, any>) => {
   formItemContext.onFieldChange()
+  formModel.value.options!.when[props.whenName].terms[props.termsName].terms[props.name][2] = labelObj
+}
+
+const typeSelect = (e: any) => {
+  formModel.value.options!.when[props.whenName].terms[props.termsName].terms[props.name][3] = e.label
 }
 
 const termAdd = () => {
@@ -259,10 +268,12 @@ const termAdd = () => {
     key: `params_${new Date().getTime()}`
   }
   formModel.value.branches?.[props.branchName]?.when?.[props.whenName]?.terms?.push(terms)
+  formModel.value.options!.when[props.whenName].terms[props.termsName].terms[props.name].push(['', '', '', '并且'])
 }
 
 const onDelete = () => {
   formModel.value.branches?.[props.branchName]?.when?.[props.whenName]?.terms?.splice(props.name, 1)
+  formModel.value.options!.when[props.whenName].terms[props.termsName].terms.splice(props.name, 1)
 }
 
 nextTick(() => {

@@ -9,6 +9,7 @@
             ]'
           type='type'
           v-model:value='formModel.branches[branchName].then[thenName].actions[actionName].terms[name].type'
+          @select='typeChange'
         />
       </div>
       <div
@@ -61,7 +62,7 @@ import FilterItem from './FilterCondition.vue'
 import { flattenDeep, isArray } from 'lodash-es'
 import { provide } from 'vue'
 import { randomString } from '@/utils/utils'
-import { useParams } from '@/views/rule-engine/Scene/Save/util'
+import { getParams, EventEmitter, EventSubscribeKeys } from '@/views/rule-engine/Scene/Save/util'
 
 const sceneStore = useSceneStore()
 const { data: formModel } = storeToRefs(sceneStore)
@@ -97,13 +98,30 @@ const props = defineProps({
   }
 })
 
-const { columnOptions } = useParams({
+const columnOptions = ref<any[]>([])
+
+const onKeys: string[] = EventSubscribeKeys({
   branch: props.branchName,
   branchGroup: props.thenName,
   action: props.actionName
 })
 
+EventEmitter.subscribe(onKeys, (d: any) => {
+  columnRequest()
+})
+
 provide('filter-params', columnOptions)
+
+const columnRequest = () => {
+  const param = {
+    branch: props.branchName,
+    branchGroup: props.thenName,
+    action: props.actionName
+  }
+  getParams(param, formModel.value).then(res => {
+    columnOptions.value = res
+  })
+}
 
 const termsOptions = computed(() => {
   return formModel.value.branches![props.branchName].then[props.thenName].actions[props.actionName].terms?.[props.name].terms
@@ -152,6 +170,15 @@ const addTerms = () => {
     .then[props.thenName]
     .actions[props.actionName]
     .terms?.push(item)
+
+  formModel.value.branches![props.branchName].then[props.thenName].actions[props.actionName].options!.terms.push({
+    terms: [['','eq','','and']],
+    termType: '并且'
+  })
+}
+
+const typeChange = (e: any) => {
+  formModel.value.branches![props.branchName].then[props.thenName].actions[props.actionName].options!.terms[props.name].termType = e.label
 }
 
 const onDelete = () => {
@@ -167,6 +194,8 @@ const onDelete = () => {
     termsColumns.splice(props.name, 1)
     handleOptionsColumnsValue(termsColumns, _options)
   }
+
+  formModel.value.branches![props.branchName].then[props.thenName].actions[props.actionName].options!.terms.splice(props.name, 1)
 }
 
 const rules = [
@@ -204,11 +233,9 @@ const rules = [
   }
 ]
 
-// watchEffect(() => {
-//   if (formModel.value.branches![props.branchName].then[props.thenName].actions[props.actionName]) {
-//     getParams()
-//   }
-// })
+nextTick(() => {
+  columnRequest()
+})
 
 </script>
 

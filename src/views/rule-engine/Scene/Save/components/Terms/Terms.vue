@@ -63,7 +63,6 @@ const { data } = storeToRefs(sceneStore)
 const open = ref(false)
 const columnOptions = ref<any>([])
 
-
 provide(ContextKey, columnOptions)
 
 const change = (e: boolean) => {
@@ -97,6 +96,7 @@ const addBranches = () => {
   }
   const lastIndex = data.value.branches!.length - 1 || 0
   data.value.branches?.splice(lastIndex, 1, branchesItem)
+  data.value.options!.when = []
 }
 
 const branchesDelete = (index: number) => {

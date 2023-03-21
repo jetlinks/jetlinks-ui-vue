@@ -44,7 +44,7 @@
       <template v-if='showInvokeFunction'>
         <InvokeFunction
           ref='invokeRef'
-          v-model:type='formModel.functionId'
+          v-model:functionId='formModel.functionId'
           v-model:functionParameters='formModel.functionParameters'
           :functions='functionOptions'
         />
@@ -237,9 +237,6 @@ defineExpose({
 
 <style scoped lang='less'>
 .type {
-  max-height: calc(100vh - 350px);
-  overflow-x: hidden;
-  overflow-y: auto;
   margin-top: 24px;
 }
 </style>

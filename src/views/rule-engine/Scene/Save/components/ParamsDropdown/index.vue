@@ -88,7 +88,7 @@ import { getOption } from '../DropdownButton/util'
 type Emit = {
   (e: 'update:value', data: ValueType): void
   (e: 'update:source', data: string): void
-  (e: 'select', data: any): void
+  (e: 'select', data: any, label?: string, labelObj?: Record<number, any>): void
   (e: 'tabChange', data: any): void
 }
 
@@ -113,7 +113,8 @@ const tabsChange = (e: string) => {
   myValue.value = undefined
   emit('update:source', mySource.value)
   emit('update:value', undefined)
-  emit('select', {})
+  emit('tabChange', e)
+  emit('select', {}, '', { 0 : undefined })
 }
 
 const treeSelect = (v: any, option: any) => {
@@ -121,27 +122,27 @@ const treeSelect = (v: any, option: any) => {
   visible.value = false
   label.value = node.fullname || node.name
   emit('update:value', node[props.valueName])
-  emit('select', node)
+  emit('select', node, label.value, { 0: label.value })
 }
 
 const valueItemChange = (e: string) => {
   label.value = e
   emit('update:value', e)
-  emit('select', e)
+  emit('select', e, label.value, { 0: label.value })
 }
 
 const onSelect = (e: string, option: any) => {
   visible.value = false
   label.value = option.label
   emit('update:value', e)
-  emit('select', e)
+  emit('select', e, label.value, { 0: label.value })
 }
 
 const timeChange = (e: any) => {
   label.value = e
   visible.value = false
   emit('update:value', e)
-  emit('select', e)
+  emit('select', e, label.value, { 0: label.value })
 }
 
 const visibleChange = (v: boolean) => {

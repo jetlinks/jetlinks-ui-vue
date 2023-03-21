@@ -22,7 +22,7 @@
           placement="topRight"
           @confirm='onDeleteAll'
         >
-          <div class='terms-params-delete' v-show='showDelete'>
+          <div class='terms-params-delete' v-show='showDelete && whenData.length'>
             <AIcon type='CloseOutlined' />
           </div>
         </j-popconfirm>
@@ -110,11 +110,14 @@ const whenData = computed(() => {
 })
 
 const onDelete = () => {
-
+  FormModel.value.branches?.splice(props.name, 1)
 }
 
 const onDeleteAll = () => {
-
+  if (FormModel.value.branches) {
+    FormModel.value.branches.length = props.name
+    FormModel.value.branches.push(null as any)
+  }
 }
 
 const mouseover = () => {

@@ -1,7 +1,7 @@
 <template>
   <j-table
     model='TABLE'
-    :noPagination='true'
+    :pagination='false'
     :data-source='dataSource.value'
     :columns='columns'
     :bodyStyle='{ padding: 0}'
@@ -33,6 +33,7 @@
           v-model:modelValue='record.value'
           :itemType="record.type"
           :options="handleOptions(record)"
+          @change='valueChange'
         />
       </template>
     </template>
@@ -41,6 +42,7 @@
 
 <script setup lang='ts' name='FunctionCall'>
 import type { PropType } from 'vue'
+import { debounce } from 'lodash-es'
 
 type Emit = {
   (e: 'change', data: Array<{ name: string, value: any}>): void
@@ -95,20 +97,20 @@ const handleOptions = (record: any) => {
   }
 }
 
-watch(() => props.data, () => {
-  dataSource.value = props.data.map((item: any) => {
-    const oldValue = props.value.find((oldItem: any) => oldItem.name === item.id)
-    return oldValue ? { ...item, value: oldValue.value } : item
-  })
-}, { immediate: true })
-
-watch(() => dataSource.value, () => {
+const valueChange = debounce(() => {
   const _value = dataSource.value.map(item => ({
     name: item.id, value: item.value
   }))
   emit('change', _value)
   emit('update:value', _value)
-}, { deep: true })
+}, 500)
+
+watch(() => props.data, () => {
+  dataSource.value = props.data.map((item: any) => {
+    const oldValue = props.value.find((oldItem: any) => oldItem.name === item.id)
+    return oldValue ? { ...item, value: oldValue.value } : item
+  })
+}, { immediate: true, deep: true })
 
 </script>
 

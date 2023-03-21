@@ -25,7 +25,7 @@
                 :active="rowKey === slotProps.id"
                 :status="String(slotProps.state)"
                 :statusText="slotProps.state === 1 ? '正常' : '禁用'"
-                :statusNames="{ '1': 'success', '0': 'error' }"
+                :statusNames="{ '1': 'processing', '0': 'error' }"
                 @click="handleClick(slotProps)"
             >
                 <template #img>

@@ -398,6 +398,7 @@ import { storeToRefs } from 'pinia';
 import { iconMap, itemNotifyIconMap, typeIconMap } from './util';
 import FilterGroup from './FilterGroup.vue';
 import { randomString } from '@/utils/utils'
+import { EventEmitter, EventEmitterKeys } from '@/views/rule-engine/Scene/Save/util'
 
 const sceneStore = useSceneStore();
 const { data: _data } = storeToRefs(sceneStore);
@@ -437,6 +438,11 @@ const emit = defineEmits(['delete', 'update']);
 const visible = ref<boolean>(false);
 const triggerVisible = ref<boolean>(false);
 const actionType = ref('');
+const eventEmitterKey = EventEmitterKeys({
+  branch: props.branchesName,
+  branchGroup: props.thenName,
+  action: props.name
+})
 
 const termsOptions = computed(() => {
     if (!props.parallel) {
@@ -462,19 +468,9 @@ const onClose = () => {
     visible.value = false;
 };
 
-const onSave = (data: ActionsType, options: any) => {
-    const { key, terms } = _data.value.branches![props.branchesName].then?.[props.thenName].actions?.[props.name]
-    const actionItem: ActionsType = {
-      ...data,
-      options,
-      key,
-      terms
-    }
-    _data.value.branches![props.branchesName].then[props.thenName].actions.splice(props.name, 1, actionItem)
-
-    visible.value = false;
-};
-
+/**
+ * 添加过滤条件
+ */
 const addFilterParams = () => {
   const item: any = {
     type: 'and',
@@ -497,6 +493,10 @@ const addFilterParams = () => {
   } else {
     _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].terms = [item]
   }
+  _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].options!.terms = [{
+    terms: [['','eq','','and']],
+    termType: '并且'
+  }]
 }
 
 const onAdd = () => {
@@ -507,26 +507,42 @@ const onType = (_type: string) => {
     actionType.value = _type;
 };
 
+/**
+ * 添加执行动作
+ * @param data
+ * @param options
+ */
+const onSave = (data: ActionsType, options: any) => {
+  const { key, terms } = _data.value.branches![props.branchesName].then?.[props.thenName].actions?.[props.name]
+  const actionItem: ActionsType = {
+    ...data,
+    options,
+    key,
+    terms
+  }
+  _data.value.branches![props.branchesName].then[props.thenName].actions.splice(props.name, 1, actionItem)
+
+  visible.value = false;
+
+  if (props.parallel === false) { // 串行
+    EventEmitter.emit(eventEmitterKey, data)
+  }
+};
+
+/**
+ * 直接编辑执行栋数据
+ * @param data
+ * @param options
+ */
 const onPropsOk = (data: ActionsType, options?: any) => {
-    emit('update', data, options);
-    // setTimeout(() => {
-    //     getParams();
-    // }, 10);
-    actionType.value = '';
+  onSave(data, options);
+  actionType.value = '';
 };
 
 const onPropsCancel = () => {
     actionType.value = '';
 };
 
-watch(
-    () => props.data,
-    () => {
-        if (props.data) {
-        }
-    },
-    { immediate: true, deep: true },
-);
 </script>
 
 <style lang="less" scoped>

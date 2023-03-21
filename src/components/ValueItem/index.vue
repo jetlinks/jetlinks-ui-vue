@@ -13,7 +13,7 @@
           v-else-if="typeMap.get(itemType) === 'time'"
           v-model:value="myValue"
           allowClear
-          format="HH:mm:ss"
+          valueFormat="HH:mm:ss"
           style="width: 100%"
           @change='timeChange'
         />
@@ -22,8 +22,7 @@
             v-model:value="myValue"
             allowClear
             showTime
-            lang="cn"
-            format="YYYY-MM-DD HH:mm:ss"
+            valueFormat="YYYY-MM-DD HH:mm:ss"
             style="width: 100%"
             @change='dateChange'
         />

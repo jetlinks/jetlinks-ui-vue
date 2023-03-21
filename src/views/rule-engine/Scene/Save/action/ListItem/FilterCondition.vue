@@ -8,6 +8,7 @@
           ]'
         type='type'
         v-model:value='paramsValue.type'
+        @change='typeChange'
       />
     </div>
     <div
@@ -170,13 +171,13 @@ const tabsOptions = ref<Array<TabsOption>>(
 const handOptionByColumn = (option: any) => {
   if (option) {
     termTypeOptions.value = option.termTypes || []
-    tabsOptions.value[0].component = option.dataType
-    if (option.dataType === 'boolean') {
+    tabsOptions.value[0].component = option.type
+    if (option.type === 'boolean') {
       valueOptions.value = [
-        { label: '是', value: true },
-        { label: '否', value: false },
+        { name: '是', id: true },
+        { name: '否', id: false },
       ]
-    } else if(option.dataType === 'enum') {
+    } else if(option.type === 'enum') {
       valueOptions.value = option.options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || []
     } else{
       valueOptions.value = option.options || []
@@ -247,9 +248,10 @@ const columnSelect = (e: any) => {
   handleOptionsColumnsValue(termsColumns, _options)
   emit('update:value', { ...paramsValue })
   formItemContext.onFieldChange()
+  formModel.value.branches![props.branchName].then[props.thenName].actions[props.actionName].options!.terms[props.termsName].terms[props.name][0] = e.name
 }
 
-const termsTypeSelect = (e: { key: string }) => {
+const termsTypeSelect = (e: { key: string, name: string }) => {
   const value = arrayParamsKey.includes(e.key) ? [ undefined, undefined ] : undefined
   paramsValue.value = {
     source: tabsOptions.value[0].key,
@@ -257,11 +259,17 @@ const termsTypeSelect = (e: { key: string }) => {
   }
   emit('update:value', { ...paramsValue })
   formItemContext.onFieldChange()
+  formModel.value.branches![props.branchName].then[props.thenName].actions[props.actionName].options!.terms[props.termsName].terms[props.name][1] = e.name
 }
 
-const valueSelect = () => {
+const valueSelect = (_: any, label: string, labelObj: Record<number, any>) => {
   emit('update:value', { ...paramsValue })
   formItemContext.onFieldChange()
+  formModel.value.branches![props.branchName].then[props.thenName].actions[props.actionName].options!.terms[props.termsName].terms[props.name][2] = labelObj
+}
+
+const typeChange = (e: any) => {
+  formModel.value.branches![props.branchName].then[props.thenName].actions[props.actionName].options!.terms[props.termsName].terms[props.name][3] = e.label
 }
 
 const termAdd = () => {
