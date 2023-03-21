@@ -10,10 +10,14 @@
             :columns="columns"
             :request="query"
             :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }"
-            :rowSelection="{
-                selectedRowKeys: _selectedRowKeys,
-                onChange: onSelectChange,
-            }"
+            :rowSelection="
+                isCheck
+                    ? {
+                          selectedRowKeys: _selectedRowKeys,
+                          onChange: onSelectChange,
+                      }
+                    : false
+            "
             :params="params"
         >
             <template #headerTitle>
@@ -26,7 +30,12 @@
                         <template #icon><AIcon type="PlusOutlined" /></template>
                         新增
                     </PermissionButton>
-                    <j-dropdown>
+                    <BatchDropdown
+                        v-model:isCheck="isCheck"
+                        :actions="batchActions"
+                        @change="onCheckChange"
+                    />
+                    <!-- <j-dropdown>
                         <j-button
                             >批量操作 <AIcon type="DownOutlined"
                         /></j-button>
@@ -131,7 +140,7 @@
                                 </j-menu-item>
                             </j-menu>
                         </template>
-                    </j-dropdown>
+                    </j-dropdown> -->
                 </j-space>
             </template>
             <template #card="slotProps">
@@ -155,10 +164,7 @@
                     </template>
                     <template #content>
                         <Ellipsis style="width: calc(100% - 100px)">
-                            <span
-                                style="font-size: 16px; font-weight: 600"
-                                @click.stop="handleView(slotProps.id)"
-                            >
+                            <span style="font-size: 16px; font-weight: 600">
                                 {{ slotProps.name }}
                             </span>
                         </Ellipsis>
@@ -233,7 +239,11 @@
                             type="link"
                             style="padding: 0 5px"
                             :danger="i.key === 'delete'"
-                            :hasPermission="i.key === 'view' ? true : 'device/Instance:' + i.key"
+                            :hasPermission="
+                                i.key === 'view'
+                                    ? true
+                                    : 'device/Instance:' + i.key
+                            "
                         >
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
@@ -296,6 +306,8 @@ import { useMenuStore } from '@/store/menu';
 import type { ActionsType } from './typings';
 import dayjs from 'dayjs';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
+import BatchDropdown from '@/components/BatchDropdown/index.vue';
+import { BatchActionsType } from '@/components/BatchDropdown/types';
 
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -307,6 +319,7 @@ const current = ref<Record<string, any>>({});
 const operationVisible = ref<boolean>(false);
 const api = ref<string>('');
 const type = ref<string>('');
+const isCheck = ref<boolean>(false);
 
 const menuStory = useMenuStore();
 
@@ -657,12 +670,20 @@ const onSelectChange = (keys: string[]) => {
 };
 
 const handleClick = (dt: any) => {
-    if (_selectedRowKeys.value.includes(dt.id)) {
-        const _index = _selectedRowKeys.value.findIndex((i) => i === dt.id);
-        _selectedRowKeys.value.splice(_index, 1);
+    if (isCheck.value) {
+        if (_selectedRowKeys.value.includes(dt.id)) {
+            const _index = _selectedRowKeys.value.findIndex((i) => i === dt.id);
+            _selectedRowKeys.value.splice(_index, 1);
+        } else {
+            _selectedRowKeys.value = [..._selectedRowKeys.value, dt.id];
+        }
     } else {
-        _selectedRowKeys.value = [..._selectedRowKeys.value, dt.id];
+        handleView(dt.id);
     }
+};
+
+const onCheckChange = () => {
+    _selectedRowKeys.value = [];
 };
 
 const activeAllDevice = () => {
@@ -684,6 +705,10 @@ const syncDeviceStatus = () => {
 };
 
 const delSelectedDevice = async () => {
+    if(!_selectedRowKeys.value.length){
+        message.error('请选择设备')
+        return
+    }
     const resp = await batchDeleteDevice(_selectedRowKeys.value);
     if (resp.status === 200) {
         message.success('操作成功！');
@@ -692,16 +717,24 @@ const delSelectedDevice = async () => {
     }
 };
 
-const activeSelectedDevice = async () => {
-    const resp = await batchDeployDevice(_selectedRowKeys.value);
-    if (resp.status === 200) {
-        message.success('操作成功！');
-        _selectedRowKeys.value = [];
-        instanceRef.value?.reload();
-    }
-};
+// const activeSelectedDevice = async () => {
+//     if(!_selectedRowKeys.value.length){
+//         message.error('请选择设备')
+//         return
+//     }
+//     const resp = await batchDeployDevice(_selectedRowKeys.value);
+//     if (resp.status === 200) {
+//         message.success('操作成功！');
+//         _selectedRowKeys.value = [];
+//         instanceRef.value?.reload();
+//     }
+// };
 
 const disabledSelectedDevice = async () => {
+    if(!_selectedRowKeys.value.length){
+        message.error('请选择设备')
+        return
+    }
     const resp = await batchUndeployDevice(_selectedRowKeys.value);
     if (resp.status === 200) {
         message.success('操作成功！');
@@ -709,6 +742,87 @@ const disabledSelectedDevice = async () => {
         instanceRef.value?.reload();
     }
 };
+
+const batchActions: BatchActionsType[] = [
+    {
+        key: 'export',
+        text: '批量导出设备',
+        permission: 'device/Instance:export',
+        icon: 'ExportOutlined',
+        onClick: () => {
+            exportVisible.value = true;
+        },
+    },
+    {
+        key: 'import',
+        text: '批量导入设备',
+        permission: 'device/Instance:import',
+        icon: 'ImportOutlined',
+        onClick: () => {
+            importVisible.value = true;
+        },
+    },
+    {
+        key: 'activeAll',
+        text: '启用全部设备',
+        ghost: true,
+        type: 'primary',
+        permission: 'device/Instance:action',
+        icon: 'CheckCircleOutlined',
+        popConfirm: {
+            title: '确认启用全部设备？',
+            onConfirm: activeAllDevice,
+        },
+    },
+    {
+        key: 'sync',
+        text: '同步设备状态',
+        type: 'primary',
+        ghost: true,
+        icon: 'SyncOutlined',
+        onClick: syncDeviceStatus,
+    },
+    {
+        key: 'delete',
+        text: '批量删除设备',
+        danger: true,
+        permission: 'device/Instance:delete',
+        icon: 'DeleteOutlined',
+        selected: {
+            popConfirm: {
+                title: '已启用的设备无法删除，确认删除选中的禁用状态设备？',
+                onConfirm: delSelectedDevice,
+            },
+        },
+    },
+    // {
+    //     key: 'active',
+    //     text: '激活选中设备',
+    //     ghost: true,
+    //     type: 'primary',
+    //     icon: 'CheckOutlined',
+    //     permission: 'device/Instance:action',
+    //     selected: {
+    //         popConfirm: {
+    //             title: '确认激活选中设备',
+    //             onConfirm: activeSelectedDevice,
+    //         },
+    //     },
+    // },
+    {
+        key: 'disable',
+        text: '批量禁用设备',
+        danger: true,
+        icon: 'StopOutlined',
+        permission: 'device/Instance:action',
+        selected: {
+            popConfirm: {
+                title: '确认禁用选中设备?',
+                onConfirm: disabledSelectedDevice,
+            }
+        },
+    },
+];
 
 const saveBtn = () => {
     visible.value = false;

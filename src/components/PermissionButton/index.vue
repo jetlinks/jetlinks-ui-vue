@@ -55,6 +55,7 @@ import { CSSProperties, PropType } from 'vue'
 import { TooltipProps, PopconfirmProps } from 'ant-design-vue/es'
 import { buttonProps } from 'ant-design-vue/es/button/button'
 import { usePermissionStore } from '@/store/permission';
+import { omit } from 'lodash-es';
 
 // interface PermissionButtonEmits {
 //   (e: 'click', data: MouseEvent): void;
@@ -88,7 +89,7 @@ const props = defineProps({
   style: {
     type: Object as PropType<CSSProperties>
   },
-  ...buttonProps()
+  ...omit(buttonProps(), 'icon')
 })
 
 // const { tooltip, popConfirm, hasPermission, noButton, ..._buttonProps } = props;
