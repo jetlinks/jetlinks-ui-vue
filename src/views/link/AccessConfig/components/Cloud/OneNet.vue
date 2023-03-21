@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div>
         <j-steps class="steps-steps" :current="stepCurrent">
             <j-step v-for="item in steps" :key="item" :title="item" />
         </j-steps>
@@ -9,7 +9,7 @@
                     <AIcon type="InfoCircleOutlined" />
                     通过OneNet平台的HTTP推送服务进行数据接入
                 </div>
-                <div style="margin-top: 15px">
+                <div style="margin-top: 42px">
                     <j-row :gutter="[24, 24]">
                         <j-col :span="16">
                             <j-form
@@ -265,23 +265,19 @@
                         新增
                     </PermissionButton>
                 </div>
-                <j-scrollbar height="500">
-                    <j-row
-                        :gutter="[24, 24]"
-                        v-if="procotolList.length > 0"
-                        style="margin-right: 10px"
-                    >
+                <j-scrollbar height="480">
+                    <j-row :gutter="[24, 24]" v-if="procotolList.length > 0">
                         <j-col
                             :span="8"
                             v-for="item in procotolList"
                             :key="item.id"
                         >
-                            <access-card
+                            <AccessCard
                                 @checkedChange="procotolChange"
                                 :checked="procotolCurrent"
                                 :data="item"
                             >
-                            </access-card>
+                            </AccessCard>
                         </j-col>
                     </j-row>
                     <j-empty v-else description="暂无数据" />
@@ -330,40 +326,32 @@
                     </div>
                 </j-col>
                 <j-col :span="12">
-                    <div class="config-right">
-                        <div class="config-right-item">
-                            <title-component data="配置概览" />
-                            <div class="config-right-item-context">
-                                接入方式：{{ provider.name }}
-                            </div>
-                            <div class="config-right-item-context">
-                                {{ provider.description }}
-                            </div>
-                            <div class="config-right-item-context">
-                                消息协议：{{ procotolCurrent }}
-                            </div>
-                        </div>
-                        <div class="config-right-item">
-                            <title-component data="设备接入指引" />
-                            <div class="config-right-item-context">
-                                1、创建类型为{{
-                                    props?.provider?.id === 'OneNet'
-                                        ? 'OneNet'
-                                        : 'CTWing'
-                                }}的设备接入网关
-                            </div>
-                            <div class="config-right-item-context">
-                                2、创建产品，并选中接入方式为
-                                {{
-                                    props?.provider?.id === 'OneNet'
-                                        ? 'OneNet'
-                                        : 'CTWing,选中后需填写CTWing平台中的产品ID、Master-APIkey。'
-                                }}
-                            </div>
-                            <div class="config-right-item-context">
-                                3、添加设备，为每一台设备设置唯一的IMEI、SN、IMSI、PSK码（需与CTWingt平台中填写的值一致，若CTWing平台没有对应的设备，将会通过CTWing平台提供的LWM2M协议自动创建）
-                            </div>
-                        </div>
+                    <div class="doc" style="height: 606px">
+                        <TitleComponent data="配置概览" />
+                        <p>接入方式：{{ provider.name }}</p>
+                        <p>
+                            {{ provider.description }}
+                        </p>
+                        <p>消息协议：{{ procotolCurrent }}</p>
+                        <TitleComponent data="设备接入指引" />
+                        <p>
+                            1、创建类型为{{
+                                props?.provider?.id === 'OneNet'
+                                    ? 'OneNet'
+                                    : 'CTWing'
+                            }}的设备接入网关
+                        </p>
+                        <p>
+                            2、创建产品，并选中接入方式为
+                            {{
+                                props?.provider?.id === 'OneNet'
+                                    ? 'OneNet'
+                                    : 'CTWing,选中后需填写CTWing平台中的产品ID、Master-APIkey。'
+                            }}
+                        </p>
+                        <p>
+                            3、添加设备，为每一台设备设置唯一的IMEI、SN、IMSI、PSK码（需与CTWingt平台中填写的值一致，若CTWing平台没有对应的设备，将会通过CTWing平台提供的LWM2M协议自动创建）
+                        </p>
                     </div>
                 </j-col>
             </j-row>
@@ -567,12 +555,8 @@ watch(
 </script>
 
 <style lang="less" scoped>
-.container {
-    margin: 20px;
-}
-
 .steps-content {
-    margin: 20px;
+    margin-top: 20px;
 }
 .steps-box {
     min-height: 400px;
@@ -586,7 +570,6 @@ watch(
 .steps-action {
     width: 100%;
     margin-top: 24px;
-    margin-left: 20px;
 }
 .steps-action-save {
     margin-left: 0;
@@ -609,54 +592,9 @@ watch(
     overflow-y: auto;
     overflow-x: hidden;
 }
-.config-right {
-    padding: 20px;
-    .config-right-item {
-        margin-bottom: 10px;
 
-        .config-right-item-title {
-            width: 100%;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .config-right-item-context {
-            margin: 5px 0;
-            color: rgba(0, 0, 0, 0.8);
-        }
-    }
-}
-
-.doc {
-    height: 550px;
-    padding: 24px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    color: rgba(#000, 0.8);
-    font-size: 14px;
-    background-color: #fafafa;
-
-    h1 {
-        margin: 16px 0;
-        color: rgba(#000, 0.85);
-        font-weight: bold;
-        font-size: 14px;
-
-        &:first-child {
-            margin-top: 0;
-        }
-    }
-
-    .image {
-        margin: 16px 0;
-    }
-}
 .form-label {
     height: 30px;
     padding-bottom: 8px;
-    .form-label-required {
-        color: red;
-        margin: 0 4px 0 -2px;
-    }
 }
 </style>

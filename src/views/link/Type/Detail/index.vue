@@ -75,11 +75,13 @@
                             </j-form-item>
                         </j-col>
                     </j-row>
+
                     <j-form
                         ref="formRef2"
                         layout="vertical"
                         name="dynamic_form_nest_item"
                         :model="dynamicValidateForm"
+                        class="form2"
                     >
                         <div
                             v-for="(
@@ -582,59 +584,71 @@
                                                 </j-radio-group>
                                             </j-form-item>
                                         </j-col>
+                                        <div class="form2-row">
+                                            <j-col
+                                                :span="12"
+                                                v-if="
+                                                    cluster.configuration.secure
+                                                "
+                                            >
+                                                <j-form-item
+                                                    label="证书"
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'configuration',
+                                                        'certId',
+                                                    ]"
+                                                    :rules="Rules.certId"
+                                                    class="form2-left"
+                                                >
+                                                    <j-select
+                                                        v-model:value="
+                                                            cluster
+                                                                .configuration
+                                                                .certId
+                                                        "
+                                                        :options="certIdOptions"
+                                                        placeholder="请选择证书"
+                                                        allowClear
+                                                        show-search
+                                                        :filter-option="
+                                                            filterOption
+                                                        "
+                                                    />
+                                                </j-form-item>
+                                            </j-col>
+                                            <j-col
+                                                :span="12"
+                                                v-if="
+                                                    cluster.configuration.secure
+                                                "
+                                            >
+                                                <j-form-item
+                                                    label="私钥别名"
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'configuration',
+                                                        'privateKeyAlias',
+                                                    ]"
+                                                    :rules="
+                                                        Rules.privateKeyAlias
+                                                    "
+                                                    class="form2-right"
+                                                >
+                                                    <j-input
+                                                        v-model:value="
+                                                            cluster
+                                                                .configuration
+                                                                .privateKeyAlias
+                                                        "
+                                                        placeholder="请输入私钥别名"
+                                                    />
+                                                </j-form-item>
+                                            </j-col>
+                                        </div>
 
-                                        <j-col
-                                            :span="12"
-                                            v-if="cluster.configuration.secure"
-                                        >
-                                            <j-form-item
-                                                label="证书"
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-                                                    'certId',
-                                                ]"
-                                                :rules="Rules.certId"
-                                            >
-                                                <j-select
-                                                    v-model:value="
-                                                        cluster.configuration
-                                                            .certId
-                                                    "
-                                                    :options="certIdOptions"
-                                                    placeholder="请选择证书"
-                                                    allowClear
-                                                    show-search
-                                                    :filter-option="
-                                                        filterOption
-                                                    "
-                                                />
-                                            </j-form-item>
-                                        </j-col>
-                                        <j-col
-                                            :span="12"
-                                            v-if="cluster.configuration.secure"
-                                        >
-                                            <j-form-item
-                                                label="私钥别名"
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-                                                    'privateKeyAlias',
-                                                ]"
-                                                :rules="Rules.privateKeyAlias"
-                                            >
-                                                <j-input
-                                                    v-model:value="
-                                                        cluster.configuration
-                                                            .privateKeyAlias
-                                                    "
-                                                    placeholder="请输入私钥别名"
-                                                />
-                                            </j-form-item>
-                                        </j-col>
                                         <j-col
                                             :span="24"
                                             v-if="
@@ -690,249 +704,265 @@
                                                 />
                                             </j-form-item>
                                         </j-col>
-
-                                        <j-col
-                                            :span="12"
-                                            v-if="
-                                                isVisible(
-                                                    'delimited',
-                                                    cluster.configuration
-                                                        .parserType,
-                                                )
-                                            "
-                                        >
-                                            <j-form-item
-                                                label="分隔符"
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-                                                    'parserConfiguration',
-                                                    'delimited',
-                                                ]"
-                                                :rules="Rules.delimited"
-                                            >
-                                                <j-input
-                                                    v-model:value="
+                                        <div class="form2-row">
+                                            <j-col
+                                                :span="12"
+                                                v-if="
+                                                    isVisible(
+                                                        'delimited',
                                                         cluster.configuration
-                                                            .parserConfiguration
-                                                            .delimited
-                                                    "
-                                                    placeholder="请输入分隔符"
-                                                />
-                                            </j-form-item>
-                                        </j-col>
-                                        <j-col
-                                            :span="24"
-                                            v-if="
-                                                isVisible(
-                                                    'lang',
-                                                    cluster.configuration
-                                                        .parserType,
-                                                )
-                                            "
-                                        >
-                                            <j-form-item
-                                                v-show="false"
-                                                label="脚本语言"
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-                                                    'parserConfiguration',
-                                                    'lang',
-                                                ]"
+                                                            .parserType,
+                                                    )
+                                                "
                                             >
-                                                <j-input
-                                                    v-model:value="
-                                                        cluster.configuration
-                                                            .parserConfiguration
-                                                            .lang
-                                                    "
-                                                />
-                                            </j-form-item>
-                                        </j-col>
-                                        <j-col
-                                            :span="24"
-                                            v-if="
-                                                isVisible(
-                                                    'script',
-                                                    cluster.configuration
-                                                        .parserType,
-                                                )
-                                            "
-                                        >
-                                            <j-form-item
-                                                label="解析脚本"
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-                                                    'parserConfiguration',
-                                                    'script',
-                                                ]"
-                                                :rules="Rules.script"
-                                            >
-                                                <div
-                                                    style="
-                                                        width: 100%;
-                                                        height: 400px;
-                                                    "
+                                                <j-form-item
+                                                    label="分隔符"
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'configuration',
+                                                        'parserConfiguration',
+                                                        'delimited',
+                                                    ]"
+                                                    :rules="Rules.delimited"
+                                                    class="form2-left"
                                                 >
-                                                    <j-monaco-editor
-                                                        theme="vs"
+                                                    <j-input
                                                         v-model:value="
                                                             cluster
                                                                 .configuration
                                                                 .parserConfiguration
-                                                                .script
+                                                                .delimited
                                                         "
-                                                        language="javascript"
+                                                        placeholder="请输入分隔符"
                                                     />
-                                                </div>
-                                            </j-form-item>
-                                        </j-col>
-                                        <j-col
-                                            :span="12"
-                                            v-if="
-                                                isVisible(
-                                                    'size',
-                                                    cluster.configuration
-                                                        .parserType,
-                                                )
-                                            "
-                                        >
-                                            <j-form-item
-                                                label="长度值"
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-                                                    'parserConfiguration',
-                                                    'size',
-                                                ]"
-                                                :rules="Rules.size"
-                                            >
-                                                <j-input-number
-                                                    style="width: 100%"
-                                                    v-model:value="
+                                                </j-form-item>
+                                            </j-col>
+
+                                            <!-- <j-col
+                                                :span="24"
+                                                v-if="
+                                                    isVisible(
+                                                        'lang',
                                                         cluster.configuration
-                                                            .parserConfiguration
-                                                            .size
-                                                    "
-                                                    placeholder="请输入长度值"
-                                                />
-                                            </j-form-item>
-                                        </j-col>
-                                        <j-col
-                                            :span="12"
-                                            v-if="
-                                                isVisible(
-                                                    'length',
-                                                    cluster.configuration
-                                                        .parserType,
-                                                )
-                                            "
-                                        >
-                                            <j-form-item
-                                                label="长度"
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-                                                    'parserConfiguration',
-                                                    'length',
-                                                ]"
-                                                :rules="Rules.length"
+                                                            .parserType,
+                                                    )
+                                                "
                                             >
-                                                <j-select
-                                                    style="width: 100%"
-                                                    v-model:value="
+                                                <j-form-item
+                                                    v-show="false"
+                                                    label="脚本语言"
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'configuration',
+                                                        'parserConfiguration',
+                                                        'lang',
+                                                    ]"
+                                                    class="form2-left"
+                                                >
+                                                    <j-input
+                                                        v-model:value="
+                                                            cluster
+                                                                .configuration
+                                                                .parserConfiguration
+                                                                .lang
+                                                        "
+                                                    />
+                                                </j-form-item>
+                                            </j-col> -->
+                                            <j-col
+                                                :span="24"
+                                                v-if="
+                                                    isVisible(
+                                                        'script',
                                                         cluster.configuration
-                                                            .parserConfiguration
-                                                            .length
-                                                    "
-                                                    :options="LengthOptions"
-                                                    placeholder="请选择长度"
-                                                    allowClear
-                                                    show-search
-                                                    :filter-option="
-                                                        filterOption
-                                                    "
-                                                />
-                                            </j-form-item>
-                                        </j-col>
-                                        <j-col
-                                            :span="12"
-                                            v-if="
-                                                isVisible(
-                                                    'offset',
-                                                    cluster.configuration
-                                                        .parserType,
-                                                )
-                                            "
-                                        >
-                                            <j-form-item
-                                                label="偏移量"
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-                                                    'parserConfiguration',
-                                                    'offset',
-                                                ]"
-                                                :rules="Rules.offset"
+                                                            .parserType,
+                                                    )
+                                                "
                                             >
-                                                <j-input-number
-                                                    style="width: 100%"
-                                                    v-model:value="
+                                                <j-form-item
+                                                    label="解析脚本"
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'configuration',
+                                                        'parserConfiguration',
+                                                        'script',
+                                                    ]"
+                                                    :rules="Rules.script"
+                                                    class="form2-left form2-right"
+                                                >
+                                                    <div
+                                                        style="
+                                                            width: 100%;
+                                                            height: 400px;
+                                                        "
+                                                    >
+                                                        <j-monaco-editor
+                                                            theme="vs"
+                                                            v-model:value="
+                                                                cluster
+                                                                    .configuration
+                                                                    .parserConfiguration
+                                                                    .script
+                                                            "
+                                                            language="javascript"
+                                                        />
+                                                    </div>
+                                                </j-form-item>
+                                            </j-col>
+
+                                            <j-col
+                                                :span="12"
+                                                v-if="
+                                                    isVisible(
+                                                        'size',
                                                         cluster.configuration
-                                                            .parserConfiguration
-                                                            .offset
-                                                    "
-                                                    placeholder="请输入偏移量"
-                                                    :min="0"
-                                                    :max="65535"
-                                                />
-                                            </j-form-item>
-                                        </j-col>
-                                        <j-col
-                                            :span="12"
-                                            v-if="
-                                                isVisible(
-                                                    'little',
-                                                    cluster.configuration
-                                                        .parserType,
-                                                )
-                                            "
-                                        >
-                                            <j-form-item
-                                                label="大小端"
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-                                                    'parserConfiguration',
-                                                    'little',
-                                                ]"
+                                                            .parserType,
+                                                    )
+                                                "
                                             >
-                                                <j-select
-                                                    style="width: 100%"
-                                                    v-model:value="
+                                                <j-form-item
+                                                    label="长度值"
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'configuration',
+                                                        'parserConfiguration',
+                                                        'size',
+                                                    ]"
+                                                    :rules="Rules.size"
+                                                    class="form2-left"
+                                                >
+                                                    <j-input-number
+                                                        style="width: 100%"
+                                                        v-model:value="
+                                                            cluster
+                                                                .configuration
+                                                                .parserConfiguration
+                                                                .size
+                                                        "
+                                                        placeholder="请输入长度值"
+                                                    />
+                                                </j-form-item>
+                                            </j-col>
+                                            <j-col
+                                                :span="12"
+                                                v-if="
+                                                    isVisible(
+                                                        'length',
                                                         cluster.configuration
-                                                            .parserConfiguration
-                                                            .little
-                                                    "
-                                                    :options="LittleOptions"
-                                                    placeholder="请选择大小端"
-                                                    allowClear
-                                                    show-search
-                                                    :filter-option="
-                                                        filterOption
-                                                    "
-                                                />
-                                            </j-form-item>
-                                        </j-col>
+                                                            .parserType,
+                                                    )
+                                                "
+                                            >
+                                                <j-form-item
+                                                    label="长度"
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'configuration',
+                                                        'parserConfiguration',
+                                                        'length',
+                                                    ]"
+                                                    :rules="Rules.length"
+                                                    class="form2-left"
+                                                >
+                                                    <j-select
+                                                        style="width: 100%"
+                                                        v-model:value="
+                                                            cluster
+                                                                .configuration
+                                                                .parserConfiguration
+                                                                .length
+                                                        "
+                                                        :options="LengthOptions"
+                                                        placeholder="请选择长度"
+                                                        allowClear
+                                                        show-search
+                                                        :filter-option="
+                                                            filterOption
+                                                        "
+                                                    />
+                                                </j-form-item>
+                                            </j-col>
+                                            <j-col
+                                                :span="12"
+                                                v-if="
+                                                    isVisible(
+                                                        'offset',
+                                                        cluster.configuration
+                                                            .parserType,
+                                                    )
+                                                "
+                                            >
+                                                <j-form-item
+                                                    label="偏移量"
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'configuration',
+                                                        'parserConfiguration',
+                                                        'offset',
+                                                    ]"
+                                                    :rules="Rules.offset"
+                                                    class="form2-right"
+                                                >
+                                                    <j-input-number
+                                                        style="width: 100%"
+                                                        v-model:value="
+                                                            cluster
+                                                                .configuration
+                                                                .parserConfiguration
+                                                                .offset
+                                                        "
+                                                        placeholder="请输入偏移量"
+                                                        :min="0"
+                                                        :max="65535"
+                                                    />
+                                                </j-form-item>
+                                            </j-col>
+                                            <j-col
+                                                :span="12"
+                                                v-if="
+                                                    isVisible(
+                                                        'little',
+                                                        cluster.configuration
+                                                            .parserType,
+                                                    )
+                                                "
+                                            >
+                                                <j-form-item
+                                                    label="大小端"
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'configuration',
+                                                        'parserConfiguration',
+                                                        'little',
+                                                    ]"
+                                                    class="form2-left"
+                                                >
+                                                    <j-select
+                                                        style="width: 100%"
+                                                        v-model:value="
+                                                            cluster
+                                                                .configuration
+                                                                .parserConfiguration
+                                                                .little
+                                                        "
+                                                        :options="LittleOptions"
+                                                        placeholder="请选择大小端"
+                                                        allowClear
+                                                        show-search
+                                                        :filter-option="
+                                                            filterOption
+                                                        "
+                                                    />
+                                                </j-form-item>
+                                            </j-col>
+                                        </div>
                                     </j-row>
                                 </j-collapse-panel>
                             </j-collapse>
@@ -1278,8 +1308,39 @@ watch(
     width: 100%;
     margin-top: 24px;
 }
+.form2 {
+    :deep(.ant-collapse-content-box) {
+        background: #fafafa;
+        border-radius: 2px;
+    }
+    .form2-row {
+        display: flex;
+        width: 100%;
+        position: relative;
+        flex-flow: row wrap;
+        .form2-left {
+            padding-left: 16px;
+            flex: 1;
+        }
+        .form2-right {
+            padding-right: 16px;
+            flex: 1;
+        }
+        &::before {
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            right: 10px;
+            width: calc(100%-10px);
+            height: 100%;
+            background-color: #f4f4f4;
+            content: ' ';
+        }
+    }
+}
 
 .collapse {
     margin-bottom: 20px;
+    background: #f4f4f4;
 }
 </style>

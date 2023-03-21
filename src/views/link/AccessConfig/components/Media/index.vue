@@ -54,26 +54,18 @@
                     </div>
                 </j-col>
                 <j-col :span="12">
-                    <div class="config-right">
-                        <div class="config-right-item">
-                            <div class="config-right-item-title">接入方式</div>
-                            <div class="config-right-item-context">
-                                {{ provider.name }}
-                            </div>
-                            <div class="config-right-item-context">
-                                {{ provider.description }}
-                            </div>
-                        </div>
-                        <div class="config-right-item">
-                            <div class="config-right-item-title">消息协议</div>
-                            <div class="config-right-item-context">
-                                {{
-                                    provider.id === 'fixed-media'
-                                        ? 'URL'
-                                        : 'SIP'
-                                }}
-                            </div>
-                        </div>
+                    <div class="doc">
+                        <h1>接入方式</h1>
+                        <p>
+                            {{ provider.name }}
+                        </p>
+                        <p>
+                            {{ provider.description }}
+                        </p>
+                        <h1>消息协议</h1>
+                        <p>
+                            {{ provider.id === 'fixed-media' ? 'URL' : 'SIP' }}
+                        </p>
                     </div>
                 </j-col>
             </j-row>
@@ -148,25 +140,5 @@ onMounted(() => {
     padding-right: 5px;
     overflow-y: auto;
     overflow-x: hidden;
-}
-.config-right {
-    padding: 20px;
-    color: rgba(0, 0, 0, 0.8);
-    background: rgba(0, 0, 0, 0.04);
-
-    .config-right-item {
-        margin-bottom: 10px;
-
-        .config-right-item-title {
-            width: 100%;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .config-right-item-context {
-            margin: 5px 0;
-            color: rgba(0, 0, 0, 0.8);
-        }
-    }
 }
 </style>

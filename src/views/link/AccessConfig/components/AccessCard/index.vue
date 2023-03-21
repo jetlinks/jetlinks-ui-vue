@@ -1,14 +1,19 @@
 <template>
     <j-card
         hoverable
-        :class="['card-render', checked === data.id ? 'checked' : '']"
+        :class="[
+            'card-render',
+            'container',
+            checked === data.id ? 'checked' : '',
+        ]"
         @click="checkedChange(data.id)"
     >
         <div class="title">
-            <j-tooltip placement="topLeft" :title="data.name">{{
-                data.name
-            }}</j-tooltip>
+            <Ellipsis style="width: calc(100% - 100px); margin-bottom: 24px">
+                {{ data.name }}
+            </Ellipsis>
         </div>
+
         <slot name="other"></slot>
         <div class="desc">
             <j-tooltip placement="topLeft" :title="data.description">{{
@@ -46,16 +51,18 @@ const checkedChange = (id: string) => {
 .card-render {
     width: 100%;
     overflow: hidden;
-    background: url('/public/images/access.png') no-repeat;
-    background-size: 100% 100%;
-    height: 120px;
-
+    // background: url('/public/images/access.png') no-repeat;
+    // background-size: 100% 100%;
+    height: 140px;
+    background: #fafafa;
+    border: 1px solid #e6e6e6;
     .title {
-        width: calc(100% - 88px);
-        overflow: hidden;
+        font-style: normal;
         font-weight: 800;
-        white-space: nowrap;
-        text-overflow: ellipsis;
+        font-size: 16px;
+        line-height: 22px;
+        color: rgba(0, 0, 0, 0.85);
+        opacity: 0.85;
     }
 
     .desc {
@@ -78,8 +85,7 @@ const checkedChange = (id: string) => {
         width: 44px;
         height: 44px;
         color: #fff;
-        background-color: red;
-        background-color: #2f54eb;
+        background-color: @primary-color;
         transform: rotate(-45deg);
 
         > div {
@@ -92,11 +98,16 @@ const checkedChange = (id: string) => {
     }
     &.checked {
         position: relative;
-        color: #2f54eb;
-        border-color: #2f54eb;
+        color: @primary-color;
+        border-color: @primary-color;
+        z-index: 0;
         .checked-icon {
             display: block;
         }
     }
+}
+.container {
+    background: url('/public/images/access-icon.png') no-repeat;
+    background-position: bottom right;
 }
 </style>

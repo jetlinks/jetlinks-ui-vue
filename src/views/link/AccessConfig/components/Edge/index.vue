@@ -1,5 +1,5 @@
 <template>
-    <div v-if="type === 'edge'" class="container">
+    <div v-if="type === 'edge'">
         <j-steps
             v-if="channel !== 'edge-child-device'"
             class="steps-steps"
@@ -29,12 +29,8 @@
                         新增
                     </PermissionButton>
                 </div>
-                <j-scrollbar height="500">
-                    <j-row
-                        :gutter="[24, 24]"
-                        v-if="networkList.length > 0"
-                        style="margin-right: 10px"
-                    >
+                <j-scrollbar height="480">
+                    <j-row :gutter="[24, 24]" v-if="networkList.length > 0">
                         <j-col
                             :span="8"
                             v-for="item in networkList"
@@ -66,11 +62,7 @@
                                                     class="item"
                                                 >
                                                     <j-badge
-                                                        :color="
-                                                            i.health === -1
-                                                                ? 'red'
-                                                                : 'green'
-                                                        "
+                                                        :status="getColor(i)"
                                                     />{{ i.address }}
                                                 </div>
                                             </div>
@@ -82,11 +74,7 @@
                                                 class="item"
                                             >
                                                 <j-badge
-                                                    :color="
-                                                        i.health === -1
-                                                            ? 'red'
-                                                            : 'green'
-                                                    "
+                                                    :status="getColor(i)"
                                                     :text="i.address"
                                                 />
                                                 <span
@@ -163,19 +151,13 @@
                     </j-form>
                 </j-col>
                 <j-col :span="12">
-                    <div class="config-right">
-                        <div class="config-right-item">
-                            <title-component data="配置概览" />
-                            <div class="config-right-item-context">
-                                接入方式：{{ provider.name }}
-                            </div>
-                            <div class="config-right-item-context">
-                                {{ provider.description }}
-                            </div>
-                            <div class="config-right-item-context">
-                                消息协议：{{ provider.id }}
-                            </div>
-                        </div>
+                    <div class="doc" style="height: 600px">
+                        <TitleComponent data="配置概览" />
+                        <p>接入方式：{{ provider.name }}</p>
+                        <p>
+                            {{ provider.description }}
+                        </p>
+                        <p>消息协议：{{ provider.id }}</p>
                     </div>
                 </j-col>
             </j-row>
@@ -278,6 +260,7 @@ const onFinish = async (values: any) => {
 const checkedChange = (id: string) => {
     networkCurrent.value = id;
 };
+const getColor = (i: any) => (i.health === -1 ? 'error' : 'processing');
 
 const queryNetworkList = async (id: string, include: string, data = {}) => {
     const resp = await getNetworkList(
@@ -359,12 +342,8 @@ watch(
 </script>
 
 <style lang="less" scoped>
-.container {
-    margin: 20px;
-}
-
 .steps-content {
-    margin: 20px;
+    margin-top: 20px;
 }
 .steps-box {
     min-height: 400px;
@@ -378,7 +357,6 @@ watch(
 .steps-action {
     width: 100%;
     margin-top: 24px;
-    margin-left: 20px;
 }
 .steps-action-save {
     margin-left: 0;
