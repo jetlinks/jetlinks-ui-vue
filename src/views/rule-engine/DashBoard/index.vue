@@ -92,7 +92,7 @@ import {
     getAlarmConfigCount,
     getAlarmLevel,
 } from '@/api/rule-engine/dashboard';
-import moment from 'moment';
+import dayjs from 'dayjs';
 let currentMonAlarm = ref<Footer[]>([
     {
         title: '当月告警',
@@ -169,7 +169,7 @@ const today = {
         time: '1d',
         // targetType: 'device',
         format: 'HH:mm:ss',
-        from: moment(new Date(new Date().setHours(0, 0, 0, 0))).format(
+        from: dayjs(new Date(new Date().setHours(0, 0, 0, 0))).format(
             'YYYY-MM-DD HH:mm:ss',
         ),
         to: 'now',
@@ -353,8 +353,8 @@ const selectChange = () => {
             // to: 'now',
             limit: limit, // 12
             // time: params.time.type === 'today' ? '1h' : '1d',
-            from: moment(queryCodition.startTime).format('YYYY-MM-DD HH:mm:ss'),
-            to: moment(queryCodition.endTime).format('YYYY-MM-DD HH:mm:ss'),
+            from: dayjs(queryCodition.startTime).format('YYYY-MM-DD HH:mm:ss'),
+            to: dayjs(queryCodition.endTime).format('YYYY-MM-DD HH:mm:ss'),
             // limit: 30,
         },
     };
@@ -370,8 +370,8 @@ const selectChange = () => {
             // time: '1h',
             time: time,
             targetType: queryCodition.targetType,
-            from: moment(queryCodition.startTime).format('YYYY-MM-DD HH:mm:ss'),
-            to: moment(queryCodition.endTime).format('YYYY-MM-DD HH:mm:ss'),
+            from: dayjs(queryCodition.startTime).format('YYYY-MM-DD HH:mm:ss'),
+            to: dayjs(queryCodition.endTime).format('YYYY-MM-DD HH:mm:ss'),
             limit: 9,
         },
     };

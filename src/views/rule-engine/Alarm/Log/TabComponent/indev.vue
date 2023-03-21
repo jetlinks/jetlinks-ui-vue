@@ -79,7 +79,7 @@
                                 <Ellipsis
                                     ><div>
                                         {{
-                                            moment(slotProps?.alarmTime).format(
+                                            dayjs(slotProps?.alarmTime).format(
                                                 'YYYY-MM-DD HH:mm:ss',
                                             )
                                         }}
@@ -157,7 +157,7 @@ import Search from '@/components/Search';
 import { useAlarmStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
 import { Store } from 'jetlinks-store';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import type { ActionsType } from '@/components/Table';
 import SolveComponent from '../SolveComponent/index.vue';
 import SolveLog from '../SolveLog/index.vue';

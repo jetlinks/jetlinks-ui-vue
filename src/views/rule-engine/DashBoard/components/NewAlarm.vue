@@ -10,7 +10,7 @@
                                 :src="getImage('/alarm/bashboard.png')"
                                 alt=""
                             />{{
-                                moment(item.alarmTime).format(
+                                dayjs(item.alarmTime).format(
                                     'YYYY-MM-DD HH:mm:ss',
                                 )
                             }}
@@ -64,7 +64,7 @@
 import { Empty } from 'jetlinks-ui-components';
 import { getImage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
-import moment from 'moment';
+import dayjs from 'dayjs';
 const props = defineProps({
     alarmList: {
         type: Array,

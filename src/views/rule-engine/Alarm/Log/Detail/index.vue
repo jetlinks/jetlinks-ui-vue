@@ -16,7 +16,7 @@
             }"
         >
             <template #alarmTime="slotProps">{{
-                moment(slotProps.alarmTime).format('YYYY-MM-DD HH:mm:ss')
+                dayjs(slotProps.alarmTime).format('YYYY-MM-DD HH:mm:ss')
             }}</template>
             <template #action="slotProps">
                 <j-space
@@ -47,7 +47,7 @@
 <script lang="ts" setup>
 import { detail, queryHistoryList } from '@/api/rule-engine/log';
 import { useRoute } from 'vue-router';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { message } from 'jetlinks-ui-components';
 import { useAlarmStore } from '@/store/alarm';

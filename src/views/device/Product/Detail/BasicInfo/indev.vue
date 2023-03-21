@@ -29,12 +29,12 @@
                 }}</j-button>
             </j-descriptions-item>
             <j-descriptions-item label="创建时间">{{
-                moment(productStore.current.createTime).format(
+                dayjs(productStore.current.createTime).format(
                     'YYYY-MM-DD HH:mm:ss',
                 )
             }}</j-descriptions-item>
             <j-descriptions-item label="更新时间">{{
-                moment(productStore.current.modifyTime).format(
+                dayjs(productStore.current.modifyTime).format(
                     'YYYY-MM-DD HH:mm:ss',
                 )
             }}</j-descriptions-item>
@@ -51,7 +51,7 @@
 <script lang="ts" setup>
 import { useProductStore } from '@/store/product';
 import Save from '../../Save/index.vue';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useRoute } from 'vue-router';
 const productStore = useProductStore();
 const route = useRoute();
