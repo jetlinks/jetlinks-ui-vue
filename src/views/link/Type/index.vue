@@ -50,7 +50,7 @@
                                 <Ellipsis
                                     style="
                                         width: calc(100% - 100px);
-                                        margin-bottom: 10px;
+                                        margin-bottom: 20px;
                                         color: #2f54eb;
                                     "
                                 >
@@ -65,8 +65,10 @@
                                     </span>
                                 </Ellipsis>
                                 <j-row class="card-item-content-box">
-                                    <j-col :span="12">
-                                        <div class="card-item-content-text">
+                                    <j-col :span="8">
+                                        <div
+                                            class="card-item-content-text-title"
+                                        >
                                             类型
                                         </div>
                                         <div class="card-item-content-text">
@@ -78,8 +80,11 @@
                                             </j-tooltip>
                                         </div>
                                     </j-col>
-                                    <j-col :span="12">
-                                        <div class="card-item-content-text">
+
+                                    <j-col :span="16">
+                                        <div
+                                            class="card-item-content-text-title"
+                                        >
                                             详情
                                         </div>
                                         <div class="card-item-content-text">
@@ -87,9 +92,7 @@
                                                 <template #title>{{
                                                     getDetails(slotProps)
                                                 }}</template>
-                                                <span class="details-text">{{
-                                                    getDetails(slotProps)
-                                                }}</span>
+                                                {{ getDetails(slotProps) }}
                                             </j-tooltip>
                                         </div>
                                     </j-col>
@@ -392,15 +395,23 @@ const handleSearch = (e: any) => {
         min-height: 50px;
     }
     .card-item-content-text {
-        color: rgba(0, 0, 0, 0.75);
-        font-size: 12px;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 170%;
+        color: rgba(0, 0, 0, 0.85);
+        opacity: 0.75;
         overflow: hidden; //超出的文本隐藏
         text-overflow: ellipsis; //溢出用省略号显示
         white-space: nowrap; //溢出不换行
     }
-}
-.details-text {
-    font-weight: 700;
-    font-size: 14px;
+    .card-item-content-text-title {
+        font-style: normal;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 170%;
+        color: rgba(0, 0, 0, 0.75);
+        opacity: 0.75;
+    }
 }
 </style>
