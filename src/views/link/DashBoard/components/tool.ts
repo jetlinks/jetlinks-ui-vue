@@ -1,7 +1,7 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 import * as echarts from 'echarts';
 
-export const getInterval = (type) => {
+export const getInterval = (type: string) => {
     switch (type) {
         case 'year':
             return '30d';
@@ -14,7 +14,7 @@ export const getInterval = (type) => {
             return '1h';
     }
 };
-export const getTimeFormat = (type) => {
+export const getTimeFormat = (type: string) => {
     switch (type) {
         case 'year':
             return 'YYYY-MM-DD';
@@ -28,22 +28,22 @@ export const getTimeFormat = (type) => {
     }
 };
 
-export const getTimeByType = (type) => {
+export const getTimeByType = (type: string) => {
     switch (type) {
         case 'hour':
-            return moment().subtract(1, 'hours');
+            return dayjs().subtract(1, 'hours');
         case 'week':
-            return moment().subtract(6, 'days');
+            return dayjs().subtract(6, 'days');
         case 'month':
-            return moment().subtract(29, 'days');
+            return dayjs().subtract(29, 'days');
         case 'year':
-            return moment().subtract(365, 'days');
+            return dayjs().subtract(365, 'days');
         default:
-            return moment().startOf('day');
+            return dayjs().startOf('day');
     }
 };
 
-export const arrayReverse = (data) => {
+export const arrayReverse = (data: string) => {
     const newArray = [];
     for (let i = data.length - 1; i >= 0; i--) {
         newArray.push(data[i]);
@@ -51,7 +51,7 @@ export const arrayReverse = (data) => {
     return newArray;
 };
 
-export const networkParams = (val) => [
+export const networkParams = (val: any) => [
     {
         dashboard: 'systemMonitor',
         object: 'network',
@@ -61,12 +61,12 @@ export const networkParams = (val) => [
         params: {
             type: val.type,
             interval: getInterval(val.time.type),
-            from: moment(val.time.time[0]).valueOf(),
-            to: moment(val.time.time[1]).valueOf(),
+            from: dayjs(val.time.time[0]).valueOf(),
+            to: dayjs(val.time.time[1]).valueOf(),
         },
     },
 ];
-export const defulteParamsData = (group, val) => [
+export const defulteParamsData = (group: any, val: any) => [
     {
         dashboard: 'systemMonitor',
         object: 'stats',
@@ -74,8 +74,8 @@ export const defulteParamsData = (group, val) => [
         dimension: 'history',
         group,
         params: {
-            from: moment(val.time[0]).valueOf(),
-            to: moment(val.time[1]).valueOf(),
+            from: dayjs(val.time[0]).valueOf(),
+            to: dayjs(val.time[1]).valueOf(),
         },
     },
 ];

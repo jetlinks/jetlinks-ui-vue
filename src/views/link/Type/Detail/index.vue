@@ -95,13 +95,23 @@
                             >
                                 <j-collapse-panel
                                     :key="cluster.id"
-                                    :header="`#${index + 1}.节点`"
+                                    :header="
+                                        cluster.serverId
+                                            ? cluster.serverId
+                                            : `#${index + 1}.配置信息`
+                                    "
+                                    collapsible="header"
                                 >
                                     <template #extra v-if="!shareCluster">
-                                        <AIcon
-                                            @click="removeCluster(cluster)"
-                                            type="DeleteOutlined"
-                                        />
+                                        <j-popconfirm
+                                            @confirm.prevent="
+                                                removeCluster(cluster)
+                                            "
+                                        >
+                                            <span class="delete-btn">
+                                                删除
+                                            </span>
+                                        </j-popconfirm>
                                     </template>
                                     <j-row :gutter="[24, 0]">
                                         <j-col :span="12" v-if="!shareCluster">
@@ -558,8 +568,8 @@
                                                         'secure',
                                                         formData.type,
                                                     )
-                                                        ? '开启TLS'
-                                                        : '开启DTLS'
+                                                        ? '开启DTLS'
+                                                        : '开启TLS'
                                                 "
                                                 :name="[
                                                     'cluster',
@@ -801,7 +811,7 @@
                                                     >
                                                         <j-monaco-editor
                                                             theme="vs"
-                                                            v-model:value="
+                                                            v-model:modelValue="
                                                                 cluster
                                                                     .configuration
                                                                     .parserConfiguration
@@ -968,7 +978,12 @@
                             </j-collapse>
                         </div>
                         <j-form-item v-if="!shareCluster">
-                            <j-button type="dashed" block @click="addCluster">
+                            <j-button
+                                type="primary"
+                                block
+                                ghost
+                                @click="addCluster"
+                            >
                                 <AIcon type="PlusOutlined" />
                                 新增
                             </j-button>
@@ -1116,6 +1131,7 @@ const changeShareCluster = (value: boolean) => {
 };
 
 const changeType = (value: string) => {
+    getResourcesCurrent();
     dynamicValidateForm.cluster = [{ ...cloneDeep(FormStates2), id: '1' }];
     if (value !== 'MQTT_CLIENT') {
         const { configuration } = dynamicValidateForm.cluster[0];
@@ -1170,7 +1186,15 @@ const changeParserType = (value: string | undefined, index: number) => {
 
 const saveData = async () => {
     await formRef1.value?.validate();
-    const formRef2Data = await formRef2.value?.validate();
+
+    const formRef2Data = await formRef2.value?.validate().catch((err) => {
+        err.errorFields.forEach((item: any) => {
+            const activeId: any = dynamicValidateForm.cluster[item.name[1]].id;
+            if (!activeKey.value.includes(activeId)) {
+                activeKey.value.push(activeId); // 校验未通过的展开
+            }
+        });
+    });
 
     const { configuration } = formRef2Data?.cluster[0];
     const params = shareCluster.value
@@ -1179,9 +1203,8 @@ const saveData = async () => {
 
     loading.value = true;
     const resp: any =
-        id === ':id'
-            ? await save(params).catch(() => {})
-            : await update({ ...params, id }).catch(() => {});
+        id === ':id' ? await save(params) : await update({ ...params, id });
+    loading.value = false;
     if (resp?.status === 200) {
         onlyMessage('操作成功', 'success');
         history.back();
@@ -1194,7 +1217,6 @@ const saveData = async () => {
             }
         }
     }
-    loading.value = false;
 };
 
 const getSupports = async () => {
@@ -1243,6 +1265,10 @@ const getDetail = () => {
                 } else {
                     dynamicValidateForm.cluster = cluster;
                 }
+
+                if (dynamicValidateForm.cluster.length === 1) {
+                    dynamicValidateForm.cluster[0].id = '1';
+                }
             }
         });
         loading.value = false;
@@ -1286,6 +1312,7 @@ watch(
     },
     { deep: true, immediate: true },
 );
+
 watch(
     () => NetworkType,
     (value) => {
@@ -1342,5 +1369,13 @@ watch(
 .collapse {
     margin-bottom: 20px;
     background: #f4f4f4;
+}
+.delete-btn {
+    display: inline-block;
+    color: #e50012;
+    padding: 0px 8px;
+    background: #ffffff;
+    border: 1px solid #e50012;
+    border-radius: 2px;
 }
 </style>
