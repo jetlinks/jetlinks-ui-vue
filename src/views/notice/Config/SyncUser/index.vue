@@ -209,6 +209,7 @@ watch(
 const onTreeSelect = (keys: any) => {
     deptId.value = keys[0];
     pageSize.value = 5;
+    current.value = 1;
 };
 
 // 右侧表格
