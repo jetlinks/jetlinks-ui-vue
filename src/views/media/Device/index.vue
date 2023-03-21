@@ -153,7 +153,7 @@
 <script setup lang="ts">
 import DeviceApi from '@/api/media/device';
 import type { ActionsType } from '@/views/device/Instance/typings';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { getImage } from '@/utils/comm';
 import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
 import { providerType } from './const';

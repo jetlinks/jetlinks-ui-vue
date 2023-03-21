@@ -71,7 +71,7 @@ import {
     getRelationshipList_api,
     delRelation_api,
 } from '@/api/system/relationship';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import EditDialog from './components/EditDialog.vue';
 
 const permission = 'system/Relationship';

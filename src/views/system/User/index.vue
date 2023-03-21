@@ -122,7 +122,7 @@ import {
     changeUserStatus_api,
     deleteUser_api,
 } from '@/api/system/user';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 const permission = 'system/User';
 

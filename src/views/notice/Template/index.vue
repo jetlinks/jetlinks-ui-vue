@@ -157,7 +157,7 @@
 <script setup lang="ts">
 import TemplateApi from '@/api/notice/template';
 import type { ActionsType } from '@/views/device/Instance/typings';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
 import Debug from './Debug/index.vue';
 import Log from './Log/index.vue';

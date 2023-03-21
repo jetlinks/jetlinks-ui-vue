@@ -3,8 +3,8 @@
         <div class="permission-container">
             <pro-search
                 :columns="columns"
-                target="category"
-                @search="(params:any)=>queryParams = {...params}"
+                target="system-permission"
+                @search="handleSearch"
             />
 
             <j-pro-table
@@ -141,7 +141,7 @@
 <script setup lang="ts">
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import EditDialog from './components/EditDialog.vue';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import {
     getPermission_api,
     editPermission_api,
@@ -172,27 +172,24 @@ const columns = [
         ellipsis: true,
         search: {
             type: 'string',
+            first: true,
         },
     },
     {
         title: '状态',
         dataIndex: 'status',
         key: 'status',
-        ellipsis: true,
+        scopedSlots: true,
         search: {
             type: 'select',
             options: [
-                {
-                    label: '启用',
-                    value: 1,
-                },
-                {
-                    label: '禁用',
-                    value: 0,
-                },
+                { label: '启用', value: 1 },
+                { label: '禁用', value: 0 },
             ],
+            handleValue: (v: any) => {
+                return v;
+            },
         },
-        scopedSlots: true,
     },
     {
         title: '操作',
@@ -204,6 +201,9 @@ const columns = [
     },
 ];
 const queryParams = ref({});
+const handleSearch = (e: any) => {
+    queryParams.value = e;
+};
 // 表格
 const tableRef = ref<Record<string, any>>({}); // 表格实例
 const table = {
@@ -237,7 +237,7 @@ const table = {
     clickExport: () => {
         const params = {
             paging: false,
-            ...queryParams,
+            ...queryParams.value,
         };
         exportPermission_api(params).then((resp) => {
             if (resp.status === 200) {

@@ -559,7 +559,7 @@
 
 <script setup lang="ts">
 import { getImage } from '@/utils/comm';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import CascadeApi from '@/api/media/cascade';
 
 const router = useRouter();

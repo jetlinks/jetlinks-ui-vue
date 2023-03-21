@@ -67,7 +67,7 @@
 
 <script setup lang="ts">
 import CascadeApi from '@/api/media/cascade';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { PropType } from 'vue';
 
 const route = useRoute();

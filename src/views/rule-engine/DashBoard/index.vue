@@ -55,15 +55,38 @@
                             </div>
                             <div class="alarmRank">
                                 <h4>告警排名</h4>
-                                <ul v-if="state.ranking.length" class="rankingList">
-                                    <li v-for="(item,i) in state.ranking" :key="item.targetId">
-                                        <img :src="getImage(`/rule-engine/dashboard/ranking/${i+1}.png`)" alt="">
-                                        <span class="rankingItemTitle" :title="item.targetName">{{item.targetName}}</span>
-                                        <span class="rankingItemValue">{{item.count}}</span>
+                                <ul
+                                    v-if="state.ranking.length"
+                                    class="rankingList"
+                                >
+                                    <li
+                                        v-for="(item, i) in state.ranking"
+                                        :key="item.targetId"
+                                    >
+                                        <img
+                                            :src="
+                                                getImage(
+                                                    `/rule-engine/dashboard/ranking/${
+                                                        i + 1
+                                                    }.png`,
+                                                )
+                                            "
+                                            alt=""
+                                        />
+                                        <span
+                                            class="rankingItemTitle"
+                                            :title="item.targetName"
+                                            >{{ item.targetName }}</span
+                                        >
+                                        <span class="rankingItemValue">{{
+                                            item.count
+                                        }}</span>
                                     </li>
                                 </ul>
                                 <div v-else class="empty-body">
-                                    <j-empty  :image="Empty.PRESENTED_IMAGE_SIMPLE"></j-empty>
+                                    <j-empty
+                                        :image="Empty.PRESENTED_IMAGE_SIMPLE"
+                                    ></j-empty>
                                 </div>
                             </div>
                         </div>
@@ -92,7 +115,7 @@ import {
     getAlarmConfigCount,
     getAlarmLevel,
 } from '@/api/rule-engine/dashboard';
-import moment from 'moment';
+import dayjs from 'dayjs';
 let currentMonAlarm = ref<Footer[]>([
     {
         title: '当月告警',
@@ -169,7 +192,7 @@ const today = {
         time: '1d',
         // targetType: 'device',
         format: 'HH:mm:ss',
-        from: moment(new Date(new Date().setHours(0, 0, 0, 0))).format(
+        from: dayjs(new Date(new Date().setHours(0, 0, 0, 0))).format(
             'YYYY-MM-DD HH:mm:ss',
         ),
         to: 'now',
@@ -246,9 +269,28 @@ const getDashBoard = () => {
                     {
                         name: '告警数',
                         data: fifteenData.map((item) => item.value),
-                        type: 'bar',
-                        itemStyle: {
-                            color: '#2F54EB',
+                        type: 'line',
+                        color: '#2F54EB',
+                        symbolSize: 0,
+                        areaStyle: {
+                            color: {
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 0,
+                                colorStops: [
+                                    {
+                                        offset: 0,
+                                        color: '#2F54EB', // 100% 处的颜色
+                                    },
+                                    {
+                                        offset: 1,
+                                        color: '#FFFFFF', //   0% 处的颜色
+                                    },
+                                ],
+                                global: false, // 缺省为 false
+                            },
                         },
                     },
                 ],
@@ -353,8 +395,8 @@ const selectChange = () => {
             // to: 'now',
             limit: limit, // 12
             // time: params.time.type === 'today' ? '1h' : '1d',
-            from: moment(queryCodition.startTime).format('YYYY-MM-DD HH:mm:ss'),
-            to: moment(queryCodition.endTime).format('YYYY-MM-DD HH:mm:ss'),
+            from: dayjs(queryCodition.startTime).format('YYYY-MM-DD HH:mm:ss'),
+            to: dayjs(queryCodition.endTime).format('YYYY-MM-DD HH:mm:ss'),
             // limit: 30,
         },
     };
@@ -370,8 +412,8 @@ const selectChange = () => {
             // time: '1h',
             time: time,
             targetType: queryCodition.targetType,
-            from: moment(queryCodition.startTime).format('YYYY-MM-DD HH:mm:ss'),
-            to: moment(queryCodition.endTime).format('YYYY-MM-DD HH:mm:ss'),
+            from: dayjs(queryCodition.startTime).format('YYYY-MM-DD HH:mm:ss'),
+            to: dayjs(queryCodition.endTime).format('YYYY-MM-DD HH:mm:ss'),
             limit: 9,
         },
     };
@@ -536,12 +578,12 @@ const selectChange = () => {
     }
 }
 .empty-body {
-        height: 490px;
-        display: flex;
-        flex-direction: column;
-        align-content: center;
-        justify-content: center;
-        width: 100%;
-        // height: 100%;
+    height: 490px;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    // height: 100%;
 }
 </style>

@@ -187,7 +187,7 @@ import {
 import { ActionsType } from '@/components/Table';
 import { getImage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 const menuStory = useMenuStore();
 const permission = 'system/Apply';

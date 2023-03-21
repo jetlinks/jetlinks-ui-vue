@@ -80,7 +80,7 @@
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import AddBindUserDialog from './components/addBindUserDialog.vue';
 import { getBindUserList_api, unBindUser_api } from '@/api/system/department';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 const permission = 'system/Department';
 

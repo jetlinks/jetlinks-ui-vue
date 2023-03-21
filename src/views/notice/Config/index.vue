@@ -196,7 +196,7 @@
 import ConfigApi from '@/api/notice/config';
 import type { ActionsType } from '@/components/Table/index.vue';
 
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
 import SyncUser from './SyncUser/index.vue';

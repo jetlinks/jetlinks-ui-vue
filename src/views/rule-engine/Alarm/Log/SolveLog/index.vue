@@ -29,7 +29,7 @@
             <template #handleTime="slotsProps">
                 <span>
                     {{
-                        moment(slotsProps.handleTime).format(
+                        dayjs(slotsProps.handleTime).format(
                             'YYYY-MM-DD HH:mm:ss'
                         )
                     }}
@@ -41,7 +41,7 @@
             <template #alarmTime="slotProps">
                 <span>
                     {{
-                        moment(slotProps.alarmTime).format(
+                        dayjs(slotProps.alarmTime).format(
                             'YYYY-MM-DD HH:mm:ss',
                         )
                     }}
@@ -53,7 +53,7 @@
 
 <script lang="ts" setup>
 import { queryHandleHistory } from '@/api/rule-engine/log';
-import moment from 'moment';
+import dayjs from 'dayjs';
 const props = defineProps({
     data: {
         type: Object,

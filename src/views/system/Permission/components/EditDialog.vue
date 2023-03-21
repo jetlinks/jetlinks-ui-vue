@@ -12,16 +12,7 @@
             <j-form-item
                 name="id"
                 :rules="[
-                    {
-                        required: true,
-                        message: '请输入标识(ID)',
-                        trigger: 'change',
-                    },
-                    {
-                        max: 64,
-                        message: '最多可输入64个字符',
-                        trigger: 'change',
-                    },
+                    { required: true, message: '' },
                     { validator: form.rules.idCheck, trigger: 'blur' },
                 ]"
                 class="question-item"
@@ -61,38 +52,57 @@
                     placeholder="请输入名称"
                 />
             </j-form-item>
+
+            <!-- 操作权限列表 -->
+            <j-table
+                :columns="table.columns"
+                :data-source="form.data.actionTableData"
+                :pagination="false"
+            >
+                <template #bodyCell="{ column, record, index }">
+                    <template v-if="column.key === 'index'">
+                        {{
+                            `#${
+                                (pager.current - 1) * pager.pageSize +
+                                (index + 1)
+                            }.`
+                        }}
+                    </template>
+                    <template
+                        v-else-if="
+                            column.key !== 'index' && column.key !== 'act'
+                        "
+                    >
+                        <j-form-item
+                            :name="['actionTableData', index, column.key]"
+                            :rules="[
+                                {
+                                    required: column.key !== 'describe',
+                                    message: `请输入${column.title}`,
+                                },
+                                {
+                                    max: 64,
+                                    message: '最多可输入64个字符',
+                                },
+                            ]"
+                        >
+                            <j-input v-model:value="record[column.key]" />
+                        </j-form-item>
+                    </template>
+                    <template v-else-if="column.key === 'act'">
+                        <j-button
+                            class="delete-btn"
+                            style="padding: 0"
+                            type="link"
+                            @click="table.clickRemove(index)"
+                        >
+                            <AIcon type="DeleteOutlined" />
+                        </j-button>
+                    </template>
+                </template>
+            </j-table>
         </j-form>
 
-        <j-table
-            :columns="table.columns"
-            :data-source="actionTableData"
-            :pagination="false"
-        >
-            <template #bodyCell="{ column, record, index }">
-                <template v-if="column.key === 'index'">
-                    {{
-                        `#${
-                            (pager.current - 1) * pager.pageSize + (index + 1)
-                        }.`
-                    }}
-                </template>
-                <template
-                    v-else-if="column.key !== 'index' && column.key !== 'act'"
-                >
-                    <j-input v-model:value="record[column.key]" />
-                </template>
-                <template v-else-if="column.key === 'act'">
-                    <j-button
-                        class="delete-btn"
-                        style="padding: 0"
-                        type="link"
-                        @click="table.clickRemove(index)"
-                    >
-                        <AIcon type="DeleteOutlined" />
-                    </j-button>
-                </template>
-            </template>
-        </j-table>
         <div class="pager" v-show="pager.total > pager.pageSize">
             <j-select v-model:value="pager.current" style="width: 60px">
                 <j-select-option v-for="(val, i) in pageArr" :value="i + 1">{{
@@ -156,6 +166,16 @@ const form = reactive({
         name: '',
         id: '',
         ...props.data,
+        actionTableData: computed(() => {
+            const startIndex = (pager.current - 1) * pager.pageSize;
+            const endIndex = Math.min(
+                pager.current * pager.pageSize,
+                table.data.length,
+            );
+            console.log(startIndex, endIndex);
+
+            return table.data.slice(startIndex, endIndex);
+        }),
     },
     rules: {
         // 校验标识是否可用
@@ -216,7 +236,7 @@ const table = reactive({
             key: 'act',
         },
     ],
-    data: props.data.id ? props.data.actions : [...defaultAction],
+    data: props.data.id ? [...props.data.actions] : [...defaultAction],
     clickRemove: (index: number) => {
         pager.total -= 1;
         table.data.splice(index, 1);
@@ -245,16 +265,16 @@ const pageArr = computed(() => {
     const maxPageNum = Math.ceil(pager.total / pager.pageSize);
     return new Array(maxPageNum).fill(1);
 });
-const actionTableData = computed(() => {
-    const startIndex = (pager.current - 1) * pager.pageSize;
-    const endIndex = Math.min(
-        pager.current * pager.pageSize,
-        table.data.length,
-    );
-    console.log(startIndex, endIndex);
+// const actionTableData = computed(() => {
+//     const startIndex = (pager.current - 1) * pager.pageSize;
+//     const endIndex = Math.min(
+//         pager.current * pager.pageSize,
+//         table.data.length,
+//     );
+//     console.log(startIndex, endIndex);
 
-    return table.data.slice(startIndex, endIndex);
-});
+//     return table.data.slice(startIndex, endIndex);
+// });
 </script>
 
 <style lang="less" scoped>

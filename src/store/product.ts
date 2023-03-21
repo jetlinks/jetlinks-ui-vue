@@ -1,6 +1,6 @@
 import { ProductItem } from "@/views/device/Product/typings";
 import { defineStore } from "pinia";
-import { detail , getDeviceNumber} from '@/api/device/product'
+import { detail, getDeviceNumber } from '@/api/device/product'
 import encodeQuery from "@/utils/encodeQuery";
 
 export const useProductStore = defineStore({
@@ -17,22 +17,24 @@ export const useProductStore = defineStore({
     },
     async getDetail(id: string) {
       const resp = await detail(id)
-      if(resp.status === 200){
-        this.current = resp.result
+      if (resp.status === 200) {
+        this.current = {
+          ...this.current,...resp.result
+        }
         this.detail = resp.result
       }
     },
     async refresh(id: string) {
       this.getDetail(id)
       const res = await getDeviceNumber(encodeQuery({ terms: { productId: id } }))
-      if(res.status === 200){
+      if (res.status === 200) {
         this.current.count = res.result
       }
     },
     setTabActiveKey(key: string) {
       this.tabActiveKey = key
     },
-    reSet(){
+    reSet() {
       this.current = {} as ProductItem
       this.detail = {} as ProductItem
     }

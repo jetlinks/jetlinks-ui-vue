@@ -112,7 +112,7 @@ import type {
     IVariableDefinitions,
     BindConfig,
 } from '@/views/notice/Template/types';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 import ToUser from '../Detail/components/ToUser.vue';
 import ToOrg from '../Detail/components/ToOrg.vue';
@@ -194,7 +194,7 @@ const getTemplateDetail = async () => {
                               },
                           },
                       ]
-                    : '',
+                    : [],
         }),
     );
 };

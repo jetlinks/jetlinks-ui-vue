@@ -36,6 +36,7 @@ import DefaultSetting from '../../../config/config';
 import { useMenuStore } from '@/store/menu';
 import { clearMenuItem } from 'jetlinks-ui-components/es/ProLayout/util';
 import { AccountMenu } from '@/router/menu'
+import { useSystem } from '@/store/system';
 
 type StateType = {
     collapsed: boolean;
@@ -49,11 +50,14 @@ const route = useRoute();
 
 const menu = useMenuStore();
 
+const system = useSystem();
+const configInfo = system.configInfo;
+
 const layoutConf = reactive({
-    theme: DefaultSetting.layout.theme,
+    theme: configInfo.front?.headerTheme || DefaultSetting.layout.theme,
     siderWidth: DefaultSetting.layout.siderWidth,
-    logo: DefaultSetting.layout.logo,
-    title: DefaultSetting.layout.title,
+    logo: configInfo.front?.logo || DefaultSetting.layout.logo,
+    title: configInfo.front?.title || DefaultSetting.layout.title,
     menuData: [...clearMenuItem(menu.siderMenus), AccountMenu],
     // menuData: menu.siderMenus,
     splitMenus: true,

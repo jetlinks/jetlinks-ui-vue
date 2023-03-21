@@ -398,6 +398,7 @@ import 'driver.js/dist/driver.min.css';
 import { marked } from 'marked';
 import type { TableColumnType } from 'ant-design-vue';
 import { useMenuStore } from '@/store/menu';
+import _ from 'lodash';
 const formRef = ref();
 const menuStore = useMenuStore();
 const permissionStore = usePermissionStore();
@@ -907,11 +908,11 @@ const submitData = async () => {
                     productStore.current = { ...res.result };
                     access.value = res.result;
                     message.success('操作成功！');
+                    getData(obj.accessId);
                 }
                 visible.value = false;
                 queryParams.value = {};
             });
-            getData(obj.accessId);
         }
     } else {
         message.error('请选择接入方式');
@@ -954,6 +955,17 @@ const getData = async (accessId?: string) => {
             metadata.value = (resp?.result[0] as ConfigMetadata) || {
                 properties: [],
             };
+            // 流传输模式 初始为udp模式
+            if (metadata.value?.properties) {
+                metadata.value?.properties.forEach((item) => {
+                    if (
+                        item.name === '流传输模式' && (!productStore.current?.configuration || !productStore.current?.configuration.hasOwnProperty(item.name)) 
+                    ) {
+                        formData.data[item.name] =
+                            item.type.expands?.defaultValue;
+                    }
+                });
+            }
             if (accessId) {
                 // 切换接入方式之后获取是否显示引导
                 getGuide(resp?.result.length); //

@@ -135,7 +135,7 @@
 <script setup lang="ts" name="SyncUser">
 import configApi from '@/api/notice/config';
 import { PropType } from 'vue';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import type { ActionsType } from '@/views/device/Instance/typings';
 import { Form } from 'ant-design-vue';
 
@@ -209,6 +209,7 @@ watch(
 const onTreeSelect = (keys: any) => {
     deptId.value = keys[0];
     pageSize.value = 5;
+    current.value = 1;
 };
 
 // 右侧表格

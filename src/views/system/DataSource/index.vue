@@ -151,7 +151,7 @@ import {
     changeStatus_api,
     delDataSource_api,
 } from '@/api/system/dataSource';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 const permission = 'system/DataSource';
 

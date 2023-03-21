@@ -20,13 +20,15 @@ import { CSSProperties, PropType } from 'vue';
 import AMap, { initAMapApiLoader } from '@vuemap/vue-amap';
 import '@vuemap/vue-amap/dist/style.css';
 import { getAMapUiPromise } from './utils';
+import { useSystem } from '@/store/system';
 
+const system = useSystem();
 interface AMapProps {
     style?: CSSProperties;
     class?: string;
     AMapUI?: string | boolean;
 }
-const amapKey = localStorage.getItem('amap_key')
+const amapKey = system.$state.configInfo.amap?.apiKey;
 
 initAMapApiLoader({
     key: amapKey || '',
