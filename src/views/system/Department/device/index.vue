@@ -210,7 +210,7 @@ import {
 import { intersection } from 'lodash-es';
 
 import type { dictType, optionsType } from '../typing';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 const permission = 'system/Department';
 

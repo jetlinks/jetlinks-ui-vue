@@ -51,7 +51,7 @@ import {
 } from '@/api/system/apply';
 import { CheckInfo } from 'ant-design-vue/lib/vc-tree/props';
 import { useMenuStore } from '@/store/menu';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { getMenuTree_api } from '@/api/system/menu';
 
 const menuStory = useMenuStore();

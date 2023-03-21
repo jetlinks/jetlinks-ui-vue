@@ -141,7 +141,7 @@
 <script setup lang="ts">
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import EditDialog from './components/EditDialog.vue';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import {
     getPermission_api,
     editPermission_api,

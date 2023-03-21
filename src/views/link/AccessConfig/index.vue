@@ -37,7 +37,7 @@
                         :status="slotProps.state.value"
                         :statusText="slotProps.state.text"
                         :statusNames="{
-                            enabled: 'success',
+                            enabled: 'processing',
                             disabled: 'error',
                         }"
                     >
@@ -51,15 +51,12 @@
                                 <Ellipsis
                                     style="
                                         width: calc(100% - 100px);
-                                        margin-bottom: 10px;
+                                        margin-bottom: 20px;
                                         color: #2f54eb;
                                     "
                                 >
                                     <span
-                                        style="
-                                            font-size: 16px;
-                                            font-weight: 600;
-                                        "
+                                        class="card-title"
                                         @click.stop="handlEye(slotProps.id)"
                                     >
                                         {{ slotProps.name }}
@@ -71,11 +68,17 @@
                                         v-if="slotProps.channelInfo"
                                         class="card-item-content-text"
                                     >
-                                        <div class="card-item-content-text">
+                                        <div
+                                            class="card-item-content-text-title"
+                                        >
                                             {{ slotProps.channelInfo.name }}
                                         </div>
-                                        <div
-                                            class="card-item-content-text"
+                                        <Ellipsis
+                                            style="
+                                                width: calc(100% - 10px);
+                                                display: flex;
+                                                margin-top: 4px;
+                                            "
                                             v-if="
                                                 slotProps.channelInfo.addresses
                                             "
@@ -83,53 +86,51 @@
                                             <j-badge
                                                 :status="getStatus(slotProps)"
                                             />
-                                            <j-tooltip>
-                                                <template #title>{{
-                                                    slotProps.channelInfo
-                                                        .addresses[0].address
-                                                }}</template>
+                                            <span>
                                                 {{
                                                     slotProps.channelInfo
                                                         .addresses[0].address
                                                 }}
-                                            </j-tooltip>
-                                        </div>
+                                            </span>
+                                        </Ellipsis>
                                     </j-col>
                                     <j-col
                                         :span="12"
                                         v-if="slotProps.protocolDetail"
+                                        class="card-item-content-text"
                                     >
-                                        <div class="card-item-content-text">
+                                        <div
+                                            class="card-item-content-text-title"
+                                        >
                                             协议
                                         </div>
-                                        <div class="card-item-content-text">
-                                            <j-tooltip>
-                                                <template #title>{{
-                                                    slotProps.protocolDetail
-                                                        .name
-                                                }}</template>
+                                        <Ellipsis
+                                            style="
+                                                width: calc(100% - 10px);
+                                                display: flex;
+                                                margin-top: 4px;
+                                            "
+                                        >
+                                            <span>
                                                 {{
                                                     slotProps.protocolDetail
                                                         .name
                                                 }}
-                                            </j-tooltip>
-                                        </div>
+                                            </span>
+                                        </Ellipsis>
                                     </j-col>
                                 </j-row>
                                 <j-row>
-                                    <j-col :span="24">
-                                        <div class="card-item-content-text">
-                                            <j-tooltip>
-                                                <template #title>
-                                                    {{
-                                                        getDescription(
-                                                            slotProps,
-                                                        )
-                                                    }}
-                                                </template>
+                                    <j-col
+                                        :span="24"
+                                        class="card-item-content-description"
+                                    >
+                                        <j-tooltip>
+                                            <template #title>
                                                 {{ getDescription(slotProps) }}
-                                            </j-tooltip>
-                                        </div>
+                                            </template>
+                                            {{ getDescription(slotProps) }}
+                                        </j-tooltip>
                                     </j-col>
                                 </j-row>
                             </div>
@@ -207,8 +208,8 @@ const columns = [
         search: {
             type: 'select',
             options: async () => {
-                const res = await getProviders();
-                return (res?.result || []).map((item) => ({
+                const res: any = await getProviders();
+                return (res?.result || [])?.map((item: any) => ({
                     lable: item.name,
                     value: item.id,
                 }));
@@ -339,7 +340,7 @@ const getDescription = (slotProps: Record<string, any>) =>
           )?.description;
 
 const getStatus = (slotProps: Record<string, any>) =>
-    slotProps.channelInfo.addresses[0].health === -1 ? 'error' : 'success';
+    slotProps.channelInfo.addresses[0].health === -1 ? 'error' : 'processing';
 
 /**
  * 搜索
@@ -358,12 +359,29 @@ const handleSearch = (e: any) => {
 
 .card-item-content {
     min-height: 100px;
+    .card-title {
+        font-size: 18px;
+        font-weight: 800;
+        line-height: 22px;
+    }
+
     .card-item-content-box {
         min-height: 50px;
     }
-    .card-item-content-text {
-        color: rgba(0, 0, 0, 0.75);
+
+    .card-item-content-text-title {
+        font-style: normal;
+        font-weight: 400;
         font-size: 12px;
+        color: rgba(0, 0, 0, 0.75);
+        opacity: 0.75;
+    }
+    .card-item-content-description {
+        font-style: normal;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 20px;
+        color: #666666;
         overflow: hidden; //超出的文本隐藏
         text-overflow: ellipsis; //溢出用省略号显示
         white-space: nowrap; //溢出不换行

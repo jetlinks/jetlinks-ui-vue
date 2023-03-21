@@ -36,7 +36,7 @@
 
 <script setup lang="ts">
 import { bindUser_api, getBindUserList_api } from '@/api/system/department';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 const emits = defineEmits(['confirm', 'update:visible']);
 

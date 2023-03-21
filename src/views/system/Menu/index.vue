@@ -79,7 +79,7 @@
 import PermissionButton from '@/components/PermissionButton/index.vue';
 
 import { getMenuTree_api, delMenuInfo_api } from '@/api/system/menu';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import moment from 'moment';
 
 const permission = 'system/Menu';

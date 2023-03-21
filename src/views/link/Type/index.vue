@@ -36,7 +36,7 @@
                         :status="slotProps.state.value"
                         :statusText="slotProps.state.text"
                         :statusNames="{
-                            enabled: 'success',
+                            enabled: 'processing',
                             disabled: 'error',
                         }"
                     >
@@ -50,7 +50,7 @@
                                 <Ellipsis
                                     style="
                                         width: calc(100% - 100px);
-                                        margin-bottom: 10px;
+                                        margin-bottom: 20px;
                                         color: #2f54eb;
                                     "
                                 >
@@ -65,8 +65,10 @@
                                     </span>
                                 </Ellipsis>
                                 <j-row class="card-item-content-box">
-                                    <j-col :span="12">
-                                        <div class="card-item-content-text">
+                                    <j-col :span="8">
+                                        <div
+                                            class="card-item-content-text-title"
+                                        >
                                             类型
                                         </div>
                                         <div class="card-item-content-text">
@@ -78,8 +80,11 @@
                                             </j-tooltip>
                                         </div>
                                     </j-col>
-                                    <j-col :span="12">
-                                        <div class="card-item-content-text">
+
+                                    <j-col :span="16">
+                                        <div
+                                            class="card-item-content-text-title"
+                                        >
                                             详情
                                         </div>
                                         <div class="card-item-content-text">
@@ -87,9 +92,7 @@
                                                 <template #title>{{
                                                     getDetails(slotProps)
                                                 }}</template>
-                                                <span class="details-text">{{
-                                                    getDetails(slotProps)
-                                                }}</span>
+                                                {{ getDetails(slotProps) }}
                                             </j-tooltip>
                                         </div>
                                     </j-col>
@@ -143,10 +146,14 @@
                     </j-space>
                 </template>
                 <template #state="slotProps">
-                    <j-badge
+                    <BadgeStatus
                         :text="slotProps.state.text"
-                        :status="statusMap.get(slotProps.state.value)"
-                    />
+                        :status="slotProps.state.value"
+                        :statusNames="{
+                            enabled: 'processing',
+                            disabled: 'error',
+                        }"
+                    ></BadgeStatus>
                 </template>
                 <template #shareCluster="slotProps">
                     {{
@@ -171,15 +178,16 @@ import { getImage } from '@/utils/comm';
 import { supports, query, remove, start, shutdown } from '@/api/link/type';
 import { onlyMessage } from '@/utils/comm';
 import { useMenuStore } from 'store/menu';
+import BadgeStatus from '@/components/BadgeStatus/index.vue';
 
 const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const options = ref([]);
 
-const statusMap = new Map();
-statusMap.set('enabled', 'success');
-statusMap.set('disabled', 'error');
+// const statusMap = new Map();
+// statusMap.set('enabled', 'processing');
+// statusMap.set('disabled', 'error');
 
 const columns = [
     {
@@ -387,15 +395,23 @@ const handleSearch = (e: any) => {
         min-height: 50px;
     }
     .card-item-content-text {
-        color: rgba(0, 0, 0, 0.75);
-        font-size: 12px;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 170%;
+        color: rgba(0, 0, 0, 0.85);
+        opacity: 0.75;
         overflow: hidden; //超出的文本隐藏
         text-overflow: ellipsis; //溢出用省略号显示
         white-space: nowrap; //溢出不换行
     }
-}
-.details-text {
-    font-weight: 700;
-    font-size: 14px;
+    .card-item-content-text-title {
+        font-style: normal;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 170%;
+        color: rgba(0, 0, 0, 0.75);
+        opacity: 0.75;
+    }
 }
 </style>

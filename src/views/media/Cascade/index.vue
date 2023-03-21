@@ -146,7 +146,7 @@
 <script setup lang="ts">
 import CascadeApi from '@/api/media/cascade';
 import type { ActionsType } from '@/views/device/Instance/typings';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { getImage } from '@/utils/comm';
 import Publish from './Publish/index.vue';
 

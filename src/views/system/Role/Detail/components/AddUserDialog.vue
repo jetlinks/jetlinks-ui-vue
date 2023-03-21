@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
 import { getUserByRole_api, bindUser_api } from '@/api/system/role';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 const emits = defineEmits(['refresh', 'update:visible']);
 const props = defineProps<{

@@ -153,7 +153,7 @@
 <script setup lang="ts">
 import CascadeApi from '@/api/media/cascade';
 import type { ActionsType } from '@/views/device/Instance/typings';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import BindChannel from './BindChannel/index.vue';
 
 const route = useRoute();

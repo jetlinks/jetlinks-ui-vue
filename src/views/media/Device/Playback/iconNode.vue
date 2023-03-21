@@ -8,7 +8,7 @@
 <script setup lang="ts">
 import type { recordsItemType } from './typings';
 import playBackApi from '@/api/media/playback';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 interface Props {
     type: string;

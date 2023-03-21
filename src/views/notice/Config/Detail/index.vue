@@ -323,7 +323,7 @@
 <script setup lang="ts">
 import { getImage } from '@/utils/comm';
 import { Form } from 'ant-design-vue';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import type { ConfigFormData } from '../types';
 import {
     NOTICE_METHOD,

@@ -65,7 +65,7 @@
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import AddUserDialog from '../components/AddUserDialog.vue';
 import { getUserByRole_api, unbindUser_api } from '@/api/system/role';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 
 const roleId = useRoute().params.id as string;
 

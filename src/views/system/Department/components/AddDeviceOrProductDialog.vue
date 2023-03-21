@@ -140,7 +140,7 @@ import {
     getPermission_api,
     bindDeviceOrProductList_api,
 } from '@/api/system/department';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { dictType } from '../typing';
 
 const emits = defineEmits(['confirm', 'update:visible']);

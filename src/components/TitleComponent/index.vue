@@ -1,6 +1,6 @@
 <template>
     <div class="title" :style="style">
-        <span class="titleData">{{ data }}</span>
+        <div class="title-content">{{ data }}</div>
         <slot name="extra"></slot>
     </div>
 </template>
@@ -22,27 +22,28 @@ const props = defineProps({
 
 <style lang="less" scoped>
 .title {
-    position: relative;
+    display: flex;
+    align-items: center;
     width: 100%;
-    margin-bottom: 10px;
-    color: rgba(0, 0, 0, 0.8);
-    font-weight: 600;
-    font-size: 16px;
-}
-.titleData {
-    position: relative;
-    width: 100%;
-    padding-left: 12px;
-    &::before {
-        position: absolute;
-        border-top-right-radius: 3px;
-        border-bottom-right-radius: 3px;
-        bottom: 0.5px;
-        left: 0;
-        width: 4px;
-        height: 80%;
-        background-color: @primary-color;
-        content: '';
+    margin-bottom: 16px;
+
+    .title-content {
+        position: relative;
+        padding-left: 10px;
+        color: rgba(0, 0, 0, 0.8);
+        font-weight: 600;
+        line-height: 1;
+
+        &::before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: @primary-color;
+            border-radius: 0 3px 3px 0;
+            content: ' ';
+        }
     }
 }
 </style>
