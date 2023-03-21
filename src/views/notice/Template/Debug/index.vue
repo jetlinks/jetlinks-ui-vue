@@ -194,7 +194,7 @@ const getTemplateDetail = async () => {
                               },
                           },
                       ]
-                    : '',
+                    : [],
         }),
     );
 };
