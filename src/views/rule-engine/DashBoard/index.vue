@@ -55,15 +55,38 @@
                             </div>
                             <div class="alarmRank">
                                 <h4>告警排名</h4>
-                                <ul v-if="state.ranking.length" class="rankingList">
-                                    <li v-for="(item,i) in state.ranking" :key="item.targetId">
-                                        <img :src="getImage(`/rule-engine/dashboard/ranking/${i+1}.png`)" alt="">
-                                        <span class="rankingItemTitle" :title="item.targetName">{{item.targetName}}</span>
-                                        <span class="rankingItemValue">{{item.count}}</span>
+                                <ul
+                                    v-if="state.ranking.length"
+                                    class="rankingList"
+                                >
+                                    <li
+                                        v-for="(item, i) in state.ranking"
+                                        :key="item.targetId"
+                                    >
+                                        <img
+                                            :src="
+                                                getImage(
+                                                    `/rule-engine/dashboard/ranking/${
+                                                        i + 1
+                                                    }.png`,
+                                                )
+                                            "
+                                            alt=""
+                                        />
+                                        <span
+                                            class="rankingItemTitle"
+                                            :title="item.targetName"
+                                            >{{ item.targetName }}</span
+                                        >
+                                        <span class="rankingItemValue">{{
+                                            item.count
+                                        }}</span>
                                     </li>
                                 </ul>
                                 <div v-else class="empty-body">
-                                    <j-empty  :image="Empty.PRESENTED_IMAGE_SIMPLE"></j-empty>
+                                    <j-empty
+                                        :image="Empty.PRESENTED_IMAGE_SIMPLE"
+                                    ></j-empty>
                                 </div>
                             </div>
                         </div>
@@ -246,9 +269,28 @@ const getDashBoard = () => {
                     {
                         name: '告警数',
                         data: fifteenData.map((item) => item.value),
-                        type: 'bar',
-                        itemStyle: {
-                            color: '#2F54EB',
+                        type: 'line',
+                        color: '#2F54EB',
+                        symbolSize: 0,
+                        areaStyle: {
+                            color: {
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 0,
+                                colorStops: [
+                                    {
+                                        offset: 0,
+                                        color: '#2F54EB', // 100% 处的颜色
+                                    },
+                                    {
+                                        offset: 1,
+                                        color: '#FFFFFF', //   0% 处的颜色
+                                    },
+                                ],
+                                global: false, // 缺省为 false
+                            },
                         },
                     },
                 ],
@@ -536,12 +578,12 @@ const selectChange = () => {
     }
 }
 .empty-body {
-        height: 490px;
-        display: flex;
-        flex-direction: column;
-        align-content: center;
-        justify-content: center;
-        width: 100%;
-        // height: 100%;
+    height: 490px;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    // height: 100%;
 }
 </style>

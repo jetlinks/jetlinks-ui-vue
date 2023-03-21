@@ -58,7 +58,7 @@
                 <j-col :span="24">
                     <div class="device-position">
                         <Guide title="设备分布"></Guide>
-                        <div class="device-map" >
+                        <div class="device-map">
                             <Amap></Amap>
                         </div>
                     </div>
@@ -85,7 +85,7 @@ import { useMenuStore } from '@/store/menu';
 import Amap from './components/Amap.vue';
 import { useSystem } from '@/store/system';
 const system = useSystem();
-const AmapKey = system.$state.configInfo.amap?.apiKey
+const AmapKey = system.$state.configInfo.amap?.apiKey;
 let productTotal = ref(0);
 let productFooter = ref<Footer[]>([
     {
@@ -259,10 +259,30 @@ const setOnlineChartOpition = (x: Array<any>, y: Array<number>): void => {
             {
                 name: '在线数',
                 data: y,
-                type: 'bar',
+                type: 'line',
+                smooth: true, // 是否平滑曲线
+                symbolSize: 0, // 拐点大小
                 showBackground: true,
-                itemStyle: {
-                    color: '#D3ADF7',
+                color: '#D3ADF7',
+                areaStyle: {
+                    color: {
+                        type: 'linear',
+                        x: 0,
+                        y: 0,
+                        x2: 0,
+                        y2: 1,
+                        colorStops: [
+                            {
+                                offset: 0,
+                                color: '#D3ADF7', // 100% 处的颜色
+                            },
+                            {
+                                offset: 1,
+                                color: '#FFFFFF', //   0% 处的颜色
+                            },
+                        ],
+                        global: false, // 缺省为 false
+                    },
                 },
             },
         ],
@@ -348,35 +368,35 @@ const setDevMesChartOption = (
             right: '50px',
         },
         series: [
-            {
-                name: '消息量',
-                data: y,
-                type: 'bar',
-                // type: 'line',
-                // smooth: true,
-                color: '#597EF7',
-                barWidth: '30%',
-                // areaStyle: {
-                //   color: {
-                //     type: 'linear',
-                //     x: 0,
-                //     y: 0,
-                //     x2: 0,
-                //     y2: 1,
-                //     colorStops: [
-                //       {
-                //         offset: 0,
-                //         color: '#685DEB', // 100% 处的颜色
-                //       },
-                //       {
-                //         offset: 1,
-                //         color: '#FFFFFF', //   0% 处的颜色
-                //       },
-                //     ],
-                //     global: false, // 缺省为 false
-                //   },
-                // },
-            },
+            // {
+            //     name: '消息量',
+            //     data: y,
+            //     type: 'bar',
+            //     // type: 'line',
+            //     // smooth: true,
+            //     color: '#597EF7',
+            //     barWidth: '30%',
+            //     // areaStyle: {
+            //     //   color: {
+            //     //     type: 'linear',
+            //     //     x: 0,
+            //     //     y: 0,
+            //     //     x2: 0,
+            //     //     y2: 1,
+            //     //     colorStops: [
+            //     //       {
+            //     //         offset: 0,
+            //     //         color: '#685DEB', // 100% 处的颜色
+            //     //       },
+            //     //       {
+            //     //         offset: 1,
+            //     //         color: '#FFFFFF', //   0% 处的颜色
+            //     //       },
+            //     //     ],
+            //     //     global: false, // 缺省为 false
+            //     //   },
+            //     // },
+            // },
             {
                 name: '占比',
                 data: y,
@@ -385,6 +405,26 @@ const setDevMesChartOption = (
                 smooth: true,
                 symbolSize: 0, // 拐点大小
                 color: '#96ECE3',
+                areaStyle: {
+                    color: {
+                        type: 'linear',
+                        x: 0,
+                        y: 0,
+                        x2: 0,
+                        y2: 1,
+                        colorStops: [
+                            {
+                                offset: 0,
+                                color: '#96ECE3', // 100% 处的颜色
+                            },
+                            {
+                                offset: 1,
+                                color: '#FFFFFF', //   0% 处的颜色
+                            },
+                        ],
+                        global: false, // 缺省为 false
+                    },
+                },
             },
         ],
     };
