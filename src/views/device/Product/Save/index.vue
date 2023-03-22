@@ -36,10 +36,10 @@
                     <j-col flex="auto">
                         <j-form-item name="id">
                             <template #label>
+                                <span>ID</span>
                                 <j-tooltip
                                     title="若不填写，系统将自动生成唯一ID"
                                 >
-                                    <span>ID</span>
                                     <AIcon
                                         type="QuestionCircleOutlined"
                                         style="margin-left: 2px"
@@ -77,56 +77,21 @@
                     </j-tree-select>
                 </j-form-item>
                 <j-form-item label="设备类型" name="deviceType">
-                    <j-radio-group
-                        v-model:value="form.deviceType"
-                        style="width: 100%"
-                        @change="changeValue"
+                    <j-card-select
+                        :value="form.deviceType"
+                        :options="deviceList"
+                        @change="changeDeviceType"
                     >
-                        <j-row :span="24" :gutter="10">
-                            <j-col
-                                :span="8"
-                                v-for="item in deviceList"
-                                :key="item.value"
-                            >
-                                <div class="button-style">
-                                    <j-radio-button
-                                        :value="item.value"
-                                        style="height: 100%; width: 100%"
-                                        :disabled="disabled"
-                                    >
-                                        <div class="card-content">
-                                            <j-row :gutter="20">
-                                                <j-col :span="10">
-                                                    <!-- 图片 -->
-                                                    <div class="img-style">
-                                                        <img :src="item.logo" />
-                                                    </div>
-                                                </j-col>
-                                                <j-col :span="14">
-                                                    <span class="card-style">
-                                                        {{ item.label }}
-                                                    </span>
-                                                </j-col>
-                                            </j-row>
-
-                                            <!-- 勾选 -->
-                                            <div
-                                                v-if="
-                                                    form.deviceType ===
-                                                    item.value
-                                                "
-                                                class="checked-icon"
-                                            >
-                                                <div>
-                                                    <CheckOutlined />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </j-radio-button>
-                                </div>
-                            </j-col>
-                        </j-row>
-                    </j-radio-group>
+                        <template #title="item">
+                            <span>{{ item.title }}</span>
+                            <a-tooltip :title="item"
+                                ><AIcon
+                                    type="QuestionCircleOutlined"
+                                    style="margin-left: 2px"
+                                />
+                            </a-tooltip>
+                        </template>
+                    </j-card-select>
                 </j-form-item>
                 <j-form-item label="说明" name="description">
                     <j-textarea
@@ -195,17 +160,20 @@ const deviceList = ref([
     {
         label: '直连设备',
         value: 'device',
-        logo: getImage('/device-type-1.png'),
+        iconUrl: getImage('/device-type-1.png'),
+        tooltip: '直连物联网平台的设备',
     },
     {
         label: '网关子设备',
         value: 'childrenDevice',
-        logo: getImage('/device-type-2.png'),
+        iconUrl: getImage('/device-type-2.png'),
+        tooltip: '能挂载子设备与平台进行通信的设备',
     },
     {
         label: '网关设备',
         value: 'gateway',
-        logo: getImage('/device/device-type-3.png'),
+        iconUrl: getImage('/device/device-type-3.png'),
+        tooltip: '作为网关的子设备，有网关代理连接到物联网平台',
     },
 ]);
 
@@ -356,6 +324,12 @@ const submitData = () => {
                 }
             } else if (props.isAdd === 2) {
                 // 编辑
+                form.classifiedId
+                    ? form.classifiedId
+                    : (form.classifiedId = '');   // 产品分类不选传空字符串
+                form.classifiedName
+                    ? form.classifiedName
+                    : (form.classifiedName = '');
                 const res = await editProduct(form);
                 if (res.status === 200) {
                     message.success('保存成功！');
@@ -372,6 +346,10 @@ const submitData = () => {
  * 初始化
  */
 queryProductTree();
+
+const changeDeviceType = (value: Array<string>) => {
+    form.deviceType = value[0];
+};
 defineExpose({
     show: show,
 });
