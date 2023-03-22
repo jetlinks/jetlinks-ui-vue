@@ -399,6 +399,7 @@ import { marked } from 'marked';
 import type { TableColumnType } from 'ant-design-vue';
 import { useMenuStore } from '@/store/menu';
 import _ from 'lodash';
+const tableRef = ref();
 const formRef = ref();
 const menuStore = useMenuStore();
 const permissionStore = usePermissionStore();
@@ -959,7 +960,11 @@ const getData = async (accessId?: string) => {
             if (metadata.value?.properties) {
                 metadata.value?.properties.forEach((item) => {
                     if (
-                        item.name === '流传输模式' && (!productStore.current?.configuration || !productStore.current?.configuration.hasOwnProperty(item.name)) 
+                        item.name === '流传输模式' &&
+                        (!productStore.current?.configuration ||
+                            !productStore.current?.configuration.hasOwnProperty(
+                                item.name,
+                            ))
                     ) {
                         formData.data[item.name] =
                             item.type.expands?.defaultValue;
@@ -1046,7 +1051,14 @@ const getDetailInfo = () => {};
 const add = () => {
     const url = menuStore.hasMenu('link/AccessConfig/Detail');
     if (url) {
-        window.open(`${origin}/#${url}`);
+        const tab: any = window.open(`${origin}/#${url}?view=false`);
+        tab.onTabSaveSuccess = (value: any) => {
+            console.log(value);
+            if (value.status === 200) {
+                tableRef.value.reload();
+                handleClick(value.result)
+            }
+        };
     }
 };
 /**

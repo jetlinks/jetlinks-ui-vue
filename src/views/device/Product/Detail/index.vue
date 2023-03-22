@@ -50,9 +50,7 @@
             </div>
             <div style="padding-top: 10px">
                 <j-descriptions size="small" :column="4">
-                    <j-descriptions-item
-                        label="设备数量"
-                        style="cursor: pointer"
+                    <j-descriptions-item label="设备数量"
                         ><span @click="jumpDevice">{{
                             productStore.current?.count
                                 ? productStore.current?.count
@@ -116,8 +114,8 @@ import { message } from 'jetlinks-ui-components';
 import { getImage } from '@/utils/comm';
 import encodeQuery from '@/utils/encodeQuery';
 import { useMenuStore } from '@/store/menu';
-const menuStory = useMenuStore();
 
+const menuStory = useMenuStore();
 const route = useRoute();
 const checked = ref<boolean>(true);
 const productStore = useProductStore();
@@ -141,7 +139,7 @@ const list = ref([
     {
         key: 'Metadata',
         tab: '物模型',
-        class:'objectModel'
+        class: 'objectModel',
     },
     {
         key: 'Device',
@@ -163,12 +161,16 @@ watch(
             productStore.reSet();
             productStore.tabActiveKey = 'Info';
             productStore.refresh(newId as string);
-            console.log(productStore);
         }
     },
     { immediate: true, deep: true },
 );
-
+watch(
+    () => productStore.current,
+    () => {
+        getProtocol();
+    },
+);
 const onBack = () => {};
 
 const onTabChange = (e: string) => {
@@ -228,10 +230,40 @@ const getProtocol = async () => {
                 (item: any) => item.id === 'transparentCodec',
             );
             if (paring) {
-                list.value.push({
-                    key: 'DataAnalysis',
-                    tab: '数据解析',
-                });
+                list.value = [
+                    {
+                        key: 'Info',
+                        tab: '配置信息',
+                    },
+                    {
+                        key: 'Metadata',
+                        tab: '物模型',
+                        class: 'objectModel',
+                    },
+                    {
+                        key: 'Device',
+                        tab: '设备接入',
+                    },
+                    {
+                        key: 'DataAnalysis',
+                        tab: '数据解析',
+                    },
+                ];
+            }else{
+                list.value = [
+                    {
+                        key: 'Info',
+                        tab: '配置信息',
+                    },
+                    {
+                        key: 'Metadata',
+                        tab: '物模型',
+                        class: 'objectModel',
+                    },
+                    {
+                        key: 'Device',
+                        tab: '设备接入',
+                    },]
             }
         }
     }
@@ -256,7 +288,6 @@ const jumpDevice = () => {
     );
 };
 onMounted(() => {
-    getProtocol();
     if (history.state?.params?.tab) {
         productStore.tabActiveKey = history.state?.params?.tab;
     }
