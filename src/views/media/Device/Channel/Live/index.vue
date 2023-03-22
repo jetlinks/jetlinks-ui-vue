@@ -140,7 +140,11 @@ const handleRecord = async () => {
  * 刷新
  */
 const handleRefresh = () => {
-    player.value.play();
+    // player.value.play();
+    url.value = '';
+    setTimeout(() => {
+        mediaStart();
+    }, 500);
 };
 
 /**

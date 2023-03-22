@@ -15,9 +15,12 @@
                 :span="1"
                 v-for="item in dataSource"
                 :key="item.key"
-                :label="`${item.name}（${item.key})`"
-                >{{ item?.value }}</j-descriptions-item
             >
+                <template #label>
+                    <Ellipsis>{{ `${item.name}（${item.key})` }}</Ellipsis>
+                </template>
+                <Ellipsis>{{ item?.value }}</Ellipsis>
+            </j-descriptions-item>
         </j-descriptions>
         <Save v-if="visible" @close="visible = false" @save="saveBtn" />
     </div>

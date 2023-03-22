@@ -18,13 +18,18 @@
                 :span="1"
                 v-for="item in dataSource"
                 :key="item.objectId"
-                :label="item.relationName"
-                >{{
-                    item?.related
-                        ? (item?.related || []).map((i) => i.name).join(',')
-                        : ''
-                }}</j-descriptions-item
             >
+                <template #label>
+                    <Ellipsis>{{ item.relationName }}</Ellipsis>
+                </template>
+                <Ellipsis>
+                    {{
+                        item?.related
+                            ? (item?.related || []).map((i) => i.name).join(',')
+                            : ''
+                    }}
+                </Ellipsis>
+            </j-descriptions-item>
         </j-descriptions>
         <Save v-if="visible" @save="saveBtn" @close="visible = false" />
     </div>

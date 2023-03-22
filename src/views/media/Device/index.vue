@@ -13,7 +13,7 @@
                 sorts: [{ name: 'createTime', order: 'desc' }],
             }"
             :params="params"
-            :gridColumn="2"
+            :gridColumn="4"
         >
             <template #headerTitle>
                 <PermissionButton
