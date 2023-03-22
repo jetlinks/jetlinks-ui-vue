@@ -40,6 +40,7 @@
                                     description: item.description
                                         ? item.description
                                         : descriptionList[provider.id],
+                                    type: 'network',
                                 }"
                             >
                                 <template #other>
@@ -118,12 +119,12 @@
                             v-for="item in procotolList"
                             :key="item?.id"
                         >
-                            <access-card
+                            <AccessCard
                                 @checkedChange="procotolChange"
                                 :checked="procotolCurrent"
-                                :data="item"
+                                :data="{ ...item, type: 'protocol' }"
                             >
-                            </access-card>
+                            </AccessCard>
                         </j-col>
                     </j-row>
                     <j-empty v-else description="暂无数据" />

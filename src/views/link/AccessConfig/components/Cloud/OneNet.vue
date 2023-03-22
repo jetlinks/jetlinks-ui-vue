@@ -275,7 +275,7 @@
                             <AccessCard
                                 @checkedChange="procotolChange"
                                 :checked="procotolCurrent"
-                                :data="item"
+                                :data="{ ...item, type: 'protocol' }"
                             >
                             </AccessCard>
                         </j-col>

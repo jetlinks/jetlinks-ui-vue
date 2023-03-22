@@ -3,7 +3,7 @@
         hoverable
         :class="[
             'card-render',
-            'container',
+            `access-${data.type || 'network'}`,
             checked === data.id ? 'checked' : '',
         ]"
         @click="checkedChange(data.id)"
@@ -41,6 +41,7 @@ const props = defineProps({
         default: () => {},
     },
 });
+console.log(111, props.data);
 
 const checkedChange = (id: string) => {
     emit('checkedChange', id);
@@ -106,8 +107,16 @@ const checkedChange = (id: string) => {
         }
     }
 }
-.container {
-    background: url('/public/images/access-icon.png') no-repeat;
+.access-media {
+    background: url('/public/images/access-media.png') no-repeat;
+    background-position: bottom right;
+}
+.access-network {
+    background: url('/public/images/access-network.png') no-repeat;
+    background-position: bottom right;
+}
+.access-protocol {
+    background: url('/public/images/access-protocol.png') no-repeat;
     background-position: bottom right;
 }
 </style>
