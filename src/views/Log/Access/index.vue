@@ -16,6 +16,9 @@
                     moment(slotProps.requestTime).format('YYYY-MM-DD HH:mm:ss')
                 }}
             </template>
+            <template #description="slotProps">
+                {{ slotProps.action }}
+            </template>
             <template #responseTime="slotProps">
                 <j-tag color="purple">
                     {{ slotProps.responseTime - slotProps.requestTime }} ms
@@ -59,12 +62,7 @@
             </template>
         </j-pro-table>
     </div>
-    <j-modal
-        :width="1100"
-        v-model:visible="visible"
-        title="详情"
-        @ok="handleOk"
-    >
+    <j-modal :width="1100" v-model:visible="visible" title="详情">
         <j-descriptions :data="descriptionsData" title="" bordered :column="2">
             <j-descriptions-item label="URL">
                 {{ descriptionsData?.url }}
@@ -112,6 +110,9 @@
                 />
             </j-descriptions-item>
         </j-descriptions>
+        <template #footer>
+            <j-button type="primary" @click="handleOk">关闭</j-button>
+        </template>
     </j-modal>
 </template>
 <script lang="ts" setup name="AccessLog">
@@ -140,6 +141,16 @@ const columns = [
         title: '请求路径',
         dataIndex: 'url',
         key: 'url',
+        search: {
+            type: 'string',
+        },
+        ellipsis: true,
+    },
+    {
+        title: '说明',
+        dataIndex: 'description',
+        key: 'description',
+        scopedSlots: true,
         search: {
             type: 'string',
         },
@@ -198,9 +209,9 @@ const columns = [
         title: '请求用户',
         dataIndex: 'username',
         key: 'username',
-        search: {
-            type: 'string',
-        },
+        // search: {
+        //     type: 'string',
+        // },
         width: 150,
         scopedSlots: true,
     },

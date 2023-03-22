@@ -20,8 +20,8 @@ export const Configuration = {
         script: '',
         size: '',
         length: '4',
-        offset: '0',
-        little: 'false',
+        offset: undefined,
+        little: undefined,
     },
 };
 
@@ -103,11 +103,12 @@ export const isVisible = (
 ) => VisibleData[LastName].includes(dependencies);
 
 export const Validator = {
-    regIp: new RegExp(
-        /((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}/,
+    regIpv4: new RegExp(
+        /^((([01]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))\.){3}(([01]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))$/,
     ),
+    regIPv6: new RegExp(/^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/),
     regDomain: new RegExp(
-        /[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\.?/,
+        /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i,
     ),
     regOnlyNumber: new RegExp(/^\d+$/),
 };
@@ -159,7 +160,8 @@ export const Rules = {
             message: '请输入公网地址',
         },
         {
-            pattern: Validator.regIp || Validator.regDomain,
+            pattern:
+                Validator.regIpv4 || Validator.regIPv6 || Validator.regDomain,
             message: '请输入正确格式的域名或ip',
         },
     ],
@@ -179,7 +181,9 @@ export const Rules = {
             message: '请输入远程地址',
         },
         {
-            pattern: Validator.regIp || Validator.regDomain,
+            pattern:
+                Validator.regIpv4 || Validator.regIPv6 || Validator.regDomain,
+
             message: '请输入正确格式的域名或ip',
         },
     ],

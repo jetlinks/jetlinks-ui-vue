@@ -5,7 +5,7 @@
             class="steps-steps"
             :current="stepCurrent"
         >
-            <j-step v-for="item in steps" :key="item" :title="item" />
+            <j-step disabled v-for="item in steps" :key="item" :title="item" />
         </j-steps>
         <div v-if="channel !== 'edge-child-device'" class="steps-content">
             <div class="steps-box" v-if="current === 0">
@@ -30,7 +30,11 @@
                     </PermissionButton>
                 </div>
                 <j-scrollbar height="480">
-                    <j-row :gutter="[24, 24]" v-if="networkList.length > 0">
+                    <j-row
+                        :gutter="[24, 24]"
+                        style="width: 100%"
+                        v-if="networkList.length > 0"
+                    >
                         <j-col
                             :span="8"
                             v-for="item in networkList"
@@ -91,7 +95,11 @@
                             </AccessCard>
                         </j-col>
                     </j-row>
-                    <j-empty v-else description="暂无数据" />
+                    <j-empty
+                        style="margin-top: 10%"
+                        v-else
+                        description="暂无数据"
+                    />
                 </j-scrollbar>
             </div>
         </div>
@@ -119,7 +127,11 @@
                                     message: '请输入名称',
                                     trigger: 'blur',
                                 },
-                                { max: 64, message: '最多可输入64个字符' },
+                                {
+                                    max: 64,
+                                    message: '最多可输入64个字符',
+                                    trigger: 'blur',
+                                },
                             ]"
                         >
                             <j-input

@@ -54,12 +54,17 @@ const loading = ref(false);
 const handleChange = (info: UploadChangeParam) => {
     loading.value = true;
     if (info.file.status === 'done') {
-        onlyMessage('上传成功！', 'success');
         const result = info.file.response?.result;
-        keystoreBase64.value = result;
+        const reg = new RegExp(/\.pem$/i);
+        if (reg.test(info.file.name)) {
+            keystoreBase64.value = result;
+            emit('change', result);
+            emit('update:modelValue', result);
+            onlyMessage('上传成功！', 'success');
+        } else {
+            onlyMessage('请上传.pem格式的文件', 'error');
+        }
         loading.value = false;
-        emit('change', result);
-        emit('update:modelValue', result);
     }
 };
 const textChange = (val: any) => {
