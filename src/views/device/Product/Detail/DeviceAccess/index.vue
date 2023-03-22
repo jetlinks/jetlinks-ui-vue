@@ -15,7 +15,7 @@
                             >选择</j-button
                         >设备接入网关，用以提供设备接入能力
                     </span>
-                    <span v-else>暂无权限，请联系管理员</span>
+                    <span v-else>请联系管理员配置产品接入方式</span>
                 </template>
             </j-empty>
         </div>
@@ -337,18 +337,37 @@
                                 <div class="card-item-content-text">
                                     {{ slotProps.channelInfo?.name }}
                                 </div>
-                                <div>
-                                    {{
-                                        slotProps.channelInfo?.addresses
-                                            ? slotProps.channelInfo
-                                                  ?.addresses[0].address
-                                            : ''
-                                    }}
-                                </div>
+                                <Ellipsis style="width: calc(100% - 20px)">
+                                    <div>
+                                        {{
+                                            slotProps.channelInfo?.addresses
+                                                ? slotProps.channelInfo
+                                                      ?.addresses[0].address
+                                                : ''
+                                        }}
+                                    </div>
+                                </Ellipsis>
                             </j-col>
                             <j-col :span="12">
                                 <div class="card-item-content-text">协议</div>
                                 <div>{{ slotProps.protocolDetail?.name }}</div>
+                            </j-col>
+                        </j-row>
+                        <j-row>
+                            <j-col :span="24">
+                                <Ellipsis style="width: calc(100% - 50px)"
+                                    ><div class="context-access">
+                                        {{
+                                            !!slotProps?.description
+                                                ? slotProps?.description
+                                                : dataSource.find(
+                                                      (item) =>
+                                                          item?.id ===
+                                                          slotProps?.provider,
+                                                  )?.description
+                                        }}
+                                    </div></Ellipsis
+                                >
                             </j-col>
                         </j-row>
                     </template>
@@ -482,6 +501,7 @@ const query = reactive({
                     return new Promise((res) => {
                         getProviders().then((resp: any) => {
                             listData.value = [];
+                            console.log(description.value);
                             if (isNoCommunity) {
                                 listData.value = (resp?.result || []).map(
                                     (item: any) => ({
@@ -1056,7 +1076,7 @@ const add = () => {
             console.log(value);
             if (value.status === 200) {
                 tableRef.value.reload();
-                handleClick(value.result)
+                handleClick(value.result);
             }
         };
     }
@@ -1100,5 +1120,12 @@ nextTick(() => {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.context-access {
+    margin-right: 10px;
+    color: #666;
+    font-weight: 400;
+    font-size: 12px;
 }
 </style>

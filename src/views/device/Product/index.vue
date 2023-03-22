@@ -432,6 +432,7 @@ const query = reactive({
             key: 'id',
             search: {
                 type: 'string',
+                defaultTermType: 'eq'
             },
         },
         {
