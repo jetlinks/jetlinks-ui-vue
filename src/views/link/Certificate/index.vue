@@ -76,14 +76,17 @@ const columns = [
         width: 200,
         ellipsis: true,
         search: {
-            type: 'select',
-            options: [
-                {
-                    label: '证书标准',
-                    value: 'common',
-                },
-            ],
+            type: 'string',
         },
+        // search: {
+        //     type: 'select',
+        //     options: [
+        //         {
+        //             label: '证书标准',
+        //             value: 'common',
+        //         },
+        //     ],
+        // },
         scopedSlots: true,
     },
     {
@@ -118,17 +121,17 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
         return [];
     }
     return [
-        {
-            key: 'view',
-            text: '查看',
-            tooltip: {
-                title: '查看',
-            },
-            icon: 'EyeOutlined',
-            onClick: async () => {
-                handlEye(data.id);
-            },
-        },
+        // {
+        //     key: 'view',
+        //     text: '查看',
+        //     tooltip: {
+        //         title: '查看',
+        //     },
+        //     icon: 'EyeOutlined',
+        //     onClick: async () => {
+        //         handlEye(data.id);
+        //     },
+        // },
         {
             key: 'update',
             text: '编辑',
@@ -143,6 +146,9 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
         {
             key: 'delete',
             text: '删除',
+            tooltip: {
+                title: '删除',
+            },
             popConfirm: {
                 title: '确认删除?',
                 okText: ' 确定',
