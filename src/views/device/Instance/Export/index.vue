@@ -49,7 +49,7 @@
 
 <script lang="ts" setup>
 import { queryNoPagingPost } from '@/api/device/product';
-import { downloadFile } from '@/utils/utils';
+import { downloadFileByUrl } from '@/utils/utils';
 import encodeQuery from '@/utils/encodeQuery';
 import { deviceExport } from '@/api/device/instance';
 
@@ -83,13 +83,23 @@ watch(
     { immediate: true, deep: true },
 );
 
-const handleOk = () => {
+const handleOk = async () => {
     const params = encodeQuery(props.data);
-    downloadFile(
-        deviceExport(modelRef.product || '', modelRef.fileType),
-        params,
+    // downloadFile(
+    //     deviceExport(modelRef.product || '', modelRef.fileType),
+    //     params,
+    // );
+    const res: any = await deviceExport(
+        modelRef.product || '',
+        modelRef.fileType,
+        params
     );
-    emit('close');
+    if (res) {
+        const blob = new Blob([res], { type: modelRef.fileType });
+        const url = URL.createObjectURL(blob);
+        downloadFileByUrl(url, `设备实例`, modelRef.fileType);
+        emit('close');
+    }
 };
 
 const handleCancel = () => {
