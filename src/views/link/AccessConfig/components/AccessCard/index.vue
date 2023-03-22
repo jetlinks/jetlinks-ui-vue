@@ -41,7 +41,6 @@ const props = defineProps({
         default: () => {},
     },
 });
-console.log(111, props.data);
 
 const checkedChange = (id: string) => {
     emit('checkedChange', id);

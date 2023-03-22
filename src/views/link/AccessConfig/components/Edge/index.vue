@@ -30,7 +30,11 @@
                     </PermissionButton>
                 </div>
                 <j-scrollbar height="480">
-                    <j-row :gutter="[24, 24]" v-if="networkList.length > 0">
+                    <j-row
+                        :gutter="[24, 24]"
+                        style="width: 100%"
+                        v-if="networkList.length > 0"
+                    >
                         <j-col
                             :span="8"
                             v-for="item in networkList"
