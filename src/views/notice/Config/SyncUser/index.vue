@@ -422,6 +422,7 @@ const formData = ref({
     userId: '',
     thirdPartyUserId: '',
     thirdPartyUserName: '',
+    bindId: '',
 });
 const formRules = ref({
     userId: [{ required: true, message: '请选择用户', trigger: 'change' }],
@@ -463,6 +464,7 @@ const handleBindSubmit = () => {
             providerName: formData.value.thirdPartyUserName,
             thirdPartyUserId: formData.value.thirdPartyUserId,
             userId: formData.value.userId,
+            id: formData.value.bindId,
         };
         confirmLoading.value = true;
         if (props.data.type === 'dingTalk') {

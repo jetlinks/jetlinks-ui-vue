@@ -4,7 +4,7 @@
             <pro-search
                 :columns="columns"
                 target="category"
-                @search="(params:any)=>queryParams = {...params}"
+                @search="handleSearch"
             />
 
             <j-pro-table
@@ -14,6 +14,7 @@
                 model="TABLE"
                 :params="queryParams"
                 noPagination
+                v-model:expandedRowKeys="expandedRowKeys"
             >
                 <template #headerTitle>
                     <PermissionButton
@@ -152,6 +153,11 @@ const columns = [
     },
 ];
 const queryParams = ref({ terms: [] });
+const expandedRowKeys = ref<string[]>([]);
+const handleSearch = (e: any) => {
+    queryParams.value = e;
+    if (!e.terms.length) expandedRowKeys.value = [];
+};
 
 const tableRef = ref<Record<string, any>>({}); // 表格实例
 const table = reactive({
