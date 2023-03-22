@@ -84,17 +84,55 @@
                             <j-badge v-else status="error" text="未绑定" />
                         </template>
                         <template v-if="column.key === 'action'">
-                            <j-tooltip title="解绑">
-                                <j-popconfirm
-                                    title="确认解绑"
+                            <j-space>
+                                <PermissionButton
+                                    type="link"
                                     :disabled="!record.id"
-                                    @confirm="unbind(record.id)"
+                                    :popConfirm="{
+                                        title: '确认解绑？',
+                                        onConfirm: unbind(record.id),
+                                    }"
+                                    style="padding: 0 5px"
+                                    hasPermission="device/Instance:update"
+                                    :tooltip="{
+                                        title: '解绑',
+                                    }"
                                 >
-                                    <j-button type="link" :disabled="!record.id"
-                                        ><AIcon type="icon-jiebang"
-                                    /></j-button>
-                                </j-popconfirm>
-                            </j-tooltip>
+                                    <AIcon type="icon-jiebang" />
+                                </PermissionButton>
+                                <template v-if="record.id">
+                                    <PermissionButton
+                                        type="link"
+                                        :disabled="!record.id"
+                                        style="padding: 0 5px"
+                                        :popConfirm="{
+                                            title:
+                                                record.state.value === 'enabled'
+                                                    ? '确认禁用？'
+                                                    : '确认启用?',
+                                            onConfirm: onAction(record),
+                                        }"
+                                        hasPermission="device/Instance:update"
+                                        :tooltip="{
+                                            title:
+                                                record.state.value === 'enabled'
+                                                    ? '禁用'
+                                                    : '启用',
+                                        }"
+                                    >
+                                        <AIcon
+                                            v-if="
+                                                record.state.value === 'enabled'
+                                            "
+                                            type="StopOutlined"
+                                        />
+                                        <AIcon
+                                            v-else
+                                            type="PlayCircleOutlined"
+                                        />
+                                    </PermissionButton>
+                                </template>
+                            </j-space>
                         </template>
                     </template>
                 </j-table>
@@ -110,7 +148,7 @@
         />
     </j-spin>
     <j-card v-else>
-        <JEmpty description='暂无数据，请配置物模型' style="margin: 10% 0" />
+        <JEmpty description="暂无数据，请配置物模型" style="margin: 10% 0" />
     </j-card>
 </template>
 
@@ -171,7 +209,7 @@ const filterOption = (input: string, option: any) => {
 const instanceStore = useInstanceStore();
 const metadata = JSON.parse(instanceStore.current?.metadata || '{}');
 const loading = ref<boolean>(false);
-const channelList = ref([]);
+const channelList = ref<any[]>([]);
 
 const modelRef = reactive({
     dataSource: [],
@@ -204,13 +242,16 @@ const handleSearch = async () => {
     }));
     console.log(metadata);
     if (_metadata && _metadata.length) {
-        const resp: any = await getEdgeMap(instanceStore.current?.parentId || '', {
-            deviceId: instanceStore.current.id,
-            query: {},
-        }).catch(() => {
+        const resp: any = await getEdgeMap(
+            instanceStore.current?.parentId || '',
+            {
+                deviceId: instanceStore.current.id,
+                query: {},
+            },
+        ).catch(() => {
             modelRef.dataSource = _metadata;
             loading.value = false;
-        })
+        });
         if (resp.status === 200) {
             const array = resp.result?.[0].reduce((x: any, y: any) => {
                 const metadataId = _metadata.find(
@@ -231,10 +272,13 @@ const handleSearch = async () => {
 
 const unbind = async (id: string) => {
     if (id) {
-        const resp = await removeEdgeMap(instanceStore.current?.parentId || '', {
-            deviceId: instanceStore.current.id,
-            idList: [id],
-        });
+        const resp = await removeEdgeMap(
+            instanceStore.current?.parentId || '',
+            {
+                deviceId: instanceStore.current.id,
+                idList: [id],
+            },
+        );
         if (resp.status === 200) {
             message.success('操作成功！');
             handleSearch();
@@ -264,7 +308,10 @@ const onSave = () => {
                     provider: (arr[0] as any)?.provider,
                     requestList: arr,
                 };
-                const resp = await saveEdgeMap(instanceStore.current.parentId || '', submitData);
+                const resp = await saveEdgeMap(
+                    instanceStore.current.parentId || '',
+                    submitData,
+                );
                 if (resp.status === 200) {
                     message.success('操作成功！');
                     handleSearch();
@@ -274,6 +321,30 @@ const onSave = () => {
         .catch((err: any) => {
             console.log('error', err);
         });
+};
+
+const onAction = async (record: any) => {
+    const value = await formRef.value.validate();
+    const array = value.filter((item: any) => item.channelId);
+    const findArray = array.find((item: any) => item.id === record?.id);
+    const arr = {
+        ...findArray,
+        state: record?.state.value === 'enabled' ? 'disabled' : 'enabled',
+    };
+    const filterArray = array.filter((item: any) => item.id !== record?.id);
+    const submitData = {
+        deviceId: instanceStore.current.id,
+        provider: array[0]?.provider,
+        requestList: [...filterArray, arr],
+    };
+    const resp = await saveEdgeMap(
+        instanceStore.current.parentId || '',
+        submitData,
+    );
+    if (resp.status === 200) {
+        message.success('操作成功！');
+        handleSearch();
+    }
 };
 </script>
 

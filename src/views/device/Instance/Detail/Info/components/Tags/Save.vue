@@ -16,7 +16,7 @@
             <template #bodyCell="{ column, text, record }">
                 <div style="width: 280px">
                     <template v-if="['key', 'name'].includes(column.dataIndex)">
-                        <span>{{ text }}</span>
+                        <Ellipsis>{{ text }}</Ellipsis>
                     </template>
                     <template v-else>
                         <ValueItem
