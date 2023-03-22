@@ -22,11 +22,16 @@
         <j-form-item>定时调用所选功能</j-form-item>
       </j-col>
       <j-col :span='24'>
+        <j-form-item
+          name='functionData'
+          :rules="rules"
+        >
         <FunctionCall
-          :value='_value'
+          v-model:value='formModel.functionData'
           :data='functionData'
           @change='callDataChange'
         />
+        </j-form-item>
       </j-col>
     </j-row>
   </j-form>
@@ -66,9 +71,9 @@ const props = defineProps({
 const emit = defineEmits<Emit>()
 const invokeForm = ref()
 const formModel = reactive({
-  functionId: props.functionId
+  functionId: props.functionId,
+  functionData: props.functionParameters
 })
-const _value = ref<any[]>(props.functionParameters)
 
 /**
  * 获取当前选择功能属性
@@ -94,13 +99,29 @@ const functionData = computed(() => {
   return arrCache
 })
 
+const rules = [{
+  validator(_: string, value: any) {
+    if (!value?.length && functionData.value.length) {
+      return Promise.reject('请输入功能值')
+    } else {
+      let hasValue = value.find((item: { name: string, value: any}) => !item.value)
+      if (hasValue) {
+        const functionItem = functionData.value.find((item: any) => item.id === hasValue.name)
+        return Promise.reject(functionItem?.name ? `请输入${functionItem?.name}值` : '请输入功能值')
+      }
+    }
+    return Promise.resolve();
+  }
+}]
+
 const onSelect = (v: string, item: any) => {
+  formModel.functionData = []
   emit('update:action', `执行${item.name}`)
   emit('update:functionId', v)
+  emit('update:functionParameters', [])
 }
 
 const callDataChange = (v: any[]) => {
-  _value.value = v
   emit('update:functionParameters', v)
 }
 

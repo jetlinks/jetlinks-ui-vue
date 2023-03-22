@@ -4,7 +4,7 @@
             <pro-search
                 :columns="columns"
                 target="category"
-                @search="(params:any)=>queryParams = {...params}"
+                @search="handleParams"
             />
 
             <j-pro-table
@@ -262,6 +262,23 @@ type dictType = {
     name: string;
 };
 type modalType = '' | 'add' | 'edit' | 'reset';
+
+const handleParams = (params: any)=> {
+
+  const newParams = (params?.terms as any[])?.map(item1 => {
+    item1.terms = item1.terms.map((item2: any) => {
+      if (['telephone', 'email'].includes(item2.column)) {
+        return {
+          column: 'id$user-detail',
+          value: [item2]
+        }
+      }
+      return item2
+    })
+    return item1
+  })
+  queryParams.value = { terms: newParams || [] }
+}
 </script>
 
 <style lang="less" scoped>

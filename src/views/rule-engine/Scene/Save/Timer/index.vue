@@ -29,8 +29,7 @@
         v-if="visible"
         @cancel='visible = false'
         @save="save"
-        :value="data.trigger.device"
-        :options="data.options.trigger"
+        :value="data.trigger.timer"
       />
     </div>
 </template>
@@ -41,6 +40,7 @@ import { storeToRefs } from 'pinia';
 import Action from '../action/index.vue';
 import AddModel from './AddModal.vue'
 import AddButton from '../components/AddButton.vue'
+import Title from './Title.vue'
 import type { OperationTimer, BranchesThen } from '@/views/rule-engine/Scene/typings'
 
 const sceneStore = useSceneStore();

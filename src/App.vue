@@ -1,6 +1,8 @@
 <template>
   <ConfigProvider :locale='zhCN'>
-    <router-view />
+    <keep-alive>
+      <router-view />
+    </keep-alive>
   </ConfigProvider>
 </template>
 

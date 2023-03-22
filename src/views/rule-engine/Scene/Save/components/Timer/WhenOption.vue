@@ -17,6 +17,7 @@ import { numberToString } from './util'
 
 type Emit = {
   (e: 'update:value', data: Array<number>):void
+  (e: 'change', data: Array<number>):void
 }
 
 const props = defineProps({
@@ -48,6 +49,7 @@ const change = (number: number) => {
   }
   rowKeys.value = [..._keys.values()]
   emit('update:value', rowKeys.value)
+  emit('change', rowKeys.value)
 }
 
 const allActive = computed(() => {
