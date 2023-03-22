@@ -14,6 +14,7 @@
                         placeholder="请选择指令类型"
                         v-model:value="modelRef.messageType"
                         show-search
+                        @change="onTypeChange"
                     >
                         <j-select-option value="READ_PROPERTY"
                             >读取属性</j-select-option
@@ -108,7 +109,7 @@
                     />
                 </j-form-item>
             </j-col>
-            <j-col :span="24" v-if="modelRef.messageType === 'INVOKE_FUNCTION'">
+            <j-col :span="24" v-if="modelRef.messageType === 'INVOKE_FUNCTION'" class="inputs">
                 <j-form-item
                     :name="['message', 'functionId']"
                     label="功能"
@@ -137,7 +138,8 @@
                 :span="24"
                 v-if="
                     modelRef.messageType === 'INVOKE_FUNCTION' &&
-                    modelRef.message.functionId
+                    modelRef.message?.functionId &&
+                    modelRef.message?.inputs?.length
                 "
                 class="inputs"
             >
@@ -184,6 +186,8 @@ const props = defineProps({
     },
 });
 
+const emit = defineEmits(['update:modelValue'])
+
 const editRef = ref();
 
 const modelRef = reactive({
@@ -192,7 +196,7 @@ const modelRef = reactive({
         properties: undefined,
         functionId: undefined,
         inputs: [],
-        value: undefined
+        value: undefined,
     },
 });
 
@@ -207,12 +211,21 @@ const onPropertyChange = (val: string) => {
     }
 };
 
+const onTypeChange = () => {
+    modelRef.message = {
+        properties: undefined,
+        functionId: undefined,
+        inputs: [],
+        value: undefined,
+    };
+};
+
 watch(
     () => props.modelValue,
     (newVal) => {
         if (newVal) {
             Object.assign(modelRef, newVal);
-            if(newVal?.message?.properties){
+            if (newVal?.message?.properties) {
                 onPropertyChange(newVal?.message?.properties);
             }
         }
@@ -244,10 +257,13 @@ const saveBtn = () =>
         formRef.value
             .validate()
             .then(async (_data: any) => {
-                await editRef.value.onSave().catch(() => {
-                    resolve(false)
-                })
-                resolve(_data)
+                if (modelRef.message.inputs?.length) {
+                    await editRef.value?.onSave().catch(() => {
+                        resolve(false);
+                    });
+                }
+                emit('update:modelValue', _data)
+                resolve(_data);
             })
             .catch((err: any) => {
                 resolve(err);

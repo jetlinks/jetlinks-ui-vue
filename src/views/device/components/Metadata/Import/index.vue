@@ -206,14 +206,14 @@ const handleImport = async () => {
     loading.value = true
     const { id } = route.params || {}
     if (data.metadata === 'alink') {
-      const res = await convertMetadata('from', 'alink', data.import)
+      const res = await convertMetadata('from', 'alink', data.import).catch(err => err)
       if (res.status === 200) {
         const metadata = operateLimits(res.result)
         if (props?.type === 'device') {
-          await saveMetadata(id as string, metadata)
+          await saveMetadata(id as string, metadata).catch(err => err)
           // instanceStore.setCurrent(JSON.parse(metadata || '{}'))
         } else {
-          await modify(id as string, { metadata: metadata })
+          await modify(id as string, { metadata: metadata }).catch(err => err)
           // productStore.setCurrent(JSON.parse(metadata || '{}'))
         }
         loading.value = false
