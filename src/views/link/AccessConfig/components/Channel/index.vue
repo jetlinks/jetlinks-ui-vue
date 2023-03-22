@@ -20,7 +20,11 @@
                                     message: '请输入名称',
                                     trigger: 'blur',
                                 },
-                                { max: 64, message: '最多可输入64个字符' },
+                                {
+                                    max: 64,
+                                    message: '最多可输入64个字符',
+                                    trigger: 'blur',
+                                },
                             ]"
                         >
                             <j-input
@@ -119,7 +123,7 @@ const onFinish = async (values: any) => {
 };
 
 onMounted(() => {
-    if (id === ':id') {
+    if (id !== ':id') {
         formState.value = {
             name: props.data.name,
             description: props.data?.description || '',

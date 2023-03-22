@@ -1,7 +1,7 @@
 <template>
     <div style="margin-top: 10px">
         <j-steps :current="stepCurrent">
-            <j-step v-for="item in steps" :key="item" :title="item" />
+            <j-step disabled v-for="item in steps" :key="item" :title="item" />
         </j-steps>
         <div class="steps-content">
             <div class="steps-box" v-if="current === 0">
@@ -29,7 +29,8 @@
                                     },
                                     {
                                         max: 64,
-                                        message: '最大可输入64个字符',
+                                        message: '最多可输入64个字符',
+                                        trigger: 'blur',
                                     },
                                 ]"
                             >
@@ -50,7 +51,8 @@
                                     },
                                     {
                                         max: 64,
-                                        message: '最大可输入64个字符',
+                                        message: '最多可输入64个字符',
+                                        trigger: 'blur',
                                     },
                                 ]"
                             >
@@ -202,7 +204,11 @@
                             <j-collapse v-model:activeKey="activeKey">
                                 <j-collapse-panel
                                     :key="cluster.id"
-                                    :header="`#${index + 1}.节点`"
+                                    :header="
+                                        cluster.clusterNodeId
+                                            ? cluster.clusterNodeId
+                                            : `#${index + 1}.配置信息`
+                                    "
                                 >
                                     <template #extra>
                                         <span
@@ -504,7 +510,7 @@ interface Form2 {
 }
 interface FormState {
     domain: string | undefined;
-    sipId: string | undefined;
+    sipId: string | number | undefined;
     shareCluster: boolean;
     hostPort: {
         port: string | undefined;
@@ -576,7 +582,7 @@ const removeCluster = (item: Form2) => {
 };
 
 const addCluster = () => {
-    const id = Date.now();
+    const id: any = Date.now();
     dynamicValidateForm.cluster.push({
         clusterNodeId: undefined,
         port: undefined,
@@ -613,7 +619,11 @@ const { resetFields, validate, validateInfos } = useForm(
     reactive({
         name: [
             { required: true, message: '请输入名称', trigger: 'blur' },
-            { max: 64, message: '最多可输入64个字符' },
+            {
+                max: 64,
+                message: '最多可输入64个字符',
+                trigger: 'blur',
+            },
         ],
         description: [{ max: 200, message: '最多可输入200个字符' }],
     }),
@@ -628,7 +638,7 @@ const saveData = () => {
             transport: 'SIP',
             channel: 'gb28181',
         };
-
+        params.configuration.sipId = Number(params.configuration?.sipId);
         const resp =
             id === ':id' ? await save(params) : await update({ ...params, id });
         if (resp.status === 200) {
@@ -645,20 +655,32 @@ const next = async () => {
         data1.hostPort.port = port;
     }
     if (!data1?.shareCluster) {
-        let data2 = await formRef2.value?.validate();
-        if (data2 && data2?.cluster) {
-            data2.cluster.forEach((i: any) => {
-                i.enabled = true;
-                i.port = JSON.parse(i.port).port;
+        await formRef2.value
+            ?.validate()
+            .then((data2) => {
+                if (data2 && data2?.cluster) {
+                    data2.cluster.forEach((i: any) => {
+                        i.enabled = true;
+                        i.port = JSON.parse(i.port).port;
+                    });
+                    data1 = {
+                        ...data1,
+                        ...data2,
+                    };
+                }
+                current.value = current.value + 1;
+                params.configuration = data1;
+            })
+            .catch((err) => {
+                err.errorFields.forEach((item: any) => {
+                    const activeId: any =
+                        dynamicValidateForm.cluster[item.name[1]].id;
+                    if (!activeKey.value.includes(activeId)) {
+                        activeKey.value.push(activeId); // 校验未通过的展开
+                    }
+                });
             });
-            data1 = {
-                ...data1,
-                ...data2,
-            };
-        }
     }
-    current.value = current.value + 1;
-    params.configuration = data1;
 };
 const prev = () => {
     current.value = current.value - 1;
@@ -698,11 +720,25 @@ onMounted(() => {
     });
 
     if (id !== ':id') {
-        formState.value = props.data.configuration;
-        formData.value = {
-            name: props.data.name,
-            description: props.data?.description || '',
-        };
+        const { configuration, name, description = '' } = props.data;
+        formData.value = { name, description };
+
+        if (configuration?.shareCluster) {
+            formState.value = {
+                ...formState.value,
+                ...props.data.configuration,
+            };
+        } else {
+            formState.value = {
+                ...formState.value,
+                ...props.data.configuration,
+            };
+            dynamicValidateForm.cluster = configuration.cluster;
+            if (dynamicValidateForm.cluster.length === 1) {
+                activeKey.value = ['1'];
+                dynamicValidateForm.cluster[0].id = 1;
+            }
+        }
     }
 });
 

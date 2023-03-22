@@ -1,7 +1,7 @@
 <template>
     <div>
         <j-steps :current="stepCurrent">
-            <j-step v-for="item in steps" :key="item" :title="item" />
+            <j-step disabled v-for="item in steps" :key="item" :title="item" />
         </j-steps>
         <div class="steps-content">
             <div class="steps-box" v-if="current === 0">
@@ -92,7 +92,11 @@
                             </AccessCard>
                         </j-col>
                     </j-row>
-                    <j-empty v-else description="暂无数据" />
+                    <j-empty
+                        style="margin-top: 10%"
+                        v-else
+                        description="暂无数据"
+                    />
                 </j-scrollbar>
             </div>
             <div class="steps-box" v-else-if="current === 1">
@@ -135,7 +139,11 @@
                             </AccessCard>
                         </j-col>
                     </j-row>
-                    <j-empty v-else description="暂无数据" />
+                    <j-empty
+                        style="margin-top: 10%"
+                        v-else
+                        description="暂无数据"
+                    />
                 </j-scrollbar>
             </div>
             <div class="steps-box" v-else>
@@ -375,7 +383,11 @@ const { resetFields, validate, validateInfos } = useForm(
     reactive({
         name: [
             { required: true, message: '请输入名称', trigger: 'blur' },
-            { max: 64, message: '最多可输入64个字符' },
+            {
+                max: 64,
+                message: '最多可输入64个字符',
+                trigger: 'blur',
+            },
         ],
         description: [{ max: 200, message: '最多可输入200个字符' }],
     }),

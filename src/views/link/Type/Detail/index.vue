@@ -1358,7 +1358,7 @@ watch(
             top: -10px;
             left: 10px;
             right: 10px;
-            width: calc(100%-10px);
+            width: calc(100% - 10px);
             height: 100%;
             background-color: #f4f4f4;
             content: ' ';
