@@ -280,7 +280,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
     if (!data) {
         return [];
     }
-    const Actions = [
+    const Actions: any = [
         {
             key: 'view',
             text: '查看',
@@ -292,7 +292,11 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                 handlEye(data.errorReason);
             },
         },
-        {
+    ];
+
+    const { state, mode } = data;
+    if (mode.value === 'push' && state.value === 'failed') {
+        Actions.push({
             key: 'update',
             text: '重试',
             tooltip: {
@@ -305,8 +309,9 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                     handlTry(data.id);
                 },
             },
-        },
-    ];
+        });
+    }
+
     return Actions;
 };
 
