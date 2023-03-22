@@ -114,8 +114,8 @@ const getNetworkEcharts = async (val: any) => {
         loading.value = false;
     }, 300);
 };
-const networkValueRender = (obj: any) => {
-    const { value } = obj;
+
+const formatterData = (value: any) => {
     let _data = '';
     if (value >= 1024 && value < 1024 * 1024) {
         _data = `${Number((value / 1024).toFixed(2))}KB`;
@@ -124,7 +124,14 @@ const networkValueRender = (obj: any) => {
     } else {
         _data = `${value}B`;
     }
-    return `${obj?.axisValueLabel}<br />${obj?.marker}${obj?.seriesName}:     ${_data}`;
+    return _data;
+};
+
+const networkValueRender = (obj: any) => {
+    const { value } = obj;
+    return `${obj?.axisValueLabel}<br />${obj?.marker}${
+        obj?.seriesName
+    } &nbsp; ${formatterData(value)}`;
 };
 
 const setOptions = (data: any, key: string) => ({
@@ -149,9 +156,12 @@ const handleNetworkOptions = (optionsData: any, xAxis: any) => {
             },
             yAxis: {
                 type: 'value',
+                axisLabel: {
+                    formatter: (_value: any) => formatterData(_value),
+                },
             },
             grid: {
-                left: '100px',
+                left: '70px',
                 right: '50px',
             },
             tooltip: {
