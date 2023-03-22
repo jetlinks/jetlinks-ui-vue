@@ -91,17 +91,41 @@
                         >
                             <j-collapse
                                 v-model:activeKey="activeKey"
-                                class="collapse"
+                                :class="[
+                                    !formData.shareCluster
+                                        ? 'collapse'
+                                        : 'collapse-panel',
+                                ]"
+                                :ghost="formData.shareCluster"
+                                collapsible="header"
                             >
                                 <j-collapse-panel
+                                    :key="cluster.id"
+                                    :show-arrow="!formData.shareCluster"
+                                >
+                                    <!-- <j-collapse-panel
                                     :key="cluster.id"
                                     :header="
                                         cluster.serverId
                                             ? cluster.serverId
-                                            : `#${index + 1}.配置信息`
+                                            : !formData.shareCluster
+                                            ? `#${index + 1}.配置信息`
+                                            : ''
                                     "
                                     collapsible="header"
-                                >
+                                    :show-arrow="!formData.shareCluster"
+                                > -->
+                                    <template #header v-if="!shareCluster">
+                                        <div class="collapse-header">
+                                            {{
+                                                cluster.serverId
+                                                    ? cluster.serverId
+                                                    : !formData.shareCluster
+                                                    ? `#${index + 1}.配置信息`
+                                                    : ''
+                                            }}
+                                        </div>
+                                    </template>
                                     <template #extra v-if="!shareCluster">
                                         <j-popconfirm
                                             @confirm.prevent="
@@ -1112,6 +1136,10 @@ const filterConfigByType = (data: any, type: string) => {
     });
 };
 
+const changeheader = (value: string) => {
+    console.log(22, value);
+};
+
 const getPortOptions = (portOptions: object, index = 0) => {
     if (!portOptions) return;
     const type = formData.value.type;
@@ -1369,7 +1397,20 @@ watch(
 .collapse {
     margin-bottom: 20px;
     background: #f4f4f4;
+    :deep(.ant-collapse-header-text) {
+        flex: 1;
+    }
 }
+.collapse-panel {
+    margin-bottom: 20px;
+    border: #d9d9d9 1px solid;
+    background: #f4f4f4;
+    border-radius: 2px;
+    :deep(.ant-collapse-header) {
+        padding: 0;
+    }
+}
+
 .delete-btn {
     display: inline-block;
     color: #e50012;
