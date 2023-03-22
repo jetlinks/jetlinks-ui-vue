@@ -139,6 +139,7 @@ import {
     getDeviceList_api,
     getPermission_api,
     bindDeviceOrProductList_api,
+    getBindingsPermission,
 } from '@/api/system/department';
 import { message } from 'jetlinks-ui-components';
 import { dictType } from '../typing';
@@ -295,22 +296,17 @@ const table: any = {
                 const { pageIndex, pageSize, total, data } =
                     resp.result as resultType;
                 const ids = data.map((item) => item.id);
-                getPermission_api(props.assetType, ids, parentId).then(
+                // fix: bug#10706
+                getBindingsPermission(props.assetType, ids).then(
                     (perResp: any) => {
-                        const permissionObj = {};
-                        perResp.result.forEach((item: any) => {
-                            permissionObj[item.assetId] = props.allPermission
-                                .filter((permission) =>
-                                    item.allPermissions.includes(permission.id),
-                                )
-                                .map((item) => ({
-                                    label: item.name,
-                                    value: item.id,
+                        data.forEach((item) => {
+                            item.permissionList = perResp.result
+                                .find((f: any) => f.assetId === item.id)
+                                .permissionInfoList?.map((m: any) => ({
+                                    label: m.name,
+                                    value: m.id,
                                     disabled: true,
                                 }));
-                        });
-                        data.forEach((item) => {
-                            item.permissionList = permissionObj[item.id];
                             item.selectPermissions = ['read'];
 
                             // 产品的状态进行转换处理
@@ -331,11 +327,10 @@ const table: any = {
                                 };
                             }
                         });
-
                         resolve({
                             code: 200,
                             result: {
-                                data: data,
+                                data: data.sort((a, b) => a.createTime - b.createTime),
                                 pageIndex,
                                 pageSize,
                                 total,
@@ -344,6 +339,57 @@ const table: any = {
                         });
                     },
                 );
+                // getPermission_api(props.assetType, ids, parentId).then(
+                //     (perResp: any) => {
+                //         console.log('perResp: ', perResp);
+                //         console.log('props.allPermission: ', props.allPermission);
+                //         const permissionObj = {};
+                //         perResp.result.forEach((item: any) => {
+                //             permissionObj[item.assetId] = props.allPermission
+                //                 .filter((permission) =>
+                //                     item.allPermissions.includes(permission.id),
+                //                 )
+                //                 .map((item) => ({
+                //                     label: item.name,
+                //                     value: item.id,
+                //                     disabled: true,
+                //                 }));
+                //         });
+                //         data.forEach((item) => {
+                //             item.permissionList = permissionObj[item.id];
+                //             item.selectPermissions = ['read'];
+
+                //             // 产品的状态进行转换处理
+                //             if (props.assetType === 'product') {
+                //                 item.state = {
+                //                     value:
+                //                         item.state === 1
+                //                             ? 'online'
+                //                             : item.state === 0
+                //                             ? 'offline'
+                //                             : '',
+                //                     text:
+                //                         item.state === 1
+                //                             ? '正常'
+                //                             : item.state === 0
+                //                             ? '禁用'
+                //                             : '',
+                //                 };
+                //             }
+                //         });
+
+                //         resolve({
+                //             code: 200,
+                //             result: {
+                //                 data: data,
+                //                 pageIndex,
+                //                 pageSize,
+                //                 total,
+                //             },
+                //             status: 200,
+                //         });
+                //     },
+                // );
             });
         }),
     // 整理参数并获取数据
@@ -398,10 +444,15 @@ const table: any = {
     },
 };
 table.init();
-const selectRow = (keys:string[], rows:any[]) => {
-    const okRows = rows.filter(item=>!!item.permissionList.find((permiss:any)=>permiss.value === 'share'));
+const selectRow = (keys: string[], rows: any[]) => {
+    const okRows = rows.filter(
+        (item) =>
+            !!item.permissionList.find(
+                (permiss: any) => permiss.value === 'share',
+            ),
+    );
     table.selectedRows = okRows;
-    table._selectedRowKeys.value = okRows.map(item=>item.id)
+    table._selectedRowKeys.value = okRows.map((item) => item.id);
 };
 </script>
 

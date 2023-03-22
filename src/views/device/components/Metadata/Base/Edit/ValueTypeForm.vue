@@ -108,6 +108,9 @@ watchEffect(() => {
   _value.value = props.value || {
     expands: {}
   }
+  if (props.onlyObject) {
+    _value.value.type = 'object'
+  }
 })
 
 watch(_value,
@@ -116,14 +119,14 @@ watch(_value,
   },
   { deep: true, immediate: true })
 
-onMounted(() => {
-  if (props.onlyObject) {
-    _value.value = {
-      type: 'object',
-      expands: {}
-    }
-  }
-})
+// onMounted(() => {
+//   if (props.onlyObject) {
+//     _value.value = props.value || {
+//       type: 'object',
+//       expands: {}
+//     }
+//   }
+// })
 
 const unit = reactive({
   unitOptions: [] as DefaultOptionType[],

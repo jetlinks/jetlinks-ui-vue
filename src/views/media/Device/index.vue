@@ -13,7 +13,7 @@
                 sorts: [{ name: 'createTime', order: 'desc' }],
             }"
             :params="params"
-            :gridColumn="2"
+            :gridColumn="4"
         >
             <template #headerTitle>
                 <PermissionButton
@@ -30,11 +30,9 @@
                     :actions="getActions(slotProps, 'card')"
                     v-bind="slotProps"
                     :showStatus="true"
-                    :status="
-                        slotProps.state.value === 'online' ? 'success' : 'error'
-                    "
+                    :status="slotProps.state.value"
                     :statusText="slotProps.state.text"
-                    :statusNames="{ success: 'success', error: 'error' }"
+                    :statusNames="{ online: 'processing', offline: 'error' }"
                 >
                     <template #img>
                         <slot name="img">

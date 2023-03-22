@@ -50,10 +50,14 @@
                 :key="item.property"
             >
                 <template #label>
-                    <span style="margin-right: 5px">{{ item.name }}</span>
-                    <j-tooltip v-if="item.description" :title="item.description"
-                        ><AIcon type="QuestionCircleOutlined"
-                    /></j-tooltip>
+                    <Ellipsis style="margin-right: 5px;">
+                        {{ item.name }}
+                        <j-tooltip
+                            v-if="item.description"
+                            :title="item.description"
+                            ><AIcon type="QuestionCircleOutlined"
+                        /></j-tooltip>
+                    </Ellipsis>
                 </template>
                 <span
                     v-if="
@@ -64,10 +68,10 @@
                     >******</span
                 >
                 <span v-else>
-                    <span>{{
+                    <Ellipsis>{{
                         instanceStore.current?.configuration?.[item.property] ||
                         ''
-                    }}</span>
+                    }}</Ellipsis>
                     <j-tooltip
                         v-if="isExit(item.property)"
                         :title="`有效值:${

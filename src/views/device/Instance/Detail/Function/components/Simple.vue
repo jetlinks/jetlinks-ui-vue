@@ -7,11 +7,12 @@
             </j-space>
         </div>
         <j-tabs v-model="activeKey" tab-position="left">
-            <j-tab-pane
-                v-for="func in newFunctions"
-                :key="func.id"
-                :tab="func.name"
-            >
+            <j-tab-pane v-for="func in newFunctions" :key="func.id">
+                <template #tab>
+                    <Ellipsis style="width: 100px; text-align: left">
+                        {{ func.name }}
+                    </Ellipsis>
+                </template>
                 <j-row :gutter="30">
                     <j-col :span="15">
                         <j-form :ref="`${func.id}Ref`" :model="func">
@@ -49,7 +50,7 @@
                                             :name="['table', index, 'value']"
                                             :rules="{
                                                 required: true,
-                                                message: '',
+                                                message: '该字段为必填字段',
                                             }"
                                             has-feedback
                                         >
@@ -106,7 +107,7 @@
                     </j-col>
                     <j-col :span="9">
                         <h6>执行结果：</h6>
-                        <span class="execute-result">
+                        <span :ref="`result${func.id}Ref`" class="execute-result">
                             {{ func.executeResult }}
                         </span>
                     </j-col>

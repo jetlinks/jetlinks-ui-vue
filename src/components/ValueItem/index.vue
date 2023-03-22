@@ -50,7 +50,7 @@
         <j-input
             v-else-if="typeMap.get(itemType) === 'file'"
             v-model:value="myValue"
-            placeholder="请输入图片链接"
+            placeholder="请输入链接"
             allowClear
             @change='inputChange'
         >

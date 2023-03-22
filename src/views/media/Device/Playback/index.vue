@@ -303,7 +303,6 @@ const queryServiceRecords = async (date: Dayjs) => {
 const cloudView = (startTime: number, endTime: number) => {
     type.value = 'cloud';
     cloudTime.value = { startTime, endTime };
-    queryServiceRecords(time.value!);
 };
 
 /**

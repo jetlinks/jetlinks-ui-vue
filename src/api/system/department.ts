@@ -18,6 +18,8 @@ export const getDeviceOrProductList_api = (data: object) => server.post(`/device
 export const getDeviceList_api = (data: object) => server.post(`/device/instance/_query`, data);
 // 根据产品的id获取产品的权限
 export const getPermission_api = (type: 'device' | 'product', ids: object, id: string) => server.post(`/assets/bindings/${type}/org/${id}/_query`, ids);
+// 获取绑定的权限
+export const getBindingsPermission = (type: 'device' | 'product', ids: string[]) => server.post(`/assets/bindings/${type}`, ids);
 // 获取产品的权限字典
 export const getPermissionDict_api = () => server.get(`/assets/bindings/product/permissions`);
 
