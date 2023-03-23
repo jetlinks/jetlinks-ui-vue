@@ -59,7 +59,9 @@ const allActive = computed(() => {
 watch(() => props.type, () => {
   const isMonth = props.type === 'month'
   const day = isMonth ? 31 : 7
-  change(0)
+  if (!props.value.length) {
+    change(0)
+  }
   timeOptions.value = new Array(day)
     .fill(1)
     .map((_, index) => {

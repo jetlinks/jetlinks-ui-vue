@@ -53,9 +53,9 @@ const cancel = () => {
   emit("cancel")
 }
 
-watchEffect(() => {
-  addModel.timer = props.value
-})
+// watchEffect(() => {
+//   addModel.timer = props.value
+// })
 
 </script>
 

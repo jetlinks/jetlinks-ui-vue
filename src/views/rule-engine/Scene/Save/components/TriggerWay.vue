@@ -57,15 +57,17 @@ const classNames = computed(() => {
 })
 
 const handleClick = (type: string) => {
-  emit('update:modelValue', type)
+  if (!props.disabled) {
+    emit('update:modelValue', type)
+  }
 }
 
 </script>
 
 <style scoped lang='less'>
-// @import 'ant-design-vue/es/style/themes/default.less';
 
-.scene-trigger-way-warp {display: flex;
+.scene-trigger-way-warp {
+  display: flex;
   flex-wrap: wrap;
   gap: 16px 24px;
   width: 100%;
@@ -113,6 +115,17 @@ const handleClick = (type: string) => {
       .way-item-image {
         opacity: 1;
       }
+    }
+  }
+
+  &.disabled {
+    color: rgba(#000, .8);
+    .way-item-image {
+      opacity: 0.6;
+    }
+
+    .trigger-way-item {
+      cursor: not-allowed;
     }
   }
 }
