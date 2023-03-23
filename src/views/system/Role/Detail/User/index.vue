@@ -18,6 +18,13 @@
             }"
             @cancelSelect="selectedRowKeys = []"
             size="small"
+            :defaultParams="{
+                pageSize: 10,
+            }"
+            :pagination="{
+                showSizeChanger: true,
+                pageSizeOptions: ['10', '20', '50', '100'],
+            }"
         >
             <template #headerTitle>
                 <j-button type="primary" @click="dialogVisible = true">
@@ -34,6 +41,9 @@
                         0: 'error',
                     }"
                 ></BadgeStatus>
+            </template>
+            <template #createTime="slotProps">
+                {{ dayjs(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss') }}
             </template>
 
             <template #action="slotProps">
@@ -66,6 +76,7 @@ import PermissionButton from '@/components/PermissionButton/index.vue';
 import AddUserDialog from '../components/AddUserDialog.vue';
 import { getUserByRole_api, unbindUser_api } from '@/api/system/role';
 import { message } from 'jetlinks-ui-components';
+import dayjs from 'dayjs';
 
 const roleId = useRoute().params.id as string;
 
@@ -93,6 +104,7 @@ const columns = [
         search: {
             type: 'date',
         },
+        scopedSlots: true,
     },
     {
         title: '状态',

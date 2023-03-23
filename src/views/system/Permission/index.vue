@@ -13,7 +13,14 @@
                 :request="getPermission_api"
                 model="TABLE"
                 :params="queryParams"
-                :defaultParams="{ sorts: [{ name: 'id', order: 'asc' }] }"
+                :defaultParams="{
+                    pageSize: 10,
+                    sorts: [{ name: 'id', order: 'asc' }],
+                }"
+                :pagination="{
+                    showSizeChanger: true,
+                    pageSizeOptions: ['10', '20', '50', '100'],
+                }"
             >
                 <template #headerTitle>
                     <PermissionButton
