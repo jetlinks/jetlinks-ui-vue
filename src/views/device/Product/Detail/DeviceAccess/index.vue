@@ -15,7 +15,7 @@
                             >选择</j-button
                         >设备接入网关，用以提供设备接入能力
                     </span>
-                    <span v-else>暂无权限，请联系管理员</span>
+                    <span v-else>请联系管理员配置产品接入方式</span>
                 </template>
             </j-empty>
         </div>
@@ -337,18 +337,37 @@
                                 <div class="card-item-content-text">
                                     {{ slotProps.channelInfo?.name }}
                                 </div>
-                                <div>
-                                    {{
-                                        slotProps.channelInfo?.addresses
-                                            ? slotProps.channelInfo
-                                                  ?.addresses[0].address
-                                            : ''
-                                    }}
-                                </div>
+                                <Ellipsis style="width: calc(100% - 20px)">
+                                    <div>
+                                        {{
+                                            slotProps.channelInfo?.addresses
+                                                ? slotProps.channelInfo
+                                                      ?.addresses[0].address
+                                                : ''
+                                        }}
+                                    </div>
+                                </Ellipsis>
                             </j-col>
                             <j-col :span="12">
                                 <div class="card-item-content-text">协议</div>
                                 <div>{{ slotProps.protocolDetail?.name }}</div>
+                            </j-col>
+                        </j-row>
+                        <j-row>
+                            <j-col :span="24">
+                                <Ellipsis style="width: calc(100% - 50px)"
+                                    ><div class="context-access">
+                                        {{
+                                            !!slotProps?.description
+                                                ? slotProps?.description
+                                                : dataSource.find(
+                                                      (item) =>
+                                                          item?.id ===
+                                                          slotProps?.provider,
+                                                  )?.description
+                                        }}
+                                    </div></Ellipsis
+                                >
                             </j-col>
                         </j-row>
                     </template>
@@ -482,6 +501,7 @@ const query = reactive({
                     return new Promise((res) => {
                         getProviders().then((resp: any) => {
                             listData.value = [];
+                            console.log(description.value);
                             if (isNoCommunity) {
                                 listData.value = (resp?.result || []).map(
                                     (item: any) => ({
@@ -548,7 +568,17 @@ const query = reactive({
 });
 const param = ref<Record<string, any>>({
     pageSize: 4,
-    terms: [],
+    terms: [
+        {
+            terms: [
+                {
+                    column: 'channel',
+                    termType: 'nin',
+                    value: 'plugin',
+                },
+            ],
+        },
+    ],
 });
 const queryParams = ref<Record<string, any>>({});
 /**
@@ -649,49 +679,6 @@ const driver1 = new Driver({
     },
 });
 
-/**
- * 表格列表
- */
-// const columnsMQTT: any[] = [
-//     {
-//         title: '分组',
-//         dataIndex: 'group',
-//         key: 'group',
-//         ellipsis: true,
-//         width: 100,
-//         // customCell: (record: any, index: number) => {
-//         //     const list =
-//         //         (config?.routes || []).sort((a: any, b: any) => a - b) || [];
-//         //     const arr = list.filter((res: any) => {
-//         //         // 这里gpsNumber是我需要判断的字段名（相同就合并）
-//         //         return res?.group == record?.group;
-//         //     });
-//         //     if (index == 0 || list[index - 1]?.group != record?.group) {
-//         //         return { rowSpan: arr.length };
-//         //     } else {
-//         //         return { rowSpan: 0 };
-//         //     }
-//         // },
-//     },
-//     {
-//         title: 'topic',
-//         dataIndex: 'topic',
-//         key: 'topic',
-//     },
-//     {
-//         title: '上下行',
-//         dataIndex: 'stream',
-//         key: 'stream',
-//         ellipsis: true,
-//         align: 'center',
-//         width: 100,
-//     },
-//     {
-//         title: '说明',
-//         dataIndex: 'description',
-//         key: 'description',
-//     },
-// ];
 let columnsMQTT = ref(<TableColumnType>[]);
 const ColumnsMQTT = [
     {
@@ -740,38 +727,6 @@ const ColumnsHTTP = [
         // scopedSlots: { customRender: 'description' },
     },
 ];
-// const columnsHTTP: any[] = [
-//     {
-//         title: '分组',
-//         dataIndex: 'group',
-//         key: 'group',
-//         ellipsis: true,
-//         width: 100,
-//         // customCell: (record: any, index: number) => {
-//         //     const list =
-//         //         (config?.routes || []).sort((a: any, b: any) => a - b) || [];
-//         //     const arr = list.filter((res: any) => {
-//         //         // 这里gpsNumber是我需要判断的字段名（相同就合并）
-//         //         return res?.group == record?.group;
-//         //     });
-//         //     if (index == 0 || list[index - 1]?.group != record?.group) {
-//         //         return { rowSpan: arr.length };
-//         //     } else {
-//         //         return { rowSpan: 0 };
-//         //     }
-//         // },
-//     },
-//     {
-//         title: '示例',
-//         dataIndex: 'example',
-//         key: 'example',
-//     },
-//     {
-//         title: '说明',
-//         dataIndex: 'description',
-//         key: 'description',
-//     },
-// ];
 /**
  * 获取上下行数据
  */
@@ -872,6 +827,28 @@ const submitData = async () => {
             accessProvider: current.value?.provider,
             messageProtocol: current.value?.protocol,
         };
+        // getConfigView(current.value?.protocol, current.value?.transport).then(
+        //     (resp: any) => {
+        //         metadata.value = (resp?.result[0] as ConfigMetadata) || {
+        //             properties: [],
+        //         };
+        //         // 流传输模式 初始为udp模式
+        //         if (metadata.value?.properties) {
+        //             metadata.value?.properties.forEach((item) => {
+        //                 if (
+        //                     item.name === '流传输模式' &&
+        //                     (!productStore.current?.configuration ||
+        //                         !productStore.current?.configuration.hasOwnProperty(
+        //                             item.name,
+        //                         ))
+        //                 ) {
+        //                     formData.data[item.name] =
+        //                         item.type.expands?.defaultValue;
+        //                 }
+        //             });
+        //         }
+        //     },
+        // );
         const metatdata = JSON.parse(productStore.current?.metadata || '{}');
         if (!productStore.current?.metadata) {
             const response = await getConfigView(
@@ -1056,7 +1033,7 @@ const add = () => {
             console.log(value);
             if (value.status === 200) {
                 tableRef.value.reload();
-                handleClick(value.result)
+                handleClick(value.result);
             }
         };
     }
@@ -1100,5 +1077,12 @@ nextTick(() => {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.context-access {
+    margin-right: 10px;
+    color: #666;
+    font-weight: 400;
+    font-size: 12px;
 }
 </style>

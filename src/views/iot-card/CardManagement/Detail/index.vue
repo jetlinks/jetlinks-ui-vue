@@ -237,6 +237,11 @@ const getData = (
     return new Promise((resolve) => {
         queryFlow(start, end, {
             orderBy: 'date',
+            terms: [{
+              column : "cardId",
+              termType: "eq",
+              value: route.params.id
+            }]
         }).then((resp: any) => {
             if (resp.status === 200) {
                 const sortArray = resp.result.sort(

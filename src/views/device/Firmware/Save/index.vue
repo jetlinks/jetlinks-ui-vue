@@ -237,6 +237,8 @@ const emit = defineEmits(['change']);
 
 const id = props.data.id;
 const VersionOrder = props.data.versionOrder;
+const VersionSign = props.data.sign;
+const VersionUrl = props.data.url;
 
 const formData: any = ref({
     name: '',
@@ -254,12 +256,14 @@ const extraValue: any = ref({});
 
 const validatorSign = async (_: Record<string, any>, value: string) => {
     const { signMethod, url } = formData.value;
-    if (value && !!signMethod && !!url && !extraValue.value) {
-        return extraValue.value[signMethod] !== value
-            ? Promise.reject('签名不一致，请检查文件是否上传正确')
-            : Promise.resolve();
-    } else {
+    if (id && VersionSign === value && VersionUrl === url) {
         return Promise.resolve();
+    } else {
+        if (value && !!signMethod && !!url && !!extraValue.value) {
+            return extraValue.value[signMethod] !== value
+                ? Promise.reject('签名不一致，请检查文件是否上传正确')
+                : Promise.resolve();
+        }
     }
 };
 const validatorVersionOrder = async (_: Record<string, any>, value: string) => {
@@ -270,7 +274,9 @@ const validatorVersionOrder = async (_: Record<string, any>, value: string) => {
         if (value && !!signMethod && productId) {
             const res = await validateVersion(productId, value);
             if (res.status === 200) {
-                return Promise.reject(res.result ? '版本序号已存在' : '');
+                return res.result
+                    ? Promise.reject('版本序号已存在')
+                    : Promise.resolve();
             }
         }
     }

@@ -432,6 +432,7 @@ const query = reactive({
             key: 'id',
             search: {
                 type: 'string',
+                defaultTermType: 'eq'
             },
         },
         {
@@ -562,7 +563,7 @@ const query = reactive({
             },
         },
         {
-            title: '所属部门',
+            title: '所属组织',
             key: 'id$dim-assets',
             dataIndex: 'id$dim-assets',
             search: {

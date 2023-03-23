@@ -112,6 +112,12 @@ export const getStream = function(url: string, params = {}) {
     })
 }
 
+export const postStream = function(url: string, data={}, params = {}) {
+    return post<any>(url, data, params, {
+        responseType: 'arraybuffer' // 设置请求数据类型，返回blob可解析类型
+    })
+}
+
 /**
  * 异常拦截处理器
  * @param {Object} error
@@ -149,10 +155,11 @@ const errorHandler = (error: any) => {
             Notification.error({
                 key: '401',
                 message: 'Unauthorized',
-                description: 'Authorization verification failed'
+                description: '用户未登录'
             })
             setTimeout(() => {
-                router.replace({
+                debugger
+                router.push({
                     path: LoginPath
                 })
             }, 0)
@@ -208,7 +215,7 @@ request.interceptors.response.use(response => {
         }
         // 如果返回的的是文件流，那么return值则为response
         if (response.headers['content-type'] === 'application/octet-stream; charset=UTF-8' || response.headers['content-type'] === 'application/vnd.ms-excel;charset=UTF-8') {
-            return response
+            return response.data
         } else {
             return response.data
         }
@@ -222,5 +229,6 @@ export default {
     patch,
     put,
     remove,
-    getStream
+    getStream,
+    postStream
 }

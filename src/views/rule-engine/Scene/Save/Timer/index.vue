@@ -2,7 +2,7 @@
     <div class='timer'>
       <j-form-item
         :rules="rules"
-        name="timer"
+        :name="['trigger', 'timer']"
       >
         <template #label>
           <TitleComponent data='触发规则' style='font-size: 14px;' />
@@ -29,8 +29,7 @@
         v-if="visible"
         @cancel='visible = false'
         @save="save"
-        :value="data.trigger.device"
-        :options="data.options.trigger"
+        :value="data.trigger.timer"
       />
     </div>
 </template>
@@ -41,6 +40,7 @@ import { storeToRefs } from 'pinia';
 import Action from '../action/index.vue';
 import AddModel from './AddModal.vue'
 import AddButton from '../components/AddButton.vue'
+import Title from './Title.vue'
 import type { OperationTimer, BranchesThen } from '@/views/rule-engine/Scene/typings'
 
 const sceneStore = useSceneStore();
@@ -49,6 +49,7 @@ const visible = ref(false)
 
 const rules = [{
   validator(_: any, v: any) {
+    console.log(v)
     if (!v) {
       return Promise.reject(new Error('请配置定时触发规则'));
     }
@@ -85,5 +86,21 @@ const save = (_data: OperationTimer, options: Record<string, any>) => {
 }
 </script>
 
-<style scoped>
+<style scoped lang='less'>
+@minWidth: 75%;
+
+.timer {
+  .actions-branches-item {
+    width: 100%;
+  }
+}
+
+
+@media (min-width: 1600px) {
+  .timer {
+    .actions-branches-item {
+      width: @minWidth;
+    }
+  }
+}
 </style>

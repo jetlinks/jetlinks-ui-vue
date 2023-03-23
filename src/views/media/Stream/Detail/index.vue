@@ -76,7 +76,10 @@
                                     message: '请输入API Host',
                                 },
                                 {
-                                    pattern: regDomain,
+                                    pattern:
+                                        Validator.regIpv4 ||
+                                        Validator.regIPv6 ||
+                                        Validator.regDomain,
                                     message: '请输入正确的IP地址或者域名',
                                 },
                             ]"
@@ -130,7 +133,10 @@
                                     message: '请输入RTP IP',
                                 },
                                 {
-                                    pattern: regDomain,
+                                    pattern:
+                                        Validator.regIpv4 ||
+                                        Validator.regIPv6 ||
+                                        Validator.regDomain,
                                     message: '请输入正确的IP地址或者域名',
                                 },
                             ]"
@@ -191,7 +197,15 @@
                                 style="width: 100%"
                                 :min="1"
                                 :max="
-                                    formData.configuration.dynamicRtpPortRange1
+                                    Number(
+                                        formData.configuration
+                                            .dynamicRtpPortRange1,
+                                    ) < 65535
+                                        ? Number(
+                                              formData.configuration
+                                                  .dynamicRtpPortRange1,
+                                          )
+                                        : 65535
                                 "
                                 :precision="0"
                                 placeholder="起始端口"
@@ -279,8 +293,17 @@ const formRef = ref<FormInstance>();
 const loading = ref(false);
 const options = ref([]);
 const checked = ref(false);
-const regDomain =
-    /[j-zA-Z0-9][-j-zA-Z0-9]{0,62}(\.[j-zA-Z0-9][-j-zA-Z0-9]{0,62})+\.?/;
+
+const Validator = {
+    regIpv4: new RegExp(
+        /^((([01]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))\.){3}(([01]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))$/,
+    ),
+    regIPv6: new RegExp(/^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/),
+    regDomain: new RegExp(
+        /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i,
+    ),
+    regOnlyNumber: new RegExp(/^\d+$/),
+};
 
 const formData = ref<FormDataType>({
     name: '',

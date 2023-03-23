@@ -17,6 +17,7 @@ import { numberToString } from './util'
 
 type Emit = {
   (e: 'update:value', data: Array<number>):void
+  (e: 'change', data: Array<number>):void
 }
 
 const props = defineProps({
@@ -48,6 +49,7 @@ const change = (number: number) => {
   }
   rowKeys.value = [..._keys.values()]
   emit('update:value', rowKeys.value)
+  emit('change', rowKeys.value)
 }
 
 const allActive = computed(() => {
@@ -57,7 +59,9 @@ const allActive = computed(() => {
 watch(() => props.type, () => {
   const isMonth = props.type === 'month'
   const day = isMonth ? 31 : 7
-  change(0)
+  if (!props.value.length) {
+    change(0)
+  }
   timeOptions.value = new Array(day)
     .fill(1)
     .map((_, index) => {

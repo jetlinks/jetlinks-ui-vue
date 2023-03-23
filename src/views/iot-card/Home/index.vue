@@ -87,7 +87,7 @@
     </page-container>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name='IotCardHome'>
 import { getImage } from '@/utils/comm';
 import Guide from '../components/Guide.vue';
 import moment from 'moment';
@@ -113,14 +113,14 @@ const menuHasPermission = useMenuStore().hasPermission;
 const btnHasPermission = usePermissionStore().hasPermission;
 
 // 菜单权限
-const dashBoardUrl = menuHasPermission('/iot-card/Dashboard');
-const platformUrl = menuHasPermission('/iot-card/Platform/Detail');
-const recordUrl = menuHasPermission('/iot-card/Record');
-const cardUrl = menuHasPermission('/iot-card/CardManagement');
+const dashBoardUrl = menuHasPermission('iot-card/Dashboard');
+const platformUrl = menuHasPermission('iot-card/Platform/Detail');
+const recordUrl = menuHasPermission('iot-card/Record');
+const cardUrl = menuHasPermission('iot-card/CardManagement');
 
 // 按钮权限
-const paltformPermission = btnHasPermission(`/iot-card/Platform:add`);
-const cardPermission = btnHasPermission(`/iot-card/CardManagement:add`);
+const paltformPermission = btnHasPermission(`iot-card/Platform:add`);
+const cardPermission = btnHasPermission(`iot-card/CardManagement:add`);
 
 const Image = {
     1: getImage('/home/1.png'),
@@ -179,23 +179,19 @@ const pieChartData = ref<any[]>([
 ]);
 
 const jumpPage = (data: GuideItemProps) => {
+  console.log(data.auth)
     if (!data.auth){
         message.warning('暂无权限，请联系管理员');
         return
     }
     if (data.key === 'EQUIPMENT') {
-        menuStory.jumpPage(data.url, { id: 'add' });
+        menuStory.jumpPage(data.url, { id: ':id'});
     } else {
         menuStory.jumpPage(data.url);
     }
 };
 
 const jumpDashboard = () => {
-    // if (dashBoardUrl) {
-    //     router.push(`${dashBoardUrl}`);
-    // } else {
-    //     message.warning('暂无权限，请联系管理员');
-    // }
     menuStory.jumpPage('iot-card/Dashboard');
 };
 

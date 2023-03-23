@@ -101,6 +101,7 @@ const valueChange = debounce(() => {
   const _value = dataSource.value.map(item => ({
     name: item.id, value: item.value
   }))
+  console.log(_value)
   emit('change', _value)
   emit('update:value', _value)
 }, 500)

@@ -4,6 +4,7 @@
         @back="onBack"
         :tabActiveKey="productStore.tabActiveKey"
         @tabChange="onTabChange"
+        showBack="true"
     >
         <template #title>
             <div>

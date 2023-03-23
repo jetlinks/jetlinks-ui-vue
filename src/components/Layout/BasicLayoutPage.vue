@@ -6,6 +6,7 @@
         v-model:selectedKeys="state.selectedKeys"
         :pure="state.pure"
         :breadcrumb="{ routes: breadcrumb }"
+        @backClick='routerBack'
     >
         <template #breadcrumbRender="slotProps">
             <a
@@ -69,6 +70,10 @@ const state = reactive<StateType>({
     openKeys: [],
     selectedKeys: [],
 });
+
+const routerBack = () => {
+  router.go(-1)
+}
 
 const findRouteMeta = (code: string) => {
   let meta = []

@@ -22,6 +22,7 @@
                         showSearch
                         placeholder="请选择功能"
                         v-model:value="modelRef.message.functionId"
+                        @select='functionSelect'
                     >
                         <j-select-option
                             v-for="item in metadata?.functions || []"
@@ -34,7 +35,7 @@
                 <j-form-item
                     v-if="modelRef.message.functionId"
                     :name="['message', 'inputs']"
-                    :rules="[{ required: true, message: '请输入功能值' }]"
+                    :rules="functionRules"
                 >
                     <EditTable
                         :functions="functions"
@@ -137,6 +138,25 @@ const modelRef = reactive({
         inputs: [],
     },
 });
+
+const functionSelect = () => {
+  modelRef.message.inputs = []
+}
+
+const functionRules = [{
+  validator(_: string, value: any) {
+    if (!value?.length && functions.value.length) {
+      return Promise.reject('请输入功能值')
+    } else {
+      const hasValue = value.find((item: { name: string, value: any}) => !item.value)
+      if (hasValue) {
+        const functionItem = functions.value.find((item: any) => item.id === hasValue.name)
+        return Promise.reject(functionItem?.name ? `请输入${functionItem.name}值` : '请输入功能值')
+      }
+    }
+    return Promise.resolve();
+  }
+}]
 
 const metadata = ref<{
     functions: any[];

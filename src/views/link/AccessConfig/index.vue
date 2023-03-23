@@ -186,6 +186,7 @@ const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 
 let providersList = ref<Record<string, any>>([]);
+const providersOptions = ref<Record<string, any>>([]);
 
 const statusMap = new Map();
 statusMap.set('enabled', 'success');
@@ -207,13 +208,7 @@ const columns = [
         key: 'provider',
         search: {
             type: 'select',
-            options: async () => {
-                const res: any = await getProviders();
-                return (res?.result || [])?.map((item: any) => ({
-                    lable: item.name,
-                    value: item.id,
-                }));
-            },
+            options: providersOptions,
         },
     },
     {
@@ -315,6 +310,10 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
 const getProvidersList = async () => {
     const res: any = await getProviders();
     providersList.value = res.result;
+    providersOptions.value = (res?.result || [])?.map((item: any) => ({
+        label: item.name,
+        value: item.id,
+    }));
 };
 getProvidersList();
 
