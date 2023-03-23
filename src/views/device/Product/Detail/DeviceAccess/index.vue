@@ -568,7 +568,17 @@ const query = reactive({
 });
 const param = ref<Record<string, any>>({
     pageSize: 4,
-    terms: [],
+    terms: [
+        {
+            terms: [
+                {
+                    column: 'channel',
+                    termType: 'nin',
+                    value: 'plugin',
+                },
+            ],
+        },
+    ],
 });
 const queryParams = ref<Record<string, any>>({});
 /**
@@ -669,49 +679,6 @@ const driver1 = new Driver({
     },
 });
 
-/**
- * 表格列表
- */
-// const columnsMQTT: any[] = [
-//     {
-//         title: '分组',
-//         dataIndex: 'group',
-//         key: 'group',
-//         ellipsis: true,
-//         width: 100,
-//         // customCell: (record: any, index: number) => {
-//         //     const list =
-//         //         (config?.routes || []).sort((a: any, b: any) => a - b) || [];
-//         //     const arr = list.filter((res: any) => {
-//         //         // 这里gpsNumber是我需要判断的字段名（相同就合并）
-//         //         return res?.group == record?.group;
-//         //     });
-//         //     if (index == 0 || list[index - 1]?.group != record?.group) {
-//         //         return { rowSpan: arr.length };
-//         //     } else {
-//         //         return { rowSpan: 0 };
-//         //     }
-//         // },
-//     },
-//     {
-//         title: 'topic',
-//         dataIndex: 'topic',
-//         key: 'topic',
-//     },
-//     {
-//         title: '上下行',
-//         dataIndex: 'stream',
-//         key: 'stream',
-//         ellipsis: true,
-//         align: 'center',
-//         width: 100,
-//     },
-//     {
-//         title: '说明',
-//         dataIndex: 'description',
-//         key: 'description',
-//     },
-// ];
 let columnsMQTT = ref(<TableColumnType>[]);
 const ColumnsMQTT = [
     {
@@ -760,38 +727,6 @@ const ColumnsHTTP = [
         // scopedSlots: { customRender: 'description' },
     },
 ];
-// const columnsHTTP: any[] = [
-//     {
-//         title: '分组',
-//         dataIndex: 'group',
-//         key: 'group',
-//         ellipsis: true,
-//         width: 100,
-//         // customCell: (record: any, index: number) => {
-//         //     const list =
-//         //         (config?.routes || []).sort((a: any, b: any) => a - b) || [];
-//         //     const arr = list.filter((res: any) => {
-//         //         // 这里gpsNumber是我需要判断的字段名（相同就合并）
-//         //         return res?.group == record?.group;
-//         //     });
-//         //     if (index == 0 || list[index - 1]?.group != record?.group) {
-//         //         return { rowSpan: arr.length };
-//         //     } else {
-//         //         return { rowSpan: 0 };
-//         //     }
-//         // },
-//     },
-//     {
-//         title: '示例',
-//         dataIndex: 'example',
-//         key: 'example',
-//     },
-//     {
-//         title: '说明',
-//         dataIndex: 'description',
-//         key: 'description',
-//     },
-// ];
 /**
  * 获取上下行数据
  */
@@ -892,6 +827,28 @@ const submitData = async () => {
             accessProvider: current.value?.provider,
             messageProtocol: current.value?.protocol,
         };
+        // getConfigView(current.value?.protocol, current.value?.transport).then(
+        //     (resp: any) => {
+        //         metadata.value = (resp?.result[0] as ConfigMetadata) || {
+        //             properties: [],
+        //         };
+        //         // 流传输模式 初始为udp模式
+        //         if (metadata.value?.properties) {
+        //             metadata.value?.properties.forEach((item) => {
+        //                 if (
+        //                     item.name === '流传输模式' &&
+        //                     (!productStore.current?.configuration ||
+        //                         !productStore.current?.configuration.hasOwnProperty(
+        //                             item.name,
+        //                         ))
+        //                 ) {
+        //                     formData.data[item.name] =
+        //                         item.type.expands?.defaultValue;
+        //                 }
+        //             });
+        //         }
+        //     },
+        // );
         const metatdata = JSON.parse(productStore.current?.metadata || '{}');
         if (!productStore.current?.metadata) {
             const response = await getConfigView(

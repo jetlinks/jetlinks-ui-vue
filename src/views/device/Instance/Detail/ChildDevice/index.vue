@@ -147,6 +147,10 @@ const columns = [
         dataIndex: 'id',
         key: 'id',
         ellipsis: true,
+        search:{
+            type:'string',
+            defaultTermType: 'eq'
+        }
     },
     {
         title: '设备名称',
