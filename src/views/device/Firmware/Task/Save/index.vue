@@ -208,10 +208,4 @@ watch(
 );
 </script>
 
-<style lang="less" scoped>
-.form {
-    .form-submit {
-        background-color: @primary-color !important;
-    }
-}
-</style>
+<style lang="less" scoped></style>

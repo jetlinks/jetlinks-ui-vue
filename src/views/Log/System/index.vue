@@ -66,12 +66,7 @@
             </template>
         </j-pro-table>
     </div>
-    <j-modal
-        :width="1100"
-        v-model:visible="visible"
-        title="详情"
-        @ok="handleOk"
-    >
+    <j-modal :width="1100" v-model:visible="visible" title="详情">
         <div>
             <span class="mr-10">[{{ descriptionsData?.threadName }}]</span>
             <span class="mr-10">{{
@@ -102,6 +97,9 @@
             placeholder="暂无数据"
             :auto-size="{ minRows: 24, maxRows: 28 }"
         />
+        <template #footer>
+            <j-button type="primary" @click="handleOk">关闭</j-button>
+        </template>
     </j-modal>
 </template>
 <script lang="ts" setup name="SystemLog">

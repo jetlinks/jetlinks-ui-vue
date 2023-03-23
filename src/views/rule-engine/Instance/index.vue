@@ -38,7 +38,7 @@
                         :statusText="slotProps.state?.text"
                         @click="openRuleEditor"
                         :statusNames="{
-                            started: 'success',
+                            started: 'processing',
                             disable: 'error',
                         }"
                     >
@@ -88,17 +88,17 @@
                     </CardBox>
                 </template>
                 <template #state="slotProps">
-                    <j-badge
+                    <BadgeStatus
                         :text="
                             slotProps.state?.value === 'started'
                                 ? '正常'
                                 : '禁用'
                         "
-                        :status="
-                            slotProps.state?.value === 'started'
-                                ? 'success'
-                                : 'error'
-                        "
+                        :status="slotProps.state?.value"
+                        :statusNames="{
+                            started: 'processing',
+                            disable: 'error',
+                        }"
                     />
                 </template>
                 <template #action="slotProps">

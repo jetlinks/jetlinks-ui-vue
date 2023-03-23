@@ -155,10 +155,11 @@ const errorHandler = (error: any) => {
             Notification.error({
                 key: '401',
                 message: 'Unauthorized',
-                description: 'Authorization verification failed'
+                description: '用户未登录'
             })
             setTimeout(() => {
-                router.replace({
+                debugger
+                router.push({
                     path: LoginPath
                 })
             }, 0)

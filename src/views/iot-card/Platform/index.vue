@@ -238,7 +238,7 @@ const handleSearch = (e: any) => {
  * 新增
  */
 const handleAdd = () => {
-    menuStory.jumpPage('iot-card/Platform/Detail', { id: 'add' })
+    menuStory.jumpPage('iot-card/Platform/Detail', { id: ':id' })
 };
 </script>
 

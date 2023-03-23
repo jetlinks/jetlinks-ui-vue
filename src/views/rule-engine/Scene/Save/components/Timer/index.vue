@@ -15,6 +15,7 @@
         ]'
         option-type='button'
         button-style='solid'
+        @change='updateValue'
       />
     </j-form-item>
     <j-form-item v-if='showCron' name='cron' :rules="[
@@ -32,11 +33,11 @@
         }
       }
     ]">
-      <j-input placeholder='corn表达式' v-model:value='formModel.cron' />
+      <j-input placeholder='corn表达式' v-model:value='formModel.cron' @change='updateValue' />
     </j-form-item>
     <template v-else>
       <j-form-item name='when'>
-        <WhenOption v-model:value='formModel.when' :type='formModel.trigger' />
+        <WhenOption v-model:value='formModel.when' :type='formModel.trigger' @change='updateValue' />
       </j-form-item>
       <j-form-item name='mod'>
         <j-radio-group
@@ -47,13 +48,19 @@
         ]'
           option-type='button'
           button-style='solid'
+          @change='updateValue'
         />
       </j-form-item>
     </template>
     <j-space v-if='showOnce' style='display: flex;gap: 24px'>
       <j-form-item :name="['once', 'time']">
-        <j-time-picker valueFormat='HH:mm:ss' v-model:value='formModel.once.time' style='width: 100%'
-                       format='HH:mm:ss' />
+        <j-time-picker
+          valueFormat='HH:mm:ss'
+          v-model:value='formModel.once.time'
+          style='width: 100%'
+          format='HH:mm:ss'
+          @change='updateValue'
+        />
       </j-form-item>
       <j-form-item> 执行一次</j-form-item>
     </j-space>
@@ -68,6 +75,7 @@
           @change='(v) => {
                   formModel.period.from = v[0]
                   formModel.period.to = v[1]
+                  updateValue()
               }'
         />
       </j-form-item>
@@ -83,6 +91,7 @@
           :min='1'
           :max='59'
           v-model:value='formModel.period.every'
+          @change='updateValue'
         >
           <template #addonAfter>
             <j-select
@@ -92,6 +101,7 @@
                 { label: "分", value: "minutes" },
                 { label: "小时", value: "hours" },
               ]'
+              @select='updateValue'
             />
           </template>
         </j-input-number>
@@ -103,7 +113,7 @@
 
 <script setup lang='ts' name='Timer'>
 import type { PropType } from 'vue'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import WhenOption from './WhenOption.vue'
 import { cloneDeep } from 'lodash-es'
 import type { OperationTimer } from '../../../typings'
@@ -131,22 +141,20 @@ const emit = defineEmits<Emit>()
 
 const formModel = reactive<OperationTimer>({
   trigger: 'week',
-  when: [],
+  when: props.value.when || [],
   mod: 'period',
   cron: undefined,
   once: {
-    time: moment(new Date()).format('HH:mm:ss')
+    time: dayjs(new Date()).format('HH:mm:ss')
   },
   period: {
-    from: moment(new Date()).startOf('day').format('HH:mm:ss'),
-    to: moment(new Date()).endOf('day').format('HH:mm:ss'),
+    from: dayjs(new Date()).startOf('day').format('HH:mm:ss'),
+    to: dayjs(new Date()).endOf('day').format('HH:mm:ss'),
     every: 1,
     unit: 'seconds'
   }
 })
 const timerForm = ref()
-
-Object.assign(formModel, props.value)
 
 const showCron = computed(() => {
   return formModel.trigger === 'cron'
@@ -160,7 +168,7 @@ const showPeriod = computed(() => {
   return formModel.trigger !== 'cron' && formModel.mod === 'period'
 })
 
-watch(() => formModel, () => {
+const updateValue = () => {
   const cloneValue = cloneDeep(formModel)
   if (cloneValue.trigger === 'cron') {
     delete cloneValue.when
@@ -174,7 +182,7 @@ watch(() => formModel, () => {
     delete cloneValue.period
   }
   emit('update:value', cloneValue)
-}, { deep: true })
+}
 
 defineExpose({
   validateFields: () => new Promise(async (resolve)  => {
@@ -182,6 +190,8 @@ defineExpose({
     resolve(data)
   })
 })
+Object.assign(formModel, props.value)
+formModel.when = props.value.when || []
 
 </script>
 

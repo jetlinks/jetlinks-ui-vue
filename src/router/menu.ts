@@ -51,7 +51,7 @@ export const AccountMenu = {
 export default [
     { path: '/*', redirect: '/'},
     {
-        path: '/login',
+        path: LoginPath,
         component: () => import('@/views/user/Login/index.vue')
     },
     {

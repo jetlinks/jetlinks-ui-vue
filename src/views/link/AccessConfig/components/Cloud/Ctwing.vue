@@ -1,7 +1,7 @@
 <template>
     <div>
         <j-steps class="steps-steps" :current="stepCurrent">
-            <j-step v-for="item in steps" :key="item" :title="item" />
+            <j-step disabled v-for="item in steps" :key="item" :title="item" />
         </j-steps>
         <div class="steps-content">
             <div class="steps-box" v-if="current === 0">
@@ -51,6 +51,7 @@
                                                     max: 64,
                                                     message:
                                                         '最多可输入64个字符',
+                                                    trigger: 'blur',
                                                 },
                                             ]"
                                         >
@@ -75,6 +76,7 @@
                                                     max: 64,
                                                     message:
                                                         '最多可输入64个字符',
+                                                    trigger: 'blur',
                                                 },
                                             ]"
                                         >
@@ -184,7 +186,11 @@
                     </PermissionButton>
                 </div>
                 <j-scrollbar height="480">
-                    <j-row :gutter="[24, 24]" v-if="procotolList.length > 0">
+                    <j-row
+                        :gutter="[24, 24]"
+                        style="width: 100%"
+                        v-if="procotolList.length > 0"
+                    >
                         <j-col
                             :span="8"
                             v-for="item in procotolList"
@@ -193,12 +199,16 @@
                             <AccessCard
                                 @checkedChange="procotolChange"
                                 :checked="procotolCurrent"
-                                :data="item"
+                                :data="{ ...item, type: 'protocol' }"
                             >
                             </AccessCard>
                         </j-col>
                     </j-row>
-                    <j-empty v-else description="暂无数据" />
+                    <j-empty
+                        style="margin-top: 10%"
+                        v-else
+                        description="暂无数据"
+                    />
                 </j-scrollbar>
             </div>
         </div>
@@ -222,7 +232,11 @@
                                     message: '请输入名称',
                                     trigger: 'blur',
                                 },
-                                { max: 64, message: '最多可输入64个字符' },
+                                {
+                                    max: 64,
+                                    message: '最多可输入64个字符',
+                                    trigger: 'blur',
+                                },
                             ]"
                         >
                             <j-input

@@ -204,6 +204,7 @@ const rules = {
 };
 
 const getDetail = async () => {
+    console.log(route.params)
     if (route.params.id === ':id') return;
     const resp: any = await queryById(route.params.id);
     if (resp.status === 200) {

@@ -194,7 +194,7 @@ const timeChange = (e: any) => {
 }
 
 const inputChange = (e: any) => {
-  emit('change', e.target ? e.target.value : e)
+  emit('change', e && e.target ? e.target.value : e)
 }
 
 const dateChange = (e: any) => {

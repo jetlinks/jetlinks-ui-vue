@@ -9,7 +9,7 @@
                         :model="formData"
                         name="basic"
                         :label-col="{ span: 8 }"
-                        :wrapper-col="{ span: 16 }"
+                        :wrapper-col="{ span: 24 }"
                         autocomplete="off"
                     >
                         <j-form-item
@@ -86,7 +86,7 @@
                         <h1>2. 配置说明</h1>
                         <h2>1、证书文件</h2>
                         <div>
-                            您可以使用文本编辑工具打开PEM或者CRT格式的证书文件，复制其中的内容并粘贴到该文本框，或者单击该文本框下的上传，并选择存储在本地计算机的证书文件，将文件内容上传到文本框。
+                            您可以使用文本编辑工具打开PEM格式的证书文件，复制其中的内容并粘贴到该文本框，或者单击该文本框下的上传，并选择存储在本地计算机的证书文件，将文件内容上传到文本框。
                         </div>
                         <h2>2、证书私钥</h2>
                         <div>
@@ -206,33 +206,6 @@ detail(id);
             width: 100%;
             height: 100%;
         }
-    }
-}
-
-.doc {
-    height: 100%;
-    padding: 0 24px;
-    overflow-y: auto;
-    color: rgba(#000, 0.8);
-    font-size: 14px;
-    background-color: #fff;
-
-    h1 {
-        margin: 16px 0;
-        color: rgba(#000, 0.85);
-        font-weight: bold;
-        font-size: 14px;
-
-        &:first-child {
-            margin-top: 0;
-        }
-    }
-
-    h2 {
-        margin: 6px 10px;
-        color: rgba(0, 0, 0, 0.8);
-        font-weight: 400;
-        font-size: 14px;
     }
 }
 </style>

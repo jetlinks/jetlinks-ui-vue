@@ -300,7 +300,7 @@ const getActions = (
     ];
     if (data.triggerType === 'manual') {
         const _item: ActionsType = {
-            key: 'trigger',
+            key: 'tigger',
             text: '手动触发',
             disabled: data.state?.value === 'disable',
             tooltip: {

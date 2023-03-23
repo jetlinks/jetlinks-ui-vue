@@ -61,12 +61,15 @@ const close = () => {
 
 const instanceStore = useInstanceStore()
 const productStore = useProductStore()
-const metadataMap = {
-  product: productStore.current?.metadata as string,
-  device: instanceStore.current?.metadata as string,
-};
-const metadata = metadataMap[props.type];
-const value = ref(metadata)
+const metadata = computed(() => {
+  const metadataMap = {
+    product: productStore.current?.metadata as string,
+    device: instanceStore.current?.metadata as string,
+  };
+  return metadataMap[props.type];
+})
+// const metadata = metadataMap[props.type];
+const value = ref(metadata.value)
 const handleExport = async () => {
   try {
     downloadObject(
@@ -86,14 +89,14 @@ const handleConvertMetadata = (key: Key) => {
   if (key === 'alink') {
     value.value = '';
     if (metadata) {
-      convertMetadata('to', 'alink', JSON.parse(metadata)).then(res => {
+      convertMetadata('to', 'alink', JSON.parse(metadata.value)).then(res => {
         if (res.status === 200) {
           value.value = JSON.stringify(res.result)
         }
       });
     }
   } else {
-    value.value = metadata;
+    value.value = metadata.value;
   }
 };
 

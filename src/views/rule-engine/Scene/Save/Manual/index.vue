@@ -1,5 +1,5 @@
 <template>
-  <div class='actions-branches-item'>
+  <div class='manual actions-branches-item'>
     <j-form-item
       :rules="actionRules"
       :name="['branches', 0, 'then']"
@@ -32,6 +32,21 @@ const actionRules = [{
 
 </script>
 
-<style scoped>
+<style scoped lang='less'>
+@minWidth: 75%;
 
+.manual {
+  &.actions-branches-item {
+    width: 100%;
+  }
+}
+
+
+@media (min-width: 1600px) {
+  .manual {
+    &.actions-branches-item {
+      width: @minWidth;
+    }
+  }
+}
 </style>

@@ -232,8 +232,8 @@ const handleOk = () => {
             btnLoading.value = true;
             const resp =
                 props.type === 'add'
-                    ? await add(toRaw(modelRef))
-                    : await edit(toRaw(modelRef));
+                    ? await add(toRaw(modelRef)).catch(err => err)
+                    : await edit(toRaw(modelRef)).catch(err => err);
             btnLoading.value = false;
             if (resp.status === 200) {
                 message.success('操作成功')
