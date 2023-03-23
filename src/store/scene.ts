@@ -32,14 +32,20 @@ export const defaultBranches = [
       {
         terms: [
           {
-            column: undefined,
-            value: {
-              source: 'fixed',
-              value: undefined
-            },
-            termType: undefined,
-            key: 'params_1',
+            terms: [
+              {
+                column: undefined,
+                value: {
+                  source: 'fixed',
+                  value: undefined
+                },
+                termType: undefined,
+                key: 'params_1',
+                type: 'and',
+              },
+            ],
             type: 'and',
+            key: 'terms_1_terms_1',
           },
         ],
         type: 'and',
@@ -79,9 +85,22 @@ export const useSceneStore = defineStore('scene', () => {
     name: '',
     id: undefined
   })
+
   const productCache = {}
 
+  const refresh = () => {
+    data.value = {
+      trigger: { type: ''},
+      options: cloneDeep(defaultOptions),
+      branches: cloneDeep(defaultBranches),
+      description: '',
+      name: '',
+      id: undefined
+    }
+  }
+
   const getDetail = async (id: string) => {
+    refresh()
     const resp = await detail(id)
     if (resp.success) {
       const result = resp.result as any
@@ -111,17 +130,6 @@ export const useSceneStore = defineStore('scene', () => {
         branches: cloneDeep(assignmentKey(branches)),
         options: result.options ? {...cloneDeep(defaultOptions), ...result.options } : cloneDeep(defaultOptions),
       }
-    }
-  }
-
-  const refresh = () => {
-    data.value = {
-      trigger: { type: ''},
-      options: cloneDeep(defaultOptions),
-      branches: cloneDeep(defaultBranches),
-      description: '',
-      name: '',
-      id: undefined
     }
   }
 

@@ -145,6 +145,7 @@ const errorHandler = (error: any) => {
             showNotification( 'Request Error', (data.message + '').substr(0, 90), '400')
         } else if (status === 401) {
             showNotification( 'Unauthorized', '用户未登录', '401')
+            console.log('showNotification')
             setTimeout(() => {
                 location.href = `/#${LoginPath}`
             }, 0)

@@ -3700,8 +3700,8 @@ jetlinks-store@^0.0.3:
 
 jetlinks-ui-components@^1.0.5:
   version "1.0.5"
-  resolved "http://47.108.170.157:9013/jetlinks-ui-components/-/jetlinks-ui-components-1.0.5.tgz#147926716787ac22464b5ce81180ce43a93e40cc"
-  integrity sha512-guypzc4QurKHfVoDrCo28Bx721kbTx8/W9r8jROWINI0J11ZTRi5bMmqK/2783Jg4kI0s4wZBWebRbIHBgoCyA==
+  resolved "http://47.108.170.157:9013/jetlinks-ui-components/-/jetlinks-ui-components-1.0.5.tgz#8cb5c9e68e46e6e7eebc0d96b1cdaab24828779f"
+  integrity sha512-yIbmplK+twekevr7n+dGMvO8tvyIqguC60TWeJCmx2mUqpwv8dEnr/cwwpJee4PBLWohvGPywsYgmm7KxVBbcw==
   dependencies:
     "@vueuse/core" "^9.12.0"
     ant-design-vue "^3.2.15"

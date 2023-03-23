@@ -210,12 +210,6 @@ watch(() => [columnOptions.value, paramsValue.column], () => {
   }
 })
 
-watchEffect(() => {
-  if (!props.value.error && props.value.column) { // 新增不查找option
-
-  }
-})
-
 const showDouble = computed(() => {
   const isRange = paramsValue.termType ? arrayParamsKey.includes(paramsValue.termType) : false
   return isRange
