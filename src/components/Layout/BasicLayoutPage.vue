@@ -6,7 +6,7 @@
         v-model:selectedKeys="state.selectedKeys"
         :pure="state.pure"
         :breadcrumb="{ routes: breadcrumb }"
-        @back='routerBack'
+        @backClick='routerBack'
     >
         <template #breadcrumbRender="slotProps">
             <a
