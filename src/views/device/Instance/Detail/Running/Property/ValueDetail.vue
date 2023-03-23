@@ -13,6 +13,7 @@
             <j-image :src="value?.formatValue" />
         </template>
         <template v-else-if="['.flv', '.m3u8', '.mp4'].includes(type)">
+            <LivePlayer :url="value?.formatValue" autoplay />
         </template>
         <template v-else>
             <JsonViewer
@@ -25,6 +26,7 @@
 
 <script lang="ts" setup>
 import JsonViewer from 'vue-json-viewer';
+import LivePlayer from '@/components/Player/index.vue';
 
 const _data = defineProps({
     type: {
