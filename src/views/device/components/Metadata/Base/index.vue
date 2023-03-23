@@ -196,11 +196,12 @@ const resetMetadata = async () => {
   // }
   const { id } = route.params
   if (target === 'device') {
-    instanceStore.refresh(id as string)
+    await instanceStore.refresh(id as string)
   } else {
-    productStore.refresh(id as string)
+    await productStore.getDetail(id as string)
   }
   metadataStore.set('importMetadata', true)
+  
 };
 
 const removeItem = async (record: MetadataItem) => {

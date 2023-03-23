@@ -22,7 +22,7 @@
                     <PermissionButton
                         :hasPermission="`${permission}:assert`"
                         type="primary"
-                        @click="table.clickAdd"
+                        @click="table.clickAdd('handle')"
                     >
                         <AIcon type="PlusOutlined" />资产分配
                     </PermissionButton>
@@ -70,7 +70,7 @@
                     :status="slotProps.state?.value"
                     :statusText="slotProps.state?.text"
                     :statusNames="{
-                        online: 'success',
+                        online: 'processing',
                         offline: 'error',
                         notActive: 'warning',
                     }"
@@ -147,7 +147,7 @@
                     :status="slotProps.state.value"
                     :text="slotProps.state.text"
                     :statusNames="{
-                        online: 'success',
+                        online: 'processing',
                         offline: 'error',
                         notActive: 'warning',
                     }"
@@ -211,6 +211,9 @@ import { intersection } from 'lodash-es';
 
 import type { dictType, optionsType } from '../typing';
 import { message } from 'jetlinks-ui-components';
+import { useDepartmentStore } from '@/store/department';
+
+const departmentStore = useDepartmentStore();
 
 const permission = 'system/Department';
 
@@ -247,6 +250,9 @@ const columns = [
         search: {
             rename: 'productId$product-info',
             type: 'select',
+            handleValue(value: string) {
+                return `id is ${value}`;
+            },
             options: () =>
                 new Promise((resolve) => {
                     const params = {
@@ -288,14 +294,9 @@ const columns = [
         search: {
             type: 'select',
             options: [
-                {
-                    label: '正常',
-                    value: 1,
-                },
-                {
-                    label: '禁用',
-                    value: 0,
-                },
+                { label: '禁用', value: 'notActive' },
+                { label: '离线', value: 'offline' },
+                { label: '在线', value: 'online' },
             ],
         },
         scopedSlots: true,
@@ -467,7 +468,9 @@ const table = {
             };
         }
     },
-    clickAdd: () => {
+    clickAdd: (type?: string) => {
+        // 设备资产分配弹窗操作类型: type = 'handle': 手动点击资产分配按钮, !type产品资产分配后, 自动弹出设备资产分配
+        departmentStore.setType(type)
         dialogs.addShow = true;
     },
     clickEdit: (row?: any) => {
@@ -520,7 +523,7 @@ const dialogs = reactive({
 });
 
 table.init();
-nextTick(() => {
+watchEffect(() => {
     props.bindBool && table.clickAdd();
     emits('update:bindBool', false);
 });

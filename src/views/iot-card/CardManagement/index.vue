@@ -457,6 +457,7 @@ const columns = [
         width: 200,
         search: {
             type: 'string',
+            defaultTermType: 'eq'
         },
     },
     {
@@ -466,6 +467,9 @@ const columns = [
         ellipsis: true,
         scopedSlots: true,
         width: 200,
+        search: {
+          type: 'string'
+        }
     },
     {
         title: '平台对接',
@@ -568,10 +572,11 @@ const columns = [
         search: {
             type: 'select',
             options: [
-                { label: '正常', value: 'using' },
+                { label: '激活', value: 'using' },
                 { label: '未激活', value: 'toBeActivated' },
                 { label: '停机', value: 'deactivate' },
-            ],
+                { label: '其它', value: 'using,toBeActivated,deactivate' },
+            ]
         },
     },
     {
@@ -737,7 +742,16 @@ const getActions = (
 };
 
 const handleSearch = (e: any) => {
-    params.value = e;
+    const newParams = (e?.terms as any[])?.map(item1 => {
+      item1.terms = item1.terms.map((item2: any) => {
+        if (['cardStateType'].includes(item2.column)) {
+          item2.termType = 'nin'
+        }
+        return item2
+      })
+      return item1
+    })
+    params.value = { terms: newParams || [] };
 };
 
 const onSelectChange = (keys: string[], rows: []) => {

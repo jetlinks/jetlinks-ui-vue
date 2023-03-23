@@ -1,100 +1,90 @@
 <template>
     <page-container
         :tabList="list"
+        :showBack="true"
         :tabActiveKey="instanceStore.tabActiveKey"
         @tabChange="onTabChange"
     >
         <template #title>
-            <div>
-                <div style="display: flex; align-items: center">
-                    <!-- <j-button @click="onBack" size="small">返回</j-button> -->
-                    <div style="font-size: 24px">
-                        {{ instanceStore.current?.name }}
-                    </div>
-                    <j-divider type="vertical" />
-                    <j-space>
-                        <span
-                            style="font-size: 14px; color: rgba(0, 0, 0, 0.85)"
-                        >
-                            状态：
-                            <j-badge
-                                :status="
-                                    statusMap.get(
-                                        instanceStore.current?.state?.value,
-                                    )
-                                "
-                            />
-                            {{ instanceStore.current?.state?.text }}
-                        </span>
-                        <PermissionButton
-                            v-if="
-                                instanceStore.current?.state?.value ===
-                                'notActive'
-                            "
-                            type="link"
-                            style="margin-top: -5px; padding: 0 20px"
-                            :popConfirm="{
-                                title: '确认启用设备',
-                                onConfirm: handleAction,
-                            }"
-                            hasPermission="device/Instance:action"
-                        >
-                            启用设备
-                        </PermissionButton>
-                        <PermissionButton
-                            v-if="
-                                instanceStore.current?.state?.value === 'online'
-                            "
-                            type="link"
-                            style="margin-top: -5px; padding: 0 20px"
-                            :popConfirm="{
-                                title: '确认断开连接？',
-                                onConfirm: handleDisconnect,
-                            }"
-                            hasPermission="device/Instance:action"
-                        >
-                            断开连接
-                        </PermissionButton>
-                        <j-tooltip
-                            v-if="
-                                instanceStore.current?.accessProvider ===
-                                    'child-device' &&
-                                instanceStore.current?.state?.value ===
-                                    'offline'
-                            "
-                            :title="
-                                instanceStore.current?.features?.find(
-                                    (item) => item?.id === 'selfManageState',
+            <div style="display: flex; align-items: center">
+                {{ instanceStore.current?.name }}
+                <j-divider type="vertical" />
+                <j-space>
+                    <span style="font-size: 14px; color: rgba(0, 0, 0, 0.85)">
+                        状态：
+                        <j-badge
+                            :status="
+                                statusMap.get(
+                                    instanceStore.current?.state?.value,
                                 )
-                                    ? '该设备的在线状态与父设备(网关设备)保持一致'
-                                    : '该设备在线状态由设备自身运行状态决定，不继承父设备（网关设备）的在线状态'
                             "
-                        >
-                            <AIcon
-                                type="QuestionCircleOutlined"
-                                style="font-size: 14px"
-                            />
-                        </j-tooltip>
-                    </j-space>
-                </div>
-                <div style="padding-top: 24px">
-                    <j-descriptions size="small" :column="4">
-                        <j-descriptions-item label="ID">{{
-                            instanceStore.current?.id
-                        }}</j-descriptions-item>
-                        <j-descriptions-item label="所属产品">
-                            <PermissionButton
-                                type="link"
-                                style="margin-top: -5px; padding: 0"
-                                @click="jumpProduct"
-                                hasPermission="device/Product:view"
-                            >
-                                {{ instanceStore.current?.productName }}
-                            </PermissionButton>
-                        </j-descriptions-item>
-                    </j-descriptions>
-                </div>
+                        />
+                        {{ instanceStore.current?.state?.text }}
+                    </span>
+                    <PermissionButton
+                        v-if="
+                            instanceStore.current?.state?.value === 'notActive'
+                        "
+                        type="link"
+                        style="margin-top: -5px; padding: 0 20px"
+                        :popConfirm="{
+                            title: '确认启用设备',
+                            onConfirm: handleAction,
+                        }"
+                        hasPermission="device/Instance:action"
+                    >
+                        启用设备
+                    </PermissionButton>
+                    <PermissionButton
+                        v-if="instanceStore.current?.state?.value === 'online'"
+                        type="link"
+                        style="margin-top: -5px; padding: 0 20px"
+                        :popConfirm="{
+                            title: '确认断开连接？',
+                            onConfirm: handleDisconnect,
+                        }"
+                        hasPermission="device/Instance:action"
+                    >
+                        断开连接
+                    </PermissionButton>
+                    <j-tooltip
+                        v-if="
+                            instanceStore.current?.accessProvider ===
+                                'child-device' &&
+                            instanceStore.current?.state?.value === 'offline'
+                        "
+                        :title="
+                            instanceStore.current?.features?.find(
+                                (item) => item?.id === 'selfManageState',
+                            )
+                                ? '该设备的在线状态与父设备(网关设备)保持一致'
+                                : '该设备在线状态由设备自身运行状态决定，不继承父设备（网关设备）的在线状态'
+                        "
+                    >
+                        <AIcon
+                            type="QuestionCircleOutlined"
+                            style="font-size: 14px"
+                        />
+                    </j-tooltip>
+                </j-space>
             </div>
+        </template>
+        <template #content>
+            <j-descriptions size="small" :column="4">
+                <j-descriptions-item label="ID">{{
+                    instanceStore.current?.id
+                }}</j-descriptions-item>
+                <j-descriptions-item label="所属产品">
+                    <PermissionButton
+                        type="link"
+                        style="margin-top: -5px; padding: 0"
+                        @click="jumpProduct"
+                        hasPermission="device/Product:view"
+                    >
+                        {{ instanceStore.current?.productName }}
+                    </PermissionButton>
+                </j-descriptions-item>
+            </j-descriptions>
         </template>
         <template #extra>
             <img
@@ -142,7 +132,7 @@ statusMap.set('notActive', 'warning');
 
 const statusRef = ref();
 
-const list = ref([
+const initList = [
     {
         key: 'Info',
         tab: '实例信息',
@@ -163,7 +153,9 @@ const list = ref([
         key: 'Log',
         tab: '日志管理',
     },
-]);
+];
+
+const list = ref([...initList]);
 
 const tabs = {
     Info,
@@ -191,64 +183,7 @@ const getStatus = (id: string) => {
     });
 };
 
-watch(
-    () => route.params?.id,
-    (newId) => {
-        if (newId) {
-            instanceStore.refresh(String(newId));
-            getStatus(String(newId));
-            instanceStore.tabActiveKey = 'Info'
-        }
-    },
-    { immediate: true, deep: true },
-);
-
-onMounted(() => {
-    instanceStore.tabActiveKey = history.state?.params?.tab || 'Info';
-});
-
-// const onBack = () => {
-//     menuStory.jumpPage('device/Instance');
-// };
-
-const onTabChange = (e: string) => {
-    instanceStore.tabActiveKey = e;
-};
-
-const handleAction = async () => {
-    if (instanceStore.current?.id) {
-        const resp = await _deploy(instanceStore.current?.id);
-        if (resp.status === 200) {
-            message.success('操作成功！');
-            instanceStore.refresh(instanceStore.current?.id);
-        }
-    }
-};
-
-const handleDisconnect = async () => {
-    if (instanceStore.current?.id) {
-        const resp = await _disconnect(instanceStore.current?.id);
-        if (resp.status === 200) {
-            message.success('操作成功！');
-            instanceStore.refresh(instanceStore.current?.id);
-        }
-    }
-};
-
-const handleRefresh = async () => {
-    if (instanceStore.current?.id) {
-        await instanceStore.refresh(instanceStore.current?.id);
-        message.success('操作成功');
-    }
-};
-
-const jumpProduct = () => {
-    menuStory.jumpPage('device/Product/Detail', {
-        id: instanceStore.current?.productId,
-    });
-};
-
-watchEffect(() => {
+const getDetail = () => {
     const keys = list.value.map((i) => i.key);
     if (
         instanceStore.current?.protocol &&
@@ -309,7 +244,66 @@ watchEffect(() => {
             tab: '边缘端映射',
         });
     }
+};
+
+watch(
+    () => route.params?.id,
+    async (newId) => {
+        if (newId) {
+            await instanceStore.refresh(String(newId));
+            getStatus(String(newId));
+            list.value = [...initList];
+            getDetail();
+            instanceStore.tabActiveKey = 'Info';
+        }
+    },
+    { immediate: true, deep: true },
+);
+
+onMounted(() => {
+    instanceStore.tabActiveKey = history.state?.params?.tab || 'Info';
 });
+
+const onBack = () => {
+    menuStory.jumpPage('device/Instance');
+};
+
+const onTabChange = (e: string) => {
+    instanceStore.tabActiveKey = e;
+};
+
+const handleAction = async () => {
+    if (instanceStore.current?.id) {
+        const resp = await _deploy(instanceStore.current?.id);
+        if (resp.status === 200) {
+            message.success('操作成功！');
+            instanceStore.refresh(instanceStore.current?.id);
+        }
+    }
+};
+
+const handleDisconnect = async () => {
+    if (instanceStore.current?.id) {
+        const resp = await _disconnect(instanceStore.current?.id);
+        if (resp.status === 200) {
+            message.success('操作成功！');
+            instanceStore.refresh(instanceStore.current?.id);
+        }
+    }
+};
+
+const handleRefresh = async () => {
+    if (instanceStore.current?.id) {
+        await instanceStore.refresh(instanceStore.current?.id);
+        message.success('操作成功');
+    }
+};
+
+const jumpProduct = () => {
+    menuStory.jumpPage('device/Product/Detail', {
+        id: instanceStore.current?.productId,
+    });
+};
 
 onUnmounted(() => {
     statusRef.value && statusRef.value.unsubscribe();

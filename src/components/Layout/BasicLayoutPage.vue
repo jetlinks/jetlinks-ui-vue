@@ -6,6 +6,7 @@
         v-model:selectedKeys="state.selectedKeys"
         :pure="state.pure"
         :breadcrumb="{ routes: breadcrumb }"
+        @backClick='routerBack'
     >
         <template #breadcrumbRender="slotProps">
             <a
@@ -14,7 +15,7 @@
             >
               {{ slotProps.route.breadcrumbName }}
             </a>
-            <span v-else style='cursor: pointer' >{{ slotProps.route.breadcrumbName }}</span>
+            <span v-else style='cursor: default' >{{ slotProps.route.breadcrumbName }}</span>
         </template>
         <template #rightContentRender>
             <div class="right-content">
@@ -69,6 +70,10 @@ const state = reactive<StateType>({
     openKeys: [],
     selectedKeys: [],
 });
+
+const routerBack = () => {
+  router.go(-1)
+}
 
 const findRouteMeta = (code: string) => {
   let meta = []

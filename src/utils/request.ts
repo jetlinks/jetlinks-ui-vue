@@ -155,12 +155,10 @@ const errorHandler = (error: any) => {
             Notification.error({
                 key: '401',
                 message: 'Unauthorized',
-                description: 'Authorization verification failed'
+                description: '用户未登录'
             })
             setTimeout(() => {
-                router.replace({
-                    path: LoginPath
-                })
+                location.href = `/#${LoginPath}`
             }, 0)
         }
     } else if (error.response === undefined) {
@@ -179,10 +177,13 @@ request.interceptors.request.use(config => {
     const token = LocalStore.get(TOKEN_KEY)
     // const token = store.$state.tokenAlias
     if (!token) {
+        // setTimeout(() => {
+        //     router.replace({
+        //         path: LoginPath
+        //     })
+        // }, 0)
         setTimeout(() => {
-            router.replace({
-                path: LoginPath
-            })
+            location.href = `/#${LoginPath}`
         }, 0)
         return config
     }

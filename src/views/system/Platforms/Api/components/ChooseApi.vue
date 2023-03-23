@@ -79,7 +79,7 @@ const rowSelection = {
     },
     selectedRowKeys: ref<string[]>([]),
 };
-const save = () => {
+const save = async () => {
     const keys = props.selectedRowKeys;
 
     const removeKeys = props.sourceKeys.filter((key) => !keys.includes(key));
@@ -87,13 +87,20 @@ const save = () => {
 
     if (props.mode === 'api') {
         // 此时是api配置
-        removeKeys.length &&
-            delOperations_api(removeKeys)
-                .finally(() => addOperations_api(addKeys))
-                .then(() => {
-                    message.success('操作成功');
-                    emits('refresh')
-                });
+        // removeKeys.length &&
+        //     delOperations_api(removeKeys)
+        //         .finally(() => addOperations_api(addKeys))
+        //         .then(() => {
+        //             message.success('操作成功');
+        //             emits('refresh');
+        //         });
+        // fix: bug#10829
+        removeKeys.length && (await delOperations_api(removeKeys));
+        const res = await addOperations_api(addKeys);
+        if (res.success) {
+            message.success('操作成功');
+            emits('refresh');
+        }
     } else if (props.mode === 'appManger') {
         const removeItems = removeKeys.map((key) => ({
             id: key,

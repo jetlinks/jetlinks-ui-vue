@@ -328,6 +328,7 @@ const columns = [
         title: 'ID',
         dataIndex: 'id',
         key: 'id',
+        ellipsis: true,
         search: {
             type: 'string',
             defaultTermType: 'eq',
@@ -337,6 +338,7 @@ const columns = [
         title: '设备名称',
         dataIndex: 'name',
         key: 'name',
+        ellipsis: true,
         search: {
             type: 'string',
             first: true,
@@ -346,6 +348,7 @@ const columns = [
         title: '产品名称',
         dataIndex: 'productName',
         key: 'productName',
+        ellipsis: true,
         search: {
             type: 'select',
             rename: 'productId',
@@ -367,6 +370,7 @@ const columns = [
         dataIndex: 'createTime',
         key: 'createTime',
         scopedSlots: true,
+        width: 200,
         search: {
             type: 'date',
         },

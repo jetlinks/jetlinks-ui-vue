@@ -62,8 +62,8 @@
                             </span>
                         </Ellipsis>
                         <j-row :gutter="24">
-                            <j-col :span="8">
-                                <div class="content-des-title">
+                            <j-col :span="8" class="content-left">
+                                <div class="content-left-title">
                                     {{ titleMap.get(slotProps.targetType) }}
                                 </div>
                                 <Ellipsis
@@ -73,7 +73,7 @@
                                 >
                             </j-col>
                             <j-col :span="8">
-                                <div class="content-des-title">
+                                <div class="content-right-title">
                                     最近告警时间
                                 </div>
                                 <Ellipsis
@@ -87,7 +87,7 @@
                                 >
                             </j-col>
                             <j-col :span="8">
-                                <div class="content-des-title">状态</div>
+                                <div class="content-right-title">状态</div>
                                 <BadgeStatus
                                     :status="slotProps.state.value"
                                     :statusName="{
@@ -135,11 +135,6 @@
             :data="data"
             v-if="data.solveVisible"
             @closeSolve="closeSolve"
-        />
-        <SolveLog
-            :data="data.current"
-            v-if="data.logVisible"
-            @closeLog="closeLog"
         />
     </div>
 </template>
@@ -292,7 +287,7 @@ const orgCol = [
     },
 ];
 
-let params = ref({
+let params:any = ref({
     sorts: [{ name: 'alarmTime', order: 'desc' }],
     terms: [],
 });
@@ -412,8 +407,11 @@ const getActions = (
             },
             icon: 'FileTextOutlined',
             onClick: () => {
-                data.value.current = currentData;
-                data.value.logVisible = true;
+                menuStory.jumpPage(
+                    'rule-engine/Alarm/Log/Record',
+                    {},
+                    { id: currentData.id },
+                );
             },
         },
     ];
@@ -434,4 +432,14 @@ const closeLog = () => {
 };
 </script>
 <style lang="less" scoped>
+.content-left{
+    border-right: .2px solid rgba(0,0,0,0.2);
+}
+.content-right-title{
+    color: #666;
+    font-size: 12px
+}
+.content-left-title{
+    font-size: 18px
+}
 </style>

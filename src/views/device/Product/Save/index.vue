@@ -84,7 +84,7 @@
                     >
                         <template #title="item">
                             <span>{{ item.title }}</span>
-                            <a-tooltip :title="item"
+                            <a-tooltip :title="item.option.tooltip"
                                 ><AIcon
                                     type="QuestionCircleOutlined"
                                     style="margin-left: 2px"

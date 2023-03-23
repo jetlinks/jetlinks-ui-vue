@@ -16,8 +16,9 @@
             </j-radio-button>
         </j-radio-group>
         <j-range-picker
-            format="YYYY-MM-DD"
-            valueFormat="YYYY-MM-DD"
+            format="YYYY-MM-DD HH:mm:ss"
+            valueFormat="YYYY-MM-DD HH:mm:ss"
+            :show-time="{ format: 'HH:mm:ss' }"
             style="margin-left: 12px"
             @change="rangeChange"
             v-model:value="rangeVal"
@@ -28,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { PropType } from 'vue';
 
 interface BtnOptions {
@@ -70,38 +71,37 @@ const rangeVal = ref<[string, string]>();
 const rangeChange = (val: any) => {
     radioValue.value = undefined;
     emit('change', {
-        start: moment(val[0]).valueOf(),
-        end: moment(val[1]).valueOf(),
+        start: dayjs(val[0]).valueOf(),
+        end: dayjs(val[1]).valueOf(),
         type: undefined,
     });
 };
 
-const getTimeByType = (type: string) => {
+const getTimeByType = (type?: string) => {
     switch (type) {
         case 'hour':
-            return moment().subtract(1, 'hours').valueOf();
+            return dayjs().subtract(1, 'hours').valueOf();
         case 'week':
-            return moment().subtract(6, 'days').valueOf();
+            return dayjs().subtract(6, 'days').valueOf();
         case 'month':
-            return moment().subtract(29, 'days').valueOf();
+            return dayjs().subtract(29, 'days').valueOf();
         case 'year':
-            return moment().subtract(365, 'days').valueOf();
+            return dayjs().subtract(365, 'days').valueOf();
         default:
-            return moment().startOf('day').valueOf();
+            return dayjs().startOf('day').valueOf();
     }
 };
 
-const handleBtnChange = (val: string) => {
-    radioValue.value = val;
-    let endTime = moment(new Date()).valueOf();
+const handleBtnChange = (val?: string) => {
+    let endTime = dayjs(new Date()).valueOf();
     let startTime = getTimeByType(val);
     if (val === 'yesterday') {
-        startTime = moment().subtract(1, 'days').startOf('day').valueOf();
-        endTime = moment().subtract(1, 'days').endOf('day').valueOf();
+        startTime = dayjs().subtract(1, 'days').startOf('day').valueOf();
+        endTime = dayjs().subtract(1, 'days').endOf('day').valueOf();
     }
     rangeVal.value = [
-        moment(startTime).format('YYYY-MM-DD'),
-        moment(endTime).format('YYYY-MM-DD'),
+      dayjs(startTime).format('YYYY-MM-DD HH:mm:ss'),
+      dayjs(endTime).format('YYYY-MM-DD HH:mm:ss'),
     ];
     emit('change', {
         start: startTime,
@@ -110,11 +110,8 @@ const handleBtnChange = (val: string) => {
     });
 };
 
-watch(
-    () => radioValue.value,
-    (val) => {
-        handleBtnChange(val);
-    },
-    { deep: true, immediate: true },
-);
+nextTick(() => {
+  handleBtnChange(radioValue.value)
+})
+
 </script>
