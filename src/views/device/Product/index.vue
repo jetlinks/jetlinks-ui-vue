@@ -447,12 +447,14 @@ const query = reactive({
                             listData.value = [];
                             // const list = () => {
                             if (isNoCommunity) {
-                                listData.value = (resp?.result || []).map(
-                                    (item: any) => ({
-                                        label: item.name,
-                                        value: item.id,
-                                    }),
-                                );
+                                (resp?.result || []).map((item: any) => {
+                                    if (item.id != 'plugin_gateway') {
+                                        listData.value.push({
+                                            label: item.name,
+                                            value: item.id,
+                                        });
+                                    }
+                                });
                             } else {
                                 listData.value = (resp?.result || [])
                                     .filter((i: any) =>

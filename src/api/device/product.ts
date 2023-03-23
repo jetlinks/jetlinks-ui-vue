@@ -48,7 +48,7 @@ export const category = (data: any) => server.post('/device/category/_tree', dat
 /**
  * 获取网关类型
  */
- export const getProviders = () => server.get('/gateway/device/providers')
+ export const getProviders = (terms?:any) => server.get('/gateway/device/providers',terms)
 
  /**
   * 查询所属部门
