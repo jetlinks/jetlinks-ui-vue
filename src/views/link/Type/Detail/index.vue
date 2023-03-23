@@ -103,18 +103,6 @@
                                     :key="cluster.id"
                                     :show-arrow="!formData.shareCluster"
                                 >
-                                    <!-- <j-collapse-panel
-                                    :key="cluster.id"
-                                    :header="
-                                        cluster.serverId
-                                            ? cluster.serverId
-                                            : !formData.shareCluster
-                                            ? `#${index + 1}.配置信息`
-                                            : ''
-                                    "
-                                    collapsible="header"
-                                    :show-arrow="!formData.shareCluster"
-                                > -->
                                     <template #header v-if="!shareCluster">
                                         <div class="collapse-header">
                                             {{
@@ -1136,10 +1124,6 @@ const filterConfigByType = (data: any, type: string) => {
     });
 };
 
-const changeheader = (value: string) => {
-    console.log(22, value);
-};
-
 const getPortOptions = (portOptions: object, index = 0) => {
     if (!portOptions) return;
     const type = formData.value.type;
@@ -1223,6 +1207,10 @@ const saveData = async () => {
             }
         });
     });
+
+    if (!formRef2Data?.cluster) {
+        return onlyMessage('请新增或完善配置', 'error');
+    }
 
     const { configuration } = formRef2Data?.cluster[0];
     const params = shareCluster.value
@@ -1418,5 +1406,6 @@ watch(
     background: #ffffff;
     border: 1px solid #e50012;
     border-radius: 2px;
+    cursor: pointer;
 }
 </style>

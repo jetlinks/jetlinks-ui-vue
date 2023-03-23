@@ -13,6 +13,17 @@
                 :request="list"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
+                    terms: [
+                        {
+                            terms: [
+                                {
+                                    termType: 'nin',
+                                    column: 'provider',
+                                    value: 'plugin_gateway', //todo 暂时不做插件接入
+                                },
+                            ],
+                        },
+                    ],
                 }"
                 gridColumn="2"
                 :gridColumns="[1, 2]"
@@ -40,6 +51,7 @@
                             enabled: 'processing',
                             disabled: 'error',
                         }"
+                        @click="handlEye(slotProps.id)"
                     >
                         <template #img>
                             <slot name="img">
@@ -52,13 +64,9 @@
                                     style="
                                         width: calc(100% - 100px);
                                         margin-bottom: 20px;
-                                        color: #2f54eb;
                                     "
                                 >
-                                    <span
-                                        class="card-title"
-                                        @click.stop="handlEye(slotProps.id)"
-                                    >
+                                    <span class="card-title">
                                         {{ slotProps.name }}
                                     </span>
                                 </Ellipsis>
@@ -310,10 +318,12 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
 const getProvidersList = async () => {
     const res: any = await getProviders();
     providersList.value = res.result;
-    providersOptions.value = (res?.result || [])?.map((item: any) => ({
-        label: item.name,
-        value: item.id,
-    }));
+    providersOptions.value = (res?.result || [])
+        ?.map((item: any) => ({
+            label: item.name,
+            value: item.id,
+        }))
+        .filter((item: any) => item.value !== 'plugin_gateway'); // todo 暂时不做插件接入
 };
 getProvidersList();
 

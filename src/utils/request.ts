@@ -118,6 +118,16 @@ export const postStream = function(url: string, data={}, params = {}) {
     })
 }
 
+const showNotification = ( message: string, description: string, key?: string, show: boolean = true ) => {
+    if (show) {
+        Notification.error({
+            key,
+            message,
+            description
+        })
+    }
+}
+
 /**
  * 异常拦截处理器
  * @param {Object} error
@@ -128,44 +138,19 @@ const errorHandler = (error: any) => {
         const data = error.response.data
         const status = error.response.status
         if (status === 403) {
-            Notification.error({
-                key: '403',
-                message: 'Forbidden',
-                description: (data.message + '').substr(0, 90)
-            })
-
-            setTimeout(() => {
-                router.push({
-                    name: 'Exception403'
-                })
-            }, 0)
+            showNotification( 'Forbidden', (data.message + '').substr(0, 90), '403')
         } else if (status === 500) {
-            Notification.error({
-                key: '500',
-                message: 'Server Side Error',
-                description: (data.message + '').substr(0, 90)
-            })
+            showNotification( 'Server Side Error', (data.message + '').substr(0, 90), '500')
         } else if (status === 400) {
-            Notification.error({
-                key: '400',
-                message: 'Request Error',
-                description: (data.message + '').substr(0, 90)
-            })
+            showNotification( 'Request Error', (data.message + '').substr(0, 90), '400')
         } else if (status === 401) {
-            Notification.error({
-                key: '401',
-                message: 'Unauthorized',
-                description: '用户未登录'
-            })
+            showNotification( 'Unauthorized', '用户未登录', '401')
             setTimeout(() => {
                 location.href = `/#${LoginPath}`
             }, 0)
         }
     } else if (error.response === undefined) {
-        Notification.error({
-            message: error.message,
-            description: (error.stack + '').substr(0, 90)
-        })
+        showNotification( error.message, (error.stack + '').substr(0, 90), undefined)
     }
     return Promise.reject(error)
 }
