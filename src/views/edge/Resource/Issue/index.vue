@@ -169,7 +169,8 @@ const onCancel = () => {
 
 <style lang="less" scoped>
 .search {
-    padding: 0 0 0 24px;
+    padding: 0px;
+    margin: 0px;
 }
 .alert {
     height: 40px;
