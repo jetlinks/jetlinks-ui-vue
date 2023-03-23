@@ -259,8 +259,10 @@ const table: any = {
     // 选中
     onSelectChange: (row: any) => {
         // 若该项的可选权限中没有分享权限，则不支持任何操作
-        if (!row.permissionList.find((item: any) => item.value === 'share'))
+        if (!row.permissionList.find((item: any) => item.value === 'share')) {
+            message.warning('该资产不支持共享');
             return;
+        }
         const selectedRowKeys = table._selectedRowKeys.value;
         const index = selectedRowKeys.indexOf(row.id);
 
@@ -330,7 +332,9 @@ const table: any = {
                         resolve({
                             code: 200,
                             result: {
-                                data: data.sort((a, b) => a.createTime - b.createTime),
+                                data: data.sort(
+                                    (a, b) => a.createTime - b.createTime,
+                                ),
                                 pageIndex,
                                 pageSize,
                                 total,

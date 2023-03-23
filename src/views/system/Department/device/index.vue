@@ -520,7 +520,7 @@ const dialogs = reactive({
 });
 
 table.init();
-nextTick(() => {
+watchEffect(() => {
     props.bindBool && table.clickAdd();
     emits('update:bindBool', false);
 });
