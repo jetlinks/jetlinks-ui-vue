@@ -482,6 +482,7 @@
                 type="primary"
                 style="margin-right: 8px"
                 @click="saveData"
+                :loading="loading"
                 :hasPermission="`link/AccessConfig:${
                     id === ':id' ? 'add' : 'update'
                 }`"
@@ -534,7 +535,7 @@ const props = defineProps({
 const route = useRoute();
 const view = route.query.view as string;
 const id = route.params.id as string;
-
+const loading = ref(false);
 const activeKey: any = ref([]);
 const clientHeight = document.body.clientHeight;
 
@@ -638,10 +639,17 @@ const saveData = () => {
             transport: 'SIP',
             channel: 'gb28181',
         };
-        params.configuration.sipId = Number(params.configuration?.sipId);
+        loading.value = true;
         const resp =
-            id === ':id' ? await save(params) : await update({ ...params, id });
-        if (resp.status === 200) {
+            id === ':id'
+                ? await save(params).catch(() => {
+                      loading.value = false;
+                  })
+                : await update({ ...params, id }).catch(() => {
+                      loading.value = false;
+                  });
+
+        if (resp?.status === 200) {
             onlyMessage('操作成功', 'success');
             history.back();
         }
@@ -667,12 +675,14 @@ const next = async () => {
                         ...data1,
                         ...data2,
                     };
+                } else {
+                    return onlyMessage('请新增或完善配置', 'error');
                 }
                 current.value = current.value + 1;
                 params.configuration = data1;
             })
             .catch((err) => {
-                err.errorFields.forEach((item: any) => {
+                err.errorFields?.forEach((item: any) => {
                     const activeId: any =
                         dynamicValidateForm.cluster[item.name[1]].id;
                     if (!activeKey.value.includes(activeId)) {
@@ -680,10 +690,24 @@ const next = async () => {
                     }
                 });
             });
+    } else {
+        current.value = current.value + 1;
+        params.configuration = data1;
     }
 };
 const prev = () => {
     current.value = current.value - 1;
+    develop();
+};
+
+const develop = () => {
+    if (dynamicValidateForm.cluster.length !== 0) {
+        dynamicValidateForm.cluster.forEach((item) => {
+            const id: any = JSON.stringify(Date.now() + Math.random());
+            item.id = id;
+            activeKey.value.push(id);
+        });
+    }
 };
 
 onMounted(() => {
@@ -723,21 +747,13 @@ onMounted(() => {
         const { configuration, name, description = '' } = props.data;
         formData.value = { name, description };
 
-        if (configuration?.shareCluster) {
-            formState.value = {
-                ...formState.value,
-                ...props.data.configuration,
-            };
-        } else {
-            formState.value = {
-                ...formState.value,
-                ...props.data.configuration,
-            };
+        formState.value = {
+            ...formState.value,
+            ...props.data.configuration,
+        };
+        if (!configuration?.shareCluster) {
             dynamicValidateForm.cluster = configuration.cluster;
-            if (dynamicValidateForm.cluster.length === 1) {
-                activeKey.value = ['1'];
-                dynamicValidateForm.cluster[0].id = 1;
-            }
+            develop();
         }
     }
 });
