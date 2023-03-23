@@ -213,7 +213,7 @@ const rules = [
           return Promise.reject(new Error('请选择操作符'))
         }
 
-        if (v.value === undefined) {
+        if (v.value.value === undefined) {
           return Promise.reject(new Error('请选择或输入参数值'))
         } else {
           if (

@@ -109,3 +109,28 @@ export const onlyMessage = (msg: string, type: 'success' | 'error' | 'warning' =
     key: type
   })
 }
+
+export interface SearchItemData {
+  column: any;
+  value: any;
+  termType: string;
+  type?: string;
+}
+
+export const handleParamsToString = (terms:SearchItemData[] = []) => {
+  const _terms: any[] = [
+    { terms: [null,null,null]},
+    { terms: [null,null,null]}
+  ]
+  let termsIndex = 0
+  let termsStar = 0
+  terms.forEach((item, index) => {
+    if (index > 2) {
+      termsIndex = 1
+      termsStar = 4
+    }
+    _terms[termsIndex].terms[index - termsStar ] = item
+  })
+
+  return JSON.stringify({ terms: _terms})
+}

@@ -111,7 +111,7 @@ import {
     getProtocolDetail,
 } from '@/api/device/product';
 import { message } from 'jetlinks-ui-components';
-import { getImage } from '@/utils/comm';
+import { getImage, handleParamsToString } from '@/utils/comm'
 import encodeQuery from '@/utils/encodeQuery';
 import { useMenuStore } from '@/store/menu';
 
@@ -286,7 +286,7 @@ const jumpDevice = () => {
         {},
         {
             target: 'device-instance',
-            q: JSON.stringify({ terms: [{ terms: [{ searchParams }] }] }),
+            q: handleParamsToString([searchParams]),
         },
     );
 };
