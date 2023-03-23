@@ -81,6 +81,7 @@
                                         ? '正常的采集器不能删除'
                                         : '删除',
                             }"
+                            :danger="data?.state?.value === 'disabled'"
                             hasPermission="DataCollect/Collector:delete"
                             :popConfirm="{
                                 title: `该操作将会删除下属点位，确定删除？`,

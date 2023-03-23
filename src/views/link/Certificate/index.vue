@@ -44,6 +44,7 @@
                                 style="padding: 0px"
                                 @click="i.onClick"
                                 type="link"
+                                :danger="i.key === 'delete'"
                                 :hasPermission="'link/Certificate:' + i.key"
                             >
                                 <template #icon

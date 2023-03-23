@@ -136,6 +136,7 @@
                                 style="padding: 0px"
                                 @click="i.onClick"
                                 type="link"
+                                :danger="i.key === 'delete'"
                                 :hasPermission="'link/Type:' + i.key"
                             >
                                 <template #icon

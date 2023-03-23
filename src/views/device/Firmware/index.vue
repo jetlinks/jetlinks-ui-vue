@@ -51,6 +51,7 @@
                                 style="padding: 0px"
                                 @click="i.onClick"
                                 type="link"
+                                :danger="i.key === 'delete'"
                                 :hasPermission="'device/Firmware:' + i.key"
                             >
                                 <template #icon
@@ -68,7 +69,6 @@
 <script lang="ts" setup name="FirmwarePage">
 import type { ActionsType } from '@/components/Table/index';
 import { query, queryProduct, remove } from '@/api/device/firmware';
-import { message } from 'ant-design-vue';
 import moment from 'moment';
 import _ from 'lodash';
 import Save from './Save/index.vue';
