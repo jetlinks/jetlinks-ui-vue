@@ -109,7 +109,7 @@ export const useSceneStore = defineStore('scene', () => {
         ...result,
         trigger: result.trigger || {},
         branches: cloneDeep(assignmentKey(branches)),
-        options: result.options ? {...defaultOptions, ...result.options } : defaultOptions,
+        options: result.options ? {...cloneDeep(defaultOptions), ...result.options } : cloneDeep(defaultOptions),
       }
     }
   }
