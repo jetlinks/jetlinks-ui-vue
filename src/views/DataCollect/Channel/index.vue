@@ -37,6 +37,7 @@
                         :status="getState(slotProps).value"
                         :statusText="getState(slotProps).text"
                         :statusNames="StatusColorEnum"
+                        @click="handlEye(slotProps.id)"
                     >
                         <template #img>
                             <slot name="img">
@@ -48,8 +49,9 @@
                                 <Ellipsis style="width: calc(100% - 100px)">
                                     <span
                                         style="
-                                            font-size: 16px;
-                                            font-weight: 600;
+                                            font-size: 18px;
+                                            font-weight: 800;
+                                            line-height: 22px;
                                         "
                                     >
                                         {{ slotProps.name }}
@@ -275,6 +277,9 @@ const handlAdd = () => {
 const handlEdit = (data: object) => {
     current.value = _.cloneDeep(data);
     visible.value = true;
+};
+const handlEye = (id: string) => {
+    menuStory.jumpPage(`DataCollect/Collector`, {}, { channelId: id });
 };
 const saveChange = (value: object) => {
     visible.value = false;

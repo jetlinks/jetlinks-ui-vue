@@ -31,10 +31,11 @@
 <script setup lang="ts" name="FileUpload">
 import { LocalStore } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
-import { FIRMWARE_UPLOAD, querySystemApi } from '@/api/device/firmware';
+import { FIRMWARE_UPLOAD } from '@/api/device/firmware';
 import { onlyMessage } from '@/utils/comm';
 import type { UploadChangeParam } from 'ant-design-vue';
 import { notification as Notification } from 'ant-design-vue';
+import { useSystem } from '@/store/system';
 
 const emit = defineEmits(['update:modelValue', 'update:extraValue', 'change']);
 
@@ -45,6 +46,10 @@ const props = defineProps({
     },
 });
 
+const paths: string = useSystem().$state.configInfo.paths?.[
+    'base-path'
+] as string;
+
 const fileValue = ref(props.modelValue);
 const loading = ref(false);
 
@@ -53,11 +58,9 @@ const handleChange = async (info: UploadChangeParam) => {
     if (info.file.status === 'done') {
         loading.value = false;
         const result = info.file.response?.result;
-        const api: any = await querySystemApi(['paths']); // todo base-path在pinia获取系统配置的
-        const path = api.result[0]?.properties
-            ? api.result[0]?.properties['base-path']
-            : '';
-        const f = `${path}/file/${result.id}?accessKey=${result.others.accessKey}`;
+        const f = `${paths || ''}/file/${result.id}?accessKey=${
+            result.others.accessKey
+        }`;
         onlyMessage('上传成功！', 'success');
         fileValue.value = f;
         emit('update:modelValue', f);

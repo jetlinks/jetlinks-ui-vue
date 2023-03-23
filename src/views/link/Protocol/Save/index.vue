@@ -37,6 +37,7 @@
                     :disabled="!!id"
                     v-model:value="formData.type"
                     :options="options"
+                    :column="2"
                     @change="changeType"
                 />
             </j-form-item>

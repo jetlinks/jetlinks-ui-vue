@@ -76,10 +76,7 @@
                                     message: '请输入API Host',
                                 },
                                 {
-                                    pattern:
-                                        Validator.regIpv4 ||
-                                        Validator.regIPv6 ||
-                                        Validator.regDomain,
+                                    validator: validateAddress,
                                     message: '请输入正确的IP地址或者域名',
                                 },
                             ]"
@@ -133,10 +130,7 @@
                                     message: '请输入RTP IP',
                                 },
                                 {
-                                    pattern:
-                                        Validator.regIpv4 ||
-                                        Validator.regIPv6 ||
-                                        Validator.regDomain,
+                                    validator: validateAddress,
                                     message: '请输入正确的IP地址或者域名',
                                 },
                             ]"
@@ -197,15 +191,8 @@
                                 style="width: 100%"
                                 :min="1"
                                 :max="
-                                    Number(
-                                        formData.configuration
-                                            .dynamicRtpPortRange1,
-                                    ) < 65535
-                                        ? Number(
-                                              formData.configuration
-                                                  .dynamicRtpPortRange1,
-                                          )
-                                        : 65535
+                                    formData.configuration
+                                        .dynamicRtpPortRange1 || 65535
                                 "
                                 :precision="0"
                                 placeholder="起始端口"
@@ -231,7 +218,8 @@
                             <j-input-number
                                 style="width: 100%"
                                 :min="
-                                    formData.configuration.dynamicRtpPortRange0
+                                    formData.configuration
+                                        .dynamicRtpPortRange0 || 1
                                 "
                                 :max="65535"
                                 :precision="0"
@@ -304,6 +292,19 @@ const Validator = {
     ),
     regOnlyNumber: new RegExp(/^\d+$/),
 };
+
+const validateAddress = (_rule: any, value: string): Promise<any> =>
+    new Promise(async (resolve, reject) => {
+        if (
+            Validator.regIpv4.test(value) ||
+            Validator.regIPv6.test(value) ||
+            Validator.regDomain.test(value)
+        ) {
+            return resolve('');
+        } else {
+            return reject('请输入正确的IP地址或者域名');
+        }
+    });
 
 const formData = ref<FormDataType>({
     name: '',
