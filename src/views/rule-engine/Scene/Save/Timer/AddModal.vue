@@ -3,7 +3,7 @@
       title='触发规则'
       visible
       :width='820'
-      @click='save'
+      @ok='save'
       @cancel='cancel'
   >
     <Timer
@@ -15,17 +15,16 @@
 <script setup lang="ts" name="timerAddModel">
 import Timer from '../components/Timer'
 import type { OperationTimer } from '@/views/rule-engine/Scene/typings'
-import {nextTick, PropType} from "vue";
-import {TriggerDevice} from "@/views/rule-engine/Scene/typings";
+import { PropType} from "vue";
 import {handleTimerOptions} from "@/views/rule-engine/Scene/Save/components/Timer/util";
 
 type Emit = {
   (e: 'cancel'): void
-  (e: 'save', data: TriggerDevice, options: Record<string, any>): void
+  (e: 'save', data: OperationTimer, options: Record<string, any>): void
 }
 
 const props = defineProps({
-  timer: {
+  value: {
     type: Object as PropType<OperationTimer>,
     default: () => ({})
   }
@@ -39,14 +38,14 @@ interface AddModelType {
 }
 
 const addModel = reactive<AddModelType>({
-  timer: props.timer
+  timer: props.value
 })
 
 const save = async () => {
   const timerData = await timerRef.value?.validateFields()
   if (timerData) {
-    const options = handleTimerOptions(timerData)
-    emit("save", timerData, options)
+    const options = handleTimerOptions(addModel.timer)
+    emit("save", addModel.timer, options)
   }
 }
 
@@ -54,9 +53,9 @@ const cancel = () => {
   emit("cancel")
 }
 
-nextTick(() => {
-  Object.assign(addModel, props.timer)
-})
+// watchEffect(() => {
+//   addModel.timer = props.value
+// })
 
 </script>
 

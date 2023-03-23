@@ -68,9 +68,8 @@
                     :status="slotProps.state?.value"
                     :statusText="slotProps.state?.text"
                     :statusNames="{
-                        online: 'success',
-                        offline: 'error',
-                        notActive: 'warning',
+                        1: 'processing',
+                        0: 'error',
                     }"
                 >
                     <template #img>
@@ -172,9 +171,8 @@
                     :status="slotProps.state.value"
                     :text="slotProps.state.text"
                     :statusNames="{
-                        online: 'success',
-                        offline: 'error',
-                        notActive: 'warning',
+                        1: 'processing',
+                        0: 'error',
                     }"
                 ></BadgeStatus>
             </template>

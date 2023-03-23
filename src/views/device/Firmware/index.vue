@@ -143,7 +143,7 @@ const columns = [
         key: 'createTime',
         dataIndex: 'createTime',
         search: {
-            type: 'time',
+            type: 'date',
         },
         width: 200,
         scopedSlots: true,
@@ -197,6 +197,9 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
         {
             key: 'delete',
             text: '删除',
+            tooltip: {
+                title: '删除',
+            },
             popConfirm: {
                 title: '确认删除?',
                 okText: ' 确定',

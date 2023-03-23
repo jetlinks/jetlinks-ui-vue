@@ -3,16 +3,22 @@
         :maskClosable="false"
         width="800px"
         :visible="true"
-        title="当前进度"
-        @ok="handleCancel"
-        @cancel="handleCancel"
+        :title="type === 'active' ? '启用' : '同步'"
+        :closable="false"
     >
-        <div>
-            <j-badge v-if="flag" status="processing" text="进行中" />
-            <j-badge v-else status="success" text="已完成" />
+        <div style="margin: 10px 0px 20px 0px">
+            <div v-if="flag">
+                <div>{{ type === 'active' ? '正在启用全部设备' : '正在同步设备状态' }}</div>
+                <j-progress :percent="50" />
+            </div>
+            <div v-else>
+                <p>{{ type === 'active' ? '启用' : '同步' }}成功：{{ count }}条</p>
+                <p v-if="type === 'active'">启用失败：{{ errCount }}条<j-tooltip title="实例信息页面中的配置项未完善"><AIcon type="QuestionCircleOutlined" /></j-tooltip></p>
+            </div>
         </div>
-        <p>总数量：{{ count }}</p>
-        <a style="color: red">{{ errMessage }}</a>
+        <template #footer>
+            <j-button v-if="!flag" type="primary" @click="handleCancel">完成</j-button>
+        </template>
     </j-modal>
 </template>
 
@@ -32,8 +38,8 @@ const props = defineProps({
 });
 // const eventSource = ref<Record<string, any>>({})
 const count = ref<number>(0);
-const flag = ref<boolean>(false);
-const errMessage = ref<string>('');
+const flag = ref<boolean>(true);
+const errCount = ref<number>(0);
 const isSource = ref<boolean>(false);
 const id = ref<string>('');
 const source = ref<Record<string, any>>({});
@@ -43,30 +49,27 @@ const handleCancel = () => {
     emit('save');
 };
 
-// const handleOk = () => {
-//     emit('close');
-//     emit('save');
-// };
-
 const getData = (api: string) => {
+    flag.value = true;
     let dt = 0;
     const _source = new EventSourcePolyfill(api);
     source.value = _source;
     _source.onmessage = (e: any) => {
         const res = JSON.parse(e.data);
+        // console.log(res)
         switch (props.type) {
             case 'active':
                 if (res.success) {
+                    _source.close();
                     dt += res.total;
                     count.value = dt;
                 } else {
                     if (res.source) {
-                        const msg = `${res.source.name}: ${res.message}`;
-                        errMessage.value = msg;
+                        errCount.value = 1
                         id.value = res.source.id;
                         isSource.value = true;
                     } else {
-                        errMessage.value = res.message;
+                        errCount.value = 1
                     }
                 }
                 break;
@@ -74,22 +77,13 @@ const getData = (api: string) => {
                 dt += res;
                 count.value = dt;
                 break;
-            case 'import':
-                if (res.success) {
-                    const temp = res.result.total;
-                    dt += temp;
-                    count.value = dt;
-                } else {
-                    errMessage.value = res.message;
-                }
-                break;
             default:
                 break;
         }
     };
     _source.onerror = () => {
-        flag.value = false;
         _source.close();
+        flag.value = false;
     };
     _source.onopen = () => {};
 };

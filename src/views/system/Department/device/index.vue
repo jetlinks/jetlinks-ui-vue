@@ -70,7 +70,7 @@
                     :status="slotProps.state?.value"
                     :statusText="slotProps.state?.text"
                     :statusNames="{
-                        online: 'success',
+                        online: 'processing',
                         offline: 'error',
                         notActive: 'warning',
                     }"
@@ -147,7 +147,7 @@
                     :status="slotProps.state.value"
                     :text="slotProps.state.text"
                     :statusNames="{
-                        online: 'success',
+                        online: 'processing',
                         offline: 'error',
                         notActive: 'warning',
                     }"
@@ -247,6 +247,9 @@ const columns = [
         search: {
             rename: 'productId$product-info',
             type: 'select',
+            handleValue(value: string) {
+              return `id is ${value}`
+            },
             options: () =>
                 new Promise((resolve) => {
                     const params = {
@@ -288,14 +291,9 @@ const columns = [
         search: {
             type: 'select',
             options: [
-                {
-                    label: '正常',
-                    value: 1,
-                },
-                {
-                    label: '禁用',
-                    value: 0,
-                },
+              { label: '禁用', value: 'notActive' },
+              { label: '离线', value: 'offline' },
+              { label: '在线', value: 'online' },
             ],
         },
         scopedSlots: true,

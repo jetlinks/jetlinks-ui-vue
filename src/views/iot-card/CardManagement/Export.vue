@@ -43,11 +43,9 @@ const type = ref<string>('xlsx');
 
 const handleOk = () => {
     _export(type.value, props.data).then((res: any) => {
-        console.log(res)
         if (res) {
-            const blob = new Blob([res], { type: type.value });
+            const blob = new Blob([res.data], { type: type.value });
             const url = URL.createObjectURL(blob);
-            console.log(url, 123);
             downloadFileByUrl(
                 url,
                 `物联卡管理-${moment(new Date()).format(
