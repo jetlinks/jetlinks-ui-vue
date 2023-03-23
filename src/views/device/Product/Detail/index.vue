@@ -48,6 +48,8 @@
                     </div>
                 </div>
             </div>
+        </template>
+        <template #content>
             <div style="padding-top: 10px">
                 <j-descriptions size="small" :column="4">
                     <j-descriptions-item

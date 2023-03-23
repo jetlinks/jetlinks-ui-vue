@@ -20,7 +20,7 @@
                 </j-col>
             </j-row>
             <j-form-item label="级别" name="level">
-                <j-radio-group v-model:value="form.level">
+                <j-radio-group v-model:value="form.level" class="levelSelect">
                     <j-radio-button
                         v-for="(item, index) in levelOption"
                         :key="index"
@@ -199,7 +199,11 @@ queryData();
 <style lang="less" scoped>
 .ant-radio-button-wrapper {
     margin: 10px 15px 0 0;
-    width: 125px;
+    width: 20%;
     height: 100%;
+}
+.levelSelect{
+    display: flex;
+    width: 100%;
 }
 </style>
