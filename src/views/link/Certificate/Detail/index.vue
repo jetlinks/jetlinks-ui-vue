@@ -41,7 +41,7 @@
                             <CertificateFile
                                 name="cert"
                                 v-model:modelValue="formData.configs.cert"
-                                placeholder='证书格式以"-----BEGIN CERTIFICATE-----"开头，以"-----END CERTIFICATE-----"结尾"'
+                                placeholder="请输入证书文件"
                             />
                         </j-form-item>
                         <j-form-item
@@ -51,7 +51,7 @@
                             <CertificateFile
                                 name="key"
                                 v-model:modelValue="formData.configs.key"
-                                placeholder='证书私钥格式以"-----BEGIN (RSA|EC) PRIVATE KEY-----"开头，以"-----END(RSA|EC) PRIVATE KEY-----"结尾。'
+                                placeholder="请输入证书私钥"
                             />
                         </j-form-item>
                         <j-form-item label="说明" name="description">
