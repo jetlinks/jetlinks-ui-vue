@@ -78,12 +78,16 @@ const form = reactive({
         });
     },
     clickSave: () => {
-        const updateRole = updateRole_api(form.data);
-        const updateTree = updatePrimissTree_api(roleId, { menus: form.menus });
+        formRef.value?.validate().then(() => {
+            const updateRole = updateRole_api(form.data);
+            const updateTree = updatePrimissTree_api(roleId, {
+                menus: form.menus,
+            });
 
-        Promise.all([updateRole, updateTree]).then((resp) => {
-            message.success('操作成功');
-            router.push('/system/Role');
+            Promise.all([updateRole, updateTree]).then((resp) => {
+                message.success('操作成功');
+                router.push('/system/Role');
+            });
         });
     },
 });
@@ -123,7 +127,7 @@ form.getForm();
             :deep(.ant-form-item-required) {
                 padding-right: 12px;
 
-                &::before{
+                &::before {
                     right: 0;
                 }
             }

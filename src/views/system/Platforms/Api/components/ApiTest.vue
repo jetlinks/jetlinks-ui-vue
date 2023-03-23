@@ -19,6 +19,7 @@
                             :dataSource="paramsTable"
                             :pagination="false"
                             size="small"
+                            bordered
                         >
                             <template #bodyCell="{ column, record, index }">
                                 <template v-if="column.key === 'name'">
@@ -65,8 +66,7 @@
                                 </template>
                                 <template v-else-if="column.key === 'action'">
                                     <PermissionButton
-                                        type="link"
-                                        :hasPermission="`{permission}:delete`"
+                                        type="text"
                                         :popConfirm="{
                                             title: `确定删除`,
                                             onConfirm: () =>
@@ -88,8 +88,9 @@
                         style="text-align: center"
                     />
                     <j-button
+                        type="dashed"
                         @click="requestBody.addRow"
-                        style="width: 100%; text-align: center"
+                        style="width: 100%; text-align: center; margin-top: 5px;"
                     >
                         <AIcon type="PlusOutlined" />新增
                     </j-button>
@@ -305,10 +306,14 @@ type requestObj = {
                 }
             }
             .table {
+                margin-bottom: 22px;
                 :deep(.ant-table-cell) {
                     padding: 0 8px;
                     height: 56px;
                 }
+            }
+            :deep(.ant-form-item) {
+                margin-bottom: 0;
             }
         }
     }
