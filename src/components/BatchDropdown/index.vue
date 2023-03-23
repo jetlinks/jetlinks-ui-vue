@@ -75,11 +75,9 @@ const handleMenuClick = (e: any) => {
     if(!(val?.popConfirm || val?.onClick)){
         emits('update:isCheck', true);
         emits('change', true);
-    }
-    if (val?.popConfirm) {
-        visible.value = false;
-    } else {
         visible.value = true;
+    } else {
+        visible.value = false;
     }
     _item.value = (val || {}) as any;
 };
