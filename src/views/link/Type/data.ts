@@ -113,6 +113,19 @@ export const Validator = {
     regOnlyNumber: new RegExp(/^\d+$/),
 };
 
+const validateAddress = (_rule: any, value: string): Promise<any> =>
+    new Promise(async (resolve, reject) => {
+        if (
+            Validator.regIpv4.test(value) ||
+            Validator.regIPv6.test(value) ||
+            Validator.regDomain.test(value)
+        ) {
+            return resolve('');
+        } else {
+            return reject('请输入正确的IP地址或者域名');
+        }
+    });
+
 export const Rules = {
     name: [
         {
@@ -160,10 +173,14 @@ export const Rules = {
             message: '请输入公网地址',
         },
         {
-            pattern:
-                Validator.regIpv4 || Validator.regIPv6 || Validator.regDomain,
-            message: '请输入正确格式的域名或ip',
+            validator: validateAddress,
+            message: '请输入正确的IP地址或者域名',
         },
+        // {
+        //     pattern:
+        //         Validator.regIpv4 || Validator.regIPv6 || Validator.regDomain,
+        //     message: '请输入正确格式的域名或ip',
+        // },
     ],
     publicPort: [
         {
@@ -181,9 +198,7 @@ export const Rules = {
             message: '请输入远程地址',
         },
         {
-            pattern:
-                Validator.regIpv4 || Validator.regIPv6 || Validator.regDomain,
-
+            validator: validateAddress,
             message: '请输入正确格式的域名或ip',
         },
     ],
