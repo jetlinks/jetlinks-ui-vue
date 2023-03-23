@@ -254,7 +254,7 @@ watch(
 <style lang="less" scoped>
 .tree-container {
     padding-right: 24px;
-    width: 300px;
+    width: 350px;
     .add-btn {
         margin: 10px 0;
 

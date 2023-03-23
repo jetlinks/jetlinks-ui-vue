@@ -51,6 +51,7 @@
                             enabled: 'processing',
                             disabled: 'error',
                         }"
+                        @click="handlEye(slotProps.id)"
                     >
                         <template #img>
                             <slot name="img">
@@ -63,13 +64,9 @@
                                     style="
                                         width: calc(100% - 100px);
                                         margin-bottom: 20px;
-                                        color: #2f54eb;
                                     "
                                 >
-                                    <span
-                                        class="card-title"
-                                        @click.stop="handlEye(slotProps.id)"
-                                    >
+                                    <span class="card-title">
                                         {{ slotProps.name }}
                                     </span>
                                 </Ellipsis>
