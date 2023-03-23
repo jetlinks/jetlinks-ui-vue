@@ -11,6 +11,7 @@
                             {
                                 required: true,
                                 message: '请上传图标',
+                                trigger: 'change',
                             },
                         ]"
                         style="flex: 0 0 186px"
@@ -45,11 +46,22 @@
                                 label="名称"
                                 name="name"
                                 :rules="[
-                                    { required: true, message: '请输入名称',trigger: 'change', },
-                                    { max: 64, message: '最多可输入64个字符', trigger: 'change', },
+                                    {
+                                        required: true,
+                                        message: '请输入名称',
+                                        trigger: 'change',
+                                    },
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64个字符',
+                                        trigger: 'change',
+                                    },
                                 ]"
                             >
-                                <j-input v-model:value="form.data.name" />
+                                <j-input
+                                    v-model:value="form.data.name"
+                                    placeholder="请输入名称"
+                                />
                             </j-form-item>
                         </j-col>
                         <j-col :span="12">
@@ -57,15 +69,26 @@
                                 label="编码"
                                 name="code"
                                 :rules="[
-                                    { required: true, message: '请输入编码', trigger: 'change', },
-                                    { max: 64, message: '最多可输入64个字符', trigger: 'change', },
+                                    {
+                                        required: true,
+                                        message: '请输入编码',
+                                        trigger: 'change',
+                                    },
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64个字符',
+                                        trigger: 'change',
+                                    },
                                     {
                                         validator: form.checkCode,
                                         trigger: 'blur',
                                     },
                                 ]"
                             >
-                                <j-input v-model:value="form.data.code" />
+                                <j-input
+                                    v-model:value="form.data.code"
+                                    placeholder="请输入编码"
+                                />
                             </j-form-item>
                         </j-col>
                         <j-col :span="12">
@@ -80,7 +103,10 @@
                                     { max: 128, message: '最多可输入128字符' },
                                 ]"
                             >
-                                <j-input v-model:value="form.data.url" />
+                                <j-input
+                                    v-model:value="form.data.url"
+                                    placeholder="请输入页面地址"
+                                />
                             </j-form-item>
                         </j-col>
                         <j-col :span="12">
@@ -94,7 +120,11 @@
                                     },
                                 ]"
                             >
-                                <j-input v-model:value="form.data.sortIndex" />
+                                <j-input-number
+                                    v-model:value="form.data.sortIndex"
+                                    placeholder="请输入排序"
+                                    style="width: 100%"
+                                />
                             </j-form-item>
                         </j-col>
                     </j-row>
@@ -104,6 +134,8 @@
                     <j-textarea
                         v-model:value="form.data.describe"
                         :rows="4"
+                        show-count
+                        :maxlength="200"
                         placeholder="请输入说明"
                     />
                 </j-form-item>
@@ -277,7 +309,7 @@ const form = reactive({
                     accessSupport:
                         resp.result?.accessSupport?.value || 'unsupported',
                 };
-                form.sourceCode = resp.result.code
+                form.sourceCode = resp.result.code;
             });
         // 获取关联菜单
         getMenuTree_api({ paging: false }).then((resp: any) => {
@@ -292,10 +324,11 @@ const form = reactive({
         });
     },
     checkCode: async (_rule: Rule, value: string): Promise<any> => {
-        if (!value) return Promise.reject('请输入编码');
+        if (!value) return Promise.reject('');
         else if (value.length > 64) return Promise.reject('最多可输入64个字符');
         // 编辑时不校验原本的编码
-        else if (routeParams.id && value === form.sourceCode) return Promise.resolve('');
+        else if (routeParams.id && value === form.sourceCode)
+            return Promise.resolve('');
         else {
             const resp: any = await validCode_api({
                 code: value,
@@ -372,6 +405,13 @@ type assetType = {
     label: string;
     value: string;
 };
+
+watch(
+    () => form.data.icon,
+    () => {
+        basicFormRef.value?.validate();
+    },
+);
 </script>
 
 <style lang="less" scoped>

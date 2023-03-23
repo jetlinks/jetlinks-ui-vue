@@ -80,17 +80,35 @@
                         </j-table>
                     </j-form>
 
-                    <j-pagination
-                        :pageSize="requestBody.pageSize"
-                        v-model:current="requestBody.pageNum"
-                        :total="requestBody.params.paramsTable.length"
-                        hideOnSinglePage
-                        style="text-align: center"
-                    />
+                    <div
+                        class="pager"
+                        v-if="
+                            requestBody.params.paramsTable.length &&
+                            requestBody.pageSize
+                        "
+                    >
+                        <j-select
+                            v-model:value="requestBody.pageNum"
+                            style="width: 60px"
+                        >
+                            <j-select-option
+                                v-for="(val, i) in pageArr"
+                                :value="i + 1"
+                                >{{ i + 1 }}</j-select-option
+                            >
+                        </j-select>
+                        <j-pagination
+                            :pageSize="requestBody.pageSize"
+                            v-model:current="requestBody.pageNum"
+                            :total="requestBody.params.paramsTable.length"
+                            hideOnSinglePage
+                            style="text-align: center"
+                        />
+                    </div>
                     <j-button
                         type="dashed"
                         @click="requestBody.addRow"
-                        style="width: 100%; text-align: center; margin-top: 5px;"
+                        style="width: 100%; text-align: center; margin-top: 5px"
                     >
                         <AIcon type="PlusOutlined" />新增
                     </j-button>
@@ -251,6 +269,12 @@ type requestObj = {
     name: string;
     value: string;
 };
+const pageArr = computed(() => {
+    const maxPageNum = Math.ceil(
+        requestBody.params.paramsTable.length / requestBody.pageSize,
+    );
+    return new Array(maxPageNum).fill(1);
+});
 </script>
 
 <style lang="less" scoped>
@@ -310,6 +334,17 @@ type requestObj = {
                 :deep(.ant-table-cell) {
                     padding: 0 8px;
                     height: 56px;
+                }
+                .pager {
+                    display: flex;
+                    justify-content: center;
+                    margin: 8px 0;
+                    .ant-pagination {
+                        margin-left: 8px;
+                        :deep(.ant-pagination-item) {
+                            display: none;
+                        }
+                    }
                 }
             }
             :deep(.ant-form-item) {

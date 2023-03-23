@@ -1,15 +1,20 @@
 <template>
-    <j-tree
-        :tree-data="treeData"
-        @select="clickSelectItem"
-        v-model:selected-keys="selectedKeys"
-        showLine
-        class="left-tree-container"
-    >
-        <template #title="{ name }">
-            {{ name }}
+    <j-spin :spinning="spinning">
+        <template #indicator>
+            <AIcon type="LoadingOutlined" />
         </template>
-    </j-tree>
+        <j-tree
+            :tree-data="treeData"
+            @select="clickSelectItem"
+            v-model:selected-keys="selectedKeys"
+            showLine
+            class="left-tree-container"
+        >
+            <template #title="{ name }">
+                {{ name }}
+            </template>
+        </j-tree>
+    </j-spin>
 </template>
 
 <script setup lang="ts">
@@ -32,8 +37,10 @@ const props = defineProps<{
 
 const treeData = ref<TreeProps['treeData']>([]);
 const selectedKeys = ref<string[]>([]);
+const spinning = ref(false);
 const getTreeData = () => {
     let tree: treeNodeTpye[] = [];
+    spinning.value = true;
     getTreeOne_api().then((resp: any) => {
         tree = resp.urls.map((item: any) => ({
             ...item,
@@ -44,32 +51,36 @@ const getTreeData = () => {
         if (props.mode === 'appManger') allPromise.push(apiOperations_api());
         else if (props.mode === 'home')
             allPromise.push(getApiGranted_api(props.code as string));
-        Promise.all(allPromise).then((values) => {
-            values.forEach((item: any, i) => {
-                if (props.mode === 'api') {
-                    tree[i].schemas = item.components.schemas;
-                    tree[i].children = combData(item.paths);
-                } else if (i < values.length - 2) {
-                    const paths = filterPath(
-                        item.paths,
-                        values[values.length - 1].result as string[],
-                    );
-                    tree[i].children = combData(paths);
-                    tree[i].schemas = item.components.schemas;
-                }
-            });
-            if (props.hasHome) {
-                tree.unshift({
-                    key: 'home',
-                    name: '首页',
-                    schemas: {},
-                    children: [],
+        Promise.all(allPromise)
+            .then((values) => {
+                values.forEach((item: any, i) => {
+                    if (props.mode === 'api') {
+                        tree[i].schemas = item.components.schemas;
+                        tree[i].children = combData(item.paths);
+                    } else if (i < values.length - 2) {
+                        const paths = filterPath(
+                            item.paths,
+                            values[values.length - 1].result as string[],
+                        );
+                        tree[i].children = combData(paths);
+                        tree[i].schemas = item.components.schemas;
+                    }
                 });
-                selectedKeys.value = ['home'];
-            }
+                if (props.hasHome) {
+                    tree.unshift({
+                        key: 'home',
+                        name: '首页',
+                        schemas: {},
+                        children: [],
+                    });
+                    selectedKeys.value = ['home'];
+                }
 
-            treeData.value = tree;
-        });
+                treeData.value = tree;
+            })
+            .finally(() => {
+                spinning.value = false;
+            });
     });
 };
 const clickSelectItem: TreeProps['onSelect'] = (key: any[], node: any) => {

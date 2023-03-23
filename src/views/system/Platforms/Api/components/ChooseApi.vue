@@ -77,6 +77,9 @@ const rowSelection = {
             });
         }
     },
+    onChange: (keys: string[]) => {
+        rowSelection.selectedRowKeys.value = keys;
+    },
     selectedRowKeys: ref<string[]>([]),
 };
 const save = async () => {
