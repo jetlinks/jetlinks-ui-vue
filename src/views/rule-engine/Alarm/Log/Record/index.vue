@@ -1,13 +1,5 @@
 <template>
-    <j-modal
-        visible
-        title="处理记录"
-        :width="1200"
-        cancelText="取消"
-        okText="确定"
-        @ok="clsoeModal"
-        @cancel="clsoeModal"
-    >
+    <page-container>
         <pro-search
             :columns="columns"
             target="bind-channel"
@@ -30,7 +22,7 @@
                 <span>
                     {{
                         dayjs(slotsProps.handleTime).format(
-                            'YYYY-MM-DD HH:mm:ss'
+                            'YYYY-MM-DD HH:mm:ss',
                         )
                     }}
                 </span>
@@ -41,29 +33,25 @@
             <template #alarmTime="slotProps">
                 <span>
                     {{
-                        dayjs(slotProps.alarmTime).format(
-                            'YYYY-MM-DD HH:mm:ss',
-                        )
+                        dayjs(slotProps.alarmTime).format('YYYY-MM-DD HH:mm:ss')
                     }}
                 </span>
             </template>
         </JProTable>
-    </j-modal>
+    </page-container>
 </template>
 
 <script lang="ts" setup>
 import { queryHandleHistory } from '@/api/rule-engine/log';
 import dayjs from 'dayjs';
-const props = defineProps({
-    data: {
-        type: Object,
-    },
-});
+import { useRoute } from 'vue-router';
+const route = useRoute();
+const id = route.query?.id;
 const terms = [
     {
         column: 'alarmRecordId',
         termType: 'eq',
-        value: props.data.id,
+        value: id,
         type: 'and',
     },
 ];
@@ -119,9 +107,6 @@ const emit = defineEmits(['closeLog']);
 /**
  * 关闭弹窗
  */
-const clsoeModal = () => {
-    emit('closeLog');
-};
 
 const handleSearch = (e: any) => {
     params.value = e;

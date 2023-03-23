@@ -148,6 +148,9 @@ const extraRouteObj = {
   'edge/Device': {
     children: [{ code: 'Remote', name: '远程控制' }],
   },
+  'rule-engine/Alarm/Log': {
+    children: [{ code: 'Record', name: '处理记录' }]
+  }
 };
 
 
@@ -206,7 +209,7 @@ const findDetailRoutes = (routes: any[]): any[] => {
 export const findCodeRoute = (asyncRouterMap: any[]) => {
   const routeMeta = {}
 
-  function getDetail( code: string, url: string) {
+  function getDetail(code: string, url: string) {
     const detail = findDetailRouteItem(code, url)
     if (!detail) return
     routeMeta[(detail as MenuItem).code] = {
@@ -217,7 +220,7 @@ export const findCodeRoute = (asyncRouterMap: any[]) => {
     }
   }
 
-  function findChildren (data: any[], code: string = '') {
+  function findChildren(data: any[], code: string = '') {
     data.forEach(route => {
       routeMeta[route.code] = {
         path: route.url || route.path,
@@ -254,7 +257,7 @@ export const findCodeRoute = (asyncRouterMap: any[]) => {
   return routeMeta
 }
 
-export function filterAsyncRouter(asyncRouterMap: any, parentCode = '', level = 1): { menusData: any, silderMenus: any} {
+export function filterAsyncRouter(asyncRouterMap: any, parentCode = '', level = 1): { menusData: any, silderMenus: any } {
   const _asyncRouterMap = cloneDeep(asyncRouterMap)
   const menusData: any[] = []
   const silderMenus: any[] = []
@@ -270,7 +273,7 @@ export function filterAsyncRouter(asyncRouterMap: any, parentCode = '', level = 
       },
     }
 
-    const silder = {..._route}
+    const silder = { ..._route }
 
     // 查看是否有隐藏子路由
     route.children = findChildrenRoute(route.code, route.url, route.children)
