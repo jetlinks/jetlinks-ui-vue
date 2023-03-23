@@ -2,7 +2,7 @@
 <template>
     <j-form layout="vertical" :model="form" ref="formBasicRef">
         <j-row :span="24" :gutter="24">
-            <j-col :span="10">
+            <j-col :span="12">
                 <j-form-item
                     label="系统名称"
                     name="title"
@@ -193,7 +193,7 @@
                     </j-col>
                 </j-row>
             </j-col>
-            <j-col :span="14">
+            <j-col :span="12">
                 <j-form-item label="登录背景图">
                     <div class="upload-image-warp-back">
                         <div class="upload-image-border-back">

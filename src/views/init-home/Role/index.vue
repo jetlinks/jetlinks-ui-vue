@@ -183,6 +183,7 @@ defineExpose({
                 flex: 1 1 auto;
                 font-weight: 700;
                 font-size: 16px;
+                text-align: center;
             }
         }
         .role-item-content {
