@@ -162,7 +162,7 @@ import {
 } from '@/api/device/instance';
 import MSelect from './MSelect.vue';
 import PatchMapping from './PatchMapping.vue';
-import { message } from 'ant-design-vue/es';
+import { onlyMessage } from '@/utils/comm';
 
 const columns = [
     {
@@ -280,7 +280,7 @@ const unbind = async (id: string) => {
             },
         );
         if (resp.status === 200) {
-            message.success('操作成功！');
+            onlyMessage('操作成功！', 'success');
             handleSearch();
         }
     }
@@ -313,7 +313,7 @@ const onSave = () => {
                     submitData,
                 );
                 if (resp.status === 200) {
-                    message.success('操作成功！');
+                    onlyMessage('操作成功！', 'success');
                     handleSearch();
                 }
             }
@@ -342,7 +342,7 @@ const onAction = async (record: any) => {
         submitData,
     );
     if (resp.status === 200) {
-        message.success('操作成功！');
+        onlyMessage('操作成功！', 'success');
         handleSearch();
     }
 };

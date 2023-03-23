@@ -136,11 +136,6 @@
             v-if="data.solveVisible"
             @closeSolve="closeSolve"
         />
-        <SolveLog
-            :data="data.current"
-            v-if="data.logVisible"
-            @closeLog="closeLog"
-        />
     </div>
 </template>
 
@@ -412,8 +407,11 @@ const getActions = (
             },
             icon: 'FileTextOutlined',
             onClick: () => {
-                data.value.current = currentData;
-                data.value.logVisible = true;
+                menuStory.jumpPage(
+                    'rule-engine/Alarm/Log/Record',
+                    {},
+                    { id: currentData.id },
+                );
             },
         },
     ];

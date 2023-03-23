@@ -267,26 +267,26 @@ const columns = [
                 }),
         },
     },
-    {
-        key: 'productId$product-info',
-        dataIndex: 'productId$product-info',
-        title: '接入方式',
-        hideInTable: true,
-        search: {
-            type: 'select',
-            options: () =>
-                new Promise((resolve) => {
-                    queryGatewayList({}).then((resp: any) => {
-                        resolve(
-                            resp.result.map((item: any) => ({
-                                label: item.name,
-                                value: `accessId is ${item.id}`,
-                            })),
-                        );
-                    });
-                }),
-        },
-    },
+    // {
+    //     key: 'productId$product-info',
+    //     dataIndex: 'productId$product-info',
+    //     title: '接入方式',
+    //     hideInTable: true,
+    //     search: {
+    //         type: 'select',
+    //         options: () =>
+    //             new Promise((resolve) => {
+    //                 queryGatewayList({}).then((resp: any) => {
+    //                     resolve(
+    //                         resp.result.map((item: any) => ({
+    //                             label: item.name,
+    //                             value: `accessId is ${item.id}`,
+    //                         })),
+    //                     );
+    //                 });
+    //             }),
+    //     },
+    // },
     {
         dataIndex: 'deviceType',
         title: '设备类型',

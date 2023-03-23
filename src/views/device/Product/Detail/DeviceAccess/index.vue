@@ -33,7 +33,7 @@
                                 "
                             >
                                 <j-button
-                                    style="margin: 0 0 0 20px"
+                                    class="changeBtn"
                                     size="small"
                                     :disabled="
                                         productStore.current?.count &&
@@ -1084,5 +1084,11 @@ nextTick(() => {
     color: #666;
     font-weight: 400;
     font-size: 12px;
+}
+.changeBtn{
+    margin: 0 0 0 20px;
+    color: #315EFB;
+    background: #ffffff;
+    border: 1px solid #315EFB
 }
 </style>
