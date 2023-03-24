@@ -45,6 +45,7 @@ initAMapApiLoader({
 
 interface EmitProps {
     (e: 'update:point', data: string): void;
+    (e: 'change', data: string): void;
 }
 const props = defineProps({
     point: { type: [Number, String], default: '' },
@@ -59,6 +60,7 @@ const inputPoint = computed({
     set: (val: any) => {
         mapPoint.value = val;
         emit('update:point', val);
+        emit('change', val);
     },
 });
 
