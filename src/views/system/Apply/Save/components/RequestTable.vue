@@ -9,7 +9,7 @@
         >
             <template #bodyCell="{ column, record, index }">
                 <template v-if="column.dataIndex === 'key'">
-                    <j-input v-model:value="record.label" />
+                    <j-input v-model:value="record.key" />
                 </template>
                 <template v-else-if="column.dataIndex === 'value'">
                     <j-input
@@ -37,13 +37,20 @@
                 </template>
             </template>
         </j-table>
-        <j-pagination
+        <!-- <j-pagination
             v-show="props.value.length > 10"
             v-model:current="current"
             :page-size="10"
             :total="props.value.length"
             show-less-items
+        /> -->
+        <RowPagination
+            v-if="props.value.length > 10"
+            v-model:pageNum="current"
+            :pageSize="10"
+            :total="props.value.length"
         />
+
         <j-button type="dashed" @click="addRow" class="add-btn">
             <AIcon type="PlusOutlined" />新增
         </j-button>
@@ -68,17 +75,20 @@ const columns = [
     {
         title: 'KEY',
         dataIndex: 'key',
-        width: '40%'
+        key: 'key',
+        width: '40%',
     },
     {
         title: 'VALUE',
         dataIndex: 'value',
-        width: '40%'
+        key: 'value',
+        width: '40%',
     },
     {
         title: ' ',
         dataIndex: 'action',
-        width: '20%'
+        key: 'action',
+        width: '20%',
     },
 ];
 
@@ -88,7 +98,7 @@ const tableData = computed(() => {
     return props.value.slice((current.value - 1) * 10, current.value * 10);
 });
 
-if(props.value.length < 1) addRow()
+if (props.value.length < 1) addRow();
 watch(
     () => props.value,
     (n, o) => {

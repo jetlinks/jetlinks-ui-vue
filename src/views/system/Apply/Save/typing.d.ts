@@ -34,7 +34,7 @@ export type formType = {
             type: 'none' | 'bearer' | 'oauth2' | 'basic' | 'other', // 类型, 可选值：none, bearer, oauth2, basic, other
             bearer: { token: string }, // 授权信息	
             basic: { username: string, password: string }, // 基本信息	
-            token: string,
+            token?: string,
             oauth2: { // OAuth2信息
                 authorizationUrl: string, // 授权地址	
                 tokenUrl: string, // token地址	

@@ -333,6 +333,7 @@
                                         .clientId
                                 "
                                 placeholder="请输入appId"
+                                :disabled="!!form.data.id"
                             />
                         </j-form-item>
                         <j-form-item
@@ -576,7 +577,12 @@
                                 form.data.apiClient.authConfig.type === 'bearer'
                             "
                             label="token"
-                            :name="['apiClient', 'authConfig', 'token']"
+                            :name="[
+                                'apiClient',
+                                'authConfig',
+                                'bearer',
+                                'token',
+                            ]"
                             :rules="[
                                 {
                                     required: true,
@@ -586,7 +592,7 @@
                         >
                             <j-input
                                 v-model:value="
-                                    form.data.apiClient.authConfig.token
+                                    form.data.apiClient.authConfig.bearer.token
                                 "
                                 placeholder="请输入token"
                             />
@@ -657,10 +663,6 @@
                                 required: true,
                                 message: '请输入secureKey',
                             },
-                            {
-                                max: 64,
-                                message: '最多可输入64个字符',
-                            },
                         ]"
                     >
                         <template #label>
@@ -711,7 +713,7 @@
                             v-model:value="form.data.apiServer.roleIdList"
                             :options="form.roleIdList"
                             mode="multiple"
-                            placeholder="请选中角色"
+                            placeholder="请选择角色"
                         ></j-select>
                         <PermissionButton
                             :hasPermission="`${rolePermission}:update`"
@@ -760,7 +762,7 @@
                             @click="
                                 clickAddItem(
                                     form.data.apiServer.orgIdList,
-                                    'Role',
+                                    'Department',
                                 )
                             "
                             class="add-item"
@@ -1165,6 +1167,10 @@
                                     required: true,
                                     message: '请输入appId',
                                 },
+                                {
+                                    max: 64,
+                                    message: '最多可输入64个字符',
+                                },
                             ]"
                         >
                             <template #label>
@@ -1196,6 +1202,10 @@
                                     required: true,
                                     message: '请输入appKey',
                                 },
+                                {
+                                    max: 64,
+                                    message: '最多可输入64个字符',
+                                },
                             ]"
                         >
                             <template #label>
@@ -1226,6 +1236,10 @@
                                 {
                                     required: true,
                                     message: '请输入appSecret',
+                                },
+                                {
+                                    max: 64,
+                                    message: '最多可输入64个字符',
                                 },
                             ]"
                         >
@@ -1280,6 +1294,10 @@
                                 {
                                     required: true,
                                     message: '请输入默认密码',
+                                },
+                                {
+                                    max: 64,
+                                    message: '最多可输入64个字符',
                                 },
                             ]"
                         >
@@ -1436,7 +1454,7 @@ const initForm: formType = {
             type: 'oauth2', // 类型, 可选值：none, bearer, oauth2, basic, other
             bearer: { token: '' }, // 授权信息
             basic: { username: '', password: '' }, // 基本信息
-            token: '',
+            // token: '',
             oauth2: {
                 // OAuth2信息
                 authorizationUrl: '', // 授权地址
@@ -1738,7 +1756,6 @@ function changeBackUpload(info: UploadChangeParam<UploadFile<any>>) {
     if (info.file.status === 'uploading') {
         form.uploadLoading = true;
     } else if (info.file.status === 'done') {
-
         info.file.url = info.file.response?.result;
         form.uploadLoading = false;
         form.data.sso.configuration.oauth2.logoUrl = info.file.response?.result;
@@ -1798,7 +1815,7 @@ function clearNullProp(obj: object) {
                 color: #000;
 
                 &.ant-radio-button-wrapper-disabled {
-                    opacity: .5;
+                    opacity: 0.5;
                 }
 
                 &.ant-radio-button-wrapper-checked {
