@@ -302,7 +302,7 @@ const validateAddress = (_rule: any, value: string): Promise<any> =>
         ) {
             return resolve('');
         } else {
-            return reject('请输入正确的IP地址或者域名');
+            return value ? reject('请输入正确的IP地址或者域名') : resolve('');
         }
     });
 
