@@ -18,6 +18,7 @@
                     placeholder="请选择上级组织"
                     :tree-data="treeData"
                     :field-names="{ value: 'id' }"
+                    @change="handleTreeSelectChange"
                 >
                     <template #title="{ name }"> {{ name }} </template>
                 </j-tree-select>
@@ -60,6 +61,21 @@ import {
     updateDepartment_api,
 } from '@/api/system/department';
 
+type treeType = {
+    id: string;
+    parentId?: string;
+    name: string;
+    sortIndex: string | number;
+    children?: treeType[];
+    disabled?: boolean;
+};
+type formType = {
+    id?: string;
+    parentId?: string;
+    name: string;
+    sortIndex: string | number;
+};
+
 const emits = defineEmits(['refresh', 'update:visible']);
 const props = defineProps<{
     treeData: any[];
@@ -91,8 +107,8 @@ const treeData = computed(() => {
 });
 /**
  * 在给定的树中通过id匹配
- * @param node 
- * @param id 
+ * @param node
+ * @param id
  */
 const findItemById = (node: treeType[], id: string): treeType | null => {
     let result = null;
@@ -107,7 +123,7 @@ const findItemById = (node: treeType[], id: string): treeType | null => {
 };
 /**
  * 将此树下的所有节点禁用
- * @param treeNode 
+ * @param treeNode
  */
 const filterTree = (treeNode: treeType[]) => {
     if (treeNode.length < 1) return;
@@ -160,18 +176,15 @@ const form = reactive({
 });
 form.init();
 
-type treeType = {
-    id: string;
-    parentId?: string;
-    name: string;
-    sortIndex: string | number;
-    children?: treeType[];
-    disabled?: boolean;
-};
-type formType = {
-    id?: string;
-    parentId?: string;
-    name: string;
-    sortIndex: string | number;
+/**
+ * 上级组织选择改变
+ */
+const handleTreeSelectChange = () => {
+    // 上级组织
+    const parent = treeData.value.find((f: any) => f.id === form.data.parentId);
+    // 当前编辑的组织排序, 为选择上级组织的最大排序+1, 如上级组织没有自组织, 则默认为1
+    form.data.sortIndex = parent?.children
+        ? parent.children[parent.children.length - 1].sortIndex + 1
+        : 1;
 };
 </script>

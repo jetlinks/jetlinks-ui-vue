@@ -49,13 +49,14 @@
                         <j-select
                             v-model:value="form.data.objectType"
                             :disabled="!!form.data.id"
-                            @change="() => (form.data.targetType = undefined)"
+                            @change="form.handleObjectTypeChange"
+                            placeholder="请选择关联方"
                         >
                             <j-select-option
                                 v-for="item in form.objectList"
                                 :value="item.id"
                             >
-                                {{ item.name }}.
+                                {{ item.name }}
                             </j-select-option>
                         </j-select>
                     </j-form-item>
@@ -69,6 +70,8 @@
                         <j-select
                             v-model:value="form.data.targetType"
                             :disabled="!!form.data.id"
+                            @change="form.rules.checkUnique"
+                            placeholder="请选择关联方"
                         >
                             <j-select-option
                                 v-for="item in targetList"
@@ -100,6 +103,7 @@ import {
     getObjectList_api,
     addRelation_api,
     editRelation_api,
+    validateField,
 } from '@/api/system/relationship';
 import { dictItemType } from '../../DataSource/typing';
 
@@ -130,15 +134,44 @@ const formRef = ref<FormInstance>();
 const form = reactive({
     data: props.data,
     rules: {
-        checkRelation: (_rule: Rule, value: string): any => {
-            if (!value) return Promise.reject('');
-            else if (value.length > 64) return Promise.reject('');
+        /**
+         * 验证标识
+         * @param _rule
+         * @param value
+         */
+        checkRelation: async (_rule: Rule, value: string) => {
             const reg = new RegExp('^[0-9a-zA-Z_\\\\-]+$');
-
-            return reg.test(value)
-                ? Promise.resolve()
-                : Promise.reject('标识只能由数字、字母、下划线、中划线组成');
+            if (!value) return Promise.reject('');
+            if (!reg.test(value))
+                return Promise.reject(
+                    '标识只能由数字、字母、下划线、中划线组成',
+                );
+            return form.rules.checkUnique();
         },
+        /**
+         * 验证标识唯一性
+         * @param value
+         */
+        checkUnique: () => {
+            if (
+                !form.data.relation ||
+                !form.data.objectType ||
+                !form.data.targetType
+            )
+                return;
+            return new Promise(async (resolve, reject) => {
+                const { result } = await validateField({
+                    relation: form.data.relation,
+                    objectType: form.data.objectType,
+                    targetType: form.data.targetType,
+                });
+                result.passed ? resolve('') : reject(result.reason);
+            });
+        },
+    },
+    handleObjectTypeChange: () => {
+        form.data.targetType = undefined;
+        form.rules.checkUnique();
     },
     objectList: [] as any[],
 
@@ -169,7 +202,7 @@ form.getObjectList();
 type formType = {
     name: string;
     relation: string;
-    objectType: string;
+    objectType: string | undefined;
     targetType: string | undefined;
     description: string;
     id?: string;

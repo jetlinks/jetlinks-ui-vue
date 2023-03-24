@@ -32,9 +32,7 @@
                 </template>
                 <template #createTime="slotProps">
                     {{
-                        moment(slotProps.createTime).format(
-                            'YYYY-MM-DD HH:mm:ss',
-                        )
+                        dayjs(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss')
                     }}
                 </template>
                 <template #action="slotProps">
@@ -81,7 +79,7 @@ import PermissionButton from '@/components/PermissionButton/index.vue';
 
 import { getMenuTree_api, delMenuInfo_api } from '@/api/system/menu';
 import { message } from 'jetlinks-ui-components';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const permission = 'system/Menu';
 
@@ -143,6 +141,7 @@ const columns = [
             type: 'date',
         },
         width: 180,
+        scopedSlots: true,
     },
     {
         title: '操作',

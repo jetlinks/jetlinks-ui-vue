@@ -143,6 +143,9 @@ import {
 } from '@/api/system/department';
 import { message } from 'jetlinks-ui-components';
 import { dictType } from '../typing';
+import { useDepartmentStore } from '@/store/department';
+
+const departmentStore = useDepartmentStore();
 
 const emits = defineEmits(['confirm', 'update:visible']);
 const props = defineProps<{
@@ -154,6 +157,9 @@ const props = defineProps<{
 }>();
 // 弹窗相关
 const loading = ref(false);
+// 资产咨询次数, 产品分配后自动进入的设备资产, 第一次需要带上产品id查询
+const queryCount = ref(0);
+
 const confirm = () => {
     if (table.selectedRows.length < 1) {
         return message.warning('请先勾选数据');
@@ -166,6 +172,11 @@ const confirm = () => {
         assetIdList: [item.id],
         permission: item.selectPermissions,
     }));
+
+    if (params.length === 1) {
+        // 只选择一个产品资产分配时, 分配之后, 进入设备资产分配需查出对应产品下的设备
+        departmentStore.setProductId(params[0].assetIdList[0]);
+    }
 
     loading.value = true;
     bindDeviceOrProductList_api(props.assetType, params)
@@ -259,8 +270,10 @@ const table: any = {
     // 选中
     onSelectChange: (row: any) => {
         // 若该项的可选权限中没有分享权限，则不支持任何操作
-        if (!row.permissionList.find((item: any) => item.value === 'share'))
+        if (!row.permissionList.find((item: any) => item.value === 'share')) {
+            message.warning('该资产不支持共享');
             return;
+        }
         const selectedRowKeys = table._selectedRowKeys.value;
         const index = selectedRowKeys.indexOf(row.id);
 
@@ -330,7 +343,9 @@ const table: any = {
                         resolve({
                             code: 200,
                             result: {
-                                data: data.sort((a, b) => a.createTime - b.createTime),
+                                data: data.sort(
+                                    (a, b) => a.createTime - b.createTime,
+                                ),
                                 pageIndex,
                                 pageSize,
                                 total,
@@ -394,6 +409,7 @@ const table: any = {
         }),
     // 整理参数并获取数据
     requestFun: async (oParams: any) => {
+        queryCount.value += 1;
         if (props.parentId) {
             const terms = [
                 {
@@ -411,9 +427,24 @@ const table: any = {
                                 ],
                             },
                         },
+                        {
+                            column: 'productId$product-info',
+                            type: 'and',
+                            value: `id is ${departmentStore.productId}`,
+                        },
                     ],
                 },
             ];
+
+            if (
+                props.assetType !== 'device' ||
+                !departmentStore.productId ||
+                queryCount.value > 1 ||
+                departmentStore.optType === 'handle'
+            ) {
+                // 非设备|产品id不存在|有其他查询操作(queryCount+1)|设备页面手动点击资产分配, 均删除产品带入的id
+                terms[0].terms.pop();
+            }
             if (oParams.terms && oParams.terms.length > 0)
                 terms.unshift({ terms: oParams.terms });
             const params = {

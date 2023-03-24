@@ -11,3 +11,6 @@ export const addRelation_api = (data: object) => server.post(`/relation`, data);
 export const editRelation_api = (data: object) => server.patch(`/relation`, data);
 // 删除关系
 export const delRelation_api = (id: string) => server.remove(`/relation/${id}`);
+
+// 验证标识唯一性
+export const validateField = (params: any) => server.get<any>(`/relation/_validate`, params);

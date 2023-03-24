@@ -8,7 +8,12 @@
         visible
         @cancel="emits('update:visible', false)"
     >
-        <div>
+        <a-alert
+            message="只能分配有'共享'权限的资产数据"
+            type="warning"
+            show-icon
+        />
+        <div style="margin-top: 5px;">
             <span>资产权限：</span>
             <j-checkbox-group
                 v-model:value="form.permission"

@@ -1,7 +1,6 @@
 <template>
     <page-container
         :tabList="list"
-        @back="onBack"
         :tabActiveKey="productStore.tabActiveKey"
         @tabChange="onTabChange"
         showBack="true"
@@ -49,9 +48,21 @@
                     </div>
                 </div>
             </div>
+        </template>
+        <template #content>
             <div style="padding-top: 10px">
                 <j-descriptions size="small" :column="4">
-                    <j-descriptions-item label="设备数量"
+                    <j-descriptions-item
+                        label="设备数量"
+                        :labelStyle="{
+                            fontSize: '14px',
+                            opacity: 0.55,
+                        }"
+                        :contentStyle="{
+                            fontSize: '14px',
+                            color: '#092EE7',
+                            cursor: 'pointer',
+                        }"
                         ><span @click="jumpDevice">{{
                             productStore.current?.count
                                 ? productStore.current?.count
@@ -62,18 +73,6 @@
             </div>
         </template>
         <template #extra>
-            <!-- <j-popconfirm
-                    title="确认应用配置"
-                    @confirm="handleCofig"
-                    okText="确定"
-                    cancelText="取消"
-                >
-                    <j-button
-                        :disabled="productStore.current.state === 0"
-                        type="primary"
-                        >应用配置</j-button
-                    >
-                </j-popconfirm> -->
             <PermissionButton
                 type="primary"
                 :popConfirm="{
@@ -112,7 +111,7 @@ import {
     getProtocolDetail,
 } from '@/api/device/product';
 import { message } from 'jetlinks-ui-components';
-import { getImage } from '@/utils/comm';
+import { getImage, handleParamsToString } from '@/utils/comm'
 import encodeQuery from '@/utils/encodeQuery';
 import { useMenuStore } from '@/store/menu';
 
@@ -172,7 +171,9 @@ watch(
         getProtocol();
     },
 );
-const onBack = () => {};
+const onBack = () => {
+    history.back();
+};
 
 const onTabChange = (e: string) => {
     productStore.tabActiveKey = e;
@@ -250,7 +251,7 @@ const getProtocol = async () => {
                         tab: '数据解析',
                     },
                 ];
-            }else{
+            } else {
                 list.value = [
                     {
                         key: 'Info',
@@ -264,7 +265,8 @@ const getProtocol = async () => {
                     {
                         key: 'Device',
                         tab: '设备接入',
-                    },]
+                    },
+                ];
             }
         }
     }
@@ -284,7 +286,7 @@ const jumpDevice = () => {
         {},
         {
             target: 'device-instance',
-            q: JSON.stringify({ terms: [{ terms: [{ searchParams }] }] }),
+            q: handleParamsToString([searchParams]),
         },
     );
 };

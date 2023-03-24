@@ -38,8 +38,8 @@
                 selectedRowKeys: _selectedRowKeys,
                 onSelect: onSelectChange,
                 onSelectAll: onSelectAllChange,
+                onChange: onChange,
             }"
-            @cancelSelect="cancelSelect"
             :params="params"
         >
             <template #headerTitle>
@@ -125,7 +125,7 @@ const defaultParams = {
 };
 
 const statusMap = new Map();
-statusMap.set('online', 'success');
+statusMap.set('online', 'processing');
 statusMap.set('offline', 'error');
 statusMap.set('notActive', 'warning');
 
@@ -223,8 +223,10 @@ const getSelectedRowsKey = (selectedRows: T[]) =>
 const getSetRowKey = (selectedRows: T[]) =>
     new Set([..._selectedRowKeys.value, ...getSelectedRowsKey(selectedRows)]);
 
-const cancelSelect = () => {
-    _selectedRowKeys.value = [];
+const onChange = (selectedRowKeys: T[]) => {
+    if (selectedRowKeys.length === 0) {
+        _selectedRowKeys.value = [];
+    }
 };
 
 const handleOk = () => {
@@ -249,7 +251,7 @@ const onVisible = () => {
 
 const handleCancel = () => {
     visible.value = false;
-    cancelSelect();
+    _selectedRowKeys.value = [];
 };
 
 onMounted(() => {

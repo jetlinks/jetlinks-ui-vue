@@ -75,8 +75,6 @@ const pickerTimeChange = () => {
 
 const getCPUEcharts = async (val: any) => {
     loading.value = true;
-    console.log(224, val);
-
     const res: any = await dashboard(defulteParamsData('cpu', val));
     if (res.success) {
         const _cpuOptions = {};

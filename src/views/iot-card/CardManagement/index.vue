@@ -572,7 +572,7 @@ const columns = [
         search: {
             type: 'select',
             options: [
-                { label: '正常', value: 'using' },
+                { label: '激活', value: 'using' },
                 { label: '未激活', value: 'toBeActivated' },
                 { label: '停机', value: 'deactivate' },
                 { label: '其它', value: 'using,toBeActivated,deactivate' },

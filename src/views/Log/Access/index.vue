@@ -265,6 +265,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
 
 const column = {
     username: 'context.username',
+    description: 'action',
 };
 
 /**

@@ -81,6 +81,7 @@
                                         ? '正常的采集器不能删除'
                                         : '删除',
                             }"
+                            :danger="data?.state?.value === 'disabled'"
                             hasPermission="DataCollect/Collector:delete"
                             :popConfirm="{
                                 title: `该操作将会删除下属点位，确定删除？`,
@@ -253,7 +254,7 @@ watch(
 <style lang="less" scoped>
 .tree-container {
     padding-right: 24px;
-    width: 300px;
+    width: 350px;
     .add-btn {
         margin: 10px 0;
 

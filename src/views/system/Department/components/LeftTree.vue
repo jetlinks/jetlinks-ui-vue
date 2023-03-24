@@ -27,6 +27,7 @@
                 v-if="treeData.length > 0"
                 :tree-data="treeData"
                 v-model:selected-keys="selectedKeys"
+                v-model:expandedKeys="expandedKeys"
                 :fieldNames="{ key: 'id' }"
             >
                 <template #title="{ name, data }">
@@ -105,6 +106,7 @@ const sourceTree = ref<any[]>([]); // 源数据
 const treeMap = new Map(); // 数据的map版本
 const treeData = ref<any[]>([]); // 展示的数据
 const selectedKeys = ref<string[]>([]); // 当前选中的项
+const expandedKeys = ref<string[] | number[]>([]);
 
 function getTree(cb?: Function) {
     loading.value = true;
@@ -149,6 +151,7 @@ const search = debounce(() => {
         treeData.value = ArrayToTree(cloneDeep([...treeArray.values()]));
     } else {
         treeData.value = ArrayToTree(cloneDeep([...treeMap.values()]));
+        expandedKeys.value = [];
     }
 
     function dig(_data: any[]): any {

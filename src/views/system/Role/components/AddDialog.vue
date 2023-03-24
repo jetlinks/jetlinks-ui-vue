@@ -28,6 +28,7 @@
                     placeholder="请输入说明"
                     allow-clear
                     :maxlength="200"
+                    show-count
                 />
             </j-form-item>
         </j-form>

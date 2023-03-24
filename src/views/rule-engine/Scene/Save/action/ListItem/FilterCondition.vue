@@ -188,11 +188,18 @@ const handOptionByColumn = (option: any) => {
   }
 }
 
-watchEffect(() => {
-  if (!props.value.error && props.value.column) { // 新增不查找option
+watch(() => [columnOptions.value, paramsValue.column], () => {
+  if (paramsValue.column) {
     const option = getOption(columnOptions.value, paramsValue.column, 'id')
-    if (option) {
+    if (option && Object.keys(option).length) {
       handOptionByColumn(option)
+      if (props.value.error) {
+        emit('update:value', {
+          ...props.value,
+          error: false
+        })
+        formItemContext.onFieldChange()
+      }
     } else {
       emit('update:value', {
         ...props.value,

@@ -13,7 +13,7 @@
             </div>
             <div v-else>
                 <p>{{ type === 'active' ? '启用' : '同步' }}成功：{{ count }}条</p>
-                <p v-if="type === 'active'">启用失败：{{ errCount }}条<j-tooltip title="实例信息页面中的配置项未完善"><AIcon type="QuestionCircleOutlined" /></j-tooltip></p>
+                <p v-if="type === 'active'">启用失败：{{ errCount }}条<j-tooltip title="实例信息页面中的配置项未完善"><AIcon style="margin-left: 5px" type="QuestionCircleOutlined" /></j-tooltip></p>
             </div>
         </div>
         <template #footer>
@@ -56,13 +56,13 @@ const getData = (api: string) => {
     source.value = _source;
     _source.onmessage = (e: any) => {
         const res = JSON.parse(e.data);
-        // console.log(res)
         switch (props.type) {
             case 'active':
                 if (res.success) {
                     _source.close();
                     dt += res.total;
                     count.value = dt;
+                    flag.value = false;
                 } else {
                     if (res.source) {
                         errCount.value = 1
@@ -76,6 +76,7 @@ const getData = (api: string) => {
             case 'sync':
                 dt += res;
                 count.value = dt;
+                flag.value = false;
                 break;
             default:
                 break;

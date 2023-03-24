@@ -1,67 +1,46 @@
 <template>
-  <div class='terms-params'>
-    <div class='terms-params-warp'>
-      <div v-if='!isFirst' class='term-type-warp'>
-        <DropdownButton
-          :options='[
-            { label: "并且", value: "and" },
-            { label: "或者", value: "or" },
-          ]'
-          type='type'
-          v-model:value='formModel.branches[branchName].when[whenName].type'
-          @select='typeChange'
-        />
+  <div
+    class='terms-params-content'
+    @mouseover='mouseover'
+    @mouseout='mouseout'
+  >
+    <j-popconfirm
+      title='确认删除？'
+      @confirm='onDelete'
+    >
+      <div v-show='showDelete' class='terms-params-delete'>
+        <AIcon type='CloseOutlined' />
       </div>
-      <div
-        class='terms-params-content'
-        @mouseover='mouseover'
-        @mouseout='mouseout'
-      >
-        <j-popconfirm
-          title='确认删除？'
-          @confirm='onDelete'
-        >
-          <div v-show='showDelete' class='terms-params-delete'>
-            <AIcon type='CloseOutlined' />
-          </div>
-        </j-popconfirm>
+    </j-popconfirm>
 
-        <j-form-item
-          v-for='(item, index) in termsData'
-          :key='item.key'
-          :name='["branches", branchName, "when", whenName, "terms", index]'
-          :rules='rules'
-        >
-          <ParamsItem
-            v-model:value='formModel.branches[branchName].when[whenName].terms[index]'
-            :isFirst='index === 0'
-            :isLast='index === termsData.length - 1'
-            :showDeleteBtn='termsData.length !== 1'
-            :name='index'
-            :termsName='name'
-            :whenName='whenName'
-            :branchName='branchName'
-          />
-        </j-form-item>
-      </div>
-      <div class='terms-group-add' @click='addTerms' v-if='isLast'>
-        <div class='terms-content'>
-          <AIcon type='PlusOutlined' />
-          <span>分组</span>
-        </div>
-      </div>
-    </div>
+    <j-form-item
+      v-for='(item, index) in termsData'
+      :key='item.key'
+      :name='["branches", branchName, "when", whenName, "terms", props.name, "terms", index]'
+      :rules='rules'
+    >
+      <ParamsItem
+        v-model:value='formModel.branches[branchName].when[whenName].terms[props.name].terms[index]'
+        :isFirst='index === 0'
+        :isLast='index === termsData.length - 1'
+        :showDeleteBtn='termsData.length !== 1'
+        :name='index'
+        :termsName='name'
+        :whenName='whenName'
+        :branchName='branchName'
+      />
+    </j-form-item>
   </div>
 </template>
 
 <script setup lang='ts' name='TermsItem'>
 import type { PropType } from 'vue'
 import type { TermsType } from '@/views/rule-engine/Scene/typings'
-import DropdownButton from '../DropdownButton'
 import { storeToRefs } from 'pinia';
 import { useSceneStore } from 'store/scene'
 import ParamsItem from './ParamsItem.vue'
 import { isArray } from 'lodash-es'
+import { randomString } from '@/utils/utils'
 
 const sceneStore = useSceneStore()
 const { data: formModel } = storeToRefs(sceneStore)
@@ -107,7 +86,7 @@ const props = defineProps({
 
 const rules = [
   {
-    validator(_: any, v: any) {
+    validator: async (_: any, v: any) => {
       if (v !== undefined && !v.error) {
         if (!Object.keys(v).length) {
           return Promise.reject(new Error('该数据已发生变更，请重新配置'));
@@ -115,22 +94,17 @@ const rules = [
         if (!v.column) {
           return Promise.reject(new Error('请选择参数'));
         }
-
         if (!v.termType) {
           return Promise.reject(new Error('请选择操作符'));
         }
-
-        if (v.value === undefined) {
+        if (!v.value?.value) {
           return Promise.reject(new Error('请选择或输入参数值'));
-        } else {
-          if (
-            isArray(v.value.value) &&
-            v.value.value.some((_v: any) => _v === undefined)
-          ) {
-            return Promise.reject(new Error('请选择或输入参数值'));
-          } else if (v.value.value === undefined) {
-            return Promise.reject(new Error('请选择或输入参数值'));
-          }
+        }
+        if (
+          isArray(v.value.value) &&
+          v.value.value.some((_v: any) => _v === undefined)
+        ) {
+          return Promise.reject(new Error('请选择或输入参数值'));
         }
       } else {
         return Promise.reject(new Error('请选择参数'));
@@ -159,12 +133,8 @@ const mouseout = () => {
 }
 
 const onDelete = () => {
-  formModel.value.branches?.[props.branchName]?.when?.splice(props.name, 1)
-  formModel.value.options!.when[props.whenName].terms.splice(props.name, 1)
-}
-
-const typeChange = (e: any) => {
-  formModel.value.options!.when[props.whenName].terms[props.name].termType = e.label
+  formModel.value.branches?.[props.branchName]?.when?.splice(props.whenName, 1)
+  formModel.value.options!.when[props.branchName].terms.splice(props.whenName, 1)
 }
 
 const addTerms = () => {
@@ -178,16 +148,14 @@ const addTerms = () => {
           value: undefined
         },
         termType: undefined,
-        key: 'params_1',
+        key: `params_${randomString()}`,
         type: 'and',
       }
     ],
-    key: `terms_${new Date().getTime()}`
+    key: `terms_${randomString()}`
   }
-  formModel.value.branches?.[props.branchName]?.when?.push(terms)
-  formModel.value.options!.when[props.whenName].push({
-    terms: [{ termType: '并且', terms: [['','eq','','and']]}]
-  })
+  formModel.value.branches?.[props.branchName]?.when?.[props.whenName].terms?.push(terms)
+  formModel.value.options!.when[props.branchName].terms[props.whenName].terms.push(['','eq','','and'])
 }
 
 </script>

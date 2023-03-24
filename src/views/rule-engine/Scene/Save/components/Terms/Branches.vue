@@ -29,7 +29,7 @@
 
         <div class='actions-terms-list-content'>
           <template v-if='showWhen'>
-            <TermsItem
+            <WhenItem
               v-for='(item, index) in whenData'
               :key='item.key'
               :name='index'
@@ -37,9 +37,7 @@
               :isFirst='index === 0'
               :isLast='index === whenData.length -1'
               :branchName='name'
-              :whenName='index'
               :data='item'
-              :isFrist='index === 0'
             />
           </template>
           <span v-else class='when-add' @click='addWhen' :style='{ padding: isFirst ? "16px 0" : 0 }'>
@@ -67,10 +65,11 @@
 <script lang='ts' setup name='Branches'>
 import type { PropType } from 'vue'
 import type { ActionBranchesProps } from '@/views/rule-engine/Scene/typings'
-import TermsItem from './TermsItem.vue'
+import WhenItem from './WhenItem.vue'
 import { storeToRefs } from 'pinia';
 import { useSceneStore } from 'store/scene'
 import Action from '../../action/index.vue'
+import { randomString } from '@/utils/utils'
 
 const sceneStore = useSceneStore()
 const { data: FormModel } = storeToRefs(sceneStore)
@@ -110,7 +109,11 @@ const whenData = computed(() => {
 })
 
 const onDelete = () => {
-  FormModel.value.branches?.splice(props.name, 1)
+  if (FormModel.value.branches?.length == 2) {
+    FormModel.value.branches?.splice(props.name, 1, null)
+  } else {
+    FormModel.value.branches?.splice(props.name, 1)
+  }
 }
 
 const onDeleteAll = () => {
@@ -133,24 +136,31 @@ const mouseout = () => {
 }
 
 const addWhen = () => {
-  const whenItem = {
-    key: `when_${new Date().getTime()}`,
+  const terms = {
     type: 'and',
     terms: [
       {
-        column: undefined,
-        value: {
-          source: 'fixed',
-          value: undefined
-        },
-        termType: undefined,
-        key: 'params_1',
+        terms: [
+          {
+            column: undefined,
+            value: {
+              source: 'fixed',
+              value: undefined
+            },
+            termType: undefined,
+            key: `params_${randomString()}`,
+            type: 'and',
+          }
+        ],
+        key: `terms_2_${randomString()}`,
         type: 'and',
       }
-    ]
+    ],
+    key: `terms_${randomString()}`
   }
-  FormModel.value.branches?.[props.name].when.push(whenItem)
-  FormModel.value.branches?.push(null)
+  FormModel.value.branches?.[props.name].when?.push(terms)
+  FormModel.value.branches?.push(null as any)
+  FormModel.value.options!.when[props.name]?.terms.push({ termType: '并且', terms: [['','eq','','and']]})
 }
 
 const optionsClass = computed(() => {

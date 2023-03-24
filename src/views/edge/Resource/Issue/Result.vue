@@ -20,7 +20,7 @@
             <j-col :span="8">已下发数量：{{ countErr + count }}</j-col>
         </j-row>
         <div v-if="!flag">
-            <j-textarea :rows="20" :value="JSON.stringify(errMessage)" />
+            <j-textarea :rows="10" :value="JSON.stringify(errMessage)" />
         </div>
     </j-modal>
 </template>
@@ -86,7 +86,7 @@ const getData = () => {
             et += 1;
             countErr.value = et;
             flag.value = false;
-            if (errMessages.length <= 5) {
+            if (errMessages.length < 5) {
                 errMessages.push({ ...res });
                 errMessage.value = [...errMessages];
             }

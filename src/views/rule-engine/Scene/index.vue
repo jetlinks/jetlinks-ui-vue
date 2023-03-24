@@ -311,7 +311,7 @@ const getActions = (
             },
             icon: 'LikeOutlined',
             popConfirm: {
-                title: '',
+                title: '确认手动触发？',
                 onConfirm: async () => {
                     const resp = await _execute(data.id);
                     if (resp.status === 200) {

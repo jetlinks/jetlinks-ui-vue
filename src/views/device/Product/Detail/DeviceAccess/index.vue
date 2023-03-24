@@ -33,7 +33,7 @@
                                 "
                             >
                                 <j-button
-                                    style="margin: 0 0 0 20px"
+                                    class="changeBtn"
                                     size="small"
                                     :disabled="
                                         productStore.current?.count &&
@@ -418,6 +418,8 @@ import { marked } from 'marked';
 import type { TableColumnType } from 'ant-design-vue';
 import { useMenuStore } from '@/store/menu';
 import _ from 'lodash';
+import encodeQuery from '@/utils/encodeQuery';
+
 const tableRef = ref();
 const formRef = ref();
 const menuStore = useMenuStore();
@@ -501,14 +503,15 @@ const query = reactive({
                     return new Promise((res) => {
                         getProviders().then((resp: any) => {
                             listData.value = [];
-                            console.log(description.value);
                             if (isNoCommunity) {
-                                listData.value = (resp?.result || []).map(
-                                    (item: any) => ({
-                                        label: item.name,
-                                        value: item.id,
-                                    }),
-                                );
+                                (resp?.result || []).map((item: any) => {
+                                    if (item.id != 'plugin_gateway') {
+                                        listData.value.push({
+                                            label: item.name,
+                                            value: item.id,
+                                        });
+                                    }
+                                });
                             } else {
                                 listData.value = (resp?.result || [])
                                     .filter((i: any) =>
@@ -568,17 +571,7 @@ const query = reactive({
 });
 const param = ref<Record<string, any>>({
     pageSize: 4,
-    terms: [
-        {
-            terms: [
-                {
-                    column: 'channel',
-                    termType: 'nin',
-                    value: 'plugin',
-                },
-            ],
-        },
-    ],
+    terms: [],
 });
 const queryParams = ref<Record<string, any>>({});
 /**
@@ -1084,5 +1077,11 @@ nextTick(() => {
     color: #666;
     font-weight: 400;
     font-size: 12px;
+}
+.changeBtn {
+    margin: 0 0 0 20px;
+    color: #315efb;
+    background: #ffffff;
+    border: 1px solid #315efb;
 }
 </style>
