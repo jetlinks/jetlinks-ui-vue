@@ -45,6 +45,7 @@
                         </PermissionButton>
 
                         <PermissionButton
+                            :danger="true"
                             :hasPermission="`${permission}:delete`"
                             type="link"
                             :tooltip="{ title: '删除' }"
@@ -161,6 +162,8 @@ const table = {
             if (resp.status === 200) {
                 tableRef.value?.reload();
                 message.success('操作成功!');
+            } else {
+                message.error(resp.message);
             }
         });
     },
