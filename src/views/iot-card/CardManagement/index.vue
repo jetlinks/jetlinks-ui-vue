@@ -176,7 +176,7 @@
                                 <div class="card-item-content-text">
                                     绑定设备
                                 </div>
-                                <div>{{ slotProps.deviceName }}</div>
+                                <Ellipsis>{{ slotProps.deviceName }}</Ellipsis>
                             </j-col>
                         </j-row>
                         <j-divider style="margin: 12px 0" />
