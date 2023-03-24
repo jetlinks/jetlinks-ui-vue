@@ -18,7 +18,7 @@
                     },
                 ]"
             >
-                <CardSelect v-model:value="formModel.type" :options="options"/>
+                <CardSelect v-model:value="formModel.type" :options="options.filter(item => !(item.value === 'delay' && parallel))"/>
             </j-form-item>
             <ActionTypeComponent
                 v-bind="props"
@@ -69,36 +69,36 @@ const props = defineProps({
 const emit = defineEmits(['cancel', 'save']);
 
 const options = [
-    {
-        label: '设备输出',
-        value: 'device',
-        iconUrl: getImage('/scene/device-type.png'),
-        subLabel: '配置设备调用功能、读取属性、设置属性规则',
-    },
-    {
-        label: '消息通知',
-        value: 'notify',
-        iconUrl: getImage('/scene/message-type.png'),
-        subLabel: '配置向指定用户发邮件、钉钉、微信、短信等通知',
-    },
-    {
-        label: '延迟执行',
-        value: 'delay',
-        iconUrl: getImage('/scene/delay-type.png'),
-        subLabel: '等待一段时间后，再执行后续动作',
-    },
-    {
-        label: '触发告警',
-        value: 'trigger',
-        iconUrl: getImage('/scene/trigger-type.png'),
-        subLabel: '配置触发告警规则，需配合“告警配置”使用',
-    },
-    {
-        label: '解除告警',
-        value: 'relieve',
-        iconUrl: getImage('/scene/cancel-type.png'),
-        subLabel: '配置解除告警规则，需配合“告警配置”使用',
-    },
+  {
+    label: '设备输出',
+    value: 'device',
+    iconUrl: getImage('/scene/device-type.png'),
+    subLabel: '配置设备调用功能、读取属性、设置属性规则',
+  },
+  {
+    label: '消息通知',
+    value: 'notify',
+    iconUrl: getImage('/scene/message-type.png'),
+    subLabel: '配置向指定用户发邮件、钉钉、微信、短信等通知',
+  },
+  {
+    label: '延迟执行',
+    value: 'delay',
+    iconUrl: getImage('/scene/delay-type.png'),
+    subLabel: '等待一段时间后，再执行后续动作',
+  },
+  {
+    label: '触发告警',
+    value: 'trigger',
+    iconUrl: getImage('/scene/trigger-type.png'),
+    subLabel: '配置触发告警规则，需配合“告警配置”使用',
+  },
+  {
+    label: '解除告警',
+    value: 'relieve',
+    iconUrl: getImage('/scene/cancel-type.png'),
+    subLabel: '配置解除告警规则，需配合“告警配置”使用',
+  },
 ];
 
 const actionForm = ref();
