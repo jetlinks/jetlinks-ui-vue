@@ -6,7 +6,7 @@
         :title="dialogTitle"
         :confirmLoading="loading"
         @ok="confirm"
-        @cancel="emits('update:visible', false)"
+        @cancel="emits('cancel')"
     >
         <j-form ref="formRef" :model="form.data" layout="vertical">
             <j-row :gutter="24">
@@ -51,7 +51,7 @@
                                 message: '请输入URL',
                                 trigger: 'change',
                             },
-                            { validator: form.checkUrl, trigger: 'blur' },
+                            { validator: checkUrl, trigger: 'blur' },
                         ]"
                     >
                         <j-input
@@ -193,9 +193,8 @@ import { FormInstance, message } from 'ant-design-vue';
 import { Rule } from 'ant-design-vue/lib/form';
 import type { dictItemType, optionItemType, sourceItemType } from '../typing';
 
-const emits = defineEmits(['confirm', 'update:visible']);
+const emits = defineEmits(['confirm', 'cancel']);
 const props = defineProps<{
-    visible: boolean;
     data: sourceItemType;
 }>();
 // 弹窗相关
@@ -203,19 +202,25 @@ const dialogTitle = computed(() =>
     props.data.id ? '编辑数据源' : '新增数据源',
 );
 const loading = ref(false);
-const confirm = () => {
-    loading.value = true;
-    formRef.value
-        ?.validate()
-        .then(() => form.submit())
-        .then((resp: any) => {
-            if (resp.status === 200) {
-                message.success('操作成功');
-                emits('confirm');
-                emits('update:visible', false);
-            }
-        })
-        .finally(() => (loading.value = false));
+
+const checkUrl = (_rule: Rule, value: string): Promise<any> => {
+    if (!value) return Promise.reject('请输入URL');
+    const arr = value.split(':');
+    if (arr?.[0] === 'jdbc' || arr?.[0] === 'r2dbc') {
+        return Promise.resolve();
+    } else {
+        return Promise.reject('请输入正确的URL');
+    }
+};
+
+const getTypeOption = () => {
+    getDataTypeDict_api().then((resp: any) => {
+        const result = resp.result as dictItemType[];
+        form.typeOptions = result.map((item) => ({
+            label: item.name,
+            value: item.id,
+        }));
+    });
 };
 
 const formRef = ref<FormInstance>();
@@ -223,30 +228,38 @@ const form = reactive({
     data: {
         ...props.data,
     } as sourceItemType,
-
     typeOptions: [] as optionItemType[],
-
-    checkUrl: (_rule: Rule, value: string): Promise<any> => {
-        if (!value) return Promise.reject('请输入URL');
-        const arr = value.split(':');
-        if (arr?.[0] === 'jdbc' || arr?.[0] === 'r2dbc') {
-            return Promise.resolve();
-        } else {
-            return Promise.reject('请输入正确的URL');
-        }
-    },
-    getTypeOption: () => {
-        getDataTypeDict_api().then((resp: any) => {
-            const result = resp.result as dictItemType[];
-            form.typeOptions = result.map((item) => ({
-                label: item.name,
-                value: item.id,
-            }));
-        });
-    },
-    submit: () => {
-        return saveDataSource_api(form.data);
-    },
 });
-form.getTypeOption();
+
+watch(
+    () => props.data,
+    (newValue) => {
+        form.data = {...newValue, shareConfig: { ...newValue?.shareConfig }}
+    },
+    {
+        immediate: true,
+        deep: true
+    },
+);
+
+onMounted(() => {
+    getTypeOption();
+})
+
+const confirm = () => {
+    loading.value = true;
+    formRef.value
+        ?.validate()
+        .then(async (_data: any) => {
+            const resp = await saveDataSource_api({ ...props.data, ..._data });
+            if (resp.status === 200) {
+                message.success('操作成功');
+                emits('confirm');
+                formRef.value?.resetFields()
+            }
+        })
+        .finally(() => {
+            loading.value = false;
+        });
+};
 </script>
