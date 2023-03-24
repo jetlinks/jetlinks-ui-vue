@@ -213,4 +213,11 @@ const table = reactive({
 });
 
 const dialogVisible = ref(false);
+
+watch(
+    () => props.parentId,
+    () => {
+        table.refresh();
+    },
+);
 </script>
