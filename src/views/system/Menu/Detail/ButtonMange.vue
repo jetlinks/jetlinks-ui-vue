@@ -122,7 +122,8 @@ const table = reactive({
         routeParams.id &&
             getMenuInfo_api(routeParams.id).then((resp: any) => {
                 menuInfo.value = resp.result;
-                table.tableData = resp.result.buttons as tableDataItem[];
+                table.tableData =
+                    (resp.result?.buttons as tableDataItem[]) || [];
             });
     },
     clickDel: (row: tableDataItem) => {

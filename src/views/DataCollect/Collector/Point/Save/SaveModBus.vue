@@ -57,8 +57,18 @@
                     v-model:value="formData.pointKey"
                     :min="0"
                     :max="255"
+                    :precision="0"
                 />
             </j-form-item>
+            <p
+                style="color: #616161"
+                v-if="formData.configuration.function && formData.pointKey"
+            >
+                PLC地址:{{
+                    InitAddress[formData.configuration.function] +
+                    formData.pointKey
+                }}
+            </p>
             <j-form-item
                 label="寄存器数量"
                 :name="['configuration', 'parameter', 'quantity']"
@@ -70,6 +80,7 @@
                     v-model:value="formData.configuration.parameter.quantity"
                     :min="1"
                     :max="255"
+                    :precision="0"
                     @blur="changeQuantity"
                 />
             </j-form-item>
@@ -258,6 +269,12 @@ const collectorId = props.data.collectorId;
 const provider = props.data.provider;
 const oldPointKey = props.data.pointKey;
 
+const InitAddress = {
+    Coils: 1,
+    HoldingRegisters: 40001,
+    InputRegisters: 30001,
+};
+
 const formData = ref({
     name: '',
     configuration: {
@@ -371,8 +388,19 @@ const getProviderList = async () => {
             value: item.id,
             label: item.name,
         }));
+
+    setProviderList(formData.value.configuration.function);
 };
 getProviderList();
+
+const setProviderList = (value: string | undefined) => {
+    providerList.value =
+        value === 'HoldingRegisters'
+            ? providerListAll.value
+            : providerListAll.value.filter(
+                  (item: any) => item.value !== 'bool',
+              );
+};
 
 watch(
     () => formData.value.configuration.parameter.quantity,
@@ -384,14 +412,9 @@ watch(
 watch(
     () => formData.value.configuration.function,
     (value) => {
-        providerList.value =
-            value === 'HoldingRegisters'
-                ? providerListAll.value
-                : providerListAll.value.filter(
-                      (item: any) => item.value !== 'bool',
-                  );
+        setProviderList(value);
     },
-    { deep: true },
+    { immediate: true, deep: true },
 );
 watch(
     () => props.data,

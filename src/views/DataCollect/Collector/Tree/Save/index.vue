@@ -77,7 +77,7 @@
                     v-model:value="formData.circuitBreaker.type"
                     :options="[
                         { label: '降频', value: 'LowerFrequency' },
-                        { label: '熔断', value: 'Break' },
+                        { label: '断开', value: 'Break' },
                         { label: '忽略', value: 'Ignore' },
                     ]"
                     @change="changeCardSelectType"
@@ -203,7 +203,7 @@ const getTypeTooltip = (value: string) =>
     value === 'LowerFrequency'
         ? '连续20次异常，降低连接频率至原有频率的1/10（重试间隔不超过1分钟），故障处理后自动恢复至设定连接频率'
         : value === 'Break'
-        ? '连续10分钟异常，停止采集数据进入熔断状态，设备重新启用后恢复采集状态'
+        ? '连续10分钟异常，停止采集数据进入断开状态，设备重新启用后恢复采集状态'
         : '忽略异常，保持原采集频率超时时间为5s';
 
 const handleCancel = () => {

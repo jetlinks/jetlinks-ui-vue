@@ -4,7 +4,7 @@ export const queryCollector = (data: any) =>
     server.post(`/data-collect/collector/_query/no-paging?paging=false`, data);
 
 export const queryChannelNoPaging = () =>
-    server.post(`/data-collect/channel/_query/no-paging?paging=false`, {});
+    server.post(`/data-collect/channel/_query/no-paging`, { paging: false });
 
 export const save = (data: any) => server.post(`/data-collect/collector`, data);
 
