@@ -120,7 +120,7 @@ export interface SearchItemData {
 export const handleParamsToString = (terms:SearchItemData[] = []) => {
   const _terms: any[] = [
     { terms: [null,null,null]},
-    { terms: [null,null,null]}
+    { terms: [null,null,null], type: 'and'}
   ]
   let termsIndex = 0
   let termsStar = 0
