@@ -8,8 +8,8 @@
             <j-col :span="12">
                 <j-form-item
                     name="properties"
-                    label="读取属性"
-                    :rules="[{ required: true, message: '请选择读取属性' }]"
+                    label="设置属性"
+                    :rules="[{ required: true, message: '请选择设置属性' }]"
                 >
                     <j-select
                         showSearch
@@ -18,7 +18,7 @@
                         @change="onChange"
                     >
                         <j-select-option
-                            v-for="item in metadata?.properties || []"
+                            v-for="item in (metadata?.properties || [])?.filter(i => i?.expands?.type?.includes('write')) || []"
                             :value="item?.id"
                             :key="item?.id"
                             >{{ item?.name }}</j-select-option
@@ -33,7 +33,6 @@
                     :rules="[{ required: true, message: '请选择' }]"
                 >
                     <ParamsDropdown
-                        placeholder="请选择"
                         :options="handleOptions"
                         :tabsOptions="tabOptions"
                         :metricOptions="upperOptions"
@@ -42,7 +41,7 @@
                         @select="onValueChange"
                     >
                         <template v-slot="{ label }">
-                            <j-input :value="label" />
+                            <j-input :value="label" placeholder="请选择" />
                         </template>
                     </ParamsDropdown>
                 </j-form-item>
@@ -73,7 +72,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['update:value']);
+const emit = defineEmits(['update:value', 'change']);
 
 const propertyFormRef = ref();
 
@@ -82,6 +81,7 @@ const propertyModelRef = reactive({
     propertiesValue: undefined,
     source: 'fixed',
 });
+
 
 const getType = computed(() => {
     return props.metadata.properties.find(
@@ -154,7 +154,7 @@ const handleOptions = computed(() => {
 
 const onChange = () => {
     propertyModelRef.propertiesValue = undefined;
-    propertyModelRef.source = 'fixed'
+    propertyModelRef.source = 'fixed';
     emit('update:value', {
         [`${propertyModelRef.properties}`]: {
             value: propertyModelRef?.propertiesValue,
@@ -169,8 +169,9 @@ const onValueChange = () => {
             value: propertyModelRef?.propertiesValue,
             source: propertyModelRef?.source,
         },
-    }
+    };
     emit('update:value', obj);
+    emit('change', propertyModelRef?.propertiesValue)
 };
 
 watch(
@@ -187,4 +188,19 @@ watch(
     },
     { deep: true, immediate: true },
 );
+
+const onSave = () => {
+    return new Promise((resolve, reject) => {
+        propertyFormRef.value
+            .validate()
+            .then(() => {
+                resolve(true);
+            })
+            .catch((err: any) => {
+                reject(err);
+            });
+    });
+};
+
+defineExpose({ onSave });
 </script>

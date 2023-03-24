@@ -83,10 +83,27 @@ const rowSelection = {
     selectedRowKeys: ref<string[]>([]),
 };
 const save = async () => {
-    const keys = props.selectedRowKeys;
+    // fix: #bug10828
+    // 当前节点表格数据id
+    const currenTableKeys = props.tableData.map((m: any) => m.id);
+    // 当前表格选中的id
+    const currentSelectedKeys = rowSelection.selectedRowKeys.value;
+    // 当前表格, 原有选中的id
+    const oldSelectedKeys = currenTableKeys.filter((key) =>
+        props.sourceKeys.includes(key),
+    );
 
-    const removeKeys = props.sourceKeys.filter((key) => !keys.includes(key));
-    const addKeys = keys.filter((key) => !props.sourceKeys.includes(key));
+    // const keys = props.selectedRowKeys;
+    // const removeKeys = props.sourceKeys.filter((key) => !keys.includes(key));
+    // const addKeys = keys.filter((key) => !props.sourceKeys.includes(key));
+    // 取消选择的数据项
+    const removeKeys = oldSelectedKeys.filter(
+        (key) => !currentSelectedKeys.includes(key),
+    );
+    // 新增选择的项
+    const addKeys = currentSelectedKeys.filter(
+        (key) => !oldSelectedKeys.includes(key),
+    );
 
     if (props.mode === 'api') {
         // 此时是api配置

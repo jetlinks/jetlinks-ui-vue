@@ -71,7 +71,7 @@
                             v-model:value="form.data.targetType"
                             :disabled="!!form.data.id"
                             @change="form.rules.checkUnique"
-                            placeholder="请选择关联方"
+                            placeholder="请选择被关联方"
                         >
                             <j-select-option
                                 v-for="item in targetList"

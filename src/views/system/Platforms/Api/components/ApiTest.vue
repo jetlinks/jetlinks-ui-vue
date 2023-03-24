@@ -83,7 +83,7 @@
                     <div
                         class="pager"
                         v-if="
-                            requestBody.params.paramsTable.length &&
+                            requestBody.params.paramsTable.length > 10 &&
                             requestBody.pageSize
                         "
                     >

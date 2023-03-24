@@ -61,26 +61,10 @@
                                                 "
                                                 :itemType="record.type"
                                                 :options="
-                                                    record.type === 'enum'
-                                                        ? (
-                                                              record?.options
-                                                                  ?.elements || []
-                                                          ).map((item:any) => ({
-                                                                  label: item.text,
-                                                                  value: item.value,
-                                                              }))
-                                                        : record.type === 'boolean'
-                                                        ? [
-                                                              {
-                                                                  label: '是',
-                                                                  value: true,
-                                                              },
-                                                              {
-                                                                  label: '否',
-                                                                  value: false,
-                                                              },
-                                                          ]
-                                                        : undefined
+                                                    (record?.options || []).map((item:any) => ({
+                                                        label: item.text,
+                                                        value: item.value,
+                                                    }))
                                                 "
                                             />
                                         </j-form-item>
@@ -107,7 +91,10 @@
                     </j-col>
                     <j-col :span="9">
                         <h6>执行结果：</h6>
-                        <span :ref="`result${func.id}Ref`" class="execute-result">
+                        <span
+                            :ref="`result${func.id}Ref`"
+                            class="execute-result"
+                        >
                             {{ func.executeResult }}
                         </span>
                     </j-col>
@@ -192,7 +179,7 @@ const newFunctions = computed(() => {
             executeResult: '',
         });
     });
-    // console.log('newFunctions: ', result)
+    // console.log('newFunctions: ', result);
     return result;
 });
 

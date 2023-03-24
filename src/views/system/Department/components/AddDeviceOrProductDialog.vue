@@ -38,7 +38,7 @@
             :params="queryParams"
             :rowSelection="{
                 selectedRowKeys: table._selectedRowKeys.value,
-                onChange: selectRow,
+                onChange: selectChange,
             }"
             @cancelSelect="table.cancelSelect"
             :columns="columns"
@@ -55,7 +55,7 @@
                     :status="slotProps.state?.value"
                     :statusText="slotProps.state?.text"
                     :statusNames="{
-                        online: 'success',
+                        online: 'processing',
                         offline: 'error',
                         notActive: 'warning',
                     }"
@@ -121,7 +121,7 @@
                     :status="slotProps.state.value"
                     :text="slotProps.state.text"
                     :statusNames="{
-                        online: 'success',
+                        online: 'processing',
                         offline: 'error',
                         notActive: 'warning',
                     }"
@@ -173,10 +173,8 @@ const confirm = () => {
         permission: item.selectPermissions,
     }));
 
-    if (params.length === 1) {
-        // 只选择一个产品资产分配时, 分配之后, 进入设备资产分配需查出对应产品下的设备
-        departmentStore.setProductId(params[0].assetIdList[0]);
-    }
+    // 分配产品资产后, 进入设备资产分配,默认查询第一个产品下的设备
+    departmentStore.setProductId(params[0].assetIdList[0]);
 
     loading.value = true;
     bindDeviceOrProductList_api(props.assetType, params)
@@ -475,15 +473,20 @@ const table: any = {
     },
 };
 table.init();
-const selectRow = (keys: string[], rows: any[]) => {
-    const okRows = rows.filter(
-        (item) =>
-            !!item.permissionList.find(
-                (permiss: any) => permiss.value === 'share',
-            ),
-    );
-    table.selectedRows = okRows;
-    table._selectedRowKeys.value = okRows.map((item) => item.id);
+// const selectRow = (rows: any[], check: boolean) => {
+//     const okRows = rows.filter(
+//         (item) =>
+//             !!item.permissionList.find(
+//                 (permiss: any) => permiss.value === 'share',
+//             ),
+//     );
+//     table.selectedRows = okRows;
+//     table._selectedRowKeys.value = okRows.map((item) => item.id);
+// };
+// fix: bug#10749
+const selectChange = (keys: string[], rows: any[]) => {
+    table.selectedRows = rows;
+    table._selectedRowKeys.value = keys;
 };
 </script>
 

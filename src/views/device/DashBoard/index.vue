@@ -84,6 +84,7 @@ import TopCard from '@/views/device/DashBoard/components/TopCard.vue';
 import { useMenuStore } from '@/store/menu';
 import Amap from './components/Amap.vue';
 import { useSystem } from '@/store/system';
+import dayjs from 'dayjs'
 const system = useSystem();
 const AmapKey = system.$state.configInfo.amap?.apiKey;
 let productTotal = ref(0);
@@ -206,6 +207,9 @@ getDeviceData();
  * 获取在线数量
  */
 const getOnline = () => {
+    const startTime = dayjs().subtract(0, 'days').startOf('day').format('YYYY-MM-DD HH:mm:ss');
+    const endTime = dayjs().subtract(0, 'days').endOf('day').format('YYYY-MM-DD HH:mm:ss');
+
     dashboard([
         {
             dashboard: 'device',
@@ -215,26 +219,34 @@ const getOnline = () => {
             group: 'aggOnline',
             params: {
                 state: 'online',
-                limit: 15,
-                from: 'now-15d',
-                time: '1d',
-                format: 'yyyy-MM-dd',
+                limit: 24,
+                from: startTime,
+                to: endTime,
+                time: '1h',
+                format: 'yyyy-MM-dd HH:mm:ss',
             },
         },
     ]).then((res) => {
         if (res.status == 200) {
-            const x = res.result
-                .map((item: any) => item.data.timeString)
-                .reverse();
-            const y = res.result.map((item: any) => item.data.value);
+            // const x = res.result
+            //     .map((item: any) => item.data.timeString)
+            //     .reverse();
+            // const y = res.result.map((item: any) => item.data.value);
+            const x: string[] = [];
+            const y: number[] = [];
+            (res.result as any)?.forEach((item: any) => {
+              x.push(item.data.timeString)
+              y.push(item.data.value)
+            })
+            x.reverse()
             const onlineYdata = y;
             onlineYdata.reverse();
-            setOnlineChartOpition(x, onlineYdata);
+            setOnlineChartOption(x, onlineYdata);
             onlineFooter.value[0].value = y?.[1];
         }
     });
 };
-const setOnlineChartOpition = (x: Array<any>, y: Array<number>): void => {
+const setOnlineChartOption = (x: Array<any>, y: Array<number>): void => {
     onlineOptions.value = {
         xAxis: {
             type: 'category',

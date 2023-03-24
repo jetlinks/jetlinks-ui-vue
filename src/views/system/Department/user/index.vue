@@ -3,7 +3,7 @@
         <pro-search
             :columns="columns"
             target="category"
-            @search="(params:any)=>queryParams = {...params}"
+            @search="handleParams"
         />
         <j-pro-table
             ref="tableRef"
@@ -119,8 +119,8 @@ const columns = [
 
     {
         title: '状态',
-        dataIndex: 'state',
-        key: 'state',
+        dataIndex: 'status',
+        key: 'status',
         ellipsis: true,
         fixed: 'left',
         search: {
@@ -149,6 +149,10 @@ const columns = [
 // 搜索参数
 const queryParams = ref({});
 
+const handleParams = (params: any) => {
+  queryParams.value = params
+}
+
 // 表格
 const tableRef = ref<Record<string, any>>({}); // 表格实例
 const table = reactive({
@@ -169,6 +173,7 @@ const table = reactive({
                                 value: props.parentId,
                             },
                         ],
+                      type: 'and'
                     },
                 ],
             };
@@ -213,4 +218,11 @@ const table = reactive({
 });
 
 const dialogVisible = ref(false);
+
+watch(
+    () => props.parentId,
+    () => {
+        table.refresh();
+    },
+);
 </script>

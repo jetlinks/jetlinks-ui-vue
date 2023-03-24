@@ -156,11 +156,11 @@
                     {{ getProviderTxt(slotProps.type, slotProps.provider) }}
                 </span>
             </template>
-            <!-- <template #description="slotProps">
+            <template #description="slotProps">
                 <Ellipsis>
                     {{ slotProps.description }}
                 </Ellipsis>
-            </template> -->
+            </template>
             <template #action="slotProps">
                 <j-space :size="16">
                     <template
@@ -194,7 +194,7 @@
 
 <script setup lang="ts">
 import ConfigApi from '@/api/notice/config';
-import type { ActionsType } from '@/components/Table/index.vue';
+import type { ActionsType } from '@/views/device/Instance/typings';
 
 import { message } from 'jetlinks-ui-components';
 
@@ -381,18 +381,6 @@ const getActions = (
             },
         },
         {
-            key: 'log',
-            text: '通知记录',
-            tooltip: {
-                title: '通知记录',
-            },
-            icon: 'BarsOutlined',
-            onClick: () => {
-                logVis.value = true;
-                currentConfig.value = data;
-            },
-        },
-        {
             key: 'delete',
             text: '删除',
             popConfirm: {
@@ -439,6 +427,18 @@ const getActions = (
                     currentConfig.value = data;
                 },
             },
+            {
+                key: 'log',
+                text: '通知记录',
+                tooltip: {
+                    title: '通知记录',
+                },
+                icon: 'BarsOutlined',
+                onClick: () => {
+                    logVis.value = true;
+                    currentConfig.value = data;
+                },
+            },
         ],
     };
 
@@ -447,7 +447,7 @@ const getActions = (
             data.provider !== 'dingTalkMessage' &&
             data.provider !== 'corpMessage'
         )
-            others.children.splice(1, 1);
+            others.children?.splice(1, 1);
         actions.splice(actions.length - 1, 0, others);
         return actions;
     } else {
@@ -455,7 +455,7 @@ const getActions = (
             data.provider !== 'dingTalkMessage' &&
             data.provider !== 'corpMessage'
         )
-            others.children.splice(1, 1);
+            others.children?.splice(1, 1);
         actions.splice(actions.length - 1, 0, ...others.children);
         return actions;
     }

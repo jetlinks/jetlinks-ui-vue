@@ -68,8 +68,8 @@
                     :status="slotProps.state?.value"
                     :statusText="slotProps.state?.text"
                     :statusNames="{
-                        1: 'processing',
-                        0: 'error',
+                        online: 'processing',
+                        offline: 'error',
                     }"
                 >
                     <template #img>
@@ -171,8 +171,8 @@
                     :status="slotProps.state.value"
                     :text="slotProps.state.text"
                     :statusNames="{
-                        1: 'processing',
-                        0: 'error',
+                        online: 'processing',
+                        offline: 'error',
                     }"
                 ></BadgeStatus>
             </template>
@@ -517,6 +517,7 @@ const table = {
             },
         ];
         unBindDeviceOrProduct_api('product', params).then(() => {
+            tableData._selectedRowKeys = [];
             message.success('操作成功');
             table.refresh();
         });

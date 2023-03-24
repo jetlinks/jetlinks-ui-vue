@@ -24,6 +24,7 @@
                 v-if="current === 0"
                 v-model:rowKey="DeviceModel.productId"
                 v-model:detail="DeviceModel.productDetail"
+                @change="onProductChange"
             />
             <Device
                 v-else-if="current === 1"
@@ -173,9 +174,9 @@ const onSave = (_data: any) => {
         _options.type = '设置';
         _options.properties = _data.message.propertiesName;
         _options.propertiesValue =
-            typeof DeviceModel.propertiesValue === 'object'
-                ? JSON.stringify(DeviceModel.propertiesValue)
-                : `${DeviceModel.propertiesValue}`;
+            typeof _data.message.propertiesValue === 'object'
+                ? JSON.stringify(_data.message.propertiesValue)
+                : `${_data.message.propertiesValue}`;
         _options.columns = DeviceModel.columns;
         _options.otherColumns = DeviceModel.columns;
         const cur: any = Object.values(_data.message.properties)?.[0];
@@ -184,13 +185,6 @@ const onSave = (_data: any) => {
         }
     }
     if (_options.selector === 'tag') {
-        // const arr = _data.map((item: any) => {
-        //     return {
-        //         column: item.name,
-        //         type: item.type,
-        //         value: item.value,
-        //     };
-        // });
         _options.taglist = DeviceModel.tagList.map((it) => ({
             name: it.column || it.name,
             type: it.type ? (it.type === 'and' ? '并且' : '或者') : '',
@@ -203,6 +197,11 @@ const onSave = (_data: any) => {
     emit('save', item, _options);
 };
 
+const onProductChange = () => {
+    DeviceModel.selectorValues = undefined
+    DeviceModel.message = {}
+}
+
 const save = async (step?: number) => {
     let _step = step !== undefined ? step : current.value;
     if (_step === 0) {
@@ -213,8 +212,10 @@ const save = async (step?: number) => {
         if (deviceRef.value) {
             await deviceRef.value?.onFormSave();
             current.value = 2;
-        } else if (DeviceModel.selectorValues.length) {
+        } else if (DeviceModel.selectorValues?.length) {
             current.value = 2;
+        } else {
+            onlyMessage('请选择设备', 'error')
         }
     } else {
         if (actionRef.value) {

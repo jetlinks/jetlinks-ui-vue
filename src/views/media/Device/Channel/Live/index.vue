@@ -25,7 +25,14 @@
                     <div class="tool-item" @click.stop="handleRefresh">
                         刷新
                     </div>
-                    <div class="tool-item" @click.stop="handleReset">重置</div>
+                    <div class="tool-item">
+                        <j-popconfirm
+                            title="重置将断开直播, 可能会影响其他播放者"
+                            @confirm="() => handleReset"
+                        >
+                            重置
+                        </j-popconfirm>
+                    </div>
                 </div>
                 <LivePlayer
                     ref="player"

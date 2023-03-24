@@ -14,7 +14,7 @@
             :rules="[
                 {
                     validator: (_rule, value) => checkValue(_rule, value, item),
-                    trigger: ['change', 'blur']
+                    trigger: ['change', 'blur'],
                 },
             ]"
         >
@@ -22,6 +22,7 @@
                 :notify="notify"
                 v-if="getType(item) === 'user'"
                 v-model:value="modelRef[item.id]"
+                @change="(val) => onChange(val, 'user')"
             />
             <Org
                 :notify="notify"
@@ -78,7 +79,7 @@ const formRef = ref();
 const modelRef = reactive({});
 
 watchEffect(() => {
-    Object.assign(modelRef, props.value);
+    Object.assign(modelRef, props?.value);
 });
 
 const getType = (item: any) => {
@@ -102,34 +103,41 @@ const checkValue = (_rule: any, value: any, item: any) => {
             return Promise.reject(new Error('请选择' + item.name));
         } else {
             if (value?.source === 'upper') {
-                if (!value.upperKey) {
+                if (!value?.upperKey) {
                     return Promise.reject(new Error('请选择' + item.name));
                 } else {
                     return Promise.resolve();
                 }
             } else {
-                if (!value.value) {
+                if (!value?.value) {
                     return Promise.reject(new Error('请选择' + item.name));
                 } else {
                     return Promise.resolve();
                 }
             }
         }
-    } else if (value?.source === 'fixed' && !value.value) {
+    } else if (value?.source === 'fixed' && !value?.value) {
         return Promise.reject(new Error('请输入' + item.name));
-    } else if (value?.source === 'relation' && !value.value && !value.relation) {
+    } else if (
+        value?.source === 'relation' &&
+        !value?.value &&
+        !value?.relation
+    ) {
         return Promise.reject(new Error('请选择' + item.name));
     } else if (value?.source === 'upper' && !value.upperKey) {
         return Promise.reject(new Error('请选择' + item.name));
     } else if (type === 'user') {
-        if (props.notify.notifyType === 'email' && value?.source !== 'relation') {
-            if (Array.isArray(value.value)) {
-                if (!value.value.length) {
+        if (
+            props.notify.notifyType === 'email' &&
+            value?.source !== 'relation'
+        ) {
+            if (Array.isArray(value?.value)) {
+                if (!value?.value.length) {
                     return Promise.reject(new Error('请输入收件人'));
                 }
                 const reg =
                     /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-                const flag = value.value.every((it: string) => {
+                const flag = value?.value.every((it: string) => {
                     return reg.test(it);
                 });
                 if (!flag) {
@@ -143,10 +151,11 @@ const checkValue = (_rule: any, value: any, item: any) => {
         }
         if (
             props.notify.notifyType &&
-            ['sms', 'voice'].includes(props?.notify?.notifyType) && value?.source !== 'relation'
+            ['sms', 'voice'].includes(props?.notify?.notifyType) &&
+            value?.source !== 'relation'
         ) {
             const reg = /^[1][3-9]\d{9}$/;
-            if (!reg.test(value.value)) {
+            if (!reg.test(value?.value)) {
                 return Promise.reject(new Error('请输入正确的手机号码'));
             } else {
                 return Promise.resolve();
@@ -161,12 +170,14 @@ const onChange = (val: any, type: any) => {
         emit('change', { orgName: val.join(',') });
     } else if (type === 'tag') {
         emit('change', { tagName: val });
+    } else if (type === 'user') {
+        emit('change', { sendTo: val });
     }
 };
 
 const onSave = () =>
     new Promise((resolve) => {
-        formRef.value.validate().then(async (_data: any) => {
+        formRef.value?.validate().then(async (_data: any) => {
             resolve(_data);
         });
     });

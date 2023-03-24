@@ -34,8 +34,8 @@
                                       )
                                     : record.type === 'boolean'
                                     ? [
-                                          { label: '是', value: true },
-                                          { label: '否', value: false },
+                                          { label: record?.dataType?.trueText, value: record?.dataType?.trueValue },
+                                          { label: record?.dataType?.falseText, value: record?.dataType?.falseValue },
                                       ]
                                     : undefined
                             "
