@@ -90,24 +90,65 @@
                         </j-row>
                     </template>
                     <template #actions="item">
-                        <PermissionButton
-                            :disabled="item.disabled"
-                            :popConfirm="item.popConfirm"
-                            :tooltip="{
-                                ...item.tooltip,
-                            }"
-                            @click="item.onClick"
-                            :hasPermission="'notice/Template:' + item.key"
+                        <j-tooltip
+                            v-bind="item.tooltip"
+                            :title="item.disabled && item.tooltip.title"
                         >
-                            <AIcon
-                                type="DeleteOutlined"
-                                v-if="item.key === 'delete'"
-                            />
+                            <j-dropdown
+                                placement="bottomRight"
+                                v-if="item.key === 'others'"
+                            >
+                                <j-button>
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item.text }}</span>
+                                </j-button>
+                                <template #overlay>
+                                    <j-menu>
+                                        <j-menu-item
+                                            v-for="(o, i) in item.children"
+                                            :key="i"
+                                        >
+                                            <PermissionButton
+                                                type="link"
+                                                @click="o.onClick"
+                                                :hasPermission="`notice/Template:${o.key}`"
+                                            >
+                                                <template #icon>
+                                                    <AIcon :type="o.icon" />
+                                                </template>
+                                                <span>{{ o.text }}</span>
+                                            </PermissionButton>
+                                        </j-menu-item>
+                                    </j-menu>
+                                </template>
+                            </j-dropdown>
+                            <j-popconfirm
+                                v-else-if="item.key === 'delete'"
+                                v-bind="item.popConfirm"
+                                :disabled="item.disabled"
+                            >
+                                <PermissionButton
+                                    :disabled="item.disabled"
+                                    :hasPermission="`notice/Template:${item.key}`"
+                                >
+                                    <template #icon>
+                                        <AIcon type="DeleteOutlined" />
+                                    </template>
+                                </PermissionButton>
+                            </j-popconfirm>
                             <template v-else>
-                                <AIcon :type="item.icon" />
-                                <span>{{ item?.text }}</span>
+                                <PermissionButton
+                                    :disabled="item.disabled"
+                                    @click="item.onClick"
+                                    :hasPermission="`notice/Template:${item.key}`"
+                                >
+                                    <template #icon>
+                                        <AIcon :type="item.icon" />
+                                    </template>
+                                    <span>{{ item.text }}</span>
+                                </PermissionButton>
                             </template>
-                        </PermissionButton>
+                        </j-tooltip>
                     </template>
                 </CardBox>
             </template>
@@ -119,11 +160,11 @@
                     {{ getProviderTxt(slotProps.type, slotProps.provider) }}
                 </span>
             </template>
-            <!-- <template #description="slotProps">
+            <template #description="slotProps">
                 <Ellipsis>
                     {{ slotProps.description }}
                 </Ellipsis>
-            </template> -->
+            </template>
             <template #action="slotProps">
                 <j-space :size="16">
                     <template
@@ -341,29 +382,6 @@ const getActions = (
             },
         },
         {
-            key: 'export',
-            text: '导出',
-            tooltip: {
-                title: '导出',
-            },
-            icon: 'ArrowDownOutlined',
-            onClick: () => {
-                downloadObject(data, `通知配置`);
-            },
-        },
-        {
-            key: 'log',
-            text: '通知记录',
-            tooltip: {
-                title: '通知记录',
-            },
-            icon: 'BarsOutlined',
-            onClick: () => {
-                logVis.value = true;
-                currentConfig.value = data;
-            },
-        },
-        {
             key: 'delete',
             text: '删除',
             popConfirm: {
@@ -381,6 +399,41 @@ const getActions = (
             icon: 'DeleteOutlined',
         },
     ];
+
+    const others: ActionsType = {
+        key: 'others',
+        text: '其他',
+        icon: 'EllipsisOutlined',
+        children: [
+            {
+                key: 'export',
+                text: '导出',
+                tooltip: {
+                    title: '导出',
+                },
+                icon: 'ArrowDownOutlined',
+                onClick: () => {
+                    downloadObject(data, `通知配置`);
+                },
+            },
+            {
+                key: 'log',
+                text: '通知记录',
+                tooltip: {
+                    title: '通知记录',
+                },
+                icon: 'BarsOutlined',
+                onClick: () => {
+                    logVis.value = true;
+                    currentConfig.value = data;
+                },
+            },
+        ],
+    };
+
+    type === 'card'
+        ? actions.splice(actions.length - 1, 0, others)
+        : actions.splice(actions.length - 1, 0, ...others.children);
     return actions;
 };
 </script>
