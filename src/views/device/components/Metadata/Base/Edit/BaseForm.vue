@@ -70,6 +70,7 @@ import { EventLevel, ExpandsTypeList } from '@/views/device/data';
 import { useMetadataStore } from '@/store/metadata';
 import { validateJson } from './validator';
 import { Rule } from 'ant-design-vue/es/form';
+import { debounce } from 'lodash';
 
 const props = defineProps({
   type: {
@@ -98,7 +99,7 @@ if (props.modelType === 'events' || props.modelType === 'tags') {
 const productStore = useProductStore()
 
 const config = ref<Record<any, any>[]>([])
-const asyncOtherConfig = async () => {
+const asyncOtherConfig = debounce(async () => {
   if (props.type !== 'product') return
   const { valueType, id } = props.value
   const { type } = valueType || {}
@@ -115,7 +116,7 @@ const asyncOtherConfig = async () => {
   if (resp.status === 200) {
     config.value = resp.result
   }
-}
+}, 500)
 
 onMounted(() => {
   if (props.modelType === 'properties') {
