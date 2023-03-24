@@ -8,12 +8,13 @@
         visible
         @cancel="emits('update:visible', false)"
     >
-        <a-alert
-            message="只能分配有'共享'权限的资产数据"
-            type="warning"
-            show-icon
-        />
-        <div style="margin-top: 5px;">
+        <div class="alert-info">
+            <j-space>
+                <AIcon type="ExclamationCircleOutlined" />
+                <span>只能分配有'共享'权限的资产数据</span>
+            </j-space>
+        </div>
+        <div style="margin-top: 5px">
             <span>资产权限：</span>
             <j-checkbox-group
                 v-model:value="form.permission"
@@ -67,4 +68,11 @@ const options = computed(() => {
 });
 </script>
 
-<style scoped></style>
+<style scoped lang="less">
+.alert-info {
+    background: #f3f3f3;
+    border-radius: 2px;
+    padding: 6px;
+    color: rgba(0, 0, 0, 0.55);
+}
+</style>

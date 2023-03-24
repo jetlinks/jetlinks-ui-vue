@@ -14,7 +14,12 @@
                 model="TABLE"
                 :params="queryParams"
                 :defaultParams="{
+                    pageSize: 10,
                     sorts: [{ name: 'createTime', order: 'desc' }],
+                }"
+                :pagination="{
+                    showSizeChanger: true,
+                    pageSizeOptions: ['10', '20', '50', '100'],
                 }"
             >
                 <template #headerTitle>
@@ -31,7 +36,7 @@
                         :status="slotProps.state?.value"
                         :text="slotProps.state?.text"
                         :statusNames="{
-                            enabled: 'success',
+                            enabled: 'processing',
                             disabled: 'error',
                         }"
                     >
@@ -116,6 +121,7 @@
                                     ? '请先禁用，再删除'
                                     : '删除',
                             }"
+                            :danger="true"
                             :popConfirm="{
                                 title: `确认删除`,
                                 onConfirm: () => table.clickDel(slotProps),
@@ -130,7 +136,7 @@
 
             <EditDialog
                 v-if="dialog.visible"
-                v-model:visible="dialog.visible"
+                @cancel="table.cancel"
                 :data="dialog.selectItem"
                 @confirm="table.refresh"
             />
@@ -211,7 +217,7 @@ const columns = [
                     value: 'enabled',
                 },
                 {
-                    label: '已禁用',
+                    label: '禁用',
                     value: 'disabled',
                 },
             ],
@@ -277,7 +283,13 @@ const table = {
     // 刷新列表
     refresh: () => {
         tableRef.value.reload();
+        dialog.visible = false
+        dialog.selectItem = {}
     },
+    cancel: () => {
+        dialog.visible = false
+        dialog.selectItem = {}
+    }
 };
 table.getTypeOption();
 

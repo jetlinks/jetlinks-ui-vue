@@ -15,7 +15,7 @@
         </j-select>
       </j-form-item>
       <j-form-item label="选择产品" v-bind="validateInfos.copy" v-if="formModel.type === 'copy'">
-        <j-select :options="productList" v-model:value="formModel.copy" option-filter-prop="label"></j-select>
+        <j-select :options="productList" v-model:value="formModel.copy" option-filter-prop="label" filterable></j-select>
       </j-form-item>
       <j-form-item label="物模型类型" v-bind="validateInfos.metadata" v-if="type === 'device' || formModel.type === 'import'">
         <j-select v-model:value="formModel.metadata">
@@ -209,19 +209,20 @@ const handleImport = async () => {
       const res = await convertMetadata('from', 'alink', data.import).catch(err => err)
       if (res.status === 200) {
         const metadata = operateLimits(res.result)
+        let result;
         if (props?.type === 'device') {
-          await saveMetadata(id as string, metadata).catch(err => err)
-          // instanceStore.setCurrent(JSON.parse(metadata || '{}'))
+          result = await saveMetadata(id as string, metadata).catch(err => err)
         } else {
-          await modify(id as string, { metadata: metadata }).catch(err => err)
-          // productStore.setCurrent(JSON.parse(metadata || '{}'))
+          result = await modify(id as string, { metadata: metadata }).catch(err => err)
+        }
+        if (result.success) {
+          message.success('导入成功')
         }
         loading.value = false
-        // MetadataAction.insert(JSON.parse(metadata || '{}'));
-        message.success('导入成功')
       } else {
         loading.value = false
-        message.error('发生错误!')
+        // message.error('物模型数据不正确!')
+        return
       }
       if (props?.type === 'device') {
         instanceStore.refresh(id as string)
