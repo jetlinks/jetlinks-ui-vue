@@ -95,8 +95,8 @@ const confirm = () => {
     loading.value = true;
     formRef.value &&
         formRef.value.validate().then(() => {
-            const buttons = toRaw(props.menuInfo.buttons);
-            const button = buttons.find((item) => item.id === form.data.id);
+            const buttons = toRaw(props.menuInfo?.buttons);
+            const button = buttons?.find((item) => item.id === form.data.id);
             if (button) {
                 Object.entries(form.data).forEach(([key, value]) => {
                     button[key] = value;
@@ -112,7 +112,10 @@ const confirm = () => {
                     emits('confirm');
                     emits('update:visible', false);
                 })
-                .finally(() => (loading.value = false));
+                .finally(() => (loading.value = false))
+                .catch(() => {
+                    loading.value = false;
+                });
         });
 };
 const initForm = {
