@@ -367,23 +367,22 @@ const clickDel = (row: any) => {
 
 const clickSave = () => {
     formRef.value.validate().then((_data: any) => {
-        console.log(_data)
-        // const columns = cloneDeep(table.data);
-        // columns.forEach((item) => delete item.index);
-        // if (!columns.length) {
-        //     onlyMessage('请配置数据源字段', 'error');
-        //     return;
-        // }
-        // const params = {
-        //     name: leftData.selectedKeys[0],
-        //     columns,
-        // };
-        // saveTable_api(id, params).then((resp) => {
-        //     if (resp.status === 200) {
-        //         message.success('操作成功');
-        //         queryTables(params.name);
-        //     }
-        // });
+        const columns = cloneDeep(table.data);
+        columns.forEach((item) => delete item.index);
+        if (!columns.length) {
+            onlyMessage('请配置数据源字段', 'error');
+            return;
+        }
+        const params = {
+            name: leftData.selectedKeys[0],
+            columns,
+        };
+        saveTable_api(id, params).then((resp) => {
+            if (resp.status === 200) {
+                message.success('操作成功');
+                queryTables(params.name);
+            }
+        });
     });
 };
 
