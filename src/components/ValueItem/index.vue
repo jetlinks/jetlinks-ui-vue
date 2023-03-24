@@ -173,7 +173,7 @@ const objectValue = ref<string>('');
 const handleItemModalSubmit = () => {
     myValue.value = objectValue.value.replace(/[\r\n]\s*/g, '');
     modalVis.value = false;
-    inputChange(myValue.value)
+    emit('change', objectValue.value)
 };
 
 // 文件上传

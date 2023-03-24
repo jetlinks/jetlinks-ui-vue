@@ -22,7 +22,7 @@
                         showSearch
                         placeholder="请选择功能"
                         v-model:value="modelRef.message.functionId"
-                        @select='functionSelect'
+                        @select="functionSelect"
                     >
                         <j-select-option
                             v-for="item in metadata?.functions || []"
@@ -56,7 +56,9 @@
                         v-model:value="modelRef.message.properties[0]"
                     >
                         <j-select-option
-                            v-for="item in metadata?.properties || []"
+                            v-for="item in metadata?.properties.filter((i) =>
+                                i?.expands?.type?.includes('read'),
+                            ) || []"
                             :value="item?.id"
                             :key="item?.id"
                             >{{ item?.name }}</j-select-option
@@ -66,9 +68,11 @@
             </template>
             <template v-else-if="deviceMessageType === 'WRITE_PROPERTY'">
                 <WriteProperty
+                    ref="writeFormRef"
                     v-model:value="modelRef.message.properties"
                     :metadata="metadata"
                     :builtInList="builtInList"
+                    @change="onWriteChange"
                 />
             </template>
         </j-form>
@@ -83,7 +87,7 @@ import EditTable from './EditTable.vue';
 import WriteProperty from './WriteProperty.vue';
 import { useSceneStore } from '@/store/scene';
 import { storeToRefs } from 'pinia';
-import { getParams } from '../../../util'
+import { getParams } from '../../../util';
 
 const sceneStore = useSceneStore();
 const { data } = storeToRefs(sceneStore);
@@ -137,26 +141,39 @@ const modelRef = reactive({
         properties: undefined,
         inputs: [],
     },
+    propertiesValue: '',
 });
 
-const functionSelect = () => {
-  modelRef.message.inputs = []
-}
+const writeFormRef = ref();
 
-const functionRules = [{
-  validator(_: string, value: any) {
-    if (!value?.length && functions.value.length) {
-      return Promise.reject('请输入功能值')
-    } else {
-      const hasValue = value.find((item: { name: string, value: any}) => !item.value)
-      if (hasValue) {
-        const functionItem = functions.value.find((item: any) => item.id === hasValue.name)
-        return Promise.reject(functionItem?.name ? `请输入${functionItem.name}值` : '请输入功能值')
-      }
-    }
-    return Promise.resolve();
-  }
-}]
+const functionSelect = () => {
+    modelRef.message.inputs = [];
+};
+
+const functionRules = [
+    {
+        validator(_: string, value: any) {
+            if (!value?.length && functions.value.length) {
+                return Promise.reject('请输入功能值');
+            } else {
+                const hasValue = value.find(
+                    (item: { name: string; value: any }) => !item.value,
+                );
+                if (hasValue) {
+                    const functionItem = functions.value.find(
+                        (item: any) => item.id === hasValue.name,
+                    );
+                    return Promise.reject(
+                        functionItem?.name
+                            ? `请输入${functionItem.name}值`
+                            : '请输入功能值',
+                    );
+                }
+            }
+            return Promise.resolve();
+        },
+    },
+];
 
 const metadata = ref<{
     functions: any[];
@@ -205,15 +222,15 @@ const queryBuiltIn = async () => {
         action: props.name - 1,
     };
     const _data = await getParams(_params, unref(data));
-    builtInList.value = _data
+    builtInList.value = _data;
 };
 
 const onMessageTypeChange = (val: string) => {
-    const flag = ['WRITE_PROPERTY', 'INVOKE_FUNCTION'].includes(val)
+    const flag = ['WRITE_PROPERTY', 'INVOKE_FUNCTION'].includes(val);
     modelRef.message = {
         messageType: val,
         functionId: undefined,
-        properties:(flag ? undefined : []) as any,
+        properties: (flag ? undefined : []) as any,
         inputs: [],
     };
     if (flag) {
@@ -251,7 +268,11 @@ watch(
     (newVal) => {
         if (newVal?.messageType) {
             modelRef.message = newVal;
-            if (['WRITE_PROPERTY', 'INVOKE_FUNCTION'].includes(newVal.messageType)) {
+            if (
+                ['WRITE_PROPERTY', 'INVOKE_FUNCTION'].includes(
+                    newVal.messageType,
+                )
+            ) {
                 queryBuiltIn();
             }
         }
@@ -259,11 +280,21 @@ watch(
     { immediate: true },
 );
 
+const onWriteChange = (val: string) => {
+    modelRef.propertiesValue = val;
+};
+
 const onFormSave = () => {
     return new Promise((resolve, reject) => {
         formRef.value
             .validate()
-            .then((_data: any) => {
+            .then(async (_data: any) => {
+                if (writeFormRef.value) {
+                    const _val = await writeFormRef.value?.onSave();
+                    if (!_val) {
+                        reject(false);
+                    }
+                }
                 // 处理三种情况的值的格式
                 const obj = {
                     message: {
@@ -273,6 +304,7 @@ const onFormSave = () => {
                             deviceMessageType.value === 'INVOKE_FUNCTION'
                                 ? _function.value?.name
                                 : _property.value?.name,
+                        propertiesValue: modelRef.propertiesValue,
                     },
                 };
                 resolve(obj);
