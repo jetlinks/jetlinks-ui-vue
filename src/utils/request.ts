@@ -191,13 +191,6 @@ request.interceptors.response.use(response => {
       response.data.success = status === SUCCESS_CODE
     }
 
-    // 统一显示异常业务信息
-    if (status !== SUCCESS_CODE && message) {
-      Notification.error({
-        message: 'Server Errors: ' + status,
-        description: message
-      })
-    }
     // 如果返回的的是文件流，那么return值则为response
     if (response.headers['content-type'] === 'application/octet-stream; charset=UTF-8' || response.headers['content-type'] === 'application/vnd.ms-excel;charset=UTF-8') {
       return response.data
