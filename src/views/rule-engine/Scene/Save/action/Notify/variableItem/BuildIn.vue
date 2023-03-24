@@ -15,10 +15,12 @@
                 :treeData="builtInList"
                 placeholder="请选择参数"
                 style="width: calc(100% - 120px)"
+                :fieldNames="{ label: 'name', value: 'id' }"
+                @change="(val) => itemOnChange(undefined, val)"
             >
-                <template #title="{ name, description }">
+                <template #title="{ fullName, description }">
                     <j-space>
-                        {{ name }}
+                        {{ fullName }}
                         <span style="color: grey; margin-left: 5px">{{ description }}</span>
                     </j-space>
                 </template>
@@ -95,14 +97,15 @@ const sourceChange = (val: any) => {
     emit('update:value', {
         ...props.value,
         source: val,
-        value: undefined,
+        value: undefined
     });
 };
 
-const itemOnChange = (val: any) => {
+const itemOnChange = (val: any, _upperKey?: string) => {
     emit('update:value', {
         ...props.value,
         value: val,
+        upperKey: _upperKey
     });
 };
 
