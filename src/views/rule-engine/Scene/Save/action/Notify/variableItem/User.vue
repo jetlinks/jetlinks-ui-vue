@@ -33,21 +33,59 @@
                 固定号码
             </j-select-option>
         </j-select>
-        <j-tree-select
-            v-if="source === 'relation'"
-            style="width: calc(100% - 120px)"
-            placeholder="请选择收信人"
-            @select="(key, node) => onChange(source, key, false, node?.relation, node.name)"
-            :tree-data="treeData"
-            :multiple="['email'].includes(notifyType)"
-            :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-            :value="relationData"
-        >
-            <template #title="{ key, username, title }">
-                <div style="display: flex; justify-content: space-between; margin-right: 10px;" v-if="key !== 'p1' && key !== 'p2'">{{ title }} <span style="color: #cfcfcf;">{{ username }}</span></div>
-                <span v-else>{{ title }}</span>
-            </template>
-        </j-tree-select>
+        <template v-if="source === 'relation'">
+            <j-tree-select
+                v-if="['email'].includes(notifyType)"
+                style="width: calc(100% - 120px)"
+                placeholder="请选择收信人"
+                @change="(key, label) => onChange(source, key, false, label)"
+                :tree-data="treeData"
+                :multiple="true"
+                :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+                :value="relationData"
+            >
+                <template #title="{ key, username, title }">
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                            margin-right: 10px;
+                        "
+                        v-if="key !== 'p1' && key !== 'p2'"
+                    >
+                        {{ title }}
+                        <span style="color: #cfcfcf">{{ username }}</span>
+                    </div>
+                    <span v-else>{{ title }}</span>
+                </template>
+            </j-tree-select>
+            <j-tree-select
+                v-else
+                style="width: calc(100% - 120px)"
+                placeholder="请选择收信人"
+                @select="
+                    (key, node) => onChange(source, key, node?.isRelation, node?.name)
+                "
+                :tree-data="treeData"
+                :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+                :value="relationData"
+            >
+                <template #title="{ key, username, title }">
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                            margin-right: 10px;
+                        "
+                        v-if="key !== 'p1' && key !== 'p2'"
+                    >
+                        {{ title }}
+                        <span style="color: #cfcfcf">{{ username }}</span>
+                    </div>
+                    <span v-else>{{ title }}</span>
+                </template>
+            </j-tree-select>
+        </template>
         <template v-else>
             <j-select
                 style="width: calc(100% - 120px)"
@@ -55,7 +93,15 @@
                 placeholder="请选择收信人"
                 :value="value?.value"
                 showSearch
-                @change="(val, option) => onChange(source, val, false, option?.label || option?.name)"
+                @change="
+                    (val, option) =>
+                        onChange(
+                            source,
+                            val,
+                            false,
+                            option?.label || option?.name,
+                        )
+                "
                 :options="relationList"
             />
             <j-select
@@ -64,14 +110,25 @@
                 placeholder="请输入收件人邮箱,多个收件人用换行分隔"
                 :value="value?.value"
                 mode="tags"
-                @change="(val) => onChange(source, val, false, Array.isArray(val) ? val.join(',') : val)"
+                @change="
+                    (val) =>
+                        onChange(
+                            source,
+                            val,
+                            false,
+                            Array.isArray(val) ? val.join(',') : val,
+                        )
+                "
             />
             <j-input
                 style="width: calc(100% - 120px)"
                 v-else-if="['sms', 'voice'].includes(notifyType)"
                 placeholder="请输入固定号码"
                 :value="value?.value"
-                @change="(e) => onChange(source, e.target.value, false, e.target.value)"
+                @change="
+                    (e) =>
+                        onChange(source, e.target.value, false, e.target.value)
+                "
             ></j-input>
         </template>
     </j-input-group>
@@ -262,7 +319,7 @@ const onChange = (
     _name?: string,
 ) => {
     let _values: any = undefined;
-    const _names: string[] = [_name || ''];
+    const _names: string[] = Array.isArray(_name) ? _name : [_name || ''];
     if (Array.isArray(_value)) {
         if (props?.notify?.notifyType === 'email') {
             if (isRelation) {
@@ -280,7 +337,7 @@ const onChange = (
         _values = getObj(_source, _value, isRelation);
     }
     emit('update:value', _values);
-    emit('change', { sendTo: _names.filter((item) => !!item).join(',') });
+    emit('change', _names.filter((item) => !!item).join(','));
 };
 
 watch(

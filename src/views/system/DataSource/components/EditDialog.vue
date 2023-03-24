@@ -204,7 +204,7 @@ const dialogTitle = computed(() =>
 const loading = ref(false);
 
 const checkUrl = (_rule: Rule, value: string): Promise<any> => {
-    if (!value) return Promise.reject('请输入URL');
+    if (!value) return Promise.resolve();
     const arr = value.split(':');
     if (arr?.[0] === 'jdbc' || arr?.[0] === 'r2dbc') {
         return Promise.resolve();

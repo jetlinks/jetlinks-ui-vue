@@ -77,12 +77,12 @@ type Emit = {
 
 const actionRef = ref();
 const params = ref({
-    terms: []
+    terms: [],
 });
 const props = defineProps({
     value: {
         type: Array as PropType<any>,
-        default: []
+        default: [],
     },
     detail: {
         type: Object,
@@ -90,8 +90,8 @@ const props = defineProps({
     },
     productId: {
         type: String,
-        default: ''
-    }
+        default: '',
+    },
 });
 
 const emit = defineEmits<Emit>();
@@ -143,9 +143,9 @@ const handleSearch = (p: any) => {
         ...p,
         terms: [
             ...p.terms,
-            {terms: [{ column: 'productId', value: props?.productId }]}
-        ]
-    }
+            { terms: [{ column: 'productId', value: props?.productId }] },
+        ],
+    };
 };
 
 const deviceQuery = (p: any) => {
@@ -162,19 +162,26 @@ const deviceQuery = (p: any) => {
 };
 
 const handleClick = (detail: any) => {
-    emit('update:value', [{ value: detail.id, name: detail.name }]);
-    emit('change', detail);
+    if (props.value?.[0]?.value === detail.id) {
+        emit('update:value', undefined);
+        emit('change', {});
+    } else {
+        emit('update:value', [{ value: detail.id, name: detail.name }]);
+        emit('change', detail);
+    }
 };
 
 watchEffect(() => {
     params.value = {
         ...params.value,
-        terms: params.value?.terms ? [
-            ...(params.value.terms || []),
-            {terms: [{ column: 'productId', value: props?.productId }]}
-        ] : [{terms: [{ column: 'productId', value: props?.productId }]}]
-    }
-})
+        terms: params.value?.terms
+            ? [
+                  ...(params.value.terms || []),
+                  { terms: [{ column: 'productId', value: props?.productId }] },
+              ]
+            : [{ terms: [{ column: 'productId', value: props?.productId }] }],
+    };
+});
 </script>
   
   <style scoped lang='less'>

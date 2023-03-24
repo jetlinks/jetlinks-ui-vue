@@ -13,17 +13,18 @@
                     @change="onSelectorChange"
                 />
             </j-form-item>
-            <j-form-item
+            <!-- <j-form-item
                 v-if="modelRef.selector === 'fixed'"
                 name="selectorValues"
                 :rules="[{ required: true, message: '请选择设备' }]"
-            >
-                <Device
-                    :productId="values.productDetail.id"
-                    v-model:value="modelRef.selectorValues"
-                    @change="onDeviceChange"
-                />
-            </j-form-item>
+            > -->
+            <Device
+                v-if="modelRef.selector === 'fixed'"
+                :productId="values.productDetail.id"
+                v-model:value="modelRef.selectorValues"
+                @change="onDeviceChange"
+            />
+            <!-- </j-form-item> -->
             <j-form-item
                 v-else-if="modelRef.selector === 'relation'"
                 label="关系"
@@ -78,7 +79,7 @@
 import { useSceneStore } from '@/store/scene';
 import TopCard from './TopCard.vue';
 import { storeToRefs } from 'pinia';
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import NoticeApi from '@/api/notice/config';
 import Device from './Device.vue';
 import Tag from './Tag.vue';
@@ -318,7 +319,19 @@ const onFormSave = () => {
         formRef.value
             .validate()
             .then(async (_data: any) => {
-                resolve(_data);
+                if(modelRef.selector === 'fixed'){
+                    if(!modelRef?.selectorValues?.[0]?.value){
+                        onlyMessage('请选择设备', 'error')
+                        reject(false);
+                    } else {
+                        resolve({
+                            ..._data,
+                            selectorValues: modelRef.selectorValues
+                        });
+                    }
+                } else {
+                    resolve(_data);
+                }
             })
             .catch((err: any) => {
                 reject(err);

@@ -13,10 +13,12 @@
             <div class="'way-item-title">
                 <span class="way-item-label">{{ item.label }}</span>
                 <j-popover v-if="item.tip">
-                    <AIcon
-                        type="QuestionCircleOutlined"
-                        class="way-item-icon"
-                    />
+                    <j-tooltip :title="item.tip">
+                        <AIcon
+                            type="QuestionCircleOutlined"
+                            class="way-item-icon"
+                        />
+                    </j-tooltip>
                 </j-popover>
             </div>
             <div class="way-item-image">
@@ -54,7 +56,7 @@ const _value = ref(props?.value || '');
 watch(
     () => props.value,
     (newValue) => {
-        _value.value = newValue || ""
+        _value.value = newValue || '';
     },
     { immediate: true, deep: true },
 );
@@ -63,7 +65,7 @@ const onSelect = (_type: string) => {
     if (!props.disabled) {
         _value.value = _type;
         emits('update:value', _type);
-        emits('change', _type)
+        emits('change', _type);
     }
 };
 </script>
