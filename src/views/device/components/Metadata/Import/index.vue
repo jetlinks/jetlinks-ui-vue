@@ -15,7 +15,7 @@
         </j-select>
       </j-form-item>
       <j-form-item label="选择产品" v-bind="validateInfos.copy" v-if="formModel.type === 'copy'">
-        <j-select :options="productList" v-model:value="formModel.copy" option-filter-prop="label" filterable></j-select>
+        <j-select :options="productList" v-model:value="formModel.copy" option-filter-prop="label" showSearch></j-select>
       </j-form-item>
       <j-form-item label="物模型类型" v-bind="validateInfos.metadata" v-if="type === 'device' || formModel.type === 'import'">
         <j-select v-model:value="formModel.metadata">

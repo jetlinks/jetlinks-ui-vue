@@ -2,7 +2,7 @@
     <j-modal
         title="执行动作"
         visible
-        :width="860"
+        :width="800"
         @cancel="onCancel"
         @ok="onOk"
         :maskClosable="false"

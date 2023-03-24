@@ -164,5 +164,6 @@ function syncTriggerClass(
 .j-ellipsis-line-clamp {
   display: -webkit-box;
   -webkit-box-orient: vertical;
+  word-break: break-all;
 }
 </style>
