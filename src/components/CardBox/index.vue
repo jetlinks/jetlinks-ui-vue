@@ -121,11 +121,11 @@ const props = defineProps({
         default: '正常',
     },
     status: {
-        type: [String, Number],
+        type: [String, Number] as PropType<string | number>,
         default: 'default',
     },
     statusNames: {
-        type: Object,
+        type: Object as PropType<Record<any, any>>,
         default:()=>({'default':'default'})
     },
     actions: {
@@ -142,7 +142,7 @@ const props = defineProps({
     },
 });
 
-const getBackgroundColor = (code: string) => {
+const getBackgroundColor = (code: string | number) => {
     const _color = color[code] || color.default;
     return `linear-gradient(
                 188.4deg,
