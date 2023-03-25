@@ -819,6 +819,9 @@ const bindDevice = (val: boolean) => {
  * 批量激活
  */
 const handleActive = () => {
+    if (!_selectedRowKeys.value.length) {
+      return message.warn('请选择数据');
+    }
     if (
         _selectedRowKeys.value.length >= 10 &&
         _selectedRowKeys.value.length <= 100
