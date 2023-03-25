@@ -148,7 +148,7 @@
 <script setup lang="ts">
 import Guide from '../components/Guide.vue';
 import LineChart from '../components/LineChart.vue';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { queryFlow } from '@/api/iot-card/home';
 import TimeSelect from '@/views/iot-card/components/TimeSelect.vue';
 import { Empty } from 'ant-design-vue';
@@ -200,16 +200,16 @@ const getData = (
  */
 const getDataTotal = () => {
     const dTime = [
-        moment(new Date()).startOf('day').valueOf(),
-        moment(new Date()).endOf('day').valueOf(),
+      dayjs(new Date()).startOf('day').valueOf(),
+      dayjs(new Date()).endOf('day').valueOf(),
     ];
     const mTime = [
-        moment().startOf('month').valueOf(),
-        moment().endOf('month').valueOf(),
+      dayjs().startOf('month').valueOf(),
+      dayjs().endOf('month').valueOf(),
     ];
     const yTime = [
-        moment().startOf('year').valueOf(),
-        moment().endOf('year').valueOf(),
+      dayjs().startOf('year').valueOf(),
+      dayjs().endOf('year').valueOf(),
     ];
     getData(dTime[0], dTime[1]).then((resp) => {
         dayTotal.value = resp.data
@@ -238,9 +238,10 @@ const getDataTotal = () => {
 const getEcharts = (data: any) => {
     let startTime = data.start;
     let endTime = data.end;
-    if (data.type === 'week' || data.type === 'month') {
-        startTime = moment(data.start).startOf('days').valueOf();
-        endTime = moment(data.end).startOf('days').valueOf();
+
+    if (data.type !== 'day') {
+        startTime = dayjs(data.start).startOf('days').valueOf();
+        endTime = dayjs(data.end).startOf('days').valueOf();
     }
     getData(startTime, endTime).then((resp) => {
         flowData.value = resp.sortArray;

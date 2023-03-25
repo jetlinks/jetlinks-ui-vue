@@ -70,10 +70,11 @@ const rangeVal = ref<[string, string]>();
 
 const rangeChange = (val: any) => {
     radioValue.value = undefined;
+    const differenceTime = dayjs(val[1]).valueOf() - dayjs(val[0]).valueOf()
     emit('change', {
         start: dayjs(val[0]).valueOf(),
         end: dayjs(val[1]).valueOf(),
-        type: undefined,
+        type: differenceTime > (24 * 60 * 60 * 1000) ? undefined : 'day',
     });
 };
 
@@ -103,6 +104,7 @@ const handleBtnChange = (val?: string) => {
       dayjs(startTime).format('YYYY-MM-DD HH:mm:ss'),
       dayjs(endTime).format('YYYY-MM-DD HH:mm:ss'),
     ];
+    console.log(startTime, endTime)
     emit('change', {
         start: startTime,
         end: endTime,
