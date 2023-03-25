@@ -107,6 +107,9 @@ const rules = [
           return Promise.reject(new Error('请选择或输入参数值'));
         }
       } else {
+        if (v?.error) { // 数据发生变化
+          return Promise.reject(new Error('该数据已发生变更，请重新配置'))
+        }
         return Promise.reject(new Error('请选择参数'));
       }
       return Promise.resolve();
