@@ -161,9 +161,8 @@ const metricsCacheOption = ref<any[]>([]) // 缓存指标值
 
 const handOptionByColumn = (option: any) => {
   if (option) {
-    console.log(option)
     termTypeOptions.value = option.termTypes || []
-    metricsCacheOption.value = option.metrics.map((item: any) => ({...item, label: item.name})) || []
+    metricsCacheOption.value = option.metrics?.map((item: any) => ({...item, label: item.name})) || []
     tabsOptions.value.length = 1
     tabsOptions.value[0].component = option.dataType
 

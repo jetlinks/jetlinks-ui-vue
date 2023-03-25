@@ -63,6 +63,7 @@ import { flattenDeep, isArray } from 'lodash-es'
 import { provide } from 'vue'
 import { randomString } from '@/utils/utils'
 import { getParams, EventEmitter, EventSubscribeKeys } from '@/views/rule-engine/Scene/Save/util'
+import { handleParamsData } from '@/views/rule-engine/Scene/Save/components/Terms/util'
 
 const sceneStore = useSceneStore()
 const { data: formModel } = storeToRefs(sceneStore)
@@ -119,7 +120,7 @@ const columnRequest = () => {
     action: props.actionName
   }
   getParams(param, formModel.value).then(res => {
-    columnOptions.value = res
+    columnOptions.value = handleParamsData(res, 'id')
   })
 }
 
