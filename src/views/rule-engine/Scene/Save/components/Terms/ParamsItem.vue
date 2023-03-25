@@ -264,12 +264,12 @@ const termsTypeSelect = (e: { key: string, name: string }) => {
 
 const valueSelect = (_: any, label: string, labelObj: Record<number, any>) => {
   emit('update:value', { ...paramsValue })
-  console.log(labelObj)
   formItemContext.onFieldChange()
   formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.name][2] = labelObj
 }
 
 const typeSelect = (e: any) => {
+  emit('update:value', { ...paramsValue })
   formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.name][3] = e.label
 }
 
