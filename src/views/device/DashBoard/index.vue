@@ -43,7 +43,6 @@
                                 <TimeSelect
                                     key="flow-static"
                                     :type="'week'"
-                                    :quickBtnList="quickBtnList"
                                     @change="getEcharts"
                                 />
                             </template>
@@ -134,12 +133,12 @@ let onlineOptions = ref<any>({});
 let TodayDevOptions = ref<any>({});
 let devMegOptions = ref<any>({});
 const menuStore = useMenuStore();
-const quickBtnList = [
-    { label: '昨日', value: 'yesterday' },
-    { label: '近一周', value: 'week' },
-    { label: '近一月', value: 'month' },
-    { label: '近一年', value: 'year' },
-];
+// const quickBtnList = [
+//     { label: '昨日', value: 'yesterday' },
+//     { label: '近一周', value: 'week' },
+//     { label: '近一月', value: 'month' },
+//     { label: '近一年', value: 'year' },
+// ];
 /**
  * 获取产品数量
  */
@@ -474,6 +473,9 @@ const setDevMesChartOption = (
 
 //今日设备消息量
 const getDevice = () => {
+  const startTime = dayjs().subtract(0, 'days').startOf('day').format('YYYY-MM-DD HH:mm:ss');
+  const endTime = dayjs().subtract(0, 'days').endOf('day').format('YYYY-MM-DD HH:mm:ss');
+
     dashboard([
         {
             dashboard: 'device',
@@ -485,7 +487,8 @@ const getDevice = () => {
                 time: '1h',
                 format: 'yyyy-MM-dd HH:mm:ss',
                 limit: 24,
-                from: 'now-1d',
+                from: startTime,
+                to: endTime
             },
         },
         {
@@ -532,7 +535,7 @@ const getDevice = () => {
         }
     });
 };
-getDevice();
+
 const getEcharts = (data: any) => {
     let _time = '1h';
     let format = 'HH';
@@ -590,6 +593,7 @@ const getEcharts = (data: any) => {
 
 getOnline();
 getYesterdayOnline()
+getDevice();
 
 </script>
 <style lang="less" scoped>
