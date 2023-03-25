@@ -3,6 +3,9 @@
     class='scene-select-value'
     trigger='click'
     v-model:visible='visible'
+    :overlayStyle='{
+      maxWidth: "300px"
+    }'
     @visibleChange='visibleChange'
   >
     <div @click.prevent='visible = true'>
