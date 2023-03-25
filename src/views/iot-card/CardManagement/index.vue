@@ -427,7 +427,7 @@ const menuStory = useMenuStore();
 const cardManageRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const _selectedRowKeys = ref<string[]>([]);
-const _selectedRow = ref<any[]>([]);
+// const _selectedRow = ref<any[]>([]);
 const bindDeviceVisible = ref<boolean>(false);
 const visible = ref<boolean>(false);
 const exportVisible = ref<boolean>(false);
@@ -761,7 +761,7 @@ const handleSearch = (e: any) => {
 
 const onSelectChange = (keys: string[], rows: []) => {
     _selectedRowKeys.value = [...keys];
-    _selectedRow.value = [...rows];
+    // _selectedRow.value = [...rows];
 };
 
 const cancelSelect = () => {
@@ -893,15 +893,15 @@ const handleSync = () => {
  * 批量删除
  */
 const handelRemove = async () => {
-    if (!_selectedRow.value.length) {
+    if (!_selectedRowKeys.value.length) {
         message.error('请选择数据');
         return;
     }
-    const resp = await removeCards(_selectedRow.value);
+    const resp = await removeCards(_selectedRowKeys.value);
     if (resp.status === 200) {
         message.success('操作成功');
         _selectedRowKeys.value = [];
-        _selectedRow.value = [];
+        // _selectedRow.value = [];
         cardManageRef.value?.reload();
     }
 };
