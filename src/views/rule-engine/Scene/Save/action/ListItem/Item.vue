@@ -125,7 +125,7 @@
                         </div>
                     </template>
                     <template v-else-if="data?.notify?.notifyType === 'email'">
-                        <div>
+                        <div style="display: flex;">
                             通过
                             <span class="notify-text-highlight">
                                 <img
@@ -138,9 +138,13 @@
                                 />
                                 邮件
                             </span>
-                            向<span class="notify-text-highlight">{{
-                                options?.sendTo || ''
-                            }}</span>
+                            向<span class="notify-text-highlight">
+                              <Ellipsis style='max-width: 400px;'>
+                              {{
+                                  options?.sendTo || ''
+                                }}
+                              </Ellipsis>
+                          </span>
                             发送
                             <span class="notify-text-highlight">
                                 {{
