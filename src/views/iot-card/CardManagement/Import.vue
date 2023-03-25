@@ -86,14 +86,14 @@ import { queryPlatformNoPage, _import ,exportCard} from '@/api/iot-card/cardMana
 import { message } from 'jetlinks-ui-components';
 
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'save']);
 
 const configList = ref<Record<string, any>[]>([]);
 const loading = ref<boolean>(false);
 const totalCount = ref<number>(0);
 const errCount = ref<number>(0);
 const formRef = ref(null)
-
+const importStatus = ref(false)
 const modelRef = reactive({
     configId: undefined,
     upload: [],
@@ -132,6 +132,7 @@ const fileChange = (info: any) => {
         _import(modelRef.configId, { fileUrl: r.result })
             .then((resp: any) => {
                 totalCount.value = resp.result.total;
+                importStatus.value = true
                 message.success('导入成功')
             })
             .catch((err) => {
@@ -164,7 +165,12 @@ const handleCancel = () => {
     totalCount.value = 0;
     errCount.value = 0;
     modelRef.configId = undefined;
+
     emit('close', true);
+    if (importStatus.value) {
+      emit('save', true)
+    }
+    importStatus.value = false
 };
 
 const handleOk = () => {

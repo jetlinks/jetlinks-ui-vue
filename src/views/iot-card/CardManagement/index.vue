@@ -370,7 +370,7 @@
             </template>
         </j-pro-table>
         <!-- 批量导入 -->
-        <Import v-if="importVisible" @close="importVisible = false" />
+        <Import v-if="importVisible" @close="importVisible = false"  @save="importSave"/>
         <!-- 批量导出 -->
         <Export
             v-if="exportVisible"
@@ -587,6 +587,11 @@ const columns = [
         scopedSlots: true,
     },
 ];
+
+const importSave = () => {
+  cardManageRef.value?.reload()
+  importVisible.value = false
+}
 
 const getActions = (
     data: Partial<Record<string, any>>,
