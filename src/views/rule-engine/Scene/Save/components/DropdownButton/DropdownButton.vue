@@ -151,7 +151,7 @@ watchEffect(() => {
   if (option) {
     label.value = option[props.labelName] || option.name
   } else {
-    label.value = props.value || props.placeholder
+    label.value = props.value !== undefined ? props.value : props.placeholder
   }
 })
 

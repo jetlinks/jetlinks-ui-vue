@@ -166,7 +166,7 @@ watchEffect(() => {
     if (isArray(props.value)) {
       doubleNull = !!props.value.filter(item => !!item).length
     }
-    label.value = props.value && !doubleNull ? props.value : props.placeholder
+    label.value = props.value !== undefined && !doubleNull ? props.value : props.placeholder
   }
 })
 
