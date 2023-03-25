@@ -58,7 +58,7 @@
         v-model:source='paramsValue.value.source'
         @select='valueSelect'
       />
-      <j-popconfirm title='确认删除？' @confirm='onDelete'>
+      <j-popconfirm title='确认删除？' @confirm='onDelete' :overlayStyle='{minWidth: "180px"}'>
         <div v-show='showDelete' class='button-delete'> <AIcon type='CloseOutlined' /></div>
       </j-popconfirm>
     </div>

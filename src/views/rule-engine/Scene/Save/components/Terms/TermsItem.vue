@@ -6,6 +6,7 @@
   >
     <j-popconfirm
       title='确认删除？'
+      :overlayStyle='{minWidth: "180px"}'
       @confirm='onDelete'
     >
       <div v-show='showDelete' class='terms-params-delete'>
