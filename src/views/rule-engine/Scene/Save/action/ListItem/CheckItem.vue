@@ -8,8 +8,8 @@ import { useSceneStore } from '@/store/scene';
 import { storeToRefs } from 'pinia';
 import { queryProductList } from '@/api/device/product'
 import { query as deviceQuery } from '@/api/device/instance'
-import { list as noticeConfigList } from '@/api/notice/config'
-import { list as noticeTemplateList } from '@/api/notice/template'
+import noticeConfig from '@/api/notice/config'
+import noticeTemplate from '@/api/notice/template'
 import { Form } from 'jetlinks-ui-components'
 const sceneStore = useSceneStore();
 const { data: _data } = storeToRefs(sceneStore);
@@ -72,13 +72,13 @@ const checkDeviceDelete = async () => {
  */
 const checkNoticeDelete = async () => {
   const item = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].notify
-  const configResp = await noticeConfigList({ terms: [{ terms: [{ column: 'id', termType: 'eq', value: item!.notifierId }]}]})
+  const configResp = await noticeConfig.list({ terms: [{ terms: [{ column: 'id', termType: 'eq', value: item!.notifierId }]}]})
   if (configResp.success && (configResp.result as any)?.total === 0) {
     _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].notify!.notifierId = ''
     formTouchOff()
     return
   }
-  const templateResp = await noticeTemplateList({ terms: [{ terms: [{ column: 'id', termType: 'eq', value: item!.templateId }]}]})
+  const templateResp = await noticeTemplate.list({ terms: [{ terms: [{ column: 'id', termType: 'eq', value: item!.templateId }]}]})
   if (templateResp.success && (templateResp.result as any)?.total === 0) {
     _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].notify!.templateId = ''
     formTouchOff()
@@ -88,9 +88,9 @@ const checkNoticeDelete = async () => {
 
 nextTick(() => {
   const _executor = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.executor
-  if (_executor === 'device') {
+  if (_executor === 'device' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.device) {
     checkDeviceDelete()
-  } else if (_executor === 'notify') {
+  } else if (_executor === 'notify' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.notify) {
     checkNoticeDelete
   }
 })

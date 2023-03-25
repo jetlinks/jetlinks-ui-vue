@@ -154,14 +154,16 @@ const columnOptions: any = inject(ContextKey) //
 const termTypeOptions = ref<Array<{ id: string, name: string}>>([]) // 条件值
 const valueOptions = ref<any[]>([]) // 默认手动输入下拉
 const metricOption = ref<any[]>([])  // 根据termType获取对应指标值
+const isMetric = ref<boolean>(false) // 是否为指标值
 const tabsOptions = ref<Array<TabsOption>>([{ label: '手动输入', key: 'manual', component: 'string' }])
 const arrayParamsKey = ['nbtw', 'btw', 'in', 'nin']
-let metricsCacheOption: any[] = [] // 缓存指标值
+const metricsCacheOption = ref<any[]>([]) // 缓存指标值
 
 const handOptionByColumn = (option: any) => {
   if (option) {
+    console.log(option)
     termTypeOptions.value = option.termTypes || []
-    metricsCacheOption = option.metrics || []
+    metricsCacheOption.value = option.metrics.map((item: any) => ({...item, label: item.name})) || []
     tabsOptions.value.length = 1
     tabsOptions.value[0].component = option.dataType
 
@@ -169,6 +171,9 @@ const handOptionByColumn = (option: any) => {
       tabsOptions.value.push(
         { label: '指标值', key: 'metric', component: 'select' }
       )
+      isMetric.value = true
+    } else {
+      isMetric.value = false
     }
 
     if (option.dataType === 'boolean') {
@@ -183,7 +188,7 @@ const handOptionByColumn = (option: any) => {
     }
   } else {
     termTypeOptions.value = []
-    metricsCacheOption = []
+    metricsCacheOption.value = []
     valueOptions.value = []
   }
 }
@@ -212,12 +217,12 @@ watch(() => [columnOptions.value, paramsValue.column], () => {
 
 const showDouble = computed(() => {
   const isRange = paramsValue.termType ? arrayParamsKey.includes(paramsValue.termType) : false
-  if (metricsCacheOption.length) {
-    metricOption.value = metricsCacheOption.filter(item => isRange ? item.range : !item.range)
+  if (metricsCacheOption.value.length) {
+    metricOption.value = metricsCacheOption.value.filter(item => isRange ? item.range : !item.range)
   } else {
     metricOption.value = []
   }
-  return isRange
+  return isRange && !isMetric
 })
 
 const mouseover = () => {
@@ -244,7 +249,6 @@ const columnSelect = (option: any) => {
   formItemContext.onFieldChange()
   formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.name][0] = option.name
   formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.name][1] = paramsValue.termType
-
 }
 
 const termsTypeSelect = (e: { key: string, name: string }) => {
@@ -261,6 +265,7 @@ const termsTypeSelect = (e: { key: string, name: string }) => {
 
 const valueSelect = (_: any, label: string, labelObj: Record<number, any>) => {
   emit('update:value', { ...paramsValue })
+  console.log(labelObj)
   formItemContext.onFieldChange()
   formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.name][2] = labelObj
 }

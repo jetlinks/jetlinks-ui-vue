@@ -27,6 +27,7 @@
             v-if='component === "select"'
             :value='selectValue'
             :options='options'
+            :valueName='valueName'
             @click='menuSelect'
           />
           <div style='min-width: 400px' v-else>
