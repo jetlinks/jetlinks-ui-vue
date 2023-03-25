@@ -111,7 +111,7 @@
                 />
             </j-form-item>
 
-            <j-collapse v-model:activeKey="form.integrationModesISO">
+            <j-collapse v-model:activeKey="form.data.integrationModes">
                 <!-- 页面集成 -->
                 <j-collapse-panel
                     key="page"
@@ -472,6 +472,10 @@
                                         required: true,
                                         message: '该字段是必填字段',
                                     },
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64个字符',
+                                    },
                                 ]"
                             >
                                 <template #label>
@@ -501,6 +505,10 @@
                                     {
                                         required: true,
                                         message: '该字段是必填字段',
+                                    },
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64个字符',
                                     },
                                 ]"
                             >
@@ -538,6 +546,10 @@
                                         required: true,
                                         message: '该字段是必填字段',
                                     },
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64个字符',
+                                    },
                                 ]"
                             >
                                 <j-input
@@ -560,6 +572,10 @@
                                     {
                                         required: true,
                                         message: '该字段是必填字段',
+                                    },
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64个字符',
                                     },
                                 ]"
                             >
@@ -600,7 +616,18 @@
                     </div>
 
                     <div v-if="form.data.provider !== 'internal-integrated'">
-                        <j-form-item>
+                        <j-form-item
+                            :name="['apiClient', 'headers']"
+                            :rules="[
+                                {
+                                    required: !headerValid,
+                                    message: '请输入请求头',
+                                },
+                                {
+                                    validator: headerValidator,
+                                },
+                            ]"
+                        >
                             <template #label>
                                 <FormLabel
                                     text="请求头"
@@ -610,11 +637,25 @@
 
                             <RequestTable
                                 v-model:value="form.data.apiClient.headers"
+                                v-model:valid="headerValid"
                             />
                         </j-form-item>
-                        <j-form-item label="参数">
+                        <j-form-item
+                            label="参数"
+                            :name="['apiClient', 'parameters']"
+                            :rules="[
+                                {
+                                    required: !paramsValid,
+                                    message: '请输入参数',
+                                },
+                                {
+                                    validator: paramsValidator,
+                                },
+                            ]"
+                        >
                             <RequestTable
                                 v-model:value="form.data.apiClient.parameters"
+                                v-model:valid="paramsValid"
                             />
                         </j-form-item>
                     </div>
@@ -698,7 +739,7 @@
                         :rules="[
                             {
                                 required: true,
-                                message: '请选中角色',
+                                message: '请选择角色',
                             },
                         ]"
                     >
@@ -1533,6 +1574,21 @@ const form = reactive({
     fileList: [] as any[],
     uploadLoading: false,
 });
+
+// 请求头和参数必填验证
+const headerValid = ref(true);
+const paramsValid = ref(true);
+const headerValidator = () => {
+    return new Promise((resolve, reject) => {
+        headerValid.value ? resolve('') : reject('请输入完整的请求头');
+    });
+};
+const paramsValidator = () => {
+    return new Promise((resolve, reject) => {
+        paramsValid.value ? resolve('') : reject('请输入完整的请求参数');
+    });
+};
+
 // 接入方式的选项
 const joinOptions = computed(() => {
     if (form.data.provider === 'internal-standalone')
@@ -1638,6 +1694,19 @@ function init() {
 
 function getInfo(id: string) {
     getAppInfo_api(id).then((resp: any) => {
+        // 后端返回的headers和parameters中, key转为label
+        resp.result.apiClient.headers = resp.result.apiClient.headers.map(
+            (m: any) => ({
+                ...m,
+                label: m.key,
+            }),
+        );
+        resp.result.apiClient.parameters = resp.result.apiClient.parameters.map(
+            (m: any) => ({
+                ...m,
+                label: m.key,
+            }),
+        );
         form.data = {
             ...resp.result,
             integrationModes: resp.result.integrationModes.map(
@@ -1678,6 +1747,7 @@ function clickAddItem(data: string[], target: string) {
 }
 // 保存
 function clickSave() {
+    console.log('headers: ', form.data.apiClient.headers);
     formRef.value?.validate().then(() => {
         const params = cloneDeep(form.data);
         // 删除多余的参数
@@ -1717,6 +1787,23 @@ function clickSave() {
                 params.id = params.apiServer.appId;
             }
         }
+
+        // headers和params参数label需改为key传给后端
+        if (params.integrationModes.includes('apiClient')) {
+            params.apiClient.headers = params.apiClient.headers.map(
+                (m: any) => ({
+                    ...m,
+                    key: m.label,
+                }),
+            );
+            params.apiClient.parameters = params.apiClient.parameters.map(
+                (m: any) => ({
+                    ...m,
+                    key: m.label,
+                }),
+            );
+        }
+
         const request = routeQuery.id
             ? updateApp_api(routeQuery.id as string, params)
             : addApp_api(params);

@@ -10,9 +10,11 @@ export type dictType = {
 }[];
 
 export type optionsType = {
-    label: string,
+    label?: string;
+    key?: string;
     value: string;
-    disabled?: boolean
+    disabled?: boolean;
+    required?: boolean;
 }[]
 export type formType = {
     id?:string,
