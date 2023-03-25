@@ -61,7 +61,6 @@
 </template>
 
 <script setup lang='ts' name="DataAnalysis">
-import AIcon from '@/components/AIcon'
 import PermissionButton from '@/components/PermissionButton/index.vue'
 // import MonacoEditor from '@/components/MonacoEditor/index.vue';
 import { useFullscreen } from '@vueuse/core'

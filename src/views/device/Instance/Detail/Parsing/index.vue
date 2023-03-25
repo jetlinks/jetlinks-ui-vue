@@ -90,7 +90,6 @@
 </template>
 
 <script setup lang='ts' name="Parsing">
-import AIcon from '@/components/AIcon'
 import PermissionButton from '@/components/PermissionButton/index.vue'
 // import MonacoEditor from '@/components/MonacoEditor/index.vue';
 import { useFullscreen } from '@vueuse/core'
