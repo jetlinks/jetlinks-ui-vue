@@ -6,12 +6,12 @@
         title="导入"
         okText="确定"
         cancelText="取消"
-        @ok="handleCancel"
+        @ok="handleOk"
         @cancel="handleCancel"
     >
         <div style="margin-top: 10px">
-            <j-form :layout="'vertical'">
-                <j-form-item label="平台对接" required>
+            <j-form :layout="'vertical'" :model="modelRef" ref="formRef" :rules="rules">
+                <j-form-item label="平台对接" required name="configId">
                     <j-select
                         showSearch
                         v-model:value="modelRef.configId"
@@ -92,12 +92,17 @@ const configList = ref<Record<string, any>[]>([]);
 const loading = ref<boolean>(false);
 const totalCount = ref<number>(0);
 const errCount = ref<number>(0);
+const formRef = ref(null)
 
 const modelRef = reactive({
     configId: undefined,
     upload: [],
     fileType: 'xlsx',
 });
+
+const rules = {
+  configId: [{ required: true, message: '请选择平台对接'}]
+}
 
 const getConfig = async () => {
     const resp: any = await queryPlatformNoPage({
@@ -161,6 +166,12 @@ const handleCancel = () => {
     modelRef.configId = undefined;
     emit('close', true);
 };
+
+const handleOk = () => {
+  formRef.value.validate().then(res => {
+    handleCancel()
+  })
+}
 
 getConfig();
 </script>
