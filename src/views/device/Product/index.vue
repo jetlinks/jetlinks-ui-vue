@@ -181,6 +181,7 @@ import { typeOptions } from '@/components/Search/util';
 import Save from './Save/index.vue';
 import { useMenuStore } from 'store/menu';
 import { useRoute } from 'vue-router';
+import {useRouterParams} from "@/utils/hooks/useParams";
 /**
  * 表格数据
  */
@@ -616,9 +617,9 @@ const saveRef = ref();
 const handleSearch = (e: any) => {
     params.value = e;
 };
-const route = useRoute();
+const routerParams = useRouterParams()
 onMounted(() => {
-    if(history.state?.params?.save){
+    if(routerParams.params?.value.save){
         add();
     }
 });

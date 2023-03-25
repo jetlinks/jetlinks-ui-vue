@@ -119,10 +119,12 @@ import { message } from 'jetlinks-ui-components';
 import { getImage } from '@/utils/comm';
 import { getWebSocket } from '@/utils/websocket';
 import { useMenuStore } from '@/store/menu';
+import {useRouterParams} from "@/utils/hooks/useParams";
 
 const menuStory = useMenuStore();
 
 const route = useRoute();
+const routerParams = useRouterParams()
 const instanceStore = useInstanceStore();
 
 const statusMap = new Map();
@@ -267,15 +269,14 @@ const getDetailFn = async () => {
     await instanceStore.refresh(String(_id));
     getStatus(String(_id));
     list.value = [...initList];
-    console.log('watch', route.params?.id)
     getDetail();
-    instanceStore.tabActiveKey = history.state?.params?.tab || 'Info';
+    instanceStore.tabActiveKey = routerParams.params.value.tab || 'Info';
   }
 }
 
 onMounted(() => {
     getDetailFn()
-    instanceStore.tabActiveKey = history.state?.params?.tab || 'Info';
+    instanceStore.tabActiveKey = routerParams.params.value.tab || 'Info';
 });
 
 const onBack = () => {

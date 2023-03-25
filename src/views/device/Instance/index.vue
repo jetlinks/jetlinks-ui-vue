@@ -308,6 +308,7 @@ import dayjs from 'dayjs';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
 import BatchDropdown from '@/components/BatchDropdown/index.vue';
 import { BatchActionsType } from '@/components/BatchDropdown/types';
+import {useRouterParams} from "@/utils/hooks/useParams";
 
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -320,7 +321,7 @@ const operationVisible = ref<boolean>(false);
 const api = ref<string>('');
 const type = ref<string>('');
 const isCheck = ref<boolean>(false);
-
+const routerParams = useRouterParams()
 const menuStory = useMenuStore();
 
 const columns = [
@@ -546,7 +547,7 @@ const paramsFormat = (
 };
 
 onMounted(() => {
-    if (history.state?.params?.type === 'add') {
+    if (routerParams.params.value.type === 'add') {
         handleAdd();
     }
 });

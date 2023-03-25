@@ -114,11 +114,13 @@ import { message } from 'jetlinks-ui-components';
 import { getImage, handleParamsToString } from '@/utils/comm'
 import encodeQuery from '@/utils/encodeQuery';
 import { useMenuStore } from '@/store/menu';
+import {useRouterParams} from "@/utils/hooks/useParams";
 
 const menuStory = useMenuStore();
 const route = useRoute();
 const checked = ref<boolean>(true);
 const productStore = useProductStore();
+const routerParams = useRouterParams()
 const searchParams = ref({
     terms1: [
         {
@@ -291,8 +293,8 @@ const jumpDevice = () => {
     );
 };
 onMounted(() => {
-    if (history.state?.params?.tab) {
-        productStore.tabActiveKey = history.state?.params?.tab;
+    if (routerParams.params?.value.tab) {
+        productStore.tabActiveKey = routerParams.params?.value.tab;
     }
 });
 </script>

@@ -421,6 +421,8 @@ import { useMenuStore } from 'store/menu';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
 import BatchDropdown from '@/components/BatchDropdown/index.vue';
 import { BatchActionsType } from '@/components/BatchDropdown/types';
+import {usePermissionStore} from "store/permission";
+import {useRouterParams} from "@/utils/hooks/useParams";
 
 const router = useRouter();
 const menuStory = useMenuStore();
@@ -588,11 +590,14 @@ const columns = [
         scopedSlots: true,
     },
 ];
-
+const btnHasPermission = usePermissionStore().hasPermission;
+const paltformPermission = btnHasPermission(`iot-card/Platform:add`);
 const importSave = () => {
   cardManageRef.value?.reload()
   importVisible.value = false
 }
+
+const routerParams = useRouterParams()
 
 const getActions = (
     data: Partial<Record<string, any>>,
@@ -989,6 +994,12 @@ const batchActions: BatchActionsType[] = [
         },
     },
 ];
+
+onMounted(() => {
+  if (routerParams.params.value.type === 'add' && paltformPermission) {
+    handleAdd()
+  }
+})
 </script>
 
 <style scoped lang="less">
