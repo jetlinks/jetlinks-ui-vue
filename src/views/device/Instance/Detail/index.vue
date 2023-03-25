@@ -246,21 +246,35 @@ const getDetail = () => {
     }
 };
 
-watch(
-    () => route.params?.id,
-    async (newId) => {
-        if (newId) {
-            await instanceStore.refresh(String(newId));
-            getStatus(String(newId));
-            list.value = [...initList];
-            getDetail();
-            instanceStore.tabActiveKey = 'Info';
-        }
-    },
-    { immediate: true, deep: true },
-);
+// watch(
+//     () => route.params?.id,
+//     async (newId) => {
+//         if (newId) {
+//             await instanceStore.refresh(String(newId));
+//             getStatus(String(newId));
+//             list.value = [...initList];
+//             console.log('watch', route.params?.id)
+//             getDetail();
+//             instanceStore.tabActiveKey = 'Info';
+//         }
+//     },
+//     { immediate: true, deep: true },
+// );
+
+const getDetailFn = async () => {
+  const _id = route.params?.id
+  if (_id) {
+    await instanceStore.refresh(String(_id));
+    getStatus(String(_id));
+    list.value = [...initList];
+    console.log('watch', route.params?.id)
+    getDetail();
+    instanceStore.tabActiveKey = history.state?.params?.tab || 'Info';
+  }
+}
 
 onMounted(() => {
+    getDetailFn()
     instanceStore.tabActiveKey = history.state?.params?.tab || 'Info';
 });
 
