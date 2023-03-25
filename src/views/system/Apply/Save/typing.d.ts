@@ -45,7 +45,7 @@ export type formType = {
                 clientSecret: string, // 客户端密钥
                 grantType: 'authorization_code' | 'client_credentials' | '', // 类型
                 accessTokenProperty: string, // token属性名	
-                tokenRequestType: 'POST_URI' | 'POST_BODY' | '' // token请求方式, 可选值：POST_URI，POST_BODY
+                tokenRequestType: 'POST_URI' | 'POST_BODY' | '' | undefined // token请求方式, 可选值：POST_URI，POST_BODY
             }
         }
     },

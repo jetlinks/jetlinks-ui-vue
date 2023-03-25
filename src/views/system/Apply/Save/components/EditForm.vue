@@ -103,15 +103,10 @@
                 <j-checkbox-group
                     v-model:value="form.data.integrationModes"
                     :options="joinOptions"
-                    @change="
-                        form.integrationModesISO = [
-                            ...form.data.integrationModes,
-                        ]
-                    "
                 />
             </j-form-item>
 
-            <j-collapse v-model:activeKey="form.data.integrationModes">
+            <j-collapse v-model:activeKey="form.integrationModesISO">
                 <!-- 页面集成 -->
                 <j-collapse-panel
                     key="page"
@@ -409,7 +404,7 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '该字段是必填字段',
+                                        message: '请输入授权地址',
                                     },
                                 ]"
                             >
@@ -440,7 +435,7 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请选择认证方式',
+                                        message: '请选择请求方式',
                                     },
                                 ]"
                             >
@@ -449,6 +444,7 @@
                                         form.data.apiClient.authConfig.oauth2
                                             .tokenRequestType
                                     "
+                                    placeholder="请选择请求方式"
                                 >
                                     <j-select-option value="POST_BODY">
                                         请求体
@@ -470,7 +466,7 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '该字段是必填字段',
+                                        message: '请输入client_id',
                                     },
                                     {
                                         max: 64,
@@ -504,7 +500,7 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '该字段是必填字段',
+                                        message: '请输入client_secret',
                                     },
                                     {
                                         max: 64,
@@ -864,7 +860,7 @@
                             :rules="[
                                 {
                                     required: true,
-                                    message: '该字段是必填字段',
+                                    message: '请选择认证方式',
                                 },
                             ]"
                         >
@@ -991,7 +987,7 @@
                         :rules="[
                             {
                                 required: true,
-                                message: '该字段是必填字段',
+                                message: '请输入授权地址',
                             },
                         ]"
                     >
@@ -1024,7 +1020,7 @@
                             :rules="[
                                 {
                                     required: true,
-                                    message: '该字段是必填字段',
+                                    message: '请输入token地址',
                                 },
                             ]"
                         >
@@ -1045,7 +1041,7 @@
                         <j-form-item label="logo">
                             <j-upload
                                 v-model:file-list="form.fileList"
-                                accept=".jpg,.png,.jfif,.pjp,.pjpeg,.jpeg"
+                                accept=".jpg,.png"
                                 :maxCount="1"
                                 list-type="picture-card"
                                 :show-upload-list="false"
@@ -1053,6 +1049,7 @@
                                     [TOKEN_KEY]: LocalStore.get(TOKEN_KEY),
                                 }"
                                 :action="`${BASE_API_PATH}/file/static`"
+                                :beforeUpload="beforeLogoUpload"
                                 @change="changeBackUpload"
                             >
                                 <img
@@ -1093,7 +1090,7 @@
                             :rules="[
                                 {
                                     required: true,
-                                    message: '该字段是必填字段',
+                                    message: '请输入用户信息地址',
                                 },
                             ]"
                         >
@@ -1117,7 +1114,7 @@
                             :rules="[
                                 {
                                     required: true,
-                                    message: '请输入该字段是必填字段用户ID',
+                                    message: '请输入用户ID',
                                 },
                             ]"
                         >
@@ -1148,7 +1145,7 @@
                             :rules="[
                                 {
                                     required: true,
-                                    message: '该字段是必填字段',
+                                    message: '请输入用户名',
                                 },
                             ]"
                         >
@@ -1353,7 +1350,7 @@
                                 v-model:value="form.data.sso.roleIdList"
                                 mode="multiple"
                                 :options="form.roleIdList"
-                                placeholder="请选中角色"
+                                placeholder="请选择角色"
                             ></j-select>
                             <PermissionButton
                                 :hasPermission="`${rolePermission}:update`"
@@ -1505,7 +1502,7 @@ const initForm: formType = {
                 clientSecret: '', // 客户端密钥
                 grantType: '', // 类型
                 accessTokenProperty: '', // token属性名
-                tokenRequestType: '', // token请求方式, 可选值：POST_URI，POST_BODY
+                tokenRequestType: undefined, // token请求方式, 可选值：POST_URI，POST_BODY
             },
         },
     },
@@ -1688,6 +1685,8 @@ function init() {
             o.forEach((key) => {
                 if (!n.includes(key)) form.errorNumInfo[key].clear();
             });
+
+            form.integrationModesISO = [...n];
         },
     );
 }
@@ -1839,6 +1838,20 @@ function getErrorNum(
         } else if (!set.has(key)) set.add(key);
     }
 }
+
+const imageTypes = ref(['image/jpg', 'image/png']);
+const beforeLogoUpload = (file: any) => {
+    const isType: any = imageTypes.value.includes(file.type);
+    if (!isType) {
+        message.error(`请上传.jpg.png格式的图片`);
+        return false;
+    }
+    const isSize = file.size / 1024 / 1024 < 4;
+    if (!isSize) {
+        message.error(`图片大小必须小于${4}M`);
+    }
+    return isType && isSize;
+};
 function changeBackUpload(info: UploadChangeParam<UploadFile<any>>) {
     if (info.file.status === 'uploading') {
         form.uploadLoading = true;
