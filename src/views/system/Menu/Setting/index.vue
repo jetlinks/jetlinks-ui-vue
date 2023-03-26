@@ -23,12 +23,16 @@
                         style="margin-bottom: 12px"
                     />
                     <j-tree
+                        v-if="treeData.length !== 0"
                         show-line
                         defaultExpandAll
                         multiple
                         draggable
                         :tree-data="treeData"
                         :height="500"
+                        @select="onSelect"
+                        :selectedKeys="selectedKeys"
+                        @drop="onDrop"
                     >
                         <template #title="row">
                             <div class="tree-content">
@@ -37,24 +41,6 @@
                                     <div style="margin-left: 8px">
                                         {{ row.name }}
                                     </div>
-                                </div>
-                                <div class="tree-content-action">
-                                    <span @click="(e) => e.stopPropagation()">
-                                        <PermissionButton
-                                            type="text"
-                                            :tooltip="{
-                                                title: '删除',
-                                            }"
-                                            hasPermission="DataCollect/Collector:delete"
-                                            :popConfirm="{
-                                                title: `确定删除？`,
-                                                onConfirm: () =>
-                                                    handlDelete(row.id),
-                                            }"
-                                        >
-                                            <AIcon type="CloseOutlined" />
-                                        </PermissionButton>
-                                    </span>
                                 </div>
                             </div>
                         </template>
@@ -69,28 +55,32 @@
 <script setup lang="ts" name="MenuSetting">
 import { getMenuTree_api } from '@/api/system/menu';
 import { getSystemPermission as getSystemPermission_api } from '@/api/initHome';
-import { filterMenu, getKeys, loop } from './utils';
+import {
+    filterMenu,
+    mergeMapToArr,
+    developArrToMap,
+    drop,
+    select,
+} from './utils';
 import BaseMenu from './baseMenu';
-import type {
-    AntTreeNodeDropEvent,
-    TreeDataItem,
-    TreeProps,
-} from 'ant-design-vue/es/tree';
+import type { AntTreeNodeDropEvent } from 'ant-design-vue/es/tree';
 import { treeFilter } from '@/utils/tree';
 import { cloneDeep } from 'lodash';
 
-const treeData = ref<any>();
+const selectedKeys: any = ref([]);
+const treeData = ref<any>([]);
 const filterText = ref('');
-treeData.value = [...BaseMenu];
-let systemMenu: any = reactive([]);
-const baseMenu = cloneDeep(BaseMenu);
+const systemMenu: any = ref([]);
+const baseMenu: any = ref([]);
+const AllMenu = ref([]);
 
-const BaseMenuMap = new Map();
-BaseMenu.forEach((item) => {
-    BaseMenuMap.set(item.code, item);
-});
+const onSelect = (selecteds: Array<string>, e: any) => {
+    selectedKeys.value = select(selecteds, e);
+};
 
-console.log(11, BaseMenuMap);
+const onDrop = (info: AntTreeNodeDropEvent) => {
+    treeData.value = drop(info, treeData.value);
+};
 
 const params = {
     paging: false,
@@ -114,20 +104,25 @@ const params = {
 };
 
 const change = (val: any) => {
-    treeData.value = treeFilter(baseMenu, val.target.value, 'name');
-};
-
-const handlDelete = (value) => {
-    console.log(22, value);
+    treeData.value = treeFilter(AllMenu.value, val.target.value, 'name');
 };
 
 onMounted(() => {
-    getMenuTree_api(params).then((resp: any) => {
-        if (resp.status == 200) {
-            systemMenu = resp.result;
-            console.log(2, systemMenu);
-        }
-        // transfer.data.rightTreeData = resp.result;
+    getSystemPermission_api().then((resp: any) => {
+        baseMenu.value = filterMenu(
+            resp.result.map((item: any) => JSON.parse(item).id),
+            BaseMenu,
+        );
+        getMenuTree_api(params).then((resp: any) => {
+            if (resp.status == 200) {
+                systemMenu.value = resp.result;
+                const baseMenuData = developArrToMap(baseMenu.value);
+                const systemMenuData = developArrToMap(systemMenu.value, true);
+                selectedKeys.value = systemMenuData.checkedKeys;
+                AllMenu.value = mergeMapToArr(baseMenuData, systemMenuData);
+                treeData.value = cloneDeep(AllMenu.value);
+            }
+        });
     });
 });
 </script>
@@ -183,15 +178,13 @@ onMounted(() => {
         &-content {
             display: flex;
             justify-content: space-between;
-            width: 100%;
             &-title {
                 flex: 1;
                 font-weight: 800;
                 font-size: 12px;
-                line-height: 17px;
+                line-height: 24px;
                 display: flex;
                 align-items: center;
-
                 color: #333333;
             }
             &-action {
