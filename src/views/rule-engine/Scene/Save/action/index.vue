@@ -151,6 +151,7 @@ const onAdd = (actionItem: any, _parallel: boolean) => {
   }
   formItemContext.onFieldChange()
 }
+
 </script>
 
 <style lang='less' scoped>

@@ -1,5 +1,4 @@
 import type { App } from 'vue'
-// import AIcon from './AIcon'
 import PermissionButton from './PermissionButton/index.vue'
 import JTable from './Table/index'
 import TitleComponent from "./TitleComponent/index.vue";

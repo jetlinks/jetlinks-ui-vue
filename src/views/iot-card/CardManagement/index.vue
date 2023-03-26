@@ -370,7 +370,7 @@
             </template>
         </j-pro-table>
         <!-- 批量导入 -->
-        <Import v-if="importVisible" @close="importVisible = false" />
+        <Import v-if="importVisible" @close="importVisible = false"  @save="importSave"/>
         <!-- 批量导出 -->
         <Export
             v-if="exportVisible"
@@ -421,13 +421,15 @@ import { useMenuStore } from 'store/menu';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
 import BatchDropdown from '@/components/BatchDropdown/index.vue';
 import { BatchActionsType } from '@/components/BatchDropdown/types';
+import {usePermissionStore} from "store/permission";
+import {useRouterParams} from "@/utils/hooks/useParams";
 
 const router = useRouter();
 const menuStory = useMenuStore();
 const cardManageRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const _selectedRowKeys = ref<string[]>([]);
-const _selectedRow = ref<any[]>([]);
+// const _selectedRow = ref<any[]>([]);
 const bindDeviceVisible = ref<boolean>(false);
 const visible = ref<boolean>(false);
 const exportVisible = ref<boolean>(false);
@@ -468,7 +470,8 @@ const columns = [
         scopedSlots: true,
         width: 200,
         search: {
-          type: 'string'
+          type: 'string',
+          rename: 'deviceName'
         }
     },
     {
@@ -587,6 +590,14 @@ const columns = [
         scopedSlots: true,
     },
 ];
+const btnHasPermission = usePermissionStore().hasPermission;
+const paltformPermission = btnHasPermission(`iot-card/Platform:add`);
+const importSave = () => {
+  cardManageRef.value?.reload()
+  importVisible.value = false
+}
+
+const routerParams = useRouterParams()
 
 const getActions = (
     data: Partial<Record<string, any>>,
@@ -756,7 +767,7 @@ const handleSearch = (e: any) => {
 
 const onSelectChange = (keys: string[], rows: []) => {
     _selectedRowKeys.value = [...keys];
-    _selectedRow.value = [...rows];
+    // _selectedRow.value = [...rows];
 };
 
 const cancelSelect = () => {
@@ -819,6 +830,9 @@ const bindDevice = (val: boolean) => {
  * 批量激活
  */
 const handleActive = () => {
+    if (!_selectedRowKeys.value.length) {
+      return message.warn('请选择数据');
+    }
     if (
         _selectedRowKeys.value.length >= 10 &&
         _selectedRowKeys.value.length <= 100
@@ -885,15 +899,15 @@ const handleSync = () => {
  * 批量删除
  */
 const handelRemove = async () => {
-    if (!_selectedRow.value.length) {
+    if (!_selectedRowKeys.value.length) {
         message.error('请选择数据');
         return;
     }
-    const resp = await removeCards(_selectedRow.value);
+    const resp = await removeCards(_selectedRowKeys.value);
     if (resp.status === 200) {
         message.success('操作成功');
         _selectedRowKeys.value = [];
-        _selectedRow.value = [];
+        // _selectedRow.value = [];
         cardManageRef.value?.reload();
     }
 };
@@ -980,6 +994,12 @@ const batchActions: BatchActionsType[] = [
         },
     },
 ];
+
+onMounted(() => {
+  if (routerParams.params.value.type === 'add' && paltformPermission) {
+    handleAdd()
+  }
+})
 </script>
 
 <style scoped lang="less">

@@ -7,6 +7,7 @@
         <j-popconfirm
           title='确认删除？'
           @confirm='onDelete'
+          :overlayStyle='{minWidth: "180px"}'
         >
           <div v-if='!isFirst' class='terms-params-delete danger show'>
             <AIcon type='DeleteOutlined' />

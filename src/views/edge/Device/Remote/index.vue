@@ -8,12 +8,13 @@
 
 <script setup lang="ts">
 import { _control, _stopControl } from '@/api/edge/device';
+import {useRouterParams} from "@/utils/hooks/useParams";
 
 const url = ref<string>('');
 const deviceId = ref<string>('');
-
+const { params } = useRouterParams()
 watch(
-    () => history.state?.params?.id,
+    () => params.value.id,
     (newId) => {
         if (newId) {
             deviceId.value = newId as string;

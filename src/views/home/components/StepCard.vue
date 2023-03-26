@@ -12,11 +12,13 @@
 
         <div class="box-list">
             <div class="list-item" v-for="item in props.dataList">
+              <div class="item-content">
                 <div class="box-top" @click="jumpPage(item)">
                     <span class="top-title">{{ item.title }}</span>
                     <img :src="item.iconUrl" alt="" />
                 </div>
                 <div class="box-details">{{ item.details }}</div>
+              </div>
             </div>
         </div>
     </div>
@@ -82,6 +84,14 @@ const jumpPage = (row: recommendList) => {
         .list-item {
             flex: 1;
             position: relative;
+            .item-content {
+              display: flex;
+              flex-direction: column;
+              height: 100%;
+              &:hover {
+               box-shadow: @shadow-1-down;
+              }
+            }
             .box-top {
                 position: relative;
                 padding: 16px 24px;
@@ -103,6 +113,7 @@ const jumpPage = (row: recommendList) => {
                 padding: 24px;
                 border: 1px solid #e5edf4;
                 border-top: none;
+                flex: 1 1 auto;
             }
 
             &:not(:last-child)::after {

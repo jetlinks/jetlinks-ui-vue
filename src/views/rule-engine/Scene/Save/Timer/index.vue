@@ -59,7 +59,7 @@ const rules = [{
 
 const actionRules = [{
   validator(_: any, v?: BranchesThen[]) {
-    if (!v || (v && !v.length)) {
+    if (!v || (v && !v.length) || !v.some(item => item.actions && item.actions.length)) {
       return Promise.reject('至少配置一个执行动作');
     }
     return Promise.resolve();

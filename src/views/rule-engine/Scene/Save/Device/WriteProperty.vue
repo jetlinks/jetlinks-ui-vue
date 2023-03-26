@@ -23,11 +23,16 @@
         </span>
       </j-col>
       <j-col :span='24' v-if='showTable'>
-        <FunctionCall
-          :value='_value'
-          :data='callDataOptions'
-          @change='callDataChange'
-        />
+        <j-form-item
+          name='data'
+          :rules="rules"
+        >
+          <FunctionCall
+            v-model:value='formModel.data'
+            :data='callDataOptions'
+            @change='callDataChange'
+          />
+        </j-form-item>
       </j-col>
     </j-row>
   </j-form>
@@ -61,8 +66,9 @@ const props = defineProps({
 
 const emit = defineEmits<Emit>()
 
-const formModel = reactive<{ reportKey: string | undefined }>({
-  reportKey: undefined
+const formModel = reactive<{ reportKey: string | undefined, data: any[] }>({
+  reportKey: undefined,
+  data: Object.keys(props.value).map(key => ({ name: key, value: props.value[key] })) || []
 })
 
 const callData = ref<Array<{ id: string, value: string | undefined }>>()
@@ -97,6 +103,10 @@ const callDataOptions = computed(() => {
   return []
 })
 
+nextTick(() => {
+  formModel.reportKey = Object.keys(props.value)[0]
+})
+
 const showTable = computed(() => {
   return !!formModel.reportKey
 })
@@ -115,6 +125,23 @@ const callDataChange = (v: any[]) => {
     [formModel.reportKey!]: v[0]?.value
   })
 }
+
+const rules = [{
+  validator(_: string, value: any) {
+    console.log(value, callDataOptions.value)
+    if (!value?.length && callDataOptions.value.length) {
+      return Promise.reject('请选择属性值')
+    } else {
+      let hasValue = value.find((item: { name: string, value: any}) => !item.value)
+      if (hasValue) {
+        const item = callDataOptions.value.find((item: any) => item.id === hasValue.name)
+        console.log()
+        return Promise.reject(item?.name ? `请输入${item?.name}值` : '请输入属性值')
+      }
+    }
+    return Promise.resolve();
+  }
+}]
 
 const initRowKey = () => {
   if (props.value.length) {

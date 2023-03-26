@@ -6,6 +6,7 @@
       v-model:value='myValue'
       class='manual-time-picker'
       :format='myFormat'
+      :valueFormat='myFormat'
       :getPopupContainer='getPopupContainer'
       popupClassName='manual-time-picker-popup'
       @change='change'
@@ -16,6 +17,7 @@
       class='manual-time-picker'
       v-model:value='myValue'
       :format='myFormat'
+      :valueFormat='myFormat'
       :getPopupContainer='getPopupContainer'
       popupClassName='manual-time-picker-popup'
       @change='change'
@@ -48,15 +50,17 @@ const props = defineProps({
 
 const emit = defineEmits<Emit>()
 const myFormat = props.format || ( props.type === 'time' ? 'HH:mm:ss' : 'YYYY-MM-DD HH:mm:ss')
-const myValue = ref<Dayjs>(dayjs(props.value || new Date(), myFormat))
+// const myValue = ref<Dayjs>(dayjs(props.value || new Date(), myFormat))
+const myValue = ref<string>(props.value || dayjs(new Date()).format(myFormat))
 
 const getPopupContainer = (trigger: HTMLElement) => {
   return trigger?.parentNode || document.body
 }
 
-const change = (e: Dayjs) => {
-  emit('update:value', e.format(myFormat))
-  emit('change', e.format(myFormat))
+const change = (e: string) => {
+  myValue.value =  e
+  emit('update:value', e)
+  emit('change', e)
 }
 
 </script>

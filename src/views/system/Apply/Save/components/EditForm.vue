@@ -103,11 +103,6 @@
                 <j-checkbox-group
                     v-model:value="form.data.integrationModes"
                     :options="joinOptions"
-                    @change="
-                        form.integrationModesISO = [
-                            ...form.data.integrationModes,
-                        ]
-                    "
                 />
             </j-form-item>
 
@@ -409,7 +404,7 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '该字段是必填字段',
+                                        message: '请输入授权地址',
                                     },
                                 ]"
                             >
@@ -440,7 +435,7 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请选择认证方式',
+                                        message: '请选择请求方式',
                                     },
                                 ]"
                             >
@@ -449,6 +444,7 @@
                                         form.data.apiClient.authConfig.oauth2
                                             .tokenRequestType
                                     "
+                                    placeholder="请选择请求方式"
                                 >
                                     <j-select-option value="POST_BODY">
                                         请求体
@@ -470,7 +466,11 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '该字段是必填字段',
+                                        message: '请输入client_id',
+                                    },
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64个字符',
                                     },
                                 ]"
                             >
@@ -500,7 +500,11 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '该字段是必填字段',
+                                        message: '请输入client_secret',
+                                    },
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64个字符',
                                     },
                                 ]"
                             >
@@ -538,6 +542,10 @@
                                         required: true,
                                         message: '该字段是必填字段',
                                     },
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64个字符',
+                                    },
                                 ]"
                             >
                                 <j-input
@@ -560,6 +568,10 @@
                                     {
                                         required: true,
                                         message: '该字段是必填字段',
+                                    },
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64个字符',
                                     },
                                 ]"
                             >
@@ -600,7 +612,18 @@
                     </div>
 
                     <div v-if="form.data.provider !== 'internal-integrated'">
-                        <j-form-item>
+                        <j-form-item
+                            :name="['apiClient', 'headers']"
+                            :rules="[
+                                {
+                                    required: !headerValid,
+                                    message: '请输入请求头',
+                                },
+                                {
+                                    validator: headerValidator,
+                                },
+                            ]"
+                        >
                             <template #label>
                                 <FormLabel
                                     text="请求头"
@@ -610,11 +633,25 @@
 
                             <RequestTable
                                 v-model:value="form.data.apiClient.headers"
+                                v-model:valid="headerValid"
                             />
                         </j-form-item>
-                        <j-form-item label="参数">
+                        <j-form-item
+                            label="参数"
+                            :name="['apiClient', 'parameters']"
+                            :rules="[
+                                {
+                                    required: !paramsValid,
+                                    message: '请输入参数',
+                                },
+                                {
+                                    validator: paramsValidator,
+                                },
+                            ]"
+                        >
                             <RequestTable
                                 v-model:value="form.data.apiClient.parameters"
+                                v-model:valid="paramsValid"
                             />
                         </j-form-item>
                     </div>
@@ -698,7 +735,7 @@
                         :rules="[
                             {
                                 required: true,
-                                message: '请选中角色',
+                                message: '请选择角色',
                             },
                         ]"
                     >
@@ -823,7 +860,7 @@
                             :rules="[
                                 {
                                     required: true,
-                                    message: '该字段是必填字段',
+                                    message: '请选择认证方式',
                                 },
                             ]"
                         >
@@ -950,7 +987,7 @@
                         :rules="[
                             {
                                 required: true,
-                                message: '该字段是必填字段',
+                                message: '请输入授权地址',
                             },
                         ]"
                     >
@@ -983,7 +1020,7 @@
                             :rules="[
                                 {
                                     required: true,
-                                    message: '该字段是必填字段',
+                                    message: '请输入token地址',
                                 },
                             ]"
                         >
@@ -1004,7 +1041,7 @@
                         <j-form-item label="logo">
                             <j-upload
                                 v-model:file-list="form.fileList"
-                                accept=".jpg,.png,.jfif,.pjp,.pjpeg,.jpeg"
+                                accept=".jpg,.png"
                                 :maxCount="1"
                                 list-type="picture-card"
                                 :show-upload-list="false"
@@ -1012,6 +1049,7 @@
                                     [TOKEN_KEY]: LocalStore.get(TOKEN_KEY),
                                 }"
                                 :action="`${BASE_API_PATH}/file/static`"
+                                :beforeUpload="beforeLogoUpload"
                                 @change="changeBackUpload"
                             >
                                 <img
@@ -1052,7 +1090,7 @@
                             :rules="[
                                 {
                                     required: true,
-                                    message: '该字段是必填字段',
+                                    message: '请输入用户信息地址',
                                 },
                             ]"
                         >
@@ -1076,7 +1114,7 @@
                             :rules="[
                                 {
                                     required: true,
-                                    message: '请输入该字段是必填字段用户ID',
+                                    message: '请输入用户ID',
                                 },
                             ]"
                         >
@@ -1107,7 +1145,7 @@
                             :rules="[
                                 {
                                     required: true,
-                                    message: '该字段是必填字段',
+                                    message: '请输入用户名',
                                 },
                             ]"
                         >
@@ -1312,7 +1350,7 @@
                                 v-model:value="form.data.sso.roleIdList"
                                 mode="multiple"
                                 :options="form.roleIdList"
-                                placeholder="请选中角色"
+                                placeholder="请选择角色"
                             ></j-select>
                             <PermissionButton
                                 :hasPermission="`${rolePermission}:update`"
@@ -1464,7 +1502,7 @@ const initForm: formType = {
                 clientSecret: '', // 客户端密钥
                 grantType: '', // 类型
                 accessTokenProperty: '', // token属性名
-                tokenRequestType: '', // token请求方式, 可选值：POST_URI，POST_BODY
+                tokenRequestType: undefined, // token请求方式, 可选值：POST_URI，POST_BODY
             },
         },
     },
@@ -1533,6 +1571,21 @@ const form = reactive({
     fileList: [] as any[],
     uploadLoading: false,
 });
+
+// 请求头和参数必填验证
+const headerValid = ref(true);
+const paramsValid = ref(true);
+const headerValidator = () => {
+    return new Promise((resolve, reject) => {
+        headerValid.value ? resolve('') : reject('请输入完整的请求头');
+    });
+};
+const paramsValidator = () => {
+    return new Promise((resolve, reject) => {
+        paramsValid.value ? resolve('') : reject('请输入完整的请求参数');
+    });
+};
+
 // 接入方式的选项
 const joinOptions = computed(() => {
     if (form.data.provider === 'internal-standalone')
@@ -1632,12 +1685,27 @@ function init() {
             o.forEach((key) => {
                 if (!n.includes(key)) form.errorNumInfo[key].clear();
             });
+
+            form.integrationModesISO = [...n];
         },
     );
 }
 
 function getInfo(id: string) {
     getAppInfo_api(id).then((resp: any) => {
+        // 后端返回的headers和parameters中, key转为label
+        resp.result.apiClient.headers = resp.result.apiClient.headers.map(
+            (m: any) => ({
+                ...m,
+                label: m.key,
+            }),
+        );
+        resp.result.apiClient.parameters = resp.result.apiClient.parameters.map(
+            (m: any) => ({
+                ...m,
+                label: m.key,
+            }),
+        );
         form.data = {
             ...resp.result,
             integrationModes: resp.result.integrationModes.map(
@@ -1678,6 +1746,7 @@ function clickAddItem(data: string[], target: string) {
 }
 // 保存
 function clickSave() {
+    console.log('headers: ', form.data.apiClient.headers);
     formRef.value?.validate().then(() => {
         const params = cloneDeep(form.data);
         // 删除多余的参数
@@ -1717,6 +1786,23 @@ function clickSave() {
                 params.id = params.apiServer.appId;
             }
         }
+
+        // headers和params参数label需改为key传给后端
+        if (params.integrationModes.includes('apiClient')) {
+            params.apiClient.headers = params.apiClient.headers.map(
+                (m: any) => ({
+                    ...m,
+                    key: m.label,
+                }),
+            );
+            params.apiClient.parameters = params.apiClient.parameters.map(
+                (m: any) => ({
+                    ...m,
+                    key: m.label,
+                }),
+            );
+        }
+
         const request = routeQuery.id
             ? updateApp_api(routeQuery.id as string, params)
             : addApp_api(params);
@@ -1752,6 +1838,20 @@ function getErrorNum(
         } else if (!set.has(key)) set.add(key);
     }
 }
+
+const imageTypes = ref(['image/jpg', 'image/png']);
+const beforeLogoUpload = (file: any) => {
+    const isType: any = imageTypes.value.includes(file.type);
+    if (!isType) {
+        message.error(`请上传.jpg.png格式的图片`);
+        return false;
+    }
+    const isSize = file.size / 1024 / 1024 < 4;
+    if (!isSize) {
+        message.error(`图片大小必须小于${4}M`);
+    }
+    return isType && isSize;
+};
 function changeBackUpload(info: UploadChangeParam<UploadFile<any>>) {
     if (info.file.status === 'uploading') {
         form.uploadLoading = true;

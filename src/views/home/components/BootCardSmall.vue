@@ -76,18 +76,15 @@ const jumpPage = (item: bootConfig) => {
         .box-item {
             cursor: pointer;
             position: relative;
-            border-width: 1px 1px 1px 2px;
-            border-style: solid;
-            border-color: rgb(238, 238, 238) rgb(238, 238, 238)
-                rgb(238, 238, 238) rgb(133, 165, 255);
+            //border-width: 1px 1px 1px 2px;
+            //border-style: solid;
+            //border-color: rgb(238, 238, 238) rgb(238, 238, 238)
+            //    rgb(238, 238, 238) rgb(133, 165, 255);
+            border: 1px solid #e6e6e6;
             padding: 11px;
-            background: linear-gradient(
-                135.62deg,
-                #f6f7fd 22.27%,
-                rgba(255, 255, 255, 0.86) 91.82%
-            );
+            background: linear-gradient(0deg, #FFFFFF, #FFFFFF), linear-gradient(135.62deg, rgba(47, 84, 235, 0.07) 22.27%, rgba(47, 84, 235, 0.01) 91.82%);
             border-radius: 2px;
-            box-shadow: 0 4px 18px #efefef;
+            box-shadow: -2px 0 #85A5FF;
             &:not(:first-child) {
                 margin-top: 12px;
             }

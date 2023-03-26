@@ -276,6 +276,8 @@ const valueSelect = (_: any, label: string, labelObj: Record<number, any>) => {
 }
 
 const typeChange = (e: any) => {
+  paramsValue.type = e.value
+  emit('update:value', { ...paramsValue })
   formModel.value.branches![props.branchName].then[props.thenName].actions[props.actionName].options!.terms[props.termsName].terms[props.name][3] = e.label
 }
 

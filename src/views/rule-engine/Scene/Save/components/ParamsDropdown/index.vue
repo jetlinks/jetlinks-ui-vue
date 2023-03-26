@@ -3,6 +3,9 @@
     class='scene-select-value'
     trigger='click'
     v-model:visible='visible'
+    :overlayStyle='{
+      maxWidth: "300px"
+    }'
     @visibleChange='visibleChange'
   >
     <div @click.prevent='visible = true'>
@@ -35,6 +38,7 @@
                 <DropdownMenus
                   v-if='(["metric", "upper"].includes(item.key) ?  metricOptions : options).length'
                   :options='["metric", "upper"].includes(item.key) ?  metricOptions : options'
+                  :valueName='valueName'
                   @click='onSelect'
                 />
                 <div class='scene-select-empty' v-else>
@@ -84,6 +88,7 @@ import type { ValueType } from './typings'
 import { defaultSetting } from './typings'
 import { DropdownMenus, DropdownTimePicker} from '../DropdownButton'
 import { getOption } from '../DropdownButton/util'
+import { isArray } from 'lodash-es'
 
 type Emit = {
   (e: 'update:value', data: ValueType): void
@@ -120,7 +125,7 @@ const tabsChange = (e: string) => {
 const treeSelect = (v: any, option: any) => {
   const node = option.node
   visible.value = false
-  label.value = node.fullname || node.name
+  label.value = node[props.labelName] || node.name
   emit('update:value', node[props.valueName])
   emit('select', node, label.value, { 0: label.value })
 }
@@ -133,7 +138,7 @@ const valueItemChange = (e: string) => {
 
 const onSelect = (e: string, option: any) => {
   visible.value = false
-  label.value = option.label
+  label.value = option[props.labelName]
   emit('update:value', e)
   emit('select', e, label.value, { 0: label.value })
 }
@@ -150,14 +155,18 @@ const visibleChange = (v: boolean) => {
 }
 
 watchEffect(() => {
-  const _options = props.source === 'upper' ? props.metricOptions : props.options
+  const _options = ['metric', 'upper'].includes(props.source) ? props.metricOptions : props.options
   const option = getOption(_options, props.value as string, props.valueName) // 回显label值
   myValue.value = props.value
   mySource.value = props.source
   if (option) {
     label.value = option[props.labelName] || option.name
   } else {
-    label.value = props.value || props.placeholder
+    let doubleNull = false
+    if (isArray(props.value)) {
+      doubleNull = !!props.value.filter(item => !!item).length
+    }
+    label.value = props.value !== undefined && !doubleNull ? props.value : props.placeholder
   }
 })
 

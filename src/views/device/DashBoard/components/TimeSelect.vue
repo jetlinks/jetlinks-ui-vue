@@ -96,9 +96,9 @@ const handleBtnChange = (val: string) => {
     radioValue.value = val;
     let endTime = dayjs(new Date()).valueOf();
     let startTime = getTimeByType(val);
-    if (val === 'yesterday') {
-        startTime = dayjs().subtract(1, 'days').startOf('day').valueOf();
-        endTime = dayjs().subtract(1, 'days').endOf('day').valueOf();
+    if (val === 'today') {
+        startTime = dayjs().subtract(0, 'days').startOf('day').valueOf();
+        endTime = dayjs().subtract(0, 'days').endOf('day').valueOf();
     }
     rangeVal.value = [
         dayjs(startTime).format('YYYY-MM-DD HH:mm:ss'),

@@ -54,7 +54,9 @@
                         </template>
                         <template #content>
                             <h3 class="card-item-content-title">
-                                {{ slotProps.name }}
+                                <Ellipsis>
+                                    {{ slotProps.name }}
+                                </Ellipsis>
                             </h3>
                             <j-row>
                                 <j-col :span="12">

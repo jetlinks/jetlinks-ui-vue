@@ -39,10 +39,7 @@ type MenuStateType = {
     }
   }
   siderMenus: MenuItem[]
-  params: {
-    key: string
-    params: Record<string, any>
-  }
+  params: Record<string, any>
 }
 
 
@@ -50,10 +47,7 @@ export const useMenuStore = defineStore({
   id: 'menu',
   state: (): MenuStateType => ({
     menus: {},
-    params: {
-      key: '',
-      params: {}
-    },
+    params: {},
     siderMenus: []
   }),
   getters: {
@@ -85,6 +79,7 @@ export const useMenuStore = defineStore({
     jumpPage(name: string, params?: Record<string, any>, query?: Record<string, any>) {
       const path = this.hasMenu(name)
       if (path) {
+        this.params = { [name]: params || {}}
         router.push({
           name, params, query, state: { params }
         })

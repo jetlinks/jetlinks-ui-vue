@@ -27,6 +27,7 @@
             v-if='component === "select"'
             :value='selectValue'
             :options='options'
+            :valueName='valueName'
             @click='menuSelect'
           />
           <div style='min-width: 400px' v-else>
@@ -150,7 +151,7 @@ watchEffect(() => {
   if (option) {
     label.value = option[props.labelName] || option.name
   } else {
-    label.value = props.value || props.placeholder
+    label.value = props.value !== undefined ? props.value : props.placeholder
   }
 })
 

@@ -6,6 +6,7 @@
   >
     <j-popconfirm
       title='确认删除？'
+      :overlayStyle='{minWidth: "180px"}'
       @confirm='onDelete'
     >
       <div v-show='showDelete' class='terms-params-delete'>
@@ -97,7 +98,7 @@ const rules = [
         if (!v.termType) {
           return Promise.reject(new Error('请选择操作符'));
         }
-        if (!v.value?.value) {
+        if (v.value?.value === undefined) {
           return Promise.reject(new Error('请选择或输入参数值'));
         }
         if (
@@ -107,6 +108,9 @@ const rules = [
           return Promise.reject(new Error('请选择或输入参数值'));
         }
       } else {
+        if (v?.error) { // 数据发生变化
+          return Promise.reject(new Error('该数据已发生变更，请重新配置'))
+        }
         return Promise.reject(new Error('请选择参数'));
       }
       return Promise.resolve();

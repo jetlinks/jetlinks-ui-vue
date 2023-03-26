@@ -6,12 +6,12 @@
         title="导入"
         okText="确定"
         cancelText="取消"
-        @ok="handleCancel"
+        @ok="handleOk"
         @cancel="handleCancel"
     >
         <div style="margin-top: 10px">
-            <j-form :layout="'vertical'">
-                <j-form-item label="平台对接" required>
+            <j-form :layout="'vertical'" :model="modelRef" ref="formRef" :rules="rules">
+                <j-form-item label="平台对接" required name="configId">
                     <j-select
                         showSearch
                         v-model:value="modelRef.configId"
@@ -86,18 +86,23 @@ import { queryPlatformNoPage, _import ,exportCard} from '@/api/iot-card/cardMana
 import { message } from 'jetlinks-ui-components';
 
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'save']);
 
 const configList = ref<Record<string, any>[]>([]);
 const loading = ref<boolean>(false);
 const totalCount = ref<number>(0);
 const errCount = ref<number>(0);
-
+const formRef = ref(null)
+const importStatus = ref(false)
 const modelRef = reactive({
     configId: undefined,
     upload: [],
     fileType: 'xlsx',
 });
+
+const rules = {
+  configId: [{ required: true, message: '请选择平台对接'}]
+}
 
 const getConfig = async () => {
     const resp: any = await queryPlatformNoPage({
@@ -127,6 +132,7 @@ const fileChange = (info: any) => {
         _import(modelRef.configId, { fileUrl: r.result })
             .then((resp: any) => {
                 totalCount.value = resp.result.total;
+                importStatus.value = true
                 message.success('导入成功')
             })
             .catch((err) => {
@@ -159,8 +165,19 @@ const handleCancel = () => {
     totalCount.value = 0;
     errCount.value = 0;
     modelRef.configId = undefined;
+
     emit('close', true);
+    if (importStatus.value) {
+      emit('save', true)
+    }
+    importStatus.value = false
 };
+
+const handleOk = () => {
+  formRef.value.validate().then(res => {
+    handleCancel()
+  })
+}
 
 getConfig();
 </script>
