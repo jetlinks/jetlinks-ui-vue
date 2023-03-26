@@ -245,7 +245,7 @@ const columns = [
         key: 'status',
         ellipsis: true,
         search: {
-            rename: 'status',
+            rename: 'state',
             type: 'select',
             options: [
                 {
