@@ -83,8 +83,9 @@ import ParamsDropdown, { DoubleParamsDropdown } from '../../components/ParamsDro
 import { inject } from 'vue'
 import { useSceneStore } from 'store/scene'
 import { storeToRefs } from 'pinia';
-import { flattenDeep, set } from 'lodash-es'
+import {cloneDeep, flattenDeep, set} from 'lodash-es'
 import { Form } from 'jetlinks-ui-components'
+import {treeFilter} from "@/utils/comm";
 
 const sceneStore = useSceneStore()
 const { data: formModel } = storeToRefs(sceneStore)
@@ -160,7 +161,7 @@ const columnOptions: any = inject('filter-params') //
 const termTypeOptions = ref<Array<{ id: string, name: string}>>([]) // 条件值
 const valueOptions = ref<any[]>([]) // 默认手动输入下拉
 const arrayParamsKey = ['nbtw', 'btw', 'in', 'nin']
-const valueColumnOptions = ref([])
+const valueColumnOptions = ref<any[]>([])
 
 const tabsOptions = ref<Array<TabsOption>>(
   [
@@ -183,7 +184,7 @@ const handOptionByColumn = (option: any) => {
     } else{
       valueOptions.value = option.options || []
     }
-    valueColumnOptions.value = columnOptions.value
+    valueColumnOptions.value = treeFilter(cloneDeep(columnOptions.value), option.type, 'type')
   } else {
     termTypeOptions.value = []
     valueOptions.value = []

@@ -1,6 +1,7 @@
 import type { Slots } from 'vue'
 import { TOKEN_KEY } from '@/utils/variable'
 import { message } from 'jetlinks-ui-components';
+import {cloneDeep} from "lodash-es";
 
 /**
  * 静态图片资源处理
@@ -133,4 +134,15 @@ export const handleParamsToString = (terms:SearchItemData[] = []) => {
   })
 
   return JSON.stringify({ terms: _terms})
+}
+
+export const treeFilter = (data: any[], value: any, key: string = 'name'): any[] => {
+  return data?.filter(item => {
+    if (item.children && item.children.length) {
+      item.children = treeFilter(item.children || [], value, key)
+      return !!item.children.length
+    } else {
+      return item[key] === value
+    }
+  }) || []
 }
