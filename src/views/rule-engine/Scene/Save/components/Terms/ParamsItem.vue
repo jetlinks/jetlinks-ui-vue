@@ -81,7 +81,7 @@ import { ContextKey } from './util'
 import { useSceneStore } from 'store/scene'
 import { storeToRefs } from 'pinia';
 import { Form } from 'jetlinks-ui-components'
-import { pick } from 'lodash-es'
+import {isArray, pick} from 'lodash-es'
 
 const sceneStore = useSceneStore()
 const { data: formModel } = storeToRefs(sceneStore)
@@ -251,7 +251,8 @@ const columnSelect = (option: any) => {
 }
 
 const termsTypeSelect = (e: { key: string, name: string }) => {
-  const value = arrayParamsKey.includes(e.key) ? [ undefined, undefined ] : undefined
+  const oldValue = isArray(paramsValue.value!.value) ? paramsValue.value!.value[0] : paramsValue.value!.value
+  const value = arrayParamsKey.includes(e.key) ? [ oldValue, undefined ] : oldValue
   paramsValue.value = {
     source: tabsOptions.value[0].key,
     value: value

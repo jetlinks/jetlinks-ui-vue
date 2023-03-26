@@ -83,7 +83,7 @@ import ParamsDropdown, { DoubleParamsDropdown } from '../../components/ParamsDro
 import { inject } from 'vue'
 import { useSceneStore } from 'store/scene'
 import { storeToRefs } from 'pinia';
-import {cloneDeep, flattenDeep, set} from 'lodash-es'
+import {cloneDeep, flattenDeep, isArray, set} from 'lodash-es'
 import { Form } from 'jetlinks-ui-components'
 import {treeFilter} from "@/utils/comm";
 
@@ -263,7 +263,8 @@ const columnSelect = (e: any) => {
 }
 
 const termsTypeSelect = (e: { key: string, name: string }) => {
-  const value = arrayParamsKey.includes(e.key) ? [ undefined, undefined ] : undefined
+  const oldValue = isArray(paramsValue.value!.value) ? paramsValue.value!.value[0] : paramsValue.value!.value
+  const value = arrayParamsKey.includes(e.key) ? [ oldValue, undefined ] : oldValue
   paramsValue.value = {
     source: tabsOptions.value[0].key,
     value: value
