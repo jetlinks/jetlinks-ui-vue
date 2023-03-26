@@ -43,7 +43,7 @@
         value-name='id'
         label-name='name'
         :options='valueOptions'
-        :metricOptions='columnOptions'
+        :metricOptions='valueColumnOptions'
         :tabsOptions='tabsOptions'
         v-model:value='paramsValue.value.value'
         v-model:source='paramsValue.value.source'
@@ -56,7 +56,7 @@
         value-name='id'
         label-name='name'
         :options='valueOptions'
-        :metricOptions='columnOptions'
+        :metricOptions='valueColumnOptions'
         :tabsOptions='tabsOptions'
         v-model:value='paramsValue.value.value'
         v-model:source='paramsValue.value.source'
@@ -160,6 +160,7 @@ const columnOptions: any = inject('filter-params') //
 const termTypeOptions = ref<Array<{ id: string, name: string}>>([]) // 条件值
 const valueOptions = ref<any[]>([]) // 默认手动输入下拉
 const arrayParamsKey = ['nbtw', 'btw', 'in', 'nin']
+const valueColumnOptions = ref([])
 
 const tabsOptions = ref<Array<TabsOption>>(
   [
@@ -182,9 +183,11 @@ const handOptionByColumn = (option: any) => {
     } else{
       valueOptions.value = option.options || []
     }
+    valueColumnOptions.value = columnOptions.value
   } else {
     termTypeOptions.value = []
     valueOptions.value = []
+    valueColumnOptions.value = []
   }
 }
 
