@@ -32,11 +32,12 @@
           />
           <div style='min-width: 400px' v-else>
             <j-tree
+              v-model:expandedKeys="treeOpenKeys"
               :selectedKeys='selectValue ? [selectValue] : []'
               :treeData='options'
-              @select='treeSelect'
               :height='450'
               :virtual='true'
+              @select='treeSelect'
             >
               <template #title="{ name, description }">
                 <j-space>
@@ -61,6 +62,7 @@ import DropMenus from './Menus.vue'
 import DropdownTimePicker from './Time.vue'
 import { getOption } from './util'
 import type { DropdownButtonOptions } from './util'
+import {openKeysByTree} from "@/utils/comm";
 
 type LabelType = string | number | boolean | undefined
 
@@ -109,7 +111,7 @@ const emit = defineEmits<Emit>()
 const label = ref<LabelType>(props.placeholder)
 const selectValue = ref(props.value)
 const visible = ref(false)
-
+const treeOpenKeys = ref<(string|number)[]>([])
 const visibleChange = (v: boolean) => {
   visible.value = v
 }
@@ -148,8 +150,9 @@ const menuSelect = (v: string, option: any) => {
 watchEffect(() => {
   const option = getOption(props.options, props.value, props.valueName)
   selectValue.value = props.value
-  if (option) {
+  if (option) { // 数据回显
     label.value = option[props.labelName] || option.name
+    treeOpenKeys.value = openKeysByTree(props.options, props.value, props.valueName)
   } else {
     label.value = props.value !== undefined ? props.value : props.placeholder
   }

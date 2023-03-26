@@ -48,11 +48,12 @@
               <template v-else-if='item.component === "tree"'>
                 <div style='min-width: 400px' v-if='(item.key === "upper" ?  metricOptions : options).length'>
                   <j-tree
+                      v-model:expandedKeys="treeOpenKeys"
                     :selectedKeys='myValue ? [myValue] : []'
                     :treeData='item.key === "upper" ?  metricOptions : options'
-                    @select='treeSelect'
                     :height='450'
                     :virtual='true'
+                    @select='treeSelect'
                   >
                     <template #title="{ name, description }">
                       <j-space>
@@ -89,6 +90,7 @@ import { defaultSetting } from './typings'
 import { DropdownMenus, DropdownTimePicker} from '../DropdownButton'
 import { getOption } from '../DropdownButton/util'
 import { isArray } from 'lodash-es'
+import {openKeysByTree} from "@/utils/comm";
 
 type Emit = {
   (e: 'update:value', data: ValueType): void
@@ -106,6 +108,7 @@ const emit = defineEmits<Emit>()
 const myValue = ref<ValueType>(props.value)
 const mySource = ref<string>(props.source)
 const label = ref<any>(props.placeholder)
+const treeOpenKeys = ref<(string|number)[]>([])
 const visible = ref(false)
 
 nextTick(() => {
@@ -161,6 +164,7 @@ watchEffect(() => {
   mySource.value = props.source
   if (option) {
     label.value = option[props.labelName] || option.name
+    treeOpenKeys.value = openKeysByTree(_options, props.value, props.valueName)
   } else {
     let doubleNull = false
     if (isArray(props.value)) {
