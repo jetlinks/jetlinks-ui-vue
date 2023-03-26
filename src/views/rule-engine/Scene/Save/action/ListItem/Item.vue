@@ -265,19 +265,23 @@
                           <Ellipsis style='max-width: 400px;'>
                             {{data?.options?.properties}}
                           </Ellipsis>
+
+                          <Ellipsis style='max-width: 200px;'>
                             {{
-                                `${
-                                    (
-                                        isBoolean(
-                                            data?.options?.propertiesValue,
-                                        )
-                                            ? true
-                                            : data?.options?.propertiesValue
-                                    )
-                                        ? `为 ${data?.options?.propertiesValue}`
-                                        : ''
-                                }`
+                              `${
+                                  (
+                                      isBoolean(
+                                          data?.options?.propertiesValue,
+                                      )
+                                          ? true
+                                          : data?.options?.propertiesValue
+                                  )
+                                      ? `为 ${data?.options?.propertiesValue}`
+                                      : ''
+                              }`
                             }}
+                          </Ellipsis>
+
                         </div>
                     </template>
                     <template v-else-if="data?.device?.selector === 'tag'">
