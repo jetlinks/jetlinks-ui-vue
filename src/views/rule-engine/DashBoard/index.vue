@@ -42,7 +42,7 @@
                                 <TimeSelect
                                     key="flow-static"
                                     :type="'week'"
-                                    :quickBtnList="quickBtnList"
+                                    
                                     @change="initQueryTime"
                                 />
                             </template>
@@ -152,12 +152,6 @@ let queryCodition = reactive({
     targetType: 'device',
 });
 let alarmStatisticsOption = ref<any>({});
-const quickBtnList = [
-    { label: '昨日', value: 'yesterday' },
-    { label: '近一周', value: 'week' },
-    { label: '近一月', value: 'month' },
-    { label: '近一年', value: 'year' },
-];
 type DashboardItem = {
     group: string;
     data: Record<string, any>;
@@ -270,7 +264,8 @@ const getDashBoard = () => {
                         name: '告警数',
                         data: fifteenData.map((item) => item.value),
                         type: 'line',
-                        color: '#2F54EB',
+                        color: '#FF595E',
+                        smooth: true,
                         symbolSize: 0,
                         areaStyle: {
                             color: {
@@ -278,11 +273,11 @@ const getDashBoard = () => {
                                 x: 0,
                                 y: 0,
                                 x2: 0,
-                                y2: 0,
+                                y2: 1,
                                 colorStops: [
                                     {
                                         offset: 0,
-                                        color: '#2F54EB', // 100% 处的颜色
+                                        color: '#FF595E', // 100% 处的颜色
                                     },
                                     {
                                         offset: 1,
@@ -463,7 +458,7 @@ const selectChange = () => {
                         data: sData.reverse(),
                         type: 'line',
                         smooth: true,
-                        color: '#685DEB',
+                        color: '#ADC6FF',
                         areaStyle: {
                             color: {
                                 type: 'linear',
@@ -474,7 +469,7 @@ const selectChange = () => {
                                 colorStops: [
                                     {
                                         offset: 0,
-                                        color: '#685DEB', // 100% 处的颜色
+                                        color: '#ADC6FF', // 100% 处的颜色
                                     },
                                     {
                                         offset: 1,

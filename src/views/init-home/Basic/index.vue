@@ -10,7 +10,6 @@
                 >
                     <j-input
                         v-model:value="form.title"
-                        :maxlength="64"
                         placeholder="请输入系统名称"
                     />
                 </j-form-item>
@@ -255,7 +254,7 @@
 <script setup lang="ts">
 import { modalState, formState, logoState } from '../data/interface';
 import { getImage } from '@/utils/comm.ts';
-import { Form,  message } from 'jetlinks-ui-components';
+import { Form, message } from 'jetlinks-ui-components';
 import { FILE_UPLOAD } from '@/api/comm';
 import {
     getSystemPermission,
@@ -276,7 +275,7 @@ import {
 } from '@/api/initHome';
 import { LocalStore } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
-import { SystemConst } from '@/utils/consts'
+import { SystemConst } from '@/utils/consts';
 const formRef = ref();
 const menuRef = ref();
 const formBasicRef = ref();
@@ -297,9 +296,16 @@ const form = ref<formState>({
     basePath: `${window.location.origin}/api`,
     logo: getImage('/logo.png'),
     ico: getImage('/favicon.ico'),
-    background:getImage('/login.png')
+    background: getImage('/login.png'),
 });
 const rulesFrom = ref({
+    title: [
+        {
+            max: 64,
+            message: '最多可输入64位',
+            trigger: 'change',
+        },
+    ],
     headerTheme: [
         {
             required: true,
@@ -322,49 +328,52 @@ const { resetFields, validate, validateInfos } = useForm(
 /**
  * 提交数据
  */
-const saveBasicInfo = () =>{
-    return new Promise( async (resolve) => {
-    validate()
-        .then(async () => {
-            const item = [
-                {
-                    scope: 'front',
-                    properties: {
-                        ...form.value,
-                        apikey: '',
-                        'base-path': '',
+const saveBasicInfo = () => {
+    return new Promise(async (resolve) => {
+        validate()
+            .then(async () => {
+                const item = [
+                    {
+                        scope: 'front',
+                        properties: {
+                            ...form.value,
+                            apikey: '',
+                            'base-path': '',
+                        },
                     },
-                },
-                {
-                    scope: 'amap',
-                    properties: {
-                        apiKey: form.value.apikey,
+                    {
+                        scope: 'amap',
+                        properties: {
+                            apiKey: form.value.apikey,
+                        },
                     },
-                },
-                {
-                    scope: 'paths',
-                    properties: {
-                        'base-path': form.value.basePath,
+                    {
+                        scope: 'paths',
+                        properties: {
+                            'base-path': form.value.basePath,
+                        },
                     },
-                },
-            ];
-            const res = await save(item);
-            if (res.status === 200) {
-                resolve(true);
-                localStorage.setItem(SystemConst.AMAP_KEY,form.value.apikey);
-                const ico: any = document.querySelector('link[rel="icon"]');
-                if (ico !== null) {
-                    ico.href = form.value.ico;
+                ];
+                const res = await save(item);
+                if (res.status === 200) {
+                    resolve(true);
+                    localStorage.setItem(
+                        SystemConst.AMAP_KEY,
+                        form.value.apikey,
+                    );
+                    const ico: any = document.querySelector('link[rel="icon"]');
+                    if (ico !== null) {
+                        ico.href = form.value.ico;
+                    }
+                } else {
+                    resolve(false);
                 }
-            }else {
+            })
+            .catch(() => {
                 resolve(false);
-            }
-        })
-        .catch(() => {
-            resolve(false);
-        });
-})
-}
+            });
+    });
+};
 /**
  * logo格式校验
  */
@@ -397,22 +406,22 @@ const handleChangeLogo = (info: any) => {
 /**
  * 浏览器页签上传之前
  */
-const beforeIconUpload = (file:any) => {
+const beforeIconUpload = (file: any) => {
     const isType = iconTypes.value.includes(file.type);
-    if(!isType){
+    if (!isType) {
         message.error('请上传ico格式的图片');
         return false;
     }
     const isSize = file.size / 1024 / 1024 < 1;
-    if(!isSize){
+    if (!isSize) {
         message.error('支持1M以内的图片');
     }
     return isType && isSize;
-}
+};
 /**
  * 浏览器页签发生改变
  */
- const changeIconUpload = (info: any) => {
+const changeIconUpload = (info: any) => {
     if (info.file.status === 'uploading') {
         iconLoading.value = true;
     }
@@ -421,11 +430,11 @@ const beforeIconUpload = (file:any) => {
         iconLoading.value = false;
         form.value.ico = info.file.response?.result;
     }
-}
+};
 /**
  * 背景图片上传之前
  */
- const beforeBackUpload = (file: any) => {
+const beforeBackUpload = (file: any) => {
     const isType = imageTypes.value.includes(file.type);
     if (!isType) {
         message.error(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`);

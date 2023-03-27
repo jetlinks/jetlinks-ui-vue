@@ -283,7 +283,7 @@ const queryParams = ref({});
 const tableRef = ref();
 const table = {
     refresh: () => {
-        tableRef.value.reload();
+        tableRef.value.reload(queryParams.value);
     },
     toSave: (id?: string, view = false) => {
         if (id) menuStory.jumpPage('system/Apply/Save', {}, { id, view });

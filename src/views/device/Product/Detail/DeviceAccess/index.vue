@@ -39,6 +39,7 @@
                                         productStore.current?.count &&
                                         productStore.current?.count > 0
                                     "
+                                    ghost
                                     type="primary"
                                     @click="showDevice"
                                     >更换</j-button
@@ -1080,8 +1081,5 @@ nextTick(() => {
 }
 .changeBtn {
     margin: 0 0 0 20px;
-    color: #315efb;
-    background: #ffffff;
-    border: 1px solid #315efb;
 }
 </style>

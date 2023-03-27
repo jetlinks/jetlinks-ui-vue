@@ -83,6 +83,7 @@ const jumpDetail = (item:any) =>{
     background-color: #fff;
     border: 1px solid #e0e4e8;
     border-radius: 2px;
+    height: 100%;
 }
 .new-alarm-items {
     ul {
