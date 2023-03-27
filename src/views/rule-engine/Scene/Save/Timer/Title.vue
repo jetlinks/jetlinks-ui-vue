@@ -2,15 +2,6 @@
   <div :class='["trigger-options-content", isAdd ? "is-add" : ""]'>
     <span v-if='!isAdd'> 点击配置定时触发 </span>
     <template v-else>
-      <div class='center-item'>
-        <AIcon v-if='options.selectorIcon' :type='options.selectorIcon' class='icon-padding-right' />
-        <span class='trigger-options-name'>
-            <Ellipsis style='max-width: 310px'>
-              {{ options.name }}
-            </Ellipsis>
-        </span>
-        <span v-if='options.extraName'>{{ options.extraName }}</span>
-      </div>
       <div v-if='options.when'>
         <span className='trigger-options-when'>{{ options.when }}</span>
       </div>
