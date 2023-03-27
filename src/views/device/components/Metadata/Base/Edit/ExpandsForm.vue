@@ -5,7 +5,7 @@
     <j-select v-model:value="_value.source" :options="PropertySource" size="small"
       :disabled="metadataStore.model.action === 'edit'" @change="changeSource"></j-select>
   </j-form-item>
-  <virtual-rule-param v-if="_value.source === 'rule'" v-model:value="_value.virtualRule"
+  <virtual-rule-param v-if="type === 'product' && _value.source === 'rule'" v-model:value="_value.virtualRule"
     :name="name.concat(['virtualRule'])" :id="id" :showWindow="_value.source === 'rule'"></virtual-rule-param>
   <j-form-item label="读写类型" :name="name.concat(['type'])" :rules="[
     { required: true, message: '请选择读写类型' },
