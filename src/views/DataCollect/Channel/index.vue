@@ -198,6 +198,9 @@ const columns = [
         dataIndex: 'description',
         key: 'description',
         ellipsis: true,
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '操作',
@@ -254,7 +257,7 @@ const getActions = (
                     state === 'enabled' ? '请先禁用该组件，再删除。' : '删除',
             },
             popConfirm: {
-                title: '确认删除?',
+                title: '该操作将会删除下属采集器与点位，确定删除?',
                 onConfirm: async () => {
                     const res = await remove(data.id);
                     if (res.success) {
