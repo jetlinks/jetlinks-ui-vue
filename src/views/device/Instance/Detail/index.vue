@@ -270,13 +270,12 @@ const getDetailFn = async () => {
     getStatus(String(_id));
     list.value = [...initList];
     getDetail();
-    instanceStore.tabActiveKey = routerParams.params.value.tab || 'Info';
   }
+  instanceStore.tabActiveKey = routerParams.params.value.tab || 'Info';
 }
 
 onMounted(() => {
     getDetailFn()
-    instanceStore.tabActiveKey = routerParams.params.value.tab || 'Info';
 });
 
 const onBack = () => {
