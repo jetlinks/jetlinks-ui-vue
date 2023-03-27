@@ -788,6 +788,9 @@
                             multiple
                             :tree-data="form.orgIdList"
                             placeholder="请选择组织"
+                            :filterTreeNode="
+                                (v: string, node: any) => filterSelectNode(v, node, 'name')
+                            "
                         >
                             <template #title="{ name }">
                                 {{ name }}
@@ -1439,7 +1442,7 @@
 
 <script setup lang="ts">
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
-import { LocalStore } from '@/utils/comm';
+import { LocalStore, filterSelectNode } from '@/utils/comm';
 
 import {
     getDepartmentList_api,
@@ -1729,7 +1732,7 @@ function getRoleIdList() {
 }
 // 获取组织列表
 function getOrgIdList() {
-    getDepartmentList_api().then((resp) => {
+    getDepartmentList_api({ paging: false }).then((resp) => {
         if (resp.status === 200) {
             form.orgIdList = resp.result as dictType;
         }
