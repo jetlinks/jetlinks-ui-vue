@@ -1,4 +1,5 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
+import dayjs from 'dayjs';
 
 const getParams = (dt: any) => {
     switch (dt.type) {
@@ -21,6 +22,8 @@ const getParams = (dt: any) => {
                 format: 'HH:mm',
             };
         default:
+            console.log(22, dt, dayjs(dt.time[0]));
+
             const time = dt.end - dt.start;
             const hour = 60 * 60 * 1000;
             const days = hour * 24;
@@ -56,15 +59,15 @@ const getParams = (dt: any) => {
 export const getTimeByType = (type: string) => {
     switch (type) {
         case 'hour':
-            return moment().subtract(1, 'hours');
+            return dayjs().subtract(1, 'hours');
         case 'week':
-            return moment().subtract(6, 'days');
+            return dayjs().subtract(6, 'days');
         case 'month':
-            return moment().subtract(29, 'days');
+            return dayjs().subtract(29, 'days');
         case 'year':
-            return moment().subtract(365, 'days');
+            return dayjs().subtract(365, 'days');
         default:
-            return moment().startOf('day');
+            return dayjs().startOf('day');
     }
 };
 

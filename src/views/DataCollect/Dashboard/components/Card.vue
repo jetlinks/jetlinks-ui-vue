@@ -21,7 +21,7 @@
                         :allowClear="false"
                         :show-time="{ format: 'HH:mm:ss' }"
                         format="YYYY-MM-DD HH:mm:ss"
-                        v-model="data.time"
+                        v-model:value="data.time.time"
                         @change="pickerTimeChange"
                     >
                         <template #suffixIcon
@@ -39,24 +39,18 @@
 import { dashboard } from '@/api/data-collect/dashboard';
 import { getTimeByType, pointParams, pointOptionsSeries } from '../tool.ts';
 import * as echarts from 'echarts';
-import { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 
 const chartRef = ref<Record<string, any>>({});
 const loading = ref(false);
-const data = ref({
+const data: any = ref({
     time: {
         type: 'hour',
-        end: 0,
-        start: 0,
+        time: [null, null],
     },
 });
 
-const pickerTimeChange = (
-    value: [Dayjs, Dayjs],
-    dateString: [string, string],
-) => {
-    data.value.time.start = Date.parse(dateString[0]);
-    data.value.time.end = Date.parse(dateString[1]);
+const pickerTimeChange = () => {
     data.value.time.type = undefined;
 };
 
@@ -114,8 +108,8 @@ const handleOptions = (x = [], y = []) => {
 watch(
     () => data.value.time.type,
     (value) => {
-        data.value.time.end = Date.parse(Date());
-        data.value.time.start = Date.parse(getTimeByType(value));
+        const date = getTimeByType(value);
+        data.value.time.time = [dayjs(date), dayjs(new Date())];
     },
     { immediate: true, deep: true },
 );
@@ -123,7 +117,7 @@ watch(
     () => data.value,
     (value) => {
         const { time } = value;
-        if (time.type || (time.end && time.start)) {
+        if (time.type || (time.time[0] && time.time[1])) {
             getEcharts(value);
         }
     },
