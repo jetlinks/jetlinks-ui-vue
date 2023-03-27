@@ -42,7 +42,7 @@
                                 <TimeSelect
                                     key="flow-static"
                                     :type="'week'"
-                                    :quickBtnList="quickBtnList"
+                                    
                                     @change="initQueryTime"
                                 />
                             </template>
@@ -152,12 +152,6 @@ let queryCodition = reactive({
     targetType: 'device',
 });
 let alarmStatisticsOption = ref<any>({});
-const quickBtnList = [
-    { label: '昨日', value: 'yesterday' },
-    { label: '近一周', value: 'week' },
-    { label: '近一月', value: 'month' },
-    { label: '近一年', value: 'year' },
-];
 type DashboardItem = {
     group: string;
     data: Record<string, any>;
@@ -271,6 +265,7 @@ const getDashBoard = () => {
                         data: fifteenData.map((item) => item.value),
                         type: 'line',
                         color: '#2F54EB',
+                        smooth: true,
                         symbolSize: 0,
                         areaStyle: {
                             color: {
@@ -278,7 +273,7 @@ const getDashBoard = () => {
                                 x: 0,
                                 y: 0,
                                 x2: 0,
-                                y2: 0,
+                                y2: 1,
                                 colorStops: [
                                     {
                                         offset: 0,

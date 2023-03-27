@@ -32,6 +32,10 @@ export const getTargetTypes = () => server.get('/alarm/config/target-type/suppor
  */
 export const save = (data:any) =>server.post('/alarm/config',data);
 /**
+ * 更新基础设置
+ */
+export const updata = (data:any) => server.patch('/alarm/config',data);
+/**
  * 获取基础设置数据
  */
 export const detail = (id:string) => server.get(`/alarm/config/${id}`);

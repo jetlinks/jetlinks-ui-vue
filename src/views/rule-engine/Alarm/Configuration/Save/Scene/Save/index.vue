@@ -229,4 +229,9 @@ const closeModal = () => {
 };
 </script>
 <style lang="less" scoped>
+.subTitle {
+    color: rgba(0, 0, 0, 0.65);
+    font-size: 14px;
+    margin-top: 10px;
+}
 </style>

@@ -6,7 +6,6 @@
             sorts: [{ name: 'createTime', order: 'desc' }],
             terms,
         }"
-        :gridColumns="[1, 1, 1]"
         ref="actionRef"
     >
         <template #headerTitle>
@@ -180,4 +179,9 @@ const saveSuccess = () => {
 };
 </script>
 <style lang="less" scoped>
+.subTitle {
+    color: rgba(0, 0, 0, 0.65);
+    font-size: 14px;
+    margin-top: 10px;
+}
 </style>

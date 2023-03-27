@@ -46,13 +46,13 @@
             <j-form-item label="说明" name="description">
                 <j-textarea v-model:value="form.description" showCount :maxlength="200"></j-textarea>
             </j-form-item>
-            <PermissionButton type="primary" @click="handleSave" :hasPermission="['rule-engine/Alarm/Configuration:add','rule-engine/Alarm/Configuration:update']">保存</PermissionButton>
+            <PermissionButton type="primary" :loading="loading" @click="handleSave" :hasPermission="['rule-engine/Alarm/Configuration:add','rule-engine/Alarm/Configuration:update']">保存</PermissionButton>
         </j-form>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { getTargetTypes, save, detail } from '@/api/rule-engine/configuration';
+import { getTargetTypes, save, detail , updata} from '@/api/rule-engine/configuration';
 import { queryLevel } from '@/api/rule-engine/config';
 import { query } from '@/api/rule-engine/scene';
 import { getImage } from '@/utils/comm';
@@ -71,10 +71,11 @@ const queryData = () => {
     if (id) {
         detail(id).then((res) => {
             if (res.status === 200) {
-                form.level = res?.result?.level;
-                form.name = res?.result?.name;
-                form.targetType = res?.result?.targetType;
-                form.description = res?.result?.description;
+                form.value = res?.result
+                // form.level = res?.result?.level;
+                // form.name = res?.result?.name;
+                // form.targetType = res?.result?.targetType;
+                // form.description = res?.result?.description;
                 configurationData.value.current = res.result;
                 query({
                     terms: [
@@ -134,7 +135,7 @@ const rule = {
         },
     ],
 };
-let form = reactive({
+let form = ref({
     level: '',
     targetType: '',
     name: '',
@@ -175,18 +176,18 @@ const handleSave = async () => {
     formRef.value
         .validate()
         .then(async () => {
-            const res = await save(form);
-            loading.value = false;
+            const res = id ? await updata(form.value) : await save(form.value);
             if (res.status === 200) {
                 message.success('操作成功,请配置关联的场景联动');
+                loading.value = false;
                 menuStory.jumpPage(
-                    'rule-engine/Alarm/Configuration/Save',
+                    'rule-engine/Alarm/Configuration/Save', 
                     {},
                     { id: res.result?.id },
                 );
                 if (!id) {
                     configurationData.value.current = res.result;
-                }
+                }   
             }
         })
         .catch((error) => {
