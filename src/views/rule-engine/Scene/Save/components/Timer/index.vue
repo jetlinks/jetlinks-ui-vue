@@ -18,21 +18,7 @@
         @change='updateValue'
       />
     </j-form-item>
-    <j-form-item v-if='showCron' name='cron' :rules="[
-      { max: 64, message: '最多可输入64个字符' },
-      {
-        validator: async (_, v) => {
-           if (v) {
-             if (!isCron(v)) {
-               return Promise.reject(new Error('请输入正确的cron表达式'));
-             }
-           } else {
-             return Promise.reject(new Error('请输入cron表达式'));
-           }
-           return Promise.resolve();
-        }
-      }
-    ]">
+    <j-form-item v-if='showCron' name='cron' :rules="cronRules">
       <j-input placeholder='corn表达式' v-model:value='formModel.cron' @change='updateValue' />
     </j-form-item>
     <template v-else>
@@ -138,6 +124,22 @@ const props = defineProps({
 })
 
 const emit = defineEmits<Emit>()
+
+const cronRules = [
+  { max: 64, message: '最多可输入64个字符' },
+  {
+    validator: async (_: any, v: string) => {
+      if (v) {
+        if (!isCron(v)) {
+          return Promise.reject(new Error('请输入正确的cron表达式'));
+        }
+      } else {
+        return Promise.reject(new Error('请输入cron表达式'));
+      }
+      return Promise.resolve();
+    }
+  }
+]
 
 const formModel = reactive<OperationTimer>({
   trigger: 'week',
