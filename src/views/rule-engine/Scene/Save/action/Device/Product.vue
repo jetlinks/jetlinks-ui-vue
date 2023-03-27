@@ -186,7 +186,13 @@ const columns = [
         hideInTable: true,
         search: {
             type: 'treeSelect',
-            options: queryTree({ paging: false }).then((resp) => resp.result),
+            options: () => {
+              return new Promise((res => {
+                queryTree({ paging: false }).then(resp => {
+                  res(resp.result)
+                })
+              }))
+            },
             componentProps: {
                 fieldNames: {
                     label: 'name',
