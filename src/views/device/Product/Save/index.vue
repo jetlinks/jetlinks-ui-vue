@@ -180,7 +180,7 @@ const deviceList = ref([
 const form = reactive({
     id: undefined,
     name: '',
-    classifiedId: '',
+    classifiedId: undefined,
     classifiedName: '',
     deviceType: '',
     describe: undefined,
@@ -278,7 +278,7 @@ const show = (data: any) => {
         idDisabled.value = true;
     } else if (props.isAdd === 1) {
         form.name = '';
-        form.classifiedId = '';
+        form.classifiedId = undefined;
         form.classifiedName = '';
         form.photoUrl = getImage('/device/instance/device-card.png');
         form.deviceType = '';

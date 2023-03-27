@@ -13,68 +13,80 @@
 <script lang="ts" setup>
 import { getImage } from '@/utils/comm';
 import BaseMenu from '../data/baseMenu';
-import { getSystemPermission } from '@/api/initHome'
+import { getSystemPermission , updateMenus } from '@/api/initHome';
 /**
  * 获取菜单数据
  */
 const menuDatas = reactive({
     count: 0,
-    /**
-     * 获取当前系统权限信息
-     */
-    getSystemPermissionData: async () => {
-        const resp = await getSystemPermission();
-        if (resp.status === 200) {
-            const newTree = menuDatas.filterMenu(
-                resp.result.map((item: any) => JSON.parse(item).id),
-                BaseMenu,
-            );
-            const _count = menuDatas.menuCount(newTree);
-            menuDatas.count = _count;
-        }
-    },
-    /**
-     * 过滤菜单
-     */
-    filterMenu: (permissions: string[], menus: any[]) => {
-        return menus.filter((item) => {
-            let isShow = false;
-            if (item.showPage && item.showPage.length) {
-                isShow = item.showPage.every((pItem: any) => {
-                    return permissions.includes(pItem);
-                });
-            }
-            if (item.children) {
-                item.children = menuDatas.filterMenu(
-                    permissions,
-                    item.children,
-                );
-            }
-            return isShow || !!item.children?.length;
-        });
-    },
-    /**
-     * 计算菜单数量
-     */
-    menuCount: (menus: any[]) => {
-        return menus.reduce((pre, next) => {
-            let _count = 1;
-            if (next.children) {
-                _count = menuDatas.menuCount(next.children);
-            }
-            return pre + _count;
-        }, 0);
-    },
+    current:undefined,
 });
+/**
+ * 获取当前系统权限信息
+ */
+const getSystemPermissionData = async () => {
+    const resp = await getSystemPermission();
+    if (resp.status === 200) {
+        const newTree = filterMenu(
+            resp.result.map((item: any) => JSON.parse(item).id),
+            BaseMenu,
+        );
+        const _count = menuCount(newTree);
+        menuDatas.current = newTree;
+        menuDatas.count = _count;
+    }
+};
+/**
+ * 过滤菜单
+ */
+const filterMenu = (permissions: string[], menus: any[]) => {
+    return menus.filter((item) => {
+        let isShow = false;
+        if (item.showPage && item.showPage.length) {
+            isShow = item.showPage.every((pItem: any) => {
+                return permissions.includes(pItem);
+            });
+        }
+        if (item.children) {
+            item.children = filterMenu(permissions, item.children);
+        }
+        return isShow || !!item.children?.length;
+    });
+};
+/**
+ * 计算菜单数量
+ */
+const menuCount = (menus: any[]) => {
+    return menus.reduce((pre, next) => {
+        let _count = 1;
+        if (next.children) {
+            _count = menuCount(next.children);
+        }
+        return pre + _count;
+    }, 0);
+};
+/**
+ * 初始化菜单
+ */
+const initMenu = () =>{
+    return new Promise((resolve) => {
+        updateMenus(menuDatas.current).then((res) => {
+          resolve(res.status === 200);
+      })
+    })
+}
 const { count } = toRefs(menuDatas);
-menuDatas.getSystemPermissionData();
+getSystemPermissionData();
+defineExpose({
+    updataMenu:initMenu
+})
 </script>
 <style lang="less" scoped>
-  .menu-style {
-                    display: flex;
-                    align-items: center;
-                    .menu-img {
-                        margin-right: 16px;
-                    }
-                }
+.menu-style {
+    display: flex;
+    align-items: center;
+    .menu-img {
+        margin-right: 16px;
+    }
+}
 </style>

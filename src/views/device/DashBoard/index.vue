@@ -439,7 +439,7 @@ const setDevMesChartOption = (
             //     // },
             // },
             {
-                name: '占比',
+                name: '消息量',
                 data: y,
                 // data: percentageY,
                 type: 'line',
