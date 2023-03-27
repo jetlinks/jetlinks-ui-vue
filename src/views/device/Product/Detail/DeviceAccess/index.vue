@@ -419,6 +419,7 @@ import { marked } from 'marked';
 import type { TableColumnType } from 'ant-design-vue';
 import { useMenuStore } from '@/store/menu';
 import _ from 'lodash';
+import { accessConfigTypeFilter } from '@/utils/setting'
 
 const tableRef = ref();
 const formRef = ref();
@@ -433,7 +434,6 @@ marked.setOptions({
 });
 const simpleImage = ref(Empty.PRESENTED_IMAGE_SIMPLE);
 const visible = ref<boolean>(false);
-const listData = ref<string[]>([]);
 const access = ref({});
 const config = ref<any>({});
 const metadata = ref<ConfigMetadata>({ properties: [] });
@@ -500,35 +500,10 @@ const query = reactive({
             search: {
                 type: 'select',
                 options: async () => {
-                    return new Promise((res) => {
+                    return new Promise((resolve) => {
                         getProviders().then((resp: any) => {
-                            listData.value = [];
-                            if (isNoCommunity) {
-                                (resp?.result || []).map((item: any) => {
-                                    if (item.id != 'plugin_gateway') {
-                                        listData.value.push({
-                                            label: item.name,
-                                            value: item.id,
-                                        });
-                                    }
-                                });
-                            } else {
-                                listData.value = (resp?.result || [])
-                                    .filter((i: any) =>
-                                        [
-                                            'mqtt-server-gateway',
-                                            'http-server-gateway',
-                                            'mqtt-client-gateway',
-                                            'tcp-server-gateway',
-                                        ].includes(i.id),
-                                    )
-                                    .map((item: any) => ({
-                                        label: item.name,
-                                        value: item.id,
-                                    }));
-                                // }
-                            }
-                            res(listData.value);
+                          const data = resp.result || []
+                          resolve(accessConfigTypeFilter(data))
                         });
                     });
                 },
@@ -960,7 +935,8 @@ const getData = async (accessId?: string) => {
         );
         getProviders().then((resp) => {
             if (resp.status === 200) {
-                dataSource.value = resp.result;
+                const data = resp.result || []
+                dataSource.value = accessConfigTypeFilter(data as any[]);
             }
         });
     }

@@ -41,7 +41,7 @@
                         @select="onValueChange"
                     >
                         <template v-slot="{ label }">
-                            <j-input :value="label" placeholder="请选择" />
+                            <j-input readonly :value="label" placeholder="请选择" />
                         </template>
                     </ParamsDropdown>
                 </j-form-item>
@@ -112,7 +112,6 @@ const filterParamsData = (type?: string, data?: any[]): any[] => {
                 item.children = _children;
                 return _children.length ? true : false;
             } else if (item.type === type) {
-                //   optionMap.current.set(item.id, item);
                 return true;
             }
             return false;
@@ -132,12 +131,12 @@ const handleOptions = computed(() => {
     if (_type === 'boolean') {
         return [
             {
-                label: _item.trueText,
-                value: _item.trueValue,
+                label: _item.trueText || true,
+                value: _item.trueValue || true,
             },
             {
-                label: _item.falseText,
-                value: _item.falseValue,
+                label: _item.falseText || false,
+                value: _item.falseValue || false,
             },
         ];
     }

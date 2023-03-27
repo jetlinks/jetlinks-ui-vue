@@ -13,18 +13,12 @@
                     @change="onSelectorChange"
                 />
             </j-form-item>
-            <!-- <j-form-item
-                v-if="modelRef.selector === 'fixed'"
-                name="selectorValues"
-                :rules="[{ required: true, message: '请选择设备' }]"
-            > -->
             <Device
                 v-if="modelRef.selector === 'fixed'"
-                :productId="values.productDetail.id"
+                :productId="productDetail.id"
                 v-model:value="modelRef.selectorValues"
                 @change="onDeviceChange"
             />
-            <!-- </j-form-item> -->
             <j-form-item
                 v-else-if="modelRef.selector === 'relation'"
                 label="关系"
@@ -107,6 +101,10 @@ const props = defineProps({
     parallel: {
         type: Boolean,
     },
+    productDetail: {
+        type: Object,
+        default: () => {},
+    },
 });
 
 // save保存deviceDetail
@@ -122,9 +120,7 @@ const modelRef = reactive({
     selectorValues: undefined,
     deviceId: '',
     source: '',
-    relationName: '',
     upperKey: '',
-    message: undefined,
 });
 
 const list = ref<any[]>([]);
@@ -166,10 +162,11 @@ const filterTree = (nodes: any[]) => {
         if (
             it.children.find(
                 (item: any) =>
-                    item.id.indexOf('deviceId' || 'device_id' || 'device_Id') >
-                    -1,
+                    item?.id?.indexOf(
+                        'deviceId' || 'device_id' || 'device_Id',
+                    ) > -1,
             ) &&
-            !it.children.find((item: any) => item.id.indexOf('boolean') > -1)
+            !it.children.find((item: any) => item?.id.indexOf('boolean') > -1)
         ) {
             return true;
         }
@@ -197,7 +194,7 @@ const sourceChangeEvent = async () => {
     const productId =
         data.value?.branches?.[props.branchesName].then?.[props.thenName]
             ?.actions?.[props.name > 0 ? props.name - 1 : 0]?.device?.productId;
-    if (productId === props.values?.productDetail?.id) {
+    if (productId === props?.productDetail?.id) {
         const _data = await getParams(_params, unref(data));
         builtInList.value = handleParamsData(filterTree(_data), 'id');
     } else {
@@ -205,7 +202,7 @@ const sourceChangeEvent = async () => {
     }
 };
 
-const filterType = async () => {
+const filterType = async (newVal: any) => {
     const _list = TypeList.filter((item) => item.value === 'fixed');
     if (unref(data)?.trigger?.type === 'device') {
         //关系
@@ -221,10 +218,9 @@ const filterType = async () => {
             _list.push(...array);
         }
         //标签
-        const tag = JSON.parse(
-            props.values.productDetail?.metadata || '{}',
-        )?.tags;
+        const tag = JSON.parse(newVal?.metadata || '{}')?.tags;
         if (tag && tag.length !== 0) {
+            tagList.value = tag || [];
             const array = TypeList.filter((item) => item.value === 'tag');
             _list.push(...array);
         }
@@ -251,23 +247,23 @@ const filterType = async () => {
     }
 };
 
-const onSelectorChange = () => {
+const onSelectorChange = (val: string) => {
     modelRef.selectorValues = undefined;
+    modelRef.selector = val;
 };
 
 const onDeviceChange = (_detail: any) => {
     if (_detail) {
         if (_detail.id) {
-            modelRef.deviceId = _detail.id;
+            modelRef.deviceId = _detail?.id;
             modelRef.selectorValues = [
                 { value: _detail.id, name: _detail.name },
             ] as any;
-            modelRef.message = {} as any;
         } else {
             modelRef.deviceId = '';
             modelRef.selectorValues = [] as any;
         }
-        emits('save', unref(modelRef), _detail);
+        emits('save', unref(modelRef), { name: _detail.name });
     }
 };
 
@@ -276,8 +272,7 @@ const onRelationChange = (val: any, options: any) => {
     modelRef.source = 'upper';
     modelRef.selectorValues = val;
     modelRef.upperKey = 'scene.deviceId';
-    modelRef.relationName = options.label;
-    emits('save', unref(modelRef), {});
+    emits('save', unref(modelRef), { relationName: options.label });
 };
 
 const onTagChange = (val: any[], arr: any[]) => {
@@ -285,27 +280,61 @@ const onTagChange = (val: any[], arr: any[]) => {
         modelRef.deviceId = 'deviceId';
         modelRef.source = 'fixed';
     }
-    emits('save', unref(modelRef), {}, arr ? { tagList: arr } : {});
+    const tagName = arr.map((i, _index) => {
+        return `${_index !== 0 && _index !== (arr || []).length && i.type}${
+            i.name
+        }为${i.value}`;
+    });
+    emits(
+        'save',
+        unref(modelRef),
+        {},
+        arr ? { tagName: tagName.join('') } : {},
+    );
 };
 
 const onVariableChange = (val: any, node: any) => {
     modelRef.deviceId = val;
     modelRef.selectorValues = [{ value: val, name: node.description }] as any;
-    emits('save', unref(modelRef), node);
+    emits('save', unref(modelRef), { name: node.description });
 };
 
-watchEffect(() => {
-    Object.assign(modelRef, props.values);
-});
+watch(
+    () => props.values,
+    (newVal) => {
+        Object.assign(modelRef, newVal);
+    },
+    {
+        immediate: true,
+        deep: true,
+    },
+);
 
 watch(
-    () => props.values.productDetail,
+    () => props.productDetail,
     async (newVal) => {
         await sourceChangeEvent();
         if (newVal) {
-            const metadata = JSON.parse(newVal?.metadata || '{}');
-            tagList.value = metadata?.tags || [];
-            filterType();
+            filterType(newVal);
+        }
+    },
+    {
+        immediate: true,
+        deep: true,
+    },
+);
+
+watch(
+    () => [props.values, builtInList.value],
+    ([newVal1, newVal2]) => {
+        if (newVal2 && newVal2.length) {
+            const param = newVal1?.selectorValues?.[0]?.value;
+            const isVariable = (newVal2 || [])?.find((item: any) => {
+                return item.children.find((i: any) => i.id === param);
+            });
+            if (isVariable) {
+                modelRef.selector = 'variable';
+            }
         }
     },
     {
@@ -319,14 +348,14 @@ const onFormSave = () => {
         formRef.value
             .validate()
             .then(async (_data: any) => {
-                if(modelRef.selector === 'fixed'){
-                    if(!modelRef?.selectorValues?.[0]?.value){
-                        onlyMessage('请选择设备', 'error')
+                if (modelRef.selector === 'fixed') {
+                    if (!modelRef?.selectorValues?.[0]?.value) {
+                        onlyMessage('请选择设备', 'error');
                         reject(false);
                     } else {
                         resolve({
                             ..._data,
-                            selectorValues: modelRef.selectorValues
+                            selectorValues: modelRef.selectorValues,
                         });
                     }
                 } else {

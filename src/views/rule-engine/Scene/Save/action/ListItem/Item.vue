@@ -263,7 +263,7 @@
                             {{data?.options?.name}}
                           </Ellipsis>
                           <Ellipsis style='max-width: 400px;'>
-                            {{data?.options?.properties}}
+                            {{data?.options?.propertiesName}}
                           </Ellipsis>
 
                           <Ellipsis style='max-width: 200px;'>
@@ -295,21 +295,9 @@
                                 "
                             />
                             {{ data?.options?.type }}
-                            <span
-                                v-for="(i, _index) in data?.options?.taglist ||
-                                []"
-                                :key="i.value"
-                            >
-                                {{
-                                    _index !== 0 &&
-                                    _index !==
-                                        (data?.options?.taglist || []).length &&
-                                    i.type
-                                }}
-                                {{ i.name }}为{{ i.value }}
-                            </span>
+                            <span>{{ data?.options?.tagName }}</span>
                             的{{ data?.options?.productName }}
-                            {{ data?.options?.properties }}
+                            {{ data?.options?.propertiesName }}
                         </div>
                     </template>
                     <template v-else-if="data?.device?.selector === 'relation'">
@@ -328,7 +316,7 @@
                             >具有相同 {{ data?.options?.relationName }}的{{
                                 data?.options?.productName
                             }}设备的
-                            {{ data?.options?.properties }}
+                            {{ data?.options?.propertiesName }}
                         </div>
                     </template>
                 </div>
@@ -571,44 +559,6 @@ const rules = [{
     return Promise.resolve()
   }
 }]
-
-const formTouchOff = () => {
-  console.log('formTouchOff')
-  formItemContext.onFieldChange()
-}
-
-/**
- * 校验当前执行动作的设备或者产品是否删除
- */
-const checkDeviceDelete = async () => {
-  const item = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device
-  const proResp = await queryProductList({ terms: [{ terms: [{ column: 'id', termType: 'eq', value: item!.productId }]}]})
-  if (proResp.success && (proResp.result as any)?.total === 0) { // 产品已删除
-    _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.productId = undefined
-    formTouchOff()
-    return
-  }
-  const deviceList = item!.selectorValues?.map(item => item.value) || []
-  const deviceResp = await deviceQuery({ terms: [{ terms: [{ column: 'id', termType: 'in', value: deviceList.toString() }]}]})
-  if (deviceResp.success && (deviceResp.result as any)?.total < (item!.selectorValues?.length || 0)) { // 某一个设备被删除
-    _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.selectorValues = undefined
-    formTouchOff()
-    return
-  }
-}
-
-/**
- * 校验当前执行动作的通知配置、消息模板是否删除
- */
-const checkNoticeDelete = () => {
-
-}
-
-nextTick(() => {
-  if (_data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.executor === 'device') {
-    checkDeviceDelete()
-  }
-})
 
 </script>
 

@@ -117,9 +117,7 @@
                                 </j-form-item>
                             </template>
                             <template v-else-if="column.key === 'notnull'">
-                                <j-form-item
-                                    :name="['data', index, 'notnull']"
-                                >
+                                <j-form-item :name="['data', index, 'notnull']">
                                     <j-radio-group
                                         v-model:value="record.notnull"
                                         button-style="solid"
@@ -134,9 +132,7 @@
                                 </j-form-item>
                             </template>
                             <template v-else-if="column.key === 'comment'">
-                                <j-form-item
-                                    :name="['data', index, 'notnull']"
-                                >
+                                <j-form-item :name="['data', index, 'notnull']">
                                     <j-input
                                         v-model:value="record.comment"
                                         placeholder="请输入说明"
@@ -167,20 +163,27 @@
                 </j-button>
             </div>
         </div>
-        <j-modal v-model:visible="dialog.visible" title="新增" @ok="handleOk">
-            <j-form :model="dialog.form" ref="addFormRef">
+        <j-modal
+            :visible="true"
+            v-if="dialog.visible"
+            title="新增"
+            @ok="handleOk"
+            @cancel="handleCancel"
+        >
+            <j-form :model="dialog.form" ref="addFormRef" :layout="'vertical'">
                 <j-form-item
                     label="名称"
                     name="name"
+                    :required="true" 
                     :rules="[
-                        {
-                            required: true,
-                            message: '请输入名称',
-                        },
+                        // {
+                        //     required: true,
+                        //     message: '请输入名称',
+                        // },
                         {
                             max: 64,
                             message: '最多可输入64个字符',
-                            trigger: 'blur',
+                            trigger: 'change',
                         },
                         {
                             // pattern: /^[0-9].*$/,
@@ -191,7 +194,7 @@
                         {
                             pattern: /^\w+$/,
                             message: '名称只能由数字、字母、下划线、中划线组成',
-                            trigger: 'blur',
+                            trigger: 'change',
                         },
                     ]"
                 >
@@ -410,6 +413,11 @@ const handleOk = () => {
         });
 };
 
+const handleCancel = () => {
+    dialog.visible = false;
+    addFormRef.value?.resetFields();
+};
+
 watch(
     [() => leftData.searchValue, () => leftData.sourceTree],
     ([m, n]) => {
@@ -458,6 +466,8 @@ const checkName = (_: any, value: any) =>
             } else {
                 resolve('');
             }
+        } else {
+            reject('请输入名称');
         }
     });
 </script>

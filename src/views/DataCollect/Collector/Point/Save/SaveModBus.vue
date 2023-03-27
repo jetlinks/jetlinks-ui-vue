@@ -301,7 +301,13 @@ const formData = ref({
 });
 
 const handleOk = async () => {
-    const data = await formRef.value?.validate();
+    console.log(2, formRef.value, formRef.value?.validate());
+
+    const data = await formRef.value?.validate().catch((err) => {
+        console.log(23, err);
+    });
+    console.log(3, data);
+
     delete data?.nspwc;
     const { codec } = data?.configuration;
 
