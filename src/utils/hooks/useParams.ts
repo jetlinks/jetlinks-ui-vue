@@ -8,9 +8,7 @@ export const useRouterParams = () => {
     const router = useRouter();
     const routeName = router.currentRoute.value.name as string
 
-    watchEffect(() => {
-        params.value = routeName && menu.params[routeName] ? menu.params[routeName] : {}
-    })
+    params.value = routeName && menu.params[routeName] ? menu.params[routeName] : {}
 
     onBeforeUnmount(() => {
         if (routeName && menu.params[routeName]) { // 如果当前路由params参数，离开页面清除掉
