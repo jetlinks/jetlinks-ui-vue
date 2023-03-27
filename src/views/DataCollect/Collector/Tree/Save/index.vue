@@ -56,22 +56,8 @@
             <j-form-item
                 :name="['circuitBreaker', 'type']"
                 :rules="LeftTreeRules.type"
+                label="故障处理"
             >
-                <template #label>
-                    <span>
-                        故障处理
-                        <j-tooltip
-                            :title="
-                                getTypeTooltip(formData.circuitBreaker.type)
-                            "
-                        >
-                            <AIcon
-                                type="QuestionCircleOutlined"
-                                style="margin-left: 2px"
-                            />
-                        </j-tooltip>
-                    </span>
-                </template>
                 <j-card-select
                     :showImage="false"
                     v-model:value="formData.circuitBreaker.type"
@@ -83,6 +69,9 @@
                     @change="changeCardSelectType"
                 />
             </j-form-item>
+            <p style="color: #616161">
+                {{ getTypeTooltip(formData.circuitBreaker.type) }}
+            </p>
             <j-form-item
                 :name="['configuration', 'endian']"
                 v-if="visibleEndian"
@@ -137,15 +126,12 @@
     </j-modal>
 </template>
 <script lang="ts" setup>
-import { Form } from 'ant-design-vue';
 import { save, update } from '@/api/data-collect/collector';
 import { Store } from 'jetlinks-store';
-import { cloneDeep } from 'lodash';
 import { LeftTreeRules } from '../../data';
 import type { FormInstance } from 'ant-design-vue';
 
 const loading = ref(false);
-const useForm = Form.useForm;
 const channelListAll = ref();
 const channelList = ref();
 const visibleEndian = ref(false);
