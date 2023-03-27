@@ -9,7 +9,7 @@
         @select="onChange"
     >
         <template v-slot="{ label }">
-            <j-input :value="label" />
+            <j-input :value="label" readonly />
         </template>
     </ParamsDropdown>
 </template>

@@ -83,10 +83,10 @@ const form = reactive({
             const updateTree = updatePrimissTree_api(roleId, {
                 menus: form.menus,
             });
-
+            console.log(form.menus);
             Promise.all([updateRole, updateTree]).then((resp) => {
                 message.success('操作成功');
-                router.push('/system/Role');
+                // router.push('/system/Role');
             });
         });
     },

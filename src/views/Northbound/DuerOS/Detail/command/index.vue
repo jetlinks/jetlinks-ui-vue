@@ -208,6 +208,7 @@ const onPropertyChange = (val: string) => {
             (item: any) => item.id === val,
         );
         property.value = _item || {};
+        modelRef.message.value = undefined
     }
 };
 

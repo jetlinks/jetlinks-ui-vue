@@ -1035,13 +1035,6 @@ nextTick(() => {
 .item-style {
     margin-bottom: 10px;
 }
-
-.info {
-    height: 630px;
-    padding: 20px;
-    background-color: #e6e6e6;
-}
-
 .ellipsis-style {
     overflow: hidden;
     white-space: nowrap;

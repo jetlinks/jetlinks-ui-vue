@@ -263,7 +263,7 @@
                             {{data?.options?.name}}
                           </Ellipsis>
                           <Ellipsis style='max-width: 400px;'>
-                            {{data?.options?.properties}}
+                            {{data?.options?.propertiesName}}
                           </Ellipsis>
 
                           <Ellipsis style='max-width: 200px;'>
@@ -295,21 +295,9 @@
                                 "
                             />
                             {{ data?.options?.type }}
-                            <span
-                                v-for="(i, _index) in data?.options?.taglist ||
-                                []"
-                                :key="i.value"
-                            >
-                                {{
-                                    _index !== 0 &&
-                                    _index !==
-                                        (data?.options?.taglist || []).length &&
-                                    i.type
-                                }}
-                                {{ i.name }}为{{ i.value }}
-                            </span>
+                            <span>{{ data?.options?.tagName }}</span>
                             的{{ data?.options?.productName }}
-                            {{ data?.options?.properties }}
+                            {{ data?.options?.propertiesName }}
                         </div>
                     </template>
                     <template v-else-if="data?.device?.selector === 'relation'">
@@ -328,7 +316,7 @@
                             >具有相同 {{ data?.options?.relationName }}的{{
                                 data?.options?.productName
                             }}设备的
-                            {{ data?.options?.properties }}
+                            {{ data?.options?.propertiesName }}
                         </div>
                     </template>
                 </div>

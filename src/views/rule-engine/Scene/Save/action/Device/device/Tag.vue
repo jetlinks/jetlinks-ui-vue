@@ -177,15 +177,8 @@ const onValueChange = () => {
             value: item.value,
         };
     });
-    const arr = _data.map((item: any) => {
-        return {
-            column: item.name,
-            type: item.type,
-            value: item.value,
-        };
-    });
     emits('update:value', [{ value: newValue, name: '标签' }]);
-    emits('change', [{ value: newValue, name: '标签' }], arr);
+    emits('change', [{ value: newValue, name: '标签' }], _data);
 };
 </script>
 

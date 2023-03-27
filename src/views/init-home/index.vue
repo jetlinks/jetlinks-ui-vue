@@ -18,14 +18,14 @@
                                 </template>
                                 <Basic ref="basicRef" />
                             </j-collapse-panel>
-                            <j-collapse-panel key="2" >
+                            <j-collapse-panel key="2" forceRender>
                                 <template #header>
                                     <span class="title">菜单初始化</span>
                                     <span class="sub-title"
                                         >初始化菜单数据</span
                                     >
                                 </template>
-                                <Menu></Menu>
+                                <Menu ref="menuRef"></Menu>
                             </j-collapse-panel>
                             <j-collapse-panel key="3" forceRender>
                                 <template #header>
@@ -74,6 +74,7 @@ import { message } from 'jetlinks-ui-components';
 const basicRef = ref();
 const roleRef = ref();
 const initDataRef = ref();
+const menuRef = ref();
 const loading = ref(false);
 /**
  * 默认打开第一个初始菜单
@@ -97,11 +98,12 @@ const jump = () => {
 const submitData = async () => {
     loading.value = true;
     const basicRes = await basicRef.value.submitBasic();
+    const menuRes = await menuRef.value.updataMenu();
     const roleRes = await roleRef.value.submitRole();
     const initDataRes = await initDataRef.value.save();
     loading.value = false;
     // 当前数据是否成功提交
-    if (basicRes && roleRes && initDataRes) {
+    if (basicRes && menuRes && roleRes && initDataRes ) {
         message.success('保存成功');
         //     // 记录初始化数据，跳转首页
         const res = await saveInit();

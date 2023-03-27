@@ -30,6 +30,21 @@ export const RoleData = {
 export default {
   [ROLEKEYS.device]: [
     {
+      assetAccesses: [],
+      code: "device/DashBoard",
+      createTime: 1679906031144,
+      granted: true,
+      icon: "icon-keshihua",
+      id:"68a02c9efa9fb4885c89b007f97d074d",
+      level:3,
+      name:"仪表盘",
+      owner: "iot",
+      parentId :"b6327c3ff01b49c9a7a96101606dc27a",
+      path:"WXaI-KCgA-gBU0",
+      sortIndex:1,
+      url:"/iot/device/DashBoard",
+    },
+    {
       id: '1-3-2',
       parentId: '1-3',
       path: 'T4zX-b4q8-o7Jy',
