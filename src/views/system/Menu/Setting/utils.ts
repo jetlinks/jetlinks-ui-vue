@@ -61,20 +61,20 @@ export const developArrToMap = (Menu: any, checked = false) => {
     const rootSet = new Set();
     const arrMap = new Map();
     const checkedKeys: any = [];
-    const getMap = (arr: any, parentCode = 'root', preKey = '0') => {
-        arr.forEach((item: any, index: number) => {
-            const key = preKey + `-${index}`; //初始化key
+    const getMap = (arr: any, parentCode = 'root') => {
+        arr.forEach((item: any) => {
             item.title = item.code;
-            item.key = key;
-            if (checked) {
-                checkedKeys.push(key);
+            item.key = item.code;
+            if (checked || item?.checked) {
+                item.checked = item?.checked || checked;
+                checkedKeys.push(item.code);
             }
             arrMap.set(item.code, item);
             if (parentCode === 'root') {
                 rootSet.add(item.code); //处理根菜单
             }
             if (item?.children) {
-                getMap(item?.children, item.code, key);
+                getMap(item?.children, item.code);
             }
         });
     };
@@ -91,17 +91,16 @@ export const developArrToMap = (Menu: any, checked = false) => {
 export const select = (selecteds: Array<string>, e: any) => {
     const { node } = e;
     const childKeys: Array<string> = [];
-    const getChildKeys = (data: any, preKey = '0') => {
-        data.forEach((item: any, index: number) => {
-            const checkedKey = preKey + `-${index}`;
-            childKeys.push(checkedKey);
+    const getChildKeys = (data: any) => {
+        data.forEach((item: any) => {
+            childKeys.push(item.code);
             if (item?.children) {
-                getChildKeys(item?.children, checkedKey);
+                getChildKeys(item?.children);
             }
         });
     };
     if (node?.children) {
-        getChildKeys(node.children, node.key);
+        getChildKeys(node.children);
     }
 
     const Keys = new Set(selecteds);
@@ -185,4 +184,28 @@ export const drop = (info: AntTreeNodeDropEvent, treeData: any) => {
         }
     }
     return data;
+};
+
+// 查找最深层级
+export const getMaxDepth = (data: any) => {
+    let maxDepth = 0;
+    data.forEach((node: any) => {
+        const depth = getNodeDepth(node);
+        if (depth > maxDepth) {
+            maxDepth = depth;
+        }
+    });
+    return maxDepth;
+};
+export const getNodeDepth = (node: any) => {
+    let depth = 1;
+    if (node.children) {
+        node.children.forEach((child: any) => {
+            const childDepth = getNodeDepth(child) + 1;
+            if (childDepth > depth) {
+                depth = childDepth;
+            }
+        });
+    }
+    return depth;
 };
