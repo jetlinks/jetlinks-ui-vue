@@ -309,6 +309,7 @@ import BadgeStatus from '@/components/BadgeStatus/index.vue';
 import BatchDropdown from '@/components/BatchDropdown/index.vue';
 import { BatchActionsType } from '@/components/BatchDropdown/types';
 import {useRouterParams} from "@/utils/hooks/useParams";
+import { accessConfigTypeFilter } from '@/utils/setting'
 
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -417,12 +418,17 @@ const columns = [
             options: () =>
                 new Promise((resolve) => {
                     getProviders().then((resp: any) => {
-                        resolve(
-                            resp.result.map((item: any) => ({
-                                label: item.name,
-                                value: `accessProvider is ${item.id}`,
-                            })),
-                        );
+                      const data = resp.result || []
+                      resolve(accessConfigTypeFilter(data).map(item => ({
+                        ...item,
+                        value: `accessProvider is ${item.id}`
+                      })))
+                        // resolve(
+                        //     resp.result.map((item: any) => ({
+                        //         label: item.name,
+                        //         value: `accessProvider is ${item.id}`,
+                        //     })),
+                        // );
                     });
                 }),
         },
