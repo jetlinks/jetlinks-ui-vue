@@ -20,7 +20,7 @@
                 <template #headerTitle>
                     <j-space>
                         <PermissionButton
-                            v-if="data?.provider !== 'OPC_UA'"
+                            v-if="data?.provider == 'MODBUS_TCP'"
                             type="primary"
                             @click="handlAdd"
                             hasPermission="DataCollect/Collector:add"

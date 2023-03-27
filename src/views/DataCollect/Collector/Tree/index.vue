@@ -24,7 +24,10 @@
                 :tree-data="defualtDataSource"
                 v-model:selected-keys="selectedKeys"
                 :fieldNames="{ key: 'id' }"
-                v-if="defualtDataSource[0].children.length !== 0"
+                v-if="
+                    defualtDataSource.length !== 0 ||
+                    defualtDataSource?.[0]?.children?.length !== 0
+                "
                 :height="600"
                 defaultExpandAll
             >
@@ -129,13 +132,15 @@ const visible = ref(false);
 const current = ref({});
 const collectorAll = ref();
 
-const defualtDataSource: any = ref([
+const root = [
     {
         id: '*',
         name: '全部',
         children: [],
     },
-]);
+];
+
+const defualtDataSource: any = ref(_.cloneDeep(root));
 
 const defualtParams = {
     paging: false,
@@ -195,9 +200,11 @@ const saveChange = (value: object) => {
 };
 
 const handleSearch = async (value: any) => {
+    let clickSearch = false;
     if (!searchValue.value && !value) {
         params.value = _.cloneDeep(defualtParams);
     } else if (!!searchValue.value) {
+        clickSearch = true;
         params.value = { ..._.cloneDeep(defualtParams) };
         params.value.terms[1] = {
             terms: [
@@ -214,12 +221,24 @@ const handleSearch = async (value: any) => {
     spinning.value = true;
     const res: any = await queryCollector(params.value);
     if (res.status === 200) {
-        defualtDataSource.value[0].children = res.result;
-        collectorAll.value = res.result;
-        if (selectedKeys.value.length === 0) {
-            selectedKeys.value = [res?.result[0]?.id] || [];
-            emits('change', res?.result[0]);
+        if (clickSearch) {
+            defualtDataSource.value = res.result;
+        } else {
+            defualtDataSource.value = _.cloneDeep(root);
+            defualtDataSource.value[0].children = res.result;
         }
+        collectorAll.value = res.result;
+
+        if (selectedKeys.value.length === 0) {
+            selectedKeys.value = ['*'];
+        }
+
+        //激活change事件
+        setTimeout(() => {
+            const _selectedKeys = _.cloneDeep(selectedKeys.value);
+            selectedKeys.value = [];
+            selectedKeys.value = _selectedKeys;
+        }, 0);
     }
     spinning.value = false;
 };
@@ -238,8 +257,10 @@ watch(
     () => selectedKeys.value,
     (n) => {
         const key = _.isArray(n) ? n[0] : n;
-        const row = collectorAll.value.find((i: any) => i.id === key);
-        emits('change', row);
+        if (key) {
+            const row = collectorAll.value.find((i: any) => i.id === key);
+            emits('change', row);
+        }
     },
 );
 
