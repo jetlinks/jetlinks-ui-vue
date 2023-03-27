@@ -22,9 +22,7 @@ const getParams = (dt: any) => {
                 format: 'HH:mm',
             };
         default:
-            console.log(22, dt, dayjs(dt.time[0]));
-
-            const time = dt.end - dt.start;
+            const time = dt.time[1] - dt.time[0];
             const hour = 60 * 60 * 1000;
             const days = hour * 24;
             const year = days * 365;
