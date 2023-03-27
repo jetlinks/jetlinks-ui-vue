@@ -1,3 +1,5 @@
+import { isEqual } from 'lodash-es'
+
 export type DropdownButtonOptions = {
   label: string;
   value: string;
@@ -34,7 +36,7 @@ export const getOption = (data: any[], value?: string | number | boolean, key: s
   if (value === undefined && value === null) return option
   for (let i = 0; i < data.length; i++) {
     const item = data[i]
-    if (item[key] === value) {
+    if (isEqual(item[key], value)) {
       option = data[i]
       break
     } else if (item.children && item.children.length) {

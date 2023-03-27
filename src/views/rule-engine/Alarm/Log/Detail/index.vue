@@ -53,8 +53,10 @@ import { message } from 'jetlinks-ui-components';
 import { useAlarmStore } from '@/store/alarm';
 import Info from './info.vue';
 import { storeToRefs } from 'pinia';
+import {useRouterParams} from "@/utils/hooks/useParams";
 const route = useRoute();
 const id = route.params?.id;
+const { params: routerParams } = useRouterParams()
 let visiable = ref(false);
 const columns = [
     {
@@ -181,7 +183,7 @@ const close = () => {
 
 watchEffect(()=>{
     current.value = details.value;
-    if(history.state?.params.detail && details.value){
+    if(routerParams.value.detail && details.value){
         visiable.value = true;
     }
 })

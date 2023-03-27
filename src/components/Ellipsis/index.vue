@@ -165,5 +165,6 @@ function syncTriggerClass(
   display: -webkit-box;
   -webkit-box-orient: vertical;
   word-break: break-all;
+  white-space: normal;
 }
 </style>

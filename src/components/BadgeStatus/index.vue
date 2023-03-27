@@ -13,7 +13,7 @@ const props = defineProps({
         type: String,
     },
     status: {
-        type: String || Number,
+        type: [String, Number],
         default: 'default',
         // validator: (value) => {
         //     // 这个值必须匹配下列字符串中的一个

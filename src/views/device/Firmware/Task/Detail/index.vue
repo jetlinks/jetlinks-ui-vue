@@ -237,7 +237,7 @@ const columns = [
         scopedSlots: true,
         width: 200,
         search: {
-            type: 'string',
+            type: 'number',
         },
     },
     {

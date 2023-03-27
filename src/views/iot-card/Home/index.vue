@@ -179,7 +179,6 @@ const pieChartData = ref<any[]>([
 ]);
 
 const jumpPage = (data: GuideItemProps) => {
-  console.log(data.auth)
     if (!data.auth){
         message.warning('暂无权限，请联系管理员');
         return
@@ -187,7 +186,11 @@ const jumpPage = (data: GuideItemProps) => {
     if (data.key === 'EQUIPMENT') {
         menuStory.jumpPage(data.url, { id: ':id'});
     } else {
-        menuStory.jumpPage(data.url);
+      let params: any = undefined
+      if (data.key === 'SCREEN') {
+        params = { type: 'add'}
+      }
+        menuStory.jumpPage(data.url, params);
     }
 };
 

@@ -43,7 +43,7 @@
         value-name='id'
         label-name='name'
         :options='valueOptions'
-        :metricOptions='columnOptions'
+        :metricOptions='valueColumnOptions'
         :tabsOptions='tabsOptions'
         v-model:value='paramsValue.value.value'
         v-model:source='paramsValue.value.source'
@@ -56,7 +56,7 @@
         value-name='id'
         label-name='name'
         :options='valueOptions'
-        :metricOptions='columnOptions'
+        :metricOptions='valueColumnOptions'
         :tabsOptions='tabsOptions'
         v-model:value='paramsValue.value.value'
         v-model:source='paramsValue.value.source'
@@ -83,8 +83,9 @@ import ParamsDropdown, { DoubleParamsDropdown } from '../../components/ParamsDro
 import { inject } from 'vue'
 import { useSceneStore } from 'store/scene'
 import { storeToRefs } from 'pinia';
-import { flattenDeep, set } from 'lodash-es'
+import {cloneDeep, flattenDeep, isArray, set} from 'lodash-es'
 import { Form } from 'jetlinks-ui-components'
+import {treeFilter} from "@/utils/comm";
 
 const sceneStore = useSceneStore()
 const { data: formModel } = storeToRefs(sceneStore)
@@ -160,6 +161,7 @@ const columnOptions: any = inject('filter-params') //
 const termTypeOptions = ref<Array<{ id: string, name: string}>>([]) // 条件值
 const valueOptions = ref<any[]>([]) // 默认手动输入下拉
 const arrayParamsKey = ['nbtw', 'btw', 'in', 'nin']
+const valueColumnOptions = ref<any[]>([])
 
 const tabsOptions = ref<Array<TabsOption>>(
   [
@@ -182,9 +184,11 @@ const handOptionByColumn = (option: any) => {
     } else{
       valueOptions.value = option.options || []
     }
+    valueColumnOptions.value = treeFilter(cloneDeep(columnOptions.value), option.type, 'type')
   } else {
     termTypeOptions.value = []
     valueOptions.value = []
+    valueColumnOptions.value = []
   }
 }
 
@@ -259,7 +263,8 @@ const columnSelect = (e: any) => {
 }
 
 const termsTypeSelect = (e: { key: string, name: string }) => {
-  const value = arrayParamsKey.includes(e.key) ? [ undefined, undefined ] : undefined
+  const oldValue = isArray(paramsValue.value!.value) ? paramsValue.value!.value[0] : paramsValue.value!.value
+  const value = arrayParamsKey.includes(e.key) ? [ oldValue, undefined ] : oldValue
   paramsValue.value = {
     source: tabsOptions.value[0].key,
     value: value
@@ -276,6 +281,8 @@ const valueSelect = (_: any, label: string, labelObj: Record<number, any>) => {
 }
 
 const typeChange = (e: any) => {
+  paramsValue.type = e.value
+  emit('update:value', { ...paramsValue })
   formModel.value.branches![props.branchName].then[props.thenName].actions[props.actionName].options!.terms[props.termsName].terms[props.name][3] = e.label
 }
 

@@ -73,6 +73,19 @@ const thenName = computed(() => {
   return _data.value.branches![props.branchesName].then.findIndex(item => item.parallel === props.parallel)
 })
 
+
+const rules = [{
+  validator(_: any, v?: ActionsType) {
+    console.log('validator',v)
+    if (v?.executor === 'device') {
+      if(!v.device?.productId || !v.device?.selectorValues) {
+        return Promise.reject(new Error('该数据已发生变更，请重新配置'))
+      }
+    }
+    return Promise.resolve()
+  }
+}]
+
 const onAdd = () => {
     visible.value = true;
 };

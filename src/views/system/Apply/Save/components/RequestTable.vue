@@ -1,49 +1,89 @@
 <template>
     <div class="request-table-container">
-        <j-table
-            :columns="columns"
-            :data-source="tableData"
-            :pagination="false"
-            size="small"
-            bordered
-        >
-            <template #bodyCell="{ column, record, index }">
-                <template v-if="column.dataIndex === 'key'">
-                    <j-input v-model:value="record.label" />
-                </template>
-                <template v-else-if="column.dataIndex === 'value'">
-                    <j-input
-                        v-model:value="record.value"
-                        v-if="props.valueType === 'input'"
-                    />
-                    <j-select
-                        v-else-if="props.valueType === 'select'"
-                        v-model:value="record.value"
-                    >
-                        <j-select-option
-                            v-for="item in props.valueOptions"
-                            :value="item.value"
-                            >{{ item.label }}</j-select-option
+        <j-form ref="formRef" :model="formData" layout="vertical">
+            <j-table
+                :columns="columns"
+                :data-source="formData.tableData"
+                :pagination="false"
+                size="small"
+                bordered
+            >
+                <template #bodyCell="{ column, record, index }">
+                    <template v-if="column.dataIndex === 'label'">
+                        <j-form-item
+                            :name="[
+                                'tableData',
+                                index + (current - 1) * 10,
+                                'label',
+                            ]"
+                            :rules="[
+                                {
+                                    required: !!record.label && !!record.value,
+                                    message: '该字段为必填字段',
+                                    trigger: 'change',
+                                },
+                            ]"
                         >
-                    </j-select>
+                            <j-input v-model:value="record.label" />
+                        </j-form-item>
+                    </template>
+                    <template v-else-if="column.dataIndex === 'value'">
+                        <j-form-item
+                            :name="[
+                                'tableData',
+                                index + (current - 1) * 10,
+                                'value',
+                            ]"
+                            :rules="[
+                                {
+                                    required: !!record.value && !!record.label,
+                                    message: '该字段为必填字段',
+                                    trigger: 'change',
+                                },
+                            ]"
+                        >
+                            <j-input
+                                v-model:value="record.value"
+                                v-if="props.valueType === 'input'"
+                            />
+                            <j-select
+                                v-else-if="props.valueType === 'select'"
+                                v-model:value="record.value"
+                            >
+                                <j-select-option
+                                    v-for="item in props.valueOptions"
+                                    :value="item.value"
+                                >
+                                    {{ item.label }}
+                                </j-select-option>
+                            </j-select>
+                        </j-form-item>
+                    </template>
+                    <template v-else-if="column.dataIndex === 'action'">
+                        <j-button
+                            type="link"
+                            @click="removeRow((current - 1) * 10 + index)"
+                        >
+                            <AIcon type="DeleteOutlined" />
+                        </j-button>
+                    </template>
                 </template>
-                <template v-else-if="column.dataIndex === 'action'">
-                    <j-button
-                        type="link"
-                        @click="removeRow((current - 1) * 10 + index)"
-                    >
-                        <AIcon type="DeleteOutlined" />
-                    </j-button>
-                </template>
-            </template>
-        </j-table>
-        <j-pagination
+            </j-table>
+        </j-form>
+        <!-- <j-pagination
             v-show="props.value.length > 10"
             v-model:current="current"
             :page-size="10"
             :total="props.value.length"
             show-less-items
+        /> -->
+        <RowPagination
+            v-if="props.value.length > 10"
+            v-model:pageNum="current"
+            :pageSize="10"
+            :total="props.value.length"
         />
+
         <j-button type="dashed" @click="addRow" class="add-btn">
             <AIcon type="PlusOutlined" />新增
         </j-button>
@@ -53,12 +93,13 @@
 <script setup lang="ts">
 import type { optionsType } from '../typing';
 
-const emits = defineEmits(['update:value']);
+const emits = defineEmits(['update:value', 'update:valid']);
 const props = withDefaults(
     defineProps<{
         value: optionsType;
         valueType?: 'input' | 'select';
         valueOptions?: optionsType;
+        valid?: boolean;
     }>(),
     {
         valueType: 'input',
@@ -67,28 +108,50 @@ const props = withDefaults(
 const columns = [
     {
         title: 'KEY',
-        dataIndex: 'key',
-        width: '40%'
+        dataIndex: 'label', // 此处表格需要验证, key为字段验证无法通过, 改为label
+        key: 'label',
+        width: '40%',
     },
     {
         title: 'VALUE',
         dataIndex: 'value',
-        width: '40%'
+        key: 'value',
+        width: '40%',
     },
     {
         title: ' ',
         dataIndex: 'action',
-        width: '20%'
+        key: 'action',
+        width: '20%',
     },
 ];
 
 const current = ref<number>(1);
 
-const tableData = computed(() => {
-    return props.value.slice((current.value - 1) * 10, current.value * 10);
+// const tableData = computed(() => {
+//     return props.value.slice((current.value - 1) * 10, current.value * 10);
+// });
+const formData = ref({
+    tableData: computed(() => {
+        return props.value.slice((current.value - 1) * 10, current.value * 10);
+    }),
 });
 
-if(props.value.length < 1) addRow()
+const formRef = ref();
+watch(
+    () => formData.value,
+    (val) => {
+        formRef.value?.validate();
+        // 每一项都填了, 或者没项都没有填, 均为验证通过, 否则均为未通过
+        const valid = formData.value.tableData.every(
+            (e: any) => (e.label && e.value) || (!e.label && !e.value),
+        );
+        emits('update:valid', valid);
+    },
+    { deep: true },
+);
+
+if (props.value.length < 1) addRow();
 watch(
     () => props.value,
     (n, o) => {
@@ -139,6 +202,9 @@ function addRow() {
         width: 100%;
         display: block;
         margin-top: 10px;
+    }
+    :deep(.ant-form-item) {
+        margin-bottom: 0;
     }
 }
 </style>

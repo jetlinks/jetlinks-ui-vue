@@ -11,7 +11,7 @@
         <template #breadcrumbRender="slotProps">
             <a
               v-if="slotProps.route.index !== 0 && !slotProps.route.isLast"
-              @click='() => jumpPage(slotProps.route.path)'
+              @click='jump(slotProps.route)'
             >
               {{ slotProps.route.breadcrumbName }}
             </a>
@@ -89,14 +89,31 @@ const findRouteMeta = (code: string) => {
   return meta
 }
 
-const jumpPage = (path: string) => {
+const jump = (item: any) => {
+  let path = history.state.back
+  if (path) {
+    // 包含query参数,清除？参数
+    if (path.includes('?')) {
+      const _path = path.split('?')[0]
+      path = _path === item.path ? path : item.path
+    } else if (path !== item.path) {
+      path = item.path
+    }
+  } else {
+    path = item.path
+  }
+
+  console.log(item, history.state)
   console.log(path)
+  // jumpPage(slotProps.route.path)
   router.push(path)
 }
 
 const breadcrumb = computed(() =>
   {
     const paths = router.currentRoute.value.name as string
+    console.log(router.currentRoute)
+    console.log(route)
     const metas = findRouteMeta(paths)
     return metas.map((item, index) => {
       return {

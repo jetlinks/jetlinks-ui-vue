@@ -1,6 +1,11 @@
 <template>
     <div class="actions-item-warp">
+      <j-form-item
+        :name='["branches", branchesName, "then", thenName, "actions", name]'
+        :rules='rules'
+      >
         <div class="actions-item">
+            <CheckItem v-bind='props'>
             <div class="item-options-warp">
                 <div class="item-options-type" @click="onAdd">
                     <img
@@ -120,7 +125,7 @@
                         </div>
                     </template>
                     <template v-else-if="data?.notify?.notifyType === 'email'">
-                        <div>
+                        <div style="display: flex;">
                             通过
                             <span class="notify-text-highlight">
                                 <img
@@ -133,9 +138,13 @@
                                 />
                                 邮件
                             </span>
-                            向<span class="notify-text-highlight">{{
-                                options?.sendTo || ''
-                            }}</span>
+                            向<span class="notify-text-highlight">
+                              <Ellipsis style='max-width: 400px;'>
+                              {{
+                                  options?.sendTo || ''
+                                }}
+                              </Ellipsis>
+                          </span>
                             发送
                             <span class="notify-text-highlight">
                                 {{
@@ -256,19 +265,23 @@
                           <Ellipsis style='max-width: 400px;'>
                             {{data?.options?.properties}}
                           </Ellipsis>
+
+                          <Ellipsis style='max-width: 200px;'>
                             {{
-                                `${
-                                    (
-                                        isBoolean(
-                                            data?.options?.propertiesValue,
-                                        )
-                                            ? true
-                                            : data?.options?.propertiesValue
-                                    )
-                                        ? `为 ${data?.options?.propertiesValue}`
-                                        : ''
-                                }`
+                              `${
+                                  (
+                                      isBoolean(
+                                          data?.options?.propertiesValue,
+                                      )
+                                          ? true
+                                          : data?.options?.propertiesValue
+                                  )
+                                      ? `为 ${data?.options?.propertiesValue}`
+                                      : ''
+                              }`
                             }}
+                          </Ellipsis>
+
                         </div>
                     </template>
                     <template v-else-if="data?.device?.selector === 'tag'">
@@ -322,12 +335,14 @@
                 <j-button v-else @click="onAdd">点击配置执行动作</j-button>
             </div>
             <div class="item-number">{{ name + 1 }}</div>
-            <j-popconfirm title="确认删除？" @confirm="onDelete">
+            <j-popconfirm title="确认删除？" @confirm="onDelete" :overlayStyle='{minWidth: "180px"}'>
                 <div class="item-delete">
                     <AIcon type="DeleteOutlined" />
                 </div>
             </j-popconfirm>
+            </CheckItem>
         </div>
+          </j-form-item>
         <template v-if="!isLast && type === 'serial'">
             <div
                 :class="[
@@ -399,6 +414,8 @@ import { iconMap, itemNotifyIconMap, typeIconMap } from './util';
 import FilterGroup from './FilterGroup.vue';
 import { randomString } from '@/utils/utils'
 import { EventEmitter, EventEmitterKeys } from '@/views/rule-engine/Scene/Save/util'
+import CheckItem from './CheckItem.vue'
+import { Form } from 'jetlinks-ui-components'
 
 const sceneStore = useSceneStore();
 const { data: _data } = storeToRefs(sceneStore);
@@ -443,7 +460,7 @@ const eventEmitterKey = EventEmitterKeys({
   branchGroup: props.thenName,
   action: props.name
 })
-
+const formItemContext = Form.useInjectFormItemContext()
 const termsOptions = computed(() => {
     if (!props.parallel) {
         // 串行
@@ -543,6 +560,56 @@ const onPropsCancel = () => {
     actionType.value = '';
 };
 
+const rules = [{
+  validator(_: any, v?: ActionsType) {
+    console.log('validator',v)
+    if (v?.executor === 'device') {
+      if(!v.device?.productId || !v.device?.selectorValues) {
+        return Promise.reject(new Error('该数据已发生变更，请重新配置'))
+      }
+    }
+    return Promise.resolve()
+  }
+}]
+
+const formTouchOff = () => {
+  console.log('formTouchOff')
+  formItemContext.onFieldChange()
+}
+
+/**
+ * 校验当前执行动作的设备或者产品是否删除
+ */
+const checkDeviceDelete = async () => {
+  const item = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device
+  const proResp = await queryProductList({ terms: [{ terms: [{ column: 'id', termType: 'eq', value: item!.productId }]}]})
+  if (proResp.success && (proResp.result as any)?.total === 0) { // 产品已删除
+    _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.productId = undefined
+    formTouchOff()
+    return
+  }
+  const deviceList = item!.selectorValues?.map(item => item.value) || []
+  const deviceResp = await deviceQuery({ terms: [{ terms: [{ column: 'id', termType: 'in', value: deviceList.toString() }]}]})
+  if (deviceResp.success && (deviceResp.result as any)?.total < (item!.selectorValues?.length || 0)) { // 某一个设备被删除
+    _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.selectorValues = undefined
+    formTouchOff()
+    return
+  }
+}
+
+/**
+ * 校验当前执行动作的通知配置、消息模板是否删除
+ */
+const checkNoticeDelete = () => {
+
+}
+
+nextTick(() => {
+  if (_data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.executor === 'device') {
+    checkDeviceDelete()
+  }
+})
+
 </script>
 
 <style lang="less" scoped>
@@ -571,7 +638,7 @@ const onPropsCancel = () => {
 
 .actions-item {
     position: relative;
-    margin-bottom: 24px;
+    //margin-bottom: 24px;
     padding: 16px;
     border: 1px dashed #999;
     border-radius: 2px;

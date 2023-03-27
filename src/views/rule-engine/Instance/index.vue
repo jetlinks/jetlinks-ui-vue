@@ -151,9 +151,11 @@ import { getImage } from '@/utils/comm';
 import { message } from 'jetlinks-ui-components';
 import Save from './Save/index.vue';
 import { SystemConst } from '@/utils/consts';
+import {useRouterParams} from "@/utils/hooks/useParams";
 const params = ref<Record<string, any>>({});
 let visiable = ref(false);
 const tableRef = ref<Record<string, any>>({});
+const { params: routeParams } = useRouterParams()
 const query = {
     columns: [
         {

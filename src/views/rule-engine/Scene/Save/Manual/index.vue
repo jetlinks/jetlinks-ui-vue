@@ -23,7 +23,8 @@ const { data } = storeToRefs(sceneStore);
 
 const actionRules = [{
   validator(_: any, v?: BranchesThen[]) {
-    if (!v || (v && !v.length) || (v && v.length && !v[0].actions.length)) {
+
+    if (!v || (v && !v.length) || !v.some(item => item.actions && item.actions.length)) {
       return Promise.reject('至少配置一个执行动作');
     }
     return Promise.resolve();

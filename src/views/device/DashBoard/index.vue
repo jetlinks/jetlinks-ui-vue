@@ -43,7 +43,6 @@
                                 <TimeSelect
                                     key="flow-static"
                                     :type="'week'"
-                                    :quickBtnList="quickBtnList"
                                     @change="getEcharts"
                                 />
                             </template>
@@ -134,12 +133,12 @@ let onlineOptions = ref<any>({});
 let TodayDevOptions = ref<any>({});
 let devMegOptions = ref<any>({});
 const menuStore = useMenuStore();
-const quickBtnList = [
-    { label: '昨日', value: 'yesterday' },
-    { label: '近一周', value: 'week' },
-    { label: '近一月', value: 'month' },
-    { label: '近一年', value: 'year' },
-];
+// const quickBtnList = [
+//     { label: '昨日', value: 'yesterday' },
+//     { label: '近一周', value: 'week' },
+//     { label: '近一月', value: 'month' },
+//     { label: '近一年', value: 'year' },
+// ];
 /**
  * 获取产品数量
  */
@@ -242,10 +241,40 @@ const getOnline = () => {
             const onlineYdata = y;
             onlineYdata.reverse();
             setOnlineChartOption(x, onlineYdata);
-            onlineFooter.value[0].value = y?.[1];
         }
     });
 };
+
+/**
+ * 昨日在线
+ */
+const getYesterdayOnline = () => {
+  const startTime = dayjs().subtract(1, 'days').startOf('day').format('YYYY-MM-DD HH:mm:ss');
+  const endTime = dayjs().subtract(1, 'days').endOf('day').format('YYYY-MM-DD HH:mm:ss');
+
+  dashboard([
+    {
+      dashboard: 'device',
+      object: 'session',
+      measurement: 'online',
+      dimension: 'agg',
+      group: 'aggOnline',
+      params: {
+        state: 'online',
+        limit: 24,
+        from: startTime,
+        to: endTime,
+        time: '1d',
+        format: 'yyyy-MM-dd HH:mm:ss',
+      },
+    },
+  ]).then((res) => {
+    if (res.status == 200) {
+      onlineFooter.value[0].value = res.result?.[0]?.data.value || 0
+    }
+  });
+}
+
 const setOnlineChartOption = (x: Array<any>, y: Array<number>): void => {
     onlineOptions.value = {
         xAxis: {
@@ -441,9 +470,12 @@ const setDevMesChartOption = (
         ],
     };
 };
-getOnline();
+
 //今日设备消息量
 const getDevice = () => {
+  const startTime = dayjs().subtract(0, 'days').startOf('day').format('YYYY-MM-DD HH:mm:ss');
+  const endTime = dayjs().subtract(0, 'days').endOf('day').format('YYYY-MM-DD HH:mm:ss');
+
     dashboard([
         {
             dashboard: 'device',
@@ -455,7 +487,8 @@ const getDevice = () => {
                 time: '1h',
                 format: 'yyyy-MM-dd HH:mm:ss',
                 limit: 24,
-                from: 'now-1d',
+                from: startTime,
+                to: endTime
             },
         },
         {
@@ -502,7 +535,7 @@ const getDevice = () => {
         }
     });
 };
-getDevice();
+
 const getEcharts = (data: any) => {
     let _time = '1h';
     let format = 'HH';
@@ -557,6 +590,11 @@ const getEcharts = (data: any) => {
         }
     });
 };
+
+getOnline();
+getYesterdayOnline()
+getDevice();
+
 </script>
 <style lang="less" scoped>
 .message-card,

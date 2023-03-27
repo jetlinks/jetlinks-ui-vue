@@ -10,9 +10,11 @@ export type dictType = {
 }[];
 
 export type optionsType = {
-    label: string,
+    label?: string;
+    key?: string;
     value: string;
-    disabled?: boolean
+    disabled?: boolean;
+    required?: boolean;
 }[]
 export type formType = {
     id?:string,
@@ -34,7 +36,7 @@ export type formType = {
             type: 'none' | 'bearer' | 'oauth2' | 'basic' | 'other', // 类型, 可选值：none, bearer, oauth2, basic, other
             bearer: { token: string }, // 授权信息	
             basic: { username: string, password: string }, // 基本信息	
-            token: string,
+            token?: string,
             oauth2: { // OAuth2信息
                 authorizationUrl: string, // 授权地址	
                 tokenUrl: string, // token地址	
@@ -43,7 +45,7 @@ export type formType = {
                 clientSecret: string, // 客户端密钥
                 grantType: 'authorization_code' | 'client_credentials' | '', // 类型
                 accessTokenProperty: string, // token属性名	
-                tokenRequestType: 'POST_URI' | 'POST_BODY' | '' // token请求方式, 可选值：POST_URI，POST_BODY
+                tokenRequestType: 'POST_URI' | 'POST_BODY' | '' | undefined // token请求方式, 可选值：POST_URI，POST_BODY
             }
         }
     },

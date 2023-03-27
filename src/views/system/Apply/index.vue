@@ -46,7 +46,6 @@
                             enabled: 'success',
                             disabled: 'error',
                         }"
-                        hasMark
                     >
                         <template #img>
                             <slot name="img">
@@ -55,7 +54,9 @@
                         </template>
                         <template #content>
                             <h3 class="card-item-content-title">
-                                {{ slotProps.name }}
+                                <Ellipsis>
+                                    {{ slotProps.name }}
+                                </Ellipsis>
                             </h3>
                             <j-row>
                                 <j-col :span="12">
@@ -74,7 +75,9 @@
                                     <div class="card-item-content-text">
                                         说明
                                     </div>
-                                    <div>{{ slotProps.description }}</div>
+                                    <Ellipsis>
+                                        {{ slotProps.description }}
+                                    </Ellipsis>
                                 </j-col>
                             </j-row>
                         </template>
@@ -242,7 +245,7 @@ const columns = [
         key: 'status',
         ellipsis: true,
         search: {
-            rename: 'status',
+            rename: 'state',
             type: 'select',
             options: [
                 {
@@ -271,8 +274,8 @@ const columns = [
         dataIndex: 'action',
         key: 'action',
         scopedSlots: true,
-        width:'200px',
-        fixed:'right'
+        width: '200px',
+        fixed: 'right',
     },
 ];
 const queryParams = ref({});
@@ -361,7 +364,7 @@ const table = {
         // 有集成菜单权限
         if (otherServers.includes('page'))
             others.children?.push({
-                permission: [`${permission}:add`,`${permission}:update`],
+                permission: [`${permission}:add`, `${permission}:update`],
                 key: 'page',
                 text: '集成菜单',
                 tooltip: {
@@ -378,7 +381,7 @@ const table = {
         if (otherServers.includes('apiServer'))
             others.children?.push(
                 {
-                    permission: [`${permission}:add`,`${permission}:update`],
+                    permission: [`${permission}:add`, `${permission}:update`],
                     key: 'empowerment',
                     text: '赋权',
                     tooltip: {
@@ -394,7 +397,7 @@ const table = {
                     },
                 },
                 {
-                    permission: [`${permission}:add`,`${permission}:update`],
+                    permission: [`${permission}:add`, `${permission}:update`],
                     key: 'viewApi',
                     text: '查看API',
                     tooltip: {

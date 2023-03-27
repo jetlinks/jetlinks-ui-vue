@@ -1,5 +1,4 @@
 import type { App } from 'vue'
-// import AIcon from './AIcon'
 import PermissionButton from './PermissionButton/index.vue'
 import JTable from './Table/index'
 import TitleComponent from "./TitleComponent/index.vue";
@@ -16,6 +15,7 @@ import JEmpty from './Empty/index.vue'
 import AMapComponent from './AMapComponent/index.vue'
 import PathSimplifier from './AMapComponent/PathSimplifier.vue'
 import ValueItem from './ValueItem/index.vue'
+import RowPagination from './RowPagination/index.vue'
 
 export default  {
     install(app: App) {
@@ -37,5 +37,6 @@ export default  {
             .component('AMapComponent', AMapComponent)
             .component('PathSimplifier', PathSimplifier)
             .component('ValueItem', ValueItem)
+            .component('RowPagination', RowPagination)
     }
 }

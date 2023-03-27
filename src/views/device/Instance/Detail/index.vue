@@ -119,10 +119,12 @@ import { message } from 'jetlinks-ui-components';
 import { getImage } from '@/utils/comm';
 import { getWebSocket } from '@/utils/websocket';
 import { useMenuStore } from '@/store/menu';
+import {useRouterParams} from "@/utils/hooks/useParams";
 
 const menuStory = useMenuStore();
 
 const route = useRoute();
+const routerParams = useRouterParams()
 const instanceStore = useInstanceStore();
 
 const statusMap = new Map();
@@ -246,22 +248,35 @@ const getDetail = () => {
     }
 };
 
-watch(
-    () => route.params?.id,
-    async (newId) => {
-        if (newId) {
-            await instanceStore.refresh(String(newId));
-            getStatus(String(newId));
-            list.value = [...initList];
-            getDetail();
-            instanceStore.tabActiveKey = 'Info';
-        }
-    },
-    { immediate: true, deep: true },
-);
+// watch(
+//     () => route.params?.id,
+//     async (newId) => {
+//         if (newId) {
+//             await instanceStore.refresh(String(newId));
+//             getStatus(String(newId));
+//             list.value = [...initList];
+//             console.log('watch', route.params?.id)
+//             getDetail();
+//             instanceStore.tabActiveKey = 'Info';
+//         }
+//     },
+//     { immediate: true, deep: true },
+// );
+
+const getDetailFn = async () => {
+  const _id = route.params?.id
+  if (_id) {
+    await instanceStore.refresh(String(_id));
+    getStatus(String(_id));
+    list.value = [...initList];
+    getDetail();
+    instanceStore.tabActiveKey = routerParams.params.value.tab || 'Info';
+  }
+}
 
 onMounted(() => {
-    instanceStore.tabActiveKey = history.state?.params?.tab || 'Info';
+    getDetailFn()
+    instanceStore.tabActiveKey = routerParams.params.value.tab || 'Info';
 });
 
 const onBack = () => {

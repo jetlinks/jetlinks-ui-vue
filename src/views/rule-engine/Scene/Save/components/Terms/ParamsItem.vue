@@ -58,7 +58,7 @@
         v-model:source='paramsValue.value.source'
         @select='valueSelect'
       />
-      <j-popconfirm title='确认删除？' @confirm='onDelete'>
+      <j-popconfirm title='确认删除？' @confirm='onDelete' :overlayStyle='{minWidth: "180px"}'>
         <div v-show='showDelete' class='button-delete'> <AIcon type='CloseOutlined' /></div>
       </j-popconfirm>
     </div>
@@ -81,7 +81,7 @@ import { ContextKey } from './util'
 import { useSceneStore } from 'store/scene'
 import { storeToRefs } from 'pinia';
 import { Form } from 'jetlinks-ui-components'
-import { pick } from 'lodash-es'
+import {isArray, pick} from 'lodash-es'
 
 const sceneStore = useSceneStore()
 const { data: formModel } = storeToRefs(sceneStore)
@@ -154,14 +154,15 @@ const columnOptions: any = inject(ContextKey) //
 const termTypeOptions = ref<Array<{ id: string, name: string}>>([]) // 条件值
 const valueOptions = ref<any[]>([]) // 默认手动输入下拉
 const metricOption = ref<any[]>([])  // 根据termType获取对应指标值
+const isMetric = ref<boolean>(false) // 是否为指标值
 const tabsOptions = ref<Array<TabsOption>>([{ label: '手动输入', key: 'manual', component: 'string' }])
 const arrayParamsKey = ['nbtw', 'btw', 'in', 'nin']
-let metricsCacheOption: any[] = [] // 缓存指标值
+const metricsCacheOption = ref<any[]>([]) // 缓存指标值
 
 const handOptionByColumn = (option: any) => {
   if (option) {
     termTypeOptions.value = option.termTypes || []
-    metricsCacheOption = option.metrics || []
+    metricsCacheOption.value = option.metrics?.map((item: any) => ({...item, label: item.name})) || []
     tabsOptions.value.length = 1
     tabsOptions.value[0].component = option.dataType
 
@@ -169,6 +170,9 @@ const handOptionByColumn = (option: any) => {
       tabsOptions.value.push(
         { label: '指标值', key: 'metric', component: 'select' }
       )
+      isMetric.value = true
+    } else {
+      isMetric.value = false
     }
 
     if (option.dataType === 'boolean') {
@@ -183,7 +187,7 @@ const handOptionByColumn = (option: any) => {
     }
   } else {
     termTypeOptions.value = []
-    metricsCacheOption = []
+    metricsCacheOption.value = []
     valueOptions.value = []
   }
 }
@@ -212,12 +216,12 @@ watch(() => [columnOptions.value, paramsValue.column], () => {
 
 const showDouble = computed(() => {
   const isRange = paramsValue.termType ? arrayParamsKey.includes(paramsValue.termType) : false
-  if (metricsCacheOption.length) {
-    metricOption.value = metricsCacheOption.filter(item => isRange ? item.range : !item.range)
+  if (metricsCacheOption.value.length) {
+    metricOption.value = metricsCacheOption.value.filter(item => isRange ? item.range : !item.range)
   } else {
     metricOption.value = []
   }
-  return isRange
+  return isRange && !isMetric
 })
 
 const mouseover = () => {
@@ -244,11 +248,11 @@ const columnSelect = (option: any) => {
   formItemContext.onFieldChange()
   formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.name][0] = option.name
   formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.name][1] = paramsValue.termType
-
 }
 
 const termsTypeSelect = (e: { key: string, name: string }) => {
-  const value = arrayParamsKey.includes(e.key) ? [ undefined, undefined ] : undefined
+  const oldValue = isArray(paramsValue.value!.value) ? paramsValue.value!.value[0] : paramsValue.value!.value
+  const value = arrayParamsKey.includes(e.key) ? [ oldValue, undefined ] : oldValue
   paramsValue.value = {
     source: tabsOptions.value[0].key,
     value: value
@@ -266,6 +270,7 @@ const valueSelect = (_: any, label: string, labelObj: Record<number, any>) => {
 }
 
 const typeSelect = (e: any) => {
+  emit('update:value', { ...paramsValue })
   formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.name][3] = e.label
 }
 

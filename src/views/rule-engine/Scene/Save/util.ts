@@ -3,7 +3,6 @@ import { handleParamsData } from './components/Terms/util'
 import { useSceneStore } from 'store/scene'
 import { storeToRefs } from 'pinia'
 import type { FormModelType } from '@/views/rule-engine/Scene/typings'
-import { isArray } from 'lodash-es'
 
 interface Params {
   branch: number
