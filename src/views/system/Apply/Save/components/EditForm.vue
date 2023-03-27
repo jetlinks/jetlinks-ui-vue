@@ -824,7 +824,15 @@
                                 placeholder="请输入redirectUrl"
                             />
                         </j-form-item>
-                        <j-form-item label="IP白名单">
+                        <j-form-item
+                            label="IP白名单"
+                            :name="['apiServer', 'ipWhiteList']"
+                            :rules="[
+                                {
+                                    validator: validateIP,
+                                },
+                            ]"
+                        >
                             <j-textarea
                                 v-model:value="form.data.apiServer.ipWhiteList"
                                 placeholder="请输入IP白名单，多个地址回车分隔，不填默认均可访问"
@@ -1432,6 +1440,7 @@
 <script setup lang="ts">
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { LocalStore, filterSelectNode } from '@/utils/comm';
+import { testIP } from '@/utils/validate';
 
 import {
     getDepartmentList_api,
@@ -1454,6 +1463,7 @@ import {
 import { randomString } from '@/utils/utils';
 import { cloneDeep, difference } from 'lodash';
 import { useMenuStore } from '@/store/menu';
+import { Rule } from 'ant-design-vue/lib/form';
 
 const emit = defineEmits(['changeApplyType']);
 const routeQuery = useRoute().query;
@@ -1836,7 +1846,7 @@ function getErrorNum(
     }
 }
 
-const imageTypes = ref(['image/jpg', 'image/png']);
+const imageTypes = ref(['image/jpg', 'image/png', 'image/jpeg']);
 const beforeLogoUpload = (file: any) => {
     const isType: any = imageTypes.value.includes(file.type);
     if (!isType) {
@@ -1871,6 +1881,23 @@ function clearNullProp(obj: object) {
         }
     }
 }
+
+/**
+ * 验证IP合法性
+ * @param _rule 
+ * @param value 
+ */
+const validateIP = (_rule: Rule, value: string) => {
+    const ipList = value?.split(/[\n,]/g).filter((i: string) => i && i.trim());
+    const errorIPList = ipList.filter(
+        (f: string) => !testIP(f.replace(/\s*/g, '')),
+    );
+    return new Promise((resolve, reject) => {
+        !errorIPList.length
+            ? resolve('')
+            : reject(`[${errorIPList}]不是正确的IP地址`);
+    });
+};
 </script>
 
 <style lang="less" scoped>

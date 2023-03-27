@@ -17,3 +17,11 @@ export const passwordRegEx = (value: string) => {
     const password = new RegExp(/^\S*(?=\S{8,})(?=\S*\d)(?=\S*[A-Z])(?=\S*[a-z])\S*$/)
     return password.test(value)
 }
+/**
+ * 判断是否为正确的IP地址
+ */
+export const testIP = (value: string) => {
+    const ip =
+        /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/;
+    return ip.test(value);
+};
