@@ -52,14 +52,14 @@
                                 {{ slotProps.name }}
                             </span>
                         </Ellipsis>
+                      <div class="subTitle">
                         <Ellipsis :lineClamp="2">
-                            <div class="subTitle">
                                 说明：{{
                                     slotProps?.description ||
                                     typeMap.get(slotProps.triggerType)?.tip
                                 }}
-                            </div>
                         </Ellipsis>
+                      </div>
                     </template>
                     <template #actions="item">
                         <PermissionButton

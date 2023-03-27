@@ -13,7 +13,7 @@ export const handleParamsData = (data: any[], key: string = 'column'): any[] => 
 
 export const thenRules = [{
   validator(_: string, value: any) {
-    if (!value || (value && !value.length) || !v.some(item => item.actions && item.actions.length)) {
+    if (!value || (value && !value.length) || !value.some(item => item.actions && item.actions.length)) {
       return Promise.reject('至少配置一个执行动作')
     }
     return Promise.resolve();
