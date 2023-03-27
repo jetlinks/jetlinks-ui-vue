@@ -33,8 +33,10 @@
                                 }指标值`,
                             }"
                             :name="['metrics', index, 'value', 0]"
-                            :label="item?.name || '指标值'"
                         >
+                            <template #label>
+                                <Ellipsis>{{ item?.name || '指标值' }}</Ellipsis>
+                            </template>
                             <ValueItem
                                 v-model:modelValue="item.value[0]"
                                 :itemType="data.valueType?.type"
@@ -95,6 +97,7 @@
 import { queryMetric, saveMetric } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import { message } from 'jetlinks-ui-components';
+import { isNumber } from 'lodash-es';
 
 const props = defineProps({
     data: {
@@ -110,7 +113,7 @@ const instanceStore = useInstanceStore();
 const formRef = ref();
 
 const modelRef = reactive<{
-    metrics: any[]
+    metrics: any[];
 }>({
     metrics: [],
 });
@@ -132,8 +135,8 @@ watch(
                         ) {
                             const list = resp?.result.map((item: any) => {
                                 const val = Array.isArray(item?.value)
-                                    ? [item?.value]
-                                    : item?.value?.split(',');
+                                    ? item?.value
+                                    : (isNumber(item?.value) ? [item.value] : item?.value?.split(','))
                                 return {
                                     ...item,
                                     value: val,
@@ -172,7 +175,7 @@ watch(
 const handleSave = () => {
     formRef.value
         .validate()
-        .then(async () => {
+        .then(async (_data: any) => {
             loading.value = true;
             const list = (toRaw(modelRef)?.metrics || []).map((item: any) => {
                 return {

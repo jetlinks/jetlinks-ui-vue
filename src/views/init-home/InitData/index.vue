@@ -68,7 +68,7 @@
                                     />
                                 </j-tooltip>
                             </template>
-                            <j-input v-model:value="modalForm.publicHost">
+                            <j-input v-model:value="modalForm.publicHost" placeholder="请输入公网地址">
                             </j-input>
                         </j-form-item>
                     </j-col>
@@ -83,7 +83,7 @@
                                     />
                                 </j-tooltip>
                             </template>
-                            <j-select v-model:value="modalForm.port">
+                            <j-select v-model:value="modalForm.port" placeholder="请选择本地端口" show-search>
                                 <j-select-option
                                     v-for="item in optionPorts"
                                     :key="item"
@@ -105,6 +105,7 @@
                             </template>
                             <j-input-number
                                 v-model:value="modalForm.publicPort"
+                                placeholder="请输入公网端口"
                                 style="width: 100%"
                             />
                         </j-form-item>
@@ -142,9 +143,6 @@ const visible = ref<boolean>(false);
  */
 const modalForm = reactive<modalState>({
     host: '0.0.0.0',
-    port: '',
-    publicHost: '',
-    publicPort: null,
 });
 /**
  * 校验官网地址

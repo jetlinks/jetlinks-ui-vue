@@ -53,8 +53,9 @@
                             </span>
                         </Ellipsis>
                       <div class="subTitle">
+                        说明：
                         <Ellipsis :lineClamp="2">
-                                说明：{{
+                                {{
                                     slotProps?.description ||
                                     typeMap.get(slotProps.triggerType)?.tip
                                 }}

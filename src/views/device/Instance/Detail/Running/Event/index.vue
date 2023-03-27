@@ -1,5 +1,5 @@
 <template>
-    <pro-search class="search" type="simple" :columns="columns" target="device-instance-running-events" @search="handleSearch" />
+    <pro-search class="device-search" type="simple" :columns="columns" target="device-instance-running-events" @search="handleSearch" />
     <JProTable
         ref="eventsRef"
         :columns="columns"
@@ -62,14 +62,14 @@ const _getEventList = (_params: any) =>
 
 watchEffect(() => {
     if (events.data?.valueType?.type === 'object') {
-        (events.data.valueType?.properties || []).map((i: any) => {
+        (events.data.valueType?.properties || []).reverse().map((i: any) => {
             columns.value.splice(0, 0, {
                 key: i.id,
                 title: i.name,
                 dataIndex: `${i.id}_format`,
                 search: {
-                    type: 'string',
-                },
+                    type: i?.valueType?.type || 'string',
+                }
             });
         });
     } else {
@@ -97,8 +97,8 @@ const detail = (_info: any) => {
 };
 </script>
 
-<style lang="less" scoped>
-.search {
-    padding: 0 0 0 24px;
+<style lang="less">
+.device-search {
+    margin: 0 0 24px 0 ;
 }
 </style>

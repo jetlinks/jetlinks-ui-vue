@@ -33,6 +33,7 @@
                 :pagination="{
                     showSizeChanger: true,
                     pageSizeOptions: ['10', '20', '50', '100'],
+                    change: handlePageChange,
                 }"
             />
         </div>
@@ -42,6 +43,9 @@
 <script setup lang="ts">
 import { bindUser_api, getBindUserList_api } from '@/api/system/department';
 import { message } from 'jetlinks-ui-components';
+import { useDepartmentStore } from '@/store/department';
+
+const department = useDepartmentStore();
 
 const emits = defineEmits(['confirm', 'update:visible']);
 
@@ -52,17 +56,19 @@ const props = defineProps<{
 // 弹窗相关
 const loading = ref(false);
 const confirm = () => {
-    if (table._selectedRowKeys.length && props.parentId) {
+    if (department.crossPageKeys.length && props.parentId) {
         loading.value = true;
-        bindUser_api(props.parentId, table._selectedRowKeys)
+        bindUser_api(props.parentId, department.crossPageKeys)
             .then(() => {
                 message.success('操作成功');
                 emits('confirm');
                 emits('update:visible', false);
+                table._selectedRowKeys = [];
             })
             .finally(() => (loading.value = false));
     } else {
-        emits('update:visible', false);
+        // emits('update:visible', false);
+        message.warning('请选择要绑定的用户');
     }
 };
 
@@ -134,6 +140,36 @@ const table = reactive({
         table._selectedRowKeys = [];
     },
 });
+
+watch(
+    () => table._selectedRowKeys,
+    (val: string[]) => {
+        // console.log('_selectedRowKeys: ', val);
+        department.setSelectedKeys(val);
+
+        // const newKeys = [];
+        // val.forEach((key: string) => {
+        //     if (!department.crossPageKeys.includes(key)) {
+        //         newKeys.push(key);
+        //     }
+        // });
+        // if (newKeys.length) {
+        //     department.setSelectedKeys(val);
+        //     console.log('_selectedRowKeys: ', val);
+        // }
+    },
+);
+// watch(
+//     () => department.crossPageKeys,
+//     (val: string[]) => {
+//         // console.log('crossPageKeys: ', val);
+//         table._selectedRowKeys = val;
+//     },
+// );
+const handlePageChange = () => {
+    console.log('PageChange');
+    // department.setSelectedKeys([], 'pagination');
+};
 </script>
 
 <style lang="less" scoped>

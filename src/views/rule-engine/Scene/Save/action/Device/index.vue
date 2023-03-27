@@ -23,7 +23,7 @@
             <Product
                 v-if="current === 0"
                 v-model:rowKey="DeviceModel.productId"
-                v-model:detail="DeviceModel.productDetail"
+                v-model:detail="productDetail"
                 @change="onProductChange"
             />
             <Device
@@ -34,6 +34,7 @@
                 :thenName="thenName"
                 :values="DeviceModel"
                 @save="onDeviceSave"
+                :productDetail="productDetail"
                 ref="deviceRef"
             />
             <Action
@@ -42,7 +43,9 @@
                 :branchesName="branchesName"
                 :thenName="thenName"
                 :values="DeviceModel"
+                :productDetail="productDetail"
                 ref="actionRef"
+                @change="onActionsChange"
             />
         </div>
         <template #footer>
@@ -61,7 +64,7 @@
 </template>
 
 <script lang="ts" setup>
-import { DeviceModelType } from './typings';
+import { DeviceModelType, DeviceOptionType } from './typings';
 import Product from './Product.vue';
 import Device from './device/index.vue';
 import Action from './actions/index.vue';
@@ -105,25 +108,21 @@ const current = ref<number>(0);
 const deviceRef = ref<any>();
 const actionRef = ref<any>();
 
+const productDetail = ref<any>({});
+
 const DeviceModel = reactive<DeviceModelType>({
     productId: '',
     deviceId: '',
-    productDetail: {},
-    device: {},
-    deviceDetail: {},
-    options: {},
     selector: 'fixed',
     selectorValues: [],
     upperKey: '',
     source: 'fixed',
-    relationName: '',
-    message: {},
-    propertiesName: '',
-    propertiesValue: '',
-    columns: [],
-    actionName: '',
-    tagList: [],
+    message: {
+        messageType: 'INVOKE_FUNCTION',
+    },
 });
+
+const DeviceOptions = ref<DeviceOptionType>({});
 
 const emit = defineEmits<Emit>();
 
@@ -139,7 +138,6 @@ const onSave = (_data: any) => {
         productId: DeviceModel.productId,
         message: _data.message,
     };
-    //处理按变量
     if (DeviceModel.selector === 'variable') {
         item.selector = 'fixed';
     }
@@ -152,55 +150,46 @@ const onSave = (_data: any) => {
         properties: '', //属性功能
         propertiesValue: '', //设置功能
         selector: DeviceModel.selector, //选择器标识
-        productName: DeviceModel.productDetail.name,
-        relationName: DeviceModel.relationName,
         triggerName: data.value.options?.trigger?.name || '触发设备',
-        tagList: [],
-        columns: [],
-        otherColumns: [],
+        ...DeviceOptions.value,
     };
-    _options.name =
-        DeviceModel.deviceDetail?.name || DeviceModel.selectorValues?.[0]?.name;
     const _type = _data.message.messageType;
     if (_type === 'INVOKE_FUNCTION') {
         _options.type = '执行';
-        _options.properties = _data.message.propertiesName;
     }
     if (_type === 'READ_PROPERTY') {
         _options.type = '读取';
-        _options.properties = _data.message.propertiesName;
     }
     if (_type === 'WRITE_PROPERTY') {
         _options.type = '设置';
-        _options.properties = _data.message.propertiesName;
         _options.propertiesValue =
-            typeof _data.message.propertiesValue === 'object'
-                ? JSON.stringify(_data.message.propertiesValue)
-                : `${_data.message.propertiesValue}`;
-        _options.columns = DeviceModel.columns;
-        _options.otherColumns = DeviceModel.columns;
-        const cur: any = Object.values(_data.message.properties)?.[0];
-        if (cur?.source === 'upper') {
-            _options.propertiesValue = DeviceModel.actionName;
-        }
-    }
-    if (_options.selector === 'tag') {
-        _options.taglist = DeviceModel.tagList.map((it) => ({
-            name: it.column || it.name,
-            type: it.type ? (it.type === 'and' ? '并且' : '或者') : '',
-            value: it.value,
-        }));
-    }
-    if (_options.selector === 'variable') {
-        _options.name = DeviceModel.selectorValues?.[0]?.name;
+            (typeof _options?.propertiesValue === 'object'
+                ? JSON.stringify(_options?.propertiesValue)
+                : `${_options?.propertiesValue}`) || DeviceModel?.selectorValues?.[0]?.value;
     }
     emit('save', item, _options);
 };
 
-const onProductChange = () => {
-    DeviceModel.selectorValues = undefined
-    DeviceModel.message = {}
-}
+const onProductChange = (_val: any) => {
+    DeviceModel.selectorValues = undefined;
+    DeviceModel.message = {
+        messageType: 'INVOKE_FUNCTION',
+    };
+    DeviceOptions.value.productName = _val?.name;
+};
+
+const onDeviceSave = (_data: any, obj?: any) => {
+    Object.assign(DeviceModel, { ..._data });
+    DeviceOptions.value = { ...unref(DeviceOptions), ...obj };
+};
+
+const onActionsChange = (options?: any) => {
+    const obj = {
+        ...DeviceOptions.value,
+        ...options,
+    };
+    DeviceOptions.value = obj;
+};
 
 const save = async (step?: number) => {
     let _step = step !== undefined ? step : current.value;
@@ -215,7 +204,7 @@ const save = async (step?: number) => {
         } else if (DeviceModel.selectorValues?.length) {
             current.value = 2;
         } else {
-            onlyMessage('请选择设备', 'error')
+            onlyMessage('请选择设备', 'error');
         }
     } else {
         if (actionRef.value) {
@@ -239,41 +228,14 @@ const prev = () => {
 
 const saveClick = () => save();
 
-const onDeviceSave = (_data: any, _detail: any, obj?: any) => {
-    Object.assign(DeviceModel, { ..._data, ...obj });
-    DeviceModel.deviceDetail = _detail;
-};
-
 watch(
     () => props.value,
     (newValue) => {
-        Object.assign(DeviceModel, newValue);
+        Object.assign(DeviceModel, {...newValue});
         if (newValue?.productId) {
             detail(newValue.productId).then((resp) => {
                 if (resp.status === 200) {
-                    DeviceModel.productDetail = resp.result;
-                    if (
-                        DeviceModel.selector === 'tag' &&
-                        DeviceModel.selectorValues[0]?.value
-                    ) {
-                        const metadata = JSON.parse(
-                            DeviceModel.productDetail?.metadata || '{}',
-                        );
-                        const tags = metadata.tags || [];
-                        const arr = DeviceModel.selectorValues[0]?.value
-                            .filter((item: any) => !!item.value)
-                            .map((item: any) => {
-                                return {
-                                    column:
-                                        tags.find(
-                                            (i: any) => i.id === item.column,
-                                        )?.name || item.column,
-                                    type: item.type,
-                                    value: item.value,
-                                };
-                            });
-                        DeviceModel.tagList = arr;
-                    }
+                    productDetail.value = resp.result;
                 }
             });
         }
