@@ -75,6 +75,18 @@ const formModel = reactive({
   functionData: props.functionParameters
 })
 
+const handlePropertiesOptions = (propertiesItem: any) => {
+  const _type = propertiesItem?.valueType.type
+  if (_type === 'boolean') {
+    return [
+      { label: propertiesItem.valueType.falseText || '是', value: propertiesItem.valueType.falseValue || false },
+      { label: propertiesItem.valueType.trueText || '否', value: propertiesItem.valueType.trueValue || true },
+    ]
+  }
+
+  return propertiesItem.valueType?.elements
+}
+
 /**
  * 获取当前选择功能属性
  */
@@ -90,7 +102,7 @@ const functionData = computed(() => {
         name: datum.name,
         type: datum.valueType ? datum.valueType.type : '-',
         format: datum.valueType ? datum.valueType.format : undefined,
-        options: datum.valueType ? datum.valueType.elements : undefined,
+        options: handlePropertiesOptions(datum),
         value: undefined,
       });
     }
@@ -101,10 +113,13 @@ const functionData = computed(() => {
 
 const rules = [{
   validator(_: string, value: any) {
+    console.log(value)
+    debugger
     if (!value?.length && functionData.value.length) {
       return Promise.reject('请输入功能值')
     } else {
-      let hasValue = value.find((item: { name: string, value: any}) => !item.value)
+      let hasValue = value.find((item: { name: string, value: any}) => item.value === undefined)
+      console.log('hasValue', hasValue)
       if (hasValue) {
         const functionItem = functionData.value.find((item: any) => item.id === hasValue.name)
         return Promise.reject(functionItem?.name ? `请输入${functionItem?.name}值` : '请输入功能值')
