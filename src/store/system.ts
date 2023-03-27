@@ -3,6 +3,8 @@ import { systemVersion } from '@/api/comm'
 import { useMenuStore } from './menu'
 import { getDetails_api } from '@/api/system/basis';
 import type { ConfigInfoType } from '@/views/system/Basis/typing';
+import { LocalStore } from '@/utils/comm'
+import { SystemConst } from '@/utils/consts'
 
 type SystemStateType = {
     isCommunity: boolean;
@@ -22,6 +24,7 @@ export const useSystem = defineStore('system', {
                 const resp = await systemVersion()
                 if (resp.success && resp.result) {
                     const isCommunity = resp.result.edition === 'community'
+                    LocalStore.set(SystemConst.VERSION_CODE, resp.result.edition)
                     this.isCommunity = isCommunity
                     //  获取菜单
                     const menu = useMenuStore()

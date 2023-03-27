@@ -572,44 +572,6 @@ const rules = [{
   }
 }]
 
-const formTouchOff = () => {
-  console.log('formTouchOff')
-  formItemContext.onFieldChange()
-}
-
-/**
- * 校验当前执行动作的设备或者产品是否删除
- */
-const checkDeviceDelete = async () => {
-  const item = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device
-  const proResp = await queryProductList({ terms: [{ terms: [{ column: 'id', termType: 'eq', value: item!.productId }]}]})
-  if (proResp.success && (proResp.result as any)?.total === 0) { // 产品已删除
-    _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.productId = undefined
-    formTouchOff()
-    return
-  }
-  const deviceList = item!.selectorValues?.map(item => item.value) || []
-  const deviceResp = await deviceQuery({ terms: [{ terms: [{ column: 'id', termType: 'in', value: deviceList.toString() }]}]})
-  if (deviceResp.success && (deviceResp.result as any)?.total < (item!.selectorValues?.length || 0)) { // 某一个设备被删除
-    _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.selectorValues = undefined
-    formTouchOff()
-    return
-  }
-}
-
-/**
- * 校验当前执行动作的通知配置、消息模板是否删除
- */
-const checkNoticeDelete = () => {
-
-}
-
-nextTick(() => {
-  if (_data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.executor === 'device') {
-    checkDeviceDelete()
-  }
-})
-
 </script>
 
 <style lang="less" scoped>

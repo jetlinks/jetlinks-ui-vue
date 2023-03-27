@@ -61,24 +61,33 @@ const columns = [
     },
 ];
 const rowSelection = {
-    onSelect: (record: any) => {
-        const targetId = record.id;
-        let newKeys = [...props.selectedRowKeys];
+    // onSelect: (record: any) => {
+    //     const targetId = record.id;
+    //     let newKeys = [...props.selectedRowKeys];
 
-        if (props.selectedRowKeys.includes(targetId)) {
-            newKeys = newKeys.filter((id) => id !== targetId);
-        } else newKeys.push(targetId);
+    //     if (props.selectedRowKeys.includes(targetId)) {
+    //         newKeys = newKeys.filter((id) => id !== targetId);
+    //     } else newKeys.push(targetId);
 
-        emits('update:selectedRowKeys', newKeys);
-        if (props.mode === 'appManger') {
-            emits('update:changedApis', {
-                ...props.changedApis,
-                [record.id]: record,
-            });
-        }
-    },
+    //     emits('update:selectedRowKeys', newKeys);
+    //     if (props.mode === 'appManger') {
+    //         emits('update:changedApis', {
+    //             ...props.changedApis,
+    //             [record.id]: record,
+    //         });
+    //     }
+    // },
     onChange: (keys: string[]) => {
-        rowSelection.selectedRowKeys.value = keys;
+        // rowSelection.selectedRowKeys.value = keys;
+        emits('update:selectedRowKeys', keys);
+        keys.forEach((key: string) => {
+            if (props.mode === 'appManger') {
+                emits('update:changedApis', {
+                    ...props.changedApis,
+                    [key]: props.tableData.find((f: any) => f.id === key),
+                });
+            }
+        });
     },
     selectedRowKeys: ref<string[]>([]),
 };
@@ -87,7 +96,9 @@ const save = async () => {
     // 当前节点表格数据id
     const currenTableKeys = props.tableData.map((m: any) => m.id);
     // 当前表格选中的id
-    const currentSelectedKeys = rowSelection.selectedRowKeys.value;
+    const currentSelectedKeys = rowSelection.selectedRowKeys.value.filter(
+        (key: string) => currenTableKeys.includes(key),
+    );
     // 当前表格, 原有选中的id
     const oldSelectedKeys = currenTableKeys.filter((key) =>
         props.sourceKeys.includes(key),
@@ -124,11 +135,15 @@ const save = async () => {
     } else if (props.mode === 'appManger') {
         const removeItems = removeKeys.map((key) => ({
             id: key,
-            permissions: props.changedApis[key]?.security,
+            // permissions: props.changedApis[key]?.security,
+            permissions: props.tableData.find((f: any) => f.id === key)
+                ?.security,
         }));
         const addItems = addKeys.map((key) => ({
             id: key,
-            permissions: props.changedApis[key]?.security,
+            // permissions: props.changedApis[key]?.security,
+            permissions: props.tableData.find((f: any) => f.id === key)
+                ?.security,
         }));
         Promise.all([
             updateOperations_api(code, '_delete', { operations: removeItems }),

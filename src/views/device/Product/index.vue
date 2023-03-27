@@ -182,6 +182,7 @@ import Save from './Save/index.vue';
 import { useMenuStore } from 'store/menu';
 import { useRoute } from 'vue-router';
 import {useRouterParams} from "@/utils/hooks/useParams";
+import { accessConfigTypeFilter } from '@/utils/setting'
 /**
  * 表格数据
  */
@@ -442,37 +443,11 @@ const query = reactive({
             dataIndex: 'accessProvider',
             search: {
                 type: 'select',
-                options: async () => {
-                    return new Promise((res) => {
+                options: () => {
+                    return new Promise((resolve) => {
                         getProviders().then((resp: any) => {
-                            listData.value = [];
-                            // const list = () => {
-                            if (isNoCommunity) {
-                                (resp?.result || []).map((item: any) => {
-                                    if (item.id != 'plugin_gateway') {
-                                        listData.value.push({
-                                            label: item.name,
-                                            value: item.id,
-                                        });
-                                    }
-                                });
-                            } else {
-                                listData.value = (resp?.result || [])
-                                    .filter((i: any) =>
-                                        [
-                                            'mqtt-server-gateway',
-                                            'http-server-gateway',
-                                            'mqtt-client-gateway',
-                                            'tcp-server-gateway',
-                                        ].includes(i.id),
-                                    )
-                                    .map((item: any) => ({
-                                        label: item.name,
-                                        value: item.id,
-                                    }));
-                                // }
-                            }
-                            res(listData.value);
+                          const data = resp.result || []
+                          resolve(accessConfigTypeFilter(data))
                         });
                     });
                 },

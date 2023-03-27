@@ -540,7 +540,7 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '该字段是必填字段',
+                                        message: '请输入用户名',
                                     },
                                     {
                                         max: 64,
@@ -567,7 +567,7 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '该字段是必填字段',
+                                        message: '请输入密码',
                                     },
                                     {
                                         max: 64,
@@ -824,7 +824,15 @@
                                 placeholder="请输入redirectUrl"
                             />
                         </j-form-item>
-                        <j-form-item label="IP白名单">
+                        <j-form-item
+                            label="IP白名单"
+                            :name="['apiServer', 'ipWhiteList']"
+                            :rules="[
+                                {
+                                    validator: validateIP,
+                                },
+                            ]"
+                        >
                             <j-textarea
                                 v-model:value="form.data.apiServer.ipWhiteList"
                                 placeholder="请输入IP白名单，多个地址回车分隔，不填默认均可访问"
@@ -1197,12 +1205,7 @@
                         <j-form-item
                             v-if="form.data.provider !== 'dingtalk-ent-app'"
                             class="resetLabel"
-                            :name="[
-                                'sso',
-                                'configuration',
-                                'oauth2',
-                                'clientId',
-                            ]"
+                            :name="['sso', 'configuration', 'appId']"
                             :rules="[
                                 {
                                     required: true,
@@ -1223,7 +1226,7 @@
                             </template>
                             <j-input
                                 v-model:value="
-                                    form.data.sso.configuration.oauth2.clientId
+                                    form.data.sso.configuration.appId
                                 "
                                 placeholder="请输入appId"
                             />
@@ -1232,12 +1235,7 @@
                         <j-form-item
                             v-if="form.data.provider !== 'wechat-webapp'"
                             class="resetLabel"
-                            :name="[
-                                'sso',
-                                'configuration',
-                                'oauth2',
-                                'clientSecret',
-                            ]"
+                            :name="['sso', 'configuration', 'appKey']"
                             :rules="[
                                 {
                                     required: true,
@@ -1258,8 +1256,7 @@
                             </template>
                             <j-input
                                 v-model:value="
-                                    form.data.sso.configuration.oauth2
-                                        .clientSecret
+                                    form.data.sso.configuration.appKey
                                 "
                                 placeholder="请输入appKey"
                             />
@@ -1443,6 +1440,7 @@
 <script setup lang="ts">
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { LocalStore, filterSelectNode } from '@/utils/comm';
+import { testIP } from '@/utils/validate';
 
 import {
     getDepartmentList_api,
@@ -1465,6 +1463,7 @@ import {
 import { randomString } from '@/utils/utils';
 import { cloneDeep, difference } from 'lodash';
 import { useMenuStore } from '@/store/menu';
+import { Rule } from 'ant-design-vue/lib/form';
 
 const emit = defineEmits(['changeApplyType']);
 const routeQuery = useRoute().query;
@@ -1673,6 +1672,10 @@ function init() {
     watch(
         () => form.data.provider,
         (n) => {
+            form.data.page.baseUrl = '';
+            form.data.page.parameters = [];
+            form.data.apiClient.baseUrl = '';
+            form.data.apiClient.parameters = [];
             emit('changeApplyType', n);
             if (routeQuery.id) return;
             if (n === 'wechat-webapp' || n === 'dingtalk-ent-app') {
@@ -1697,19 +1700,21 @@ function init() {
 function getInfo(id: string) {
     getAppInfo_api(id).then((resp: any) => {
         // 后端返回的headers和parameters中, key转为label
-        resp.result.apiClient.headers = resp.result.apiClient.headers.map(
-            (m: any) => ({
-                ...m,
-                label: m.key,
-            }),
-        );
-        resp.result.apiClient.parameters = resp.result.apiClient.parameters.map(
-            (m: any) => ({
-                ...m,
-                label: m.key,
-            }),
-        );
+        if (resp.result.apiClient) {
+            resp.result.apiClient.headers = resp.result.apiClient.headers.map(
+                (m: any) => ({
+                    ...m,
+                    label: m.key,
+                }),
+            );
+            resp.result.apiClient.parameters =
+                resp.result.apiClient.parameters.map((m: any) => ({
+                    ...m,
+                    label: m.key,
+                }));
+        }
         form.data = {
+            ...initForm, // 查询详情, 赋值初始字段. 解决编辑改变接入方式报错的问题: bug#10892
             ...resp.result,
             integrationModes: resp.result.integrationModes.map(
                 (item: any) => item.value,
@@ -1749,7 +1754,6 @@ function clickAddItem(data: string[], target: string) {
 }
 // 保存
 function clickSave() {
-    console.log('headers: ', form.data.apiClient.headers);
     formRef.value?.validate().then(() => {
         const params = cloneDeep(form.data);
         // 删除多余的参数
@@ -1813,7 +1817,7 @@ function clickSave() {
             if (resp.status === 200) {
                 const isPage = params.integrationModes.includes('page');
                 if (isPage) {
-                    form.data = params;
+                    // form.data = params;
                     dialog.selectId = routeQuery.id || resp.result.id;
                     dialog.selectProvider = form.data.provider;
                     dialog.visible = true;
@@ -1842,7 +1846,7 @@ function getErrorNum(
     }
 }
 
-const imageTypes = ref(['image/jpg', 'image/png']);
+const imageTypes = ref(['image/jpg', 'image/png', 'image/jpeg']);
 const beforeLogoUpload = (file: any) => {
     const isType: any = imageTypes.value.includes(file.type);
     if (!isType) {
@@ -1863,7 +1867,6 @@ function changeBackUpload(info: UploadChangeParam<UploadFile<any>>) {
         form.uploadLoading = false;
         form.data.sso.configuration.oauth2.logoUrl = info.file.response?.result;
     } else if (info.file.status === 'error') {
-        console.log(info.file);
         form.uploadLoading = false;
         message.error('logo上传失败，请稍后再试');
     }
@@ -1878,6 +1881,23 @@ function clearNullProp(obj: object) {
         }
     }
 }
+
+/**
+ * 验证IP合法性
+ * @param _rule 
+ * @param value 
+ */
+const validateIP = (_rule: Rule, value: string) => {
+    const ipList = value?.split(/[\n,]/g).filter((i: string) => i && i.trim());
+    const errorIPList = ipList.filter(
+        (f: string) => !testIP(f.replace(/\s*/g, '')),
+    );
+    return new Promise((resolve, reject) => {
+        !errorIPList.length
+            ? resolve('')
+            : reject(`[${errorIPList}]不是正确的IP地址`);
+    });
+};
 </script>
 
 <style lang="less" scoped>
