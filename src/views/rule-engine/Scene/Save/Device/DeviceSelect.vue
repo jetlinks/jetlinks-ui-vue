@@ -58,8 +58,12 @@ const typeList = [
 
 const select = (s: string) => {
   selectorModel.value = s
+  devices.value = []
+  orgIds.value = []
   emit('update:selector', s)
   emit('update:selectorValues', [])
+  emit('update:deviceKeys', [])
+  emit('update:orgId', [])
 }
 
 const updateDevice = (d: any[]) => {
@@ -69,7 +73,6 @@ const updateDevice = (d: any[]) => {
 }
 
 const updateOrg = (d: any[]) => {
-  console.log('updateOrg', d)
   orgIds.value = d
   emit('update:orgId', d)
   emit('update:selectorValues', d)
