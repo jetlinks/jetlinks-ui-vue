@@ -1,5 +1,5 @@
 <template>
-  <div class="boolean-param">
+  <div class="boolean-param ant-form-horizontal">
     <j-row :gutter="4">
       <j-col :span="12">
         <j-form-item label=" " :name="name.concat(['trueText'])" :rules="[
