@@ -44,6 +44,10 @@ const props = defineProps({
     },
 });
 
+watchEffect(() => {
+    console.log(props.data)
+})
+
 const emit = defineEmits(['cancel', 'save']);
 
 const onCancel = () => {

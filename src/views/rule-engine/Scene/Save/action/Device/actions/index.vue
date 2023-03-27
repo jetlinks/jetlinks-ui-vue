@@ -22,12 +22,13 @@
                         showSearch
                         placeholder="请选择功能"
                         v-model:value="modelRef.message.functionId"
-                        @select="functionSelect"
+                        @change="functionSelect"
                     >
                         <j-select-option
                             v-for="item in metadata?.functions || []"
                             :value="item?.id"
                             :key="item?.id"
+                            :label="item?.name"
                             >{{ item?.name }}</j-select-option
                         >
                     </j-select>
@@ -54,6 +55,7 @@
                         showSearch
                         placeholder="请选择属性"
                         v-model:value="modelRef.message.properties[0]"
+                        @change="propertySelect"
                     >
                         <j-select-option
                             v-for="item in metadata?.properties.filter((i) =>
@@ -61,6 +63,7 @@
                             ) || []"
                             :value="item?.id"
                             :key="item?.id"
+                            :label="item?.name"
                             >{{ item?.name }}</j-select-option
                         >
                     </j-select>
@@ -130,7 +133,13 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
+    productDetail: {
+        type: Object,
+        default: () => {},
+    },
 });
+
+const emit = defineEmits(['change']);
 
 const formRef = ref();
 
@@ -146,8 +155,19 @@ const modelRef = reactive({
 
 const writeFormRef = ref();
 
-const functionSelect = () => {
+const functionSelect = (val: any, options?: any) => {
     modelRef.message.inputs = [];
+    emit('change', {
+        propertiesName: options?.label,
+        propertiesValue: modelRef.propertiesValue,
+    });
+};
+
+const propertySelect = (val: any, options?: any) => {
+    emit('change', {
+        propertiesName: options?.label,
+        propertiesValue: modelRef.propertiesValue,
+    });
 };
 
 const functionRules = [
@@ -239,11 +259,11 @@ const onMessageTypeChange = (val: string) => {
 };
 
 watch(
-    () => props.values,
+    () => props.productDetail,
     (newVal) => {
-        if (newVal?.productDetail?.id) {
-            if (newVal?.selector === 'fixed') {
-                const id = newVal?.selectorValues?.[0]?.value;
+        if (newVal?.id) {
+            if (props.values?.selector === 'fixed') {
+                const id = props.values?.selectorValues?.[0]?.value;
                 if (id) {
                     detail(id).then((resp) => {
                         if (resp.status === 200) {
@@ -254,9 +274,7 @@ watch(
                     });
                 }
             } else {
-                metadata.value = JSON.parse(
-                    newVal?.productDetail?.metadata || '{}',
-                );
+                metadata.value = JSON.parse(newVal?.metadata || '{}');
             }
         }
     },
@@ -282,6 +300,13 @@ watch(
 
 const onWriteChange = (val: string) => {
     modelRef.propertiesValue = val;
+    emit('change', {
+        propertiesName:
+            deviceMessageType.value === 'INVOKE_FUNCTION'
+                ? _function.value?.name
+                : _property.value?.name,
+        propertiesValue: modelRef.propertiesValue,
+    });
 };
 
 const onFormSave = () => {
@@ -295,19 +320,19 @@ const onFormSave = () => {
                         reject(false);
                     }
                 }
-                // 处理三种情况的值的格式
-                const obj = {
+                resolve({
                     message: {
                         ...modelRef.message,
                         ..._data.message,
-                        propertiesName:
-                            deviceMessageType.value === 'INVOKE_FUNCTION'
-                                ? _function.value?.name
-                                : _property.value?.name,
-                        propertiesValue: modelRef.propertiesValue,
                     },
-                };
-                resolve(obj);
+                });
+                emit('change', {
+                    propertiesName:
+                        deviceMessageType.value === 'INVOKE_FUNCTION'
+                            ? _function.value?.name
+                            : _property.value?.name,
+                    propertiesValue: modelRef.propertiesValue,
+                });
             })
             .catch((err: any) => {
                 reject(err);
