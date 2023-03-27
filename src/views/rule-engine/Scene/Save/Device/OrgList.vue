@@ -3,7 +3,7 @@
     :columns="columns"
     type='simple'
     @search="handleSearch"
-    class='search'
+    class='scene-search'
     target="scene-triggrt-device-category"
   />
   <j-divider style='margin: 0' />
