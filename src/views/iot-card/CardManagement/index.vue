@@ -181,15 +181,15 @@
                         </j-row>
                         <j-divider style="margin: 12px 0" />
                         <div class="content-bottom">
-                            <div v-if="slotProps.usedFlow === 0">
-                                <span class="flow-text">
-                                    {{ slotProps.totalFlow }}
-                                </span>
-                                <span class="card-item-content-text">
-                                    M 使用流量</span
-                                >
-                            </div>
-                            <div v-else>
+<!--                            <div v-if="slotProps.usedFlow === 0">-->
+<!--                                <span class="flow-text">-->
+<!--                                    {{ slotProps.totalFlow }}-->
+<!--                                </span>-->
+<!--                                <span class="card-item-content-text">-->
+<!--                                    M 使用流量</span-->
+<!--                                >-->
+<!--                            </div>-->
+                            <div>
                                 <div class="progress-text">
                                     <div>
                                         {{
