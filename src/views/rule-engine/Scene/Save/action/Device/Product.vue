@@ -74,6 +74,7 @@ import { queryTree } from '@/api/device/category';
 import { getTreeData_api } from '@/api/system/department';
 import { isNoCommunity } from '@/utils/utils';
 import { getImage } from '@/utils/comm';
+import { accessConfigTypeFilter } from '@/utils/setting'
 
 type Emit = {
     (e: 'update:rowKey', data: string): void;
@@ -127,26 +128,8 @@ const columns = [
             type: 'select',
             options: () =>
                 getProviders().then((resp: any) => {
-                    if (isNoCommunity) {
-                        return (resp?.result || []).map((item: any) => ({
-                            label: item.name,
-                            value: item.id,
-                        }));
-                    } else {
-                        return (resp?.result || [])
-                            .filter((item: any) =>
-                                [
-                                    'mqtt-server-gateway',
-                                    'http-server-gateway',
-                                    'mqtt-client-gateway',
-                                    'tcp-server-gateway',
-                                ].includes(item.id),
-                            )
-                            .map((item: any) => ({
-                                label: item.name,
-                                value: item.id,
-                            }));
-                    }
+                  const data = resp.result || []
+                  return accessConfigTypeFilter(data)
                 }),
         },
     },

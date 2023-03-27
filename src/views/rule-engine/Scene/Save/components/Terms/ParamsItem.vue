@@ -221,7 +221,7 @@ const showDouble = computed(() => {
   } else {
     metricOption.value = []
   }
-  return isRange && !isMetric
+  return isRange && !isMetric.value
 })
 
 const mouseover = () => {

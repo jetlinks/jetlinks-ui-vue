@@ -58,12 +58,14 @@ const checkDeviceDelete = async () => {
     formTouchOff()
     return
   }
-  const deviceList = item!.selectorValues?.map(item => item.value) || []
-  const deviceResp = await deviceQuery({ terms: [{ terms: [{ column: 'id', termType: 'in', value: deviceList.toString() }]}]})
-  if (deviceResp.success && (deviceResp.result as any)?.total < (item!.selectorValues?.length || 0)) { // 某一个设备被删除
-    _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.selectorValues = undefined
-    formTouchOff()
-    return
+  if (item?.selector === 'fixed') {
+    const deviceList = item!.selectorValues?.map(item => item.value) || []
+    const deviceResp = await deviceQuery({ terms: [{ terms: [{ column: 'id', termType: 'in', value: deviceList.toString() }]}]})
+    if (deviceResp.success && (deviceResp.result as any)?.total < (item!.selectorValues?.length || 0)) { // 某一个设备被删除
+      _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.selectorValues = undefined
+      formTouchOff()
+      return
+    }
   }
 }
 

@@ -42,6 +42,8 @@ export default [
             actions: ['query'],
           },
         ],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
       },
       {
         code: 'notice',
@@ -182,6 +184,8 @@ export default [
                 ],
               },
             ],
+            accessSupport: { text: "支持", value: "support" },
+            supportDataAccess: true
           },
           {
             code: 'notice/Template',
@@ -301,6 +305,8 @@ export default [
                 ],
               },
             ],
+            accessSupport: { text: "支持", value: "support" },
+            supportDataAccess: true
           },
         ],
       },
@@ -344,6 +350,8 @@ export default [
                 actions: ['find-geo'],
               },
             ],
+            accessSupport: { text: "不支持", value: "unsupported" },
+            supportDataAccess: false
           },
           {
             code: 'device/Product',
@@ -354,7 +362,6 @@ export default [
             url: '/iot/device/Product',
             icon: 'icon-chanpin',
             sortIndex: 2,
-            accessSupport: 'support',
             assetType: 'product',
             showPage: ['device-product'],
             permissions: [
@@ -535,6 +542,8 @@ export default [
                 ],
               },
             ],
+            accessSupport: { text: "支持", value: "support" },
+            supportDataAccess: true
           },
           {
             code: 'device/Instance',
@@ -545,7 +554,8 @@ export default [
             url: '/iot/device/Instance',
             icon: 'icon-shebei',
             sortIndex: 3,
-            accessSupport: 'support',
+            accessSupport: { text: "支持", value: "support" },
+            supportDataAccess: true,
             assetType: 'device',
             showPage: ['device-instance'],
             permissions: [
@@ -752,7 +762,8 @@ export default [
             sortIndex: 4,
             url: '/iot/device/Category',
             icon: 'icon-chanpinfenlei',
-            accessSupport: 'support',
+            accessSupport: { text: "支持", value: "support" },
+            supportDataAccess: true,
             assetType: 'deviceCategory',
             showPage: ['device-category'],
             permissions: [],
@@ -832,6 +843,8 @@ export default [
                 actions: ['query'],
               },
             ],
+            accessSupport: { text: "不支持", value: "unsupported" },
+            supportDataAccess: false
           },
           {
             code: 'link/AccessConfig',
@@ -956,6 +969,8 @@ export default [
                 ],
               },
             ],
+            accessSupport: { text: "不支持", value: "unsupported" },
+            supportDataAccess: false
           },
           {
             code: 'link/Protocol',
@@ -1026,6 +1041,8 @@ export default [
                 ],
               },
             ],
+            accessSupport: { text: "不支持", value: "unsupported" },
+            supportDataAccess: false
           },
           {
             code: 'Log',
@@ -1048,6 +1065,8 @@ export default [
               },
             ],
             buttons: [],
+            accessSupport: { text: "不支持", value: "unsupported" },
+            supportDataAccess: false
           },
           {
             code: 'link/Type',
@@ -1124,6 +1143,8 @@ export default [
                 ],
               },
             ],
+            accessSupport: { text: "不支持", value: "unsupported" },
+            supportDataAccess: false
           },
           {
             code: 'link/Certificate',
@@ -1178,6 +1199,8 @@ export default [
                 ],
               },
             ],
+            accessSupport: { text: "支持", value: "support" },
+            supportDataAccess: true
           },
           {
             code: 'media/Stream',
@@ -1242,125 +1265,9 @@ export default [
                 ],
               },
             ],
+            accessSupport: { text: "不支持", value: "unsupported" },
+            supportDataAccess: false
           },
-          // {
-          //   code: 'link/Channel',
-          //   name: '通道配置',
-          //   owner: 'iot',
-          //   //parentId: '1-4',
-          //   //id: '1-4-8',
-          //   sortIndex: 8,
-          //   url: '/iot/link/Channel',
-          //   icon: 'icon-zidingyiguize',
-          //   showPage: ['media-server'],
-          //   permissions: [],
-          //   children: [
-          //     {
-          //       code: 'link/Channel/Opcua',
-          //       name: 'OPC UA',
-          //       owner: 'iot',
-          //       //parentId: '1-4-8',
-          //       //id: '1-4-8-1',
-          //       sortIndex: 1,
-          //       url: '/iot/link/Channel/Opcua',
-          //       icon: 'icon-zhilianshebei',
-          //       showPage: ['opc-client'],
-          //       permissions: [
-          //         { permission: 'opc-device-bind', actions: ['query'] },
-          //         { permission: 'opc-point', actions: ['query'] },
-          //         { permission: 'opc-client', actions: ['query'] },
-          //       ],
-          //       buttons: [
-          //         {
-          //           id: 'view',
-          //           name: '设备接入',
-          //           permissions: [
-          //             { permission: 'opc-point', actions: ['query'] },
-          //             { permission: 'opc-device-bind', actions: ['query'] },
-          //             { permission: 'opc-client', actions: ['query'] },
-          //           ],
-          //         },
-          //         {
-          //           id: 'action',
-          //           name: '启/禁用',
-          //           permissions: [
-          //             { permission: 'opc-point', actions: ['query', 'save'] },
-          //             { permission: 'opc-client', actions: ['query', 'save'] },
-          //           ],
-          //         },
-          //         {
-          //           id: 'update',
-          //           name: '编辑',
-          //           permissions: [
-          //             { permission: 'opc-point', actions: ['query', 'save'] },
-          //             { permission: 'opc-device-bind', actions: ['query', 'save'] },
-          //             { permission: 'opc-client', actions: ['query', 'save'] },
-          //           ],
-          //         },
-          //         {
-          //           id: 'delete',
-          //           name: '删除',
-          //           permissions: [
-          //             { permission: 'opc-point', actions: ['query', 'delete'] },
-          //             { permission: 'opc-device-bind', actions: ['query', 'delete'] },
-          //             { permission: 'opc-client', actions: ['query', 'delete'] },
-          //           ],
-          //         },
-          //         {
-          //           id: 'add',
-          //           name: '新增',
-          //           permissions: [
-          //             { permission: 'opc-point', actions: ['query', 'save'] },
-          //             { permission: 'opc-device-bind', actions: ['query', 'save'] },
-          //             { permission: 'opc-client', actions: ['query', 'save'] },
-          //           ],
-          //         },
-          //       ],
-          //     },
-          //     {
-          //       code: 'link/Channel/Modbus',
-          //       name: 'Modbus',
-          //       owner: 'iot',
-          //       //parentId: '1-4-8',
-          //       //id: '1-4-8-2',
-          //       sortIndex: 2,
-          //       url: '/iot/link/Channel/Modbus',
-          //       icon: 'icon-changjingliandong',
-          //       showPage: ['modbus-master'],
-          //       permissions: [
-          //         { permission: 'modbus-point', actions: ['query', 'save', 'delete'] },
-          //         { permission: 'modbus-master', actions: ['query', 'save', 'delete'] },
-          //       ],
-          //       buttons: [
-          //         {
-          //           id: 'update',
-          //           name: '编辑',
-          //           permissions: [{ permission: 'modbus-master', actions: ['query', 'save'] }],
-          //         },
-          //         {
-          //           id: 'action',
-          //           name: '启/禁用',
-          //           permissions: [{ permission: 'modbus-master', actions: ['query', 'save'] }],
-          //         },
-          //         {
-          //           id: 'view',
-          //           name: '设备接入',
-          //           permissions: [{ permission: 'modbus-master', actions: ['query', 'save'] }],
-          //         },
-          //         {
-          //           id: 'delete',
-          //           name: '删除',
-          //           permissions: [{ permission: 'modbus-master', actions: ['query', 'delete'] }],
-          //         },
-          //         {
-          //           id: 'add',
-          //           name: '新增',
-          //           permissions: [{ permission: 'modbus-master', actions: ['query', 'save'] }],
-          //         },
-          //       ],
-          //     },
-          //   ],
-          // },
           {
             code: 'device/Firmware',
             name: '远程升级',
@@ -1458,6 +1365,8 @@ export default [
                 ],
               },
             ],
+            accessSupport: { text: "不支持", value: "unsupported" },
+            supportDataAccess: false
           },
         ],
       },
@@ -1493,6 +1402,8 @@ export default [
               { permission: 'things-collector', actions: ['query'] },
             ],
             buttons: [],
+            accessSupport: { text: "不支持", value: "unsupported" },
+            supportDataAccess: false
           },
           {
             code: 'DataCollect/Channel',
@@ -1624,6 +1535,8 @@ export default [
                 ],
               },
             ],
+            accessSupport: { text: "支持", value: "support" },
+            supportDataAccess: true
           },
           {
             code: 'DataCollect/Collector',
@@ -1755,6 +1668,8 @@ export default [
                 ],
               },
             ],
+            accessSupport: { text: "支持", value: "support" },
+            supportDataAccess: true
           },
         ],
       },
@@ -1787,6 +1702,8 @@ export default [
               { permission: 'alarm-record', actions: ['query'] },
             ],
             buttons: [],
+            accessSupport: { text: "不支持", value: "unsupported" },
+            supportDataAccess: false
           },
           {
             code: 'rule-engine/Alarm/Config',
@@ -1809,6 +1726,8 @@ export default [
                 ],
               },
             ],
+            accessSupport: { text: "不支持", value: "unsupported" },
+            supportDataAccess: false
           },
           {
             code: 'rule-engine/Alarm/Configuration',
@@ -1920,6 +1839,8 @@ export default [
                 ],
               },
             ],
+            accessSupport: { text: "支持", value: "support" },
+            supportDataAccess: true
           },
           {
             code: 'rule-engine/Alarm/Log',
@@ -1970,6 +1891,8 @@ export default [
                 ],
               },
             ],
+            accessSupport: { text: "不支持", value: "unsupported" },
+            supportDataAccess: false
           },
         ],
       },
@@ -2061,6 +1984,8 @@ export default [
                 ],
               },
             ],
+            accessSupport: { text: "不支持", value: "unsupported" },
+            supportDataAccess: false
           },
           {
             code: 'Northbound/AliCloud',
@@ -2137,6 +2062,8 @@ export default [
                 ],
               },
             ],
+            accessSupport: { text: "不支持", value: "unsupported" },
+            supportDataAccess: false
           },
         ],
       },
@@ -2295,6 +2222,8 @@ export default [
                 ],
               },
             ],
+            accessSupport: { text: "支持", value: "support" },
+            supportDataAccess: true
           },
           {
             code: 'rule-engine/Scene',
@@ -2445,6 +2374,8 @@ export default [
                 ],
               },
             ],
+            accessSupport: { text: "支持", value: "support" },
+            supportDataAccess: true
           },
         ],
       },
@@ -2566,6 +2497,8 @@ export default [
                 ],
               },
             ],
+            accessSupport: { text: "不支持", value: "unsupported" },
+            supportDataAccess: false
           },
           {
             code: 'edge/Resource',
@@ -2641,6 +2574,8 @@ export default [
                 ],
               },
             ],
+            accessSupport: { text: "不支持", value: "unsupported" },
+            supportDataAccess: false
           },
         ],
       },
@@ -2656,8 +2591,6 @@ export default [
     url: '/media',
     icon: 'icon-shipinwangguan',
     sortIndex: 2,
-    accessSupport: 'indirect',
-    indirectMenus: ['1-3-3'],
     permissions: [],
     buttons: [],
     children: [
@@ -2673,6 +2606,8 @@ export default [
         permissions: [],
         buttons: [],
         showPage: ['media-device'],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
       },
       {
         code: 'media/DashBoard',
@@ -2691,6 +2626,8 @@ export default [
         ],
         buttons: [],
         showPage: ['dashboard', 'media-device'],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
       },
       {
         code: 'media/Device',
@@ -2811,6 +2748,8 @@ export default [
             ],
           },
         ],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
       },
       {
         code: 'media/SplitScreen',
@@ -2845,6 +2784,8 @@ export default [
             ],
           },
         ],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
       },
       {
         code: 'media/Cascade',
@@ -2954,6 +2895,8 @@ export default [
             ],
           },
         ],
+        accessSupport: { text: "支持", value: "support" },
+        supportDataAccess: true
       },
     ],
   },
@@ -3007,6 +2950,8 @@ export default [
             ],
           },
         ],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
       },
       {
         code: 'system/User',
@@ -3095,6 +3040,8 @@ export default [
             ],
           },
         ],
+        accessSupport: { text: "支持", value: "support" },
+        supportDataAccess: true
       },
       {
         code: 'system/Department',
@@ -3291,6 +3238,8 @@ export default [
             ],
           },
         ],
+        accessSupport: { text: "支持", value: "support" },
+        supportDataAccess: true
       },
       {
         code: 'system/Role',
@@ -3366,6 +3315,8 @@ export default [
             ],
           },
         ],
+        accessSupport: { text: "支持", value: "support" },
+        supportDataAccess: true
       },
       {
         code: 'system/Menu',
@@ -3393,17 +3344,6 @@ export default [
               },
             ],
           },
-          // 超管才具备该权限
-          // {
-          //   id: 'setting',
-          //   name: '配置',
-          //   permissions: [
-          //     {
-          //       permission: 'menu',
-          //       actions: ['query', 'save', 'grant'],
-          //     },
-          //   ],
-          // },
           {
             id: 'update',
             name: '编辑',
@@ -3459,6 +3399,8 @@ export default [
             ],
           },
         ],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
       },
       {
         code: 'system/Permission',
@@ -3547,44 +3489,9 @@ export default [
             ],
           },
         ],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
       },
-      // {
-      //   code: 'system/Platforms',
-      //   name: '第三方平台',
-      //   owner: 'iot',
-      //   //parentId: '3',
-      //   //id: '3-7',
-      //   sortIndex: 7,
-      //   url: '/system/platforms',
-      //   icon: 'icon-xitongguanli1',
-      //   permissions: [{ permission: 'open-api', actions: ['query', 'save', 'delete'] }],
-      //   buttons: [
-      //     {
-      //       id: 'empowerment',
-      //       name: '赋权',
-      //       permissions: [
-      //         { permission: 'user-third-party-manager', actions: ['save'] },
-      //         { permission: 'open-api', actions: ['save'] },
-      //       ],
-      //     },
-      //     {
-      //       id: 'password',
-      //       name: '重置密码',
-      //       permissions: [{ permission: 'open-api', actions: ['save'] }],
-      //     },
-      //     {
-      //       id: 'delete',
-      //       name: '删除',
-      //       permissions: [{ permission: 'open-api', actions: ['delete'] }],
-      //     },
-      //     {
-      //       id: 'update',
-      //       name: '编辑',
-      //       permissions: [{ permission: 'open-api', actions: ['save'] }],
-      //     },
-      //     { id: 'add', name: '新增', permissions: [{ permission: 'open-api', actions: ['save'] }] },
-      //   ],
-      // },
       {
         code: 'system/Relationship',
         name: '关系配置',
@@ -3638,6 +3545,8 @@ export default [
             ],
           },
         ],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
       },
       {
         code: 'system/DataSource',
@@ -3720,6 +3629,8 @@ export default [
             ],
           },
         ],
+        accessSupport: { text: "支持", value: "support" },
+        supportDataAccess: true
       },
       {
         code: 'system/Platforms/Setting',
@@ -3767,6 +3678,8 @@ export default [
             ],
           },
         ],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
       },
       {
         code: 'system/Apply',
@@ -3859,6 +3772,8 @@ export default [
             ],
           },
         ],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
       },
       {
         code: 'system/License',
@@ -3955,6 +3870,8 @@ export default [
         icon: 'icon-keshihua',
         showPage: ['network-flow'],
         permissions: [{ permission: 'network-flow', actions: ['query'] }],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
       },
       {
         path: '5Hpl-O2m8',
@@ -4115,6 +4032,8 @@ export default [
             ],
           },
         ],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
       },
       {
         path: '5Hpl-ZjAG',
@@ -4159,6 +4078,8 @@ export default [
             ],
           },
         ],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
       },
       {
         path: '5Hpl-eS9h',
@@ -4229,6 +4150,8 @@ export default [
             ],
           },
         ],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
       },
       {
         path: '5Hpl-cL34',
@@ -4247,6 +4170,8 @@ export default [
             actions: ['query'],
           },
         ],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
       },
     ],
   },
