@@ -214,6 +214,12 @@
                                                             item.actionType
                                                         "
                                                         show-search
+                                                        @change="
+                                                            () =>
+                                                                onActionTypeChange(
+                                                                    index,
+                                                                )
+                                                        "
                                                     >
                                                         <j-select-option
                                                             value="command"
@@ -491,6 +497,18 @@ const onActionCollChange = (_key: string[]) => {
     actionActiveKey.value = _key;
 };
 
+const onActionTypeChange = (_index: number) => {
+    modelRef.actionMappings[_index].command = {
+        messageType: undefined,
+        message: {
+            properties: undefined,
+            functionId: undefined,
+            inputs: [],
+            value: undefined
+        },
+    };
+};
+
 const addItem = () => {
     actionActiveKey.value.push(String(modelRef.actionMappings.length));
     modelRef.actionMappings.push({
@@ -526,6 +544,20 @@ const delPropertyItem = (index: number) => {
 const productChange = (value: string) => {
     modelRef.propertyMappings = modelRef.propertyMappings.map((item) => {
         return { source: item.source, target: [] };
+    });
+    modelRef.actionMappings = modelRef.actionMappings.map((item) => {
+        return {
+            ...item,
+            command: {
+                messageType: undefined,
+                message: {
+                    properties: undefined,
+                    functionId: undefined,
+                    inputs: [],
+                    value: undefined,
+                },
+            },
+        };
     });
     const item = productList.value.find((item) => item.id === value);
     if (item) {
@@ -571,7 +603,7 @@ const getTypes = async () => {
 };
 
 const getDuerOSProperties = (val: string) => {
-    console.log(val)
+    console.log(val);
     const arr = modelRef.propertyMappings.map((item) => item?.source) || [];
     const checked = _.cloneDeep(arr);
     const _index = checked.findIndex((i) => i === val);
@@ -673,7 +705,7 @@ watch(
                 _data.applianceType = _data?.applianceType?.value;
             }
             Object.assign(modelRef, _data);
-            console.log(modelRef.propertyMappings)
+            console.log(modelRef.propertyMappings);
         }
     },
     { immediate: true, deep: true },

@@ -34,7 +34,7 @@
                     </j-select>
                 </j-form-item>
                 <j-form-item
-                    v-if="modelRef.message.functionId"
+                    v-if="modelRef.message.functionId && functions.length"
                     :name="['message', 'inputs']"
                     :rules="functionRules"
                 >
@@ -176,11 +176,11 @@ const functionRules = [
             if (!value?.length && functions.value.length) {
                 return Promise.reject('请输入功能值');
             } else {
-                const hasValue = value.find(
+                const hasValue = value?.find(
                     (item: { name: string; value: any }) => !item.value,
                 );
                 if (hasValue) {
-                    const functionItem = functions.value.find(
+                    const functionItem = functions.value?.find(
                         (item: any) => item.id === hasValue.name,
                     );
                     return Promise.reject(

@@ -231,7 +231,6 @@ const saveClick = () => save();
 watch(
     () => props.value,
     (newValue) => {
-        console.log(newValue)
         Object.assign(DeviceModel, {...newValue});
         if (newValue?.productId) {
             detail(newValue.productId).then((resp) => {

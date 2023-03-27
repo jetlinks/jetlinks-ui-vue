@@ -66,7 +66,7 @@
 </template>
   
   <script setup lang='ts' name='Product'>
-import { query } from '@/api/device/instance';
+import { query, detail } from '@/api/device/instance';
 import { getImage } from '@/utils/comm';
 import { PropType } from 'vue';
 
@@ -161,15 +161,26 @@ const deviceQuery = (p: any) => {
     return query(p);
 };
 
-const handleClick = (detail: any) => {
-    if (props.value?.[0]?.value === detail.id) {
+const handleClick = (_detail: any) => {
+    if (props.value?.[0]?.value === _detail.id) {
         emit('update:value', undefined);
         emit('change', {});
     } else {
-        emit('update:value', [{ value: detail.id, name: detail.name }]);
-        emit('change', detail);
+        emit('update:value', [{ value: _detail.id, name: _detail.name }]);
+        emit('change', _detail);
     }
 };
+
+watch(() => props.value, async (newVal) => {
+    if(newVal[0]?.value){
+        const { result } = await detail(newVal[0]?.value)
+        emit('update:value', [{ value: result?.id, name: result?.name }]);
+        emit('change', result);
+    }
+}, {
+    deep: true,
+    immediate: true
+})
 
 watchEffect(() => {
     params.value = {
