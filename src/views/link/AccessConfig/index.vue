@@ -188,6 +188,7 @@ import {
 } from '@/api/link/accessConfig';
 import { onlyMessage } from '@/utils/comm';
 import { useMenuStore } from 'store/menu';
+import { accessConfigTypeFilter } from '@/utils/setting'
 
 const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
@@ -318,12 +319,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
 const getProvidersList = async () => {
     const res: any = await getProviders();
     providersList.value = res.result;
-    providersOptions.value = (res?.result || [])
-        ?.map((item: any) => ({
-            label: item.name,
-            value: item.id,
-        }))
-        .filter((item: any) => item.value !== 'plugin_gateway'); // todo 暂时不做插件接入
+    providersOptions.value = accessConfigTypeFilter(res.result || [])
 };
 getProvidersList();
 

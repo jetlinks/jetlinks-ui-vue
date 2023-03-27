@@ -51,6 +51,7 @@ import Channel from '../components/Channel/index.vue';
 import Edge from '../components/Edge/index.vue';
 import Cloud from '../components/Cloud/index.vue';
 import { getProviders, detail } from '@/api/link/accessConfig';
+import { accessConfigTypeFilter } from '@/utils/setting'
 
 const route = useRoute();
 const id = route.params.id as string;
@@ -140,7 +141,8 @@ const getTypeList = (result: Record<string, any>) => {
 const queryProviders = async () => {
     const resp: any = await getProviders();
     if (resp.status === 200) {
-        dataSource.value = getTypeList(resp.result);
+      const data = resp.result || []
+        dataSource.value = getTypeList(accessConfigTypeFilter(data as any[]));
         // dataSource.value = getTypeList(resp.result)[0].list.filter(
         //     (item) => item.name !== '插件设备接入',
         // );
@@ -151,7 +153,8 @@ const getProvidersData = async () => {
     if (id !== ':id') {
         getProviders().then((response: any) => {
             if (response.status === 200) {
-                const list = getTypeList(response.result);
+              const data = response.result || []
+                const list = getTypeList(accessConfigTypeFilter(data as any[]));
                 dataSource.value = list.filter(
                     (item: any) =>
                         item.channel === 'network' ||

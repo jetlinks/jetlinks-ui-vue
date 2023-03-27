@@ -1,4 +1,7 @@
 <template>
+  <j-form-item :name="name.concat(['type'])" v-show="false">
+    <j-input v-model:value="value.type" disabled/>
+  </j-form-item>
   <j-form-item :name="name.concat(['script'])">
     <f-rule-editor v-model:value="value.script" :id="id" :virtualRule="value"></f-rule-editor>
   </j-form-item>
@@ -60,10 +63,12 @@ interface Emits {
 const emit = defineEmits<Emits>()
 
 onMounted(() => {
-  emit('update:value', {
-    ...props.value,
-    type: 'script'
-  })
+  if (!props.value.type) {
+    emit('update:value', {
+      ...props.value,
+      type: 'script'
+    })
+  }
 })
 
 const aggTypeOptions = ref()
