@@ -540,7 +540,7 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '该字段是必填字段',
+                                        message: '请输入用户名',
                                     },
                                     {
                                         max: 64,
@@ -567,7 +567,7 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '该字段是必填字段',
+                                        message: '请输入密码',
                                     },
                                     {
                                         max: 64,
@@ -1197,12 +1197,7 @@
                         <j-form-item
                             v-if="form.data.provider !== 'dingtalk-ent-app'"
                             class="resetLabel"
-                            :name="[
-                                'sso',
-                                'configuration',
-                                'oauth2',
-                                'clientId',
-                            ]"
+                            :name="['sso', 'configuration', 'appId']"
                             :rules="[
                                 {
                                     required: true,
@@ -1223,7 +1218,7 @@
                             </template>
                             <j-input
                                 v-model:value="
-                                    form.data.sso.configuration.oauth2.clientId
+                                    form.data.sso.configuration.appId
                                 "
                                 placeholder="请输入appId"
                             />
@@ -1232,12 +1227,7 @@
                         <j-form-item
                             v-if="form.data.provider !== 'wechat-webapp'"
                             class="resetLabel"
-                            :name="[
-                                'sso',
-                                'configuration',
-                                'oauth2',
-                                'clientSecret',
-                            ]"
+                            :name="['sso', 'configuration', 'appKey']"
                             :rules="[
                                 {
                                     required: true,
@@ -1258,8 +1248,7 @@
                             </template>
                             <j-input
                                 v-model:value="
-                                    form.data.sso.configuration.oauth2
-                                        .clientSecret
+                                    form.data.sso.configuration.appKey
                                 "
                                 placeholder="请输入appKey"
                             />
@@ -1701,18 +1690,19 @@ function init() {
 function getInfo(id: string) {
     getAppInfo_api(id).then((resp: any) => {
         // 后端返回的headers和parameters中, key转为label
-        resp.result.apiClient.headers = resp.result.apiClient.headers.map(
-            (m: any) => ({
-                ...m,
-                label: m.key,
-            }),
-        );
-        resp.result.apiClient.parameters = resp.result.apiClient.parameters.map(
-            (m: any) => ({
-                ...m,
-                label: m.key,
-            }),
-        );
+        if (resp.result.apiClient) {
+            resp.result.apiClient.headers = resp.result.apiClient.headers.map(
+                (m: any) => ({
+                    ...m,
+                    label: m.key,
+                }),
+            );
+            resp.result.apiClient.parameters =
+                resp.result.apiClient.parameters.map((m: any) => ({
+                    ...m,
+                    label: m.key,
+                }));
+        }
         form.data = {
             ...initForm, // 查询详情, 赋值初始字段. 解决编辑改变接入方式报错的问题: bug#10892
             ...resp.result,
@@ -1754,7 +1744,6 @@ function clickAddItem(data: string[], target: string) {
 }
 // 保存
 function clickSave() {
-    console.log('headers: ', form.data.apiClient.headers);
     formRef.value?.validate().then(() => {
         const params = cloneDeep(form.data);
         // 删除多余的参数
@@ -1868,7 +1857,6 @@ function changeBackUpload(info: UploadChangeParam<UploadFile<any>>) {
         form.uploadLoading = false;
         form.data.sso.configuration.oauth2.logoUrl = info.file.response?.result;
     } else if (info.file.status === 'error') {
-        console.log(info.file);
         form.uploadLoading = false;
         message.error('logo上传失败，请稍后再试');
     }
