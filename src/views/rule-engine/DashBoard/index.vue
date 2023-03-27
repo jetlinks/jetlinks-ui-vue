@@ -264,7 +264,7 @@ const getDashBoard = () => {
                         name: '告警数',
                         data: fifteenData.map((item) => item.value),
                         type: 'line',
-                        color: '#2F54EB',
+                        color: '#FF595E',
                         smooth: true,
                         symbolSize: 0,
                         areaStyle: {
@@ -277,7 +277,7 @@ const getDashBoard = () => {
                                 colorStops: [
                                     {
                                         offset: 0,
-                                        color: '#2F54EB', // 100% 处的颜色
+                                        color: '#FF595E', // 100% 处的颜色
                                     },
                                     {
                                         offset: 1,
@@ -458,7 +458,7 @@ const selectChange = () => {
                         data: sData.reverse(),
                         type: 'line',
                         smooth: true,
-                        color: '#685DEB',
+                        color: '#ADC6FF',
                         areaStyle: {
                             color: {
                                 type: 'linear',
@@ -469,7 +469,7 @@ const selectChange = () => {
                                 colorStops: [
                                     {
                                         offset: 0,
-                                        color: '#685DEB', // 100% 处的颜色
+                                        color: '#ADC6FF', // 100% 处的颜色
                                     },
                                     {
                                         offset: 1,
