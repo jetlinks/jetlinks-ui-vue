@@ -107,9 +107,11 @@ const onKeys: string[] = EventSubscribeKeys({
   action: props.actionName
 })
 
-EventEmitter.subscribe(onKeys, (d: any) => {
+const handleRequest = () => {
   columnRequest()
-})
+}
+
+EventEmitter.subscribe(onKeys, handleRequest)
 
 provide('filter-params', columnOptions)
 
@@ -239,6 +241,10 @@ const rules = [
 
 nextTick(() => {
   columnRequest()
+})
+
+onUnmounted(() => {
+  EventEmitter.unSubscribe(onKeys, handleRequest)
 })
 
 </script>
