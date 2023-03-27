@@ -1673,6 +1673,10 @@ function init() {
     watch(
         () => form.data.provider,
         (n) => {
+            form.data.page.baseUrl = '';
+            form.data.page.parameters = [];
+            form.data.apiClient.baseUrl = '';
+            form.data.apiClient.parameters = [];
             emit('changeApplyType', n);
             if (routeQuery.id) return;
             if (n === 'wechat-webapp' || n === 'dingtalk-ent-app') {
@@ -1710,6 +1714,7 @@ function getInfo(id: string) {
             }),
         );
         form.data = {
+            ...initForm, // 查询详情, 赋值初始字段. 解决编辑改变接入方式报错的问题: bug#10892
             ...resp.result,
             integrationModes: resp.result.integrationModes.map(
                 (item: any) => item.value,
@@ -1813,7 +1818,7 @@ function clickSave() {
             if (resp.status === 200) {
                 const isPage = params.integrationModes.includes('page');
                 if (isPage) {
-                    form.data = params;
+                    // form.data = params;
                     dialog.selectId = routeQuery.id || resp.result.id;
                     dialog.selectProvider = form.data.provider;
                     dialog.visible = true;
