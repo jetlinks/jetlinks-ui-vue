@@ -53,13 +53,17 @@
                             </span>
                         </Ellipsis>
                       <div class="subTitle">
+                        <span class='subTitle-title'>
                         说明：
-                        <Ellipsis :lineClamp="2">
-                                {{
-                                    slotProps?.description ||
-                                    typeMap.get(slotProps.triggerType)?.tip
-                                }}
-                        </Ellipsis>
+                        </span>
+                        <span class='subTitle-content'>
+                          <Ellipsis :lineClamp="2">
+                                  {{
+                                      slotProps?.description ||
+                                      typeMap.get(slotProps.triggerType)?.tip
+                                  }}
+                          </Ellipsis>
+                        </span>
                       </div>
                     </template>
                     <template #actions="item">
@@ -378,10 +382,21 @@ const handleView = (id: string, triggerType: string) => {
 };
 </script>
 
-<style scoped>
+<style scoped lang='less'>
 .subTitle {
+  position: relative;
+  margin-top: 10px;
+
+  .subTitle-title {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .subTitle-content {
     color: rgba(0, 0, 0, 0.65);
     font-size: 14px;
-    margin-top: 10px;
+    text-indent: 38px;
+  }
 }
 </style>
