@@ -69,7 +69,7 @@ import {
     select,
     getMaxDepth,
 } from './utils';
-import BaseMenu from './baseMenu';
+import BaseMenu from '@/views/init-home/data/baseMenu';
 import type { AntTreeNodeDropEvent } from 'ant-design-vue/es/tree';
 import { cloneDeep } from 'lodash';
 import { onlyMessage } from '@/utils/comm';
