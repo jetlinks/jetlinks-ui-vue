@@ -1,10 +1,22 @@
 <template>
     <j-form class="table" ref="formTableRef" :model="modelRef">
         <j-table
+            v-if="modelRef.dataSource.length !== 0"
             :dataSource="modelRef.dataSource"
             :columns="FormTableColumns"
             :scroll="{ x: 1000, y: 550 }"
         >
+            <template #headerCell="{ column }">
+                <template
+                    v-if="column.key === 'nodeId' || column.key === 'action'"
+                >
+                    <span> {{ column.title }} </span>
+                </template>
+                <template v-else>
+                    <span> {{ column.title }} </span>
+                    <span style="margin-left: 5px; color: red">*</span>
+                </template>
+            </template>
             <template #bodyCell="{ column: { dataIndex }, record, index }">
                 <template v-if="dataIndex === 'name'">
                     <j-form-item
@@ -24,15 +36,20 @@
                     </j-form-item>
                 </template>
                 <template v-if="dataIndex === 'id'">
-                    <j-form-item :name="['dataSource', index, 'id']">
+                    <j-form-item
+                        v-show="false"
+                        :name="['dataSource', index, 'id']"
+                    >
                         <j-input
                             v-model:value="record[dataIndex]"
                             disabled
                             :bordered="false"
                         ></j-input>
                     </j-form-item>
+                    <div style="margin: -24px 0 0 10px">
+                        {{ record[dataIndex] }}
+                    </div>
                 </template>
-
                 <template v-if="dataIndex === 'accessModes'">
                     <j-form-item
                         class="form-item"
@@ -163,12 +180,15 @@
                             title="确认删除"
                             @confirm="clickDelete(record.id)"
                         >
-                            <a><AIcon type="DeleteOutlined" /></a>
+                            <a style="color: red"
+                                ><AIcon type="DeleteOutlined"
+                            /></a>
                         </j-popconfirm>
                     </j-tooltip>
                 </template>
             </template>
         </j-table>
+        <j-empty v-else style="margin-top: 10%" />
     </j-form>
 </template>
 
@@ -286,7 +306,20 @@ watch(
 </script>
 
 <style lang="less" scoped>
-.table {}
+.table {
+    :deep(.ant-table-tbody) {
+        .ant-table-cell {
+            padding: 24px 0 0 0;
+        }
+        .ant-table-cell-fix-right-first {
+            padding: 0 0 0 20px;
+        }
+    }
+    :deep(.ant-pagination) {
+        display: none;
+    }
+}
+
 .form-item {
     display: flex;
 }

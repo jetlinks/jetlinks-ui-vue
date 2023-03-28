@@ -10,6 +10,8 @@
                 :load-data="onLoadData"
                 :tree-data="treeData"
                 v-model:checkedKeys="checkedKeys"
+                :selectedKeys="selectedKeys"
+                :selectable="false"
                 checkable
                 @check="onCheck"
                 :height="600"
@@ -26,7 +28,7 @@
                     </span>
                 </template>
             </j-tree>
-            <j-empty v-else />
+            <j-empty v-else style="margin-top: 22%" />
         </j-spin>
     </div>
 </template>
@@ -216,13 +218,16 @@ watch(
 .tree-content {
     padding: 16px;
     padding-left: 0;
+    min-width: 180px;
     .tree-header {
         margin-bottom: 16px;
         display: flex;
         justify-content: space-between;
     }
     .tree-selected {
-        color: #1d39c4;
+        padding: 2px 5px;
+        background-color: #d6e4ff;
+        border-radius: 2px;
     }
     .tree-title {
         color: black;
