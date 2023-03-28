@@ -38,8 +38,14 @@
                     <j-tag
                         class="tree-left-tag"
                         v-if="data.id !== '*'"
-                        :color="colorMap.get(getState(data)?.value)"
-                        >{{ getState(data)?.text }}</j-tag
+                        :color="colorMap.get(data?.runningState?.value)"
+                        >{{ data?.runningState?.text }}</j-tag
+                    >
+                    <j-tag
+                        class="tree-left-tag2"
+                        v-if="data.id !== '*'"
+                        :color="colorMap.get(data?.state?.value)"
+                        >{{ data?.state?.text }}</j-tag
                     >
                     <span
                         v-if="data.id !== '*'"
@@ -119,7 +125,7 @@ import Save from './Save/index.vue';
 import { onlyMessage } from '@/utils/comm';
 import { Store } from 'jetlinks-store';
 import _ from 'lodash';
-import { colorMap, getState } from '../data.ts';
+import { colorMap } from '../data.ts';
 
 const props = defineProps({
     data: {
@@ -285,7 +291,7 @@ watch(
 <style lang="less" scoped>
 .tree-container {
     padding-right: 24px;
-    width: 350px;
+    width: 370px;
     .add-btn {
         margin: 10px 0;
 
@@ -308,6 +314,11 @@ watch(
                 }
                 .tree-left-tag {
                     width: 70px;
+                    display: flex;
+                    justify-content: center;
+                }
+                .tree-left-tag2 {
+                    width: 50px;
                     display: flex;
                     justify-content: center;
                 }
