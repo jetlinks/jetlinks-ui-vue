@@ -307,6 +307,9 @@
                     }}
                 </div>
             </template>
+            <template #operatorName='slotProps'>
+              {{ OperatorMap[slotProps.operatorName]}}
+            </template>
             <template #cardType="slotProps">
                 {{ slotProps.cardType.text }}
             </template>
@@ -423,6 +426,7 @@ import BatchDropdown from '@/components/BatchDropdown/index.vue';
 import { BatchActionsType } from '@/components/BatchDropdown/types';
 import {usePermissionStore} from "store/permission";
 import {useRouterParams} from "@/utils/hooks/useParams";
+import { OperatorList, OperatorMap } from '@/views/iot-card/data'
 
 const router = useRouter();
 const menuStory = useMenuStore();
@@ -505,11 +509,7 @@ const columns = [
         width: 120,
         search: {
             type: 'select',
-            options: [
-                { label: '移动', value: '移动' },
-                { label: '电信', value: '电信' },
-                { label: '联通', value: '联通' },
-            ],
+            options: OperatorList,
         },
     },
     {

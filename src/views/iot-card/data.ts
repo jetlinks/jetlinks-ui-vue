@@ -1,37 +1,46 @@
 import { getImage } from '@/utils/comm';
 
 // 平台类型
-export const PlatformTypeList = [
+export const platformTypeList = [
   {
     label: '移动OneLink',
-    value: 'OneLinkPB',
+    value: 'onelink',
     imgUrl: getImage('/iot-card/onelink.png'),
+    imgSize: ['78px', '20px'],
   },
   {
     label: '电信Ctwing',
-    value: 'CtwingCmp',
+    value: 'ctwing',
     imgUrl: getImage('/iot-card/ctwingcmp.png'),
+    imgSize: ['52px', '25px'],
   },
   {
     label: '联通Unicom',
-    value: 'UnicomCmp',
+    value: 'unicom',
     imgUrl: getImage('/iot-card/unicom.png'),
+    imgSize: ['56px', '41px'],
   },
 ];
+
+export const OperatorMap = {
+  onelink: '移动',
+  ctwing: '电信',
+  unicom: '联通',
+}
 
 //运营商
 export const OperatorList = [
   {
     label: '移动',
-    value: '移动',
+    value: 'onelink',
   },
   {
     label: '电信',
-    value: '电信',
+    value: 'ctwing',
   },
   {
     label: '联通',
-    value: '联通',
+    value: 'unicom',
   },
 ];
 

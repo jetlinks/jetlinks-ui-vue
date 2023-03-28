@@ -42,6 +42,17 @@
                         :disabled="type === 'edit'"
                     />
                 </j-form-item>
+                <j-form-item label="运营商" name="operatorName">
+                  <j-select
+                    allowClear
+                    showSearch
+                    :filter-option="filterOption"
+                    :options="OperatorList"
+                    v-model:value="modelRef.operatorName"
+                    placeholder="请选择运营商"
+                  >
+                  </j-select>
+                </j-form-item>
                 <j-form-item label="平台对接" name="platformConfigId">
                     <j-select
                         showSearch
@@ -55,17 +66,7 @@
                 </j-select>
                 </j-form-item>
 
-                <j-form-item label="运营商" name="operatorName">
-                    <j-select
-                        allowClear
-                        showSearch
-                        :filter-option="filterOption"
-                        :options="OperatorList"
-                        v-model:value="modelRef.operatorName"
-                        placeholder="请选择运营商"
-                    >
-                    </j-select>
-                </j-form-item>
+
                 <j-form-item label="类型" name="cardType">
                     <j-select
                         allowClear
@@ -113,7 +114,7 @@ const props = defineProps({
 });
 
 const btnLoading = ref<boolean>(false);
-const platformConfigList = ref<Record<string, any>[]>([]);
+const platformConfigCacheList = ref<Record<string, any>[]>([]);
 
 const formRef = ref();
 
@@ -184,6 +185,12 @@ const rules = {
             message: '请选择平台对接',
         },
     ],
+    operatorName: [
+      {
+        required: true,
+        message: '请选择运营商',
+      },
+    ],
     cardType: [
         {
             required: true,
@@ -200,6 +207,10 @@ const filterOption = (input: string, option: any) => {
     );
 };
 
+const platformConfigList = computed(() => {
+  return platformConfigCacheList.value.filter(item => item.operatorName === modelRef.operatorName).map(item => ({ label: item.name, value: item.id }))
+})
+
 watch(
     () => props.data,
     (newValue) => {
@@ -209,10 +220,7 @@ watch(
             terms: [{ column: 'state', value: 'enabled' }],
         }).then((resp: any) => {
             if (resp.status === 200) {
-                platformConfigList.value = resp.result.map((item: any) => ({
-                    label: item.name,
-                    value: item.id,
-                }));
+              platformConfigCacheList.value = resp.result
             }
         });
         Object.assign(modelRef, newValue);
