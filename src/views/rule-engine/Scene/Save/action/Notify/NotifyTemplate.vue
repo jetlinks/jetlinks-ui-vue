@@ -84,7 +84,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['update:value', 'change']);
+const emit = defineEmits(['update:value', 'change', 'update:detail']);
 
 const getLogo = (type: string, provider: string) => {
     return MSG_TYPE[type].find((f: any) => f.value === provider)?.logo;
@@ -133,10 +133,12 @@ const handleClick = (dt: any) => {
         _selectedRowKeys.value = [];
         emit('update:value', undefined);
         emit('change', { templateName: undefined });
+        emit('update:detail', undefined);
     } else {
         _selectedRowKeys.value = [dt.id];
         emit('update:value', dt.id);
         emit('change', { templateName: dt?.name });
+        emit('update:detail', dt);
     }
 };
 
