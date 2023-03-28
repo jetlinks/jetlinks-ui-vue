@@ -7,10 +7,10 @@
             :headers="{
                 'X-Access-Token': LocalStore.get(TOKEN_KEY),
             }"
-            accept=".xlsx,.csv"
             :maxCount="1"
             :showUploadList="false"
             @change="uploadChange"
+            :accept="props?.file?.fileType ? `.${props?.file?.fileType}` : '.xlsx'"
         >
             <j-button>
                 <template #icon><AIcon type="UploadOutlined" /></template>

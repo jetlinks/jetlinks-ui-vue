@@ -47,6 +47,7 @@
                     <j-form-item name="templateId">
                         <NotifyTemplate
                             v-model:value="formModel.templateId"
+                            v-model:detail="template"
                             :notifierId="formModel.notifierId"
                             @change="(val) => onValChange(val, 'templateId')"
                         />
@@ -58,6 +59,7 @@
                             :variableDefinitions="variable"
                             :value="formModel.variables"
                             :notify="formModel"
+                            :template="template"
                             @change="(val) => onValChange(val, 'variables')"
                             ref="variableRef"
                         />
@@ -119,11 +121,19 @@ const formModel = reactive({
 
 const variable = ref([]);
 const variableRef = ref();
+const template = ref();
 
 watch(
     () => props.value,
     (newVal) => {
         Object.assign(formModel, newVal);
+        if(newVal?.templateId){
+            Template.detail(newVal?.templateId).then((resp: any) => {
+                if(resp.status === 200){
+                    template.value = resp.result
+                }
+            })
+        }
     },
     { deep: true, immediate: true },
 );
@@ -193,8 +203,11 @@ const onCancel = () => {
     emit('cancel');
 };
 const onOk = async () => {
-    const _data = await variableRef.value.onSave();
-    formModel.variables = _data;
+    let _data = undefined
+    if(variable.value.length){
+        _data = await variableRef.value.onSave()
+    }
+    formModel.variables = _data || [];
     const { options, ...extra } = formModel;
     emit('save', { ...extra }, { ...options });
 };

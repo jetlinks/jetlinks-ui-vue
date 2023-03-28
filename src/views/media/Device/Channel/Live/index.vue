@@ -28,7 +28,7 @@
                     <div class="tool-item">
                         <j-popconfirm
                             title="重置将断开直播, 可能会影响其他播放者"
-                            @confirm="() => handleReset"
+                            @confirm="handleReset"
                         >
                             重置
                         </j-popconfirm>

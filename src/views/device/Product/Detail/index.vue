@@ -77,7 +77,7 @@
                 type="primary"
                 :popConfirm="{
                     title: `确定应用配置?`,
-                    onConfirm: handleConfig,
+                    onConfirm: handleDeploy,
                 }"
                 :disabled="productStore.current?.state === 0"
                 :tooltip="

@@ -75,6 +75,10 @@ const props = defineProps({
         type: Object,
         default: () => {},
     },
+    template: {
+        type: Object,
+        default: () => {},
+    },
 });
 
 const emit = defineEmits(['update:value', 'change']);
@@ -85,6 +89,12 @@ const modelRef = reactive({});
 
 watchEffect(() => {
     Object.assign(modelRef, props?.value);
+});
+
+watchEffect(() => {
+    if(props?.template?.template?.sendTo && props?.template?.template?.sendTo?.length){
+        emit('change', { sendTo: props?.template?.template?.sendTo.join(' ') });
+    }
 });
 
 const getType = (item: any) => {
@@ -180,16 +190,16 @@ const onChange = (val: any, type: any) => {
         emit('change', { tagName: val });
     } else if (type === 'user') {
         emit('change', { sendTo: val });
-    } else if (type === 'build-in') {
-        // emit('change', { sendTo: val });
     }
 };
 
 const onSave = () =>
-    new Promise((resolve) => {
-        formRef.value?.validate().then(async (_data: any) => {
+    new Promise((resolve, reject) => {
+        formRef.value?.validate().then((_data: any) => {
             resolve(_data);
-        });
+        }).catch(() => {
+            reject(false)
+        })
     });
 
 defineExpose({ onSave });

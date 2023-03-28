@@ -27,9 +27,19 @@
             }"
         >
             <template #headerTitle>
-                <j-button type="primary" @click="dialogVisible = true">
-                    <AIcon type="PlusOutlined" />新增
-                </j-button>
+                <j-space>
+                    <j-button type="primary" @click="dialogVisible = true">
+                        <AIcon type="PlusOutlined" />新增
+                    </j-button>
+                    <PermissionButton
+                        :popConfirm="{
+                            title: `是否批量解除绑定`,
+                            onConfirm: () => table.unbind(),
+                        }"
+                    >
+                        <AIcon type="DisconnectOutlined" />批量解绑
+                    </PermissionButton>
+                </j-space>
             </template>
 
             <template #status="slotProps">
@@ -159,8 +169,13 @@ const table = {
         return getUserByRole_api(params);
     },
     // 批量解绑
-    unbind: (ids: string[] = []) => {
-        unbindUser_api(roleId, ids).then((resp) => {
+    unbind: (ids?: string[]) => {
+        const data = ids ? ids : selectedRowKeys.value;
+        if (!data.length) {
+            message.warning('请勾选数据');
+            return;
+        }
+        unbindUser_api(roleId, data).then((resp) => {
             if (resp.status === 200) {
                 message.success('操作成功');
                 table.refresh();
@@ -170,6 +185,7 @@ const table = {
     // 刷新表格
     refresh: () => {
         tableRef.value.reload();
+        selectedRowKeys.value = [];
     },
 };
 

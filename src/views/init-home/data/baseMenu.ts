@@ -185,7 +185,8 @@ export default [
               },
             ],
             accessSupport: { text: "支持", value: "support" },
-            supportDataAccess: true
+            supportDataAccess: true,
+            assetType: 'notifyConfig'
           },
           {
             code: 'notice/Template',
@@ -306,6 +307,7 @@ export default [
               },
             ],
             accessSupport: { text: "支持", value: "support" },
+            assetType: 'notifyTemplate',
             supportDataAccess: true
           },
         ],
@@ -969,8 +971,9 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
-            supportDataAccess: false
+            accessSupport: { text: "支持", value: "support" },
+            supportDataAccess: true,
+            assetType: 'deviceGateway'
           },
           {
             code: 'link/Protocol',
@@ -1041,8 +1044,9 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
-            supportDataAccess: false
+            accessSupport: { text: "支持", value: "support" },
+            supportDataAccess: true,
+            assetType: 'protocol'
           },
           {
             code: 'Log',
@@ -1143,8 +1147,9 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
-            supportDataAccess: false
+            accessSupport: { text: "支持", value: "support" },
+            supportDataAccess: true,
+            assetType: 'network'
           },
           {
             code: 'link/Certificate',
@@ -1200,7 +1205,8 @@ export default [
               },
             ],
             accessSupport: { text: "支持", value: "support" },
-            supportDataAccess: true
+            supportDataAccess: true,
+            assetType: 'certificate'
           },
           {
             code: 'media/Stream',
@@ -1546,7 +1552,8 @@ export default [
               },
             ],
             accessSupport: { text: "支持", value: "support" },
-            supportDataAccess: true
+            supportDataAccess: true,
+            assetType: 'dataCollectChannel'
           },
           {
             code: 'DataCollect/Collector',
@@ -1679,7 +1686,8 @@ export default [
               },
             ],
             accessSupport: { text: "支持", value: "support" },
-            supportDataAccess: true
+            supportDataAccess: true,
+            assetType: 'ataCollectCollector'
           },
         ],
       },
@@ -1850,7 +1858,8 @@ export default [
               },
             ],
             accessSupport: { text: "支持", value: "support" },
-            supportDataAccess: true
+            supportDataAccess: true,
+            assetType: 'alarmConfig'
           },
           {
             code: 'rule-engine/Alarm/Log',
@@ -1994,8 +2003,9 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
-            supportDataAccess: false
+            accessSupport: { text: "支持", value: "support" },
+            supportDataAccess: true,
+            assetType: 'dueros'
           },
           {
             code: 'Northbound/AliCloud',
@@ -2233,7 +2243,8 @@ export default [
               },
             ],
             accessSupport: { text: "支持", value: "support" },
-            supportDataAccess: true
+            supportDataAccess: true,
+            assetType: 'ruleInstance'
           },
           {
             code: 'rule-engine/Scene',
@@ -2385,7 +2396,8 @@ export default [
               },
             ],
             accessSupport: { text: "支持", value: "support" },
-            supportDataAccess: true
+            supportDataAccess: true,
+            assetType: 'scene'
           },
         ],
       },
@@ -2906,7 +2918,8 @@ export default [
           },
         ],
         accessSupport: { text: "支持", value: "support" },
-        supportDataAccess: true
+        supportDataAccess: true,
+        assetType: 'gbCascade'
       },
     ],
   },
@@ -3051,7 +3064,8 @@ export default [
           },
         ],
         accessSupport: { text: "支持", value: "support" },
-        supportDataAccess: true
+        supportDataAccess: true,
+        assetType: 'user'
       },
       {
         code: 'system/Department',
@@ -3249,7 +3263,8 @@ export default [
           },
         ],
         accessSupport: { text: "支持", value: "support" },
-        supportDataAccess: true
+        supportDataAccess: true,
+        assetType: 'organization'
       },
       {
         code: 'system/Role',
@@ -3326,7 +3341,8 @@ export default [
           },
         ],
         accessSupport: { text: "支持", value: "support" },
-        supportDataAccess: true
+        supportDataAccess: true,
+        assetType: 'role'
       },
       {
         code: 'system/Menu',
@@ -3640,7 +3656,8 @@ export default [
           },
         ],
         accessSupport: { text: "支持", value: "support" },
-        supportDataAccess: true
+        supportDataAccess: true,
+        assetType: 'datasource'
       },
       {
         code: 'system/Platforms/Setting',
@@ -4042,8 +4059,9 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
-        supportDataAccess: false
+        accessSupport: { text: "支持", value: "support" },
+        supportDataAccess: true,
+        assetType: 'networkCard'
       },
       {
         path: '5Hpl-ZjAG',
@@ -4160,8 +4178,9 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
-        supportDataAccess: false
+        accessSupport: { text: "支持", value: "support" },
+        supportDataAccess: true,
+        assetType: 'networkCardPlatform'
       },
       {
         path: '5Hpl-cL34',

@@ -6,7 +6,7 @@
         @ok="onSave"
         @cancel="onCancel"
     >
-        <div class="alert">
+        <div class="resource-issue-alert">
             <AIcon
                 type="InfoCircleOutlined"
                 style="margin-right: 10px"
@@ -17,7 +17,7 @@
             target="edge-resource-issue"
             @search="handleSearch"
             type="simple"
-            class="search"
+            class="resource-issue-search"
         />
         <JProTable
             ref="edgeResourceIssueRef"
@@ -30,6 +30,10 @@
             :rowSelection="{
                 selectedRowKeys: _selectedRowKeys,
                 onChange: onSelectChange,
+            }"
+            :pagination="{
+                showSizeChanger: true,
+                pageSizeOptions: ['10', '20', '50', '100'],
             }"
         >
             <template #state="slotProps">
@@ -47,7 +51,12 @@
                 }}</span>
             </template>
         </JProTable>
-        <Result v-if="visible" :data="props.data" :list="_data" @close="onCancel" />
+        <Result
+            v-if="visible"
+            :data="props.data"
+            :list="_data"
+            @close="onCancel"
+        />
     </j-modal>
 </template>
 
@@ -56,9 +65,11 @@ import { onlyMessage } from '@/utils/comm';
 import { queryDeviceList } from '@/api/edge/resource';
 import dayjs from 'dayjs';
 import Result from './Result.vue';
+import { queryNoPagingPost } from '@/api/device/product';
 
 const defaultParams = {
-    sorts: [{ name: 'createTime', order: 'desc' }],
+    pageSize: 10,
+    sorts: [{ name: 'registerTime', order: 'desc' }],
     terms: [
         {
             terms: [
@@ -111,6 +122,18 @@ const columns = [
         ellipsis: true,
         search: {
             type: 'select',
+            rename: 'productId',
+            options: () =>
+                new Promise((resolve) => {
+                    queryNoPagingPost({ paging: false }).then((resp: any) => {
+                        resolve(
+                            resp.result.map((item: any) => ({
+                                label: item.name,
+                                value: item.id,
+                            })),
+                        );
+                    });
+                }),
         },
     },
     {
@@ -155,10 +178,10 @@ const handleSearch = (v: any) => {
 };
 
 const onSave = () => {
-    if(_data.value.length){
-        visible.value = true
+    if (_data.value.length) {
+        visible.value = true;
     } else {
-        onlyMessage('请选择设备', 'error')
+        onlyMessage('请选择设备', 'error');
     }
 };
 
@@ -167,12 +190,12 @@ const onCancel = () => {
 };
 </script>
 
-<style lang="less" scoped>
-.search {
-    padding: 0px;
+<style lang="less">
+.resource-issue-search {
+    padding: 18px 0 0 0;
     margin: 0px;
 }
-.alert {
+.resource-issue-alert {
     height: 40px;
     padding-left: 10px;
     color: rgba(0, 0, 0, 0.55);

@@ -565,6 +565,9 @@ onMounted(() => {
     if (routerParams.params.value.type === 'add') {
         handleAdd();
     }
+    if (routerParams.params.value.type === 'import') {
+        importVisible.value = true;
+    }
 });
 
 const handleParams = (config: Record<string, any>) => {

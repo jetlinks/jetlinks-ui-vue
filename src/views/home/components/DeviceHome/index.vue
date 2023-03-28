@@ -139,7 +139,7 @@ const deviceStepDetails: recommendList[] = [
         linkUrl: 'device/Instance',
         auth: devicePermission('import'),
         params: {
-            import: true,
+            type: 'import',
         },
     },
 ];

@@ -135,7 +135,7 @@ const aggPlayingFooter = ref<Footer[]>([]);
 const aggPlayingTotal = ref(0);
 const getAggPlayingData = () => {
     dashboardApi.aggPlaying().then((res) => {
-        aggTotal.value = res.result.playingTotal;
+        aggPlayingTotal.value = res.result.playingTotal;
         aggPlayingFooter.value = [
             {
                 title: '播放人数',

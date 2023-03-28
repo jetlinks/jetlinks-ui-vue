@@ -15,6 +15,7 @@
             <template #card="slotProps">
                 <CardBox
                     :value="slotProps"
+                    @click="handleView(slotProps)"
                     :actions="getActions(slotProps, 'card')"
                     :status="slotProps.state?.value"
                     :statusText="slotProps.state?.text"
@@ -30,10 +31,7 @@
                     </template>
                     <template #content>
                         <Ellipsis style="width: calc(100% - 100px)">
-                            <span
-                                style="font-size: 16px; font-weight: 600"
-                                @click.stop="handleView(slotProps.id)"
-                            >
+                            <span style="font-size: 16px; font-weight: 600">
                                 {{ slotProps.name }}
                             </span>
                         </Ellipsis>
@@ -120,7 +118,11 @@
                             type="link"
                             style="padding: 0 5px"
                             :danger="i.key === 'delete'"
-                            :hasPermission="i.key === 'view' ? true : 'edge/Resource:' + i.key"
+                            :hasPermission="
+                                i.key === 'view'
+                                    ? true
+                                    : 'edge/Resource:' + i.key
+                            "
                         >
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
@@ -213,17 +215,6 @@ const columns = [
                 new Promise((resolve) => {
                     queryNoPagingPost({
                         paging: false,
-                        terms: [
-                            {
-                                terms: [
-                                    {
-                                        column: 'productId$product-info',
-                                        value: 'accessProvider is official-edge-gateway',
-                                    },
-                                ],
-                                type: 'and',
-                            },
-                        ],
                         sorts: [
                             {
                                 name: 'createTime',
@@ -278,6 +269,17 @@ const getActions = (
 ): ActionsType[] => {
     if (!data) return [];
     const actions = [
+        {
+            key: 'view',
+            text: '查看',
+            tooltip: {
+                title: '查看',
+            },
+            icon: 'EyeOutlined',
+            onClick: () => {
+                handleView(data);
+            },
+        },
         {
             key: 'update',
             text: '编辑',
@@ -370,8 +372,8 @@ const handleSearch = (_params: any) => {
     params.value = _params;
 };
 
-const handleView = (id: string) => {
-    menuStory.jumpPage('device/Instance/Detail', { id });
+const handleView = (dt: any) => {
+    menuStory.jumpPage('device/Instance/Detail', { id: dt?.sourceId });
 };
 
 const saveBtn = () => {
@@ -384,6 +386,7 @@ const onRefresh = () => {
     edgeResourceRef.value?.reload();
 };
 </script>
-  
-  <style lang="less" scoped>
+
+<style lang="less" scoped>
 </style>
+

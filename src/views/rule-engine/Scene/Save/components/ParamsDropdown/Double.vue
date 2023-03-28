@@ -48,7 +48,7 @@ const label: Record<number, any> = {
 
 const emit = defineEmits<Emit>()
 
-const myValue = ref<ValueType>(props.value)
+const myValue = ref<ValueType>(props.value || [undefined, undefined] as any)
 const mySource = ref<string>(props.source)
 
 const onSelect = (v: any, _label: string, index: number) => {

@@ -100,7 +100,7 @@ type Emit = {
 }
 
 const props = defineProps({
-  ...defaultSetting
+  ...defaultSetting,
 })
 
 const emit = defineEmits<Emit>()
