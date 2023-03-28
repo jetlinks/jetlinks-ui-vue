@@ -1020,7 +1020,8 @@ nextTick(() => {
     getData();
 });
 watch(()=>productStore.current,()=>{
-    getData()
+    getData();
+    formData.data = productStore.current?.configuration || {}
 })
 </script>
 <style lang="less" scoped>
