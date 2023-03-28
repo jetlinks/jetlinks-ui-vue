@@ -220,18 +220,21 @@ const table: any = {
                     // 启用批量设置
                     if (bulkBool.value) {
                         // 将已勾选的权限和批量设置的权限进行合并，并与自己可选的权限进行比对，取交集作为当前选中的权限
-                        let newPermission = uniq([
-                            ...item.selectPermissions,
-                            ...bulkList.value,
-                        ]);
-                        const allPermissions = item.permissionList.map(
-                            (item: any) => item.value,
-                        );
-                        newPermission = intersection(
-                            newPermission,
-                            allPermissions,
-                        );
-                        item.selectPermissions = newPermission;
+                        // let newPermission = uniq([
+                        //     ...item.selectPermissions,
+                        //     ...bulkList.value,
+                        // ]);
+                        // const allPermissions = item.permissionList.map(
+                        //     (item: any) => item.value,
+                        // );
+                        // newPermission = intersection(
+                        //     newPermission,
+                        //     allPermissions,
+                        // );
+                        // item.selectPermissions = newPermission;
+                        
+                        // fix: bug#10756
+                        item.selectPermissions = n[1];
                         // 禁用单独勾选
                         item.permissionList.forEach((permission: any) => {
                             permission.disabled = true;
