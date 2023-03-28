@@ -43,6 +43,7 @@
                         { label: '写', value: 'write' },
                         { label: '订阅', value: 'subscribe' },
                     ]"
+                    :column="3"
                 />
             </j-form-item>
             <j-form-item
@@ -161,6 +162,8 @@ const checkLength = (_rule: Rule, value: string): Promise<any> =>
             return String(value).length > 64
                 ? reject('最多可输入64个字符')
                 : resolve('');
+        } else {
+            reject('');
         }
     });
 

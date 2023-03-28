@@ -42,12 +42,15 @@
                             /></template>
                             扫描
                         </PermissionButton>
-                        <j-dropdown v-if="data?.provider === 'OPC_UA'">
-                            <j-button
+                        <j-dropdown
+                            v-if="data?.provider === 'OPC_UA'"
+                            :trigger="['click']"
+                        >
+                            <j-button @click.prevent="clickBatch"
                                 >批量操作 <AIcon type="DownOutlined"
                             /></j-button>
                             <template #overlay>
-                                <j-menu>
+                                <j-menu v-if="showBatch">
                                     <j-menu-item>
                                         <PermissionButton
                                             hasPermission="DataCollect/Collector:update"
@@ -145,13 +148,13 @@
                                                 style="max-width: 150px"
                                             >
                                                 {{
-                                                    propertyValue.get(
+                                                    getParseData(
                                                         slotProps.id,
-                                                    )?.parseData[0] || 0
+                                                    )[0]
                                                 }}({{
-                                                    propertyValue.get(
+                                                    getParseData(
                                                         slotProps.id,
-                                                    )?.dataType
+                                                    )[1]
                                                 }})
                                             </j-ellipsis>
                                         </div>
@@ -280,7 +283,7 @@ import SaveModBus from './Save/SaveModBus.vue';
 import SaveOPCUA from './Save/SaveOPCUA.vue';
 import Scan from './Scan/index.vue';
 import { colorMap, getState } from '../data.ts';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, isNumber } from 'lodash-es';
 import { getWebSocket } from '@/utils/websocket';
 import { map } from 'rxjs/operators';
 import dayjs from 'dayjs';
@@ -410,6 +413,17 @@ const columns = [
 const subRef = ref();
 const propertyValue = ref(new Map());
 
+const showBatch = ref(false);
+
+const clickBatch = () => {
+    if (_selectedRowKeys.value.length === 0) {
+        onlyMessage('请先选择', 'warning');
+        showBatch.value = false;
+    } else {
+        showBatch.value = true;
+    }
+};
+
 const handlAdd = () => {
     visible.saveModBus = true;
     current.value = {
@@ -440,21 +454,10 @@ const handlDelete = async (id: string | undefined = undefined) => {
 };
 
 const handlBatchDelete = () => {
-    if (_selectedRowKeys.value.length === 0) {
-        onlyMessage('请先选择', 'warning');
-        return;
-    } else {
-        console.log(2);
-
-        handlDelete();
-    }
+    handlDelete();
 };
 
 const handlBatchUpdate = () => {
-    if (_selectedRowKeys.value.length === 0) {
-        onlyMessage('请先选择', 'warning');
-        return;
-    }
     const dataSet = new Set(_selectedRowKeys.value);
     const dataMap = new Map();
     tableRef?.value?._dataSource.forEach((i: any) => {
@@ -504,6 +507,12 @@ const getInterval = (item: Partial<Record<string, any>>) => {
 };
 const getAccessModes = (item: Partial<Record<string, any>>) => {
     return item?.accessModes?.map((i: any) => i?.value);
+};
+
+const getParseData = (id: string) => {
+    const { parseData, dataType } = propertyValue.value.get(id);
+    const data = isNumber(parseData) ? parseData || 0 : parseData;
+    return [data, dataType];
 };
 
 const saveChange = (value: object) => {

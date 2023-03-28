@@ -65,7 +65,13 @@
                                         : '禁用',
                             }"
                             hasPermission="DataCollect/Collector:update"
-                            @click="handlUpdate(data)"
+                            :popConfirm="{
+                                title:
+                                    data?.state?.value === 'disabled'
+                                        ? '确定启用?'
+                                        : '确定禁用?',
+                                onConfirm: () => handlUpdate(data),
+                            }"
                         >
                             <AIcon
                                 :type="
@@ -81,7 +87,7 @@
                             :tooltip="{
                                 title:
                                     data?.state?.value !== 'disabled'
-                                        ? '正常的采集器不能删除'
+                                        ? '请先禁用，再删除'
                                         : '删除',
                             }"
                             :danger="data?.state?.value === 'disabled'"
@@ -200,7 +206,8 @@ const saveChange = (value: object) => {
 };
 
 const handleSearch = async (value: any) => {
-    let clickSearch = false;
+    let clickSearch = !!channelId; // 通道跳转进来或者搜索时，树根节点无全部
+
     if (!searchValue.value && !value) {
         params.value = _.cloneDeep(defualtParams);
     } else if (!!searchValue.value) {
@@ -223,6 +230,9 @@ const handleSearch = async (value: any) => {
     if (res.status === 200) {
         if (clickSearch) {
             defualtDataSource.value = res.result;
+            if (res.result.length !== 0) {
+                selectedKeys.value = [res.result[0].id]; // 通道跳转进来或者搜索时，默认选中第一个
+            }
         } else {
             defualtDataSource.value = _.cloneDeep(root);
             defualtDataSource.value[0].children = res.result;
