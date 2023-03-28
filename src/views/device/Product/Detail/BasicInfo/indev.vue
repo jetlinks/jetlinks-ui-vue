@@ -5,9 +5,16 @@
             <template #title>
                 <div style="display: flex">
                     <h3>配置信息</h3>
-                    <div style="margin: 0 0px 0 15px; color: #1d39c4">
-                        <AIcon type="EditOutlined" @click="editConfig"/>
-                    </div>
+                    <!-- <div style="margin: 0 0px 0 15px; color: #1d39c4">
+                        <AIcon type="EditOutlined" @click="editConfig" />
+                    </div> -->
+                    <PermissionButton
+                        type="link"
+                        @click="editConfig"
+                        hasPermission="device/Product:update"
+                    >
+                        <template #icon><AIcon type="EditOutlined" /></template>
+                    </PermissionButton>
                 </div>
             </template>
 
