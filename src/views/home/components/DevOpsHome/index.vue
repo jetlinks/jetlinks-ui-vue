@@ -53,31 +53,31 @@ const opsStepDetails: recommendList[] = [
         title: '协议管理',
         details:
             '根据业务需求自定义开发对应的产品（设备模型）接入协议，并上传到平台。',
-        iconUrl: '/images/home/Frame 4528.png',
+        iconUrl: '/images/home/Frame4528.png',
         linkUrl: 'link/Protocol',
     },
     {
         title: '证书管理',
         details: '统一维护平台内的证书，用于数据通信加密。',
-        iconUrl: '/images/home/Frame 4528.png',
+        iconUrl: '/images/home/Frame4528.png',
         linkUrl: 'link/Certificate',
     },
     {
         title: '网络组件',
         details: '根据不同的传输类型配置平台底层网络组件相关参数。',
-        iconUrl: '/images/home/Frame 4529.png',
+        iconUrl: '/images/home/Frame4529.png',
         linkUrl: 'link/Type',
     },
     {
         title: '设备接入网关',
         details: '根据不同的传输类型，关联消息协议，配置设备接入网关相关参数。',
-        iconUrl: '/images/home/Frame 4528(1).png',
+        iconUrl: '/images/home/Frame4528(1).png',
         linkUrl: 'link/AccessConfig',
     },
     {
         title: '日志管理',
         details: '监控系统日志，及时处理系统异常。',
-        iconUrl: '/images/home/Frame 4528.png',
+        iconUrl: '/images/home/Frame4528.png',
         linkUrl: 'Log',
         params: {
             tab: 'system',
