@@ -95,13 +95,15 @@ const confirm = () => {
     loading.value = true;
     formRef.value &&
         formRef.value.validate().then(() => {
-            const buttons = toRaw(props.menuInfo?.buttons);
+            const buttons = toRaw(props.menuInfo?.buttons) || [];
             const button = buttons?.find((item) => item.id === form.data.id);
             if (button) {
                 Object.entries(form.data).forEach(([key, value]) => {
                     button[key] = value;
                 });
-            } else buttons.push({ ...form.data });
+            } else {
+                buttons.push({ ...form.data });
+            }
             const params = {
                 ...props.menuInfo,
                 buttons,

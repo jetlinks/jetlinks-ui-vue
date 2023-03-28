@@ -191,6 +191,20 @@ const importVisible = ref<boolean>(false);
 const visible = ref<boolean>(false);
 const current = ref<Record<string, any>>({});
 
+const transformData = (arr: any[]): any[] => {
+    if(Array.isArray(arr) && arr.length){
+        return (arr || []).map((item: any) => {
+            return {
+                ...item,
+                id: `classifiedId is ${item.id}`,
+                children: transformData(item.children)
+            }
+        })
+    } else {
+        return []
+    }
+}
+
 const columns = [
     {
         title: 'ID',
@@ -216,6 +230,7 @@ const columns = [
         key: 'productName',
         search: {
             type: 'select',
+            rename: 'productId',
             options: () =>
                 new Promise((resolve) => {
                     queryNoPagingPost({ paging: false }).then((resp: any) => {
@@ -253,8 +268,8 @@ const columns = [
         },
     },
     {
-        key: 'classifiedId',
-        dataIndex: 'classifiedId',
+        key: 'productId$product-info',
+        dataIndex: 'productId$product-info',
         title: '产品分类',
         hideInTable: true,
         search: {
@@ -262,7 +277,7 @@ const columns = [
             options: () =>
                 new Promise((resolve) => {
                     queryTree({ paging: false }).then((resp: any) => {
-                        resolve(resp.result);
+                        resolve(transformData(resp.result));
                     });
                 }),
         },

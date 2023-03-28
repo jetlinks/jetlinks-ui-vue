@@ -325,6 +325,20 @@ const isCheck = ref<boolean>(false);
 const routerParams = useRouterParams()
 const menuStory = useMenuStore();
 
+const transformData = (arr: any[]): any[] => {
+    if(Array.isArray(arr) && arr.length){
+        return (arr || []).map((item: any) => {
+            return {
+                ...item,
+                id: `classifiedId is ${item.id}`,
+                children: transformData(item.children)
+            }
+        })
+    } else {
+        return []
+    }
+}
+
 const columns = [
     {
         title: 'ID',
@@ -398,10 +412,11 @@ const columns = [
         hideInTable: true,
         search: {
             type: 'treeSelect',
+            rename: 'productId$product-info',
             options: () =>
                 new Promise((resolve) => {
                     queryTree({ paging: false }).then((resp: any) => {
-                        resolve(resp.result);
+                        resolve(transformData(resp.result));
                     });
                 }),
         },
@@ -423,12 +438,6 @@ const columns = [
                         ...item,
                         value: `accessProvider is ${item.id}`
                       })))
-                        // resolve(
-                        //     resp.result.map((item: any) => ({
-                        //         label: item.name,
-                        //         value: `accessProvider is ${item.id}`,
-                        //     })),
-                        // );
                     });
                 }),
         },

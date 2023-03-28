@@ -197,9 +197,9 @@ const rules = {
         { required: true, message: '请输入用户 ID' },
         { max: 64, message: '最多可输入64个字符' },
     ],
-    secretKey: [{ required: true, message: '请输入secretKey' }],
-    appSecret: [{ required: true, message: '请输入App Secret' }],
-    openId: [{ required: true, message: '请输入创建者ID' }],
+    secretKey: [{ required: true, message: '请输入secretKey' }, { max: 64, message: '最多可输入64个字符' },],
+    appSecret: [{ required: true, message: '请输入App Secret' }, { max: 64, message: '最多可输入64个字符' },],
+    openId: [{ required: true, message: '请输入创建者ID' }, { max: 64, message: '最多可输入64个字符' },],
     explain: [{ required: false, max: 200, message: '最多可输入200个字符' }],
 };
 

@@ -195,7 +195,7 @@ import {
 import { FormValidate, FormState } from '../data';
 import type { FormInstance } from 'ant-design-vue';
 import type { FormDataType } from '../type.d';
-import { isArray } from 'lodash-es';
+import { cloneDeep, isArray } from 'lodash-es';
 
 const props = defineProps({
     data: {
@@ -217,7 +217,7 @@ const Options = ref({
     'security-policies': [],
 });
 
-const formData = ref<FormDataType>(FormState);
+const formData = ref<FormDataType>(cloneDeep(FormState));
 
 const handleOk = async () => {
     const params = await formRef.value?.validate();
@@ -238,11 +238,12 @@ const handleCancel = () => {
 const changeAuthType = (value: Array<string>) => {
     formData.value.configuration.authType = value[0];
 };
+
 const isAuthType = computed(() => {
     const { authType } = formData.value.configuration;
     return isArray(authType)
-        ? authType[0] === 'username'
-        : authType === 'username';
+        ? authType[0] === 'username' && formData.value.provider === 'OPC_UA'
+        : authType === 'username' && formData.value.provider === 'OPC_UA';
 });
 const isSecurityMode = computed(() => {
     const { securityMode } = formData.value.configuration;
