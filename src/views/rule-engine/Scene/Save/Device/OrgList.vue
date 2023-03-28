@@ -14,8 +14,9 @@
     :columns="columns"
     :request="query"
     :scroll="{
-        y: 350
+        y: 200
     }"
+    :bodyStyle='{ padding: "16px 0 0 0"}'
     :expandable='{
       expandedRowKeys: openKeys,
       onExpandedRowsChange: expandedRowChange,

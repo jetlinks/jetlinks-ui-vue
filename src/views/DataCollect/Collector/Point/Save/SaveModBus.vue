@@ -60,13 +60,10 @@
                     :precision="0"
                 />
             </j-form-item>
-            <p
-                style="color: #616161"
-                v-if="formData.configuration.function && formData.pointKey"
-            >
+            <p style="color: #616161" v-if="formData.configuration.function">
                 PLC地址:{{
                     InitAddress[formData.configuration.function] +
-                    formData.pointKey
+                        formData.pointKey || 0
                 }}
             </p>
             <j-form-item
@@ -268,6 +265,7 @@ const id = props.data.id;
 const collectorId = props.data.collectorId;
 const provider = props.data.provider;
 const oldPointKey = props.data.pointKey;
+console.log(22, props.data);
 
 const InitAddress = {
     Coils: 1,
@@ -293,7 +291,7 @@ const formData = ref({
             },
         },
     },
-    pointKey: '',
+    pointKey: undefined,
     accessModes: [],
     nspwc: false,
     features: [],
@@ -301,13 +299,7 @@ const formData = ref({
 });
 
 const handleOk = async () => {
-    console.log(2, formRef.value, formRef.value?.validate());
-
-    const data = await formRef.value?.validate().catch((err) => {
-        console.log(23, err);
-    });
-    console.log(3, data);
-
+    const data = await formRef.value?.validate();
     delete data?.nspwc;
     const { codec } = data?.configuration;
 
@@ -368,17 +360,21 @@ const checkProvider = (_rule: Rule, value: string): Promise<any> =>
             return checkProviderData[value] > Number(quantity) * 2
                 ? reject('数据类型长度需 <= 寄存器数量 * 2')
                 : resolve('');
+        } else {
+            return reject('');
         }
     });
 
 const checkPointKey = (_rule: Rule, value: string): Promise<any> =>
     new Promise(async (resolve, reject) => {
-        if (value) {
+        if (value || Number(value) === 0) {
             if (Number(oldPointKey) === Number(value)) return resolve('');
             const res: any = await _validateField(collectorId, {
                 pointKey: value,
             });
             return res.result?.passed ? resolve('') : reject(res.result.reason);
+        } else {
+            return reject('');
         }
     });
 

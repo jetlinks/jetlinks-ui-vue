@@ -175,14 +175,14 @@ const handOptionByColumn = (option: any) => {
     termTypeOptions.value = option.termTypes || []
     tabsOptions.value[0].component = option.type
     if (option.type === 'boolean') {
-      valueOptions.value = [
-        { name: '是', id: true },
-        { name: '否', id: false },
+      valueOptions.value = option.options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || [
+        { label: '是', value: true },
+        { label: '否', value: false },
       ]
     } else if(option.type === 'enum') {
       valueOptions.value = option.options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || []
     } else{
-      valueOptions.value = option.options || []
+      valueOptions.value = (option.options || []).map((item: any) => ({ ...item, label: item.name, value: item.id}))
     }
     valueColumnOptions.value = treeFilter(cloneDeep(columnOptions.value), option.type, 'type')
   } else {

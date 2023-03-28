@@ -406,12 +406,7 @@ type assetType = {
     value: string;
 };
 
-watch(
-    () => form.data.icon,
-    () => {
-        basicFormRef.value?.validate();
-    },
-);
+
 </script>
 
 <style lang="less" scoped>

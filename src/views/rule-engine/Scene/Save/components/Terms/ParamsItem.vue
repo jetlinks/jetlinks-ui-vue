@@ -176,14 +176,14 @@ const handOptionByColumn = (option: any) => {
     }
 
     if (option.dataType === 'boolean') {
-      valueOptions.value = [
+      valueOptions.value = option.options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || [
         { label: '是', value: true },
         { label: '否', value: false },
       ]
     } else if(option.dataType === 'enum') {
       valueOptions.value = option.options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || []
     } else{
-      valueOptions.value = option.options || []
+      valueOptions.value = (option.options || []).map((item: any) => ({ ...item, label: item.name, value: item.id}))
     }
   } else {
     termTypeOptions.value = []

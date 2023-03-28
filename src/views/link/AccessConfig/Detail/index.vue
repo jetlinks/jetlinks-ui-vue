@@ -51,7 +51,7 @@ import Channel from '../components/Channel/index.vue';
 import Edge from '../components/Edge/index.vue';
 import Cloud from '../components/Cloud/index.vue';
 import { getProviders, detail } from '@/api/link/accessConfig';
-import { accessConfigTypeFilter } from '@/utils/setting'
+import { accessConfigTypeFilter } from '@/utils/setting';
 
 const route = useRoute();
 const id = route.params.id as string;
@@ -61,7 +61,7 @@ const type = ref(false);
 const loading = ref(true);
 const provider = ref({});
 const data = ref({});
-const showType = ref('');
+const showType: any = ref('');
 
 const goProviders = (param: any) => {
     showType.value = param.type;
@@ -73,6 +73,19 @@ const goBack = () => {
     provider.value = {};
     type.value = true;
 };
+
+//network
+const TypeMap = new Map([
+    ['fixed-media', 'media'],
+    ['gb28181-2016', 'media'],
+    ['OneNet', 'cloud'],
+    ['Ctwing', 'cloud'],
+    ['modbus-tcp', 'channel'],
+    ['opc-ua', 'channel'],
+    ['official-edge-gateway', 'edge'],
+    ['edge-child-device', 'edge'],
+    ['network', 'network'],
+]);
 
 const getTypeList = (result: Record<string, any>) => {
     const list = [];
@@ -141,8 +154,8 @@ const getTypeList = (result: Record<string, any>) => {
 const queryProviders = async () => {
     const resp: any = await getProviders();
     if (resp.status === 200) {
-      const data = resp.result || []
-        dataSource.value = getTypeList(accessConfigTypeFilter(data as any[]));
+        const _data = resp.result || [];
+        dataSource.value = getTypeList(accessConfigTypeFilter(_data as any[]));
         // dataSource.value = getTypeList(resp.result)[0].list.filter(
         //     (item) => item.name !== '插件设备接入',
         // );
@@ -153,8 +166,10 @@ const getProvidersData = async () => {
     if (id !== ':id') {
         getProviders().then((response: any) => {
             if (response.status === 200) {
-              const data = response.result || []
-                const list = getTypeList(accessConfigTypeFilter(data as any[]));
+                const _data = response.result || [];
+                const list = getTypeList(
+                    accessConfigTypeFilter(_data as any[]),
+                );
                 dataSource.value = list.filter(
                     (item: any) =>
                         item.channel === 'network' ||
@@ -165,11 +180,12 @@ const getProvidersData = async () => {
                         const dt = response.result.find(
                             (item: any) => item?.id === resp.result.provider,
                         );
-
                         response.result.forEach((item: any) => {
                             if (item.id === resp.result.provider) {
-                                resp.result.type = item.type;
-                                showType.value = item.type;
+                                resp.result.type = TypeMap.has(item.id)
+                                    ? TypeMap.get(item.id)
+                                    : TypeMap.get('network');
+                                showType.value = resp.result.type;
                             }
                         });
 
