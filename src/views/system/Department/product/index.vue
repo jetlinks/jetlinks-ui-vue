@@ -548,6 +548,7 @@ watch(
     () => props.parentId,
     () => {
         tableData._selectedRowKeys = [];
+        tableData.selectedRows = [];
     },
 );
 </script>
