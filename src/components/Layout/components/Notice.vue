@@ -5,10 +5,13 @@
             :trigger="['click']"
             @visible-change="visibleChange"
         >
-            <div class="icon-content">
+            <!-- <div class="icon-content">
                 <AIcon type="BellOutlined" style="font-size: 16px" />
                 <span class="unread" v-show="total > 0">{{ total }}</span>
-            </div>
+            </div> -->
+            <j-badge :count="total" :offset="[3, -3]">
+                <AIcon type="BellOutlined" style="font-size: 16px" />
+            </j-badge>
             <template #overlay>
                 <div>
                     <NoticeInfo :data="list" @on-action="handleRead" />
@@ -26,6 +29,9 @@ import { notification, Button } from 'ant-design-vue';
 import { changeStatus_api } from '@/api/account/notificationRecord';
 import { useUserInfo } from '@/store/userInfo';
 
+import { useMenuStore } from '@/store/menu';
+
+const { jumpPage } = useMenuStore();
 const updateCount = computed(() => useUserInfo().$state.alarmUpdateCount);
 
 const total = ref(0);
@@ -44,29 +50,37 @@ const subscribeNotice = () => {
                         class="ellipsis"
                         style={{ cursor: 'pointer' }}
                         onClick={() => {
-                            changeStatus_api('_read', [resp.id]);
+                            {
+                                /* changeStatus_api('_read', [resp.id]); */
+                            }
+                            read('', resp);
                         }}
                     >
                         {resp?.payload?.message}
                     </div>
                 ),
                 onClick: () => {
-                    changeStatus_api('_read', [resp.id]);
+                    // changeStatus_api('_read', [resp.id])
+                    read('', resp);
                 },
                 key: resp.payload.id,
                 btn: (
                     <Button
                         type="primary"
                         size="small"
-                        onClick={() => {
-                            changeStatus_api('_read', [resp.id]).then(
+                        onClick={(e) => {
+                            {
+                                /* changeStatus_api('_read', [resp.id]).then(
                                 (resp: any) => {
                                     if (resp.status === 200) {
                                         notification.close(resp.payload.id);
                                         getList();
                                     }
                                 },
-                            );
+                            ); */
+                            }
+                            e.stopPropagation();
+                            read('_read', resp);
                         }}
                     >
                         标记已读
@@ -75,6 +89,21 @@ const subscribeNotice = () => {
             });
         });
 };
+
+const read = (type: string, data: any) => {
+    changeStatus_api('_read', [data.payload.id]).then((resp: any) => {
+        if (resp.status !== 200) return;
+
+        notification.close(data.payload.id);
+        getList();
+        if (type !== '_read') {
+            jumpPage('account/NotificationRecord', {
+                row: data.payload.detail,
+            });
+        }
+    });
+};
+
 const getList = () => {
     loading.value = true;
     const params = {

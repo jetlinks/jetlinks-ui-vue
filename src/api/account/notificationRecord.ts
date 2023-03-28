@@ -6,7 +6,6 @@ export const getList_api = (data: object): any => server.get(`/notifications/_qu
 export const getListByUnRead_api = (data: object): any => server.post(`/notifications/_query`, data)
 // 修改记录状态
 export const changeStatus_api = (type: '_read' | '_unread', data: string[]): any => server.post(`/notifications/${type}`, data)
-export const read = (id: string): any => server.get(`notifications/${id}/read`)
 
 
 const encodeParams = (params: Record<string, any>) => {
