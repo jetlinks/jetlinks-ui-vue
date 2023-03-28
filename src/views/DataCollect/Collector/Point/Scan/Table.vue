@@ -47,7 +47,11 @@
                         ></j-input>
                     </j-form-item>
                     <div style="margin: -24px 0 0 10px">
-                        {{ record[dataIndex] }}
+                        <Ellipsis style="width: calc(100% - 10px)">
+                            <span>
+                                {{ record[dataIndex] }}
+                            </span>
+                        </Ellipsis>
                     </div>
                 </template>
                 <template v-if="dataIndex === 'accessModes'">
@@ -246,10 +250,8 @@ const changeValue = (index: number, type: string) => {
 };
 
 const changeCheckbox = async (index: number, type: string) => {
-    // console.log(1, getTargetData(index, type).check,getTargetData(index, type));
     //Dom未更新完成，需要用 setTimeout 或者 await nextTick() 处理
     setTimeout(() => {
-        // console.log(2, getTargetData(index, type).check,getTargetData(index, type));
         let startIndex = 0;
         const { dataSource } = modelRef;
         const currentCheck = getTargetData(index, type).check;

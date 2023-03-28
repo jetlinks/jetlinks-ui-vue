@@ -54,7 +54,6 @@ const props = defineProps({
 const emits = defineEmits(['change']);
 
 const channelId = props.data?.channelId;
-
 const checkedKeys = ref<string[]>([]);
 const selectKeys = ref<string[]>([]);
 const spinning = ref(false);
@@ -166,14 +165,29 @@ const updateTreeData = (list: any, key: string, children: any[]): any[] => {
 
 const getPoint = async () => {
     spinning.value = true;
-    const res: any = await queryPointNoPaging();
+    const res: any = await queryPointNoPaging({
+        paging: false,
+        terms: [
+            {
+                terms: [
+                    {
+                        column: 'collectorId',
+                        value: props.data?.id,
+                    },
+                ],
+            },
+        ],
+    });
     if (res.status === 200) {
         selectKeys.value = res.result.map((item: any) => item.pointKey);
     }
     getScanOpcUAList();
     spinning.value = false;
 };
-getPoint();
+
+onMounted(() => {
+    getPoint();
+});
 
 const getScanOpcUAList = async () => {
     spinning.value = true;

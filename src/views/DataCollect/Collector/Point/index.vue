@@ -114,15 +114,37 @@
                         </template>
                         <template #action>
                             <div class="card-box-action">
-                                <j-popconfirm
-                                    title="确定删除？"
-                                    @confirm="handlDelete(slotProps.id)"
+                                <PermissionButton
+                                    type="text"
+                                    :tooltip="{
+                                        title: '删除',
+                                    }"
+                                    hasPermission="DataCollect/Collector:delete"
+                                    :popConfirm="{
+                                        title: `确定删除？`,
+                                        onConfirm: () =>
+                                            handlDelete(slotProps.id),
+                                    }"
                                 >
-                                    <a><AIcon type="DeleteOutlined" /></a>
-                                </j-popconfirm>
-                                <a @click="handlEdit(slotProps)"
-                                    ><AIcon type="FormOutlined"
-                                /></a>
+                                    <a
+                                        style="
+                                            font-size: 20px;
+                                            margin-top: -10px;
+                                        "
+                                        ><AIcon type="DeleteOutlined"
+                                    /></a>
+                                </PermissionButton>
+
+                                <PermissionButton
+                                    class="add-btn"
+                                    type="text"
+                                    @click="handlEdit(slotProps)"
+                                    hasPermission="DataCollect/Collector:update"
+                                >
+                                    <a style="font-size: 20px"
+                                        ><AIcon type="FormOutlined"
+                                    /></a>
+                                </PermissionButton>
                             </div>
                         </template>
                         <template #img>
@@ -526,7 +548,7 @@ const saveChange = (value: object) => {
     }
 };
 
-const onSelectChange = (keys: string[]) => {
+const onSelectChange = (keys: string[]) => {    
     _selectedRowKeys.value = [...keys];
 };
 
@@ -647,11 +669,11 @@ const handleSearch = (e: any) => {
         color: #474747;
     }
     .card-box-action {
-        width: 50px;
+        width: 90px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: 20px;
+        margin-top: -10px;
     }
     .card-box-content {
         margin-top: 20px;

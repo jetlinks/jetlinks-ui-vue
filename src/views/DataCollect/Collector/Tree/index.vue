@@ -70,7 +70,7 @@
                                         ? '启用'
                                         : '禁用',
                             }"
-                            hasPermission="DataCollect/Collector:update"
+                            hasPermission="DataCollect/Collector:action"
                             :popConfirm="{
                                 title:
                                     data?.state?.value === 'disabled'
@@ -271,11 +271,13 @@ onMounted(() => {
 
 watch(
     () => selectedKeys.value,
-    (n) => {
+    (n, p) => {
         const key = _.isArray(n) ? n[0] : n;
         if (key) {
             const row = collectorAll.value.find((i: any) => i.id === key);
             emits('change', row);
+        } else {
+            selectedKeys.value = p; // 防止取消
         }
     },
 );

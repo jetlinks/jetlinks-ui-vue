@@ -31,7 +31,7 @@
                 </template>
                 <template #createTime="slotProps">
                     <span>{{
-                        moment(slotProps.createTime).format(
+                        dayjs(slotProps.createTime).format(
                             'YYYY-MM-DD HH:mm:ss',
                         )
                     }}</span>
@@ -69,7 +69,7 @@
 <script lang="ts" setup name="FirmwarePage">
 import type { ActionsType } from '@/components/Table/index';
 import { query, queryProduct, remove } from '@/api/device/firmware';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import _ from 'lodash';
 import Save from './Save/index.vue';
 import { useMenuStore } from 'store/menu';
@@ -244,9 +244,11 @@ const saveChange = (value: FormDataType) => {
 
 const handlDelete = async (id: string) => {
     const res = await remove(id);
-    if (res.success) {
+    if (res.status === 200) {
         onlyMessage('操作成功', 'success');
         tableRef.value.reload();
+    } else {
+        onlyMessage(res?.message, 'error');
     }
 };
 

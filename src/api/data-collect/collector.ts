@@ -46,8 +46,8 @@ export const readPoint = (collectorId: string, data: string[]) =>
 export const writePoint = (collectorId: string, data: string[]) =>
     server.post(`/data-collect/collector/${collectorId}/points/_write`, data);
 
-export const queryPointNoPaging = () =>
-    server.post(`/data-collect/point/_query/no-paging`, { paging: false });
+export const queryPointNoPaging = (data: any) =>
+    server.post(`/data-collect/point/_query/no-paging`, data);
 
 export const scanOpcUAList = (data: any) =>
     server.get(
