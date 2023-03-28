@@ -142,6 +142,8 @@ const addRoleData = async () => {
             } else if (index === keys.value.length - 1) {
                 resolve(Count === keys.value.length);
                 roleData.isSucessRole = 2;
+            }else{
+                resolve(false);
             }
         });
     });

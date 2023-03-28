@@ -98,12 +98,28 @@ const jump = () => {
 const submitData = async () => {
     loading.value = true;
     const basicRes = await basicRef.value.submitBasic();
+    if (!basicRes) {
+        loading.value = false;
+        return;
+    }
     const menuRes = await menuRef.value.updataMenu();
+    if (!menuRes) {
+        loading.value = false;
+        return;
+    }
     const roleRes = await roleRef.value.submitRole();
+    if (!roleRes) {
+        loading.value = false;
+        return;
+    }
     const initDataRes = await initDataRef.value.save();
+    if (!initDataRes) {
+        loading.value = false;
+        return;
+    }
     loading.value = false;
     // 当前数据是否成功提交
-    if (basicRes && menuRes && roleRes && initDataRes ) {
+    if (basicRes && menuRes && roleRes && initDataRes) {
         message.success('保存成功');
         //     // 记录初始化数据，跳转首页
         const res = await saveInit();

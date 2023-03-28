@@ -329,7 +329,7 @@ const { resetFields, validate, validateInfos } = useForm(
  * 提交数据
  */
 const saveBasicInfo = () => {
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve,reject) => {
         validate()
             .then(async () => {
                 const item = [
