@@ -10,7 +10,14 @@
             ref="RecordRef"
             :columns="columns"
             :request="queryList"
-            :defaultParams="{ sorts: [{ name: 'time', order: 'desc' }] }"
+            :defaultParams="{
+                    pageSize: 10,
+                    sorts: [{ name: 'time', order: 'desc' }],
+                }"
+            :pagination="{
+                    showSizeChanger: true,
+                    pageSizeOptions: ['10', '20', '50', '100'],
+                }"
             :params="params"
             :model="'TABLE'"
         >
