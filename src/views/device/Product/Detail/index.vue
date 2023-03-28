@@ -77,6 +77,7 @@
                 type="primary"
                 :popConfirm="{
                     title: `确定应用配置?`,
+                    placement: 'bottomRight',
                     onConfirm: handleDeploy,
                 }"
                 :disabled="productStore.current?.state === 0"
@@ -111,16 +112,16 @@ import {
     getProtocolDetail,
 } from '@/api/device/product';
 import { message } from 'jetlinks-ui-components';
-import { getImage, handleParamsToString } from '@/utils/comm'
+import { getImage, handleParamsToString } from '@/utils/comm';
 import encodeQuery from '@/utils/encodeQuery';
 import { useMenuStore } from '@/store/menu';
-import {useRouterParams} from "@/utils/hooks/useParams";
+import { useRouterParams } from '@/utils/hooks/useParams';
 
 const menuStory = useMenuStore();
 const route = useRoute();
 const checked = ref<boolean>(true);
 const productStore = useProductStore();
-const routerParams = useRouterParams()
+const routerParams = useRouterParams();
 const searchParams = ref({
     terms1: [
         {
