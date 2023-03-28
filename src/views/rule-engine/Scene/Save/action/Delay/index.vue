@@ -13,7 +13,7 @@
             v-model:value="_value"
             :precision="3"
             :min="0"
-            :max="6535"
+            :max="65535"
         >
             <template #addonAfter>
                 <j-select

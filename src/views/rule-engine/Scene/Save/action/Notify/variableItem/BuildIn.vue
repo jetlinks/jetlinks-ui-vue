@@ -91,7 +91,7 @@ const source = computed(() => {
 });
 
 const builtInList = ref<any[]>([]);
-const upperKey = ref();
+const upperKey = ref(props.value?.upperKey);
 
 const sourceChange = (val: any) => {
     emit('update:value', {
@@ -159,6 +159,14 @@ watch(
         }
     },
     { deep: true, immediate: true },
+);
+
+watch(
+    () => props.value.upperKey,
+    (newVal) => {
+        upperKey.value = newVal
+    },
+    { immediate: true },
 );
 </script>
 
