@@ -487,6 +487,7 @@ const table = {
     },
     clickEdit: (row?: any) => {
         const ids = row ? [row.id] : [...tableData._selectedRowKeys];
+        if (ids.length < 1) return message.warning('请勾选需要编辑的数据');
 
         if (row || tableData.selectedRows.length === 1) {
             const permissionList =

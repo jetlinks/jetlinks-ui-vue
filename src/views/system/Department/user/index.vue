@@ -46,7 +46,7 @@
                     <AIcon type="DisconnectOutlined" />批量解绑
                 </PermissionButton>
             </template>
-            <template #state="slotProps">
+            <template #status="slotProps">
                 <BadgeStatus
                     :status="slotProps.status"
                     :text="slotProps.status ? '正常' : '禁用'"

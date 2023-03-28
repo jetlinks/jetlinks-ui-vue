@@ -1,17 +1,17 @@
 <template>
     <div class="notice-container">
-        <j-dropdown :trigger="['click']" @visible-change="visibleChange">
+        <j-dropdown
+            v-model:visible="visible"
+            :trigger="['click']"
+            @visible-change="visibleChange"
+        >
             <div class="icon-content">
-                <AIcon
-                    type="BellOutlined"
-                    @click.prevent
-                    style="font-size: 16px"
-                />
+                <AIcon type="BellOutlined" style="font-size: 16px" />
                 <span class="unread" v-show="total > 0">{{ total }}</span>
             </div>
             <template #overlay>
                 <div>
-                    <NoticeInfo :data="list" @on-action="getList" />
+                    <NoticeInfo :data="list" @on-action="handleRead" />
                 </div>
             </template>
         </j-dropdown>
@@ -105,6 +105,12 @@ getList();
 watch(updateCount, () => getList());
 const visibleChange = (bool: boolean) => {
     bool && getList();
+};
+
+const visible = ref(false);
+const handleRead = () => {
+    visible.value = false;
+    getList();
 };
 </script>
 
