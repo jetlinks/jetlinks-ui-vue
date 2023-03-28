@@ -543,6 +543,13 @@ const dialogs = reactive({
     editShow: false,
     nextShow: false,
 });
+
+watch(
+    () => props.parentId,
+    () => {
+        tableData._selectedRowKeys = [];
+    },
+);
 </script>
 
 <style lang="less" scoped>

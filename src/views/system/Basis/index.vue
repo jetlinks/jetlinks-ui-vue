@@ -204,7 +204,7 @@
                                     </div>
 
                                     <div class="upload-tips">推荐尺寸64*64</div>
-                                    <div class="upload-tips">支持icon格式</div>
+                                    <div class="upload-tips">支持ico格式</div>
                                 </j-form-item>
                             </j-col>
                         </j-row>
