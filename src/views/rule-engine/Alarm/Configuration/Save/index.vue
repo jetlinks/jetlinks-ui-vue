@@ -3,7 +3,7 @@
         <j-card>
             <j-tabs :activeKey="activeKey" @change="changeTabs">
                 <j-tab-pane key="1" tab="基础配置">
-                    <Base />
+                    <Base v-if="activeKey === '1'" />
                 </j-tab-pane>
                 <j-tab-pane key="2" tab="关联场景联动">
                     <Scene></Scene>
