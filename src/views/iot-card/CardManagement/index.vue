@@ -156,11 +156,11 @@
                         </slot>
                     </template>
                     <template #content>
+                      <span style="font-size: 16px; font-weight: 600">
                         <Ellipsis style="width: calc(100% - 100px)">
-                            <span style="font-size: 16px; font-weight: 600">
                                 {{ slotProps.id }}
-                            </span>
                         </Ellipsis>
+                      </span>
                         <j-row style="margin-top: 20px">
                             <j-col :span="8">
                                 <div class="card-item-content-text">
