@@ -99,7 +99,7 @@ const handleItem = (data: any) => {
         valueType: data.valueType ? data.valueType.type : '-',
         format: data.valueType ? data.valueType.format : undefined,
         options: data.valueType ? data.valueType.elements : undefined,
-        value: data.value,
+        value: data?.value,
     };
 };
 
@@ -135,9 +135,9 @@ watch(
         options.value = newTag.map((item: any) => {
             return { label: item.name, value: item.id, ...item };
         });
-        if (newVal && newVal[0] && newVal[0].name && newTag && newTag.length) {
+        if (newVal && newVal[0] && newVal[0]?.name && newTag && newTag.length) {
             const names: string[] = [];
-            const newTagList = newVal[0].value
+            const newTagList = newVal[0]?.value
                 .filter((valueItem: any) => {
                     return newTag.some(
                         (item: any) => valueItem.column === item.id,
@@ -151,8 +151,8 @@ watch(
                         names.push(oldItem.name);
                         return {
                             ...handleItem(oldItem),
-                            value: valueItem.value,
-                            type: valueItem.type,
+                            value: valueItem?.value,
+                            type: valueItem?.type,
                         };
                     }
                     return valueItem;
@@ -169,12 +169,12 @@ watch(
 );
 
 const onValueChange = () => {
-    const _data = tagList.value.filter((item) => !!item.value);
+    const _data = tagList.value.filter((item) => !!item?.value);
     const newValue = _data.map((item: any) => {
         return {
             column: item.id,
-            type: item.type,
-            value: item.value,
+            type: item?.type,
+            value: item?.value,
         };
     });
     emits('update:value', [{ value: newValue, name: '标签' }]);

@@ -4,6 +4,8 @@ colorMap.set('partialError', 'warning');
 colorMap.set('failed', 'error');
 colorMap.set('stopped', 'default');
 colorMap.set('processing', '#cccccc');
+colorMap.set('enabled', 'processing');
+colorMap.set('disabled', 'error');
 
 export const getState = (record: any) => {
     const enabled = record?.state?.value === 'enabled';

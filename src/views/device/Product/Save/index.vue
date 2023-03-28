@@ -68,7 +68,11 @@
                         :tree-data="treeList"
                         @change="valueChange"
                         allow-clear
-                        :fieldNames="{ label: 'name', value: 'id' }"
+                        :fieldNames="{
+                            label: 'name',
+                            value: 'id',
+                            children: 'children',
+                        }"
                         :filterTreeNode="
                             (v, option) => filterSelectNode(v, option)
                         "
@@ -120,11 +124,7 @@ import { FILE_UPLOAD } from '@/api/comm';
 import { isInput } from '@/utils/regular';
 import type { Rule } from 'ant-design-vue/es/form';
 import { queryProductId, addProduct, editProduct } from '@/api/device/product';
-import {
-    SearchOutlined,
-    CheckOutlined,
-    DeleteOutlined,
-} from '@ant-design/icons-vue';
+import encodeQuery from '@/utils/encodeQuery';
 const productStore = useProductStore();
 const emit = defineEmits(['success']);
 const props = defineProps({
@@ -246,12 +246,23 @@ const valueChange = (value: string, label: string) => {
  * 查询产品分类
  */
 const queryProductTree = async () => {
-    category({
-        paging: false,
-    }).then((resp) => {
+    category(encodeQuery({ sorts: { sortIndex: 'asc' } })).then((resp) => {
         if (resp.status === 200) {
             treeList.value = resp.result;
+            treeList.value = dealProductTree(treeList.value);
         }
+    });
+};
+/**
+ * 处理产品分类key
+ */
+const dealProductTree = (arr: any) => {
+   return arr.map((element: any) => {
+        element.key = element.id;
+        if (element.children) {
+            element.children = dealProductTree(element.children);
+        }
+        return element
     });
 };
 watch(
@@ -326,7 +337,7 @@ const submitData = () => {
                 // 编辑
                 form.classifiedId
                     ? form.classifiedId
-                    : (form.classifiedId = '');   // 产品分类不选传空字符串
+                    : (form.classifiedId = ''); // 产品分类不选传空字符串
                 form.classifiedName
                     ? form.classifiedName
                     : (form.classifiedName = '');

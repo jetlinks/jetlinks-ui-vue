@@ -12,7 +12,7 @@
             placeholder="请输入时间"
             v-model:value="_value"
             :precision="3"
-            :min="0"
+            :min="0.001"
             :max="65535"
         >
             <template #addonAfter>
@@ -60,8 +60,8 @@ const unit = ref<'seconds' | 'minutes' | 'hours'>(
 watch(
     () => props.value,
     (newVal) => {
-        _value.value = newVal?.time || 0
-        unit.value = newVal?.unit || 'seconds'
+        _value.value = newVal?.time || 0;
+        unit.value = newVal?.unit || 'seconds';
     },
     {
         immediate: true,
@@ -73,17 +73,21 @@ const onCancel = () => {
     emit('cancel');
 };
 const onOk = () => {
-    if (unref(_value) || unref(_value) === 0) {
+    if (unref(_value)) {
+        emit(
+            'save',
+            {
+                time: _value.value,
+                unit: unit.value,
+            },
+            {
+                name: `${_value.value} ${
+                    timeUnitEnum[unit.value]
+                }后，执行后续动作`,
+            },
+        );
     } else {
         onlyMessage('请输入时间', 'error');
     }
-    emit(
-        'save',
-        {
-            time: _value.value,
-            unit: unit.value,
-        },
-        { name: `${_value.value} ${timeUnitEnum[unit.value]}后，执行后续动作` },
-    );
 };
 </script>

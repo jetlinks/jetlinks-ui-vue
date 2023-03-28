@@ -117,11 +117,16 @@ const routeChange = async (id: string) => {
     });
   }
 }
-watch(
-  () => route.params.id,
-  (id) => routeChange(id as string),
-  { immediate: true }
-)
+
+// watch(
+//   () => route.params.id,
+//   (id) => routeChange(id as string),
+//   { immediate: true }
+// )
+
+onMounted(() => {
+  routeChange(route.params.id as string)
+})
 
 watch(
   () => [props.visible, props.type],

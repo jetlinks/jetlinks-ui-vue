@@ -43,7 +43,7 @@ export const detail = (id: string) => server.get<ProductItem>(`/device-product/$
  * 产品分类
  * @param data 查询条件
  */
-export const category = (data: any) => server.post('/device/category/_tree', data)
+export const category = (data: any) => server.get('/device/category/_tree?paging=false', data)
 
 /**
  * 获取网关类型

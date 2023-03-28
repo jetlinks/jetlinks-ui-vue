@@ -99,8 +99,8 @@
                         @click="handleClick"
                         :active="_selectedRowKeys.includes(slotProps.id)"
                         class="card-box"
-                        :status="getState(slotProps).value"
-                        :statusText="getState(slotProps)?.text"
+                        :status="slotProps?.runningState?.value"
+                        :statusText="slotProps?.runningState?.text"
                         :statusNames="Object.fromEntries(colorMap.entries())"
                     >
                         <template #title>
@@ -282,7 +282,7 @@ import BatchUpdate from './components/BatchUpdate/index.vue';
 import SaveModBus from './Save/SaveModBus.vue';
 import SaveOPCUA from './Save/SaveOPCUA.vue';
 import Scan from './Scan/index.vue';
-import { colorMap, getState } from '../data.ts';
+import { colorMap } from '../data.ts';
 import { cloneDeep, isNumber } from 'lodash-es';
 import { getWebSocket } from '@/utils/websocket';
 import { map } from 'rxjs/operators';

@@ -287,7 +287,7 @@ const orgCol = [
     },
 ];
 
-let params:any = ref({
+let params: any = ref({
     sorts: [{ name: 'alarmTime', order: 'desc' }],
     terms: [],
 });
@@ -369,7 +369,10 @@ const getActions = (
             key: 'solve',
             text: '告警处理',
             tooltip: {
-                title: '告警处理',
+                title:
+                    currentData.state?.value === 'normal'
+                        ? '无告警'
+                        : '告警处理',
             },
             icon: 'ToolOutlined',
             onClick: () => {
@@ -432,14 +435,14 @@ const closeLog = () => {
 };
 </script>
 <style lang="less" scoped>
-.content-left{
-    border-right: .2px solid rgba(0,0,0,0.2);
+.content-left {
+    border-right: 0.2px solid rgba(0, 0, 0, 0.2);
 }
-.content-right-title{
+.content-right-title {
     color: #666;
-    font-size: 12px
+    font-size: 12px;
 }
-.content-left-title{
-    font-size: 18px
+.content-left-title {
+    font-size: 18px;
 }
 </style>

@@ -22,7 +22,7 @@
                         <PermissionButton
                             type="primary"
                             @click="add"
-                            hasPermission="device/Instance:add"
+                            hasPermission="rule-engine/Alarm/Configuration:add"
                         >
                             <template #icon
                                 ><AIcon type="PlusOutlined"
@@ -82,7 +82,7 @@
                             <PermissionButton
                                 :disabled="item.disabled"
                                 :popConfirm="item.popConfirm"
-                                :tooltip="{ ...item.tootip }"
+                                :tooltip="{ ...item.tooltip }"
                                 @click="item.onClick"
                                 :hasPermission="
                                     'rule-engine/Alarm/Configuration:' +

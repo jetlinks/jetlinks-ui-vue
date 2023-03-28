@@ -1,6 +1,6 @@
 <template>
-    <a-space align="end">
-        <a-upload
+    <j-space align="end">
+        <j-upload
             v-model:fileList="modelValue.upload"
             name="file"
             :action="FILE_UPLOAD"
@@ -12,21 +12,22 @@
             :showUploadList="false"
             @change="uploadChange"
         >
-            <a-button>
+            <j-button>
                 <template #icon><AIcon type="UploadOutlined" /></template>
                 文件上传
-            </a-button>
-        </a-upload>
+            </j-button>
+        </j-upload>
         <div style="margin-left: 20px">
-            <a-space>
+            <j-space>
+                下载模板
                 <a @click="downFile('xlsx')">.xlsx</a>
                 <a @click="downFile('csv')">.csv</a>
-            </a-space>
+            </j-space>
         </div>
-    </a-space>
+    </j-space>
     <div style="margin-top: 20px" v-if="importLoading">
-        <a-badge v-if="flag" status="processing" text="进行中" />
-        <a-badge v-else status="success" text="已完成" />
+        <j-badge v-if="flag" status="processing" text="进行中" />
+        <j-badge v-else status="success" text="已完成" />
         <span>总数量：{{ count }}</span>
         <p style="color: red">{{ errMessage }}</p>
     </div>

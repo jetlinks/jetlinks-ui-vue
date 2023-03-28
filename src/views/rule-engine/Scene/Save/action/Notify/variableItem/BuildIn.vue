@@ -16,12 +16,14 @@
                 placeholder="请选择参数"
                 style="width: calc(100% - 120px)"
                 :fieldNames="{ label: 'name', value: 'id' }"
-                @change="(val) => itemOnChange(undefined, val)"
+                @change="(val, label) => itemOnChange(undefined, val, label)"
             >
                 <template #title="{ fullName, description }">
                     <j-space>
                         {{ fullName }}
-                        <span style="color: grey; margin-left: 5px">{{ description }}</span>
+                        <span style="color: grey; margin-left: 5px">{{
+                            description
+                        }}</span>
                     </j-space>
                 </template>
             </j-tree-select>
@@ -84,7 +86,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['update:value']);
+const emit = defineEmits(['update:value', 'change']);
 
 const source = computed(() => {
     return props.value?.source || 'fixed';
@@ -97,15 +99,18 @@ const sourceChange = (val: any) => {
     emit('update:value', {
         ...props.value,
         source: val,
-        value: undefined
+        value: undefined,
     });
 };
 
-const itemOnChange = (val: any, _upperKey?: string) => {
+const itemOnChange = (val: any, _upperKey?: string, label?: any) => {
     emit('update:value', {
         ...props.value,
         value: val,
-        upperKey: _upperKey
+        upperKey: _upperKey,
+    });
+    emit('change', {
+        sendTo: label?.[0] || val,
     });
 };
 
@@ -164,7 +169,7 @@ watch(
 watch(
     () => props.value.upperKey,
     (newVal) => {
-        upperKey.value = newVal
+        upperKey.value = newVal;
     },
     { immediate: true },
 );

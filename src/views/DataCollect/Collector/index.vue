@@ -36,9 +36,9 @@ const changeTree = (row: any) => {
     min-height: calc(100vh - 180px);
     width: 100%;
     .left {
-        width: 350px;
+        width: 370px;
         border-right: 1px #eeeeee solid;
-        margin: 10px;
+        margin: 10px 10px 0 0;
     }
     .right {
         flex: 1;

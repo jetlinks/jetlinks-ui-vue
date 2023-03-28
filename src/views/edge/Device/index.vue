@@ -110,9 +110,9 @@
                     }"
                 />
             </template>
-            <template #createTime="slotProps">
+            <template #registryTime="slotProps">
                 <span>{{
-                    dayjs(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss')
+                    dayjs(slotProps.registryTime).format('YYYY-MM-DD HH:mm:ss')
                 }}</span>
             </template>
             <template #action="slotProps">

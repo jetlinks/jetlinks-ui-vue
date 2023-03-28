@@ -1021,7 +1021,9 @@
                     type="primary"
                     @click="saveData"
                     :loading="loading"
-                    :hasPermission="`link/Type:${id ? 'update' : 'add'}`"
+                    :hasPermission="`link/Type:${
+                        id !== ':id' ? 'update' : 'add'
+                    }`"
                 >
                     保存
                 </PermissionButton>
@@ -1219,7 +1221,9 @@ const saveData = async () => {
 
     loading.value = true;
     const resp: any =
-        id === ':id' ? await save(params) : await update({ ...params, id });
+        id === ':id'
+            ? await save(params).catch(() => {})
+            : await update({ ...params, id }).catch(() => {});
     loading.value = false;
     if (resp?.status === 200) {
         onlyMessage('操作成功', 'success');
