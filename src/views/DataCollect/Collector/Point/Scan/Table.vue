@@ -4,7 +4,7 @@
             v-if="modelRef.dataSource.length !== 0"
             :dataSource="modelRef.dataSource"
             :columns="FormTableColumns"
-            :scroll="{ x: 1000, y: 550 }"
+            :scroll="{ y: 580 }"
         >
             <template #headerCell="{ column }">
                 <template
@@ -46,12 +46,18 @@
                             :bordered="false"
                         ></j-input>
                     </j-form-item>
-                    <div style="margin: -24px 0 0 10px">
-                        <Ellipsis style="width: calc(100% - 10px)">
-                            <span>
-                                {{ record[dataIndex] }}
-                            </span>
-                        </Ellipsis>
+                    <div
+                        style="
+                            margin: -24px 0 0 10px;
+                            overflow: hidden;
+                            white-space: nowrap;
+                            text-overflow: ellipsis;
+                        "
+                    >
+                        <j-tooltip>
+                            <template #title>{{ record[dataIndex] }}</template>
+                            {{ record[dataIndex] }}
+                        </j-tooltip>
                     </div>
                 </template>
                 <template v-if="dataIndex === 'accessModes'">
@@ -112,7 +118,7 @@
                         ]"
                     >
                         <j-input
-                            style="width: 70%"
+                            style="width: 60%"
                             v-model:value="
                                 record.configuration[dataIndex].value
                             "
@@ -148,7 +154,7 @@
                         ]"
                     >
                         <j-select
-                            style="width: 50%"
+                            style="width: 40%"
                             v-model:value="record[dataIndex].value"
                             placeholder="请选择"
                             allowClear
@@ -309,12 +315,20 @@ watch(
 
 <style lang="less" scoped>
 .table {
+    width: 100%;
+    min-width: 600px;
+    :deep(.ant-table-header) {
+        .ant-table-cell {
+            padding: 16px 5px;
+        }
+    }
+
     :deep(.ant-table-tbody) {
         .ant-table-cell {
             padding: 24px 0 0 0;
         }
         .ant-table-cell-fix-right-first {
-            padding: 0 0 0 20px;
+            padding: 0 0 0 10px;
         }
     }
     :deep(.ant-pagination) {

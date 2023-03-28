@@ -177,7 +177,7 @@ export const FormTableColumns = [
         title: 'nodeId',
         dataIndex: 'id',
         key: 'id',
-        width: 180,
+        width: 200,
         ellipsis: true,
     },
     {
@@ -190,19 +190,19 @@ export const FormTableColumns = [
         title: '采集频率',
         key: 'interval',
         dataIndex: 'interval',
-        width: 220,
+        width: 200,
     },
     {
         title: '只推送变化的数据',
         key: 'features',
         dataIndex: 'features',
-        width: 160,
+        width: 140,
     },
     {
         title: '操作',
         key: 'action',
         dataIndex: 'action',
         fixed: 'right',
-        width: 60,
+        width: 50,
     },
 ];
