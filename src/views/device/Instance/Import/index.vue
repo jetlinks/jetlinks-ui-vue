@@ -4,7 +4,6 @@
         width="800px"
         :visible="true"
         title="导入"
-        @ok="handleSave"
         @cancel="handleCancel"
     >
         <div style="margin-top: 10px">
@@ -44,6 +43,9 @@
                 </j-row>
             </j-form>
         </div>
+        <template #footer>
+            <j-button type="primary" @click="handleSave">关闭</j-button>
+        </template>
     </j-modal>
 </template>
 
@@ -100,6 +102,7 @@ const handleCancel = () => {
 };
 
 const handleSave = () => {
+    emit('close');
     emit('save');
 };
 </script>

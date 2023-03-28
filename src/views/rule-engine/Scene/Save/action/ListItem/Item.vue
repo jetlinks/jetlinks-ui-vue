@@ -77,10 +77,10 @@
                                     钉钉
                                 </span>
                                 向<span class="notify-text-highlight">{{
-                                    options?.orgName || ''
+                                    options?.sendTo || ''
                                 }}</span>
                                 <span class="notify-text-highlight">{{
-                                    options?.sendTo || ''
+                                    options?.orgName || ''
                                 }}</span>
                                 发送
                                 <span class="notify-text-highlight">
@@ -107,10 +107,10 @@
                                 微信
                             </span>
                             向<span class="notify-text-highlight">{{
-                                options?.orgName || ''
+                                options?.sendTo || ''
                             }}</span>
                             <span class="notify-text-highlight">{{
-                                options?.sendTo || ''
+                                options?.orgName || ''
                             }}</span>
                             <span class="notify-text-highlight">{{
                                 options?.tagName || ''

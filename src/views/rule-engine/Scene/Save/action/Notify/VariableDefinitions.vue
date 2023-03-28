@@ -44,7 +44,12 @@
                 v-else-if="getType(item) === 'link'"
                 v-model:value="modelRef[item.id]"
             />
-            <BuildIn v-else :item="item" v-model:value="modelRef[item.id]" />
+            <BuildIn
+                v-else
+                :item="item"
+                v-model:value="modelRef[item.id]"
+                @change="(val) => onChange(val, 'build-in')"
+            />
         </j-form-item>
     </j-form>
 </template>
@@ -79,7 +84,6 @@ const formRef = ref();
 const modelRef = reactive({});
 
 watchEffect(() => {
-    console.log(props?.value)
     Object.assign(modelRef, props?.value);
 });
 
@@ -88,6 +92,9 @@ const getType = (item: any) => {
 };
 
 const checkValue = (_rule: any, value: any, item: any) => {
+    if(!value){
+        return Promise.resolve();
+    }
     const type = item.expands?.businessType || item?.type;
     if (type === 'file') {
         return Promise.resolve();
@@ -153,7 +160,7 @@ const checkValue = (_rule: any, value: any, item: any) => {
         if (
             props.notify.notifyType &&
             ['sms', 'voice'].includes(props?.notify?.notifyType) &&
-            value?.source !== 'relation'
+            value?.source !== 'relation' && value?.value
         ) {
             const reg = /^[1][3-9]\d{9}$/;
             if (!reg.test(value?.value)) {
@@ -173,6 +180,8 @@ const onChange = (val: any, type: any) => {
         emit('change', { tagName: val });
     } else if (type === 'user') {
         emit('change', { sendTo: val });
+    } else if (type === 'build-in') {
+        // emit('change', { sendTo: val });
     }
 };
 

@@ -193,6 +193,8 @@ watch(
             }
         });
         Object.assign(modelRef, newValue);
+        // description 和 describe 处理
+        modelRef.describe = newValue?.describe || newValue?.description
     },
     { immediate: true, deep: true },
 );

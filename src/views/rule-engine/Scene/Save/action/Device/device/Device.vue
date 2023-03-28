@@ -172,9 +172,8 @@ const handleClick = (_detail: any) => {
 };
 
 watch(() => props.value?.[0]?.value, (newVal) => {
-    console.log(newVal, '123')
     if(newVal){
-        detail(newVal[0]?.value).then(resp => {
+        detail(newVal).then(resp => {
             emit('change', resp.result);
         })
     }
