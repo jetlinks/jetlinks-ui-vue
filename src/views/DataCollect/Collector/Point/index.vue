@@ -64,7 +64,8 @@
                                             hasPermission="DataCollect/Collector:delete"
                                             :popConfirm="{
                                                 title: `确定删除？`,
-                                                onConfirm: () => handlDelete(),
+                                                onConfirm: () =>
+                                                    handlBatchDelete(),
                                             }"
                                         >
                                             <template #icon
@@ -101,9 +102,11 @@
                     >
                         <template #title>
                             <slot name="title">
-                                <div class="card-box-title">
-                                    {{ slotProps.name }}
-                                </div>
+                                <Ellipsis style="width: calc(100% - 10px)">
+                                    <div class="card-box-title">
+                                        {{ slotProps.name }}
+                                    </div>
+                                </Ellipsis>
                             </slot>
                         </template>
                         <template #action>
@@ -184,7 +187,7 @@
                                         </p>
                                         <p>
                                             {{
-                                                moment(
+                                                dayjs(
                                                     propertyValue.get(
                                                         slotProps.id,
                                                     )?.timestamp,
@@ -195,24 +198,42 @@
                                 </div>
 
                                 <div class="card-box-content-right">
-                                    <div
-                                        v-if="getRight1(slotProps)"
-                                        class="card-box-content-right-1"
+                                    <Ellipsis
+                                        style="
+                                            width: calc(100% - 10px);
+                                            margin-bottom: 10px;
+                                        "
                                     >
-                                        <span>{{
-                                            getQuantity(slotProps)
-                                        }}</span>
-                                        <span>{{ getAddress(slotProps) }}</span>
-                                        <span>{{
-                                            getScaleFactor(slotProps)
-                                        }}</span>
-                                    </div>
-                                    <div class="card-box-content-right-2">
-                                        <span>{{ getText(slotProps) }}</span>
-                                        <span>{{
-                                            getInterval(slotProps)
-                                        }}</span>
-                                    </div>
+                                        <div
+                                            v-if="getRight1(slotProps)"
+                                            class="card-box-content-right-1"
+                                        >
+                                            <span>
+                                                {{ getQuantity(slotProps) }}
+                                            </span>
+                                            <span>
+                                                {{ getAddress(slotProps) }}
+                                            </span>
+                                            <span>
+                                                {{ getScaleFactor(slotProps) }}
+                                            </span>
+                                        </div>
+                                    </Ellipsis>
+                                    <Ellipsis
+                                        style="
+                                            width: calc(100% - 10px);
+                                            margin-bottom: 10px;
+                                        "
+                                    >
+                                        <div class="card-box-content-right-2">
+                                            <span>{{
+                                                getText(slotProps)
+                                            }}</span>
+                                            <span>{{
+                                                getInterval(slotProps)
+                                            }}</span>
+                                        </div>
+                                    </Ellipsis>
                                 </div>
                             </div>
                         </template>
@@ -262,7 +283,7 @@ import { colorMap, getState } from '../data.ts';
 import { cloneDeep } from 'lodash-es';
 import { getWebSocket } from '@/utils/websocket';
 import { map } from 'rxjs/operators';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const props = defineProps({
     data: {
@@ -404,6 +425,7 @@ const handlEdit = (data: any) => {
     }
     current.value = cloneDeep(data);
 };
+
 const handlDelete = async (id: string | undefined = undefined) => {
     spinning.value = true;
     const res = !id
@@ -416,6 +438,18 @@ const handlDelete = async (id: string | undefined = undefined) => {
     }
     spinning.value = false;
 };
+
+const handlBatchDelete = () => {
+    if (_selectedRowKeys.value.length === 0) {
+        onlyMessage('请先选择', 'warning');
+        return;
+    } else {
+        console.log(2);
+
+        handlDelete();
+    }
+};
+
 const handlBatchUpdate = () => {
     if (_selectedRowKeys.value.length === 0) {
         onlyMessage('请先选择', 'warning');
@@ -590,7 +624,7 @@ const handleSearch = (e: any) => {
 </script>
 <style lang="less" scoped>
 .card-box {
-    min-width: 480px;
+    // min-width: 480px;
     a {
         color: #474747;
         z-index: 1;
@@ -638,7 +672,6 @@ const handleSearch = (e: any) => {
                 span {
                     margin: 0 5px 0 0;
                 }
-                margin-bottom: 10px;
             }
             .card-box-content-right-2 {
                 span {

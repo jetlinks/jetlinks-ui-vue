@@ -183,7 +183,7 @@ watch(
 
 <style lang="less">
 .action-search {
-    padding: 0 0 24px 0;
+    padding: 0;
 }
 
 .logo {

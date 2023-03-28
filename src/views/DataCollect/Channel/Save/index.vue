@@ -135,6 +135,7 @@
                     v-model:value="formData.configuration.authType"
                     :options="Options['auth-types']"
                     @change="changeAuthType"
+                    :column="2"
                 />
             </j-form-item>
             <j-form-item

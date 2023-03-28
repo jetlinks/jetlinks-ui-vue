@@ -39,6 +39,7 @@
                         v-model:value="propertyModelRef.propertiesValue"
                         v-model:source="propertyModelRef.source"
                         @select="onValueChange"
+                        valueName="id"
                     >
                         <template v-slot="{ label }">
                             <j-input readonly :value="label" placeholder="请选择" />
@@ -51,6 +52,7 @@
 </template>
 
 <script lang="ts" setup>
+import { cloneDeep } from 'lodash-es';
 import ParamsDropdown from '../../../components/ParamsDropdown';
 import { handleParamsData } from './index';
 const props = defineProps({
@@ -122,7 +124,8 @@ const filterParamsData = (type?: string, data?: any[]): any[] => {
 };
 
 const upperOptions = computed(() => {
-    return filterParamsData(getType.value?.valueType?.type, props?.builtInList);
+    const _data = filterParamsData(getType.value?.valueType?.type, cloneDeep(props?.builtInList))
+    return _data
 });
 
 const handleOptions = computed(() => {
@@ -162,7 +165,7 @@ const onChange = () => {
     });
 };
 
-const onValueChange = () => {
+const onValueChange = (val: any) => {
     const obj = {
         [`${propertyModelRef.properties}`]: {
             value: propertyModelRef?.propertiesValue,
@@ -170,7 +173,7 @@ const onValueChange = () => {
         },
     };
     emit('update:value', obj);
-    emit('change', propertyModelRef?.propertiesValue)
+    emit('change', val?.name || val)
 };
 
 watch(

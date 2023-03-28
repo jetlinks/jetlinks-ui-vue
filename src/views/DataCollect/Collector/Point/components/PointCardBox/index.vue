@@ -212,6 +212,9 @@ const handleClick = () => {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                .card-header-left {
+                    flex: 1;
+                }
             }
 
             .card-item {

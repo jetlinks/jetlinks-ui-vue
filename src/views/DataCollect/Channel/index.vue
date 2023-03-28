@@ -257,6 +257,7 @@ const getActions = (
                     state === 'enabled' ? '请先禁用该组件，再删除。' : '删除',
             },
             popConfirm: {
+                placement: 'topRight',
                 title: '该操作将会删除下属采集器与点位，确定删除?',
                 onConfirm: async () => {
                     const res = await remove(data.id);
