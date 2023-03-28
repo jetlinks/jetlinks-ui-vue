@@ -500,6 +500,7 @@ import type { FormInstance } from 'ant-design-vue';
 import { getResourcesCurrent, getClusters } from '@/api/link/accessConfig';
 import { update, save } from '@/api/link/accessConfig';
 import { onlyMessage } from '@/utils/comm';
+import { isNumber } from 'lodash-es';
 
 interface Form2 {
     clusterNodeId: string | undefined;
@@ -669,7 +670,9 @@ const next = async () => {
                 if (data2 && data2?.cluster) {
                     data2.cluster.forEach((i: any) => {
                         i.enabled = true;
-                        i.port = JSON.parse(i.port).port;
+                        i.port = isNumber(i.port)
+                            ? i.port
+                            : JSON.parse(i.port).port;
                     });
                     data1 = {
                         ...data1,
