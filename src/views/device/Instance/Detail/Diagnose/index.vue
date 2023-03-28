@@ -25,6 +25,7 @@
                             />
                             <img
                                 :src="getImage('/diagnose/loading-1.png')"
+                                class="diagnose-loading"
                                 style="height: 100%"
                             />
                         </div>
