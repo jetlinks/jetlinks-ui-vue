@@ -122,8 +122,9 @@ export default {
     height: 150px;
     padding: 16px;
     background-color: #fff;
-    box-shadow: 0px 2.73036px 5.46071px rgba(31, 89, 245, 0.2);
-
+    // box-shadow: 0px 2.73036px 5.46071px rgba(31, 89, 245, 0.2);
+    border: 1px solid #e0e4e8;
+    border-radius: 2px;
     .echarts-item-left {
         display: flex;
         flex-direction: column;
