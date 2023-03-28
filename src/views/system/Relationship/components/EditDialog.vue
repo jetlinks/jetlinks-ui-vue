@@ -154,6 +154,7 @@ const form = reactive({
          */
         checkUnique: () => {
             if (
+                props.data?.id ||
                 !form.data.relation ||
                 !form.data.objectType ||
                 !form.data.targetType

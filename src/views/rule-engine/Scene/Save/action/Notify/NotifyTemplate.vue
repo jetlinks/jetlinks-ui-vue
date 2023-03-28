@@ -4,7 +4,7 @@
         type="simple"
         target="action-notice-template"
         @search="handleSearch"
-        class="search"
+        class="action-search"
     />
     <div style="height: 400px; overflow-y: auto">
         <JProTable
@@ -12,8 +12,7 @@
             :request="(e) => handleData(e)"
             model="CARD"
             :bodyStyle="{
-                paddingRight: 0,
-                paddingLeft: 0,
+                padding: 0
             }"
             :params="params"
             :gridColumn="2"
@@ -130,9 +129,15 @@ const handleSearch = (_params: any) => {
 };
 
 const handleClick = (dt: any) => {
-    _selectedRowKeys.value = [dt.id];
-    emit('update:value', dt.id);
-    emit('change', { templateName: dt?.name });
+    if (_selectedRowKeys.value.includes(dt.id)) {
+        _selectedRowKeys.value = [];
+        emit('update:value', undefined);
+        emit('change', { templateName: undefined });
+    } else {
+        _selectedRowKeys.value = [dt.id];
+        emit('update:value', dt.id);
+        emit('change', { templateName: dt?.name });
+    }
 };
 
 const onSelectChange = (keys: string[]) => {
@@ -176,10 +181,9 @@ watch(
 );
 </script>
 
-<style lang="less" scoped>
-.search {
-    margin-bottom: 0;
-    padding: 0;
+<style lang="less">
+.action-search {
+    padding: 0 0 24px 0;
 }
 
 .logo {

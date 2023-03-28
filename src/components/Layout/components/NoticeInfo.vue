@@ -3,20 +3,23 @@
         <j-tabs :activeKey="'default'">
             <j-tab-pane key="default" tab="未读消息">
                 <div class="no-data" v-if="props.data.length === 0">
-                    <img src="https://gw.alipayobjects.com/zos/rmsportal/sAuJeJzSKbUmHfBQRzmZ.svg" alt="" />
+                    <img
+                        src="https://gw.alipayobjects.com/zos/rmsportal/sAuJeJzSKbUmHfBQRzmZ.svg"
+                        alt=""
+                    />
                 </div>
 
                 <div v-else class="content">
-                    <ul class="list">
-                        <li
+                    <j-scrollbar class="list" max-height="400">
+                        <div
                             class="list-item"
                             v-for="item in props.data"
-                            @click="read(item.id)"
+                            @click.stop="read(item.id)"
                         >
                             <h5>{{ item.topicName }}</h5>
                             <p>{{ item.message }}</p>
-                        </li>
-                    </ul>
+                        </div>
+                    </j-scrollbar>
                     <div class="btns">
                         <span @click="read()">当前标记为已读</span>
                         <span @click="jumpPage('account/NotificationRecord')"
@@ -41,8 +44,13 @@ const { jumpPage } = useMenuStore();
 
 const read = (id?: string) => {
     const ids = id ? [id] : props.data.map((item) => item.id);
-    changeStatus_api('_read', ids).then((resp:any) => {
-        if (resp.status === 200) emits('onAction');
+    changeStatus_api('_read', ids).then((resp: any) => {
+        if (resp.status === 200) {
+            jumpPage('account/NotificationRecord', {
+                row: props.data.find((f: any) => f.id === id),
+            });
+            emits('onAction');
+        }
     });
 };
 </script>
@@ -97,7 +105,7 @@ const read = (id?: string) => {
                     color: rgba(0, 0, 0, 0.45);
                 }
 
-                &:hover{
+                &:hover {
                     background: #f0f5ff;
                 }
             }

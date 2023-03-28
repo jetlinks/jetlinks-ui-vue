@@ -755,7 +755,7 @@ const getActions = (
 const handleSearch = (e: any) => {
     const newParams = (e?.terms as any[])?.map(item1 => {
       item1.terms = item1.terms.map((item2: any) => {
-        if (['cardStateType'].includes(item2.column)) {
+        if (['cardStateType'].includes(item2.column) && !(['using', 'toBeActivated', 'deactivate'].includes(item2.value))) { // 处理其它状态
           item2.termType = 'nin'
         }
         return item2
