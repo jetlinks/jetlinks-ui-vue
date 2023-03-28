@@ -42,9 +42,7 @@ import { getStreamingAggType } from '@/api/device/product'
 const props = defineProps({
   value: {
     type: Object,
-    default: () => ({
-      type: 'script',
-    })
+    default: () => ({})
   },
   name: {
     type: Array as PropType<(string| number)[]>,
@@ -89,7 +87,7 @@ const changeWindow = (val: boolean | string | number) => {
       props.value.window = {}
     }
   } else {
-    delete props.value.type
+    props.value.type = 'script'
   }
 }
 
