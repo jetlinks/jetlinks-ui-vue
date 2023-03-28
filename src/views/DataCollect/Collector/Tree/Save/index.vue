@@ -96,6 +96,7 @@
                         { label: 'BA', value: 'LITTLE' },
                     ]"
                     @change="changeCardSelectEndian"
+                    :column="2"
                 />
             </j-form-item>
             <j-form-item label="说明" name="description">

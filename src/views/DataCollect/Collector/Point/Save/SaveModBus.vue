@@ -133,6 +133,7 @@
                         { label: '读', value: 'read' },
                         { label: '写', value: 'write' },
                     ]"
+                    :column="2"
                 />
             </j-form-item>
             <j-form-item
@@ -165,6 +166,7 @@
                         { label: '否', value: false },
                     ]"
                     @change="changeWriteByteCount"
+                    :column="2"
                 />
             </j-form-item>
             <j-form-item

@@ -12,7 +12,7 @@ export const FormState: FormDataType = {
         securityPolicy: 'None',
         securityMode: undefined,
         certificate: undefined,
-        authType: 'username',
+        authType: 'anonymous',
         username: '',
         password: '',
     },
