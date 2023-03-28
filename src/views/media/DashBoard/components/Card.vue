@@ -57,7 +57,7 @@ const createChart = () => {
     nextTick(() => {
         const myChart = echarts.init(chartRef.value as HTMLElement);
         const sData: number[] = props.chartData.map(
-            (m: any) => m.value && m.value.toFixed(2),
+            (m: any) => m.value && m.value.toFixed(0),
         );
         const maxY = Math.max.apply(null, sData.length ? sData : [0]);
         const options = {
