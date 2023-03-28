@@ -232,7 +232,7 @@ const table: any = {
                         //     allPermissions,
                         // );
                         // item.selectPermissions = newPermission;
-                        
+
                         // fix: bug#10756
                         item.selectPermissions = n[1];
                         // 禁用单独勾选
@@ -262,6 +262,12 @@ const table: any = {
                             (permission: any) => (permission.disabled = true),
                         );
                         removedItem.selectPermissions = ['read'];
+                    });
+                }
+                if (!nValue.length) {
+                    // 列表取消全部选择
+                    table.tableData.forEach((item: any) => {
+                        item.selectPermissions = ['read'];
                     });
                 }
             },

@@ -40,12 +40,13 @@
                 </j-space>
             </template>
         </JProTable>
-        <Info v-if="visiable"  :data="current" @close="close"/>
+        <Info v-if="visiable"  :data="current" @close="close" :description="description"/>
     </page-container>
 </template>
 
 <script lang="ts" setup>
 import { detail, queryHistoryList } from '@/api/rule-engine/log';
+import { detail as configurationDetail} from '@/api/rule-engine/configuration'
 import { useRoute } from 'vue-router';
 import dayjs from 'dayjs';
 import type { ActionsType } from '@/components/Table/index.vue';
@@ -58,6 +59,7 @@ const route = useRoute();
 const id = route.params?.id;
 const { params: routerParams } = useRouterParams()
 let visiable = ref(false);
+let description = ref<string>();
 const columns = [
     {
         title: '告警时间',
@@ -168,6 +170,11 @@ watchEffect(async () => {
                 key: 'targetName',
             });
         }
+        configurationDetail(res.result?.alarmConfigId).then((res:any)=>{
+            if(res.status === 200){
+                description.value = res.result?.description;
+            }
+        })
     }
 });
 const handleSearch = (_params: any) => {

@@ -7,6 +7,7 @@
         v-model:value="_value"
         v-model:source="_source"
         @select="onChange"
+        valueName="id"
     >
         <template v-slot="{ label }">
             <j-input :value="label" readonly />
@@ -15,6 +16,7 @@
 </template>
 
 <script lang="ts" setup>
+import { cloneDeep } from 'lodash-es';
 import ParamsDropdown from '../../../components/ParamsDropdown';
 import { handleParamsData } from './index';
 
@@ -101,7 +103,7 @@ const filterParamsData = (type?: string, data?: any[]): any[] => {
 };
 
 const upperOptions = computed(() => {
-    return filterParamsData(props.data.valueType?.type, props?.builtInList);
+    return filterParamsData(props.data.valueType?.type, cloneDeep(props?.builtInList));
 });
 
 const onChange = () => {

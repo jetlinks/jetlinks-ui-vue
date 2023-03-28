@@ -1,5 +1,11 @@
 <template>
-    <pro-search class="device-search" type="simple" :columns="columns" target="device-instance-running-events" @search="handleSearch" />
+    <pro-search
+        class="device-search"
+        type="simple"
+        :columns="columns"
+        target="device-instance-running-events"
+        @search="handleSearch"
+    />
     <JProTable
         ref="eventsRef"
         :columns="columns"
@@ -17,13 +23,18 @@
             </j-button>
         </template>
     </JProTable>
+    <j-modal :width="600" v-model:visible="visible" title="详情" class="device-running-event-modal">
+        <JsonViewer :value="info" />
+        <template #footer>
+            <j-button type="primary" @click="visible = false">关闭</j-button>
+        </template>
+    </j-modal>
 </template>
 
 <script lang="ts" setup>
 import dayjs from 'dayjs';
 import { getEventList } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
-import { Modal } from 'jetlinks-ui-components';
 import JsonViewer from 'vue-json-viewer';
 
 const events = defineProps({
@@ -52,13 +63,11 @@ const columns = ref<Record<string, any>>([
     },
 ]);
 const params = ref<Record<string, any>>({});
+const visible = ref<boolean>(false);
+const info = ref<Record<string, any>>({});
 
 const _getEventList = (_params: any) =>
-    getEventList(
-        instanceStore.current.id || '',
-        events.data.id || '',
-        _params
-    );
+    getEventList(instanceStore.current.id || '', events.data.id || '', _params);
 
 watchEffect(() => {
     if (events.data?.valueType?.type === 'object') {
@@ -69,7 +78,7 @@ watchEffect(() => {
                 dataIndex: `${i.id}_format`,
                 search: {
                     type: i?.valueType?.type || 'string',
-                }
+                },
             });
         });
     } else {
@@ -85,20 +94,28 @@ const handleSearch = (_params: any) => {
 };
 
 const detail = (_info: any) => {
-    Modal.info({
-        title: () => '详情',
-        width: 850,
-        content: () => h('JsonViewer', {
-            'expand-depth': 5,
-            value: _info
-        }),
-        okText: '关闭',
-    });
+    info.value = _info
+    visible.value = true
+    // Modal.info({
+    //     title: () => '详情',
+    //     width: 850,
+    //     content: () => h('JsonViewer', {
+    //         'expand-depth': 5,
+    //         value: _info
+    //     }),
+    //     okText: '关闭',
+    // });
 };
 </script>
 
 <style lang="less">
 .device-search {
-    margin: 0 0 24px 0 ;
+    margin: 0 0 24px 0;
+}
+
+.device-running-event-modal {
+    .ant-modal-body {
+        padding: 0 20px;
+    }
 }
 </style>

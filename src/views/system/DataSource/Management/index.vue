@@ -176,10 +176,10 @@
                     name="name"
                     :required="true" 
                     :rules="[
-                        // {
-                        //     required: true,
-                        //     message: '请输入名称',
-                        // },
+                        {
+                            required: true,
+                            message: '请输入名称',
+                        },
                         {
                             max: 64,
                             message: '最多可输入64个字符',
@@ -467,7 +467,7 @@ const checkName = (_: any, value: any) =>
                 resolve('');
             }
         } else {
-            reject('请输入名称');
+            resolve('');
         }
     });
 </script>
