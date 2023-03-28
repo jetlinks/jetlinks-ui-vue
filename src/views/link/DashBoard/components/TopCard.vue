@@ -129,7 +129,7 @@ watch(
     flex-wrap: wrap;
     height: 100%;
     background-color: #fff;
-    box-shadow: 0px 2.73036px 5.46071px rgba(31, 89, 245, 0.2);
+    // box-shadow: 0px 2.73036px 5.46071px rgba(31, 89, 245, 0.2);
     border-radius: 2px;
     justify-content: space-between;
     .dash-board-item {
