@@ -80,25 +80,53 @@ const createChart = () => {
                 // minInterval: 1,
             },
             series: [
+                // {
+                //     name: '播放数量(人次)',
+                //     data: sData,
+                //     type: 'bar',
+                //     barWidth: 16,
+                //     itemStyle: {
+                //         color: '#2f54eb',
+                //     },
+                // },
+                // {
+                //     name: '播放数量(人次)',
+                //     type: 'line',
+                //     symbol: 'circle',
+                //     showSymbol: false,
+                //     smooth: true,
+                //     lineStyle: {
+                //         color: '#a5fff9',
+                //     },
+                //     data: sData,
+                // },
                 {
                     name: '播放数量(人次)',
                     data: sData,
-                    type: 'bar',
-                    barWidth: 16,
-                    itemStyle: {
-                        color: '#2f54eb',
-                    },
-                },
-                {
-                    name: '播放数量(人次)',
                     type: 'line',
-                    symbol: 'circle',
-                    showSymbol: false,
                     smooth: true,
-                    lineStyle: {
-                        color: '#a5fff9',
+                    symbolSize: 0, // 拐点大小
+                    color: '#ADC6FF',
+                    areaStyle: {
+                        color: {
+                            type: 'linear',
+                            x: 0,
+                            y: 0,
+                            x2: 0,
+                            y2: 1,
+                            colorStops: [
+                                {
+                                    offset: 0,
+                                    color: '#ADC6FF', // 100% 处的颜色
+                                },
+                                {
+                                    offset: 1,
+                                    color: '#FFFFFF', //   0% 处的颜色
+                                },
+                            ],
+                            global: false, // 缺省为 false
+                        },
                     },
-                    data: sData,
                 },
             ],
         };

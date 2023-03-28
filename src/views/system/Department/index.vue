@@ -5,7 +5,7 @@
                 <LeftTree @change="(id) => (departmentId = id)" />
             </div>
             <div class="right">
-                <j-tabs v-model:activeKey="activeKey">
+                <j-tabs v-model:activeKey="activeKey" destroyInactiveTabPane>
                     <j-tab-pane key="product" tab="产品">
                         <Product
                             :parentId="departmentId"

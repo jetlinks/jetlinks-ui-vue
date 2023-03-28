@@ -65,7 +65,7 @@
                         <div>
                             <j-image
                                 :preview="false"
-                                :src="getImage('/apply/provider3.png')"
+                                :src="getImage('/apply/provider4.png')"
                             />
                             <p>微信网站应用</p>
                         </div>
@@ -74,7 +74,7 @@
                         <div>
                             <j-image
                                 :preview="false"
-                                :src="getImage('/apply/provider4.png')"
+                                :src="getImage('/apply/provider3.png')"
                             />
                             <p>钉钉企业内部应用</p>
                         </div>
