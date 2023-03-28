@@ -173,7 +173,7 @@ const onValueChange = () => {
     const newValue = _data.map((item: any) => {
         return {
             column: item.id,
-            type: item?.type,
+            type: item?.valueType,
             value: item?.value,
         };
     });

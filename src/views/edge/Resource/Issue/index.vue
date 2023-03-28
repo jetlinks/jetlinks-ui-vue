@@ -123,6 +123,7 @@ const columns = [
         search: {
             type: 'select',
             rename: 'productId',
+            first: true,
             options: () =>
                 new Promise((resolve) => {
                     queryNoPagingPost({ paging: false }).then((resp: any) => {
@@ -141,6 +142,9 @@ const columns = [
         ellipsis: true,
         dataIndex: 'name',
         key: 'name',
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '注册时间',

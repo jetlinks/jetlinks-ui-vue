@@ -203,7 +203,7 @@ const Status = defineComponent({
                 }, time);
             } else {
                 let _item: ListProps | undefined = undefined
-                if (!unref(gateway)) {
+                if (!unref(gateway)?.id) {
                     const accessId = unref(device)?.accessId
                     if (accessId) {
                         const response: Record<string, any> = await queryGatewayState(accessId)
@@ -463,7 +463,7 @@ const Status = defineComponent({
         })
 
         // 网关父设备
-        const diagnoseParentDevice = new Promise(async (resolve) => {
+        const diagnoseParentDevice = () => new Promise(async (resolve) => {
             if (unref(device).state.value === 'online') {
                 setTimeout(() => {
                     list.value = modifyArrayList(unref(list), {

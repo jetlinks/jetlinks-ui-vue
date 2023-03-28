@@ -165,16 +165,20 @@ const onSave = (_data: any) => {
         _options.propertiesValue =
             (typeof _options?.propertiesValue === 'object'
                 ? JSON.stringify(_options?.propertiesValue)
-                : `${_options?.propertiesValue}`) || DeviceModel?.selectorValues?.[0]?.value;
+                : `${_options?.propertiesValue}`) ||
+            DeviceModel?.selectorValues?.[0]?.value;
     }
     emit('save', item, _options);
 };
 
-const onProductChange = (_val: any) => {
-    DeviceModel.selectorValues = undefined;
-    DeviceModel.message = {
-        messageType: 'INVOKE_FUNCTION',
-    };
+const onProductChange = (_val: any, bol: boolean) => {
+    if (!bol) {
+        DeviceModel.selectorValues = undefined;
+        DeviceModel.message = {
+            messageType: 'INVOKE_FUNCTION',
+        };
+    }
+    productDetail.value = _val
     DeviceOptions.value.productName = _val?.name;
 };
 
@@ -231,14 +235,7 @@ const saveClick = () => save();
 watch(
     () => props.value,
     (newValue) => {
-        Object.assign(DeviceModel, {...newValue});
-        if (newValue?.productId) {
-            detail(newValue.productId).then((resp) => {
-                if (resp.status === 200) {
-                    productDetail.value = resp.result;
-                }
-            });
-        }
+        Object.assign(DeviceModel, newValue);
     },
     { immediate: true },
 );
