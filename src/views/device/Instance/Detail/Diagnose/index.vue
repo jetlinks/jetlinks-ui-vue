@@ -78,13 +78,15 @@
                 <template v-if="!first">
                     <Message v-show="activeKey === 'message'" />
                 </template>
-                <Status
-                    v-show="activeKey !== 'message'"
-                    :providerType="providerType"
-                    @countChange="countChange"
-                    @percentChange="percentChange"
-                    @stateChange="stateChange"
-                />
+                <template v-if="flag">
+                    <Status
+                        v-show="activeKey !== 'message'"
+                        :providerType="providerType"
+                        @countChange="countChange"
+                        @percentChange="percentChange"
+                        @stateChange="stateChange"
+                    />
+                </template>
             </div>
         </div>
     </j-card>
@@ -127,13 +129,15 @@ const providerType = ref();
 
 const first = ref<boolean>(true);
 
+const flag = ref<boolean>(false); // 处理数据不更新的情况
+
 provide('topState', topState);
 
 const onTabChange = (key: 'status' | 'message') => {
     if (topState.value === 'success') {
         activeKey.value = key;
     }
-    first.value = false
+    first.value = false;
 };
 
 const percentChange = (num: number) => {
@@ -154,7 +158,9 @@ const countChange = (num: number) => {
     count.value = num;
 };
 
-onMounted(() => {
+const init = () => {
+    flag.value = true
+    activeKey.value = 'status';
     const provider = instanceStore.current?.accessProvider;
     if (provider === 'fixed-media' || provider === 'gb28181-2016') {
         providerType.value = 'media';
@@ -168,11 +174,22 @@ onMounted(() => {
         providerType.value = 'network';
     }
     topState.value = 'loading';
+}
+
+onMounted(() => {
+    setTimeout(() => {
+        init()
+    }, 500)
+});
+
+onUnmounted(() => {
+    flag.value = false
 });
 </script>
 
 <style lang="less" scoped>
 .diagnose {
+    min-height: 600px;
     .diagnose-header {
         position: relative;
         width: 100%;

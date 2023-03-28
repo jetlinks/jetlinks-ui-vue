@@ -7,7 +7,9 @@
     >
         <template #title>
             <div style="display: flex; align-items: center">
-                {{ instanceStore.current?.name }}
+                <j-tooltip :title="instanceStore.current?.name">
+                    <div class="deviceDetailHead">{{ instanceStore.current?.name }}</div>
+                </j-tooltip>
                 <j-divider type="vertical" />
                 <j-space>
                     <span style="font-size: 14px; color: rgba(0, 0, 0, 0.85)">
@@ -323,3 +325,13 @@ onUnmounted(() => {
     statusRef.value && statusRef.value.unsubscribe();
 });
 </script>
+
+<style lang="less" scoped>
+.deviceDetailHead {
+    max-width: 400px;
+    overflow: hidden;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+</style>

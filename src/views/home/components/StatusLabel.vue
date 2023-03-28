@@ -1,8 +1,9 @@
 <template>
-    <span class="status-label-container">
+    <!-- <span class="status-label-container">
         <i class="circle" :style="{ background: bjColor }"></i>
         <span>{{ props.statusLabel }}</span>
-    </span>
+    </span> -->
+    <j-badge :text="statusLabel" :status="status" />
 </template>
 
 <script setup lang="ts">
@@ -11,14 +12,14 @@ const props = defineProps<{
     statusLabel: string;
 }>();
 
-const bjColor = computed(() => {
+const status = computed(() => {
     switch (props.statusValue) {
         case 'online':
-            return '#52c41a';
+            return 'processing';
         case 'offline':
-            return '#ff4d4f';
+            return 'error';
         case 'notActive':
-            return '#1890ff';
+            return 'warning';
     }
 });
 </script>

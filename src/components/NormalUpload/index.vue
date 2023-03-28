@@ -10,7 +10,10 @@
             :maxCount="1"
             :showUploadList="false"
             @change="uploadChange"
-            :accept="props?.file?.fileType ? `.${props?.file?.fileType}` : '.xlsx'"
+            :accept="
+                props?.file?.fileType ? `.${props?.file?.fileType}` : '.xlsx'
+            "
+            :before-upload="beforeUpload"
         >
             <j-button>
                 <template #icon><AIcon type="UploadOutlined" /></template>
@@ -36,7 +39,7 @@
 <script lang="ts" setup>
 import { FILE_UPLOAD } from '@/api/comm';
 import { TOKEN_KEY } from '@/utils/variable';
-import { LocalStore } from '@/utils/comm';
+import { LocalStore, onlyMessage } from '@/utils/comm';
 import { downloadFile, downloadFileByUrl } from '@/utils/utils';
 import {
     deviceImport,
@@ -85,6 +88,19 @@ const downFile = async (type: string) => {
         const url = URL.createObjectURL(blob);
         downloadFileByUrl(url, `设备导入模版`, type);
     }
+};
+
+const beforeUpload = (_file: any) => {
+    const fileType = props?.file?.fileType === 'csv' ? 'csv' : 'xlsx';
+    const isCsv = _file.type === 'text/csv';
+    const isXlsx = _file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    if (!isCsv && fileType !== 'xlsx') {
+        onlyMessage('请上传.csv格式文件', 'warning');
+    }
+    if (!isXlsx && fileType !== 'csv') {
+        onlyMessage('请上传.xlsx格式文件', 'warning');
+    }
+    return (isCsv && fileType !== 'xlsx') || (isXlsx && fileType !== 'csv');
 };
 
 const submitData = async (fileUrl: string) => {

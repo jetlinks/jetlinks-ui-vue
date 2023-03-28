@@ -105,12 +105,13 @@
                                     </j-select>
                                 </j-col>
                                 <j-col :span="2" v-if="!route.query.id">
-                                    <j-button
+                                    <PermissionButton
                                         type="link"
                                         @click="saveProductVis = true"
+                                        hasPermission="device/Product:add"
                                     >
                                         <AIcon type="PlusOutlined" />
-                                    </j-button>
+                                    </PermissionButton>
                                 </j-col>
                             </j-row>
                         </j-form-item>

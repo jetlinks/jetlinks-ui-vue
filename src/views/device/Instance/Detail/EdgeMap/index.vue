@@ -8,7 +8,11 @@
                 </j-space>
             </template>
             <j-form ref="formRef" :model="modelRef">
-                <j-table :dataSource="modelRef.dataSource" :columns="columns">
+                <j-table
+                    :dataSource="modelRef.dataSource"
+                    :columns="columns"
+                    :pagination="false"
+                >
                     <template #headerCell="{ column }">
                         <template v-if="column.key === 'collectorId'">
                             采集器
@@ -136,6 +140,14 @@
                         </template>
                     </template>
                 </j-table>
+                <div class="pagination">
+                    <j-pagination
+                        @change="onPageChange"
+                        v-model:pageSize="pageSize"
+                        v-model:current="current"
+                        :total="metadata?.properties?.length || 0"
+                    />
+                </div>
             </j-form>
         </j-card>
         <PatchMapping
@@ -202,6 +214,9 @@ const columns = [
     },
 ];
 
+const current = ref<number>(1);
+const pageSize = ref<number>(10);
+
 const filterOption = (input: string, option: any) => {
     return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
@@ -211,7 +226,11 @@ const metadata = JSON.parse(instanceStore.current?.metadata || '{}');
 const loading = ref<boolean>(false);
 const channelList = ref<any[]>([]);
 
-const modelRef = reactive({
+const _properties = ref<any[]>([]);
+
+const modelRef = reactive<{
+    dataSource: any[];
+}>({
     dataSource: [],
 });
 
@@ -231,16 +250,23 @@ const getChannel = async () => {
     }
 };
 
-const handleSearch = async () => {
+const queryData = (cur: number) => {
+    _properties.value = metadata.properties.slice(
+        (cur > 0 ? cur - 1 : 0) * 10,
+        cur * 10,
+    );
+    handleSearch(_properties.value)
+};
+
+const handleSearch = async (array: any[]) => {
     loading.value = true;
     getChannel();
-    const _metadata = metadata.properties.map((item: any) => ({
+    const _metadata: any[] = array.map((item: any) => ({
         metadataId: item.id,
         metadataName: `${item.name}(${item.id})`,
         metadataType: 'property',
         name: item.name,
     }));
-    console.log(metadata);
     if (_metadata && _metadata.length) {
         const resp: any = await getEdgeMap(
             instanceStore.current?.parentId || '',
@@ -281,18 +307,23 @@ const unbind = async (id: string) => {
         );
         if (resp.status === 200) {
             onlyMessage('操作成功！', 'success');
-            handleSearch();
+            handleSearch(_properties.value);
         }
     }
 };
 
 const onPatchBind = () => {
     visible.value = false;
-    handleSearch();
+    handleSearch(_properties.value);
+};
+
+const onPageChange = (page: any) => {
+    queryData(page)
 };
 
 onMounted(() => {
-    handleSearch();
+    _properties.value = metadata.properties.slice(0, 10);
+    handleSearch(_properties.value);
 });
 
 const onSave = () => {
@@ -314,7 +345,7 @@ const onSave = () => {
                 );
                 if (resp.status === 200) {
                     onlyMessage('操作成功！', 'success');
-                    handleSearch();
+                    handleSearch(_properties.value);
                 }
             }
         })
@@ -343,7 +374,7 @@ const onAction = async (record: any) => {
     );
     if (resp.status === 200) {
         onlyMessage('操作成功！', 'success');
-        handleSearch();
+        handleSearch(_properties.value);
     }
 };
 </script>
@@ -351,5 +382,12 @@ const onAction = async (record: any) => {
 <style lang="less" scoped>
 :deep(.ant-form-item) {
     margin: 0 !important;
+}
+
+.pagination {
+    display: flex;
+    margin-top: 20px;
+    width: 100%;
+    justify-content: flex-end;
 }
 </style>
