@@ -1672,10 +1672,13 @@ function init() {
     watch(
         () => form.data.provider,
         (n) => {
-            form.data.page.baseUrl = '';
-            form.data.page.parameters = [];
-            form.data.apiClient.baseUrl = '';
-            form.data.apiClient.parameters = [];
+            if (!form.data.id) {
+                // 新增时, 切换应用类型, 清空公用字段的值
+                form.data.page.baseUrl = '';
+                form.data.page.parameters = [];
+                form.data.apiClient.baseUrl = '';
+                form.data.apiClient.parameters = [];
+            }
             emit('changeApplyType', n);
             if (routeQuery.id) return;
             if (n === 'wechat-webapp' || n === 'dingtalk-ent-app') {
@@ -1712,6 +1715,14 @@ function getInfo(id: string) {
                     ...m,
                     label: m.key,
                 }));
+        }
+        if (resp.result.page) {
+            resp.result.page.parameters = resp.result.page.parameters.map(
+                (m: any) => ({
+                    ...m,
+                    label: m.key,
+                }),
+            );
         }
         form.data = {
             ...initForm, // 查询详情, 赋值初始字段. 解决编辑改变接入方式报错的问题: bug#10892
@@ -1809,6 +1820,12 @@ function clickSave() {
                 }),
             );
         }
+        if (params.integrationModes.includes('page')) {
+            params.page.parameters = params.page.parameters.map((m: any) => ({
+                ...m,
+                key: m.label,
+            }));
+        }
 
         const request = routeQuery.id
             ? updateApp_api(routeQuery.id as string, params)
@@ -1884,8 +1901,8 @@ function clearNullProp(obj: object) {
 
 /**
  * 验证IP合法性
- * @param _rule 
- * @param value 
+ * @param _rule
+ * @param value
  */
 const validateIP = (_rule: Rule, value: string) => {
     const ipList = value?.split(/[\n,]/g).filter((i: string) => i && i.trim());
