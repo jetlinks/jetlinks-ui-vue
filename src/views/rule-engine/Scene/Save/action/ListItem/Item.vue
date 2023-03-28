@@ -259,9 +259,9 @@
                                 type="icon-mubiao"
                                 style="padding:0 4px"
                             />
-                          < style='max-width: 200px;margin-right: 12px;'>
+                          <Ellipsis style='max-width: 200px;margin-right: 12px;'>
                             {{data?.options?.name}}
-                          </>
+                          </Ellipsis>
                           <Ellipsis style='max-width: 400px;'>
                             {{data?.options?.propertiesName}}
                           </Ellipsis>
