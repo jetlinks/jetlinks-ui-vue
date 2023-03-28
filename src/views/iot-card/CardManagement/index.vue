@@ -181,15 +181,15 @@
                         </j-row>
                         <j-divider style="margin: 12px 0" />
                         <div class="content-bottom">
-                            <div v-if="slotProps.usedFlow === 0">
-                                <span class="flow-text">
-                                    {{ slotProps.totalFlow }}
-                                </span>
-                                <span class="card-item-content-text">
-                                    M 使用流量</span
-                                >
-                            </div>
-                            <div v-else>
+<!--                            <div v-if="slotProps.usedFlow === 0">-->
+<!--                                <span class="flow-text">-->
+<!--                                    {{ slotProps.totalFlow }}-->
+<!--                                </span>-->
+<!--                                <span class="card-item-content-text">-->
+<!--                                    M 使用流量</span-->
+<!--                                >-->
+<!--                            </div>-->
+                            <div>
                                 <div class="progress-text">
                                     <div>
                                         {{
@@ -755,7 +755,7 @@ const getActions = (
 const handleSearch = (e: any) => {
     const newParams = (e?.terms as any[])?.map(item1 => {
       item1.terms = item1.terms.map((item2: any) => {
-        if (['cardStateType'].includes(item2.column)) {
+        if (['cardStateType'].includes(item2.column) && !(['using', 'toBeActivated', 'deactivate'].includes(item2.value))) { // 处理其它状态
           item2.termType = 'nin'
         }
         return item2

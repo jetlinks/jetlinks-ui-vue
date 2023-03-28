@@ -265,7 +265,7 @@
                           <Ellipsis style='max-width: 400px;'>
                             {{data?.options?.propertiesName}}
                           </Ellipsis>
-
+                          <span v-if='!isBoolean(data?.options?.propertiesValue) && data?.options?.propertiesValue'>为 </span>
                           <Ellipsis style='max-width: 200px;'>
                             {{
                               `${
@@ -276,7 +276,7 @@
                                           ? true
                                           : data?.options?.propertiesValue
                                   )
-                                      ? `为 ${data?.options?.propertiesValue}`
+                                      ? `${data?.options?.propertiesValue}`
                                       : ''
                               }`
                             }}

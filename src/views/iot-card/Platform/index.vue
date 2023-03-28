@@ -38,7 +38,7 @@
                             </j-col>
                             <j-col :span="12">
                                 <div class="card-item-content-text">说明</div>
-                                <div>{{ slotProps.explain }}</div>
+                                <Ellipsis>{{ slotProps.explain }}</Ellipsis>
                             </j-col>
                         </j-row>
                     </template>

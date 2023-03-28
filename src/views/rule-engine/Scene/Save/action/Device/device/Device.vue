@@ -171,11 +171,12 @@ const handleClick = (_detail: any) => {
     }
 };
 
-watch(() => props.value, async (newVal) => {
-    if(newVal[0]?.value){
-        const { result } = await detail(newVal[0]?.value)
-        emit('update:value', [{ value: result?.id, name: result?.name }]);
-        emit('change', result);
+watch(() => props.value?.[0]?.value, (newVal) => {
+    console.log(newVal, '123')
+    if(newVal){
+        detail(newVal[0]?.value).then(resp => {
+            emit('change', resp.result);
+        })
     }
 }, {
     deep: true,

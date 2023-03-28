@@ -192,28 +192,30 @@ const columns = [
     hideInTable: true,
     search: {
       type: 'treeSelect',
-      options: getTreeData_api({ paging: false }).then((resp: any) => {
-        const formatValue = (list: any[]) => {
-          return list.map((item: any) => {
-            if (item.children) {
-              item.children = formatValue(item.children);
-            }
-            return {
-              ...item,
-              value: JSON.stringify({
-                assetType: 'product',
-                targets: [
-                  {
-                    type: 'org',
-                    id: item.id,
-                  },
-                ],
-              }),
-            }
-          })
-        }
-        return formatValue(resp.result)
-      }),
+      options: () => new Promise((resolve) => {
+        getTreeData_api({ paging: false }).then((resp: any) => {
+          const formatValue = (list: any[]) => {
+            return list.map((item: any) => {
+              if (item.children) {
+                item.children = formatValue(item.children);
+              }
+              return {
+                ...item,
+                value: JSON.stringify({
+                  assetType: 'product',
+                  targets: [
+                    {
+                      type: 'org',
+                      id: item.id,
+                    },
+                  ],
+                }),
+              }
+            })
+          }
+          resolve(formatValue(resp.result) || [])
+        })
+      })
     }
   }
 ]

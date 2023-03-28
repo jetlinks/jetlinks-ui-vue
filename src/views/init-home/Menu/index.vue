@@ -13,13 +13,13 @@
 <script lang="ts" setup>
 import { getImage } from '@/utils/comm';
 import BaseMenu from '../data/baseMenu';
-import { getSystemPermission , updateMenus } from '@/api/initHome';
+import { getSystemPermission, updateMenus } from '@/api/initHome';
 /**
  * 获取菜单数据
  */
 const menuDatas = reactive({
     count: 0,
-    current:undefined,
+    current: undefined,
 });
 /**
  * 获取当前系统权限信息
@@ -68,18 +68,21 @@ const menuCount = (menus: any[]) => {
 /**
  * 初始化菜单
  */
-const initMenu = () =>{
-    return new Promise((resolve) => {
-        updateMenus(menuDatas.current).then((res) => {
-          resolve(res.status === 200);
-      })
-    })
-}
+const initMenu = async () => {
+    return new Promise(async (resolve) => {
+        const res = await updateMenus(menuDatas.current);
+        if (res.status === 200) {
+            resolve(true);
+        } else {
+            resolve(false);
+        }
+    });
+};
 const { count } = toRefs(menuDatas);
 getSystemPermissionData();
 defineExpose({
-    updataMenu:initMenu
-})
+    updataMenu: initMenu,
+});
 </script>
 <style lang="less" scoped>
 .menu-style {

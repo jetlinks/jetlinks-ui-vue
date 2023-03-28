@@ -88,23 +88,19 @@ const handleOptions = (record: any) => {
     case 'enum':
       return (record?.options?.elements || []).map((item: any) => ({ label: item.text, value: item.value }))
     case 'boolean':
-      return [
-        { label: '是', value: true },
-        { label: '否', value: false },
-      ]
+      return record?.options
     default:
       return undefined
   }
 }
 
-const valueChange = debounce(() => {
+const valueChange = () => {
   const _value = dataSource.value.map(item => ({
     name: item.id, value: item.value
   }))
-  console.log(_value)
   emit('change', _value)
   emit('update:value', _value)
-}, 500)
+}
 
 watch(() => props.data, () => {
   dataSource.value = props.data.map((item: any) => {

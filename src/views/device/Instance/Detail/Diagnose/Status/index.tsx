@@ -891,7 +891,7 @@ const Status = defineComponent({
                                                                         name: `产品-${item?.name}`,
                                                                         desc: '诊断产品MQTT认证配置是否正确，错误的配置将导致连接失败',
                                                                         data: { ...item },
-                                                                        configuration,
+                                                                        configuration: _configuration,
                                                                         productId: unref(device).productId,
                                                                     });
                                                                 }}
@@ -1052,7 +1052,7 @@ const Status = defineComponent({
                                                                         name: `设备-${item?.name}`,
                                                                         desc: '诊断设备MQTT认证配置是否正确，错误的配置将导致连接失败',
                                                                         data: { ...item },
-                                                                        configuration,
+                                                                        configuration: _configuration,
                                                                         productId: unref(device).productId,
                                                                     });
                                                                 }}

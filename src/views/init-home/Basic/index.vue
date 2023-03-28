@@ -187,7 +187,7 @@
                             </div>
 
                             <div class="upload-tips">推荐尺寸64*64</div>
-                            <div class="upload-tips">支持icon格式</div>
+                            <div class="upload-tips">支持ico格式</div>
                         </j-form-item>
                     </j-col>
                 </j-row>
@@ -329,7 +329,7 @@ const { resetFields, validate, validateInfos } = useForm(
  * 提交数据
  */
 const saveBasicInfo = () => {
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve,reject) => {
         validate()
             .then(async () => {
                 const item = [

@@ -56,7 +56,7 @@
                                         ? '标为未读'
                                         : '标为已读',
                             }"
-                            >
+                        >
                             <AIcon type="icon-a-PIZHU1" />
                         </PermissionButton>
                         <PermissionButton
@@ -94,6 +94,7 @@ import { dictItemType } from '@/views/system/DataSource/typing';
 import moment from 'moment';
 import { message } from 'ant-design-vue';
 import { useUserInfo } from '@/store/userInfo';
+import { useRouterParams } from '@/utils/hooks/useParams';
 
 const { updateAlarm } = useUserInfo();
 const columns = [
@@ -180,6 +181,7 @@ const table = {
         });
     },
     view: (row: any) => {
+        console.log('row: ', row);
         viewItem.value = row;
         viewVisible.value = true;
     },
@@ -190,6 +192,13 @@ const table = {
 
 const viewVisible = ref<boolean>(false);
 const viewItem = ref<any>({});
+
+const routerParams = useRouterParams();
+onMounted(() => {
+    if (routerParams.params?.value.row) {
+        table.view(routerParams.params?.value.row);
+    }
+});
 </script>
 
 <style lang="less" scoped>

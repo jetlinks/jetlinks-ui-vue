@@ -218,7 +218,7 @@ const ManualInspection = defineComponent({
                         if (data.type === 'device') {
                             instanceStore.tabActiveKey = 'Info'
                         } else if (data.type === 'product') {
-                            menuStory.jumpPage('device/Product/Detail', { id: data.productId, tab: 'access' });
+                            menuStory.jumpPage('device/Product/Detail', { id: data.productId, tab: 'Device' });
                         } else {
                             menuStory.jumpPage('link/AccessConfig/Detail', { id: data.configuration?.id });
                         }
