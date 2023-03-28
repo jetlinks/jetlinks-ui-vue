@@ -133,7 +133,7 @@ const props = defineProps({
       type: '',
       termType: 'eq',
       value: {
-        source: 'fixed',
+        source: 'manual',
         value: undefined
       }
     })
@@ -223,7 +223,13 @@ const showDouble = computed(() => {
     metricOption.value = []
   }
 
-  return isRange && !isMetric.value && !isSourceMetric
+  if (isRange) {
+    if (isMetric.value) {
+      return !isSourceMetric
+    }
+    return true
+  }
+  return false
 })
 
 const mouseover = () => {
@@ -298,7 +304,7 @@ const termAdd = () => {
   const terms = {
     column: undefined,
     value: {
-      source: 'fixed',
+      source: 'manual',
       value: undefined
     },
     termType: undefined,
