@@ -7,12 +7,12 @@
             <div class="box-item">
                 <div class="label">产品数量</div>
                 <div class="value">{{ projectNum }}</div>
-                <img src="/images/home/top-1.png" alt="" />
+                <img src="/images/home/product.png" alt="" />
             </div>
             <div class="box-item">
                 <div class="label">设备数量</div>
                 <div class="value">{{ deviceNum }}</div>
-                <img src="/images/home/top-2.png" alt="" />
+                <img src="/images/home/Group 3793.png" alt="" />
             </div>
         </div>
     </div>
