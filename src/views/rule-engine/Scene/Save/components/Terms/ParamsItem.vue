@@ -216,12 +216,14 @@ watch(() => [columnOptions.value, paramsValue.column], () => {
 
 const showDouble = computed(() => {
   const isRange = paramsValue.termType ? arrayParamsKey.includes(paramsValue.termType) : false
+  const isSourceMetric = paramsValue.value?.source === 'metric'
   if (metricsCacheOption.value.length) {
     metricOption.value = metricsCacheOption.value.filter(item => isRange ? item.range : !item.range)
   } else {
     metricOption.value = []
   }
-  return isRange && !isMetric.value
+
+  return isRange && !isMetric.value && !isSourceMetric
 })
 
 const mouseover = () => {
@@ -237,11 +239,29 @@ const mouseout = () => {
 }
 
 const columnSelect = (option: any) => {
+  const dataType = option.dataType
+  const hasTypeChange = dataType !== tabsOptions.value[0].component
+  let termTypeChange = false
+  // 如果参数类型未发生变化，则不修改操作符以及值
   const termTypes = option.termTypes
-  paramsValue.termType = termTypes?.length ? termTypes[0].id : 'eq'
-  paramsValue.value = {
-    source: tabsOptions.value[0].key,
-    value: undefined
+  if (!termTypes.some((item: {id: string}) => paramsValue.termType === item.id)) { // 修改操作符
+    termTypeChange = true
+    paramsValue.termType = termTypes?.length ? termTypes[0].id : 'eq'
+  }
+
+  if (hasTypeChange) { // 类型发生变化
+    paramsValue.termType = termTypes?.length ? termTypes[0].id : 'eq'
+    paramsValue.value = {
+      source: tabsOptions.value[0].key,
+      value: undefined
+    }
+  } else if (termTypeChange) {
+    const oldValue = isArray(paramsValue.value!.value) ? paramsValue.value!.value[0] : paramsValue.value!.value
+    const value = arrayParamsKey.includes(paramsValue.termType as string) ? [ oldValue, undefined ] : oldValue
+    paramsValue.value = {
+      source: paramsValue.value?.source || tabsOptions.value[0].key,
+      value: value
+    }
   }
   handOptionByColumn(option)
   emit('update:value', { ...paramsValue })
@@ -254,7 +274,7 @@ const termsTypeSelect = (e: { key: string, name: string }) => {
   const oldValue = isArray(paramsValue.value!.value) ? paramsValue.value!.value[0] : paramsValue.value!.value
   const value = arrayParamsKey.includes(e.key) ? [ oldValue, undefined ] : oldValue
   paramsValue.value = {
-    source: tabsOptions.value[0].key,
+    source: paramsValue.value?.source || tabsOptions.value[0].key,
     value: value
   }
   emit('update:value', { ...paramsValue })
@@ -263,7 +283,7 @@ const termsTypeSelect = (e: { key: string, name: string }) => {
 
 }
 
-const valueSelect = (_: any, label: string, labelObj: Record<number, any>) => {
+const valueSelect = (v: any, label: string, labelObj: Record<number, any>) => {
   emit('update:value', { ...paramsValue })
   formItemContext.onFieldChange()
   formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.name][2] = labelObj

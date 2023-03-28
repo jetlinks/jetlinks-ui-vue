@@ -242,10 +242,30 @@ const handleOptionsColumnsValue = (termsColumns: any[], _options: any) => {
 }
 
 const columnSelect = (e: any) => {
-  paramsValue.termType = 'eq'
-  paramsValue.value = {
-    source: tabsOptions.value[0].key,
-    value: undefined
+  const dataType = e.type
+  const hasTypeChange = dataType !== tabsOptions.value[0].component
+  let termTypeChange = false
+
+  // 如果参数类型未发生变化，则不修改操作符以及值
+  const termTypes = e.termTypes
+  if (!termTypes.some((item: {id: string}) => paramsValue.termType === item.id)) { // 修改操作符
+    termTypeChange = true
+    paramsValue.termType = termTypes?.length ? termTypes[0].id : 'eq'
+  }
+
+  if (hasTypeChange) {
+    paramsValue.termType = termTypes?.length ? termTypes[0].id : 'eq'
+    paramsValue.value = {
+      source: tabsOptions.value[0].key,
+      value: undefined
+    }
+  } else if (termTypeChange) {
+    const oldValue = isArray(paramsValue.value!.value) ? paramsValue.value!.value[0] : paramsValue.value!.value
+    const value = arrayParamsKey.includes(e.key) ? [ oldValue, undefined ] : oldValue
+    paramsValue.value = {
+      source: paramsValue.value?.source || tabsOptions.value[0].key,
+      value: value
+    }
   }
 
   const columns = e.metadata === true ? [e.column] : []
@@ -266,7 +286,7 @@ const termsTypeSelect = (e: { key: string, name: string }) => {
   const oldValue = isArray(paramsValue.value!.value) ? paramsValue.value!.value[0] : paramsValue.value!.value
   const value = arrayParamsKey.includes(e.key) ? [ oldValue, undefined ] : oldValue
   paramsValue.value = {
-    source: tabsOptions.value[0].key,
+    source: paramsValue.value?.source || tabsOptions.value[0].key,
     value: value
   }
   emit('update:value', { ...paramsValue })

@@ -185,7 +185,8 @@ export default [
               },
             ],
             accessSupport: { text: "支持", value: "support" },
-            supportDataAccess: true
+            supportDataAccess: true,
+            assetType: 'notifyConfig'
           },
           {
             code: 'notice/Template',
