@@ -90,8 +90,8 @@ const props: JUploadProps = defineProps({
         default: '',
     },
     accept:{
-        type:Array,
-        default:()=>[],
+        type: String,
+        default: undefined
     }
 });
 
