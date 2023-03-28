@@ -14,7 +14,7 @@ export type TabsOption = {
   key: string;
   component: string
 }
-type ValueArrayType = [string, number]
+type ValueArrayType = [string, number, undefined]
 export type ValueType = string | number | undefined | ValueArrayType
 
 export const defaultSetting = {

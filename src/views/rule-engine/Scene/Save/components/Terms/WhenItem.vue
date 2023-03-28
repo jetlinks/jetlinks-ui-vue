@@ -97,7 +97,7 @@ const addWhen = () => {
           {
             column: undefined,
             value: {
-              source: 'fixed',
+              source: 'manual',
               value: undefined
             },
             termType: undefined,

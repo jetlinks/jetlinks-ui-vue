@@ -166,6 +166,7 @@ const columns = [
         dataIndex: 'registerTime',
         search: {
             type: 'date',
+            rename: 'registryTime'
         },
         width: 200,
         scopedSlots: true,
@@ -290,7 +291,19 @@ watch(
  * @param params
  */
 const handleSearch = (e: any) => {
-    params.value = e;
+  const newParams = (e?.terms as any[])?.map(item1 => {
+    item1.terms = item1.terms.map((item2: any) => {
+      if (item2.column === 'version') {
+        return {
+          column: 'id$dev-firmware',
+          value: [item2]
+        }
+      }
+      return item2
+    })
+    return item1
+  })
+    params.value = { terms: newParams || []}
 };
 </script>
 

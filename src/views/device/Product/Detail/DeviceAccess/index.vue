@@ -1019,6 +1019,9 @@ watchEffect(() => {
 nextTick(() => {
     getData();
 });
+watch(()=>productStore.current,()=>{
+    getData()
+})
 </script>
 <style lang="less" scoped>
 :deep(

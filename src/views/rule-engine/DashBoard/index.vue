@@ -42,7 +42,6 @@
                                 <TimeSelect
                                     key="flow-static"
                                     :type="'week'"
-                                    
                                     @change="initQueryTime"
                                 />
                             </template>
@@ -483,7 +482,11 @@ const selectChange = () => {
                 ],
             };
             state.ranking = res.result
-                ?.filter((item: any) => item.group === 'alarmRank')
+                ?.filter(
+                    (item: any) =>
+                        item.group === 'alarmRank' &&
+                        item.data?.value?.count !== 0,
+                )
                 .map((d: { data: { value: any } }) => d.data?.value)
                 .sort(
                     (a: { count: number }, b: { count: number }) =>
