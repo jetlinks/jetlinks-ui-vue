@@ -205,7 +205,7 @@ const opsStepDetails: recommendList[] = [
     {
         title: '网络组件',
         details: '根据不同的传输类型配置平台底层网络组件相关参数。',
-        iconUrl: '/images/home/Frame4529.png',
+        iconUrl: '/images/home/Frame4528.png',
         linkUrl: 'link/Type',
     },
     {

@@ -1675,9 +1675,23 @@ function init() {
             if (!form.data.id) {
                 // 新增时, 切换应用类型, 清空公用字段的值
                 form.data.page.baseUrl = '';
-                form.data.page.parameters = [];
                 form.data.apiClient.baseUrl = '';
+                form.data.page.parameters = [];
                 form.data.apiClient.parameters = [];
+                form.data.apiClient.authConfig.oauth2.authorizationUrl = '';
+                form.data.sso.configuration.oauth2.authorizationUrl = '';
+                form.data.apiClient.authConfig.oauth2.clientId = '';
+                form.data.sso.configuration.oauth2.clientId = '';
+                form.data.apiClient.authConfig.oauth2.clientSecret = '';
+                form.data.sso.configuration.oauth2.clientSecret = '';
+                form.data.apiClient.headers = [];
+                form.data.apiServer.roleIdList = [];
+                form.data.apiServer.orgIdList = [];
+                form.data.description = '';
+                form.data.apiServer.redirectUri = '';
+                form.data.sso.configuration.appSecret = '';
+
+                // formRef.value?.resetFields();
             }
             emit('changeApplyType', n);
             if (routeQuery.id) return;
