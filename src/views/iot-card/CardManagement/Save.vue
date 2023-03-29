@@ -47,9 +47,13 @@
                     allowClear
                     showSearch
                     :filter-option="filterOption"
+                    :disabled="type === 'edit'"
                     :options="OperatorList"
                     v-model:value="modelRef.operatorName"
                     placeholder="请选择运营商"
+                    @select='() => {
+                      modelRef.platformConfigId = undefined
+                    }'
                   >
                   </j-select>
                 </j-form-item>

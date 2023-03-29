@@ -159,6 +159,14 @@ const queryProviders = async () => {
         // dataSource.value = getTypeList(resp.result)[0].list.filter(
         //     (item) => item.name !== '插件设备接入',
         // );
+        if (route.query.save) {
+            // 视频中心-设备快速添加产品, 添加接入网关
+            goProviders(
+                dataSource.value
+                    .find((f: any) => f.title === '视频类设备接入')
+                    ?.list?.find((f: any) => f.id === route.query.type),
+            );
+        }
     }
 };
 

@@ -68,17 +68,17 @@
                 :rules="{ required: true, message: '请选择接入网关' }"
             >
                 <div class="gateway-box">
-                    <div v-if="!gatewayList.length">
-                        暂无数据，请先
-                        <PermissionButton
-                            type="link"
-                            style="padding: 0"
-                            hasPermission="link/AccessConfig:add"
-                            @click="onJump"
-                        >
-                            添加{{ providerType[props.channel] }}接入网关
-                        </PermissionButton>
-                    </div>
+                    <j-empty
+                        v-if="!gatewayList.length"
+                        style="margin-top: 50px"
+                    >
+                        <template #description>
+                            暂无数据，请先
+                            <j-button type="link" @click="handleAdd">
+                                添加{{ providerType[props.channel] }} 接入网关
+                            </j-button>
+                        </template>
+                    </j-empty>
                     <div
                         class="gateway-item"
                         v-for="(item, index) in gatewayList"
@@ -242,8 +242,8 @@ watch(
         if (val) {
             getGatewayList();
         } else {
-            _selectedRowKeys.value = [];
-            extendFormItem.value = [];
+            _selectedRowKeys.value = [];;
+            extendFormItem.value = [];;
             emit('close');
         }
     },
@@ -299,13 +299,18 @@ const handleCancel = () => {
     formRef.value.resetFields();
 };
 
-const onJump = () => {
-    menuStory.jumpPage(
-        `link/AccessConfig/Detail`,
-        { id: ':id' },
-        { view: false },
+/**
+ * 添加接入网关
+ */
+const handleAdd = () => {
+    const tab: any = window.open(
+        `${origin}/#/iot/link/accessConfig/detail/:id?save=true&view=false&type=${props.channel}`,
     );
-}
+    tab.onSaveSuccess = async (value: string) => {
+        await getGatewayList();
+        handleClick(value);
+    };
+};
 </script>
 
 <style lang="less" scoped>

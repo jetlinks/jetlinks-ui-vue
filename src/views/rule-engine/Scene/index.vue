@@ -13,7 +13,7 @@
                     <PermissionButton
                         type="primary"
                         @click="handleAdd"
-                        hasPermission="device/Instance:add"
+                        hasPermission="rule-engine/Scene:add"
                     >
                         <template #icon><AIcon type="PlusOutlined" /></template>
                         新增
