@@ -47,7 +47,7 @@ const change = (number: number) => {
       _keys.add(number)
     }
   }
-  rowKeys.value = [..._keys.values()]
+  rowKeys.value = [..._keys.values()].sort((a, b) => a - b )
   emit('update:value', rowKeys.value)
   emit('change', rowKeys.value)
 }

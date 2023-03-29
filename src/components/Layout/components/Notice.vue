@@ -107,8 +107,10 @@ const read = (type: string, data: any) => {
 const getList = () => {
     loading.value = true;
     const params = {
-        'sorts[0].name': 'notifyTime',
-        'sorts[0].order': 'desc',
+        sorts: [{
+          name: 'notifyTime',
+          order: 'desc'
+        }],
         terms: [
             {
                 terms: [

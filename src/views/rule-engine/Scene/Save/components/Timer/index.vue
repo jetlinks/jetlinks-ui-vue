@@ -15,7 +15,7 @@
         ]'
         option-type='button'
         button-style='solid'
-        @change='updateValue'
+        @change='triggerChange'
       />
     </j-form-item>
     <j-form-item v-if='showCron' name='cron' :rules="cronRules">
@@ -170,7 +170,10 @@ const showPeriod = computed(() => {
   return formModel.trigger !== 'cron' && formModel.mod === 'period'
 })
 
+
+
 const updateValue = () => {
+
   const cloneValue = cloneDeep(formModel)
   if (cloneValue.trigger === 'cron') {
     delete cloneValue.when
@@ -184,6 +187,12 @@ const updateValue = () => {
     delete cloneValue.period
   }
   emit('update:value', cloneValue)
+}
+
+const triggerChange = (v: any) => {
+  formModel.when = []
+  formModel.cron = undefined
+  updateValue()
 }
 
 defineExpose({
