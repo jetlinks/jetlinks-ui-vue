@@ -154,6 +154,7 @@ const columns = [
         scopedSlots: true,
         search: {
             type: 'date',
+            rename: 'registryTime'
         },
     },
     {

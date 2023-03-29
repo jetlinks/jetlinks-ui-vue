@@ -25,7 +25,7 @@
             :params="queryParams"
             :rowSelection="{
                 selectedRowKeys: selectedRowKeys,
-                onChange: (keys:string[])=>selectedRowKeys = keys,
+                onSelect: changeSelect,
             }"
             @cancelSelect="selectedRowKeys = []"
         >
@@ -98,5 +98,15 @@ const confirm = () => {
             }
         });
     }
+};
+const changeSelect = (item: any, state: boolean) => {
+    const arr = new Set(selectedRowKeys.value);
+    console.log(item,state);
+    if(state){
+        arr.add(item.id)
+    }else{
+        arr.delete(item.id)
+    }
+    selectedRowKeys.value = [...arr.values()];
 };
 </script>

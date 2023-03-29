@@ -38,6 +38,7 @@ import { useMenuStore } from '@/store/menu';
 import { clearMenuItem } from 'jetlinks-ui-components/es/ProLayout/util';
 import { AccountMenu } from '@/router/menu'
 import { useSystem } from '@/store/system';
+import { storeToRefs } from 'pinia';
 
 type StateType = {
     collapsed: boolean;
@@ -52,13 +53,13 @@ const route = useRoute();
 const menu = useMenuStore();
 
 const system = useSystem();
-const configInfo = system.configInfo;
+const {configInfo} = storeToRefs(system);
 
 const layoutConf = reactive({
-    theme: configInfo.front?.headerTheme || DefaultSetting.layout.theme,
+    theme: configInfo.value.front?.headerTheme || DefaultSetting.layout.theme,
     siderWidth: DefaultSetting.layout.siderWidth,
-    logo: configInfo.front?.logo || DefaultSetting.layout.logo,
-    title: configInfo.front?.title || DefaultSetting.layout.title,
+    logo: configInfo.value.front?.logo || DefaultSetting.layout.logo,
+    title: configInfo.value.front?.title || DefaultSetting.layout.title,
     menuData: [...clearMenuItem(menu.siderMenus), AccountMenu],
     // menuData: menu.siderMenus,
     splitMenus: true,
