@@ -339,6 +339,7 @@ export default {
           granted: true,
         },
         { id: 'add', name: '新增', enabled: true, granted: true },
+        { id: 'view', name: '查看', enabled: true, granted: true },
       ],
       assetAccesses: [],
       options: {},
@@ -364,6 +365,12 @@ export default {
           granted: true,
         },
         { id: 'update', name: '编辑', enabled: true, granted: true },
+        {
+          id: 'action',
+          name: '启/禁用',
+          enabled: true,
+          granted: true,
+        },
         {
           id: 'add',
           name: '新增',
@@ -451,6 +458,7 @@ export default {
       icon: 'icon-wangluozujian',
       url: '/iot/link/firmware',
       buttons: [
+        { id: 'view', name: '查看', enabled: true, granted: true },
         { id: 'update', name: '编辑', enabled: true, granted: true },
         {
           id: 'action',
@@ -784,6 +792,7 @@ export default {
           granted: true,
         },
         { id: 'add', name: '新增', enabled: true, granted: true },
+        { id: 'view', name: '查看', enabled: true, granted: true },
       ],
       assetAccesses: [],
       options: {},
@@ -809,6 +818,12 @@ export default {
           granted: true,
         },
         { id: 'update', name: '编辑', enabled: true, granted: true },
+        {
+          id: 'action',
+          name: '启/禁用',
+          enabled: true,
+          granted: true,
+        },
         {
           id: 'add',
           name: '新增',
@@ -896,6 +911,7 @@ export default {
       icon: 'icon-wangluozujian',
       url: '/iot/link/firmware',
       buttons: [
+        { id: 'view', name: '查看', enabled: true, granted: true },
         { id: 'update', name: '编辑', enabled: true, granted: true },
         {
           id: 'action',
