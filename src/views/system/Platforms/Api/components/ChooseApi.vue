@@ -18,9 +18,14 @@
             </j-pro-table>
         </div>
 
-        <j-button type="primary" @click="save" v-if="props.mode !== 'home'"
-            >保存</j-button
+        <PermissionButton
+            type="primary"
+            hasPermission="system/Platforms/Setting:update"
+            @click="save"
+            v-if="props.mode !== 'home'"
         >
+            保存
+        </PermissionButton>
     </div>
 </template>
 

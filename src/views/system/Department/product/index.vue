@@ -345,7 +345,7 @@ const table = {
                     onClick: () => table.clickEdit(data),
                 },
                 {
-                    permission: `${permission}:assert`,
+                    permission: `${permission}:bind`,
                     key: 'unbind',
                     tooltip: { title: '解除绑定' },
                     popConfirm: {

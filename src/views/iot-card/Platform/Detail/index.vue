@@ -130,11 +130,11 @@
 </template>
 
 <script lang="ts" setup>
-import { getImage } from '@/utils/comm';
 import PlatformType from '@/views/iot-card/components/PlatformType.vue';
 import { queryById, save, update } from '@/api/iot-card/platform';
 import { message } from 'jetlinks-ui-components';
 import Doc from '../doc/index.vue';
+import { platformTypeList } from '../../data'
 
 const router = useRouter();
 const route = useRoute();
@@ -157,27 +157,6 @@ const form = reactive({
     openId: undefined,
     explain: undefined,
 });
-
-const platformTypeList = [
-    {
-        label: '移动OneLink',
-        value: 'onelink',
-        imgUrl: getImage('/iot-card/onelink.png'),
-        imgSize: ['78px', '20px'],
-    },
-    {
-        label: '电信Ctwing',
-        value: 'ctwing',
-        imgUrl: getImage('/iot-card/ctwingcmp.png'),
-        imgSize: ['52px', '25px'],
-    },
-    {
-        label: '联通Unicom',
-        value: 'unicom',
-        imgUrl: getImage('/iot-card/unicom.png'),
-        imgSize: ['56px', '41px'],
-    },
-];
 
 const rules = {
     name: [

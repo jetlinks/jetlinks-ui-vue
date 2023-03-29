@@ -27,7 +27,9 @@
                     </template>
                     <template #content>
                         <h3 class="card-item-content-title">
+                          <Ellipsis>
                             {{ slotProps.name }}
+                          </Ellipsis>
                         </h3>
                         <j-row>
                             <j-col :span="12">

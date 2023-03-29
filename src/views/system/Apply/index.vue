@@ -325,7 +325,7 @@ const table = {
                 onClick: () => table.toSave(data.id),
             },
             {
-                permission: `${permission}:update`,
+                permission: `${permission}:action`,
                 key: 'action',
                 text: disabled ? '禁用' : '启用',
                 tooltip: {

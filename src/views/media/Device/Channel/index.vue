@@ -47,9 +47,15 @@
                         >
                             <j-button type="primary" disabled> 新增 </j-button>
                         </j-tooltip>
-                        <j-button type="primary" @click="handleAdd" v-else>
-                            新增
-                        </j-button>
+                        <PermissionButton
+                            type="primary"
+                            @click="handleAdd"
+                            hasPermission="media/Device:add"
+                        >
+                            <template #icon
+                                ><AIcon type="PlusOutlined" />新增</template
+                            >
+                        </PermissionButton>
                     </template>
                     <template #status="slotProps">
                         <j-space>
@@ -64,41 +70,52 @@
                         </j-space>
                     </template>
                     <template #action="slotProps">
-                        <j-space :size="16">
-                            <j-tooltip
+                        <j-space>
+                            <template
                                 v-for="i in getActions(slotProps, 'table')"
                                 :key="i.key"
-                                v-bind="i.tooltip"
                             >
-                                <j-popconfirm
-                                    v-if="i.popConfirm"
-                                    v-bind="i.popConfirm"
+                                <PermissionButton
+                                    v-if="
+                                        i.key !== 'play' && i.key !== 'backPlay'
+                                    "
+                                    :danger="i.key === 'delete'"
                                     :disabled="i.disabled"
-                                >
-                                    <j-button
-                                        :disabled="i.disabled"
-                                        style="padding: 0"
-                                        type="link"
-                                        :danger="i.key === 'delete'"
-                                    >
-                                        <AIcon :type="i.icon" />
-                                    </j-button>
-                                </j-popconfirm>
-                                <j-button
-                                    style="padding: 0"
+                                    :popConfirm="i.popConfirm"
+                                    :tooltip="{
+                                        ...i.tooltip,
+                                    }"
+                                    @click="i.onClick"
                                     type="link"
-                                    v-else
-                                    @click="i.onClick && i.onClick(slotProps)"
+                                    style="padding: 0px"
+                                    :hasPermission="'media/Device:' + i.key"
                                 >
-                                    <j-button
-                                        :disabled="i.disabled"
-                                        style="padding: 0"
-                                        type="link"
-                                    >
-                                        <AIcon :type="i.icon" />
-                                    </j-button>
-                                </j-button>
-                            </j-tooltip>
+                                    <template #icon
+                                        ><AIcon :type="i.icon"
+                                    /></template>
+                                </PermissionButton>
+                                <!-- 回放/播放不要权限控制 -->
+                                <template v-else>
+                                    <j-tooltip :key="i.key" v-bind="i.tooltip">
+                                        <j-button
+                                            style="padding: 0px"
+                                            type="link"
+                                            @click="
+                                                i.onClick &&
+                                                    i.onClick(slotProps)
+                                            "
+                                        >
+                                            <j-button
+                                                :disabled="i.disabled"
+                                                style="padding: 0"
+                                                type="link"
+                                            >
+                                                <AIcon :type="i.icon" />
+                                            </j-button>
+                                        </j-button>
+                                    </j-tooltip>
+                                </template>
+                            </template>
                         </j-space>
                     </template>
                 </JProTable>
@@ -216,7 +233,7 @@ const getActions = (
     if (!data) return [];
     const actions = [
         {
-            key: 'edit',
+            key: 'update',
             text: '编辑',
             tooltip: {
                 title: '编辑',

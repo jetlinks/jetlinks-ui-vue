@@ -336,14 +336,14 @@ const table = {
         else
             return [
                 {
-                    permission: true,
+                    permission: `${permission}:assert`,
                     key: 'edit',
                     tooltip: { title: '编辑' },
                     icon: 'EditOutlined',
                     onClick: () => table.clickEdit(data),
                 },
                 {
-                    permission: true,
+                    permission: `${permission}:bind`,
                     key: 'unbind',
                     tooltip: { title: '解除绑定' },
                     popConfirm: {
