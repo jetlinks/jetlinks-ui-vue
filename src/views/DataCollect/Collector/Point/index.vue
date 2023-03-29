@@ -333,7 +333,6 @@ const accessModesOption = ref();
 const _selectedRowKeys = ref<string[]>([]);
 const checkAll = ref(false);
 const spinning = ref(false);
-const collectorId = ref(props.data.id);
 
 const defaultParams = ref({
     sorts: [{ name: 'id', order: 'desc' }],
@@ -342,7 +341,7 @@ const defaultParams = ref({
             terms: [
                 {
                     column: 'collectorId',
-                    value: collectorId.value,
+                    value: props.data.id,
                 },
             ],
         },
@@ -449,7 +448,7 @@ const clickBatch = () => {
 const handlAdd = () => {
     visible.saveModBus = true;
     current.value = {
-        collectorId: collectorId.value,
+        collectorId: props.data?.id,
         provider: props.data?.provider || 'MODBUS_TCP',
     };
 };
@@ -548,7 +547,7 @@ const saveChange = (value: object) => {
     }
 };
 
-const onSelectChange = (keys: string[]) => {    
+const onSelectChange = (keys: string[]) => {
     _selectedRowKeys.value = [...keys];
 };
 

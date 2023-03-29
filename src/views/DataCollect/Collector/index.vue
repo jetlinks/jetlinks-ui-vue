@@ -22,8 +22,15 @@ const data = ref();
 const spinning = ref(true);
 
 const changeTree = (row: any) => {
-    data.value = row;
-    spinning.value = false;
+    spinning.value = true;
+    //手动延迟，防止数据库更新不及时
+    setTimeout(() => {
+        data.value = {
+            ...row,
+            collectorId: row?.id,
+        };
+        spinning.value = false;
+    }, 300);
 };
 </script>
 

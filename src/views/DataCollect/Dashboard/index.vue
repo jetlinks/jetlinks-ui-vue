@@ -1,7 +1,7 @@
 <template>
     <page-container>
         <j-row :gutter="24">
-            <j-col :span="8" v-for="item in statusData" :key="item[0].type">
+            <j-col :span="8" v-for="item in StatusData" :key="item[0].type">
                 <TopCard
                     :title="item[0].label"
                     :img="
@@ -27,15 +27,18 @@ import { getImage } from '@/utils/comm';
 import { queryCount } from '@/api/data-collect/dashboard';
 import { defaultParams, statusData } from './tool';
 
+const StatusData = ref(statusData);
 const getNumberData = () => {
-    statusData.forEach(async (item: any) => {
+    StatusData.value.forEach(async (item: any) => {
         const res = await queryCount(item[0].type, {});
         const resp = await queryCount(item[0].type, defaultParams);
-        item[0].total = res?.result || 0;
-        item[0].value = resp?.result || 0;
+        item[0].total = res?.result;
+        item[0].value = resp?.result;
     });
 };
-getNumberData();
+onMounted(() => {
+    getNumberData();
+});
 </script>
 
 <style lang="less" scoped></style>

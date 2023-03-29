@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import dayjs from 'dayjs';
 
 const getParams = (dt: any) => {
     switch (dt.type) {

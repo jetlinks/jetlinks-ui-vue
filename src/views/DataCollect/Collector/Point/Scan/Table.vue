@@ -108,12 +108,12 @@
                         ]"
                         :rules="[
                             {
-                                pattern: regOnlyNumber,
-                                message: '请输入0或者正整数',
-                            },
-                            {
                                 validator: checkLength,
                                 trigger: 'change',
+                            },
+                            {
+                                pattern: regOnlyNumber,
+                                message: '请输入0或者正整数',
                             },
                         ]"
                     >
@@ -226,6 +226,8 @@ const checkLength = (_rule: Rule, value: string): Promise<any> =>
             return String(value).length > 64
                 ? reject('最多可输入64个字符')
                 : resolve('');
+        } else {
+            reject('请输入');
         }
     });
 
