@@ -85,6 +85,7 @@
             width="700px"
             @cancel="modalVis = false"
             @ok="handleItemModalSubmit"
+            :zIndex='1100'
         >
             <div style="width: 100%; height: 300px">
                 <JMonacoEditor v-model:modelValue="objectValue" />
@@ -211,6 +212,10 @@ const dateChange = (e: any) => {
 }
 
 myValue.value = props.modelValue
+
+if (props.itemType === 'object') {
+  objectValue.value = props.modelValue as string
+}
 
 </script>
 
