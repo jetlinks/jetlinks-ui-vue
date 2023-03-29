@@ -6,6 +6,7 @@
       <pro-search :columns='columns' target='iot-card-bind-device' @search='handleSearch' type='simple' />
       <j-pro-table
         ref='bindDeviceRef'
+        :alertRender='false'
         :columns='columns'
         :request='queryUnbounded'
         model='TABLE'
