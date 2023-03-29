@@ -74,14 +74,11 @@
                     >
                         <template #description>
                             暂无数据，请先
-                            <!-- <j-button type="link" @click="handleAdd">
-                                添加{{ providerType[props.channel] }} 接入网关
-                            </j-button> -->
                             <PermissionButton
                                 type="link"
                                 style="padding: 0"
                                 hasPermission="link/AccessConfig:add"
-                                @click="onJump"
+                                @click="handleAdd"
                             >
                                 添加{{ providerType[props.channel] }}接入网关
                             </PermissionButton>
@@ -318,13 +315,6 @@ const handleAdd = () => {
         await getGatewayList();
         handleClick(value);
     };
-};
-const onJump = () => {
-    menuStory.jumpPage(
-        `link/AccessConfig/Detail`,
-        { id: ':id' },
-        { view: false },
-    );
 };
 </script>
 
