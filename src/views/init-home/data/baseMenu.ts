@@ -2083,8 +2083,9 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
-            supportDataAccess: false
+            accessSupport: { text: "支持", value: "support" },
+            supportDataAccess: true,
+            assetType: 'aliyunNorthOutput'
           },
         ],
       },

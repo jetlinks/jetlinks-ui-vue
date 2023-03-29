@@ -66,7 +66,10 @@
                     <j-form-item
                         :name="['shareConfig', 'adminUrl']"
                         label="管理地址"
-                        :rules="[{ required: true, message: '请输入管理地址' }]"
+                        :rules="[
+                            { required: true, message: '请输入管理地址' },
+                            { validator: validateAdminUrl },
+                        ]"
                     >
                         <j-input
                             v-model:value="form.data.shareConfig.adminUrl"
@@ -80,7 +83,10 @@
                     <j-form-item
                         :name="['shareConfig', 'addresses']"
                         label="链接地址"
-                        :rules="[{ required: true, message: '请输入链接地址' }]"
+                        :rules="[
+                            { required: true, message: '请输入链接地址' },
+                            { validator: validateAddress },
+                        ]"
                     >
                         <j-input
                             v-model:value="form.data.shareConfig.addresses"
@@ -213,6 +219,44 @@ const checkUrl = (_rule: Rule, value: string): Promise<any> => {
     }
 };
 
+/**
+ * 管理地址校验
+ */
+const validateAdminUrl = (_rule: Rule, value: string): Promise<any> => {
+    return new Promise((resolve, reject) => {
+        if (!value) {
+            resolve('');
+        } else {
+            const arr = value.split('://');
+            if (arr[0] === 'http' || arr[0] === 'https') {
+                resolve('');
+            } else {
+                reject('请输入正确的管理地址');
+            }
+        }
+    });
+};
+/**
+ * 链接地址校验
+ * @param _rule
+ * @param value
+ */
+const validateAddress = (_rule: Rule, value: string): Promise<any> => {
+    return new Promise((resolve, reject) => {
+        if (!value) {
+            resolve('');
+        } else {
+            const reg =
+                /(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?/;
+            if (reg.test(value)) {
+                resolve('');
+            } else {
+                reject('请输入正确的链接地址');
+            }
+        }
+    });
+};
+
 const getTypeOption = () => {
     getDataTypeDict_api().then((resp: any) => {
         const result = resp.result as dictItemType[];
@@ -234,17 +278,17 @@ const form = reactive({
 watch(
     () => props.data,
     (newValue) => {
-        form.data = {...newValue, shareConfig: { ...newValue?.shareConfig }}
+        form.data = { ...newValue, shareConfig: { ...newValue?.shareConfig } };
     },
     {
         immediate: true,
-        deep: true
+        deep: true,
     },
 );
 
 onMounted(() => {
     getTypeOption();
-})
+});
 
 const confirm = () => {
     loading.value = true;
@@ -255,7 +299,7 @@ const confirm = () => {
             if (resp.status === 200) {
                 message.success('操作成功');
                 emits('confirm');
-                formRef.value?.resetFields()
+                formRef.value?.resetFields();
             }
         })
         .finally(() => {
