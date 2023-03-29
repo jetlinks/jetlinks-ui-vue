@@ -81,11 +81,9 @@
                     @blur="changeQuantity"
                 />
             </j-form-item>
+
             <j-form-item
-                v-if="
-                    formData.configuration.function === 'HoldingRegisters' ||
-                    formData.configuration.function === 'InputRegisters'
-                "
+                v-if="formData.configuration.function === 'HoldingRegisters'"
                 label="数据类型"
                 :name="['configuration', 'codec', 'provider']"
                 :rules="[
@@ -124,15 +122,23 @@
                     "
                 />
             </j-form-item>
-            <j-form-item label="访问类型" name="accessModes">
+            <j-form-item
+                v-if="formData.configuration.function"
+                label="访问类型"
+                name="accessModes"
+            >
                 <j-card-select
                     multiple
                     :showImage="false"
                     v-model:value="formData.accessModes"
-                    :options="[
-                        { label: '读', value: 'read' },
-                        { label: '写', value: 'write' },
-                    ]"
+                    :options="
+                        formData.configuration.function === 'InputRegisters'
+                            ? [{ label: '读', value: 'read' }]
+                            : [
+                                  { label: '读', value: 'read' },
+                                  { label: '写', value: 'write' },
+                              ]
+                    "
                     :column="2"
                 />
             </j-form-item>
@@ -144,7 +150,10 @@
                 "
             >
                 <span style="margin-right: 10px">非标准协议写入配置</span>
-                <j-switch v-model:checked="formData.nspwc" />
+                <j-switch
+                    @change="changeNspwc"
+                    v-model:checked="formData.nspwc"
+                />
             </j-form-item>
             <j-form-item
                 v-if="
@@ -262,7 +271,6 @@ const id = props.data.id;
 const collectorId = props.data.collectorId;
 const provider = props.data.provider;
 const oldPointKey = props.data.pointKey;
-console.log(22, props.data);
 
 const InitAddress = {
     Coils: 1,
@@ -329,8 +337,20 @@ const handleCancel = () => {
 };
 
 const changeQuantity = () => {
-    if (formData.value.configuration.function === 'HoldingRegisters') {
+    const { configuration, nspwc } = formData.value;
+    if (configuration.function === 'HoldingRegisters') {
         formRef.value?.validate();
+    }
+    if (nspwc) {
+        configuration.parameter.byteCount =
+            Number(configuration.parameter.quantity) * 2;
+    }
+};
+const changeNspwc = (value: boolean) => {
+    const { configuration } = formData.value;
+    if (value) {
+        configuration.parameter.byteCount =
+            Number(configuration.parameter.quantity || 0) * 2;
     }
 };
 const changeWriteByteCount = (value: Array<string>) => {
@@ -357,12 +377,13 @@ const checkPointKey = (_rule: Rule, value: string): Promise<any> =>
     new Promise(async (resolve, reject) => {
         if (value || Number(value) === 0) {
             if (Number(oldPointKey) === Number(value)) return resolve('');
+            if (typeof value === 'object') return resolve('');
             const res: any = await _validateField(collectorId, {
                 pointKey: value,
             });
             return res.result?.passed ? resolve('') : reject(res.result.reason);
         } else {
-            return reject('');
+            return reject('请输入地址');
         }
     });
 
@@ -392,13 +413,6 @@ const setProviderList = (value: string | undefined) => {
               );
 };
 
-watch(
-    () => formData.value.configuration.parameter.quantity,
-    (value) => {
-        formData.value.configuration.parameter.byteCount = Number(value) * 2;
-    },
-    { immediate: true, deep: true },
-);
 watch(
     () => formData.value.configuration.function,
     (value) => {

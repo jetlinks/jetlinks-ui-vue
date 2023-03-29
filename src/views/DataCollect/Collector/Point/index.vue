@@ -506,7 +506,7 @@ const clickRedo = async (data: any) => {
 
 const getQuantity = (item: Partial<Record<string, any>>) => {
     const { quantity } = item.configuration?.parameter || '';
-    return !!quantity ? quantity + '(读取寄存器)' : '';
+    return !!quantity ? quantity + '(寄存器数量)' : '';
 };
 const getAddress = (item: Partial<Record<string, any>>) => {
     const { address } = item.configuration?.parameter || '';
@@ -571,21 +571,35 @@ const handleClick = (dt: any) => {
     }
 };
 
+//节流
+let timer: any = null;
+function throttle(fn: any, delay = 1000) {
+    if (timer == null) {
+        timer = setTimeout(() => {
+            fn();
+            clearTimeout(timer);
+            timer = null;
+        }, delay);
+    }
+}
 const subscribeProperty = (value: any) => {
-    // const list = value.map((item: any) => item.id);
-    // const id = `collector-${props.data?.channelId || 'channel'}-${
-    //     props.data?.id || 'point'
-    // }-data-${list.join('-')}`;
-    // const topic = `/collector/${props.data?.channelId || '*'}/${
-    //     props.data?.id || '*'
-    // }/data`;
-    // subRef.value = getWebSocket(id, topic, {
-    //     pointId: list.join(','),
-    // })
-    //     ?.pipe(map((res: any) => res.payload))
-    //     .subscribe((payload: any) => {
-    //         propertyValue.value.set(payload.pointId, payload);
-    //     });
+    const list = value.map((item: any) => item.id);
+    const id = `collector-${props.data?.channelId || 'channel'}-${
+        props.data?.id || 'point'
+    }-data-${list.join('-')}`;
+    const topic = `/collector/${props.data?.channelId || '*'}/${
+        props.data?.id || '*'
+    }/data`;
+    subRef.value = getWebSocket(id, topic, {
+        pointId: list.join(','),
+    })
+        ?.pipe(map((res: any) => res.payload))
+        .subscribe((payload: any) => {
+            //防止刷新过快
+            throttle(() => {
+                propertyValue.value.set(payload.pointId, payload);
+            });
+        });
 };
 
 const onCheckAllChange = (e: any) => {
