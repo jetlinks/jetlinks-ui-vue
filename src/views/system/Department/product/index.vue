@@ -551,6 +551,13 @@ watch(
         tableData.selectedRows = [];
     },
 );
+
+watch(
+    () => dialogs.editShow,
+    (val: boolean) => {
+        if (!val) tableData.selectedRows = [];
+    },
+);
 </script>
 
 <style lang="less" scoped>

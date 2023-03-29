@@ -6,11 +6,15 @@
         title="导入"
         okText="确定"
         cancelText="取消"
-        @ok="handleOk"
         @cancel="handleCancel"
     >
         <div style="margin-top: 10px">
-            <j-form :layout="'vertical'" :model="modelRef" ref="formRef" :rules="rules">
+            <j-form
+                :layout="'vertical'"
+                :model="modelRef"
+                ref="formRef"
+                :rules="rules"
+            >
                 <j-form-item label="平台对接" required name="configId">
                     <j-select
                         showSearch
@@ -33,6 +37,14 @@
                 </j-form-item>
 
                 <j-form-item label="文件上传" v-if="modelRef.configId">
+                    <UploadFile
+                        :product="modelRef.configId"
+                        v-model="modelRef.upload"
+                        :file="modelRef.fileType"
+                    />
+                </j-form-item>
+            </j-form>
+            <!-- <j-form-item label="文件上传" v-if="modelRef.configId">
                     <j-upload
                         v-model:fileList="modelRef.upload"
                         name="file"
@@ -70,30 +82,30 @@
                     <a-icon class="check-num" style="color: red" type="close" />
                     失败 总数量
                     <span class="check-num">{{ errCount }}</span>
-                </div>
-            </j-form>
+                </div> -->
         </div>
+        <template #footer>
+            <j-button type="primary" @click="handleOk">关闭</j-button>
+        </template>
     </j-modal>
 </template>
 
 <script setup lang="ts">
-import { FILE_UPLOAD } from '@/api/comm';
-import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
-import { LocalStore } from '@/utils/comm';
-import { downloadFile, downloadFileByUrl } from '@/utils/utils';
-import { queryPlatformNoPage, _import ,exportCard} from '@/api/iot-card/cardManagement';
-// import { message } from 'ant-design-vue';
-import { message } from 'jetlinks-ui-components';
-
+// import { downloadFile, downloadFileByUrl } from '@/utils/utils';
+import {
+    queryPlatformNoPage,
+    _import,
+} from '@/api/iot-card/cardManagement';
+import UploadFile from './UploadFile.vue'
 
 const emit = defineEmits(['close', 'save']);
 
 const configList = ref<Record<string, any>[]>([]);
-const loading = ref<boolean>(false);
-const totalCount = ref<number>(0);
-const errCount = ref<number>(0);
-const formRef = ref(null)
-const importStatus = ref(false)
+// const loading = ref<boolean>(false);
+// const totalCount = ref<number>(0);
+// const errCount = ref<number>(0);
+const formRef = ref(null);
+// const importStatus = ref(false);
 const modelRef = reactive({
     configId: undefined,
     upload: [],
@@ -101,8 +113,8 @@ const modelRef = reactive({
 });
 
 const rules = {
-  configId: [{ required: true, message: '请选择平台对接'}]
-}
+    configId: [{ required: true, message: '请选择平台对接' }],
+};
 
 const getConfig = async () => {
     const resp: any = await queryPlatformNoPage({
@@ -125,59 +137,53 @@ const getConfig = async () => {
     });
 };
 
-const fileChange = (info: any) => {
-    loading.value = true;
-    if (info.file.status === 'done') {
-        const r = info.file.response || { result: '' };
-        _import(modelRef.configId, { fileUrl: r.result })
-            .then((resp: any) => {
-                totalCount.value = resp.result.total;
-                importStatus.value = true
-                message.success('导入成功')
-            })
-            .catch((err) => {
-                message.error(err.response.data.message || '导入失败')
-            })
-            .finally(() => {
-                loading.value = false;
-            });
-    }
-};
+// const fileChange = (info: any) => {
+//     loading.value = true;
+//     if (info.file.status === 'done') {
+//         const r = info.file.response || { result: '' };
+        // _import(modelRef.configId, { fileUrl: r.result })
+        //     .then((resp: any) => {
+        //         totalCount.value = resp.result.total;
+        //         importStatus.value = true;
+        //         message.success('导入成功');
+        //     })
+        //     .catch((err) => {
+        //         message.error(err.response.data.message || '导入失败');
+        //     })
+        //     .finally(() => {
+        //         loading.value = false;
+        //     });
+//     }
+// };
 
-const downFileFn =async (type: string) => {
-    // const url = `${BASE_API_PATH}/network/card/template.${type}`;
-    // downloadFile(url);
-    const res:any = await exportCard(type)
-    if(res){
-        const blob = new Blob([res], { type: type });
-            const url = URL.createObjectURL(blob);
-            console.log(url);
-            downloadFileByUrl(
-                url,
-                `物联卡导入模版`,
-                type,
-            );
-    }
-
-};
+// const downFileFn = async (type: string) => {
+//     // const url = `${BASE_API_PATH}/network/card/template.${type}`;
+//     // downloadFile(url);
+//     const res: any = await exportCard(type);
+//     if (res) {
+//         const blob = new Blob([res], { type: type });
+//         const url = URL.createObjectURL(blob);
+//         console.log(url);
+//         downloadFileByUrl(url, `物联卡导入模版`, type);
+//     }
+// };
 
 const handleCancel = () => {
-    totalCount.value = 0;
-    errCount.value = 0;
+    // totalCount.value = 0;
+    // errCount.value = 0;
     modelRef.configId = undefined;
 
     emit('close', true);
-    if (importStatus.value) {
-      emit('save', true)
-    }
-    importStatus.value = false
+    // if (importStatus.value) {
+    //     emit('save', true);
+    // }
+    // importStatus.value = false;
 };
 
 const handleOk = () => {
-  formRef.value.validate().then(res => {
-    handleCancel()
-  })
-}
+    modelRef.configId = undefined;
+    emit('save', true);
+};
 
 getConfig();
 </script>
@@ -188,3 +194,4 @@ getConfig();
     color: @primary-color;
 }
 </style>
+

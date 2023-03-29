@@ -571,3 +571,6 @@ export const queryLog = (deviceId: string, data: Record<string, unknown>) => ser
  */
 export const queryLogsType = () => server.get(`/dictionary/device-log-type/items`)
 
+export const getDeviceNumber = (data?:any) => server.post<number>('/device-instance/_count', data)
+
+
