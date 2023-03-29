@@ -282,6 +282,7 @@ function menuChange(
     row: tableItemType,
     setButtonBool: boolean = true,
 ): undefined {
+    console.log(row, 'test');
     // 判断是否需要对子菜单及操作权限进行选择
     if (setButtonBool) {
         if (row.buttons && row.buttons.length > 0)
@@ -293,16 +294,16 @@ function menuChange(
     // 更新选中状态
     if (row.buttons && row.buttons.length > 0) setStatus(row, 'buttons');
     else setStatus(row, 'children');
-
     // 更新数据权限
-    if (row.accessSupport && row.accessSupport.value === 'support') {
-        // 如果当前数据权限已有值，且菜单权限没有被选中或被半选   则清空对应的数据权限
-        if (row.selectAccesses && !row.granted && !row.indeterminate)
-            row.selectAccesses = '';
-        // 如果当前数据权限没有值，且菜单权限有被选中或者是被半选   则将数据权限变为默认值'creator'
-        else if (!row.selectAccesses && (row.granted || row.indeterminate))
-            row.selectAccesses = 'creator';
-    }
+    updataAuthority(row);
+    // if (row.accessSupport && row.accessSupport.value === 'support') {
+    //     // 如果当前数据权限已有值，且菜单权限没有被选中或被半选   则清空对应的数据权限
+    //     if (row.selectAccesses && !row.granted && !row.indeterminate)
+    //         row.selectAccesses = '';
+    //     // 如果当前数据权限没有值，且菜单权限有被选中或者是被半选   则将数据权限变为默认值'creator'
+    //     else if (!row.selectAccesses && (row.granted || row.indeterminate))
+    //         row.selectAccesses = 'creator';
+    // }
 
     // 更新上层节点的状态
     if (row.parentId) {
@@ -334,6 +335,38 @@ function menuChange(
     }
     emits('update:selectItems', selectList); // 选中的项传回父组件
 }
+
+/**
+ * 更新权限
+ */
+const updataAuthority = (row: any) => {
+    if (row.accessSupport && row.accessSupport.value === 'support') {
+        // 如果当前数据权限已有值，且菜单权限没有被选中或被半选   则清空对应的数据权限
+        if (row.selectAccesses && !row.granted && !row.indeterminate)
+            row.selectAccesses = '';
+        // 如果当前数据权限没有值，且菜单权限有被选中或者是被半选   则将数据权限变为默认值'creator'
+        else if (!row.selectAccesses && (row.granted || row.indeterminate))
+            row.selectAccesses = 'creator';
+    }
+    if (row.children?.length > 0) {
+        row.children?.forEach((item) => {
+            if (item.accessSupport && item.accessSupport.value === 'support') {
+                // 如果当前数据权限已有值，且菜单权限没有被选中或被半选   则清空对应的数据权限
+                if (item.selectAccesses && !item.granted && !item.indeterminate)
+                    item.selectAccesses = '';
+                // 如果当前数据权限没有值，且菜单权限有被选中或者是被半选   则将数据权限变为默认值'creator'
+                else if (
+                    !item.selectAccesses &&
+                    (item.granted || item.indeterminate)
+                )
+                    item.selectAccesses = 'creator';
+            }
+            if (item.children) {
+                updataAuthority(item.children);
+            }
+        });
+    }
+};
 /**
  * 操作权限改变事件
  * @param row 触发的项
@@ -376,6 +409,14 @@ function setChildrenChecked(childrens: tableItemType[], value: boolean) {
             item.buttons.forEach((button) => {
                 button.granted = value;
             });
+        if (item.assetAccesses?.length > 0) {
+            item.assetAccesses?.forEach((i) => {
+                if (i.supportId === 'creator') {
+                    i.granted = true;
+                }
+            });
+            // console.log( item.assetAccesses);
+        }
         item.children && setChildrenChecked(item.children, value);
     });
 }
