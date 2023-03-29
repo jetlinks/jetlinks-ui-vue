@@ -903,7 +903,7 @@ const handelRemove = async () => {
         message.error('请选择数据');
         return;
     }
-    const resp = await removeCards(_selectedRowKeys.value);
+    const resp = await removeCards(_selectedRowKeys.value.map( v => ({ id:v })));
     if (resp.status === 200) {
         message.success('操作成功');
         _selectedRowKeys.value = [];
