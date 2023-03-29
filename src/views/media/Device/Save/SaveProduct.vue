@@ -70,9 +70,14 @@
                 <div class="gateway-box">
                     <div v-if="!gatewayList.length">
                         暂无数据，请先
-                        <j-button type="link">
-                            添加{{ providerType[props.channel] }} 接入网关
-                        </j-button>
+                        <PermissionButton
+                            type="link"
+                            style="padding: 0"
+                            hasPermission="link/AccessConfig:add"
+                            @click="onJump"
+                        >
+                            添加{{ providerType[props.channel] }}接入网关
+                        </PermissionButton>
                     </div>
                     <div
                         class="gateway-item"
@@ -156,6 +161,9 @@ import DeviceApi from '@/api/media/device';
 import { getImage } from '@/utils/comm';
 import { gatewayType } from '@/views/media/Device/typings';
 import { providerType } from '../const';
+import { useMenuStore } from '@/store/menu';
+
+const menuStory = useMenuStore();
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
@@ -234,8 +242,8 @@ watch(
         if (val) {
             getGatewayList();
         } else {
-            _selectedRowKeys.value = []
-            extendFormItem.value = []
+            _selectedRowKeys.value = [];
+            extendFormItem.value = [];
             emit('close');
         }
     },
@@ -290,6 +298,14 @@ const handleCancel = () => {
     _vis.value = false;
     formRef.value.resetFields();
 };
+
+const onJump = () => {
+    menuStory.jumpPage(
+        `link/AccessConfig/Detail`,
+        { id: ':id' },
+        { view: false },
+    );
+}
 </script>
 
 <style lang="less" scoped>

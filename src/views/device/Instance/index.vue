@@ -308,8 +308,8 @@ import dayjs from 'dayjs';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
 import BatchDropdown from '@/components/BatchDropdown/index.vue';
 import { BatchActionsType } from '@/components/BatchDropdown/types';
-import {useRouterParams} from "@/utils/hooks/useParams";
-import { accessConfigTypeFilter } from '@/utils/setting'
+import { useRouterParams } from '@/utils/hooks/useParams';
+import { accessConfigTypeFilter } from '@/utils/setting';
 
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -322,22 +322,22 @@ const operationVisible = ref<boolean>(false);
 const api = ref<string>('');
 const type = ref<string>('');
 const isCheck = ref<boolean>(false);
-const routerParams = useRouterParams()
+const routerParams = useRouterParams();
 const menuStory = useMenuStore();
 
 const transformData = (arr: any[]): any[] => {
-    if(Array.isArray(arr) && arr.length){
+    if (Array.isArray(arr) && arr.length) {
         return (arr || []).map((item: any) => {
             return {
                 ...item,
                 id: `classifiedId is ${item.id}`,
-                children: transformData(item.children)
-            }
-        })
+                children: transformData(item.children),
+            };
+        });
     } else {
-        return []
+        return [];
     }
-}
+};
 
 const columns = [
     {
@@ -412,7 +412,7 @@ const columns = [
         hideInTable: true,
         search: {
             type: 'treeSelect',
-            rename: 'productId$product-info',
+            // rename: 'productId$product-info',
             options: () =>
                 new Promise((resolve) => {
                     queryTree({ paging: false }).then((resp: any) => {
@@ -429,22 +429,24 @@ const columns = [
         hideInTable: true,
         search: {
             type: 'select',
-            rename: 'productId$product-info',
+            // rename: 'productId$product-info',
             options: () =>
                 new Promise((resolve) => {
                     getProviders().then((resp: any) => {
-                      const data = resp.result || []
-                      resolve(accessConfigTypeFilter(data).map(item => ({
-                        ...item,
-                        value: `accessProvider is ${item.id}`
-                      })))
+                        const data = resp.result || [];
+                        resolve(
+                            accessConfigTypeFilter(data).map((item) => ({
+                                ...item,
+                                value: `accessProvider is ${item.id}`,
+                            })),
+                        );
                     });
                 }),
         },
     },
     {
-        key: 'productId$product-info',
-        dataIndex: 'productId$product-info',
+        key: 'accessId',
+        dataIndex: 'accessId',
         title: '接入方式',
         hideInTable: true,
         search: {
@@ -728,9 +730,9 @@ const syncDeviceStatus = () => {
 };
 
 const delSelectedDevice = async () => {
-    if(!_selectedRowKeys.value.length){
-        message.error('请选择设备')
-        return
+    if (!_selectedRowKeys.value.length) {
+        message.error('请选择设备');
+        return;
     }
     const resp = await batchDeleteDevice(_selectedRowKeys.value);
     if (resp.status === 200) {
@@ -754,9 +756,9 @@ const delSelectedDevice = async () => {
 // };
 
 const disabledSelectedDevice = async () => {
-    if(!_selectedRowKeys.value.length){
-        message.error('请选择设备')
-        return
+    if (!_selectedRowKeys.value.length) {
+        message.error('请选择设备');
+        return;
     }
     const resp = await batchUndeployDevice(_selectedRowKeys.value);
     if (resp.status === 200) {
@@ -842,7 +844,7 @@ const batchActions: BatchActionsType[] = [
             popConfirm: {
                 title: '确认禁用选中设备?',
                 onConfirm: disabledSelectedDevice,
-            }
+            },
         },
     },
 ];
@@ -853,7 +855,25 @@ const saveBtn = () => {
 };
 
 const handleSearch = (_params: any) => {
-    params.value = _params;
+    // params.value = _params;
+    const newParams = (_params?.terms as any[])?.map((item1) => {
+        item1.terms = item1.terms.map((item2: any) => {
+            if (
+                item2.column &&
+                ['classifiedId', 'accessId', 'accessProvider'].includes(
+                    item2.column,
+                )
+            ) {
+                return {
+                    ...item2,
+                    column: 'productId$product-info'
+                };
+            }
+            return item2;
+        });
+        return item1;
+    });
+    params.value = { terms: newParams || [] };
 };
 
 const onRefresh = () => {
