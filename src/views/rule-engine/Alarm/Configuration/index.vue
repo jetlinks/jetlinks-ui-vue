@@ -42,6 +42,15 @@
                             enabled: 'processing',
                             disabled: 'error',
                         }"
+                        @click="
+                            () => {
+                                menuStory.jumpPage(
+                                    'rule-engine/Alarm/Configuration/Save',
+                                    {},
+                                    { id: slotProps.id },
+                                );
+                            }
+                        "
                     >
                         <template #img>
                             <slot name="img">
