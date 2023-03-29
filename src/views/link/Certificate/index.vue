@@ -77,17 +77,14 @@ const columns = [
         width: 200,
         ellipsis: true,
         search: {
-            type: 'string',
+            type: 'select',
+            options: [
+                {
+                    label: '证书标准',
+                    value: 'common',
+                },
+            ],
         },
-        // search: {
-        //     type: 'select',
-        //     options: [
-        //         {
-        //             label: '证书标准',
-        //             value: 'common',
-        //         },
-        //     ],
-        // },
         scopedSlots: true,
     },
     {
