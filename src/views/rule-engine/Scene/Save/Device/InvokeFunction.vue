@@ -114,7 +114,6 @@ const functionData = computed(() => {
 const rules = [{
   validator(_: string, value: any) {
     console.log(value)
-    debugger
     if (!value?.length && functionData.value.length) {
       return Promise.reject('请输入功能值')
     } else {
@@ -137,6 +136,7 @@ const onSelect = (v: string, item: any) => {
 }
 
 const callDataChange = (v: any[]) => {
+  console.log('callDataChange',v)
   emit('update:functionParameters', v)
 }
 

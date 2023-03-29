@@ -1,9 +1,11 @@
 <template>
   <j-menu class='scene-dropdown-menus' @click='click' :selectedKeys='[myValue]'>
     <j-menu-item v-for='item in myOptions' :key='item.value' :title='item.label'>
-      <Ellipsis >
-        {{ item.label }}
-      </Ellipsis>
+      <div>
+        <Ellipsis >
+          {{ item.label }}
+        </Ellipsis>
+      </div>
     </j-menu-item>
   </j-menu>
 </template>

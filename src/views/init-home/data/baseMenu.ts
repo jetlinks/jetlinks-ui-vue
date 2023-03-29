@@ -1688,7 +1688,7 @@ export default [
             ],
             accessSupport: { text: "支持", value: "support" },
             supportDataAccess: true,
-            assetType: 'ataCollectCollector'
+            assetType: 'dataCollectCollector'
           },
         ],
       },
