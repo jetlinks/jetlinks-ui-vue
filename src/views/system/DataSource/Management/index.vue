@@ -147,7 +147,7 @@
                                     :danger="true"
                                     :popConfirm="{
                                         title: `确认删除`,
-                                        onConfirm: () => clickDel(record),
+                                        onConfirm: () => clickDel(record, index),
                                     }"
                                     :disabled="record.status"
                                 >
@@ -358,14 +358,18 @@ const addRow = () => {
     table.data.push(initData);
 };
 
-const clickDel = (row: any) => {
+const clickDel = (row: any, index: number) => {
     if (row.scale !== undefined) {
         delSaveRow_api(id, leftData.selectedKeys[0], [row.name]).then(
             (resp: any) => {
-                if (resp.status === 200) table.data.splice(row.index, 1);
+                if (resp.status === 200) {
+                    table.data.splice(index, 1)
+                }
             },
         );
-    } else table.data.splice(row.index, 1);
+    } else {
+        table.data.splice(index, 1)
+    };
 };
 
 const clickSave = () => {

@@ -71,7 +71,7 @@ import { queryPlatformNoPage, recharge } from '@/api/iot-card/cardManagement';
 import { message } from 'jetlinks-ui-components';
 import { PaymentMethod } from '@/views/iot-card/data';
 
-const emit = defineEmits(['change']);
+const emit = defineEmits(['change', 'save']);
 
 const btnLoading = ref<boolean>(false);
 const configList = ref<Record<string, any>[]>([]);
@@ -171,7 +171,7 @@ const handleOk = () => {
                 } else {
                     window.open(resp.result);
                 }
-                emit('change');
+                emit('change', true);
                 formRef.value.resetFields();
             }
         })

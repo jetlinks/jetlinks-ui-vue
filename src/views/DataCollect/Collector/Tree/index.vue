@@ -237,7 +237,8 @@ const handleSearch = async (value: any) => {
         if (clickSearch) {
             defualtDataSource.value = res.result;
             if (res.result.length !== 0) {
-                selectedKeys.value = [res.result[0].id]; // 通道跳转进来或者搜索时，默认选中第一个
+                selectedKeys.value.length === 0 &&
+                    (selectedKeys.value = [res.result[0].id]); // 通道跳转进来或者搜索时，默认选中第一个
             }
         } else {
             defualtDataSource.value = _.cloneDeep(root);
@@ -285,7 +286,11 @@ watch(
 watch(
     () => searchValue.value,
     (value) => {
-        !value && handleSearch(value);
+        if (!value) {
+            setTimeout(() => {
+                handleSearch(value);
+            }, 0);
+        }
     },
 );
 </script>

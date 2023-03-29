@@ -112,16 +112,12 @@
                         ]"
                         :rules="[
                             {
-                                validator: checkLength,
-                                trigger: 'change',
-                            },
-                            {
                                 pattern: regOnlyNumber,
                                 message: '请输入0或者正整数',
                             },
                         ]"
                     >
-                        <j-input
+                        <j-input-number
                             style="width: 60%"
                             v-model:value="
                                 record.configuration[dataIndex].value
@@ -129,12 +125,13 @@
                             placeholder="请输入"
                             allowClear
                             addon-after="ms"
+                            :max="9999999999999998"
                             :disabled="
                                 index !== 0 &&
                                 record.configuration[dataIndex].check
                             "
                             @blur="changeValue(index, dataIndex)"
-                        ></j-input>
+                        ></j-input-number>
                         <j-checkbox
                             style="margin-left: 5px; margin-top: 5px"
                             v-show="index !== 0"

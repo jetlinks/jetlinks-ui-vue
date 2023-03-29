@@ -86,7 +86,7 @@ export const pointParams = (data: any) => {
                 from: Number(data.time.time[0]),
                 to: Number(data.time.time[1]),
                 interval: getParams(data.time).interval,
-                format: getParams(data.time).format,
+                format: 'YYYY-MM-dd HH:mm',
             },
         },
     ];

@@ -114,6 +114,7 @@ export const defulteParamsData = (group: any, val: any) => [
         params: {
             from: dayjs(val.time[0]).valueOf(),
             to: dayjs(val.time[1]).valueOf(),
+            format: 'YYYY-MM-dd HH:mm',
         },
     },
 ];

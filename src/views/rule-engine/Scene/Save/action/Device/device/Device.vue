@@ -150,7 +150,7 @@ const handleSearch = (p: any) => {
 
 const deviceQuery = (p: any) => {
     const sorts: any = [];
-    if (props.value) {
+    if (props.value[0]?.value) {
         sorts.push({
             name: 'id',
             value: props.value[0]?.value,
