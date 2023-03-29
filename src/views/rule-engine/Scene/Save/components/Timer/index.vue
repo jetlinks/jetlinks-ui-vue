@@ -75,7 +75,7 @@
           style='max-width: 170px'
           :precision='0'
           :min='1'
-          :max='59'
+          :max='unitMax'
           v-model:value='formModel.period.every'
           @change='updateValue'
         >
@@ -87,7 +87,7 @@
                 { label: "分", value: "minutes" },
                 { label: "小时", value: "hours" },
               ]'
-              @select='updateValue'
+              @select='periodUnitChange'
             />
           </template>
         </j-input-number>
@@ -124,6 +124,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<Emit>()
+const unitMax = ref<number>(99)
 
 const cronRules = [
   { max: 64, message: '最多可输入64个字符' },
@@ -171,7 +172,6 @@ const showPeriod = computed(() => {
 })
 
 
-
 const updateValue = () => {
 
   const cloneValue = cloneDeep(formModel)
@@ -189,9 +189,23 @@ const updateValue = () => {
   emit('update:value', cloneValue)
 }
 
-const triggerChange = (v: any) => {
+const triggerChange = () => {
   formModel.when = []
   formModel.cron = undefined
+  updateValue()
+}
+
+/**
+ * 频率单位切换
+ * @param v
+ */
+const periodUnitChange = (v: any) => {
+  if(v === 'hours') {
+    unitMax.value = 99999
+  } else {
+    unitMax.value = 99
+  }
+  formModel.period!.every = 1
   updateValue()
 }
 
