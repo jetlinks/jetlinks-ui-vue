@@ -157,15 +157,17 @@ const componentsType = ref<ITypes>({
 });
 const typeMap = new Map(Object.entries(componentsType.value));
 
-const myValue = computed({
-    get: () => {
-        return props.modelValue;
-    },
-    set: (val: any) => {
-        objectValue.value = val;
-        emit('update:modelValue', val);
-    },
-});
+// const myValue = computed({
+//     get: () => {
+//         return props.modelValue;
+//     },
+//     set: (val: any) => {
+//         objectValue.value = val;
+//         emit('update:modelValue', val);
+//     },
+// });
+
+const myValue = ref(props.modelValue)
 
 // 代码编辑器弹窗
 const modalVis = ref<boolean>(false);
@@ -174,6 +176,7 @@ const handleItemModalSubmit = () => {
     myValue.value = objectValue.value.replace(/[\r\n]\s*/g, '');
     modalVis.value = false;
     emit('change', objectValue.value)
+    emit('update:modelValue', myValue.value);
 };
 
 // 文件上传
@@ -189,19 +192,25 @@ const handleFileChange = (info: UploadChangeParam<UploadFile<any>>) => {
 
 const selectChange = (e: string, option: any) => {
   emit('change', e, option)
+  emit('update:modelValue', myValue.value);
 }
 
 const timeChange = (e: any) => {
   emit('change', e)
+  emit('update:modelValue', myValue.value);
 }
 
 const inputChange = (e: any) => {
   emit('change', e && e.target ? e.target.value : e)
+  emit('update:modelValue', myValue.value);
 }
 
 const dateChange = (e: any) => {
   emit('change', e)
+  emit('update:modelValue', myValue.value);
 }
+
+myValue.value = props.modelValue
 
 </script>
 
