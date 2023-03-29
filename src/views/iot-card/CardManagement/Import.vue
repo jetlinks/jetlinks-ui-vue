@@ -181,6 +181,7 @@ const handleCancel = () => {
 };
 
 const handleOk = () => {
+    modelRef.configId = undefined;
     emit('save', true);
 };
 
