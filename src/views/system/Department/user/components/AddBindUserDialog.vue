@@ -7,9 +7,10 @@
         centered
         :confirmLoading="loading"
         @ok="confirm"
-        @cancel="emits('update:visible', false)"
+        @cancel="cancel"
     >
         <pro-search
+            type="simple"
             :columns="columns"
             target="category"
             @search="(params:any)=>queryParams = {...params}"
@@ -33,7 +34,6 @@
                 :pagination="{
                     showSizeChanger: true,
                     pageSizeOptions: ['10', '20', '50', '100'],
-                    change: handlePageChange,
                 }"
             />
         </div>
@@ -63,13 +63,19 @@ const confirm = () => {
                 message.success('操作成功');
                 emits('confirm');
                 emits('update:visible', false);
-                table._selectedRowKeys = [];
+                // table._selectedRowKeys = [];
+                department.setSelectedKeys([]);
             })
             .finally(() => (loading.value = false));
     } else {
         // emits('update:visible', false);
         message.warning('请选择要绑定的用户');
     }
+};
+
+const cancel = () => {
+    emits('update:visible', false);
+    department.setSelectedKeys([]);
 };
 
 const columns = [
@@ -134,42 +140,24 @@ const table = reactive({
         }
     },
     onSelectChange: (keys: string[]) => {
-        table._selectedRowKeys = keys;
+        // console.log('手动选择改变: ', keys);
+        // table._selectedRowKeys = keys;
+        department.setSelectedKeys(keys, keys.length ? 'concat' : '');
     },
     cancelSelect: () => {
-        table._selectedRowKeys = [];
+        // console.log('分页会 取消选择', 1111111111);
+        // table._selectedRowKeys = [];
+        department.setSelectedKeys([], 'concat');
     },
 });
 
 watch(
-    () => table._selectedRowKeys,
+    () => department.crossPageKeys,
     (val: string[]) => {
-        // console.log('_selectedRowKeys: ', val);
-        department.setSelectedKeys(val);
-
-        // const newKeys = [];
-        // val.forEach((key: string) => {
-        //     if (!department.crossPageKeys.includes(key)) {
-        //         newKeys.push(key);
-        //     }
-        // });
-        // if (newKeys.length) {
-        //     department.setSelectedKeys(val);
-        //     console.log('_selectedRowKeys: ', val);
-        // }
+        // console.log('crossPageKeys: ', val);
+        table._selectedRowKeys = val;
     },
 );
-// watch(
-//     () => department.crossPageKeys,
-//     (val: string[]) => {
-//         // console.log('crossPageKeys: ', val);
-//         table._selectedRowKeys = val;
-//     },
-// );
-const handlePageChange = () => {
-    console.log('PageChange');
-    // department.setSelectedKeys([], 'pagination');
-};
 </script>
 
 <style lang="less" scoped>

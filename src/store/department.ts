@@ -26,8 +26,7 @@ export const useDepartmentStore = defineStore({
         },
         setSelectedKeys(value: string[], type?: string) {
             // 分页保留选中项
-            // this.crossPageKeys = type === 'pagination' ? [...new Set([...this.crossPageKeys, ...value])] : value;
-            this.crossPageKeys = [...new Set([...this.crossPageKeys, ...value])];
+            this.crossPageKeys = type === 'concat' ? [...new Set([...this.crossPageKeys, ...value])] : value;
         }
     }
 })
