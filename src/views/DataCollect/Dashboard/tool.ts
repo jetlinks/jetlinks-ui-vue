@@ -6,19 +6,19 @@ const getParams = (dt: any) => {
             return {
                 limit: 24,
                 interval: '1h',
-                format: 'HH:mm',
+                format: 'YYYY-MM-dd HH:mm',
             };
         case 'week':
             return {
                 limit: 7,
                 interval: '1d',
-                format: 'MM-dd',
+                format: 'YYYY-MM-dd HH:mm',
             };
         case 'hour':
             return {
                 limit: 60,
                 interval: '1m',
-                format: 'HH:mm',
+                format: 'YYYY-MM-dd HH:mm',
             };
         default:
             const time = dt.time[1] - dt.time[0];
@@ -29,31 +29,31 @@ const getParams = (dt: any) => {
                 return {
                     limit: Math.abs(Math.ceil(time / (60 * 60))),
                     interval: '1m',
-                    format: 'HH:mm',
+                    format: 'YYYY-MM-dd HH:mm',
                 };
             } else if (time > hour && time <= days) {
                 return {
                     limit: Math.abs(Math.ceil(time / hour)),
                     interval: '1h',
-                    format: 'HH:mm',
+                    format: 'YYYY-MM-dd HH:mm',
                 };
             } else if (time > days && time <= days * 7) {
                 return {
                     limit: Math.abs(Math.ceil(time / days / 7)) + 1,
                     interval: '1d',
-                    format: 'YYYY-MM-DD',
+                    format: 'YYYY-MM-dd HH:mm',
                 };
             } else if (time >= year) {
                 return {
                     limit: Math.abs(Math.ceil(time / days / 31)) + 1,
                     interval: '1M',
-                    format: 'yyyy年-M月',
+                    format: 'YYYY-MM-dd HH:mm',
                 };
             } else {
                 return {
                     limit: Math.abs(Math.ceil(time / days)) + 1,
                     interval: '1d',
-                    format: 'MM-dd',
+                    format: 'YYYY-MM-dd HH:mm',
                 };
             }
     }

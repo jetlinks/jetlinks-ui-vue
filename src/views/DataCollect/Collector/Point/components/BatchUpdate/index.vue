@@ -88,7 +88,7 @@
 import type { FormInstance } from 'ant-design-vue';
 import { savePointBatch } from '@/api/data-collect/collector';
 import { Rule } from 'ant-design-vue/lib/form';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isObject } from 'lodash';
 import { regOnlyNumber } from '../../../data';
 
 const props = defineProps({
@@ -125,7 +125,15 @@ const handleOk = async () => {
     if (ischange) {
         const params = cloneDeep(props.data);
         params.forEach((i: any) => {
-            accessModes.length !== 0 && (i.accessModes = data.accessModes);
+            if (accessModes.length !== 0) {
+                i.accessModes = data.accessModes;
+            } else {
+                if (isObject(i.accessModes)) {
+                    i.accessModes = i.accessModes.map(
+                        (item: any) => item.value,
+                    );
+                }
+            }
             features.length !== 0 && (i.features = data.features);
             if (!!interval) {
                 i.interval = data.interval;

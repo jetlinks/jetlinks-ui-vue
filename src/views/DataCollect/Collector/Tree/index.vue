@@ -28,7 +28,7 @@
                     defualtDataSource.length !== 0 ||
                     defualtDataSource?.[0]?.children?.length !== 0
                 "
-                :height="600"
+                :height="660"
                 defaultExpandAll
             >
                 <template #title="{ name, data }">
@@ -300,6 +300,10 @@ watch(
         :deep(.ant-btn-primary) {
             width: 100%;
         }
+    }
+
+    :deep(.ant-tree-list-holder-inner) {
+        width: 90%;
     }
 
     :deep(.ant-tree-treenode) {
