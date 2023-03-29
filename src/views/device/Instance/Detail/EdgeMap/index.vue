@@ -31,7 +31,9 @@
                                     v-model:value="record[column.dataIndex]"
                                     placeholder="请选择"
                                     allowClear
-                                    :filter-option="filterOption"
+                                    @change="
+                                        () => onChannelChange(index, 'channel')
+                                    "
                                 >
                                     <j-select-option
                                         v-for="item in channelList"
@@ -58,6 +60,10 @@
                                     :id="record.channelId"
                                     type="COLLECTOR"
                                     :edgeId="instanceStore.current.parentId"
+                                    v-model:provider="record.provider"
+                                    @change="
+                                        onChannelChange(index, 'collector')
+                                    "
                                 />
                             </j-form-item>
                         </template>
@@ -80,61 +86,84 @@
                             </j-form-item>
                         </template>
                         <template v-if="column.dataIndex === 'id'">
-                            <j-badge
-                                v-if="record[column.dataIndex]"
-                                status="success"
-                                text="已绑定"
-                            />
+                            <template v-if="record[column.dataIndex]">
+                                <j-badge
+                                    v-if="record.state.value === 'enabled'"
+                                    status="success"
+                                    text="在线"
+                                />
+                                <j-badge
+                                    v-else
+                                    status="warning"
+                                    text="离线"
+                                />
+                            </template>
                             <j-badge v-else status="error" text="未绑定" />
                         </template>
                         <template v-if="column.key === 'action'">
                             <j-space>
-                                <PermissionButton
-                                    type="link"
-                                    :disabled="!record.id"
-                                    :popConfirm="{
-                                        title: '确认解绑？',
-                                        onConfirm: unbind(record.id),
-                                    }"
-                                    style="padding: 0 5px"
-                                    hasPermission="device/Instance:update"
-                                    :tooltip="{
-                                        title: '解绑',
-                                    }"
+                                <j-tooltip
+                                    :title="
+                                        isPermission
+                                            ? '解绑'
+                                            : '暂无权限，请联系管理员'
+                                    "
                                 >
-                                    <AIcon type="icon-jiebang" />
-                                </PermissionButton>
+                                    <j-popconfirm
+                                        title="确认解绑？"
+                                        :disabled="!record.id || !isPermission"
+                                        @confirm="unbind(record.id)"
+                                    >
+                                        <j-button
+                                            type="link"
+                                            :disabled="
+                                                !record.id || !isPermission
+                                            "
+                                            style="padding: 0 5px"
+                                        >
+                                            <AIcon type="icon-jiebang" />
+                                        </j-button>
+                                    </j-popconfirm>
+                                </j-tooltip>
                                 <template v-if="record.id">
-                                    <PermissionButton
-                                        type="link"
-                                        :disabled="!record.id"
-                                        style="padding: 0 5px"
-                                        :popConfirm="{
-                                            title:
+                                    <j-tooltip
+                                        :title="
+                                            isPermission
+                                                ? record.state.value ===
+                                                  'enabled'
+                                                    ? '禁用'
+                                                    : '启用'
+                                                : '暂无权限，请联系管理员'
+                                        "
+                                    >
+                                        <j-popconfirm
+                                            :title="
                                                 record.state.value === 'enabled'
                                                     ? '确认禁用？'
-                                                    : '确认启用?',
-                                            onConfirm: onAction(record),
-                                        }"
-                                        hasPermission="device/Instance:update"
-                                        :tooltip="{
-                                            title:
-                                                record.state.value === 'enabled'
-                                                    ? '禁用'
-                                                    : '启用',
-                                        }"
-                                    >
-                                        <AIcon
-                                            v-if="
-                                                record.state.value === 'enabled'
+                                                    : '确认启用?'
                                             "
-                                            type="StopOutlined"
-                                        />
-                                        <AIcon
-                                            v-else
-                                            type="PlayCircleOutlined"
-                                        />
-                                    </PermissionButton>
+                                            :disabled="!isPermission"
+                                            @confirm="onAction(record)"
+                                        >
+                                            <j-button
+                                                type="link"
+                                                style="padding: 0 5px"
+                                                :disabled="!isPermission"
+                                            >
+                                                <AIcon
+                                                    v-if="
+                                                        record.state.value ===
+                                                        'enabled'
+                                                    "
+                                                    type="StopOutlined"
+                                                />
+                                                <AIcon
+                                                    v-else
+                                                    type="PlayCircleOutlined"
+                                                />
+                                            </j-button>
+                                        </j-popconfirm>
+                                    </j-tooltip>
                                 </template>
                             </j-space>
                         </template>
@@ -142,10 +171,10 @@
                 </j-table>
                 <div class="pagination">
                     <j-pagination
-                        @change="onPageChange"
                         v-model:pageSize="pageSize"
                         v-model:current="current"
                         :total="metadata?.properties?.length || 0"
+                        @change="onPageChange"
                     />
                 </div>
             </j-form>
@@ -175,6 +204,8 @@ import {
 import MSelect from './MSelect.vue';
 import PatchMapping from './PatchMapping.vue';
 import { onlyMessage } from '@/utils/comm';
+import { cloneDeep } from 'lodash-es';
+import { usePermissionStore } from '@/store/permission';
 
 const columns = [
     {
@@ -214,19 +245,22 @@ const columns = [
     },
 ];
 
-const current = ref<number>(1);
-const pageSize = ref<number>(10);
+const permissionStore = usePermissionStore();
 
-const filterOption = (input: string, option: any) => {
-    return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-};
+const isPermission = permissionStore.hasPermission('device/Instance:update');
+
+const current = ref<number>(0);
+const pageSize = ref<number>(10);
 
 const instanceStore = useInstanceStore();
 const metadata = JSON.parse(instanceStore.current?.metadata || '{}');
 const loading = ref<boolean>(false);
 const channelList = ref<any[]>([]);
 
-const _properties = ref<any[]>([]);
+const _properties = computed(() => {
+    const _cur = current.value >= 1 ? current.value : 1;
+    return metadata.properties.slice((_cur - 1) * 10, _cur * 10);
+});
 
 const modelRef = reactive<{
     dataSource: any[];
@@ -250,18 +284,9 @@ const getChannel = async () => {
     }
 };
 
-const queryData = (cur: number) => {
-    _properties.value = metadata.properties.slice(
-        (cur > 0 ? cur - 1 : 0) * 10,
-        cur * 10,
-    );
-    handleSearch(_properties.value)
-};
-
-const handleSearch = async (array: any[]) => {
+const handleSearch = async (_array: any[]) => {
     loading.value = true;
-    getChannel();
-    const _metadata: any[] = array.map((item: any) => ({
+    const _metadata: any[] = _array.map((item: any) => ({
         metadataId: item.id,
         metadataName: `${item.name}(${item.id})`,
         metadataType: 'property',
@@ -297,11 +322,12 @@ const handleSearch = async (array: any[]) => {
 };
 
 const unbind = async (id: string) => {
-    if (id) {
+    const _deviceId = instanceStore.current.id;
+    if (id && _deviceId) {
         const resp = await removeEdgeMap(
             instanceStore.current?.parentId || '',
             {
-                deviceId: instanceStore.current.id,
+                deviceId: _deviceId,
                 idList: [id],
             },
         );
@@ -314,22 +340,31 @@ const unbind = async (id: string) => {
 
 const onPatchBind = () => {
     visible.value = false;
-    handleSearch(_properties.value);
+    onRefresh();
 };
 
-const onPageChange = (page: any) => {
-    queryData(page)
+const onChannelChange = (_index: number, type: 'collector' | 'channel') => {
+    if (type === 'channel') {
+        modelRef.dataSource[_index].collectorId = undefined;
+        modelRef.dataSource[_index].pointId = undefined;
+    } else {
+        modelRef.dataSource[_index].pointId = undefined;
+    }
 };
 
 onMounted(() => {
-    _properties.value = metadata.properties.slice(0, 10);
+    getChannel();
     handleSearch(_properties.value);
 });
+
+const onPageChange = () => {
+    handleSearch(_properties.value);
+};
 
 const onSave = () => {
     formRef.value
         .validate()
-        .then(async () => {
+        .then(async (_data: any) => {
             const arr = toRaw(modelRef).dataSource.filter(
                 (i: any) => i.channelId,
             );
@@ -345,7 +380,7 @@ const onSave = () => {
                 );
                 if (resp.status === 200) {
                     onlyMessage('操作成功！', 'success');
-                    handleSearch(_properties.value);
+                    onRefresh();
                 }
             }
         })
@@ -355,8 +390,9 @@ const onSave = () => {
 };
 
 const onAction = async (record: any) => {
-    const value = await formRef.value.validate();
-    const array = value.filter((item: any) => item.channelId);
+    const array = (modelRef.dataSource || [])?.filter(
+        (item: any) => item.channelId,
+    );
     const findArray = array.find((item: any) => item.id === record?.id);
     const arr = {
         ...findArray,
@@ -374,8 +410,41 @@ const onAction = async (record: any) => {
     );
     if (resp.status === 200) {
         onlyMessage('操作成功！', 'success');
-        handleSearch(_properties.value);
+        onRefresh();
     }
+};
+
+const onRefresh = async () => {
+    loading.value = true;
+    if (modelRef.dataSource && modelRef.dataSource.length) {
+        const resp: any = await getEdgeMap(
+            instanceStore.current?.parentId || '',
+            {
+                deviceId: instanceStore.current.id,
+                query: {},
+            },
+        ).catch(() => {
+            loading.value = false;
+        });
+        if (resp.status === 200) {
+            const arr = cloneDeep(modelRef.dataSource);
+            const array = resp.result?.[0].map((x: any) => {
+                const _item = arr.find(
+                    (item: any) => item.metadataId === x.metadataId,
+                );
+                if (_item) {
+                    return {
+                        ..._item,
+                        ...x,
+                    };
+                } else {
+                    return x;
+                }
+            });
+            modelRef.dataSource = array;
+        }
+    }
+    loading.value = false;
 };
 </script>
 

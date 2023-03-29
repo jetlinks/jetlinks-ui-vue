@@ -50,6 +50,7 @@
 <script setup lang="ts" name="RolePermiss">
 import { FormInstance, message } from 'ant-design-vue';
 import PermissTree from '../components/PermissTree.vue';
+import { useMenuStore } from '@/store/menu';
 
 import {
     getRoleDetails_api,
@@ -57,6 +58,7 @@ import {
     updatePrimissTree_api,
 } from '@/api/system/role';
 
+const { jumpPage } = useMenuStore();
 const route = useRoute();
 const router = useRouter();
 const roleId = route.params.id as string;
@@ -86,7 +88,7 @@ const form = reactive({
             console.log(form.menus);
             Promise.all([updateRole, updateTree]).then((resp) => {
                 message.success('操作成功');
-                // router.push('/system/Role');
+                jumpPage(`system/Role`);
             });
         });
     },
