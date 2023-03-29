@@ -8,7 +8,7 @@
           ]'
         type='type'
         v-model:value='paramsValue.type'
-        @change='typeChange'
+        @select='typeChange'
       />
     </div>
     <div
@@ -137,7 +137,7 @@ const props = defineProps({
     type: Object as PropType<TermsType>,
     default: () => ({
       column: '',
-      type: '',
+      type: 'and',
       termType: 'eq',
       value: {
         source: 'fixed',
@@ -174,15 +174,16 @@ const handOptionByColumn = (option: any) => {
   if (option) {
     termTypeOptions.value = option.termTypes || []
     tabsOptions.value[0].component = option.type
+    const _options = isArray(option.options) ? option.options : []
     if (option.type === 'boolean') {
-      valueOptions.value = option.options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || [
+      valueOptions.value = _options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || [
         { label: '是', value: true },
         { label: '否', value: false },
       ]
     } else if(option.type === 'enum') {
-      valueOptions.value = option.options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || []
+      valueOptions.value = _options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || []
     } else{
-      valueOptions.value = (option.options || []).map((item: any) => ({ ...item, label: item.name, value: item.id}))
+      valueOptions.value = _options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || []
     }
     valueColumnOptions.value = treeFilter(cloneDeep(columnOptions.value), option.type, 'type')
   } else {
