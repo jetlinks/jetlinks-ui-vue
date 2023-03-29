@@ -85,7 +85,7 @@
                         :value="form.deviceType"
                         :options="deviceList"
                         @change="changeDeviceType"
-                        :disabled="disabled"
+                        :disabled="productStore.detail?.accessId ? true : false"
                     >
                         <template #title="item">
                             <span>{{ item.title }}</span>
@@ -142,12 +142,9 @@ const loading = ref<boolean>(false);
 const dialogRef = ref();
 const treeList = ref<Record<string, any>[]>([]);
 const visible = ref<boolean>(false);
-const logoLoading = ref<boolean>(false);
 const formRef = ref();
-const disabled = ref<boolean>(false);
 const idDisabled = ref<boolean>(false);
 const useForm = Form.useForm;
-const _selectedRowKeys = ref([]);
 const photoValue = ref('/images/device-product.png');
 const imageTypes = reactive([
     'image/jpeg',
@@ -258,12 +255,12 @@ const queryProductTree = async () => {
  * 处理产品分类key
  */
 const dealProductTree = (arr: any) => {
-   return arr.map((element: any) => {
+    return arr.map((element: any) => {
         element.key = element.id;
         if (element.children) {
             element.children = dealProductTree(element.children);
         }
-        return element
+        return element;
     });
 };
 /**
@@ -279,9 +276,9 @@ const show = (data: any) => {
         form.deviceType = data.deviceType.value;
         form.describe = form.describe;
         form.id = data.id;
-        disabled.value = productStore.current?.accessId ? true : false;
         idDisabled.value = true;
     } else if (props.isAdd === 1) {
+        productStore.reSet();
         form.name = '';
         form.classifiedId = undefined;
         form.classifiedName = '';
@@ -289,8 +286,7 @@ const show = (data: any) => {
         form.deviceType = '';
         form.describe = undefined;
         form.id = undefined;
-        disabled.value = false;
-        disabled.vlaue = false;
+        idDisabled.value = false;
     }
     visible.value = true;
 };

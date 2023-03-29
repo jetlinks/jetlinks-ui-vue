@@ -8,6 +8,12 @@
                         v-if="
                             permissionStore.hasPermission(
                                 'device/Product:update',
+                            ) &&
+                            permissionStore.hasPermission(
+                                'link/AccessConfig:add',
+                            ) &&
+                            permissionStore.hasPermission(
+                                'link/AccessConfig:update',
                             )
                         "
                     >
@@ -24,7 +30,7 @@
                 <j-col :span="12">
                     <Title data="接入方式">
                         <template #extra>
-                            <j-tooltip
+                            <!-- <j-tooltip
                                 :title="
                                     productStore.current?.count &&
                                     productStore.current?.count > 0
@@ -44,7 +50,48 @@
                                     @click="showDevice"
                                     >更换</j-button
                                 >
-                            </j-tooltip>
+                            </j-tooltip> -->
+                            <PermissionButton
+                                style="margin: 0 0 0 20px"
+                                type="primary"
+                                size="small"
+                                :tooltip="{
+                                    title:
+                                        productStore.current?.count &&
+                                        productStore.current?.count > 0
+                                            ? '产品下有设备实例时不能更换接入方式'
+                                            : !(permissionStore.hasPermission(
+                                                  'device/Product:update',
+                                              ) &&
+                                              permissionStore.hasPermission(
+                                                  'link/AccessConfig:add',
+                                              ) &&
+                                              permissionStore.hasPermission(
+                                                  'link/AccessConfig:update',
+                                              ))
+                                            ? '暂无权限，请联系管理员'
+                                            : '',
+                                }"
+                                :disabled="
+                                    (productStore.current?.count &&
+                                        productStore.current?.count > 0) ||
+                                    !(
+                                        permissionStore.hasPermission(
+                                            'device/Product:update',
+                                        ) &&
+                                        permissionStore.hasPermission(
+                                            'link/AccessConfig:add',
+                                        ) &&
+                                        permissionStore.hasPermission(
+                                            'link/AccessConfig:update',
+                                        )
+                                    )
+                                "
+                                ghost
+                                @click="showDevice"
+                            >
+                                更换
+                            </PermissionButton>
                         </template>
                     </Title>
                     <div>
@@ -419,7 +466,7 @@ import { marked } from 'marked';
 import type { TableColumnType } from 'ant-design-vue';
 import { useMenuStore } from '@/store/menu';
 import _ from 'lodash';
-import { accessConfigTypeFilter } from '@/utils/setting'
+import { accessConfigTypeFilter } from '@/utils/setting';
 
 const tableRef = ref();
 const formRef = ref();
@@ -502,8 +549,8 @@ const query = reactive({
                 options: async () => {
                     return new Promise((resolve) => {
                         getProviders().then((resp: any) => {
-                          const data = resp.result || []
-                          resolve(accessConfigTypeFilter(data))
+                            const data = resp.result || [];
+                            resolve(accessConfigTypeFilter(data));
                         });
                     });
                 },
@@ -935,7 +982,7 @@ const getData = async (accessId?: string) => {
         );
         getProviders().then((resp) => {
             if (resp.status === 200) {
-                const data = resp.result || []
+                const data = resp.result || [];
                 dataSource.value = accessConfigTypeFilter(data as any[]);
             }
         });
@@ -1019,10 +1066,13 @@ watchEffect(() => {
 nextTick(() => {
     getData();
 });
-watch(()=>productStore.current,()=>{
-    getData();
-    formData.data = productStore.current?.configuration || {}
-})
+watch(
+    () => productStore.current,
+    () => {
+        getData();
+        formData.data = productStore.current?.configuration || {};
+    },
+);
 </script>
 <style lang="less" scoped>
 :deep(

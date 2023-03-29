@@ -1,21 +1,25 @@
 <template>
-    <j-select allowClear v-model:value="_value" @change="onChange" placeholder="请选择" style="width: 100%">
+    <j-select
+        allowClear
+        v-model:value="_value"
+        @change="onChange"
+        placeholder="请选择"
+        style="width: 100%"
+    >
         <j-select-option
             v-for="item in list"
+            v-bind="item"
             :key="item.id"
             :value="item.id"
             :label="item.name"
-            :filter-option="filterOption"
+            showSearch
             >{{ item.name }}</j-select-option
         >
     </j-select>
 </template>
 
 <script lang="ts" setup>
-import {
-    edgeCollector,
-    edgePoint,
-} from '@/api/device/instance';
+import queryDataList from './utils';
 
 const _props = defineProps({
     modelValue: {
@@ -33,15 +37,17 @@ const _props = defineProps({
     edgeId: {
         type: String,
         default: '',
-    }
+    },
+    provider: {
+        type: String,
+        default: '',
+    },
 });
-
-const filterOption = (input: string, option: any) => {
-    return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-};
 
 type Emits = {
     (e: 'update:modelValue', data: string | undefined): void;
+    (e: 'update:provider', data: string | undefined): void;
+    (e: 'change', data: string | undefined): void;
 };
 const emit = defineEmits<Emits>();
 
@@ -52,64 +58,16 @@ watchEffect(() => {
     _value.value = _props.modelValue;
 });
 
-const onChange = (_val: string) => {
+const onChange = (_val: string, _options: any) => {
     emit('update:modelValue', _val);
-};
-
-const getCollector = async (_val: string) => {
-    if (!_val) {
-        return [];
-    } else {
-        const resp = await edgeCollector(_props.edgeId, {
-            terms: [
-                {
-                    terms: [
-                        {
-                            column: 'channelId',
-                            value: _val,
-                        },
-                    ],
-                },
-            ],
-        });
-        if (resp.status === 200) {
-            list.value = (resp.result as any[])?.[0] || []
-        }
-    }
-};
-
-const getPoint = async (_val: string) => {
-    if (!_val) {
-        return [];
-    } else {
-        const resp = await edgePoint(_props.edgeId, {
-            terms: [
-                {
-                    terms: [
-                        {
-                            column: 'collectorId',
-                            value: _val,
-                        },
-                    ],
-                },
-            ],
-        });
-        if (resp.status === 200) {
-            list.value = (resp.result as any[])?.[0] || []
-        }
-    }
+    emit('update:provider', _options?.provider);
+    emit('change', _val);
 };
 
 watchEffect(() => {
-    if (_props.id) {
-        if (_props.type === 'POINT') {
-            getPoint(_props.id);
-        } else {
-            getCollector(_props.id);
-        }
-    } else {
-        list.value = [];
-    }
+    queryDataList(_props.id, _props.edgeId, _props.type).then((_data: any) => {
+        list.value = _data;
+    });
 });
 </script>
 

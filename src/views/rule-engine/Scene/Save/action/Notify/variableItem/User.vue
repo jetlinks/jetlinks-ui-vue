@@ -43,6 +43,8 @@
                 :multiple="true"
                 :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
                 :value="relationData"
+                showSearch
+                treeNodeFilterProp="title"
             >
                 <template #title="{ key, username, title }">
                     <div
@@ -69,6 +71,8 @@
                 :tree-data="treeData"
                 :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
                 :value="relationData"
+                showSearch
+                treeNodeFilterProp="title"
             >
                 <template #title="{ key, username, title }">
                     <div
@@ -110,6 +114,7 @@
                 placeholder="请输入收件人邮箱,多个收件人用换行分隔"
                 :value="value?.value"
                 mode="tags"
+                max-tag-count="responsive"
                 @change="
                     (val) =>
                         onChange(

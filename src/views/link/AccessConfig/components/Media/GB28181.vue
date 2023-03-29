@@ -659,9 +659,8 @@ const saveData = () => {
 
 const next = async () => {
     let data1: any = await formRef1.value?.validate();
-    if (data1.hostPort?.port) {
-        const port = JSON.parse(data1.hostPort.port).port;
-        data1.hostPort.port = port;
+    if (!isNumber(data1.hostPort.port)) {
+        data1.hostPort.port = JSON.parse(data1.hostPort.port).port;
     }
     if (!data1?.shareCluster) {
         await formRef2.value

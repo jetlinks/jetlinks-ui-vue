@@ -6,10 +6,10 @@
         :title="type === 'active' ? '启用' : '同步'"
         :closable="false"
     >
-        <div style="margin: 10px 0px 20px 0px">
+        <div style="margin: 10px 0px 20px 0px; padding-right: 10px;">
             <div v-if="flag">
                 <div>{{ type === 'active' ? '正在启用全部设备' : '正在同步设备状态' }}</div>
-                <j-progress :percent="50" />
+                <j-progress :percent="_percent" />
             </div>
             <div v-else>
                 <p>{{ type === 'active' ? '启用' : '同步' }}成功：{{ count }}条</p>
@@ -23,6 +23,7 @@
 </template>
 
 <script lang="ts" setup>
+import { getDeviceNumber } from '@/api/device/product';
 import { EventSourcePolyfill } from 'event-source-polyfill';
 
 const emit = defineEmits(['close', 'save']);
@@ -36,12 +37,11 @@ const props = defineProps({
         default: '',
     },
 });
-// const eventSource = ref<Record<string, any>>({})
+
 const count = ref<number>(0);
+const total = ref<number>(0);
 const flag = ref<boolean>(true);
 const errCount = ref<number>(0);
-const isSource = ref<boolean>(false);
-const id = ref<string>('');
 const source = ref<Record<string, any>>({});
 
 const handleCancel = () => {
@@ -49,9 +49,14 @@ const handleCancel = () => {
     emit('save');
 };
 
+const _percent = computed(() => {
+    return ((errCount.value + count.value) / total.value * 100).toFixed(2)
+})
+
 const getData = (api: string) => {
     flag.value = true;
     let dt = 0;
+    let dt1 = 0;
     const _source = new EventSourcePolyfill(api);
     source.value = _source;
     _source.onmessage = (e: any) => {
@@ -59,24 +64,16 @@ const getData = (api: string) => {
         switch (props.type) {
             case 'active':
                 if (res.success) {
-                    _source.close();
                     dt += res.total;
                     count.value = dt;
-                    flag.value = false;
                 } else {
-                    if (res.source) {
-                        errCount.value = 1
-                        id.value = res.source.id;
-                        isSource.value = true;
-                    } else {
-                        errCount.value = 1
-                    }
+                    dt1 += res.total;
+                    errCount.value = dt1;
                 }
                 break;
             case 'sync':
                 dt += res;
                 count.value = dt;
-                flag.value = false;
                 break;
             default:
                 break;
@@ -93,7 +90,12 @@ watch(
     () => props.api,
     (newValue) => {
         if (newValue) {
-            getData(newValue);
+            getDeviceNumber({}).then(resp => {
+                if(resp.status === 200){
+                    total.value = resp.result
+                    getData(newValue);
+                }
+            })
         }
     },
     { deep: true, immediate: true },

@@ -161,6 +161,9 @@ import DeviceApi from '@/api/media/device';
 import { getImage } from '@/utils/comm';
 import { gatewayType } from '@/views/media/Device/typings';
 import { providerType } from '../const';
+import { useMenuStore } from '@/store/menu';
+
+const menuStory = useMenuStore();
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
@@ -239,8 +242,8 @@ watch(
         if (val) {
             getGatewayList();
         } else {
-            _selectedRowKeys.value = [];
-            extendFormItem.value = [];
+            _selectedRowKeys.value = [];;
+            extendFormItem.value = [];;
             emit('close');
         }
     },
