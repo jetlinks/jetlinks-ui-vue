@@ -478,12 +478,6 @@ export default {
       buttons: [
         { id: 'view', name: '查看', enabled: true, granted: true },
         { id: 'update', name: '编辑', enabled: true, granted: true },
-        {
-          id: 'action',
-          name: '启/禁用',
-          enabled: true,
-          granted: true,
-        },
         { id: 'delete', name: '删除', enabled: true, granted: true },
         {
           id: 'add',
@@ -949,12 +943,6 @@ export default {
       buttons: [
         { id: 'view', name: '查看', enabled: true, granted: true },
         { id: 'update', name: '编辑', enabled: true, granted: true },
-        {
-          id: 'action',
-          name: '启/禁用',
-          enabled: true,
-          granted: true,
-        },
         { id: 'delete', name: '删除', enabled: true, granted: true },
         {
           id: 'add',
