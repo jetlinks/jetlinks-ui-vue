@@ -317,6 +317,13 @@ const table: any = {
                 const { pageIndex, pageSize, total, data } =
                     resp.result as resultType;
                 const ids = data.map((item) => item.id);
+                // 资产权限排序: 查看/编辑/删除/共享
+                const idxMap = {
+                    read: 0,
+                    save: 1,
+                    delete: 2,
+                    share: 3,
+                };
                 // fix: bug#10706
                 getBindingsPermission(props.assetType, ids).then(
                     (perResp: any) => {
@@ -329,7 +336,15 @@ const table: any = {
                                     disabled: true,
                                 }));
                             item.selectPermissions = ['read'];
-
+                            // 资产排序
+                            item.permissionList = item.permissionList
+                                .map((m: any) => {
+                                    return {
+                                        ...m,
+                                        idx: idxMap[m.value],
+                                    };
+                                })
+                                .sort((a: any, b: any) => a.idx - b.idx);
                             // 产品的状态进行转换处理
                             if (props.assetType === 'product') {
                                 item.state = {
