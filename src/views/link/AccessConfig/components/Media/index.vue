@@ -121,7 +121,14 @@ const onFinish = async (values: any) => {
         id === ':id' ? await save(params) : await update({ ...params, id });
     if (resp.status === 200) {
         onlyMessage('操作成功', 'success');
-        history.back();
+
+        if (route.query.save) {
+            // @ts-ignore
+            window?.onSaveSuccess(resp.result);
+            window.close();
+        } else {
+            history.back();
+        }
     }
 };
 
