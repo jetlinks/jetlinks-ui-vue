@@ -203,11 +203,11 @@ const onCancel = () => {
     emit('cancel');
 };
 const onOk = async () => {
-    let _data = undefined
+    let _data = null
     if(variable.value.length){
         _data = await variableRef.value.onSave()
     }
-    formModel.variables = _data || [];
+    formModel.variables = _data;
     const { options, ...extra } = formModel;
     emit('save', { ...extra }, { ...options });
 };

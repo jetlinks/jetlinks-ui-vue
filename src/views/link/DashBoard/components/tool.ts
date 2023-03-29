@@ -99,6 +99,7 @@ export const networkParams = (val: any) => {
                 from: Number(val.time.time[0]),
                 to: Number(val.time.time[1]),
                 limit: _limit,
+                format: 'YYYY-MM-dd HH:mm',
             },
         },
     ];

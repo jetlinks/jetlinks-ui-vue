@@ -113,9 +113,10 @@ const deleteItem = (_index: number) => {
 };
 
 const onTypeSelect = (key: any, _index: number) => {
-    const indexItem = tagList[_index];
+    const indexItem = tagList.value[_index];
     indexItem.type = key;
     tagList.value[_index] = indexItem;
+    onValueChange()
 };
 
 const onTagSelect = (_data: any, _index: number) => {
@@ -127,6 +128,7 @@ const onTagSelect = (_data: any, _index: number) => {
         handleItem({ ..._data, value: undefined, type: indexType }),
     );
     tagList.value = newList;
+    onValueChange()
 };
 
 watch(
@@ -173,7 +175,7 @@ const onValueChange = () => {
     const newValue = _data.map((item: any) => {
         return {
             column: item.id,
-            type: item?.valueType,
+            type: item?.type,
             value: item?.value,
         };
     });
@@ -181,10 +183,21 @@ const onValueChange = () => {
     emits('change', [{ value: newValue, name: '标签' }], _data);
 };
 
-// onMounted(() => {
-//     // console.log(tagList.value, props.tagData, props.value)
-//     // emits('change', props.value, _data);
-// })
+onMounted(() => {
+    if(props.value?.[0]?.value){
+        const arr: any[] = []
+        props.value?.[0]?.value.map((item: any) => {
+            const _item = props.tagData.find(i => i.id === item.column)
+            if(_item){
+                arr.push({
+                    ..._item,
+                    ...item,
+                })
+            }
+        })
+        emits('change', props.value, arr);
+    }
+})
 </script>
 
 <style lang="less" scoped>

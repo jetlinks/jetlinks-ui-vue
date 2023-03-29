@@ -188,7 +188,7 @@ import {
 } from '@/api/link/accessConfig';
 import { onlyMessage } from '@/utils/comm';
 import { useMenuStore } from 'store/menu';
-import { accessConfigTypeFilter } from '@/utils/setting'
+import { accessConfigTypeFilter } from '@/utils/setting';
 
 const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
@@ -304,10 +304,12 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             popConfirm: {
                 title: '确认删除?',
                 onConfirm: async () => {
-                    const res = await remove(data.id);
-                    if (res.success) {
+                    const res: any = await remove(data.id);
+                    if (res.status === 200) {
                         onlyMessage('操作成功', 'success');
                         tableRef.value.reload();
+                    } else {
+                        onlyMessage(res?.message, 'error');
                     }
                 },
             },
@@ -319,7 +321,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
 const getProvidersList = async () => {
     const res: any = await getProviders();
     providersList.value = res.result;
-    providersOptions.value = accessConfigTypeFilter(res.result || [])
+    providersOptions.value = accessConfigTypeFilter(res.result || []);
 };
 getProvidersList();
 

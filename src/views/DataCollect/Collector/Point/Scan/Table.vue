@@ -26,6 +26,10 @@
                                 required: true,
                                 message: '请输入',
                             },
+                            {
+                                validator: checkLength,
+                                trigger: 'change',
+                            },
                         ]"
                     >
                         <j-input

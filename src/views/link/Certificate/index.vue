@@ -80,7 +80,7 @@ const columns = [
             type: 'select',
             options: [
                 {
-                    label: '证书标准',
+                    label: '国际标准',
                     value: 'common',
                 },
             ],

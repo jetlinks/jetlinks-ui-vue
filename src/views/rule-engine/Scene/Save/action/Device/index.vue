@@ -72,6 +72,7 @@ import { onlyMessage } from '@/utils/comm';
 
 import { useSceneStore } from '@/store/scene';
 import { storeToRefs } from 'pinia';
+import { isActionChange } from '../../util';
 
 const sceneStore = useSceneStore();
 const { data } = storeToRefs(sceneStore);
@@ -173,11 +174,17 @@ const onSave = (_data: any) => {
 const onProductChange = (_val: any, bol: boolean) => {
     if (!bol) {
         DeviceModel.selectorValues = undefined;
-        DeviceModel.message = {
-            messageType: 'INVOKE_FUNCTION',
-        };
+        const flag = isActionChange(
+            JSON.parse(_val.metadata || '{}'),
+            DeviceModel?.message,
+        );
+        if (!flag) {
+            DeviceModel.message = {
+                messageType: 'INVOKE_FUNCTION',
+            };
+        }
     }
-    productDetail.value = _val
+    productDetail.value = _val;
     DeviceOptions.value.productName = _val?.name;
 };
 

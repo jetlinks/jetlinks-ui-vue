@@ -31,7 +31,7 @@
                 />
             </j-form-item>
             <j-form-item
-                v-else-if="modelRef.selector === 'tag'"
+                v-else-if="modelRef.selector === 'tag' && isTags"
                 name="selectorValues"
                 :rules="[{ required: true, message: '请选择标签' }]"
             >
@@ -80,6 +80,7 @@ import Tag from './Tag.vue';
 import RelationSelect from './RelationSelect.vue';
 import { getParams } from '../../../util';
 import { handleParamsData } from '../../../components/Terms/util';
+import _ from 'lodash';
 
 const props = defineProps({
     values: {
@@ -105,6 +106,11 @@ const props = defineProps({
         type: Object,
         default: () => {},
     },
+});
+
+// 首次操作标签数据option回显问题
+const isTags = computed(() => {
+    return _.map(list.value, 'value').includes('tag');
 });
 
 // save保存deviceDetail
@@ -281,17 +287,10 @@ const onTagChange = (val: any[], arr: any[]) => {
         modelRef.source = 'fixed';
     }
     const tagName = arr.map((i, _index) => {
-        return `${_index !== 0 && _index !== (arr || []).length && i.type}${
-            i.name
-        }为${i.value}`;
+        const _type = (_index !== 0 && _index !== (arr || []).length && i.type) ? (i.type === 'and' ? '并且' : '或者') : '';
+        return `${_type}${i.name}为${i.value}`;
     });
-    console.log(tagName)
-    emits(
-        'save',
-        unref(modelRef),
-        {},
-        arr ? { tagName: tagName.join('') } : {},
-    );
+    emits('save', unref(modelRef), { tagName: tagName.join('') });
 };
 
 const onVariableChange = (val: any, node: any) => {
@@ -315,7 +314,7 @@ watch(
     () => props.productDetail,
     async (newVal) => {
         await sourceChangeEvent();
-        if (newVal) {
+        if (newVal?.id) {
             filterType(newVal);
         }
     },

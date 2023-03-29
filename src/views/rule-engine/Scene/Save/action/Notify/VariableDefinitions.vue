@@ -52,6 +52,7 @@
             />
         </j-form-item>
     </j-form>
+    <j-empty v-else style="margin: 20px 0" description="暂无模板变量" />
 </template>
 
 <script lang="ts" setup>
