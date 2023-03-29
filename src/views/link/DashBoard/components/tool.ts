@@ -1,19 +1,21 @@
 import dayjs from 'dayjs';
 import * as echarts from 'echarts';
 
-export const getInterval = (type: string) => {
-    switch (type) {
-        case 'year':
-            return '30d';
-        case 'month':
-        case 'week':
-            return '1d';
-        case 'hour':
-            return '1m';
-        default:
-            return '1h';
-    }
-};
+// export const getInterval = (type: string) => {
+//     switch (type) {
+//         case 'year':
+//             return '30d';
+//         case 'month':
+//         case 'week':
+//             return '1d';
+//         case 'hour':
+//             return '1m';
+//         case 'today':
+//             return '1h';
+//         default:
+//             return '1h';
+//     }
+// };
 export const getTimeFormat = (type: string) => {
     switch (type) {
         case 'year':
@@ -21,10 +23,11 @@ export const getTimeFormat = (type: string) => {
         case 'month':
         case 'week':
             return 'MM-DD';
+        case 'today':
         case 'hour':
             return 'HH:mm';
         default:
-            return 'HH';
+            return 'YYYY-MM-DD HH:mm:ss';
     }
 };
 
@@ -51,21 +54,55 @@ export const arrayReverse = (data: string) => {
     return newArray;
 };
 
-export const networkParams = (val: any) => [
-    {
-        dashboard: 'systemMonitor',
-        object: 'network',
-        measurement: 'traffic',
-        dimension: 'agg',
-        group: 'network',
-        params: {
-            type: val.type,
-            interval: getInterval(val.time.type),
-            from: dayjs(val.time.time[0]).valueOf(),
-            to: dayjs(val.time.time[1]).valueOf(),
+export const networkParams = (val: any) => {
+    let _time = '1h';
+    let _limit = 12;
+    let format = 'HH';
+
+    const dt = Number(val.time.time[1]) - Number(val.time.time[0]);
+    const hour = 60 * 60 * 1000;
+    const days = hour * 24;
+    const months = days * 30;
+    const year = 365 * days;
+
+    if (dt <= hour) {
+        format = 'mm:ss';
+        _time = '1m';
+        _limit = 30;
+    } else if (dt > hour && dt <= days) {
+        _limit = Math.abs(Math.ceil(dt / hour));
+        _limit = 24;
+        format = 'HH:mm';
+    } else if (dt > days && dt <= months * 3) {
+        _limit = Math.abs(Math.ceil(dt / days)) + 1;
+        _time = '1d';
+        format = 'M月dd日';
+    } else if (dt > months * 3 && dt < year) {
+        _limit = Math.abs(Math.ceil(dt / months)) + 1;
+        _time = '1M';
+        format = 'M月dd日';
+    } else if (dt >= year) {
+        _limit = Math.abs(Math.floor(dt / months));
+        _time = '1M';
+        format = 'yyyy年-M月';
+    }
+    return [
+        {
+            dashboard: 'systemMonitor',
+            object: 'network',
+            measurement: 'traffic',
+            dimension: 'agg',
+            group: 'network-group',
+            params: {
+                type: val.type,
+                interval: _time,
+                from: Number(val.time.time[0]),
+                to: Number(val.time.time[1]),
+                limit: _limit,
+            },
         },
-    },
-];
+    ];
+};
 export const defulteParamsData = (group: any, val: any) => [
     {
         dashboard: 'systemMonitor',

@@ -37,6 +37,12 @@ const getParams = (dt: any) => {
                     interval: '1h',
                     format: 'HH:mm',
                 };
+            } else if (time > days && time <= days * 7) {
+                return {
+                    limit: Math.abs(Math.ceil(time / days / 7)) + 1,
+                    interval: '1d',
+                    format: 'YYYY-MM-DD',
+                };
             } else if (time >= year) {
                 return {
                     limit: Math.abs(Math.ceil(time / days / 31)) + 1,
@@ -68,21 +74,23 @@ export const getTimeByType = (type: string) => {
     }
 };
 
-export const pointParams = (data: any) => [
-    {
-        dashboard: 'collector',
-        object: 'pointData',
-        measurement: 'quantity',
-        dimension: 'agg',
-        params: {
-            limit: getParams(data.time).limit,
-            from: data.time.start,
-            to: data.time.end,
-            interval: getParams(data.time).interval,
-            format: getParams(data.time).format,
+export const pointParams = (data: any) => {
+    return [
+        {
+            dashboard: 'collector',
+            object: 'pointData',
+            measurement: 'quantity',
+            dimension: 'agg',
+            params: {
+                limit: getParams(data.time).limit,
+                from: Number(data.time.time[0]),
+                to: Number(data.time.time[1]),
+                interval: getParams(data.time).interval,
+                format: getParams(data.time).format,
+            },
         },
-    },
-];
+    ];
+};
 
 export const pointOptionsSeries = {
     type: 'line',
