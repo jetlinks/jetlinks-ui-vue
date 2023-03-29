@@ -114,7 +114,10 @@
                 <h3>修改密码</h3>
                 <div class="content">
                     <div class="content" style="align-items: flex-end">
-                        <AIcon type="LockOutlined" style="color: #1d39c4; font-size: 70px" />
+                        <AIcon
+                            type="LockOutlined"
+                            style="color: #1d39c4; font-size: 70px"
+                        />
                         <span
                             style="margin-left: 5px; color: rgba(0, 0, 0, 0.55)"
                             >安全性高的密码可以使帐号更安全。建议您定期更换密码,设置一个包含字母,符号或数字中至少两项且长度超过8位的密码</span
@@ -261,7 +264,9 @@ const unBind = (id: string) => {
     });
 };
 const clickBind = (id: string) => {
-    window.open(`/${origin}/application/sso/${id}/login?autoCreateUser=false`);
+    window.open(
+        `${location.host}${BASE_API_PATH}/application/sso/${id}/login?autoCreateUser=false`,
+    );
     localStorage.setItem('onBind', 'false');
     localStorage.setItem('onLogin', 'yes');
     window.onstorage = (e) => {

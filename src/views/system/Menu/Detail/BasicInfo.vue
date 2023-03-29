@@ -362,6 +362,7 @@ const form = reactive({
                                 ? '支持'
                                 : '间接控制',
                     },
+                    owner: 'iot',
                 };
                 api(params)
                     .then((resp: any) => {
