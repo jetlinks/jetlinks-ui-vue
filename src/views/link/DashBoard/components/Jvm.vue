@@ -169,6 +169,7 @@ const handleJVMOptions = (optionsData: any, xAxis: any) => {
 watch(
     () => data.value.type,
     (value) => {
+        if (value === undefined) return;
         const date = getTimeByType(value);
         data.value.time = [dayjs(date), dayjs(new Date())];
     },

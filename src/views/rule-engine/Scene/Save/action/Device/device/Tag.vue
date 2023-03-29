@@ -180,6 +180,11 @@ const onValueChange = () => {
     emits('update:value', [{ value: newValue, name: '标签' }]);
     emits('change', [{ value: newValue, name: '标签' }], _data);
 };
+
+// onMounted(() => {
+//     // console.log(tagList.value, props.tagData, props.value)
+//     // emits('change', props.value, _data);
+// })
 </script>
 
 <style lang="less" scoped>
