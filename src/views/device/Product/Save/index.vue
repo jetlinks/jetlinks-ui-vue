@@ -85,6 +85,7 @@
                         :value="form.deviceType"
                         :options="deviceList"
                         @change="changeDeviceType"
+                        :disabled="disabled"
                     >
                         <template #title="item">
                             <span>{{ item.title }}</span>
@@ -265,13 +266,6 @@ const dealProductTree = (arr: any) => {
         return element
     });
 };
-watch(
-    () => props.isAdd,
-    () => {
-        // queryProductTree();
-    },
-    { immediate: true, deep: true },
-);
 /**
  * 显示弹窗
  */
@@ -318,7 +312,6 @@ const submitData = () => {
     formRef.value
         .validate()
         .then(async () => {
-            console.log(form);
             // 新增
             if (props.isAdd === 1) {
                 if (form.id === '') {

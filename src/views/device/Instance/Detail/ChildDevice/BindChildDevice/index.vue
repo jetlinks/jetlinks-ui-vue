@@ -27,7 +27,11 @@
                     terms: [
                         {
                             terms: [
-                                { column: 'parentId$isnull', value: '1' },
+                                {
+                                    column: 'parentId$isnull',
+                                    value: '',
+                                    type: 'or',
+                                },
                                 {
                                     column: 'parentId$not',
                                     value: detail.id,
@@ -43,6 +47,7 @@
                                     type: 'and',
                                 },
                             ],
+                            type: 'and',
                         },
                         {
                             terms: [
