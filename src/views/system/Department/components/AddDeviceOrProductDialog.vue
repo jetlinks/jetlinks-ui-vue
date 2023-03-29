@@ -27,6 +27,7 @@
         </div>
 
         <pro-search
+            type="simple"
             :columns="props.queryColumns"
             target="category"
             @search="(params:any)=>queryParams = {...params}"
