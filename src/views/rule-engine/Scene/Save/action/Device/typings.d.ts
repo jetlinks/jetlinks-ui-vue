@@ -12,7 +12,8 @@ type DeviceModelType = {
     message: {
         properties?: any;
         messageType: string;
-        inputs?: any[]
+        inputs?: any[];
+        functionId?: string;
     }
 }
 

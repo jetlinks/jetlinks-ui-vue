@@ -73,15 +73,21 @@
                         style="margin-top: 50px"
                     >
                         <template #description>
-                            暂无数据，请先
-                            <PermissionButton
-                                type="link"
-                                style="padding: 0"
-                                hasPermission="link/AccessConfig:add"
-                                @click="handleAdd"
+                            <template v-if="!isPermission"
+                                >暂无权限, 请联系管理员</template
                             >
-                                添加{{ providerType[props.channel] }}接入网关
-                            </PermissionButton>
+                            <template v-else>
+                                暂无数据，请先
+                                <j-button
+                                    type="link"
+                                    style="padding: 0"
+                                    @click="handleAdd"
+                                >
+                                    添加{{
+                                        providerType[props.channel]
+                                    }}接入网关
+                                </j-button>
+                            </template>
                         </template>
                     </j-empty>
                     <div
@@ -166,9 +172,11 @@ import DeviceApi from '@/api/media/device';
 import { getImage } from '@/utils/comm';
 import { gatewayType } from '@/views/media/Device/typings';
 import { providerType } from '../const';
-import { useMenuStore } from '@/store/menu';
+import { usePermissionStore } from '@/store/permission';
 
-const menuStory = useMenuStore();
+const isPermission = usePermissionStore().hasPermission(
+    'link/AccessConfig:add',
+);
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;

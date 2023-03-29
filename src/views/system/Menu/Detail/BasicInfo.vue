@@ -188,6 +188,7 @@
                             v-model:value="form.data.assetType"
                             style="width: 500px"
                             placeholder="请选择资产类型"
+                            show-search
                         >
                             <j-select-option
                                 v-for="item in form.assetsType"
@@ -235,7 +236,9 @@
 
             <PermissionButton
                 type="primary"
-                :hasPermission="`${permission}:update`"
+                :hasPermission="`${permission}:${
+                    route.params.id === ':id' ? 'add' : 'update'
+                }`"
                 @click="form.clickSave"
             >
                 保存
@@ -405,8 +408,6 @@ type assetType = {
     label: string;
     value: string;
 };
-
-
 </script>
 
 <style lang="less" scoped>

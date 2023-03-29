@@ -1,6 +1,5 @@
 <template>
     <ParamsDropdown
-        placeholder="请选择"
         :options="handleOptions"
         :tabsOptions="tabOptions"
         :metricOptions="upperOptions"
@@ -10,7 +9,7 @@
         valueName="id"
     >
         <template v-slot="{ label }">
-            <j-input :value="label" readonly />
+            <j-input :value="label" readonly placeholder="请选择" />
         </template>
     </ParamsDropdown>
 </template>

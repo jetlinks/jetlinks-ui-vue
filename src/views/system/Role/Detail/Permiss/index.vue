@@ -88,7 +88,7 @@ const form = reactive({
             console.log(form.menus);
             Promise.all([updateRole, updateTree]).then((resp) => {
                 message.success('操作成功');
-                jumpPage(`system/Role`);
+                // jumpPage(`system/Role`);
             });
         });
     },
