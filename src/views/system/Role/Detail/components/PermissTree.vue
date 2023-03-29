@@ -137,8 +137,29 @@ const selectAllChange = () => {
         item.buttons?.forEach((button) => {
             button.granted = selectedAll.value;
         });
+        if (selectedAll.value) {
+            // 全选
+            item.selectAccesses = 'creator';
+        } else {
+            // 取消全选
+            item.selectAccesses = '';
+        }
+        // if (item.accessSupport && item.accessSupport.value === 'support') {
+        //     item.assetAccesses?.forEach((asset) => {
+        //         if (asset.supportId === item.selectAccesses) {
+        //             asset.granted = true;
+        //         } else {
+        //             asset.granted = false;
+        //         }
+        //     });
+        // }
     });
+    console.log('selectAllChange: ', flatTableData);
     indeterminate.value = false;
+    emits(
+        'update:selectItems',
+        flatTableData.filter((item) => item.granted),
+    );
 };
 // 表头-批量设置
 const bulkShow = ref<boolean>(false);
@@ -165,9 +186,21 @@ const bulkChange = () => {
     if (!bulkValue) return;
     flatTableData.forEach((item) => {
         if (item.accessSupport && item.accessSupport.value === 'support') {
-            item.selectAccesses = bulkValue.value;
+            // item.selectAccesses = bulkValue.value;
+            item.assetAccesses?.forEach((asset) => {
+                if (asset.supportId === bulkValue.value) {
+                    asset.granted = true;
+                } else {
+                    asset.granted = false;
+                }
+            });
         }
     });
+    console.log('bulkChange: ', flatTableData);
+    emits(
+        'update:selectItems',
+        flatTableData.filter((item) => item.granted),
+    );
 };
 
 // 重置批量设置
