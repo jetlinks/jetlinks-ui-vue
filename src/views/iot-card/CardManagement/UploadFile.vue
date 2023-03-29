@@ -11,7 +11,7 @@
             :showUploadList="false"
             @change="uploadChange"
             :accept="
-                props?.file?.fileType ? `.${props?.file?.fileType}` : '.xlsx'
+                props?.file ? `.${props?.file}` : '.xlsx'
             "
             :before-upload="beforeUpload"
         >
@@ -41,11 +41,7 @@ import { FILE_UPLOAD } from '@/api/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import { LocalStore, onlyMessage } from '@/utils/comm';
 import { downloadFileByUrl } from '@/utils/utils';
-import {
-    deviceImport,
-    templateDownload,
-} from '@/api/device/instance';
-import { EventSourcePolyfill } from 'event-source-polyfill';
+import { exportCard, _import } from '@/api/iot-card/cardManagement';
 import { message } from 'jetlinks-ui-components';
 
 type Emits = {
@@ -64,22 +60,8 @@ const props = defineProps({
         default: '',
     },
     file: {
-        type: Object,
-        default: () => {
-            return {
-                fileType: 'xlsx',
-                autoDeploy: false,
-            };
-        },
-    },
-    url: {
-        type: Object,
-        default: () => {
-            return {
-                fileType: 'xlsx',
-                autoDeploy: false,
-            };
-        },
+        type: String,
+        default: 'xlsx',
     },
 });
 
@@ -89,18 +71,20 @@ const count = ref<number>(0);
 const errMessage = ref<string>('');
 
 const downFile = async (type: string) => {
-    const res: any = await templateDownload(props.product, type);
+    const res: any = await exportCard(type);
     if (res) {
         const blob = new Blob([res], { type: type });
         const url = URL.createObjectURL(blob);
-        downloadFileByUrl(url, `设备导入模版`, type);
+        downloadFileByUrl(url, `物联卡导入模版`, type);
     }
 };
 
 const beforeUpload = (_file: any) => {
-    const fileType = props?.file?.fileType === 'csv' ? 'csv' : 'xlsx';
+    const fileType = props?.file === 'csv' ? 'csv' : 'xlsx';
     const isCsv = _file.type === 'text/csv';
-    const isXlsx = _file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    const isXlsx =
+        _file.type ===
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
     if (!isCsv && fileType !== 'xlsx') {
         onlyMessage('请上传.csv格式文件', 'warning');
     }
@@ -110,42 +94,22 @@ const beforeUpload = (_file: any) => {
     return (isCsv && fileType !== 'xlsx') || (isXlsx && fileType !== 'csv');
 };
 
-const submitData = async (fileUrl: string) => {
-    if (!!fileUrl) {
-        count.value = 0;
-        errMessage.value = '';
-        flag.value = true;
-        const autoDeploy = !!props?.file?.autoDeploy || false;
-        importLoading.value = true;
-        let dt = 0;
-        const source = new EventSourcePolyfill(
-            deviceImport(props.product, fileUrl, autoDeploy),
-        );
-        source.onmessage = (e: any) => {
-            const res = JSON.parse(e.data);
-            if (res.success) {
-                const temp = res.result.total;
-                dt += temp;
-                count.value = dt;
-            } else {
-                errMessage.value = res.message || '失败';
-            }
-        };
-        source.onerror = (e: { status: number }) => {
-            if (e.status === 403) errMessage.value = '暂无权限，请联系管理员';
-            flag.value = false;
-            source.close();
-        };
-        source.onopen = () => {};
-    } else {
-        message.error('请先上传文件');
-    }
-};
-
 const uploadChange = async (info: Record<string, any>) => {
+    importLoading.value = true;
     if (info.file.status === 'done') {
         const resp: any = info.file.response || { result: '' };
-        await submitData(resp?.result || '');
+        flag.value = true;
+        _import(props.product, { fileUrl: resp.result })
+            .then((response: any) => {
+                count.value = response.result?.total || 0
+                message.success('导入成功');
+            })
+            .catch((err) => {
+                errMessage.value = err?.response?.data?.message || '导入失败'
+            })
+            .finally(() => {
+                flag.value = false;
+            });
     }
 };
 </script>

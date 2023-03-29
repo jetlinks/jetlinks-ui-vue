@@ -268,6 +268,7 @@
         @close="operationVisible = false"
         :api="api"
         :type="type"
+        :data="params"
         @save="onRefresh"
     />
     <Save
@@ -575,7 +576,7 @@ onMounted(() => {
 const handleParams = (config: Record<string, any>) => {
     const _terms: Record<string, any> = {};
     paramsFormat(config, _terms);
-    if (Object.keys(_terms._value).length && Object.keys(_terms).length) {
+    if (Object.keys(_terms).length) {
         const url = new URLSearchParams();
         Object.keys(_terms).forEach((key) => {
             url.append(key, _terms[key]);
@@ -715,7 +716,7 @@ const activeAllDevice = () => {
     type.value = 'active';
     const activeAPI = `${BASE_API_PATH}/device-instance/deploy?:X_Access_Token=${LocalStore.get(
         TOKEN_KEY,
-    )}&${handleParams(params)}`;
+    )}&${handleParams(params.value)}`;
     api.value = activeAPI;
     operationVisible.value = true;
 };
@@ -724,7 +725,7 @@ const syncDeviceStatus = () => {
     type.value = 'sync';
     const syncAPI = `${BASE_API_PATH}/device-instance/state/_sync?:X_Access_Token=${LocalStore.get(
         TOKEN_KEY,
-    )}&${handleParams(params)}`;
+    )}&${handleParams(params.value)}`;
     api.value = syncAPI;
     operationVisible.value = true;
 };

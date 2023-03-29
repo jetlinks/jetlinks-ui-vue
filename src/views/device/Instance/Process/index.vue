@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getDeviceNumber } from '@/api/device/product';
+import { getDeviceNumber } from '@/api/device/instance';
 import { EventSourcePolyfill } from 'event-source-polyfill';
 
 const emit = defineEmits(['close', 'save']);
@@ -36,6 +36,10 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    data: {
+        type: Object,
+        default: () => []
+    }
 });
 
 const count = ref<number>(0);
@@ -90,7 +94,7 @@ watch(
     () => props.api,
     (newValue) => {
         if (newValue) {
-            getDeviceNumber({}).then(resp => {
+            getDeviceNumber(props.data).then(resp => {
                 if(resp.status === 200){
                     total.value = resp.result
                     getData(newValue);
