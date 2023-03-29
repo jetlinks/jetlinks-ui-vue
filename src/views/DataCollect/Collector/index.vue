@@ -30,7 +30,7 @@ const changeTree = (row: any) => {
             collectorId: row?.id,
         };
         spinning.value = false;
-    }, 300);
+    }, 1000);
 };
 </script>
 

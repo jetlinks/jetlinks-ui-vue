@@ -53,7 +53,6 @@ import * as echarts from 'echarts';
 import { dashboard } from '@/api/link/dashboard';
 import dayjs from 'dayjs';
 import {
-    getTimeFormat,
     getTimeByType,
     arrayReverse,
     typeDataLine,
@@ -95,9 +94,7 @@ const getJVMEcharts = async (val: any) => {
                     _jvmOptions[nodeID] = [];
                 }
                 _jvmXAxis.add(
-                    dayjs(value.timestamp).format(
-                        getTimeFormat(data.value.type),
-                    ),
+                    dayjs(value.timestamp).format('YYYY-MM-DD HH:mm'),
                 );
                 _jvmOptions[nodeID].push(_value);
             });

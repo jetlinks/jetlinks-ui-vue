@@ -572,20 +572,20 @@ const handleClick = (dt: any) => {
 };
 
 const subscribeProperty = (value: any) => {
-    const list = value.map((item: any) => item.id);
-    const id = `collector-${props.data?.channelId || 'channel'}-${
-        props.data?.id || 'point'
-    }-data-${list.join('-')}`;
-    const topic = `/collector/${props.data?.channelId || '*'}/${
-        props.data?.id || '*'
-    }/data`;
-    subRef.value = getWebSocket(id, topic, {
-        pointId: list.join(','),
-    })
-        ?.pipe(map((res: any) => res.payload))
-        .subscribe((payload: any) => {
-            propertyValue.value.set(payload.pointId, payload);
-        });
+    // const list = value.map((item: any) => item.id);
+    // const id = `collector-${props.data?.channelId || 'channel'}-${
+    //     props.data?.id || 'point'
+    // }-data-${list.join('-')}`;
+    // const topic = `/collector/${props.data?.channelId || '*'}/${
+    //     props.data?.id || '*'
+    // }/data`;
+    // subRef.value = getWebSocket(id, topic, {
+    //     pointId: list.join(','),
+    // })
+    //     ?.pipe(map((res: any) => res.payload))
+    //     .subscribe((payload: any) => {
+    //         propertyValue.value.set(payload.pointId, payload);
+    //     });
 };
 
 const onCheckAllChange = (e: any) => {

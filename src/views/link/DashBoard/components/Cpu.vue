@@ -53,7 +53,6 @@ import * as echarts from 'echarts';
 import { dashboard } from '@/api/link/dashboard';
 import dayjs from 'dayjs';
 import {
-    getTimeFormat,
     getTimeByType,
     arrayReverse,
     defulteParamsData,
@@ -84,9 +83,7 @@ const getCPUEcharts = async (val: any) => {
                 const value = item.data.value;
                 const nodeID = item.data.clusterNodeId;
                 _cpuXAxis.add(
-                    dayjs(value.timestamp).format(
-                        getTimeFormat(data.value.type),
-                    ),
+                    dayjs(value.timestamp).format('YYYY-MM-DD HH:mm'),
                 );
 
                 if (!_cpuOptions[nodeID]) {

@@ -187,19 +187,14 @@
             <j-form-item
                 label="采集频率"
                 :name="['configuration', 'interval']"
-                :rules="[
-                    ...ModBusRules.interval,
-                    {
-                        validator: checkLength,
-                        trigger: 'change',
-                    },
-                ]"
+                :rules="[...ModBusRules.interval]"
             >
-                <j-input
+                <j-input-number
                     style="width: 100%"
                     placeholder="请输入采集频率"
                     v-model:value="formData.configuration.interval"
                     addon-after="ms"
+                    :max="9999999999999998"
                 />
             </j-form-item>
 
@@ -345,15 +340,6 @@ const changeFunction = (value: string) => {
     formData.value.accessModes =
         value === 'InputRegisters' ? ['read'] : ['read', 'write'];
 };
-
-const checkLength = (_rule: Rule, value: string): Promise<any> =>
-    new Promise(async (resolve, reject) => {
-        if (value) {
-            return String(value).length > 64
-                ? reject('最多可输入64个字符')
-                : resolve('');
-        }
-    });
 
 const checkProvider = (_rule: Rule, value: string): Promise<any> =>
     new Promise(async (resolve, reject) => {

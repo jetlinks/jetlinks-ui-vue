@@ -36,10 +36,6 @@
                         pattern: regOnlyNumber,
                         message: '请输入0或者正整数',
                     },
-                    {
-                        validator: checkLength,
-                        trigger: 'change',
-                    },
                 ]"
             >
                 <template #label>
@@ -53,11 +49,12 @@
                         </j-tooltip>
                     </span>
                 </template>
-                <j-input
+                <j-input-number
                     style="width: 100%"
                     placeholder="请输入采集频率"
                     v-model:value="formData.interval"
                     addon-after="ms"
+                    :max="9999999999999998"
                 />
             </j-form-item>
 

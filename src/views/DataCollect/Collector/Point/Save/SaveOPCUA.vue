@@ -49,19 +49,14 @@
             <j-form-item
                 label="采集频率"
                 :name="['configuration', 'interval']"
-                :rules="[
-                    ...OPCUARules.interval,
-                    {
-                        validator: checkLength,
-                        trigger: 'change',
-                    },
-                ]"
+                :rules="[...OPCUARules.interval]"
             >
-                <j-input
+                <j-input-number
                     style="width: 100%"
                     placeholder="请输入采集频率"
                     v-model:value="formData.configuration.interval"
                     addon-after="ms"
+                    :max="9999999999999998"
                 />
             </j-form-item>
             <j-form-item label="" :name="['features']">
@@ -155,17 +150,6 @@ const handleOk = async () => {
 const handleCancel = () => {
     emit('change', false);
 };
-
-const checkLength = (_rule: Rule, value: string): Promise<any> =>
-    new Promise(async (resolve, reject) => {
-        if (value) {
-            return String(value).length > 64
-                ? reject('最多可输入64个字符')
-                : resolve('');
-        } else {
-            reject('');
-        }
-    });
 
 const filterOption = (input: string, option: any) => {
     return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
