@@ -16,6 +16,7 @@
             }"
             :params="params"
             :gridColumn="2"
+            :noPagination="true"
             :rowSelection="{
                 selectedRowKeys: _selectedRowKeys,
                 onChange: onSelectChange,

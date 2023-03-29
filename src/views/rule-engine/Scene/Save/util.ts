@@ -121,3 +121,33 @@ export const EventEmitter = {
     return this
   }
 }
+
+export const isActionChange = (_metadata: any, _message: any) => {
+  const _properties = _metadata?.properties || [];
+  const _functions = _metadata?.functions || [];
+  if (
+      _message?.messageType === 'READ_PROPERTY' &&
+      _message?.properties?.[0]
+  ) {
+      const _item = _properties.find(
+          (i: any) => i.id === _message?.properties?.[0],
+      );
+      return _item?.id;
+  } else if (
+      _message?.messageType === 'INVOKE_FUNCTION' &&
+      _message?.functionId
+  ) {
+      const _item = _functions.find(
+          (i: any) => i.id === _message?.functionId,
+      );
+      return _item?.id;
+  } else if (_message?.messageType === 'WRITE_PROPERTY') {
+      const _data = Object.keys(_message?.properties)?.[0]
+      if (_data) {
+          const _item = _functions.find((i: any) => i.id === _data);
+          return _item?.id;
+      }
+      return false;
+  }
+  return false;
+};

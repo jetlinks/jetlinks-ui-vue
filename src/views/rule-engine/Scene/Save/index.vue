@@ -66,7 +66,9 @@ const save = async () => {
   if (formData) {
     loading.value = true
     const branches = data.value.branches?.filter(item => item)
-    const resp = await modify(data.value.id!, { ...data.value, branches }).then(res => res)
+    const resp: any = await modify(data.value.id!, { ...data.value, branches }).then(res => res).catch(() => {
+      loading.value = false
+    })
     loading.value = false
     if (resp.success) {
       menuStore.jumpPage('rule-engine/Scene')
