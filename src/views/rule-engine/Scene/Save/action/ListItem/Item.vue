@@ -323,7 +323,7 @@
                 <j-button v-else @click="onAdd">点击配置执行动作</j-button>
             </div>
             <div class="item-number">{{ name + 1 }}</div>
-            <j-popconfirm title="确认删除？" @confirm="onDelete" :overlayStyle='{minWidth: "180px"}'>
+            <j-popconfirm title="确认删除？" @confirm="onDelete" placement="topRight" :overlayStyle='{minWidth: "190px"}'>
                 <div class="item-delete">
                     <AIcon type="DeleteOutlined" />
                 </div>
