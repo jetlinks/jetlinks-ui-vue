@@ -171,15 +171,12 @@ const handleClick = (_detail: any) => {
     }
 };
 
-watch(() => props.value?.[0]?.value, (newVal) => {
-    if(newVal){
-        detail(newVal).then(resp => {
+onMounted(() => {
+    if(props.value?.[0]?.value){
+        detail(props.value?.[0]?.value).then(resp => {
             emit('change', resp.result);
         })
     }
-}, {
-    deep: true,
-    immediate: true
 })
 
 watchEffect(() => {

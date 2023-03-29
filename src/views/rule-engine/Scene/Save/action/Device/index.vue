@@ -69,7 +69,6 @@ import Product from './Product.vue';
 import Device from './device/index.vue';
 import Action from './actions/index.vue';
 import { onlyMessage } from '@/utils/comm';
-import { detail } from '@/api/device/product';
 
 import { useSceneStore } from '@/store/scene';
 import { storeToRefs } from 'pinia';

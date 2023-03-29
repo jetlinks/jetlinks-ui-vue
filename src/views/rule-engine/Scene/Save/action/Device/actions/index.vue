@@ -58,7 +58,7 @@
                         @change="propertySelect"
                     >
                         <j-select-option
-                            v-for="item in metadata?.properties.filter((i) =>
+                            v-for="item in (metadata?.properties || []).filter((i) =>
                                 i?.expands?.type?.includes('read'),
                             ) || []"
                             :value="item?.id"
