@@ -6,7 +6,7 @@
                 <span>精简模式下参数只支持输入框的方式录入</span>
             </j-space>
         </div>
-        <j-tabs v-model="activeKey" tab-position="left">
+        <j-tabs v-model="activeKey" tab-position="left" @change="onTabChange" :destroyInactiveTabPane="true">
             <j-tab-pane v-for="func in newFunctions" :key="func.id">
                 <template #tab>
                     <Ellipsis style="width: 100px; text-align: left">
@@ -95,7 +95,7 @@
                             :ref="`result${func.id}Ref`"
                             class="execute-result"
                         >
-                            {{ func.executeResult }}
+                            {{ executeResult || '' }}
                         </span>
                     </j-col>
                 </j-row>
@@ -134,6 +134,8 @@ const columns = ref([
         dataIndex: 'value',
     },
 ]);
+
+const executeResult = ref('')
 
 // 设备功能数据处理
 const newFunctions = computed(() => {
@@ -205,7 +207,7 @@ const handleExecute = async (func: any) => {
             );
             if (!success) return;
             message.success('操作成功');
-            func.executeResult = result instanceof Array ? result[0] : result;
+            executeResult.value = result instanceof Array ? result[0] : result;
             proxy?.$forceUpdate();
         })
         .catch((err: any) => {
@@ -216,8 +218,13 @@ const handleExecute = async (func: any) => {
  * 清空
  */
 const handleClear = (func: any) => {
+    executeResult.value = ''
     proxy?.$refs[`${func.id}Ref`][0].resetFields();
 };
+
+const onTabChange = (_key: string) => {
+    executeResult.value = ''
+}
 </script>
 
 <style lang="less" scoped>
