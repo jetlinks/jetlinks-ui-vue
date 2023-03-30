@@ -621,6 +621,14 @@
                                                         'secure',
                                                     ]"
                                                     :rules="Rules.secure"
+                                                    @change="
+                                                        changeSecure(
+                                                            cluster
+                                                                .configuration
+                                                                .secure,
+                                                            index,
+                                                        )
+                                                    "
                                                 >
                                                     <j-radio-group
                                                         v-model:value="
@@ -1095,6 +1103,8 @@ import {
     start,
 } from '@/api/link/type';
 import {
+    ParserConfiguration,
+    Configuration,
     FormStates,
     FormStates2,
     ParserTypeOptions,
@@ -1243,9 +1253,19 @@ const changeHost = (
 };
 
 const changeParserType = (value: string | undefined, index: number) => {
-    const { parserConfiguration } =
-        dynamicValidateForm.cluster[index].configuration;
-    value === 'SCRIPT' ? (parserConfiguration.lang = 'javascript') : '';
+    const configuration: any = dynamicValidateForm.cluster[index].configuration;
+    configuration.parserConfiguration = cloneDeep(ParserConfiguration);
+    value === 'SCRIPT'
+        ? (configuration.parserConfiguration.lang = 'javascript')
+        : '';
+};
+const changeSecure = (value: string | undefined, index: number) => {
+    if (!value) {
+        const configuration: any =
+            dynamicValidateForm.cluster[index].configuration;
+        configuration.certId = undefined;
+        configuration.privateKeyAlias = '';
+    }
 };
 
 const saveData = async () => {
@@ -1330,10 +1350,15 @@ const getDetail = () => {
                 shareCluster.value = result.shareCluster;
                 activeKey.value = ['1'];
                 if (result.shareCluster) {
-                    dynamicValidateForm.cluster[0].configuration =
-                        configuration;
+                    dynamicValidateForm.cluster[0].configuration = {
+                        ...cloneDeep(Configuration), //防止编辑时，表单字段不完善，导致输入/选择框新出现时找不到
+                        ...configuration,
+                    };
                 } else {
-                    dynamicValidateForm.cluster = cluster;
+                    dynamicValidateForm.cluster = {
+                        ...cloneDeep(FormStates2), //同上
+                        ...cluster,
+                    };
                 }
 
                 if (dynamicValidateForm.cluster.length === 1) {
