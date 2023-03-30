@@ -6,6 +6,7 @@
             :pagination="false"
             :rowKey="'id'"
             :scroll="{ y: '500px' }"
+            ref="treeRef"
         >
             <!-- 表头 -->
             <template #headerCell="{ column }">
@@ -99,13 +100,14 @@
 <script setup lang="ts">
 import { cloneDeep } from 'lodash-es';
 import { getPrimissTree_api } from '@/api/system/role';
-
+import { getCurrentInstance } from 'vue';
 const emits = defineEmits(['update:selectItems']);
 const route = useRoute();
 const props = defineProps({
     selectItems: Array,
 });
-
+const treeRef = ref();
+let { ctx: that, proxy } = getCurrentInstance();
 const columns = [
     {
         title: '菜单权限',
@@ -282,7 +284,6 @@ function menuChange(
     row: tableItemType,
     setButtonBool: boolean = true,
 ): undefined {
-    console.log(row, 'test');
     // 判断是否需要对子菜单及操作权限进行选择
     if (setButtonBool) {
         if (row.buttons && row.buttons.length > 0)
@@ -334,6 +335,7 @@ function menuChange(
         indeterminate.value = false;
     }
     emits('update:selectItems', selectList); // 选中的项传回父组件
+    treeRef.value.$forceUpdate();
 }
 
 /**
@@ -430,7 +432,6 @@ function setStatus(
     prop: 'children' | 'buttons' = 'children',
 ) {
     const childrens = target[prop] as any[];
-
     if (childrens && childrens instanceof Array) {
         // 如果子选项有半全选，则当前节点直接为半全选
         const indeterminateLen = childrens.filter(
