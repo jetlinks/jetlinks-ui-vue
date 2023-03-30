@@ -1,58 +1,79 @@
 <template>
-    <page-container :tabList="list" @tabChange="onTabChange" :tabActiveKey="tab">
-        <div v-if="tab=='config'">
+    <page-container
+        :tabList="list"
+        @tabChange="onTabChange"
+        :tabActiveKey="tab"
+    >
+        <div v-if="tab == 'config'">
             <j-row :gutter="24">
                 <j-col :span="14">
-                    <div class="alarm-level">
-                        <j-card
-                            :headStyle="{ borderBottom: 'none', padding: 0 }"
-                            :bodyStyle="{ padding: 0 }"
-                            :bordered="false"
-                        >
-                            <template #title>
-                                <div class="alarmLevelTitle">告警级别配置</div>
-                            </template>
-                            <div
-                                v-for="(item, i) in levels"
-                                :key="i"
-                                class="alarmInputItem"
+                    <FullPage>
+                        <div class="alarm-level">
+                            <j-card
+                                :headStyle="{
+                                    borderBottom: 'none',
+                                    padding: 0,
+                                }"
+                                :bodyStyle="{ padding: 0 }"
+                                :bordered="false"
                             >
-                                <div>
-                                    <img
-                                        :src="
-                                            getImage(`/alarm/alarm${i + 1}.png`)
-                                        "
-                                        alt=""
-                                    />
-                                    <span>{{ `级别${i + 1}` }}</span>
+                                <template #title>
+                                    <div class="alarmLevelTitle">
+                                        告警级别配置
+                                    </div>
+                                </template>
+                                <div
+                                    v-for="(item, i) in levels"
+                                    :key="i"
+                                    class="alarmInputItem"
+                                >
+                                    <div>
+                                        <img
+                                            :src="
+                                                getImage(
+                                                    `/alarm/alarm${i + 1}.png`,
+                                                )
+                                            "
+                                            alt=""
+                                        />
+                                        <span>{{ `级别${i + 1}` }}</span>
+                                    </div>
+                                    <div>
+                                        <j-input
+                                            type="text"
+                                            v-model:value="item.title"
+                                            :maxlength="64"
+                                        ></j-input>
+                                    </div>
                                 </div>
-                                <div>
-                                    <j-input
-                                        type="text"
-                                        v-model:value="item.title"
-                                        :maxlength="64"
-                                    ></j-input>
-                                </div>
-                            </div>
-                        </j-card>
-                        <!-- <j-button
+                            </j-card>
+                            <!-- <j-button
                             type="primary"
                             size="middle"
                             @click="handleSaveLevel"
                             >保存</j-button
                         > -->
-                        <PermissionButton type="primary" size="middle" @click="handleSaveLevel" hasPermission="rule-engine/Alarm/Config:update">保存</PermissionButton>
-                    </div>
+                            <PermissionButton
+                                type="primary"
+                                size="middle"
+                                @click="handleSaveLevel"
+                                hasPermission="rule-engine/Alarm/Config:update"
+                                >保存</PermissionButton
+                            >
+                        </div>
+                    </FullPage>
                 </j-col>
                 <j-col :span="10">
-                    <div class="description">
-                        <h1>功能说明</h1>
-                        <div>
-                            1、告警级别用于描述告警的严重程度，请根据业务管理方式进行自定义。
+                    <FullPage>
+                        <div class="description">
+                            <h1>功能说明</h1>
+                            <div>
+                                1、告警级别用于描述告警的严重程度，请根据业务管理方式进行自定义。
+                            </div>
+                            <div>2、告警级别将会在告警配置中被引用。</div>
+                            <div>3、最多可配置5个级别。</div>
                         </div>
-                        <div>2、告警级别将会在告警配置中被引用。</div>
-                        <div>3、最多可配置5个级别。</div>
-                    </div>
+                    </FullPage>
                 </j-col>
             </j-row>
         </div>
@@ -65,7 +86,7 @@ import { getImage } from '@/utils/comm';
 import { queryLevel, saveLevel } from '@/api/rule-engine/config';
 import { LevelItem } from './typing';
 import { message } from 'jetlinks-ui-components';
-import Io from './Io/index.vue'
+import Io from './Io/index.vue';
 const list = ref([
     {
         key: 'config',
@@ -77,7 +98,7 @@ const list = ref([
     },
 ]);
 let levels = ref<LevelItem[]>([]);
-let tab = ref<'io'|'config'|string>('config');
+let tab = ref<'io' | 'config' | string>('config');
 const getAlarmLevel = () => {
     queryLevel().then((res: any) => {
         if (res.status == 200) {
@@ -133,9 +154,10 @@ const onTabChange = (e: string) => {
     font-size: 14px;
     background-color: #fff;
     h1 {
-    margin: 16px 0;
-    color: rgba(#000, 0.85);
-    font-weight: bold;
-    font-size: 14px;}
+        margin: 16px 0;
+        color: rgba(#000, 0.85);
+        font-weight: bold;
+        font-size: 14px;
+    }
 }
 </style>

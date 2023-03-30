@@ -1,138 +1,193 @@
 
 <template>
-    <j-card>
-        <div>
-            <div class="top">
-                <div>
-                    脚本语言:
-                    <j-select :defaultValue="'JavaScript'" style="width: 200;margin-left: 5px;">
-                        <j-select-option value="JavaScript">JavaScript(ECMAScript 5)</j-select-option>
-                    </j-select>
-                    <AIcon type="ExpandOutlined" style="margin-left: 20px;" @click="toggle" />
-                </div>
-            </div>
-            <div class="edit" ref="el">
-                <j-monaco-editor language="javascript" style="height: 100%;" theme="vs" v-model:modelValue="editorValue" />
-            </div>
-            <div class="bottom">
-                <div style="width: 49.5%;">
-                    <div class="bottom-title">
-                        <div class="bottom-title-text">模拟输入</div>
-                        <div class="bottom-title-topic">
-                            <template v-if="productStore.current.transportProtocol === 'MQTT'">
-                                <div style="margin-right: 5px;">Topic:</div>
-                                <j-auto-complete placeholder="请输入Topic" style="width: 300px" :options="topicList"
-                                    :allowClear="true" :filterOption="(inputValue: any, option: any) =>
-                                        option!.value.indexOf(inputValue) !== -1" v-model:value="topic" />
-                            </template>
-                            <template v-else>
-                                <div style="margin-right: 5px;">URL:</div>
-                                <j-input placeholder="请输入URL" v-model:value="url" style="width: 300px"></j-input>
-                            </template>
-                        </div>
-
-                    </div>
-                    <j-textarea :rows="5" placeholder="// 二进制数据以0x开头的十六进制输入，字符串数据输入原始字符串" style="margin-top: 10px;"
-                        v-model:value="simulation" />
-                </div>
-                <div style="width: 49.5%;">
-                    <div class="bottom-title">
-                        <div class="bottom-title-text">运行结果</div>
-                    </div>
-                    <j-textarea :autoSize="{ minRows: 5 }" :style="resStyle" v-model:value="result" />
-                </div>
+    <div>
+        <div class="top">
+            <div>
+                脚本语言:
+                <j-select
+                    :defaultValue="'JavaScript'"
+                    style="width: 200; margin-left: 5px"
+                >
+                    <j-select-option value="JavaScript"
+                        >JavaScript(ECMAScript 5)</j-select-option
+                    >
+                </j-select>
+                <AIcon
+                    type="ExpandOutlined"
+                    style="margin-left: 20px"
+                    @click="toggle"
+                />
             </div>
         </div>
-        <div style="margin-top: 10px;margin-left: 10px;">
-            <PermissionButton type="primary" hasPermission="device/Instance:update" :loading="loading"
-                :disabled="isDisabled" @click="debug()" :tooltip="{
-                    title: '需输入脚本和模拟数据后再点击',
-                }">
-                调试
-            </PermissionButton>
-            <PermissionButton hasPermission="device/Instance:update" :loading="loading" :disabled="!isTest" @click="save()"
-                :style="{ marginLeft: '10px' }" :tooltip="{
-                    title: isTest ? '' : '请先调试',
-                }">
-                保存
-            </PermissionButton>
+        <div class="edit" ref="el">
+            <j-monaco-editor
+                language="javascript"
+                style="height: 100%"
+                theme="vs"
+                v-model:modelValue="editorValue"
+            />
         </div>
-    </j-card>
+        <div class="bottom">
+            <div style="width: 49.5%">
+                <div class="bottom-title">
+                    <div class="bottom-title-text">模拟输入</div>
+                    <div class="bottom-title-topic">
+                        <template
+                            v-if="
+                                productStore.current.transportProtocol ===
+                                'MQTT'
+                            "
+                        >
+                            <div style="margin-right: 5px">Topic:</div>
+                            <j-auto-complete
+                                placeholder="请输入Topic"
+                                style="width: 300px"
+                                :options="topicList"
+                                :allowClear="true"
+                                :filterOption="(inputValue: any, option: any) =>
+                                        option!.value.indexOf(inputValue) !== -1"
+                                v-model:value="topic"
+                            />
+                        </template>
+                        <template v-else>
+                            <div style="margin-right: 5px">URL:</div>
+                            <j-input
+                                placeholder="请输入URL"
+                                v-model:value="url"
+                                style="width: 300px"
+                            ></j-input>
+                        </template>
+                    </div>
+                </div>
+                <j-textarea
+                    :rows="5"
+                    placeholder="// 二进制数据以0x开头的十六进制输入，字符串数据输入原始字符串"
+                    style="margin-top: 10px"
+                    v-model:value="simulation"
+                />
+            </div>
+            <div style="width: 49.5%">
+                <div class="bottom-title">
+                    <div class="bottom-title-text">运行结果</div>
+                </div>
+                <j-textarea
+                    :autoSize="{ minRows: 5 }"
+                    :style="resStyle"
+                    v-model:value="result"
+                />
+            </div>
+        </div>
+    </div>
+    <div style="margin-top: 10px; margin-left: 10px">
+        <PermissionButton
+            type="primary"
+            hasPermission="device/Instance:update"
+            :loading="loading"
+            :disabled="isDisabled"
+            @click="debug()"
+            :tooltip="{
+                title: '需输入脚本和模拟数据后再点击',
+            }"
+        >
+            调试
+        </PermissionButton>
+        <PermissionButton
+            hasPermission="device/Instance:update"
+            :loading="loading"
+            :disabled="!isTest"
+            @click="save()"
+            :style="{ marginLeft: '10px' }"
+            :tooltip="{
+                title: isTest ? '' : '请先调试',
+            }"
+        >
+            保存
+        </PermissionButton>
+    </div>
 </template>
 
 <script setup lang='ts' name="DataAnalysis">
-import PermissionButton from '@/components/PermissionButton/index.vue'
+import PermissionButton from '@/components/PermissionButton/index.vue';
 // import MonacoEditor from '@/components/MonacoEditor/index.vue';
-import { useFullscreen } from '@vueuse/core'
+import { useFullscreen } from '@vueuse/core';
 import { useProductStore } from '@/store/product';
 import {
     productCode,
     getProtocal,
     testCode,
     saveProductCode,
-} from '@/api/device/instance'
+} from '@/api/device/instance';
 import { message } from 'jetlinks-ui-components';
 import { isBoolean } from 'lodash';
 
 const defaultValue =
     '//解码函数\r\nfunction decode(context) {\r\n    //原始报文\r\n    var buffer = context.payload();\r\n    // 转为json\r\n    // var json = context.json();\r\n    //mqtt 时通过此方法获取topic\r\n    // var topic = context.topic();\r\n\r\n    // 提取变量\r\n    // var topicVars = context.pathVars("/{deviceId}/**",topic)\r\n    //温度属性\r\n    var temperature = buffer.getShort(3) * 10;\r\n    //湿度属性\r\n    var humidity = buffer.getShort(6) * 10;\r\n    return {\r\n        "temperature": temperature,\r\n        "humidity": humidity\r\n    };\r\n}\r\n';
 
-const el = ref<HTMLElement | null>(null)
-const { toggle } = useFullscreen(el)
-const productStore = useProductStore()
+const el = ref<HTMLElement | null>(null);
+const { toggle } = useFullscreen(el);
+const productStore = useProductStore();
 
+const url = ref<string>('');
+const topic = ref<string>('');
+const topicList = ref([]);
+const simulation = ref<string>('');
+const resultValue = ref<any>({});
+const loading = ref<boolean>(false);
+const isTest = ref<boolean>(false);
+const editorValue = ref<string>('');
 
-const url = ref<string>('')
-const topic = ref<string>('')
-const topicList = ref([])
-const simulation = ref<string>('')
-const resultValue = ref<any>({})
-const loading = ref<boolean>(false)
-const isTest = ref<boolean>(false)
-const editorValue = ref<string>('')
+const resStyle = computed(() =>
+    isBoolean(resultValue.value.success)
+        ? {
+              'margin-top': '10px',
+              'border-color': resultValue.value.success ? 'green' : 'red',
+          }
+        : {
+              'margin-top': '10px',
+          },
+);
 
-const resStyle = computed(() => (isBoolean(resultValue.value.success) ? {
-    'margin-top': '10px',
-    'border-color': resultValue.value.success ? 'green' : 'red'
-} : {
-    'margin-top': '10px',
-}))
+const isDisabled = computed(() => simulation.value === '');
 
-const isDisabled = computed(() => simulation.value === '')
-
-const result = computed(() => resultValue.value.success ? JSON.stringify(resultValue.value.outputs?.[0]) : resultValue.value.reason)
-
+const result = computed(() =>
+    resultValue.value.success
+        ? JSON.stringify(resultValue.value.outputs?.[0])
+        : resultValue.value.reason,
+);
 
 //获取topic
 const getTopic = async () => {
-    const res: any = await getProtocal(productStore.current.messageProtocol, productStore.current.transportProtocol)
+    const res: any = await getProtocal(
+        productStore.current.messageProtocol,
+        productStore.current.transportProtocol,
+    );
     if (res.status === 200) {
         const item = res.result.routes?.map((items: any) => ({
             value: items.topic,
         }));
-        topicList.value = item
+        topicList.value = item;
     }
 };
 //获取产品解析规则
 const getProductCode = async () => {
-    const res: any = await productCode(productStore.current.id)
+    const res: any = await productCode(productStore.current.id);
     if (res.status === 200) {
-        if(res.result){
-            editorValue.value = res.result?.configuration?.script
-        }else{
-            editorValue.value = defaultValue
+        if (res.result) {
+            editorValue.value = res.result?.configuration?.script;
+        } else {
+            editorValue.value = defaultValue;
         }
     }
-}
+};
 //调试
 const test = async (dataTest: any) => {
-    loading.value = true
-    const res = await testCode(dataTest)
+    loading.value = true;
+    const res = await testCode(dataTest);
     if (res.status === 200) {
-        loading.value = false
-        resultValue.value = res?.result
+        loading.value = false;
+        resultValue.value = res?.result;
     } else {
-        loading.value = false
+        loading.value = false;
     }
 };
 
@@ -144,14 +199,13 @@ const save = async () => {
             script: editorValue.value,
             lang: 'javascript',
         },
-    }
-    const res = await saveProductCode(productStore.current.id, item)
+    };
+    const res = await saveProductCode(productStore.current.id, item);
     if (res.status === 200) {
         message.success('保存成功');
         getProductCode();
     }
 };
-
 
 const debug = () => {
     if (productStore.current.transportProtocol === 'MQTT') {
@@ -166,8 +220,8 @@ const debug = () => {
                 },
                 provider: 'jsr223',
                 payload: simulation.value,
-            })
-            isTest.value = true
+            });
+            isTest.value = true;
         } else {
             message.error('请输入topic');
         }
@@ -184,19 +238,17 @@ const debug = () => {
                 },
                 payload: simulation.value,
             });
-            isTest.value = true
+            isTest.value = true;
         } else {
             message.error('请输入url');
         }
     }
-}
-
+};
 
 onMounted(() => {
-    getProductCode()
-    getTopic()
-})
-
+    getProductCode();
+    getTopic();
+});
 </script>
 
 <style scoped lang='less'>

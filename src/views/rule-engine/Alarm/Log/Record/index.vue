@@ -5,39 +5,43 @@
             target="bind-channel"
             @search="handleSearch"
         />
-        <JProTable
-            model="TABLE"
-            :columns="columns"
-            :defaultParams="{
-                sorts: [{ name: 'createTime', order: 'desc' }],
-                terms,
-            }"
-            :request="queryHandleHistory"
-            :params="params"
-        >
-            <template #headerTitle>
-                <h3>记录列表</h3>
-            </template>
-            <template #handleTime="slotsProps">
-                <span>
-                    {{
-                        dayjs(slotsProps.handleTime).format(
-                            'YYYY-MM-DD HH:mm:ss',
-                        )
-                    }}
-                </span>
-            </template>
-            <template #handleType="slotProps">
-                <span>{{ slotProps.handleType.text }}</span>
-            </template>
-            <template #alarmTime="slotProps">
-                <span>
-                    {{
-                        dayjs(slotProps.alarmTime).format('YYYY-MM-DD HH:mm:ss')
-                    }}
-                </span>
-            </template>
-        </JProTable>
+        <FullPage>
+            <JProTable
+                model="TABLE"
+                :columns="columns"
+                :defaultParams="{
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                    terms,
+                }"
+                :request="queryHandleHistory"
+                :params="params"
+            >
+                <template #headerTitle>
+                    <h3>记录列表</h3>
+                </template>
+                <template #handleTime="slotsProps">
+                    <span>
+                        {{
+                            dayjs(slotsProps.handleTime).format(
+                                'YYYY-MM-DD HH:mm:ss',
+                            )
+                        }}
+                    </span>
+                </template>
+                <template #handleType="slotProps">
+                    <span>{{ slotProps.handleType.text }}</span>
+                </template>
+                <template #alarmTime="slotProps">
+                    <span>
+                        {{
+                            dayjs(slotProps.alarmTime).format(
+                                'YYYY-MM-DD HH:mm:ss',
+                            )
+                        }}
+                    </span>
+                </template>
+            </JProTable>
+        </FullPage>
     </page-container>
 </template>
 

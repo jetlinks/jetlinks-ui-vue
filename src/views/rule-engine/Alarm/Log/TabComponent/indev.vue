@@ -24,113 +24,118 @@
             v-if="props.type === 'org'"
             @search="search"
         />
-        <JProTable
-            :columns="columns"
-            :request="handleSearch"
-            :params="params"
-            :gridColumns="[1, 1, 2]"
-            :gridColumn="2"
-            model="CARD"
-            ref="tableRef"
-        >
-            <template #card="slotProps">
-                <CardBox
-                    :value="slotProps"
-                    v-bind="slotProps"
-                    :actions="getActions(slotProps, 'card')"
-                    :statusText="
-                        data.defaultLevel.find(
-                            (i) => i.level === slotProps.level,
-                        )?.title || slotProps.level
-                    "
-                    :status="slotProps.level"
-                    :statusNames="{
-                        1: 'level1',
-                        2: 'level2',
-                        3: 'level3',
-                        4: 'level4',
-                        5: 'level5',
-                    }"
-                >
-                    <template #img>
-                        <img :src="imgMap.get(slotProps.targetType)" alt="" />
-                    </template>
-                    <template #content>
-                        <Ellipsis style="width: calc(100% - 100px)">
-                            <span style="font-weight: 500">
-                                {{ slotProps.alarmName }}
-                            </span>
-                        </Ellipsis>
-                        <j-row :gutter="24">
-                            <j-col :span="8" class="content-left">
-                                <div class="content-left-title">
-                                    {{ titleMap.get(slotProps.targetType) }}
-                                </div>
-                                <Ellipsis
-                                    ><div>
-                                        {{ slotProps?.targetName }}
-                                    </div></Ellipsis
-                                >
-                            </j-col>
-                            <j-col :span="8">
-                                <div class="content-right-title">
-                                    最近告警时间
-                                </div>
-                                <Ellipsis
-                                    ><div>
-                                        {{
-                                            dayjs(slotProps?.alarmTime).format(
-                                                'YYYY-MM-DD HH:mm:ss',
-                                            )
-                                        }}
-                                    </div></Ellipsis
-                                >
-                            </j-col>
-                            <j-col :span="8">
-                                <div class="content-right-title">状态</div>
-                                <BadgeStatus
-                                    :status="slotProps.state.value"
-                                    :statusName="{
-                                        warning: 'warning',
-                                        normal: 'default',
-                                    }"
-                                >
-                                </BadgeStatus
-                                ><span
-                                    :style="
-                                        slotProps.state.value === 'warning'
-                                            ? 'color: #E50012'
-                                            : 'color:black'
-                                    "
-                                >
-                                    {{ slotProps.state.text }}
+        <FullPage>
+            <JProTable
+                :columns="columns"
+                :request="handleSearch"
+                :params="params"
+                :gridColumns="[1, 1, 2]"
+                :gridColumn="2"
+                model="CARD"
+                ref="tableRef"
+            >
+                <template #card="slotProps">
+                    <CardBox
+                        :value="slotProps"
+                        v-bind="slotProps"
+                        :actions="getActions(slotProps, 'card')"
+                        :statusText="
+                            data.defaultLevel.find(
+                                (i) => i.level === slotProps.level,
+                            )?.title || slotProps.level
+                        "
+                        :status="slotProps.level"
+                        :statusNames="{
+                            1: 'level1',
+                            2: 'level2',
+                            3: 'level3',
+                            4: 'level4',
+                            5: 'level5',
+                        }"
+                    >
+                        <template #img>
+                            <img
+                                :src="imgMap.get(slotProps.targetType)"
+                                alt=""
+                            />
+                        </template>
+                        <template #content>
+                            <Ellipsis style="width: calc(100% - 100px)">
+                                <span style="font-weight: 500">
+                                    {{ slotProps.alarmName }}
                                 </span>
-                            </j-col>
-                        </j-row>
-                    </template>
-                    <template #actions="item">
-                        <PermissionButton
-                            :disabled="
-                                item.key === 'solve' &&
-                                slotProps.state.value === 'normal'
-                            "
-                            :tooltip="{
-                                ...item.tooltip,
-                            }"
-                            @click="item.onClick"
-                            :hasPermission="
-                                item.key == 'solve'
-                                    ? 'rule-engine/Alarm/Log:action'
-                                    : 'rule-engine/Alarm/Log:view'
-                            "
-                        >
-                            <AIcon :type="item.icon" />
-                            <span>{{ item?.text }}</span>
-                        </PermissionButton>
-                    </template>
-                </CardBox>
-            </template>
-        </JProTable>
+                            </Ellipsis>
+                            <j-row :gutter="24">
+                                <j-col :span="8" class="content-left">
+                                    <div class="content-left-title">
+                                        {{ titleMap.get(slotProps.targetType) }}
+                                    </div>
+                                    <Ellipsis
+                                        ><div>
+                                            {{ slotProps?.targetName }}
+                                        </div></Ellipsis
+                                    >
+                                </j-col>
+                                <j-col :span="8">
+                                    <div class="content-right-title">
+                                        最近告警时间
+                                    </div>
+                                    <Ellipsis
+                                        ><div>
+                                            {{
+                                                dayjs(
+                                                    slotProps?.alarmTime,
+                                                ).format('YYYY-MM-DD HH:mm:ss')
+                                            }}
+                                        </div></Ellipsis
+                                    >
+                                </j-col>
+                                <j-col :span="8">
+                                    <div class="content-right-title">状态</div>
+                                    <BadgeStatus
+                                        :status="slotProps.state.value"
+                                        :statusName="{
+                                            warning: 'warning',
+                                            normal: 'default',
+                                        }"
+                                    >
+                                    </BadgeStatus
+                                    ><span
+                                        :style="
+                                            slotProps.state.value === 'warning'
+                                                ? 'color: #E50012'
+                                                : 'color:black'
+                                        "
+                                    >
+                                        {{ slotProps.state.text }}
+                                    </span>
+                                </j-col>
+                            </j-row>
+                        </template>
+                        <template #actions="item">
+                            <PermissionButton
+                                :disabled="
+                                    item.key === 'solve' &&
+                                    slotProps.state.value === 'normal'
+                                "
+                                :tooltip="{
+                                    ...item.tooltip,
+                                }"
+                                @click="item.onClick"
+                                :hasPermission="
+                                    item.key == 'solve'
+                                        ? 'rule-engine/Alarm/Log:action'
+                                        : 'rule-engine/Alarm/Log:view'
+                                "
+                            >
+                                <AIcon :type="item.icon" />
+                                <span>{{ item?.text }}</span>
+                            </PermissionButton>
+                        </template>
+                    </CardBox>
+                </template>
+            </JProTable>
+        </FullPage>
         <SolveComponent
             :data="data"
             v-if="data.solveVisible"
