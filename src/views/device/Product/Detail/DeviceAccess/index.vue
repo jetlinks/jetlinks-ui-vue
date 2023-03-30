@@ -8,12 +8,6 @@
                         v-if="
                             permissionStore.hasPermission(
                                 'device/Product:update',
-                            ) &&
-                            permissionStore.hasPermission(
-                                'link/AccessConfig:add',
-                            ) &&
-                            permissionStore.hasPermission(
-                                'link/AccessConfig:update',
                             )
                         "
                     >
@@ -60,35 +54,15 @@
                                         productStore.current?.count &&
                                         productStore.current?.count > 0
                                             ? '产品下有设备实例时不能更换接入方式'
-                                            : !(permissionStore.hasPermission(
-                                                  'device/Product:update',
-                                              ) &&
-                                              permissionStore.hasPermission(
-                                                  'link/AccessConfig:add',
-                                              ) &&
-                                              permissionStore.hasPermission(
-                                                  'link/AccessConfig:update',
-                                              ))
-                                            ? '暂无权限，请联系管理员'
                                             : '',
                                 }"
                                 :disabled="
-                                    (productStore.current?.count &&
-                                        productStore.current?.count > 0) ||
-                                    !(
-                                        permissionStore.hasPermission(
-                                            'device/Product:update',
-                                        ) &&
-                                        permissionStore.hasPermission(
-                                            'link/AccessConfig:add',
-                                        ) &&
-                                        permissionStore.hasPermission(
-                                            'link/AccessConfig:update',
-                                        )
-                                    )
+                                    productStore.current?.count &&
+                                    productStore.current?.count > 0
                                 "
                                 ghost
                                 @click="showDevice"
+                                hasPermission="device/Product:update"
                             >
                                 更换
                             </PermissionButton>
@@ -349,8 +323,11 @@
             :gridColumns="[2]"
         >
             <template #headerTitle>
-                <j-button type="primary" @click="add"
-                    ><plus-outlined />新增</j-button
+                <PermissionButton
+                    type="primary"
+                    @click="add"
+                    hasPermission="link/AccessConfig:add"
+                    >新增</PermissionButton
                 >
             </template>
             <template #deviceType="slotProps">
@@ -1010,7 +987,6 @@ const submitDevice = async () => {
     const result: any = {};
     flatObj(values, result);
     const { storePolicy, ...extra } = result;
-    console.log({ ...extra });
     const id = productStore.current?.id;
     const resp = await modify(id || '', {
         id: id,
@@ -1046,7 +1022,6 @@ const add = () => {
     if (url) {
         const tab: any = window.open(`${origin}/#${url}?view=false`);
         tab.onTabSaveSuccess = (value: any) => {
-            console.log(value);
             if (value.status === 200) {
                 tableRef.value.reload();
                 handleClick(value.result);
