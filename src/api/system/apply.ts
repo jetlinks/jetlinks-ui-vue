@@ -13,7 +13,7 @@ export const delApply_api = (id: string) => server.remove(`/application/${id}`)
 // 获取组织列表
 export const getDepartmentList_api = (params: any) => server.get(`/organization/_all/tree`, params);
 // 获取应用详情
-export const getAppInfo_api = (id: string) => server.get(`/application/${id}`);
+export const getAppInfo_api = (id: string) => server.get<any>(`/application/${id}`);
 // 新增应用
 export const addApp_api = (data: object) => server.post(`/application`, data);
 // 更新应用

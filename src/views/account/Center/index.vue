@@ -265,7 +265,7 @@ const unBind = (id: string) => {
 };
 const clickBind = (id: string) => {
     window.open(
-        `${location.host}${BASE_API_PATH}/application/sso/${id}/login?autoCreateUser=false`,
+        `${BASE_API_PATH}/application/sso/${id}/login?autoCreateUser=false`,
     );
     localStorage.setItem('onBind', 'false');
     localStorage.setItem('onLogin', 'yes');
