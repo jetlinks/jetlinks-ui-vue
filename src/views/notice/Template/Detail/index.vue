@@ -783,6 +783,7 @@ import { LocalStore } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import { phoneRegEx } from '@/utils/validate';
 import type { Rule } from 'ant-design-vue/es/form';
+import { cloneDeep } from 'lodash-es';
 
 const router = useRouter();
 const route = useRoute();
@@ -1005,7 +1006,8 @@ const formRules = ref({
             trigger: 'change',
             validator(_rule: Rule, value: string) {
                 if (!value) return Promise.resolve();
-                if (!phoneRegEx(value)) return Promise.reject('该字段不是有效的手机号');
+                if (!phoneRegEx(value))
+                    return Promise.reject('该字段不是有效的手机号');
                 return Promise.resolve();
             },
         },
@@ -1032,10 +1034,7 @@ const { resetFields, validate, validateInfos, clearValidate } = useForm(
 watch(
     () => formData.value.template.markdown?.title,
     (val) => {
-        if (!val) {
-            formData.value.variableDefinitions = [];
-            return;
-        }
+        if (!val) return;
         variableReg();
     },
     { deep: true },
@@ -1044,10 +1043,7 @@ watch(
 watch(
     () => formData.value.template.link?.title,
     (val) => {
-        if (!val) {
-            formData.value.variableDefinitions = [];
-            return;
-        }
+        if (!val) return;
         variableReg();
     },
     { deep: true },
@@ -1176,7 +1172,7 @@ const handleMessageTypeChange = () => {
             content: formData.value.template.message as string,
         };
     }
-    formData.value.variableDefinitions = [];
+    // formData.value.variableDefinitions = [];
 };
 
 /**
@@ -1186,7 +1182,10 @@ const getDetail = async () => {
     if (route.params.id !== ':id') {
         const res = await templateApi.detail(route.params.id as string);
         // formData.value = res.result;
-        Object.assign(formData.value, res.result);
+        // Object.assign(formData.value, res.result);
+        console.log('res.result: ', res.result);
+        formData.value = cloneDeep(res.result);
+        console.log('formData.value: ', formData.value);
     }
 };
 getDetail();
