@@ -120,15 +120,31 @@ const onTypeSelect = (key: any, _index: number) => {
 };
 
 const onTagSelect = (_data: any, _index: number) => {
-    const newList = [...unref(tagList)];
-    const indexType = newList[_index].type;
-    newList.splice(
-        _index,
-        1,
-        handleItem({ ..._data, value: undefined, type: indexType }),
-    );
-    tagList.value = newList;
-    onValueChange()
+    const indexType = tagList.value[_index].type;
+    const _item = handleItem({ ..._data, value: undefined, type: indexType })
+    tagList.value[_index] = _item
+    const newValue = tagList.value.map((item: any) => {
+        return {
+            column: item.id,
+            type: item?.type,
+            value: item?.value,
+        };
+    });
+    emits('update:value', [{ value: newValue, name: '标签' }]);
+    emits('change', [{ value: newValue, name: '标签' }], tagList.value);
+};
+
+const onValueChange = () => {
+    const _data = tagList.value.filter((item) => item?.value !== undefined);
+    const newValue = _data.map((item: any) => {
+        return {
+            column: item.id,
+            type: item?.type,
+            value: item?.value,
+        };
+    });
+    emits('update:value', [{ value: newValue, name: '标签' }]);
+    emits('change', [{ value: newValue, name: '标签' }], _data);
 };
 
 watch(
@@ -169,19 +185,6 @@ watch(
         deep: true,
     },
 );
-
-const onValueChange = () => {
-    const _data = tagList.value.filter((item) => !!item?.value);
-    const newValue = _data.map((item: any) => {
-        return {
-            column: item.id,
-            type: item?.type,
-            value: item?.value,
-        };
-    });
-    emits('update:value', [{ value: newValue, name: '标签' }]);
-    emits('change', [{ value: newValue, name: '标签' }], _data);
-};
 
 onMounted(() => {
     if(props.value?.[0]?.value){
