@@ -59,7 +59,7 @@
                                 </template>
                                 <j-input
                                     v-model:value="formValue['base-path']"
-                                    placeholder="请输入高德API Key"
+                                    placeholder="输入base-path"
                                 />
                             </j-form-item>
                             <j-row :gutter="24" :span="24">
@@ -455,7 +455,7 @@ const uploader: uploaderType = {
     },
     // 浏览器页签格式校验
     beforeIconUpload: (file) => {
-        const typeBool = file.type.includes('.icon');
+        const typeBool = file.type.includes('x-icon');
         const sizeBool = file.size / 1024 / 1024 < 1;
         if (!typeBool) {
             message.error(`请上传ico格式的图片`);

@@ -56,14 +56,20 @@ const system = useSystem();
 const {configInfo} = storeToRefs(system);
 
 const layoutConf = reactive({
-    theme: configInfo.value.front?.headerTheme || DefaultSetting.layout.theme,
+    theme: DefaultSetting.layout.theme,
     siderWidth: DefaultSetting.layout.siderWidth,
-    logo: configInfo.value.front?.logo || DefaultSetting.layout.logo,
-    title: configInfo.value.front?.title || DefaultSetting.layout.title,
+    logo: DefaultSetting.layout.logo,
+    title: DefaultSetting.layout.title,
     menuData: [...clearMenuItem(menu.siderMenus), AccountMenu],
     // menuData: menu.siderMenus,
     splitMenus: true,
 });
+
+watchEffect(() => {
+    layoutConf.theme = configInfo.value.front?.headerTheme || DefaultSetting.layout.theme;
+    layoutConf.title = configInfo.value.front?.title || DefaultSetting.layout.title;
+    layoutConf.logo = configInfo.value.front?.logo || DefaultSetting.layout.logo;
+})
 
 const state = reactive<StateType>({
     pure: false,
