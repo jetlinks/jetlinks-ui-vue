@@ -8,7 +8,7 @@ import Search from './Search'
 import NormalUpload from './NormalUpload/index.vue'
 import FileFormat from './FileFormat/index.vue'
 import JProUpload from './Upload/index.vue'
-import { BasicLayoutPage, BlankLayoutPage } from './Layout'
+import { BasicLayoutPage, BlankLayoutPage, FullPage } from './Layout'
 import { PageContainer, AIcon, Ellipsis } from 'jetlinks-ui-components'
 // import Ellipsis from './Ellipsis/index.vue'
 import JEmpty from './Empty/index.vue'
@@ -38,5 +38,6 @@ export default  {
             .component('PathSimplifier', PathSimplifier)
             .component('ValueItem', ValueItem)
             .component('RowPagination', RowPagination)
+            .component('FullPage', FullPage)
     }
 }

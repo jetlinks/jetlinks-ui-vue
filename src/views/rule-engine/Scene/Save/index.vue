@@ -1,42 +1,44 @@
 <template>
   <page-container>
-    <div class='scene-warp'>
-      <div class='header'>
-        <Ellipsis :tooltip='data.name' style='max-width: 50%'>
-          <span class='title'>{{ data.name }}</span>
-        </Ellipsis>
-        <div class='type'>
-          <img :src='TriggerHeaderIcon[data.triggerType]' />
-          {{ keyByLabel[data.triggerType] }}
+    <FullPage>
+      <div class='scene-warp'>
+        <div class='header'>
+          <Ellipsis :tooltip='data.name' style='max-width: 50%'>
+            <span class='title'>{{ data.name }}</span>
+          </Ellipsis>
+          <div class='type'>
+            <img :src='TriggerHeaderIcon[data.triggerType]' />
+            {{ keyByLabel[data.triggerType] }}
+          </div>
         </div>
-      </div>
-      <j-form ref='sceneForm' :model='data' :colon='false' layout='vertical'>
-        <Device v-if='data.triggerType === "device"' />
-        <Manual v-else-if='data.triggerType === "manual"' />
-        <Timer v-else-if='data.triggerType === "timer"' />
-        <j-form-item
+        <j-form ref='sceneForm' :model='data' :colon='false' layout='vertical'>
+          <Device v-if='data.triggerType === "device"' />
+          <Manual v-else-if='data.triggerType === "manual"' />
+          <Timer v-else-if='data.triggerType === "timer"' />
+          <j-form-item
+          >
+            <template #label>
+              <TitleComponent data='说明' style='font-size: 14px;' />
+            </template>
+            <j-textarea
+                v-model:value="data.description"
+                placeholder='请输入说明'
+                :rows="4"
+                show-count
+                :maxLength="200"
+            />
+          </j-form-item>
+        </j-form>
+        <PermissionButton
+          type='primary'
+          hasPermission='rule-engine/Scene:update'
+          :loading='loading'
+          @click='save'
         >
-          <template #label>
-            <TitleComponent data='说明' style='font-size: 14px;' />
-          </template>
-          <j-textarea
-              v-model:value="data.description"
-              placeholder='请输入说明'
-              :rows="4"
-              show-count
-              :maxLength="200"
-          />
-        </j-form-item>
-      </j-form>
-      <PermissionButton
-        type='primary'
-        hasPermission='rule-engine/Scene:update'
-        :loading='loading'
-        @click='save'
-      >
-        保存
-      </PermissionButton>
-    </div>
+          保存
+        </PermissionButton>
+      </div>
+      <FullPage>
   </page-container>
 </template>
 

@@ -106,13 +106,7 @@
                     :column="2"
                 />
             </j-form-item>
-            <div
-                style="color: #616161"
-                v-if="
-                    formData.configuration.endian ||
-                    formData.configuration.endianIn
-                "
-            >
+            <div style="color: #616161" v-if="visibleEndian">
                 <p>
                     当前内存布局:{{
                         endianMap.get(formData.configuration.endian)
@@ -123,6 +117,19 @@
                     具有4种内存布局，其它只有ABCD、DCBA两种内存布局(以双字配置为准)
                 </p>
             </div>
+            <j-form-item
+                label="请求超时时间配置"
+                :name="['configuration', 'requsetTimeout']"
+            >
+                <j-input-number
+                    style="width: 100%"
+                    placeholder="请输入请求超时时间配置"
+                    v-model:value="formData.configuration.requsetTimeout"
+                    addon-after="ms"
+                    :max="9999999999999998"
+                    :min="1"
+                />
+            </j-form-item>
 
             <j-form-item label="说明" name="description">
                 <j-textarea
@@ -188,6 +195,7 @@ const formData = ref({
         type: 'LowerFrequency',
         endian: 'BIG',
         endianIn: 'BIG',
+        requsetTimeout: 2000,
     },
     circuitBreaker: {
         type: 'LowerFrequency',
