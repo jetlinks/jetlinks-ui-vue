@@ -128,6 +128,11 @@
                     }"
                 ></BadgeStatus>
             </template>
+            <template #registryTime="slotProps">
+                <span>{{
+                    dayjs(slotProps.registryTime).format('YYYY-MM-DD YY:mm:ss')
+                }}</span>
+            </template>
         </j-pro-table>
     </j-modal>
 </template>
@@ -145,6 +150,7 @@ import {
 import { message } from 'jetlinks-ui-components';
 import { dictType } from '../typing';
 import { useDepartmentStore } from '@/store/department';
+import dayjs from 'dayjs';
 
 const departmentStore = useDepartmentStore();
 

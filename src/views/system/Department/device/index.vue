@@ -282,12 +282,14 @@ const columns = [
         key: 'permission',
         ellipsis: true,
         scopedSlots: true,
+        width: 300,
     },
     {
         title: '注册时间',
         dataIndex: 'registryTime',
         key: 'registryTime',
         ellipsis: true,
+        scopedSlots: true,
         search: {
             type: 'date',
         },
