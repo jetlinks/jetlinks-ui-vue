@@ -95,7 +95,7 @@ import {openKeysByTree} from "@/utils/comm";
 type Emit = {
   (e: 'update:value', data: ValueType): void
   (e: 'update:source', data: string): void
-  (e: 'select', data: any, label?: string, labelObj?: Record<number, any>): void
+  (e: 'select', data: any, label?: string, labelObj?: Record<number, any>, option?: any): void
   (e: 'tabChange', data: any): void
 }
 
@@ -143,7 +143,7 @@ const onSelect = (e: string, option: any) => {
   visible.value = false
   label.value = option[props.labelName]
   emit('update:value', e)
-  emit('select', e, label.value, { 0: label.value })
+  emit('select', e, label.value, { 0: label.value }, option)
 }
 
 const timeChange = (e: any) => {

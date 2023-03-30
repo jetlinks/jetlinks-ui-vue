@@ -203,6 +203,7 @@ export type TermsType = {
   terms?: TermsType[];
   key?: string;
   error?: boolean
+  metric?: string
 };
 
 export type PlatformRelation = {

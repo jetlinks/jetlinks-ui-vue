@@ -146,7 +146,8 @@ const paramsValue = reactive<TermsType>({
   column: props.value?.column,
   type: props.value?.type,
   termType: props.value?.termType,
-  value: props.value?.value
+  value: props.value?.value,
+  metric: undefined
 })
 
 const showDelete = ref(false)
@@ -167,6 +168,7 @@ const handOptionByColumn = (option: any) => {
     tabsOptions.value[0].component = option.dataType
 
     if (option.metrics && option.metrics.length) {
+
       tabsOptions.value.push(
         { label: '指标值', key: 'metric', component: 'select' }
       )
@@ -289,8 +291,18 @@ const termsTypeSelect = (e: { key: string, name: string }) => {
 
 }
 
-const valueSelect = (v: any, label: string, labelObj: Record<number, any>) => {
-  emit('update:value', { ...paramsValue })
+const valueSelect = (v: any, label: string, labelObj: Record<number, any>, option: any) => {
+  if (isMetric.value) {
+    paramsValue.metric = option?.id
+  }
+
+  const newValues = { ...paramsValue }
+
+  if (!isMetric.value) {
+    delete newValues.metric
+  }
+
+  emit('update:value', { ...newValues })
   formItemContext.onFieldChange()
   formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.name][2] = labelObj
 }
