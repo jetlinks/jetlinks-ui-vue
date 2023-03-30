@@ -159,7 +159,9 @@ const handleSearch = (e: any) => {
 const saveChange = (val: any) => {
     visible.value = false;
     if (val) {
+      setTimeout(() => {
         rechargeRef.value?.reload();
+      }, 500)
     }
 };
 
