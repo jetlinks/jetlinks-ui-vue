@@ -123,6 +123,11 @@ const onTagSelect = (_data: any, _index: number) => {
     const indexType = tagList.value[_index].type;
     const _item = handleItem({ ..._data, value: undefined, type: indexType })
     tagList.value[_index] = _item
+    onValueChange()
+};
+
+const onValueChange = () => {
+    // const _data = tagList.value.filter((item) => item?.value !== undefined);
     const newValue = tagList.value.map((item: any) => {
         return {
             column: item.id,
@@ -132,19 +137,6 @@ const onTagSelect = (_data: any, _index: number) => {
     });
     emits('update:value', [{ value: newValue, name: '标签' }]);
     emits('change', [{ value: newValue, name: '标签' }], tagList.value);
-};
-
-const onValueChange = () => {
-    const _data = tagList.value.filter((item) => item?.value !== undefined);
-    const newValue = _data.map((item: any) => {
-        return {
-            column: item.id,
-            type: item?.type,
-            value: item?.value,
-        };
-    });
-    emits('update:value', [{ value: newValue, name: '标签' }]);
-    emits('change', [{ value: newValue, name: '标签' }], _data);
 };
 
 watch(
