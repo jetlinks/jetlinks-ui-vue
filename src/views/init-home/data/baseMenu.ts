@@ -2806,7 +2806,7 @@ export default [
         ],
         accessSupport: { text: "间接支持", value: "indirect" },
         supportDataAccess: false,
-        indirectMenus: ['1b136e7e4e4e74bb24b91802e4cfcd2d']
+        indirectMenus: ['c4d640af0a00ce619a429e7d1c2d2bb8']
       },
       {
         code: 'media/Cascade',
