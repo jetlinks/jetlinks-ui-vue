@@ -1366,16 +1366,7 @@ export default [
                   },
                 ],
               },
-              {
-                id: 'action',
-                name: '启/禁用',
-                permissions: [
-                  {
-                    permission: 'firmware-upgrade-task-manager',
-                    actions: ['save'],
-                  }
-                ],
-              },
+        
             ],
             accessSupport: { text: "间接支持", value: "indirect" },
             supportDataAccess: false,
