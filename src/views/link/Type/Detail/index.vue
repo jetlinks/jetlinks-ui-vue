@@ -76,7 +76,18 @@
                                 </j-form-item>
                             </j-col>
                         </j-row>
-
+                        <div
+                            v-if="
+                                !shareCluster &&
+                                dynamicValidateForm.cluster.length === 0
+                            "
+                            style="
+                                border: 1px #d9d9d9 solid;
+                                margin-bottom: 12px;
+                            "
+                        >
+                            <j-empty style="margin-top: 12px" />
+                        </div>
                         <j-form
                             ref="formRef2"
                             layout="vertical"
