@@ -176,8 +176,8 @@ const objectValue = ref<string>('');
 const handleItemModalSubmit = () => {
     myValue.value = objectValue.value.replace(/[\r\n]\s*/g, '');
     modalVis.value = false;
+    emit('update:modelValue', objectValue.value);
     emit('change', objectValue.value)
-    emit('update:modelValue', myValue.value);
 };
 
 // 文件上传
@@ -192,23 +192,23 @@ const handleFileChange = (info: UploadChangeParam<UploadFile<any>>) => {
 };
 
 const selectChange = (e: string, option: any) => {
-  emit('change', e, option)
   emit('update:modelValue', myValue.value);
+  emit('change', e, option)
 }
 
 const timeChange = (e: any) => {
-  emit('change', e)
   emit('update:modelValue', myValue.value);
+  emit('change', e)
 }
 
 const inputChange = (e: any) => {
-  emit('change', e && e.target ? e.target.value : e)
   emit('update:modelValue', myValue.value);
+  emit('change', e && e.target ? e.target.value : e)
 }
 
 const dateChange = (e: any) => {
-  emit('change', e)
   emit('update:modelValue', myValue.value);
+  emit('change', e)
 }
 
 myValue.value = props.modelValue
