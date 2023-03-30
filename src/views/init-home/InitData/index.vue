@@ -264,6 +264,7 @@ const saveCurrentData = () => {
                             port: modalForm.port,
                             publicHost: modalForm.publicHost,
                             publicPort: modalForm.publicPort,
+                            maxMessageSize:8192,
                         },
                     });
                     // 保存协议

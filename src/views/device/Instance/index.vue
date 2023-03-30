@@ -164,7 +164,10 @@
                     >
                         <template #img>
                             <img
+                                :width="88"
+                                :height="88"
                                 :src="
+                                    slotProps?.photoUrl ||
                                     getImage('/device/instance/device-card.png')
                                 "
                             />
