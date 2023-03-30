@@ -73,7 +73,7 @@ export const handleTimerOptions = (timer: OperationTimer):TimerOption => {
     const whenStrArr = continuousValue(timer.when! || [], timer!.trigger);
     const whenStrArr3 = whenStrArr.splice(0, 3);
     when += whenStrArr3.join('、');
-    when += `等${timer.when!.length}天`;
+    when += `...等${timer.when!.length}天`;
   }
 
   if (timer.once) {
