@@ -177,7 +177,7 @@ const functionRules = [
                 return Promise.reject('请输入功能值');
             } else {
                 const hasValue = value?.find(
-                    (item: { name: string; value: any }) => !item.value,
+                    (item: { name: string; value: any }) => item.value === undefined,
                 );
                 if (hasValue) {
                     const functionItem = functions.value?.find(
