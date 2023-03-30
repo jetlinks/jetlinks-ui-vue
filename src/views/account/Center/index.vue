@@ -233,12 +233,13 @@ import PermissionButton from '@/components/PermissionButton/index.vue';
 import EditInfoDialog from './components/EditInfoDialog.vue';
 import EditPasswordDialog from './components/EditPasswordDialog.vue';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
-import { LocalStore, getImage } from '@/utils/comm';
+import { LocalStore, getImage, onlyMessage } from '@/utils/comm'
 import { message, UploadChangeParam, UploadFile } from 'ant-design-vue';
 import {
     getMeInfo_api,
     getSsoBinds_api,
     unBind_api,
+    updateMeInfo_api
 } from '@/api/account/center';
 import moment from 'moment';
 import { getMe_api, getView_api, setView_api } from '@/api/home';
@@ -285,9 +286,14 @@ const upload = reactive({
             info.file.url = info.file.response?.result;
             upload.uploadLoading = false;
             userInfo.value.avatar = info.file.response?.result;
+            updateMeInfo_api(userInfo.value).then(res => {
+              if(res.success) {
+                onlyMessage('上传成功')
+              }
+            })
         } else if (info.file.status === 'error') {
             upload.uploadLoading = false;
-            message.error('logo上传失败，请稍后再试');
+          onlyMessage('logo上传失败，请稍后再试', 'error');
         }
     },
     beforeUpload: ({ size, type }: File) => {
