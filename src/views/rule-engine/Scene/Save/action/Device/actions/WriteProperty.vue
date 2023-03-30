@@ -136,10 +136,12 @@ const handleOptions = computed(() => {
             {
                 label: _item.trueText || true,
                 value: _item.trueValue || true,
+                id: _item.trueValue || true,
             },
             {
                 label: _item.falseText || false,
                 value: _item.falseValue || false,
+                id: _item.falseValue || false,
             },
         ];
     }
@@ -148,6 +150,7 @@ const handleOptions = computed(() => {
             return {
                 label: i.text,
                 value: i.value,
+                id: i.value,
             };
         });
     }
