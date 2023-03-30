@@ -351,6 +351,10 @@ export default [
                 permission: 'geo-manager',
                 actions: ['find-geo'],
               },
+              {
+                permission: 'system_config',
+                actions: ['query'],
+              },
             ],
             accessSupport: { text: "不支持", value: "unsupported" },
             supportDataAccess: false
@@ -583,6 +587,10 @@ export default [
               },
               {
                 permission: 'device-gateway',
+                actions: ['query'],
+              },
+              {
+                permission: 'system_config',
                 actions: ['query'],
               },
             ],
@@ -2118,7 +2126,7 @@ export default [
                   },
                   {
                     permission: 'rule-instance',
-                    actions: ['query', 'save', 'execute'],
+                    actions: ['query'],
                   },
                   {
                     permission: 'notifier',

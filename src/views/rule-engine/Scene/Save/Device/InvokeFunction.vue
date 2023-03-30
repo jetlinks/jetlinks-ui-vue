@@ -136,7 +136,6 @@ const onSelect = (v: string, item: any) => {
 }
 
 const callDataChange = (v: any[]) => {
-  console.log('callDataChange',v)
   emit('update:functionParameters', v)
 }
 
