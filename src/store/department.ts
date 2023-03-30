@@ -5,6 +5,7 @@ type DepartmentStateType = {
     productId: string;
     optType: string | undefined;
     crossPageKeys: string[];
+    changedApis: any;
 }
 
 export const useDepartmentStore = defineStore({
@@ -16,6 +17,7 @@ export const useDepartmentStore = defineStore({
         // 2. optType === ': 产品资产分配后, 自动弹出设备资产分配
         optType: '',
         crossPageKeys: [], // 表格跨页多选的keys
+        changedApis: {},
     }),
     actions: {
         setProductId(value: string) {
@@ -27,6 +29,9 @@ export const useDepartmentStore = defineStore({
         setSelectedKeys(value: string[], type?: string) {
             // 分页保留选中项
             this.crossPageKeys = type === 'concat' ? [...new Set([...this.crossPageKeys, ...value])] : value;
+        },
+        setChangedApis(value: any) {
+            this.changedApis = { ...this.changedApis, ...value };
         }
     }
 })

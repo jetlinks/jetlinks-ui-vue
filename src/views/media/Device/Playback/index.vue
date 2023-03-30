@@ -1,186 +1,191 @@
 <!-- 回放 -->
 <template>
     <page-container>
-        <div class="playback-warp">
-            <!-- 播放器/进度条 -->
-            <div class="playback-left">
-                <LivePlayer
-                    ref="player"
-                    autoplay
-                    :url="url"
-                    className="playback-media"
-                    :live="type === 'local'"
-                    :on-play="
-                        () => {
-                            isEnded = false;
-                            playStatus = 1;
-                        }
-                    "
-                    :on-pause="
-                        () => {
-                            playStatus = 2;
-                        }
-                    "
-                    :on-ended="
-                        () => {
-                            playStatus = 0;
-                            if (playTimeNode && isEnded) {
-                                isEnded = true;
-                                playTimeNode.onNextPlay();
+        <FullPage>
+            <div class="playback-warp">
+                <!-- 播放器/进度条 -->
+                <div class="playback-left">
+                    <LivePlayer
+                        ref="player"
+                        autoplay
+                        :url="url"
+                        className="playback-media"
+                        :live="type === 'local'"
+                        :on-play="
+                            () => {
+                                isEnded = false;
+                                playStatus = 1;
                             }
-                        }
-                    "
-                    :on-error="
-                        () => {
-                            playStatus = 0;
-                        }
-                    "
-                    :on-time-update="
-                        (e: any) => {
-                            playTime = e;
-                        }
-                    "
-                />
-                <TimeLine
-                    ref="playTimeNode"
-                    :type="type"
-                    :data="historyList"
-                    :date-time="time"
-                    :on-change="handleTimeLineChange"
-                    :play-status="playStatus"
-                    :play-time="playNowTime + playTime * 1000"
-                    :local-to-server="cloudTime"
-                />
-            </div>
-            <div class="playback-right">
-                <j-spin :spinning="loading">
-                    <j-tooltip placement="topLeft">
-                        <template #title>
-                            <div>云端：存储在服务器中</div>
-                            <div>本地：存储在设备本地</div>
-                        </template>
-                        <div>类型: <AIcon type="QuestionCircleOutlined" /></div>
-                    </j-tooltip>
-                    <RadioCard
-                        layout="horizontal"
-                        :options="[
-                            {
-                                label: '云端',
-                                value: 'cloud',
-                                logo: getImage('/media/cloud.png'),
-                            },
-                            {
-                                label: '本地',
-                                value: 'local',
-                                logo: getImage('/local.png'),
-                                disabled: deviceType === 'fixed-media',
-                            },
-                        ]"
-                        :checkStyle="true"
-                        v-model="type"
+                        "
+                        :on-pause="
+                            () => {
+                                playStatus = 2;
+                            }
+                        "
+                        :on-ended="
+                            () => {
+                                playStatus = 0;
+                                if (playTimeNode && isEnded) {
+                                    isEnded = true;
+                                    playTimeNode.onNextPlay();
+                                }
+                            }
+                        "
+                        :on-error="
+                            () => {
+                                playStatus = 0;
+                            }
+                        "
+                        :on-time-update="
+                            (e: any) => {
+                                playTime = e;
+                            }
+                        "
                     />
-                    <div class="playback-calendar">
-                        <j-calendar
-                            v-model:value="time"
-                            :fullscreen="false"
-                            :disabledDate="
-                                (currentDate: Dayjs) => currentDate > dayjs(new Date())
-                            "
-                            @change="handlePanelChange"
+                    <TimeLine
+                        ref="playTimeNode"
+                        :type="type"
+                        :data="historyList"
+                        :date-time="time"
+                        :on-change="handleTimeLineChange"
+                        :play-status="playStatus"
+                        :play-time="playNowTime + playTime * 1000"
+                        :local-to-server="cloudTime"
+                    />
+                </div>
+                <div class="playback-right">
+                    <j-spin :spinning="loading">
+                        <j-tooltip placement="topLeft">
+                            <template #title>
+                                <div>云端：存储在服务器中</div>
+                                <div>本地：存储在设备本地</div>
+                            </template>
+                            <div>
+                                类型: <AIcon type="QuestionCircleOutlined" />
+                            </div>
+                        </j-tooltip>
+                        <RadioCard
+                            layout="horizontal"
+                            :options="[
+                                {
+                                    label: '云端',
+                                    value: 'cloud',
+                                    logo: getImage('/media/cloud.png'),
+                                },
+                                {
+                                    label: '本地',
+                                    value: 'local',
+                                    logo: getImage('/local.png'),
+                                    disabled: deviceType === 'fixed-media',
+                                },
+                            ]"
+                            :checkStyle="true"
+                            v-model="type"
                         />
-                    </div>
-                    <div
-                        class="playback-list"
-                        :class="{ 'no-list': !historyList.length }"
-                    >
-                        <j-empty
-                            v-if="!historyList.length"
-                            description="暂无数据"
-                        />
-                        <j-list
-                            v-else
-                            class="playback-list-items"
-                            itemLayout="horizontal"
-                            :dataSource="historyList"
+                        <div class="playback-calendar">
+                            <j-calendar
+                                v-model:value="time"
+                                :fullscreen="false"
+                                :disabledDate="
+                                    (currentDate: Dayjs) => currentDate > dayjs(new Date())
+                                "
+                                @change="handlePanelChange"
+                            />
+                        </div>
+                        <div
+                            class="playback-list"
+                            :class="{ 'no-list': !historyList.length }"
                         >
-                            <template #renderItem="{ item }">
-                                <j-list-item>
-                                    <template #actions>
-                                        <j-tooltip
-                                            key="play-btn"
-                                            :title="
-                                                (item.startTime ||
-                                                    item.mediaStartTime) ===
-                                                    playNowTime &&
-                                                playStatus === 1
-                                                    ? '暂停'
-                                                    : '播放'
-                                            "
-                                        >
-                                            <a
-                                                @click="
-                                                    handlePlay(
-                                                        item.startTime ||
-                                                            item.mediaStartTime,
-                                                    )
+                            <j-empty
+                                v-if="!historyList.length"
+                                description="暂无数据"
+                            />
+                            <j-list
+                                v-else
+                                class="playback-list-items"
+                                itemLayout="horizontal"
+                                :dataSource="historyList"
+                            >
+                                <template #renderItem="{ item }">
+                                    <j-list-item>
+                                        <template #actions>
+                                            <j-tooltip
+                                                key="play-btn"
+                                                :title="
+                                                    (item.startTime ||
+                                                        item.mediaStartTime) ===
+                                                        playNowTime &&
+                                                    playStatus === 1
+                                                        ? '暂停'
+                                                        : '播放'
                                                 "
                                             >
-                                                <AIcon
-                                                    :type="
-                                                        (item.startTime ||
-                                                            item.mediaStartTime) ===
-                                                            playNowTime &&
-                                                        playStatus === 1
-                                                            ? 'PauseCircleOutlined'
-                                                            : 'PlayCircleOutlined'
+                                                <a
+                                                    @click="
+                                                        handlePlay(
+                                                            item.startTime ||
+                                                                item.mediaStartTime,
+                                                        )
+                                                    "
+                                                >
+                                                    <AIcon
+                                                        :type="
+                                                            (item.startTime ||
+                                                                item.mediaStartTime) ===
+                                                                playNowTime &&
+                                                            playStatus === 1
+                                                                ? 'PauseCircleOutlined'
+                                                                : 'PlayCircleOutlined'
+                                                        "
+                                                    />
+                                                </a>
+                                            </j-tooltip>
+                                            <j-tooltip
+                                                key="download"
+                                                :title="
+                                                    type !== 'local'
+                                                        ? '下载录像文件'
+                                                        : item.isServer
+                                                        ? '查看'
+                                                        : '下载到云端'
+                                                "
+                                            >
+                                                <IconNode
+                                                    :type="type"
+                                                    :item="item"
+                                                    :on-cloud-view="cloudView"
+                                                    :on-down-load="
+                                                        () =>
+                                                            downloadClick(item)
                                                     "
                                                 />
-                                            </a>
-                                        </j-tooltip>
-                                        <j-tooltip
-                                            key="download"
-                                            :title="
-                                                type !== 'local'
-                                                    ? '下载录像文件'
-                                                    : item.isServer
-                                                    ? '查看'
-                                                    : '下载到云端'
-                                            "
-                                        >
-                                            <IconNode
-                                                :type="type"
-                                                :item="item"
-                                                :on-cloud-view="cloudView"
-                                                :on-down-load="
-                                                    () => downloadClick(item)
-                                                "
-                                            />
-                                        </j-tooltip>
-                                    </template>
+                                            </j-tooltip>
+                                        </template>
 
-                                    <div>
-                                        {{
-                                            dayjs(
-                                                item.startTime ||
-                                                    item.mediaStartTime,
-                                            ).format('HH:mm:ss')
-                                        }}
-                                        ~
-                                        {{
-                                            dayjs(
-                                                item.endTime ||
-                                                    item.mediaEndTime,
-                                            ).format('HH:mm:ss')
-                                        }}
-                                    </div>
-                                </j-list-item>
-                            </template>
-                            <div></div>
-                        </j-list>
-                    </div>
-                </j-spin>
+                                        <div>
+                                            {{
+                                                dayjs(
+                                                    item.startTime ||
+                                                        item.mediaStartTime,
+                                                ).format('HH:mm:ss')
+                                            }}
+                                            ~
+                                            {{
+                                                dayjs(
+                                                    item.endTime ||
+                                                        item.mediaEndTime,
+                                                ).format('HH:mm:ss')
+                                            }}
+                                        </div>
+                                    </j-list-item>
+                                </template>
+                                <div></div>
+                            </j-list>
+                        </div>
+                    </j-spin>
+                </div>
             </div>
-        </div>
+        </FullPage>
     </page-container>
 </template>
 
@@ -216,7 +221,7 @@ const deviceType = ref('');
 
 /**
  * 查询本地视频
- * @param date 
+ * @param date
  */
 const queryLocalRecords = async (date: Dayjs) => {
     playStatus.value = 0;

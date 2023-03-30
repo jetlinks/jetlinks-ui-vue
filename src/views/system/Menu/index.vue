@@ -6,70 +6,73 @@
                 target="category"
                 @search="handleSearch"
             />
-
-            <j-pro-table
-                ref="tableRef"
-                :columns="columns"
-                :request="table.getList"
-                model="TABLE"
-                :params="queryParams"
-                noPagination
-                v-model:expandedRowKeys="expandedRowKeys"
-            >
-                <template #headerTitle>
-                    <PermissionButton
-                        type="primary"
-                        :hasPermission="`${permission}:add`"
-                        @click="table.toDetails({})"
-                    >
-                        <AIcon type="PlusOutlined" />新增
-                    </PermissionButton>
-                    <j-button
-                        style="margin-left: 12px"
-                        @click="router.push('/system/Menu/Setting')"
-                        >菜单配置</j-button
-                    >
-                </template>
-                <template #createTime="slotProps">
-                    {{
-                        dayjs(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss')
-                    }}
-                </template>
-                <template #action="slotProps">
-                    <j-space :size="16">
-                        <j-tooltip>
-                            <template #title>查看</template>
-                            <j-button
-                                style="padding: 0"
-                                type="link"
-                                @click="table.toDetails(slotProps)"
-                            >
-                                <AIcon type="SearchOutlined" />
-                            </j-button>
-                        </j-tooltip>
-
+            <FullPage>
+                <j-pro-table
+                    ref="tableRef"
+                    :columns="columns"
+                    :request="table.getList"
+                    model="TABLE"
+                    :params="queryParams"
+                    noPagination
+                    v-model:expandedRowKeys="expandedRowKeys"
+                >
+                    <template #headerTitle>
                         <PermissionButton
-                            type="link"
+                            type="primary"
                             :hasPermission="`${permission}:add`"
-                            :tooltip="{ title: '新增子菜单' }"
-                            @click="table.addChildren(slotProps)"
+                            @click="table.toDetails({})"
                         >
-                            <AIcon type="PlusCircleOutlined" />
+                            <AIcon type="PlusOutlined" />新增
                         </PermissionButton>
-                        <PermissionButton
-                            type="link"
-                            :hasPermission="`${permission}:delete`"
-                            :tooltip="{ title: '删除' }"
-                            :popConfirm="{
-                                title: `是否删除该菜单`,
-                                onConfirm: () => table.clickDel(slotProps),
-                            }"
+                        <j-button
+                            style="margin-left: 12px"
+                            @click="router.push('/system/Menu/Setting')"
+                            >菜单配置</j-button
                         >
-                            <AIcon type="DeleteOutlined" />
-                        </PermissionButton>
-                    </j-space>
-                </template>
-            </j-pro-table>
+                    </template>
+                    <template #createTime="slotProps">
+                        {{
+                            dayjs(slotProps.createTime).format(
+                                'YYYY-MM-DD HH:mm:ss',
+                            )
+                        }}
+                    </template>
+                    <template #action="slotProps">
+                        <j-space :size="16">
+                            <j-tooltip>
+                                <template #title>查看</template>
+                                <j-button
+                                    style="padding: 0"
+                                    type="link"
+                                    @click="table.toDetails(slotProps)"
+                                >
+                                    <AIcon type="SearchOutlined" />
+                                </j-button>
+                            </j-tooltip>
+
+                            <PermissionButton
+                                type="link"
+                                :hasPermission="`${permission}:add`"
+                                :tooltip="{ title: '新增子菜单' }"
+                                @click="table.addChildren(slotProps)"
+                            >
+                                <AIcon type="PlusCircleOutlined" />
+                            </PermissionButton>
+                            <PermissionButton
+                                type="link"
+                                :hasPermission="`${permission}:delete`"
+                                :tooltip="{ title: '删除' }"
+                                :popConfirm="{
+                                    title: `是否删除该菜单`,
+                                    onConfirm: () => table.clickDel(slotProps),
+                                }"
+                            >
+                                <AIcon type="DeleteOutlined" />
+                            </PermissionButton>
+                        </j-space>
+                    </template>
+                </j-pro-table>
+            </FullPage>
         </div>
     </page-container>
 </template>

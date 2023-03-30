@@ -1,437 +1,479 @@
 <template>
     <page-container>
-        <j-card>
-            <j-row :gutter="24">
-                <j-col :span="16">
-                    <TitleComponent data="基本信息" />
-                    <j-form
-                        :layout="'vertical'"
-                        ref="formRef"
-                        :model="modelRef"
-                    >
-                        <j-row :gutter="24">
-                            <j-col :span="24">
-                                <j-form-item
-                                    label="名称"
-                                    name="name"
-                                    :rules="[
-                                        {
-                                            required: true,
-                                            message: '请输入名称',
-                                        },
-                                        {
-                                            max: 64,
-                                            message: '最多输入64个字符',
-                                        },
+        <FullPage>
+            <j-card>
+                <div class="box">
+                    <div class="left">
+                        <div class="left-content">
+                            <TitleComponent data="基本信息" />
+                            <j-form
+                                :layout="'vertical'"
+                                ref="formRef"
+                                :model="modelRef"
+                            >
+                                <j-row :gutter="24">
+                                    <j-col :span="24">
+                                        <j-form-item
+                                            label="名称"
+                                            name="name"
+                                            :rules="[
+                                                {
+                                                    required: true,
+                                                    message: '请输入名称',
+                                                },
+                                                {
+                                                    max: 64,
+                                                    message: '最多输入64个字符',
+                                                },
+                                            ]"
+                                        >
+                                            <j-input
+                                                placeholder="请输入名称"
+                                                v-model:value="modelRef.name"
+                                            />
+                                        </j-form-item>
+                                    </j-col>
+                                    <j-col :span="12">
+                                        <j-form-item
+                                            label="产品"
+                                            name="id"
+                                            :rules="[
+                                                {
+                                                    required: true,
+                                                    message: '请选择产品',
+                                                },
+                                            ]"
+                                        >
+                                            <j-select
+                                                :disabled="
+                                                    type !== 'edit' &&
+                                                    modelRef.id &&
+                                                    modelRef.id !== ':id'
+                                                "
+                                                placeholder="请选择产品"
+                                                v-model:value="modelRef.id"
+                                                show-search
+                                                @change="productChange"
+                                            >
+                                                <j-select-option
+                                                    v-for="item in productList"
+                                                    :key="item.id"
+                                                    :value="item.id"
+                                                    :label="item.name"
+                                                    >{{
+                                                        item.name
+                                                    }}</j-select-option
+                                                >
+                                            </j-select>
+                                        </j-form-item>
+                                    </j-col>
+                                    <j-col :span="12">
+                                        <j-form-item
+                                            name="applianceType"
+                                            :rules="{
+                                                required: true,
+                                                message: '请选择设备类型',
+                                            }"
+                                        >
+                                            <template #label>
+                                                <span>
+                                                    设备类型
+                                                    <j-tooltip
+                                                        title="DuerOS平台拟定的规范"
+                                                    >
+                                                        <AIcon
+                                                            type="QuestionCircleOutlined"
+                                                            style="
+                                                                margin-left: 2px;
+                                                            "
+                                                        />
+                                                    </j-tooltip>
+                                                </span>
+                                            </template>
+                                            <j-select
+                                                placeholder="请选择设备类型"
+                                                v-model:value="
+                                                    modelRef.applianceType
+                                                "
+                                                show-search
+                                                @change="typeChange"
+                                            >
+                                                <j-select-option
+                                                    v-for="item in typeList"
+                                                    :key="item.id"
+                                                    :value="item.id"
+                                                    :label="item.name"
+                                                    >{{
+                                                        item.name
+                                                    }}</j-select-option
+                                                >
+                                            </j-select>
+                                        </j-form-item>
+                                        <j-form-item
+                                            name="productName"
+                                            v-show="false"
+                                            label="产品名称"
+                                        >
+                                            <j-input
+                                                v-model:value="
+                                                    modelRef.productName
+                                                "
+                                            />
+                                        </j-form-item>
+                                    </j-col>
+                                    <j-col :span="24">
+                                        <p>动作映射</p>
+                                        <j-collapse
+                                            v-if="
+                                                modelRef.actionMappings.length
+                                            "
+                                            :activeKey="actionActiveKey"
+                                            @change="onActionCollChange"
+                                        >
+                                            <j-collapse-panel
+                                                v-for="(
+                                                    item, index
+                                                ) in modelRef.actionMappings"
+                                                :key="index"
+                                                :header="
+                                                    item.action
+                                                        ? getTypesActions(
+                                                              item.action,
+                                                          ).find(
+                                                              (i) =>
+                                                                  i.id ===
+                                                                  item.action,
+                                                          )?.name
+                                                        : `动作映射${index + 1}`
+                                                "
+                                            >
+                                                <template #extra
+                                                    ><AIcon
+                                                        type="DeleteOutlined"
+                                                        @click="delItem(index)"
+                                                /></template>
+                                                <j-row :gutter="24">
+                                                    <j-col :span="12">
+                                                        <j-form-item
+                                                            :name="[
+                                                                'actionMappings',
+                                                                index,
+                                                                'action',
+                                                            ]"
+                                                            :rules="{
+                                                                required: true,
+                                                                message:
+                                                                    '请选择动作',
+                                                            }"
+                                                        >
+                                                            <template #label>
+                                                                <span>
+                                                                    动作
+                                                                    <j-tooltip
+                                                                        title="DuerOS平台拟定的设备类型具有的相关动作"
+                                                                    >
+                                                                        <AIcon
+                                                                            type="QuestionCircleOutlined"
+                                                                        />
+                                                                    </j-tooltip>
+                                                                </span>
+                                                            </template>
+                                                            <j-select
+                                                                placeholder="请选择动作"
+                                                                v-model:value="
+                                                                    item.action
+                                                                "
+                                                                show-search
+                                                            >
+                                                                <j-select-option
+                                                                    v-for="i in getTypesActions(
+                                                                        item.action ||
+                                                                            '',
+                                                                    )"
+                                                                    :key="i.id"
+                                                                    :value="
+                                                                        i.id
+                                                                    "
+                                                                    :label="
+                                                                        i.name
+                                                                    "
+                                                                    >{{
+                                                                        i.name
+                                                                    }}</j-select-option
+                                                                >
+                                                            </j-select>
+                                                        </j-form-item>
+                                                    </j-col>
+                                                    <j-col :span="12">
+                                                        <j-form-item
+                                                            :name="[
+                                                                'actionMappings',
+                                                                index,
+                                                                'actionType',
+                                                            ]"
+                                                            :rules="{
+                                                                required: true,
+                                                                message:
+                                                                    '请选择操作',
+                                                            }"
+                                                        >
+                                                            <template #label>
+                                                                <span>
+                                                                    操作
+                                                                    <j-tooltip
+                                                                        title="映射物联网平台中所选产品具备的动作"
+                                                                    >
+                                                                        <AIcon
+                                                                            type="QuestionCircleOutlined"
+                                                                        />
+                                                                    </j-tooltip>
+                                                                </span>
+                                                            </template>
+                                                            <j-select
+                                                                placeholder="请选择操作"
+                                                                v-model:value="
+                                                                    item.actionType
+                                                                "
+                                                                show-search
+                                                                @change="
+                                                                    () =>
+                                                                        onActionTypeChange(
+                                                                            index,
+                                                                        )
+                                                                "
+                                                            >
+                                                                <j-select-option
+                                                                    value="command"
+                                                                    >下发指令</j-select-option
+                                                                >
+                                                                <j-select-option
+                                                                    value="latestData"
+                                                                    >获取历史数据</j-select-option
+                                                                >
+                                                            </j-select>
+                                                        </j-form-item>
+                                                    </j-col>
+                                                    <j-col
+                                                        :span="24"
+                                                        v-if="item.actionType"
+                                                    >
+                                                        <j-form-item
+                                                            :name="[
+                                                                'actionMappings',
+                                                                index,
+                                                                'command',
+                                                            ]"
+                                                        >
+                                                            <Command
+                                                                ref="command"
+                                                                :metadata="
+                                                                    findProductMetadata
+                                                                "
+                                                                v-model:modelValue="
+                                                                    item.command
+                                                                "
+                                                                :actionType="
+                                                                    item.actionType
+                                                                "
+                                                            />
+                                                        </j-form-item>
+                                                    </j-col>
+                                                </j-row>
+                                            </j-collapse-panel>
+                                        </j-collapse>
+                                        <j-card v-else>
+                                            <j-empty />
+                                        </j-card>
+                                    </j-col>
+                                    <j-col :span="24">
+                                        <j-button
+                                            type="dashed"
+                                            style="
+                                                width: 100%;
+                                                margin-top: 10px;
+                                            "
+                                            @click="addItem"
+                                        >
+                                            <AIcon
+                                                type="PlusOutlined"
+                                                style="margin-left: 2px"
+                                            />新增动作
+                                        </j-button>
+                                    </j-col>
+                                    <j-col :span="24">
+                                        <p style="margin-top: 20px">属性映射</p>
+                                        <j-collapse
+                                            v-if="
+                                                modelRef.propertyMappings.length
+                                            "
+                                            :activeKey="propertyActiveKey"
+                                            @change="onPropertyCollChange"
+                                        >
+                                            <j-collapse-panel
+                                                v-for="(
+                                                    item, index
+                                                ) in modelRef.propertyMappings"
+                                                :key="index"
+                                                :header="
+                                                    item.source
+                                                        ? getDuerOSProperties(
+                                                              item.source,
+                                                          ).find(
+                                                              (i) =>
+                                                                  i.id ===
+                                                                  item.source,
+                                                          )?.name
+                                                        : `属性映射${index + 1}`
+                                                "
+                                            >
+                                                <template #extra
+                                                    ><AIcon
+                                                        type="DeleteOutlined"
+                                                        @click="
+                                                            delPropertyItem(
+                                                                index,
+                                                            )
+                                                        "
+                                                /></template>
+                                                <j-row :gutter="24">
+                                                    <j-col :span="12">
+                                                        <j-form-item
+                                                            label="DuerOS属性"
+                                                            :name="[
+                                                                'propertyMappings',
+                                                                index,
+                                                                'source',
+                                                            ]"
+                                                            :rules="{
+                                                                required: true,
+                                                                message:
+                                                                    '请选择DuerOS属性',
+                                                            }"
+                                                        >
+                                                            <j-select
+                                                                placeholder="请选择DuerOS属性"
+                                                                v-model:value="
+                                                                    item.source
+                                                                "
+                                                                show-search
+                                                            >
+                                                                <j-select-option
+                                                                    v-for="i in getDuerOSProperties(
+                                                                        item.source ||
+                                                                            '',
+                                                                    )"
+                                                                    :key="i.id"
+                                                                    :value="
+                                                                        i.id
+                                                                    "
+                                                                    >{{
+                                                                        i.name
+                                                                    }}</j-select-option
+                                                                >
+                                                            </j-select>
+                                                        </j-form-item>
+                                                    </j-col>
+                                                    <j-col :span="12">
+                                                        <j-form-item
+                                                            label="平台属性"
+                                                            :name="[
+                                                                'propertyMappings',
+                                                                index,
+                                                                'target',
+                                                            ]"
+                                                            :rules="{
+                                                                required: true,
+                                                                message:
+                                                                    '请选择平台属性',
+                                                            }"
+                                                        >
+                                                            <j-select
+                                                                placeholder="请选择平台属性"
+                                                                v-model:value="
+                                                                    item.target
+                                                                "
+                                                                mode="tags"
+                                                                show-search
+                                                            >
+                                                                <j-select-option
+                                                                    v-for="i in getProductProperties(
+                                                                        item.target,
+                                                                    )"
+                                                                    :key="i.id"
+                                                                    :value="
+                                                                        i.id
+                                                                    "
+                                                                    >{{
+                                                                        i.name
+                                                                    }}</j-select-option
+                                                                >
+                                                            </j-select>
+                                                        </j-form-item>
+                                                    </j-col>
+                                                </j-row>
+                                            </j-collapse-panel>
+                                        </j-collapse>
+                                        <j-card v-else>
+                                            <j-empty />
+                                        </j-card>
+                                    </j-col>
+                                    <j-col :span="24">
+                                        <j-button
+                                            type="dashed"
+                                            style="
+                                                width: 100%;
+                                                margin-top: 10px;
+                                            "
+                                            @click="addPropertyItem"
+                                        >
+                                            <AIcon
+                                                type="PlusOutlined"
+                                                style="margin-left: 2px"
+                                            />新增属性
+                                        </j-button>
+                                    </j-col>
+                                    <j-col :span="24" style="margin-top: 20px">
+                                        <j-form-item
+                                            label="说明"
+                                            name="description"
+                                            :rules="{
+                                                max: 200,
+                                                message: '最多输入200个字符',
+                                            }"
+                                        >
+                                            <j-textarea
+                                                v-model:value="
+                                                    modelRef.description
+                                                "
+                                                placeholder="请输入说明"
+                                                showCount
+                                                :maxlength="200"
+                                            />
+                                        </j-form-item>
+                                    </j-col>
+                                </j-row>
+                            </j-form>
+                            <div v-if="type === 'edit'">
+                                <PermissionButton
+                                    type="primary"
+                                    :loading="loading"
+                                    @click="saveBtn"
+                                    :hasPermission="[
+                                        'Northbound/DuerOS:add',
+                                        'Northbound/DuerOS:update',
                                     ]"
                                 >
-                                    <j-input
-                                        placeholder="请输入名称"
-                                        v-model:value="modelRef.name"
-                                    />
-                                </j-form-item>
-                            </j-col>
-                            <j-col :span="12">
-                                <j-form-item
-                                    label="产品"
-                                    name="id"
-                                    :rules="[
-                                        {
-                                            required: true,
-                                            message: '请选择产品',
-                                        },
-                                    ]"
-                                >
-                                    <j-select
-                                        :disabled="
-                                            type !== 'edit' &&
-                                            modelRef.id &&
-                                            modelRef.id !== ':id'
-                                        "
-                                        placeholder="请选择产品"
-                                        v-model:value="modelRef.id"
-                                        show-search
-                                        @change="productChange"
-                                    >
-                                        <j-select-option
-                                            v-for="item in productList"
-                                            :key="item.id"
-                                            :value="item.id"
-                                            :label="item.name"
-                                            >{{ item.name }}</j-select-option
-                                        >
-                                    </j-select>
-                                </j-form-item>
-                            </j-col>
-                            <j-col :span="12">
-                                <j-form-item
-                                    name="applianceType"
-                                    :rules="{
-                                        required: true,
-                                        message: '请选择设备类型',
-                                    }"
-                                >
-                                    <template #label>
-                                        <span>
-                                            设备类型
-                                            <j-tooltip
-                                                title="DuerOS平台拟定的规范"
-                                            >
-                                                <AIcon
-                                                    type="QuestionCircleOutlined"
-                                                    style="margin-left: 2px"
-                                                />
-                                            </j-tooltip>
-                                        </span>
-                                    </template>
-                                    <j-select
-                                        placeholder="请选择设备类型"
-                                        v-model:value="modelRef.applianceType"
-                                        show-search
-                                        @change="typeChange"
-                                    >
-                                        <j-select-option
-                                            v-for="item in typeList"
-                                            :key="item.id"
-                                            :value="item.id"
-                                            :label="item.name"
-                                            >{{ item.name }}</j-select-option
-                                        >
-                                    </j-select>
-                                </j-form-item>
-                                <j-form-item
-                                    name="productName"
-                                    v-show="false"
-                                    label="产品名称"
-                                >
-                                    <j-input
-                                        v-model:value="modelRef.productName"
-                                    />
-                                </j-form-item>
-                            </j-col>
-                            <j-col :span="24">
-                                <p>动作映射</p>
-                                <j-collapse
-                                    v-if="modelRef.actionMappings.length"
-                                    :activeKey="actionActiveKey"
-                                    @change="onActionCollChange"
-                                >
-                                    <j-collapse-panel
-                                        v-for="(
-                                            item, index
-                                        ) in modelRef.actionMappings"
-                                        :key="index"
-                                        :header="
-                                            item.action
-                                                ? getTypesActions(
-                                                      item.action,
-                                                  ).find(
-                                                      (i) =>
-                                                          i.id === item.action,
-                                                  )?.name
-                                                : `动作映射${index + 1}`
-                                        "
-                                    >
-                                        <template #extra
-                                            ><AIcon
-                                                type="DeleteOutlined"
-                                                @click="delItem(index)"
-                                        /></template>
-                                        <j-row :gutter="24">
-                                            <j-col :span="12">
-                                                <j-form-item
-                                                    :name="[
-                                                        'actionMappings',
-                                                        index,
-                                                        'action',
-                                                    ]"
-                                                    :rules="{
-                                                        required: true,
-                                                        message: '请选择动作',
-                                                    }"
-                                                >
-                                                    <template #label>
-                                                        <span>
-                                                            动作
-                                                            <j-tooltip
-                                                                title="DuerOS平台拟定的设备类型具有的相关动作"
-                                                            >
-                                                                <AIcon
-                                                                    type="QuestionCircleOutlined"
-                                                                />
-                                                            </j-tooltip>
-                                                        </span>
-                                                    </template>
-                                                    <j-select
-                                                        placeholder="请选择动作"
-                                                        v-model:value="
-                                                            item.action
-                                                        "
-                                                        show-search
-                                                    >
-                                                        <j-select-option
-                                                            v-for="i in getTypesActions(
-                                                                item.action ||
-                                                                    '',
-                                                            )"
-                                                            :key="i.id"
-                                                            :value="i.id"
-                                                            :label="i.name"
-                                                            >{{
-                                                                i.name
-                                                            }}</j-select-option
-                                                        >
-                                                    </j-select>
-                                                </j-form-item>
-                                            </j-col>
-                                            <j-col :span="12">
-                                                <j-form-item
-                                                    :name="[
-                                                        'actionMappings',
-                                                        index,
-                                                        'actionType',
-                                                    ]"
-                                                    :rules="{
-                                                        required: true,
-                                                        message: '请选择操作',
-                                                    }"
-                                                >
-                                                    <template #label>
-                                                        <span>
-                                                            操作
-                                                            <j-tooltip
-                                                                title="映射物联网平台中所选产品具备的动作"
-                                                            >
-                                                                <AIcon
-                                                                    type="QuestionCircleOutlined"
-                                                                />
-                                                            </j-tooltip>
-                                                        </span>
-                                                    </template>
-                                                    <j-select
-                                                        placeholder="请选择操作"
-                                                        v-model:value="
-                                                            item.actionType
-                                                        "
-                                                        show-search
-                                                        @change="
-                                                            () =>
-                                                                onActionTypeChange(
-                                                                    index,
-                                                                )
-                                                        "
-                                                    >
-                                                        <j-select-option
-                                                            value="command"
-                                                            >下发指令</j-select-option
-                                                        >
-                                                        <j-select-option
-                                                            value="latestData"
-                                                            >获取历史数据</j-select-option
-                                                        >
-                                                    </j-select>
-                                                </j-form-item>
-                                            </j-col>
-                                            <j-col
-                                                :span="24"
-                                                v-if="item.actionType"
-                                            >
-                                                <j-form-item
-                                                    :name="[
-                                                        'actionMappings',
-                                                        index,
-                                                        'command',
-                                                    ]"
-                                                >
-                                                    <Command
-                                                        ref="command"
-                                                        :metadata="
-                                                            findProductMetadata
-                                                        "
-                                                        v-model:modelValue="
-                                                            item.command
-                                                        "
-                                                        :actionType="
-                                                            item.actionType
-                                                        "
-                                                    />
-                                                </j-form-item>
-                                            </j-col>
-                                        </j-row>
-                                    </j-collapse-panel>
-                                </j-collapse>
-                                <j-card v-else>
-                                    <j-empty />
-                                </j-card>
-                            </j-col>
-                            <j-col :span="24">
-                                <j-button
-                                    type="dashed"
-                                    style="width: 100%; margin-top: 10px"
-                                    @click="addItem"
-                                >
-                                    <AIcon
-                                        type="PlusOutlined"
-                                        style="margin-left: 2px"
-                                    />新增动作
-                                </j-button>
-                            </j-col>
-                            <j-col :span="24">
-                                <p style="margin-top: 20px">属性映射</p>
-                                <j-collapse
-                                    v-if="modelRef.propertyMappings.length"
-                                    :activeKey="propertyActiveKey"
-                                    @change="onPropertyCollChange"
-                                >
-                                    <j-collapse-panel
-                                        v-for="(
-                                            item, index
-                                        ) in modelRef.propertyMappings"
-                                        :key="index"
-                                        :header="
-                                            item.source
-                                                ? getDuerOSProperties(
-                                                      item.source,
-                                                  ).find(
-                                                      (i) =>
-                                                          i.id === item.source,
-                                                  )?.name
-                                                : `属性映射${index + 1}`
-                                        "
-                                    >
-                                        <template #extra
-                                            ><AIcon
-                                                type="DeleteOutlined"
-                                                @click="delPropertyItem(index)"
-                                        /></template>
-                                        <j-row :gutter="24">
-                                            <j-col :span="12">
-                                                <j-form-item
-                                                    label="DuerOS属性"
-                                                    :name="[
-                                                        'propertyMappings',
-                                                        index,
-                                                        'source',
-                                                    ]"
-                                                    :rules="{
-                                                        required: true,
-                                                        message:
-                                                            '请选择DuerOS属性',
-                                                    }"
-                                                >
-                                                    <j-select
-                                                        placeholder="请选择DuerOS属性"
-                                                        v-model:value="
-                                                            item.source
-                                                        "
-                                                        show-search
-                                                    >
-                                                        <j-select-option
-                                                            v-for="i in getDuerOSProperties(
-                                                                item.source ||
-                                                                    '',
-                                                            )"
-                                                            :key="i.id"
-                                                            :value="i.id"
-                                                            >{{
-                                                                i.name
-                                                            }}</j-select-option
-                                                        >
-                                                    </j-select>
-                                                </j-form-item>
-                                            </j-col>
-                                            <j-col :span="12">
-                                                <j-form-item
-                                                    label="平台属性"
-                                                    :name="[
-                                                        'propertyMappings',
-                                                        index,
-                                                        'target',
-                                                    ]"
-                                                    :rules="{
-                                                        required: true,
-                                                        message:
-                                                            '请选择平台属性',
-                                                    }"
-                                                >
-                                                    <j-select
-                                                        placeholder="请选择平台属性"
-                                                        v-model:value="
-                                                            item.target
-                                                        "
-                                                        mode="tags"
-                                                        show-search
-                                                    >
-                                                        <j-select-option
-                                                            v-for="i in getProductProperties(
-                                                                item.target,
-                                                            )"
-                                                            :key="i.id"
-                                                            :value="i.id"
-                                                            >{{
-                                                                i.name
-                                                            }}</j-select-option
-                                                        >
-                                                    </j-select>
-                                                </j-form-item>
-                                            </j-col>
-                                        </j-row>
-                                    </j-collapse-panel>
-                                </j-collapse>
-                                <j-card v-else>
-                                    <j-empty />
-                                </j-card>
-                            </j-col>
-                            <j-col :span="24">
-                                <j-button
-                                    type="dashed"
-                                    style="width: 100%; margin-top: 10px"
-                                    @click="addPropertyItem"
-                                >
-                                    <AIcon
-                                        type="PlusOutlined"
-                                        style="margin-left: 2px"
-                                    />新增属性
-                                </j-button>
-                            </j-col>
-                            <j-col :span="24" style="margin-top: 20px">
-                                <j-form-item
-                                    label="说明"
-                                    name="description"
-                                    :rules="{
-                                        max: 200,
-                                        message: '最多输入200个字符',
-                                    }"
-                                >
-                                    <j-textarea
-                                        v-model:value="modelRef.description"
-                                        placeholder="请输入说明"
-                                        showCount
-                                        :maxlength="200"
-                                    />
-                                </j-form-item>
-                            </j-col>
-                        </j-row>
-                    </j-form>
-                    <div v-if="type === 'edit'">
-                        <PermissionButton
-                            type="primary"
-                            :loading="loading"
-                            @click="saveBtn"
-                            :hasPermission="[
-                                'Northbound/DuerOS:add',
-                                'Northbound/DuerOS:update',
-                            ]"
-                        >
-                            保存
-                        </PermissionButton>
+                                    保存
+                                </PermissionButton>
+                            </div>
+                        </div>
                     </div>
-                </j-col>
-                <j-col :span="8">
-                    <Doc />
-                </j-col>
-            </j-row>
-        </j-card>
+                    <div class="right">
+                        <Doc />
+                    </div>
+                </div>
+            </j-card>
+        </FullPage>
     </page-container>
 </template>
 
@@ -504,7 +546,7 @@ const onActionTypeChange = (_index: number) => {
             properties: undefined,
             functionId: undefined,
             inputs: [],
-            value: undefined
+            value: undefined,
         },
     };
 };
@@ -721,3 +763,22 @@ watch(
     { immediate: true, deep: true },
 );
 </script>
+
+<style scoped lang="less">
+.box {
+    position: relative;
+    .left {
+        .left-content {
+            width: 66%;
+        }
+    }
+    .right {
+        width: 33%;
+        position: absolute;
+        right: 0;
+        top: 0;
+        overflow-y: auto;
+        height: 100%;
+    }
+}
+</style>

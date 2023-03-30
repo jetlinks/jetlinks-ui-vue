@@ -5,119 +5,133 @@
             target="northbound-aliyun"
             @search="handleSearch"
         />
-        <JProTable
-            ref="instanceRef"
-            :columns="columns"
-            :request="query"
-            :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }"
-            :params="params"
-        >
-            <template #headerTitle>
-                <j-space>
-                    <PermissionButton
-                        type="primary"
-                        @click="handleAdd"
-                        hasPermission="Northbound/AliCloud:add"
+        <FullPage>
+            <JProTable
+                ref="instanceRef"
+                :columns="columns"
+                :request="query"
+                :defaultParams="{
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                }"
+                :params="params"
+            >
+                <template #headerTitle>
+                    <j-space>
+                        <PermissionButton
+                            type="primary"
+                            @click="handleAdd"
+                            hasPermission="Northbound/AliCloud:add"
+                        >
+                            <template #icon
+                                ><AIcon type="PlusOutlined"
+                            /></template>
+                            新增
+                        </PermissionButton>
+                    </j-space>
+                </template>
+                <template #card="slotProps">
+                    <CardBox
+                        :value="slotProps"
+                        @click="handleView(slotProps.id)"
+                        :actions="getActions(slotProps, 'card')"
+                        :status="slotProps.state?.value"
+                        :statusText="slotProps.state?.text"
+                        :statusNames="{
+                            enabled: 'processing',
+                            disabled: 'error',
+                        }"
                     >
-                        <template #icon><AIcon type="PlusOutlined" /></template>
-                        新增
-                    </PermissionButton>
-                </j-space>
-            </template>
-            <template #card="slotProps">
-                <CardBox
-                    :value="slotProps"
-                    @click="handleView(slotProps.id)"
-                    :actions="getActions(slotProps, 'card')"
-                    :status="slotProps.state?.value"
-                    :statusText="slotProps.state?.text"
-                    :statusNames="{
-                        enabled: 'processing',
-                        disabled: 'error',
-                    }"
-                >
-                    <template #img>
-                        <img :src="getImage('/northbound/aliyun.png')" />
-                    </template>
-                    <template #content>
-                        <Ellipsis style="width: calc(100% - 100px)">
-                            <span style="font-size: 16px; font-weight: 600">
-                                {{ slotProps.name }}
-                            </span>
-                        </Ellipsis>
-                        <j-row style="margin-top: 15px">
-                            <j-col :span="12">
-                                <div class="card-item-content-text">
-                                    网桥产品
-                                </div>
-                                <Ellipsis>
-                                    <div>
-                                        {{ slotProps?.bridgeProductName }}
+                        <template #img>
+                            <img :src="getImage('/northbound/aliyun.png')" />
+                        </template>
+                        <template #content>
+                            <Ellipsis style="width: calc(100% - 100px)">
+                                <span style="font-size: 16px; font-weight: 600">
+                                    {{ slotProps.name }}
+                                </span>
+                            </Ellipsis>
+                            <j-row style="margin-top: 15px">
+                                <j-col :span="12">
+                                    <div class="card-item-content-text">
+                                        网桥产品
                                     </div>
-                                </Ellipsis>
-                            </j-col>
-                            <j-col :span="12">
-                                <div class="card-item-content-text">
-                                    <label>说明</label>
-                                </div>
-                                <Ellipsis>
-                                    <div>{{ slotProps?.description }}</div>
-                                </Ellipsis>
-                            </j-col>
-                        </j-row>
-                    </template>
-                    <template #actions="item">
-                        <PermissionButton
-                            :disabled="item.disabled"
-                            :popConfirm="item.popConfirm"
-                            :tooltip="item.tooltip"
-                            @click="item.onClick"
-                            :hasPermission="'Northbound/AliCloud:' + item.key"
+                                    <Ellipsis>
+                                        <div>
+                                            {{ slotProps?.bridgeProductName }}
+                                        </div>
+                                    </Ellipsis>
+                                </j-col>
+                                <j-col :span="12">
+                                    <div class="card-item-content-text">
+                                        <label>说明</label>
+                                    </div>
+                                    <Ellipsis>
+                                        <div>{{ slotProps?.description }}</div>
+                                    </Ellipsis>
+                                </j-col>
+                            </j-row>
+                        </template>
+                        <template #actions="item">
+                            <PermissionButton
+                                :disabled="item.disabled"
+                                :popConfirm="item.popConfirm"
+                                :tooltip="item.tooltip"
+                                @click="item.onClick"
+                                :hasPermission="
+                                    'Northbound/AliCloud:' + item.key
+                                "
+                            >
+                                <AIcon
+                                    type="DeleteOutlined"
+                                    v-if="item.key === 'delete'"
+                                />
+                                <template v-else>
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item?.text }}</span>
+                                </template>
+                            </PermissionButton>
+                        </template>
+                    </CardBox>
+                </template>
+                <template #state="slotProps">
+                    <BadgeStatus
+                        :status="slotProps.state?.value"
+                        :text="slotProps.state?.text"
+                        :statusNames="{
+                            enabled: 'processing',
+                            disabled: 'error',
+                        }"
+                    />
+                </template>
+                <template #action="slotProps">
+                    <j-space>
+                        <template
+                            v-for="i in getActions(slotProps, 'table')"
+                            :key="i.key"
                         >
-                            <AIcon
-                                type="DeleteOutlined"
-                                v-if="item.key === 'delete'"
-                            />
-                            <template v-else>
-                                <AIcon :type="item.icon" />
-                                <span>{{ item?.text }}</span>
-                            </template>
-                        </PermissionButton>
-                    </template>
-                </CardBox>
-            </template>
-            <template #state="slotProps">
-                <BadgeStatus
-                    :status="slotProps.state?.value"
-                    :text="slotProps.state?.text"
-                    :statusNames="{
-                        enabled: 'processing',
-                        disabled: 'error',
-                    }"
-                />
-            </template>
-            <template #action="slotProps">
-                <j-space>
-                    <template
-                        v-for="i in getActions(slotProps, 'table')"
-                        :key="i.key"
-                    >
-                        <PermissionButton
-                            :disabled="i.disabled"
-                            :popConfirm="i.popConfirm"
-                            :tooltip="i.tooltip"
-                            style="padding: 0 5px"
-                            @click="i.onClick"
-                            type="link"
-                            :danger="i.key === 'delete'"
-                            :hasPermission="i.key === 'view' ? true : 'Northbound/AliCloud:' + i.key"
-                        >
-                            <template #icon><AIcon :type="i.icon" /></template>
-                        </PermissionButton>
-                    </template>
-                </j-space>
-            </template>
-        </JProTable>
+                            <PermissionButton
+                                :disabled="i.disabled"
+                                :popConfirm="i.popConfirm"
+                                :tooltip="i.tooltip"
+                                style="padding: 0 5px"
+                                @click="i.onClick"
+                                type="link"
+                                :danger="i.key === 'delete'"
+                                :hasPermission="
+                                    i.key === 'view'
+                                        ? true
+                                        : 'Northbound/AliCloud:' + i.key
+                                "
+                            >
+                                <template #icon
+                                    ><AIcon :type="i.icon"
+                                /></template>
+                            </PermissionButton>
+                        </template>
+                    </j-space>
+                </template>
+            </JProTable>
+        </FullPage>
     </page-container>
 </template>
 

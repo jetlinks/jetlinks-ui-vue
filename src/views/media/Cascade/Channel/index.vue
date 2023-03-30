@@ -2,149 +2,153 @@
 <template>
     <page-container>
         <pro-search :columns="columns" target="media" @search="handleSearch" />
-
-        <JProTable
-            ref="listRef"
-            model="table"
-            :columns="columns"
-            :request="(e:any) => CascadeApi.queryBindChannel(route?.query.id as string, e)"
-            :defaultParams="{
-                pageSize: 10,
-                sorts: [{ name: 'name', order: 'desc' }],
-            }"
-            :params="params"
-            :rowSelection="{
-                selectedRowKeys: _selectedRowKeys,
-                onChange: onSelectChange,
-            }"
-            @cancelSelect="_selectedRowKeys = []"
-            :pagination="{
-                showSizeChanger: true,
-                pageSizeOptions: ['10', '20', '50', '100'],
-            }"
-        >
-            <template #headerTitle>
-                <h3>通道列表</h3>
-            </template>
-            <template #rightExtraRender>
-                <j-space>
-                    <j-button type="primary" @click="bindVis = true">
-                        绑定通道
-                    </j-button>
-                    <j-popconfirm
-                        title="确认解绑?"
-                        @confirm="handleMultipleUnbind"
-                    >
-                        <j-button> 批量解绑 </j-button>
-                    </j-popconfirm>
-                </j-space>
-            </template>
-            <template #gbChannelIdHeader="title">
-                <j-tooltip
-                    title="国标级联有16位、20位两种格式。在当前页面修改不会修改视频设备-通道页面中的国标ID"
-                >
+        <FullPage>
+            <JProTable
+                ref="listRef"
+                model="table"
+                :columns="columns"
+                :request="(e:any) => CascadeApi.queryBindChannel(route?.query.id as string, e)"
+                :defaultParams="{
+                    pageSize: 10,
+                    sorts: [{ name: 'name', order: 'desc' }],
+                }"
+                :params="params"
+                :rowSelection="{
+                    selectedRowKeys: _selectedRowKeys,
+                    onChange: onSelectChange,
+                }"
+                @cancelSelect="_selectedRowKeys = []"
+                :pagination="{
+                    showSizeChanger: true,
+                    pageSizeOptions: ['10', '20', '50', '100'],
+                }"
+            >
+                <template #headerTitle>
+                    <h3>通道列表</h3>
+                </template>
+                <template #rightExtraRender>
                     <j-space>
-                        <span>{{ title }}</span>
-                        <AIcon type="InfoCircleOutlined" />
-                    </j-space>
-                </j-tooltip>
-            </template>
-            <template #channelId="slotProps">
-                <j-space>
-                    <Ellipsis style="width: 150px">
-                        {{ slotProps.gbChannelId }}
-                    </Ellipsis>
-                    <j-popover
-                        v-model:visible="slotProps.popVis"
-                        trigger="click"
-                    >
-                        <template #title>
-                            <div class="header">
-                                <span>编辑国标ID</span>
-                                <AIcon
-                                    type="CloseOutlined"
-                                    @click="handleClose(slotProps)"
-                                />
-                            </div>
-                        </template>
-                        <template #content>
-                            <div class="simple-form">
-                                <j-input
-                                    v-model:value="gbID"
-                                    @change="validField(slotProps)"
-                                    placeholder="请输入国标ID"
-                                />
-                                <div
-                                    class="error"
-                                    v-if="valid && !valid?.passed"
-                                >
-                                    <!-- {{ valid?.reason }} -->
-                                    该国标ID在同一设备下已存在
-                                </div>
-                            </div>
-                            <j-button
-                                type="primary"
-                                @click="handleSave(slotProps)"
-                                :loading="loading"
-                                style="width: 100%"
-                            >
-                                保存
-                            </j-button>
-                        </template>
-                        <j-button type="link" @click="slotProps.popVis = true">
-                            <AIcon type="EditOutlined" />
+                        <j-button type="primary" @click="bindVis = true">
+                            绑定通道
                         </j-button>
-                    </j-popover>
-                </j-space>
-            </template>
-            <template #status="slotProps">
-                <j-space>
-                    <j-badge
-                        :status="
-                            slotProps.status.value === 'online'
-                                ? 'success'
-                                : 'error'
-                        "
-                        :text="slotProps.status.text"
-                    ></j-badge>
-                </j-space>
-            </template>
-            <template #action="slotProps">
-                <j-space :size="16">
-                    <j-tooltip
-                        v-for="i in getActions(slotProps, 'table')"
-                        :key="i.key"
-                        v-bind="i.tooltip"
-                    >
                         <j-popconfirm
-                            v-if="i.popConfirm"
-                            v-bind="i.popConfirm"
-                            :disabled="i.disabled"
+                            title="确认解绑?"
+                            @confirm="handleMultipleUnbind"
                         >
-                            <j-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></j-button>
+                            <j-button> 批量解绑 </j-button>
                         </j-popconfirm>
-                        <j-button
-                            style="padding: 0"
-                            type="link"
-                            v-else
-                            @click="i.onClick && i.onClick(slotProps)"
+                    </j-space>
+                </template>
+                <template #gbChannelIdHeader="title">
+                    <j-tooltip
+                        title="国标级联有16位、20位两种格式。在当前页面修改不会修改视频设备-通道页面中的国标ID"
+                    >
+                        <j-space>
+                            <span>{{ title }}</span>
+                            <AIcon type="InfoCircleOutlined" />
+                        </j-space>
+                    </j-tooltip>
+                </template>
+                <template #channelId="slotProps">
+                    <j-space>
+                        <Ellipsis style="width: 150px">
+                            {{ slotProps.gbChannelId }}
+                        </Ellipsis>
+                        <j-popover
+                            v-model:visible="slotProps.popVis"
+                            trigger="click"
                         >
+                            <template #title>
+                                <div class="header">
+                                    <span>编辑国标ID</span>
+                                    <AIcon
+                                        type="CloseOutlined"
+                                        @click="handleClose(slotProps)"
+                                    />
+                                </div>
+                            </template>
+                            <template #content>
+                                <div class="simple-form">
+                                    <j-input
+                                        v-model:value="gbID"
+                                        @change="validField(slotProps)"
+                                        placeholder="请输入国标ID"
+                                    />
+                                    <div
+                                        class="error"
+                                        v-if="valid && !valid?.passed"
+                                    >
+                                        <!-- {{ valid?.reason }} -->
+                                        该国标ID在同一设备下已存在
+                                    </div>
+                                </div>
+                                <j-button
+                                    type="primary"
+                                    @click="handleSave(slotProps)"
+                                    :loading="loading"
+                                    style="width: 100%"
+                                >
+                                    保存
+                                </j-button>
+                            </template>
                             <j-button
+                                type="link"
+                                @click="slotProps.popVis = true"
+                            >
+                                <AIcon type="EditOutlined" />
+                            </j-button>
+                        </j-popover>
+                    </j-space>
+                </template>
+                <template #status="slotProps">
+                    <j-space>
+                        <j-badge
+                            :status="
+                                slotProps.status.value === 'online'
+                                    ? 'success'
+                                    : 'error'
+                            "
+                            :text="slotProps.status.text"
+                        ></j-badge>
+                    </j-space>
+                </template>
+                <template #action="slotProps">
+                    <j-space :size="16">
+                        <j-tooltip
+                            v-for="i in getActions(slotProps, 'table')"
+                            :key="i.key"
+                            v-bind="i.tooltip"
+                        >
+                            <j-popconfirm
+                                v-if="i.popConfirm"
+                                v-bind="i.popConfirm"
                                 :disabled="i.disabled"
+                            >
+                                <j-button
+                                    :disabled="i.disabled"
+                                    style="padding: 0"
+                                    type="link"
+                                    ><AIcon :type="i.icon"
+                                /></j-button>
+                            </j-popconfirm>
+                            <j-button
                                 style="padding: 0"
                                 type="link"
-                                ><AIcon :type="i.icon"
-                            /></j-button>
-                        </j-button>
-                    </j-tooltip>
-                </j-space>
-            </template>
-        </JProTable>
+                                v-else
+                                @click="i.onClick && i.onClick(slotProps)"
+                            >
+                                <j-button
+                                    :disabled="i.disabled"
+                                    style="padding: 0"
+                                    type="link"
+                                    ><AIcon :type="i.icon"
+                                /></j-button>
+                            </j-button>
+                        </j-tooltip>
+                    </j-space>
+                </template>
+            </JProTable>
+        </FullPage>
 
         <BindChannel v-model:visible="bindVis" @submit="listRef.reload()" />
     </page-container>

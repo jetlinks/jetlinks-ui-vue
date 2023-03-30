@@ -5,72 +5,74 @@
             target="category"
             @search="handleParams"
         />
-        <j-pro-table
-            ref="tableRef"
-            :columns="columns"
-            :request="table.requestFun"
-            :params="queryParams"
-            :rowSelection="{
-                selectedRowKeys: table._selectedRowKeys,
-                onChange: table.onSelectChange,
-            }"
-            @cancelSelect="table.cancelSelect"
-            model="TABLE"
-            :defaultParams="{
-                pageSize: 10,
-            }"
-            :pagination="{
-                showSizeChanger: true,
-                pageSizeOptions: ['10', '20', '50', '100'],
-            }"
-        >
-            <template #headerTitle>
-                <PermissionButton
-                    type="primary"
-                    :hasPermission="`${permission}:bind-user`"
-                    @click="dialogVisible = true"
-                    style="margin-right: 15px"
-                >
-                    <AIcon type="PlusOutlined" />绑定用户
-                </PermissionButton>
-                <div
-                    style="display: inline-block; width: 12px; height: 1px"
-                ></div>
-                <PermissionButton
-                    :hasPermission="`${permission}:bind`"
-                    :popConfirm="{
-                        title: `是否解除绑定`,
-                        onConfirm: () => table.unBind(),
-                    }"
-                >
-                    <AIcon type="DisconnectOutlined" />批量解绑
-                </PermissionButton>
-            </template>
-            <template #status="slotProps">
-                <BadgeStatus
-                    :status="slotProps.status"
-                    :text="slotProps.status ? '正常' : '禁用'"
-                    :statusNames="{
-                        1: 'success',
-                        0: 'error',
-                    }"
-                ></BadgeStatus>
-            </template>
-            <template #action="slotProps">
-                <j-space :size="16">
+        <FullPage>
+            <j-pro-table
+                ref="tableRef"
+                :columns="columns"
+                :request="table.requestFun"
+                :params="queryParams"
+                :rowSelection="{
+                    selectedRowKeys: table._selectedRowKeys,
+                    onChange: table.onSelectChange,
+                }"
+                @cancelSelect="table.cancelSelect"
+                model="TABLE"
+                :defaultParams="{
+                    pageSize: 10,
+                }"
+                :pagination="{
+                    showSizeChanger: true,
+                    pageSizeOptions: ['10', '20', '50', '100'],
+                }"
+            >
+                <template #headerTitle>
                     <PermissionButton
-                        type="link"
+                        type="primary"
+                        :hasPermission="`${permission}:bind-user`"
+                        @click="dialogVisible = true"
+                        style="margin-right: 15px"
+                    >
+                        <AIcon type="PlusOutlined" />绑定用户
+                    </PermissionButton>
+                    <div
+                        style="display: inline-block; width: 12px; height: 1px"
+                    ></div>
+                    <PermissionButton
                         :hasPermission="`${permission}:bind`"
                         :popConfirm="{
                             title: `是否解除绑定`,
-                            onConfirm: () => table.unBind(slotProps),
+                            onConfirm: () => table.unBind(),
                         }"
                     >
-                        <AIcon type="DisconnectOutlined" />
+                        <AIcon type="DisconnectOutlined" />批量解绑
                     </PermissionButton>
-                </j-space>
-            </template>
-        </j-pro-table>
+                </template>
+                <template #status="slotProps">
+                    <BadgeStatus
+                        :status="slotProps.status"
+                        :text="slotProps.status ? '正常' : '禁用'"
+                        :statusNames="{
+                            1: 'success',
+                            0: 'error',
+                        }"
+                    ></BadgeStatus>
+                </template>
+                <template #action="slotProps">
+                    <j-space :size="16">
+                        <PermissionButton
+                            type="link"
+                            :hasPermission="`${permission}:bind`"
+                            :popConfirm="{
+                                title: `是否解除绑定`,
+                                onConfirm: () => table.unBind(slotProps),
+                            }"
+                        >
+                            <AIcon type="DisconnectOutlined" />
+                        </PermissionButton>
+                    </j-space>
+                </template>
+            </j-pro-table>
+        </FullPage>
 
         <div class="dialogs">
             <AddBindUserDialog
@@ -150,8 +152,8 @@ const columns = [
 const queryParams = ref({});
 
 const handleParams = (params: any) => {
-  queryParams.value = params
-}
+    queryParams.value = params;
+};
 
 // 表格
 const tableRef = ref<Record<string, any>>({}); // 表格实例
@@ -174,7 +176,7 @@ const table = reactive({
                                 value: props.parentId,
                             },
                         ],
-                      type: 'and'
+                        type: 'and',
                     },
                 ],
             };

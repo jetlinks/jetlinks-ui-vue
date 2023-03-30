@@ -6,172 +6,182 @@
                 target="device-instance"
                 @search="handleSearch"
             />
-            <JProTable
-                :columns="columns"
-                :request="queryList"
-                :gridColumn="3"
-                :gridColumns="[1, 2, 3]"
-                ref="tableRef"
-                :defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
-                :params="params"
-            >
-                <template #headerTitle>
-                    <j-space>
-                        <PermissionButton
-                            type="primary"
-                            @click="add"
-                            hasPermission="rule-engine/Alarm/Configuration:add"
-                        >
-                            <template #icon
-                                ><AIcon type="PlusOutlined"
-                            /></template>
-                            新增
-                        </PermissionButton>
-                    </j-space>
-                </template>
-                <template #card="slotProps">
-                    <CardBox
-                        :value="slotProps"
-                        :actions="getActions(slotProps, 'card')"
-                        v-bind="slotProps"
-                        :status="slotProps.state?.value"
-                        :statusText="slotProps.state?.text"
-                        :statusNames="{
-                            enabled: 'processing',
-                            disabled: 'error',
-                        }"
-                        @click="
-                            () => {
-                                menuStory.jumpPage(
-                                    'rule-engine/Alarm/Configuration/Save',
-                                    {},
-                                    { id: slotProps.id },
-                                );
-                            }
-                        "
-                    >
-                        <template #img>
-                            <slot name="img">
-                                <img
-                                    :src="getImage('/alarm/alarm-config.png')"
-                                />
-                            </slot>
-                        </template>
-                        <template #content>
-                            <Ellipsis style="width: calc(100% - 100px)">
-                                <span style="font-weight: 600; font-size: 16px">
-                                    {{ slotProps.name }}
-                                </span>
-                            </Ellipsis>
-                            <j-row>
-                                <j-col :span="12">
-                                    <div class="content-des-title">
-                                        关联场景联动
-                                    </div>
-                                    <Ellipsis
-                                        ><div>
-                                            {{ (slotProps?.scene || []).map((item: any) => item?.name).join(',') || '' }}
-                                        </div></Ellipsis
-                                    >
-                                </j-col>
-                                <j-col :span="12">
-                                    <div class="content-des-title">
-                                        告警级别
-                                    </div>
-                                    <div>
-                                        {{ (Store.get('default-level') || []).find((item: any) => item?.level === slotProps.level)?.title ||
-            slotProps.level }}
-                                    </div>
-                                </j-col>
-                            </j-row>
-                        </template>
-                        <template #actions="item">
+            <FullPage>
+                <JProTable
+                    :columns="columns"
+                    :request="queryList"
+                    :gridColumn="3"
+                    :gridColumns="[1, 2, 3]"
+                    ref="tableRef"
+                    :defaultParams="{
+                        sorts: [{ name: 'createTime', order: 'desc' }],
+                    }"
+                    :params="params"
+                >
+                    <template #headerTitle>
+                        <j-space>
                             <PermissionButton
-                                :disabled="item.disabled"
-                                :popConfirm="item.popConfirm"
-                                :tooltip="{ ...item.tooltip }"
-                                @click="item.onClick"
-                                :hasPermission="
-                                    'rule-engine/Alarm/Configuration:' +
-                                    item.key
-                                "
-                            >
-                                <AIcon
-                                    type="DeleteOutlined"
-                                    v-if="item.key === 'delete'"
-                                />
-                                <template v-else>
-                                    <AIcon :type="item.icon" />
-                                    <span>{{ item?.text }}</span>
-                                </template>
-                            </PermissionButton>
-                        </template>
-                    </CardBox>
-                </template>
-                <template #targetType="slotProps">
-                    <span>{{ map[slotProps.targetType] }}</span>
-                </template>
-                <template #level="slotProps">
-                    <j-tooltip
-                        placement="topLeft"
-                        :title="(Store.get('default-level') || []).find((item: any) => item?.level === slotProps.level)?.title ||
-            slotProps.level"
-                    >
-                        <div class="ellipsis">
-                            {{ (Store.get('default-level') || []).find((item: any) => item?.level === slotProps.level)?.title ||
-            slotProps.level }}
-                        </div>
-                    </j-tooltip>
-                </template>
-                <template #sceneId="slotProps">
-                    <span
-                        >{{(slotProps?.scene || []).map((item: any) => item?.name).join(',') || ''}}</span
-                    >
-                </template>
-                <template #state="slotProps">
-                    <BadgeStatus
-                        :text="
-                            slotProps.state?.value === 'enabled'
-                                ? '正常'
-                                : '禁用'
-                        "
-                        :status="slotProps.state?.value"
-                        :statusNames="{
-                            enabled: 'processing',
-                            disabled: 'error',
-                        }"
-                    />
-                </template>
-                <template #action="slotProps">
-                    <j-space :size="16">
-                        <template
-                            v-for="i in getActions(slotProps, 'table')"
-                            :key="i.key"
-                        >
-                            <PermissionButton
-                                :disabled="i.disabled"
-                                :popConfirm="i.popConfirm"
-                                :tooltip="{
-                                    ...i.tooltip,
-                                }"
-                                @click="i.onClick"
-                                type="link"
-                                style="padding: 0px"
-                                :hasPermission="
-                                    'rule-engine/Alarm/Configuration:' + i.key
-                                "
-                                :danger="i.key === 'delete'"
+                                type="primary"
+                                @click="add"
+                                hasPermission="rule-engine/Alarm/Configuration:add"
                             >
                                 <template #icon
-                                    ><AIcon :type="i.icon"
+                                    ><AIcon type="PlusOutlined"
                                 /></template>
+                                新增
                             </PermissionButton>
-                        </template>
-                    </j-space>
-                </template>
-            </JProTable>
+                        </j-space>
+                    </template>
+                    <template #card="slotProps">
+                        <CardBox
+                            :value="slotProps"
+                            :actions="getActions(slotProps, 'card')"
+                            v-bind="slotProps"
+                            :status="slotProps.state?.value"
+                            :statusText="slotProps.state?.text"
+                            :statusNames="{
+                                enabled: 'processing',
+                                disabled: 'error',
+                            }"
+                            @click="
+                                () => {
+                                    menuStory.jumpPage(
+                                        'rule-engine/Alarm/Configuration/Save',
+                                        {},
+                                        { id: slotProps.id },
+                                    );
+                                }
+                            "
+                        >
+                            <template #img>
+                                <slot name="img">
+                                    <img
+                                        :src="
+                                            getImage('/alarm/alarm-config.png')
+                                        "
+                                    />
+                                </slot>
+                            </template>
+                            <template #content>
+                                <Ellipsis style="width: calc(100% - 100px)">
+                                    <span
+                                        style="
+                                            font-weight: 600;
+                                            font-size: 16px;
+                                        "
+                                    >
+                                        {{ slotProps.name }}
+                                    </span>
+                                </Ellipsis>
+                                <j-row>
+                                    <j-col :span="12">
+                                        <div class="content-des-title">
+                                            关联场景联动
+                                        </div>
+                                        <Ellipsis
+                                            ><div>
+                                                {{ (slotProps?.scene || []).map((item: any) => item?.name).join(',') || '' }}
+                                            </div></Ellipsis
+                                        >
+                                    </j-col>
+                                    <j-col :span="12">
+                                        <div class="content-des-title">
+                                            告警级别
+                                        </div>
+                                        <div>
+                                            {{ (Store.get('default-level') || []).find((item: any) => item?.level === slotProps.level)?.title ||
+            slotProps.level }}
+                                        </div>
+                                    </j-col>
+                                </j-row>
+                            </template>
+                            <template #actions="item">
+                                <PermissionButton
+                                    :disabled="item.disabled"
+                                    :popConfirm="item.popConfirm"
+                                    :tooltip="{ ...item.tooltip }"
+                                    @click="item.onClick"
+                                    :hasPermission="
+                                        'rule-engine/Alarm/Configuration:' +
+                                        item.key
+                                    "
+                                >
+                                    <AIcon
+                                        type="DeleteOutlined"
+                                        v-if="item.key === 'delete'"
+                                    />
+                                    <template v-else>
+                                        <AIcon :type="item.icon" />
+                                        <span>{{ item?.text }}</span>
+                                    </template>
+                                </PermissionButton>
+                            </template>
+                        </CardBox>
+                    </template>
+                    <template #targetType="slotProps">
+                        <span>{{ map[slotProps.targetType] }}</span>
+                    </template>
+                    <template #level="slotProps">
+                        <j-tooltip
+                            placement="topLeft"
+                            :title="(Store.get('default-level') || []).find((item: any) => item?.level === slotProps.level)?.title ||
+            slotProps.level"
+                        >
+                            <div class="ellipsis">
+                                {{ (Store.get('default-level') || []).find((item: any) => item?.level === slotProps.level)?.title ||
+            slotProps.level }}
+                            </div>
+                        </j-tooltip>
+                    </template>
+                    <template #sceneId="slotProps">
+                        <span
+                            >{{(slotProps?.scene || []).map((item: any) => item?.name).join(',') || ''}}</span
+                        >
+                    </template>
+                    <template #state="slotProps">
+                        <BadgeStatus
+                            :text="
+                                slotProps.state?.value === 'enabled'
+                                    ? '正常'
+                                    : '禁用'
+                            "
+                            :status="slotProps.state?.value"
+                            :statusNames="{
+                                enabled: 'processing',
+                                disabled: 'error',
+                            }"
+                        />
+                    </template>
+                    <template #action="slotProps">
+                        <j-space :size="16">
+                            <template
+                                v-for="i in getActions(slotProps, 'table')"
+                                :key="i.key"
+                            >
+                                <PermissionButton
+                                    :disabled="i.disabled"
+                                    :popConfirm="i.popConfirm"
+                                    :tooltip="{
+                                        ...i.tooltip,
+                                    }"
+                                    @click="i.onClick"
+                                    type="link"
+                                    style="padding: 0px"
+                                    :hasPermission="
+                                        'rule-engine/Alarm/Configuration:' +
+                                        i.key
+                                    "
+                                    :danger="i.key === 'delete'"
+                                >
+                                    <template #icon
+                                        ><AIcon :type="i.icon"
+                                    /></template>
+                                </PermissionButton>
+                            </template>
+                        </j-space>
+                    </template>
+                </JProTable>
+            </FullPage>
         </div>
     </page-container>
 </template>

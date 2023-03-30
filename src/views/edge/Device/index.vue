@@ -5,147 +5,166 @@
             target="edge-device"
             @search="handleSearch"
         />
-        <JProTable
-            ref="edgeDeviceRef"
-            :columns="columns"
-            :request="query"
-            :defaultParams="defaultParams"
-            :params="params"
-            :gridColumn="3"
-        >
-            <template #headerTitle>
-                <j-space>
-                    <PermissionButton
-                        type="primary"
-                        @click="handleAdd"
-                        hasPermission="edge/Device:add"
-                    >
-                        <template #icon><AIcon type="PlusOutlined" /></template>
-                        新增
-                    </PermissionButton>
-                    <PermissionButton
-                        @click="importVisible = true"
-                        hasPermission="edge/Device:import"
-                    >
-                        <template #icon
-                            ><AIcon type="ImportOutlined"
-                        /></template>
-                        导入
-                    </PermissionButton>
-                </j-space>
-            </template>
-            <template #card="slotProps">
-                <CardBox
-                    :value="slotProps"
-                    :actions="getActions(slotProps, 'card')"
-                    :status="slotProps.state?.value"
-                    :statusText="slotProps.state?.text"
-                    :statusNames="{
-                        online: 'processing',
-                        offline: 'error',
-                        notActive: 'warning',
-                    }"
-                >
-                    <template #img>
-                        <img
-                            :src="getImage('/device/instance/device-card.png')"
-                        />
-                    </template>
-                    <template #content>
-                        <Ellipsis style="width: calc(100% - 100px)">
-                            <span
-                                style="font-size: 16px; font-weight: 600"
-                                @click.stop="handleView(slotProps.id)"
-                            >
-                                {{ slotProps.name }}
-                            </span>
-                        </Ellipsis>
-                        <j-row style="margin-top: 20px">
-                            <j-col :span="12">
-                                <div class="card-item-content-text">
-                                    设备类型
-                                </div>
-                                <div>{{ slotProps.deviceType?.text }}</div>
-                            </j-col>
-                            <j-col :span="12">
-                                <div class="card-item-content-text">
-                                    产品名称
-                                </div>
-                                <Ellipsis style="width: 100%">
-                                    {{ slotProps.productName }}
-                                </Ellipsis>
-                            </j-col>
-                        </j-row>
-                    </template>
-                    <template #actions="item">
+        <FullPage>
+            <JProTable
+                ref="edgeDeviceRef"
+                :columns="columns"
+                :request="query"
+                :defaultParams="defaultParams"
+                :params="params"
+                :gridColumn="3"
+            >
+                <template #headerTitle>
+                    <j-space>
                         <PermissionButton
-                            :disabled="item.disabled"
-                            :popConfirm="item.popConfirm"
-                            :tooltip="{
-                                ...item.tooltip,
-                            }"
-                            @click="item.onClick"
-                            :hasPermission="'edge/Device:' + item.key"
+                            type="primary"
+                            @click="handleAdd"
+                            hasPermission="edge/Device:add"
                         >
-                            <AIcon
-                                type="DeleteOutlined"
-                                v-if="item.key === 'delete'"
+                            <template #icon
+                                ><AIcon type="PlusOutlined"
+                            /></template>
+                            新增
+                        </PermissionButton>
+                        <PermissionButton
+                            @click="importVisible = true"
+                            hasPermission="edge/Device:import"
+                        >
+                            <template #icon
+                                ><AIcon type="ImportOutlined"
+                            /></template>
+                            导入
+                        </PermissionButton>
+                    </j-space>
+                </template>
+                <template #card="slotProps">
+                    <CardBox
+                        :value="slotProps"
+                        :actions="getActions(slotProps, 'card')"
+                        :status="slotProps.state?.value"
+                        :statusText="slotProps.state?.text"
+                        :statusNames="{
+                            online: 'processing',
+                            offline: 'error',
+                            notActive: 'warning',
+                        }"
+                    >
+                        <template #img>
+                            <img
+                                :src="
+                                    getImage('/device/instance/device-card.png')
+                                "
                             />
-                            <template v-else>
-                                <AIcon :type="item.icon" />
-                                <span>{{ item?.text }}</span>
-                            </template>
-                        </PermissionButton>
-                    </template>
-                </CardBox>
-            </template>
-            <template #state="slotProps">
-                <BadgeStatus
-                    :status="slotProps.state?.value"
-                    :text="slotProps.state?.text"
-                    :statusNames="{
-                        online: 'processing',
-                        offline: 'error',
-                        notActive: 'warning',
-                    }"
-                />
-            </template>
-            <template #registryTime="slotProps">
-                <span>{{
-                    dayjs(slotProps.registryTime).format('YYYY-MM-DD HH:mm:ss')
-                }}</span>
-            </template>
-            <template #action="slotProps">
-                <j-space>
-                    <template
-                        v-for="i in getActions(slotProps, 'table')"
-                        :key="i.key"
-                    >
-                        <PermissionButton
-                            :disabled="i.disabled"
-                            :popConfirm="i.popConfirm"
-                            :tooltip="{
-                                ...i.tooltip,
-                            }"
-                            @click="i.onClick"
-                            type="link"
-                            style="padding: 0 5px"
-                            :danger="i.key === 'delete'"
-                            :hasPermission="i.key === 'view' ? true : 'edge/Device:' + i.key"
+                        </template>
+                        <template #content>
+                            <Ellipsis style="width: calc(100% - 100px)">
+                                <span
+                                    style="font-size: 16px; font-weight: 600"
+                                    @click.stop="handleView(slotProps.id)"
+                                >
+                                    {{ slotProps.name }}
+                                </span>
+                            </Ellipsis>
+                            <j-row style="margin-top: 20px">
+                                <j-col :span="12">
+                                    <div class="card-item-content-text">
+                                        设备类型
+                                    </div>
+                                    <div>{{ slotProps.deviceType?.text }}</div>
+                                </j-col>
+                                <j-col :span="12">
+                                    <div class="card-item-content-text">
+                                        产品名称
+                                    </div>
+                                    <Ellipsis style="width: 100%">
+                                        {{ slotProps.productName }}
+                                    </Ellipsis>
+                                </j-col>
+                            </j-row>
+                        </template>
+                        <template #actions="item">
+                            <PermissionButton
+                                :disabled="item.disabled"
+                                :popConfirm="item.popConfirm"
+                                :tooltip="{
+                                    ...item.tooltip,
+                                }"
+                                @click="item.onClick"
+                                :hasPermission="'edge/Device:' + item.key"
+                            >
+                                <AIcon
+                                    type="DeleteOutlined"
+                                    v-if="item.key === 'delete'"
+                                />
+                                <template v-else>
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item?.text }}</span>
+                                </template>
+                            </PermissionButton>
+                        </template>
+                    </CardBox>
+                </template>
+                <template #state="slotProps">
+                    <BadgeStatus
+                        :status="slotProps.state?.value"
+                        :text="slotProps.state?.text"
+                        :statusNames="{
+                            online: 'processing',
+                            offline: 'error',
+                            notActive: 'warning',
+                        }"
+                    />
+                </template>
+                <template #registryTime="slotProps">
+                    <span>{{
+                        dayjs(slotProps.registryTime).format(
+                            'YYYY-MM-DD HH:mm:ss',
+                        )
+                    }}</span>
+                </template>
+                <template #action="slotProps">
+                    <j-space>
+                        <template
+                            v-for="i in getActions(slotProps, 'table')"
+                            :key="i.key"
                         >
-                            <template #icon><AIcon :type="i.icon" /></template>
-                        </PermissionButton>
-                    </template>
-                </j-space>
-            </template>
-        </JProTable>
+                            <PermissionButton
+                                :disabled="i.disabled"
+                                :popConfirm="i.popConfirm"
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                @click="i.onClick"
+                                type="link"
+                                style="padding: 0 5px"
+                                :danger="i.key === 'delete'"
+                                :hasPermission="
+                                    i.key === 'view'
+                                        ? true
+                                        : 'edge/Device:' + i.key
+                                "
+                            >
+                                <template #icon
+                                    ><AIcon :type="i.icon"
+                                /></template>
+                            </PermissionButton>
+                        </template>
+                    </j-space>
+                </template>
+            </JProTable>
+        </FullPage>
         <Save
             v-if="visible"
             :data="current"
             @close="visible = false"
             @save="saveBtn"
         />
-        <Import @save="onRefresh" @close="importVisible = false" v-if="importVisible" type="official-edge-gateway" />
+        <Import
+            @save="onRefresh"
+            @close="importVisible = false"
+            v-if="importVisible"
+            type="official-edge-gateway"
+        />
     </page-container>
 </template>
   
@@ -192,18 +211,18 @@ const visible = ref<boolean>(false);
 const current = ref<Record<string, any>>({});
 
 const transformData = (arr: any[]): any[] => {
-    if(Array.isArray(arr) && arr.length){
+    if (Array.isArray(arr) && arr.length) {
         return (arr || []).map((item: any) => {
             return {
                 ...item,
                 id: `classifiedId is ${item.id}`,
-                children: transformData(item.children)
-            }
-        })
+                children: transformData(item.children),
+            };
+        });
     } else {
-        return []
+        return [];
     }
-}
+};
 
 const columns = [
     {
@@ -471,9 +490,9 @@ const saveBtn = () => {
 };
 
 const onRefresh = () => {
-    importVisible.value = false
+    importVisible.value = false;
     edgeDeviceRef.value?.reload();
-}
+};
 </script>
   
   <style lang="less" scoped>

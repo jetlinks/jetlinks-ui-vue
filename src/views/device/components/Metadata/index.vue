@@ -1,5 +1,4 @@
 <template>
-  <j-card>
     <div class='device-detail-metadata' style="position: relative;">
       <div class="tips">
         <j-tooltip :title="instanceStore.detail?.independentMetadata && type === 'device'
@@ -44,7 +43,6 @@
       <Import v-if="visible" v-model:visible="visible" :type="type" @close="visible = false" />
       <Cat v-model:visible="cat" @close="cat = false" :type="type" />
     </div>
-  </j-card>
 </template>
 <script setup lang="ts" name="Metadata">
 import PermissionButton from '@/components/PermissionButton/index.vue'

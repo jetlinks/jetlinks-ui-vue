@@ -1,36 +1,26 @@
 <!-- 设备接入 -->
 <template>
-    <j-card style="min-height: 100%">
-        <div v-if="productStore.current.accessId === undefined || null">
-            <j-empty :image="simpleImage">
-                <template #description>
-                    <span
-                        v-if="
-                            permissionStore.hasPermission(
-                                'device/Product:update',
-                            ) &&
-                            permissionStore.hasPermission(
-                                'link/AccessConfig:add',
-                            ) &&
-                            permissionStore.hasPermission(
-                                'link/AccessConfig:update',
-                            )
-                        "
-                    >
-                        请先<j-button type="link" @click="showModal"
-                            >选择</j-button
-                        >设备接入网关，用以提供设备接入能力
-                    </span>
-                    <span v-else>请联系管理员配置产品接入方式</span>
-                </template>
-            </j-empty>
-        </div>
-        <div v-else>
-            <j-row :gutter="24">
-                <j-col :span="12">
-                    <Title data="接入方式">
-                        <template #extra>
-                            <!-- <j-tooltip
+    <div v-if="productStore.current.accessId === undefined || null">
+        <j-empty :image="simpleImage">
+            <template #description>
+                <span
+                    v-if="
+                        permissionStore.hasPermission('device/Product:update')
+                    "
+                >
+                    请先<j-button type="link" @click="showModal">选择</j-button
+                    >设备接入网关，用以提供设备接入能力
+                </span>
+                <span v-else>请联系管理员配置产品接入方式</span>
+            </template>
+        </j-empty>
+    </div>
+    <div v-else>
+        <j-row :gutter="24">
+            <j-col :span="12">
+                <Title data="接入方式">
+                    <template #extra>
+                        <!-- <j-tooltip
                                 :title="
                                     productStore.current?.count &&
                                     productStore.current?.count > 0
@@ -51,269 +41,229 @@
                                     >更换</j-button
                                 >
                             </j-tooltip> -->
-                            <PermissionButton
-                                style="margin: 0 0 0 20px"
-                                type="primary"
-                                size="small"
-                                :tooltip="{
-                                    title:
-                                        productStore.current?.count &&
-                                        productStore.current?.count > 0
-                                            ? '产品下有设备实例时不能更换接入方式'
-                                            : !(permissionStore.hasPermission(
-                                                  'device/Product:update',
-                                              ) &&
-                                              permissionStore.hasPermission(
-                                                  'link/AccessConfig:add',
-                                              ) &&
-                                              permissionStore.hasPermission(
-                                                  'link/AccessConfig:update',
-                                              ))
-                                            ? '暂无权限，请联系管理员'
-                                            : '',
-                                }"
-                                :disabled="
-                                    (productStore.current?.count &&
-                                        productStore.current?.count > 0) ||
-                                    !(
-                                        permissionStore.hasPermission(
-                                            'device/Product:update',
-                                        ) &&
-                                        permissionStore.hasPermission(
-                                            'link/AccessConfig:add',
-                                        ) &&
-                                        permissionStore.hasPermission(
-                                            'link/AccessConfig:update',
-                                        )
-                                    )
-                                "
-                                ghost
-                                @click="showDevice"
-                            >
-                                更换
-                            </PermissionButton>
-                        </template>
-                    </Title>
+                        <PermissionButton
+                            style="margin: 0 0 0 20px"
+                            type="primary"
+                            size="small"
+                            :tooltip="{
+                                title:
+                                    productStore.current?.count &&
+                                    productStore.current?.count > 0
+                                        ? '产品下有设备实例时不能更换接入方式'
+                                        : '',
+                            }"
+                            :disabled="
+                                productStore.current?.count &&
+                                productStore.current?.count > 0
+                            "
+                            ghost
+                            @click="showDevice"
+                            hasPermission="device/Product:update"
+                        >
+                            更换
+                        </PermissionButton>
+                    </template>
+                </Title>
+                <div>
                     <div>
-                        <div>
-                            {{ access?.name }}
+                        {{ access?.name }}
+                    </div>
+                    <div>
+                        {{
+                            access?.description ||
+                            dataSource.find(
+                                (item) => item?.id === access?.provider,
+                            )?.description
+                        }}
+                    </div>
+                </div>
+                <div class="item-style">
+                    <Title data="消息协议"></Title>
+                    <div>
+                        {{ access?.protocolDetail?.name }}
+                    </div>
+                    <!-- 显示md文件内容 -->
+                    <div v-if="config?.document" v-html="markdownToHtml"></div>
+                </div>
+                <div class="item-style">
+                    <Title data="连接信息"></Title>
+                    <div v-if="access?.channelInfo?.addresses.length > 0">
+                        <div
+                            v-for="item in access?.channelInfo?.addresses"
+                            :key="item.address"
+                        >
+                            <j-badge
+                                :color="item.health === -1 ? 'red' : 'green'"
+                                :text="item.address"
+                            >
+                            </j-badge>
                         </div>
-                        <div>
+                    </div>
+                    <div v-else>{{ '暂无连接信息' }}</div>
+                </div>
+                <Title
+                    v-if="metadata?.name"
+                    :data="metadata?.name"
+                    class="config"
+                >
+                    <template #extra>
+                        <j-tooltip title="此配置来自于产品接入方式所选择的协议">
+                            <AIcon
+                                type="QuestionCircleOutlined"
+                                style="margin-left: 2px"
+                            />
+                        </j-tooltip>
+                    </template>
+                </Title>
+                <j-form ref="formRef" :model="formData.data" layout="vertical">
+                    <j-form-item
+                        :name="item.property"
+                        v-for="item in metadata.properties"
+                        :key="item"
+                        :label="item.name"
+                        :rules="[
+                            {
+                                required: !!item?.type?.expands?.required,
+                                message: `${
+                                    item.type.type === 'enum'
+                                        ? '请选择'
+                                        : '请输入'
+                                }${item.name}`,
+                            },
+                        ]"
+                    >
+                        <j-input
+                            placeholder="请输入"
+                            v-if="item.type.type === 'string'"
+                            v-model:value="formData.data[item.property]"
+                        ></j-input>
+                        <j-input-password
+                            placeholder="请输入"
+                            v-if="item.type.type === 'password'"
+                            v-model:value="formData.data[item.property]"
+                        ></j-input-password>
+                        <j-select
+                            placeholder="请选择"
+                            v-if="item.type.type === 'enum'"
+                            v-model:value="formData.data[item.name]"
+                        >
+                            <j-select-option
+                                v-for="el in item?.type?.type === 'enum' &&
+                                item?.type?.elements
+                                    ? item?.type?.elements
+                                    : []"
+                                :key="el"
+                                :value="el.value"
+                            >
+                                {{ el.text }}
+                            </j-select-option>
+                        </j-select>
+                    </j-form-item>
+                </j-form>
+                <Title data="存储策略">
+                    <template #extra>
+                        <j-tooltip
+                            title="若修改存储策略,需要手动做数据迁移,平台只能搜索最新存储策略中的数据"
+                        >
+                            <AIcon
+                                type="QuestionCircleOutlined"
+                                style="margin-left: 2px"
+                            />
+                        </j-tooltip>
+                    </template>
+                </Title>
+                <j-form layout="vertical">
+                    <j-form-item>
+                        <j-select ref="select" v-model:value="form.storePolicy">
+                            <j-select-option
+                                v-for="(item, index) in storageList"
+                                :key="index"
+                                :value="item.id"
+                                >{{ item.name }}</j-select-option
+                            >
+                        </j-select>
+                    </j-form-item>
+                </j-form>
+                <PermissionButton
+                    type="primary"
+                    @click="submitDevice"
+                    hasPermission="device/Instance:update"
+                    >保存</PermissionButton
+                >
+            </j-col>
+            <j-col
+                :span="12"
+                v-if="config?.routes && config?.routes?.length > 0"
+            >
+                <div class="info">
+                    <div>
+                        <div style="font-weight: 600; margin: 0 0 10 px 0">
                             {{
-                                access?.description ||
-                                dataSource.find(
-                                    (item) => item?.id === access?.provider,
-                                )?.description
+                                access?.provider === 'mqtt-server-gateway' ||
+                                access?.provider === 'mqtt-client-gateway'
+                                    ? 'topic'
+                                    : 'URL信息'
                             }}
                         </div>
-                    </div>
-                    <div class="item-style">
-                        <Title data="消息协议"></Title>
-                        <div>
-                            {{ access?.protocolDetail?.name }}
-                        </div>
-                        <!-- 显示md文件内容 -->
-                        <div
-                            v-if="config?.document"
-                            v-html="markdownToHtml"
-                        ></div>
-                    </div>
-                    <div class="item-style">
-                        <Title data="连接信息"></Title>
-                        <div v-if="access?.channelInfo?.addresses.length > 0">
-                            <div
-                                v-for="item in access?.channelInfo?.addresses"
-                                :key="item.address"
-                            >
-                                <j-badge
-                                    :color="
-                                        item.health === -1 ? 'red' : 'green'
-                                    "
-                                    :text="item.address"
-                                >
-                                </j-badge>
-                            </div>
-                        </div>
-                        <div v-else>{{ '暂无连接信息' }}</div>
-                    </div>
-                    <Title
-                        v-if="metadata?.name"
-                        :data="metadata?.name"
-                        class="config"
-                    >
-                        <template #extra>
-                            <j-tooltip
-                                title="此配置来自于产品接入方式所选择的协议"
-                            >
-                                <AIcon
-                                    type="QuestionCircleOutlined"
-                                    style="margin-left: 2px"
-                                />
-                            </j-tooltip>
-                        </template>
-                    </Title>
-                    <j-form
-                        ref="formRef"
-                        :model="formData.data"
-                        layout="vertical"
-                    >
-                        <j-form-item
-                            :name="item.property"
-                            v-for="item in metadata.properties"
-                            :key="item"
-                            :label="item.name"
-                            :rules="[
-                                {
-                                    required: !!item?.type?.expands?.required,
-                                    message: `${
-                                        item.type.type === 'enum'
-                                            ? '请选择'
-                                            : '请输入'
-                                    }${item.name}`,
-                                },
-                            ]"
+                        <j-table
+                            :columns="
+                                config.id === 'MQTT' ? columnsMQTT : columnsHTTP
+                            "
+                            :data-source="config?.routes"
+                            :pagination="false"
+                            :scroll="{ y: 500 }"
                         >
-                            <j-input
-                                placeholder="请输入"
-                                v-if="item.type.type === 'string'"
-                                v-model:value="formData.data[item.property]"
-                            ></j-input>
-                            <j-input-password
-                                placeholder="请输入"
-                                v-if="item.type.type === 'password'"
-                                v-model:value="formData.data[item.property]"
-                            ></j-input-password>
-                            <j-select
-                                placeholder="请选择"
-                                v-if="item.type.type === 'enum'"
-                                v-model:value="formData.data[item.name]"
-                            >
-                                <j-select-option
-                                    v-for="el in item?.type?.type === 'enum' &&
-                                    item?.type?.elements
-                                        ? item?.type?.elements
-                                        : []"
-                                    :key="el"
-                                    :value="el.value"
-                                >
-                                    {{ el.text }}
-                                </j-select-option>
-                            </j-select>
-                        </j-form-item>
-                    </j-form>
-                    <Title data="存储策略">
-                        <template #extra>
-                            <j-tooltip
-                                title="若修改存储策略,需要手动做数据迁移,平台只能搜索最新存储策略中的数据"
-                            >
-                                <AIcon
-                                    type="QuestionCircleOutlined"
-                                    style="margin-left: 2px"
-                                />
-                            </j-tooltip>
-                        </template>
-                    </Title>
-                    <j-form layout="vertical">
-                        <j-form-item>
-                            <j-select
-                                ref="select"
-                                v-model:value="form.storePolicy"
-                            >
-                                <j-select-option
-                                    v-for="(item, index) in storageList"
-                                    :key="index"
-                                    :value="item.id"
-                                    >{{ item.name }}</j-select-option
-                                >
-                            </j-select>
-                        </j-form-item>
-                    </j-form>
-                    <PermissionButton
-                        type="primary"
-                        @click="submitDevice"
-                        hasPermission="device/Instance:update"
-                        >保存</PermissionButton
-                    >
-                </j-col>
-                <j-col
-                    :span="12"
-                    v-if="config?.routes && config?.routes?.length > 0"
-                >
-                    <div class="info">
-                        <div>
-                            <div style="font-weight: 600; margin: 0 0 10 px 0">
-                                {{
-                                    access?.provider ===
-                                        'mqtt-server-gateway' ||
-                                    access?.provider === 'mqtt-client-gateway'
-                                        ? 'topic'
-                                        : 'URL信息'
-                                }}
-                            </div>
-                            <j-table
-                                :columns="
-                                    config.id === 'MQTT'
-                                        ? columnsMQTT
-                                        : columnsHTTP
-                                "
-                                :data-source="config?.routes"
-                                :pagination="false"
-                                :scroll="{ y: 500 }"
-                            >
-                                <template #bodyCell="{ text, column, record }">
-                                    <template v-if="column.key === 'topic'">
-                                        <j-tooltip
-                                            placement="topLeft"
-                                            :title="text"
-                                        >
-                                            <div class="ellipsis-style">
-                                                {{ text }}
-                                            </div>
-                                        </j-tooltip>
-                                    </template>
-                                    <template v-if="column.key === 'stream'">
-                                        <div>{{ getStream(record) }}</div>
-                                    </template>
-                                    <template
-                                        v-if="column.key === 'description'"
+                            <template #bodyCell="{ text, column, record }">
+                                <template v-if="column.key === 'topic'">
+                                    <j-tooltip
+                                        placement="topLeft"
+                                        :title="text"
                                     >
-                                        <j-tooltip
-                                            placement="topLeft"
-                                            :title="text"
-                                        >
-                                            <div class="ellipsis-style">
-                                                {{ text }}
-                                            </div>
-                                        </j-tooltip>
-                                    </template>
-                                    <template v-if="column.key === 'address'">
-                                        <j-tooltip
-                                            placement="topLeft"
-                                            :title="text"
-                                        >
-                                            <div class="ellipsis-style">
-                                                {{ text }}
-                                            </div>
-                                        </j-tooltip>
-                                    </template>
-                                    <template v-if="column.key === 'example'">
-                                        <j-tooltip
-                                            placement="topLeft"
-                                            :title="text"
-                                        >
-                                            <div class="ellipsis-style">
-                                                {{ text }}
-                                            </div>
-                                        </j-tooltip>
-                                    </template>
+                                        <div class="ellipsis-style">
+                                            {{ text }}
+                                        </div>
+                                    </j-tooltip>
                                 </template>
-                            </j-table>
-                        </div>
+                                <template v-if="column.key === 'stream'">
+                                    <div>{{ getStream(record) }}</div>
+                                </template>
+                                <template v-if="column.key === 'description'">
+                                    <j-tooltip
+                                        placement="topLeft"
+                                        :title="text"
+                                    >
+                                        <div class="ellipsis-style">
+                                            {{ text }}
+                                        </div>
+                                    </j-tooltip>
+                                </template>
+                                <template v-if="column.key === 'address'">
+                                    <j-tooltip
+                                        placement="topLeft"
+                                        :title="text"
+                                    >
+                                        <div class="ellipsis-style">
+                                            {{ text }}
+                                        </div>
+                                    </j-tooltip>
+                                </template>
+                                <template v-if="column.key === 'example'">
+                                    <j-tooltip
+                                        placement="topLeft"
+                                        :title="text"
+                                    >
+                                        <div class="ellipsis-style">
+                                            {{ text }}
+                                        </div>
+                                    </j-tooltip>
+                                </template>
+                            </template>
+                        </j-table>
                     </div>
-                </j-col>
-            </j-row>
-        </div>
-    </j-card>
+                </div>
+            </j-col>
+        </j-row>
+    </div>
     <!-- 选择设备 -->
     <j-modal
         title="设备接入配置"
@@ -349,8 +299,11 @@
             :gridColumns="[2]"
         >
             <template #headerTitle>
-                <j-button type="primary" @click="add"
-                    ><plus-outlined />新增</j-button
+                <PermissionButton
+                    type="primary"
+                    @click="add"
+                    hasPermission="link/AccessConfig:add"
+                    >新增</PermissionButton
                 >
             </template>
             <template #deviceType="slotProps">
@@ -1010,7 +963,6 @@ const submitDevice = async () => {
     const result: any = {};
     flatObj(values, result);
     const { storePolicy, ...extra } = result;
-    console.log({ ...extra });
     const id = productStore.current?.id;
     const resp = await modify(id || '', {
         id: id,
@@ -1046,7 +998,6 @@ const add = () => {
     if (url) {
         const tab: any = window.open(`${origin}/#${url}?view=false`);
         tab.onTabSaveSuccess = (value: any) => {
-            console.log(value);
             if (value.status === 200) {
                 tableRef.value.reload();
                 handleClick(value.result);

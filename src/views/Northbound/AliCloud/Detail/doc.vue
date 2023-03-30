@@ -57,7 +57,7 @@ import { getImage } from '@/utils/comm';
 
 <style lang="less" scoped>
 .doc {
-    height: 1000px;
+    height: 100%;
     padding: 24px;
     overflow-y: auto;
     color: rgba(#000, 0.8);

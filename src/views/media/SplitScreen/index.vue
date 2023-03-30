@@ -1,23 +1,28 @@
 <template>
     <page-container>
-        <j-card class="splitScreen">
-            <div class="split-screen">
-                <LeftTree @onSelect="mediaStart" />
-                <div class="right-content">
-                    <ScreenPlayer
-                        ref="player"
-                        :id="deviceId"
-                        :channelId="channelId"
-                        :onMouseUp="(id, cId) => channelApi.ptzStop(id, cId)"
-                        :onMouseDown="
-                            (id, cId, type) => channelApi.ptzTool(id, cId, type)
-                        "
-                        :historyHandle="(dId, cId) => getMediaUrl(dId, cId)"
-                        showScreen
-                    />
+        <FullPage>
+            <j-card class="splitScreen">
+                <div class="split-screen">
+                    <LeftTree @onSelect="mediaStart" />
+                    <div class="right-content">
+                        <ScreenPlayer
+                            ref="player"
+                            :id="deviceId"
+                            :channelId="channelId"
+                            :onMouseUp="
+                                (id, cId) => channelApi.ptzStop(id, cId)
+                            "
+                            :onMouseDown="
+                                (id, cId, type) =>
+                                    channelApi.ptzTool(id, cId, type)
+                            "
+                            :historyHandle="(dId, cId) => getMediaUrl(dId, cId)"
+                            showScreen
+                        />
+                    </div>
                 </div>
-            </div>
-        </j-card>
+            </j-card>
+        </FullPage>
     </page-container>
 </template>
 
@@ -32,8 +37,8 @@ const player = ref();
 
 /**
  * 获取视频链接
- * @param dId 
- * @param cId 
+ * @param dId
+ * @param cId
  */
 const getMediaUrl = (dId: string, cId: string): string => {
     return channelApi.ptzStart(dId, cId, 'mp4');
@@ -41,7 +46,7 @@ const getMediaUrl = (dId: string, cId: string): string => {
 
 /**
  * 点击左侧摄像头, 播放对应视频
- * @param e 
+ * @param e
  */
 const mediaStart = (e: { cId: string; dId: string }) => {
     channelId.value = e.cId;

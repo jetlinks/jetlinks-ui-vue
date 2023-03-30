@@ -24,101 +24,109 @@
                     target="channel"
                     @search="handleSearch"
                 />
-
-                <JProTable
-                    ref="listRef"
-                    model="table"
-                    :columns="columns"
-                    :request="(e:any) => ChannelApi.list(e, route?.query.id as string)"
-                    :defaultParams="{
-                        pageSize: 10,
-                        sorts: [{ name: 'notifyTime', order: 'desc' }],
-                    }"
-                    :params="params"
-                    :pagination="{
-                        showSizeChanger: true,
-                        pageSizeOptions: ['10', '20', '50', '100'],
-                    }"
-                >
-                    <template #headerTitle>
-                        <j-tooltip
-                            v-if="route?.query.type === 'gb28181-2016'"
-                            title="接入方式为GB/T28281时，不支持新增"
-                        >
-                            <j-button type="primary" disabled> 新增 </j-button>
-                        </j-tooltip>
-                        <PermissionButton
-                            type="primary"
-                            @click="handleAdd"
-                            hasPermission="media/Device:add"
-                        >
-                            <template #icon
-                                ><AIcon type="PlusOutlined" />新增</template
+                <FullPage>
+                    <JProTable
+                        ref="listRef"
+                        model="table"
+                        :columns="columns"
+                        :request="(e:any) => ChannelApi.list(e, route?.query.id as string)"
+                        :defaultParams="{
+                            pageSize: 10,
+                            sorts: [{ name: 'notifyTime', order: 'desc' }],
+                        }"
+                        :params="params"
+                        :pagination="{
+                            showSizeChanger: true,
+                            pageSizeOptions: ['10', '20', '50', '100'],
+                        }"
+                    >
+                        <template #headerTitle>
+                            <j-tooltip
+                                v-if="route?.query.type === 'gb28181-2016'"
+                                title="接入方式为GB/T28281时，不支持新增"
                             >
-                        </PermissionButton>
-                    </template>
-                    <template #status="slotProps">
-                        <j-space>
-                            <j-badge
-                                :status="
-                                    slotProps.status.value === 'online'
-                                        ? 'success'
-                                        : 'error'
-                                "
-                                :text="slotProps.status.text"
-                            ></j-badge>
-                        </j-space>
-                    </template>
-                    <template #action="slotProps">
-                        <j-space>
-                            <template
-                                v-for="i in getActions(slotProps, 'table')"
-                                :key="i.key"
+                                <j-button type="primary" disabled>
+                                    新增
+                                </j-button>
+                            </j-tooltip>
+                            <PermissionButton
+                                v-else
+                                type="primary"
+                                @click="handleAdd"
+                                hasPermission="media/Device:add"
                             >
-                                <PermissionButton
-                                    v-if="
-                                        i.key !== 'play' && i.key !== 'backPlay'
-                                    "
-                                    :danger="i.key === 'delete'"
-                                    :disabled="i.disabled"
-                                    :popConfirm="i.popConfirm"
-                                    :tooltip="{
-                                        ...i.tooltip,
-                                    }"
-                                    @click="i.onClick"
-                                    type="link"
-                                    style="padding: 0px"
-                                    :hasPermission="'media/Device:' + i.key"
+                                <template #icon
+                                    ><AIcon type="PlusOutlined" />新增</template
                                 >
-                                    <template #icon
-                                        ><AIcon :type="i.icon"
-                                    /></template>
-                                </PermissionButton>
-                                <!-- 回放/播放不要权限控制 -->
-                                <template v-else>
-                                    <j-tooltip :key="i.key" v-bind="i.tooltip">
-                                        <j-button
-                                            style="padding: 0px"
-                                            type="link"
-                                            @click="
-                                                i.onClick &&
-                                                    i.onClick(slotProps)
-                                            "
+                            </PermissionButton>
+                        </template>
+                        <template #status="slotProps">
+                            <j-space>
+                                <j-badge
+                                    :status="
+                                        slotProps.status.value === 'online'
+                                            ? 'success'
+                                            : 'error'
+                                    "
+                                    :text="slotProps.status.text"
+                                ></j-badge>
+                            </j-space>
+                        </template>
+                        <template #action="slotProps">
+                            <j-space>
+                                <template
+                                    v-for="i in getActions(slotProps, 'table')"
+                                    :key="i.key"
+                                >
+                                    <PermissionButton
+                                        v-if="
+                                            i.key !== 'play' &&
+                                            i.key !== 'backPlay'
+                                        "
+                                        :danger="i.key === 'delete'"
+                                        :disabled="i.disabled"
+                                        :popConfirm="i.popConfirm"
+                                        :tooltip="{
+                                            ...i.tooltip,
+                                        }"
+                                        @click="i.onClick"
+                                        type="link"
+                                        style="padding: 0px"
+                                        :hasPermission="'media/Device:' + i.key"
+                                    >
+                                        <template #icon
+                                            ><AIcon :type="i.icon"
+                                        /></template>
+                                    </PermissionButton>
+                                    <!-- 回放/播放不要权限控制 -->
+                                    <template v-else>
+                                        <j-tooltip
+                                            :key="i.key"
+                                            v-bind="i.tooltip"
                                         >
                                             <j-button
-                                                :disabled="i.disabled"
-                                                style="padding: 0"
+                                                style="padding: 0px"
                                                 type="link"
+                                                @click="
+                                                    i.onClick &&
+                                                        i.onClick(slotProps)
+                                                "
                                             >
-                                                <AIcon :type="i.icon" />
+                                                <j-button
+                                                    :disabled="i.disabled"
+                                                    style="padding: 0"
+                                                    type="link"
+                                                >
+                                                    <AIcon :type="i.icon" />
+                                                </j-button>
                                             </j-button>
-                                        </j-button>
-                                    </j-tooltip>
+                                        </j-tooltip>
+                                    </template>
                                 </template>
-                            </template>
-                        </j-space>
-                    </template>
-                </JProTable>
+                            </j-space>
+                        </template>
+                    </JProTable>
+                </FullPage>
             </div>
         </div>
 

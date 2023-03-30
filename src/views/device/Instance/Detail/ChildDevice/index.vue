@@ -1,114 +1,113 @@
 <template>
-    <j-card>
-        <SaveChild
-            v-if="childVisible"
-            @close-child-save="closeChildSave"
-            :childData="_current"
+    <SaveChild
+        v-if="childVisible"
+        @close-child-save="closeChildSave"
+        :childData="_current"
+    />
+    <div v-else>
+        <pro-search
+            :columns="columns"
+            target="child-device"
+            @search="handleSearch"
+            class="device-child-device-search"
         />
-        <div v-else>
-            <pro-search
-                :columns="columns"
-                target="child-device"
-                @search="handleSearch"
-                class="child-device-search"
-            />
-            <JProTable
-                ref="childDeviceRef"
-                :columns="columns"
-                :request="query"
-                :defaultParams="{
-                    terms: [
-                        {
-                            column: 'parentId',
-                            value: detail?.id || '',
-                            termType: 'eq',
-                        },
-                    ],
-                }"
-                :rowSelection="{
-                    selectedRowKeys: _selectedRowKeys,
-                    onChange: onSelectChange,
-                }"
-                @cancelSelect="cancelSelect"
-                :params="params"
-                :model="'TABLE'"
-            >
-                <template #headerTitle>
-                    <j-space>
+        <!-- <j-divider /> -->
+        <JProTable
+            ref="childDeviceRef"
+            :columns="columns"
+            :request="query"
+            :bodyStyle="{
+                padding: 0
+            }"
+            :defaultParams="{
+                terms: [
+                    {
+                        column: 'parentId',
+                        value: detail?.id || '',
+                        termType: 'eq',
+                    },
+                ],
+            }"
+            :rowSelection="{
+                selectedRowKeys: _selectedRowKeys,
+                onChange: onSelectChange,
+            }"
+            @cancelSelect="cancelSelect"
+            :params="params"
+            :model="'TABLE'"
+        >
+            <template #rightExtraRender>
+                <j-space>
+                    <PermissionButton
+                        type="primary"
+                        v-if="
+                            detail?.accessProvider === 'official-edge-gateway'
+                        "
+                        hasPermission="device/Instance:update"
+                        @click="
+                            _current = {};
+                            childVisible = true;
+                        "
+                        >新增并绑定</PermissionButton
+                    >
+                    <PermissionButton
+                        type="primary"
+                        @click="visible = true"
+                        hasPermission="device/Instance:update"
+                    >
+                        绑定</PermissionButton
+                    >
+                    <PermissionButton
+                        type="primary"
+                        hasPermission="device/Instance:update"
+                        :popConfirm="{
+                            title: '确定解绑吗？',
+                            onConfirm: handleUnBind,
+                        }"
+                        >批量解除</PermissionButton
+                    >
+                </j-space>
+            </template>
+            <template #registryTime="slotProps">
+                {{
+                    slotProps.registryTime
+                        ? moment(slotProps.registryTime).format(
+                              'YYYY-MM-DD HH:mm:ss',
+                          )
+                        : ''
+                }}
+            </template>
+            <template #state="slotProps">
+                <j-badge
+                    :text="slotProps.state.text"
+                    :status="statusMap.get(slotProps.state.value)"
+                />
+            </template>
+            <template #action="slotProps">
+                <j-space :size="16">
+                    <template
+                        v-for="i in getActions(slotProps, 'table')"
+                        :key="i.key"
+                    >
                         <PermissionButton
-                            type="primary"
-                            v-if="
-                                detail?.accessProvider ===
-                                'official-edge-gateway'
-                            "
-                            hasPermission="device/Instance:update"
-                            @click="
-                                _current = {};
-                                childVisible = true;
-                            "
-                            >新增并绑定</PermissionButton
-                        >
-                        <PermissionButton
-                            type="primary"
-                            @click="visible = true"
-                            hasPermission="device/Instance:update"
-                        >
-                            绑定</PermissionButton
-                        >
-                        <PermissionButton
-                            type="primary"
-                            hasPermission="device/Instance:update"
-                            :popConfirm="{
-                                title: '确定解绑吗？',
-                                onConfirm: handleUnBind,
+                            :disabled="i.disabled"
+                            :popConfirm="i.popConfirm"
+                            :tooltip="{
+                                ...i.tooltip,
                             }"
-                            >批量解除</PermissionButton
+                            @click="i.onClick"
+                            type="link"
+                            style="padding: 0px"
+                            :hasPermission="'device/Instance:' + i.key"
                         >
-                    </j-space>
-                </template>
-                <template #registryTime="slotProps">
-                    {{
-                        slotProps.registryTime
-                            ? moment(slotProps.registryTime).format(
-                                  'YYYY-MM-DD HH:mm:ss',
-                              )
-                            : ''
-                    }}
-                </template>
-                <template #state="slotProps">
-                    <j-badge
-                        :text="slotProps.state.text"
-                        :status="statusMap.get(slotProps.state.value)"
-                    />
-                </template>
-                <template #action="slotProps">
-                    <j-space :size="16">
-                        <template
-                            v-for="i in getActions(slotProps, 'table')"
-                            :key="i.key"
-                        >
-                            <PermissionButton
-                                :disabled="i.disabled"
-                                :popConfirm="i.popConfirm"
-                                :tooltip="{
-                                    ...i.tooltip,
-                                }"
-                                @click="i.onClick"
-                                type="link"
-                                style="padding: 0px"
-                                :hasPermission="'device/Instance:' + i.key"
-                            >
-                                <template #icon
-                                    ><AIcon :type="i.icon"
-                                /></template>
-                            </PermissionButton>
-                        </template>
-                    </j-space>
-                </template>
-            </JProTable>
-            <BindChildDevice v-if="visible" @change="closeBindDevice" />
-        </div>
-    </j-card>
+                            <template #icon><AIcon :type="i.icon" /></template>
+                        </PermissionButton>
+                    </template>
+                </j-space>
+            </template>
+        </JProTable>
+        <BindChildDevice v-if="visible" @change="closeBindDevice" />
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -147,10 +146,10 @@ const columns = [
         dataIndex: 'id',
         key: 'id',
         ellipsis: true,
-        search:{
-            type:'string',
-            defaultTermType: 'eq'
-        }
+        search: {
+            type: 'string',
+            defaultTermType: 'eq',
+        },
     },
     {
         title: '设备名称',
@@ -303,12 +302,8 @@ const closeChildSave = () => {
 };
 </script>
 
-<style scoped lang="less">
-.child-device-search {
-    border-bottom: 1px solid #f0f0f0;
-}
-
-:deep(._jtable-body_1eyxz_1 ._jtable-body-header_1eyxz_6) {
-    justify-content: flex-end;
+<style lang="less">
+.device-child-device-search {
+    padding: 0px;
 }
 </style>

@@ -5,139 +5,146 @@
             target="media-cascade"
             @search="handleSearch"
         />
-
-        <JProTable
-            ref="listRef"
-            :columns="columns"
-            :request="(e:any) => lastValueFrom(e)"
-            :defaultParams="{
-                sorts: [{ name: 'createTime', order: 'desc' }],
-            }"
-            :params="params"
-            :gridColumn="2"
-        >
-            <template #headerTitle>
-                <PermissionButton
-                    type="primary"
-                    @click="handleAdd"
-                    hasPermission="media/Cascade:add"
-                >
-                    <template #icon><AIcon type="PlusOutlined" />新增</template>
-                </PermissionButton>
-            </template>
-            <template #card="slotProps">
-                <CardBox
-                    :value="slotProps"
-                    :actions="getActions(slotProps, 'card')"
-                    v-bind="slotProps"
-                    :showStatus="true"
-                    :status="slotProps.status?.value"
-                    :statusText="slotProps.status?.text"
-                    :statusNames="{
-                        enabled: 'success',
-                        disabled: 'error',
-                    }"
-                >
-                    <template #img>
-                        <slot name="img">
-                            <img
-                                :src="
-                                    getImage('/device/instance/device-card.png')
-                                "
-                            />
-                        </slot>
-                    </template>
-                    <template #content>
-                        <h3 class="card-item-content-title">
-                            {{ slotProps.name }}
-                        </h3>
-                        <p>通道数量：{{ slotProps.count || 0 }}</p>
-                        <Ellipsis>
-                            <j-badge
-                                :text="`sip:${slotProps.sipConfigs[0]?.sipId}@${slotProps.sipConfigs[0]?.hostAndPort}`"
-                                :status="
-                                    slotProps.status?.value === 'enabled'
-                                        ? 'success'
-                                        : 'error'
-                                "
-                            />
-                        </Ellipsis>
-                    </template>
-                    <template #actions="item">
-                        <PermissionButton
-                            :disabled="item.disabled"
-                            :popConfirm="item.popConfirm"
-                            :tooltip="{
-                                ...item.tooltip,
-                            }"
-                            @click="item.onClick"
-                            :hasPermission="'media/Cascade:' + item.key"
-                        >
-                            <AIcon
-                                type="DeleteOutlined"
-                                v-if="item.key === 'delete'"
-                            />
-                            <template v-else>
-                                <AIcon :type="item.icon" />
-                                <span>{{ item?.text }}</span>
-                            </template>
-                        </PermissionButton>
-                    </template>
-                </CardBox>
-            </template>
-            <template #sipId="slotProps">
-                {{ slotProps.sipConfigs[0]?.sipId }}
-            </template>
-            <template #publicHost="slotProps">
-                {{ slotProps.sipConfigs[0]?.publicHost }}
-            </template>
-            <template #count="slotProps">
-                {{ slotProps.count || 0 }}
-            </template>
-            <template #status="slotProps">
-                <j-badge
-                    :text="slotProps.status?.text"
-                    :status="
-                        slotProps.status?.value === 'enabled'
-                            ? 'success'
-                            : 'error'
-                    "
-                />
-            </template>
-            <template #onlineStatus="slotProps">
-                <j-badge
-                    :text="slotProps.onlineStatus?.text"
-                    :status="
-                        slotProps.onlineStatus?.value === 'online'
-                            ? 'success'
-                            : 'error'
-                    "
-                />
-            </template>
-            <template #action="slotProps">
-                <j-space :size="16">
-                    <template
-                        v-for="i in getActions(slotProps, 'table')"
-                        :key="i.key"
+        <FullPage>
+            <JProTable
+                ref="listRef"
+                :columns="columns"
+                :request="(e:any) => lastValueFrom(e)"
+                :defaultParams="{
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                }"
+                :params="params"
+                :gridColumn="2"
+            >
+                <template #headerTitle>
+                    <PermissionButton
+                        type="primary"
+                        @click="handleAdd"
+                        hasPermission="media/Cascade:add"
                     >
-                        <PermissionButton
-                            :danger="i.key === 'delete'"
-                            :disabled="i.disabled"
-                            :popConfirm="i.popConfirm"
-                            :tooltip="{
-                                ...i.tooltip,
-                            }"
-                            @click="i.onClick"
-                            type="link"
-                            style="padding: 0px"
-                            :hasPermission="'media/Cascade:' + i.key"
+                        <template #icon
+                            ><AIcon type="PlusOutlined" />新增</template
                         >
-                            <template #icon><AIcon :type="i.icon" /></template>
-                        </PermissionButton>
-                    </template>
-                </j-space>
-            </template>
-        </JProTable>
+                    </PermissionButton>
+                </template>
+                <template #card="slotProps">
+                    <CardBox
+                        :value="slotProps"
+                        :actions="getActions(slotProps, 'card')"
+                        v-bind="slotProps"
+                        :showStatus="true"
+                        :status="slotProps.status?.value"
+                        :statusText="slotProps.status?.text"
+                        :statusNames="{
+                            enabled: 'success',
+                            disabled: 'error',
+                        }"
+                    >
+                        <template #img>
+                            <slot name="img">
+                                <img
+                                    :src="
+                                        getImage(
+                                            '/device/instance/device-card.png',
+                                        )
+                                    "
+                                />
+                            </slot>
+                        </template>
+                        <template #content>
+                            <h3 class="card-item-content-title">
+                                {{ slotProps.name }}
+                            </h3>
+                            <p>通道数量：{{ slotProps.count || 0 }}</p>
+                            <Ellipsis>
+                                <j-badge
+                                    :text="`sip:${slotProps.sipConfigs[0]?.sipId}@${slotProps.sipConfigs[0]?.hostAndPort}`"
+                                    :status="
+                                        slotProps.status?.value === 'enabled'
+                                            ? 'success'
+                                            : 'error'
+                                    "
+                                />
+                            </Ellipsis>
+                        </template>
+                        <template #actions="item">
+                            <PermissionButton
+                                :disabled="item.disabled"
+                                :popConfirm="item.popConfirm"
+                                :tooltip="{
+                                    ...item.tooltip,
+                                }"
+                                @click="item.onClick"
+                                :hasPermission="'media/Cascade:' + item.key"
+                            >
+                                <AIcon
+                                    type="DeleteOutlined"
+                                    v-if="item.key === 'delete'"
+                                />
+                                <template v-else>
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item?.text }}</span>
+                                </template>
+                            </PermissionButton>
+                        </template>
+                    </CardBox>
+                </template>
+                <template #sipId="slotProps">
+                    {{ slotProps.sipConfigs[0]?.sipId }}
+                </template>
+                <template #publicHost="slotProps">
+                    {{ slotProps.sipConfigs[0]?.publicHost }}
+                </template>
+                <template #count="slotProps">
+                    {{ slotProps.count || 0 }}
+                </template>
+                <template #status="slotProps">
+                    <j-badge
+                        :text="slotProps.status?.text"
+                        :status="
+                            slotProps.status?.value === 'enabled'
+                                ? 'success'
+                                : 'error'
+                        "
+                    />
+                </template>
+                <template #onlineStatus="slotProps">
+                    <j-badge
+                        :text="slotProps.onlineStatus?.text"
+                        :status="
+                            slotProps.onlineStatus?.value === 'online'
+                                ? 'success'
+                                : 'error'
+                        "
+                    />
+                </template>
+                <template #action="slotProps">
+                    <j-space :size="16">
+                        <template
+                            v-for="i in getActions(slotProps, 'table')"
+                            :key="i.key"
+                        >
+                            <PermissionButton
+                                :danger="i.key === 'delete'"
+                                :disabled="i.disabled"
+                                :popConfirm="i.popConfirm"
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                @click="i.onClick"
+                                type="link"
+                                style="padding: 0px"
+                                :hasPermission="'media/Cascade:' + i.key"
+                            >
+                                <template #icon
+                                    ><AIcon :type="i.icon"
+                                /></template>
+                            </PermissionButton>
+                        </template>
+                    </j-space>
+                </template>
+            </JProTable>
+        </FullPage>
 
         <Publish v-model:visible="publishVis" :data="currentData" />
     </page-container>

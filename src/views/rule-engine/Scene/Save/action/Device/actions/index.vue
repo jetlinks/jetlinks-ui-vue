@@ -278,7 +278,7 @@ watch(
             }
         }
     },
-    { immediate: true, deep: true },
+    { immediate: true },
 );
 
 watch(

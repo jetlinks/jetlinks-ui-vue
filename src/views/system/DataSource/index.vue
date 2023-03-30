@@ -6,133 +6,134 @@
                 target="category"
                 @search="(params:any)=>queryParams = {...params}"
             />
-
-            <j-pro-table
-                ref="tableRef"
-                :columns="columns"
-                :request="getDataSourceList_api"
-                model="TABLE"
-                :params="queryParams"
-                :defaultParams="{
-                    pageSize: 10,
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
-                :pagination="{
-                    showSizeChanger: true,
-                    pageSizeOptions: ['10', '20', '50', '100'],
-                }"
-            >
-                <template #headerTitle>
-                    <PermissionButton
-                        type="primary"
-                        :hasPermission="`${permission}:add`"
-                        @click="table.openDialog({})"
-                    >
-                        <AIcon type="PlusOutlined" />新增
-                    </PermissionButton>
-                </template>
-                <template #state="slotProps">
-                    <BadgeStatus
-                        :status="slotProps.state?.value"
-                        :text="slotProps.state?.text"
-                        :statusNames="{
-                            enabled: 'processing',
-                            disabled: 'error',
-                        }"
-                    >
-                    </BadgeStatus>
-                </template>
-                <template #typeId="slotProps">
-                    {{
-                        (table.typeOptions.value.length &&
-                            table.getTypeLabel(slotProps.typeId)) ||
-                        ''
-                    }}
-                </template>
-                <template #action="slotProps">
-                    <j-space :size="16">
+            <FullPage>
+                <j-pro-table
+                    ref="tableRef"
+                    :columns="columns"
+                    :request="getDataSourceList_api"
+                    model="TABLE"
+                    :params="queryParams"
+                    :defaultParams="{
+                        pageSize: 10,
+                        sorts: [{ name: 'createTime', order: 'desc' }],
+                    }"
+                    :pagination="{
+                        showSizeChanger: true,
+                        pageSizeOptions: ['10', '20', '50', '100'],
+                    }"
+                >
+                    <template #headerTitle>
                         <PermissionButton
-                            :hasPermission="`${permission}:update`"
-                            type="link"
-                            :tooltip="{
-                                title: '编辑',
-                            }"
-                            @click="table.openDialog(slotProps)"
+                            type="primary"
+                            :hasPermission="`${permission}:add`"
+                            @click="table.openDialog({})"
                         >
-                            <AIcon type="EditOutlined" />
+                            <AIcon type="PlusOutlined" />新增
                         </PermissionButton>
-                        <PermissionButton
-                            :hasPermission="`${permission}:manage`"
-                            type="link"
-                            :tooltip="{
-                                title:
-                                    slotProps?.typeId === 'rabbitmq'
-                                        ? '暂不支持管理功能'
-                                        : table.getRowStatus(slotProps)
-                                        ? '管理'
-                                        : '请先启用数据源',
-                            }"
-                            @click="
-                                () =>
-                                    router.push(
-                                        `/system/DataSource/Management?id=${slotProps.id}`,
-                                    )
-                            "
-                            :disabled="
-                                slotProps?.typeId === 'rabbitmq' ||
-                                !table.getRowStatus(slotProps)
-                            "
-                        >
-                            <AIcon type="icon-ziyuankuguanli" />
-                        </PermissionButton>
-                        <PermissionButton
-                            :hasPermission="`${permission}:action`"
-                            type="link"
-                            :popConfirm="{
-                                title: `确定要${
-                                    table.getRowStatus(slotProps)
-                                        ? '禁用'
-                                        : '启用'
-                                }吗？`,
-                                onConfirm: () =>
-                                    table.clickChangeStatus(slotProps),
-                            }"
-                            :tooltip="{
-                                title: table.getRowStatus(slotProps)
-                                    ? '禁用'
-                                    : '启用',
+                    </template>
+                    <template #state="slotProps">
+                        <BadgeStatus
+                            :status="slotProps.state?.value"
+                            :text="slotProps.state?.text"
+                            :statusNames="{
+                                enabled: 'processing',
+                                disabled: 'error',
                             }"
                         >
-                            <AIcon
-                                :type="
-                                    table.getRowStatus(slotProps)
-                                        ? 'StopOutlined'
-                                        : 'PlayCircleOutlined'
+                        </BadgeStatus>
+                    </template>
+                    <template #typeId="slotProps">
+                        {{
+                            (table.typeOptions.value.length &&
+                                table.getTypeLabel(slotProps.typeId)) ||
+                            ''
+                        }}
+                    </template>
+                    <template #action="slotProps">
+                        <j-space :size="16">
+                            <PermissionButton
+                                :hasPermission="`${permission}:update`"
+                                type="link"
+                                :tooltip="{
+                                    title: '编辑',
+                                }"
+                                @click="table.openDialog(slotProps)"
+                            >
+                                <AIcon type="EditOutlined" />
+                            </PermissionButton>
+                            <PermissionButton
+                                :hasPermission="`${permission}:manage`"
+                                type="link"
+                                :tooltip="{
+                                    title:
+                                        slotProps?.typeId === 'rabbitmq'
+                                            ? '暂不支持管理功能'
+                                            : table.getRowStatus(slotProps)
+                                            ? '管理'
+                                            : '请先启用数据源',
+                                }"
+                                @click="
+                                    () =>
+                                        router.push(
+                                            `/system/DataSource/Management?id=${slotProps.id}`,
+                                        )
                                 "
-                            />
-                            <!-- <AIcon type="PlayCircleOutlined" /> -->
-                        </PermissionButton>
+                                :disabled="
+                                    slotProps?.typeId === 'rabbitmq' ||
+                                    !table.getRowStatus(slotProps)
+                                "
+                            >
+                                <AIcon type="icon-ziyuankuguanli" />
+                            </PermissionButton>
+                            <PermissionButton
+                                :hasPermission="`${permission}:action`"
+                                type="link"
+                                :popConfirm="{
+                                    title: `确定要${
+                                        table.getRowStatus(slotProps)
+                                            ? '禁用'
+                                            : '启用'
+                                    }吗？`,
+                                    onConfirm: () =>
+                                        table.clickChangeStatus(slotProps),
+                                }"
+                                :tooltip="{
+                                    title: table.getRowStatus(slotProps)
+                                        ? '禁用'
+                                        : '启用',
+                                }"
+                            >
+                                <AIcon
+                                    :type="
+                                        table.getRowStatus(slotProps)
+                                            ? 'StopOutlined'
+                                            : 'PlayCircleOutlined'
+                                    "
+                                />
+                                <!-- <AIcon type="PlayCircleOutlined" /> -->
+                            </PermissionButton>
 
-                        <PermissionButton
-                            :hasPermission="`${permission}:delete`"
-                            type="link"
-                            :tooltip="{
-                                title: table.getRowStatus(slotProps)
-                                    ? '请先禁用，再删除'
-                                    : '删除',
-                            }"
-                            :danger="true"
-                            :popConfirm="{
-                                title: `确认删除`,
-                                onConfirm: () => table.clickDel(slotProps),
-                            }"
-                            :disabled="table.getRowStatus(slotProps)"
-                        >
-                            <AIcon type="DeleteOutlined" />
-                        </PermissionButton>
-                    </j-space>
-                </template>
-            </j-pro-table>
+                            <PermissionButton
+                                :hasPermission="`${permission}:delete`"
+                                type="link"
+                                :tooltip="{
+                                    title: table.getRowStatus(slotProps)
+                                        ? '请先禁用，再删除'
+                                        : '删除',
+                                }"
+                                :danger="true"
+                                :popConfirm="{
+                                    title: `确认删除`,
+                                    onConfirm: () => table.clickDel(slotProps),
+                                }"
+                                :disabled="table.getRowStatus(slotProps)"
+                            >
+                                <AIcon type="DeleteOutlined" />
+                            </PermissionButton>
+                        </j-space>
+                    </template>
+                </j-pro-table>
+            </FullPage>
 
             <EditDialog
                 v-if="dialog.visible"
@@ -283,13 +284,13 @@ const table = {
     // 刷新列表
     refresh: () => {
         tableRef.value.reload();
-        dialog.visible = false
-        dialog.selectItem = {}
+        dialog.visible = false;
+        dialog.selectItem = {};
     },
     cancel: () => {
-        dialog.visible = false
-        dialog.selectItem = {}
-    }
+        dialog.visible = false;
+        dialog.selectItem = {};
+    },
 };
 table.getTypeOption();
 

@@ -76,6 +76,9 @@ import LeftTree from './components/LeftTree.vue';
 import ChooseApi from './components/ChooseApi.vue';
 import ApiDoes from './components/ApiDoes.vue';
 import ApiTest from './components/ApiTest.vue';
+import { useDepartmentStore } from '@/store/department';
+
+const department = useDepartmentStore();
 
 const props = defineProps<{
     mode: modeType;
@@ -157,12 +160,20 @@ function getSelectKeys() {
     }
 }
 
-// watch(
-//     () => changedApis.value,
-//     (val: any) => {
-//         console.log('changedApis: ', val);
-//     },
-// );
+watch(
+    () => selectedKeys.value,
+    (val: any) => {
+        // console.log('selectedKeys: ', val);
+        department.setSelectedKeys(val);
+    },
+);
+watch(
+    () => changedApis.value,
+    (val: any) => {
+        // console.log('changedApis: ', val);
+        department.setChangedApis(val);
+    },
+);
 </script>
 
 <style lang="less" scoped>

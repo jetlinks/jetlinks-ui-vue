@@ -181,6 +181,7 @@ const onProductChange = (_val: any, bol: boolean) => {
             JSON.parse(_val.metadata || '{}'),
             DeviceModel?.message,
         );
+        console.log(flag)
         if (!flag) {
             DeviceModel.message = {
                 messageType: 'INVOKE_FUNCTION',

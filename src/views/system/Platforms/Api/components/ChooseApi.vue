@@ -37,6 +37,9 @@ import {
 } from '@/api/system/apiPage';
 import { message } from 'ant-design-vue';
 import { modeType } from '../typing';
+import { useDepartmentStore } from '@/store/department';
+
+const department = useDepartmentStore();
 const emits = defineEmits([
     'refresh',
     'update:clickApi',
@@ -64,11 +67,6 @@ const columns = [
         dataIndex: 'summary',
         key: 'summary',
     },
-    // {
-    //     title: 'ID',
-    //     dataIndex: 'id',
-    //     key: 'id',
-    // },
 ];
 const rowSelection = {
     // onSelect: (record: any) => {
@@ -95,7 +93,7 @@ const rowSelection = {
             props.sourceKeys.includes(key),
         );
         // 除当前表格之外, 勾选上的数据
-        const otherSelectedKeys = props.sourceKeys.filter(
+        const otherSelectedKeys = department.crossPageKeys.filter(
             (key) => !currenTableKeys.includes(key),
         );
 
@@ -103,6 +101,7 @@ const rowSelection = {
         const removeKeys = oldSelectedKeys.filter((key) => !keys.includes(key));
         // 新增选择的项
         const addKeys = keys.filter((key) => !oldSelectedKeys.includes(key));
+        // 缓存当前表格和其他表格改变的数据
         emits('update:selectedRowKeys', [...otherSelectedKeys, ...keys]);
 
         // 新增选中/取消选中的数据
@@ -111,37 +110,21 @@ const rowSelection = {
             changed[key] = props.tableData.find((f: any) => f.id === key);
         });
         if (props.mode === 'appManger') {
-            emits('update:changedApis', changed);
+            // 缓存当前表格和其他表格改变的数据
+            emits('update:changedApis', {
+                ...department.changedApis,
+                ...changed,
+            });
         }
     },
     selectedRowKeys: ref<string[]>([]),
 };
 const save = async () => {
-    // fix: #bug10828
-    // 当前节点表格数据id
-    // const currenTableKeys = props.tableData.map((m: any) => m.id);
-    // // 当前表格选中的id
-    // const currentSelectedKeys = rowSelection.selectedRowKeys.value.filter(
-    //     (key: string) => currenTableKeys.includes(key),
-    // );
-    // // 当前表格, 原有选中的id
-    // const oldSelectedKeys = currenTableKeys.filter((key) =>
-    //     props.sourceKeys.includes(key),
-    // );
-
     const keys = props.selectedRowKeys;
+    // 移除的key
     const removeKeys = props.sourceKeys.filter((key) => !keys.includes(key));
+    // 新选中的key
     const addKeys = keys.filter((key) => !props.sourceKeys.includes(key));
-    // console.log('addKeys: ', addKeys);
-    // console.log('removeKeys: ', removeKeys);
-    // 取消选择的数据项
-    // const removeKeys = oldSelectedKeys.filter(
-    //     (key) => !currentSelectedKeys.includes(key),
-    // );
-    // // 新增选择的项
-    // const addKeys = currentSelectedKeys.filter(
-    //     (key) => !oldSelectedKeys.includes(key),
-    // );
 
     if (props.mode === 'api') {
         // 此时是api配置
@@ -163,14 +146,10 @@ const save = async () => {
         const removeItems = removeKeys.map((key) => ({
             id: key,
             permissions: props.changedApis[key]?.security,
-            // permissions: props.tableData.find((f: any) => f.id === key)
-            //     ?.security,
         }));
         const addItems = addKeys.map((key) => ({
             id: key,
             permissions: props.changedApis[key]?.security,
-            // permissions: props.tableData.find((f: any) => f.id === key)
-            //     ?.security,
         }));
         Promise.all([
             updateOperations_api(code, '_delete', { operations: removeItems }),
