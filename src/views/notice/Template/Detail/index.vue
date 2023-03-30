@@ -1030,72 +1030,19 @@ const { resetFields, validate, validateInfos, clearValidate } = useForm(
     formRules.value,
 );
 
-// 钉钉机器人markdown标题变量提取
+// 字段提取变量
 watch(
-    () => formData.value.template.markdown?.title,
-    (val) => {
-        if (!val) return;
+    [
+        () => formData.value.template.markdown?.title,
+        () => formData.value.template.link?.title,
+        () => formData.value.template.subject,
+        () => formData.value.template.message,
+        () => formData.value.template.ttsmessage,
+        () => formData.value.template.body,
+    ],
+    () => {
         variableReg();
     },
-    { deep: true },
-);
-// 钉钉机器人link标题变量提取
-watch(
-    () => formData.value.template.link?.title,
-    (val) => {
-        if (!val) return;
-        variableReg();
-    },
-    { deep: true },
-);
-// 邮件标题变量提取
-watch(
-    () => formData.value.template.subject,
-    (val) => {
-        if (!val) {
-            formData.value.variableDefinitions = [];
-            return;
-        }
-        variableReg();
-    },
-    { deep: true },
-);
-
-// 模板内容变量提取
-watch(
-    () => formData.value.template.message,
-    (val) => {
-        if (!val) {
-            formData.value.variableDefinitions = [];
-            return;
-        }
-        variableReg();
-    },
-    { deep: true },
-);
-// 模板内容变量提取
-watch(
-    () => formData.value.template.ttsmessage,
-    (val) => {
-        if (!val) {
-            formData.value.variableDefinitions = [];
-            return;
-        }
-        variableReg();
-    },
-    { deep: true },
-);
-// webhook请求体变量提取
-watch(
-    () => formData.value.template.body,
-    (val) => {
-        if (!val) {
-            formData.value.variableDefinitions = [];
-            return;
-        }
-        variableReg();
-    },
-    { deep: true },
 );
 
 /**
