@@ -39,7 +39,9 @@
 <script lang="ts" setup>
 import { setView_api } from '@/api/home';
 import { getImage } from '@/utils/comm';
+import { useUserInfo } from '@/store/userInfo';
 
+const user = useUserInfo();
 const emits = defineEmits(['refresh']);
 const selectValue = ref('device');
 
@@ -49,6 +51,14 @@ const confirm = () => {
         content: selectValue.value,
     }).then(() => emits('refresh'));
 };
+
+watch(
+    () => user.userInfos,
+    (val: any) => {
+        // 超管默认综合管理视图
+        if (val.username === 'admin') selectValue.value = 'comprehensive';
+    },
+);
 </script>
 
 <style lang="less" scoped>
