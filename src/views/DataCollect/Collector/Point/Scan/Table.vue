@@ -238,6 +238,9 @@ const filterOption = (input: string, option: any) => {
 
 const clickDelete = (value: string) => {
     emits('change', value);
+    
+    // 删除时需要做同上操作 todo
+
 };
 
 const getTargetData = (index: number, type: string) => {

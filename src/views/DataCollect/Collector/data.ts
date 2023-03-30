@@ -162,7 +162,12 @@ export const LeftTreeRules = {
         },
     ],
     type: [{ required: true, message: '请选择处理方式', trigger: 'blur' }],
-    endian: [{ required: true, message: '请选择高低位切换', trigger: 'blur' }],
+    endian: [
+        { required: true, message: '请选择双字高低位切换', trigger: 'blur' },
+    ],
+    endianIn: [
+        { required: true, message: '请选择单字高低位切换', trigger: 'blur' },
+    ],
 };
 
 export const FormTableColumns = [

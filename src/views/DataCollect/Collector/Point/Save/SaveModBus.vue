@@ -30,6 +30,7 @@
                     v-model:value="formData.configuration.function"
                     :options="[
                         { label: '01线圈寄存器', value: 'Coils' },
+                        { label: '02离散输入寄存器', value: 'DiscreteInputs' },
                         { label: '03保存寄存器', value: 'HoldingRegisters' },
                         { label: '04输入寄存器', value: 'InputRegisters' },
                     ]"
@@ -123,6 +124,21 @@
                 />
             </j-form-item>
             <j-form-item
+                label="小数保留位数"
+                :name="['configuration', 'codec', 'configuration', 'scale']"
+            >
+                <j-input-number
+                    style="width: 100%"
+                    placeholder="请输入小数保留位数"
+                    :min="0"
+                    :max="255"
+                    :precision="0"
+                    v-model:value="
+                        formData.configuration.codec.configuration.scale
+                    "
+                />
+            </j-form-item>
+            <j-form-item
                 v-if="formData.configuration.function"
                 label="访问类型"
                 name="accessModes"
@@ -132,7 +148,8 @@
                     :showImage="false"
                     v-model:value="formData.accessModes"
                     :options="
-                        formData.configuration.function === 'InputRegisters'
+                        formData.configuration.function === 'InputRegisters' ||
+                        formData.configuration.function === 'DiscreteInputs'
                             ? [{ label: '读', value: 'read' }]
                             : [
                                   { label: '读', value: 'read' },
@@ -274,6 +291,7 @@ const oldPointKey = props.data.pointKey;
 
 const InitAddress = {
     Coils: 1,
+    DiscreteInputs: 10001,
     HoldingRegisters: 40001,
     InputRegisters: 30001,
 };
@@ -293,6 +311,7 @@ const formData = ref({
             provider: undefined,
             configuration: {
                 scaleFactor: 1,
+                scale: undefined,
             },
         },
     },

@@ -99,14 +99,11 @@ const handleOptions = (record: any) => {
 }
 
 const valueChange = () => {
-  console.log('valueChange', dataSource.value)
   const _value = dataSource.value.map(item => {
-    console.log(item.value)
     return {
       name: item.id, value: item.value
     }
   })
-  console.log('valueChange2', _value)
   emit('update:value', _value)
   emit('change', _value)
 }

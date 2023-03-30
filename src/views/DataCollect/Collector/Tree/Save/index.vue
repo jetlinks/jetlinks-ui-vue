@@ -73,21 +73,11 @@
                 {{ getTypeTooltip(formData.circuitBreaker.type) }}
             </p>
             <j-form-item
+                label="双字高低位切换"
                 :name="['configuration', 'endian']"
                 v-if="visibleEndian"
                 :rules="LeftTreeRules.endian"
             >
-                <template #label>
-                    <span>
-                        高低位切换
-                        <j-tooltip title="统一配置所有点位的高低位切换">
-                            <AIcon
-                                type="QuestionCircleOutlined"
-                                style="margin-left: 2px"
-                            />
-                        </j-tooltip>
-                    </span>
-                </template>
                 <j-card-select
                     :showImage="false"
                     v-model:value="formData.configuration.endian"
@@ -99,6 +89,41 @@
                     :column="2"
                 />
             </j-form-item>
+            <j-form-item
+                label="单字高低位切换"
+                :name="['configuration', 'endianIn']"
+                v-if="visibleEndian"
+                :rules="LeftTreeRules.endianIn"
+            >
+                <j-card-select
+                    :showImage="false"
+                    v-model:value="formData.configuration.endianIn"
+                    :options="[
+                        { label: 'AB', value: 'BIG' },
+                        { label: 'BA', value: 'LITTLE' },
+                    ]"
+                    @change="changeCardSelectEndianIn"
+                    :column="2"
+                />
+            </j-form-item>
+            <div
+                style="color: #616161"
+                v-if="
+                    formData.configuration.endian ||
+                    formData.configuration.endianIn
+                "
+            >
+                <p>
+                    当前内存布局:{{
+                        endianMap.get(formData.configuration.endian)
+                    }}{{ endianMap.get(formData.configuration.endianIn) }}
+                </p>
+                <p>
+                    只有4字节数据类型(int32、ieee754 float)
+                    具有4种内存布局，其它只有ABCD、DCBA两种内存布局(以双字配置为准)
+                </p>
+            </div>
+
             <j-form-item label="说明" name="description">
                 <j-textarea
                     placeholder="请输入说明"
@@ -150,6 +175,11 @@ const emit = defineEmits(['change']);
 const id = props.data.id;
 const formRef = ref<FormInstance>();
 
+const endianMap = new Map([
+    ['BIG', 'AB'],
+    ['LITTLE', 'BA'],
+]);
+
 const formData = ref({
     channelId: undefined,
     name: '',
@@ -157,6 +187,7 @@ const formData = ref({
         unitId: '',
         type: 'LowerFrequency',
         endian: 'BIG',
+        endianIn: 'BIG',
     },
     circuitBreaker: {
         type: 'LowerFrequency',
@@ -202,6 +233,9 @@ const changeCardSelectType = (value: Array<string>) => {
 };
 const changeCardSelectEndian = (value: Array<string>) => {
     formData.value.configuration.endian = value[0];
+};
+const changeCardSelectEndianIn = (value: Array<string>) => {
+    formData.value.configuration.endianIn = value[0];
 };
 const getChannelNoPaging = async () => {
     channelListAll.value = Store.get('channelListAll');

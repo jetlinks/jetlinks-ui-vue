@@ -66,11 +66,12 @@ import Role from './Role/index.vue';
 import Menu from './Menu/index.vue';
 import InitData from './InitData/index.vue';
 import { modalState, formState, logoState } from './data/interface';
-import { saveInit } from '@/api/initHome';
+import { getInit, saveInit } from '@/api/initHome';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { FILE_UPLOAD } from '@/api/comm';
 import { LocalStore } from '@/utils/comm';
 import { message } from 'jetlinks-ui-components';
+import { useUserInfo } from '@/store/userInfo';
 const basicRef = ref();
 const roleRef = ref();
 const initDataRef = ref();
@@ -81,6 +82,7 @@ const loading = ref(false);
  */
 const activeKey = ref<string>('1');
 const spinning = ref<boolean>(false);
+const userInfo = useUserInfo();
 // const action = ref<string>(`${BASE_API_PATH}/file/static`);
 // const headers = ref({ [TOKEN_KEY]: LocalStore.get(TOKEN_KEY) });
 /**
@@ -128,6 +130,22 @@ const submitData = async () => {
         }
     }
 };
+/**
+ * 判断是否已有配置
+ */
+const judgeInitSet = async () => {
+    if (userInfo.$state.userInfos.username === 'admin') {
+        const resp: any = await getInit();
+        if (resp.status === 200 && resp.result.length) {
+            window.location.href = '/';
+        }
+    } else {
+        window.location.href = '/';
+    }
+};
+onMounted(() => {
+    judgeInitSet();
+});
 </script>
 <style scoped lang="less">
 .page-container {
