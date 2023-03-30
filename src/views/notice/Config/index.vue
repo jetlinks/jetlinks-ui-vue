@@ -355,7 +355,7 @@ const beforeUpload = (file: any) => {
  * 导出
  */
 const handleExport = () => {
-    downloadObject(configRef.value._dataSource, `通知配置`);
+    downloadObject(configRef.value._dataSource, `通知配置数据`);
 };
 
 const syncVis = ref(false);
@@ -425,7 +425,7 @@ const getActions = (
                 },
                 icon: 'ArrowDownOutlined',
                 onClick: () => {
-                    downloadObject(data, `通知配置`);
+                    downloadObject(data, `${data.name}`);
                 },
             },
             {

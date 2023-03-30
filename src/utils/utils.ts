@@ -11,7 +11,7 @@ import { SystemConst } from './consts';
 export const downloadObject = (record: Record<string, any>, fileName: string, format?: string) => {
   // 创建隐藏的可下载链接
   const ghostLink = document.createElement('a');
-  ghostLink.download = `${fileName ? '' : record?.name}${fileName}_${moment(new Date()).format(
+  ghostLink.download = `${fileName ? '' : record?.name}${fileName}-${moment(new Date()).format(
     format || 'YYYY_MM_DD',
   )}.json`;
   ghostLink.style.display = 'none';
