@@ -189,12 +189,13 @@
                             style="width: 500px"
                             placeholder="请选择资产类型"
                             show-search
+                            :options="form.assetsType"
                         >
-                            <j-select-option
+                            <!-- <j-select-option
                                 v-for="item in form.assetsType"
                                 :value="item.value"
                                 >{{ item.label }}</j-select-option
-                            >
+                            > -->
                         </j-select>
                     </j-form-item>
 
