@@ -6,185 +6,198 @@
             target="notice-config"
             @search="handleSearch"
         />
-        <JProTable
-            ref="configRef"
-            :columns="columns"
-            :request="ConfigApi.list"
-            :defaultParams="{
-                sorts: [{ name: 'createTime', order: 'desc' }],
-            }"
-            :params="params"
-            :gridColumn="3"
-        >
-            <template #headerTitle>
-                <j-space>
-                    <PermissionButton
-                        type="primary"
-                        @click="handleAdd"
-                        hasPermission="notice/Config:add"
-                    >
-                        新增
-                    </PermissionButton>
-                    <j-upload
-                        name="file"
-                        accept=".json"
-                        :showUploadList="false"
-                        :before-upload="beforeUpload"
-                    >
-                        <PermissionButton hasPermission="notice/Config:import">
-                            导入
-                        </PermissionButton>
-                    </j-upload>
-                    <j-popconfirm
-                        title="确认导出？"
-                        ok-text="确定"
-                        cancel-text="取消"
-                        @confirm="handleExport"
-                    >
-                        <PermissionButton hasPermission="notice/Config:export">
-                            导出
-                        </PermissionButton>
-                    </j-popconfirm>
-                </j-space>
-            </template>
-            <template #card="slotProps">
-                <CardBox
-                    :showStatus="false"
-                    :statusNames="{}"
-                    :value="slotProps"
-                    :actions="getActions(slotProps, 'card')"
-                >
-                    <template #img>
-                        <slot name="img">
-                            <img
-                                :src="
-                                    getLogo(slotProps.type, slotProps.provider)
-                                "
-                                class="logo"
-                            />
-                        </slot>
-                    </template>
-                    <template #content>
-                        <h3 class="card-item-content-title">
-                            {{ slotProps.name }}
-                        </h3>
-                        <j-row>
-                            <j-col :span="12">
-                                <div class="card-item-content-text">
-                                    通知方式
-                                </div>
-                                <div>
-                                    {{ getMethodTxt(slotProps.type) }}
-                                </div>
-                            </j-col>
-                            <j-col :span="12">
-                                <div class="card-item-content-text">说明</div>
-                                <Ellipsis>
-                                    {{ slotProps.description }}
-                                </Ellipsis>
-                            </j-col>
-                        </j-row>
-                    </template>
-                    <template #actions="item">
-                        <j-tooltip
-                            v-bind="item.tooltip"
-                            :title="item.disabled && item.tooltip.title"
-                        >
-                            <j-dropdown
-                                placement="bottomRight"
-                                v-if="item.key === 'others'"
-                            >
-                                <j-button>
-                                    <AIcon :type="item.icon" />
-                                    <span>{{ item.text }}</span>
-                                </j-button>
-                                <template #overlay>
-                                    <j-menu>
-                                        <j-menu-item
-                                            v-for="(o, i) in item.children"
-                                            :key="i"
-                                        >
-                                            <PermissionButton
-                                                type="link"
-                                                @click="o.onClick"
-                                                :hasPermission="`notice/Config:${o.key}`"
-                                            >
-                                                <template #icon>
-                                                    <AIcon :type="o.icon" />
-                                                </template>
-                                                <span>{{ o.text }}</span>
-                                            </PermissionButton>
-                                        </j-menu-item>
-                                    </j-menu>
-                                </template>
-                            </j-dropdown>
-                            <j-popconfirm
-                                v-else-if="item.key === 'delete'"
-                                v-bind="item.popConfirm"
-                                :disabled="item.disabled"
-                            >
-                                <PermissionButton
-                                    :disabled="item.disabled"
-                                    :hasPermission="`notice/Config:${item.key}`"
-                                >
-                                    <template #icon>
-                                        <AIcon type="DeleteOutlined" />
-                                    </template>
-                                </PermissionButton>
-                            </j-popconfirm>
-                            <template v-else>
-                                <PermissionButton
-                                    :disabled="item.disabled"
-                                    @click="item.onClick"
-                                    :hasPermission="`notice/Config:${item.key}`"
-                                >
-                                    <template #icon>
-                                        <AIcon :type="item.icon" />
-                                    </template>
-                                    <span>{{ item.text }}</span>
-                                </PermissionButton>
-                            </template>
-                        </j-tooltip>
-                    </template>
-                </CardBox>
-            </template>
-            <template #type="slotProps">
-                <span> {{ getMethodTxt(slotProps.type) }}</span>
-            </template>
-            <template #provider="slotProps">
-                <span>
-                    {{ getProviderTxt(slotProps.type, slotProps.provider) }}
-                </span>
-            </template>
-            <template #description="slotProps">
-                <Ellipsis>
-                    {{ slotProps.description }}
-                </Ellipsis>
-            </template>
-            <template #action="slotProps">
-                <j-space :size="16">
-                    <template
-                        v-for="i in getActions(slotProps, 'table')"
-                        :key="i.key"
-                    >
+        <FullPage>
+            <JProTable
+                ref="configRef"
+                :columns="columns"
+                :request="ConfigApi.list"
+                :defaultParams="{
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                }"
+                :params="params"
+                :gridColumn="3"
+            >
+                <template #headerTitle>
+                    <j-space>
                         <PermissionButton
-                            :danger="i.key === 'delete'"
-                            :disabled="i.disabled"
-                            :popConfirm="i.popConfirm"
-                            :tooltip="{
-                                ...i.tooltip,
-                            }"
-                            @click="i.onClick"
-                            type="link"
-                            style="padding: 0px"
-                            :hasPermission="'notice/Config:' + i.key"
+                            type="primary"
+                            @click="handleAdd"
+                            hasPermission="notice/Config:add"
                         >
-                            <template #icon><AIcon :type="i.icon" /></template>
+                            新增
                         </PermissionButton>
-                    </template>
-                </j-space>
-            </template>
-        </JProTable>
+                        <j-upload
+                            name="file"
+                            accept=".json"
+                            :showUploadList="false"
+                            :before-upload="beforeUpload"
+                        >
+                            <PermissionButton
+                                hasPermission="notice/Config:import"
+                            >
+                                导入
+                            </PermissionButton>
+                        </j-upload>
+                        <j-popconfirm
+                            title="确认导出？"
+                            ok-text="确定"
+                            cancel-text="取消"
+                            @confirm="handleExport"
+                        >
+                            <PermissionButton
+                                hasPermission="notice/Config:export"
+                            >
+                                导出
+                            </PermissionButton>
+                        </j-popconfirm>
+                    </j-space>
+                </template>
+                <template #card="slotProps">
+                    <CardBox
+                        :showStatus="false"
+                        :statusNames="{}"
+                        :value="slotProps"
+                        :actions="getActions(slotProps, 'card')"
+                    >
+                        <template #img>
+                            <slot name="img">
+                                <img
+                                    :src="
+                                        getLogo(
+                                            slotProps.type,
+                                            slotProps.provider,
+                                        )
+                                    "
+                                    class="logo"
+                                />
+                            </slot>
+                        </template>
+                        <template #content>
+                            <h3 class="card-item-content-title">
+                                {{ slotProps.name }}
+                            </h3>
+                            <j-row>
+                                <j-col :span="12">
+                                    <div class="card-item-content-text">
+                                        通知方式
+                                    </div>
+                                    <div>
+                                        {{ getMethodTxt(slotProps.type) }}
+                                    </div>
+                                </j-col>
+                                <j-col :span="12">
+                                    <div class="card-item-content-text">
+                                        说明
+                                    </div>
+                                    <Ellipsis>
+                                        {{ slotProps.description }}
+                                    </Ellipsis>
+                                </j-col>
+                            </j-row>
+                        </template>
+                        <template #actions="item">
+                            <j-tooltip
+                                v-bind="item.tooltip"
+                                :title="item.disabled && item.tooltip.title"
+                            >
+                                <j-dropdown
+                                    placement="bottomRight"
+                                    v-if="item.key === 'others'"
+                                >
+                                    <j-button>
+                                        <AIcon :type="item.icon" />
+                                        <span>{{ item.text }}</span>
+                                    </j-button>
+                                    <template #overlay>
+                                        <j-menu>
+                                            <j-menu-item
+                                                v-for="(o, i) in item.children"
+                                                :key="i"
+                                            >
+                                                <PermissionButton
+                                                    type="link"
+                                                    @click="o.onClick"
+                                                    :hasPermission="`notice/Config:${o.key}`"
+                                                >
+                                                    <template #icon>
+                                                        <AIcon :type="o.icon" />
+                                                    </template>
+                                                    <span>{{ o.text }}</span>
+                                                </PermissionButton>
+                                            </j-menu-item>
+                                        </j-menu>
+                                    </template>
+                                </j-dropdown>
+                                <j-popconfirm
+                                    v-else-if="item.key === 'delete'"
+                                    v-bind="item.popConfirm"
+                                    :disabled="item.disabled"
+                                >
+                                    <PermissionButton
+                                        :disabled="item.disabled"
+                                        :hasPermission="`notice/Config:${item.key}`"
+                                    >
+                                        <template #icon>
+                                            <AIcon type="DeleteOutlined" />
+                                        </template>
+                                    </PermissionButton>
+                                </j-popconfirm>
+                                <template v-else>
+                                    <PermissionButton
+                                        :disabled="item.disabled"
+                                        @click="item.onClick"
+                                        :hasPermission="`notice/Config:${item.key}`"
+                                    >
+                                        <template #icon>
+                                            <AIcon :type="item.icon" />
+                                        </template>
+                                        <span>{{ item.text }}</span>
+                                    </PermissionButton>
+                                </template>
+                            </j-tooltip>
+                        </template>
+                    </CardBox>
+                </template>
+                <template #type="slotProps">
+                    <span> {{ getMethodTxt(slotProps.type) }}</span>
+                </template>
+                <template #provider="slotProps">
+                    <span>
+                        {{ getProviderTxt(slotProps.type, slotProps.provider) }}
+                    </span>
+                </template>
+                <template #description="slotProps">
+                    <Ellipsis>
+                        {{ slotProps.description }}
+                    </Ellipsis>
+                </template>
+                <template #action="slotProps">
+                    <j-space :size="16">
+                        <template
+                            v-for="i in getActions(slotProps, 'table')"
+                            :key="i.key"
+                        >
+                            <PermissionButton
+                                :danger="i.key === 'delete'"
+                                :disabled="i.disabled"
+                                :popConfirm="i.popConfirm"
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                @click="i.onClick"
+                                type="link"
+                                style="padding: 0px"
+                                :hasPermission="'notice/Config:' + i.key"
+                            >
+                                <template #icon
+                                    ><AIcon :type="i.icon"
+                                /></template>
+                            </PermissionButton>
+                        </template>
+                    </j-space>
+                </template>
+            </JProTable>
+        </FullPage>
 
         <Debug v-model:visible="debugVis" :data="currentConfig" />
         <Log v-model:visible="logVis" :data="currentConfig" />

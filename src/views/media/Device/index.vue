@@ -5,146 +5,159 @@
             target="notice-config"
             @search="handleSearch"
         />
-        <JProTable
-            ref="listRef"
-            :columns="columns"
-            :request="DeviceApi.list"
-            :defaultParams="{
-                sorts: [{ name: 'createTime', order: 'desc' }],
-            }"
-            :params="params"
-            :gridColumn="4"
-        >
-            <template #headerTitle>
-                <PermissionButton
-                    type="primary"
-                    @click="handleAdd"
-                    hasPermission="media/Device:add"
-                >
-                    <template #icon><AIcon type="PlusOutlined" />新增</template>
-                </PermissionButton>
-            </template>
-            <template #card="slotProps">
-                <CardBox
-                    :value="slotProps"
-                    :actions="getActions(slotProps, 'card')"
-                    v-bind="slotProps"
-                    :showStatus="true"
-                    :status="slotProps.state.value"
-                    :statusText="slotProps.state.text"
-                    :statusNames="{ online: 'processing', offline: 'error' }"
-                >
-                    <template #img>
-                        <slot name="img">
-                            <img :src="getImage('/device-media.png')" />
-                        </slot>
-                    </template>
-                    <template #content>
-                        <h3 class="card-item-content-title">
-                            {{ slotProps.name }}
-                        </h3>
-                        <j-row>
-                            <j-col :span="12">
-                                <div class="card-item-content-text">厂商</div>
-                                <div>{{ slotProps.manufacturer }}</div>
-                            </j-col>
-                            <j-col :span="12">
-                                <div class="card-item-content-text">
-                                    通道数量
-                                </div>
-                                <div>{{ slotProps.channelNumber }}</div>
-                            </j-col>
-                            <j-col :span="12">
-                                <div class="card-item-content-text">型号</div>
-                                <div>{{ slotProps.model }}</div>
-                            </j-col>
-                            <j-col :span="12">
-                                <div class="card-item-content-text">
-                                    接入方式
-                                </div>
-                                <div>
-                                    {{ providerType[slotProps.provider] }}
-                                </div>
-                            </j-col>
-                        </j-row>
-                    </template>
-                    <template #actions="item">
-                        <PermissionButton
-                            :disabled="item.disabled"
-                            :popConfirm="item.popConfirm"
-                            :tooltip="{
-                                ...item.tooltip,
-                            }"
-                            @click="item.onClick"
-                            :hasPermission="
-                                'media/Device:' +
-                                (item.key !== 'updateChannel'
-                                    ? item.key
-                                    : 'update')
-                            "
-                        >
-                            <AIcon
-                                type="DeleteOutlined"
-                                v-if="item.key === 'delete'"
-                            />
-                            <template v-else>
-                                <AIcon :type="item.icon" />
-                                <span>{{ item?.text }}</span>
-                            </template>
-                        </PermissionButton>
-                    </template>
-                </CardBox>
-            </template>
-
-            <template #channelNumber="slotProps">
-                {{ slotProps.channelNumber || 0 }}
-            </template>
-            <template #provider="slotProps">
-                {{ providerType[slotProps.provider] }}
-            </template>
-            <template #productId="slotProps">
-                {{ getProductName(slotProps.productId) }}
-            </template>
-            <template #state="slotProps">
-                <j-badge
-                    :text="slotProps.state?.text"
-                    :status="
-                        slotProps.state?.value === 'online'
-                            ? 'success'
-                            : 'error'
-                    "
-                />
-            </template>
-            <template #action="slotProps">
-                <j-space :size="16">
-                    <template
-                        v-for="i in getActions(slotProps, 'table')"
-                        :key="i.key"
+        <FullPage>
+            <JProTable
+                ref="listRef"
+                :columns="columns"
+                :request="DeviceApi.list"
+                :defaultParams="{
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                }"
+                :params="params"
+                :gridColumn="4"
+            >
+                <template #headerTitle>
+                    <PermissionButton
+                        type="primary"
+                        @click="handleAdd"
+                        hasPermission="media/Device:add"
                     >
-                        <PermissionButton
-                            :danger="i.key === 'delete'"
-                            :disabled="i.disabled"
-                            :popConfirm="i.popConfirm"
-                            :tooltip="{
-                                ...i.tooltip,
-                            }"
-                            @click="i.onClick"
-                            type="link"
-                            style="padding: 0px"
-                            :hasPermission="
-                                'media/Device:' +
-                                (i.key !== 'updateChannel' &&
-                                i.key !== 'viewDevice'
-                                    ? i.key
-                                    : 'update')
-                            "
+                        <template #icon
+                            ><AIcon type="PlusOutlined" />新增</template
                         >
-                            <template #icon><AIcon :type="i.icon" /></template>
-                        </PermissionButton>
-                    </template>
-                </j-space>
-            </template>
-        </JProTable>
+                    </PermissionButton>
+                </template>
+                <template #card="slotProps">
+                    <CardBox
+                        :value="slotProps"
+                        :actions="getActions(slotProps, 'card')"
+                        v-bind="slotProps"
+                        :showStatus="true"
+                        :status="slotProps.state.value"
+                        :statusText="slotProps.state.text"
+                        :statusNames="{
+                            online: 'processing',
+                            offline: 'error',
+                        }"
+                    >
+                        <template #img>
+                            <slot name="img">
+                                <img :src="getImage('/device-media.png')" />
+                            </slot>
+                        </template>
+                        <template #content>
+                            <h3 class="card-item-content-title">
+                                {{ slotProps.name }}
+                            </h3>
+                            <j-row>
+                                <j-col :span="12">
+                                    <div class="card-item-content-text">
+                                        厂商
+                                    </div>
+                                    <div>{{ slotProps.manufacturer }}</div>
+                                </j-col>
+                                <j-col :span="12">
+                                    <div class="card-item-content-text">
+                                        通道数量
+                                    </div>
+                                    <div>{{ slotProps.channelNumber }}</div>
+                                </j-col>
+                                <j-col :span="12">
+                                    <div class="card-item-content-text">
+                                        型号
+                                    </div>
+                                    <div>{{ slotProps.model }}</div>
+                                </j-col>
+                                <j-col :span="12">
+                                    <div class="card-item-content-text">
+                                        接入方式
+                                    </div>
+                                    <div>
+                                        {{ providerType[slotProps.provider] }}
+                                    </div>
+                                </j-col>
+                            </j-row>
+                        </template>
+                        <template #actions="item">
+                            <PermissionButton
+                                :disabled="item.disabled"
+                                :popConfirm="item.popConfirm"
+                                :tooltip="{
+                                    ...item.tooltip,
+                                }"
+                                @click="item.onClick"
+                                :hasPermission="
+                                    'media/Device:' +
+                                    (item.key !== 'updateChannel'
+                                        ? item.key
+                                        : 'update')
+                                "
+                            >
+                                <AIcon
+                                    type="DeleteOutlined"
+                                    v-if="item.key === 'delete'"
+                                />
+                                <template v-else>
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item?.text }}</span>
+                                </template>
+                            </PermissionButton>
+                        </template>
+                    </CardBox>
+                </template>
+
+                <template #channelNumber="slotProps">
+                    {{ slotProps.channelNumber || 0 }}
+                </template>
+                <template #provider="slotProps">
+                    {{ providerType[slotProps.provider] }}
+                </template>
+                <template #productId="slotProps">
+                    {{ getProductName(slotProps.productId) }}
+                </template>
+                <template #state="slotProps">
+                    <j-badge
+                        :text="slotProps.state?.text"
+                        :status="
+                            slotProps.state?.value === 'online'
+                                ? 'success'
+                                : 'error'
+                        "
+                    />
+                </template>
+                <template #action="slotProps">
+                    <j-space :size="16">
+                        <template
+                            v-for="i in getActions(slotProps, 'table')"
+                            :key="i.key"
+                        >
+                            <PermissionButton
+                                :danger="i.key === 'delete'"
+                                :disabled="i.disabled"
+                                :popConfirm="i.popConfirm"
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                @click="i.onClick"
+                                type="link"
+                                style="padding: 0px"
+                                :hasPermission="
+                                    'media/Device:' +
+                                    (i.key !== 'updateChannel' &&
+                                    i.key !== 'viewDevice'
+                                        ? i.key
+                                        : 'update')
+                                "
+                            >
+                                <template #icon
+                                    ><AIcon :type="i.icon"
+                                /></template>
+                            </PermissionButton>
+                        </template>
+                    </j-space>
+                </template>
+            </JProTable>
+        </FullPage>
     </page-container>
 </template>
 
