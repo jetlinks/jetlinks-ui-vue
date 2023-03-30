@@ -5,122 +5,138 @@
             target="northbound-dueros"
             @search="handleSearch"
         />
-        <JProTable
-            ref="instanceRef"
-            :columns="columns"
-            :request="query"
-            :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }"
-            :params="params"
-        >
-            <template #headerTitle>
-                <j-space>
-                    <PermissionButton
-                        type="primary"
-                        @click="handleAdd"
-                        hasPermission="Northbound/DuerOS:add"
-                    >
-                        <template #icon><AIcon type="PlusOutlined" /></template>
-                        新增
-                    </PermissionButton>
-                </j-space>
-            </template>
-            <template #card="slotProps">
-                <CardBox
-                    :value="slotProps"
-                    @click="handleView(slotProps.id)"
-                    :actions="getActions(slotProps, 'card')"
-                    :status="slotProps.state?.value"
-                    :statusText="slotProps.state?.text"
-                    :statusNames="{
-                        enabled: 'processing',
-                        disabled: 'error',
-                    }"
-                >
-                    <template #img>
-                        <img :src="getImage('/cloud/dueros.png')" />
-                    </template>
-                    <template #content>
-                        <Ellipsis style="width: calc(100% - 100px)">
-                            <span style="font-size: 16px; font-weight: 600">
-                                {{ slotProps.name }}
-                            </span>
-                        </Ellipsis>
-                        <j-row style="margin-top: 15px">
-                            <j-col :span="12">
-                                <div class="card-item-content-text">产品</div>
-                                <Ellipsis>
-                                    <div>{{ slotProps?.productName }}</div>
-                                </Ellipsis>
-                            </j-col>
-                            <j-col :span="12">
-                                <div class="card-item-content-text">
-                                    设备类型
-                                </div>
-                                <Ellipsis>
-                                    <div>{{ slotProps?.applianceType?.text }}</div>
-                                </Ellipsis>
-                            </j-col>
-                        </j-row>
-                    </template>
-                    <template #actions="item">
+        <FullPage>
+            <JProTable
+                ref="instanceRef"
+                :columns="columns"
+                :request="query"
+                :defaultParams="{
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                }"
+                :params="params"
+            >
+                <template #headerTitle>
+                    <j-space>
                         <PermissionButton
-                            :disabled="item.disabled"
-                            :popConfirm="item.popConfirm"
-                            :tooltip="{
-                                ...item.tooltip,
-                            }"
-                            @click="item.onClick"
-                            :hasPermission="'Northbound/DuerOS:' + item.key"
+                            type="primary"
+                            @click="handleAdd"
+                            hasPermission="Northbound/DuerOS:add"
                         >
-                            <AIcon
-                                type="DeleteOutlined"
-                                v-if="item.key === 'delete'"
-                            />
-                            <template v-else>
-                                <AIcon :type="item.icon" />
-                                <span>{{ item?.text }}</span>
-                            </template>
+                            <template #icon
+                                ><AIcon type="PlusOutlined"
+                            /></template>
+                            新增
                         </PermissionButton>
-                    </template>
-                </CardBox>
-            </template>
-            <template #state="slotProps">
-                <BadgeStatus
-                    :status="slotProps.state?.value"
-                    :text="slotProps.state?.text"
-                    :statusNames="{
-                        enabled: 'processing',
-                        disabled: 'error',
-                    }"
-                />
-            </template>
-            <template #applianceType="slotProps">
-                {{ slotProps.applianceType.text }}
-            </template>
-            <template #action="slotProps">
-                <j-space>
-                    <template
-                        v-for="i in getActions(slotProps, 'table')"
-                        :key="i.key"
+                    </j-space>
+                </template>
+                <template #card="slotProps">
+                    <CardBox
+                        :value="slotProps"
+                        @click="handleView(slotProps.id)"
+                        :actions="getActions(slotProps, 'card')"
+                        :status="slotProps.state?.value"
+                        :statusText="slotProps.state?.text"
+                        :statusNames="{
+                            enabled: 'processing',
+                            disabled: 'error',
+                        }"
                     >
-                        <PermissionButton
-                            :disabled="i.disabled"
-                            :popConfirm="i.popConfirm"
-                            :tooltip="{
-                                ...i.tooltip,
-                            }"
-                            style="padding: 0 5px"
-                            @click="i.onClick"
-                            type="link"
-                            :danger="i.key === 'delete'"
-                            :hasPermission="i.key === 'view' ? true : 'Northbound/DuerOS:' + i.key"
+                        <template #img>
+                            <img :src="getImage('/cloud/dueros.png')" />
+                        </template>
+                        <template #content>
+                            <Ellipsis style="width: calc(100% - 100px)">
+                                <span style="font-size: 16px; font-weight: 600">
+                                    {{ slotProps.name }}
+                                </span>
+                            </Ellipsis>
+                            <j-row style="margin-top: 15px">
+                                <j-col :span="12">
+                                    <div class="card-item-content-text">
+                                        产品
+                                    </div>
+                                    <Ellipsis>
+                                        <div>{{ slotProps?.productName }}</div>
+                                    </Ellipsis>
+                                </j-col>
+                                <j-col :span="12">
+                                    <div class="card-item-content-text">
+                                        设备类型
+                                    </div>
+                                    <Ellipsis>
+                                        <div>
+                                            {{ slotProps?.applianceType?.text }}
+                                        </div>
+                                    </Ellipsis>
+                                </j-col>
+                            </j-row>
+                        </template>
+                        <template #actions="item">
+                            <PermissionButton
+                                :disabled="item.disabled"
+                                :popConfirm="item.popConfirm"
+                                :tooltip="{
+                                    ...item.tooltip,
+                                }"
+                                @click="item.onClick"
+                                :hasPermission="'Northbound/DuerOS:' + item.key"
+                            >
+                                <AIcon
+                                    type="DeleteOutlined"
+                                    v-if="item.key === 'delete'"
+                                />
+                                <template v-else>
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item?.text }}</span>
+                                </template>
+                            </PermissionButton>
+                        </template>
+                    </CardBox>
+                </template>
+                <template #state="slotProps">
+                    <BadgeStatus
+                        :status="slotProps.state?.value"
+                        :text="slotProps.state?.text"
+                        :statusNames="{
+                            enabled: 'processing',
+                            disabled: 'error',
+                        }"
+                    />
+                </template>
+                <template #applianceType="slotProps">
+                    {{ slotProps.applianceType.text }}
+                </template>
+                <template #action="slotProps">
+                    <j-space>
+                        <template
+                            v-for="i in getActions(slotProps, 'table')"
+                            :key="i.key"
                         >
-                            <template #icon><AIcon :type="i.icon" /></template>
-                        </PermissionButton>
-                    </template>
-                </j-space>
-            </template>
-        </JProTable>
+                            <PermissionButton
+                                :disabled="i.disabled"
+                                :popConfirm="i.popConfirm"
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                style="padding: 0 5px"
+                                @click="i.onClick"
+                                type="link"
+                                :danger="i.key === 'delete'"
+                                :hasPermission="
+                                    i.key === 'view'
+                                        ? true
+                                        : 'Northbound/DuerOS:' + i.key
+                                "
+                            >
+                                <template #icon
+                                    ><AIcon :type="i.icon"
+                                /></template>
+                            </PermissionButton>
+                        </template>
+                    </j-space>
+                </template>
+            </JProTable>
+        </FullPage>
     </page-container>
 </template>
 
