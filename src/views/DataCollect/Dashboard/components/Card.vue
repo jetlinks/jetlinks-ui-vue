@@ -1,37 +1,46 @@
 <template>
     <j-spin :spinning="loading">
-        <div class="dash-board">
-            <div class="header">
-                <div class="left">
-                    <h3 style="width: 100px">点位数据量</h3>
+        <FullPage>
+            <div class="dash-board">
+                <div class="header">
+                    <div class="left">
+                        <h3 style="width: 100px">点位数据量</h3>
+                    </div>
+                    <div class="right">
+                        <j-radio-group
+                            button-style="solid"
+                            style="margin-right: 10px"
+                            v-model:value="data.time.type"
+                        >
+                            <j-radio-button value="hour">
+                                最近1小时
+                            </j-radio-button>
+                            <j-radio-button value="today">
+                                今日
+                            </j-radio-button>
+                            <j-radio-button value="week">
+                                近一周
+                            </j-radio-button>
+                        </j-radio-group>
+                        <j-range-picker
+                            :allowClear="false"
+                            :show-time="{ format: 'HH:mm:ss' }"
+                            format="YYYY-MM-DD HH:mm:ss"
+                            v-model:value="data.time.time"
+                            @change="pickerTimeChange"
+                        >
+                            <template #suffixIcon
+                                ><AIcon type="CalendarOutlined"
+                            /></template>
+                        </j-range-picker>
+                    </div>
                 </div>
-                <div class="right">
-                    <j-radio-group
-                        button-style="solid"
-                        style="margin-right: 10px"
-                        v-model:value="data.time.type"
-                    >
-                        <j-radio-button value="hour">
-                            最近1小时
-                        </j-radio-button>
-                        <j-radio-button value="today"> 今日 </j-radio-button>
-                        <j-radio-button value="week"> 近一周 </j-radio-button>
-                    </j-radio-group>
-                    <j-range-picker
-                        :allowClear="false"
-                        :show-time="{ format: 'HH:mm:ss' }"
-                        format="YYYY-MM-DD HH:mm:ss"
-                        v-model:value="data.time.time"
-                        @change="pickerTimeChange"
-                    >
-                        <template #suffixIcon
-                            ><AIcon type="CalendarOutlined"
-                        /></template>
-                    </j-range-picker>
-                </div>
+                <div
+                    ref="chartRef"
+                    style="width: 100%; min-height: 350px"
+                ></div>
             </div>
-            <div ref="chartRef" style="width: 100%; height: 350px"></div>
-        </div>
+        </FullPage>
     </j-spin>
 </template>
 
@@ -99,9 +108,11 @@ const handleOptions = (x = [], y = []) => {
                 },
             ],
         };
-        myChart.setOption(options);
-        window.addEventListener('resize', function () {
-            myChart.resize();
+        nextTick(() => {
+            myChart.setOption(options);
+            window.addEventListener('resize', function () {
+                myChart.resize();
+            });
         });
     }
 };
@@ -132,6 +143,7 @@ watch(
     display: flex;
     flex-direction: column;
     height: 100%;
+    // height: 500px;
     padding: 24px;
     background-color: #fff;
     border-radius: 2px;

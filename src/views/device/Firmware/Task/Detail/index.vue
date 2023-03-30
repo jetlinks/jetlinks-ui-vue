@@ -60,61 +60,64 @@
                 target="search"
                 @search="handleSearch"
             />
-            <j-pro-table
-                ref="tableRef"
-                model="TABLE"
-                :columns="columns"
-                :request="history"
-                :defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                    terms: defaultParams,
-                }"
-                :params="params"
-            >
-                <template #createTime="slotProps">
-                    <span>{{
-                        moment(slotProps.createTime).format(
-                            'YYYY-MM-DD HH:mm:ss',
-                        )
-                    }}</span>
-                </template>
-                <template #productId="slotProps">
-                    <span>{{ slotProps.productName }}</span>
-                </template>
-                <template #state="slotProps">
-                    <j-badge
-                        :text="slotProps.state.text"
-                        :color="colorMap.get(slotProps.state.value)"
-                    />
-                </template>
-                <template #progress="slotProps">
-                    <span>{{ slotProps.progress }}%</span>
-                </template>
-                <template #action="slotProps">
-                    <j-space>
-                        <template
-                            v-for="i in getActions(slotProps)"
-                            :key="i.key"
-                        >
-                            <PermissionButton
-                                :disabled="i.disabled"
-                                :popConfirm="i.popConfirm"
-                                :tooltip="{
-                                    ...i.tooltip,
-                                }"
-                                style="padding: 0px"
-                                @click="i.onClick"
-                                type="link"
-                                :hasPermission="'device/Firmware:' + i.key"
+            <FullPage>
+                <j-pro-table
+                    ref="tableRef"
+                    model="TABLE"
+                    :columns="columns"
+                    :request="history"
+                    :defaultParams="{
+                        sorts: [{ name: 'createTime', order: 'desc' }],
+                        terms: defaultParams,
+                    }"
+                    :params="params"
+                >
+                    <template #createTime="slotProps">
+                        <span>{{
+                            moment(slotProps.createTime).format(
+                                'YYYY-MM-DD HH:mm:ss',
+                            )
+                        }}</span>
+                    </template>
+                    <template #productId="slotProps">
+                        <span>{{ slotProps.productName }}</span>
+                    </template>
+                    <template #state="slotProps">
+                        <j-badge
+                            :text="slotProps.state.text"
+                            :color="colorMap.get(slotProps.state.value)"
+                        />
+                    </template>
+                    <template #progress="slotProps">
+                        <span>{{ slotProps.progress }}%</span>
+                    </template>
+                    <template #action="slotProps">
+                        <j-space>
+                            <template
+                                v-for="i in getActions(slotProps)"
+                                :key="i.key"
                             >
-                                <template #icon
-                                    ><AIcon :type="i.icon"
-                                /></template>
-                            </PermissionButton>
-                        </template>
-                    </j-space>
-                </template>
-            </j-pro-table>
+                                <PermissionButton
+                                    :disabled="i.disabled"
+                                    :popConfirm="i.popConfirm"
+                                    :tooltip="{
+                                        ...i.tooltip,
+                                    }"
+                                    style="padding: 0px"
+                                    @click="i.onClick"
+                                    type="link"
+                                    :hasPermission="'device/Firmware:' + i.key"
+                                >
+                                    <template #icon
+                                        ><AIcon :type="i.icon"
+                                    /></template>
+                                </PermissionButton>
+                            </template>
+                        </j-space>
+                    </template>
+                </j-pro-table>
+            </FullPage>
+
             <Save :data="current" v-if="visible" @change="saveChange" />
         </div>
     </page-container>

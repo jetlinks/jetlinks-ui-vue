@@ -1,44 +1,46 @@
 <template>
     <page-container>
         <j-spin :spinning="loading">
-            <j-card :bordered="false">
-                <div v-if="type && id === ':id'">
-                    <Provider
-                        @onClick="goProviders"
-                        :dataSource="dataSource"
-                    ></Provider>
-                </div>
-                <div v-else>
-                    <div class="go-back" v-if="id === ':id'">
-                        <a @click="goBack">返回</a>
+            <FullPage>
+                <j-card :bordered="false">
+                    <div v-if="type && id === ':id'">
+                        <Provider
+                            @onClick="goProviders"
+                            :dataSource="dataSource"
+                        ></Provider>
                     </div>
-                    <Network
-                        v-if="showType === 'network'"
-                        :provider="provider"
-                        :data="data"
-                    />
-                    <Media
-                        v-if="showType === 'media'"
-                        :provider="provider"
-                        :data="data"
-                    />
-                    <Channel
-                        v-if="showType === 'channel'"
-                        :provider="provider"
-                        :data="data"
-                    />
-                    <Edge
-                        v-if="showType === 'edge'"
-                        :provider="provider"
-                        :data="data"
-                    />
-                    <Cloud
-                        v-if="showType === 'cloud'"
-                        :provider="provider"
-                        :data="data"
-                    />
-                </div>
-            </j-card>
+                    <div v-else>
+                        <div class="go-back" v-if="id === ':id'">
+                            <a @click="goBack">返回</a>
+                        </div>
+                        <Network
+                            v-if="showType === 'network'"
+                            :provider="provider"
+                            :data="data"
+                        />
+                        <Media
+                            v-if="showType === 'media'"
+                            :provider="provider"
+                            :data="data"
+                        />
+                        <Channel
+                            v-if="showType === 'channel'"
+                            :provider="provider"
+                            :data="data"
+                        />
+                        <Edge
+                            v-if="showType === 'edge'"
+                            :provider="provider"
+                            :data="data"
+                        />
+                        <Cloud
+                            v-if="showType === 'cloud'"
+                            :provider="provider"
+                            :data="data"
+                        />
+                    </div>
+                </j-card>
+            </FullPage>
         </j-spin>
     </page-container>
 </template>

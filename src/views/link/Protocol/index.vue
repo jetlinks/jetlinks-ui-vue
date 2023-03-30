@@ -6,136 +6,139 @@
                 target="search"
                 @search="handleSearch"
             />
-
-            <j-pro-table
-                ref="tableRef"
-                :columns="columns"
-                :request="list"
-                :defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
-                :params="params"
-            >
-                <template #headerTitle>
-                    <PermissionButton
-                        type="primary"
-                        @click="handlAdd"
-                        hasPermission="link/Protocol:add"
-                    >
-                        <template #icon><AIcon type="PlusOutlined" /></template>
-                        新增
-                    </PermissionButton>
-                </template>
-                <template #card="slotProps">
-                    <CardBox
-                        :showStatus="false"
-                        :value="slotProps"
-                        :actions="getActions(slotProps, 'card')"
-                        v-bind="slotProps"
-                    >
-                        <template #img>
-                            <slot name="img">
-                                <img :src="getImage('/protocol.png')" />
-                            </slot>
-                        </template>
-                        <template #content>
-                            <div class="card-item-content">
-                                <Ellipsis
-                                    style="
-                                        width: calc(100% - 100px);
-                                        margin-bottom: 10px;
-                                    "
-                                >
-                                    <span
+            <FullPage>
+                <j-pro-table
+                    ref="tableRef"
+                    :columns="columns"
+                    :request="list"
+                    :defaultParams="{
+                        sorts: [{ name: 'createTime', order: 'desc' }],
+                    }"
+                    :params="params"
+                >
+                    <template #headerTitle>
+                        <PermissionButton
+                            type="primary"
+                            @click="handlAdd"
+                            hasPermission="link/Protocol:add"
+                        >
+                            <template #icon
+                                ><AIcon type="PlusOutlined"
+                            /></template>
+                            新增
+                        </PermissionButton>
+                    </template>
+                    <template #card="slotProps">
+                        <CardBox
+                            :showStatus="false"
+                            :value="slotProps"
+                            :actions="getActions(slotProps, 'card')"
+                            v-bind="slotProps"
+                        >
+                            <template #img>
+                                <slot name="img">
+                                    <img :src="getImage('/protocol.png')" />
+                                </slot>
+                            </template>
+                            <template #content>
+                                <div class="card-item-content">
+                                    <Ellipsis
                                         style="
-                                            font-size: 16px;
-                                            font-weight: 600;
+                                            width: calc(100% - 100px);
+                                            margin-bottom: 10px;
                                         "
                                     >
-                                        {{ slotProps.name }}
-                                    </span>
-                                </Ellipsis>
-                                <j-row class="card-item-content-box">
-                                    <j-col
-                                        :span="12"
-                                        class="card-item-content-text"
-                                    >
-                                        <div class="card-item-content-text">
-                                            ID
-                                        </div>
-                                        <div class="card-item-content-text">
-                                            <j-tooltip>
-                                                <template #title>{{
-                                                    slotProps.id
-                                                }}</template>
-                                                {{ slotProps.id }}
-                                            </j-tooltip>
-                                        </div>
-                                    </j-col>
-                                    <j-col :span="12">
-                                        <div class="card-item-content-text">
-                                            类型
-                                        </div>
-                                        <div class="card-item-content-text">
-                                            <j-tooltip>
-                                                <template #title>{{
-                                                    slotProps.type
-                                                }}</template>
-                                                {{ slotProps.type }}
-                                            </j-tooltip>
-                                        </div>
-                                    </j-col>
-                                </j-row>
-                            </div>
-                        </template>
-                        <template #actions="item">
-                            <PermissionButton
-                                :disabled="item.disabled"
-                                :popConfirm="item.popConfirm"
-                                :tooltip="{
-                                    ...item.tooltip,
-                                }"
-                                @click="item.onClick"
-                                :hasPermission="'link/Protocol:' + item.key"
+                                        <span
+                                            style="
+                                                font-size: 16px;
+                                                font-weight: 600;
+                                            "
+                                        >
+                                            {{ slotProps.name }}
+                                        </span>
+                                    </Ellipsis>
+                                    <j-row class="card-item-content-box">
+                                        <j-col
+                                            :span="12"
+                                            class="card-item-content-text"
+                                        >
+                                            <div class="card-item-content-text">
+                                                ID
+                                            </div>
+                                            <div class="card-item-content-text">
+                                                <j-tooltip>
+                                                    <template #title>{{
+                                                        slotProps.id
+                                                    }}</template>
+                                                    {{ slotProps.id }}
+                                                </j-tooltip>
+                                            </div>
+                                        </j-col>
+                                        <j-col :span="12">
+                                            <div class="card-item-content-text">
+                                                类型
+                                            </div>
+                                            <div class="card-item-content-text">
+                                                <j-tooltip>
+                                                    <template #title>{{
+                                                        slotProps.type
+                                                    }}</template>
+                                                    {{ slotProps.type }}
+                                                </j-tooltip>
+                                            </div>
+                                        </j-col>
+                                    </j-row>
+                                </div>
+                            </template>
+                            <template #actions="item">
+                                <PermissionButton
+                                    :disabled="item.disabled"
+                                    :popConfirm="item.popConfirm"
+                                    :tooltip="{
+                                        ...item.tooltip,
+                                    }"
+                                    @click="item.onClick"
+                                    :hasPermission="'link/Protocol:' + item.key"
+                                >
+                                    <AIcon
+                                        type="DeleteOutlined"
+                                        v-if="item.key === 'delete'"
+                                    />
+                                    <template v-else>
+                                        <AIcon :type="item.icon" />
+                                        <span>{{ item?.text }}</span>
+                                    </template>
+                                </PermissionButton>
+                            </template>
+                        </CardBox>
+                    </template>
+                    <template #action="slotProps">
+                        <j-space>
+                            <template
+                                v-for="i in getActions(slotProps, 'table')"
+                                :key="i.key"
                             >
-                                <AIcon
-                                    type="DeleteOutlined"
-                                    v-if="item.key === 'delete'"
-                                />
-                                <template v-else>
-                                    <AIcon :type="item.icon" />
-                                    <span>{{ item?.text }}</span>
-                                </template>
-                            </PermissionButton>
-                        </template>
-                    </CardBox>
-                </template>
-                <template #action="slotProps">
-                    <j-space>
-                        <template
-                            v-for="i in getActions(slotProps, 'table')"
-                            :key="i.key"
-                        >
-                            <PermissionButton
-                                :disabled="i.disabled"
-                                :popConfirm="i.popConfirm"
-                                :tooltip="{
-                                    ...i.tooltip,
-                                }"
-                                style="padding: 0px"
-                                @click="i.onClick"
-                                type="link"
-                                :danger="i.key === 'delete'"
-                                :hasPermission="'link/Protocol:' + i.key"
-                            >
-                                <template #icon
-                                    ><AIcon :type="i.icon"
-                                /></template>
-                            </PermissionButton>
-                        </template>
-                    </j-space>
-                </template>
-            </j-pro-table>
+                                <PermissionButton
+                                    :disabled="i.disabled"
+                                    :popConfirm="i.popConfirm"
+                                    :tooltip="{
+                                        ...i.tooltip,
+                                    }"
+                                    style="padding: 0px"
+                                    @click="i.onClick"
+                                    type="link"
+                                    :danger="i.key === 'delete'"
+                                    :hasPermission="'link/Protocol:' + i.key"
+                                >
+                                    <template #icon
+                                        ><AIcon :type="i.icon"
+                                    /></template>
+                                </PermissionButton>
+                            </template>
+                        </j-space>
+                    </template>
+                </j-pro-table>
+            </FullPage>
         </div>
         <Save v-if="visible" :data="current" @change="saveChange" />
     </page-container>
