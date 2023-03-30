@@ -129,7 +129,7 @@ let params = ref();
  */
 const handleSearch = (e: any) => {
     params.value = e;
-    expandedRowKeys.value = []
+    expandedRowKeys.value = [];
 };
 /**
  * 操作栏按钮
@@ -210,21 +210,20 @@ const table = reactive({
             dataIndex: 'name',
             key: 'name',
             ellipsis: true,
-            width: 600,
+            width: 500,
         },
         {
             title: '排序',
             dataIndex: 'sortIndex',
             key: 'sortIndex',
             scopedSlots: true,
-            width: 200,
+            width: 100,
         },
         {
             title: '说明',
             dataIndex: 'description',
             key: 'description',
             ellipsis: true,
-            width: 700,
         },
         {
             title: '操作',
@@ -232,6 +231,7 @@ const table = reactive({
             fixed: 'right',
             ellipsis: true,
             scopedSlots: true,
+            width: 120,
         },
     ],
     /**
