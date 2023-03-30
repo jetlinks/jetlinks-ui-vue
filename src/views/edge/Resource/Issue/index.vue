@@ -47,7 +47,7 @@
             </template>
             <template #registerTime="slotProps">
                 <span>{{
-                    dayjs(slotProps.registerTime).format('YYYY-MM-DD HH:mm:ss')
+                    slotProps?.registerTime ? dayjs(slotProps.registerTime).format('YYYY-MM-DD HH:mm:ss') : ''
                 }}</span>
             </template>
         </JProTable>

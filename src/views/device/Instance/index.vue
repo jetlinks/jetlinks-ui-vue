@@ -220,7 +220,7 @@
             </template>
             <template #createTime="slotProps">
                 <span>{{
-                    dayjs(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss')
+                    slotProps?.createTime ? dayjs(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss') : ''
                 }}</span>
             </template>
             <template #action="slotProps">
