@@ -66,7 +66,7 @@ import Role from './Role/index.vue';
 import Menu from './Menu/index.vue';
 import InitData from './InitData/index.vue';
 import { modalState, formState, logoState } from './data/interface';
-import { saveInit } from '@/api/initHome';
+import { getInit, saveInit } from '@/api/initHome';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { FILE_UPLOAD } from '@/api/comm';
 import { LocalStore } from '@/utils/comm';
@@ -128,6 +128,18 @@ const submitData = async () => {
         }
     }
 };
+/**
+ * 判断是否已有配置
+ */
+const judgeInitSet = async () => {
+    const resp:any = await getInit();
+    if(resp.status === 200 && resp.result.length){
+        window.location.href = '/';
+    }
+}
+onMounted(()=>{
+    judgeInitSet();
+});
 </script>
 <style scoped lang="less">
 .page-container {

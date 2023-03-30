@@ -145,10 +145,10 @@ const onSave = (_data: any) => {
         item.upperKey = 'scene.deviceId';
     }
     const _options: any = {
-        name: '-', //设备名称
-        type: '', //类型
-        properties: '', //属性功能
-        propertiesValue: '', //设置功能
+        // name: '-', //设备名称
+        // type: '', //类型
+        // properties: '', //属性功能
+        // propertiesValue: '', //设置功能
         selector: DeviceModel.selector, //选择器标识
         triggerName: data.value.options?.trigger?.name || '触发设备',
         ...DeviceOptions.value,
@@ -165,15 +165,18 @@ const onSave = (_data: any) => {
         _options.propertiesValue =
             (typeof _options?.propertiesValue === 'object'
                 ? JSON.stringify(_options?.propertiesValue)
-                : `${_options?.propertiesValue}`) ||
-            DeviceModel?.selectorValues?.[0]?.value;
+                : _options?.propertiesValue)
     }
-    emit('save', item, _options);
+    emit('save', item, JSON.parse(JSON.stringify(_options)));
 };
 
 const onProductChange = (_val: any, bol: boolean) => {
     if (!bol) {
         DeviceModel.selectorValues = undefined;
+        DeviceModel.deviceId = ''
+        DeviceModel.selector = 'fixed',
+        DeviceModel.upperKey = ''
+        DeviceModel.source = 'fixed'
         const flag = isActionChange(
             JSON.parse(_val.metadata || '{}'),
             DeviceModel?.message,

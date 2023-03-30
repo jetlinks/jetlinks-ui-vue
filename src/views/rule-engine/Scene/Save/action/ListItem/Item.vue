@@ -519,9 +519,10 @@ const onType = (_type: string) => {
  */
 const onSave = (data: ActionsType, options: any) => {
   const { key, terms } = _data.value.branches![props.branchesName].then?.[props.thenName].actions?.[props.name]
+  console.log({...props.options, ...options})
   const actionItem: ActionsType = {
     ...data,
-    options,
+    options: {...props.options, ...options},
     key,
     terms
   }

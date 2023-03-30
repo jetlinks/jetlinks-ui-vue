@@ -326,13 +326,13 @@ const onFormSave = () => {
                         ..._data.message,
                     },
                 });
-                emit('change', {
-                    propertiesName:
-                        deviceMessageType.value === 'INVOKE_FUNCTION'
-                            ? _function.value?.name
-                            : _property.value?.name,
-                    propertiesValue: modelRef.propertiesValue,
-                });
+                // emit('change', {
+                //     propertiesName:
+                //         deviceMessageType.value === 'INVOKE_FUNCTION'
+                //             ? _function.value?.name
+                //             : _property.value?.name,
+                //     propertiesValue: modelRef.propertiesValue,
+                // });
             })
             .catch((err: any) => {
                 reject(err);
