@@ -90,11 +90,19 @@
                 >应用配置</PermissionButton
             >
         </template>
-        <component
-            :is="tabs[productStore.tabActiveKey]"
-            :class="productStore.tabActiveKey === 'Metadata' ? 'metedata' : ''"
-            v-bind="{ type: 'product' }"
-        />
+        <FullPage>
+            <j-card :bordered="false">
+                <component
+                    :is="tabs[productStore.tabActiveKey]"
+                    :class="
+                        productStore.tabActiveKey === 'Metadata'
+                            ? 'metedata'
+                            : ''
+                    "
+                    v-bind="{ type: 'product' }"
+                />
+            </j-card>
+        </FullPage>
     </page-container>
 </template>
 

@@ -6,61 +6,65 @@
             target="category"
             @search="handleSearch"
         />
-        <JProTable
-            ref="tableRef"
-            :columns="table.columns"
-            :request="queryTree"
-            model="TABLE"
-            type="TREE"
-            v-model:expandedRowKeys="expandedRowKeys"
-            :scroll="{ y: 550 }"
-            :defaultParams="{
-                paging: false,
-                sorts: [
-                    { name: 'sortIndex', order: 'asc' },
-                    {
-                        name: 'createTime',
-                        order: 'desc',
-                    },
-                ],
-            }"
-            :params="params"
-            :loading="tableLoading"
-        >
-            <template #headerTitle>
-                <PermissionButton
-                    type="primary"
-                    @click="add"
-                    hasPermission="device/Category:add"
-                >
-                    <template #icon><AIcon type="PlusOutlined" /></template>
-                    新增
-                </PermissionButton>
-            </template>
-            <template #action="slotProps">
-                <j-space>
-                    <template
-                        v-for="i in getActions(slotProps, 'table')"
-                        :key="i.key"
+        <FullPage>
+            <JProTable
+                ref="tableRef"
+                :columns="table.columns"
+                :request="queryTree"
+                model="TABLE"
+                type="TREE"
+                v-model:expandedRowKeys="expandedRowKeys"
+                :scroll="{ y: 550 }"
+                :defaultParams="{
+                    paging: false,
+                    sorts: [
+                        { name: 'sortIndex', order: 'asc' },
+                        {
+                            name: 'createTime',
+                            order: 'desc',
+                        },
+                    ],
+                }"
+                :params="params"
+                :loading="tableLoading"
+            >
+                <template #headerTitle>
+                    <PermissionButton
+                        type="primary"
+                        @click="add"
+                        hasPermission="device/Category:add"
                     >
-                        <PermissionButton
-                            :disabled="i.disabled"
-                            :popConfirm="i.popConfirm"
-                            :hasPermission="'device/Category:' + i.key"
-                            :tooltip="{
-                                ...i.tooltip,
-                            }"
-                            @click="i.onClick"
-                            type="link"
-                            style="padding: 0px"
-                            :danger="i.key === 'delete'"
+                        <template #icon><AIcon type="PlusOutlined" /></template>
+                        新增
+                    </PermissionButton>
+                </template>
+                <template #action="slotProps">
+                    <j-space>
+                        <template
+                            v-for="i in getActions(slotProps, 'table')"
+                            :key="i.key"
                         >
-                            <template #icon><AIcon :type="i.icon" /></template>
-                        </PermissionButton>
-                    </template>
-                </j-space>
-            </template>
-        </JProTable>
+                            <PermissionButton
+                                :disabled="i.disabled"
+                                :popConfirm="i.popConfirm"
+                                :hasPermission="'device/Category:' + i.key"
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                @click="i.onClick"
+                                type="link"
+                                style="padding: 0px"
+                                :danger="i.key === 'delete'"
+                            >
+                                <template #icon
+                                    ><AIcon :type="i.icon"
+                                /></template>
+                            </PermissionButton>
+                        </template>
+                    </j-space>
+                </template>
+            </JProTable>
+        </FullPage>
         <!-- 新增和编辑弹窗 -->
         <ModifyModal
             ref="modifyRef"

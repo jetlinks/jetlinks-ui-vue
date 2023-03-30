@@ -6,127 +6,138 @@
                 target="device-instance"
                 @search="handleSearch"
             />
-            <JProTable
-                :columns="columns"
-                :request="queryList"
-                ref="tableRef"
-                :defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
-                :params="params"
-            >
-                <template #headerTitle>
-                    <j-space>
-                        <PermissionButton
-                            type="primary"
-                            @click="add"
-                            hasPermission="rule-engine/Instance:add"
-                        >
-                            <template #icon
-                                ><AIcon type="PlusOutlined"
-                            /></template>
-                            新增
-                        </PermissionButton>
-                    </j-space>
-                </template>
-                <template #card="slotProps">
-                    <CardBox
-                        :value="slotProps"
-                        :actions="getActions(slotProps, 'card')"
-                        v-bind="slotProps"
-                        :status="slotProps.state?.value"
-                        :statusText="slotProps.state?.text"
-                        @click="openRuleEditor"
-                        :statusNames="{
-                            started: 'processing',
-                            disable: 'error',
-                        }"
-                    >
-                        <template #img>
-                            <slot name="img">
-                                <img :src="getImage('/device-product.png')" />
-                            </slot>
-                        </template>
-                        <template #content>
-                            <Ellipsis style="width: calc(100% - 100px)">
-                                <span style="font-weight: 600; font-size: 16px">
-                                    {{ slotProps.name }}
-                                </span>
-                            </Ellipsis>
-                            <j-row>
-                                <j-col :span="12">
-                                    <Ellipsis>
-                                        <div>
-                                            {{ slotProps.description }}
-                                        </div>
-                                    </Ellipsis>
-                                </j-col>
-                            </j-row>
-                        </template>
-                        <template #actions="item">
+            <FullPage>
+                <JProTable
+                    :columns="columns"
+                    :request="queryList"
+                    ref="tableRef"
+                    :defaultParams="{
+                        sorts: [{ name: 'createTime', order: 'desc' }],
+                    }"
+                    :params="params"
+                >
+                    <template #headerTitle>
+                        <j-space>
                             <PermissionButton
-                                :disabled="item.disabled"
-                                :popConfirm="item.popConfirm"
-                                :tooltip="{
-                                    ...item.tooltip,
-                                }"
-                                :hasPermission="
-                                    'rule-engine/Instance:' + item.key
-                                "
-                                @click="item.onClick"
-                            >
-                                <AIcon
-                                    type="DeleteOutlined"
-                                    v-if="item.key === 'delete'"
-                                />
-                                <template v-else>
-                                    <AIcon :type="item.icon" />
-                                    <span>{{ item?.text }}</span>
-                                </template>
-                            </PermissionButton>
-                        </template>
-                    </CardBox>
-                </template>
-                <template #state="slotProps">
-                    <BadgeStatus
-                        :text="
-                            slotProps.state?.value === 'started'
-                                ? '正常'
-                                : '禁用'
-                        "
-                        :status="slotProps.state?.value"
-                        :statusNames="{
-                            started: 'processing',
-                            disable: 'error',
-                        }"
-                    />
-                </template>
-                <template #action="slotProps">
-                    <j-space :size="16">
-                        <template
-                            v-for="i in getActions(slotProps, 'table')"
-                            :key="i.key"
-                        >
-                            <PermissionButton
-                                :disabled="i.disabled"
-                                :popConfirm="i.popConfirm"
-                                :tooltip="{
-                                    ...i.tooltip,
-                                }"
-                                @click="i.onClick"
-                                type="link"
-                                style="padding: 0px"
-                                :hasPermission="'rule-engine/Instance:' + i.key"
-                                :danger="i.key === 'delete'"
+                                type="primary"
+                                @click="add"
+                                hasPermission="rule-engine/Instance:add"
                             >
                                 <template #icon
-                                    ><AIcon :type="i.icon"
+                                    ><AIcon type="PlusOutlined"
                                 /></template>
+                                新增
                             </PermissionButton>
-                        </template>
-                    </j-space>
-                </template>
-            </JProTable>
+                        </j-space>
+                    </template>
+                    <template #card="slotProps">
+                        <CardBox
+                            :value="slotProps"
+                            :actions="getActions(slotProps, 'card')"
+                            v-bind="slotProps"
+                            :status="slotProps.state?.value"
+                            :statusText="slotProps.state?.text"
+                            @click="openRuleEditor"
+                            :statusNames="{
+                                started: 'processing',
+                                disable: 'error',
+                            }"
+                        >
+                            <template #img>
+                                <slot name="img">
+                                    <img
+                                        :src="getImage('/device-product.png')"
+                                    />
+                                </slot>
+                            </template>
+                            <template #content>
+                                <Ellipsis style="width: calc(100% - 100px)">
+                                    <span
+                                        style="
+                                            font-weight: 600;
+                                            font-size: 16px;
+                                        "
+                                    >
+                                        {{ slotProps.name }}
+                                    </span>
+                                </Ellipsis>
+                                <j-row>
+                                    <j-col :span="12">
+                                        <Ellipsis>
+                                            <div>
+                                                {{ slotProps.description }}
+                                            </div>
+                                        </Ellipsis>
+                                    </j-col>
+                                </j-row>
+                            </template>
+                            <template #actions="item">
+                                <PermissionButton
+                                    :disabled="item.disabled"
+                                    :popConfirm="item.popConfirm"
+                                    :tooltip="{
+                                        ...item.tooltip,
+                                    }"
+                                    :hasPermission="
+                                        'rule-engine/Instance:' + item.key
+                                    "
+                                    @click="item.onClick"
+                                >
+                                    <AIcon
+                                        type="DeleteOutlined"
+                                        v-if="item.key === 'delete'"
+                                    />
+                                    <template v-else>
+                                        <AIcon :type="item.icon" />
+                                        <span>{{ item?.text }}</span>
+                                    </template>
+                                </PermissionButton>
+                            </template>
+                        </CardBox>
+                    </template>
+                    <template #state="slotProps">
+                        <BadgeStatus
+                            :text="
+                                slotProps.state?.value === 'started'
+                                    ? '正常'
+                                    : '禁用'
+                            "
+                            :status="slotProps.state?.value"
+                            :statusNames="{
+                                started: 'processing',
+                                disable: 'error',
+                            }"
+                        />
+                    </template>
+                    <template #action="slotProps">
+                        <j-space :size="16">
+                            <template
+                                v-for="i in getActions(slotProps, 'table')"
+                                :key="i.key"
+                            >
+                                <PermissionButton
+                                    :disabled="i.disabled"
+                                    :popConfirm="i.popConfirm"
+                                    :tooltip="{
+                                        ...i.tooltip,
+                                    }"
+                                    @click="i.onClick"
+                                    type="link"
+                                    style="padding: 0px"
+                                    :hasPermission="
+                                        'rule-engine/Instance:' + i.key
+                                    "
+                                    :danger="i.key === 'delete'"
+                                >
+                                    <template #icon
+                                        ><AIcon :type="i.icon"
+                                    /></template>
+                                </PermissionButton>
+                            </template>
+                        </j-space>
+                    </template>
+                </JProTable>
+            </FullPage>
             <!-- 新增、编辑 -->
             <Save
                 :data="current"
@@ -151,11 +162,11 @@ import { getImage } from '@/utils/comm';
 import { message } from 'jetlinks-ui-components';
 import Save from './Save/index.vue';
 import { SystemConst } from '@/utils/consts';
-import {useRouterParams} from "@/utils/hooks/useParams";
+import { useRouterParams } from '@/utils/hooks/useParams';
 const params = ref<Record<string, any>>({});
 let visiable = ref(false);
 const tableRef = ref<Record<string, any>>({});
-const { params: routeParams } = useRouterParams()
+const { params: routeParams } = useRouterParams();
 const query = {
     columns: [
         {

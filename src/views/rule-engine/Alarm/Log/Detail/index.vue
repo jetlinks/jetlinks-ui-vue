@@ -5,48 +5,57 @@
             target="alarm-log-detail"
             @search="handleSearch"
         />
-        <JProTable
-            :columns="columns"
-            model="TABLE"
-            :request="queryList"
-            :params="params"
-            :defaultParams="{
-                terms,
-                sorts: [{ name: 'alarmTime', order: 'desc' }],
-            }"
-        >
-            <template #alarmTime="slotProps">{{
-                dayjs(slotProps.alarmTime).format('YYYY-MM-DD HH:mm:ss')
-            }}</template>
-            <template #action="slotProps">
-                <j-space
-                    ><template
-                        v-for="i in getActions(slotProps, 'table')"
-                        :key="i.key"
-                    >
-                        <PermissionButton
-                            :disabled="i.disabled"
-                            :popConfirm="i.popConfirm"
-                            :tooltip="{
-                                ...i.tooltip,
-                            }"
-                            @click="i.onClick"
-                            type="link"
-                            style="padding: 0px"
+        <FullPage>
+            <JProTable
+                :columns="columns"
+                model="TABLE"
+                :request="queryList"
+                :params="params"
+                :defaultParams="{
+                    terms,
+                    sorts: [{ name: 'alarmTime', order: 'desc' }],
+                }"
+            >
+                <template #alarmTime="slotProps">{{
+                    dayjs(slotProps.alarmTime).format('YYYY-MM-DD HH:mm:ss')
+                }}</template>
+                <template #action="slotProps">
+                    <j-space
+                        ><template
+                            v-for="i in getActions(slotProps, 'table')"
+                            :key="i.key"
                         >
-                            <template #icon><AIcon :type="i.icon"/></template>
-                        </PermissionButton>
-                    </template>
-                </j-space>
-            </template>
-        </JProTable>
-        <Info v-if="visiable"  :data="current" @close="close" :description="description"/>
+                            <PermissionButton
+                                :disabled="i.disabled"
+                                :popConfirm="i.popConfirm"
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                @click="i.onClick"
+                                type="link"
+                                style="padding: 0px"
+                            >
+                                <template #icon
+                                    ><AIcon :type="i.icon"
+                                /></template>
+                            </PermissionButton>
+                        </template>
+                    </j-space>
+                </template>
+            </JProTable>
+        </FullPage>
+        <Info
+            v-if="visiable"
+            :data="current"
+            @close="close"
+            :description="description"
+        />
     </page-container>
 </template>
 
 <script lang="ts" setup>
 import { detail, queryHistoryList } from '@/api/rule-engine/log';
-import { detail as configurationDetail} from '@/api/rule-engine/configuration'
+import { detail as configurationDetail } from '@/api/rule-engine/configuration';
 import { useRoute } from 'vue-router';
 import dayjs from 'dayjs';
 import type { ActionsType } from '@/components/Table/index.vue';
@@ -54,10 +63,10 @@ import { message } from 'jetlinks-ui-components';
 import { useAlarmStore } from '@/store/alarm';
 import Info from './info.vue';
 import { storeToRefs } from 'pinia';
-import {useRouterParams} from "@/utils/hooks/useParams";
+import { useRouterParams } from '@/utils/hooks/useParams';
 const route = useRoute();
 const id = route.params?.id;
-const { params: routerParams } = useRouterParams()
+const { params: routerParams } = useRouterParams();
 let visiable = ref(false);
 let description = ref<string>();
 const columns = [
@@ -170,11 +179,11 @@ watchEffect(async () => {
                 key: 'targetName',
             });
         }
-        configurationDetail(res.result?.alarmConfigId).then((res:any)=>{
-            if(res.status === 200){
+        configurationDetail(res.result?.alarmConfigId).then((res: any) => {
+            if (res.status === 200) {
                 description.value = res.result?.description;
             }
-        })
+        });
     }
 });
 const handleSearch = (_params: any) => {
@@ -185,15 +194,15 @@ const handleSearch = (_params: any) => {
  * 关闭模态弹窗
  */
 const close = () => {
-  visiable.value = false
-}
+    visiable.value = false;
+};
 
-watchEffect(()=>{
+watchEffect(() => {
     current.value = details.value;
-    if(routerParams.value.detail && details.value){
+    if (routerParams.value.detail && details.value) {
         visiable.value = true;
     }
-})
+});
 </script>
 <style lang="less" scoped>
 </style>

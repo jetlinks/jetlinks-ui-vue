@@ -1,67 +1,74 @@
 <template>
-    <div>
-        <j-form layout="vertical" :rules="rule" :model="form" ref="formRef">
-            <j-row :gutter="24">
-                <j-col :span="12">
-                    <j-form-item label="名称" name="name">
-                        <j-input
-                            placeholder="请输入名称"
-                            v-model:value="form.name"
-                        ></j-input> </j-form-item
-                ></j-col>
-                <j-col :span="12">
-                    <j-form-item label="类型" name="targetType">
-                        <j-select
-                            :options="options"
-                            v-model:value="form.targetType"
-                            :disabled="selectDisable"
-                        ></j-select>
-                    </j-form-item>
-                </j-col>
-            </j-row>
-            <j-form-item label="级别" name="level">
-                <j-radio-group v-model:value="form.level" class="levelSelect">
-                    <j-radio-button
-                        v-for="(item, index) in levelOption"
-                        :key="index"
-                        :value="item.value"
+    <FullPage>
+        <div>
+            <j-form layout="vertical" :rules="rule" :model="form" ref="formRef">
+                <j-row :gutter="24">
+                    <j-col :span="12">
+                        <j-form-item label="名称" name="name">
+                            <j-input
+                                placeholder="请输入名称"
+                                v-model:value="form.name"
+                            ></j-input> </j-form-item
+                    ></j-col>
+                    <j-col :span="12">
+                        <j-form-item label="类型" name="targetType">
+                            <j-select
+                                :options="options"
+                                v-model:value="form.targetType"
+                                :disabled="selectDisable"
+                            ></j-select>
+                        </j-form-item>
+                    </j-col>
+                </j-row>
+                <j-form-item label="级别" name="level">
+                    <j-radio-group
+                        v-model:value="form.level"
+                        class="levelSelect"
                     >
-                        <div
-                            style="
-                                text-align: center;
-                                margin-top: 10px;
-                                font-size: 15px;
-                                width: 90%;
-                            "
+                        <j-radio-button
+                            v-for="(item, index) in levelOption"
+                            :key="index"
+                            :value="item.value"
                         >
-                            <img
-                                :src="getImage(`/alarm/alarm${index + 1}.png`)"
-                                style="height: 40px"
-                                alt=""
-                            />{{ item.label }}
-                        </div>
-                    </j-radio-button>
-                </j-radio-group>
-            </j-form-item>
-            <j-form-item label="说明" name="description">
-                <j-textarea
-                    v-model:value="form.description"
-                    showCount
-                    :maxlength="200"
-                ></j-textarea>
-            </j-form-item>
-            <PermissionButton
-                type="primary"
-                :loading="loading"
-                @click="handleSave"
-                :hasPermission="[
-                    'rule-engine/Alarm/Configuration:add',
-                    'rule-engine/Alarm/Configuration:update',
-                ]"
-                >保存</PermissionButton
-            >
-        </j-form>
-    </div>
+                            <div
+                                style="
+                                    text-align: center;
+                                    margin-top: 10px;
+                                    font-size: 15px;
+                                    width: 90%;
+                                "
+                            >
+                                <img
+                                    :src="
+                                        getImage(`/alarm/alarm${index + 1}.png`)
+                                    "
+                                    style="height: 40px"
+                                    alt=""
+                                />{{ item.label }}
+                            </div>
+                        </j-radio-button>
+                    </j-radio-group>
+                </j-form-item>
+                <j-form-item label="说明" name="description">
+                    <j-textarea
+                        v-model:value="form.description"
+                        showCount
+                        :maxlength="200"
+                    ></j-textarea>
+                </j-form-item>
+                <PermissionButton
+                    type="primary"
+                    :loading="loading"
+                    @click="handleSave"
+                    :hasPermission="[
+                        'rule-engine/Alarm/Configuration:add',
+                        'rule-engine/Alarm/Configuration:update',
+                    ]"
+                    >保存</PermissionButton
+                >
+            </j-form>
+        </div>
+    </FullPage>
 </template>
 
 <script lang="ts" setup>

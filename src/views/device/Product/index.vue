@@ -5,152 +5,167 @@
             target="product-manage"
             @search="handleSearch"
         />
-        <JProTable
-            :columns="columns"
-            :request="queryProductList"
-            ref="tableRef"
-            :defaultParams="{
-                sorts: [{ name: 'createTime', order: 'desc' }],
-            }"
-            :params="params"
-        >
-            <template #headerTitle>
-                <j-space>
-                    <PermissionButton
-                        type="primary"
-                        @click="add"
-                        hasPermission="device/Product:add"
-                    >
-                        <template #icon><AIcon type="PlusOutlined" /></template>
-                        新增
-                    </PermissionButton>
-                    <j-upload
-                        name="file"
-                        accept=".json"
-                        :showUploadList="false"
-                        :before-upload="beforeUpload"
-                    >
-                        <PermissionButton hasPermission="device/Product:import"
-                            >导入</PermissionButton
+        <FullPage>
+            <JProTable
+                :columns="columns"
+                :request="queryProductList"
+                ref="tableRef"
+                :defaultParams="{
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                }"
+                :params="params"
+            >
+                <template #headerTitle>
+                    <j-space>
+                        <PermissionButton
+                            type="primary"
+                            @click="add"
+                            hasPermission="device/Product:add"
                         >
-                    </j-upload>
-                </j-space>
-            </template>
-            <template #deviceType="slotProps">
-                <div>{{ slotProps.deviceType.text }}</div>
-            </template>
-            <template #card="slotProps">
-                <CardBox
-                    :value="slotProps"
-                    :actions="getActions(slotProps, 'card')"
-                    v-bind="slotProps"
-                    :active="_selectedRowKeys.includes(slotProps.id)"
-                    :status="slotProps.state"
-                    @click="handleView(slotProps.id)"
-                    :statusText="slotProps.state === 1 ? '正常' : '禁用'"
-                    :statusNames="{
-                        1: 'processing',
-                        0: 'error',
-                    }"
-                >
-                    <template #img>
-                        <slot name="img">
-                            <img
-                                :src="
-                                    slotProps.photoUrl ||
-                                    getImage('/device-product.png')
-                                "
-                                class="productImg"
-                            />
-                        </slot>
-                    </template>
-                    <template #content>
-                        <Ellipsis style="width: calc(100% - 100px)"
-                            ><span
-                                style="font-weight: 600; font-size: 16px"
+                            <template #icon
+                                ><AIcon type="PlusOutlined"
+                            /></template>
+                            新增
+                        </PermissionButton>
+                        <j-upload
+                            name="file"
+                            accept=".json"
+                            :showUploadList="false"
+                            :before-upload="beforeUpload"
+                        >
+                            <PermissionButton
+                                hasPermission="device/Product:import"
+                                >导入</PermissionButton
                             >
-                                {{ slotProps.name }}
-                            </span></Ellipsis
-                        >
-                        <j-row>
-                            <j-col :span="12">
-                                <div class="card-item-content-text">
-                                    设备类型
-                                </div>
-                                <div>{{ slotProps?.deviceType?.text }}</div>
-                            </j-col>
-                            <j-col :span="12">
-                                <div class="card-item-content-text">
-                                    接入方式
-                                </div>
-                                <Ellipsis
-                                    ><div>
-                                        {{
-                                            slotProps?.accessName
-                                                ? slotProps?.accessName
-                                                : '未接入'
-                                        }}
-                                    </div></Ellipsis
-                                >
-                            </j-col>
-                        </j-row>
-                    </template>
-                    <template #actions="item">
-                        <PermissionButton
-                            :disabled="item.disabled"
-                            :popConfirm="item.popConfirm"
-                            :tooltip="{
-                                ...item.tooltip,
-                            }"
-                            @click="item.onClick"
-                            :hasPermission="item.key ==='view' ? true : 'device/Product:' + item.key"
-                        >
-                            <AIcon
-                                type="DeleteOutlined"
-                                v-if="item.key === 'delete'"
-                            />
-                            <template v-else>
-                                <AIcon :type="item.icon" />
-                                <span>{{ item?.text }}</span>
-                            </template>
-                        </PermissionButton>
-                    </template>
-                </CardBox>
-            </template>
-            <template #state="slotProps">
-                <BadgeStatus
-                    :text="slotProps.state === 1 ? '正常' : '禁用'"
-                    :status="slotProps.state"
-                    :statusNames="{
-                        1: 'processing',
-                        0: 'error',
-                    }"
-                />
-            </template>
-            <template #action="slotProps">
-                <j-space :size="16">
-                    <template
-                        v-for="i in getActions(slotProps, 'table')"
-                        :key="i.key"
+                        </j-upload>
+                    </j-space>
+                </template>
+                <template #deviceType="slotProps">
+                    <div>{{ slotProps.deviceType.text }}</div>
+                </template>
+                <template #card="slotProps">
+                    <CardBox
+                        :value="slotProps"
+                        :actions="getActions(slotProps, 'card')"
+                        v-bind="slotProps"
+                        :active="_selectedRowKeys.includes(slotProps.id)"
+                        :status="slotProps.state"
+                        @click="handleView(slotProps.id)"
+                        :statusText="slotProps.state === 1 ? '正常' : '禁用'"
+                        :statusNames="{
+                            1: 'processing',
+                            0: 'error',
+                        }"
                     >
-                        <PermissionButton
-                            :disabled="i.disabled"
-                            :popConfirm="i.popConfirm"
-                            :hasPermission="i.key === 'view' ? true : 'device/Product:' + i.key"
-                            :tooltip="{
-                                ...i.tooltip,
-                            }"
-                            @click="i.onClick"
-                            type="link"
-                            style="padding: 0px"
-                            :danger="i.key === 'delete'"
+                        <template #img>
+                            <slot name="img">
+                                <img
+                                    :src="
+                                        slotProps.photoUrl ||
+                                        getImage('/device-product.png')
+                                    "
+                                    class="productImg"
+                                />
+                            </slot>
+                        </template>
+                        <template #content>
+                            <Ellipsis style="width: calc(100% - 100px)"
+                                ><span
+                                    style="font-weight: 600; font-size: 16px"
+                                >
+                                    {{ slotProps.name }}
+                                </span></Ellipsis
+                            >
+                            <j-row>
+                                <j-col :span="12">
+                                    <div class="card-item-content-text">
+                                        设备类型
+                                    </div>
+                                    <div>{{ slotProps?.deviceType?.text }}</div>
+                                </j-col>
+                                <j-col :span="12">
+                                    <div class="card-item-content-text">
+                                        接入方式
+                                    </div>
+                                    <Ellipsis
+                                        ><div>
+                                            {{
+                                                slotProps?.accessName
+                                                    ? slotProps?.accessName
+                                                    : '未接入'
+                                            }}
+                                        </div></Ellipsis
+                                    >
+                                </j-col>
+                            </j-row>
+                        </template>
+                        <template #actions="item">
+                            <PermissionButton
+                                :disabled="item.disabled"
+                                :popConfirm="item.popConfirm"
+                                :tooltip="{
+                                    ...item.tooltip,
+                                }"
+                                @click="item.onClick"
+                                :hasPermission="
+                                    item.key === 'view'
+                                        ? true
+                                        : 'device/Product:' + item.key
+                                "
+                            >
+                                <AIcon
+                                    type="DeleteOutlined"
+                                    v-if="item.key === 'delete'"
+                                />
+                                <template v-else>
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item?.text }}</span>
+                                </template>
+                            </PermissionButton>
+                        </template>
+                    </CardBox>
+                </template>
+                <template #state="slotProps">
+                    <BadgeStatus
+                        :text="slotProps.state === 1 ? '正常' : '禁用'"
+                        :status="slotProps.state"
+                        :statusNames="{
+                            1: 'processing',
+                            0: 'error',
+                        }"
+                    />
+                </template>
+                <template #action="slotProps">
+                    <j-space :size="16">
+                        <template
+                            v-for="i in getActions(slotProps, 'table')"
+                            :key="i.key"
                         >
-                            <template #icon><AIcon :type="i.icon" /></template>
-                        </PermissionButton>
-                    </template>
-                </j-space>
-            </template>
-        </JProTable>
+                            <PermissionButton
+                                :disabled="i.disabled"
+                                :popConfirm="i.popConfirm"
+                                :hasPermission="
+                                    i.key === 'view'
+                                        ? true
+                                        : 'device/Product:' + i.key
+                                "
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                @click="i.onClick"
+                                type="link"
+                                style="padding: 0px"
+                                :danger="i.key === 'delete'"
+                            >
+                                <template #icon
+                                    ><AIcon :type="i.icon"
+                                /></template>
+                            </PermissionButton>
+                        </template>
+                    </j-space>
+                </template>
+            </JProTable>
+        </FullPage>
         <!-- 新增、编辑 -->
         <Save ref="saveRef" :isAdd="isAdd" :title="title" @success="refresh" />
     </page-container>
@@ -181,8 +196,8 @@ import { typeOptions } from '@/components/Search/util';
 import Save from './Save/index.vue';
 import { useMenuStore } from 'store/menu';
 import { useRoute } from 'vue-router';
-import {useRouterParams} from "@/utils/hooks/useParams";
-import { accessConfigTypeFilter } from '@/utils/setting'
+import { useRouterParams } from '@/utils/hooks/useParams';
+import { accessConfigTypeFilter } from '@/utils/setting';
 /**
  * 表格数据
  */
@@ -196,21 +211,21 @@ const columns = [
         dataIndex: 'id',
         key: 'id',
         scopedSlots: true,
-        width:200,
+        width: 200,
         ellipsis: true,
     },
     {
         title: '产品名称',
         dataIndex: 'name',
         key: 'name',
-        width:220,
+        width: 220,
         ellipsis: true,
     },
     {
         title: '接入方式',
         dataIndex: 'accessName',
         key: 'accessName',
-        width:220,
+        width: 220,
         ellipsis: true,
     },
     {
@@ -219,7 +234,7 @@ const columns = [
         key: 'deviceType',
         scopedSlots: true,
         ellipsis: true,
-        width:120,
+        width: 120,
     },
     {
         title: '状态',
@@ -227,7 +242,7 @@ const columns = [
         key: 'state',
         scopedSlots: true,
         ellipsis: true,
-        width:90,
+        width: 90,
     },
     {
         title: '说明',
@@ -434,7 +449,7 @@ const query = reactive({
             key: 'id',
             search: {
                 type: 'string',
-                defaultTermType: 'eq'
+                defaultTermType: 'eq',
             },
         },
         {
@@ -446,8 +461,8 @@ const query = reactive({
                 options: () => {
                     return new Promise((resolve) => {
                         getProviders().then((resp: any) => {
-                          const data = resp.result || []
-                          resolve(accessConfigTypeFilter(data))
+                            const data = resp.result || [];
+                            resolve(accessConfigTypeFilter(data));
                         });
                     });
                 },
@@ -592,9 +607,9 @@ const saveRef = ref();
 const handleSearch = (e: any) => {
     params.value = e;
 };
-const routerParams = useRouterParams()
+const routerParams = useRouterParams();
 onMounted(() => {
-    if(routerParams.params?.value.save){
+    if (routerParams.params?.value.save) {
         add();
     }
 });
