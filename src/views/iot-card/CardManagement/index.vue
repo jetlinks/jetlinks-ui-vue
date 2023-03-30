@@ -6,6 +6,7 @@
             target="iot-card-management-search"
             @search="handleSearch"
         />
+        <FullPage>
         <j-pro-table
             :scroll="{ x: 1366 }"
             ref="cardManageRef"
@@ -372,6 +373,7 @@
                 </j-space>
             </template>
         </j-pro-table>
+        </FullPage>
         <!-- 批量导入 -->
         <Import v-if="importVisible" @close="importVisible = false"  @save="importSave"/>
         <!-- 批量导出 -->

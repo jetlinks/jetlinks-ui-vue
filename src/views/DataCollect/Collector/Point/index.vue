@@ -1,274 +1,300 @@
 <template>
     <j-spin :spinning="spinning">
         <pro-search :columns="columns" target="search" @search="handleSearch" />
-        <j-scrollbar height="680">
-            <j-pro-table
-                ref="tableRef"
-                model="CARD"
-                :columns="columns"
-                :gridColumn="2"
-                :gridColumns="[1, 2]"
-                :request="queryPoint"
-                :defaultParams="defaultParams"
-                :params="params"
-                :rowSelection="{
-                    selectedRowKeys: _selectedRowKeys,
-                    onChange: onSelectChange,
-                }"
-                @cancelSelect="cancelSelect"
-            >
-                <template #headerTitle>
-                    <j-space>
-                        <PermissionButton
-                            v-if="data?.provider == 'MODBUS_TCP'"
-                            type="primary"
-                            @click="handlAdd"
-                            hasPermission="DataCollect/Collector:add"
-                        >
-                            <template #icon
-                                ><AIcon type="PlusOutlined"
-                            /></template>
-                            新增点位
-                        </PermissionButton>
+        <FullPage>
+            <j-scrollbar height="680">
+                <j-pro-table
+                    ref="tableRef"
+                    model="CARD"
+                    :columns="columns"
+                    :gridColumn="2"
+                    :gridColumns="[1, 2]"
+                    :request="queryPoint"
+                    :defaultParams="defaultParams"
+                    :params="params"
+                    :rowSelection="{
+                        selectedRowKeys: _selectedRowKeys,
+                        onChange: onSelectChange,
+                    }"
+                    @cancelSelect="cancelSelect"
+                >
+                    <template #headerTitle>
+                        <j-space>
+                            <PermissionButton
+                                v-if="data?.provider == 'MODBUS_TCP'"
+                                type="primary"
+                                @click="handlAdd"
+                                hasPermission="DataCollect/Collector:add"
+                            >
+                                <template #icon
+                                    ><AIcon type="PlusOutlined"
+                                /></template>
+                                新增点位
+                            </PermissionButton>
 
-                        <PermissionButton
+                            <PermissionButton
+                                v-if="data?.provider === 'OPC_UA'"
+                                type="primary"
+                                @click="handlScan"
+                                hasPermission="DataCollect/Collector:add"
+                            >
+                                <template #icon
+                                    ><AIcon type="PlusOutlined"
+                                /></template>
+                                扫描
+                            </PermissionButton>
+                            <j-dropdown
+                                v-if="data?.provider === 'OPC_UA'"
+                                :trigger="['click']"
+                            >
+                                <j-button @click.prevent="clickBatch"
+                                    >批量操作 <AIcon type="DownOutlined"
+                                /></j-button>
+                                <template #overlay>
+                                    <j-menu v-if="showBatch">
+                                        <j-menu-item>
+                                            <PermissionButton
+                                                hasPermission="DataCollect/Collector:update"
+                                                @click="handlBatchUpdate()"
+                                            >
+                                                <template #icon
+                                                    ><AIcon type="FormOutlined"
+                                                /></template>
+                                                编辑
+                                            </PermissionButton>
+                                        </j-menu-item>
+                                        <j-menu-item>
+                                            <PermissionButton
+                                                hasPermission="DataCollect/Collector:delete"
+                                                :popConfirm="{
+                                                    title: `确定删除？`,
+                                                    onConfirm: () =>
+                                                        handlBatchDelete(),
+                                                }"
+                                            >
+                                                <template #icon
+                                                    ><AIcon type="EditOutlined"
+                                                /></template>
+                                                删除
+                                            </PermissionButton>
+                                        </j-menu-item>
+                                    </j-menu>
+                                </template>
+                            </j-dropdown>
+                        </j-space>
+                        <div
                             v-if="data?.provider === 'OPC_UA'"
-                            type="primary"
-                            @click="handlScan"
-                            hasPermission="DataCollect/Collector:add"
+                            style="margin-top: 15px"
                         >
-                            <template #icon
-                                ><AIcon type="PlusOutlined"
-                            /></template>
-                            扫描
-                        </PermissionButton>
-                        <j-dropdown
-                            v-if="data?.provider === 'OPC_UA'"
-                            :trigger="['click']"
+                            <j-checkbox
+                                v-model:checked="checkAll"
+                                @change="onCheckAllChange"
+                                >全选</j-checkbox
+                            >
+                        </div>
+                    </template>
+                    <template #card="slotProps">
+                        <PointCardBox
+                            :showStatus="true"
+                            :value="slotProps"
+                            @click="handleClick"
+                            :active="_selectedRowKeys.includes(slotProps.id)"
+                            class="card-box"
+                            :status="slotProps?.runningState?.value"
+                            :statusText="slotProps?.runningState?.text"
+                            :statusNames="
+                                Object.fromEntries(colorMap.entries())
+                            "
                         >
-                            <j-button @click.prevent="clickBatch"
-                                >批量操作 <AIcon type="DownOutlined"
-                            /></j-button>
-                            <template #overlay>
-                                <j-menu v-if="showBatch">
-                                    <j-menu-item>
-                                        <PermissionButton
-                                            hasPermission="DataCollect/Collector:update"
-                                            @click="handlBatchUpdate()"
-                                        >
-                                            <template #icon
-                                                ><AIcon type="FormOutlined"
-                                            /></template>
-                                            编辑
-                                        </PermissionButton>
-                                    </j-menu-item>
-                                    <j-menu-item>
-                                        <PermissionButton
-                                            hasPermission="DataCollect/Collector:delete"
-                                            :popConfirm="{
-                                                title: `确定删除？`,
-                                                onConfirm: () =>
-                                                    handlBatchDelete(),
-                                            }"
-                                        >
-                                            <template #icon
-                                                ><AIcon type="EditOutlined"
-                                            /></template>
-                                            删除
-                                        </PermissionButton>
-                                    </j-menu-item>
-                                </j-menu>
+                            <template #title>
+                                <slot name="title">
+                                    <Ellipsis style="width: calc(100% - 10px)">
+                                        <div class="card-box-title">
+                                            {{ slotProps.name }}
+                                        </div>
+                                    </Ellipsis>
+                                </slot>
                             </template>
-                        </j-dropdown>
-                    </j-space>
-                    <div
-                        v-if="data?.provider === 'OPC_UA'"
-                        style="margin-top: 15px"
-                    >
-                        <j-checkbox
-                            v-model:checked="checkAll"
-                            @change="onCheckAllChange"
-                            >全选</j-checkbox
-                        >
-                    </div>
-                </template>
-                <template #card="slotProps">
-                    <PointCardBox
-                        :showStatus="true"
-                        :value="slotProps"
-                        @click="handleClick"
-                        :active="_selectedRowKeys.includes(slotProps.id)"
-                        class="card-box"
-                        :status="slotProps?.runningState?.value"
-                        :statusText="slotProps?.runningState?.text"
-                        :statusNames="Object.fromEntries(colorMap.entries())"
-                    >
-                        <template #title>
-                            <slot name="title">
-                                <Ellipsis style="width: calc(100% - 10px)">
-                                    <div class="card-box-title">
-                                        {{ slotProps.name }}
-                                    </div>
-                                </Ellipsis>
-                            </slot>
-                        </template>
-                        <template #action>
-                            <div class="card-box-action">
-                                <PermissionButton
-                                    type="text"
-                                    :tooltip="{
-                                        title: '删除',
-                                    }"
-                                    hasPermission="DataCollect/Collector:delete"
-                                    :popConfirm="{
-                                        title: `确定删除？`,
-                                        onConfirm: () =>
-                                            handlDelete(slotProps.id),
-                                    }"
-                                >
-                                    <a
-                                        style="
-                                            font-size: 20px;
-                                            margin-top: -10px;
-                                        "
-                                        ><AIcon type="DeleteOutlined"
-                                    /></a>
-                                </PermissionButton>
+                            <template #action>
+                                <div class="card-box-action">
+                                    <PermissionButton
+                                        type="text"
+                                        :tooltip="{
+                                            title: '删除',
+                                        }"
+                                        hasPermission="DataCollect/Collector:delete"
+                                        :popConfirm="{
+                                            title: `确定删除？`,
+                                            onConfirm: () =>
+                                                handlDelete(slotProps.id),
+                                        }"
+                                    >
+                                        <a
+                                            style="
+                                                font-size: 20px;
+                                                margin-top: -10px;
+                                            "
+                                            ><AIcon type="DeleteOutlined"
+                                        /></a>
+                                    </PermissionButton>
 
-                                <PermissionButton
-                                    class="add-btn"
-                                    type="text"
-                                    @click="handlEdit(slotProps)"
-                                    hasPermission="DataCollect/Collector:update"
-                                >
-                                    <a style="font-size: 20px"
-                                        ><AIcon type="FormOutlined"
-                                    /></a>
-                                </PermissionButton>
-                            </div>
-                        </template>
-                        <template #img>
-                            <img
-                                :src="
-                                    slotProps.provider === 'OPC_UA'
-                                        ? opcImage
-                                        : modbusImage
-                                "
-                            />
-                        </template>
-                        <template #content>
-                            <div class="card-box-content">
-                                <div class="card-box-content-left">
-                                    <div class="card-box-content-left-1">
+                                    <PermissionButton
+                                        class="add-btn"
+                                        type="text"
+                                        @click="handlEdit(slotProps)"
+                                        hasPermission="DataCollect/Collector:update"
+                                    >
+                                        <a style="font-size: 20px"
+                                            ><AIcon type="FormOutlined"
+                                        /></a>
+                                    </PermissionButton>
+                                </div>
+                            </template>
+                            <template #img>
+                                <img
+                                    :src="
+                                        slotProps.provider === 'OPC_UA'
+                                            ? opcImage
+                                            : modbusImage
+                                    "
+                                />
+                            </template>
+                            <template #content>
+                                <div class="card-box-content">
+                                    <div class="card-box-content-left">
+                                        <div class="card-box-content-left-1">
+                                            <div
+                                                class="ard-box-content-left-1-title"
+                                                v-if="
+                                                    propertyValue.has(
+                                                        slotProps.id,
+                                                    )
+                                                "
+                                            >
+                                                <j-ellipsis
+                                                    style="max-width: 150px"
+                                                >
+                                                    {{
+                                                        getParseData(slotProps)
+                                                    }}
+                                                </j-ellipsis>
+                                            </div>
+                                            <div
+                                                class="ard-box-content-left-1-title"
+                                                v-else
+                                            >
+                                                <j-ellipsis
+                                                    style="max-width: 150px"
+                                                >
+                                                    {{
+                                                        getReadParseData(
+                                                            slotProps,
+                                                        )
+                                                    }}
+                                                </j-ellipsis>
+                                            </div>
+                                            <a
+                                                v-if="
+                                                    getAccessModes(
+                                                        slotProps,
+                                                    ).includes('write')
+                                                "
+                                                @click.stop="
+                                                    clickEdit(slotProps)
+                                                "
+                                                ><AIcon type="EditOutlined"
+                                            /></a>
+                                            <a
+                                                v-if="
+                                                    getAccessModes(
+                                                        slotProps,
+                                                    ).includes('read')
+                                                "
+                                                @click.stop="
+                                                    clickRead(slotProps)
+                                                "
+                                                ><AIcon type="RedoOutlined"
+                                            /></a>
+                                        </div>
                                         <div
-                                            class="ard-box-content-left-1-title"
                                             v-if="
                                                 propertyValue.has(slotProps.id)
                                             "
+                                            class="card-box-content-right-2"
                                         >
-                                            <j-ellipsis
-                                                style="max-width: 150px"
-                                            >
-                                                {{ getParseData(slotProps) }}
-                                            </j-ellipsis>
-                                        </div>
-                                        <div
-                                            class="ard-box-content-left-1-title"
-                                            v-else
-                                        >
-                                            <j-ellipsis
-                                                style="max-width: 150px"
-                                            >
+                                            <p>
                                                 {{
-                                                    getReadParseData(slotProps)
-                                                }}
-                                            </j-ellipsis>
-                                        </div>
-                                        <a
-                                            v-if="
-                                                getAccessModes(
-                                                    slotProps,
-                                                ).includes('write')
-                                            "
-                                            @click.stop="clickEdit(slotProps)"
-                                            ><AIcon type="EditOutlined"
-                                        /></a>
-                                        <a
-                                            v-if="
-                                                getAccessModes(
-                                                    slotProps,
-                                                ).includes('read')
-                                            "
-                                            @click.stop="clickRead(slotProps)"
-                                            ><AIcon type="RedoOutlined"
-                                        /></a>
-                                    </div>
-                                    <div
-                                        v-if="propertyValue.has(slotProps.id)"
-                                        class="card-box-content-right-2"
-                                    >
-                                        <p>
-                                            {{
-                                                propertyValue.get(slotProps.id)
-                                                    ?.hex || ''
-                                            }}
-                                        </p>
-                                        <p>
-                                            {{
-                                                dayjs(
                                                     propertyValue.get(
                                                         slotProps.id,
-                                                    )?.timestamp,
-                                                ).format('YYYY-MM-DD HH:mm:ss')
-                                            }}
-                                        </p>
+                                                    )?.hex || ''
+                                                }}
+                                            </p>
+                                            <p>
+                                                {{
+                                                    dayjs(
+                                                        propertyValue.get(
+                                                            slotProps.id,
+                                                        )?.timestamp,
+                                                    ).format(
+                                                        'YYYY-MM-DD HH:mm:ss',
+                                                    )
+                                                }}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-box-content-right">
+                                        <Ellipsis
+                                            style="
+                                                width: calc(100% - 10px);
+                                                margin-bottom: 10px;
+                                            "
+                                        >
+                                            <div
+                                                v-if="getRight1(slotProps)"
+                                                class="card-box-content-right-1"
+                                            >
+                                                <span>
+                                                    {{ getQuantity(slotProps) }}
+                                                </span>
+                                                <span>
+                                                    {{ getAddress(slotProps) }}
+                                                </span>
+                                                <span>
+                                                    {{
+                                                        getScaleFactor(
+                                                            slotProps,
+                                                        )
+                                                    }}
+                                                </span>
+                                            </div>
+                                        </Ellipsis>
+                                        <Ellipsis
+                                            style="
+                                                width: calc(100% - 10px);
+                                                margin-bottom: 10px;
+                                            "
+                                        >
+                                            <div
+                                                class="card-box-content-right-2"
+                                            >
+                                                <span>{{
+                                                    getText(slotProps)
+                                                }}</span>
+                                                <span>{{
+                                                    getInterval(slotProps)
+                                                }}</span>
+                                            </div>
+                                        </Ellipsis>
                                     </div>
                                 </div>
+                            </template>
+                        </PointCardBox>
+                    </template>
+                </j-pro-table>
+            </j-scrollbar>
+        </FullPage>
 
-                                <div class="card-box-content-right">
-                                    <Ellipsis
-                                        style="
-                                            width: calc(100% - 10px);
-                                            margin-bottom: 10px;
-                                        "
-                                    >
-                                        <div
-                                            v-if="getRight1(slotProps)"
-                                            class="card-box-content-right-1"
-                                        >
-                                            <span>
-                                                {{ getQuantity(slotProps) }}
-                                            </span>
-                                            <span>
-                                                {{ getAddress(slotProps) }}
-                                            </span>
-                                            <span>
-                                                {{ getScaleFactor(slotProps) }}
-                                            </span>
-                                        </div>
-                                    </Ellipsis>
-                                    <Ellipsis
-                                        style="
-                                            width: calc(100% - 10px);
-                                            margin-bottom: 10px;
-                                        "
-                                    >
-                                        <div class="card-box-content-right-2">
-                                            <span>{{
-                                                getText(slotProps)
-                                            }}</span>
-                                            <span>{{
-                                                getInterval(slotProps)
-                                            }}</span>
-                                        </div>
-                                    </Ellipsis>
-                                </div>
-                            </div>
-                        </template>
-                    </PointCardBox>
-                </template>
-            </j-pro-table>
-        </j-scrollbar>
         <SaveModBus
             v-if="visible.saveModBus"
             :data="current"

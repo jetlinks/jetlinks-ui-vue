@@ -38,7 +38,7 @@
           保存
         </PermissionButton>
       </div>
-      <FullPage>
+    </FullPage>
   </page-container>
 </template>
 

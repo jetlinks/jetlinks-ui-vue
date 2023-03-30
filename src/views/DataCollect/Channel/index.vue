@@ -6,120 +6,128 @@
                 target="search"
                 @search="handleSearch"
             />
-
-            <j-pro-table
-                ref="tableRef"
-                :columns="columns"
-                model="CARD"
-                :gridColumn="3"
-                :request="query"
-                :defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
-                :params="params"
-            >
-                <template #headerTitle>
-                    <PermissionButton
-                        type="primary"
-                        @click="handlAdd"
-                        hasPermission="DataCollect/Channel:add"
-                    >
-                        <template #icon><AIcon type="PlusOutlined" /></template>
-                        新增通道
-                    </PermissionButton>
-                </template>
-                <template #card="slotProps">
-                    <CardBox
-                        :showStatus="true"
-                        :value="slotProps"
-                        :actions="getActions(slotProps, 'card')"
-                        v-bind="slotProps"
-                        :status="getState(slotProps).value"
-                        :statusText="getState(slotProps).text"
-                        :statusNames="StatusColorEnum"
-                        @click="handlEye(slotProps.id)"
-                    >
-                        <template #img>
-                            <slot name="img">
-                                <img :src="getImage('/network.png')" />
-                            </slot>
-                        </template>
-                        <template #content>
-                            <div class="card-item-content">
-                                <Ellipsis style="width: calc(100% - 100px)">
-                                    <span
-                                        style="
-                                            font-size: 18px;
-                                            font-weight: 800;
-                                            line-height: 22px;
-                                        "
-                                    >
-                                        {{ slotProps.name }}
-                                    </span>
-                                </Ellipsis>
-                                <j-row class="card-item-content-box">
-                                    <j-col :span="12">
-                                        <div class="card-item-content-text">
-                                            协议
-                                        </div>
-                                        <div class="card-item-content-text">
-                                            <j-tooltip>
-                                                <template #title>{{
-                                                    slotProps.provider
-                                                }}</template>
-                                                {{ slotProps.provider }}
-                                            </j-tooltip>
-                                        </div>
-                                    </j-col>
-                                    <j-col :span="12">
-                                        <div class="card-item-content-text">
-                                            地址
-                                        </div>
-                                        <div class="card-item-content-text">
-                                            <j-tooltip>
-                                                <template #title>{{
-                                                    slotProps.configuration
-                                                        .host ||
-                                                    slotProps.configuration
-                                                        .endpoint
-                                                }}</template>
-                                                <span class="details-text">{{
-                                                    slotProps.configuration
-                                                        .host ||
-                                                    slotProps.configuration
-                                                        .endpoint
-                                                }}</span>
-                                            </j-tooltip>
-                                        </div>
-                                    </j-col>
-                                </j-row>
-                            </div>
-                        </template>
-                        <template #actions="item">
-                            <PermissionButton
-                                :disabled="item.disabled"
-                                :popConfirm="item.popConfirm"
-                                :tooltip="{
-                                    ...item.tooltip,
-                                }"
-                                @click="item.onClick"
-                                :hasPermission="
-                                    'DataCollect/Channel:' + item.key
-                                "
-                            >
-                                <AIcon
-                                    type="DeleteOutlined"
-                                    v-if="item.key === 'delete'"
-                                />
-                                <template v-else>
-                                    <AIcon :type="item.icon" />
-                                    <span>{{ item?.text }}</span>
-                                </template>
-                            </PermissionButton>
-                        </template>
-                    </CardBox>
-                </template>
-            </j-pro-table>
+            <FullPage>
+                <j-pro-table
+                    ref="tableRef"
+                    :columns="columns"
+                    model="CARD"
+                    :gridColumn="3"
+                    :request="query"
+                    :defaultParams="{
+                        sorts: [{ name: 'createTime', order: 'desc' }],
+                    }"
+                    :params="params"
+                >
+                    <template #headerTitle>
+                        <PermissionButton
+                            type="primary"
+                            @click="handlAdd"
+                            hasPermission="DataCollect/Channel:add"
+                        >
+                            <template #icon
+                                ><AIcon type="PlusOutlined"
+                            /></template>
+                            新增通道
+                        </PermissionButton>
+                    </template>
+                    <template #card="slotProps">
+                        <CardBox
+                            :showStatus="true"
+                            :value="slotProps"
+                            :actions="getActions(slotProps, 'card')"
+                            v-bind="slotProps"
+                            :status="getState(slotProps).value"
+                            :statusText="getState(slotProps).text"
+                            :statusNames="StatusColorEnum"
+                            @click="handlEye(slotProps.id)"
+                        >
+                            <template #img>
+                                <slot name="img">
+                                    <img :src="getImage('/network.png')" />
+                                </slot>
+                            </template>
+                            <template #content>
+                                <div class="card-item-content">
+                                    <Ellipsis style="width: calc(100% - 100px)">
+                                        <span
+                                            style="
+                                                font-size: 18px;
+                                                font-weight: 800;
+                                                line-height: 22px;
+                                            "
+                                        >
+                                            {{ slotProps.name }}
+                                        </span>
+                                    </Ellipsis>
+                                    <j-row class="card-item-content-box">
+                                        <j-col :span="12">
+                                            <div class="card-item-content-text">
+                                                协议
+                                            </div>
+                                            <div class="card-item-content-text">
+                                                <j-tooltip>
+                                                    <template #title>{{
+                                                        slotProps.provider
+                                                    }}</template>
+                                                    {{ slotProps.provider }}
+                                                </j-tooltip>
+                                            </div>
+                                        </j-col>
+                                        <j-col :span="12">
+                                            <div class="card-item-content-text">
+                                                地址
+                                            </div>
+                                            <div class="card-item-content-text">
+                                                <j-tooltip>
+                                                    <template #title>{{
+                                                        slotProps.configuration
+                                                            .host ||
+                                                        slotProps.configuration
+                                                            .endpoint
+                                                    }}</template>
+                                                    <span
+                                                        class="details-text"
+                                                        >{{
+                                                            slotProps
+                                                                .configuration
+                                                                .host ||
+                                                            slotProps
+                                                                .configuration
+                                                                .endpoint
+                                                        }}</span
+                                                    >
+                                                </j-tooltip>
+                                            </div>
+                                        </j-col>
+                                    </j-row>
+                                </div>
+                            </template>
+                            <template #actions="item">
+                                <PermissionButton
+                                    :disabled="item.disabled"
+                                    :popConfirm="item.popConfirm"
+                                    :tooltip="{
+                                        ...item.tooltip,
+                                    }"
+                                    @click="item.onClick"
+                                    :hasPermission="
+                                        'DataCollect/Channel:' + item.key
+                                    "
+                                >
+                                    <AIcon
+                                        type="DeleteOutlined"
+                                        v-if="item.key === 'delete'"
+                                    />
+                                    <template v-else>
+                                        <AIcon :type="item.icon" />
+                                        <span>{{ item?.text }}</span>
+                                    </template>
+                                </PermissionButton>
+                            </template>
+                        </CardBox>
+                    </template>
+                </j-pro-table>
+            </FullPage>
             <Save v-if="visible" :data="current" @change="saveChange" />
         </div>
     </page-container>

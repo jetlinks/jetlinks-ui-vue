@@ -1,102 +1,106 @@
 <template>
     <page-container>
-        <j-card>
-            <j-row :gutter="[24, 24]" style="padding: 24px">
-                <j-col :span="12">
-                    <j-form
-                        class="form"
-                        layout="vertical"
-                        :model="formData"
-                        name="basic"
-                        :label-col="{ span: 8 }"
-                        :wrapper-col="{ span: 24 }"
-                        autocomplete="off"
-                    >
-                        <j-form-item
-                            label="证书标准"
-                            v-bind="validateInfos.type"
+        <FullPage>
+            <j-card>
+                <j-row :gutter="[24, 24]" style="padding: 24px">
+                    <j-col :span="12">
+                        <j-form
+                            class="form"
+                            layout="vertical"
+                            :model="formData"
+                            name="basic"
+                            :label-col="{ span: 8 }"
+                            :wrapper-col="{ span: 24 }"
+                            autocomplete="off"
                         >
-                            <j-radio-group v-model:value="formData.type">
-                                <j-radio-button
-                                    class="form-radio-button"
-                                    value="common"
-                                >
-                                    <img :src="getImage('/certificate.png')" />
-                                </j-radio-button>
-                            </j-radio-group>
-                        </j-form-item>
-                        <j-form-item
-                            label="证书名称"
-                            v-bind="validateInfos.name"
-                        >
-                            <j-input
-                                placeholder="请输入证书名称"
-                                v-model:value="formData.name"
-                            />
-                        </j-form-item>
-                        <j-form-item
-                            label="证书文件"
-                            v-bind="validateInfos['configs.cert']"
-                        >
-                            <CertificateFile
-                                name="cert"
-                                v-model:modelValue="formData.configs.cert"
-                                placeholder="请输入证书文件"
-                            />
-                        </j-form-item>
-                        <j-form-item
-                            label="证书私钥"
-                            v-bind="validateInfos['configs.key']"
-                        >
-                            <CertificateFile
-                                name="key"
-                                v-model:modelValue="formData.configs.key"
-                                placeholder="请输入证书私钥"
-                            />
-                        </j-form-item>
-                        <j-form-item label="说明" name="description">
-                            <j-textarea
-                                placeholder="请输入说明"
-                                v-model:value="formData.description"
-                                :maxlength="200"
-                                :rows="3"
-                                showCount
-                            />
-                        </j-form-item>
-
-                        <j-form-item>
-                            <j-button
-                                v-if="view === 'false'"
-                                class="form-submit"
-                                html-type="submit"
-                                type="primary"
-                                @click.prevent="onSubmit"
-                                :loading="loading"
-                                >保存</j-button
+                            <j-form-item
+                                label="证书标准"
+                                v-bind="validateInfos.type"
                             >
-                        </j-form-item>
-                    </j-form>
-                </j-col>
-                <j-col :span="12">
-                    <div class="doc">
-                        <h1>1. 概述</h1>
-                        <div>
-                            证书由受信任的数字证书颁发机构CA，在验证服务器身份后颁发，具有服务器身份验证和数据传输加密功能，保障设备与平台间的数据传输安全。配置后可被网络组件引用。
+                                <j-radio-group v-model:value="formData.type">
+                                    <j-radio-button
+                                        class="form-radio-button"
+                                        value="common"
+                                    >
+                                        <img
+                                            :src="getImage('/certificate.png')"
+                                        />
+                                    </j-radio-button>
+                                </j-radio-group>
+                            </j-form-item>
+                            <j-form-item
+                                label="证书名称"
+                                v-bind="validateInfos.name"
+                            >
+                                <j-input
+                                    placeholder="请输入证书名称"
+                                    v-model:value="formData.name"
+                                />
+                            </j-form-item>
+                            <j-form-item
+                                label="证书文件"
+                                v-bind="validateInfos['configs.cert']"
+                            >
+                                <CertificateFile
+                                    name="cert"
+                                    v-model:modelValue="formData.configs.cert"
+                                    placeholder="请输入证书文件"
+                                />
+                            </j-form-item>
+                            <j-form-item
+                                label="证书私钥"
+                                v-bind="validateInfos['configs.key']"
+                            >
+                                <CertificateFile
+                                    name="key"
+                                    v-model:modelValue="formData.configs.key"
+                                    placeholder="请输入证书私钥"
+                                />
+                            </j-form-item>
+                            <j-form-item label="说明" name="description">
+                                <j-textarea
+                                    placeholder="请输入说明"
+                                    v-model:value="formData.description"
+                                    :maxlength="200"
+                                    :rows="3"
+                                    showCount
+                                />
+                            </j-form-item>
+
+                            <j-form-item>
+                                <j-button
+                                    v-if="view === 'false'"
+                                    class="form-submit"
+                                    html-type="submit"
+                                    type="primary"
+                                    @click.prevent="onSubmit"
+                                    :loading="loading"
+                                    >保存</j-button
+                                >
+                            </j-form-item>
+                        </j-form>
+                    </j-col>
+                    <j-col :span="12">
+                        <div class="doc">
+                            <h1>1. 概述</h1>
+                            <div>
+                                证书由受信任的数字证书颁发机构CA，在验证服务器身份后颁发，具有服务器身份验证和数据传输加密功能，保障设备与平台间的数据传输安全。配置后可被网络组件引用。
+                            </div>
+                            <h1>2. 配置说明</h1>
+                            <h2>1、证书文件</h2>
+                            <div>
+                                您可以使用文本编辑工具打开PEM格式的证书文件，复制其中的内容并粘贴到该文本框，或者单击该文本框下的上传，并选择存储在本地计算机的证书文件，将文件内容上传到文本框。
+                            </div>
+                            <h2>2、证书私钥</h2>
+                            <div>
+                                填写证书私钥内容的PEM编码。
+                                您可以使用文本编辑工具打开KEY格式的证书私钥文件，复制其中的内容并粘贴到该文本框，或者单击该文本框下的上传并选择存储在本地计算机的证书私钥文件，将文件内容上传到文本框。
+                            </div>
                         </div>
-                        <h1>2. 配置说明</h1>
-                        <h2>1、证书文件</h2>
-                        <div>
-                            您可以使用文本编辑工具打开PEM格式的证书文件，复制其中的内容并粘贴到该文本框，或者单击该文本框下的上传，并选择存储在本地计算机的证书文件，将文件内容上传到文本框。
-                        </div>
-                        <h2>2、证书私钥</h2>
-                        <div>
-                            填写证书私钥内容的PEM编码。
-                            您可以使用文本编辑工具打开KEY格式的证书私钥文件，复制其中的内容并粘贴到该文本框，或者单击该文本框下的上传并选择存储在本地计算机的证书私钥文件，将文件内容上传到文本框。
-                        </div>
-                    </div>
-                </j-col>
-            </j-row>
-        </j-card>
+                    </j-col>
+                </j-row>
+            </j-card>
+        </FullPage>
     </page-container>
 </template>
 

@@ -1,16 +1,22 @@
 <template>
-    <page-container :tabList="list" :tabActiveKey="activeKey" @tabChange="onTabChange">
-        <AccessLog v-if="activeKey === '1'" />
-        <SystemLog v-else />
+    <page-container
+        :tabList="list"
+        :tabActiveKey="activeKey"
+        @tabChange="onTabChange"
+    >
+        <FullPage>
+            <AccessLog v-if="activeKey === '1'" />
+            <SystemLog v-else />
+        </FullPage>
     </page-container>
 </template>
 <script lang="ts" setup name="LogPage">
 import { defineComponent, ref } from 'vue';
 import AccessLog from './Access/index.vue';
 import SystemLog from './System/index.vue';
-import {useRouterParams} from "@/utils/hooks/useParams";
+import { useRouterParams } from '@/utils/hooks/useParams';
 
-const routerParams = useRouterParams()
+const routerParams = useRouterParams();
 const activeKey = ref('1');
 
 const list = [

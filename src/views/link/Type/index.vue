@@ -6,170 +6,173 @@
                 target="search"
                 @search="handleSearch"
             />
-
-            <j-pro-table
-                ref="tableRef"
-                :columns="columns"
-                :gridColumn="3"
-                :request="query"
-                :defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
-                :params="params"
-            >
-                <template #headerTitle>
-                    <PermissionButton
-                        type="primary"
-                        @click="handlAdd"
-                        hasPermission="link/Type:add"
-                    >
-                        <template #icon><AIcon type="PlusOutlined" /></template>
-                        新增
-                    </PermissionButton>
-                </template>
-                <template #card="slotProps">
-                    <CardBox
-                        :showStatus="true"
-                        :value="slotProps"
-                        :actions="getActions(slotProps, 'card')"
-                        v-bind="slotProps"
-                        :status="slotProps.state.value"
-                        :statusText="slotProps.state.text"
-                        :statusNames="{
-                            enabled: 'processing',
-                            disabled: 'error',
-                        }"
-                        @click="handlEye(slotProps.id)"
-                    >
-                        <template #img>
-                            <slot name="img">
-                                <img :src="getImage('/network.png')" />
-                            </slot>
-                        </template>
-                        <template #content>
-                            <div class="card-item-content">
-                                <Ellipsis
-                                    style="
-                                        width: calc(100% - 100px);
-                                        margin-bottom: 20px;
-                                    "
-                                >
-                                    <span
+            <FullPage>
+                <j-pro-table
+                    ref="tableRef"
+                    :columns="columns"
+                    :gridColumn="3"
+                    :request="query"
+                    :defaultParams="{
+                        sorts: [{ name: 'createTime', order: 'desc' }],
+                    }"
+                    :params="params"
+                >
+                    <template #headerTitle>
+                        <PermissionButton
+                            type="primary"
+                            @click="handlAdd"
+                            hasPermission="link/Type:add"
+                        >
+                            <template #icon
+                                ><AIcon type="PlusOutlined"
+                            /></template>
+                            新增
+                        </PermissionButton>
+                    </template>
+                    <template #card="slotProps">
+                        <CardBox
+                            :showStatus="true"
+                            :value="slotProps"
+                            :actions="getActions(slotProps, 'card')"
+                            v-bind="slotProps"
+                            :status="slotProps.state.value"
+                            :statusText="slotProps.state.text"
+                            :statusNames="{
+                                enabled: 'processing',
+                                disabled: 'error',
+                            }"
+                            @click="handlEye(slotProps.id)"
+                        >
+                            <template #img>
+                                <slot name="img">
+                                    <img :src="getImage('/network.png')" />
+                                </slot>
+                            </template>
+                            <template #content>
+                                <div class="card-item-content">
+                                    <Ellipsis
                                         style="
-                                            font-size: 18px;
-                                            font-weight: 800;
-                                            line-height: 22px;
+                                            width: calc(100% - 100px);
+                                            margin-bottom: 20px;
                                         "
                                     >
-                                        {{ slotProps.name }}
-                                    </span>
-                                </Ellipsis>
-                                <j-row class="card-item-content-box">
-                                    <j-col :span="8">
-                                        <div
-                                            class="card-item-content-text-title"
+                                        <span
+                                            style="
+                                                font-size: 18px;
+                                                font-weight: 800;
+                                                line-height: 22px;
+                                            "
                                         >
-                                            类型
-                                        </div>
-                                        <div class="card-item-content-text">
-                                            <j-tooltip>
-                                                <template #title>{{
-                                                    slotProps.type
-                                                }}</template>
-                                                {{ slotProps.type }}
-                                            </j-tooltip>
-                                        </div>
-                                    </j-col>
+                                            {{ slotProps.name }}
+                                        </span>
+                                    </Ellipsis>
+                                    <j-row class="card-item-content-box">
+                                        <j-col :span="8">
+                                            <div
+                                                class="card-item-content-text-title"
+                                            >
+                                                类型
+                                            </div>
+                                            <div class="card-item-content-text">
+                                                <j-tooltip>
+                                                    <template #title>{{
+                                                        slotProps.type
+                                                    }}</template>
+                                                    {{ slotProps.type }}
+                                                </j-tooltip>
+                                            </div>
+                                        </j-col>
 
-                                    <j-col :span="16">
-                                        <div
-                                            class="card-item-content-text-title"
-                                        >
-                                            详情
-                                        </div>
-                                        <div class="card-item-content-text">
-                                            <j-tooltip>
-                                                <template #title>{{
-                                                    getDetails(slotProps)
-                                                }}</template>
-                                                {{ getDetails(slotProps) }}
-                                            </j-tooltip>
-                                        </div>
-                                    </j-col>
-                                </j-row>
-                            </div>
-                        </template>
-                        <template #actions="item">
-                            <PermissionButton
-                                :disabled="item.disabled"
-                                :popConfirm="item.popConfirm"
-                                :tooltip="{
-                                    ...item.tooltip,
-                                }"
-                                @click="item.onClick"
-                                :hasPermission="'link/Type:' + item.key"
+                                        <j-col :span="16">
+                                            <div
+                                                class="card-item-content-text-title"
+                                            >
+                                                详情
+                                            </div>
+                                            <div class="card-item-content-text">
+                                                <j-tooltip>
+                                                    <template #title>{{
+                                                        getDetails(slotProps)
+                                                    }}</template>
+                                                    {{ getDetails(slotProps) }}
+                                                </j-tooltip>
+                                            </div>
+                                        </j-col>
+                                    </j-row>
+                                </div>
+                            </template>
+                            <template #actions="item">
+                                <PermissionButton
+                                    :disabled="item.disabled"
+                                    :popConfirm="item.popConfirm"
+                                    :tooltip="{
+                                        ...item.tooltip,
+                                    }"
+                                    @click="item.onClick"
+                                    :hasPermission="'link/Type:' + item.key"
+                                >
+                                    <AIcon
+                                        type="DeleteOutlined"
+                                        v-if="item.key === 'delete'"
+                                    />
+                                    <template v-else>
+                                        <AIcon :type="item.icon" />
+                                        <span>{{ item?.text }}</span>
+                                    </template>
+                                </PermissionButton>
+                            </template>
+                        </CardBox>
+                    </template>
+                    <template #action="slotProps">
+                        <j-space>
+                            <template
+                                v-for="i in getActions(slotProps, 'table')"
+                                :key="i.key"
                             >
-                                <AIcon
-                                    type="DeleteOutlined"
-                                    v-if="item.key === 'delete'"
-                                />
-                                <template v-else>
-                                    <AIcon :type="item.icon" />
-                                    <span>{{ item?.text }}</span>
-                                </template>
-                            </PermissionButton>
-                        </template>
-                    </CardBox>
-                </template>
-                <template #action="slotProps">
-                    <j-space>
-                        <template
-                            v-for="i in getActions(slotProps, 'table')"
-                            :key="i.key"
-                        >
-                            <PermissionButton
-                                :disabled="i.disabled"
-                                :popConfirm="i.popConfirm"
-                                :tooltip="{
-                                    ...i.tooltip,
-                                }"
-                                style="padding: 0px"
-                                @click="i.onClick"
-                                type="link"
-                                :danger="i.key === 'delete'"
-                                :hasPermission="'link/Type:' + i.key"
-                            >
-                                <template #icon
-                                    ><AIcon :type="i.icon"
-                                /></template>
-                            </PermissionButton>
-                        </template>
-                    </j-space>
-                </template>
-                <template #state="slotProps">
-                    <BadgeStatus
-                        :text="slotProps.state.text"
-                        :status="slotProps.state.value"
-                        :statusNames="{
-                            enabled: 'processing',
-                            disabled: 'error',
-                        }"
-                    ></BadgeStatus>
-                </template>
-                <template #shareCluster="slotProps">
-                    {{
-                        slotProps.shareCluster === 'true'
-                            ? '共享配置'
-                            : '独立配置'
-                    }}
-                </template>
-                <template #type="slotProps">
-                    {{ slotProps.typeObject.name }}
-                </template>
-                <template #details="slotProps">
-                    {{ getDetails(slotProps) }}
-                </template>
-            </j-pro-table>
+                                <PermissionButton
+                                    :disabled="i.disabled"
+                                    :popConfirm="i.popConfirm"
+                                    :tooltip="{
+                                        ...i.tooltip,
+                                    }"
+                                    style="padding: 0px"
+                                    @click="i.onClick"
+                                    type="link"
+                                    :danger="i.key === 'delete'"
+                                    :hasPermission="'link/Type:' + i.key"
+                                >
+                                    <template #icon
+                                        ><AIcon :type="i.icon"
+                                    /></template>
+                                </PermissionButton>
+                            </template>
+                        </j-space>
+                    </template>
+                    <template #state="slotProps">
+                        <BadgeStatus
+                            :text="slotProps.state.text"
+                            :status="slotProps.state.value"
+                            :statusNames="{
+                                enabled: 'processing',
+                                disabled: 'error',
+                            }"
+                        ></BadgeStatus>
+                    </template>
+                    <template #shareCluster="slotProps">
+                        {{
+                            slotProps.shareCluster === 'true'
+                                ? '共享配置'
+                                : '独立配置'
+                        }}
+                    </template>
+                    <template #type="slotProps">
+                        {{ slotProps.typeObject.name }}
+                    </template>
+                    <template #details="slotProps">
+                        {{ getDetails(slotProps) }}
+                    </template>
+                </j-pro-table>
+            </FullPage>
         </div>
     </page-container>
 </template>

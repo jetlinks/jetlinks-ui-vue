@@ -1,3 +1,13 @@
+export const ParserConfiguration = {
+    delimited: '',
+    lang: '',
+    script: '',
+    size: '',
+    length: '4',
+    offset: undefined,
+    little: undefined,
+};
+
 export const Configuration = {
     parserType: undefined,
     port: undefined,
@@ -14,15 +24,7 @@ export const Configuration = {
     certId: undefined,
     privateKeyAlias: '',
     clientId: '',
-    parserConfiguration: {
-        delimited: '',
-        lang: '',
-        script: '',
-        size: '',
-        length: '4',
-        offset: undefined,
-        little: undefined,
-    },
+    parserConfiguration: ParserConfiguration,
 };
 
 export const FormStates = {
@@ -230,8 +232,7 @@ export const Rules = {
     ],
     password: [
         {
-            // required: true,
-            required: false,
+            required: true,
             message: '请输入密码',
         },
         {

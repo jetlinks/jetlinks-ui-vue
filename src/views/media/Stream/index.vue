@@ -6,143 +6,146 @@
                 target="search"
                 @search="handleSearch"
             />
-
-            <j-pro-table
-                ref="tableRef"
-                model="CARD"
-                :columns="columns"
-                :gridColumn="2"
-                :gridColumns="[1, 2]"
-                :request="query"
-                :defaultParams="{
-                    sorts: [{ name: 'id', order: 'desc' }],
-                }"
-                :params="params"
-            >
-                <template #headerTitle>
-                    <PermissionButton
-                        type="primary"
-                        @click="handlAdd"
-                        hasPermission="media/Stream:add"
-                    >
-                        <template #icon><AIcon type="PlusOutlined" /></template>
-                        新增
-                    </PermissionButton>
-                </template>
-                <template #card="slotProps">
-                    <CardBox
-                        :showStatus="true"
-                        :value="slotProps"
-                        :actions="getActions(slotProps)"
-                        v-bind="slotProps"
-                        :status="slotProps.state.value"
-                        :statusText="slotProps.state.text"
-                        :statusNames="{
-                            enabled: 'processing',
-                            disabled: 'error',
-                        }"
-                        @click="handlEye(slotProps.id)"
-                    >
-                        <template #img>
-                            <slot name="img">
-                                <img :src="getImage('/stream.png')" />
-                            </slot>
-                        </template>
-                        <template #content>
-                            <div class="card-item-content">
-                                <Ellipsis
-                                    style="
-                                        width: calc(100% - 100px);
-                                        margin-bottom: 10px;
-                                    "
-                                >
-                                    <span
+            <FullPage>
+                <j-pro-table
+                    ref="tableRef"
+                    model="CARD"
+                    :columns="columns"
+                    :gridColumn="2"
+                    :gridColumns="[1, 2]"
+                    :request="query"
+                    :defaultParams="{
+                        sorts: [{ name: 'id', order: 'desc' }],
+                    }"
+                    :params="params"
+                >
+                    <template #headerTitle>
+                        <PermissionButton
+                            type="primary"
+                            @click="handlAdd"
+                            hasPermission="media/Stream:add"
+                        >
+                            <template #icon
+                                ><AIcon type="PlusOutlined"
+                            /></template>
+                            新增
+                        </PermissionButton>
+                    </template>
+                    <template #card="slotProps">
+                        <CardBox
+                            :showStatus="true"
+                            :value="slotProps"
+                            :actions="getActions(slotProps)"
+                            v-bind="slotProps"
+                            :status="slotProps.state.value"
+                            :statusText="slotProps.state.text"
+                            :statusNames="{
+                                enabled: 'processing',
+                                disabled: 'error',
+                            }"
+                            @click="handlEye(slotProps.id)"
+                        >
+                            <template #img>
+                                <slot name="img">
+                                    <img :src="getImage('/stream.png')" />
+                                </slot>
+                            </template>
+                            <template #content>
+                                <div class="card-item-content">
+                                    <Ellipsis
                                         style="
-                                            font-size: 18px;
-                                            font-weight: 800;
-                                            line-height: 22px;
+                                            width: calc(100% - 100px);
+                                            margin-bottom: 10px;
                                         "
                                     >
-                                        {{ slotProps.name }}
-                                    </span>
-                                </Ellipsis>
-                                <j-row class="card-item-content-box">
-                                    <j-col
-                                        :span="8"
-                                        class="card-item-content-text"
-                                    >
-                                        <div class="card-item-content-text">
-                                            服务商
-                                        </div>
-                                        <div class="card-item-content-text">
-                                            <j-tooltip>
-                                                <template #title>{{
-                                                    slotProps.provider
-                                                }}</template>
-                                                {{ slotProps.provider }}
-                                            </j-tooltip>
-                                        </div>
-                                    </j-col>
-                                    <j-col :span="8">
-                                        <div class="card-item-content-text">
-                                            RTP IP
-                                        </div>
-                                        <div class="card-item-content-text">
-                                            <j-tooltip>
-                                                <template #title>{{
-                                                    slotProps.configuration
-                                                        ?.rtpIp
-                                                }}</template>
-                                                {{
-                                                    slotProps.configuration
-                                                        ?.rtpIp
-                                                }}
-                                            </j-tooltip>
-                                        </div>
-                                    </j-col>
-                                    <j-col :span="8">
-                                        <div class="card-item-content-text">
-                                            API HOST
-                                        </div>
-                                        <div class="card-item-content-text">
-                                            <j-tooltip>
-                                                <template #title>{{
-                                                    slotProps.configuration
-                                                        ?.apiHost
-                                                }}</template>
-                                                {{
-                                                    slotProps.configuration
-                                                        ?.apiHost
-                                                }}
-                                            </j-tooltip>
-                                        </div>
-                                    </j-col>
-                                </j-row>
-                            </div>
-                        </template>
-                        <template #actions="item">
-                            <PermissionButton
-                                :disabled="item.disabled"
-                                :popConfirm="item.popConfirm"
-                                :tooltip="{
-                                    ...item.tooltip,
-                                }"
-                                @click="item.onClick"
-                                :hasPermission="'media/Stream:' + item.key"
-                            >
-                                <AIcon
-                                    type="DeleteOutlined"
-                                    v-if="item.key === 'delete'"
-                                />
-                                <template v-else>
-                                    <AIcon :type="item.icon" />
-                                    <span>{{ item?.text }}</span>
-                                </template>
-                            </PermissionButton>
-                        </template>
-                    </CardBox>
-                </template>
-            </j-pro-table>
+                                        <span
+                                            style="
+                                                font-size: 18px;
+                                                font-weight: 800;
+                                                line-height: 22px;
+                                            "
+                                        >
+                                            {{ slotProps.name }}
+                                        </span>
+                                    </Ellipsis>
+                                    <j-row class="card-item-content-box">
+                                        <j-col
+                                            :span="8"
+                                            class="card-item-content-text"
+                                        >
+                                            <div class="card-item-content-text">
+                                                服务商
+                                            </div>
+                                            <div class="card-item-content-text">
+                                                <j-tooltip>
+                                                    <template #title>{{
+                                                        slotProps.provider
+                                                    }}</template>
+                                                    {{ slotProps.provider }}
+                                                </j-tooltip>
+                                            </div>
+                                        </j-col>
+                                        <j-col :span="8">
+                                            <div class="card-item-content-text">
+                                                RTP IP
+                                            </div>
+                                            <div class="card-item-content-text">
+                                                <j-tooltip>
+                                                    <template #title>{{
+                                                        slotProps.configuration
+                                                            ?.rtpIp
+                                                    }}</template>
+                                                    {{
+                                                        slotProps.configuration
+                                                            ?.rtpIp
+                                                    }}
+                                                </j-tooltip>
+                                            </div>
+                                        </j-col>
+                                        <j-col :span="8">
+                                            <div class="card-item-content-text">
+                                                API HOST
+                                            </div>
+                                            <div class="card-item-content-text">
+                                                <j-tooltip>
+                                                    <template #title>{{
+                                                        slotProps.configuration
+                                                            ?.apiHost
+                                                    }}</template>
+                                                    {{
+                                                        slotProps.configuration
+                                                            ?.apiHost
+                                                    }}
+                                                </j-tooltip>
+                                            </div>
+                                        </j-col>
+                                    </j-row>
+                                </div>
+                            </template>
+                            <template #actions="item">
+                                <PermissionButton
+                                    :disabled="item.disabled"
+                                    :popConfirm="item.popConfirm"
+                                    :tooltip="{
+                                        ...item.tooltip,
+                                    }"
+                                    @click="item.onClick"
+                                    :hasPermission="'media/Stream:' + item.key"
+                                >
+                                    <AIcon
+                                        type="DeleteOutlined"
+                                        v-if="item.key === 'delete'"
+                                    />
+                                    <template v-else>
+                                        <AIcon :type="item.icon" />
+                                        <span>{{ item?.text }}</span>
+                                    </template>
+                                </PermissionButton>
+                            </template>
+                        </CardBox>
+                    </template>
+                </j-pro-table>
+            </FullPage>
         </div>
     </page-container>
 </template>

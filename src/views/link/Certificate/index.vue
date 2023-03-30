@@ -6,55 +6,59 @@
                 target="search"
                 @search="handleSearch"
             />
-            <j-pro-table
-                ref="tableRef"
-                model="TABLE"
-                :columns="columns"
-                :request="query"
-                :defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
-                :params="params"
-            >
-                <template #headerTitle>
-                    <PermissionButton
-                        type="primary"
-                        @click="handlAdd"
-                        hasPermission="link/Certificate:add"
-                    >
-                        <template #icon><AIcon type="PlusOutlined" /></template>
-                        新增
-                    </PermissionButton>
-                </template>
-                <template #type="slotProps">
-                    <span>{{ slotProps.type.text }}</span>
-                </template>
-                <template #action="slotProps">
-                    <j-space>
-                        <template
-                            v-for="i in getActions(slotProps)"
-                            :key="i.key"
+            <FullPage>
+                <j-pro-table
+                    ref="tableRef"
+                    model="TABLE"
+                    :columns="columns"
+                    :request="query"
+                    :defaultParams="{
+                        sorts: [{ name: 'createTime', order: 'desc' }],
+                    }"
+                    :params="params"
+                >
+                    <template #headerTitle>
+                        <PermissionButton
+                            type="primary"
+                            @click="handlAdd"
+                            hasPermission="link/Certificate:add"
                         >
-                            <PermissionButton
-                                :disabled="i.disabled"
-                                :popConfirm="i.popConfirm"
-                                :tooltip="{
-                                    ...i.tooltip,
-                                }"
-                                style="padding: 0px"
-                                @click="i.onClick"
-                                type="link"
-                                :danger="i.key === 'delete'"
-                                :hasPermission="'link/Certificate:' + i.key"
+                            <template #icon
+                                ><AIcon type="PlusOutlined"
+                            /></template>
+                            新增
+                        </PermissionButton>
+                    </template>
+                    <template #type="slotProps">
+                        <span>{{ slotProps.type.text }}</span>
+                    </template>
+                    <template #action="slotProps">
+                        <j-space>
+                            <template
+                                v-for="i in getActions(slotProps)"
+                                :key="i.key"
                             >
-                                <template #icon
-                                    ><AIcon :type="i.icon"
-                                /></template>
-                            </PermissionButton>
-                        </template>
-                    </j-space>
-                </template>
-            </j-pro-table>
+                                <PermissionButton
+                                    :disabled="i.disabled"
+                                    :popConfirm="i.popConfirm"
+                                    :tooltip="{
+                                        ...i.tooltip,
+                                    }"
+                                    style="padding: 0px"
+                                    @click="i.onClick"
+                                    type="link"
+                                    :danger="i.key === 'delete'"
+                                    :hasPermission="'link/Certificate:' + i.key"
+                                >
+                                    <template #icon
+                                        ><AIcon :type="i.icon"
+                                    /></template>
+                                </PermissionButton>
+                            </template>
+                        </j-space>
+                    </template>
+                </j-pro-table>
+            </FullPage>
         </div>
     </page-container>
 </template>

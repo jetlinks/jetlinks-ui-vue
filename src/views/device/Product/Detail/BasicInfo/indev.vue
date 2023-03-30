@@ -28,11 +28,16 @@
         }}</j-descriptions-item>
 
         <j-descriptions-item label="接入方式">
-            <j-button type="link" @click="changeTables">{{
-                productStore.current.accessName
-                    ? productStore.current.accessName
-                    : '配置接入方式'
-            }}</j-button>
+            <PermissionButton
+                type="link"
+                @click="changeTables"
+                hasPermission="device/Product:update"
+                >{{
+                    productStore.current.accessName
+                        ? productStore.current.accessName
+                        : '配置接入方式'
+                }}</PermissionButton
+            >
         </j-descriptions-item>
         <j-descriptions-item label="创建时间">{{
             dayjs(productStore.current.createTime).format('YYYY-MM-DD HH:mm:ss')
@@ -55,6 +60,8 @@ import { useProductStore } from '@/store/product';
 import Save from '../../Save/index.vue';
 import dayjs from 'dayjs';
 import { useRoute } from 'vue-router';
+import { useMenuStore } from '@/store/menu';
+const menuSotre = useMenuStore();
 const productStore = useProductStore();
 const route = useRoute();
 const saveRef = ref();

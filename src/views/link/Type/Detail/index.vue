@@ -1,910 +1,292 @@
 <template>
     <page-container>
-        <j-card>
-            <div class="container">
-                <j-form
-                    :model="formData"
-                    ref="formRef1"
-                    name="basic"
-                    autocomplete="off"
-                    layout="vertical"
-                >
-                    <j-row :gutter="[24, 0]">
-                        <j-col :span="12">
-                            <j-form-item
-                                label="名称"
-                                name="name"
-                                :rules="Rules.name"
-                            >
-                                <j-input
-                                    v-model:value="formData.name"
-                                    placeholder="请输入名称"
-                                />
-                            </j-form-item>
-                        </j-col>
-                        <j-col :span="12">
-                            <j-form-item
-                                label="类型"
-                                name="type"
-                                :rules="Rules.type"
-                            >
-                                <j-select
-                                    v-model:value="formData.type"
-                                    :options="typeOptions"
-                                    placeholder="请选择类型"
-                                    allowClear
-                                    show-search
-                                    :filter-option="filterOption"
-                                    @change="changeType"
-                                    :disabled="!!NetworkType"
-                                />
-                            </j-form-item>
-                        </j-col>
-                        <j-col :span="24">
-                            <j-form-item
-                                name="shareCluster"
-                                :rules="Rules.shareCluster"
-                            >
-                                <template #label>
-                                    集群
-                                    <j-tooltip
-                                        title="共享配置:集群下所有节点共用同一配置,独立配置:集群下不同节点使用不同配置"
-                                    >
-                                        <AIcon
-                                            type="QuestionCircleOutlined"
-                                            style="margin-left: 2px"
-                                        />
-                                    </j-tooltip>
-                                </template>
-                                <j-radio-group
-                                    v-model:value="formData.shareCluster"
-                                    button-style="solid"
-                                    @change="
-                                        changeShareCluster(
-                                            formData.shareCluster,
-                                        )
-                                    "
-                                >
-                                    <j-radio-button :value="true"
-                                        >共享配置</j-radio-button
-                                    >
-                                    <j-radio-button :value="false"
-                                        >独立配置</j-radio-button
-                                    >
-                                </j-radio-group>
-                            </j-form-item>
-                        </j-col>
-                    </j-row>
-
+        <FullPage>
+            <j-card>
+                <div class="container">
                     <j-form
-                        ref="formRef2"
+                        :model="formData"
+                        ref="formRef1"
+                        name="basic"
+                        autocomplete="off"
                         layout="vertical"
-                        name="dynamic_form_nest_item"
-                        :model="dynamicValidateForm"
-                        class="form2"
                     >
-                        <div
-                            v-for="(
-                                cluster, index
-                            ) in dynamicValidateForm.cluster"
-                            :key="cluster.id"
-                        >
-                            <j-collapse
-                                v-model:activeKey="activeKey"
-                                :class="[
-                                    !formData.shareCluster
-                                        ? 'collapse'
-                                        : 'collapse-panel',
-                                ]"
-                                :ghost="formData.shareCluster"
-                                collapsible="header"
-                            >
-                                <j-collapse-panel
-                                    :key="cluster.id"
-                                    :show-arrow="!formData.shareCluster"
+                        <j-row :gutter="[24, 0]">
+                            <j-col :span="12">
+                                <j-form-item
+                                    label="名称"
+                                    name="name"
+                                    :rules="Rules.name"
                                 >
-                                    <template #header v-if="!shareCluster">
-                                        <div class="collapse-header">
-                                            {{
-                                                cluster.serverId
-                                                    ? cluster.serverId
-                                                    : !formData.shareCluster
-                                                    ? `#${index + 1}.配置信息`
-                                                    : ''
-                                            }}
-                                        </div>
+                                    <j-input
+                                        v-model:value="formData.name"
+                                        placeholder="请输入名称"
+                                    />
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="12">
+                                <j-form-item
+                                    label="类型"
+                                    name="type"
+                                    :rules="Rules.type"
+                                >
+                                    <j-select
+                                        v-model:value="formData.type"
+                                        :options="typeOptions"
+                                        placeholder="请选择类型"
+                                        allowClear
+                                        show-search
+                                        :filter-option="filterOption"
+                                        @change="changeType"
+                                        :disabled="!!NetworkType"
+                                    />
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="24">
+                                <j-form-item
+                                    name="shareCluster"
+                                    :rules="Rules.shareCluster"
+                                >
+                                    <template #label>
+                                        集群
+                                        <j-tooltip
+                                            title="共享配置:集群下所有节点共用同一配置,独立配置:集群下不同节点使用不同配置"
+                                        >
+                                            <AIcon
+                                                type="QuestionCircleOutlined"
+                                                style="margin-left: 2px"
+                                            />
+                                        </j-tooltip>
                                     </template>
-                                    <template #extra v-if="!shareCluster">
-                                        <j-popconfirm
-                                            @confirm.prevent="
-                                                removeCluster(cluster)
-                                            "
+                                    <j-radio-group
+                                        v-model:value="formData.shareCluster"
+                                        button-style="solid"
+                                        @change="
+                                            changeShareCluster(
+                                                formData.shareCluster,
+                                            )
+                                        "
+                                    >
+                                        <j-radio-button :value="true"
+                                            >共享配置</j-radio-button
                                         >
-                                            <span class="delete-btn">
-                                                删除
-                                            </span>
-                                        </j-popconfirm>
-                                    </template>
-                                    <j-row :gutter="[24, 0]">
-                                        <j-col :span="12" v-if="!shareCluster">
-                                            <j-form-item
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'serverId',
-                                                ]"
-                                                label="节点名称"
-                                                :rules="Rules.serverId"
+                                        <j-radio-button :value="false"
+                                            >独立配置</j-radio-button
+                                        >
+                                    </j-radio-group>
+                                </j-form-item>
+                            </j-col>
+                        </j-row>
+                        <div
+                            v-if="
+                                !shareCluster &&
+                                dynamicValidateForm.cluster.length === 0
+                            "
+                            style="
+                                border: 1px #d9d9d9 solid;
+                                margin-bottom: 12px;
+                            "
+                        >
+                            <j-empty style="margin-top: 12px" />
+                        </div>
+                        <j-form
+                            ref="formRef2"
+                            layout="vertical"
+                            name="dynamic_form_nest_item"
+                            :model="dynamicValidateForm"
+                            class="form2"
+                        >
+                            <div
+                                v-for="(
+                                    cluster, index
+                                ) in dynamicValidateForm.cluster"
+                                :key="cluster.id"
+                            >
+                                <j-collapse
+                                    v-model:activeKey="activeKey"
+                                    :class="[
+                                        !formData.shareCluster
+                                            ? 'collapse'
+                                            : 'collapse-panel',
+                                    ]"
+                                    :ghost="formData.shareCluster"
+                                    collapsible="header"
+                                >
+                                    <j-collapse-panel
+                                        :key="cluster.id"
+                                        :show-arrow="!formData.shareCluster"
+                                    >
+                                        <template #header v-if="!shareCluster">
+                                            <div class="collapse-header">
+                                                {{
+                                                    cluster.serverId
+                                                        ? cluster.serverId
+                                                        : !formData.shareCluster
+                                                        ? `#${
+                                                              index + 1
+                                                          }.配置信息`
+                                                        : ''
+                                                }}
+                                            </div>
+                                        </template>
+                                        <template #extra v-if="!shareCluster">
+                                            <j-popconfirm
+                                                @confirm.prevent="
+                                                    removeCluster(cluster)
+                                                "
                                             >
-                                                <j-select
-                                                    v-model:value="
-                                                        cluster.serverId
-                                                    "
-                                                    :options="
-                                                        clustersListIndex[index]
-                                                    "
-                                                    placeholder="请选择节点名称"
-                                                    allowClear
-                                                    show-search
-                                                    :filter-option="
-                                                        filterOption
-                                                    "
-                                                    @change="
-                                                        changeServerId(
-                                                            cluster.serverId,
-                                                            index,
-                                                        )
-                                                    "
+                                                <span class="delete-btn">
+                                                    删除
+                                                </span>
+                                            </j-popconfirm>
+                                        </template>
+                                        <j-row :gutter="[24, 0]">
+                                            <j-col
+                                                :span="12"
+                                                v-if="!shareCluster"
+                                            >
+                                                <j-form-item
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'serverId',
+                                                    ]"
+                                                    label="节点名称"
+                                                    :rules="Rules.serverId"
                                                 >
-                                                </j-select>
-                                            </j-form-item>
-                                        </j-col>
-                                        <j-col
-                                            :span="12"
-                                            v-if="
-                                                isVisible('host', formData.type)
-                                            "
-                                        >
-                                            <j-form-item
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-                                                    'host',
-                                                ]"
-                                                :rules="Rules.host"
-                                            >
-                                                <template #label>
-                                                    本地地址
-                                                    <j-tooltip
-                                                        title="绑定到服务器上的网卡地址,绑定到所有网卡:0.0.0.0"
+                                                    <j-select
+                                                        v-model:value="
+                                                            cluster.serverId
+                                                        "
+                                                        :options="
+                                                            clustersListIndex[
+                                                                index
+                                                            ]
+                                                        "
+                                                        placeholder="请选择节点名称"
+                                                        allowClear
+                                                        show-search
+                                                        :filter-option="
+                                                            filterOption
+                                                        "
+                                                        @change="
+                                                            changeServerId(
+                                                                cluster.serverId,
+                                                                index,
+                                                            )
+                                                        "
                                                     >
-                                                        <AIcon
-                                                            type="QuestionCircleOutlined"
-                                                            style="
-                                                                margin-left: 2px;
-                                                            "
-                                                        />
-                                                    </j-tooltip>
-                                                </template>
-                                                <j-select
-                                                    v-model:value="
-                                                        cluster.configuration
-                                                            .host
-                                                    "
-                                                    :options="
-                                                        hostOptionsIndex[index]
-                                                    "
-                                                    placeholder="请选择本地地址"
-                                                    allowClear
-                                                    show-search
-                                                    :disabled="shareCluster"
-                                                    :filter-option="
-                                                        filterOption
-                                                    "
-                                                    @change="
-                                                        changeHost(
-                                                            cluster.serverId,
-                                                            cluster
-                                                                .configuration
-                                                                .host,
-                                                            index,
-                                                        )
-                                                    "
-                                                >
-                                                </j-select>
-                                            </j-form-item>
-                                        </j-col>
-                                        <j-col
-                                            :span="12"
-                                            v-if="
-                                                isVisible('port', formData.type)
-                                            "
-                                        >
-                                            <j-form-item
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-                                                    'port',
-                                                ]"
-                                                :rules="Rules.port"
-                                            >
-                                                <template #label>
-                                                    本地端口
-                                                    <j-tooltip
-                                                        title="监听指定端口的请求"
-                                                    >
-                                                        <AIcon
-                                                            type="QuestionCircleOutlined"
-                                                            style="
-                                                                margin-left: 2px;
-                                                            "
-                                                        />
-                                                    </j-tooltip>
-                                                </template>
-                                                <j-select
-                                                    v-model:value="
-                                                        cluster.configuration
-                                                            .port
-                                                    "
-                                                    :options="
-                                                        portOptionsIndex[index]
-                                                    "
-                                                    placeholder="请选择本地端口"
-                                                    allowClear
-                                                    show-search
-                                                    :filter-option="
-                                                        filterPortOption
-                                                    "
-                                                />
-                                            </j-form-item>
-                                        </j-col>
-                                        <j-col
-                                            :span="12"
-                                            v-if="
-                                                isVisible(
-                                                    'publicHost',
-                                                    formData.type,
-                                                )
-                                            "
-                                        >
-                                            <j-form-item
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-
-                                                    'publicHost',
-                                                ]"
-                                                :rules="Rules.publicHost"
-                                            >
-                                                <template #label>
-                                                    公网地址
-                                                    <j-tooltip
-                                                        title="对外提供访问的地址,内网环境时填写服务器的内网IP地址"
-                                                    >
-                                                        <AIcon
-                                                            type="QuestionCircleOutlined"
-                                                            style="
-                                                                margin-left: 2px;
-                                                            "
-                                                        />
-                                                    </j-tooltip>
-                                                </template>
-                                                <j-input
-                                                    v-model:value="
-                                                        cluster.configuration
-                                                            .publicHost
-                                                    "
-                                                    placeholder="请输入公网地址"
-                                                    allowClear
-                                                />
-                                            </j-form-item>
-                                        </j-col>
-                                        <j-col
-                                            :span="12"
-                                            v-if="
-                                                isVisible(
-                                                    'publicPort',
-                                                    formData.type,
-                                                )
-                                            "
-                                        >
-                                            <j-form-item
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-                                                    'publicPort',
-                                                ]"
-                                                :rules="Rules.publicPort"
-                                            >
-                                                <template #label>
-                                                    公网端口
-                                                    <j-tooltip
-                                                        title="对外提供访问的端口"
-                                                    >
-                                                        <AIcon
-                                                            type="QuestionCircleOutlined"
-                                                            style="
-                                                                margin-left: 2px;
-                                                            "
-                                                        />
-                                                    </j-tooltip>
-                                                </template>
-                                                <j-input-number
-                                                    style="width: 100%"
-                                                    placeholder="请输入端口"
-                                                    v-model:value="
-                                                        cluster.configuration
-                                                            .publicPort
-                                                    "
-                                                    :min="1"
-                                                    :max="65535"
-                                                />
-                                            </j-form-item>
-                                        </j-col>
-                                        <j-col
-                                            :span="12"
-                                            v-if="
-                                                isVisible(
-                                                    'remoteHost',
-                                                    formData.type,
-                                                )
-                                            "
-                                        >
-                                            <j-form-item
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-                                                    'remoteHost',
-                                                ]"
-                                                :rules="Rules.remoteHost"
-                                                label="远程地址"
-                                            >
-                                                <j-input
-                                                    placeholder="请输入远程地址"
-                                                    v-model:value="
-                                                        cluster.configuration
-                                                            .remoteHost
-                                                    "
-                                                />
-                                            </j-form-item>
-                                        </j-col>
-                                        <j-col
-                                            :span="12"
-                                            v-if="
-                                                isVisible(
-                                                    'remotePort',
-                                                    formData.type,
-                                                )
-                                            "
-                                        >
-                                            <j-form-item
-                                                label="远程端口"
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-                                                    'remotePort',
-                                                ]"
-                                                :rules="Rules.remotePort"
-                                            >
-                                                <j-input-number
-                                                    style="width: 100%"
-                                                    placeholder="请输入远程端口"
-                                                    v-model:value="
-                                                        cluster.configuration
-                                                            .remotePort
-                                                    "
-                                                    :min="1"
-                                                    :max="65535"
-                                                />
-                                            </j-form-item>
-                                        </j-col>
-                                        <j-col
-                                            :span="12"
-                                            v-if="
-                                                isVisible(
-                                                    'clientId',
-                                                    formData.type,
-                                                )
-                                            "
-                                        >
-                                            <j-form-item
-                                                label="clientId"
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-                                                    'clientId',
-                                                ]"
-                                                :rules="Rules.clientId"
-                                            >
-                                                <j-input
-                                                    v-model:value="
-                                                        cluster.configuration
-                                                            .clientId
-                                                    "
-                                                    placeholder="请输入ClientId"
-                                                />
-                                            </j-form-item>
-                                        </j-col>
-
-                                        <j-col
-                                            :span="12"
-                                            v-if="
-                                                isVisible(
-                                                    'username',
-                                                    formData.type,
-                                                )
-                                            "
-                                        >
-                                            <j-form-item
-                                                label="用户名"
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-                                                    'username',
-                                                ]"
-                                                :rules="Rules.username"
-                                            >
-                                                <j-input
-                                                    v-model:value="
-                                                        cluster.configuration
-                                                            .username
-                                                    "
-                                                    placeholder="请输入用户名"
-                                                />
-                                            </j-form-item>
-                                        </j-col>
-                                        <j-col
-                                            :span="12"
-                                            v-if="
-                                                isVisible(
-                                                    'password',
-                                                    formData.type,
-                                                )
-                                            "
-                                        >
-                                            <j-form-item
-                                                label="密码"
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-                                                    'password',
-                                                ]"
-                                                :rules="Rules.password"
-                                            >
-                                                <j-input-password
-                                                    v-model:value="
-                                                        cluster.configuration
-                                                            .password
-                                                    "
-                                                    placeholder="请输入密码"
-                                                />
-                                            </j-form-item>
-                                        </j-col>
-                                        <j-col
-                                            :span="12"
-                                            v-if="
-                                                isVisible(
-                                                    'topicPrefix',
-                                                    formData.type,
-                                                )
-                                            "
-                                        >
-                                            <j-form-item
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-                                                    'topicPrefix',
-                                                ]"
-                                                :rules="Rules.topicPrefix"
-                                            >
-                                                <template #label>
-                                                    订阅前缀
-                                                    <j-tooltip
-                                                        title="当连接的服务为EMQ时,可能需要使用共享的订阅前缀,如:$queue或$share"
-                                                    >
-                                                        <AIcon
-                                                            type="QuestionCircleOutlined"
-                                                            style="
-                                                                margin-left: 2px;
-                                                            "
-                                                        />
-                                                    </j-tooltip>
-                                                </template>
-                                                <j-input
-                                                    v-model:value="
-                                                        cluster.configuration
-                                                            .topicPrefix
-                                                    "
-                                                    placeholder="请输入订阅前缀"
-                                                />
-                                            </j-form-item>
-                                        </j-col>
-
-                                        <j-col
-                                            :span="12"
-                                            v-if="
-                                                isVisible(
-                                                    'maxMessageSize',
-                                                    formData.type,
-                                                )
-                                            "
-                                        >
-                                            <j-form-item
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-                                                    'maxMessageSize',
-                                                ]"
-                                                :rules="Rules.maxMessageSize"
-                                            >
-                                                <template #label>
-                                                    最大消息长度
-                                                    <j-tooltip
-                                                        title="单次收发消息的最大长度,单位:字节;设置过大可能会影响性能"
-                                                    >
-                                                        <AIcon
-                                                            type="QuestionCircleOutlined"
-                                                            style="
-                                                                margin-left: 2px;
-                                                            "
-                                                        />
-                                                    </j-tooltip>
-                                                </template>
-                                                <j-input-number
-                                                    style="width: 100%"
-                                                    v-model:value="
-                                                        cluster.configuration
-                                                            .maxMessageSize
-                                                    "
-                                                    placeholder="请输入最大消息长度"
-                                                    :min="1024"
-                                                    :max="1073741824"
-                                                />
-                                            </j-form-item>
-                                        </j-col>
-                                        <j-col :span="24">
-                                            <j-form-item
-                                                :label="
+                                                    </j-select>
+                                                </j-form-item>
+                                            </j-col>
+                                            <j-col
+                                                :span="12"
+                                                v-if="
                                                     isVisible(
-                                                        'secure',
+                                                        'host',
                                                         formData.type,
                                                     )
-                                                        ? '开启DTLS'
-                                                        : '开启TLS'
-                                                "
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-                                                    'secure',
-                                                ]"
-                                                :rules="Rules.secure"
-                                            >
-                                                <j-radio-group
-                                                    v-model:value="
-                                                        cluster.configuration
-                                                            .secure
-                                                    "
-                                                >
-                                                    <j-radio :value="true"
-                                                        >是</j-radio
-                                                    >
-                                                    <j-radio :value="false"
-                                                        >否</j-radio
-                                                    >
-                                                </j-radio-group>
-                                            </j-form-item>
-                                        </j-col>
-                                        <div class="form2-row">
-                                            <j-col
-                                                :span="12"
-                                                v-if="
-                                                    cluster.configuration.secure
                                                 "
                                             >
                                                 <j-form-item
-                                                    label="证书"
                                                     :name="[
                                                         'cluster',
                                                         index,
                                                         'configuration',
-                                                        'certId',
+                                                        'host',
                                                     ]"
-                                                    :rules="Rules.certId"
-                                                    class="form2-left"
+                                                    :rules="Rules.host"
                                                 >
+                                                    <template #label>
+                                                        本地地址
+                                                        <j-tooltip
+                                                            title="绑定到服务器上的网卡地址,绑定到所有网卡:0.0.0.0"
+                                                        >
+                                                            <AIcon
+                                                                type="QuestionCircleOutlined"
+                                                                style="
+                                                                    margin-left: 2px;
+                                                                "
+                                                            />
+                                                        </j-tooltip>
+                                                    </template>
                                                     <j-select
                                                         v-model:value="
                                                             cluster
                                                                 .configuration
-                                                                .certId
+                                                                .host
                                                         "
-                                                        :options="certIdOptions"
-                                                        placeholder="请选择证书"
+                                                        :options="
+                                                            hostOptionsIndex[
+                                                                index
+                                                            ]
+                                                        "
+                                                        placeholder="请选择本地地址"
                                                         allowClear
                                                         show-search
+                                                        :disabled="shareCluster"
                                                         :filter-option="
                                                             filterOption
                                                         "
-                                                    />
-                                                </j-form-item>
-                                            </j-col>
-                                            <j-col
-                                                :span="12"
-                                                v-if="
-                                                    cluster.configuration.secure
-                                                "
-                                            >
-                                                <j-form-item
-                                                    label="私钥别名"
-                                                    :name="[
-                                                        'cluster',
-                                                        index,
-                                                        'configuration',
-                                                        'privateKeyAlias',
-                                                    ]"
-                                                    :rules="
-                                                        Rules.privateKeyAlias
-                                                    "
-                                                    class="form2-right"
-                                                >
-                                                    <j-input
-                                                        v-model:value="
-                                                            cluster
-                                                                .configuration
-                                                                .privateKeyAlias
-                                                        "
-                                                        placeholder="请输入私钥别名"
-                                                    />
-                                                </j-form-item>
-                                            </j-col>
-                                        </div>
-
-                                        <j-col
-                                            :span="24"
-                                            v-if="
-                                                isVisible(
-                                                    'parserType',
-                                                    formData.type,
-                                                )
-                                            "
-                                        >
-                                            <j-form-item
-                                                :name="[
-                                                    'cluster',
-                                                    index,
-                                                    'configuration',
-                                                    'parserType',
-                                                ]"
-                                                :rules="Rules.parserType"
-                                            >
-                                                <template #label>
-                                                    粘拆包规则
-                                                    <j-tooltip
-                                                        title="处理TCP粘拆包的方式"
-                                                    >
-                                                        <AIcon
-                                                            type="QuestionCircleOutlined"
-                                                            style="
-                                                                margin-left: 2px;
-                                                            "
-                                                        />
-                                                    </j-tooltip>
-                                                </template>
-                                                <j-select
-                                                    style="width: 48.5%"
-                                                    v-model:value="
-                                                        cluster.configuration
-                                                            .parserType
-                                                    "
-                                                    :options="ParserTypeOptions"
-                                                    placeholder="请选择粘拆包规则"
-                                                    allowClear
-                                                    show-search
-                                                    :filter-option="
-                                                        filterOption
-                                                    "
-                                                    @change="
-                                                        changeParserType(
-                                                            cluster
-                                                                .configuration
-                                                                .parserType,
-                                                            index,
-                                                        )
-                                                    "
-                                                />
-                                            </j-form-item>
-                                        </j-col>
-                                        <div class="form2-row">
-                                            <j-col
-                                                :span="12"
-                                                v-if="
-                                                    isVisible(
-                                                        'delimited',
-                                                        cluster.configuration
-                                                            .parserType,
-                                                    )
-                                                "
-                                            >
-                                                <j-form-item
-                                                    label="分隔符"
-                                                    :name="[
-                                                        'cluster',
-                                                        index,
-                                                        'configuration',
-                                                        'parserConfiguration',
-                                                        'delimited',
-                                                    ]"
-                                                    :rules="Rules.delimited"
-                                                    class="form2-left"
-                                                >
-                                                    <j-input
-                                                        v-model:value="
-                                                            cluster
-                                                                .configuration
-                                                                .parserConfiguration
-                                                                .delimited
-                                                        "
-                                                        placeholder="请输入分隔符"
-                                                    />
-                                                </j-form-item>
-                                            </j-col>
-
-                                            <!-- <j-col
-                                                :span="24"
-                                                v-if="
-                                                    isVisible(
-                                                        'lang',
-                                                        cluster.configuration
-                                                            .parserType,
-                                                    )
-                                                "
-                                            >
-                                                <j-form-item
-                                                    v-show="false"
-                                                    label="脚本语言"
-                                                    :name="[
-                                                        'cluster',
-                                                        index,
-                                                        'configuration',
-                                                        'parserConfiguration',
-                                                        'lang',
-                                                    ]"
-                                                    class="form2-left"
-                                                >
-                                                    <j-input
-                                                        v-model:value="
-                                                            cluster
-                                                                .configuration
-                                                                .parserConfiguration
-                                                                .lang
-                                                        "
-                                                    />
-                                                </j-form-item>
-                                            </j-col> -->
-                                            <j-col
-                                                :span="24"
-                                                v-if="
-                                                    isVisible(
-                                                        'script',
-                                                        cluster.configuration
-                                                            .parserType,
-                                                    )
-                                                "
-                                            >
-                                                <j-form-item
-                                                    label="解析脚本"
-                                                    :name="[
-                                                        'cluster',
-                                                        index,
-                                                        'configuration',
-                                                        'parserConfiguration',
-                                                        'script',
-                                                    ]"
-                                                    :rules="Rules.script"
-                                                    class="form2-left form2-right"
-                                                >
-                                                    <div
-                                                        style="
-                                                            width: 100%;
-                                                            height: 400px;
-                                                        "
-                                                    >
-                                                        <j-monaco-editor
-                                                            theme="vs"
-                                                            v-model:modelValue="
+                                                        @change="
+                                                            changeHost(
+                                                                cluster.serverId,
                                                                 cluster
                                                                     .configuration
-                                                                    .parserConfiguration
-                                                                    .script
-                                                            "
-                                                            language="javascript"
-                                                        />
-                                                    </div>
-                                                </j-form-item>
-                                            </j-col>
-
-                                            <j-col
-                                                :span="12"
-                                                v-if="
-                                                    isVisible(
-                                                        'size',
-                                                        cluster.configuration
-                                                            .parserType,
-                                                    )
-                                                "
-                                            >
-                                                <j-form-item
-                                                    label="长度值"
-                                                    :name="[
-                                                        'cluster',
-                                                        index,
-                                                        'configuration',
-                                                        'parserConfiguration',
-                                                        'size',
-                                                    ]"
-                                                    :rules="Rules.size"
-                                                    class="form2-left"
-                                                >
-                                                    <j-input-number
-                                                        style="width: 100%"
-                                                        v-model:value="
-                                                            cluster
-                                                                .configuration
-                                                                .parserConfiguration
-                                                                .size
+                                                                    .host,
+                                                                index,
+                                                            )
                                                         "
-                                                        placeholder="请输入长度值"
-                                                    />
+                                                    >
+                                                    </j-select>
                                                 </j-form-item>
                                             </j-col>
                                             <j-col
                                                 :span="12"
                                                 v-if="
                                                     isVisible(
-                                                        'length',
-                                                        cluster.configuration
-                                                            .parserType,
+                                                        'port',
+                                                        formData.type,
                                                     )
                                                 "
                                             >
                                                 <j-form-item
-                                                    label="长度"
                                                     :name="[
                                                         'cluster',
                                                         index,
                                                         'configuration',
-                                                        'parserConfiguration',
-                                                        'length',
+                                                        'port',
                                                     ]"
-                                                    :rules="Rules.length"
-                                                    class="form2-left"
+                                                    :rules="Rules.port"
                                                 >
+                                                    <template #label>
+                                                        本地端口
+                                                        <j-tooltip
+                                                            title="监听指定端口的请求"
+                                                        >
+                                                            <AIcon
+                                                                type="QuestionCircleOutlined"
+                                                                style="
+                                                                    margin-left: 2px;
+                                                                "
+                                                            />
+                                                        </j-tooltip>
+                                                    </template>
                                                     <j-select
-                                                        style="width: 100%"
                                                         v-model:value="
                                                             cluster
                                                                 .configuration
-                                                                .parserConfiguration
-                                                                .length
+                                                                .port
                                                         "
-                                                        :options="LengthOptions"
-                                                        placeholder="请选择长度"
+                                                        :options="
+                                                            portOptionsIndex[
+                                                                index
+                                                            ]
+                                                        "
+                                                        placeholder="请选择本地端口"
                                                         allowClear
                                                         show-search
                                                         :filter-option="
-                                                            filterOption
+                                                            filterPortOption
                                                         "
                                                     />
                                                 </j-form-item>
@@ -913,34 +295,85 @@
                                                 :span="12"
                                                 v-if="
                                                     isVisible(
-                                                        'offset',
-                                                        cluster.configuration
-                                                            .parserType,
+                                                        'publicHost',
+                                                        formData.type,
                                                     )
                                                 "
                                             >
                                                 <j-form-item
-                                                    label="偏移量"
                                                     :name="[
                                                         'cluster',
                                                         index,
                                                         'configuration',
-                                                        'parserConfiguration',
-                                                        'offset',
+
+                                                        'publicHost',
                                                     ]"
-                                                    :rules="Rules.offset"
-                                                    class="form2-right"
+                                                    :rules="Rules.publicHost"
                                                 >
-                                                    <j-input-number
-                                                        style="width: 100%"
+                                                    <template #label>
+                                                        公网地址
+                                                        <j-tooltip
+                                                            title="对外提供访问的地址,内网环境时填写服务器的内网IP地址"
+                                                        >
+                                                            <AIcon
+                                                                type="QuestionCircleOutlined"
+                                                                style="
+                                                                    margin-left: 2px;
+                                                                "
+                                                            />
+                                                        </j-tooltip>
+                                                    </template>
+                                                    <j-input
                                                         v-model:value="
                                                             cluster
                                                                 .configuration
-                                                                .parserConfiguration
-                                                                .offset
+                                                                .publicHost
                                                         "
-                                                        placeholder="请输入偏移量"
-                                                        :min="0"
+                                                        placeholder="请输入公网地址"
+                                                        allowClear
+                                                    />
+                                                </j-form-item>
+                                            </j-col>
+                                            <j-col
+                                                :span="12"
+                                                v-if="
+                                                    isVisible(
+                                                        'publicPort',
+                                                        formData.type,
+                                                    )
+                                                "
+                                            >
+                                                <j-form-item
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'configuration',
+                                                        'publicPort',
+                                                    ]"
+                                                    :rules="Rules.publicPort"
+                                                >
+                                                    <template #label>
+                                                        公网端口
+                                                        <j-tooltip
+                                                            title="对外提供访问的端口"
+                                                        >
+                                                            <AIcon
+                                                                type="QuestionCircleOutlined"
+                                                                style="
+                                                                    margin-left: 2px;
+                                                                "
+                                                            />
+                                                        </j-tooltip>
+                                                    </template>
+                                                    <j-input-number
+                                                        style="width: 100%"
+                                                        placeholder="请输入端口"
+                                                        v-model:value="
+                                                            cluster
+                                                                .configuration
+                                                                .publicPort
+                                                        "
+                                                        :min="1"
                                                         :max="65535"
                                                     />
                                                 </j-form-item>
@@ -949,86 +382,722 @@
                                                 :span="12"
                                                 v-if="
                                                     isVisible(
-                                                        'little',
-                                                        cluster.configuration
-                                                            .parserType,
+                                                        'remoteHost',
+                                                        formData.type,
                                                     )
                                                 "
                                             >
                                                 <j-form-item
-                                                    label="大小端"
                                                     :name="[
                                                         'cluster',
                                                         index,
                                                         'configuration',
-                                                        'parserConfiguration',
-                                                        'little',
+                                                        'remoteHost',
                                                     ]"
-                                                    class="form2-left"
+                                                    :rules="Rules.remoteHost"
+                                                    label="远程地址"
                                                 >
-                                                    <j-select
+                                                    <j-input
+                                                        placeholder="请输入远程地址"
+                                                        v-model:value="
+                                                            cluster
+                                                                .configuration
+                                                                .remoteHost
+                                                        "
+                                                    />
+                                                </j-form-item>
+                                            </j-col>
+                                            <j-col
+                                                :span="12"
+                                                v-if="
+                                                    isVisible(
+                                                        'remotePort',
+                                                        formData.type,
+                                                    )
+                                                "
+                                            >
+                                                <j-form-item
+                                                    label="远程端口"
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'configuration',
+                                                        'remotePort',
+                                                    ]"
+                                                    :rules="Rules.remotePort"
+                                                >
+                                                    <j-input-number
+                                                        style="width: 100%"
+                                                        placeholder="请输入远程端口"
+                                                        v-model:value="
+                                                            cluster
+                                                                .configuration
+                                                                .remotePort
+                                                        "
+                                                        :min="1"
+                                                        :max="65535"
+                                                    />
+                                                </j-form-item>
+                                            </j-col>
+                                            <j-col
+                                                :span="12"
+                                                v-if="
+                                                    isVisible(
+                                                        'clientId',
+                                                        formData.type,
+                                                    )
+                                                "
+                                            >
+                                                <j-form-item
+                                                    label="clientId"
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'configuration',
+                                                        'clientId',
+                                                    ]"
+                                                    :rules="Rules.clientId"
+                                                >
+                                                    <j-input
+                                                        v-model:value="
+                                                            cluster
+                                                                .configuration
+                                                                .clientId
+                                                        "
+                                                        placeholder="请输入ClientId"
+                                                    />
+                                                </j-form-item>
+                                            </j-col>
+
+                                            <j-col
+                                                :span="12"
+                                                v-if="
+                                                    isVisible(
+                                                        'username',
+                                                        formData.type,
+                                                    )
+                                                "
+                                            >
+                                                <j-form-item
+                                                    label="用户名"
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'configuration',
+                                                        'username',
+                                                    ]"
+                                                    :rules="Rules.username"
+                                                >
+                                                    <j-input
+                                                        v-model:value="
+                                                            cluster
+                                                                .configuration
+                                                                .username
+                                                        "
+                                                        placeholder="请输入用户名"
+                                                    />
+                                                </j-form-item>
+                                            </j-col>
+                                            <j-col
+                                                :span="12"
+                                                v-if="
+                                                    isVisible(
+                                                        'password',
+                                                        formData.type,
+                                                    )
+                                                "
+                                            >
+                                                <j-form-item
+                                                    label="密码"
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'configuration',
+                                                        'password',
+                                                    ]"
+                                                    :rules="Rules.password"
+                                                >
+                                                    <j-input-password
+                                                        v-model:value="
+                                                            cluster
+                                                                .configuration
+                                                                .password
+                                                        "
+                                                        placeholder="请输入密码"
+                                                    />
+                                                </j-form-item>
+                                            </j-col>
+                                            <j-col
+                                                :span="12"
+                                                v-if="
+                                                    isVisible(
+                                                        'topicPrefix',
+                                                        formData.type,
+                                                    )
+                                                "
+                                            >
+                                                <j-form-item
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'configuration',
+                                                        'topicPrefix',
+                                                    ]"
+                                                    :rules="Rules.topicPrefix"
+                                                >
+                                                    <template #label>
+                                                        订阅前缀
+                                                        <j-tooltip
+                                                            title="当连接的服务为EMQ时,可能需要使用共享的订阅前缀,如:$queue或$share"
+                                                        >
+                                                            <AIcon
+                                                                type="QuestionCircleOutlined"
+                                                                style="
+                                                                    margin-left: 2px;
+                                                                "
+                                                            />
+                                                        </j-tooltip>
+                                                    </template>
+                                                    <j-input
+                                                        v-model:value="
+                                                            cluster
+                                                                .configuration
+                                                                .topicPrefix
+                                                        "
+                                                        placeholder="请输入订阅前缀"
+                                                    />
+                                                </j-form-item>
+                                            </j-col>
+
+                                            <j-col
+                                                :span="12"
+                                                v-if="
+                                                    isVisible(
+                                                        'maxMessageSize',
+                                                        formData.type,
+                                                    )
+                                                "
+                                            >
+                                                <j-form-item
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'configuration',
+                                                        'maxMessageSize',
+                                                    ]"
+                                                    :rules="
+                                                        Rules.maxMessageSize
+                                                    "
+                                                >
+                                                    <template #label>
+                                                        最大消息长度
+                                                        <j-tooltip
+                                                            title="单次收发消息的最大长度,单位:字节;设置过大可能会影响性能"
+                                                        >
+                                                            <AIcon
+                                                                type="QuestionCircleOutlined"
+                                                                style="
+                                                                    margin-left: 2px;
+                                                                "
+                                                            />
+                                                        </j-tooltip>
+                                                    </template>
+                                                    <j-input-number
                                                         style="width: 100%"
                                                         v-model:value="
                                                             cluster
                                                                 .configuration
-                                                                .parserConfiguration
-                                                                .little
+                                                                .maxMessageSize
                                                         "
-                                                        :options="LittleOptions"
-                                                        placeholder="请选择大小端"
+                                                        placeholder="请输入最大消息长度"
+                                                        :min="1024"
+                                                        :max="1073741824"
+                                                    />
+                                                </j-form-item>
+                                            </j-col>
+                                            <j-col :span="24">
+                                                <j-form-item
+                                                    :label="
+                                                        isVisible(
+                                                            'secure',
+                                                            formData.type,
+                                                        )
+                                                            ? '开启DTLS'
+                                                            : '开启TLS'
+                                                    "
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'configuration',
+                                                        'secure',
+                                                    ]"
+                                                    :rules="Rules.secure"
+                                                    @change="
+                                                        changeSecure(
+                                                            cluster
+                                                                .configuration
+                                                                .secure,
+                                                            index,
+                                                        )
+                                                    "
+                                                >
+                                                    <j-radio-group
+                                                        v-model:value="
+                                                            cluster
+                                                                .configuration
+                                                                .secure
+                                                        "
+                                                    >
+                                                        <j-radio :value="true"
+                                                            >是</j-radio
+                                                        >
+                                                        <j-radio :value="false"
+                                                            >否</j-radio
+                                                        >
+                                                    </j-radio-group>
+                                                </j-form-item>
+                                            </j-col>
+                                            <div class="form2-row">
+                                                <j-col
+                                                    :span="12"
+                                                    v-if="
+                                                        cluster.configuration
+                                                            .secure
+                                                    "
+                                                >
+                                                    <j-form-item
+                                                        label="证书"
+                                                        :name="[
+                                                            'cluster',
+                                                            index,
+                                                            'configuration',
+                                                            'certId',
+                                                        ]"
+                                                        :rules="Rules.certId"
+                                                        class="form2-left"
+                                                    >
+                                                        <j-select
+                                                            v-model:value="
+                                                                cluster
+                                                                    .configuration
+                                                                    .certId
+                                                            "
+                                                            :options="
+                                                                certIdOptions
+                                                            "
+                                                            placeholder="请选择证书"
+                                                            allowClear
+                                                            show-search
+                                                            :filter-option="
+                                                                filterOption
+                                                            "
+                                                        />
+                                                    </j-form-item>
+                                                </j-col>
+                                                <j-col
+                                                    :span="12"
+                                                    v-if="
+                                                        cluster.configuration
+                                                            .secure
+                                                    "
+                                                >
+                                                    <j-form-item
+                                                        label="私钥别名"
+                                                        :name="[
+                                                            'cluster',
+                                                            index,
+                                                            'configuration',
+                                                            'privateKeyAlias',
+                                                        ]"
+                                                        :rules="
+                                                            Rules.privateKeyAlias
+                                                        "
+                                                        class="form2-right"
+                                                    >
+                                                        <j-input
+                                                            v-model:value="
+                                                                cluster
+                                                                    .configuration
+                                                                    .privateKeyAlias
+                                                            "
+                                                            placeholder="请输入私钥别名"
+                                                        />
+                                                    </j-form-item>
+                                                </j-col>
+                                            </div>
+
+                                            <j-col
+                                                :span="24"
+                                                v-if="
+                                                    isVisible(
+                                                        'parserType',
+                                                        formData.type,
+                                                    )
+                                                "
+                                            >
+                                                <j-form-item
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'configuration',
+                                                        'parserType',
+                                                    ]"
+                                                    :rules="Rules.parserType"
+                                                >
+                                                    <template #label>
+                                                        粘拆包规则
+                                                        <j-tooltip
+                                                            title="处理TCP粘拆包的方式"
+                                                        >
+                                                            <AIcon
+                                                                type="QuestionCircleOutlined"
+                                                                style="
+                                                                    margin-left: 2px;
+                                                                "
+                                                            />
+                                                        </j-tooltip>
+                                                    </template>
+                                                    <j-select
+                                                        style="width: 48.5%"
+                                                        v-model:value="
+                                                            cluster
+                                                                .configuration
+                                                                .parserType
+                                                        "
+                                                        :options="
+                                                            ParserTypeOptions
+                                                        "
+                                                        placeholder="请选择粘拆包规则"
                                                         allowClear
                                                         show-search
                                                         :filter-option="
                                                             filterOption
                                                         "
+                                                        @change="
+                                                            changeParserType(
+                                                                cluster
+                                                                    .configuration
+                                                                    .parserType,
+                                                                index,
+                                                            )
+                                                        "
                                                     />
                                                 </j-form-item>
                                             </j-col>
-                                        </div>
-                                    </j-row>
-                                </j-collapse-panel>
-                            </j-collapse>
-                        </div>
-                        <j-form-item v-if="!shareCluster">
-                            <j-button
-                                type="primary"
-                                block
-                                ghost
-                                @click="addCluster"
-                            >
-                                <AIcon type="PlusOutlined" />
-                                新增
-                            </j-button>
-                        </j-form-item>
-                    </j-form>
+                                            <div class="form2-row">
+                                                <j-col
+                                                    :span="12"
+                                                    v-if="
+                                                        isVisible(
+                                                            'delimited',
+                                                            cluster
+                                                                .configuration
+                                                                .parserType,
+                                                        )
+                                                    "
+                                                >
+                                                    <j-form-item
+                                                        label="分隔符"
+                                                        :name="[
+                                                            'cluster',
+                                                            index,
+                                                            'configuration',
+                                                            'parserConfiguration',
+                                                            'delimited',
+                                                        ]"
+                                                        :rules="Rules.delimited"
+                                                        class="form2-left"
+                                                    >
+                                                        <j-input
+                                                            v-model:value="
+                                                                cluster
+                                                                    .configuration
+                                                                    .parserConfiguration
+                                                                    .delimited
+                                                            "
+                                                            placeholder="请输入分隔符"
+                                                        />
+                                                    </j-form-item>
+                                                </j-col>
 
-                    <j-row :gutter="[24, 0]">
-                        <j-col :span="24">
-                            <j-form-item label="说明" name="description">
-                                <j-textarea
-                                    v-model:value="formData.description"
-                                    show-count
-                                    :maxlength="200"
-                                    :rows="4"
-                                /> </j-form-item
-                        ></j-col>
-                    </j-row>
-                </j-form>
-            </div>
-            <div class="footer">
-                <PermissionButton
-                    v-if="view === 'false'"
-                    type="primary"
-                    @click="saveData"
-                    :loading="loading"
-                    :hasPermission="`link/Type:${
-                        id !== ':id' ? 'update' : 'add'
-                    }`"
-                >
-                    保存
-                </PermissionButton>
-            </div>
-        </j-card>
+                                                <!-- <j-col
+                                    :span="24"
+                                    v-if="
+                                        isVisible(
+                                            'lang',
+                                            cluster.configuration
+                                                .parserType,
+                                        )
+                                    "
+                                >
+                                    <j-form-item
+                                        v-show="false"
+                                        label="脚本语言"
+                                        :name="[
+                                            'cluster',
+                                            index,
+                                            'configuration',
+                                            'parserConfiguration',
+                                            'lang',
+                                        ]"
+                                        class="form2-left"
+                                    >
+                                        <j-input
+                                            v-model:value="
+                                                cluster
+                                                    .configuration
+                                                    .parserConfiguration
+                                                    .lang
+                                            "
+                                        />
+                                    </j-form-item>
+                                </j-col> -->
+                                                <j-col
+                                                    :span="24"
+                                                    v-if="
+                                                        isVisible(
+                                                            'script',
+                                                            cluster
+                                                                .configuration
+                                                                .parserType,
+                                                        )
+                                                    "
+                                                >
+                                                    <j-form-item
+                                                        label="解析脚本"
+                                                        :name="[
+                                                            'cluster',
+                                                            index,
+                                                            'configuration',
+                                                            'parserConfiguration',
+                                                            'script',
+                                                        ]"
+                                                        :rules="Rules.script"
+                                                        class="form2-left form2-right"
+                                                    >
+                                                        <div
+                                                            style="
+                                                                width: 100%;
+                                                                height: 400px;
+                                                            "
+                                                        >
+                                                            <j-monaco-editor
+                                                                theme="vs"
+                                                                v-model:modelValue="
+                                                                    cluster
+                                                                        .configuration
+                                                                        .parserConfiguration
+                                                                        .script
+                                                                "
+                                                                language="javascript"
+                                                            />
+                                                        </div>
+                                                    </j-form-item>
+                                                </j-col>
+
+                                                <j-col
+                                                    :span="12"
+                                                    v-if="
+                                                        isVisible(
+                                                            'size',
+                                                            cluster
+                                                                .configuration
+                                                                .parserType,
+                                                        )
+                                                    "
+                                                >
+                                                    <j-form-item
+                                                        label="长度值"
+                                                        :name="[
+                                                            'cluster',
+                                                            index,
+                                                            'configuration',
+                                                            'parserConfiguration',
+                                                            'size',
+                                                        ]"
+                                                        :rules="Rules.size"
+                                                        class="form2-left"
+                                                    >
+                                                        <j-input-number
+                                                            style="width: 100%"
+                                                            v-model:value="
+                                                                cluster
+                                                                    .configuration
+                                                                    .parserConfiguration
+                                                                    .size
+                                                            "
+                                                            placeholder="请输入长度值"
+                                                        />
+                                                    </j-form-item>
+                                                </j-col>
+                                                <j-col
+                                                    :span="12"
+                                                    v-if="
+                                                        isVisible(
+                                                            'length',
+                                                            cluster
+                                                                .configuration
+                                                                .parserType,
+                                                        )
+                                                    "
+                                                >
+                                                    <j-form-item
+                                                        label="长度"
+                                                        :name="[
+                                                            'cluster',
+                                                            index,
+                                                            'configuration',
+                                                            'parserConfiguration',
+                                                            'length',
+                                                        ]"
+                                                        :rules="Rules.length"
+                                                        class="form2-left"
+                                                    >
+                                                        <j-select
+                                                            style="width: 100%"
+                                                            v-model:value="
+                                                                cluster
+                                                                    .configuration
+                                                                    .parserConfiguration
+                                                                    .length
+                                                            "
+                                                            :options="
+                                                                LengthOptions
+                                                            "
+                                                            placeholder="请选择长度"
+                                                            allowClear
+                                                            show-search
+                                                            :filter-option="
+                                                                filterOption
+                                                            "
+                                                        />
+                                                    </j-form-item>
+                                                </j-col>
+                                                <j-col
+                                                    :span="12"
+                                                    v-if="
+                                                        isVisible(
+                                                            'offset',
+                                                            cluster
+                                                                .configuration
+                                                                .parserType,
+                                                        )
+                                                    "
+                                                >
+                                                    <j-form-item
+                                                        label="偏移量"
+                                                        :name="[
+                                                            'cluster',
+                                                            index,
+                                                            'configuration',
+                                                            'parserConfiguration',
+                                                            'offset',
+                                                        ]"
+                                                        :rules="Rules.offset"
+                                                        class="form2-right"
+                                                    >
+                                                        <j-input-number
+                                                            style="width: 100%"
+                                                            v-model:value="
+                                                                cluster
+                                                                    .configuration
+                                                                    .parserConfiguration
+                                                                    .offset
+                                                            "
+                                                            placeholder="请输入偏移量"
+                                                            :min="0"
+                                                            :max="65535"
+                                                        />
+                                                    </j-form-item>
+                                                </j-col>
+                                                <j-col
+                                                    :span="12"
+                                                    v-if="
+                                                        isVisible(
+                                                            'little',
+                                                            cluster
+                                                                .configuration
+                                                                .parserType,
+                                                        )
+                                                    "
+                                                >
+                                                    <j-form-item
+                                                        label="大小端"
+                                                        :name="[
+                                                            'cluster',
+                                                            index,
+                                                            'configuration',
+                                                            'parserConfiguration',
+                                                            'little',
+                                                        ]"
+                                                        class="form2-left"
+                                                    >
+                                                        <j-select
+                                                            style="width: 100%"
+                                                            v-model:value="
+                                                                cluster
+                                                                    .configuration
+                                                                    .parserConfiguration
+                                                                    .little
+                                                            "
+                                                            :options="
+                                                                LittleOptions
+                                                            "
+                                                            placeholder="请选择大小端"
+                                                            allowClear
+                                                            show-search
+                                                            :filter-option="
+                                                                filterOption
+                                                            "
+                                                        />
+                                                    </j-form-item>
+                                                </j-col>
+                                            </div>
+                                        </j-row>
+                                    </j-collapse-panel>
+                                </j-collapse>
+                            </div>
+                            <j-form-item v-if="!shareCluster">
+                                <j-button
+                                    type="primary"
+                                    block
+                                    ghost
+                                    @click="addCluster"
+                                >
+                                    <AIcon type="PlusOutlined" />
+                                    新增
+                                </j-button>
+                            </j-form-item>
+                        </j-form>
+
+                        <j-row :gutter="[24, 0]">
+                            <j-col :span="24">
+                                <j-form-item label="说明" name="description">
+                                    <j-textarea
+                                        v-model:value="formData.description"
+                                        show-count
+                                        :maxlength="200"
+                                        :rows="4"
+                                    /> </j-form-item
+                            ></j-col>
+                        </j-row>
+                    </j-form>
+                </div>
+                <div class="footer">
+                    <PermissionButton
+                        v-if="view === 'false'"
+                        type="primary"
+                        @click="saveData"
+                        :loading="loading"
+                        :hasPermission="`link/Type:${
+                            id !== ':id' ? 'update' : 'add'
+                        }`"
+                    >
+                        保存
+                    </PermissionButton>
+                </div>
+            </j-card>
+        </FullPage>
     </page-container>
 </template>
 
@@ -1045,6 +1114,8 @@ import {
     start,
 } from '@/api/link/type';
 import {
+    ParserConfiguration,
+    Configuration,
     FormStates,
     FormStates2,
     ParserTypeOptions,
@@ -1193,9 +1264,19 @@ const changeHost = (
 };
 
 const changeParserType = (value: string | undefined, index: number) => {
-    const { parserConfiguration } =
-        dynamicValidateForm.cluster[index].configuration;
-    value === 'SCRIPT' ? (parserConfiguration.lang = 'javascript') : '';
+    const configuration: any = dynamicValidateForm.cluster[index].configuration;
+    configuration.parserConfiguration = cloneDeep(ParserConfiguration);
+    value === 'SCRIPT'
+        ? (configuration.parserConfiguration.lang = 'javascript')
+        : '';
+};
+const changeSecure = (value: string | undefined, index: number) => {
+    if (!value) {
+        const configuration: any =
+            dynamicValidateForm.cluster[index].configuration;
+        configuration.certId = undefined;
+        configuration.privateKeyAlias = '';
+    }
 };
 
 const saveData = async () => {
@@ -1280,10 +1361,15 @@ const getDetail = () => {
                 shareCluster.value = result.shareCluster;
                 activeKey.value = ['1'];
                 if (result.shareCluster) {
-                    dynamicValidateForm.cluster[0].configuration =
-                        configuration;
+                    dynamicValidateForm.cluster[0].configuration = {
+                        ...cloneDeep(Configuration), //防止编辑时，表单字段不完善，导致输入/选择框新出现时找不到
+                        ...configuration,
+                    };
                 } else {
-                    dynamicValidateForm.cluster = cluster;
+                    dynamicValidateForm.cluster = {
+                        ...cloneDeep(FormStates2), //同上
+                        ...cluster,
+                    };
                 }
 
                 if (dynamicValidateForm.cluster.length === 1) {

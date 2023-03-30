@@ -35,7 +35,7 @@
           <ValueItem
             v-model:modelValue='record.value'
             :itemType="record.type"
-            :options="handleOptions(record)"
+            :options="record.options"
             @change='valueChange'
           />
         </div>
@@ -86,17 +86,6 @@ const columns = [
     width: 260
   },
 ]
-
-const handleOptions = (record: any) => {
-  switch(record.type) {
-    case 'enum':
-      return (record?.options?.elements || []).map((item: any) => ({ label: item.text, value: item.value }))
-    case 'boolean':
-      return record?.options
-    default:
-      return undefined
-  }
-}
 
 const valueChange = () => {
   const _value = dataSource.value.map(item => {
