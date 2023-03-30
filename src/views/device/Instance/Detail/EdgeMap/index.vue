@@ -1,6 +1,6 @@
 <template>
     <j-spin :spinning="loading" v-if="metadata.properties.length">
-        <j-card>
+        <j-card :bordered="false" style="padding: 0">
             <template #extra>
                 <j-space>
                     <j-button @click="visible = true">批量映射</j-button>
@@ -188,7 +188,7 @@
             :edgeId="instanceStore.current.parentId"
         />
     </j-spin>
-    <j-card v-else>
+    <j-card v-else :bordered="false" style="padding: 0">
         <JEmpty description="暂无数据，请配置物模型" style="margin: 10% 0" />
     </j-card>
 </template>

@@ -8,7 +8,9 @@
         <template #title>
             <div style="display: flex; align-items: center">
                 <j-tooltip :title="instanceStore.current?.name">
-                    <div class="deviceDetailHead">{{ instanceStore.current?.name }}</div>
+                    <div class="deviceDetailHead">
+                        {{ instanceStore.current?.name }}
+                    </div>
                 </j-tooltip>
                 <j-divider type="vertical" />
                 <j-space>
@@ -95,11 +97,15 @@
                 style="margin-right: 20px; cursor: pointer"
             />
         </template>
-        <component
-            :is="tabs[instanceStore.tabActiveKey]"
-            v-bind="{ type: 'device' }"
-            @onJump="onTabChange"
-        />
+        <FullPage>
+            <j-card :bordered="false">
+                <component
+                    :is="tabs[instanceStore.tabActiveKey]"
+                    v-bind="{ type: 'device' }"
+                    @onJump="onTabChange"
+                />
+            </j-card>
+        </FullPage>
     </page-container>
 </template>
 
@@ -121,12 +127,12 @@ import { message } from 'jetlinks-ui-components';
 import { getImage } from '@/utils/comm';
 import { getWebSocket } from '@/utils/websocket';
 import { useMenuStore } from '@/store/menu';
-import {useRouterParams} from "@/utils/hooks/useParams";
+import { useRouterParams } from '@/utils/hooks/useParams';
 
 const menuStory = useMenuStore();
 
 const route = useRoute();
-const routerParams = useRouterParams()
+const routerParams = useRouterParams();
 const instanceStore = useInstanceStore();
 
 const statusMap = new Map();
@@ -266,18 +272,18 @@ const getDetail = () => {
 // );
 
 const getDetailFn = async () => {
-  const _id = route.params?.id
-  if (_id) {
-    await instanceStore.refresh(String(_id));
-    getStatus(String(_id));
-    list.value = [...initList];
-    getDetail();
-  }
-  instanceStore.tabActiveKey = routerParams.params.value.tab || 'Info';
-}
+    const _id = route.params?.id;
+    if (_id) {
+        await instanceStore.refresh(String(_id));
+        getStatus(String(_id));
+        list.value = [...initList];
+        getDetail();
+    }
+    instanceStore.tabActiveKey = routerParams.params.value.tab || 'Info';
+};
 
 onMounted(() => {
-    getDetailFn()
+    getDetailFn();
 });
 
 const onBack = () => {

@@ -1,96 +1,84 @@
 <template>
-    <j-card>
-        <div class="diagnose">
-            <div
-                class="diagnose-header"
-                :style="{ background: headerColorMap.get(topState) }"
-            >
-                <div class="diagnose-top">
-                    <div class="diagnose-img">
-                        <div
-                            v-if="topState === 'loading'"
-                            style="
-                                width: 100%;
-                                height: 100%;
-                                position: relative;
-                            "
-                        >
-                            <img
-                                :src="headerImgMap.get(topState)"
-                                style="
-                                    height: 100%;
-                                    position: absolute;
-                                    z-index: 2;
-                                "
-                            />
-                            <img
-                                :src="getImage('/diagnose/loading-1.png')"
-                                class="diagnose-loading"
-                                style="height: 100%"
-                            />
-                        </div>
+    <div class="diagnose">
+        <div
+            class="diagnose-header"
+            :style="{ background: headerColorMap.get(topState) }"
+        >
+            <div class="diagnose-top">
+                <div class="diagnose-img">
+                    <div
+                        v-if="topState === 'loading'"
+                        style="width: 100%; height: 100%; position: relative"
+                    >
                         <img
-                            v-else
                             :src="headerImgMap.get(topState)"
+                            style="height: 100%; position: absolute; z-index: 2"
+                        />
+                        <img
+                            :src="getImage('/diagnose/loading-1.png')"
+                            class="diagnose-loading"
                             style="height: 100%"
                         />
                     </div>
-                    <div class="diagnose-text">
-                        <div class="diagnose-title">
-                            {{ headerTitleMap.get(topState) }}
-                        </div>
-                        <div class="diagnose-desc">
-                            <template v-if="topState !== 'loading'">{{
-                                headerDescMap.get(topState)
-                            }}</template>
-                            <template v-else>已诊断{{ count }}个</template>
-                        </div>
-                    </div>
-                </div>
-                <div class="diagnose-progress">
-                    <j-progress
-                        :percent="percent"
-                        :showInfo="false"
-                        size="small"
-                        :strokeColor="progressMap.get(topState)"
-                        style="width: 100%"
+                    <img
+                        v-else
+                        :src="headerImgMap.get(topState)"
+                        style="height: 100%"
                     />
                 </div>
-                <div class="diagnose-radio">
-                    <div
-                        class="diagnose-radio-item"
-                        :class="
-                            item.key === 'message' && topState !== 'success'
-                                ? 'disabled'
-                                : ''
-                        "
-                        v-for="item in tabList"
-                        :key="item.key"
-                        :style="
-                            activeKey === item.key ? { ...activeStyle } : {}
-                        "
-                        @click="onTabChange(item.key)"
-                    >
-                        {{ item.text }}
+                <div class="diagnose-text">
+                    <div class="diagnose-title">
+                        {{ headerTitleMap.get(topState) }}
+                    </div>
+                    <div class="diagnose-desc">
+                        <template v-if="topState !== 'loading'">{{
+                            headerDescMap.get(topState)
+                        }}</template>
+                        <template v-else>已诊断{{ count }}个</template>
                     </div>
                 </div>
             </div>
-            <div>
-                <template v-if="!first">
-                    <Message v-show="activeKey === 'message'" />
-                </template>
-                <template v-if="flag">
-                    <Status
-                        v-show="activeKey !== 'message'"
-                        :providerType="providerType"
-                        @countChange="countChange"
-                        @percentChange="percentChange"
-                        @stateChange="stateChange"
-                    />
-                </template>
+            <div class="diagnose-progress">
+                <j-progress
+                    :percent="percent"
+                    :showInfo="false"
+                    size="small"
+                    :strokeColor="progressMap.get(topState)"
+                    style="width: 100%"
+                />
+            </div>
+            <div class="diagnose-radio">
+                <div
+                    class="diagnose-radio-item"
+                    :class="
+                        item.key === 'message' && topState !== 'success'
+                            ? 'disabled'
+                            : ''
+                    "
+                    v-for="item in tabList"
+                    :key="item.key"
+                    :style="activeKey === item.key ? { ...activeStyle } : {}"
+                    @click="onTabChange(item.key)"
+                >
+                    {{ item.text }}
+                </div>
             </div>
         </div>
-    </j-card>
+        <div>
+            <template v-if="!first">
+                <Message v-show="activeKey === 'message'" />
+            </template>
+            <template v-if="flag">
+                <Status
+                    v-show="activeKey !== 'message'"
+                    :providerType="providerType"
+                    @countChange="countChange"
+                    @percentChange="percentChange"
+                    @stateChange="stateChange"
+                />
+            </template>
+        </div>
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -160,7 +148,7 @@ const countChange = (num: number) => {
 };
 
 const init = () => {
-    flag.value = true
+    flag.value = true;
     activeKey.value = 'status';
     const provider = instanceStore.current?.accessProvider;
     if (provider === 'fixed-media' || provider === 'gb28181-2016') {
@@ -175,16 +163,16 @@ const init = () => {
         providerType.value = 'network';
     }
     topState.value = 'loading';
-}
+};
 
 onMounted(() => {
     setTimeout(() => {
-        init()
-    }, 500)
+        init();
+    }, 500);
 });
 
 onUnmounted(() => {
-    flag.value = false
+    flag.value = false;
 });
 </script>
 

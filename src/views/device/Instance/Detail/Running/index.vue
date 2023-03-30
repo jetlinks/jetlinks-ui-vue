@@ -1,37 +1,31 @@
 <template>
-    <j-card>
-        <div class="property-box">
-            <div class="property-box-left">
-                <j-input-search
-                    v-model:value="value"
-                    placeholder="请输入事件名称"
-                    style="width: 200px; margin-bottom: 10px"
-                    @search="onSearch"
-                    :allowClear="true"
-                />
-                <j-tabs
-                    tab-position="left"
-                    style="height: 600px"
-                    v-if="tabList.length"
-                    v-model:activeKey="activeKey"
-                    :tabBarStyle="{ width: '200px' }"
-                    @change="tabChange"
-                >
-                    <j-tab-pane
-                        v-for="i in tabList"
-                        :key="i.key"
-                        :tab="i.tab"
-                    />
-                </j-tabs>
-                <JEmpty v-else style="margin: 180px 0" />
-            </div>
-            <div class="property-box-right">
-                <Event v-if="type === 'event'" :data="data" />
-                <Property v-else-if="type === 'property'" :data="properties" />
-                <JEmpty v-else style="margin: 220px 0" />
-            </div>
+    <div class="property-box">
+        <div class="property-box-left">
+            <j-input-search
+                v-model:value="value"
+                placeholder="请输入事件名称"
+                style="width: 200px; margin-bottom: 10px"
+                @search="onSearch"
+                :allowClear="true"
+            />
+            <j-tabs
+                tab-position="left"
+                style="height: 600px"
+                v-if="tabList.length"
+                v-model:activeKey="activeKey"
+                :tabBarStyle="{ width: '200px' }"
+                @change="tabChange"
+            >
+                <j-tab-pane v-for="i in tabList" :key="i.key" :tab="i.tab" />
+            </j-tabs>
+            <JEmpty v-else style="margin: 180px 0" />
         </div>
-    </j-card>
+        <div class="property-box-right">
+            <Event v-if="type === 'event'" :data="data" />
+            <Property v-else-if="type === 'property'" :data="properties" />
+            <JEmpty v-else style="margin: 220px 0" />
+        </div>
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -51,28 +45,32 @@ const tabList = ref<{ key: string; tab: string; type: 'property' | 'event' }[]>(
     ],
 );
 const type = ref<string>('property');
-const data = ref<Record<string, any>>({})
+const data = ref<Record<string, any>>({});
 const value = ref<string>('');
-const instanceStore = useInstanceStore()
-const metadata = JSON.parse(instanceStore.current?.metadata || '{}')
-const properties = metadata.properties
-const events = metadata.events
+const instanceStore = useInstanceStore();
+const metadata = JSON.parse(instanceStore.current?.metadata || '{}');
+const properties = metadata.properties;
+const events = metadata.events;
 
-watch(() => events, (newVal) => {
-    if(events && newVal.length){
-        newVal.map((item: any) => {
-            tabList.value.push({
-                ...item,
-                key: item.id,
-                tab: item.name,
-                type: 'event',
-            })
-        })
-    }
-}, {
-    deep: true,
-    immediate: true
-})
+watch(
+    () => events,
+    (newVal) => {
+        if (events && newVal.length) {
+            newVal.map((item: any) => {
+                tabList.value.push({
+                    ...item,
+                    key: item.id,
+                    tab: item.name,
+                    type: 'event',
+                });
+            });
+        }
+    },
+    {
+        deep: true,
+        immediate: true,
+    },
+);
 
 const onSearch = () => {
     const arr = [
@@ -87,33 +85,32 @@ const onSearch = () => {
                 key: item.id,
                 tab: item.name,
                 type: 'event',
-            }
-        })
-    ]
-    if(value.value){
+            };
+        }),
+    ];
+    if (value.value) {
         const li = arr.filter((i: any) => {
             return i?.tab.indexOf(value.value) !== -1;
-        })
-        tabList.value = _.cloneDeep(li)
+        });
+        tabList.value = _.cloneDeep(li);
     } else {
-        tabList.value = _.cloneDeep(arr)
+        tabList.value = _.cloneDeep(arr);
     }
-    const dt = tabList.value?.[0]
+    const dt = tabList.value?.[0];
     if (dt) {
-        data.value = dt
+        data.value = dt;
         type.value = dt.type;
     } else {
-        type.value = ''
+        type.value = '';
     }
 };
 const tabChange = (key: string) => {
     const dt = tabList.value.find((i) => i.key === key);
     if (dt) {
-        data.value = dt
+        data.value = dt;
         type.value = dt.type;
     }
 };
-
 </script>
 
 <style lang="less" scoped>

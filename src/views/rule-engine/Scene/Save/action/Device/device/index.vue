@@ -154,7 +154,7 @@ const TypeList = [
     },
     {
         label: '按变量',
-        value: 'variable',
+        value: 'context',
         image: getImage('/scene/device-variable.png'),
         tip: '选择设备ID为上游变量值的设备',
     },
@@ -236,7 +236,7 @@ const filterType = async (newVal: any) => {
             !props.parallel &&
             props.name !== 0
         ) {
-            const array = TypeList.filter((item) => item.value === 'variable');
+            const array = TypeList.filter((item) => item.value === 'context');
             _list.push(...array);
         }
         list.value = _list;
@@ -246,7 +246,7 @@ const filterType = async (newVal: any) => {
             !props.parallel &&
             props.name !== 0
         ) {
-            const array = TypeList.filter((item) => item.value === 'variable');
+            const array = TypeList.filter((item) => item.value === 'context');
             _list.push(...array);
         }
         list.value = _list;
@@ -287,7 +287,12 @@ const onTagChange = (val: any[], arr: any[]) => {
         modelRef.source = 'fixed';
     }
     const tagName = arr.map((i, _index) => {
-        const _type = (_index !== 0 && _index !== (arr || []).length && i.type) ? (i.type === 'and' ? '并且' : '或者') : '';
+        const _type =
+            _index !== 0 && _index !== (arr || []).length && i.type
+                ? i.type === 'and'
+                    ? '并且'
+                    : '或者'
+                : '';
         return `${_type}${i.name}为${i.value}`;
     });
     emits('save', unref(modelRef), { tagName: tagName.join('') });
@@ -295,6 +300,8 @@ const onTagChange = (val: any[], arr: any[]) => {
 
 const onVariableChange = (val: any, node: any) => {
     modelRef.deviceId = val;
+    modelRef.source = 'upper';
+    modelRef.upperKey = val;
     modelRef.selectorValues = [{ value: val, name: node.description }] as any;
     emits('save', unref(modelRef), { name: node.description });
 };
@@ -333,7 +340,7 @@ watch(
                 return item.children.find((i: any) => i.id === param);
             });
             if (isVariable) {
-                modelRef.selector = 'variable';
+                modelRef.selector = 'context';
             }
         }
     },
