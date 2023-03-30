@@ -328,6 +328,7 @@ const jumpProduct = () => {
 };
 
 onUnmounted(() => {
+    instanceStore.current = {} as any
     statusRef.value && statusRef.value.unsubscribe();
 });
 </script>
