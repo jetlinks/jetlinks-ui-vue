@@ -47,7 +47,7 @@
                             total: dataSource.length,
                             current: current,
                             pageSize: pageSize,
-                            pageSizeOptions: ['5', '10', '20', '50', '100'],
+                            pageSizeOptions: ['10', '20', '50', '100'],
                             showSizeChanger: true,
                             hideOnSinglePage: false,
                             showTotal: (total: number, range: number) => `第 ${range[0]} - ${range[1]} 条/总共 ${total} 条`,
@@ -399,7 +399,7 @@ const getTableData = (terms?: any) => {
  * 前端分页
  */
 const current = ref(1);
-const pageSize = ref(5);
+const pageSize = ref(10);
 const handleTableChange = (pagination: any) => {
     current.value = pagination.current;
     pageSize.value = pagination.pageSize;
