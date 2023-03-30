@@ -1,28 +1,30 @@
 <template>
     <page-container>
-        <div class="department-container">
+        <div class="department-warp">
+          <div class='department-container'>
             <div class="left">
-                <LeftTree @change="(id) => (departmentId = id)" />
+              <LeftTree @change="(id) => (departmentId = id)" />
             </div>
             <div class="right">
-                <j-tabs v-model:activeKey="activeKey" destroyInactiveTabPane>
-                    <j-tab-pane key="product" tab="产品">
-                        <Product
-                            :parentId="departmentId"
-                            @open-device-bind="openDeviceBind"
-                        />
-                    </j-tab-pane>
-                    <j-tab-pane key="device" tab="设备">
-                        <Device
-                            :parentId="departmentId"
-                            v-model:bindBool="bindBool"
-                        />
-                    </j-tab-pane>
-                    <j-tab-pane key="user" tab="用户">
-                        <User :parentId="departmentId" />
-                    </j-tab-pane>
-                </j-tabs>
+              <j-tabs v-model:activeKey="activeKey" destroyInactiveTabPane>
+                <j-tab-pane key="product" tab="产品">
+                  <Product
+                    :parentId="departmentId"
+                    @open-device-bind="openDeviceBind"
+                  />
+                </j-tab-pane>
+                <j-tab-pane key="device" tab="设备">
+                  <Device
+                    :parentId="departmentId"
+                    v-model:bindBool="bindBool"
+                  />
+                </j-tab-pane>
+                <j-tab-pane key="user" tab="用户">
+                  <User :parentId="departmentId" />
+                </j-tab-pane>
+              </j-tabs>
             </div>
+          </div>
         </div>
     </page-container>
 </template>
@@ -45,19 +47,25 @@ const openDeviceBind = () => {
 </script>
 
 <style lang="less" scoped>
-.department-container {
-    display: flex;
-    background-color: #fff;
-    padding: 24px;
+.department-warp {
+  background-color: #fff;
+  padding: 24px;
+  .department-container {
+      position: relative;
 
-    .left {
-        flex-basis: 300px;
-    }
-    .right {
-        width: calc(100% - 300px);
-        :deep(.ant-tabs-nav-wrap) {
-            padding-left: 24px;
-        }
-    }
+      .left {
+          position: absolute;
+          height: 100%;
+          width: 300px;
+      }
+
+      .right {
+          width: calc(100% - 316px);
+          margin-left: 316px;
+          :deep(.ant-tabs-nav-wrap) {
+              padding-left: 24px;
+          }
+      }
+  }
 }
 </style>

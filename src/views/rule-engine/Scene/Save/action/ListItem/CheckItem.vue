@@ -35,7 +35,10 @@ const rules = [{
   validator(_: any, v?: ActionsType) {
     console.log('validator',v)
     if (v?.executor === 'device') {
-      if(!v.device?.productId || !v.device?.selectorValues) {
+      if(
+        !v.device?.productId ||  // 产品已删除
+        !v.device?.selectorValues // 设备已删除
+      ) {
         return Promise.reject(new Error('该数据已发生变更，请重新配置'))
       }
     }
@@ -53,12 +56,13 @@ const formTouchOff = () => {
 const checkDeviceDelete = async () => {
   const item = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device
   const proResp = await queryProductList({ terms: [{ terms: [{ column: 'id', termType: 'eq', value: item!.productId }]}]})
-  if (proResp.success && (proResp.result as any)?.total === 0) { // 产品已删除
+  if (proResp.success && (proResp.result as any)?.total === 0 && item && item.productId) { // 产品已删除
     _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.productId = undefined
     formTouchOff()
     return
   }
   if (item?.selector === 'fixed') {
+    console.log(item)
     const deviceList = item!.selectorValues?.map(item => item.value) || []
     const deviceResp = await deviceQuery({ terms: [{ terms: [{ column: 'id', termType: 'in', value: deviceList.toString() }]}]})
     if (deviceResp.success && (deviceResp.result as any)?.total < (item!.selectorValues?.length || 0)) { // 某一个设备被删除

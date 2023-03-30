@@ -122,7 +122,7 @@ const showNotification = (message: string, description: string, key?: string, sh
   if (show) {
     Notification.error({
       key,
-      message,
+      message: '',
       description
     })
   }

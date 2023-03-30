@@ -1,9 +1,11 @@
 <template>
   <j-menu class='scene-dropdown-menus' @click='click' :selectedKeys='[myValue]'>
     <j-menu-item v-for='item in myOptions' :key='item.value' :title='item.label'>
-      <Ellipsis >
-        {{ item.label }}
-      </Ellipsis>
+      <div>
+        <Ellipsis >
+          {{ item.label }}
+        </Ellipsis>
+      </div>
     </j-menu-item>
   </j-menu>
 </template>
@@ -60,7 +62,7 @@ const handleBoolean = (key: string) => {
 const click = (e: any) => {
   const _key = ['true', 'false'].includes(e.key) ? handleBoolean(e.key) : e.key
   const option = getOption(myOptions.value, _key, props.valueName)
-  myValue.value = _key
+  myValue.value = e.key
   emit('update:value', _key)
   emit('click', _key, {
     key: _key,
@@ -69,7 +71,7 @@ const click = (e: any) => {
 }
 
 watch(() => props.value, () => {
-  myValue.value = props.value
+  myValue.value = isBoolean(props.value) ? String(props.value) : props.value
 }, { immediate: true})
 </script>
 

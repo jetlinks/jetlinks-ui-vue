@@ -8,7 +8,9 @@
   >
     <template #bodyCell="{ column, record, index }">
       <template v-if='column.dataIndex === "name"'>
-        {{ record.name }}
+        <Ellipsis>
+         {{ record.name }}
+        </Ellipsis>
       </template>
       <template v-if='column.dataIndex === "type"'>
         {{ record.type }}
@@ -29,12 +31,14 @@
         </j-tooltip>
       </template>
       <template v-if='column.dataIndex === "value"'>
-        <ValueItem
-          v-model:modelValue='record.value'
-          :itemType="record.type"
-          :options="handleOptions(record)"
-          @change='valueChange'
-        />
+        <div style='max-width: 260px'>
+          <ValueItem
+            v-model:modelValue='record.value'
+            :itemType="record.type"
+            :options="handleOptions(record)"
+            @change='valueChange'
+          />
+        </div>
       </template>
     </template>
   </j-table>
@@ -42,7 +46,6 @@
 
 <script setup lang='ts' name='FunctionCall'>
 import type { PropType } from 'vue'
-import { debounce } from 'lodash-es'
 
 type Emit = {
   (e: 'change', data: Array<{ name: string, value: any}>): void
@@ -69,7 +72,8 @@ const dataSource = reactive<{value: any[]}>({
 const columns = [
   {
     title: '参数名称',
-    dataIndex: 'name'
+    dataIndex: 'name',
+    width: 300
   },
   {
     title: '类型',
@@ -95,11 +99,13 @@ const handleOptions = (record: any) => {
 }
 
 const valueChange = () => {
-  const _value = dataSource.value.map(item => ({
-    name: item.id, value: item.value
-  }))
-  emit('change', _value)
+  const _value = dataSource.value.map(item => {
+    return {
+      name: item.id, value: item.value
+    }
+  })
   emit('update:value', _value)
+  emit('change', _value)
 }
 
 watch(() => props.data, () => {

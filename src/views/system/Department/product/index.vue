@@ -553,7 +553,7 @@ watch(
 );
 
 watch(
-    () => dialogs.editShow,
+    () => dialogs.addShow,
     (val: boolean) => {
         if (!val) tableData.selectedRows = [];
     },

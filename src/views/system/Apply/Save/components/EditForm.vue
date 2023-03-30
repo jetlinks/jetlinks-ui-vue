@@ -1718,20 +1718,20 @@ function getInfo(id: string) {
     getAppInfo_api(id).then((resp: any) => {
         // 后端返回的headers和parameters中, key转为label
         if (resp.result.apiClient) {
-            resp.result.apiClient.headers = resp.result.apiClient.headers.map(
+            resp.result.apiClient.headers = resp.result.apiClient.headers?.map(
                 (m: any) => ({
                     ...m,
                     label: m.key,
                 }),
             );
             resp.result.apiClient.parameters =
-                resp.result.apiClient.parameters.map((m: any) => ({
+                resp.result.apiClient.parameters?.map((m: any) => ({
                     ...m,
                     label: m.key,
                 }));
         }
         if (resp.result.page) {
-            resp.result.page.parameters = resp.result.page.parameters.map(
+            resp.result.page.parameters = resp.result.page.parameters?.map(
                 (m: any) => ({
                     ...m,
                     label: m.key,
@@ -1741,7 +1741,7 @@ function getInfo(id: string) {
         form.data = {
             ...initForm, // 查询详情, 赋值初始字段. 解决编辑改变接入方式报错的问题: bug#10892
             ...resp.result,
-            integrationModes: resp.result.integrationModes.map(
+            integrationModes: resp.result.integrationModes?.map(
                 (item: any) => item.value,
             ),
         } as formType;
@@ -1753,7 +1753,7 @@ function getRoleIdList() {
     getRoleList_api().then((resp) => {
         if (resp.status === 200) {
             const result = resp.result as dictType;
-            form.roleIdList = result.map((item) => ({
+            form.roleIdList = result?.map((item) => ({
                 label: item.name,
                 value: item.id,
             }));
@@ -1821,13 +1821,13 @@ function clickSave() {
 
         // headers和params参数label需改为key传给后端
         if (params.integrationModes.includes('apiClient')) {
-            params.apiClient.headers = params.apiClient.headers.map(
+            params.apiClient.headers = params.apiClient.headers?.map(
                 (m: any) => ({
                     ...m,
                     key: m.label,
                 }),
             );
-            params.apiClient.parameters = params.apiClient.parameters.map(
+            params.apiClient.parameters = params.apiClient.parameters?.map(
                 (m: any) => ({
                     ...m,
                     key: m.label,
@@ -1835,7 +1835,7 @@ function clickSave() {
             );
         }
         if (params.integrationModes.includes('page')) {
-            params.page.parameters = params.page.parameters.map((m: any) => ({
+            params.page.parameters = params.page.parameters?.map((m: any) => ({
                 ...m,
                 key: m.label,
             }));

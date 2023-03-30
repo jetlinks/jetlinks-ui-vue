@@ -1366,16 +1366,7 @@ export default [
                   },
                 ],
               },
-              {
-                id: 'action',
-                name: '启/禁用',
-                permissions: [
-                  {
-                    permission: 'firmware-upgrade-task-manager',
-                    actions: ['save'],
-                  }
-                ],
-              },
+        
             ],
             accessSupport: { text: "间接支持", value: "indirect" },
             supportDataAccess: false,
@@ -1688,7 +1679,7 @@ export default [
             ],
             accessSupport: { text: "支持", value: "support" },
             supportDataAccess: true,
-            assetType: 'ataCollectCollector'
+            assetType: 'dataCollectCollector'
           },
         ],
       },

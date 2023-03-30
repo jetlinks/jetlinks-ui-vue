@@ -215,8 +215,19 @@ defineExpose({
     resolve(data)
   })
 })
+
 Object.assign(formModel, props.value)
 formModel.when = props.value.when || []
+
+watchEffect(() => {
+  if(props.value?.period.unit === 'hours') {
+    unitMax.
+      value = 99999
+  } else {
+    unitMax.value = 99
+  }
+})
+
 
 </script>
 

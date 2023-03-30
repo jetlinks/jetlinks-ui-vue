@@ -23,58 +23,59 @@
         </div>
 
         <div class="tree">
-            <jTree
-                v-if="treeData.length > 0"
-                :tree-data="treeData"
-                v-model:selected-keys="selectedKeys"
-                v-model:expandedKeys="expandedKeys"
-                :fieldNames="{ key: 'id' }"
-            >
-                <template #title="{ name, data }">
-                    <span>{{ name }}</span>
-                    <span class="func-btns" @click="(e) => e.stopPropagation()">
-                        <PermissionButton
-                            :hasPermission="`${permission}:update`"
-                            type="link"
-                            :tooltip="{
-                                title: '编辑',
-                            }"
-                            @click="openDialog(data)"
-                        >
-                            <AIcon type="EditOutlined" />
-                        </PermissionButton>
-                        <PermissionButton
-                            :hasPermission="`${permission}:add`"
-                            type="link"
-                            :tooltip="{
-                                title: '新增子组织',
-                            }"
-                            @click="
-                                openDialog({
-                                    ...data,
-                                    id: '',
-                                    parentId: data.id,
-                                })
-                            "
-                        >
-                            <AIcon type="PlusCircleOutlined" />
-                        </PermissionButton>
-                        <PermissionButton
-                            type="link"
-                            :hasPermission="`${permission}:delete`"
-                            :tooltip="{ title: '删除' }"
-                            :popConfirm="{
-                                title: `确定要删除吗`,
-                                onConfirm: () => delDepartment(data.id),
-                            }"
-                        >
-                            <AIcon type="DeleteOutlined" />
-                        </PermissionButton>
-                    </span>
-                </template>
-            </jTree>
-            <div class="loading" v-else-if="loading"><j-spin /></div>
-            <j-empty v-else description="暂无数据" />
+          <j-spin :spinning='loading'>
+              <jTree
+                  v-if="treeData.length > 0"
+                  :tree-data="treeData"
+                  v-model:selected-keys="selectedKeys"
+                  v-model:expandedKeys="expandedKeys"
+                  :fieldNames="{ key: 'id' }"
+              >
+                  <template #title="{ name, data }">
+                      <span>{{ name }}</span>
+                      <span class="func-btns" @click="(e) => e.stopPropagation()">
+                          <PermissionButton
+                              :hasPermission="`${permission}:update`"
+                              type="link"
+                              :tooltip="{
+                                  title: '编辑',
+                              }"
+                              @click="openDialog(data)"
+                          >
+                              <AIcon type="EditOutlined" />
+                          </PermissionButton>
+                          <PermissionButton
+                              :hasPermission="`${permission}:add`"
+                              type="link"
+                              :tooltip="{
+                                  title: '新增子组织',
+                              }"
+                              @click="
+                                  openDialog({
+                                      ...data,
+                                      id: '',
+                                      parentId: data.id,
+                                  })
+                              "
+                          >
+                              <AIcon type="PlusCircleOutlined" />
+                          </PermissionButton>
+                          <PermissionButton
+                              type="link"
+                              :hasPermission="`${permission}:delete`"
+                              :tooltip="{ title: '删除' }"
+                              :popConfirm="{
+                                  title: `确定要删除吗`,
+                                  onConfirm: () => delDepartment(data.id),
+                              }"
+                          >
+                              <AIcon type="DeleteOutlined" />
+                          </PermissionButton>
+                      </span>
+                  </template>
+              </jTree>
+              <j-empty v-else description="暂无数据" />
+          </j-spin>
         </div>
         <!-- 编辑弹窗 -->
         <EditDepartmentDialog
@@ -227,6 +228,9 @@ function init() {
 .left-tree-container {
     padding-right: 24px;
     border-right: 1px solid #f0f0f0;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
 
     .add-btn {
         margin: 24px 0;
@@ -262,10 +266,17 @@ function init() {
         }
     }
 
-    .loading {
+
+    .tree {
+      overflow-y: auto;
+      overflow-x: hidden;
+
+      .loading {
         display: flex;
+        width: 100%;
         justify-content: center;
         margin-top: 20px;
+      }
     }
 }
 </style>
