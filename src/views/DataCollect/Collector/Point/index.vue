@@ -169,18 +169,21 @@
                                             <j-ellipsis
                                                 style="max-width: 150px"
                                             >
-                                                {{
-                                                    getParseData(
-                                                        slotProps.id,
-                                                    )[0]
-                                                }}({{
-                                                    getParseData(
-                                                        slotProps.id,
-                                                    )[1]
-                                                }})
+                                                {{ getParseData(slotProps) }}
                                             </j-ellipsis>
                                         </div>
-                                        <span v-else>--</span>
+                                        <div
+                                            class="ard-box-content-left-1-title"
+                                            v-else
+                                        >
+                                            <j-ellipsis
+                                                style="max-width: 150px"
+                                            >
+                                                {{
+                                                    getReadParseData(slotProps)
+                                                }}
+                                            </j-ellipsis>
+                                        </div>
                                         <a
                                             v-if="
                                                 getAccessModes(
@@ -196,7 +199,7 @@
                                                     slotProps,
                                                 ).includes('read')
                                             "
-                                            @click.stop="clickRedo(slotProps)"
+                                            @click.stop="clickRead(slotProps)"
                                             ><AIcon type="RedoOutlined"
                                         /></a>
                                     </div>
@@ -333,6 +336,7 @@ const accessModesOption = ref();
 const _selectedRowKeys = ref<string[]>([]);
 const checkAll = ref(false);
 const spinning = ref(false);
+const ReadIdMap = new Map();
 
 const defaultParams = ref({
     sorts: [{ name: 'id', order: 'desc' }],
@@ -495,9 +499,14 @@ const clickEdit = async (data: object) => {
     visible.writePoint = true;
     current.value = cloneDeep(data);
 };
-const clickRedo = async (data: any) => {
-    const res = await readPoint(data?.collectorId, [data?.id]);
+
+// ReadIdMap
+const clickRead = async (data: any) => {
+    const res: any = await readPoint(data?.collectorId, [data?.id]);
     if (res.status === 200) {
+        const readData: any = res.result[0];
+        const _data = ReadIdMap.get(data?.id);
+        ReadIdMap.set(data?.id, { ..._data, ...readData });
         cancelSelect();
         tableRef.value?.reload();
         onlyMessage('操作成功', 'success');
@@ -526,14 +535,24 @@ const getInterval = (item: Partial<Record<string, any>>) => {
     const { interval } = item.configuration || '';
     return !!interval ? '采集频率' + interval + 'ms' : '';
 };
+
 const getAccessModes = (item: Partial<Record<string, any>>) => {
     return item?.accessModes?.map((i: any) => i?.value);
 };
 
-const getParseData = (id: string) => {
-    const { parseData, dataType } = propertyValue.value.get(id);
+const getParseData = (item: any) => {
+    const { parseData, dataType } = propertyValue.value.get(item.id);
     const data = isNumber(parseData) ? parseData || 0 : parseData;
-    return [data, dataType];
+    const _data = `${data}(${dataType}) `;
+    return _data;
+};
+const getReadParseData = (item: any) => {
+    let _data = '--';
+    if (ReadIdMap.has(item.id)) {
+        const { parseData, dataType } = ReadIdMap.get(item.id);
+        _data = !!parseData ? `${parseData}(${dataType || '-'}) ` : '--';
+    }
+    return _data;
 };
 
 const saveChange = (value: object) => {
@@ -618,6 +637,13 @@ watch(
     (value) => {
         if (value.length !== 0) {
             subscribeProperty(value);
+            value.forEach((item: any) => {
+                item?.accessModes?.forEach((i: any) => {
+                    if (i?.value === 'read') {
+                        ReadIdMap.set(item.id, item);
+                    }
+                });
+            });
         }
         cancelSelect();
         checkAll.value = false;

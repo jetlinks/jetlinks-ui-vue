@@ -123,6 +123,21 @@
                 />
             </j-form-item>
             <j-form-item
+                label="小数保留位数"
+                :name="['configuration', 'codec', 'configuration', 'scale']"
+            >
+                <j-input-number
+                    style="width: 100%"
+                    placeholder="请输入小数保留位数"
+                    :min="0"
+                    :max="255"
+                    :precision="0"
+                    v-model:value="
+                        formData.configuration.codec.configuration.scale
+                    "
+                />
+            </j-form-item>
+            <j-form-item
                 v-if="formData.configuration.function"
                 label="访问类型"
                 name="accessModes"
@@ -293,6 +308,7 @@ const formData = ref({
             provider: undefined,
             configuration: {
                 scaleFactor: 1,
+                scale: undefined,
             },
         },
     },
