@@ -75,16 +75,18 @@ const formModel = reactive({
   functionData: props.functionParameters
 })
 
-const handlePropertiesOptions = (propertiesItem: any) => {
-  const _type = propertiesItem?.valueType.type
+const handlePropertiesOptions = (propertiesValueType: any) => {
+  const _type = propertiesValueType?.type
   if (_type === 'boolean') {
     return [
-      { label: propertiesItem.valueType.falseText || '是', value: propertiesItem.valueType.falseValue || false },
-      { label: propertiesItem.valueType.trueText || '否', value: propertiesItem.valueType.trueValue || true },
+      { label: propertiesValueType?.falseText || '是', value: propertiesValueType?.falseValue || false },
+      { label: propertiesValueType?.trueText || '否', value: propertiesValueType?.trueValue || true },
     ]
+  } else if (_type === 'enum') {
+    return propertiesValueType?.elements?.map((a: any) => ({ ...a, label: a.text }))
   }
 
-  return propertiesItem.valueType?.elements
+  return propertiesValueType?.elements
 }
 
 /**
@@ -95,14 +97,14 @@ const functionData = computed(() => {
   const arrCache = []
 
   if (functionItem) {
-    const properties = functionItem.valueType ? functionItem.valueType.properties : functionItem.inputs;
+    const properties = functionItem.input?.properties || functionItem.inputs;
     for (const datum of properties) {
       arrCache.push({
         id: datum.id,
         name: datum.name,
-        type: datum.valueType ? datum.valueType.type : '-',
-        format: datum.valueType ? datum.valueType.format : undefined,
-        options: handlePropertiesOptions(datum),
+        type: datum.valueType?.type || '-',
+        format: datum.valueType?.format || undefined,
+        options: handlePropertiesOptions(datum.valueType),
         value: undefined,
       });
     }
@@ -113,12 +115,10 @@ const functionData = computed(() => {
 
 const rules = [{
   validator(_: string, value: any) {
-    console.log(value)
     if (!value?.length && functionData.value.length) {
       return Promise.reject('请输入功能值')
     } else {
       let hasValue = value.find((item: { name: string, value: any}) => item.value === undefined)
-      console.log('hasValue', hasValue)
       if (hasValue) {
         const functionItem = functionData.value.find((item: any) => item.id === hasValue.name)
         return Promise.reject(functionItem?.name ? `请输入${functionItem?.name}值` : '请输入功能值')
