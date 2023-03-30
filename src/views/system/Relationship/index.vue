@@ -6,60 +6,61 @@
                 target="category"
                 @search="(params:any)=>queryParams = {...params}"
             />
-
-            <j-pro-table
-                ref="tableRef"
-                :columns="columns"
-                :request="getRelationshipList_api"
-                model="TABLE"
-                :params="queryParams"
-                :defaultParams="{
-                    pageSize: 10,
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
-                :pagination="{
-                    showSizeChanger: true,
-                    pageSizeOptions: ['10', '20', '50', '100'],
-                }"
-            >
-                <template #headerTitle>
-                    <PermissionButton
-                        type="primary"
-                        :hasPermission="`${permission}:add`"
-                        @click="table.openDialog(undefined)"
-                    >
-                        <AIcon type="PlusOutlined" />新增
-                    </PermissionButton>
-                </template>
-                <template #action="slotProps">
-                    <j-space :size="16">
+            <FullPage>
+                <j-pro-table
+                    ref="tableRef"
+                    :columns="columns"
+                    :request="getRelationshipList_api"
+                    model="TABLE"
+                    :params="queryParams"
+                    :defaultParams="{
+                        pageSize: 10,
+                        sorts: [{ name: 'createTime', order: 'desc' }],
+                    }"
+                    :pagination="{
+                        showSizeChanger: true,
+                        pageSizeOptions: ['10', '20', '50', '100'],
+                    }"
+                >
+                    <template #headerTitle>
                         <PermissionButton
-                            :hasPermission="`${permission}:update`"
-                            type="link"
-                            :tooltip="{
-                                title: '编辑',
-                            }"
-                            @click="table.openDialog(slotProps)"
+                            type="primary"
+                            :hasPermission="`${permission}:add`"
+                            @click="table.openDialog(undefined)"
                         >
-                            <AIcon type="EditOutlined" />
+                            <AIcon type="PlusOutlined" />新增
                         </PermissionButton>
+                    </template>
+                    <template #action="slotProps">
+                        <j-space :size="16">
+                            <PermissionButton
+                                :hasPermission="`${permission}:update`"
+                                type="link"
+                                :tooltip="{
+                                    title: '编辑',
+                                }"
+                                @click="table.openDialog(slotProps)"
+                            >
+                                <AIcon type="EditOutlined" />
+                            </PermissionButton>
 
-                        <PermissionButton
-                            :danger="true"
-                            :hasPermission="`${permission}:delete`"
-                            type="link"
-                            :tooltip="{ title: '删除' }"
-                            :popConfirm="{
-                                title: `确认删除`,
-                                onConfirm: () => table.clickDel(slotProps),
-                            }"
-                            :disabled="slotProps.status"
-                        >
-                            <AIcon type="DeleteOutlined" />
-                        </PermissionButton>
-                    </j-space>
-                </template>
-            </j-pro-table>
+                            <PermissionButton
+                                :danger="true"
+                                :hasPermission="`${permission}:delete`"
+                                type="link"
+                                :tooltip="{ title: '删除' }"
+                                :popConfirm="{
+                                    title: `确认删除`,
+                                    onConfirm: () => table.clickDel(slotProps),
+                                }"
+                                :disabled="slotProps.status"
+                            >
+                                <AIcon type="DeleteOutlined" />
+                            </PermissionButton>
+                        </j-space>
+                    </template>
+                </j-pro-table>
+            </FullPage>
 
             <EditDialog
                 v-if="dialog.visible"

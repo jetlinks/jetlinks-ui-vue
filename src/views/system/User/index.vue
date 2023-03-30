@@ -6,106 +6,111 @@
                 target="category"
                 @search="handleParams"
             />
-
-            <j-pro-table
-                ref="tableRef"
-                :columns="columns"
-                :request="getUserList_api"
-                model="TABLE"
-                :params="queryParams"
-                :defaultParams="{
-                    pageSize: 10,
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
-                :pagination="{
-                    showSizeChanger: true,
-                    pageSizeOptions: ['10', '20', '50', '100'],
-                }"
-            >
-                <template #headerTitle>
-                    <PermissionButton
-                        :hasPermission="`${permission}:add`"
-                        type="primary"
-                        @click="table.openDialog('add')"
-                    >
-                        <AIcon type="PlusOutlined" />新增
-                    </PermissionButton>
-                </template>
-                <template #type="slotProps">
-                    {{ slotProps.type.name }}
-                </template>
-                <template #status="slotProps">
-                    <BadgeStatus
-                        :status="slotProps.status"
-                        :text="slotProps.status ? '正常' : '禁用'"
-                        :statusNames="{
-                            1: 'success',
-                            0: 'error',
-                        }"
-                    ></BadgeStatus>
-                </template>
-                <template #action="slotProps">
-                    <j-space :size="16">
+            <FullPage>
+                <j-pro-table
+                    ref="tableRef"
+                    :columns="columns"
+                    :request="getUserList_api"
+                    model="TABLE"
+                    :params="queryParams"
+                    :defaultParams="{
+                        pageSize: 10,
+                        sorts: [{ name: 'createTime', order: 'desc' }],
+                    }"
+                    :pagination="{
+                        showSizeChanger: true,
+                        pageSizeOptions: ['10', '20', '50', '100'],
+                    }"
+                >
+                    <template #headerTitle>
                         <PermissionButton
-                            :hasPermission="`${permission}:update`"
-                            type="link"
-                            :tooltip="{
-                                title: '编辑',
-                            }"
-                            @click="table.openDialog('edit', slotProps)"
+                            :hasPermission="`${permission}:add`"
+                            type="primary"
+                            @click="table.openDialog('add')"
                         >
-                            <AIcon type="EditOutlined" />
+                            <AIcon type="PlusOutlined" />新增
                         </PermissionButton>
-                        <PermissionButton
-                            :hasPermission="`${permission}:action`"
-                            type="link"
-                            :tooltip="{
-                                title: `${slotProps.status ? '禁用' : '启用'}`,
+                    </template>
+                    <template #type="slotProps">
+                        {{ slotProps.type.name }}
+                    </template>
+                    <template #status="slotProps">
+                        <BadgeStatus
+                            :status="slotProps.status"
+                            :text="slotProps.status ? '正常' : '禁用'"
+                            :statusNames="{
+                                1: 'success',
+                                0: 'error',
                             }"
-                            :popConfirm="{
-                                title: `确定${
-                                    slotProps.status ? '禁用' : '启用'
-                                }吗？`,
-                                onConfirm: () => table.changeStatus(slotProps),
-                            }"
-                        >
-                            <AIcon
-                                :type="
-                                    slotProps.status
-                                        ? 'StopOutlined'
-                                        : 'PlayCircleOutlined'
-                                "
-                            />
-                        </PermissionButton>
-                        <PermissionButton
-                            :hasPermission="`${permission}:update`"
-                            type="link"
-                            :tooltip="{
-                                title: '重置密码',
-                            }"
-                            @click="table.openDialog('reset', slotProps)"
-                        >
-                            <AIcon type="icon-zhongzhimima" />
-                        </PermissionButton>
-                        <PermissionButton
-                            type="link"
-                            :hasPermission="`${permission}:delete`"
-                            :tooltip="{
-                                title: slotProps.status
-                                    ? '请先禁用，再删除'
-                                    : '删除',
-                            }"
-                            :popConfirm="{
-                                title: `确认删除`,
-                                onConfirm: () => table.clickDel(slotProps.id),
-                            }"
-                            :disabled="slotProps.status"
-                        >
-                            <AIcon type="DeleteOutlined" />
-                        </PermissionButton>
-                    </j-space>
-                </template>
-            </j-pro-table>
+                        ></BadgeStatus>
+                    </template>
+                    <template #action="slotProps">
+                        <j-space :size="16">
+                            <PermissionButton
+                                :hasPermission="`${permission}:update`"
+                                type="link"
+                                :tooltip="{
+                                    title: '编辑',
+                                }"
+                                @click="table.openDialog('edit', slotProps)"
+                            >
+                                <AIcon type="EditOutlined" />
+                            </PermissionButton>
+                            <PermissionButton
+                                :hasPermission="`${permission}:action`"
+                                type="link"
+                                :tooltip="{
+                                    title: `${
+                                        slotProps.status ? '禁用' : '启用'
+                                    }`,
+                                }"
+                                :popConfirm="{
+                                    title: `确定${
+                                        slotProps.status ? '禁用' : '启用'
+                                    }吗？`,
+                                    onConfirm: () =>
+                                        table.changeStatus(slotProps),
+                                }"
+                            >
+                                <AIcon
+                                    :type="
+                                        slotProps.status
+                                            ? 'StopOutlined'
+                                            : 'PlayCircleOutlined'
+                                    "
+                                />
+                            </PermissionButton>
+                            <PermissionButton
+                                :hasPermission="`${permission}:update`"
+                                type="link"
+                                :tooltip="{
+                                    title: '重置密码',
+                                }"
+                                @click="table.openDialog('reset', slotProps)"
+                            >
+                                <AIcon type="icon-zhongzhimima" />
+                            </PermissionButton>
+                            <PermissionButton
+                                type="link"
+                                :hasPermission="`${permission}:delete`"
+                                :tooltip="{
+                                    title: slotProps.status
+                                        ? '请先禁用，再删除'
+                                        : '删除',
+                                }"
+                                :popConfirm="{
+                                    title: `确认删除`,
+                                    onConfirm: () =>
+                                        table.clickDel(slotProps.id),
+                                }"
+                                :disabled="slotProps.status"
+                            >
+                                <AIcon type="DeleteOutlined" />
+                            </PermissionButton>
+                        </j-space>
+                    </template>
+                </j-pro-table>
+            </FullPage>
 
             <EditUserDialog
                 v-if="dialog.visible"
@@ -263,22 +268,21 @@ type dictType = {
 };
 type modalType = '' | 'add' | 'edit' | 'reset';
 
-const handleParams = (params: any)=> {
-
-  const newParams = (params?.terms as any[])?.map(item1 => {
-    item1.terms = item1.terms.map((item2: any) => {
-      if (['telephone', 'email'].includes(item2.column)) {
-        return {
-          column: 'id$user-detail',
-          value: [item2]
-        }
-      }
-      return item2
-    })
-    return item1
-  })
-  queryParams.value = { terms: newParams || [] }
-}
+const handleParams = (params: any) => {
+    const newParams = (params?.terms as any[])?.map((item1) => {
+        item1.terms = item1.terms.map((item2: any) => {
+            if (['telephone', 'email'].includes(item2.column)) {
+                return {
+                    column: 'id$user-detail',
+                    value: [item2],
+                };
+            }
+            return item2;
+        });
+        return item1;
+    });
+    queryParams.value = { terms: newParams || [] };
+};
 </script>
 
 <style lang="less" scoped>

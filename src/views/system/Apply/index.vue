@@ -6,166 +6,176 @@
                 target="category"
                 @search="(params:any)=>queryParams = {...params}"
             />
-
-            <j-pro-table
-                ref="tableRef"
-                :columns="columns"
-                :request="getApplyList_api"
-                :defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
-                :params="queryParams"
-                :gridColumn="3"
-            >
-                <template #headerTitle>
-                    <div style="display: flex; align-items: center">
-                        <PermissionButton
-                            :hasPermission="`${permission}:add`"
-                            type="primary"
-                            @click="() => table.toSave()"
-                        >
-                            <AIcon type="PlusOutlined" />新增
-                        </PermissionButton>
-                        <p style="margin: 0 0 0 30px; color: #0000008c">
-                            <AIcon
-                                type="ExclamationCircleOutlined"
-                                style="margin-right: 12px"
-                            />
-                            应用管理将多个应用系统的登录简化为一次登录，实现多处访问、集中管控的业务场景。
-                        </p>
-                    </div>
-                </template>
-                <template #card="slotProps">
-                    <CardBox
-                        :value="slotProps"
-                        :actions="table.getActions(slotProps, 'card')"
-                        v-bind="slotProps"
-                        :status="slotProps.state?.value"
-                        :statusText="slotProps.state?.text"
-                        :statusNames="{
-                            enabled: 'success',
-                            disabled: 'error',
-                        }"
-                    >
-                        <template #img>
-                            <slot name="img">
-                                <img :src="getImage('/apply.png')" />
-                            </slot>
-                        </template>
-                        <template #content>
-                            <h3 class="card-item-content-title">
-                                <Ellipsis>
-                                    {{ slotProps.name }}
-                                </Ellipsis>
-                            </h3>
-                            <j-row>
-                                <j-col :span="12">
-                                    <div class="card-item-content-text">
-                                        类型
-                                    </div>
-                                    <div>
-                                        {{
-                                            table.getTypeLabel(
-                                                slotProps.provider,
-                                            )
-                                        }}
-                                    </div>
-                                </j-col>
-                                <j-col :span="12">
-                                    <div class="card-item-content-text">
-                                        说明
-                                    </div>
-                                    <Ellipsis>
-                                        {{ slotProps.description }}
-                                    </Ellipsis>
-                                </j-col>
-                            </j-row>
-                        </template>
-                        <template #actions="item">
-                            <j-tooltip
-                                v-bind="item.tooltip"
-                                :title="item.disabled && item.tooltip.title"
+            <FullPage>
+                <j-pro-table
+                    ref="tableRef"
+                    :columns="columns"
+                    :request="getApplyList_api"
+                    :defaultParams="{
+                        sorts: [{ name: 'createTime', order: 'desc' }],
+                    }"
+                    :params="queryParams"
+                    :gridColumn="3"
+                >
+                    <template #headerTitle>
+                        <div style="display: flex; align-items: center">
+                            <PermissionButton
+                                :hasPermission="`${permission}:add`"
+                                type="primary"
+                                @click="() => table.toSave()"
                             >
-                                <j-dropdown
-                                    placement="bottomRight"
-                                    v-if="item.key === 'others'"
-                                >
-                                    <j-button>
-                                        <AIcon :type="item.icon" />
-                                        <span>{{ item.text }}</span>
-                                    </j-button>
-                                    <template #overlay>
-                                        <j-menu>
-                                            <j-menu-item
-                                                v-for="(o, i) in item.children"
-                                                :key="i"
-                                            >
-                                                <j-button
-                                                    type="link"
-                                                    @click="o.onClick"
-                                                >
-                                                    <AIcon :type="o.icon" />
-                                                    <span>{{ o.text }}</span>
-                                                </j-button>
-                                            </j-menu-item>
-                                        </j-menu>
-                                    </template>
-                                </j-dropdown>
-                                <PermissionButton
-                                    v-else
-                                    :hasPermission="item.permission"
-                                    :tooltip="item.tooltip"
-                                    :pop-confirm="item.popConfirm"
-                                    @click="item.onClick"
-                                    :disabled="item.disabled"
-                                >
-                                    <AIcon :type="item.icon" />
-                                    <span v-if="item.key !== 'delete'">{{
-                                        item.text
-                                    }}</span>
-                                </PermissionButton>
-                            </j-tooltip>
-                        </template>
-
-                        <template #mark>
-                            <AIcon
-                                type="EyeOutlined"
-                                style="font-size: 24px"
-                                @click="() => table.toSave(slotProps.id, true)"
-                            />
-                        </template>
-                    </CardBox>
-                </template>
-
-                <template #provider="slotProps">
-                    {{ table.getTypeLabel(slotProps.provider) }}
-                </template>
-                <template #status="slotProps">
-                    <BadgeStatus
-                        :status="slotProps.state.value"
-                        :text="slotProps.state.text"
-                        :statusNames="{
-                            enabled: 'success',
-                            disabled: 'error',
-                        }"
-                    ></BadgeStatus>
-                </template>
-                <template #action="slotProps">
-                    <j-space :size="16">
-                        <PermissionButton
-                            v-for="i in table.getActions(slotProps, 'table')"
-                            :hasPermission="i.permission"
-                            type="link"
-                            :tooltip="i.tooltip"
-                            :pop-confirm="i.popConfirm"
-                            @click="i.onClick"
-                            :disabled="i.disabled"
+                                <AIcon type="PlusOutlined" />新增
+                            </PermissionButton>
+                            <p style="margin: 0 0 0 30px; color: #0000008c">
+                                <AIcon
+                                    type="ExclamationCircleOutlined"
+                                    style="margin-right: 12px"
+                                />
+                                应用管理将多个应用系统的登录简化为一次登录，实现多处访问、集中管控的业务场景。
+                            </p>
+                        </div>
+                    </template>
+                    <template #card="slotProps">
+                        <CardBox
+                            :value="slotProps"
+                            :actions="table.getActions(slotProps, 'card')"
+                            v-bind="slotProps"
+                            :status="slotProps.state?.value"
+                            :statusText="slotProps.state?.text"
+                            :statusNames="{
+                                enabled: 'success',
+                                disabled: 'error',
+                            }"
                         >
-                            <AIcon :type="i.icon" />
-                        </PermissionButton>
-                    </j-space>
-                </template>
-            </j-pro-table>
+                            <template #img>
+                                <slot name="img">
+                                    <img :src="getImage('/apply.png')" />
+                                </slot>
+                            </template>
+                            <template #content>
+                                <h3 class="card-item-content-title">
+                                    <Ellipsis>
+                                        {{ slotProps.name }}
+                                    </Ellipsis>
+                                </h3>
+                                <j-row>
+                                    <j-col :span="12">
+                                        <div class="card-item-content-text">
+                                            类型
+                                        </div>
+                                        <div>
+                                            {{
+                                                table.getTypeLabel(
+                                                    slotProps.provider,
+                                                )
+                                            }}
+                                        </div>
+                                    </j-col>
+                                    <j-col :span="12">
+                                        <div class="card-item-content-text">
+                                            说明
+                                        </div>
+                                        <Ellipsis>
+                                            {{ slotProps.description }}
+                                        </Ellipsis>
+                                    </j-col>
+                                </j-row>
+                            </template>
+                            <template #actions="item">
+                                <j-tooltip
+                                    v-bind="item.tooltip"
+                                    :title="item.disabled && item.tooltip.title"
+                                >
+                                    <j-dropdown
+                                        placement="bottomRight"
+                                        v-if="item.key === 'others'"
+                                    >
+                                        <j-button>
+                                            <AIcon :type="item.icon" />
+                                            <span>{{ item.text }}</span>
+                                        </j-button>
+                                        <template #overlay>
+                                            <j-menu>
+                                                <j-menu-item
+                                                    v-for="(
+                                                        o, i
+                                                    ) in item.children"
+                                                    :key="i"
+                                                >
+                                                    <j-button
+                                                        type="link"
+                                                        @click="o.onClick"
+                                                    >
+                                                        <AIcon :type="o.icon" />
+                                                        <span>{{
+                                                            o.text
+                                                        }}</span>
+                                                    </j-button>
+                                                </j-menu-item>
+                                            </j-menu>
+                                        </template>
+                                    </j-dropdown>
+                                    <PermissionButton
+                                        v-else
+                                        :hasPermission="item.permission"
+                                        :tooltip="item.tooltip"
+                                        :pop-confirm="item.popConfirm"
+                                        @click="item.onClick"
+                                        :disabled="item.disabled"
+                                    >
+                                        <AIcon :type="item.icon" />
+                                        <span v-if="item.key !== 'delete'">{{
+                                            item.text
+                                        }}</span>
+                                    </PermissionButton>
+                                </j-tooltip>
+                            </template>
+
+                            <template #mark>
+                                <AIcon
+                                    type="EyeOutlined"
+                                    style="font-size: 24px"
+                                    @click="
+                                        () => table.toSave(slotProps.id, true)
+                                    "
+                                />
+                            </template>
+                        </CardBox>
+                    </template>
+
+                    <template #provider="slotProps">
+                        {{ table.getTypeLabel(slotProps.provider) }}
+                    </template>
+                    <template #status="slotProps">
+                        <BadgeStatus
+                            :status="slotProps.state.value"
+                            :text="slotProps.state.text"
+                            :statusNames="{
+                                enabled: 'success',
+                                disabled: 'error',
+                            }"
+                        ></BadgeStatus>
+                    </template>
+                    <template #action="slotProps">
+                        <j-space :size="16">
+                            <PermissionButton
+                                v-for="i in table.getActions(
+                                    slotProps,
+                                    'table',
+                                )"
+                                :hasPermission="i.permission"
+                                type="link"
+                                :tooltip="i.tooltip"
+                                :pop-confirm="i.popConfirm"
+                                @click="i.onClick"
+                                :disabled="i.disabled"
+                            >
+                                <AIcon :type="i.icon" />
+                            </PermissionButton>
+                        </j-space>
+                    </template>
+                </j-pro-table>
+            </FullPage>
         </div>
         <div class="dialogs">
             <MenuDialog

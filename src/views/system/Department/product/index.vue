@@ -5,193 +5,199 @@
             target="category"
             @search="(params:any)=>queryParams = {...params}"
         />
-        <j-pro-table
-            ref="tableRef"
-            :request="table.requestFun"
-            :gridColumn="2"
-            :params="queryParams"
-            :rowSelection="{
-                selectedRowKeys: tableData._selectedRowKeys,
-                onChange:(keys:string[])=>tableData._selectedRowKeys = [...keys],
-                onSelectNone: table.cancelSelect
-            }"
-            :columns="columns"
-        >
-            <template #headerTitle>
-                <j-space>
-                    <PermissionButton
-                        :hasPermission="`${permission}:assert`"
-                        type="primary"
-                        @click="dialogs.addShow = true"
-                    >
-                        <AIcon type="PlusOutlined" />资产分配
-                    </PermissionButton>
-                    <j-dropdown trigger="hover">
-                        <j-button>批量操作</j-button>
-                        <template #overlay>
-                            <j-menu>
-                                <j-menu-item>
-                                    <PermissionButton
-                                        :hasPermission="`${permission}:bind`"
-                                        :popConfirm="{
-                                            title: `是否批量解除绑定`,
-                                            onConfirm: () =>
-                                                table.clickUnBind(),
-                                        }"
-                                    >
-                                        <AIcon
-                                            type="DisconnectOutlined"
-                                        />批量解绑
-                                    </PermissionButton>
-                                </j-menu-item>
-                                <j-menu-item>
-                                    <PermissionButton
-                                        :hasPermission="`${permission}:assert`"
-                                        @click="() => table.clickEdit()"
-                                    >
-                                        <AIcon type="EditOutlined" />批量编辑
-                                    </PermissionButton>
-                                </j-menu-item>
-                            </j-menu>
-                        </template>
-                    </j-dropdown>
-                </j-space>
-            </template>
-
-            <template #card="slotProps">
-                <CardBox
-                    :value="slotProps"
-                    :actions="table.getActions(slotProps, 'card')"
-                    v-bind="slotProps"
-                    :active="tableData._selectedRowKeys.includes(slotProps.id)"
-                    @click="table.onSelectChange"
-                    :status="slotProps.state?.value"
-                    :statusText="slotProps.state?.text"
-                    :statusNames="{
-                        online: 'processing',
-                        offline: 'error',
-                    }"
-                >
-                    <template #img>
-                        <slot name="img">
-                            <img
-                                :src="getImage('/device-product.png')"
-                                style="cursor: pointer"
-                            />
-                        </slot>
-                    </template>
-                    <template #content>
-                        <h3 class="card-item-content-title">
-                            {{ slotProps.name }}
-                        </h3>
-                        <j-row>
-                            <j-col :span="12">
-                                <div class="card-item-content-text">ID</div>
-                                <div
-                                    style="cursor: pointer"
-                                    class="card-item-content-value"
-                                >
-                                    {{ slotProps.id }}
-                                </div>
-                            </j-col>
-                            <j-col :span="12">
-                                <div class="card-item-content-text">
-                                    资产权限
-                                </div>
-                                <div
-                                    style="cursor: pointer"
-                                    class="card-item-content-value"
-                                >
-                                    {{
-                                        tableData.permissionList.length &&
-                                        table.getPermissLabel(
-                                            slotProps.permission,
-                                        )
-                                    }}
-                                </div>
-                            </j-col>
-                        </j-row>
-                    </template>
-                    <template #actions="item">
-                        <j-tooltip
-                            v-bind="item.tooltip"
-                            :title="item.disabled && item.tooltip.title"
+        <FullPage>
+            <j-pro-table
+                ref="tableRef"
+                :request="table.requestFun"
+                :gridColumn="2"
+                :params="queryParams"
+                :rowSelection="{
+                    selectedRowKeys: tableData._selectedRowKeys,
+                    onChange:(keys:string[])=>tableData._selectedRowKeys = [...keys],
+                    onSelectNone: table.cancelSelect
+                }"
+                :columns="columns"
+            >
+                <template #headerTitle>
+                    <j-space>
+                        <PermissionButton
+                            :hasPermission="`${permission}:assert`"
+                            type="primary"
+                            @click="dialogs.addShow = true"
                         >
-                            <j-dropdown
-                                placement="bottomRight"
-                                v-if="item.key === 'others'"
-                            >
-                                <j-button>
-                                    <AIcon :type="item.icon" />
-                                    <span>{{ item.text }}</span>
-                                </j-button>
-                                <template #overlay>
-                                    <j-menu>
-                                        <j-menu-item
-                                            v-for="(o, i) in item.children"
-                                            :key="i"
+                            <AIcon type="PlusOutlined" />资产分配
+                        </PermissionButton>
+                        <j-dropdown trigger="hover">
+                            <j-button>批量操作</j-button>
+                            <template #overlay>
+                                <j-menu>
+                                    <j-menu-item>
+                                        <PermissionButton
+                                            :hasPermission="`${permission}:bind`"
+                                            :popConfirm="{
+                                                title: `是否批量解除绑定`,
+                                                onConfirm: () =>
+                                                    table.clickUnBind(),
+                                            }"
                                         >
-                                            <j-button
-                                                type="link"
-                                                @click="o.onClick"
-                                            >
-                                                <AIcon :type="o.icon" />
-                                                <span>{{ o.text }}</span>
-                                            </j-button>
-                                        </j-menu-item>
-                                    </j-menu>
-                                </template>
-                            </j-dropdown>
-                            <PermissionButton
-                                v-else
-                                :hasPermission="item.permission"
-                                :tooltip="item.tooltip"
-                                :pop-confirm="item.popConfirm"
-                                @click="item.onClick"
-                                :disabled="item.disabled"
-                            >
-                                <AIcon :type="item.icon" />
-                                <span v-if="item.key !== 'delete'">{{
-                                    item.text
-                                }}</span>
-                            </PermissionButton>
-                        </j-tooltip>
-                    </template>
-                </CardBox>
-            </template>
+                                            <AIcon
+                                                type="DisconnectOutlined"
+                                            />批量解绑
+                                        </PermissionButton>
+                                    </j-menu-item>
+                                    <j-menu-item>
+                                        <PermissionButton
+                                            :hasPermission="`${permission}:assert`"
+                                            @click="() => table.clickEdit()"
+                                        >
+                                            <AIcon
+                                                type="EditOutlined"
+                                            />批量编辑
+                                        </PermissionButton>
+                                    </j-menu-item>
+                                </j-menu>
+                            </template>
+                        </j-dropdown>
+                    </j-space>
+                </template>
 
-            <template #permission="slotProps">
-                {{
-                    tableData.permissionList.length &&
-                    table.getPermissLabel(slotProps.permission)
-                }}
-            </template>
-            <template #state="slotProps">
-                <BadgeStatus
-                    :status="slotProps.state.value"
-                    :text="slotProps.state.text"
-                    :statusNames="{
-                        online: 'processing',
-                        offline: 'error',
-                    }"
-                ></BadgeStatus>
-            </template>
-            <template #action="slotProps">
-                <j-space :size="16">
-                    <PermissionButton
-                        v-for="i in table.getActions(slotProps, 'table')"
-                        :hasPermission="i.permission"
-                        type="link"
-                        :tooltip="i?.tooltip"
-                        :pop-confirm="i.popConfirm"
-                        @click="i.onClick"
-                        :disabled="i?.disabled"
+                <template #card="slotProps">
+                    <CardBox
+                        :value="slotProps"
+                        :actions="table.getActions(slotProps, 'card')"
+                        v-bind="slotProps"
+                        :active="
+                            tableData._selectedRowKeys.includes(slotProps.id)
+                        "
+                        @click="table.onSelectChange"
+                        :status="slotProps.state?.value"
+                        :statusText="slotProps.state?.text"
+                        :statusNames="{
+                            online: 'processing',
+                            offline: 'error',
+                        }"
                     >
-                        <AIcon :type="i.icon" />
-                    </PermissionButton>
-                </j-space>
-            </template>
-        </j-pro-table>
+                        <template #img>
+                            <slot name="img">
+                                <img
+                                    :src="getImage('/device-product.png')"
+                                    style="cursor: pointer"
+                                />
+                            </slot>
+                        </template>
+                        <template #content>
+                            <h3 class="card-item-content-title">
+                                {{ slotProps.name }}
+                            </h3>
+                            <j-row>
+                                <j-col :span="12">
+                                    <div class="card-item-content-text">ID</div>
+                                    <div
+                                        style="cursor: pointer"
+                                        class="card-item-content-value"
+                                    >
+                                        {{ slotProps.id }}
+                                    </div>
+                                </j-col>
+                                <j-col :span="12">
+                                    <div class="card-item-content-text">
+                                        资产权限
+                                    </div>
+                                    <div
+                                        style="cursor: pointer"
+                                        class="card-item-content-value"
+                                    >
+                                        {{
+                                            tableData.permissionList.length &&
+                                            table.getPermissLabel(
+                                                slotProps.permission,
+                                            )
+                                        }}
+                                    </div>
+                                </j-col>
+                            </j-row>
+                        </template>
+                        <template #actions="item">
+                            <j-tooltip
+                                v-bind="item.tooltip"
+                                :title="item.disabled && item.tooltip.title"
+                            >
+                                <j-dropdown
+                                    placement="bottomRight"
+                                    v-if="item.key === 'others'"
+                                >
+                                    <j-button>
+                                        <AIcon :type="item.icon" />
+                                        <span>{{ item.text }}</span>
+                                    </j-button>
+                                    <template #overlay>
+                                        <j-menu>
+                                            <j-menu-item
+                                                v-for="(o, i) in item.children"
+                                                :key="i"
+                                            >
+                                                <j-button
+                                                    type="link"
+                                                    @click="o.onClick"
+                                                >
+                                                    <AIcon :type="o.icon" />
+                                                    <span>{{ o.text }}</span>
+                                                </j-button>
+                                            </j-menu-item>
+                                        </j-menu>
+                                    </template>
+                                </j-dropdown>
+                                <PermissionButton
+                                    v-else
+                                    :hasPermission="item.permission"
+                                    :tooltip="item.tooltip"
+                                    :pop-confirm="item.popConfirm"
+                                    @click="item.onClick"
+                                    :disabled="item.disabled"
+                                >
+                                    <AIcon :type="item.icon" />
+                                    <span v-if="item.key !== 'delete'">{{
+                                        item.text
+                                    }}</span>
+                                </PermissionButton>
+                            </j-tooltip>
+                        </template>
+                    </CardBox>
+                </template>
+
+                <template #permission="slotProps">
+                    {{
+                        tableData.permissionList.length &&
+                        table.getPermissLabel(slotProps.permission)
+                    }}
+                </template>
+                <template #state="slotProps">
+                    <BadgeStatus
+                        :status="slotProps.state.value"
+                        :text="slotProps.state.text"
+                        :statusNames="{
+                            online: 'processing',
+                            offline: 'error',
+                        }"
+                    ></BadgeStatus>
+                </template>
+                <template #action="slotProps">
+                    <j-space :size="16">
+                        <PermissionButton
+                            v-for="i in table.getActions(slotProps, 'table')"
+                            :hasPermission="i.permission"
+                            type="link"
+                            :tooltip="i?.tooltip"
+                            :pop-confirm="i.popConfirm"
+                            @click="i.onClick"
+                            :disabled="i?.disabled"
+                        >
+                            <AIcon :type="i.icon" />
+                        </PermissionButton>
+                    </j-space>
+                </template>
+            </j-pro-table>
+        </FullPage>
 
         <div class="dialogs">
             <AddDeviceOrProductDialog

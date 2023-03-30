@@ -6,134 +6,136 @@
                 target="system-permission"
                 @search="handleSearch"
             />
-
-            <j-pro-table
-                ref="tableRef"
-                :columns="columns"
-                :request="getPermission_api"
-                model="TABLE"
-                :params="queryParams"
-                :defaultParams="{
-                    pageSize: 10,
-                    sorts: [{ name: 'id', order: 'asc' }],
-                }"
-                :pagination="{
-                    showSizeChanger: true,
-                    pageSizeOptions: ['10', '20', '50', '100'],
-                }"
-            >
-                <template #headerTitle>
-                    <PermissionButton
-                        type="primary"
-                        :hasPermission="`${permission}:add`"
-                        @click="table.openDialog(undefined)"
-                    >
-                        <AIcon type="PlusOutlined" />新增
-                    </PermissionButton>
-                    <j-dropdown trigger="hover">
-                        <j-button>批量操作</j-button>
-                        <template #overlay>
-                            <j-menu>
-                                <j-menu-item>
-                                    <j-upload
-                                        name="file"
-                                        action="#"
-                                        accept=".json"
-                                        :showUploadList="false"
-                                        :before-upload="table.clickImport"
-                                        :disabled="
-                                            !hasPermission(
-                                                `${permission}:import`,
-                                            )
-                                        "
-                                    >
-                                        <PermissionButton
-                                            :hasPermission="`${permission}:import`"
+            <FullPage>
+                <j-pro-table
+                    ref="tableRef"
+                    :columns="columns"
+                    :request="getPermission_api"
+                    model="TABLE"
+                    :params="queryParams"
+                    :defaultParams="{
+                        pageSize: 10,
+                        sorts: [{ name: 'id', order: 'asc' }],
+                    }"
+                    :pagination="{
+                        showSizeChanger: true,
+                        pageSizeOptions: ['10', '20', '50', '100'],
+                    }"
+                >
+                    <template #headerTitle>
+                        <PermissionButton
+                            type="primary"
+                            :hasPermission="`${permission}:add`"
+                            @click="table.openDialog(undefined)"
+                        >
+                            <AIcon type="PlusOutlined" />新增
+                        </PermissionButton>
+                        <j-dropdown trigger="hover">
+                            <j-button>批量操作</j-button>
+                            <template #overlay>
+                                <j-menu>
+                                    <j-menu-item>
+                                        <j-upload
+                                            name="file"
+                                            action="#"
+                                            accept=".json"
+                                            :showUploadList="false"
+                                            :before-upload="table.clickImport"
+                                            :disabled="
+                                                !hasPermission(
+                                                    `${permission}:import`,
+                                                )
+                                            "
                                         >
-                                            导入
+                                            <PermissionButton
+                                                :hasPermission="`${permission}:import`"
+                                            >
+                                                导入
+                                            </PermissionButton>
+                                        </j-upload>
+                                    </j-menu-item>
+                                    <j-menu-item>
+                                        <PermissionButton
+                                            :hasPermission="`${permission}:export`"
+                                            :popConfirm="{
+                                                title: `确认导出？`,
+                                                onConfirm: () =>
+                                                    table.clickExport(),
+                                            }"
+                                        >
+                                            导出
                                         </PermissionButton>
-                                    </j-upload>
-                                </j-menu-item>
-                                <j-menu-item>
-                                    <PermissionButton
-                                        :hasPermission="`${permission}:export`"
-                                        :popConfirm="{
-                                            title: `确认导出？`,
-                                            onConfirm: () =>
-                                                table.clickExport(),
-                                        }"
-                                    >
-                                        导出
-                                    </PermissionButton>
-                                </j-menu-item>
-                            </j-menu>
-                        </template>
-                    </j-dropdown>
-                </template>
-                <template #status="slotProps">
-                    <BadgeStatus
-                        :status="slotProps.status"
-                        :text="slotProps.status ? '启用' : '禁用'"
-                        :statusNames="{
-                            1: 'success',
-                            0: 'error',
-                        }"
-                    ></BadgeStatus>
-                </template>
-                <template #action="slotProps">
-                    <j-space :size="16">
-                        <PermissionButton
-                            :hasPermission="`${permission}:update`"
-                            type="link"
-                            :tooltip="{
-                                title: '编辑',
+                                    </j-menu-item>
+                                </j-menu>
+                            </template>
+                        </j-dropdown>
+                    </template>
+                    <template #status="slotProps">
+                        <BadgeStatus
+                            :status="slotProps.status"
+                            :text="slotProps.status ? '启用' : '禁用'"
+                            :statusNames="{
+                                1: 'success',
+                                0: 'error',
                             }"
-                            @click="table.openDialog(slotProps)"
-                        >
-                            <AIcon type="EditOutlined" />
-                        </PermissionButton>
+                        ></BadgeStatus>
+                    </template>
+                    <template #action="slotProps">
+                        <j-space :size="16">
+                            <PermissionButton
+                                :hasPermission="`${permission}:update`"
+                                type="link"
+                                :tooltip="{
+                                    title: '编辑',
+                                }"
+                                @click="table.openDialog(slotProps)"
+                            >
+                                <AIcon type="EditOutlined" />
+                            </PermissionButton>
 
-                        <PermissionButton
-                            :hasPermission="`${permission}:action`"
-                            type="link"
-                            :popConfirm="{
-                                title: `确定要${
-                                    slotProps.status ? '禁用' : '启用'
-                                }吗？`,
-                                onConfirm: () => table.changeStatus(slotProps),
-                            }"
-                            :tooltip="{
-                                title: slotProps.status ? '禁用' : '启用',
-                            }"
-                        >
-                            <AIcon
-                                :type="
-                                    slotProps.status
-                                        ? 'StopOutlined'
-                                        : 'PlayCircleOutlined'
-                                "
-                            />
-                        </PermissionButton>
+                            <PermissionButton
+                                :hasPermission="`${permission}:action`"
+                                type="link"
+                                :popConfirm="{
+                                    title: `确定要${
+                                        slotProps.status ? '禁用' : '启用'
+                                    }吗？`,
+                                    onConfirm: () =>
+                                        table.changeStatus(slotProps),
+                                }"
+                                :tooltip="{
+                                    title: slotProps.status ? '禁用' : '启用',
+                                }"
+                            >
+                                <AIcon
+                                    :type="
+                                        slotProps.status
+                                            ? 'StopOutlined'
+                                            : 'PlayCircleOutlined'
+                                    "
+                                />
+                            </PermissionButton>
 
-                        <PermissionButton
-                            :hasPermission="`${permission}:delete`"
-                            type="link"
-                            :tooltip="{
-                                title: slotProps.status
-                                    ? '请先禁用，再删除'
-                                    : '删除',
-                            }"
-                            :popConfirm="{
-                                title: `确认删除`,
-                                onConfirm: () => table.clickDel(slotProps),
-                            }"
-                            :disabled="slotProps.status"
-                        >
-                            <AIcon type="DeleteOutlined" />
-                        </PermissionButton>
-                    </j-space>
-                </template>
-            </j-pro-table>
+                            <PermissionButton
+                                :hasPermission="`${permission}:delete`"
+                                type="link"
+                                :tooltip="{
+                                    title: slotProps.status
+                                        ? '请先禁用，再删除'
+                                        : '删除',
+                                }"
+                                :popConfirm="{
+                                    title: `确认删除`,
+                                    onConfirm: () => table.clickDel(slotProps),
+                                }"
+                                :disabled="slotProps.status"
+                            >
+                                <AIcon type="DeleteOutlined" />
+                            </PermissionButton>
+                        </j-space>
+                    </template>
+                </j-pro-table>
+            </FullPage>
 
             <EditDialog
                 v-if="dialog.visible"
