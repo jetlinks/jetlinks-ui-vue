@@ -1,4 +1,6 @@
 export const LoginPath = '/login'
+export const InitHomePath = '/init-home'
+export const AccountCenterBindPath = '/account/center/bind'
 
 export const AccountMenu = {
     path: '/account',
@@ -55,11 +57,11 @@ export default [
         component: () => import('@/views/user/Login/index.vue')
     },
     {
-        path: '/account/center/bind',
+        path: AccountCenterBindPath,
         component: () => import('@/views/account/Center/bind/index.vue')
     },
     {
-      path: '/init-home', // 初始化
+      path: InitHomePath, // 初始化
       component: () => import('@/views/init-home/index.vue')
     },
 
