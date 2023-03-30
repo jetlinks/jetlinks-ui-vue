@@ -59,9 +59,9 @@
                             <p>注册时间</p>
                             <p>
                                 {{
-                                    moment(userInfo.createTime).format(
+                                userInfo.createTime ? moment(userInfo.createTime).format(
                                         'YYYY-MM-DD HH:mm:ss',
-                                    )
+                                    ) : '-'
                                 }}
                             </p>
                         </div>
