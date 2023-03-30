@@ -2,6 +2,7 @@
 <template>
     <page-container>
         <pro-search :columns="columns" target="recharge-search" @search="handleSearch" />
+        <FullPage>
         <j-pro-table
           ref="rechargeRef"
           :columns="columns"
@@ -62,6 +63,7 @@
                 </j-space>
             </template>
         </j-pro-table>
+        </FullPage>
         <!-- 充值 -->
         <Save v-if="visible" @change="saveChange" />
         <Detail v-if="detailVisible" :data="current" @close="close" />
