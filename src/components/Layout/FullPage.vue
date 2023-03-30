@@ -1,5 +1,5 @@
 <template>
-  <div class='full-page-warp' ref='fullPage' :style='{ minHeight: `calc(100vh - ${x + 24}px)`}'>
+  <div class='full-page-warp' ref='fullPage' :style='{ minHeight: `calc(100vh - ${y + 24}px)`}'>
     <slot></slot>
   </div>
 </template>
@@ -8,7 +8,7 @@
 import { useElementBounding } from '@vueuse/core'
 
 const fullPage = ref(null)
-const { x } = useElementBounding(fullPage)
+const { y } = useElementBounding(fullPage)
 
 </script>
 
