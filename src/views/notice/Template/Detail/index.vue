@@ -1129,10 +1129,14 @@ const getDetail = async () => {
     if (route.params.id !== ':id') {
         const res = await templateApi.detail(route.params.id as string);
         // formData.value = res.result;
-        // Object.assign(formData.value, res.result);
-        console.log('res.result: ', res.result);
-        formData.value = cloneDeep(res.result);
-        console.log('formData.value: ', formData.value);
+        Object.assign(formData.value, res.result);
+        // 阿里云语音模板内容字段采用别名
+        if (formData.value.provider === 'aliyun') {
+            formData.value.template.ttsmessage = res.result.template.message;
+        }
+        // console.log('res.result: ', res.result);
+        // formData.value = cloneDeep(res.result);
+        // console.log('formData.value: ', formData.value);
     }
 };
 getDetail();
@@ -1238,20 +1242,17 @@ const handleSubmit = () => {
         delete formData.value.template.link;
     if (formData.value.template.messageType === 'link')
         delete formData.value.template.markdown;
+    if (formData.value.provider === 'aliyun') {
+        formData.value.template.ttsCode = formData.value.template.templateCode;
+        // 语音message字段与其他类型的message字段重名, 但语音不需要必填验证
+        // 取别名ttsmessage, 验证通过之后, 赋值回message字段, 并删除别名字段
+        formData.value.template.message = formData.value.template.ttsmessage;
+        delete formData.value.template.ttsmessage;
+    }
     // 提交必填验证无法通过, 实际已有值, 问题未知, 暂时解决方法: 延迟验证
     setTimeout(() => {
         validate()
             .then(async () => {
-                if (formData.value.provider === 'aliyun') {
-                    formData.value.template.ttsCode =
-                        formData.value.template.templateCode;
-                    // 语音message字段与其他类型的message字段重名, 但语音不需要必填验证
-                    // 取别名ttsmessage, 验证通过之后, 赋值回message字段, 并删除别名字段
-                    formData.value.template.message =
-                        formData.value.template.ttsmessage;
-                    delete formData.value.template.ttsmessage;
-                }
-
                 btnLoading.value = true;
 
                 const res = formData.value.id
