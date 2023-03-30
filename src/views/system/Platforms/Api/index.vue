@@ -109,7 +109,7 @@ const treeSelect = (node: treeNodeTpye, nodeSchemas: object = {}) => {
     tableData.value = table;
 };
 
-const activeKey = ref<'does' | 'test'>('does'); 
+const activeKey = ref<'does' | 'test'>('does');
 const schemas = ref({}); // 对应一级api相关的类
 const initSelectedApi: apiDetailsType = {
     url: '',
@@ -156,6 +156,13 @@ function getSelectKeys() {
         });
     }
 }
+
+// watch(
+//     () => changedApis.value,
+//     (val: any) => {
+//         console.log('changedApis: ', val);
+//     },
+// );
 </script>
 
 <style lang="less" scoped>

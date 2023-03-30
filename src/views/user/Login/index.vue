@@ -237,7 +237,7 @@ const onFinish = async () => {
                 username: form.username,
             });
             LocalStore.set(TOKEN_KEY, res?.result.token);
-            if (res.result.username === 'admin') {
+            if (res.result.user?.username === 'admin') {
                 const resp: any = await getInitSet();
                 if (resp.status === 200 && !resp.result.length) {
                     window.location.href = '/#/init-home';

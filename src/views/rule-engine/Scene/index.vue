@@ -1,6 +1,8 @@
 <template>
     <page-container>
+
         <pro-search :columns="columns" target="scene" @search="handleSearch" />
+      <FullPage>
         <JProTable
             ref="sceneRef"
             :columns="columns"
@@ -125,6 +127,7 @@
                 </j-space>
             </template>
         </JProTable>
+      </FullPage>
         <SaveModal v-if="visible" @close="visible = false" :data="current" />
     </page-container>
 </template>
