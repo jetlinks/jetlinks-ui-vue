@@ -100,10 +100,11 @@
                                     @change="getTopRang"
                             /></template>
                         </Guide>
+                      <FullPage v-if="topList.length !== 0">
                         <div
                             v-if="topList.length !== 0"
                             class="rankingList"
-                            style="min-height: 490px"
+
                         >
                             <div
                                 v-for="(item, index) in topList"
@@ -135,6 +136,7 @@
                                 </div>
                             </div>
                         </div>
+                      </FullPage>
                         <div class="empty-body" v-else>
                             <j-empty :image="Empty.PRESENTED_IMAGE_SIMPLE" />
                         </div>

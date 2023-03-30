@@ -75,18 +75,32 @@ const callData = ref<Array<{ id: string, value: string | undefined }>>()
 const writeForm = ref()
 const _value = ref([])
 
+const handleOptions = (item: any, type: string) => {
+  if (type === 'enum') {
+    return item.valueType.elements?.map((a: any) => ({ ...a, label: a.text }))
+  } else if (type === 'boolean') {
+    return [
+      { label: item.valueType.trueText, value: item.valueType.trueValue },
+      { label: item.valueType.falseText, value: item.valueType.falseValue },
+    ]
+  }
+  return undefined
+}
+
 const callDataOptions = computed(() => {
   const _valueKeys = Object.keys(props.value)
   if (_valueKeys.length) {
     return _valueKeys.map(key => {
       const item: any = props.properties.find((p: any) => p.id === key)
+      console.log(item, props.value, key)
       if (item) {
+        const _options = handleOptions(item, item.valueType?.type)
         return {
           id: item.id,
           name: item.name,
           type: item.valueType ? item.valueType.type : '-',
           format: item.valueType ? item.valueType.format : undefined,
-          options: item.valueType ? item.valueType.element : undefined,
+          options: _options,
           value: props.value[key]
         }
       }
@@ -96,7 +110,7 @@ const callDataOptions = computed(() => {
         type: '',
         format: undefined,
         options: undefined,
-        value: props.value[key]
+        value: undefined
       }
     })
   }

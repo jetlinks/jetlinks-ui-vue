@@ -211,7 +211,9 @@ const dateChange = (e: any) => {
   emit('change', e)
 }
 
-myValue.value = props.modelValue
+watch(() => props.modelValue, () => {
+  myValue.value = props.modelValue
+}, { immediate: true })
 
 if (props.itemType === 'object') {
   objectValue.value = props.modelValue as string

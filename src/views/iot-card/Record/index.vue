@@ -6,29 +6,31 @@
             target="record-search"
             @search="handleSearch"
         />
-        <j-pro-table
-            ref="RecordRef"
-            :columns="columns"
-            :request="queryList"
-            :defaultParams="{
-                    pageSize: 10,
-                    sorts: [{ name: 'time', order: 'desc' }],
-                }"
-            :pagination="{
-                    showSizeChanger: true,
-                    pageSizeOptions: ['10', '20', '50', '100'],
-                }"
-            :params="params"
-            :model="'TABLE'"
-        >
-            <template #time="slotProps">
-                {{
-                    slotProps.time
-                        ? moment(slotProps.time).format('YYYY-MM-DD HH:mm:ss')
-                        : ''
-                }}
-            </template>
-        </j-pro-table>
+        <FullPage>
+          <j-pro-table
+              ref="RecordRef"
+              :columns="columns"
+              :request="queryList"
+              :defaultParams="{
+                      pageSize: 10,
+                      sorts: [{ name: 'time', order: 'desc' }],
+                  }"
+              :pagination="{
+                      showSizeChanger: true,
+                      pageSizeOptions: ['10', '20', '50', '100'],
+                  }"
+              :params="params"
+              :model="'TABLE'"
+          >
+              <template #time="slotProps">
+                  {{
+                      slotProps.time
+                          ? moment(slotProps.time).format('YYYY-MM-DD HH:mm:ss')
+                          : ''
+                  }}
+              </template>
+          </j-pro-table>
+        </FullPage>
     </page-container>
 </template>
 
