@@ -312,7 +312,7 @@ function menuChange(
         const parent = flatTableData.find(
             (item) => item.id === row.parentId,
         ) as tableItemType;
-        // setStatus(parent, 'children');
+        setStatus(parent, 'children');
         // 若该父节点不是根节点  重复此操作以此来确定该父节点的父节点状态
         if (parent.parentId) {
             return menuChange(parent, false);
