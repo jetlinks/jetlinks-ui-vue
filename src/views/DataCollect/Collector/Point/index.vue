@@ -334,7 +334,7 @@ import SaveModBus from './Save/SaveModBus.vue';
 import SaveOPCUA from './Save/SaveOPCUA.vue';
 import Scan from './Scan/index.vue';
 import { colorMap } from '../data.ts';
-import { cloneDeep, isNumber } from 'lodash-es';
+import { cloneDeep, isNumber, throttle } from 'lodash-es';
 import { getWebSocket } from '@/utils/websocket';
 import { map } from 'rxjs/operators';
 import dayjs from 'dayjs';
@@ -616,17 +616,6 @@ const handleClick = (dt: any) => {
     }
 };
 
-//节流
-let timer: any = null;
-function throttle(fn: any, delay = 1000) {
-    if (timer == null) {
-        timer = setTimeout(() => {
-            fn();
-            clearTimeout(timer);
-            timer = null;
-        }, delay);
-    }
-}
 const subscribeProperty = (value: any) => {
     const list = value.map((item: any) => item.id);
     const id = `collector-${props.data?.channelId || 'channel'}-${
@@ -643,7 +632,7 @@ const subscribeProperty = (value: any) => {
             //防止刷新过快
             throttle(() => {
                 propertyValue.value.set(payload.pointId, payload);
-            });
+            }, 1000);
         });
 };
 
