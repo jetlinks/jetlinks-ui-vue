@@ -281,9 +281,14 @@
                                                 <span>{{
                                                     getText(slotProps)
                                                 }}</span>
-                                                <span>{{
-                                                    getInterval(slotProps)
-                                                }}</span>
+                                                <span
+                                                    v-if="
+                                                        getInterval(slotProps)
+                                                    "
+                                                    >{{
+                                                        getInterval(slotProps)
+                                                    }}</span
+                                                >
                                             </div>
                                         </Ellipsis>
                                     </div>
