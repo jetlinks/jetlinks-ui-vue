@@ -88,6 +88,17 @@ const TypeMap = new Map([
     ['edge-child-device', 'edge'],
     ['network', 'network'],
 ]);
+// DataMap后期优化
+const DataMap = new Map();
+DataMap.set('fixed-media', { type: 'media', title: '视频类设备接入' });
+DataMap.set('gb28181-2016', { type: 'media', title: '视频类设备接入' });
+DataMap.set('OneNet', { type: 'cloud', title: '云平台接入' });
+DataMap.set('Ctwing', { type: 'cloud', title: '云平台接入' });
+DataMap.set('modbus-tcp', { type: 'channel', title: '通道类设备接入' });
+DataMap.set('opc-ua', { type: 'channel', title: '通道类设备接入' });
+DataMap.set('official-edge-gateway', { type: 'edge', title: '官方接入' });
+DataMap.set('edge-child-device', { type: 'edge', title: '官方接入' });
+DataMap.set('network', { type: 'network', title: '自定义设备接入' });
 
 const getTypeList = (result: Record<string, any>) => {
     const list = [];
@@ -161,12 +172,14 @@ const queryProviders = async () => {
         // dataSource.value = getTypeList(resp.result)[0].list.filter(
         //     (item) => item.name !== '插件设备接入',
         // );
-        if (route.query.save) {
-            // 视频中心-设备快速添加产品, 添加接入网关
+
+        // 快速添加接入网关
+        if (route.query.save && route.query?.type) {
+            const type = route.query.type;
             goProviders(
                 dataSource.value
-                    .find((f: any) => f.title === '视频类设备接入')
-                    ?.list?.find((f: any) => f.id === route.query.type),
+                    .find((f: any) => f.title === DataMap.get(type).title)
+                    ?.list?.find((f: any) => f.id === type),
             );
         }
     }

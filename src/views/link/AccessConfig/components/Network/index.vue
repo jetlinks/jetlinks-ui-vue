@@ -522,7 +522,6 @@ const saveData = () => {
                 onlyMessage('操作成功', 'success');
                 history.back();
                 if ((window as any).onTabSaveSuccess) {
-                    console.log(123);
                     if (resp.result?.id) {
                         (window as any).onTabSaveSuccess(resp);
                         setTimeout(() => window.close(), 300);

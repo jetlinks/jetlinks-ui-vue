@@ -63,7 +63,7 @@ const confirm = () => {
 
                 if (route.query.save) {
                     // @ts-ignore
-                    window?.onSaveSuccess(resp.result.id);
+                    window?.onTabSaveSuccess(resp.result.id);
                     window.close();
                 } else jumpPage(`system/Role/Detail`, { id: resp.result.id });
             }

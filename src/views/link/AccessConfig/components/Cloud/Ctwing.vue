@@ -413,6 +413,10 @@ const saveData = async () => {
     if (resp.status === 200) {
         onlyMessage('操作成功', 'success');
         history.back();
+        if ((window as any).onTabSaveSuccess) {
+            (window as any).onTabSaveSuccess(resp);
+            setTimeout(() => window.close(), 300);
+        }
     }
 };
 
