@@ -47,8 +47,7 @@ const emit = defineEmits<Emits>()
 const props = defineProps({
   value: {
     type: Object as PropType<ModelValueType>,
-    default: () => ({
-    })
+    default: () => ({})
   },
   name: {
     type: Array as PropType<(string| number)[]>,
@@ -65,6 +64,15 @@ onMounted(() => {
       falseValue: 'false',
       ...props.value
     })
+})
+
+watchEffect(() => {
+  if (typeof props.value.trueValue === 'boolean') {
+    props.value.trueValue = String(props.value.trueValue)
+  }
+  if (typeof props.value.falseValue === 'boolean') {
+    props.value.falseValue = String(props.value.falseValue)
+  }
 })
 
 </script>

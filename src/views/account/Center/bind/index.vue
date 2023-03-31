@@ -4,7 +4,7 @@
         <div class="content">
             <div class="title">第三方账户绑定</div>
             <!-- 已登录-绑定三方账号 -->
-            <template v-if="!token">
+            <template v-if="!!token">
                 <div class="info">
                     <j-card style="width: 280px">
                         <template #title>
@@ -14,9 +14,14 @@
                             </div>
                         </template>
                         <div class="info-body">
-                            <img :src="getImage('/bind/jetlinksLogo.png')" />
-                            <p>账号：admin</p>
-                            <p>用户名：超级管理员</p>
+                            <img
+                                :src="
+                                    user?.avatar ||
+                                    getImage('/bind/jetlinksLogo.png')
+                                "
+                            />
+                            <p>账号：{{ user?.username }}</p>
+                            <p>用户名：{{ user?.name }}</p>
                         </div>
                     </j-card>
                     <img :src="getImage('/bind/Vector.png')" />
@@ -30,12 +35,13 @@
                         <div class="info-body">
                             <img
                                 :src="
-                                    accountInfo?.avatar ||
-                                    getImage('/bind/wechat-webapp.png')
+                                    iconMap.get(
+                                        bindUser?.applicationProvider,
+                                    ) || getImage('/apply/provider1.png')
                                 "
                             />
-                            <p>用户名：-</p>
-                            <p>名称：{{ accountInfo?.name || '-' }}</p>
+                            <p>账号：{{ bindUser?.result?.username || '-' }}</p>
+                            <p>用户名：{{ bindUser?.result?.name || '-' }}</p>
                         </div>
                     </j-card>
                 </div>
@@ -54,10 +60,18 @@
                             class="arrow"
                             :src="getImage('/bind/Vector.png')"
                         />
-                        <img :src="getImage('/bind/wechat-webapp.png')" />
+                        <img
+                            :src="iconMap.get(bindUser?.applicationProvider)"
+                        />
                     </div>
                     <div class="desc">
-                        你已通过微信授权,完善以下登录信息即可以完成绑定
+                        你已通过
+                        {{
+                            bindUser?.type === 'dingtalk-ent-app'
+                                ? '钉钉'
+                                : '微信'
+                        }}
+                        授权,完善以下登录信息即可以完成绑定
                     </div>
                     <div class="login-form">
                         <j-form layout="vertical">
@@ -120,7 +134,7 @@ import { Form } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
 
 import { applicationInfo, bindAccount } from '@/api/bind';
-import { code, authLogin } from '@/api/login';
+import { code, authLogin, userDetail } from '@/api/login';
 
 const useForm = Form.useForm;
 
@@ -130,24 +144,44 @@ interface formData {
     verifyCode: string;
 }
 
+const iconMap = new Map();
+iconMap.set('dingtalk-ent-app', getImage('/notice/dingtalk.png'));
+iconMap.set('wechat-webapp', getImage('/notice/wechat.png'));
+iconMap.set('internal-standalone', getImage('/apply/provider1.png'));
+iconMap.set('third-party', getImage('/apply/provider5.png'));
+
 const token = computed(() => LocalStore.get(TOKEN_KEY));
 
-// 已登录直接绑定
+/**
+ * 用户信息
+ */
+const user = ref();
+const getDetail = () => {
+    if (!token) return;
+    userDetail().then((res: any) => {
+        user.value = res?.result;
+    });
+};
+getDetail();
+
+/**
+ * 三方应用信息
+ */
+const bindUser = ref();
+const getAppInfo = async () => {
+    const code = getUrlCode();
+    const { result } = await applicationInfo(code);
+    bindUser.value = result;
+};
+getAppInfo();
+
+/**
+ * 获取url参数
+ */
 const getUrlCode = () => {
     const url = new URLSearchParams(window.location.href);
     return url.get('code') as string;
 };
-// 三方应用信息
-const accountInfo = ref({
-    avatar: '',
-    name: '',
-});
-const getAppInfo = async () => {
-    const code = getUrlCode();
-    const res = await applicationInfo(code);
-    accountInfo.value = res?.result?.result;
-};
-getAppInfo();
 
 /**
  * 立即绑定

@@ -1236,8 +1236,11 @@ const handleSubmit = () => {
         formData.value.variableDefinitions.some((s: any) => !s.name)
     )
         return;
-    // 邮件没有配置字段
-    if (formData.value.type === 'email') delete formData.value.configId;
+    if (formData.value.type === 'email') {
+        formData.value.template.text = formData.value.template.message;
+        // 邮件没有配置字段
+        delete formData.value.configId;
+    }
     if (formData.value.template.messageType === 'markdown')
         delete formData.value.template.link;
     if (formData.value.template.messageType === 'link')

@@ -40,6 +40,7 @@
                 <j-input
                     v-model:value="form.data.name"
                     :disabled="props.mode === '查看'"
+                    placeholder="请输入名称"
                 />
             </j-form-item>
             <j-form-item
@@ -92,7 +93,6 @@ const props = defineProps<{
 
 const loading = ref(false);
 const confirm = () => {
-    loading.value = true;
     formRef.value &&
         formRef.value.validate().then(() => {
             const buttons = toRaw(props.menuInfo?.buttons) || [];
@@ -108,6 +108,7 @@ const confirm = () => {
                 ...props.menuInfo,
                 buttons,
             };
+            loading.value = true;
             saveMenuInfo_api(params)
                 .then((resp) => {
                     message.success('操作成功');

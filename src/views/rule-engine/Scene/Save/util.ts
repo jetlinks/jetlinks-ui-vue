@@ -123,6 +123,7 @@ export const EventEmitter = {
 }
 
 export const isActionChange = (_metadata: any, _message: any) => {
+  console.log(_metadata, _message)
   const _properties = _metadata?.properties || [];
   const _functions = _metadata?.functions || [];
   if (
@@ -144,7 +145,7 @@ export const isActionChange = (_metadata: any, _message: any) => {
   } else if (_message?.messageType === 'WRITE_PROPERTY') {
       const _data = Object.keys(_message?.properties)?.[0]
       if (_data) {
-          const _item = _functions.find((i: any) => i.id === _data);
+          const _item = _properties.find((i: any) => i.id === _data);
           return _item?.id;
       }
       return false;
