@@ -56,7 +56,10 @@ watch(
     () => user.userInfos,
     (val: any) => {
         // 超管默认综合管理视图
-        if (val.username === 'admin') selectValue.value = 'comprehensive';
+        if (val.username === 'admin') {
+            selectValue.value = 'comprehensive';
+            confirm();
+        }
     },
 );
 </script>
