@@ -10,6 +10,7 @@
             <j-radio-button
                 v-for="typeStr in iconKeys"
                 :value="typeStr"
+                :key="typeStr"
                 :class="{ active: selected === typeStr }"
             >
                 <AIcon :type="typeStr" />
@@ -19,6 +20,7 @@
 </template>
 
 <script setup lang="ts">
+import iconKeys from './fields';
 const emits = defineEmits(['confirm', 'update:visible']);
 const props = defineProps<{
     visible: boolean;
@@ -28,38 +30,6 @@ const confirm = () => {
     emits('confirm', selected.value);
     emits('update:visible', false);
 };
-const iconKeys = [
-    'EyeOutlined',
-    'EditOutlined',
-    'PlusOutlined',
-    'DeleteOutlined',
-    'CheckCircleOutlined',
-    'StopOutlined',
-    'CheckOutlined',
-    'CloseOutlined',
-    'DownOutlined',
-    'ImportOutlined',
-    'ExportOutlined',
-    'SyncOutlined',
-    'ExclamationCircleOutlined',
-    'UploadOutlined',
-    'LoadingOutlined',
-    'PlusCircleOutlined',
-    'QuestionCircleOutlined',
-    'DisconnectOutlined',
-    'LinkOutlined',
-    'PoweroffOutlined',
-    'SwapOutlined',
-    'BugOutlined',
-    'BarsOutlined',
-    'ArrowDownOutlined',
-    'SmallDashOutlined',
-    'TeamOutlined',
-    'MenuUnfoldOutlined',
-    'MenuFoldOutlined',
-    'InfoCircleOutlined',
-    'SearchOutlined',
-];
 
 const selected = ref<string>('');
 </script>

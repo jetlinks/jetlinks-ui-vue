@@ -1366,10 +1366,7 @@ const getDetail = () => {
                         ...configuration,
                     };
                 } else {
-                    dynamicValidateForm.cluster = {
-                        ...cloneDeep(FormStates2), //同上
-                        ...cluster,
-                    };
+                    dynamicValidateForm.cluster = cluster;
                 }
 
                 if (dynamicValidateForm.cluster.length === 1) {
