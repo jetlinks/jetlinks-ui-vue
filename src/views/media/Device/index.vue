@@ -66,7 +66,7 @@
                                     <div class="card-item-content-text">
                                         型号
                                     </div>
-                                    <div>{{ slotProps.model }}</div>
+                                    <Ellipsis>{{ slotProps.model }}</Ellipsis>
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
