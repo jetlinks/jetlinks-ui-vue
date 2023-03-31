@@ -124,7 +124,7 @@ const onFinish = async (values: any) => {
 
         if (route.query.save) {
             // @ts-ignore
-            window?.onSaveSuccess(resp.result);
+            window?.onTabSaveSuccess(resp.result);
             window.close();
         } else {
             history.back();

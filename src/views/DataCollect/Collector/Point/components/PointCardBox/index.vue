@@ -80,6 +80,7 @@
 <script setup lang="ts">
 import type { ActionsType } from '@/components/Table/index';
 import { PropType } from 'vue';
+import BadgeStatus from '@/components/BadgeStatus/index.vue';
 
 type EmitProps = {
     // (e: 'update:modelValue', data: Record<string, any>): void;

@@ -77,7 +77,7 @@ import DropdownButton from '../DropdownButton'
 import { getOption } from '../DropdownButton/util'
 import ParamsDropdown, { DoubleParamsDropdown } from '../ParamsDropdown'
 import { inject } from 'vue'
-import { ContextKey } from './util'
+import { ContextKey, arrayParamsKey, timeTypeKeys } from './util'
 import { useSceneStore } from 'store/scene'
 import { storeToRefs } from 'pinia';
 import { Form } from 'jetlinks-ui-components'
@@ -157,7 +157,6 @@ const valueOptions = ref<any[]>([]) // 默认手动输入下拉
 const metricOption = ref<any[]>([])  // 根据termType获取对应指标值
 const isMetric = ref<boolean>(false) // 是否为指标值
 const tabsOptions = ref<Array<TabsOption>>([{ label: '手动输入', key: 'manual', component: 'string' }])
-const arrayParamsKey = ['nbtw', 'btw', 'in', 'nin']
 const metricsCacheOption = ref<any[]>([]) // 缓存指标值
 
 const handOptionByColumn = (option: any) => {
@@ -280,7 +279,18 @@ const columnSelect = (option: any) => {
 
 const termsTypeSelect = (e: { key: string, name: string }) => {
   const oldValue = isArray(paramsValue.value!.value) ? paramsValue.value!.value[0] : paramsValue.value!.value
-  const value = arrayParamsKey.includes(e.key) ? [ oldValue, undefined ] : oldValue
+  let value = arrayParamsKey.includes(e.key) ? [ oldValue, undefined ] : oldValue
+  // 如果上次的值 在 timeTypeKeys中 则不变
+  if (timeTypeKeys.includes(e.key)) {
+    if (tabsOptions.value[0].component !== 'int') {
+      value = undefined
+    }
+    tabsOptions.value[0].component = 'int'
+  } else if (!timeTypeKeys.includes(e.key) && tabsOptions.value[0].component == 'int') {
+    value = undefined
+    tabsOptions.value[0].component = 'date'
+  }
+
   paramsValue.value = {
     source: paramsValue.value?.source || tabsOptions.value[0].key,
     value: value

@@ -43,7 +43,7 @@
                             :status="slotProps.state?.value"
                             :statusText="slotProps.state?.text"
                             :statusNames="{
-                                enabled: 'success',
+                                enabled: 'processing',
                                 disabled: 'error',
                             }"
                         >
@@ -151,7 +151,7 @@
                             :status="slotProps.state.value"
                             :text="slotProps.state.text"
                             :statusNames="{
-                                enabled: 'success',
+                                enabled: 'processing',
                                 disabled: 'error',
                             }"
                         ></BadgeStatus>
@@ -201,6 +201,7 @@ import { ActionsType } from '@/components/Table';
 import { getImage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import { message } from 'jetlinks-ui-components';
+import BadgeStatus from '@/components/BadgeStatus/index.vue';
 
 const menuStory = useMenuStore();
 const permission = 'system/Apply';

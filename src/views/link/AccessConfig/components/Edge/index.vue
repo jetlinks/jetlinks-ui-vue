@@ -264,7 +264,11 @@ const onFinish = async (values: any) => {
         id === ':id' ? await save(params) : await update({ ...params, id });
     if (resp.status === 200) {
         onlyMessage('操作成功', 'success');
-        history.back();
+        history.back();        
+        if ((window as any).onTabSaveSuccess) {            
+            (window as any).onTabSaveSuccess(resp);
+            setTimeout(() => window.close(), 300);
+        }
     }
 };
 

@@ -1771,7 +1771,7 @@ function getOrgIdList() {
 // 添加角色/组织
 function clickAddItem(data: string[], target: string) {
     const tab: any = window.open(`${origin}/#/system/${target}?save=true`);
-    tab.onSaveSuccess = (value: string) => {
+    tab.onTabSaveSuccess = (value: string) => {
         data.push(value);
         if (target === 'Role') getRoleIdList();
         else getOrgIdList();

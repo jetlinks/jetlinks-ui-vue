@@ -345,7 +345,7 @@ const form = reactive({
     IsShow: (...typeList: modalType[]) => typeList.includes(props.type),
     clickAddItem: (prop: 'roleIdList' | 'orgIdList', target: string) => {
         const tab: any = window.open(`${origin}/#/system/${target}?save=true`);
-        tab.onSaveSuccess = (value: string) => {
+        tab.onTabSaveSuccess = (value: string) => {
             form.data[prop] = [...(form.data[prop] || []), value];
             if (prop === 'roleIdList') form.getRoleList();
             else form.getDepartmentList();

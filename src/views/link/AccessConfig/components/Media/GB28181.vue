@@ -654,7 +654,7 @@ const saveData = () => {
             onlyMessage('操作成功', 'success');
             if (route.query.save) {
                 // @ts-ignore
-                window?.onSaveSuccess(resp.result);
+                window?.onTabSaveSuccess(resp.result);
                 window.close();
             } else {
                 history.back();

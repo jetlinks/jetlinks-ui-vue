@@ -319,7 +319,7 @@ const handleAdd = () => {
     const tab: any = window.open(
         `${origin}/#/iot/link/accessConfig/detail/:id?save=true&view=false&type=${props.channel}`,
     );
-    tab.onSaveSuccess = async (value: string) => {
+    tab.onTabSaveSuccess = async (value: string) => {
         await getGatewayList();
         handleClick(value);
     };
