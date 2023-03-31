@@ -57,7 +57,7 @@ const getTreeData = () => {
                     if (props.mode === 'api') {
                         tree[i].schemas = item.components.schemas;
                         tree[i].children = combData(item.paths);
-                    } else if (i < values.length - 2) {
+                    } else if (i < values.length - 1) {
                         const paths = filterPath(
                             item.paths,
                             values[values.length - 1].result as string[],
