@@ -49,7 +49,7 @@
             </j-tooltip>
           </j-space>
         </template>
-        <JMonacoEditor v-model="formModel.import" theme="vs" style="height: 300px" lang="javascript"></JMonacoEditor>
+        <JMonacoEditor v-model="formModel.import" theme="vs" style="height: 300px" lang="json"></JMonacoEditor>
       </j-form-item>
     </j-form>
   </j-modal>
@@ -206,14 +206,14 @@ const handleImport = async () => {
     loading.value = true
     const { id } = route.params || {}
     if (data.metadata === 'alink') {
-      const res = await convertMetadata('from', 'alink', data.import).catch(err => err)
+      const res = await convertMetadata('from', 'alink', JSON.parse(data.import)).catch(err => err)
       if (res.status === 200) {
         const metadata = operateLimits(res.result)
         let result;
         if (props?.type === 'device') {
           result = await saveMetadata(id as string, metadata).catch(err => err)
         } else {
-          result = await modify(id as string, { metadata: metadata }).catch(err => err)
+          result = await modify(id as string, { id, metadata: JSON.stringify(metadata) }).catch(err => err)
         }
         if (result.success) {
           message.success('导入成功')
@@ -224,10 +224,11 @@ const handleImport = async () => {
         // message.error('物模型数据不正确!')
         return
       }
+      let resp
       if (props?.type === 'device') {
-        instanceStore.refresh(id as string)
+        await instanceStore.refresh(id as string)
       } else {
-        productStore.refresh(id as string)
+        await productStore.refresh(id as string)
       }
       metadataStore.set('importMetadata', true)
       // Store.set(SystemConst.GET_METADATA, true)
@@ -258,21 +259,21 @@ const handleImport = async () => {
         loading.value = false
         if (resp.success) {
           if (props?.type === 'device') {
-            const detail = instanceStore.current
-            detail.metadata = JSON.stringify(paramsDevice)
-            instanceStore.setCurrent(detail)
+            // const detail = instanceStore.current
+            // detail.metadata = JSON.stringify(paramsDevice)
+            // instanceStore.setCurrent(detail)
             message.success('导入成功')
           } else {
-            const detail = productStore.current
-            detail.metadata = params.metadata
-            productStore.setCurrent(detail)
+            // const detail = productStore.current
+            // detail.metadata = params.metadata
+            // productStore.setCurrent(detail)
             message.success('导入成功')
           }
         }
         if (props?.type === 'device') {
-          instanceStore.refresh(id as string)
+          await instanceStore.refresh(id as string)
         } else {
-          productStore.refresh(id as string)
+          await productStore.refresh(id as string)
         }
         metadataStore.set('importMetadata', true)
         // Store.set(SystemConst.GET_METADATA, true)

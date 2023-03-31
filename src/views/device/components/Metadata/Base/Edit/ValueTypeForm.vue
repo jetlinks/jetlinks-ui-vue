@@ -13,6 +13,9 @@
     <j-input-number v-model:value="_value.scale" size="small" :min="0" :max="2147483647" :precision="0"
       style="width: 100%" placeholder="请输入精度"></j-input-number>
   </j-form-item>
+  <j-form-item label="时间格式" :name="name.concat(['format'])" v-if="['date'].includes(_value.type)" v-show="false">
+    <j-input v-model:value="_value.format" size="small"></j-input>
+  </j-form-item>
   <j-form-item label="布尔值" name="booleanConfig" v-if="['boolean'].includes(_value.type)">
     <BooleanParam :name="name" v-model:value="_value"></BooleanParam>
   </j-form-item>
@@ -158,6 +161,9 @@ const changeType = (val: SelectValue) => {
   }
   if (['file'].includes(val as string)) {
     _value.value.fileType = _value.value.fileType || 'url'
+  }
+  if (['date'].includes(val as string)) {
+    _value.value.format = _value.value.format || 'yyyy-MM-DD HH:mm:ss'
   }
   emit('changeType', val as string)
 }
