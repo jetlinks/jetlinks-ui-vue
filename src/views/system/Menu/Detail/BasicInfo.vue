@@ -258,7 +258,6 @@
 
 <script setup lang="ts">
 import PermissionButton from '@/components/PermissionButton/index.vue';
-
 import { FormInstance, message } from 'ant-design-vue';
 import ChooseIconDialog from '../components/ChooseIconDialog.vue';
 import PermissChoose from '../components/PermissChoose.vue';
