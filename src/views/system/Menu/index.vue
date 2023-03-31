@@ -40,13 +40,13 @@
                     <template #action="slotProps">
                         <j-space :size="16">
                             <j-tooltip>
-                                <template #title>查看</template>
+                                <template #title>编辑</template>
                                 <j-button
                                     style="padding: 0"
                                     type="link"
                                     @click="table.toDetails(slotProps)"
                                 >
-                                    <AIcon type="SearchOutlined" />
+                                    <AIcon type="EditOutlined" />
                                 </j-button>
                             </j-tooltip>
 
