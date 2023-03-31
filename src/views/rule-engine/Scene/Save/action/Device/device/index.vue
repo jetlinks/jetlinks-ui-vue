@@ -43,14 +43,14 @@
             </j-form-item>
             <j-form-item
                 v-else
-                name="selectorValues"
+                name="upperKey"
                 label="变量"
                 :rules="[{ required: true, message: '请选择' }]"
             >
                 <j-tree-select
                     style="width: 100%; height: 100%"
                     :tree-data="builtInList"
-                    v-model:value="modelRef.selectorValues"
+                    v-model:value="modelRef.upperKey"
                     placeholder="请选择参数"
                     @select="onVariableChange"
                     :fieldNames="{ label: 'name', value: 'id' }"
@@ -302,7 +302,7 @@ const onVariableChange = (val: any, node: any) => {
     modelRef.deviceId = val;
     modelRef.source = 'upper';
     modelRef.upperKey = val;
-    modelRef.selectorValues = [{ value: val, name: node.description }] as any;
+    modelRef.selectorValues = undefined // [{ value: val, name: node.description }] as any;
     emits('save', unref(modelRef), { name: node.description });
 };
 
@@ -366,7 +366,7 @@ const onFormSave = () => {
                         });
                     }
                 } else {
-                    resolve(_data);
+                    resolve({..._data});
                 }
             })
             .catch((err: any) => {

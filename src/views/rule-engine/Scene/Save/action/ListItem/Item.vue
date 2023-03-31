@@ -242,7 +242,7 @@
                     v-else-if="data?.executor === 'device'"
                     @click="onType('device')"
                 >
-                    <template v-if="data?.device?.selector === 'fixed'">
+                    <template v-if="['fixed', 'context'].includes(data?.device?.selector)">
                         <div style='display: flex; align-items: center;'>
                             <AIcon
                                 :type="
