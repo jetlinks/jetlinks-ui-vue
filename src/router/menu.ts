@@ -1,6 +1,7 @@
 export const LoginPath = '/login'
 export const InitHomePath = '/init-home'
 export const AccountCenterBindPath = '/account/center/bind'
+export const InitLicense = '/init-license'
 
 export const AccountMenu = {
     path: '/account',
@@ -51,7 +52,7 @@ export const AccountMenu = {
 }
 
 export default [
-    { path: '/*', redirect: '/'},
+    { path: '/*', redirect: '/' },
     {
         path: LoginPath,
         component: () => import('@/views/user/Login/index.vue')
@@ -61,8 +62,12 @@ export default [
         component: () => import('@/views/account/Center/bind/index.vue')
     },
     {
-      path: InitHomePath, // 初始化
-      component: () => import('@/views/init-home/index.vue')
+        path: InitHomePath, // 初始化
+        component: () => import('@/views/init-home/index.vue')
     },
+    {
+        path: InitLicense,
+        component: () => import('@/views/system/License/index.vue')
+    }
 
 ]
