@@ -157,6 +157,13 @@
                         }"
                     ></BadgeStatus>
                 </template>
+                <template #registryTime="slotProps">
+                    <span>{{
+                        dayjs(slotProps.registryTime).format(
+                            'YYYY-MM-DD YY:mm:ss',
+                        )
+                    }}</span>
+                </template>
                 <template #action="slotProps">
                     <j-space :size="16">
                         <PermissionButton
@@ -217,6 +224,7 @@ import { intersection } from 'lodash-es';
 import type { dictType, optionsType } from '../typing';
 import { message } from 'jetlinks-ui-components';
 import { useDepartmentStore } from '@/store/department';
+import dayjs from 'dayjs';
 
 const departmentStore = useDepartmentStore();
 
@@ -290,6 +298,7 @@ const columns = [
         key: 'registryTime',
         ellipsis: true,
         scopedSlots: true,
+        width: 200,
         search: {
             type: 'date',
         },
