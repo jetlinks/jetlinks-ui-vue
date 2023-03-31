@@ -53,7 +53,8 @@
                             <img
                                 :width="88"
                                 :height="88"
-                                :src="slotProps?.photoUrl || 
+                                :src="
+                                    slotProps?.photoUrl ||
                                     getImage('/device/instance/device-card.png')
                                 "
                             />
@@ -85,8 +86,42 @@
                             </j-row>
                         </template>
                         <template #actions="item">
+                            <j-dropdown
+                                placement="bottomRight"
+                                v-if="item.key === 'others'"
+                            >
+                                <j-button>
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item.text }}</span>
+                                </j-button>
+                                <template #overlay>
+                                    <j-menu>
+                                        <j-menu-item
+                                            v-for="(o, i) in item.children"
+                                            :key="i"
+                                        >
+                                            <PermissionButton
+                                                :disabled="o.disabled"
+                                                :popConfirm="o.popConfirm"
+                                                :tooltip="{
+                                                    ...o.tooltip,
+                                                }"
+                                                @click="o.onClick"
+                                                :hasPermission="
+                                                    'edge/Device:' + o.key
+                                                "
+                                                type="link"
+                                            >
+                                                <AIcon :type="o.icon" />
+                                                <span>{{ o?.text }}</span>
+                                            </PermissionButton>
+                                        </j-menu-item>
+                                    </j-menu>
+                                </template>
+                            </j-dropdown>
                             <PermissionButton
                                 :disabled="item.disabled"
+                                v-else
                                 :popConfirm="item.popConfirm"
                                 :tooltip="{
                                     ...item.tooltip,
@@ -384,36 +419,6 @@ const getActions = (
             },
         },
         {
-            key: 'setting',
-            text: '远程控制',
-            tooltip: {
-                title: '远程控制',
-            },
-            icon: 'ControlOutlined',
-            onClick: () => {
-                menuStory.jumpPage('edge/Device/Remote', { id: data.id });
-            },
-        },
-        {
-            key: 'password',
-            text: '重置密码',
-            tooltip: {
-                title: '重置密码',
-            },
-            icon: 'RedoOutlined',
-            popConfirm: {
-                title: '确认重置密码为P@ssw0rd？',
-                onConfirm: async () => {
-                    restPassword(data.id).then((resp: any) => {
-                        if (resp.status === 200) {
-                            message.success('操作成功！');
-                            edgeDeviceRef.value?.reload();
-                        }
-                    });
-                },
-            },
-        },
-        {
             key: 'action',
             text: data.state?.value !== 'notActive' ? '禁用' : '启用',
             tooltip: {
@@ -443,34 +448,82 @@ const getActions = (
                 },
             },
         },
+    ];
+    const others = [
         {
-            key: 'delete',
-            text: '删除',
-            disabled: data.state?.value !== 'notActive',
+            key: 'setting',
+            text: '远程控制',
             tooltip: {
-                title:
-                    data.state.value !== 'notActive'
-                        ? '已启用的设备不能删除'
-                        : '删除',
+                title: '远程控制',
             },
+            icon: 'ControlOutlined',
+            onClick: () => {
+                menuStory.jumpPage('edge/Device/Remote', {
+                    id: data.id,
+                });
+            },
+        },
+        {
+            key: 'password',
+            text: '重置密码',
+            tooltip: {
+                title: '重置密码',
+            },
+            icon: 'RedoOutlined',
             popConfirm: {
-                title: '确认删除?',
+                title: '确认重置密码为P@ssw0rd？',
                 onConfirm: async () => {
-                    const resp = await _delete(data.id);
-                    if (resp.status === 200) {
-                        message.success('操作成功！');
-                        edgeDeviceRef.value?.reload();
-                    } else {
-                        message.error('操作失败！');
-                    }
+                    restPassword(data.id).then((resp: any) => {
+                        if (resp.status === 200) {
+                            message.success('操作成功！');
+                            edgeDeviceRef.value?.reload();
+                        }
+                    });
                 },
             },
-            icon: 'DeleteOutlined',
         },
     ];
-    if (type === 'card')
-        return actions.filter((i: ActionsType) => i.key !== 'view');
-    return actions;
+
+    const deleteItem = {
+        key: 'delete',
+        text: '删除',
+        disabled: data.state?.value !== 'notActive',
+        tooltip: {
+            title:
+                data.state.value !== 'notActive'
+                    ? '已启用的设备不能删除'
+                    : '删除',
+        },
+        popConfirm: {
+            title: '确认删除?',
+            onConfirm: async () => {
+                const resp = await _delete(data.id);
+                if (resp.status === 200) {
+                    message.success('操作成功！');
+                    edgeDeviceRef.value?.reload();
+                } else {
+                    message.error('操作失败！');
+                }
+            },
+        },
+        icon: 'DeleteOutlined',
+    };
+
+    if (type === 'card') {
+        const arr = actions.filter((i: ActionsType) => i.key !== 'view');
+        return [
+            ...arr,
+            {
+                key: 'others',
+                text: '其他',
+                icon: 'EllipsisOutlined',
+                children: [...others],
+            },
+            deleteItem,
+        ];
+    } else {
+        return [...actions, ...others, deleteItem];
+    }
 };
 
 const handleSearch = (_params: any) => {

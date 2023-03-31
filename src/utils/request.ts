@@ -151,6 +151,8 @@ const errorHandler = (error: any) => {
           path: LoginPath
         })
       }, 0)
+    } else if (status === 404) {
+      showNotification(error?.code, error?.response?.data?.message, '404')
     }
   } else if (error.response === undefined) {
     showNotification(error.message, (error.stack + '').substr(0, 90), undefined)
