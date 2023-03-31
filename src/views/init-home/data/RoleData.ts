@@ -1,3 +1,4 @@
+import USER_CENTER_MENU_DATA from './baseMenu'
 /**
  * 内置角色数据
  */
@@ -8,6 +9,33 @@ export enum ROLEKEYS {
 }
 
 export type roleKeysType = keyof typeof ROLEKEYS;
+
+export const ROLE_USER_CENTER = {
+  ...USER_CENTER_MENU_DATA,
+  buttons: [
+    {
+      id: 'passwd-update',
+      name: '密码修改',
+      enabled: true,
+      granted: true
+    },
+    {
+      id: 'info-update',
+      name: '基本信息修改',
+      enabled: true,
+      granted: true
+    },
+    {
+      id: 'message',
+      name: '消息订阅',
+      enabled: true,
+      granted: true
+    }
+  ],
+  assetAccesses: [],
+  granted: true,
+  owner: 'iot'
+}
 
 export const RoleData = {
   [ROLEKEYS.device]: {
@@ -217,6 +245,7 @@ export default {
       createTime: 1659344075524,
       granted: true,
     },
+    ROLE_USER_CENTER
   ],
   [ROLEKEYS.link]: [
     {
@@ -958,5 +987,6 @@ export default {
       accessDescription: '此菜单不支持数据权限控制',
       granted: true,
     },
+    ROLE_USER_CENTER
   ],
 };

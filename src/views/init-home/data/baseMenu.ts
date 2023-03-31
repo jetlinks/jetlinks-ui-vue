@@ -1,3 +1,44 @@
+import { USER_CENTER_MENU_CODE } from '@/utils/consts'
+
+export const USER_CENTER_MENU_DATA = {
+  id: '19a1f2c763e1231f1e1',
+  accessSupport: { value: 'unsupported', label: '不支持'},
+  supportDataAccess: false,
+  code: USER_CENTER_MENU_CODE,
+  buttons: [
+    {
+      id: 'passwd-update',
+      name: '密码修改',
+      permissions: [
+        {
+          permission: 'user',
+          action: ['update-self-pwd']
+        }
+      ]
+    },
+    {
+      id: 'info-update',
+      name: '基本信息修改',
+      permissions: [
+        {
+          permission: 'user',
+          action: ['update-self-info']
+        }
+      ]
+    },
+    {
+      id: 'message',
+      name: '消息订阅',
+      permissions: [
+        {
+          permission: 'alarm-config',
+          action: ['query']
+        }
+      ]
+    }
+  ]
+}
+
 export default [
   // 物联网
   {
@@ -4015,6 +4056,10 @@ export default [
                 permission: 'network-card',
                 actions: ['save'],
               },
+              {
+                permission: 'device-instance',
+                actions: ['query'],
+              },
             ],
           },
           {
@@ -4219,4 +4264,6 @@ export default [
       },
     ],
   },
+  //  用户中心
+  USER_CENTER_MENU_DATA
 ];

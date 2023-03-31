@@ -47,3 +47,5 @@ export const SystemConst = {
   VERSION_CODE: 'version_code',
   AMAP_KEY : 'amap_key',
 }
+
+export const USER_CENTER_MENU_CODE = 'account-center'
