@@ -1,3 +1,5 @@
+import { MESSAGE_SUBSCRIBE_MENU_DATA } from '@/views/init-home/data/baseMenu'
+
 /**
  * 状态颜色
  */
@@ -49,3 +51,6 @@ export const SystemConst = {
 }
 
 export const USER_CENTER_MENU_CODE = 'account-center'
+export const USER_CENTER_MENU_BUTTON_CODE = 'user-center-passwd-update'
+export const MESSAGE_SUBSCRIBE_MENU_CODE = 'message-subscribe'
+export const MESSAGE_SUBSCRIBE_MENU_BUTTON_CODE = 'message-subscribe-view'

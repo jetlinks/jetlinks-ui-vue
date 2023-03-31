@@ -73,7 +73,7 @@ import BaseMenu from '@/views/init-home/data/baseMenu';
 import type { AntTreeNodeDropEvent } from 'ant-design-vue/es/tree';
 import { cloneDeep } from 'lodash';
 import { onlyMessage } from '@/utils/comm';
-import { USER_CENTER_MENU_CODE } from '@/utils/consts'
+import { MESSAGE_SUBSCRIBE_MENU_CODE, USER_CENTER_MENU_CODE } from '@/utils/consts'
 
 const selectedKeys: any = ref([]);
 const treeData = ref<any>([]);
@@ -186,7 +186,7 @@ onMounted(() => {
         );
         getMenuTree_api(params).then((resp: any) => {
             if (resp.status == 200) {
-                systemMenu.value = resp.result?.filter((item: { code: string }) => item.code !== USER_CENTER_MENU_CODE);
+                systemMenu.value = resp.result?.filter((item: { code: string }) => ![USER_CENTER_MENU_CODE, MESSAGE_SUBSCRIBE_MENU_CODE].includes(item.code));
                 //初始化菜单
                 const baseMenuData = developArrToMap(baseMenu.value);
                 const systemMenuData = developArrToMap(systemMenu.value, true);
