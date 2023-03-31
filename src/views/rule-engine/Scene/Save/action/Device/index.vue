@@ -136,11 +136,9 @@ const onSave = (_data: any) => {
         source: DeviceModel.source,
         selectorValues: DeviceModel.selectorValues,
         productId: DeviceModel.productId,
+        upperKey: DeviceModel.upperKey,
         message: _data.message,
     };
-    if (DeviceModel.selector === 'variable') {
-        item.selector = 'fixed';
-    }
     if (DeviceModel.selector === 'relation') {
         item.upperKey = 'scene.deviceId';
     }
@@ -167,6 +165,7 @@ const onSave = (_data: any) => {
                 ? JSON.stringify(_options?.propertiesValue)
                 : _options?.propertiesValue)
     }
+    console.log(item)
     emit('save', item, JSON.parse(JSON.stringify(_options)));
 };
 
@@ -181,7 +180,6 @@ const onProductChange = (_val: any, bol: boolean) => {
             JSON.parse(_val.metadata || '{}'),
             DeviceModel?.message,
         );
-        console.log(flag)
         if (!flag) {
             DeviceModel.message = {
                 messageType: 'INVOKE_FUNCTION',

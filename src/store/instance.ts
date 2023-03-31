@@ -16,14 +16,10 @@ export const useInstanceStore = defineStore({
       this.detail = current
     },
     async refresh(id: string) {
-      const resp: any = await detail(id).catch((err) => {
-        onlyMessage(err.response.data.message, 'error')
-      })
+      const resp: any = await detail(id)
       if(resp.status === 200){
         this.current = resp.result
         this.detail = resp.result
-      } else {
-        onlyMessage(resp?.message, 'error')
       }
     },
     setTabActiveKey(key: string) {
