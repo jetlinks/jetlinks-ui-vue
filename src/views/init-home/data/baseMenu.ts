@@ -1,3 +1,55 @@
+import {
+  MESSAGE_SUBSCRIBE_MENU_BUTTON_CODE,
+  MESSAGE_SUBSCRIBE_MENU_CODE,
+  USER_CENTER_MENU_BUTTON_CODE,
+  USER_CENTER_MENU_CODE
+} from '@/utils/consts'
+
+export const USER_CENTER_MENU_DATA = {
+  id: '19a1f2c763e1231f1e1',
+  accessSupport: { value: 'unsupported', label: '不支持'},
+  supportDataAccess: false,
+  code: USER_CENTER_MENU_CODE,
+  name: '个人中心',
+  url: '/user-center',
+  sortIndex: 9999,
+  granted: true,
+  buttons: [
+    {
+      id: USER_CENTER_MENU_BUTTON_CODE,
+      name: '修改密码',
+      permissions: [
+        {
+          permission: 'user',
+          action: ['update-self-pwd']
+        }
+      ]
+    }
+  ]
+}
+
+export const MESSAGE_SUBSCRIBE_MENU_DATA = {
+  id: '23a1f2c7123e56731f890',
+  accessSupport: { value: 'unsupported', label: '不支持'},
+  supportDataAccess: false,
+  code: MESSAGE_SUBSCRIBE_MENU_CODE,
+  name: '通知订阅',
+  url: '/message-subscribe',
+  buttons: [
+    {
+      id: MESSAGE_SUBSCRIBE_MENU_BUTTON_CODE,
+      name: '查看',
+      permissions: [
+        {
+          permission: 'alarm-config',
+          action: ['query']
+        }
+      ]
+    }
+  ],
+  sortIndex: 9998
+}
+
 export default [
   // 物联网
   {
@@ -4015,6 +4067,10 @@ export default [
                 permission: 'network-card',
                 actions: ['save'],
               },
+              {
+                permission: 'device-instance',
+                actions: ['query'],
+              },
             ],
           },
           {
@@ -4218,5 +4274,5 @@ export default [
         supportDataAccess: false
       },
     ],
-  },
+  }
 ];

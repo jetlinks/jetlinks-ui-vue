@@ -25,6 +25,7 @@
                             <AIcon type="PlusOutlined" />新增
                         </PermissionButton>
                         <j-button
+                            v-if="admin"
                             style="margin-left: 12px"
                             @click="router.push('/system/Menu/Setting')"
                             >菜单配置</j-button
@@ -79,10 +80,12 @@
 
 <script setup lang="ts" name="Menu">
 import PermissionButton from '@/components/PermissionButton/index.vue';
-
 import { getMenuTree_api, delMenuInfo_api } from '@/api/system/menu';
 import { message } from 'jetlinks-ui-components';
 import dayjs from 'dayjs';
+import { useUserInfo } from '@/store/userInfo';
+import { MESSAGE_SUBSCRIBE_MENU_CODE, USER_CENTER_MENU_CODE } from '@/utils/consts'
+const admin = useUserInfo().userInfos?.type.id === 'admin';
 
 const permission = 'system/Menu';
 
@@ -108,7 +111,7 @@ const columns = [
         search: {
             type: 'string',
         },
-        width: 220,
+        // width: 220,
     },
     {
         title: '页面地址',
@@ -133,7 +136,8 @@ const columns = [
         title: '说明',
         dataIndex: 'describe',
         key: 'describe',
-        width: 200,
+        ellipsis: true,
+        // width: 200,
     },
     {
         title: '创建时间',
@@ -150,8 +154,9 @@ const columns = [
         title: '操作',
         dataIndex: 'action',
         key: 'action',
+        fixed: 'right',
         scopedSlots: true,
-        width: 140,
+        width: 200,
     },
 ];
 const queryParams = ref({ terms: [] });
@@ -201,7 +206,7 @@ const table = reactive({
         return {
             code: resp.message,
             result: {
-                data: resp.result,
+                data: resp.result?.filter((item: { code: string }) => ![USER_CENTER_MENU_CODE, MESSAGE_SUBSCRIBE_MENU_CODE].includes(item.code)),
                 pageIndex: resp.pageIndex,
                 pageSize: resp.pageSize,
                 total: resp.total,
@@ -246,6 +251,7 @@ const table = reactive({
 
 <style lang="less" scoped>
 .menu-container {
+    width: 100%;
     :deep(.ant-table-cell) {
         .ant-btn-link {
             padding: 0;

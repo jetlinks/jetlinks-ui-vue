@@ -319,9 +319,9 @@ const handleAdd = () => {
     const tab: any = window.open(
         `${origin}/#/iot/link/accessConfig/detail/:id?save=true&view=false&type=${props.channel}`,
     );
-    tab.onTabSaveSuccess = async (value: string) => {
+    tab.onTabSaveSuccess = async (value: any) => {
         await getGatewayList();
-        handleClick(value);
+        handleClick(value?.result);
     };
 };
 </script>

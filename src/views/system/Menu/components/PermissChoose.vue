@@ -131,7 +131,6 @@ const permission = reactive({
         const newProp = props.value.filter(
             (item) => item.permission !== row.id,
         );
-
         if (newValue.length === row.options.length) {
             row.checkAll = true;
             row.indeterminate = false;
@@ -146,6 +145,8 @@ const permission = reactive({
                 permission: row.id,
                 actions: newValue,
             });
+        }else{
+            row.indeterminate = false
         }
 
         emits('update:value', newProp);

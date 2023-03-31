@@ -413,23 +413,17 @@ const filterOption = (input: string, option: any) => {
 const getProviderList = async () => {
     const res: any = await queryCodecProvider();
     providerListAll.value = res.result
-        .filter((i: any) => i.id !== 'property')
+        .filter((i: any) => i.id !== 'property' && i.id !== 'bool')
         .map((item: any) => ({
             value: item.id,
             label: item.name,
         }));
-
     setProviderList(formData.value.configuration.function);
 };
 getProviderList();
 
 const setProviderList = (value: string | undefined) => {
-    providerList.value =
-        value === 'HoldingRegisters'
-            ? providerListAll.value
-            : providerListAll.value.filter(
-                  (item: any) => item.value !== 'bool',
-              );
+    providerList.value = providerListAll.value;
 };
 
 watch(
