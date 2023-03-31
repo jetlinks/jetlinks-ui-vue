@@ -224,7 +224,6 @@ const handleImport = async () => {
         // message.error('物模型数据不正确!')
         return
       }
-      let resp
       if (props?.type === 'device') {
         await instanceStore.refresh(id as string)
       } else {
