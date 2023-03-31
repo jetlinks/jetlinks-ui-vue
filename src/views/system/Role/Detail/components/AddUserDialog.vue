@@ -28,6 +28,14 @@
                 onSelect: changeSelect,
             }"
             @cancelSelect="selectedRowKeys = []"
+            :defaultParams="{
+                pageSize: 10,
+            }"
+            :pagination="{
+                pageSizeOptions: ['10', '20', '50', '100'],
+                showSizeChanger: true,
+                hideOnSinglePage: false,
+            }"
         >
         </j-pro-table>
     </j-modal>
@@ -101,11 +109,11 @@ const confirm = () => {
 };
 const changeSelect = (item: any, state: boolean) => {
     const arr = new Set(selectedRowKeys.value);
-    console.log(item,state);
-    if(state){
-        arr.add(item.id)
-    }else{
-        arr.delete(item.id)
+    console.log(item, state);
+    if (state) {
+        arr.add(item.id);
+    } else {
+        arr.delete(item.id);
     }
     selectedRowKeys.value = [...arr.values()];
 };

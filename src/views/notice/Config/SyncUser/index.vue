@@ -208,7 +208,7 @@ watch(
  */
 const onTreeSelect = (keys: any) => {
     deptId.value = keys[0];
-    pageSize.value = 5;
+    pageSize.value = 10;
     current.value = 1;
 };
 
