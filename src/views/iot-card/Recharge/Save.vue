@@ -70,6 +70,7 @@
 import { queryPlatformNoPage, recharge } from '@/api/iot-card/cardManagement';
 import { message } from 'jetlinks-ui-components';
 import { PaymentMethod } from '@/views/iot-card/data';
+import { onlyMessage } from '@/utils/comm'
 
 const emit = defineEmits(['change', 'save']);
 
@@ -168,6 +169,8 @@ const handleOk = () => {
             if (resp.status === 200) {
                 if (resp.result === '失败') {
                     message.error('缴费失败')
+                } else if(resp.result) {
+                  onlyMessage('操作过于频繁，请稍后再试！', 'warning')
                 } else {
                     window.open(resp.result);
                 }
