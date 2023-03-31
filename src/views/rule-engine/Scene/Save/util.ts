@@ -123,7 +123,6 @@ export const EventEmitter = {
 }
 
 export const isActionChange = (_metadata: any, _message: any) => {
-  console.log(_metadata, _message)
   const _properties = _metadata?.properties || [];
   const _functions = _metadata?.functions || [];
   if (
