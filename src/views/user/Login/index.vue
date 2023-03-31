@@ -225,6 +225,8 @@ const defaultImg = getImage('/apply/provider1.png');
 const iconMap = new Map();
 iconMap.set('dingtalk-ent-app', getImage('/bind/dingtalk.png'));
 iconMap.set('wechat-webapp', getImage('/bind/wechat-webapp.png'));
+iconMap.set('internal-standalone', getImage('/apply/provider1.png'));
+iconMap.set('third-party', getImage('/apply/provider5.png'));
 
 const onFinish = async () => {
     try {
