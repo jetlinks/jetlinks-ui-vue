@@ -98,7 +98,7 @@
 </template>
 
 <script setup lang="ts">
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, uniqBy } from 'lodash-es';
 import { getPrimissTree_api } from '@/api/system/role';
 import { getCurrentInstance } from 'vue';
 const emits = defineEmits(['update:selectItems']);
@@ -156,7 +156,7 @@ const selectAllChange = () => {
             });
         }
     });
-    console.log('selectAllChange: ', flatTableData);
+    // console.log('selectAllChange: ', flatTableData);
     indeterminate.value = false;
     emits(
         'update:selectItems',
@@ -165,24 +165,25 @@ const selectAllChange = () => {
 };
 // 表头-批量设置
 const bulkShow = ref<boolean>(false);
-const bulkOptions = [
-    {
-        label: '全部数据',
-        value: 'ignore',
-    },
-    {
-        label: '所在组织及下级组织',
-        value: 'org-include-children',
-    },
-    {
-        label: '所在组织',
-        value: 'org',
-    },
-    {
-        label: '自己创建的',
-        value: 'creator',
-    },
-];
+const bulkOptions = ref();
+// const bulkOptions = [
+//     {
+//         label: '全部数据',
+//         value: 'ignore',
+//     },
+//     {
+//         label: '所在组织及下级组织',
+//         value: 'org-include-children',
+//     },
+//     {
+//         label: '所在组织',
+//         value: 'org',
+//     },
+//     {
+//         label: '自己创建的',
+//         value: 'creator',
+//     },
+// ];
 const bulkValue = ref<string>('');
 const bulkChange = () => {
     if (!bulkValue) return;
@@ -198,7 +199,7 @@ const bulkChange = () => {
             });
         }
     });
-    console.log('bulkChange: ', flatTableData);
+    // console.log('bulkChange: ', flatTableData);
     emits(
         'update:selectItems',
         flatTableData.filter((item) => item.granted),
@@ -396,6 +397,16 @@ function treeToSimple(treeData: tableItemType[]) {
         flatTableData.push(item);
         item.children && treeToSimple(item.children);
     });
+    // console.log('flatTableData: ', flatTableData);
+    // 根据所有权限, 取assetAccesses并集数据
+    let assets: any[] = [];
+    flatTableData?.forEach((item: any) => {
+        assets = [...assets, ...item.assetAccesses];
+    });
+    bulkOptions.value = uniqBy(assets, 'supportId')?.map((m: any) => ({
+        label: m.name,
+        value: m.supportId,
+    }));
 }
 /**
  * 设置子节点的状态

@@ -172,12 +172,16 @@ const confirm = () => {
         return message.warning('请先勾选数据');
     }
 
+    console.log('table.selectedRows: ', table.selectedRows);
     const params = table.selectedRows.map((item: any) => ({
         targetType: 'org',
         targetId: props.parentId,
         assetType: props.assetType,
         assetIdList: [item.id],
-        permission: item.selectPermissions,
+        // 保存时, 过滤没有的权限
+        permission: item.selectPermissions.filter((f: any) =>
+            item.permissionList.map((m: any) => m.value).includes(f),
+        ),
     }));
 
     // 分配产品资产后, 进入设备资产分配,默认查询第一个产品下的设备

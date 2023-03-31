@@ -134,12 +134,8 @@ const submitData = async () => {
  * 判断是否已有配置
  */
 const judgeInitSet = async () => {
-    if (userInfo.$state.userInfos.username === 'admin') {
-        const resp: any = await getInit();
-        if (resp.status === 200 && resp.result.length) {
-            window.location.href = '/';
-        }
-    } else {
+    const resp: any = await getInit();
+    if (resp.status === 200 && resp.result.length) {
         window.location.href = '/';
     }
 };
