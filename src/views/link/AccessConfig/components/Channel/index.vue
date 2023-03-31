@@ -99,7 +99,7 @@ const props = defineProps({
     },
 });
 
-const type = ref(props.provider.type);
+const type = ref(props.provider.type || props.data.type);
 
 const formState = ref<FormState>({
     name: '',

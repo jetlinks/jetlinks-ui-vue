@@ -234,8 +234,7 @@ const props = defineProps({
     },
 });
 
-const type = props.provider.type;
-
+const type = ref(props.provider.type || props.data.type);
 const channel = ref(props.provider.channel);
 
 const formState = ref<FormState>({
