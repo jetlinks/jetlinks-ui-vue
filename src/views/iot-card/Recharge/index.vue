@@ -161,7 +161,7 @@ const saveChange = (val: any) => {
     if (val) {
       setTimeout(() => {
         rechargeRef.value?.reload();
-      }, 500)
+      }, 700)
     }
 };
 

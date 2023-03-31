@@ -159,6 +159,7 @@ const paramsValue = reactive<TermsType>({
 const formItemContext = Form.useInjectFormItemContext()
 const showDelete = ref(false)
 const columnOptions: any = inject('filter-params') //
+const columnType = ref<string>()
 const termTypeOptions = ref<Array<{ id: string, name: string}>>([]) // 条件值
 const valueOptions = ref<any[]>([]) // 默认手动输入下拉
 const arrayParamsKey = ['nbtw', 'btw', 'in', 'nin', 'contains_all', 'contains_any', 'not_contains']
@@ -175,6 +176,7 @@ const handOptionByColumn = (option: any) => {
   if (option) {
     termTypeOptions.value = option.termTypes || []
     tabsOptions.value[0].component = option.type
+    columnType.value = option.type
     const _options = isArray(option.options) ? option.options : []
     if (option.type === 'boolean') {
       valueOptions.value = _options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || [
@@ -289,14 +291,16 @@ const termsTypeSelect = (e: { key: string, name: string }) => {
   let value = arrayParamsKey.includes(e.key) ? [ oldValue, undefined ] : oldValue
 
   // 如果上次的值 在 timeTypeKeys中 则不变
-  if (timeTypeKeys.includes(e.key)) {
-    if (tabsOptions.value[0].component !== 'int') {
+  if (columnType.value ==='date') {
+    if (timeTypeKeys.includes(e.key)) {
+      if (tabsOptions.value[0].component !== 'int') {
+        value = undefined
+      }
+      tabsOptions.value[0].component = 'int'
+    } else if (!timeTypeKeys.includes(e.key) && tabsOptions.value[0].component == 'int') {
       value = undefined
+      tabsOptions.value[0].component = 'date'
     }
-    tabsOptions.value[0].component = 'int'
-  } else if (!timeTypeKeys.includes(e.key) && tabsOptions.value[0].component == 'int') {
-    value = undefined
-    tabsOptions.value[0].component = 'date'
   }
 
   paramsValue.value = {

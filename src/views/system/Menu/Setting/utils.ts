@@ -31,12 +31,12 @@ export const filterMenu = (permissions: string[], menus: any[]) => {
 export const mergeMapToArr = (baseMenuData: any, systemMenuData: any) => {
     const updataArr = (r: any) => {
         for (let i = 0; i < r.length; i++) {
-            const child = r[i].children;
+            let child = r[i].children;
             if (child) {
                 updataArr(child);
             }
             r[i] = newMap.get(r[i].code);
-            delete r[i].parentCode;
+            r[i]?.parentCode && delete r[i].parentCode;
         }
     };
     const root: any = [];
@@ -45,7 +45,7 @@ export const mergeMapToArr = (baseMenuData: any, systemMenuData: any) => {
         ...new Set([...baseMenuData?.rootSet, ...systemMenuData.rootSet]),
     ];
     newRootArr.forEach((item: any) => {
-        root.push(newMap.get(item));
+        newMap.has(item) && root.push(newMap.get(item));
     });
     updataArr(root);
     return root;
@@ -55,9 +55,10 @@ export const mergeMapToArr = (baseMenuData: any, systemMenuData: any) => {
  * 平铺菜单
  * @param value 默认菜单以及查询系统菜单 baseMenu systemMenu
  * @param checked 查询系统菜单传true
+ * @param save 保存时传true
  * @returns 平铺菜单Map、根菜单名、系统选中的keys
  */
-export const developArrToMap = (Menu: any, checked = false) => {
+export const developArrToMap = (Menu: any, checked = false, save = false) => {
     const rootSet = new Set();
     const arrMap = new Map();
     const checkedKeys: any = [];
@@ -65,10 +66,16 @@ export const developArrToMap = (Menu: any, checked = false) => {
         arr.forEach((item: any) => {
             item.title = item.code;
             item.key = item.code;
-            if (checked || item?.checked) {
-                item.checked = item?.checked || checked;
+            if (save) {
+                delete item.checked; //保存时删除 checked 字段
                 checkedKeys.push(item.code);
+            } else {
+                if (checked || item?.checked) {
+                    item.checked = item?.checked || checked;
+                    checkedKeys.push(item.code);
+                }
             }
+
             arrMap.set(item.code, item);
             if (parentCode === 'root') {
                 rootSet.add(item.code); //处理根菜单

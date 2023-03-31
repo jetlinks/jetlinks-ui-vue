@@ -12,7 +12,7 @@
 
 <script lang="ts" setup>
 import { getImage } from '@/utils/comm';
-import BaseMenu from '../data/baseMenu';
+import BaseMenu, { MESSAGE_SUBSCRIBE_MENU_DATA, USER_CENTER_MENU_DATA } from '../data/baseMenu'
 import { getSystemPermission, updateMenus } from '@/api/initHome';
 /**
  * 获取菜单数据
@@ -70,7 +70,8 @@ const menuCount = (menus: any[]) => {
  */
 const initMenu = async () => {
     return new Promise(async (resolve) => {
-        const res = await updateMenus(menuDatas.current);
+      //  用户中心
+        const res = await updateMenus([...menuDatas.current!, USER_CENTER_MENU_DATA, MESSAGE_SUBSCRIBE_MENU_DATA]);
         if (res.status === 200) {
             resolve(true);
         } else {

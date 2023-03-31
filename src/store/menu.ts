@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
 import { queryOwnThree } from '@/api/system/menu'
 import { filterAsyncRouter, findCodeRoute, MenuItem } from '@/utils/menu'
-import { isArray } from 'lodash-es'
+import { cloneDeep, isArray } from 'lodash-es'
 import { usePermissionStore } from './permission'
 import router from '@/router'
 import { onlyMessage } from '@/utils/comm'
-import { AccountMenu } from '@/router/menu'
+import { AccountMenu, NotificationRecordCode, NotificationSubscriptionCode } from '@/router/menu'
+import { MESSAGE_SUBSCRIBE_MENU_CODE, USER_CENTER_MENU_CODE } from '@/utils/consts'
 
 const defaultOwnParams = [
   {
@@ -96,6 +97,13 @@ export const useMenuStore = defineStore({
           const permission = usePermissionStore()
           permission.permissions = {}
           const { menusData, silderMenus } = filterAsyncRouter(resp.result)
+
+          // 是否存在通知订阅
+          const hasMessageSub = resp.result.some((item: { code: string }) => item.code === MESSAGE_SUBSCRIBE_MENU_CODE)
+          console.log('hasMessageSub', hasMessageSub)
+          if (!hasMessageSub) {
+            AccountMenu.children = AccountMenu.children.filter((item: { code: string }) => ![NotificationSubscriptionCode, NotificationRecordCode].includes(item.code) )
+          }
           this.menus = findCodeRoute([...resp.result, AccountMenu])
           Object.keys(this.menus).forEach((item) => {
             const _item = this.menus[item]
@@ -112,7 +120,7 @@ export const useMenuStore = defineStore({
             }
           })
           menusData.push(AccountMenu)
-          this.siderMenus = silderMenus
+          this.siderMenus = silderMenus.filter((item: { name: string }) => ![USER_CENTER_MENU_CODE, MESSAGE_SUBSCRIBE_MENU_CODE].includes(item.name))
           res(menusData)
         }
       })
