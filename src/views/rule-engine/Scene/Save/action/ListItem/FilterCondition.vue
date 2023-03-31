@@ -160,7 +160,7 @@ const showDelete = ref(false)
 const columnOptions: any = inject('filter-params') //
 const termTypeOptions = ref<Array<{ id: string, name: string}>>([]) // 条件值
 const valueOptions = ref<any[]>([]) // 默认手动输入下拉
-const arrayParamsKey = ['nbtw', 'btw', 'in', 'nin']
+const arrayParamsKey = ['nbtw', 'btw', 'in', 'nin', 'contains_all', 'contains_any', 'not_contains']
 const valueColumnOptions = ref<any[]>([])
 
 const tabsOptions = ref<Array<TabsOption>>(
