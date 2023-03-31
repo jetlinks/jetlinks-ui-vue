@@ -32,11 +32,11 @@
                                     value: '',
                                     type: 'or',
                                 },
-                                {
-                                    column: 'parentId$not',
-                                    value: detail.id,
-                                    type: 'or',
-                                },
+                            //     {
+                            //         column: 'parentId$not',
+                            //         value: detail.id,
+                            //         type: 'or',
+                            //     },
                             ],
                         },
                         {
