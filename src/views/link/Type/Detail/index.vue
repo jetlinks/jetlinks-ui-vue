@@ -1365,8 +1365,23 @@ const getDetail = () => {
                         ...cloneDeep(Configuration), //防止编辑时，表单字段不完善，导致输入/选择框新出现时找不到
                         ...configuration,
                     };
+
+                    const configRef = Store.get('configRef').filter(
+                        (item: any) => item.host === '0.0.0.0',
+                    );
+                    getPortOptions(configRef); //更新端口
                 } else {
                     dynamicValidateForm.cluster = cluster;
+                    //遍历数据更新对应的本地端口
+                    setTimeout(() => {
+                        cluster.forEach((item: any, index: number) => {
+                            const { host } = item.configuration;
+                            let configRef = Store.get('configRef').filter(
+                                (item: any) => item.host === host,
+                            );
+                            getPortOptions(configRef, index);
+                        });
+                    }, 0);
                 }
 
                 if (dynamicValidateForm.cluster.length === 1) {
