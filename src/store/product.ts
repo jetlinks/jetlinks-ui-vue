@@ -25,7 +25,7 @@ export const useProductStore = defineStore({
       }
     },
     async refresh(id: string) {
-      this.getDetail(id)
+      await this.getDetail(id)
       const res = await getDeviceNumber(encodeQuery({ terms: { productId: id } }))
       if (res.status === 200) {
         this.current.count = res.result
