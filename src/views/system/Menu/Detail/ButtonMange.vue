@@ -63,26 +63,29 @@
 
 <script setup lang="ts">
 import PermissionButton from '@/components/PermissionButton/index.vue';
-
 import ButtonAddDialog from '../components/ButtonAddDialog.vue';
-
 import { getMenuInfo_api, saveMenuInfo_api } from '@/api/system/menu';
 import { message } from 'jetlinks-ui-components';
 
 const permission = 'system/Menu';
 // 路由
 const route = useRoute();
-const routeParams = {
+const routeParams = reactive({
     id: route.params.id === ':id' ? '' : (route.params.id as string),
     ...route.query,
-};
+});
+const paramsId = ref('');
 
 // 弹窗相关
 const selectItem = ref<any>({});
 const dialogVisible = ref(false);
 const dialogTitle = ref<'查看' | '新增' | '编辑'>('新增');
 const openDialog = (mode: '查看' | '新增' | '编辑', row: object) => {
-    if (!routeParams.id) return message.warning('请先新增菜单基本信息');
+    if (!routeParams.id && !paramsId.value) {
+        return message.warning('请先新增菜单基本信息');
+    }
+    console.log(3);
+
     selectItem.value = { ...row };
     dialogTitle.value = mode;
     dialogVisible.value = true;
@@ -147,6 +150,15 @@ type tableDataItem = {
     description?: string;
     permissions: object[];
 };
+
+watch(
+    () => route.params.id,
+    (value) => {
+        if (!!value) {
+            paramsId.value = value;
+        }
+    },
+);
 </script>
 
 <style lang="less" scoped>

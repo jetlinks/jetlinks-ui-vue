@@ -107,11 +107,7 @@
                 />
             </j-form-item>
             <div style="color: #616161" v-if="visibleEndian">
-                <p>
-                    当前内存布局:{{
-                        endianMap.get(formData.configuration.endian)
-                    }}{{ endianMap.get(formData.configuration.endianIn) }}
-                </p>
+                <p>当前内存布局: {{ endianData }}</p>
                 <p>
                     只有4字节数据类型(int32、ieee754 float)
                     具有4种内存布局，其它只有ABCD、DCBA两种内存布局(以双字配置为准)
@@ -182,10 +178,21 @@ const emit = defineEmits(['change']);
 const id = props.data.id;
 const formRef = ref<FormInstance>();
 
-const endianMap = new Map([
-    ['BIG', 'AB'],
-    ['LITTLE', 'BA'],
-]);
+
+const endianData = computed(() => {
+    const { endian, endianIn } = formData.value.configuration;
+    if (endian) {
+        if (endianIn) {
+            if (endian === 'BIG') {
+                return endianIn === 'BIG' ? 'ABCD' : 'BADC';
+            } else {
+                return endianIn === 'BIG' ? 'CDBA' : 'DCBA';
+            }
+        } else {
+            return endian === 'BIG' ? 'ABCD' : 'DCBA';
+        }
+    }
+});
 
 const formData = ref({
     channelId: undefined,

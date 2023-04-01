@@ -315,7 +315,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             text: '删除',
             disabled: state === 'enabled',
             tooltip: {
-                title: state === 'enabled' ? '已启用的设备不能删除' : '删除',
+                title: state === 'enabled' ? '请先禁用，再删除' : '删除',
             },
             popConfirm: {
                 title: '确认删除?',

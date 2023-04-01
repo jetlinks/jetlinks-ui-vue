@@ -132,11 +132,13 @@ const formData = ref({
 
 const handleOk = async () => {
     const data = await formRef.value?.validate();
+    const { interval } = formData.value.configuration;
     const params = {
         ...props.data,
         ...data,
         provider,
         collectorId,
+        interval,
     };
 
     loading.value = true;

@@ -310,6 +310,9 @@ watch(
     :deep(.ant-tree-list-holder-inner) {
         width: 90%;
     }
+    :deep(.ant-tree-list) {
+        width: 110%;
+    }
 
     :deep(.ant-tree-treenode) {
         width: 100%;

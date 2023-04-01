@@ -73,6 +73,7 @@ import BaseMenu from '@/views/init-home/data/baseMenu';
 import type { AntTreeNodeDropEvent } from 'ant-design-vue/es/tree';
 import { cloneDeep } from 'lodash';
 import { onlyMessage } from '@/utils/comm';
+import { MESSAGE_SUBSCRIBE_MENU_CODE, USER_CENTER_MENU_CODE } from '@/utils/consts'
 
 const selectedKeys: any = ref([]);
 const treeData = ref<any>([]);
@@ -103,10 +104,55 @@ const params = {
     ],
 };
 
+// 过滤子级空children
+const filterAndClean = (data: any) => {
+    // 如果 data 是一个数组，则对每个元素递归调用此函数
+    if (Array.isArray(data)) {
+        return data
+            .filter((item) => item !== null) // 过滤掉 null 元素
+            .map((item: any) => filterAndClean(item)); // 递归调用此函数
+    }
+
+    // 如果 data 是一个对象，则递归调用此函数来清除其子元素
+    if (typeof data === 'object') {
+        let cleanedChildren = filterAndClean(data.children); // 递归清除子元素
+        if (Array.isArray(cleanedChildren)) {
+            cleanedChildren = cleanedChildren.filter((i) => i);
+        }
+
+        if (cleanedChildren !== undefined) {
+            data.children = cleanedChildren;
+        } else {
+            delete data.children; // 如果 children 是 undefined，则将其删除
+        }
+    }
+    return data;
+};
+
 const handleOk = async () => {
+    const { arrMap, rootSet } = developArrToMap(
+        cloneDeep(treeData.value),
+        false,
+        true,
+    );
+    const dataMap = new Map();
+    // 过滤选中菜单的map
+    selectedKeys.value.forEach((item: string) => {
+        if (arrMap.has(item)) {
+            dataMap.set(item, arrMap.get(item));
+        }
+    });
+
+    const _saveDataMap = {
+        arrMap: dataMap,
+        rootSet,
+    };
+
+    const dataArr = filterAndClean(mergeMapToArr(_saveDataMap, _saveDataMap));
+
     loading.value = true;
-    const res = await updateMenus(treeData.value);
-    if (res.status === 200) {
+    const res = await updateMenus(dataArr).catch(() => {});
+    if (res?.status === 200) {
         onlyMessage('操作成功', 'success');
     }
     loading.value = false;
@@ -140,7 +186,7 @@ onMounted(() => {
         );
         getMenuTree_api(params).then((resp: any) => {
             if (resp.status == 200) {
-                systemMenu.value = resp.result;
+                systemMenu.value = resp.result?.filter((item: { code: string }) => ![USER_CENTER_MENU_CODE, MESSAGE_SUBSCRIBE_MENU_CODE].includes(item.code));
                 //初始化菜单
                 const baseMenuData = developArrToMap(baseMenu.value);
                 const systemMenuData = developArrToMap(systemMenu.value, true);

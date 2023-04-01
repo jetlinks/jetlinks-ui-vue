@@ -68,7 +68,7 @@
                                     ]"
                                 >
                                     <j-input
-                                        :disabled="record.scale !== undefined"
+                                        :disabled="record.old_id"
                                         v-model:value="record.name"
                                         placeholder="请输入名称"
                                     />
@@ -104,12 +104,10 @@
                                     />
                                 </j-form-item>
                             </template>
-                            <template v-else-if="column.key === 'precision'">
-                                <j-form-item
-                                    :name="['data', index, 'precision']"
-                                >
+                            <template v-else-if="column.key === 'scale'">
+                                <j-form-item :name="['data', index, 'scale']">
                                     <j-input-number
-                                        v-model:value="record.precision"
+                                        v-model:value="record.scale"
                                         :min="0"
                                         :max="99999"
                                         style="width: 100%"
@@ -117,7 +115,15 @@
                                 </j-form-item>
                             </template>
                             <template v-else-if="column.key === 'notnull'">
-                                <j-form-item :name="['data', index, 'notnull']">
+                                <j-form-item
+                                    :name="['data', index, 'notnull']"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请选择是否不能为空',
+                                        },
+                                    ]"
+                                >
                                     <j-radio-group
                                         v-model:value="record.notnull"
                                         button-style="solid"
@@ -132,7 +138,7 @@
                                 </j-form-item>
                             </template>
                             <template v-else-if="column.key === 'comment'">
-                                <j-form-item :name="['data', index, 'notnull']">
+                                <j-form-item :name="['data', index, 'comment']">
                                     <j-input
                                         v-model:value="record.comment"
                                         placeholder="请输入说明"
@@ -147,7 +153,8 @@
                                     :danger="true"
                                     :popConfirm="{
                                         title: `确认删除`,
-                                        onConfirm: () => clickDel(record, index),
+                                        onConfirm: () =>
+                                            clickDel(record, index),
                                     }"
                                     :disabled="record.status"
                                 >
@@ -174,7 +181,7 @@
                 <j-form-item
                     label="名称"
                     name="name"
-                    :required="true" 
+                    :required="true"
                     :rules="[
                         {
                             required: true,
@@ -217,6 +224,7 @@ import {
     delSaveRow_api,
 } from '@/api/system/dataSource';
 import { onlyMessage } from '@/utils/comm';
+import { randomString } from '@/utils/utils';
 import { FormInstance, message } from 'ant-design-vue';
 import { DataNode } from 'ant-design-vue/lib/tree';
 import _ from 'lodash';
@@ -243,13 +251,14 @@ const columns = [
     },
     {
         title: '精度',
-        dataIndex: 'precision',
-        key: 'precision',
+        dataIndex: 'scale',
+        key: 'scale',
     },
     {
         title: '不能为空',
         dataIndex: 'notnull',
         key: 'notnull',
+        width: 130
     },
     {
         title: '说明',
@@ -287,6 +296,7 @@ const queryTables = (key: string) => {
         rdbTables_api(id, key).then((resp: any) => {
             table.data = resp.result.columns.map(
                 (item: object, index: number) => ({
+                    old_id: randomString(),
                     ...item,
                     index,
                 }),
@@ -348,7 +358,7 @@ const table = reactive({
 
 const addRow = () => {
     const initData: dbColumnType = {
-        precision: 0,
+        scale: 0,
         length: 0,
         notnull: false,
         type: '',
@@ -363,19 +373,22 @@ const clickDel = (row: any, index: number) => {
         delSaveRow_api(id, leftData.selectedKeys[0], [row.name]).then(
             (resp: any) => {
                 if (resp.status === 200) {
-                    table.data.splice(index, 1)
+                    table.data.splice(index, 1);
                 }
             },
         );
     } else {
-        table.data.splice(index, 1)
-    };
+        table.data.splice(index, 1);
+    }
 };
 
 const clickSave = () => {
     formRef.value.validate().then((_data: any) => {
         const columns = cloneDeep(table.data);
-        columns.forEach((item) => delete item.index);
+        columns.forEach((item: any) => {
+            delete item?.old_id
+            delete item?.index
+        });
         if (!columns.length) {
             onlyMessage('请配置数据源字段', 'error');
             return;

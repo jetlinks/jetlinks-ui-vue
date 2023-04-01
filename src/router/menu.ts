@@ -2,6 +2,8 @@ export const LoginPath = '/login'
 export const InitHomePath = '/init-home'
 export const AccountCenterBindPath = '/account/center/bind'
 export const InitLicense = '/init-license'
+export const NotificationSubscriptionCode = 'account/NotificationSubscription'
+export const NotificationRecordCode = 'account/NotificationRecord'
 
 export const AccountMenu = {
     path: '/account',

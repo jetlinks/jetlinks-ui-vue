@@ -330,11 +330,13 @@ const handleOk = async () => {
     if (data?.configuration.function !== 'HoldingRegisters') {
         codec.provider = 'int8';
     }
+    const { interval } = formData.value.configuration;
     const params = {
         ...props.data,
         ...data,
         provider,
         collectorId,
+        interval,
     };
 
     // address是多余字段，但是react版本上使用到了这个字段
@@ -413,23 +415,17 @@ const filterOption = (input: string, option: any) => {
 const getProviderList = async () => {
     const res: any = await queryCodecProvider();
     providerListAll.value = res.result
-        .filter((i: any) => i.id !== 'property')
+        .filter((i: any) => i.id !== 'property' && i.id !== 'bool')
         .map((item: any) => ({
             value: item.id,
             label: item.name,
         }));
-
     setProviderList(formData.value.configuration.function);
 };
 getProviderList();
 
 const setProviderList = (value: string | undefined) => {
-    providerList.value =
-        value === 'HoldingRegisters'
-            ? providerListAll.value
-            : providerListAll.value.filter(
-                  (item: any) => item.value !== 'bool',
-              );
+    providerList.value = providerListAll.value;
 };
 
 watch(

@@ -52,6 +52,7 @@
                     <j-checkbox
                         v-model:checked="record.granted"
                         :indeterminate="record.indeterminate"
+                        :disabled='record.code === USER_CENTER_MENU_CODE'
                         @change="menuChange(record, true)"
                         >{{ record.name }}</j-checkbox
                     >
@@ -63,6 +64,7 @@
                             v-for="button in record.buttons"
                             v-model:checked="button.granted"
                             @change="actionChange(record)"
+                            :disabled='[USER_CENTER_MENU_BUTTON_CODE].includes(button.id)'
                             >{{ button.name }}</j-checkbox
                         >
                     </div>
@@ -98,9 +100,16 @@
 </template>
 
 <script setup lang="ts">
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, uniqBy } from 'lodash-es';
 import { getPrimissTree_api } from '@/api/system/role';
 import { getCurrentInstance } from 'vue';
+import {
+  USER_CENTER_MENU_BUTTON_CODE,
+  MESSAGE_SUBSCRIBE_MENU_BUTTON_CODE,
+  USER_CENTER_MENU_CODE,
+  MESSAGE_SUBSCRIBE_MENU_CODE
+} from '@/utils/consts'
+
 const emits = defineEmits(['update:selectItems']);
 const route = useRoute();
 const props = defineProps({
@@ -156,7 +165,7 @@ const selectAllChange = () => {
             });
         }
     });
-    console.log('selectAllChange: ', flatTableData);
+    // console.log('selectAllChange: ', flatTableData);
     indeterminate.value = false;
     emits(
         'update:selectItems',
@@ -165,24 +174,25 @@ const selectAllChange = () => {
 };
 // 表头-批量设置
 const bulkShow = ref<boolean>(false);
-const bulkOptions = [
-    {
-        label: '全部数据',
-        value: 'ignore',
-    },
-    {
-        label: '所在组织及下级组织',
-        value: 'org-include-children',
-    },
-    {
-        label: '所在组织',
-        value: 'org',
-    },
-    {
-        label: '自己创建的',
-        value: 'creator',
-    },
-];
+const bulkOptions = ref();
+// const bulkOptions = [
+//     {
+//         label: '全部数据',
+//         value: 'ignore',
+//     },
+//     {
+//         label: '所在组织及下级组织',
+//         value: 'org-include-children',
+//     },
+//     {
+//         label: '所在组织',
+//         value: 'org',
+//     },
+//     {
+//         label: '自己创建的',
+//         value: 'creator',
+//     },
+// ];
 const bulkValue = ref<string>('');
 const bulkChange = () => {
     if (!bulkValue) return;
@@ -198,7 +208,7 @@ const bulkChange = () => {
             });
         }
     });
-    console.log('bulkChange: ', flatTableData);
+    // console.log('bulkChange: ', flatTableData);
     emits(
         'update:selectItems',
         flatTableData.filter((item) => item.granted),
@@ -221,9 +231,10 @@ const init = () => {
         () => {
             // 深克隆表格数据的扁平版  因为会做一些改动 该改动只用于反馈给父组件，本组件无需变化
             const selected = cloneDeep(flatTableData).filter(
-                (item) =>
+                (item: any) =>
                     (item.granted && item.parentId) ||
-                    (item.indeterminate && item.buttons),
+                    (item.indeterminate && item.buttons) ||
+                  item.code === USER_CENTER_MENU_CODE || item.code === MESSAGE_SUBSCRIBE_MENU_CODE, // 放开个人中心以及消息订阅
             );
 
             selected.forEach((item) => {
@@ -259,9 +270,17 @@ init();
 function getAllPermiss() {
     const id = route.params.id as string;
     getPrimissTree_api(id).then((resp) => {
-        tableData.value = resp.result;
+        const _result = resp.result
+        // 默认选中个人中心相关设置
+        tableData.value = _result.map((item: { code: string , buttons: any[], granted: boolean}) => {
+          if (item.code === USER_CENTER_MENU_CODE) {
+            item.granted = true
+            item.buttons = item.buttons.map( b => ({...b, granted: true, enabled: true}))
+          }
+          return item
+        });
 
-        treeToSimple(resp.result); // 表格数据扁平化
+        treeToSimple(tableData.value); // 表格数据扁平化
 
         const selectList = flatTableData.filter((item) => item.granted); // 第一列选中的项
         emits('update:selectItems', selectList); // 选中的项传回父组件
@@ -396,6 +415,16 @@ function treeToSimple(treeData: tableItemType[]) {
         flatTableData.push(item);
         item.children && treeToSimple(item.children);
     });
+    // console.log('flatTableData: ', flatTableData);
+    // 根据所有权限, 取assetAccesses并集数据
+    let assets: any[] = [];
+    flatTableData?.forEach((item: any) => {
+        assets = [...assets, ...item.assetAccesses];
+    });
+    bulkOptions.value = uniqBy(assets, 'supportId')?.map((m: any) => ({
+        label: m.name,
+        value: m.supportId,
+    }));
 }
 /**
  * 设置子节点的状态

@@ -101,7 +101,7 @@ const formRef = ref<FormInstance>();
 
 const formData = ref({
     accessModes: [],
-    interval: '',
+    interval: undefined,
     features: [],
 });
 
@@ -118,7 +118,10 @@ const handleOk = async () => {
     const data = cloneDeep(formData.value);
     const { accessModes, features, interval } = data;
     const ischange =
-        accessModes.length !== 0 || features.length !== 0 || !!interval;
+        accessModes.length !== 0 ||
+        features.length !== 0 ||
+        Number(interval) === 0 ||
+        !!interval;
     if (ischange) {
         const params = cloneDeep(props.data);
         params.forEach((i: any) => {
@@ -132,7 +135,7 @@ const handleOk = async () => {
                 }
             }
             features.length !== 0 && (i.features = data.features);
-            if (!!interval) {
+            if (!!interval || Number(interval) === 0) {
                 i.interval = data.interval;
                 i.configuration = {
                     ...i.configuration,
