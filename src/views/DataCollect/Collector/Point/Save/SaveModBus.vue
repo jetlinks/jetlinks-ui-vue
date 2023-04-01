@@ -330,11 +330,13 @@ const handleOk = async () => {
     if (data?.configuration.function !== 'HoldingRegisters') {
         codec.provider = 'int8';
     }
+    const { interval } = formData.value.configuration;
     const params = {
         ...props.data,
         ...data,
         provider,
         collectorId,
+        interval,
     };
 
     // address是多余字段，但是react版本上使用到了这个字段
