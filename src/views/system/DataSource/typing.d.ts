@@ -29,7 +29,7 @@ export type dbColumnType = {
     previousName?: string,
     type: String,
     length: number,
-    precision: number,
+    scale: number,
     notnull: boolean,
     comment: string,
     name: string,

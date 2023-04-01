@@ -110,7 +110,7 @@
                     />
                 </div>
             </div>
-            <div class="card">
+            <div class="card" v-if='updatePassword'>
                 <h3>修改密码</h3>
                 <div class="content">
                     <div class="content" style="align-items: flex-end">
@@ -245,7 +245,10 @@ import moment from 'moment';
 import { getMe_api, getView_api, setView_api } from '@/api/home';
 import { isNoCommunity } from '@/utils/utils';
 import { userInfoType } from './typing';
+import { usePermissionStore } from 'store/permission'
 
+const btnHasPermission = usePermissionStore().hasPermission;
+const updatePassword = btnHasPermission('account-center:user-center-passwd-update')
 const permission = 'system/User';
 const userInfo = ref<userInfoType>({} as any);
 // 第三方账号
@@ -361,7 +364,7 @@ function getViews() {
         .then((resp: any) => {
             if (resp?.status === 200) {
                 if (resp.result) currentView.value = resp.result?.content;
-                else if (resp.result.username === 'admin') {
+                else if (resp.result?.username === 'admin') {
                     currentView.value = 'comprehensive';
                 } else currentView.value = 'init';
             }

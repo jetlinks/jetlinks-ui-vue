@@ -139,9 +139,9 @@ const judgeInitSet = async () => {
         window.location.href = '/';
     }
 };
-onMounted(() => {
-    judgeInitSet();
-});
+onBeforeMount(() => {
+  // judgeInitSet();
+})
 </script>
 <style scoped lang="less">
 .page-container {

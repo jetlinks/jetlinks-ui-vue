@@ -163,7 +163,7 @@ const changeType = (val: SelectValue) => {
     _value.value.fileType = _value.value.fileType || 'url'
   }
   if (['date'].includes(val as string)) {
-    _value.value.format = _value.value.format || 'yyyy-MM-DD HH:mm:ss'
+    _value.value.format = _value.value.format || 'yyyy-MM-dd HH:mm:ss'
   }
   emit('changeType', val as string)
 }

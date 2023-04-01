@@ -51,6 +51,7 @@
 import { FormInstance, message } from 'ant-design-vue';
 import PermissTree from '../components/PermissTree.vue';
 import { useMenuStore } from '@/store/menu';
+import { USER_CENTER_MENU_DATA } from '@/views/init-home/data/baseMenu'
 
 import {
     getRoleDetails_api,
@@ -71,7 +72,7 @@ const form = reactive({
         name: '',
         description: '',
     },
-    menus: [],
+    menus: [USER_CENTER_MENU_DATA],
     getForm: () => {
         getRoleDetails_api(roleId).then((resp) => {
             if (resp.status) {

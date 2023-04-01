@@ -152,6 +152,7 @@ const paramsValue = reactive<TermsType>({
 
 const showDelete = ref(false)
 const columnOptions: any = inject(ContextKey) //
+const columnType = ref<string>()
 const termTypeOptions = ref<Array<{ id: string, name: string}>>([]) // 条件值
 const valueOptions = ref<any[]>([]) // 默认手动输入下拉
 const metricOption = ref<any[]>([])  // 根据termType获取对应指标值
@@ -165,7 +166,7 @@ const handOptionByColumn = (option: any) => {
     metricsCacheOption.value = option.metrics?.map((item: any) => ({...item, label: item.name})) || []
     tabsOptions.value.length = 1
     tabsOptions.value[0].component = option.dataType
-
+    columnType.value = option.dataType
     if (option.metrics && option.metrics.length) {
 
       tabsOptions.value.push(
@@ -281,14 +282,16 @@ const termsTypeSelect = (e: { key: string, name: string }) => {
   const oldValue = isArray(paramsValue.value!.value) ? paramsValue.value!.value[0] : paramsValue.value!.value
   let value = arrayParamsKey.includes(e.key) ? [ oldValue, undefined ] : oldValue
   // 如果上次的值 在 timeTypeKeys中 则不变
-  if (timeTypeKeys.includes(e.key)) {
-    if (tabsOptions.value[0].component !== 'int') {
+  if (columnType.value === 'date') {
+    if (timeTypeKeys.includes(e.key)) {
+      if (tabsOptions.value[0].component !== 'int') {
+        value = undefined
+      }
+      tabsOptions.value[0].component = 'int'
+    } else if (!timeTypeKeys.includes(e.key) && tabsOptions.value[0].component == 'int') {
       value = undefined
+      tabsOptions.value[0].component = 'date'
     }
-    tabsOptions.value[0].component = 'int'
-  } else if (!timeTypeKeys.includes(e.key) && tabsOptions.value[0].component == 'int') {
-    value = undefined
-    tabsOptions.value[0].component = 'date'
   }
 
   paramsValue.value = {

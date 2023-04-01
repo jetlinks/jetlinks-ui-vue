@@ -68,6 +68,14 @@
             </template>
         </j-input>
         <j-input
+            v-else-if="typeMap.get(itemType) === 'password'"
+            allowClear
+            type="password"
+            v-model:value="myValue"
+            style="width: 100%"
+            @change='inputChange'
+        />
+        <j-input
             v-else
             allowClear
             type="text"
@@ -148,7 +156,7 @@ const componentsType = ref<ITypes>({
     double: 'inputNumber',
     string: 'input',
     array: 'input',
-    password: 'input',
+    password: 'password',
     enum: 'select',
     boolean: 'select',
     date: 'date',
