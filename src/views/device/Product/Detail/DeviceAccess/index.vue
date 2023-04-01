@@ -412,7 +412,6 @@ import {
     modify,
 } from '@/api/device/product';
 import { isNoCommunity } from '@/utils/utils';
-const productStore = useProductStore();
 import Driver from 'driver.js';
 import 'driver.js/dist/driver.min.css';
 import { marked } from 'marked';
@@ -420,7 +419,9 @@ import type { TableColumnType } from 'ant-design-vue';
 import { useMenuStore } from '@/store/menu';
 import _ from 'lodash';
 import { accessConfigTypeFilter } from '@/utils/setting';
+import DeviceApi from '@/api/media/device';
 
+const productStore = useProductStore();
 const tableRef = ref();
 const formRef = ref();
 const menuStore = useMenuStore();
@@ -844,7 +845,9 @@ const submitData = async () => {
                 obj.metadata = JSON.stringify(mdata);
             }
         }
-        // 保存或者更新设备接入
+      // DeviceApi.getConfiguration(current.value?.protocol, current.value?.transport)
+      // visible.value = false;
+      //   保存或者更新设备接入
         const resp: any = obj.id
             ? await updateDevice(obj)
             : await saveDevice(obj);
