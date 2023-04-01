@@ -14,6 +14,7 @@ import { LocalStore } from '@/utils/comm';
 import { getAppInfo_api } from '@/api/system/apply';
 
 const iframeUrl = ref<string>('');
+const route = useRoute()
 
 const handle = async (appId: string, url: string) => {
     const res = await getAppInfo_api(appId);
@@ -25,7 +26,7 @@ const handle = async (appId: string, url: string) => {
         }
         if (res.result.provider === 'internal-standalone') {
             //{baseUrl}/api/application/sso/{appId}/login?redirect={menuUrl}
-            const urlStandalone = `${res.result.page.baseUrl}/api/application/sso/${appId}/login?redirect=${menuUrl}?layout=false`;
+            const urlStandalone = `${res.result.page.baseUrl}/#/api/application/sso/${appId}/login?redirect=${menuUrl}&layout=false`;
             iframeUrl.value = urlStandalone;
             // console.log(urlStandalone);
         } else if (res.result.provider === 'internal-integrated') {
@@ -41,9 +42,9 @@ const handle = async (appId: string, url: string) => {
 };
 
 watchEffect(() => {
-    const params = location.pathname.split('/')?.[1];
-    const url = location.pathname.split('/').slice(2).join('/');
-    // console.log(params, url);
+    const params = route.path.split('/')?.[1];
+    const url = route.path.split('/').slice(2).join('/');
+    console.log(params, url);
     handle(params, url);
 });
 </script>

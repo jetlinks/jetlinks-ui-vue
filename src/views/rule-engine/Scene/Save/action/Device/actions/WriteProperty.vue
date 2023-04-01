@@ -135,13 +135,15 @@ const handleOptions = computed(() => {
         return [
             {
                 label: _item.trueText || true,
+                name: _item.trueText || true,
                 value: _item.trueValue || true,
-                id: _item.trueValue || true,
+                id: String(_item.trueValue || true),
             },
             {
                 label: _item.falseText || false,
+                name: _item.falseText || false,
                 value: _item.falseValue || false,
-                id: _item.falseValue || false,
+                id: String(_item.falseValue || false),
             },
         ];
     }
@@ -149,6 +151,7 @@ const handleOptions = computed(() => {
         return _item?.elements.map((i: any) => {
             return {
                 label: i.text,
+                name: i.text,
                 value: i.value,
                 id: i.value,
             };
@@ -168,7 +171,7 @@ const onChange = () => {
     });
 };
 
-const onValueChange = (val: any) => {
+const onValueChange = (val: any, label: string) => {
     const obj = {
         [`${propertyModelRef.properties}`]: {
             value: propertyModelRef?.propertiesValue,
@@ -176,7 +179,7 @@ const onValueChange = (val: any) => {
         },
     };
     emit('update:value', obj);
-    emit('change', val?.name || val)
+    emit('change', label || val)
 };
 
 watch(

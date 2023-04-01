@@ -11,7 +11,7 @@
 </template>
 
 <script lang='ts' setup name='DropdownMenus'>
-import { isBoolean, isUndefined } from 'lodash-es'
+import { isArray, isBoolean, isString, isUndefined } from 'lodash-es'
 import { getOption } from '../DropdownButton/util'
 
 type ValueType = string| number | boolean
@@ -45,6 +45,9 @@ const myOptions = computed(() => {
       _label = _value === true ? '是' : '否'
       _value = String(_value)
     }
+    if (isArray(_value)) {
+      _value = JSON.stringify(_value)
+    }
     return {
       ...item,
       label: _label,
@@ -60,7 +63,10 @@ const handleBoolean = (key: string) => {
 }
 
 const click = (e: any) => {
-  const _key = ['true', 'false'].includes(e.key) ? handleBoolean(e.key) : e.key
+  let _key = ['true', 'false'].includes(e.key) ? handleBoolean(e.key) : e.key
+  if (isString(_key) && _key.startsWith('[') && _key.endsWith(']')) {
+    _key = JSON.parse(_key)
+  }
   const option = getOption(myOptions.value, _key, props.valueName)
   myValue.value = e.key
   emit('update:value', _key)
@@ -71,7 +77,13 @@ const click = (e: any) => {
 }
 
 watch(() => props.value, () => {
-  myValue.value = isBoolean(props.value) ? String(props.value) : props.value
+  if (isBoolean(props.value)) {
+    myValue.value = isBoolean(props.value)
+  } else if (isArray(props.value)) {
+    myValue.value = JSON.stringify(props.value)
+  } else {
+    myValue.value = props.value
+  }
 }, { immediate: true})
 </script>
 

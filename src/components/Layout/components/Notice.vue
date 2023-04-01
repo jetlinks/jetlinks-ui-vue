@@ -25,7 +25,7 @@
 import { getListByUnRead_api } from '@/api/account/notificationRecord';
 import NoticeInfo from './NoticeInfo.vue';
 import { getWebSocket } from '@/utils/websocket';
-import { notification, Button } from 'ant-design-vue';
+import { notification, Button } from 'jetlinks-ui-components';
 import { changeStatus_api } from '@/api/account/notificationRecord';
 import { useUserInfo } from '@/store/userInfo';
 

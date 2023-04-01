@@ -1,4 +1,4 @@
-export const LoginPath = '/login'
+export const LoginPath = '/user/login'
 export const InitHomePath = '/init-home'
 export const AccountCenterBindPath = '/account/center/bind'
 export const InitLicense = '/init-license'

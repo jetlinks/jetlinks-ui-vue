@@ -22,7 +22,11 @@ export const USER_CENTER_MENU_DATA = {
         {
           permission: 'user',
           action: ['update-self-pwd']
-        }
+        },
+        {
+          permission: 'system_config',
+          actions: ['query'],
+        },
       ]
     }
   ]

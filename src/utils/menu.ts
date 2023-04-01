@@ -212,6 +212,7 @@ export const findCodeRoute = (asyncRouterMap: any[]) => {
   function getDetail(code: string, url: string) {
     const detail = findDetailRouteItem(code, url)
     if (!detail) return
+
     routeMeta[(detail as MenuItem).code] = {
       path: detail.url,
       title: detail.name,
@@ -243,11 +244,19 @@ export const findCodeRoute = (asyncRouterMap: any[]) => {
           getDetail(_code, url)
         })
       }
-
-      getDetail(route.code, route.url)
-
+      const _code = route.appId ? `/${route.appId}${route.url}` : route.code
+      if (!route.appId) {
+        getDetail(_code, route.url)
+      } else {
+        routeMeta[_code] = {
+          path: `/${route.appId}${route.url}`,
+          title: route.name,
+          parentName: code,
+          buttons: []
+        }
+      }
       if (route.children) {
-        findChildren(route.children, route.code)
+        findChildren(route.children, _code)
       }
     })
   }
@@ -262,9 +271,11 @@ export function filterAsyncRouter(asyncRouterMap: any, parentCode = '', level = 
   const menusData: any[] = []
   const silderMenus: any[] = []
   _asyncRouterMap.forEach((route: any) => {
+    const hasAppId = route.appId
     const _route: any = {
-      path: `${route.url}`,
-      name: route.code,
+      path:  hasAppId ? `/${route.appId}${route.url}` : `${route.url}`,
+      name: hasAppId ? `/${route.appId}${route.url}` : route.code,
+      url: hasAppId ? `/${route.appId}${route.url}` : route.url,
       meta: {
         icon: route.icon,
         title: route.name,
@@ -274,7 +285,6 @@ export function filterAsyncRouter(asyncRouterMap: any, parentCode = '', level = 
     }
 
     const silder = { ..._route }
-
     // 查看是否有隐藏子路由
     route.children = findChildrenRoute(route.code, route.url, route.children)
     route.children = findDetailRoutes(route.children)
@@ -287,7 +297,7 @@ export function filterAsyncRouter(asyncRouterMap: any, parentCode = '', level = 
 
       if (showChildren && _route.children.length) {
         _route.component = level === 1 ? BasicLayoutPage : BlankLayoutPage
-        _route.redirect = route.children[0].url
+        _route.redirect = _route.children[0].url
       } else {
         const myComponent = resolveComponent(route.code)
         // _route.component = myComponent ? myComponent : BlankLayoutPage;
@@ -300,7 +310,11 @@ export function filterAsyncRouter(asyncRouterMap: any, parentCode = '', level = 
         }
       }
     } else {
-      _route.component = route.component || resolveComponent(route.code) || BlankLayoutPage
+      if (hasAppId) {
+        _route.component = route.component || resolveComponent('iframe')
+      } else {
+        _route.component = route.component || resolveComponent(route.code) || BlankLayoutPage
+      }
     }
     menusData.push(_route)
     silderMenus.push(silder)

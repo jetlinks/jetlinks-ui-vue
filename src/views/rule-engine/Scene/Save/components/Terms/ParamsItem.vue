@@ -81,7 +81,7 @@ import { ContextKey, arrayParamsKey, timeTypeKeys } from './util'
 import { useSceneStore } from 'store/scene'
 import { storeToRefs } from 'pinia';
 import { Form } from 'jetlinks-ui-components'
-import {isArray, pick} from 'lodash-es'
+import { isArray, isObject, pick } from 'lodash-es'
 
 const sceneStore = useSceneStore()
 const { data: formModel } = storeToRefs(sceneStore)
@@ -178,10 +178,20 @@ const handOptionByColumn = (option: any) => {
     }
 
     if (option.dataType === 'boolean') {
-      valueOptions.value = option.options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || [
-        { label: '是', value: true, id: true },
-        { label: '否', value: false, id: false },
-      ]
+      // 处理_options为Object时
+      const _options = option.options || option.others
+      if (isObject(_options)) {
+        const bool = (_options as any)?.bool
+        valueOptions.value = [
+          { label: bool.falseText, value: String(bool.falseValue)},
+          { label: bool.trueText, value: String(bool.trueValue)},
+        ]
+      } else {
+        valueOptions.value = option.options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || [
+          { label: '是', value: 'true' },
+          { label: '否', value: 'false' },
+        ]
+      }
     } else if(option.dataType === 'enum') {
       valueOptions.value = option.options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || []
     } else{

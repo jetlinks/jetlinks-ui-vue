@@ -227,7 +227,7 @@ const handleImport = async () => {
       if (props?.type === 'device') {
         await instanceStore.refresh(id as string)
       } else {
-        await productStore.refresh(id as string)
+        await productStore.getDetail(id as string)
       }
       metadataStore.set('importMetadata', true)
       // Store.set(SystemConst.GET_METADATA, true)
@@ -257,22 +257,12 @@ const handleImport = async () => {
         }
         loading.value = false
         if (resp.success) {
-          if (props?.type === 'device') {
-            // const detail = instanceStore.current
-            // detail.metadata = JSON.stringify(paramsDevice)
-            // instanceStore.setCurrent(detail)
-            message.success('导入成功')
-          } else {
-            // const detail = productStore.current
-            // detail.metadata = params.metadata
-            // productStore.setCurrent(detail)
-            message.success('导入成功')
-          }
+          message.success('导入成功')
         }
         if (props?.type === 'device') {
           await instanceStore.refresh(id as string)
         } else {
-          await productStore.refresh(id as string)
+          await productStore.getDetail(id as string)
         }
         metadataStore.set('importMetadata', true)
         // Store.set(SystemConst.GET_METADATA, true)

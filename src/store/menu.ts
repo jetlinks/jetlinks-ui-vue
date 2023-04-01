@@ -100,7 +100,6 @@ export const useMenuStore = defineStore({
 
           // 是否存在通知订阅
           const hasMessageSub = resp.result.some((item: { code: string }) => item.code === MESSAGE_SUBSCRIBE_MENU_CODE)
-          console.log('hasMessageSub', hasMessageSub)
           if (!hasMessageSub) {
             AccountMenu.children = AccountMenu.children.filter((item: { code: string }) => ![NotificationSubscriptionCode, NotificationRecordCode].includes(item.code) )
           }

@@ -38,6 +38,7 @@
                 <DropdownMenus
                   v-if='(["metric", "upper"].includes(item.key) ?  metricOptions : options).length'
                   :options='["metric", "upper"].includes(item.key) ?  metricOptions : options'
+                  :value='myValue'
                   :valueName='valueName'
                   @click='onSelect'
                 />
@@ -162,6 +163,7 @@ watchEffect(() => {
   const option = getOption(_options, props.value as string, props.valueName) // 回显label值
   myValue.value = props.value
   mySource.value = props.source
+  console.log(_options, props.value, props.valueName, option)
   if (option) {
     label.value = option[props.labelName] || option.name
     treeOpenKeys.value = openKeysByTree(_options, props.value, props.valueName)

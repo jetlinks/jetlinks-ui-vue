@@ -28,6 +28,7 @@
 <script setup lang="ts">
 import { loginout_api } from '@/api/login';
 import { useUserInfo } from '@/store/userInfo';
+import { LoginPath } from '@/router/menu'
 
 const {push} = useRouter();
 
@@ -37,7 +38,7 @@ const userInfo = useUserInfo().$state.userInfos as any;
 const logOut = () => {
     loginout_api().then(() => {
         localStorage.clear();
-        push('/user/login');
+        push(LoginPath);
     });
 };
 </script>

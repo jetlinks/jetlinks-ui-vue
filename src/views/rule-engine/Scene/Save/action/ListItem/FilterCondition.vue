@@ -83,7 +83,7 @@ import ParamsDropdown, { DoubleParamsDropdown } from '../../components/ParamsDro
 import { inject } from 'vue'
 import { useSceneStore } from 'store/scene'
 import { storeToRefs } from 'pinia';
-import {cloneDeep, flattenDeep, isArray, set} from 'lodash-es'
+import { cloneDeep, flattenDeep, isArray, isObject, set } from 'lodash-es'
 import { Form } from 'jetlinks-ui-components'
 import {treeFilter} from "@/utils/comm";
 import { timeTypeKeys } from '@/views/rule-engine/Scene/Save/components/Terms/util'
@@ -177,12 +177,21 @@ const handOptionByColumn = (option: any) => {
     termTypeOptions.value = option.termTypes || []
     tabsOptions.value[0].component = option.type
     columnType.value = option.type
-    const _options = isArray(option.options) ? option.options : []
+    const _options = option.options
     if (option.type === 'boolean') {
-      valueOptions.value = _options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || [
-        { label: '是', value: true },
-        { label: '否', value: false },
-      ]
+      // 处理_options为Object时
+      if (isObject(_options)) {
+        const bool = (_options as any)?.bool
+        valueOptions.value = [
+          { label: bool.falseText, name: bool.falseText, value: bool.falseValue, id: bool.falseValue },
+          { label: bool.trueText, name: bool.trueText, value: bool.trueValue, id: bool.trueValue },
+        ]
+      } else {
+        valueOptions.value = _options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || [
+          { label: '是', name: '是', value: 'true', id: 'true' },
+          { label: '否', name: '否', value: 'false', id: 'false' },
+        ]
+      }
     } else if(option.type === 'enum') {
       valueOptions.value = _options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || []
     } else{
