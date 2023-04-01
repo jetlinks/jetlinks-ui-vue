@@ -1439,7 +1439,7 @@
 
 <script setup lang="ts">
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
-import { LocalStore, filterSelectNode } from '@/utils/comm';
+import { LocalStore, filterSelectNode, onlyMessage } from '@/utils/comm'
 import { testIP } from '@/utils/validate';
 
 import {
@@ -1799,12 +1799,21 @@ function clickSave() {
             delete params.page.parameters;
         }
 
-        if (
-            params.provider === 'internal-standalone' &&
-            params.integrationModes.includes('ssoClient') &&
-            params.integrationModes.length === 1
-        )
-            return message.warning('配置单点登录需同时配置api配置');
+        if (params.provider === 'internal-standalone') {
+          // 只选择了API服务和单点登录 或者只选择了单点登录
+          if (
+            (params.integrationModes.includes('ssoClient') &&
+            params.integrationModes.length === 1) ||
+            (
+              params.integrationModes.includes('ssoClient') &&
+              params.integrationModes.includes('apiServer') &&
+              params.integrationModes.length === 2
+            )
+          ) {
+            return message.warning('配置单点登录需同时配置API客服端');
+          }
+        }
+
 
         //独立应用-api客户端 id?clientId:appId
         if (params.provider === 'internal-standalone') {
