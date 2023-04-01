@@ -22,6 +22,71 @@ export const filterMenu = (permissions: string[], menus: any[]) => {
     });
 };
 
+// 拖拽跨级 存在顺序错乱，重复code todo
+/**
+ * 合并数组(合并菜单)
+ * @param oldData Array 默认菜单
+ * @param newData Array 当前系统菜单
+ * @returns Array 合并后的菜单
+ */
+
+export const mergeArr = (oldData: Array<any>, newData: Array<any>) => {
+    const mergedData = [];
+
+    const mergeItem: any = (oldItem: any, newItem: any) => {
+        if (!oldItem) {
+            return newItem;
+        }
+
+        if (!oldItem.children && newItem.children) {
+            oldItem.children = newItem.children;
+            return oldItem;
+        }
+
+        if (oldItem.children && !newItem.children) {
+            return oldItem;
+        }
+
+        if (oldItem.children && newItem.children) {
+            const mergedChildren = [];
+            const newChildren = [...newItem.children];
+            for (const oldChild of oldItem.children) {
+                const index = newChildren.findIndex(
+                    (child) => child.code === oldChild.code,
+                );
+                if (index !== -1) {
+                    mergedChildren.push(
+                        mergeItem(oldChild, newChildren[index]),
+                    );
+                    newChildren.splice(index, 1);
+                } else {
+                    mergedChildren.push(oldChild);
+                }
+            }
+            return {
+                ...oldItem,
+                children: mergedChildren.concat(newChildren),
+            };
+        }
+
+        return oldItem;
+    };
+
+    for (const newItem of newData) {
+        const oldItem = oldData.find((item) => item.code === newItem.code);
+        mergedData.push(mergeItem(oldItem, newItem));
+    }
+
+    for (const oldItem of oldData) {
+        const newItem = newData.find((item) => item.code === oldItem.code);
+        if (!newItem) {
+            mergedData.push(oldItem);
+        }
+    }
+
+    return mergedData;
+};
+
 /**
  * 合并Map菜单转成Arr菜单
  * @param baseMenuData baseMenu developArrToMap平铺后的数据
@@ -90,30 +155,83 @@ export const developArrToMap = (Menu: any, checked = false, save = false) => {
 };
 
 /**
+ * 查找父级、子级code
+ * @param data 当前完整的菜单
+ * @param code 当前点击的code
+ * @returns result = {
+        parents: [], //当前code的全部父级code
+        children: [],//当前code的全部子级code
+    };
+ */
+
+function findAllParentsAndChildren(data: any, code: any) {
+    const result = {
+        parents: [],
+        children: [],
+    };
+
+    function findParentsAndChildrenRecursive(node: any) {
+        if (node.code === code) {
+            if (node.children) {
+                result.children = node.children.flatMap((child: any) => {
+                    if (child.children) {
+                        return [
+                            child.code,
+                            ...findChildrenRecursive(child.children),
+                        ];
+                    }
+                    return [child.code];
+                });
+            }
+            return true;
+        }
+
+        if (node.children) {
+            for (let child of node.children) {
+                if (findParentsAndChildrenRecursive(child)) {
+                    result.parents.push(node.code);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    function findChildrenRecursive(children: any) {
+        return children.flatMap((child: any) => {
+            if (child.children) {
+                return [child.code, ...findChildrenRecursive(child.children)];
+            }
+            return [child.code];
+        });
+    }
+
+    for (let node of data) {
+        if (findParentsAndChildrenRecursive(node)) {
+            break;
+        }
+    }
+
+    return result;
+}
+/**
  * 选择功能
  * @param selecteds onSelect事件默认参数
  * @param e onSelect事件默认参数
  * @returns 处理后的keys
  */
-export const select = (selecteds: Array<string>, e: any) => {
-    const { node } = e;
-    const childKeys: Array<string> = [];
-    const getChildKeys = (data: any) => {
-        data.forEach((item: any) => {
-            childKeys.push(item.code);
-            if (item?.children) {
-                getChildKeys(item?.children);
-            }
-        });
-    };
-    if (node?.children) {
-        getChildKeys(node.children);
-    }
-
+export const select = (selecteds: Array<string>, e: any, treeData: any) => {
+    const { node, selected } = e;
+    const { parents, children } = findAllParentsAndChildren(
+        treeData,
+        node.code,
+    );
     const Keys = new Set(selecteds);
-    const selectedAllKeys = [...[node.key, ...childKeys]];
+    const selectedAllKeys = selected
+        ? [...[...parents, ...children]]
+        : [...children];
     selectedAllKeys.forEach((item: string) => {
-        Keys[e.selected ? 'add' : 'delete'](item);
+        Keys[selected ? 'add' : 'delete'](item);
     });
     return [...Keys];
 };

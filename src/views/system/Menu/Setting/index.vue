@@ -68,12 +68,16 @@ import {
     drop,
     select,
     getMaxDepth,
+    mergeArr,
 } from './utils';
 import BaseMenu from '@/views/init-home/data/baseMenu';
 import type { AntTreeNodeDropEvent } from 'ant-design-vue/es/tree';
 import { cloneDeep } from 'lodash';
 import { onlyMessage } from '@/utils/comm';
-import { MESSAGE_SUBSCRIBE_MENU_CODE, USER_CENTER_MENU_CODE } from '@/utils/consts'
+import {
+    MESSAGE_SUBSCRIBE_MENU_CODE,
+    USER_CENTER_MENU_CODE,
+} from '@/utils/consts';
 
 const selectedKeys: any = ref([]);
 const treeData = ref<any>([]);
@@ -104,54 +108,34 @@ const params = {
     ],
 };
 
-// 过滤子级空children
-const filterAndClean = (data: any) => {
-    // 如果 data 是一个数组，则对每个元素递归调用此函数
-    if (Array.isArray(data)) {
-        return data
-            .filter((item) => item !== null) // 过滤掉 null 元素
-            .map((item: any) => filterAndClean(item)); // 递归调用此函数
-    }
-
-    // 如果 data 是一个对象，则递归调用此函数来清除其子元素
-    if (typeof data === 'object') {
-        let cleanedChildren = filterAndClean(data.children); // 递归清除子元素
-        if (Array.isArray(cleanedChildren)) {
-            cleanedChildren = cleanedChildren.filter((i) => i);
+function filterTree(nodes: Array<any>, selectedKeys: Array<any>) {
+    const filtered = [];
+    for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+        if (!node.code) {
+            continue;
         }
 
-        if (cleanedChildren !== undefined) {
-            data.children = cleanedChildren;
-        } else {
-            delete data.children; // 如果 children 是 undefined，则将其删除
+        if (selectedKeys.indexOf(node.code) !== -1) {
+            filtered.push(node);
+            if (node.children) {
+                node.children = filterTree(node.children, selectedKeys);
+            }
+        } else if (node.children) {
+            node.children = filterTree(node.children, selectedKeys);
+            if (node.children.length > 0) {
+                filtered.push(node);
+            }
         }
     }
-    return data;
-};
+    return filtered;
+}
 
 const handleOk = async () => {
-    const { arrMap, rootSet } = developArrToMap(
-        cloneDeep(treeData.value),
-        false,
-        true,
-    );
-    const dataMap = new Map();
-    // 过滤选中菜单的map
-    selectedKeys.value.forEach((item: string) => {
-        if (arrMap.has(item)) {
-            dataMap.set(item, arrMap.get(item));
-        }
-    });
-
-    const _saveDataMap = {
-        arrMap: dataMap,
-        rootSet,
-    };
-
-    const dataArr = filterAndClean(mergeMapToArr(_saveDataMap, _saveDataMap));
+    const _dataArr = filterTree(cloneDeep(treeData.value), selectedKeys.value);
 
     loading.value = true;
-    const res = await updateMenus(dataArr).catch(() => {});
+    const res = await updateMenus(_dataArr).catch(() => {});
     if (res?.status === 200) {
         onlyMessage('操作成功', 'success');
     }
@@ -163,7 +147,7 @@ const handleCancel = () => {
 };
 
 const onSelect = (selecteds: Array<string>, e: any) => {
-    selectedKeys.value = select(selecteds, e);
+    selectedKeys.value = select(selecteds, e, cloneDeep(treeData.value));
 };
 
 const onDrop = (info: AntTreeNodeDropEvent) => {
@@ -186,12 +170,20 @@ onMounted(() => {
         );
         getMenuTree_api(params).then((resp: any) => {
             if (resp.status == 200) {
-                systemMenu.value = resp.result?.filter((item: { code: string }) => ![USER_CENTER_MENU_CODE, MESSAGE_SUBSCRIBE_MENU_CODE].includes(item.code));
+                systemMenu.value = resp.result?.filter(
+                    (item: { code: string }) =>
+                        ![
+                            USER_CENTER_MENU_CODE,
+                            MESSAGE_SUBSCRIBE_MENU_CODE,
+                        ].includes(item.code),
+                );
                 //初始化菜单
                 const baseMenuData = developArrToMap(baseMenu.value);
                 const systemMenuData = developArrToMap(systemMenu.value, true);
                 selectedKeys.value = systemMenuData.checkedKeys;
-                AllMenu.value = mergeMapToArr(baseMenuData, systemMenuData);
+                // AllMenu.value = mergeMapToArr(baseMenuData, systemMenuData);
+                AllMenu.value = mergeArr(cloneDeep(BaseMenu), systemMenu.value);
+
                 treeData.value = cloneDeep(AllMenu.value);
             }
         });
