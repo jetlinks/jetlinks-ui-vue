@@ -288,10 +288,10 @@
             model="CARD"
             :defaultParams="{
                 ...temp,
-                sorts: [
+                sorts: productStore.current?.accessId ? [
                     { name: 'id', value: productStore.current?.accessId },
                     { name: 'createTime', order: 'desc' },
-                ],
+                ] : [{ name: 'createTime', order: 'desc' }],
             }"
             :params="queryParams"
             @cancelSelect="cancelSelect"
