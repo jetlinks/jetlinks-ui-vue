@@ -38,6 +38,7 @@
                 <DropdownMenus
                   v-if='(["metric", "upper"].includes(item.key) ?  metricOptions : options).length'
                   :options='["metric", "upper"].includes(item.key) ?  metricOptions : options'
+                  :value='myValue'
                   :valueName='valueName'
                   @click='onSelect'
                 />

@@ -65,12 +65,12 @@ const handleOptions = computed(() => {
             {
                 label: _item.trueText || true,
                 value: _item.trueValue || true,
-                id: _item.trueValue || true,
+                id: String(_item.trueValue || true),
             },
             {
                 label: _item.falseText || false,
                 value: _item.falseValue || false,
-                id: _item.falseValue || false,
+                id: String(_item.falseValue || false),
             },
         ];
     }
