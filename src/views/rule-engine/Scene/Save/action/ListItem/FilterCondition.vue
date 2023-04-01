@@ -188,8 +188,8 @@ const handOptionByColumn = (option: any) => {
         ]
       } else {
         valueOptions.value = _options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || [
-          { label: '是', name: '是', value: true, id: true },
-          { label: '否', name: '否', value: false, id: false },
+          { label: '是', name: '是', value: 'true', id: 'true' },
+          { label: '否', name: '否', value: 'false', id: 'false' },
         ]
       }
     } else if(option.type === 'enum') {
