@@ -21,6 +21,7 @@
                             @select="onSelect"
                             :selectedKeys="selectedKeys"
                             @drop="onDrop"
+                            @dragend="onDragend"
                         >
                             <template #title="row">
                                 <div class="tree-content">
@@ -63,12 +64,12 @@ import {
 } from '@/api/initHome';
 import {
     filterMenu,
-    mergeMapToArr,
-    developArrToMap,
+    initData,
     drop,
     select,
     getMaxDepth,
     mergeArr,
+    findAllParentsAndChildren,
 } from './utils';
 import BaseMenu from '@/views/init-home/data/baseMenu';
 import type { AntTreeNodeDropEvent } from 'ant-design-vue/es/tree';
@@ -83,9 +84,9 @@ const selectedKeys: any = ref([]);
 const treeData = ref<any>([]);
 const systemMenu: any = ref([]);
 const baseMenu: any = ref([]);
-const AllMenu = ref([]);
 const visible = ref(false);
 const loading = ref(false);
+const treeDataDropChange = ref(false); // 标记treeData拖拽成功
 
 const params = {
     paging: false,
@@ -156,9 +157,28 @@ const onDrop = (info: AntTreeNodeDropEvent) => {
     const maxDepth = getMaxDepth(newTreeData);
     if (maxDepth > 3) {
         onlyMessage('仅支持3级菜单', 'error');
+        treeDataDropChange.value = false;
         treeData.value = TreeData;
     } else {
+        treeDataDropChange.value = true;
         treeData.value = newTreeData;
+    }
+};
+
+const onDragend = (info: AntTreeNodeDropEvent) => {
+    const { node } = info;
+    const { children } = findAllParentsAndChildren(
+        cloneDeep(treeData.value),
+        node.code,
+    );
+    const cancelKeys = [node.code, ...children];
+    const Keys = new Set(cloneDeep(selectedKeys.value));
+    cancelKeys.forEach((i) => {
+        Keys.has(i) && Keys.delete(i);
+    });
+    //拖拽成功时更新selectedKeys
+    if (treeDataDropChange.value) {
+        selectedKeys.value = [...Keys];
     }
 };
 
@@ -178,13 +198,16 @@ onMounted(() => {
                         ].includes(item.code),
                 );
                 //初始化菜单
-                const baseMenuData = developArrToMap(baseMenu.value);
-                const systemMenuData = developArrToMap(systemMenu.value, true);
+                initData(baseMenu.value); // 不要克隆，通过引用 处理key和name
+                const systemMenuData = initData(systemMenu.value);
                 selectedKeys.value = systemMenuData.checkedKeys;
-                // AllMenu.value = mergeMapToArr(baseMenuData, systemMenuData);
-                AllMenu.value = mergeArr(cloneDeep(BaseMenu), systemMenu.value);
 
-                treeData.value = cloneDeep(AllMenu.value);
+                const AllMenu = mergeArr(
+                    cloneDeep(BaseMenu),
+                    cloneDeep(systemMenu.value),
+                );
+
+                treeData.value = AllMenu;
             }
         });
     });
