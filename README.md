@@ -3,7 +3,7 @@
 ## 平台简介
 
 * 本仓库为JetLinks vue版本。
-* 前端技术栈[Vue3](https://v3.cn.vuejs.org) + [Jetlinks-ui-components](https://github.com/jetlinks/jetlinks-ui-components) + [Vite 3.x](https://cn.vitejs.dev)
+* 前端技术栈[Vue3](https://v3.cn.vuejs.org) + [Jetlinks-ui-components](https://github.com/jetlinks/jetlinks-ui-components) + [Vite 4.x](https://cn.vitejs.dev)
 * 本项目采用约定式路由，文件系统即路由，通过目录和文件及其命名分析出路由配置。
 
 ## 前端运行
