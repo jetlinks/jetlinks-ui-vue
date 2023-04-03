@@ -315,13 +315,13 @@ const termsTypeSelect = (e: { key: string, name: string }) => {
 }
 
 const valueSelect = (v: any, label: string, labelObj: Record<number, any>, option: any) => {
-  if (isMetric.value) {
+  if (paramsValue.value?.source === 'metric') {
     paramsValue.metric = option?.id
   }
 
   const newValues = { ...paramsValue }
 
-  if (!isMetric.value) {
+  if (paramsValue.value?.source !== 'metric') {
     delete newValues.metric
   }
 
