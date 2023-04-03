@@ -16,7 +16,7 @@ export const SUCCESS_CODE = 200 // 成功代码
 export const request = axios.create({
   withCredentials: false,
   baseURL: BASE_API_PATH,
-  timeout: 1000 * 60 * 5
+  timeout: 1000 * 15
 })
 
 /**
