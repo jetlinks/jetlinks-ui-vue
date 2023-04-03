@@ -225,7 +225,8 @@ import {
 } from '@/api/system/dataSource';
 import { onlyMessage } from '@/utils/comm';
 import { randomString } from '@/utils/utils';
-import { FormInstance, message } from 'ant-design-vue';
+import { FormInstance } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { DataNode } from 'ant-design-vue/lib/tree';
 import _ from 'lodash';
 import { cloneDeep } from 'lodash';

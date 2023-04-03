@@ -1456,10 +1456,10 @@ import type { formType, dictType, optionsType } from '../typing';
 import { getRoleList_api } from '@/api/system/user';
 import {
     FormInstance,
-    message,
     UploadChangeParam,
     UploadFile,
 } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components'
 import { randomString } from '@/utils/utils';
 import { cloneDeep, difference } from 'lodash';
 import { useMenuStore } from '@/store/menu';

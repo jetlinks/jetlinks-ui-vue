@@ -34,7 +34,7 @@ import { TOKEN_KEY } from '@/utils/variable';
 import { FIRMWARE_UPLOAD } from '@/api/device/firmware';
 import { onlyMessage } from '@/utils/comm';
 import type { UploadChangeParam } from 'ant-design-vue';
-import { notification as Notification } from 'ant-design-vue';
+import { notification as Notification } from 'jetlinks-ui-components';
 import { useSystem } from '@/store/system';
 
 const emit = defineEmits(['update:modelValue', 'update:extraValue', 'change']);

@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable'
-import { notification as Notification } from 'ant-design-vue'
+import { notification as Notification } from 'jetlinks-ui-components'
 import router from '@/router'
 import { LoginPath } from '@/router/menu'
 import { cleanToken, getToken, LocalStore } from '@/utils/comm'

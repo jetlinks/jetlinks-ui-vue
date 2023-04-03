@@ -759,8 +759,8 @@
 
 <script setup lang="ts">
 import { getImage } from '@/utils/comm';
-import { Form, UploadChangeParam } from 'ant-design-vue';
-import { message } from 'jetlinks-ui-components';
+import { UploadChangeParam } from 'ant-design-vue';
+import { message, Form } from 'jetlinks-ui-components';
 import type { IVariableDefinitions, TemplateFormData } from '../types';
 import {
     NOTICE_METHOD,

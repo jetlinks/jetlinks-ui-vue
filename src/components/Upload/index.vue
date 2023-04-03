@@ -55,7 +55,8 @@
 </template>
 
 <script lang="ts" setup name='JProUpload'>
-import { message, UploadChangeParam, UploadProps } from 'ant-design-vue';
+import { UploadChangeParam, UploadProps } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { FILE_UPLOAD } from '@/api/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import { LocalStore } from '@/utils/comm';

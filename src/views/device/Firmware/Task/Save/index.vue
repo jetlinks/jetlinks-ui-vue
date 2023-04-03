@@ -108,8 +108,6 @@
     </j-modal>
 </template>
 <script lang="ts" setup name="TaskPage">
-import { message } from 'ant-design-vue';
-import { getImage } from '@/utils/comm';
 import { queryProduct, saveTask } from '@/api/device/firmware';
 import type { FormInstance } from 'ant-design-vue';
 import SelectDevices from './SelectDevices.vue';

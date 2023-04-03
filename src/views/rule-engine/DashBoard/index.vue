@@ -97,7 +97,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Empty } from 'ant-design-vue';
+import { Empty } from 'jetlinks-ui-components';
 import { getImage } from '@/utils/comm';
 import Charts from './components/Charts.vue';
 import TopCard from './components/TopCard.vue';

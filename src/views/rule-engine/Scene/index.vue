@@ -137,7 +137,7 @@ import SaveModal from './Save/save.vue';
 import type { SceneItem } from './typings';
 import { useMenuStore } from 'store/menu';
 import { query, _delete, _action, _execute } from '@/api/rule-engine/scene';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import type { ActionsType } from '@/components/Table';
 import { getImage } from '@/utils/comm';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';

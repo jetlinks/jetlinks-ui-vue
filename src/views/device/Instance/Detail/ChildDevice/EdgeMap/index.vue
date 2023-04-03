@@ -132,7 +132,7 @@ import {
 } from '@/api/device/instance';
 import MSelect from './MSelect.vue';
 import PatchMapping from './PatchMapping.vue';
-import { message } from 'ant-design-vue/es';
+import { message } from 'jetlinks-ui-components';
 import { inject } from 'vue';
 const columns = [
     {

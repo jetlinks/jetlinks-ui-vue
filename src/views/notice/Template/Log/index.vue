@@ -50,7 +50,7 @@
 import templateApi from '@/api/notice/template';
 import { PropType } from 'vue';
 import moment from 'moment';
-import { Modal } from 'ant-design-vue';
+import { Modal } from 'jetlinks-ui-components';
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;

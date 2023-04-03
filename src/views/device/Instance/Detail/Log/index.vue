@@ -49,7 +49,7 @@ import type { ActionsType } from '@/components/Table';
 import { queryLog, queryLogsType } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import moment from 'moment';
-import { Modal, Textarea } from 'ant-design-vue';
+import { Modal, Textarea } from 'jetlinks-ui-components';
 
 const params = ref<Record<string, any>>({});
 const instanceStore = useInstanceStore();

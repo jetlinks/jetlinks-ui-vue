@@ -57,7 +57,7 @@
 
 <script lang="ts" setup>
 import { treeMapping, saveMapping } from '@/api/device/instance';
-import { message } from 'ant-design-vue/es';
+import { message } from 'jetlinks-ui-components';
 const _props = defineProps({
     type: {
         type: String,
