@@ -1065,12 +1065,10 @@
                             >
                                 <img
                                     v-if="
-                                        form.data.sso.configuration.oauth2
-                                            .logoUrl
+                                        form.data.logoUrl
                                     "
                                     :src="
-                                        form.data.sso.configuration.oauth2
-                                            .logoUrl
+                                        form.data.logoUrl
                                     "
                                     alt="avatar"
                                     style="width: 150px"
@@ -1905,7 +1903,7 @@ function changeBackUpload(info: UploadChangeParam<UploadFile<any>>) {
     } else if (info.file.status === 'done') {
         info.file.url = info.file.response?.result;
         form.uploadLoading = false;
-        form.data.sso.configuration.oauth2.logoUrl = info.file.response?.result;
+        form.data.logoUrl = info.file.response?.result;
     } else if (info.file.status === 'error') {
         form.uploadLoading = false;
         message.error('logo上传失败，请稍后再试');

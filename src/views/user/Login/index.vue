@@ -143,7 +143,7 @@
                                                 style="width: 32px; height: 33px"
                                                 :alt="item.name"
                                                 :src="
-                                                    iconMap.get(
+                                                    item.logoUrl || iconMap.get(
                                                         item.provider,
                                                     ) || defaultImg
                                                 "
