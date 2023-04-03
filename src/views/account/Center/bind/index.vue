@@ -157,7 +157,7 @@ const token = computed(() => LocalStore.get(TOKEN_KEY));
  */
 const user = ref();
 const getDetail = () => {
-    if (!token) return;
+    if (!token.value) return;
     userDetail().then((res: any) => {
         user.value = res?.result;
     });

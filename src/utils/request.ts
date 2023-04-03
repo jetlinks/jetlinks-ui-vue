@@ -13,6 +13,8 @@ interface AxiosResponseRewrite<T = any[]> extends AxiosResponse<T, any> {
 
 export const SUCCESS_CODE = 200 // 成功代码
 
+const filterApiUrl = ['/system/version', '/system/config/front', '/authorize/captcha/config', '/application/sso/_all', '/authorize/captcha/image']
+
 export const request = axios.create({
   withCredentials: false,
   baseURL: BASE_API_PATH,
@@ -165,7 +167,8 @@ request.interceptors.request.use(config => {
   // 如果 token 存在
   // 让每个请求携带自定义 token 请根据实际情况自行修改
   const token = getToken()
-  if (!token) {
+  const isFilterUrl = filterApiUrl.some(url => config.url.includes(url))
+  if (!token && !isFilterUrl) {
     setTimeout(() => {
       cleanToken()
       router.replace({

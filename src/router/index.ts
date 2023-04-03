@@ -19,7 +19,9 @@ const filterPath = [ InitHomePath, AccountCenterBindPath ]
 router.beforeEach((to, from, next) => {
   // TODO 切换路由取消请求
   const token = getToken()
-  if (token) {
+  if (to.path === AccountCenterBindPath) {
+    next()
+  } else if (token) {
     if (to.path === LoginPath) {
       next({ path: '/' })
     } else {
