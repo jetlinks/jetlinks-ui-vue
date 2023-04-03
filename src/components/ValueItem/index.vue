@@ -67,7 +67,7 @@
                 </j-upload>
             </template>
         </j-input>
-        <j-input
+        <j-input-password
             v-else-if="typeMap.get(itemType) === 'password'"
             allowClear
             type="password"
