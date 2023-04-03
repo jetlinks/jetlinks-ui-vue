@@ -13,7 +13,7 @@ interface AxiosResponseRewrite<T = any[]> extends AxiosResponse<T, any> {
 
 export const SUCCESS_CODE = 200 // 成功代码
 
-const filterApiUrl = ['/system/version', '/system/config/front', '/authorize/captcha/config', '/application/sso/_all', '/authorize/captcha/image']
+const filterApiUrl = ['/system/version', '/system/config/front', '/authorize/captcha/config', '/application/sso/_all', '/authorize/captcha/image', '/application/sso/bind-code', '/authorize/login']
 
 export const request = axios.create({
   withCredentials: false,
