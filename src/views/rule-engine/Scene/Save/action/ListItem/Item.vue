@@ -551,9 +551,9 @@ const onPropsCancel = () => {
 
 const rules = [{
   validator(_: any, v?: ActionsType) {
-    console.log('validator',v)
+    console.log('validator-action-item',v)
     if (v?.executor === 'device') {
-      if(!v.device?.productId || !v.device?.selectorValues) {
+      if(v?.device?.source === 'fixed' && (!v.device?.productId || !v.device?.selectorValues)) {
         return Promise.reject(new Error('该数据已发生变更，请重新配置'))
       }
     }

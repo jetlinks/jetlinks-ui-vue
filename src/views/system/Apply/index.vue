@@ -49,7 +49,7 @@
                         >
                             <template #img>
                                 <slot name="img">
-                                    <img :src="slotProps.sso.configuration.oauth2.logoUrl || getImage('/apply.png')" />
+                                    <img :src="getImage('/apply.png')" />
                                 </slot>
                             </template>
                             <template #content>
