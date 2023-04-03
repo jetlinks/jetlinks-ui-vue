@@ -258,6 +258,10 @@ const onSelectorChange = (val: string) => {
     modelRef.selector = val;
 };
 
+/**
+ * 切换设备
+ * @param _detail
+ */
 const onDeviceChange = (_detail: any) => {
     if (_detail) {
         if (_detail.id) {
@@ -269,10 +273,16 @@ const onDeviceChange = (_detail: any) => {
             modelRef.deviceId = '';
             modelRef.selectorValues = [] as any;
         }
+        modelRef.upperKey = ''
         emits('save', unref(modelRef), { name: _detail.name });
     }
 };
 
+/**
+ * 变量选择
+ * @param val
+ * @param options
+ */
 const onRelationChange = (val: any, options: any) => {
     modelRef.deviceId = 'deviceId';
     modelRef.source = 'upper';
@@ -281,6 +291,11 @@ const onRelationChange = (val: any, options: any) => {
     emits('save', unref(modelRef), { relationName: options.label });
 };
 
+/**
+ *
+ * @param val
+ * @param arr
+ */
 const onTagChange = (val: any[], arr: any[]) => {
     if (val) {
         modelRef.deviceId = 'deviceId';

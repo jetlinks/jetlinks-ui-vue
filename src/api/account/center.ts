@@ -1,4 +1,5 @@
 import server from '@/utils/request'
+import { BASE_API_PATH } from '@/utils/variable'
 
 export const getSsoBinds_api = (): any =>server.get(`/application/sso/me/bindings`)
 

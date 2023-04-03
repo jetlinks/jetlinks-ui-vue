@@ -203,7 +203,7 @@ request.interceptors.response.use(response => {
 }, errorHandler)
 
 export default {
-  request: axios,
+  request,
   post,
   get,
   patch,
