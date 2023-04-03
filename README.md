@@ -1,18 +1,30 @@
-# Vue 3 + TypeScript + Vite
+<h1 align="center"> JetLinks-ui-vue v1.0.0</h1>
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## 平台简介
 
-## Recommended IDE Setup
+* 本仓库为JetLinks vue版本。
+* 前端技术栈[Vue3](https://v3.cn.vuejs.org) + [Jetlinks-ui-components](https://github.com/jetlinks/jetlinks-ui-components) + [Vite 3.x](https://cn.vitejs.dev)
+* 本项目采用约定式路由，文件系统即路由，通过目录和文件及其命名分析出路由配置。
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## 前端运行
+```bash
+# 克隆项目
+git clone https://github.com/jetlinks/jetlinks-ui-vue.git
 
-## Type Support For `.vue` Imports in TS
+# 安装依赖
+yarn
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+# 启动服务
+yarn dev
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+# 更新jetlinks-ui-components
+yarn add jetlinks-ui-components@latest
 
-1. Disable the built-in TypeScript Extension
-   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+# 更新jetlinks-ui-components之后没有效果时
+yarn dev:force
+
+```
+
+### 备注
+
+项目再开发模式下，首页加载慢属于正常现象；
