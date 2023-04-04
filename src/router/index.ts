@@ -28,7 +28,7 @@ router.beforeEach((to, from, next) => {
       const userInfo = useUserInfo()
       const system = useSystem()
       const menu = useMenuStore()
-      if (!menu.siderMenus.length && !filterPath.includes(to.path)) {
+      if (!Object.keys(menu.menus).length && !filterPath.includes(to.path)) {
         userInfo.getUserInfo().then(() => {
           system.getSystemVersion().then((menuData: any[]) => {
             menuData.forEach(r => {

@@ -46,7 +46,7 @@ export const MESSAGE_SUBSCRIBE_MENU_DATA = {
       permissions: [
         {
           permission: 'alarm-config',
-          action: ['query']
+          actions: ['query']
         }
       ]
     }
