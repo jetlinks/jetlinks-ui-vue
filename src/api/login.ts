@@ -10,7 +10,7 @@ export const config = () => server.get(`/authorize/captcha/config`)
  * 获取验证码图片
  * @returns 
  */
-export const code = () => server.get(`/authorize/captcha/image?width=130&height=30`)
+export const code = () => server.get<{ base64: string, key: string }>(`/authorize/captcha/image?width=130&height=30`)
 
 /**
  * 登录
@@ -57,3 +57,7 @@ export const userDetail = () => server.get<any>('/user/detail')
  * 退出登录
  */
 export const loginout_api = () => server.get<any>('/user-token/reset')
+
+export const getOAuth2 = (params: any) => server.get<any>('/oauth2/authorize', params)
+
+export const initApplication = (clientId: string | number) => server.get<{name: string}>(`/application/${clientId}/info`)

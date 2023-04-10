@@ -68,6 +68,8 @@ export const EventEmitterKeys = (params: Params): string => {
  * @constructor
  */
 export const EventSubscribeKeys = (params: Params): string[] => {
+  const sceneStore = useSceneStore()
+
   let keys: string[] = []
 
   if (params.action === 0) {
@@ -75,10 +77,14 @@ export const EventSubscribeKeys = (params: Params): string[] => {
   }
 
   for (let i = 0; i <= params.action; i++) {
-    const _b = `branches_${params.branch}` // branchesName
-    const _t = `then_${params.branchGroup}` // thenName
-    const _a = `then_${i}` // actionName
-    keys.push(`${_b}_${_t}_${_a}`)
+    let key = sceneStore.data.branches?.[params.branch].then[params.branchGroup].actions[i]?.key
+    if (!key) {
+      const _b = `branches_${params.branch}` // branchesName
+      const _t = `then_${params.branchGroup}` // thenName
+      const _a = `then_${i}` // actionName
+      key = `${_b}_${_t}_${_a}`
+    }
+    keys.push(key)
   }
 
   return keys

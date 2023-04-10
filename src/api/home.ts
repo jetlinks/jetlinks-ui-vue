@@ -1,7 +1,7 @@
 import server from '@/utils/request';
 
 // 当前登录用户权限信息
-export const getMe_api = () => server.get(`/authorize/me`);
+export const getMe_api = () => server.get<{ user: any, [key : string]: any }>(`/authorize/me`);
 // 设置登录用户选择的页面
 export const setView_api = (data:object) => server.patch(`/user/settings/view/user`, data);
 // 当前登录用户选择的页面

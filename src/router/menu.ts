@@ -4,6 +4,7 @@ export const AccountCenterBindPath = '/account/center/bind'
 export const InitLicense = '/init-license'
 export const NotificationSubscriptionCode = 'account/NotificationSubscription'
 export const NotificationRecordCode = 'account/NotificationRecord'
+export const OauthPath = '/oauth'
 
 export const AccountMenu = {
     path: '/account',
@@ -70,6 +71,13 @@ export default [
     {
         path: InitLicense,
         component: () => import('@/views/system/License/index.vue')
+    },
+    {
+        path: OauthPath,
+        meta: {
+            title: '授权页'
+        },
+        component: () => import('@/views/oauth/index.vue')
     }
 
 ]

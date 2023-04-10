@@ -6,328 +6,328 @@
       >
         <div class="actions-item">
             <CheckItem v-bind='props'>
-            <div class="item-options-warp">
-                <div class="item-options-type" @click="onAdd">
-                    <img
-                        style="width: 18px"
-                        :src="
-                            iconMap.get(
-                                data?.executor === 'alarm'
-                                    ? data?.alarm?.mode
-                                    : data?.executor,
-                            )
-                        "
-                    />
-                </div>
-                <div
-                    class="item-options-content"
-                    v-if="data?.executor === 'alarm'"
-                >
-                    <template v-if="data?.alarm?.mode === 'trigger'">
-                        满足条件后将触发<j-button
-                            style="padding: 0"
-                            type="link"
-                            @click.stop="triggerVisible = true"
-                            >关联此场景的告警</j-button
-                        >
-                    </template>
-                    <template v-else>
-                        满足条件后将解除<j-button
-                            style="padding: 0"
-                            type="link"
-                            @click.stop="triggerVisible = true"
-                            >关联此场景的告警</j-button
-                        >
-                    </template>
-                </div>
-                <div
-                    class="item-options-content"
-                    v-else-if="data?.executor === 'notify'"
-                    @click="onType('notify')"
-                >
-                    <template v-if="data?.notify?.notifyType === 'dingTalk'">
-                        <template
-                            v-if="options?.provider === 'dingTalkRobotWebHook'"
-                        >
-                            <div>
-                                通过<span class="notify-text-highlight"
-                                    >群机器人消息</span
-                                >
-                                发送
-                                <span class="notify-text-highlight">
-                                    {{
-                                        options?.templateName ||
-                                        data?.notify?.templateId
-                                    }}
-                                </span>
-                            </div>
-                        </template>
-                        <template v-else>
-                            <div>
-                                通过
-                                <span class="notify-text-highlight">
-                                    <img
-                                        style="width: 18px"
-                                        :src="
-                                            itemNotifyIconMap.get(
-                                                data?.notify?.notifyType,
-                                            )
-                                        "
-                                    />
-                                    钉钉
-                                </span>
-                                向<span class="notify-text-highlight">{{
-                                    options?.sendTo || ''
-                                }}</span>
-                                <span class="notify-text-highlight">{{
-                                    options?.orgName || ''
-                                }}</span>
-                                发送
-                                <span class="notify-text-highlight">
-                                    {{
-                                        options?.templateName ||
-                                        data?.notify?.templateId
-                                    }}
-                                </span>
-                            </div>
-                        </template>
-                    </template>
-                    <template v-else-if="data?.notify?.notifyType === 'weixin'">
-                        <div>
-                            通过
-                            <span class="notify-text-highlight">
-                                <img
-                                    style="width: 18px"
-                                    :src="
-                                        itemNotifyIconMap.get(
-                                            data?.notify?.notifyType,
-                                        )
-                                    "
-                                />
-                                微信
-                            </span>
-                            向<span class="notify-text-highlight">{{
-                                options?.sendTo || ''
-                            }}</span>
-                            <span class="notify-text-highlight">{{
-                                options?.orgName || ''
-                            }}</span>
-                            <span class="notify-text-highlight">{{
-                                options?.tagName || ''
-                            }}</span>
-                            发送
-                            <span class="notify-text-highlight">
-                                {{
-                                    options?.templateName ||
-                                    data?.notify?.templateId
-                                }}
-                            </span>
-                        </div>
-                    </template>
-                    <template v-else-if="data?.notify?.notifyType === 'email'">
-                        <div style="display: flex;">
-                            通过
-                            <span class="notify-text-highlight">
-                                <img
-                                    style="width: 18px"
-                                    :src="
-                                        itemNotifyIconMap.get(
-                                            data?.notify?.notifyType,
-                                        )
-                                    "
-                                />
-                                邮件
-                            </span>
-                            向<span class="notify-text-highlight">
-                              <Ellipsis style='max-width: 400px;'>
-                              {{
+              <div class="item-options-warp">
+                  <div class="item-options-type" @click="onAdd">
+                      <img
+                          style="width: 18px"
+                          :src="
+                              iconMap.get(
+                                  data?.executor === 'alarm'
+                                      ? data?.alarm?.mode
+                                      : data?.executor,
+                              )
+                          "
+                      />
+                  </div>
+                  <div
+                      class="item-options-content"
+                      v-if="data?.executor === 'alarm'"
+                  >
+                      <template v-if="data?.alarm?.mode === 'trigger'">
+                          满足条件后将触发<j-button
+                              style="padding: 0"
+                              type="link"
+                              @click.stop="triggerVisible = true"
+                              >关联此场景的告警</j-button
+                          >
+                      </template>
+                      <template v-else>
+                          满足条件后将解除<j-button
+                              style="padding: 0"
+                              type="link"
+                              @click.stop="triggerVisible = true"
+                              >关联此场景的告警</j-button
+                          >
+                      </template>
+                  </div>
+                  <div
+                      class="item-options-content"
+                      v-else-if="data?.executor === 'notify'"
+                      @click="onType('notify')"
+                  >
+                      <template v-if="data?.notify?.notifyType === 'dingTalk'">
+                          <template
+                              v-if="options?.provider === 'dingTalkRobotWebHook'"
+                          >
+                              <div>
+                                  通过<span class="notify-text-highlight"
+                                      >群机器人消息</span
+                                  >
+                                  发送
+                                  <span class="notify-text-highlight">
+                                      {{
+                                          options?.templateName ||
+                                          data?.notify?.templateId
+                                      }}
+                                  </span>
+                              </div>
+                          </template>
+                          <template v-else>
+                              <div>
+                                  通过
+                                  <span class="notify-text-highlight">
+                                      <img
+                                          style="width: 18px"
+                                          :src="
+                                              itemNotifyIconMap.get(
+                                                  data?.notify?.notifyType,
+                                              )
+                                          "
+                                      />
+                                      钉钉
+                                  </span>
+                                  向<span class="notify-text-highlight">{{
+                                      options?.sendTo || ''
+                                  }}</span>
+                                  <span class="notify-text-highlight">{{
+                                      options?.orgName || ''
+                                  }}</span>
+                                  发送
+                                  <span class="notify-text-highlight">
+                                      {{
+                                          options?.templateName ||
+                                          data?.notify?.templateId
+                                      }}
+                                  </span>
+                              </div>
+                          </template>
+                      </template>
+                      <template v-else-if="data?.notify?.notifyType === 'weixin'">
+                          <div>
+                              通过
+                              <span class="notify-text-highlight">
+                                  <img
+                                      style="width: 18px"
+                                      :src="
+                                          itemNotifyIconMap.get(
+                                              data?.notify?.notifyType,
+                                          )
+                                      "
+                                  />
+                                  微信
+                              </span>
+                              向<span class="notify-text-highlight">{{
                                   options?.sendTo || ''
-                                }}
-                              </Ellipsis>
-                          </span>
-                            发送
-                            <span class="notify-text-highlight">
+                              }}</span>
+                              <span class="notify-text-highlight">{{
+                                  options?.orgName || ''
+                              }}</span>
+                              <span class="notify-text-highlight">{{
+                                  options?.tagName || ''
+                              }}</span>
+                              发送
+                              <span class="notify-text-highlight">
+                                  {{
+                                      options?.templateName ||
+                                      data?.notify?.templateId
+                                  }}
+                              </span>
+                          </div>
+                      </template>
+                      <template v-else-if="data?.notify?.notifyType === 'email'">
+                          <div style="display: flex;">
+                              通过
+                              <span class="notify-text-highlight">
+                                  <img
+                                      style="width: 18px"
+                                      :src="
+                                          itemNotifyIconMap.get(
+                                              data?.notify?.notifyType,
+                                          )
+                                      "
+                                  />
+                                  邮件
+                              </span>
+                              向<span class="notify-text-highlight">
+                                <Ellipsis style='max-width: 400px;'>
                                 {{
-                                    options?.templateName ||
-                                    data?.notify?.templateId
-                                }}
+                                    options?.sendTo || ''
+                                  }}
+                                </Ellipsis>
                             </span>
-                        </div>
-                    </template>
-                    <template v-else-if="data?.notify?.notifyType === 'voice'">
-                        <div>
-                            通过
-                            <span class="notify-text-highlight">
-                                <img
-                                    style="width: 18px"
-                                    :src="
-                                        itemNotifyIconMap.get(
-                                            data?.notify?.notifyType,
+                              发送
+                              <span class="notify-text-highlight">
+                                  {{
+                                      options?.templateName ||
+                                      data?.notify?.templateId
+                                  }}
+                              </span>
+                          </div>
+                      </template>
+                      <template v-else-if="data?.notify?.notifyType === 'voice'">
+                          <div>
+                              通过
+                              <span class="notify-text-highlight">
+                                  <img
+                                      style="width: 18px"
+                                      :src="
+                                          itemNotifyIconMap.get(
+                                              data?.notify?.notifyType,
+                                          )
+                                      "
+                                  />
+                                  语音
+                              </span>
+                              向<span class="notify-text-highlight">{{
+                                  options?.sendTo || ''
+                              }}</span>
+                              发送
+                              <span class="notify-text-highlight">
+                                  {{
+                                      options?.templateName ||
+                                      data?.notify?.templateId
+                                  }}
+                              </span>
+                          </div>
+                      </template>
+                      <template v-else-if="data?.notify?.notifyType === 'sms'">
+                          <div>
+                              通过
+                              <span class="notify-text-highlight">
+                                  <img
+                                      style="width: 18px"
+                                      :src="
+                                          itemNotifyIconMap.get(
+                                              data?.notify?.notifyType,
+                                          )
+                                      "
+                                  />
+                                  短信
+                              </span>
+                              向<span class="notify-text-highlight">{{
+                                  options?.sendTo || ''
+                              }}</span>
+                              发送
+                              <span class="notify-text-highlight">
+                                  {{
+                                      options?.templateName ||
+                                      data?.notify?.templateId
+                                  }}
+                              </span>
+                          </div>
+                      </template>
+                      <template
+                          v-else-if="data?.notify?.notifyType === 'webhook'"
+                      >
+                          <div>
+                              通过
+                              <span class="notify-text-highlight">
+                                  <img
+                                      style="width: 18px"
+                                      :src="
+                                          itemNotifyIconMap.get(
+                                              data?.notify?.notifyType,
+                                          )
+                                      "
+                                  />
+                                  webhook
+                              </span>
+                              发送
+                              <span>{{
+                                  options?.templateName ||
+                                  data?.notify?.templateId
+                              }}</span>
+                          </div>
+                      </template>
+                  </div>
+                  <div
+                      class="item-options-content"
+                      v-else-if="data?.executor === 'delay'"
+                      @click="onType('delay')"
+                  >
+                      {{ options?.name }}
+                  </div>
+                  <div
+                      class="item-options-content"
+                      v-else-if="data?.executor === 'device'"
+                      @click="onType('device')"
+                  >
+                      <template v-if="['fixed', 'context'].includes(data?.device?.selector)">
+                          <div style='display: flex; align-items: center;'>
+                              <AIcon
+                                  :type="
+                                      typeIconMap[
+                                          data?.device?.message?.messageType ||
+                                              'INVOKE_FUNCTION'
+                                      ]
+                                  "
+                              />
+                              <span style="padding-left: 4px">{{
+                                  data?.options?.type
+                              }}</span>
+                              <AIcon
+                                  type="icon-mubiao"
+                                  style="padding:0 4px"
+                              />
+                            <Ellipsis style='max-width: 200px;margin-right: 12px;'>
+                              {{data?.options?.name}}
+                            </Ellipsis>
+                            <Ellipsis style='max-width: 400px;'>
+                              {{data?.options?.propertiesName}}
+                            </Ellipsis>
+                            <span v-if='!isBoolean(data?.options?.propertiesValue) && data?.options?.propertiesValue'>为 </span>
+                            <Ellipsis style='max-width: 200px;'>
+                              {{
+                                `${
+                                    (
+                                        isBoolean(
+                                            data?.options?.propertiesValue,
                                         )
-                                    "
-                                />
-                                语音
-                            </span>
-                            向<span class="notify-text-highlight">{{
-                                options?.sendTo || ''
-                            }}</span>
-                            发送
-                            <span class="notify-text-highlight">
-                                {{
-                                    options?.templateName ||
-                                    data?.notify?.templateId
-                                }}
-                            </span>
-                        </div>
-                    </template>
-                    <template v-else-if="data?.notify?.notifyType === 'sms'">
-                        <div>
-                            通过
-                            <span class="notify-text-highlight">
-                                <img
-                                    style="width: 18px"
-                                    :src="
-                                        itemNotifyIconMap.get(
-                                            data?.notify?.notifyType,
-                                        )
-                                    "
-                                />
-                                短信
-                            </span>
-                            向<span class="notify-text-highlight">{{
-                                options?.sendTo || ''
-                            }}</span>
-                            发送
-                            <span class="notify-text-highlight">
-                                {{
-                                    options?.templateName ||
-                                    data?.notify?.templateId
-                                }}
-                            </span>
-                        </div>
-                    </template>
-                    <template
-                        v-else-if="data?.notify?.notifyType === 'webhook'"
-                    >
-                        <div>
-                            通过
-                            <span class="notify-text-highlight">
-                                <img
-                                    style="width: 18px"
-                                    :src="
-                                        itemNotifyIconMap.get(
-                                            data?.notify?.notifyType,
-                                        )
-                                    "
-                                />
-                                webhook
-                            </span>
-                            发送
-                            <span>{{
-                                options?.templateName ||
-                                data?.notify?.templateId
-                            }}</span>
-                        </div>
-                    </template>
-                </div>
-                <div
-                    class="item-options-content"
-                    v-else-if="data?.executor === 'delay'"
-                    @click="onType('delay')"
-                >
-                    {{ options?.name }}
-                </div>
-                <div
-                    class="item-options-content"
-                    v-else-if="data?.executor === 'device'"
-                    @click="onType('device')"
-                >
-                    <template v-if="['fixed', 'context'].includes(data?.device?.selector)">
-                        <div style='display: flex; align-items: center;'>
-                            <AIcon
-                                :type="
-                                    typeIconMap[
-                                        data?.device?.message?.messageType ||
-                                            'INVOKE_FUNCTION'
-                                    ]
-                                "
-                            />
-                            <span style="padding-left: 4px">{{
-                                data?.options?.type
-                            }}</span>
-                            <AIcon
-                                type="icon-mubiao"
-                                style="padding:0 4px"
-                            />
-                          <Ellipsis style='max-width: 200px;margin-right: 12px;'>
-                            {{data?.options?.name}}
-                          </Ellipsis>
-                          <Ellipsis style='max-width: 400px;'>
-                            {{data?.options?.propertiesName}}
-                          </Ellipsis>
-                          <span v-if='!isBoolean(data?.options?.propertiesValue) && data?.options?.propertiesValue'>为 </span>
-                          <Ellipsis style='max-width: 200px;'>
-                            {{
-                              `${
-                                  (
-                                      isBoolean(
-                                          data?.options?.propertiesValue,
-                                      )
-                                          ? true
-                                          : data?.options?.propertiesValue
-                                  )
-                                      ? `${data?.options?.propertiesValue}`
-                                      : ''
-                              }`
-                            }}
-                          </Ellipsis>
+                                            ? true
+                                            : data?.options?.propertiesValue
+                                    )
+                                        ? `${data?.options?.propertiesValue}`
+                                        : ''
+                                }`
+                              }}
+                            </Ellipsis>
 
-                        </div>
-                    </template>
-                    <template v-else-if="data?.device?.selector === 'tag'">
-                        <div>
-                            <AIcon
-                                :type="
-                                    typeIconMap[
-                                        data?.device?.message?.messageType ||
-                                            'INVOKE_FUNCTION'
-                                    ]
-                                "
-                            />
-                            {{ data?.options?.type }}
-                            <span>{{ data?.options?.tagName }}</span>
-                            的{{ data?.options?.productName }}
-                            {{ data?.options?.propertiesName }}
-                        </div>
-                    </template>
-                    <template v-else-if="data?.device?.selector === 'relation'">
-                        <div>
-                            <AIcon
-                                :type="
-                                    typeIconMap[
-                                        data?.device?.message?.messageType ||
-                                            'INVOKE_FUNCTION'
-                                    ]
-                                "
-                            />
-                            {{ data?.options?.type }}与<span>{{
-                                data?.options?.triggerName
-                            }}</span
-                            >具有相同 {{ data?.options?.relationName }}的{{
-                                data?.options?.productName
-                            }}设备的
-                            {{ data?.options?.propertiesName }}
-                        </div>
-                    </template>
-                </div>
-                <j-button v-else @click="onAdd">点击配置执行动作</j-button>
-            </div>
-            <div class="item-number">{{ name + 1 }}</div>
-            <j-popconfirm title="确认删除？" @confirm="onDelete" placement="topRight" :overlayStyle='{minWidth: "190px"}'>
-                <div class="item-delete">
-                    <AIcon type="DeleteOutlined" />
-                </div>
-            </j-popconfirm>
+                          </div>
+                      </template>
+                      <template v-else-if="data?.device?.selector === 'tag'">
+                          <div>
+                              <AIcon
+                                  :type="
+                                      typeIconMap[
+                                          data?.device?.message?.messageType ||
+                                              'INVOKE_FUNCTION'
+                                      ]
+                                  "
+                              />
+                              {{ data?.options?.type }}
+                              <span>{{ data?.options?.tagName }}</span>
+                              的{{ data?.options?.productName }}
+                              {{ data?.options?.propertiesName }}
+                          </div>
+                      </template>
+                      <template v-else-if="data?.device?.selector === 'relation'">
+                          <div>
+                              <AIcon
+                                  :type="
+                                      typeIconMap[
+                                          data?.device?.message?.messageType ||
+                                              'INVOKE_FUNCTION'
+                                      ]
+                                  "
+                              />
+                              {{ data?.options?.type }}与<span>{{
+                                  data?.options?.triggerName
+                              }}</span
+                              >具有相同 {{ data?.options?.relationName }}的{{
+                                  data?.options?.productName
+                              }}设备的
+                              {{ data?.options?.propertiesName }}
+                          </div>
+                      </template>
+                  </div>
+                  <j-button v-else @click="onAdd">点击配置执行动作</j-button>
+              </div>
+              <div class="item-number">{{ name + 1 }}</div>
+              <j-popconfirm title="确认删除？" @confirm="onDelete" placement="topRight" :overlayStyle='{minWidth: "190px"}'>
+                  <div class="item-delete">
+                      <AIcon type="DeleteOutlined" />
+                  </div>
+              </j-popconfirm>
             </CheckItem>
         </div>
           </j-form-item>
@@ -461,11 +461,14 @@ const termsOptions = computed(() => {
 });
 
 const onDelete = () => {
+    const key = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].key
+    EventEmitter.emit(key!, { isDelete: true })
     if (props.name !== 0 && !props.parallel) { // 清空上一个串行执行动作中的options.termsColumns和terms
       _data.value.branches![props.branchesName].then[props.thenName].actions[props.name - 1].options!.termsColumns = []
       _data.value.branches![props.branchesName].then[props.thenName].actions[props.name - 1].options!.terms = []
       _data.value.branches![props.branchesName].then[props.thenName].actions[props.name - 1].terms = []
     }
+
     emit('delete');
 };
 
