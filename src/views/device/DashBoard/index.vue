@@ -5,7 +5,7 @@
                 <j-col :span="6">
                     <TopCard
                         title="产品数量"
-                        :img="getImage('/device/device-product.png')"
+                        :img="getImage('/device/device-product.svg')"
                         :footer="productFooter"
                         :value="productTotal"
                     ></TopCard>
@@ -13,7 +13,7 @@
                 <j-col :span="6">
                     <TopCard
                         title="设备数量"
-                        :img="getImage('/device/device-number.png')"
+                        :img="getImage('/device/device-number.svg')"
                         :footer="deviceFooter"
                         :value="deviceTotal"
                     ></TopCard
@@ -605,7 +605,7 @@ getDevice();
 }
 .message-chart {
     width: 100%;
-    height: 400px;
+    height: 470px;
 }
 .amap-box {
     height: 500px;
