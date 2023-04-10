@@ -22,11 +22,11 @@ const handle = async (appId: string, url: string) => {
     if (res.status === 200) {
         // console.log(res.result);
         if (res.result.page.routeType === 'hash') {
-            menuUrl = `${url}`;
+            menuUrl = `/%23/${url}`;
         }
         if (res.result.provider === 'internal-standalone') {
             //{baseUrl}/api/application/sso/{appId}/login?redirect={menuUrl}
-            const urlStandalone = `${res.result.page.baseUrl}/#/api/application/sso/${appId}/login?redirect=${menuUrl}&layout=false`;
+            const urlStandalone = `${res.result.page.baseUrl}/api/application/sso/${appId}/login?redirect=${menuUrl}?layout=false`;
             iframeUrl.value = urlStandalone;
             // console.log(urlStandalone);
         } else if (res.result.provider === 'internal-integrated') {
