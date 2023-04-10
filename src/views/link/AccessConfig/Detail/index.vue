@@ -1,15 +1,15 @@
 <template>
     <page-container>
         <j-spin :spinning="loading">
-            <FullPage>
+          <div v-if="type && id === ':id'">
+            <Provider
+              @onClick="goProviders"
+              :dataSource="dataSource"
+            ></Provider>
+          </div>
+            <FullPage  v-else>
                 <j-card :bordered="false">
-                    <div v-if="type && id === ':id'">
-                        <Provider
-                            @onClick="goProviders"
-                            :dataSource="dataSource"
-                        ></Provider>
-                    </div>
-                    <div v-else>
+                    <div>
                         <div class="go-back" v-if="id === ':id'">
                             <a @click="goBack">返回</a>
                         </div>
