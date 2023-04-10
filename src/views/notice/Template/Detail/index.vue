@@ -52,7 +52,7 @@
                                 <span>
                                     绑定配置
                                     <j-tooltip
-                                        title="使用固定的通知配置来发送此通知模版"
+                                        title="使用固定的通知配置来发送此通知模板"
                                     >
                                         <AIcon
                                             type="QuestionCircleOutlined"
@@ -281,7 +281,7 @@
                                             <span>
                                                 收信人
                                                 <j-tooltip
-                                                    title="如果不填写该字段,将在使用此模版发送通知时进行指定。"
+                                                    title="如果不填写该字段,将在使用此模板发送通知时进行指定。"
                                                 >
                                                     <AIcon
                                                         type="QuestionCircleOutlined"
@@ -316,7 +316,7 @@
                                     <span>
                                         标签推送
                                         <j-tooltip
-                                            title="本企业微信的标签ID列表,最多支持100个,如果不填写该字段,将在使用此模版发送通知时进行指定"
+                                            title="本企业微信的标签ID列表,最多支持100个,如果不填写该字段,将在使用此模板发送通知时进行指定"
                                         >
                                             <AIcon
                                                 type="QuestionCircleOutlined"
@@ -540,7 +540,7 @@
                             >
                                 <template #label>
                                     <span>
-                                        模版内容
+                                        模板内容
                                         <j-tooltip
                                             title="语音验证码内容输入框，用于渲染验语音证码变量。"
                                         >
@@ -569,7 +569,7 @@
                                             <span>
                                                 模板
                                                 <j-tooltip
-                                                    title="阿里云短信平台自定义的模版名称"
+                                                    title="阿里云短信平台自定义的模板名称"
                                                 >
                                                     <AIcon
                                                         type="QuestionCircleOutlined"
@@ -696,7 +696,7 @@
                             >
                                 <template #label>
                                     <span>
-                                        模版内容
+                                        模板内容
                                         <j-tooltip
                                             title="发送的内容，支持录入变量"
                                         >

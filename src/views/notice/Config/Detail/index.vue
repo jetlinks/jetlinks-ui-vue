@@ -81,6 +81,7 @@
                                 <j-form-item
                                     label="webHook"
                                     v-bind="validateInfos['configuration.url']"
+                                    :rules='[{ max: 64, message: "最多可输入64个字符" }]'
                                 >
                                     <j-input
                                         v-model:value="

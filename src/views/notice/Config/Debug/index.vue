@@ -11,13 +11,13 @@
     >
         <j-form ref="formRef" layout="vertical" :model="formData">
             <j-form-item
-                label="通知模版"
+                label="通知模板"
                 name="templateId"
                 :rules="{ required: true, message: '该字段为必填字段' }"
             >
                 <j-select
                     v-model:value="formData.templateId"
-                    placeholder="请选择通知模版"
+                    placeholder="请选择通知模板"
                     @change="getTemplateDetail"
                 >
                     <j-select-option

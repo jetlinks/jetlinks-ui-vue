@@ -93,7 +93,7 @@ const downFile = async (type: string) => {
     if (res) {
         const blob = new Blob([res], { type: type });
         const url = URL.createObjectURL(blob);
-        downloadFileByUrl(url, `设备导入模版`, type);
+        downloadFileByUrl(url, `设备导入模板`, type);
     }
 };
 
