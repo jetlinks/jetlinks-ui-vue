@@ -14,8 +14,8 @@
             <div class="list-item" v-for="item in props.dataList">
               <div class="item-content">
                 <div class="box-top" @click="jumpPage(item)">
-                    <span class="top-title">{{ item.title }}</span>
                     <img :src="item.iconUrl" alt="" />
+                    <span class="top-title">{{ item.title }}</span>
                 </div>
                 <div class="box-details">{{ item.details }}</div>
               </div>
@@ -108,6 +108,10 @@ const jumpPage = (row: recommendList) => {
                     z-index: 1;
                     height: 100%;
                 }
+                span {
+                  position: relative;
+                  z-index: 2;
+                }
             }
             .box-details {
                 padding: 24px;
@@ -128,5 +132,21 @@ const jumpPage = (row: recommendList) => {
             }
         }
     }
+}
+
+@media (min-width: @screen-md-min) {
+  .step-container {
+    .box-list {
+      .list-item {
+        .box-top {
+          font-size: 12px;
+          padding: 12px 18px;
+        }
+        .box-details {
+          padding: 12px;
+        }
+      }
+    }
+  }
 }
 </style>
