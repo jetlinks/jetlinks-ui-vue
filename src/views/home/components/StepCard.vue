@@ -6,7 +6,7 @@
                 <template #title>
                     <span>{{ props.tooltip }}</span>
                 </template>
-                <AIcon type="QuestionCircleOutlined" style="padding-top: 5px" />
+                <AIcon type="QuestionCircleOutlined" style="padding-top: 8px;font-size: 14px;color: #666;" />
             </j-tooltip>
         </h5>
 
