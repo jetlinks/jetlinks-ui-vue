@@ -162,7 +162,9 @@ const handleNetworkOptions = (optionsData: any, xAxis: any) => {
             },
             grid: {
                 left: '70px',
-                right: '50px',
+                right: 10,
+                bottom: '24px',
+                top: 24
             },
             tooltip: {
                 trigger: 'axis',

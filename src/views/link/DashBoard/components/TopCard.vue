@@ -132,9 +132,11 @@ watch(
     // box-shadow: 0px 2.73036px 5.46071px rgba(31, 89, 245, 0.2);
     border-radius: 2px;
     justify-content: space-between;
+    padding: 24px;
+    gap: 24px;
     .dash-board-item {
         flex: 1;
-        margin: 24px 12px;
+        //margin: 24px 12px;
         min-width: 250px;
     }
 }
