@@ -4,6 +4,6 @@ export const restPassword = (id: string) => server.post(`/edge/operations/${id}/
 
 export const _control = (deviceId: string) => server.get(`/edge/remote/${deviceId}/url`)
 
-export const _stopControl = (deviceId: string) => server.get(`/edge/remote/${deviceId}/stop`, {})
+export const _stopControl = (deviceId: string) => server.post(`/edge/remote/${deviceId}/stop`)
 
 
