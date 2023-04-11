@@ -1,6 +1,6 @@
 <!-- 设备接入 -->
 <template>
-    <div v-if="productStore.current.accessId === undefined || null">
+    <div v-if="productStore.current.accessId === undefined || null" style='margin-top: 20%; transform: translateY(-50%);'>
         <j-empty :image="simpleImage">
             <template #description>
                 <span
