@@ -1,8 +1,8 @@
 <!-- 物联卡-首页 -->
 <template>
     <page-container>
-        <j-row :gutter="24">
-            <j-col :span="14">
+        <j-row :gutter="[24, 24]">
+            <j-col :xxl="14" :xl='24'>
                 <div class="home-guide">
                     <Guide title="物联卡引导"></Guide>
                     <div
@@ -26,7 +26,7 @@
                     </div>
                 </div>
             </j-col>
-            <j-col :span="10">
+            <j-col :xxl="10" :xl='24'>
                 <div class="home-statistics">
                     <Guide title="基础统计">
                         <template #extra>
@@ -72,7 +72,7 @@
                     </div>
                 </div>
             </j-col>
-            <j-col :span="24" style="min-height: 580px">
+            <j-col :span="24">
                 <div class="home-body">
                     <Guide
                         title="平台架构图"
@@ -354,7 +354,6 @@ getStateCard();
 }
 
 .home-guide {
-    margin-bottom: 24px;
     padding: 24px 16px;
     background-color: #fff;
 
