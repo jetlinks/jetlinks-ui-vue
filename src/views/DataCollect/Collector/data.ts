@@ -55,7 +55,7 @@ export const ModBusRules = {
         },
         {
             pattern: regOnlyNumber,
-            message: '请输入0-255之间的正整数',
+            message: '请输入0-999999999之间的正整数',
         },
     ],
     quantity: [
