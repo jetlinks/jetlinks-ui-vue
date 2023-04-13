@@ -198,6 +198,7 @@ watch(
         if (value.id) {
             formData.value = {
                 ...value,
+                mode: value.mode.value,
                 releaseType: value?.deviceId ? 'part' : 'all',
             };
         }
