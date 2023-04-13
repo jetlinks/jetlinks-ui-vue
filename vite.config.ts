@@ -14,6 +14,7 @@ import monacoEditorPlugin from 'vite-plugin-monaco-editor';
 import { JetlinksVueResolver } from './plugin/jetlinks'
 import { optimizeDeps } from './plugin/optimize'
 import copy from 'rollup-plugin-copy';
+import progress from 'vite-plugin-progress'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode}) => {
@@ -83,7 +84,8 @@ export default defineConfig(({ mode}) => {
             targets: [
               {src: 'node_modules/@liveqing/liveplayer-v3/dist/component/liveplayer-lib.min.js', dest: 'public/js'},
             ]
-          })
+          }),
+          progress()
       ],
       server: {
           host:'0.0.0.0',

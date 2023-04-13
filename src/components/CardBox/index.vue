@@ -1,5 +1,5 @@
 <template>
-    <div class="card">
+    <div class="card j-table-card-box">
         <div
             class="card-warp"
             :class="{ active: active ? 'active' : '' }"
@@ -225,11 +225,13 @@ const handleClick = () => {
 
         .card-content {
             position: relative;
-            padding: 30px 12px 16px 30px;
+            padding: 30px 12px 30px 30px;
             overflow: hidden;
 
             .card-item-avatar {
                 margin-right: 16px;
+              display: flex;
+              align-items: center;
             }
 
             .card-item-body {
@@ -237,6 +239,10 @@ const handleClick = () => {
                 flex-direction: column;
                 flex-grow: 1;
                 width: 0;
+
+              .ant-row{
+                margin-top: 19px;
+              }
             }
 
             .card-state {
@@ -285,7 +291,7 @@ const handleClick = () => {
             }
 
             :deep(.card-item-content-text) {
-                color: rgba(0, 0, 0, 0.75);
+                color: rgba(0, 0, 0, 0.7);
                 font-size: 12px;
             }
         }

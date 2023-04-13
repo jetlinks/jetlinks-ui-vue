@@ -78,7 +78,7 @@
                                         <div class="content-des-title">
                                             关联场景联动
                                         </div>
-                                        <Ellipsis
+                                        <Ellipsis style='margin-bottom: 18px;'
                                             ><div>
                                                 {{ (slotProps?.scene || []).map((item: any) => item?.name).join(',') || '' }}
                                             </div></Ellipsis

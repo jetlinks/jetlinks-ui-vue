@@ -7,6 +7,7 @@
     :deleteRequest='deleteSearchHistory'
     :columns='columns'
     :class='props.class'
+    style='padding-top: 18px; padding-bottom: 18px;'
     @search='searchSubmit'
   />
 </template> 

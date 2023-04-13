@@ -69,7 +69,7 @@
                             </slot>
                         </template>
                         <template #content>
-                            <Ellipsis style="width: calc(100% - 100px)"
+                            <Ellipsis style="width: calc(100% - 100px); margin-bottom: 18px;"
                                 ><span
                                     style="font-weight: 600; font-size: 16px"
                                 >
@@ -621,8 +621,8 @@ onMounted(() => {
     background: #f0f2f5;
 }
 .productImg {
-    width: 88px;
-    height: 88px;
+    width: 80px;
+    height: 80px;
 }
 .productName {
     white-space: nowrap; /*强制在同一行内显示所有文本，直到文本结束或者遭遇br标签对象才换行。*/

@@ -986,6 +986,11 @@
   resolved "https://registry.npmjs.org/@types/node/-/node-18.14.0.tgz"
   integrity sha512-5EWrvLmglK+imbCJY0+INViFWUHg1AHel1sq4ZVSfdcNqGy9Edv3UB9IIzzg+xPaUcAgZYcfVs2fBcwDeZzU0A==
 
+"@types/node@^10.3.6":
+  version "10.17.60"
+  resolved "http://registry.jetlinks.cn/@types%2fnode/-/node-10.17.60.tgz#35f3d6213daed95da7f0f73e75bcc6980e90597b"
+  integrity sha512-F0KIgDJfy2nA3zMLmWGKxcH2ZVEtCZXHHdOQs2gSaQ27+lNeEfGxzkIw90aXswATX7AZ33tahPbzy6KAfUreVw==
+
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
   resolved "https://registry.npmmirror.com/@types/normalize-package-data/-/normalize-package-data-2.4.1.tgz"
@@ -5413,6 +5418,11 @@ process@^0.11.10:
   resolved "https://registry.jetlinks.cn/process/-/process-0.11.10.tgz"
   integrity sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A==
 
+progress@^2.0.3:
+  version "2.0.3"
+  resolved "http://registry.jetlinks.cn/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
+  integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
+
 promise-all-reject-late@^1.0.0:
   version "1.0.1"
   resolved "https://registry.jetlinks.cn/promise-all-reject-late/-/promise-all-reject-late-1.0.1.tgz"
@@ -5524,6 +5534,13 @@ rc@1.2.8, rc@^1.0.1, rc@^1.1.6, rc@^1.2.1, rc@^1.2.8:
     ini "~1.3.0"
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
+
+rd@^2.0.1:
+  version "2.0.1"
+  resolved "http://registry.jetlinks.cn/rd/-/rd-2.0.1.tgz#e18a8af5b2f7440c0db1523ca04c6e0f9660003f"
+  integrity sha512-/XdKU4UazUZTXFmI0dpABt8jSXPWcEyaGdk340KdHnsEOdkTctlX23aAK7ChQDn39YGNlAJr1M5uvaKt4QnpNw==
+  dependencies:
+    "@types/node" "^10.3.6"
 
 read-cmd-shim@^2.0.0:
   version "2.0.0"
@@ -6402,6 +6419,13 @@ tough-cookie@~2.5.0:
     psl "^1.1.28"
     punycode "^2.1.1"
 
+treer@^1.0.4:
+  version "1.0.4"
+  resolved "http://registry.jetlinks.cn/treer/-/treer-1.0.4.tgz#3b5ff47baec11c97476b8b7712da71cf459d52a3"
+  integrity sha512-Q2oAOOxzGYq+/KoKT1bZSSwDL4Y4WYukjiYBAn6GrNlt1xKKf5JS216dsSzkPDoYTHA9CXdbYkehUG7F1JT+5A==
+  dependencies:
+    commander "^2.9.0"
+
 treeverse@^1.0.4:
   version "1.0.4"
   resolved "http://47.108.170.157:9013/treeverse/-/treeverse-1.0.4.tgz#a6b0ebf98a1bca6846ddc7ecbc900df08cb9cd5f"
@@ -6780,6 +6804,15 @@ vite-plugin-monaco-editor@^1.1.0:
   version "1.1.0"
   resolved "https://registry.jetlinks.cn/vite-plugin-monaco-editor/-/vite-plugin-monaco-editor-1.1.0.tgz"
   integrity sha512-IvtUqZotrRoVqwT0PBBDIZPNraya3BxN/bfcNfnxZ5rkJiGcNtO5eAOWWSgT7zullIAEqQwxMU83yL9J5k7gww==
+
+vite-plugin-progress@^0.0.7:
+  version "0.0.7"
+  resolved "http://registry.jetlinks.cn/vite-plugin-progress/-/vite-plugin-progress-0.0.7.tgz#10979d2195b4dd1960ad0ec9347ce844fc13b97d"
+  integrity sha512-zyvKdcc/X+6hnw3J1HVV1TKrlFKC4Rh8GnDnWG/2qhRXjqytTcM++xZ+SAPnoDsSyWl8O93ymK0wZRgHAoglEQ==
+  dependencies:
+    picocolors "^1.0.0"
+    progress "^2.0.3"
+    rd "^2.0.1"
 
 vite-plugin-style-import@^2.0.0:
   version "2.0.0"

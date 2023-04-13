@@ -4,6 +4,7 @@
         v-model:openKeys="state.openKeys"
         v-model:collapsed="state.collapsed"
         v-model:selectedKeys="state.selectedKeys"
+        :headerHeight='60'
         :pure="state.pure"
         :breadcrumb="{ routes: breadcrumb }"
         @backClick='routerBack'

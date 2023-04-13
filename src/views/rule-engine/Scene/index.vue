@@ -61,7 +61,7 @@
                         <span class='subTitle-content'>
                           <Ellipsis :lineClamp="2">
                                   {{
-                                      slotProps?.description ||
+                                      slotProps?.description ? slotProps?.description :
                                       typeMap.get(slotProps.triggerType)?.tip
                                   }}
                           </Ellipsis>
@@ -388,7 +388,7 @@ const handleView = (id: string, triggerType: string) => {
 <style scoped lang='less'>
 .subTitle {
   position: relative;
-  margin-top: 10px;
+  margin-top: 18px;
 
   .subTitle-title {
     position: absolute;

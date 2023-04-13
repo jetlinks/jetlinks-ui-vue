@@ -68,7 +68,7 @@
                                     {{ slotProps.name }}
                                 </span>
                             </Ellipsis>
-                            <j-row style="margin-top: 20px">
+                            <j-row style="margin-top: 18px">
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
                                         设备类型
