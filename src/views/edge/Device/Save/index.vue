@@ -178,7 +178,7 @@ const modelRef = reactive({
     id: undefined,
     name: '',
     describe: '',
-    photoUrl: getImage('/device/instance/device-card.png'),
+    photoUrl: getImage('/device-gateway.png'),
 });
 
 const vailId = async (_: Record<string, any>, value: string) => {
