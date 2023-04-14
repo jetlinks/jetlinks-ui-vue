@@ -43,7 +43,7 @@
                         >
                             <template #img>
                                 <slot name="img">
-                                    <img :src="getImage('/network.png')" />
+                                    <img :src="getImage('/channel.png')" />
                                 </slot>
                             </template>
                             <template #content>

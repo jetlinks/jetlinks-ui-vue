@@ -23,7 +23,7 @@
                 <li>获取您的个人信息</li>
               </ul>
               <div class='oauth-content-button'>
-                <j-button type='primary' @click='goOAuth2Fn'> 同意授权 </j-button>
+                <j-button type='primary' @click='() => goOAuth2Fn()'> 同意授权 </j-button>
                 <j-button type='primary' @click='changeAccount'> 切换账号 </j-button>
               </div>
             </div>
@@ -121,6 +121,7 @@ const getCode = async () => {
 }
 
 const goOAuth2Fn = async (data?: any) => {
+  console.log(data, params.value)
   const res = await getOAuth2(data || params.value)
   if (res.success) {
     window.location.href = res.result;
@@ -168,7 +169,6 @@ const getQueryVariable = (variable: any) => {
 }
 
 const doLogin = async () => {
-  console.log(formModel)
   const res = await authLogin({
     verifyKey: captcha.key,
     ...formModel
@@ -197,7 +197,7 @@ const initPage = async () => {
     const origin = items.redirect_uri.split('/').slice(0, 3)
     const url = `${origin.join('/')}${items.redirect_uri?.split('redirect=')[1]}`
     // redirectUrl = `${items.redirect_uri?.split('redirect_uri=')[0]}?redirect=${url}`
-    redirectUrl = url
+    redirectUrl = items.redirect_uri
     console.log(origin, items.redirect_uri)
   }
 
@@ -216,6 +216,7 @@ const initPage = async () => {
 
 document.title = 'OAuth授权-jetlinks';
 headerImg.value = getImage('/logo.png')
+
 getCode()
 initPage()
 

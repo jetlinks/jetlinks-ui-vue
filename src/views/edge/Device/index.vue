@@ -51,8 +51,8 @@
                     >
                         <template #img>
                             <img
-                                :width="88"
-                                :height="88"
+                                :width="80"
+                                :height="80"
                                 :src="
                                     slotProps?.photoUrl ||
                                     getImage('/device-gateway.png')

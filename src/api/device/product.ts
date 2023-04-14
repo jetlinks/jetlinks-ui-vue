@@ -187,6 +187,13 @@ export const getOperator = () => server.get<OperatorItem[]>('/property-calculate
  */
 export const getStreamingAggType = () => server.get<Record<string, string>[]>('/dictionary/streaming-agg-type/items')
 
+/**
+ * 根据指定的接入方式获取产品需要的配置信息
+ * @pId 产品id
+ * @accessId 设备接入id
+ */
+export const getAccessConfig = (pId: string, accessId: string) => server.get(`/device-product/${pId}/${accessId}/config-metadata`)
+
 export const getMetadataConfig = (params: {
   deviceId: string;
   metadata: {
