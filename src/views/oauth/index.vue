@@ -1,71 +1,73 @@
 <template>
-  <j-spin :spinning='spinning'>
-
-      <div class='oauth'>
-        <div class='oauth-header'>
-          <div class='oauth-header-left'>
-            <img :src='logoImg' alt=''>
-          </div>
-        </div>
-
-        <div class='oauth-content'>
-          <!--     登录     -->
-          <template v-if='isLogin'>
-            <div class='oauth-content-header'>
-              <img :src='headerImg' />
-            </div>
-            <div class='oauth-content-content'>
-              <div class='oauth-content-content-text'>
-                您正在授权登录,{{ appName }}将获得以下权限:
+  <div class='oauth-warp'>
+    <j-spin :spinning='spinning'>
+            <div class='oauth' v-if='!spinning'>
+              <div class='oauth-header'>
+                <div class='oauth-header-left'>
+                  <img :src='logoImg' alt=''>
+                </div>
               </div>
-              <ul>
-                <li>关联{{userName}}账号</li>
-                <li>获取您的个人信息</li>
-              </ul>
-              <div class='oauth-content-button'>
-                <j-button type='primary' @click='() => goOAuth2Fn()'> 同意授权 </j-button>
-                <j-button type='primary' @click='changeAccount'> 切换账号 </j-button>
+
+              <div class='oauth-content'>
+                <!--     登录     -->
+                <template v-if='isLogin'>
+                  <div class='oauth-content-header'>
+                    <img :src='headerImg' />
+                  </div>
+                  <div class='oauth-content-content'>
+                    <div class='oauth-content-content-text'>
+                      您正在授权登录,{{ appName }}将获得以下权限:
+                    </div>
+                    <ul>
+                      <li>关联{{userName}}账号</li>
+                      <li>获取您的个人信息</li>
+                    </ul>
+                    <div class='oauth-content-button'>
+                      <j-button type='primary' @click='() => goOAuth2Fn()'> 同意授权 </j-button>
+                      <j-button type='primary' @click='changeAccount'> 切换账号 </j-button>
+                    </div>
+                  </div>
+                </template>
+                <template v-else>
+                  <div class='oauth-content-header'>
+                    <img :src='headerImg' />
+                  </div>
+                  <div class='oauth-content-login'>
+                    <j-form layout='horizontal' size='large' :model='formModel' >
+                      <j-form-item name='username'>
+                        <j-input placeholder='用户名' v-model:value='formModel.username' />
+                      </j-form-item>
+                      <j-form-item name='password'>
+                        <j-input-password placeholder='密码' v-model:value='formModel.password' />
+                      </j-form-item>
+                      <j-form-item name='verifyCode' v-if='captcha.base64'>
+                        <j-input placeholder='请输入验证码' v-model:value='formModel.verifyCode' >
+                          <template #addonAfter>
+                            <img
+                              :src='captcha.base64'
+                              @click='getCode'
+                              style='cursor: pointer'
+                            />
+                          </template>
+                        </j-input>
+                      </j-form-item>
+                      <j-form-item>
+                        <j-button
+                          type='primary'
+                          @click='doLogin'
+                          style='width: 100%'
+                        >
+                          登录
+                        </j-button>
+                      </j-form-item>
+                    </j-form>
+                  </div>
+                </template>
               </div>
             </div>
-          </template>
-          <template v-else>
-            <div class='oauth-content-header'>
-              <img :src='headerImg' />
-            </div>
-            <div class='oauth-content-login'>
-              <j-form layout='horizontal' size='large' :model='formModel' >
-                <j-form-item name='username'>
-                  <j-input placeholder='用户名' v-model:value='formModel.username' />
-                </j-form-item>
-                <j-form-item name='password'>
-                  <j-input-password placeholder='密码' v-model:value='formModel.password' />
-                </j-form-item>
-                <j-form-item name='verifyCode' v-if='captcha.base64'>
-                  <j-input placeholder='请输入验证码' v-model:value='formModel.verifyCode' >
-                    <template #addonAfter>
-                      <img
-                        :src='captcha.base64'
-                        @click='getCode'
-                        style='cursor: pointer'
-                      />
-                    </template>
-                  </j-input>
-                </j-form-item>
-                <j-form-item>
-                  <j-button
-                    type='primary'
-                    @click='doLogin'
-                    style='width: 100%'
-                  >
-                    登录
-                  </j-button>
-                </j-form-item>
-              </j-form>
-            </div>
-          </template>
-        </div>
-      </div>
-  </j-spin>
+    </j-spin>
+
+  </div>
 </template>
 
 <script setup lang='ts' name='Oauth'>
@@ -145,15 +147,17 @@ const getLoginUser = async (data?: any) => {
       goOAuth2Fn(data)
     }
   } else if (res.status === 401) {
-    isLogin.value = false
+    setTimeout(() => {
+      spinning.value = false
+    })
     getCode()
     getApplication(data.client_id || params.value.client_id)
   } else {
-    isLogin.value = false
+    setTimeout(() => {
+      spinning.value = false
+    })
   }
-  setTimeout(() => {
-    spinning.value = false
-  })
+
 }
 
 const getQueryVariable = (variable: any) => {
@@ -223,6 +227,13 @@ initPage()
 </script>
 
 <style scoped lang='less'>
+.oauth-warp {
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .oauth {
   .oauth-header {
     display: flex;

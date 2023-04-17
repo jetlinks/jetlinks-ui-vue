@@ -34,7 +34,7 @@ export default defineConfig(({ mode}) => {
       build: {
           outDir: 'dist',
           assetsDir: 'assets',
-          sourcemap: true,
+          sourcemap: false,
           cssCodeSplit: false,
           manifest: true,
           chunkSizeWarningLimit: 2000,
@@ -92,9 +92,9 @@ export default defineConfig(({ mode}) => {
 
           proxy: {
               [env.VITE_APP_BASE_API]: {
-                  // target: 'http://192.168.32.226:8844',
+                  target: 'http://192.168.32.226:8844',
                   // target: 'http://192.168.32.244:8881',
-                  target: 'http://120.77.179.54:8844', // 120测试
+                  // target: 'http://120.77.179.54:8844', // 120测试
                 //   target: 'http://192.168.33.46:8844', // 本地开发环境
                   ws: 'ws://192.168.33.46:8844',
                   changeOrigin: true,

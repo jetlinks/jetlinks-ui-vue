@@ -4,6 +4,7 @@
             :columns="columns"
             target="category"
             @search="(params:any)=>queryParams = {...params}"
+            style='margin-bottom: 0;'
         />
         <FullPage>
             <j-pro-table

@@ -1327,6 +1327,9 @@ const getSupports = async () => {
             label: item.name,
             value: item.id,
         }));
+        if (!typeOptions.value.every((item : any) => item.value === 'UDP')) {
+          formData.value.type = typeOptions.value[0].value
+        }
     }
 };
 

@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import * as echarts from 'echarts';
-import { ComponentInternalInstance } from 'vue';
+import { ComponentInternalInstance, onBeforeUnmount } from 'vue';
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 
@@ -46,20 +46,35 @@ const options = computed(() => ({
     ],
 }));
 
+const myChart = ref()
+
 watch(options, () => {
-    initChart();
+    if (myChart.value) {
+      myChart.value.setOption(options.value)
+    } else {
+      initChart()
+    }
 });
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', resize)
+})
+
+const resize = () => {
+  if (myChart.value) {
+    myChart.value.resize();
+  }
+}
+
 const initChart = () => {
     nextTick(() => {
-        const myChart = echarts.init(proxy?.$refs[props.chartRef as string] as HTMLElement);
+        myChart.value = echarts.init(proxy?.$refs[props.chartRef as string] as HTMLElement);
 
-        myChart.clear();
-        myChart.setOption(options.value);
+        myChart.value.setOption(options.value);
 
-        window.addEventListener('resize', () => {
-            myChart.resize();
-        });
+        window.addEventListener('resize', resize);
     });
 };
+
 initChart();
 </script>

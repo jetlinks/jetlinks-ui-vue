@@ -3718,10 +3718,10 @@ jetlinks-store@^0.0.3:
   resolved "https://registry.npmjs.org/jetlinks-store/-/jetlinks-store-0.0.3.tgz"
   integrity sha512-AZf/soh1hmmwjBZ00fr1emuMEydeReaI6IBTGByQYhTmK1Zd5pQAxC7WLek2snRAn/HHDgJfVz2hjditKThl6Q==
 
-jetlinks-ui-components@^1.0.5:
+jetlinks-ui-components@1.0.5:
   version "1.0.5"
-  resolved "http://47.108.170.157:9013/jetlinks-ui-components/-/jetlinks-ui-components-1.0.5.tgz#dd86644756d6044c4842193ea72335688cfa77d5"
-  integrity sha512-NFjJRwFuluUEAuFguyLYidgFy3tDuh1lKg10uBR//zFxmIzRaGPNN1r9nt/hp3BIGdQLJHUKgDJXQX6fZmfARg==
+  resolved "https://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.5.tgz#9fa4680c69471ee9abf518782faf1b4c276aa305"
+  integrity sha512-pFZ0ol0jjIrrIEqPOFmrS5K623QzczYVMFPf8NQ3XeSBLksW9dncgVEPa6cZZ+9jjwAgWHo2MyPGXZcY6SF8PQ==
   dependencies:
     "@vueuse/core" "^9.12.0"
     "@vueuse/router" "^9.13.0"
@@ -6418,13 +6418,6 @@ tough-cookie@~2.5.0:
   dependencies:
     psl "^1.1.28"
     punycode "^2.1.1"
-
-treer@^1.0.4:
-  version "1.0.4"
-  resolved "http://registry.jetlinks.cn/treer/-/treer-1.0.4.tgz#3b5ff47baec11c97476b8b7712da71cf459d52a3"
-  integrity sha512-Q2oAOOxzGYq+/KoKT1bZSSwDL4Y4WYukjiYBAn6GrNlt1xKKf5JS216dsSzkPDoYTHA9CXdbYkehUG7F1JT+5A==
-  dependencies:
-    commander "^2.9.0"
 
 treeverse@^1.0.4:
   version "1.0.4"

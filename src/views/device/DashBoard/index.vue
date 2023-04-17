@@ -53,7 +53,7 @@
                     </div>
                 </j-col>
             </j-row>
-            <j-row :span="24" v-if="AmapKey">
+            <j-row :span="24" v-if="AmapKey && isNoCommunity">
                 <j-col :span="24">
                     <div class="device-position">
                         <Guide title="设备分布"></Guide>
@@ -84,6 +84,8 @@ import { useMenuStore } from '@/store/menu';
 import Amap from './components/Amap.vue';
 import { useSystem } from '@/store/system';
 import dayjs from 'dayjs'
+import { isNoCommunity } from '@/utils/utils'
+
 const system = useSystem();
 const AmapKey = system.$state.configInfo.amap?.apiKey;
 let productTotal = ref(0);

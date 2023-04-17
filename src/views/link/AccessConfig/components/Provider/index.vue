@@ -145,12 +145,12 @@ const click = (value: object) => {
         display: flex;
         width: calc(100% - 100px);
         .images {
-            width: 88px;
-            height: 88px;
+            width: 80px;
+            height: 80px;
 
             img {
-                width: 88px;
-                height: 88px;
+                width: 80px;
+                height: 80px;
             }
         }
 

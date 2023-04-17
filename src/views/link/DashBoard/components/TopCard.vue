@@ -47,6 +47,7 @@ import { serverNode } from '@/api/link/dashboard';
 import TopEchartsItemNode from './TopEchartsItemNode.vue';
 import { getWebSocket } from '@/utils/websocket';
 import { map } from 'rxjs/operators';
+import { isNoCommunity } from '@/utils/utils'
 
 const serverId = ref();
 const serverNodeOptions = ref<Array<any>>([]);
@@ -103,17 +104,19 @@ const getData = () => {
 };
 
 onMounted(() => {
-    serverNode().then((resp: any) => {
-        if (resp.success) {
-            serverNodeOptions.value = resp.result.map((item: any) => ({
-                label: item.name,
-                value: item.id,
-            }));
-            if (serverNodeOptions.value.length) {
-                serverId.value = serverNodeOptions.value[0]?.value;
-            }
-        }
-    });
+    if (isNoCommunity) {
+      serverNode().then((resp: any) => {
+          if (resp.success) {
+              serverNodeOptions.value = resp.result.map((item: any) => ({
+                  label: item.name,
+                  value: item.id,
+              }));
+              if (serverNodeOptions.value.length) {
+                  serverId.value = serverNodeOptions.value[0]?.value;
+              }
+          }
+      });
+    }
 });
 watch(
     () => serverId.value,

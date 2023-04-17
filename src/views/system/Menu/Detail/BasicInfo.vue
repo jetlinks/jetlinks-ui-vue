@@ -242,6 +242,7 @@
                     route.params.id === ':id' ? 'add' : 'update'
                 }`"
                 @click="form.clickSave"
+                :loading='form.saveLoading'
             >
                 保存
             </PermissionButton>

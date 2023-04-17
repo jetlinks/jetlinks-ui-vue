@@ -85,11 +85,17 @@ import { message } from 'jetlinks-ui-components';
 import dayjs from 'dayjs';
 import { useUserInfo } from '@/store/userInfo';
 import { MESSAGE_SUBSCRIBE_MENU_CODE, USER_CENTER_MENU_CODE } from '@/utils/consts'
-const admin = useUserInfo().userInfos?.type.id === 'admin';
+import { storeToRefs } from 'pinia';
 
 const permission = 'system/Menu';
 
 const router = useRouter();
+const userInfoStore = useUserInfo()
+const { userInfos } = storeToRefs(userInfoStore)
+
+const admin = computed(() => {
+  return userInfos.value?.username === 'admin';
+})
 
 const columns = [
     {
