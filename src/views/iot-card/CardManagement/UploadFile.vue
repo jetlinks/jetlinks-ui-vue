@@ -75,7 +75,7 @@ const downFile = async (type: string) => {
     if (res) {
         const blob = new Blob([res], { type: type });
         const url = URL.createObjectURL(blob);
-        downloadFileByUrl(url, `物联卡导入模版`, type);
+        downloadFileByUrl(url, `物联卡导入模板`, type);
     }
 };
 

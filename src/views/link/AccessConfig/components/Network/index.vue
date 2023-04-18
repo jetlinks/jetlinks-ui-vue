@@ -134,6 +134,7 @@
                             <AccessCard
                                 @checkedChange="procotolChange"
                                 :checked="procotolCurrent"
+                                :disabled='id !== ":id"'
                                 :data="{ ...item, type: 'protocol' }"
                             >
                             </AccessCard>

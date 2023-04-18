@@ -348,6 +348,7 @@ const termAdd = () => {
 }
 
 const onDelete = () => {
+  const key = formModel.value.branches?.[props.branchName]?.then?.[props.thenName]?.actions?.[props.actionName].terms?.[props.termsName].terms?.[props.name].key
   formModel.value.branches?.[props.branchName]?.then?.[props.thenName]?.actions?.[props.actionName].terms?.[props.termsName].terms?.splice(props.name, 1)
   const _options = formModel.value.branches![props.branchName].then[props.thenName].actions[props.name].options
   const termsColumns = _options?.termsColumns || []

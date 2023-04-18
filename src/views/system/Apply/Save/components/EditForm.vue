@@ -1065,12 +1065,10 @@
                             >
                                 <img
                                     v-if="
-                                        form.data.sso.configuration.oauth2
-                                            .logoUrl
+                                        form.data.logoUrl
                                     "
                                     :src="
-                                        form.data.sso.configuration.oauth2
-                                            .logoUrl
+                                        form.data.logoUrl
                                     "
                                     alt="avatar"
                                     style="width: 150px"
@@ -1334,6 +1332,10 @@
                                     message: '请输入默认密码',
                                 },
                                 {
+                                    min: 8,
+                                    message: '最少输入8个字符',
+                                },
+                                {
                                     max: 64,
                                     message: '最多可输入64个字符',
                                 },
@@ -1456,10 +1458,10 @@ import type { formType, dictType, optionsType } from '../typing';
 import { getRoleList_api } from '@/api/system/user';
 import {
     FormInstance,
-    message,
     UploadChangeParam,
     UploadFile,
 } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components'
 import { randomString } from '@/utils/utils';
 import { cloneDeep, difference } from 'lodash';
 import { useMenuStore } from '@/store/menu';
@@ -1905,7 +1907,7 @@ function changeBackUpload(info: UploadChangeParam<UploadFile<any>>) {
     } else if (info.file.status === 'done') {
         info.file.url = info.file.response?.result;
         form.uploadLoading = false;
-        form.data.sso.configuration.oauth2.logoUrl = info.file.response?.result;
+        form.data.logoUrl = info.file.response?.result;
     } else if (info.file.status === 'error') {
         form.uploadLoading = false;
         message.error('logo上传失败，请稍后再试');

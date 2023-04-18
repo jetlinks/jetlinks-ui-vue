@@ -149,7 +149,7 @@ import {
     getSearchHistory,
     saveSearchHistory,
 } from '@/api/comm';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import LivePlayer from '@/components/Player/index.vue';
 import MediaTool from '@/components/Player/mediaTool.vue';
 

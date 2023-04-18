@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import { exportPermission_api } from '@/api/system/permission';
-import { Form } from 'ant-design-vue';
+import { Form } from 'jetlinks-ui-components';
 Form.useInjectFormItemContext();
 
 const props = defineProps<{

@@ -1,5 +1,5 @@
 // import './index.less';
-import { Image } from 'ant-design-vue';
+import { Image } from 'jetlinks-ui-components';
 import { getImage } from '@/utils/comm';
 
 const DingTalk = () => {

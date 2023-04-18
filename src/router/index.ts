@@ -19,14 +19,16 @@ const filterPath = [ InitHomePath, AccountCenterBindPath ]
 router.beforeEach((to, from, next) => {
   // TODO 切换路由取消请求
   const token = getToken()
-  if (token) {
+  if (to.path === AccountCenterBindPath) {
+    next()
+  } else if (token) {
     if (to.path === LoginPath) {
       next({ path: '/' })
     } else {
       const userInfo = useUserInfo()
       const system = useSystem()
       const menu = useMenuStore()
-      if (!menu.siderMenus.length && !filterPath.includes(to.path)) {
+      if (!Object.keys(menu.menus).length && !filterPath.includes(to.path)) {
         userInfo.getUserInfo().then(() => {
           system.getSystemVersion().then((menuData: any[]) => {
             menuData.forEach(r => {

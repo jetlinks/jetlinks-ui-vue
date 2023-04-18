@@ -337,9 +337,6 @@ export function JetlinksVueResolver(options: JetlinksVueResolverOptions = {}): a
         options.packageName = _isJetlinks ? 'jetlinks-ui-components' : 'ant-design-vue'
         const path = `${options.packageName}/${options.cjs ? 'lib' : 'es'}`
         const stylePath = getSideEffects(importName, options, _isAntd)
-        if (_isJetlinks) {
-          console.log(name, importName, stylePath)
-        }
         return {
           name: importName,
           from: path,

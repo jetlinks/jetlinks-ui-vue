@@ -257,21 +257,7 @@ import { getImage } from '@/utils/comm.ts';
 import { Form, message } from 'jetlinks-ui-components';
 import { FILE_UPLOAD } from '@/api/comm';
 import {
-    getSystemPermission,
     save,
-    addRole,
-    getRoleMenu,
-    updateRoleMenu,
-    getResourcesCurrent,
-    saveNetwork,
-    saveProtocol,
-    getProtocol,
-    saveAccessConfig,
-    saveProduct,
-    saveDevice,
-    changeDeploy,
-    deployDevice,
-    saveInit,
 } from '@/api/initHome';
 import { LocalStore } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';

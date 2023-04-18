@@ -34,7 +34,7 @@
       >
         <template #img>
           <slot name="img">
-            <img width='88' height='88' :src="slotProps.photoUrl || getImage('/device/instance/device-card.png')" />
+            <img width='80' height='80' :src="slotProps.photoUrl || getImage('/device/instance/device-card.png')" />
           </slot>
         </template>
         <template #content>

@@ -73,7 +73,7 @@
 import { PropType } from 'vue';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons-vue';
 import { useProductStore } from '@/store/product';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { useRuleEditorStore } from '@/store/ruleEditor';
 import moment from 'moment';
 import { getWebSocket } from '@/utils/websocket';

@@ -70,8 +70,11 @@
                         </slot>
                     </template>
                     <template #content>
-                        <h3 class="card-item-content-title">
+                        <h3 class="card-item-content-title" style='margin-bottom: 18px;'>
+                          <Ellipsis style="width: calc(100% - 100px);"
+                          >
                             {{ slotProps.name }}
+                          </Ellipsis>
                         </h3>
                         <j-row>
                             <j-col :span="12">

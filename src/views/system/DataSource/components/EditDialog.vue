@@ -195,7 +195,8 @@ import {
     getDataTypeDict_api,
     saveDataSource_api,
 } from '@/api/system/dataSource';
-import { FormInstance, message } from 'ant-design-vue';
+import { FormInstance } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { Rule } from 'ant-design-vue/lib/form';
 import type { dictItemType, optionItemType, sourceItemType } from '../typing';
 

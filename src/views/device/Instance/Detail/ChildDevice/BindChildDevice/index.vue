@@ -91,7 +91,7 @@
 <script setup lang="ts">
 import { query, bindDevice } from '@/api/device/instance';
 import moment from 'moment';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { useInstanceStore } from '@/store/instance';
 import { storeToRefs } from 'pinia';
 

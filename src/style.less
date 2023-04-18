@@ -3,6 +3,101 @@
     right: -12px;
 }
 
+.ant-pro-page-container {
+    .ant-page-header-footer {
+        border-top: 1px solid #e9e9e9;
+        padding-top: 10px;
+    }
+}
+
+.ant-pro-basicLayout {
+    .ant-pro-top-nav-header-main {
+        gap: 16px;
+    }
+
+    .ant-pro-top-nav-header {
+
+        .ant-menu-item {
+            padding: 0 10px !important;
+            &:not(:first-child) {
+                margin-left: 8px;
+            }
+            &:hover {
+                background-color: transparent;
+            }
+        }
+
+        .ant-menu-item-selected,& .ant-menu-item-active {
+            transition: background 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+
+        h1,& .right-content, & .anticon-bell {
+            color: #fff !important;
+        }
+
+        & .ant-pro-menu-item-title,& .anticon,& .ant-menu-item-active {
+            color: rgba(#fff, 0.55)  !important;
+        }
+
+        .ant-menu-item-selected {
+            & .ant-pro-menu-item-title,& .anticon {
+                color: #fff  !important;
+            }
+        }
+
+        .ant-menu-item-selected,& .ant-menu-item-active {
+            transition: background 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+            background: linear-gradient(0deg, rgba(#fff, 0.25) 0%, rgba(#fff, 0) 82%);
+            &::after {
+                left: 0;
+                right: 0;
+                border-bottom-color: rgba(#fff, .8);
+            }
+        }
+
+        &.light {
+            background: #3F4960;
+            box-shadow: 0 1px 0px 0px #E9E9E9;
+
+            h1,& .right-content, & .anticon-bell {
+                color: #fff  !important;
+            }
+
+            .ant-menu-item-selected,& .ant-menu-item-active {
+                transition: background 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+                background: linear-gradient(0deg, rgba(#fff, 0.15) 0%, rgba(#fff, 0) 82%);
+                &::after {
+                    left: 0;
+                    right: 0;
+                    border-bottom-color: rgba(#fff, .7);
+                }
+            }
+        }
+    }
+
+    .ant-layout-sider {
+        box-shadow: 1px 0 0 0 #E9E9E9 !important;
+    }
+
+    .ant-page-header.has-breadcrumb {
+        background: transparent;
+        padding-top: 20px;
+        padding-bottom: 0;
+
+        &.has-footer {
+            background-color: #fff;
+        }
+    }
+
+    .ant-pro-page-container-children-content {
+        margin-top: 16px;
+    }
+
+    .ant-pro-sider-menu {
+        padding-top: 6px;
+    }
+}
+
 // 说明文档样式
 .doc {
     height: 750px;

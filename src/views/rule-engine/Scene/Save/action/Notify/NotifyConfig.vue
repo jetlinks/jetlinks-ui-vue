@@ -37,7 +37,7 @@
                                 :src="
                                     getLogo(slotProps.type, slotProps.provider)
                                 "
-                                class="logo"
+                                class="notify-logo"
                             />
                         </slot>
                     </template>
@@ -186,7 +186,7 @@ watch(
     padding: 0;
 }
 
-.logo {
+.notify-logo {
     width: 88px;
     height: 88px;
 }

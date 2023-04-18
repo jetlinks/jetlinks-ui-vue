@@ -61,7 +61,7 @@
                         <span class='subTitle-content'>
                           <Ellipsis :lineClamp="2">
                                   {{
-                                      slotProps?.description ||
+                                      slotProps?.description ? slotProps?.description :
                                       typeMap.get(slotProps.triggerType)?.tip
                                   }}
                           </Ellipsis>
@@ -137,7 +137,7 @@ import SaveModal from './Save/save.vue';
 import type { SceneItem } from './typings';
 import { useMenuStore } from 'store/menu';
 import { query, _delete, _action, _execute } from '@/api/rule-engine/scene';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import type { ActionsType } from '@/components/Table';
 import { getImage } from '@/utils/comm';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
@@ -388,7 +388,7 @@ const handleView = (id: string, triggerType: string) => {
 <style scoped lang='less'>
 .subTitle {
   position: relative;
-  margin-top: 10px;
+  margin-top: 18px;
 
   .subTitle-title {
     position: absolute;

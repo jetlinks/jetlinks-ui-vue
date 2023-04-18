@@ -17,9 +17,9 @@
         <j-descriptions-item label="产品名称">{{
             instanceStore.current?.productName
         }}</j-descriptions-item>
-        <j-descriptions-item label="产品分类">{{
-            instanceStore.current?.classifiedName
-        }}</j-descriptions-item>
+<!--        <j-descriptions-item label="产品分类">{{-->
+<!--            instanceStore.current?.classifiedName-->
+<!--        }}</j-descriptions-item>-->
         <j-descriptions-item label="设备类型">{{
             instanceStore.current?.deviceType?.text
         }}</j-descriptions-item>

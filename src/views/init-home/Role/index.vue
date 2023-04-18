@@ -95,59 +95,67 @@ const findMenuByRole = (menu: any[], code: string): any => {
     });
     return _item;
 };
+
+const saveRoleData = (item: any) => {
+    return new Promise(async (resolve) => {
+        const _itemData = RoleData[item];
+        // 添加该角色
+        const res = await addRole(_itemData);
+        if (res.status === 200) {
+            const menuTree = await getRoleMenu(res.result.id);
+            if (menuTree.status === 200) {
+                const _roleData = (RoleMenuData[item] as []).filter(
+                    (roleItem: any) => {
+                        const _menu = findMenuByRole(
+                            menuTree.result,
+                            roleItem.code,
+                        );
+                        if (_menu) {
+                            roleItem.id = _menu.id;
+                            roleItem.parentId = _menu.parentId;
+                            roleItem.createTime = _menu.createTime;
+                            return true;
+                        }
+                        return false;
+                    },
+                );
+                //更新权限
+                const roleRes = await updateRoleMenu(res.result.id, {
+                    menus: _roleData,
+                });
+                resolve(roleRes.status === 200)
+            } else {
+                resolve(false);
+            }
+        } else {
+            resolve(false);
+        }
+    });
+};
+
 /**
  * 保存角色
  */
 const addRoleData = async () => {
-    return new Promise((resolve) => {
-        if (!keys.value.length) {
-            return resolve(true);
-        }
-        let Count = 0;
-        keys.value.forEach(async (item, index) => {
-            const _itemData = RoleData[item];
-            // 添加该角色
-            const res = await addRole(_itemData);
-            if (res.status === 200) {
-                const menuTree = await getRoleMenu(res.result.id);
-                if (menuTree.status === 200) {
-                    const _roleData = (RoleMenuData[item] as []).filter(
-                        (roleItem: any) => {
-                            const _menu = findMenuByRole(
-                                menuTree.result,
-                                roleItem.code,
-                            );
-                            if (_menu) {
-                                roleItem.id = _menu.id;
-                                roleItem.parentId = _menu.parentId;
-                                roleItem.createTime = _menu.createTime;
-                                return true;
-                            }
-                            return false;
-                        },
-                    );
-                    //更新权限
-                    const roleRes = await updateRoleMenu(res.result.id, {
-                        menus: _roleData,
-                    });
-                    if (roleRes.status === 200) {
-                        Count += 1;
-                    }
-                    if (index === keys.value.length - 1) {
-                        resolve(Count === keys.value.length);
-                    }
-                } else if (index === keys.value.length - 1) {
-                    resolve(Count === keys.value.length);
-                }
-            } else if (index === keys.value.length - 1) {
-                resolve(Count === keys.value.length);
-                roleData.isSucessRole = 2;
-            }else{
-                resolve(false);
-            }
-        });
+  return new Promise((resolve) => {
+    if (!keys.value.length) {
+      return resolve(true);
+    }
+
+    const allPromise = keys.value.map(async (item) => {
+      return await saveRoleData(item);
     });
+
+    Promise.all(allPromise).then((item) => {
+      resolve(
+        item.every((i) => {
+          return i;
+        }),
+      );
+    });
+  });
 };
+
 defineExpose({
     submitRole: addRoleData,
 });

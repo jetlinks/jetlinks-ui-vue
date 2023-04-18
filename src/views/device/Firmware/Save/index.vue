@@ -190,7 +190,7 @@
     </j-modal>
 </template>
 <script lang="ts" setup>
-import { message, Form } from 'ant-design-vue';
+import { message, Form } from 'jetlinks-ui-components';
 import { getImage } from '@/utils/comm';
 import FileUpload from './FileUpload.vue';
 import {

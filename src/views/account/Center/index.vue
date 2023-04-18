@@ -140,8 +140,10 @@
                 <div class="content">
                     <div class="account-card" v-for="item in bindList">
                         <img
-                            :src="getImage(bindIcon[item.provider])"
-                            style="height: 50px"
+                            :src="item.logoUrl || getImage(bindIcon[item.provider])"
+                            style="height: 50px;width: 50px"
+                            width='50px'
+                            height='50px'
                             alt=""
                         />
                         <Ellipsis style="width: 150px; font-size: 22px">
@@ -399,6 +401,8 @@ function getViews() {
             display: flex;
             margin-top: 24px;
             flex-wrap: wrap;
+            gap: 24px;
+
             .content-item {
                 margin-right: 24px;
 
@@ -438,9 +442,10 @@ function getViews() {
             }
 
             .account-card {
-                margin-right: 24px;
                 width: 415px;
                 background-image: url(/images/notice/dingtalk-background.png);
+                border-right: 1px solid #f0f0f0;
+                border-bottom: 1px solid #f0f0f0;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;

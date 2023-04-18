@@ -5,6 +5,7 @@
             'card-render',
             `access-${data.type || 'network'}`,
             checked === data.id ? 'checked' : '',
+            disabled ? 'disabled' : ''
         ]"
         @click="checkedChange(data.id)"
     >
@@ -40,6 +41,10 @@ const props = defineProps({
         type: Object,
         default: () => {},
     },
+    disabled: {
+        type: Boolean,
+        default: false
+    }
 });
 
 const checkedChange = (id: string) => {
@@ -105,6 +110,9 @@ const checkedChange = (id: string) => {
             display: block;
         }
     }
+  &.disabled {
+    cursor: not-allowed;
+  }
 }
 .access-media {
     background: url('/public/images/access-media.png') no-repeat;

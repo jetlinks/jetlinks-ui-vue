@@ -14,7 +14,7 @@ import { useInstanceStore } from '@/store/instance';
 import { useMetadataStore } from '@/store/metadata';
 import { useProductStore } from '@/store/product';
 import { ProductItem } from '@/views/device/Product/typings';
-import { message } from 'ant-design-vue/es';
+import { message } from 'jetlinks-ui-components';
 import type { FormInstance } from 'ant-design-vue/es';
 import { updateMetadata, asyncUpdateMetadata } from '../../metadata'
 import { detail } from '@/api/device/instance';

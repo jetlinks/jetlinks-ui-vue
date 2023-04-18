@@ -43,10 +43,7 @@
                             <template #content>
                                 <div class="card-item-content">
                                     <Ellipsis
-                                        style="
-                                            width: calc(100% - 100px);
-                                            margin-bottom: 10px;
-                                        "
+                                        style="margin-bottom: 18px;"
                                     >
                                         <span
                                             style="

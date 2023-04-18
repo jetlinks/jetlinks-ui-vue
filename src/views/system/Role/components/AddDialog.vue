@@ -36,7 +36,8 @@
 </template>
 
 <script setup lang="ts">
-import { FormInstance, message } from 'ant-design-vue';
+import { FormInstance } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { saveRole_api } from '@/api/system/role';
 import { useMenuStore } from '@/store/menu';
 const route = useRoute();

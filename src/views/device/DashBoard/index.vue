@@ -5,7 +5,7 @@
                 <j-col :span="6">
                     <TopCard
                         title="产品数量"
-                        :img="getImage('/device/device-product.png')"
+                        :img="getImage('/device/device-product.svg')"
                         :footer="productFooter"
                         :value="productTotal"
                     ></TopCard>
@@ -13,7 +13,7 @@
                 <j-col :span="6">
                     <TopCard
                         title="设备数量"
-                        :img="getImage('/device/device-number.png')"
+                        :img="getImage('/device/device-number.svg')"
                         :footer="deviceFooter"
                         :value="deviceTotal"
                     ></TopCard
@@ -53,7 +53,7 @@
                     </div>
                 </j-col>
             </j-row>
-            <j-row :span="24" v-if="AmapKey">
+            <j-row :span="24" v-if="AmapKey && isNoCommunity">
                 <j-col :span="24">
                     <div class="device-position">
                         <Guide title="设备分布"></Guide>
@@ -84,6 +84,8 @@ import { useMenuStore } from '@/store/menu';
 import Amap from './components/Amap.vue';
 import { useSystem } from '@/store/system';
 import dayjs from 'dayjs'
+import { isNoCommunity } from '@/utils/utils'
+
 const system = useSystem();
 const AmapKey = system.$state.configInfo.amap?.apiKey;
 let productTotal = ref(0);
@@ -605,7 +607,7 @@ getDevice();
 }
 .message-chart {
     width: 100%;
-    height: 400px;
+    height: 470px;
 }
 .amap-box {
     height: 500px;

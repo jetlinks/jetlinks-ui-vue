@@ -60,7 +60,7 @@
                             />
                         </template>
                         <template #content>
-                            <Ellipsis style="width: calc(100% - 100px)">
+                            <Ellipsis style="width: calc(100% - 100px);">
                                 <span style="font-weight: 500">
                                     {{ slotProps.alarmName }}
                                 </span>

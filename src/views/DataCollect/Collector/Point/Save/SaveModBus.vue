@@ -57,7 +57,7 @@
                     placeholder="请输入地址"
                     v-model:value="formData.pointKey"
                     :min="0"
-                    :max="255"
+                    :max="999999999"
                     :precision="0"
                 />
             </j-form-item>

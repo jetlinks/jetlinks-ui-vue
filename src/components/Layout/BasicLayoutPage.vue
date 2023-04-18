@@ -4,6 +4,7 @@
         v-model:openKeys="state.openKeys"
         v-model:collapsed="state.collapsed"
         v-model:selectedKeys="state.selectedKeys"
+        :headerHeight='60'
         :pure="state.pure"
         :breadcrumb="{ routes: breadcrumb }"
         @backClick='routerBack'
@@ -110,8 +111,6 @@ const jump = (item: any) => {
     path = item.path
   }
 
-  console.log(item, history.state)
-  console.log(path)
   // jumpPage(slotProps.route.path)
   router.push(path)
 }
@@ -119,8 +118,7 @@ const jump = (item: any) => {
 const breadcrumb = computed(() =>
   {
     const paths = router.currentRoute.value.name as string
-    console.log(router.currentRoute)
-    console.log(route)
+
     const metas = findRouteMeta(paths)
     return metas.map((item, index) => {
       return {

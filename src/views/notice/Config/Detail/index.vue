@@ -81,6 +81,7 @@
                                 <j-form-item
                                     label="webHook"
                                     v-bind="validateInfos['configuration.url']"
+                                    :rules='[{ max: 64, message: "最多可输入64个字符" }]'
                                 >
                                     <j-input
                                         v-model:value="
@@ -322,7 +323,7 @@
 
 <script setup lang="ts">
 import { getImage } from '@/utils/comm';
-import { Form } from 'ant-design-vue';
+import { Form } from 'jetlinks-ui-components';
 import { message } from 'jetlinks-ui-components';
 import type { ConfigFormData } from '../types';
 import {

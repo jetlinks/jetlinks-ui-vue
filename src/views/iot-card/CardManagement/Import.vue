@@ -164,7 +164,7 @@ const getConfig = async () => {
 //         const blob = new Blob([res], { type: type });
 //         const url = URL.createObjectURL(blob);
 //         console.log(url);
-//         downloadFileByUrl(url, `物联卡导入模版`, type);
+//         downloadFileByUrl(url, `物联卡导入模板`, type);
 //     }
 // };
 

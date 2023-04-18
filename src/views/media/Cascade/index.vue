@@ -45,7 +45,7 @@
                                 <img
                                     :src="
                                         getImage(
-                                            '/device/instance/device-card.png',
+                                            '/cascade.png',
                                         )
                                     "
                                 />

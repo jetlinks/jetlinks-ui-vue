@@ -60,12 +60,10 @@
     </div>
 </template>
 <script setup lang="ts">
-import { getImage } from '@/utils/comm.ts';
 import Basic from './Basic/index.vue';
 import Role from './Role/index.vue';
 import Menu from './Menu/index.vue';
 import InitData from './InitData/index.vue';
-import { modalState, formState, logoState } from './data/interface';
 import { getInit, saveInit } from '@/api/initHome';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { FILE_UPLOAD } from '@/api/comm';
@@ -110,6 +108,7 @@ const submitData = async () => {
         return;
     }
     const roleRes = await roleRef.value.submitRole();
+    console.log(roleRes);
     if (!roleRes) {
         loading.value = false;
         return;
@@ -140,8 +139,8 @@ const judgeInitSet = async () => {
     }
 };
 onBeforeMount(() => {
-  // judgeInitSet();
-})
+    // judgeInitSet();
+});
 </script>
 <style scoped lang="less">
 .page-container {

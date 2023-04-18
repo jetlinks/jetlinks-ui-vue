@@ -107,8 +107,11 @@ const onKeys: string[] = EventSubscribeKeys({
   action: props.actionName
 })
 
-const handleRequest = () => {
-  columnRequest()
+const handleRequest = (e: any) => {
+  const hasDelete = 'isDelete' in e
+  if (!hasDelete) {
+    columnRequest()
+  }
 }
 
 EventEmitter.subscribe(onKeys, handleRequest)

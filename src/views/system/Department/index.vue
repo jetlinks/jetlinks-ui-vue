@@ -6,7 +6,7 @@
               <LeftTree @change="(id) => (departmentId = id)" />
             </div>
             <div class="right">
-              <j-tabs v-model:activeKey="activeKey" destroyInactiveTabPane>
+              <j-tabs v-if='isNoCommunity' v-model:activeKey="activeKey" destroyInactiveTabPane>
                 <j-tab-pane key="product" tab="产品">
                   <Product
                     :parentId="departmentId"
@@ -23,6 +23,7 @@
                   <User :parentId="departmentId" />
                 </j-tab-pane>
               </j-tabs>
+              <User :parentId="departmentId" v-else />
             </div>
           </div>
         </div>
@@ -34,6 +35,7 @@ import LeftTree from './components/LeftTree.vue';
 import Product from './product/index.vue';
 import Device from './device/index.vue';
 import User from './user/index.vue';
+import { isNoCommunity } from '@/utils/utils'
 
 const activeKey = ref<'product' | 'device' | 'user'>('product');
 

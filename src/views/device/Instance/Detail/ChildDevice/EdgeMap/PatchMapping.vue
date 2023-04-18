@@ -57,7 +57,7 @@
 
 <script lang="ts" setup>
 import { treeEdgeMap, saveEdgeMap, addDevice } from '@/api/device/instance';
-import { message } from 'ant-design-vue/es';
+import { message } from 'jetlinks-ui-components';
 const _props = defineProps({
     metaData: {
         type: Array,

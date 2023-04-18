@@ -35,7 +35,7 @@ import {
     delOperations_api,
     updateOperations_api,
 } from '@/api/system/apiPage';
-import { message } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { modeType } from '../typing';
 import { useDepartmentStore } from '@/store/department';
 

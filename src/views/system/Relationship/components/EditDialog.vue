@@ -96,7 +96,8 @@
 </template>
 
 <script setup lang="ts">
-import { FormInstance, message } from 'ant-design-vue';
+import { FormInstance } from 'ant-design-vue';
+import { message } from 'jetlinks-ui-components';
 import { Rule } from 'ant-design-vue/es/form';
 
 import {

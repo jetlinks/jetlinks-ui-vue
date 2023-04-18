@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable'
-import { notification as Notification } from 'ant-design-vue'
+import { notification as Notification } from 'jetlinks-ui-components'
 import router from '@/router'
 import { LoginPath } from '@/router/menu'
 import { cleanToken, getToken, LocalStore } from '@/utils/comm'
@@ -13,10 +13,12 @@ interface AxiosResponseRewrite<T = any[]> extends AxiosResponse<T, any> {
 
 export const SUCCESS_CODE = 200 // 成功代码
 
+const filterApiUrl = ['/system/version', '/system/config/front', '/authorize/captcha/config', '/application/sso/_all', '/authorize/captcha/image', '/application/sso/bind-code', '/authorize/login']
+
 export const request = axios.create({
   withCredentials: false,
   baseURL: BASE_API_PATH,
-  timeout: 1000 * 60 * 5
+  timeout: 1000 * 15
 })
 
 /**
@@ -165,7 +167,8 @@ request.interceptors.request.use(config => {
   // 如果 token 存在
   // 让每个请求携带自定义 token 请根据实际情况自行修改
   const token = getToken()
-  if (!token) {
+  const isFilterUrl = filterApiUrl.some(url => config.url.includes(url))
+  if (!token && !isFilterUrl) {
     setTimeout(() => {
       cleanToken()
       router.replace({
@@ -203,7 +206,7 @@ request.interceptors.response.use(response => {
 }, errorHandler)
 
 export default {
-  request: axios,
+  request,
   post,
   get,
   patch,

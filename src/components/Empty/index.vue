@@ -7,14 +7,13 @@
 </template>
 
 <script lang="ts" setup name="JEmpty">
-import { Empty } from 'ant-design-vue';
+import { Empty } from 'jetlinks-ui-components';
 import { useSlots } from 'vue';
 import NoData from './assets/nodata.svg';
 import { omit } from 'lodash-es';
 import type { PropType, CSSProperties } from 'vue';
 const slots = useSlots();
 const renderArr = Object.keys(slots);
-console.log(renderArr);
 
 const props = defineProps({
     description: {

@@ -46,12 +46,12 @@
                             <template #img>
                                 <slot name="img">
                                     <img
-                                        :src="getImage('/device-product.png')"
+                                        :src="getImage('/scene/trigger-type/scene.png')"
                                     />
                                 </slot>
                             </template>
                             <template #content>
-                                <Ellipsis style="width: calc(100% - 100px)">
+                                <Ellipsis style="width: calc(100% - 100px); margin-bottom: 18px;">
                                     <span
                                         style="
                                             font-weight: 600;

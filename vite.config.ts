@@ -14,6 +14,7 @@ import monacoEditorPlugin from 'vite-plugin-monaco-editor';
 import { JetlinksVueResolver } from './plugin/jetlinks'
 import { optimizeDeps } from './plugin/optimize'
 import copy from 'rollup-plugin-copy';
+import progress from 'vite-plugin-progress'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode}) => {
@@ -33,7 +34,7 @@ export default defineConfig(({ mode}) => {
       build: {
           outDir: 'dist',
           assetsDir: 'assets',
-          sourcemap: true,
+          sourcemap: false,
           cssCodeSplit: false,
           manifest: true,
           chunkSizeWarningLimit: 2000,
@@ -83,16 +84,17 @@ export default defineConfig(({ mode}) => {
             targets: [
               {src: 'node_modules/@liveqing/liveplayer-v3/dist/component/liveplayer-lib.min.js', dest: 'public/js'},
             ]
-          })
+          }),
+          progress()
       ],
       server: {
           host:'0.0.0.0',
 
           proxy: {
               [env.VITE_APP_BASE_API]: {
-                  // target: 'http://192.168.33.22:8800',
+                  target: 'http://192.168.32.226:8844',
                   // target: 'http://192.168.32.244:8881',
-                  target: 'http://120.77.179.54:8844', // 120测试
+                  // target: 'http://120.77.179.54:8844', // 120测试
                 //   target: 'http://192.168.33.46:8844', // 本地开发环境
                   ws: 'ws://192.168.33.46:8844',
                   changeOrigin: true,

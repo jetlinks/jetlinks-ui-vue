@@ -43,7 +43,6 @@ export function optimizeDeps() {
       ]
       let concat = config.optimizeDeps.include.concat(components)
       config.optimizeDeps.include = Array.from(new Set(concat))
-      console.log(config.optimizeDeps.include)
     }
   }
 }

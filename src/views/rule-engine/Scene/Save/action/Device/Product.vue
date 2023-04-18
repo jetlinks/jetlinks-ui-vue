@@ -31,8 +31,8 @@
                 <template #img>
                     <slot name="img">
                         <img
-                            :width="88"
-                            :height="88"
+                            :width="80"
+                            :height="80"
                             :src="
                                 slotProps.photoUrl ||
                                 getImage('/device-product.png')

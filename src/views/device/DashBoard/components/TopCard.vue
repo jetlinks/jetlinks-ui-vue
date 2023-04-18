@@ -72,18 +72,16 @@ const props = defineProps({
         }
         .content-right {
             width: 0;
-            height: 123px;
             display: flex;
-            flex-grow: .7;
+            flex-grow: 1;
             align-items: flex-end;
             justify-content: flex-end;
             img {
-                width: 100%;
-                height: 100%;
+                width: 92px;
+                height: 92px;
             }
         }
         .content-right-echart{
-            height: 123px;
             display: flex;
             flex-grow: 1;
             align-items: flex-end;

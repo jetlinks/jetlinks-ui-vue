@@ -1,7 +1,7 @@
 <template>
     <div v-for="items in dataSource" :key="items.type" class="card-items">
         <div class="card-items-container">
-            <TitleComponent :data="items.title"></TitleComponent>
+            <TitleComponent :data="items.title" style='font-size: 16px;'></TitleComponent>
             <j-row :gutter="[24, 24]">
                 <j-col :span="12" v-for="item in items.list" :key="item.id">
                     <div class="provider">
@@ -75,6 +75,9 @@ const click = (value: object) => {
 <style lang="less" scoped>
 .card-items {
     margin-bottom: 24px;
+    background-color: #fff;
+    padding: 24px;
+
     .card-items-container {
     }
 }
@@ -142,12 +145,12 @@ const click = (value: object) => {
         display: flex;
         width: calc(100% - 100px);
         .images {
-            width: 88px;
-            height: 88px;
+            width: 80px;
+            height: 80px;
 
             img {
-                width: 88px;
-                height: 88px;
+                width: 80px;
+                height: 80px;
             }
         }
 

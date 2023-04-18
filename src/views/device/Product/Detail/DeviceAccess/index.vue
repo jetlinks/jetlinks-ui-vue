@@ -1,6 +1,6 @@
 <!-- 设备接入 -->
 <template>
-    <div v-if="productStore.current.accessId === undefined || null">
+    <div v-if="access.id === undefined || null" style='margin-top: 20%; transform: translateY(-50%);'>
         <j-empty :image="simpleImage">
             <template #description>
                 <span
@@ -20,42 +20,14 @@
             <j-col :span="12">
                 <Title data="接入方式">
                     <template #extra>
-                        <!-- <j-tooltip
-                                :title="
-                                    productStore.current?.count &&
-                                    productStore.current?.count > 0
-                                        ? '产品下有设备实例时不能更换接入方式'
-                                        : ''
-                                "
-                            >
-                                <j-button
-                                    class="changeBtn"
-                                    size="small"
-                                    :disabled="
-                                        productStore.current?.count &&
-                                        productStore.current?.count > 0
-                                    "
-                                    ghost
-                                    type="primary"
-                                    @click="showDevice"
-                                    >更换</j-button
-                                >
-                            </j-tooltip> -->
                         <PermissionButton
                             style="margin: 0 0 0 20px"
                             type="primary"
                             size="small"
                             :tooltip="{
-                                title:
-                                    productStore.current?.count &&
-                                    productStore.current?.count > 0
-                                        ? '产品下有设备实例时不能更换接入方式'
-                                        : '',
+                                title: tooltip
                             }"
-                            :disabled="
-                                productStore.current?.count &&
-                                productStore.current?.count > 0
-                            "
+                            :disabled="checkDisabled"
                             ghost
                             @click="showDevice"
                             hasPermission="device/Product:update"
@@ -197,7 +169,7 @@
             >
                 <div class="info">
                     <div>
-                        <div style="font-weight: 600; margin: 0 0 10 px 0">
+                        <div style="font-weight: 600; margin: 0 0 10px 0">
                             {{
                                 access?.provider === 'mqtt-server-gateway' ||
                                 access?.provider === 'mqtt-client-gateway'
@@ -214,7 +186,7 @@
                             :scroll="{ y: 500 }"
                         >
                             <template #bodyCell="{ text, column, record }">
-                                <template v-if="column.key === 'topic'">
+                                <template v-if="column?.key === 'topic'">
                                     <j-tooltip
                                         placement="topLeft"
                                         :title="text"
@@ -224,7 +196,7 @@
                                         </div>
                                     </j-tooltip>
                                 </template>
-                                <template v-if="column.key === 'stream'">
+                                <template v-if="column?.key === 'stream'">
                                     <div>{{ getStream(record) }}</div>
                                 </template>
                                 <template v-if="column.key === 'description'">
@@ -237,7 +209,7 @@
                                         </div>
                                     </j-tooltip>
                                 </template>
-                                <template v-if="column.key === 'address'">
+                                <template v-if="column?.key === 'address'">
                                     <j-tooltip
                                         placement="topLeft"
                                         :title="text"
@@ -247,7 +219,7 @@
                                         </div>
                                     </j-tooltip>
                                 </template>
-                                <template v-if="column.key === 'example'">
+                                <template v-if="column?.key === 'example'">
                                     <j-tooltip
                                         placement="topLeft"
                                         :title="text"
@@ -265,133 +237,21 @@
         </j-row>
     </div>
     <!-- 选择设备 -->
-    <j-modal
-        title="设备接入配置"
-        v-if="visible"
-        visible
-        width="1200px"
-        okText="确定"
-        cancelText="取消"
-        @ok="submitData"
-        @cancel="cancel"
-    >
-        <pro-search
-            :columns="query.columns"
-            target="deviceModal"
-            @search="search"
-            type="simple"
-        />
-        <JProTable
-            :columns="query.columns"
-            :request="queryList"
-            ref="tableRef"
-            model="CARD"
-            :defaultParams="{
-                ...temp,
-                sorts: productStore.current?.accessId ? [
-                    { name: 'id', value: productStore.current?.accessId },
-                    { name: 'createTime', order: 'desc' },
-                ] : [{ name: 'createTime', order: 'desc' }],
-            }"
-            :params="queryParams"
-            @cancelSelect="cancelSelect"
-            :gridColumn="2"
-            :gridColumns="[2]"
-        >
-            <template #headerTitle>
-                <PermissionButton
-                    type="primary"
-                    @click="add"
-                    hasPermission="link/AccessConfig:add"
-                    >新增</PermissionButton
-                >
-            </template>
-            <template #deviceType="slotProps">
-                <div>{{ slotProps.deviceType.text }}</div>
-            </template>
-            <template #card="slotProps">
-                <CardBox
-                    :value="slotProps"
-                    @click="handleClick"
-                    v-bind="slotProps"
-                    :active="_selectedRowKeys.includes(slotProps.id)"
-                    :status="slotProps.state.value"
-                    :statusText="slotProps.state.text"
-                    :statusNames="{
-                        enabled: 'processing',
-                        disabled: 'error',
-                    }"
-                >
-                    <template #img>
-                        <slot name="img">
-                            <img :src="getImage('/device-access.png')" />
-                        </slot>
-                    </template>
-                    <template #content>
-                        <Ellipsis style="width: calc(100% - 100px)">
-                            <h3 style="font-weight: 600">
-                                {{ slotProps.name }}
-                            </h3>
-                        </Ellipsis>
-                        <j-row>
-                            <j-col :span="12" v-if="slotProps.channelInfo">
-                                <div class="card-item-content-text">
-                                    {{ slotProps.channelInfo?.name }}
-                                </div>
-                                <Ellipsis style="width: calc(100% - 20px)">
-                                    <div>
-                                        {{
-                                            slotProps.channelInfo?.addresses
-                                                ? slotProps.channelInfo
-                                                      ?.addresses[0].address
-                                                : ''
-                                        }}
-                                    </div>
-                                </Ellipsis>
-                            </j-col>
-                            <j-col :span="12">
-                                <div class="card-item-content-text">协议</div>
-                                <div>{{ slotProps.protocolDetail?.name }}</div>
-                            </j-col>
-                        </j-row>
-                        <j-row>
-                            <j-col :span="24">
-                                <Ellipsis style="width: calc(100% - 50px)"
-                                    ><div class="context-access">
-                                        {{
-                                            !!slotProps?.description
-                                                ? slotProps?.description
-                                                : dataSource.find(
-                                                      (item) =>
-                                                          item?.id ===
-                                                          slotProps?.provider,
-                                                  )?.description
-                                        }}
-                                    </div></Ellipsis
-                                >
-                            </j-col>
-                        </j-row>
-                    </template>
-                </CardBox>
-            </template>
-            <template #state="slotProps">
-                <j-badge
-                    :text="slotProps.state === 1 ? '正常' : '禁用'"
-                    :status="statusMap.get(slotProps.state)"
-                />
-            </template>
-            <template #id="slotProps">
-                <a>{{ slotProps.id }}</a>
-            </template>
-        </JProTable>
-    </j-modal>
+    <AccessModal
+      v-if='visible'
+      :product-id='productStore.current.id'
+      :deviceType='productStore.current.deviceType'
+      :accessId='accessId'
+      :providersList='dataSource'
+      @cancel=' visible = false'
+      @submit='checkAccess'
+    />
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name='AccessConfig'>
 import { useProductStore } from '@/store/product';
 import { ConfigMetadata } from '@/views/device/Product/typings';
 import { Empty, message } from 'jetlinks-ui-components';
-import { getImage } from '@/utils/comm';
 import Title from '../Title/index.vue';
 import { usePermissionStore } from '@/store/permission';
 import { steps, steps1 } from './util';
@@ -411,7 +271,7 @@ import {
     detail,
     modify,
 } from '@/api/device/product';
-import { isNoCommunity } from '@/utils/utils';
+
 import Driver from 'driver.js';
 import 'driver.js/dist/driver.min.css';
 import { marked } from 'marked';
@@ -419,7 +279,7 @@ import type { TableColumnType } from 'ant-design-vue';
 import { useMenuStore } from '@/store/menu';
 import _ from 'lodash';
 import { accessConfigTypeFilter } from '@/utils/setting';
-import DeviceApi from '@/api/media/device';
+import AccessModal from './accessModal.vue'
 
 const productStore = useProductStore();
 const tableRef = ref();
@@ -435,7 +295,8 @@ marked.setOptions({
 });
 const simpleImage = ref(Empty.PRESENTED_IMAGE_SIMPLE);
 const visible = ref<boolean>(false);
-const access = ref({});
+const access = ref<Record<string, any>>({});
+const accessId = ref<string>(productStore.current.accessId)
 const config = ref<any>({});
 const metadata = ref<ConfigMetadata>({ properties: [] });
 const dataSource = ref<string[]>([]);
@@ -476,115 +337,17 @@ const cancel = () => {
  * 打开设备弹窗
  */
 const showDevice = () => {
-    _selectedRowKeys.value = [productStore.current?.accessId];
     visible.value = true;
 };
-/**
- * 筛选
- */
 
-const query = reactive({
-    columns: [
-        {
-            title: '名称',
-            dataIndex: 'name',
-            key: 'name',
-            search: {
-                first: true,
-                type: 'string',
-            },
-        },
-        {
-            title: '网关类型',
-            key: 'provider',
-            dataIndex: 'provider',
-            search: {
-                type: 'select',
-                options: async () => {
-                    return new Promise((resolve) => {
-                        getProviders().then((resp: any) => {
-                            const data = resp.result || [];
-                            resolve(accessConfigTypeFilter(data));
-                        });
-                    });
-                },
-            },
-        },
-        {
-            title: '状态',
-            key: 'state',
-            dataIndex: 'state',
-            search: {
-                type: 'select',
-                options: [
-                    {
-                        label: '正常',
-                        value: 'enabled',
-                    },
-                    {
-                        label: '禁用',
-                        value: 'disabled',
-                    },
-                ],
-            },
-        },
-        {
-            title: '说明',
-            key: 'description',
-            dataIndex: 'description',
-            search: {
-                type: 'string',
-            },
-        },
-        {
-            title: '操作',
-            key: 'action',
-            fixed: 'right',
-            width: 250,
-            scopedSlots: true,
-        },
-    ],
-});
 const param = ref<Record<string, any>>({
     pageSize: 4,
     terms: [],
 });
 const queryParams = ref<Record<string, any>>({});
-/**
- * 查询条件
- */
-const temp = {
-    ...param.value,
-    terms:
-        productStore.current?.deviceType?.value === 'childrenDevice'
-            ? [
-                  ...param.value.terms,
-                  {
-                      terms: [
-                          {
-                              column: 'provider',
-                              termType: 'in',
-                              value: 'child-device,edge-child-device',
-                          },
-                      ],
-                  },
-              ]
-            : [...param.value?.terms],
-};
-const _selectedRowKeys = ref<string[]>([]);
+
 const currentForm = ref({});
 
-const cancelSelect = () => {
-    _selectedRowKeys.value = [];
-};
-
-const handleClick = (dt: any) => {
-    _selectedRowKeys.value.splice(0, 1);
-    _selectedRowKeys.value = [dt.id];
-    current.value = {
-        ...dt,
-    };
-};
 const search = (e: any) => {
     queryParams.value = {
         ...e,
@@ -727,6 +490,37 @@ const queryAccessDetail = async (id: string) => {
     });
 };
 
+const handleColumns = () => {
+  const Group = {
+    title: '分组',
+    dataIndex: 'group',
+    key: 'group',
+    ellipsis: true,
+    align: 'center',
+    width: 100,
+    customCell: (record: any, rowIndex: number) => {
+      const obj = {
+        children: record,
+        rowSpan: 0,
+      };
+      const list = config.value?.routes || [];
+
+      const arr = list.filter(
+        (res: any) => res.group === record.group,
+      );
+
+      const isRowIndex =
+        rowIndex === 0 ||
+        list[rowIndex - 1].group !== record.group;
+      isRowIndex && (obj.rowSpan = arr.length);
+
+      return obj;
+    },
+  };
+  columnsMQTT.value = [Group, ...ColumnsMQTT];
+  columnsHTTP.value = [Group, ...ColumnsHTTP];
+}
+
 /**
  * 查询协议信息
  */
@@ -737,34 +531,7 @@ const getConfigDetail = (
     getConfigView(messageProtocol, transportProtocol).then((resp) => {
         if (resp.status === 200) {
             config.value = resp.result;
-            const Group = {
-                title: '分组',
-                dataIndex: 'group',
-                key: 'group',
-                ellipsis: true,
-                align: 'center',
-                width: 100,
-                customCell: (record: any, rowIndex: number) => {
-                    const obj = {
-                        children: record,
-                        rowSpan: 0,
-                    };
-                    const list = config.value?.routes || [];
-
-                    const arr = list.filter(
-                        (res: any) => res.group === record.group,
-                    );
-
-                    const isRowIndex =
-                        rowIndex === 0 ||
-                        list[rowIndex - 1].group !== record.group;
-                    isRowIndex && (obj.rowSpan = arr.length);
-
-                    return obj;
-                },
-            };
-            columnsMQTT.value = [Group, ...ColumnsMQTT];
-            columnsHTTP.value = [Group, ...ColumnsHTTP];
+            handleColumns()
             if (config.value?.document) {
                 markdownToHtml.value = marked(config.value.document);
             }
@@ -772,101 +539,6 @@ const getConfigDetail = (
     });
 };
 
-/**
- * 获取网关类型
- */
-const getProviderList = async () => {
-    const res = await getProviders().then((resp) => {
-        if (resp.status === 200) {
-            dataSource.value = resp.result;
-        }
-    });
-};
-/**
- * 提交设备数据
- */
-const submitData = async () => {
-    if (current.value) {
-        const obj: any = {
-            ...productStore.current,
-            transportProtocol: current.value?.transport,
-            protocolName: current.value?.protocolDetail?.name,
-            accessId: current.value?.id,
-            accessName: current.value?.name,
-            accessProvider: current.value?.provider,
-            messageProtocol: current.value?.protocol,
-        };
-        // getConfigView(current.value?.protocol, current.value?.transport).then(
-        //     (resp: any) => {
-        //         metadata.value = (resp?.result[0] as ConfigMetadata) || {
-        //             properties: [],
-        //         };
-        //         // 流传输模式 初始为udp模式
-        //         if (metadata.value?.properties) {
-        //             metadata.value?.properties.forEach((item) => {
-        //                 if (
-        //                     item.name === '流传输模式' &&
-        //                     (!productStore.current?.configuration ||
-        //                         !productStore.current?.configuration.hasOwnProperty(
-        //                             item.name,
-        //                         ))
-        //                 ) {
-        //                     formData.data[item.name] =
-        //                         item.type.expands?.defaultValue;
-        //                 }
-        //             });
-        //         }
-        //     },
-        // );
-        const metatdata = JSON.parse(productStore.current?.metadata || '{}');
-        if (!productStore.current?.metadata) {
-            const response = await getConfigView(
-                obj?.messageProtocol || '',
-                obj?.transportProtocol || '',
-            );
-            if (response.status === 200) {
-                const ndata = JSON.parse(response.result?.metadata || '{}');
-                const mdata = {
-                    events: modifyArray(
-                        metatdata?.events || [],
-                        ndata?.events || [],
-                    ),
-                    properties: modifyArray(
-                        metatdata?.properties || [],
-                        ndata?.properties || [],
-                    ),
-                    functions: modifyArray(
-                        metatdata?.functions || [],
-                        ndata?.functions || [],
-                    ),
-                    tags: modifyArray(metatdata?.tags || [], ndata?.tags || []),
-                };
-                //  MetadataAction.insert(mdata);
-                obj.metadata = JSON.stringify(mdata);
-            }
-        }
-      // DeviceApi.getConfiguration(current.value?.protocol, current.value?.transport)
-      // visible.value = false;
-      //   保存或者更新设备接入
-        const resp: any = obj.id
-            ? await updateDevice(obj)
-            : await saveDevice(obj);
-        if (resp.status === 200) {
-            detail(productStore.current?.id || '').then((res) => {
-                if (res.status === 200) {
-                    productStore.current = { ...res.result };
-                    access.value = res.result;
-                    message.success('操作成功！');
-                    getData(obj.accessId);
-                }
-                visible.value = false;
-                queryParams.value = {};
-            });
-        }
-    } else {
-        message.error('请选择接入方式');
-    }
-};
 const modifyArray = (oldData: any[], newData: any[]) => {
     newData.map((item) => {
         if (!_.map(oldData, 'id').includes(item.id)) {
@@ -894,6 +566,26 @@ const getGuide = async (isDriver1: boolean = false) => {
         }
     }
 };
+
+const checkAccess = async (data: any) => {
+  visible.value = false
+  accessId.value = data.access.id
+  access.value = data.access
+  metadata.value = data.metadata[0]
+  config.value = data.access?.transportDetail || {}
+  handleColumns()
+  markdownToHtml.value = config.value?.document ? marked(config.value.document) : '';
+  getGuide(!!data.metadata.length); //
+}
+
+/**
+ * 获取协议类型名称
+ */
+const getProvidersList = async () => {
+  const res: any = await getProviders();
+  dataSource.value = res.result;
+};
+
 /**
  * 查询保存数据信息
  */
@@ -936,12 +628,7 @@ const getData = async (accessId?: string) => {
             productStore.current?.messageProtocol || '',
             productStore.current?.transportProtocol || '',
         );
-        getProviders().then((resp) => {
-            if (resp.status === 200) {
-                const data = resp.result || [];
-                dataSource.value = accessConfigTypeFilter(data as any[]);
-            }
-        });
+
     }
     // else {
     //   if (productStore.current?.id) {
@@ -967,6 +654,22 @@ const submitDevice = async () => {
     flatObj(values, result);
     const { storePolicy, ...extra } = result;
     const id = productStore.current?.id;
+    //TODO 二次确认是否覆盖物模型
+    // 更新选择设备(设备接入)
+    const accessObj = {
+      ...productStore.current,
+      transportProtocol: access.value?.transport,
+      protocolName: access.value?.protocolDetail?.name,
+      accessId: access.value?.id,
+      accessName: access.value?.name,
+      accessProvider: access.value?.provider,
+      messageProtocol: access.value?.protocol,
+    }
+    const updateDeviceResp = await updateDevice(accessObj)
+
+    if (!updateDeviceResp.success) return
+
+    // 更新产品配置信息
     const resp = await modify(id || '', {
         id: id,
         configuration: { ...extra },
@@ -985,6 +688,7 @@ const submitDevice = async () => {
         }
     }
 };
+
 const flatObj = (obj: any, result: any) => {
     Object.keys(obj).forEach((key: string) => {
         if (typeof obj[key] === 'string') {
@@ -994,20 +698,11 @@ const flatObj = (obj: any, result: any) => {
         }
     });
 };
+
 const getDetailInfo = () => {};
 
-const add = () => {
-    const url = menuStore.hasMenu('link/AccessConfig/Detail');
-    if (url) {
-        const tab: any = window.open(`${origin}/#${url}?view=false`);
-        tab.onTabSaveSuccess = (value: any) => {
-            if (value.status === 200) {
-                tableRef.value.reload();
-                handleClick(value.result);
-            }
-        };
-    }
-};
+
+getProvidersList()
 /**
  * 初始化
  */
@@ -1016,6 +711,23 @@ watchEffect(() => {
         form.storePolicy = productStore.current!.storePolicy;
     }
 });
+
+const tooltip = computed(() => {
+  if (productStore.current?.count > 0) {
+    return '产品下有设备实例时不能更换接入方式'
+  }
+  if (productStore.current.state === 1) {
+    return '停用产品后才可更换接入方式'
+  }
+  return ''
+})
+
+const checkDisabled = computed(() => {
+  if (productStore.current?.count > 0 || productStore.current.state === 1) {
+    return true
+  }
+  return false
+})
 
 nextTick(() => {
     getData();

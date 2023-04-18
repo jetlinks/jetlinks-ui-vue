@@ -51,11 +51,11 @@
                     >
                         <template #img>
                             <img
-                                :width="88"
-                                :height="88"
+                                :width="80"
+                                :height="80"
                                 :src="
                                     slotProps?.photoUrl ||
-                                    getImage('/device/instance/device-card.png')
+                                    getImage('/device-gateway.png')
                                 "
                             />
                         </template>
@@ -68,7 +68,7 @@
                                     {{ slotProps.name }}
                                 </span>
                             </Ellipsis>
-                            <j-row style="margin-top: 20px">
+                            <j-row style="margin-top: 18px">
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
                                         设备类型

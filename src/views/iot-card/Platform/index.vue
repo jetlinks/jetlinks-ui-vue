@@ -27,7 +27,7 @@
                           </slot>
                       </template>
                       <template #content>
-                          <h3  style='font-size: 16px;width: calc(100% - 90px)'>
+                          <h3  style='font-size: 16px;width: calc(100% - 90px); margin-bottom: 18px;'>
                             <Ellipsis>
                               {{ slotProps.name }}
                             </Ellipsis>

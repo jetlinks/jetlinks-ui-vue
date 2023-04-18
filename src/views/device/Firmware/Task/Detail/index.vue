@@ -131,7 +131,6 @@ import {
     startTask,
     startOneTask,
 } from '@/api/device/firmware';
-import { message } from 'ant-design-vue';
 import { getImage } from '@/utils/comm';
 import moment from 'moment';
 import { cloneDeep } from 'lodash-es';

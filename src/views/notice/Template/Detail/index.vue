@@ -4,10 +4,10 @@
         <j-card>
             <j-row>
                 <j-col :span="10">
-                    <j-form layout="vertical">
+                    <j-form layout="vertical" :rules='formRules' ref='formRef' :model='formData'>
                         <j-form-item
                             label="通知方式"
-                            v-bind="validateInfos.type"
+                            name='type'
                         >
                             <j-select
                                 v-model:value="formData.type"
@@ -24,7 +24,7 @@
                                 </j-select-option>
                             </j-select>
                         </j-form-item>
-                        <j-form-item label="名称" v-bind="validateInfos.name">
+                        <j-form-item label="名称" name='name'>
                             <j-input
                                 v-model:value="formData.name"
                                 placeholder="请输入名称"
@@ -32,7 +32,7 @@
                         </j-form-item>
                         <j-form-item
                             label="类型"
-                            v-bind="validateInfos.provider"
+                            name='provider'
                             v-if="
                                 formData.type !== 'email' &&
                                 formData.type !== 'webhook'
@@ -45,14 +45,14 @@
                             />
                         </j-form-item>
                         <j-form-item
-                            v-bind="validateInfos.configId"
+                            name='configId'
                             v-if="formData.type !== 'email'"
                         >
                             <template #label>
                                 <span>
                                     绑定配置
                                     <j-tooltip
-                                        title="使用固定的通知配置来发送此通知模版"
+                                        title="使用固定的通知配置来发送此通知模板"
                                     >
                                         <AIcon
                                             type="QuestionCircleOutlined"
@@ -81,7 +81,7 @@
                                 v-if="formData.provider === 'dingTalkMessage'"
                             >
                                 <j-form-item
-                                    v-bind="validateInfos['template.agentId']"
+                                    :name='["template", "agentId"]'
                                 >
                                     <template #label>
                                         <span>
@@ -149,9 +149,7 @@
                             >
                                 <j-form-item
                                     label="消息类型"
-                                    v-bind="
-                                        validateInfos['template.messageType']
-                                    "
+                                    :name='["template", "messageType"]'
                                 >
                                     <j-select
                                         v-model:value="
@@ -179,11 +177,7 @@
                                 >
                                     <j-form-item
                                         label="标题"
-                                        v-bind="
-                                            validateInfos[
-                                                'template.markdown.title'
-                                            ]
-                                        "
+                                        :name='["template", "markdown", "title"]'
                                     >
                                         <j-input
                                             v-model:value="
@@ -200,9 +194,7 @@
                                 >
                                     <j-form-item
                                         label="标题"
-                                        v-bind="
-                                            validateInfos['template.link.title']
-                                        "
+                                        :name='["template", "link", "title"]'
                                     >
                                         <j-input
                                             v-model:value="
@@ -256,7 +248,7 @@
                         <!-- 微信 -->
                         <template v-if="formData.type === 'weixin'">
                             <j-form-item
-                                v-bind="validateInfos['template.agentId']"
+                                :name='["template", "agentId"]'
                             >
                                 <template #label>
                                     <span>
@@ -281,7 +273,7 @@
                                             <span>
                                                 收信人
                                                 <j-tooltip
-                                                    title="如果不填写该字段,将在使用此模版发送通知时进行指定。"
+                                                    title="如果不填写该字段,将在使用此模板发送通知时进行指定。"
                                                 >
                                                     <AIcon
                                                         type="QuestionCircleOutlined"
@@ -316,7 +308,7 @@
                                     <span>
                                         标签推送
                                         <j-tooltip
-                                            title="本企业微信的标签ID列表,最多支持100个,如果不填写该字段,将在使用此模版发送通知时进行指定"
+                                            title="本企业微信的标签ID列表,最多支持100个,如果不填写该字段,将在使用此模板发送通知时进行指定"
                                         >
                                             <AIcon
                                                 type="QuestionCircleOutlined"
@@ -335,7 +327,7 @@
                         <!-- 邮件 -->
                         <template v-if="formData.type === 'email'">
                             <j-form-item
-                                v-bind="validateInfos['template.subject']"
+                                :name='["template", "subject"]'
                             >
                                 <template #label>
                                     <span>
@@ -354,7 +346,7 @@
                                 />
                             </j-form-item>
                             <j-form-item
-                                v-bind="validateInfos['template.sendTo']"
+                                :name='["template", "sendTo"]'
                             >
                                 <template #label>
                                     <span>
@@ -399,7 +391,7 @@
                         <!-- 语音 -->
                         <template v-if="formData.type === 'voice'">
                             <j-form-item
-                                v-bind="validateInfos['template.templateType']"
+                                :name='["template", "templateType"]'
                             >
                                 <template #label>
                                     <span>
@@ -432,11 +424,7 @@
                             <j-row :gutter="10">
                                 <j-col :span="12">
                                     <j-form-item
-                                        v-bind="
-                                            validateInfos[
-                                                'template.templateCode'
-                                            ]
-                                        "
+                                       :name='["template", "templateCode"]'
                                     >
                                         <template #label>
                                             <span>
@@ -461,11 +449,7 @@
                                 </j-col>
                                 <j-col :span="12">
                                     <j-form-item
-                                        v-bind="
-                                            validateInfos[
-                                                'template.calledNumber'
-                                            ]
-                                        "
+                                        :name='["template", "calledNumber"]'
                                     >
                                         <template #label>
                                             <span>
@@ -490,9 +474,7 @@
                                 </j-col>
                             </j-row>
                             <j-form-item
-                                v-bind="
-                                    validateInfos['template.calledShowNumbers']
-                                "
+                                :name='["template", "calledShowNumbers"]'
                             >
                                 <template #label>
                                     <span>
@@ -515,7 +497,7 @@
                                 />
                             </j-form-item>
                             <j-form-item
-                                v-bind="validateInfos['template.playTimes']"
+                                :name='["template", "playTimes"]'
                             >
                                 <template #label>
                                     <span>
@@ -536,11 +518,11 @@
                             </j-form-item>
                             <j-form-item
                                 v-if="formData.template.templateType === 'tts'"
-                                v-bind="validateInfos['template.ttsmessage']"
+                                :name='["template", "ttsmessage"]'
                             >
                                 <template #label>
                                     <span>
-                                        模版内容
+                                        模板内容
                                         <j-tooltip
                                             title="语音验证码内容输入框，用于渲染验语音证码变量。"
                                         >
@@ -563,13 +545,13 @@
                             <j-row :gutter="10">
                                 <j-col :span="12">
                                     <j-form-item
-                                        v-bind="validateInfos['template.code']"
+                                        :name='["template", "code"]'
                                     >
                                         <template #label>
                                             <span>
                                                 模板
                                                 <j-tooltip
-                                                    title="阿里云短信平台自定义的模版名称"
+                                                    title="阿里云短信平台自定义的模板名称"
                                                 >
                                                     <AIcon
                                                         type="QuestionCircleOutlined"
@@ -599,11 +581,7 @@
                                 </j-col>
                                 <j-col :span="12">
                                     <j-form-item
-                                        v-bind="
-                                            validateInfos[
-                                                'template.phoneNumber'
-                                            ]
-                                        "
+                                        :name='["template", "phoneNumber"]'
                                     >
                                         <template #label>
                                             <span>
@@ -628,7 +606,7 @@
                                 </j-col>
                             </j-row>
                             <j-form-item
-                                v-bind="validateInfos['template.signName']"
+                                :name='["template", "signName"]'
                             >
                                 <template #label>
                                     <span>
@@ -692,11 +670,11 @@
                             "
                         >
                             <j-form-item
-                                v-bind="validateInfos['template.message']"
+                                :name='["template", "message"]'
                             >
                                 <template #label>
                                     <span>
-                                        模版内容
+                                        模板内容
                                         <j-tooltip
                                             title="发送的内容，支持录入变量"
                                         >
@@ -759,8 +737,8 @@
 
 <script setup lang="ts">
 import { getImage } from '@/utils/comm';
-import { Form, UploadChangeParam } from 'ant-design-vue';
-import { message } from 'jetlinks-ui-components';
+import { UploadChangeParam } from 'ant-design-vue';
+import { message, Form } from 'jetlinks-ui-components';
 import type { IVariableDefinitions, TemplateFormData } from '../types';
 import {
     NOTICE_METHOD,
@@ -788,7 +766,7 @@ import { cloneDeep } from 'lodash-es';
 const router = useRouter();
 const route = useRoute();
 const useForm = Form.useForm;
-
+const formRef = ref()
 // 消息类型
 const msgType = ref([
     {
@@ -810,7 +788,7 @@ const formData = ref<TemplateFormData>({
         sendTo: [],
         attachments: [],
         message: '',
-        text: '',
+        text: ''
     },
     name: '',
     type: 'email',
@@ -902,133 +880,119 @@ watch(
 );
 
 // 验证规则
-const formRules = ref({
+const formRules = {
     type: [{ required: true, message: '请选择通知方式' }],
     name: [
-        { required: true, message: '请输入名称', trigger: 'blur' },
+        { required: true, message: '请输入名称' },
         { max: 64, message: '最多可输入64个字符' },
     ],
     provider: [{ required: true, message: '请选择类型' }],
-    configId: [{ required: true, message: '请选择绑定配置', trigger: 'blur' }],
-    // 钉钉
-    'template.agentId': [
-        { required: true, message: '请输入AgentId', trigger: 'blur' },
-        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
-    ],
-    'template.messageType': [
-        { required: true, message: '请选择消息类型', trigger: 'blur' },
-    ],
-    'template.markdown.title': [
-        { required: true, message: '请输入标题', trigger: 'blur' },
-        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
-    ],
-    'template.link.title': [
-        { required: true, message: '请输入标题', trigger: 'blur' },
-        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
-    ],
-    // 'template.url': [{ required: true, message: '请输入WebHook' }],
-    // 微信
-    // 'template.agentId': [{ required: true, message: '请输入AgentId' }],
-    // 邮件
-    'template.subject': [
-        { required: true, message: '请输入标题', trigger: 'blur' },
-        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
-    ],
-    'template.sendTo': [
+    configId: [{ required: true, message: '请选择绑定配置' }],
+    template: {
+      agentId: [
+        { required: true, message: '请输入AgentId' },
+        { max: 64, message: '最多可输入64个字符' },
+      ],
+      messageType: [{ required: true, message: '请选择消息类型' }],
+      markdown: {
+        title: [
+          { required: true, message: '请输入标题' },
+          { max: 64, message: '最多可输入64个字符' },
+        ]
+      },
+      link: {
+        title: [
+          { required: true, message: '请输入标题' },
+          { max: 64, message: '最多可输入64个字符' },
+        ]
+      },
+      subject: [
+        { required: true, message: '请输入标题' },
+        { max: 64, message: '最多可输入64个字符' },
+      ],
+      sendTo: [
         {
-            trigger: 'change',
-            validator(_rule: Rule, value: string[]) {
-                const regEmail =
-                    /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
-                let error;
-                if (value) {
-                    value.some((item: string) => {
-                        if (!regEmail.test(item)) {
-                            error = item;
-                            return true;
-                        }
-                        return false;
-                    });
+          validator(_rule: Rule, value: string[]) {
+            const regEmail =
+              /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+            let error;
+            if (value) {
+              value.some((item: string) => {
+                if (!regEmail.test(item)) {
+                  error = item;
+                  return true;
                 }
-                if (error)
-                    return Promise.reject(error ? `${error}邮件格式错误` : '');
-                else return Promise.resolve();
-            },
-        },
-    ],
-    // 阿里云语音
-    'template.templateType': [{ required: true, message: '请选择类型' }],
-    'template.templateCode': [
-        { required: true, message: '请输入模板ID', trigger: 'blur' },
-    ],
-    'template.calledNumber': [
-        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
+                return false;
+              });
+            }
+            if (error)
+              return Promise.reject(error ? `${error}邮件格式错误` : '');
+            else return Promise.resolve();
+          },
+        }
+      ],
+      templateType: [{ required: true, message: '请选择类型' }],
+      templateCode: [{ required: true, message: '请输入模板ID' }],
+      calledNumber: [
+        { max: 64, message: '最多可输入64个字符' },
         {
-            trigger: 'change',
-            validator(_rule: Rule, value: string) {
-                if (!value) return Promise.resolve();
-                if (!phoneRegEx(value)) return Promise.reject('请输入有效号码');
-                return Promise.resolve();
-            },
-        },
-    ],
-    'template.calledShowNumbers': [
-        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
+          validator(_rule: Rule, value: string) {
+            if (!value) return Promise.resolve();
+            if (!phoneRegEx(value)) return Promise.reject('请输入有效号码');
+            return Promise.resolve();
+          },
+        }
+      ],
+      calledShowNumbers: [
+        { max: 64, message: '最多可输入64个字符' },
         {
-            trigger: 'change',
-            validator(_rule: Rule, value: string) {
-                if (!value) return Promise.resolve();
-                if (!phoneRegEx(value)) return Promise.reject('请输入有效号码');
-                return Promise.resolve();
-            },
-        },
-    ],
-    'template.playTimes': [
+          validator(_rule: Rule, value: string) {
+            if (!value) return Promise.resolve();
+            if (!phoneRegEx(value)) return Promise.reject('请输入有效号码');
+            return Promise.resolve();
+          },
+        }
+      ],
+      playTimes: [
         {
-            trigger: 'change',
-            validator(_rule: Rule, value: number) {
-                if (value < 1 || value > 3)
-                    return Promise.reject('仅支持1～3次');
-                else return Promise.resolve();
-            },
-        },
-    ],
-    // 短信
-    'template.code': [
-        { required: true, message: '请选择模板', trigger: 'blur' },
-    ],
-    'template.signName': [
-        { required: true, message: '请输入签名', trigger: 'blur' },
-    ],
-    'template.phoneNumber': [
-        { max: 64, message: '最多可输入64个字符', trigger: 'change' },
+          validator(_rule: Rule, value: number) {
+            if (value < 1 || value > 3)
+              return Promise.reject('仅支持1～3次');
+            else return Promise.resolve();
+          },
+        }
+      ],
+      code: [{ required: true, message: '请选择模板'}],
+      signName: [{ required: true, message: '请输入签名' }],
+      phoneNumber: [
+        { max: 64, message: '最多可输入64个字符' },
         {
-            trigger: 'change',
-            validator(_rule: Rule, value: string) {
-                if (!value) return Promise.resolve();
-                if (!phoneRegEx(value))
-                    return Promise.reject('该字段不是有效的手机号');
-                return Promise.resolve();
-            },
+          validator(_rule: Rule, value: string) {
+            if (!value) return Promise.resolve();
+            if (!phoneRegEx(value))
+              return Promise.reject('该字段不是有效的手机号');
+            return Promise.resolve();
+          },
+        }
+      ],
+      message: [
+        {
+          required: true,
+          message: '请输入模板内容',
         },
-    ],
-    // webhook
+        { max: 500, message: '最多可输入500个字符' },
+      ],
+      ttsmessage: [
+        { max: 500, message: '最多可输入500个字符' }
+      ]
+    },
     description: [{ max: 200, message: '最多可输入200个字符' }],
-    'template.message': [
-        {
-            required: true,
-            message: '请输入模板内容',
-            trigger: 'blur',
-        },
-        { max: 500, message: '最多可输入500个字符', trigger: 'change' },
-    ],
-    'template.ttsmessage': [{ max: 500, message: '最多可输入500个字符' }],
-});
+}
 
-const { resetFields, validate, validateInfos, clearValidate } = useForm(
-    formData.value,
-    formRules.value,
-);
+// const { validate, validateInfos } = useForm(
+//     formData.value,
+//     formRules,
+// );
 
 // 字段提取变量
 watch(
@@ -1201,6 +1165,7 @@ const handleConfigChange = () => {
  */
 const templateList = ref();
 const getTemplateList = async () => {
+    if (!formData.value.configId) return
     const id = formData.value.configId || undefined;
     const { result } = await templateApi.getAliTemplate(id);
     templateList.value = result;
@@ -1220,6 +1185,7 @@ const handleTemplateChange = () => {
  */
 const signsList = ref();
 const getSignsList = async () => {
+    if (!formData.value.configId) return
     const id = formData.value.configId || undefined;
     const { result } = await templateApi.getSigns(id);
     signsList.value = result;
@@ -1252,27 +1218,25 @@ const handleSubmit = () => {
         formData.value.template.message = formData.value.template.ttsmessage;
         delete formData.value.template.ttsmessage;
     }
-    // 提交必填验证无法通过, 实际已有值, 问题未知, 暂时解决方法: 延迟验证
-    setTimeout(() => {
-        validate()
-            .then(async () => {
-                btnLoading.value = true;
 
-                const res = formData.value.id
-                    ? await templateApi.update(formData.value)
-                    : await templateApi.save(formData.value);
+  formRef.value?.validate()
+    .then(async () => {
+      btnLoading.value = true;
 
-                if (res?.success) {
-                    message.success('保存成功');
-                    router.back();
-                }
-            })
-            .catch((err) => {
-                console.log('err: ', err);
-            })
-            .finally(() => {
-                btnLoading.value = false;
-            });
-    }, 200);
+      const res = formData.value.id
+        ? await templateApi.update(formData.value)
+        : await templateApi.save(formData.value);
+
+      if (res?.success) {
+        message.success('保存成功');
+        router.back();
+      }
+    })
+    .catch((err) => {
+      console.log('err: ', err);
+    })
+    .finally(() => {
+      btnLoading.value = false;
+    });
 };
 </script>

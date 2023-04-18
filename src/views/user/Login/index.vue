@@ -37,16 +37,11 @@
                                     :model="form"
                                     class="login-form"
                                     @finish="onFinish"
+                                    :rules='rules'
                                 >
                                     <j-form-item
                                         label="账号"
                                         name="username"
-                                        :rules="[
-                                            {
-                                                required: true,
-                                                message: '请输入账号!',
-                                            },
-                                        ]"
                                     >
                                         <j-input
                                             v-model:value="form.username"
@@ -57,12 +52,6 @@
                                     <j-form-item
                                         label="密码"
                                         name="password"
-                                        :rules="[
-                                            {
-                                                required: true,
-                                                message: '请输入密码!',
-                                            },
-                                        ]"
                                     >
                                         <j-input-password
                                             v-model:value="form.password"
@@ -75,12 +64,6 @@
                                         class="verifyCode"
                                         label="验证码"
                                         name="verifyCode"
-                                        :rules="[
-                                            {
-                                                required: true,
-                                                message: '请输入验证码!',
-                                            },
-                                        ]"
                                     >
                                         <j-input
                                             v-model:value="form.verifyCode"
@@ -129,26 +112,26 @@
                                 <div class="other">
                                     <j-divider plain>
                                         <div class="other-text">
-                                            其他方式登录
+                                            其他登录方式
                                         </div>
                                     </j-divider>
                                     <div class="other-button">
-                                        <j-button
-                                            v-for="(item, index) in bindings"
-                                            :key="index"
-                                            type="link"
-                                            @Click="handleClickOther(item)"
+                                        <div
+                                          class='other-button-item'
+                                          v-for="(item, index) in bindings"
+                                          :key="index"
+                                          @click="handleClickOther(item)"
                                         >
-                                            <img
-                                                style="width: 32px; height: 33px"
-                                                :alt="item.name"
-                                                :src="
-                                                    iconMap.get(
+                                          <img
+                                            style="width: 32px; height: 32px"
+                                            :alt="item.name"
+                                            :src="
+                                                    item.logoUrl || iconMap.get(
                                                         item.provider,
                                                     ) || defaultImg
                                                 "
-                                            />
-                                        </j-button>
+                                          />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -213,6 +196,39 @@ const form = reactive({
     verifyCode: '',
     verifyKey: '',
 });
+
+const rules = {
+  username: [
+    {
+      validator(_: any, value: string) {
+        if (!value) {
+          return Promise.reject('请输入账号!')
+        }
+        return Promise.resolve()
+      }
+    }
+  ],
+  password: [
+    {
+      validator(_: any, value: string) {
+        if (!value) {
+          return Promise.reject('请输入密码!')
+        }
+        return Promise.resolve()
+      }
+    }
+  ],
+  verifyCode: [
+    {
+      validator(_: any, value: string) {
+        if (!value) {
+          return Promise.reject('请输入验证码!')
+        }
+        return Promise.resolve()
+      }
+    }
+  ]
+}
 
 const codeUrl = ref('');
 const codeConfig = ref(false);
@@ -445,6 +461,15 @@ screenRotation(screenWidth.value, screenHeight.value);
                             position: relative;
                             bottom: 10px;
                             text-align: center;
+                            display: flex;
+                            gap: 24px;
+                            justify-content: center;
+                            flex-wrap: wrap;
+
+                            .other-button-item {
+                              cursor: pointer;
+                              padding: 4px;
+                            }
 
                         }
                     }
@@ -529,7 +554,8 @@ screenRotation(screenWidth.value, screenHeight.value);
     }
 
     .content {
-        padding: 32px 0 24px;
+        padding: 32px 0 24px !important;
+        margin-top: 12% !important;
     }
 }
 </style>

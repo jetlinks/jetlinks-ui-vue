@@ -4,6 +4,7 @@
             :columns="columns"
             target="category"
             @search="handleParams"
+            style='margin-bottom: 0;'
         />
         <FullPage>
             <j-pro-table
@@ -31,6 +32,7 @@
                         :hasPermission="`${permission}:bind-user`"
                         @click="dialogVisible = true"
                         style="margin-right: 15px"
+                        :disabled='!parentId'
                     >
                         <AIcon type="PlusOutlined" />绑定用户
                     </PermissionButton>

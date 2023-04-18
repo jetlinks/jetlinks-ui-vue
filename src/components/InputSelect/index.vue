@@ -1,8 +1,7 @@
 <template>
-  <a-select v-model:value="_value" mode="tags" :options="options" :size="size" @change="change" placeholder="请选择单位"></a-select>
+  <j-select v-model:value="_value" mode="tags" :options="options" :size="size" @change="change" placeholder="请选择单位"></j-select>
 </template>
 <script setup lang="ts" name="InputSelect">
-import { SizeType } from 'ant-design-vue/es/config-provider';
 import { DefaultOptionType, SelectValue } from 'ant-design-vue/es/select';
 import { PropType } from 'vue';
 type valueType = string | number
@@ -10,6 +9,8 @@ type Emits = {
   (e: 'update:value', data: valueType | undefined): void;
   (e: 'change'): void;
 };
+
+type SizeType = 'small' | 'middle' | 'large' | undefined;
 const emit = defineEmits<Emits>();
 const props = defineProps({
   value: [String, Number],

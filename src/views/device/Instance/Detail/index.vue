@@ -256,20 +256,20 @@ const getDetail = () => {
     }
 };
 
-// watch(
-//     () => route.params?.id,
-//     async (newId) => {
-//         if (newId) {
-//             await instanceStore.refresh(String(newId));
-//             getStatus(String(newId));
-//             list.value = [...initList];
-//             console.log('watch', route.params?.id)
-//             getDetail();
-//             instanceStore.tabActiveKey = 'Info';
-//         }
-//     },
-//     { immediate: true, deep: true },
-// );
+const initPage = async (newId: any) => {
+  await instanceStore.refresh(String(newId));
+  getStatus(String(newId));
+  list.value = [...initList];
+  getDetail();
+  instanceStore.tabActiveKey = 'Info';
+}
+
+onBeforeRouteUpdate((to: any) => {
+  if (to.params?.id) {
+    initPage(to.params?.id)
+  }
+})
+
 
 const getDetailFn = async () => {
     const _id = route.params?.id;
@@ -285,10 +285,6 @@ const getDetailFn = async () => {
 onMounted(() => {
     getDetailFn();
 });
-
-const onBack = () => {
-    menuStory.jumpPage('device/Instance');
-};
 
 const onTabChange = (e: string) => {
     instanceStore.tabActiveKey = e;

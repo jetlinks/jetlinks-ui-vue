@@ -621,6 +621,10 @@ const handleClick = (dt: any) => {
     }
 };
 
+const handleSubscribeValue = throttle((payload: any) => {
+  propertyValue.value.set(payload.pointId, payload);
+})
+
 const subscribeProperty = (value: any) => {
     const list = value.map((item: any) => item.id);
     const id = `collector-${props.data?.channelId || 'channel'}-${
@@ -635,9 +639,7 @@ const subscribeProperty = (value: any) => {
         ?.pipe(map((res: any) => res.payload))
         .subscribe((payload: any) => {
             //防止刷新过快
-            throttle(() => {
-                propertyValue.value.set(payload.pointId, payload);
-            }, 1000);
+          handleSubscribeValue(payload)
         });
 };
 

@@ -20,15 +20,12 @@ const handle = async (appId: string, url: string) => {
     const res = await getAppInfo_api(appId);
     let menuUrl: any = url;
     if (res.status === 200) {
-        // console.log(res.result);
         if (res.result.page.routeType === 'hash') {
             menuUrl = `${url}`;
         }
         if (res.result.provider === 'internal-standalone') {
-            //{baseUrl}/api/application/sso/{appId}/login?redirect={menuUrl}
-            const urlStandalone = `${res.result.page.baseUrl}/#/api/application/sso/${appId}/login?redirect=${menuUrl}&layout=false`;
+            const urlStandalone = `${res.result.page.baseUrl}/api/application/sso/${appId}/login?redirect=${menuUrl}?layout=false`;
             iframeUrl.value = urlStandalone;
-            // console.log(urlStandalone);
         } else if (res.result.provider === 'internal-integrated') {
             const tokenUrl = `${
                 res.result.page.baseUrl
@@ -44,7 +41,12 @@ const handle = async (appId: string, url: string) => {
 watchEffect(() => {
     const params = route.path.split('/')?.[1];
     const url = route.path.split('/').slice(2).join('/');
-    console.log(params, url);
     handle(params, url);
 });
 </script>
+
+<style lang='less' scoped>
+:deep(.children-full-height) {
+  margin: 0 !important;
+}
+</style>
