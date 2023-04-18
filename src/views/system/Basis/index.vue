@@ -374,10 +374,10 @@ const form = reactive<formType>({
         form.formValue = {
             title: configInfo.front?.title,
             headerTheme: configInfo.front?.headerTheme,
-            logo: configInfo.front?.logo || '/public/logo.png',
-            ico: configInfo.front?.ico || '/public/favicon.ico',
+            logo: configInfo.front?.logo || '/logo.png',
+            ico: configInfo.front?.ico || '/favicon.ico',
             backgroud:
-                configInfo.front?.backgroud || '/public/images/login.png',
+                configInfo.front?.backgroud || '/images/login.png',
             apiKey: configInfo.amap?.apiKey,
             'base-path': configInfo.paths?.['base-path'],
         };
