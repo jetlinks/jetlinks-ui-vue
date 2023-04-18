@@ -98,7 +98,7 @@ const click = (value: object) => {
         width: 15%;
         min-width: 64px;
         height: 2px;
-        background-image: url('/public/images/access/rectangle.png');
+        background-image: url('/images/access/rectangle.png');
         background-repeat: no-repeat;
         background-size: 100% 100%;
         content: ' ';
