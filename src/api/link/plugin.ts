@@ -24,3 +24,7 @@ export const savePluginData = (type: string, pluginId: string, internalId: strin
 export const getPluginData = (type: string, pluginId: string, internalId: string ) => get(`/plugin/mapping/${type}/${pluginId}/${internalId}`)
 
 export const getPublic = (id: string, path: string) => get(`/plugin/driver/${id}/${path}`)
+
+export const getTypes = () => get(`/dictionary/internal-plugin-type/items`)
+
+export const vailIdFn = (id: string ) => get(`/plugin/driver/id/_validate`, { id })

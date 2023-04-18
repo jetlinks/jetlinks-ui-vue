@@ -294,6 +294,7 @@
                 :hasPermission="`link/AccessConfig:${
                     id === ':id' ? 'add' : 'update'
                 }`"
+                :loading='loading'
             >
                 保存
             </PermissionButton>
@@ -378,6 +379,7 @@ const formData = ref({
     name: '',
     description: '',
 });
+const loading = ref(false)
 
 const { resetFields, validate, validateInfos } = useForm(
     formData,
@@ -515,10 +517,12 @@ const saveData = () => {
                         ? 'Gateway'
                         : ProtocolMapping.get(props.provider.id),
             };
+            loading.value = true
             const resp =
                 id === ':id'
                     ? await save(params)
                     : await update({ ...params, id });
+            loading.value = false
             if (resp.status === 200) {
                 onlyMessage('操作成功', 'success');
                 history.back();

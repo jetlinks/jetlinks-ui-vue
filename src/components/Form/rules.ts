@@ -1,7 +1,7 @@
 
 const MaxLengthStringFn = (len: number = 64) => ({
   max: len,
-  message: `最多输入${64}个字符`,
+  message: `最多输入${len}个字符`,
 })
 
 export const Max_Length_64 = [MaxLengthStringFn()]

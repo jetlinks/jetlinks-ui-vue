@@ -43,3 +43,7 @@ export const getResourcesCurrent = () =>
 
 export const getClusters = () =>
     server.get(`network/resources/clusters`);
+
+export const getPluginList = (data: any) => server.post('/plugin/driver/_query/no-paging', data)
+
+export const getPluginConfig = (id: string) => server.get(`/plugin/driver/${id}/description`)
