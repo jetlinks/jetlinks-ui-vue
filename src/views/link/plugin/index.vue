@@ -29,8 +29,12 @@
             :value="slotProps"
             :showStatus='false'
             :actions='getActions(slotProps)'
+            :statusNames='{
+              processing: "processing"
+            }'
             status='processing'
           >
+
             <template #img>
               <img
                 :width="80"
@@ -39,11 +43,16 @@
               />
             </template>
             <template #content>
-              <Ellipsis style="width: calc(100% - 100px); margin-bottom: 18px;">
-                                  <span style="font-size: 16px; font-weight: 600">
-                                      {{ slotProps.name }}
-                                  </span>
-              </Ellipsis>
+              <div>
+                <div>
+                  <j-tag class='plugin-version'>{{ slotProps.version }}</j-tag>
+                </div>
+                <Ellipsis style="width: calc(100% - 100px); margin-bottom: 18px;">
+                                    <span style="font-size: 16px; font-weight: 600">
+                                        {{ slotProps.name }}
+                                    </span>
+                </Ellipsis>
+              </div>
               <j-row>
                 <j-col :span="12">
                   <div class="card-item-content-text">
@@ -258,6 +267,8 @@ onMounted(() => {
 
 </script>
 
-<style scoped>
-
+<style scoped lang='less'>
+.plugin-version {
+  border-radius: 4px;
+}
 </style>

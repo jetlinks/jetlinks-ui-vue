@@ -41,7 +41,7 @@
           name='version'
           :rules='[{ required: true, message: "请上传文件" }]'
         >
-          <UploadFile v-model:modelValue='modelRef.version' @change='uploadChange' :disabled='data.id' />
+          <UploadFile v-model:modelValue='modelRef.version' @change='uploadChange' />
         </j-form-item>
         <div v-if='modelRef.version' class='file-detail'>
           <div>
@@ -77,7 +77,6 @@ import { FileUploadResult } from '@/views/link/plugin/typings'
 import { add, vailIdFn } from '@/api/link/plugin'
 import { message } from 'jetlinks-ui-components'
 import { TypeMap } from './util'
-import { start } from '@/api/link/type'
 
 const props = defineProps({
   data: {

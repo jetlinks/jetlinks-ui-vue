@@ -173,6 +173,7 @@ import {
 import AccessCard from '../AccessCard/index.vue';
 import { useMenuStore } from 'store/menu'
 import { onlyMessage } from '@/utils/comm';
+import { CreteRuleByType } from 'components/Form/rules'
 
 const props = defineProps({
   provider: {
@@ -208,6 +209,7 @@ const config = ref<any>([])
 const queryPlugin = (params = {}) => {
   getPluginList({
     ...params,
+    sorts: [{ name: 'createTime', order: 'desc' }],
     paging: false
   }).then(res => {
     pluginList.value = []
@@ -219,26 +221,23 @@ const queryPlugin = (params = {}) => {
 
 const getRules = (item: any) => {
   let typeName = '输入'
+  let rules: any[] = []
 
   if (['select', 'date'].includes(item.type?.type || 'string')) {
     typeName = '选择'
   }
 
-  const rules = [
-    {
-      required: true,
-      message: `请${typeName}${item.name}`
-    }
-  ]
-
-  if (['select', 'date'].includes(item.type?.type || 'string')) {
-    rules.push({
-      max: 64,
-      message: `最多输入64个字符`
-    })
+  if (item.required) {
+    rules.push(
+        {
+          required: true,
+          message: `请${typeName}${item.name}`
+        }
+    )
   }
 
-
+  const typeRules = CreteRuleByType(item.type?.type)
+  rules = [...rules, ...typeRules]
   return rules
 }
 

@@ -9,12 +9,12 @@
     @change="handleChange"
     class="upload-box"
     :before-upload="beforeUpload"
-    :disabled='disabled || loading'
+    :disabled='loading'
     :maxCount='1'
   >
     <div>
-      <j-button :disabled='disabled'>上传文件</j-button>
-      <span class='upload-tip'>格式要求：{文件名}.jar</span>
+      <j-button>上传文件</j-button>
+      <span class='upload-tip'>格式要求：{文件名}.jar/{文件名}.zip</span>
     </div>
   </j-upload>
 
@@ -51,9 +51,9 @@ const loading = ref(false);
 
 const beforeUpload: UploadProps['beforeUpload'] = (file, fl) => {
   const arr = file.name.split('.');
-  const isFile = ['jar'].includes(arr[arr.length - 1]); // file.type === 'application/zip' || file.type === 'application/javj-archive'
+  const isFile = ['jar', 'zip'].includes(arr[arr.length - 1]); // file.type === 'application/zip' || file.type === 'application/javj-archive'
   if (!isFile) {
-    onlyMessage('请上传.jar格式的文件', 'error');
+    onlyMessage('请上传.jar,.zip格式的文件', 'error');
     loading.value = false;
   }
   return isFile;
