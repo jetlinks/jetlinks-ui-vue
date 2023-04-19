@@ -34,8 +34,8 @@ const emit = defineEmits(['checkedChange']);
 
 const props = defineProps({
     checked: {
-        type: Array,
-        default: () => [],
+        type: String,
+        default: undefined,
     },
     data: {
         type: Object,
@@ -115,15 +115,15 @@ const checkedChange = (id: string) => {
   }
 }
 .access-media {
-    background: url('/public/images/access-media.png') no-repeat;
+    background: url('/images/access-media.png') no-repeat;
     background-position: bottom right;
 }
-.access-network {
-    background: url('/public/images/access-network.png') no-repeat;
+.access-network, .access-plugin {
+    background: url('/images/access-network.png') no-repeat;
     background-position: bottom right;
 }
 .access-protocol {
-    background: url('/public/images/access-protocol.png') no-repeat;
+    background: url('/images/access-protocol.png') no-repeat;
     background-position: bottom right;
 }
 </style>

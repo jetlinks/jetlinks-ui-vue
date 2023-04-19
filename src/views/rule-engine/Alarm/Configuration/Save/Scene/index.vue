@@ -101,7 +101,7 @@ import { useRoute } from 'vue-router';
 import type { ActionsType } from '@/components/Table';
 import { getImage } from '@/utils/comm';
 import { message } from 'jetlinks-ui-components';
-import Save from './save/index.vue';
+import Save from './Save/index.vue';
 import { useAlarmConfigurationStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
 const route = useRoute();

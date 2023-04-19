@@ -13,18 +13,7 @@
                     :columns="columns"
                     :request="list"
                     :defaultParams="{
-                        sorts: [{ name: 'createTime', order: 'desc' }],
-                        terms: [
-                            {
-                                terms: [
-                                    {
-                                        termType: 'nin',
-                                        column: 'provider',
-                                        value: 'plugin_gateway', //todo 暂时不做插件接入
-                                    },
-                                ],
-                            },
-                        ],
+                        sorts: [{ name: 'createTime', order: 'desc' }]
                     }"
                     gridColumn="2"
                     :gridColumns="[1, 2]"

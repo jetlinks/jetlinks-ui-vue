@@ -13,11 +13,19 @@
                         <div class="go-back" v-if="id === ':id'">
                             <a @click="goBack">返回</a>
                         </div>
+                      <template v-if="showType === 'network'">
                         <Network
-                            v-if="showType === 'network'"
-                            :provider="provider"
-                            :data="data"
+                          v-if="provider.id !== 'plugin_gateway'"
+                          :provider="provider"
+                          :data="data"
                         />
+                        <Plugin
+                          v-else
+                          :provider="provider"
+                          :data="data"
+                        />
+                      </template>
+
                         <Media
                             v-if="showType === 'media'"
                             :provider="provider"
@@ -52,6 +60,7 @@ import Media from '../components/Media/index.vue';
 import Channel from '../components/Channel/index.vue';
 import Edge from '../components/Edge/index.vue';
 import Cloud from '../components/Cloud/index.vue';
+import Plugin from '../components/Plugin/index.vue'
 import { getProviders, detail } from '@/api/link/accessConfig';
 import { accessConfigTypeFilter } from '@/utils/setting';
 
@@ -125,13 +134,7 @@ const getTypeList = (result: Record<string, any>) => {
             edge.push(item);
         } else {
             item.type = 'network';
-            // network.push(item);
-            /**
-             * 插件设备接入 暂时不开发 todo
-             */
-            if (item.id !== 'plugin_gateway' || item.name !== '插件设备接入') {
-                network.push(item);
-            }
+            network.push(item);
         }
     });
 

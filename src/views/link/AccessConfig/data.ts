@@ -33,6 +33,7 @@ BackMap.set('modbus-tcp', getImage('/access/modbus.png'));
 BackMap.set('coap-server-gateway', getImage('/access/coap.png'));
 BackMap.set('tcp-server-gateway', getImage('/access/tcp.png'));
 BackMap.set('Ctwing', getImage('/access/ctwing.png'));
+BackMap.set('plugin_gateway', getImage('/access/plugin.png'));
 BackMap.set('child-device', getImage('/access/child-device.png'));
 BackMap.set('opc-ua', getImage('/access/opc-ua.png'));
 BackMap.set('http-server-gateway', getImage('/access/http.png'));

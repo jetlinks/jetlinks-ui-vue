@@ -90,7 +90,7 @@
                 <j-form ref="formRef" :model="formData.data" layout="vertical">
                     <j-form-item
                         :name="item.property"
-                        v-for="item in metadata.properties"
+                        v-for="item in metadata?.properties || []"
                         :key="item"
                         :label="item.name"
                         :rules="[
