@@ -7,6 +7,8 @@ export const uploadFile = `${BASE_API_PATH}/plugin/driver/upload`
 
 export const add = (data: any) => post('/plugin/driver', data)
 
+export const update = (data: any) => patch('/plugin/driver', data)
+
 export const removeFn = (id: string) => remove(`/plugin/driver/${id}`)
 
 export const detail = (id: string) => get(`/plugin/driver/${id}`)
@@ -19,7 +21,7 @@ export const detail = (id: string) => get(`/plugin/driver/${id}`)
  */
 export const getProductsById = (id: string) => get(`/plugin/driver/${id}/products`)
 
-export const savePluginData = (type: string, pluginId: string, internalId: string, externalId: string ) => patch(`/plugin/mapping/${type}/${pluginId}/${internalId}`, externalId)
+export const savePluginData = (type: string, pluginId: string, internalId: string, externalId: string ) => patch(`/plugin/mapping/${type}/${pluginId}/${internalId}`, externalId, { headers: {'Content-Type': "text/plain"}})
 
 export const getPluginData = (type: string, pluginId: string, internalId: string ) => get(`/plugin/mapping/${type}/${pluginId}/${internalId}`)
 
@@ -28,3 +30,5 @@ export const getPublic = (id: string, path: string) => get(`/plugin/driver/${id}
 export const getTypes = () => get(`/dictionary/internal-plugin-type/items`)
 
 export const vailIdFn = (id: string ) => get(`/plugin/driver/id/_validate`, { id })
+
+export const getProductByPluginId = (id: string) => get(`/plugin/driver/${id}/products`)

@@ -143,7 +143,7 @@ const handleTypeChange = (record: IVariable) => {
             record.format = 'timestamp';
             break;
         case 'double':
-            record.format = '%.xf';
+            record.format = '%.2f';
             break;
     }
 };

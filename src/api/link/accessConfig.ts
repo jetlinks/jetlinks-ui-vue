@@ -47,3 +47,7 @@ export const getClusters = () =>
 export const getPluginList = (data: any) => server.post('/plugin/driver/_query/no-paging', data)
 
 export const getPluginConfig = (id: string) => server.get(`/plugin/driver/${id}/description`)
+
+export const getCommandsByAccess = (id: string) => server.get(`/gateway/device/${id}/commands`)
+
+export const getCommandsDevicesByAccessId = (id: string, data: any) => server.post(`/gateway/device/${id}/command/QueryDevicePage`, data)
