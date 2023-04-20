@@ -89,7 +89,7 @@
 
 <script setup lang="ts" name="user">
 import PermissionButton from '@/components/PermissionButton/index.vue';
-import AddBindUserDialog from './components/addBindUserDialog.vue';
+import AddBindUserDialog from './components/AddBindUserDialog.vue';
 import { getBindUserList_api, unBindUser_api } from '@/api/system/department';
 import { message } from 'jetlinks-ui-components';
 

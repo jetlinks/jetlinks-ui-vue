@@ -1,4 +1,4 @@
-<h1 align="center"> JetLinks-ui-vue v1.0.0</h1>
+<h1 align="center"> JetLinks-ui-vue</h1>
 
 ## 平台简介
 
