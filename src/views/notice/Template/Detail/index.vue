@@ -1219,6 +1219,10 @@ const handleSubmit = () => {
         delete formData.value.template.ttsmessage;
     }
 
+    if (formData.value.provider === 'dingTalkRobotWebHook' && formData.value.template?.messageType === 'text') {
+      formData.value.template.text!.content = formData.value.template.message as string
+    }
+
   formRef.value?.validate()
     .then(async () => {
       btnLoading.value = true;
