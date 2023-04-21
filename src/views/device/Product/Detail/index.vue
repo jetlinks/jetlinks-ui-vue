@@ -112,6 +112,7 @@ import Info from './BasicInfo/indev.vue';
 import Device from './DeviceAccess/index.vue';
 import Metadata from '../../../device/components/Metadata/index.vue';
 import DataAnalysis from './DataAnalysis/index.vue';
+import MetadataMap from './MetadataMap'
 // import Metadata from '../../../components/Metadata/index.vue';
 import {
     _deploy,
@@ -163,6 +164,7 @@ const tabs = {
     Metadata,
     Device,
     DataAnalysis,
+    MetadataMap
 };
 
 watch(
@@ -279,6 +281,9 @@ const getProtocol = async () => {
                     },
                 ];
             }
+        }
+        if (productStore.current?.accessProvider === 'plugin_gateway') {
+          list.value.push({ key: 'MetadataMap', tab: '物模型映射'})
         }
     }
 };

@@ -90,7 +90,6 @@
                       {
                           max: 64,
                           message: '最多可输入64个字符',
-                          trigger: 'blur',
                       },
                   ]"
                   name='name'
@@ -325,10 +324,10 @@ const saveData = () => {
       loading.value = true
       const resp =
         paramsId === ':id'
-          ? await save(params)
-          : await update({ ...params, id: paramsId });
+          ? await save(params).catch(() => { success: false})
+          : await update({ ...params, id: paramsId }).catch(() => { success: false});
       loading.value = false
-      if (resp.status === 200) {
+      if (resp.success) {
         onlyMessage('操作成功', 'success');
         history.back();
         if ((window as any).onTabSaveSuccess) {

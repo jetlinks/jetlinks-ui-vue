@@ -129,6 +129,7 @@ import { getImage } from '@/utils/comm';
 import { queryList, getAccessConfig } from '@/api/device/product'
 import { message } from 'jetlinks-ui-components'
 import { useMenuStore } from '@/store/menu';
+import { getProductByPluginId } from '@/api/link/plugin'
 
 type Emit = {
   (e: 'submit', data: any): void
@@ -255,16 +256,25 @@ const findProvidersByProvider = (provider: string) => {
  */
 const submitData = async () => {
   if (selectedRowKeys.value.length) {
-    loading.value= true
-    const resp = await getAccessConfig(props.productId!, checkData.value.id).catch(() => ({ success: false, result: {}}))
-    // 返回外部组件需要的数据
-    loading.value = false
-    if (resp.success) {
-      // const providers = findProvidersByProvider((resp.result as any)[0]?.provider)
+    if (checkData.value.channel === 'plugin') {
+      const resp = await getProductByPluginId(checkData.value.channelId).catch(() => ({ success: false, result: []}))
+
       emit('submit', {
         access: {...checkData.value},
-        metadata: resp.result
+        productTypes: resp.result
       })
+    } else {
+      loading.value= true
+      const resp = await getAccessConfig(props.productId!, checkData.value.id).catch(() => ({ success: false, result: {}}))
+      // 返回外部组件需要的数据
+      loading.value = false
+      if (resp.success) {
+        // const providers = findProvidersByProvider((resp.result as any)[0]?.provider)
+        emit('submit', {
+          access: {...checkData.value},
+          metadata: resp.result
+        })
+      }
     }
   } else {
     message.error('请选择接入方式');

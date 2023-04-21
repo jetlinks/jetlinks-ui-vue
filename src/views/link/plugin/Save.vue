@@ -74,7 +74,7 @@
 import { ID_Rule, Max_Length_64, Max_Length_200, RequiredStringFn } from '@/components/Form/rules'
 import UploadFile from './UploadFile.vue'
 import { FileUploadResult } from '@/views/link/plugin/typings'
-import { add, vailIdFn } from '@/api/link/plugin'
+import { add, update, vailIdFn } from '@/api/link/plugin'
 import { message } from 'jetlinks-ui-components'
 import { TypeMap } from './util'
 
@@ -92,7 +92,7 @@ const fileType = ref(props.data.type)
 const loading = ref(false)
 
 const vailId = async (_: any, value: string) => {
-  if (!!props.data.id && value) { // 新增校验
+  if (!props.data.id && value) { // 新增校验
     const resp = await vailIdFn(value)
     if (resp.success && resp.result) {
       return Promise.reject('ID重复');
@@ -135,7 +135,7 @@ const handleSave = async () => {
   const data = await formRef.value.validate()
   if (data) {
     loading.value = true
-    const resp = await add(modelRef).catch(() => { success: false })
+    const resp = props.data.id ? await update(modelRef).catch(() => { success: false }) : await add(modelRef).catch(() => { success: false })
     loading.value = false
     if (resp.success) {
       message.success('操作成功！');

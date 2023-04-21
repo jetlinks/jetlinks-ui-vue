@@ -73,6 +73,19 @@
                     </div>
                     <div v-else>{{ '暂无连接信息' }}</div>
                 </div>
+                <!--        产品类型        -->
+                <j-form ref="pluginFormRef" :model="productData" layout="vertical" v-if='productTypes.length'>
+                  <j-form-item name='id' label='产品类型' :rules='[{ required: true, message: "请选择产品类型"}]'>
+                    <j-select
+                      v-model:value='productData.id'
+                      :options='productTypes'
+                      @change='productTypeChange'
+                      placeholder='请选择产品类型'
+                    />
+                  </j-form-item>
+
+                </j-form>
+                <!--        其它接入配置        -->
                 <Title
                     v-if="metadata?.name"
                     :data="metadata?.name"
@@ -160,6 +173,7 @@
                     type="primary"
                     @click="submitDevice"
                     hasPermission="device/Instance:update"
+                    :loading='submitLoading'
                     >保存</PermissionButton
                 >
             </j-col>
@@ -246,6 +260,15 @@
       @cancel=' visible = false'
       @submit='checkAccess'
     />
+  <!-- 物模型处理方式 -->
+  <MetaDataModal
+    v-if='metadataVisible'
+    :metadata='productData.metadata'
+    :access='access'
+    :data='metadataModalCacheData'
+    @cancel=' () => { metadataVisible = false, metadataModalCacheData = {}}'
+    @submit='MetaDataModalSubmit'
+  />
 </template>
 
 <script lang="ts" setup name='AccessConfig'>
@@ -257,20 +280,20 @@ import { usePermissionStore } from '@/store/permission';
 import { steps, steps1 } from './util';
 import './index.less';
 import {
-    getProviders,
-    _deploy,
-    _undeploy,
-    queryList,
-    getConfigView,
-    getConfigMetadata,
-    productGuide,
-    productGuideSave,
-    getStoragList,
-    saveDevice,
-    updateDevice,
-    detail,
-    modify,
-} from '@/api/device/product';
+  getProviders,
+  _deploy,
+  _undeploy,
+  queryList,
+  getConfigView,
+  getConfigMetadata,
+  productGuide,
+  productGuideSave,
+  getStoragList,
+  saveDevice,
+  updateDevice,
+  detail,
+  modify, getAccessConfig
+} from '@/api/device/product'
 
 import Driver from 'driver.js';
 import 'driver.js/dist/driver.min.css';
@@ -280,6 +303,9 @@ import { useMenuStore } from '@/store/menu';
 import _ from 'lodash';
 import { accessConfigTypeFilter } from '@/utils/setting';
 import AccessModal from './accessModal.vue'
+import MetaDataModal from './metadataModal.vue'
+import { getPluginData, getProductByPluginId, savePluginData } from '@/api/link/plugin'
+import { detail as queryPluginAccessDetail } from '@/api/link/accessConfig'
 
 const productStore = useProductStore();
 const tableRef = ref();
@@ -319,6 +345,17 @@ const form = reactive<Record<string, any>>({
 const formData = reactive<Record<string, any>>({
     data: productStore.current?.configuration || {},
 });
+// 产品类型
+const productTypes = ref([])
+const productData = reactive({
+  id: undefined,
+  metadata: {} // 物模型
+})
+const pluginFormRef = ref()
+const metadataVisible = ref(false)
+const metadataModalCacheData = ref()
+
+const submitLoading = ref(false)
 /**
  * 显示弹窗
  */
@@ -571,11 +608,27 @@ const checkAccess = async (data: any) => {
   visible.value = false
   accessId.value = data.access.id
   access.value = data.access
-  metadata.value = data.metadata[0]
   config.value = data.access?.transportDetail || {}
-  handleColumns()
-  markdownToHtml.value = config.value?.document ? marked(config.value.document) : '';
-  getGuide(!!data.metadata.length); //
+  productTypes.value = []
+  productData.id = undefined
+  productData.metadata = {}
+  if (data.access.channel === 'plugin') { // 插件设备
+    markdownToHtml.value = ''
+    productTypes.value = data.productTypes.map(item => ({ ...item, label: item.name, value: item.id}))
+  } else {
+    metadata.value = data.metadata[0]
+    handleColumns()
+    markdownToHtml.value = config.value?.document ? marked(config.value.document) : '';
+    getGuide(!!data.metadata.length); //
+
+    if (data.access?.transportDetail?.metadata) {
+      productData.metadata = JSON.parse(data.access?.transportDetail?.metadata)
+    }
+  }
+}
+
+const productTypeChange = (id: string, items: any) => {
+  productData.metadata = items?.metadata || {}
 }
 
 /**
@@ -623,20 +676,32 @@ const getData = async (accessId?: string) => {
         // if (metadataResp.success) {
         //   metadata.value = (metadataResp.result?.[0] as ConfigMetadata[]) || [];
         // }
-        queryAccessDetail(_accessId);
+      queryAccessDetail(_accessId);
+      if (productStore.current?.accessProvider === 'plugin_gateway') {
+        queryPluginAccessDetail(_accessId).then(async res => { //
+          if (res.success) {
+            const pluginRes = await getPluginData('product', res.result.channelId, productStore.current?.id)
+            const resp = await getProductByPluginId(res.result.channelId).catch(() => ({ success: false, result: []}))
+            if (resp.success) {
+              productTypes.value = resp.result.map(item => {
+                if (pluginRes?.result?.externalId === item.id) {
+                  productData.id = pluginRes?.result?.externalId
+                  productData.metadata = JSON.stringify(item.metadata || {})
+                }
+                return { ...item, label: item.name, value: item.id }
+              })
+            }
+          }
+        })
+
+      } else {
         getConfigDetail(
             productStore.current?.messageProtocol || '',
             productStore.current?.transportProtocol || '',
         );
+      }
 
     }
-    // else {
-    //   if (productStore.current?.id) {
-    //     getConfigMetadata(productStore.current?.id).then((resp: any) => {
-    //       metadata.value = resp?.result[0] as ConfigMetadata[];
-    //     });
-    //   }
-    // }
     getStoragList().then((resp: any) => {
         if (resp.status === 200) {
             storageList.value = resp.result;
@@ -648,46 +713,79 @@ const getData = async (accessId?: string) => {
  * 保存设备接入
  */
 const submitDevice = async () => {
-    const res = await formRef.value.validate();
-    const values = { storePolicy: form.storePolicy, ...formData.data };
-    const result: any = {};
-    flatObj(values, result);
-    const { storePolicy, ...extra } = result;
-    const id = productStore.current?.id;
-    //TODO 二次确认是否覆盖物模型
-    // 更新选择设备(设备接入)
-    const accessObj = {
-      ...productStore.current,
-      transportProtocol: access.value?.transport,
-      protocolName: access.value?.protocolDetail?.name,
-      accessId: access.value?.id,
-      accessName: access.value?.name,
-      accessProvider: access.value?.provider,
-      messageProtocol: access.value?.protocol,
+    if (pluginFormRef.value) { // 插件
+      const pluginRef = await pluginFormRef.value.validate();
+      if (!pluginRef) return
     }
-    const updateDeviceResp = await updateDevice(accessObj)
 
-    if (!updateDeviceResp.success) return
-
-    // 更新产品配置信息
-    const resp = await modify(id || '', {
-        id: id,
-        configuration: { ...extra },
-        storePolicy: storePolicy,
-    });
-    if (resp.status === 200) {
-        message.success('操作成功！');
-        productStore.current!.storePolicy = storePolicy;
-        if ((window as any).onTabSaveSuccess) {
-            if (resp.result) {
-                (window as any).onTabSaveSuccess(resp);
-                setTimeout(() => window.close(), 300);
-            }
-        } else {
-            getDetailInfo();
-        }
+    const res = await formRef.value.validate();
+    if (!res) return
+    const values = { storePolicy: form.storePolicy, ...formData.data };
+    const id = productStore.current?.id;
+    // 该产品是否有物模型，有则弹窗进行处理
+    const _metadata = JSON.parse(productStore.current?.metadata || '{}')
+    if (_metadata.properties?.length || _metadata.events?.length || _metadata.functions?.length || _metadata.tags?.length) {
+      metadataModalCacheData.value = {
+        id,
+        values,
+        productTypeId: productData.id
+      }
+      metadataVisible.value = true
+    } else {
+      updateAccessData(id, values)
     }
 };
+
+const updateAccessData = async (id: string, values: any) => {
+  const result: any = {};
+  flatObj(values, result);
+  const { storePolicy, ...extra } = result;
+  // 更新选择设备(设备接入)
+  const accessObj = {
+    ...productStore.current,
+    metadata: JSON.stringify(productData.metadata || "{}"),
+    transportProtocol: access.value?.transport,
+    protocolName: access.value?.protocolDetail?.name,
+    accessId: access.value?.id,
+    accessName: access.value?.name,
+    accessProvider: access.value?.provider,
+    messageProtocol: access.value?.protocol,
+  }
+  submitLoading.value = true
+  const updateDeviceResp = await updateDevice(accessObj).catch(() => { success: false})
+
+  if (!updateDeviceResp.success) {
+    submitLoading.value = false
+  }
+
+  if (access.value?.provider === "plugin_gateway") {
+    await savePluginData(
+      'product',
+      access.value?.channelId,
+      productStore.current.id,
+      productData.id
+    ).catch(() => ({}))
+  }
+  // 更新产品配置信息
+  const resp = await modify(id || '', {
+    id: id,
+    configuration: { ...extra },
+    storePolicy: storePolicy,
+  });
+  submitLoading.value = false
+  if (resp.status === 200) {
+    message.success('操作成功！');
+    productStore.current!.storePolicy = storePolicy;
+    if ((window as any).onTabSaveSuccess) {
+      if (resp.result) {
+        (window as any).onTabSaveSuccess(resp);
+        setTimeout(() => window.close(), 300);
+      }
+    } else {
+      getDetailInfo();
+    }
+  }
+}
 
 const flatObj = (obj: any, result: any) => {
     Object.keys(obj).forEach((key: string) => {
@@ -699,8 +797,15 @@ const flatObj = (obj: any, result: any) => {
     });
 };
 
-const getDetailInfo = () => {};
+const getDetailInfo = async () => {
+  await productStore.getDetail(productStore.detail.id)
+  MetaDataModalSubmit()
+};
 
+const MetaDataModalSubmit = () => {
+  // 跳转物模型标签
+  productStore.tabActiveKey = 'Metadata'
+}
 
 getProvidersList()
 /**

@@ -573,4 +573,17 @@ export const queryLogsType = () => server.get(`/dictionary/device-log-type/items
 
 export const getDeviceNumber = (data?:any) => server.post<number>('/device-instance/_count', data)
 
+/**
+ * 导入映射设备
+ * @param productId
+ * @param data
+ */
+export const importDeviceByPlugin = (productId: string, data: any[]) => server.post(`/device/instance/plugin/${productId}/import`, data)
+
+export const metadateMapById = (productId: string, data: ant[]) => server.patch(`/device/metadata/mapping/product/${productId}`, data)
+
+export const getMetadateMapById = (productId: string) => server.get(`/device/metadata/mapping/product/${productId}`)
+
+export const getInkingDevices = (data: string[]) => server.post('/plugin/mapping/device/_all', data)
+
 
