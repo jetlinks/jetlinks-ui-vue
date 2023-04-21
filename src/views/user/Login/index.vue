@@ -163,14 +163,14 @@
 <script setup lang="ts">
 import { getImage } from '@/utils/comm';
 import {
-    config,
-    code,
-    authLogin,
-    getInitSet,
-    systemVersion,
-    bindInfo,
-    settingDetail,
-} from '@/api/login';
+  config,
+  code,
+  authLogin,
+  getInitSet,
+  systemVersion,
+  bindInfo,
+  settingDetail, userDetail
+} from '@/api/login'
 import { useUserInfo } from '@/store/userInfo';
 import { LocalStore } from '@/utils/comm';
 import { BASE_API_PATH, TOKEN_KEY, Version_Code } from '@/utils/variable';
@@ -250,18 +250,29 @@ const onFinish = async () => {
         const res: any = await authLogin(form);
         loading.value = false;
         if (res.success) {
+          LocalStore.set(TOKEN_KEY, res?.result.token);
+          const userResp = await userDetail()
+          if (userResp.success) {
             store.$patch({
-                ...res.result,
-                username: form.username,
+              userInfos: {
+                ...userResp.result,
+                token: res?.result.token,
+              },
+              isAdmin: userResp.username === "admin",
             });
-            LocalStore.set(TOKEN_KEY, res?.result.token);
-            if (res.result.user?.username === 'admin') {
-                const resp: any = await getInitSet();
-                if (resp.status === 200 && !resp.result.length) {
-                    window.location.href = '/#/init-home';
-                    return;
-                }
+
+            if (userResp.result?.username === 'admin') {
+              const resp: any = await getInitSet();
+              if (resp.status === 200 && !resp.result.length) {
+                window.location.href = '/#/init-home';
+                return;
+              }
             }
+          } else {
+            store.$patch({
+              ...res.result
+            });
+          }
             window.location.href = '/';
         }
     } catch (error) {
