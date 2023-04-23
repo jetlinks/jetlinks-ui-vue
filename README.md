@@ -24,7 +24,16 @@ yarn add jetlinks-ui-components@latest
 yarn dev:force
 
 ```
+## Node
+* node >= 18.14.0
+
+## 浏览器兼容
+* Chrome >= 100
+* Firefox >= 100
+* Edge >= 100  
+不支持IE
 
 ### 备注
 
-项目在开发模式下，首页加载慢属于正常现象；
+* 项目在开发模式下，首页加载慢属于正常现象；
+* 打开F12后页面卡顿是`vuetools`引起，[https://github.com/vuejs/devtools/issues/1987](https://github.com/vuejs/devtools/issues/1987)
