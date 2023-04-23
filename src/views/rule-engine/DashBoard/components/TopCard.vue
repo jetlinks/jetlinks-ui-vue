@@ -78,8 +78,8 @@ const props = defineProps({
             align-items: flex-end;
             justify-content: flex-end;
             img {
-                width: 100%;
-                height: 100%;
+                width: 100px;
+                height: 100px;
             }
         }
         .content-right-echart{
