@@ -25,6 +25,7 @@
                   modelRef?.file?.fileType ? `.${modelRef?.file?.fileType}` : '.xlsx'
               "
           :before-upload="beforeUpload"
+          :disabled='disabled'
         >
           <j-button style='width: 760px;'>
             <template #icon><AIcon type="UploadOutlined" /></template>
@@ -80,6 +81,7 @@ const importLoading = ref<boolean>(false);
 const flag = ref<boolean>(false);
 const count = ref<number>(0);
 const errMessage = ref<string>('');
+const disabled = ref(false)
 
 const downFile = async (type: string) => {
   const res: any = await templateDownload(props.product!, type);
@@ -107,7 +109,6 @@ const submitData = async (fileUrl: string) => {
   if (!!fileUrl) {
     count.value = 0;
     errMessage.value = '';
-    flag.value = true;
     const autoDeploy = !!modelRef?.file?.autoDeploy || false;
     importLoading.value = true;
     let dt = 0;
@@ -123,10 +124,12 @@ const submitData = async (fileUrl: string) => {
       } else {
         errMessage.value = res.message || '失败';
       }
+      disabled.value = false
     };
     source.onerror = (e: { status: number }) => {
       if (e.status === 403) errMessage.value = '暂无权限，请联系管理员';
       flag.value = false;
+      disabled.value = false
       source.close();
     };
     source.onopen = () => {};
@@ -136,6 +139,8 @@ const submitData = async (fileUrl: string) => {
 };
 
 const uploadChange = async (info: Record<string, any>) => {
+  disabled.value = true
+  console.log(info.file)
   if (info.file.status === 'done') {
     const resp: any = info.file.response || { result: '' };
     await submitData(resp?.result || '');

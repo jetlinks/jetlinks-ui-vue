@@ -41,7 +41,7 @@
           name='version'
           :rules='[{ required: true, message: "请上传文件" }]'
         >
-          <UploadFile v-model:modelValue='modelRef.version' @change='uploadChange' />
+          <UploadFile v-model:modelValue='modelRef.version' @change='uploadChange' :fileName='data.filename' />
         </j-form-item>
         <div v-if='modelRef.version' class='file-detail'>
           <div>
