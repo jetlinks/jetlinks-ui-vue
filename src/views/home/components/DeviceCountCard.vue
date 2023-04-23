@@ -12,7 +12,7 @@
             <div class="box-item">
                 <div class="label">设备数量</div>
                 <div class="value">{{ deviceNum }}</div>
-                <img src="/images/home/Group3793.png" alt="" />
+                <img src="/images/home/top-1.png" alt="" />
             </div>
         </div>
     </div>
