@@ -4,6 +4,7 @@
       <j-input-search
         style='width: 350px;margin-bottom:24px;'
         placeholder='搜索平台属性名称'
+        allowClear
         @search='search'
       />
       <j-table
@@ -17,7 +18,7 @@
         }'
         rowKey='id'
       >
-        <template #bodyCell="{ column, text, record }">
+        <template #bodyCell="{ column, text, record, index }">
           <template v-if='column.dataIndex === "name"'>
             <span class='metadata-title'>{{ text }} ({{ record.id }})</span>
           </template>
@@ -73,6 +74,7 @@ import { getMetadateMapById, metadateMapById } from '@/api/device/instance'
 
 const productStore = useProductStore();
 const { current: productDetail } = storeToRefs(productStore)
+const dataSourceCache = ref([])
 const dataSource = ref([])
 const pluginOptions = ref<any[]>([])
 
@@ -94,11 +96,7 @@ const columns = [
   {
     title: '目标属性',
     dataIndex: 'plugin',
-    filters: [
-      { text: '置顶已映射数据', value: 'already' },
-      { text: '置顶未映射数据', value: 'not' },
-    ],
-    onFilter: tableFilter
+    sorter: tableFilter
   }
 ]
 
@@ -125,6 +123,16 @@ const getMetadataMapData = () => {
   })
 }
 
+const search = (value: string) => {
+  console.log(value)
+  if (value) {
+    dataSource.value = dataSourceCache.value.filter((item: any) => {
+      return !!item.name?.includes(value)
+    })
+  } else {
+    dataSource.value = dataSourceCache.value
+  }
+}
 
 const getDefaultMetadata = async () => {
   const metadata = JSON.parse(productDetail.value?.metadata || '{}')
@@ -136,7 +144,6 @@ const getDefaultMetadata = async () => {
 
   const concatProperties = [ ...pluginProperties.map(item => ({ id: item.id, pluginId: item.id})), ...metadataMap]
   dataSource.value = properties?.map((item: any, index: number) => {
-
     const _m = concatProperties.find(p => p.id === item.id)
     return {
       index: index + 1,
@@ -146,6 +153,7 @@ const getDefaultMetadata = async () => {
       plugin: _m?.pluginId, // 插件物模型id
     }
   })
+  dataSourceCache.value = dataSource.value
 }
 
 const getPluginMetadata = (): Promise<{ properties: any[]}> => {
