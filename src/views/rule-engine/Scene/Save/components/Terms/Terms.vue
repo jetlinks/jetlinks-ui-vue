@@ -144,6 +144,10 @@ watchEffect(() => {
   }
 })
 
+onMounted(() => {
+  console.log('terms-onMounted')
+})
+
 </script>
 
 <style scoped lang='less'>

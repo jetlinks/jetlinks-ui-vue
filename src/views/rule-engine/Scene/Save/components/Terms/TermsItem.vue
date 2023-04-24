@@ -13,7 +13,6 @@
         <AIcon type='CloseOutlined' />
       </div>
     </j-popconfirm>
-
     <j-form-item
       :name='["branches", branchName, "when", whenName, "terms", props.name]'
       :rules='rules'

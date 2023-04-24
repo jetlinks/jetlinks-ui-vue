@@ -356,7 +356,7 @@ const onDelete = () => {
 }
 
 nextTick(() => {
-  Object.assign(paramsValue, pick(props.value, ['column', 'options', 'termType', 'terms', 'type', 'value', 'metric']))
+  Object.assign(paramsValue, pick(props.value, ['column', 'options', 'termType', 'terms', 'type', 'value', 'metric', 'key']))
 })
 
 </script>
