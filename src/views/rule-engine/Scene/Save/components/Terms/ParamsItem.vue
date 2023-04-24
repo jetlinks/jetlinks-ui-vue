@@ -276,10 +276,18 @@ const columnSelect = (option: any) => {
   } else if (termTypeChange) {
     const oldValue = isArray(paramsValue.value!.value) ? paramsValue.value!.value[0] : paramsValue.value!.value
     const value = arrayParamsKey.includes(paramsValue.termType as string) ? [ oldValue, undefined ] : oldValue
-    paramsValue.value = {
-      source: paramsValue.value?.source || tabsOptions.value[0].key,
+
+    const _source = paramsValue.value?.source || tabsOptions.value[0].key
+    const newValue: any = {
+      source: _source,
       value: value
     }
+
+    if (_source === 'metric') {
+      newValue.metric = paramsValue.value?.metric
+    }
+
+    paramsValue.value = newValue
   }
   handOptionByColumn(option)
   emit('update:value', { ...paramsValue })
@@ -304,10 +312,16 @@ const termsTypeSelect = (e: { key: string, name: string }) => {
     }
   }
 
-  paramsValue.value = {
-    source: paramsValue.value?.source || tabsOptions.value[0].key,
+  const _source = paramsValue.value?.source || tabsOptions.value[0].key
+  const newValue: any = {
+    source: _source,
     value: value
   }
+
+  if (_source === 'metric') {
+    newValue.metric = paramsValue.value?.metric
+  }
+  paramsValue.value = newValue
   emit('update:value', { ...paramsValue })
   formItemContext.onFieldChange()
   formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][1] = e.name
