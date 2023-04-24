@@ -389,6 +389,8 @@ const handleView = (id: string, triggerType: string) => {
 .subTitle {
   position: relative;
   margin-top: 18px;
+  display: inline-block;
+  height: 50px;
 
   .subTitle-title {
     position: absolute;
@@ -400,6 +402,7 @@ const handleView = (id: string, triggerType: string) => {
     color: rgba(0, 0, 0, 0.65);
     font-size: 14px;
     text-indent: 38px;
+
   }
 }
 </style>
