@@ -287,14 +287,8 @@
             </j-row>
         </div>
         <div :class="current !== 2 ? 'steps-action' : 'steps-action-save'">
-            <j-button
-                v-if="[0, 1].includes(current)"
-                type="primary"
-                style="margin-right: 8px"
-                @click="next"
-            >
-                下一步
-            </j-button>
+
+          <j-button v-if="current > 0" @click="prev" style="margin-right: 8px"> 上一步 </j-button>
             <PermissionButton
                 v-if="current === 2 && view === 'false'"
                 type="primary"
@@ -306,7 +300,14 @@
             >
                 保存
             </PermissionButton>
-            <j-button v-if="current > 0" @click="prev"> 上一步 </j-button>
+          <j-button
+            v-if="[0, 1].includes(current)"
+            type="primary"
+
+            @click="next"
+          >
+            下一步
+          </j-button>
         </div>
     </div>
 </template>

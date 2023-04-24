@@ -135,13 +135,13 @@
     </div>
     <div class="steps-action">
       <j-button
-        v-if="current === 0"
-        type="primary"
+        v-if="current > 0"
+        @click="prev"
         style="margin-right: 8px"
-        @click="next"
       >
-        下一步
+        上一步
       </j-button>
+
       <PermissionButton
         v-if="current === 1 && view === 'false'"
         type="primary"
@@ -155,10 +155,12 @@
         保存
       </PermissionButton>
       <j-button
-        v-if="current > 0"
-        @click="prev"
+        v-if="current === 0"
+        type="primary"
+
+        @click="next"
       >
-        上一步
+        下一步
       </j-button>
     </div>
   </div>
