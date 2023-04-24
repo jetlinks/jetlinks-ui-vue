@@ -106,7 +106,6 @@ const showWhen = computed(() => {
 })
 
 const whenData = computed(() => {
-  console.log(props.data.when)
   return props.data.when
 })
 

@@ -118,6 +118,7 @@ export const useSceneStore = defineStore('scene', () => {
           branches.push(null);
         }
       }
+      console.log(branches)
       data.value = {
         ...result,
         trigger: result.trigger || {},
