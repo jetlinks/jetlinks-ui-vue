@@ -316,13 +316,13 @@ const termsTypeSelect = (e: { key: string, name: string }) => {
 
 const valueSelect = (v: any, label: string, labelObj: Record<number, any>, option: any) => {
   if (paramsValue.value?.source === 'metric') {
-    paramsValue.metric = option?.id
+    paramsValue.value.metric = option?.id
   }
 
   const newValues = { ...paramsValue }
 
   if (paramsValue.value?.source !== 'metric') {
-    delete newValues.metric
+    delete newValues.value.metric
   }
 
   emit('update:value', { ...newValues })

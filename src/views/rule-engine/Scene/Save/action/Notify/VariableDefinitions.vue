@@ -14,7 +14,7 @@
             :rules="[
                 {
                     validator: (_rule, value) => checkValue(_rule, value, item),
-                    trigger: ['change', 'blur'],
+                    trigger: ['blur', 'change'],
                 },
             ]"
         >
@@ -103,6 +103,7 @@ const getType = (item: any) => {
 };
 
 const checkValue = (_rule: any, value: any, item: any) => {
+  console.log('checkValue',value)
     if(!value){
         return Promise.resolve();
     }
