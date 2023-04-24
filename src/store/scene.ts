@@ -32,20 +32,14 @@ export const defaultBranches = [
       {
         terms: [
           {
-            terms: [
-              {
-                column: undefined,
-                value: {
-                  source: 'fixed',
-                  value: undefined
-                },
-                termType: undefined,
-                key: 'params_1',
-                type: 'and',
-              },
-            ],
+            column: undefined,
+            value: {
+              source: 'fixed',
+              value: undefined
+            },
+            termType: undefined,
+            key: 'params_1',
             type: 'and',
-            key: 'terms_1_terms_1',
           },
         ],
         type: 'and',

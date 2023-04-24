@@ -18,7 +18,7 @@
         :branchName='branchName'
         :whenName='props.name'
         :name='index'
-        :showDeleteBtn='showDeleteBtn'
+        :showDeleteBtn='termsData.length > 1'
         :isFirst='index === 0'
         :isLast='index === termsData.length -1'
         :data='item'
@@ -93,19 +93,13 @@ const addWhen = () => {
     type: 'and',
     terms: [
       {
-        terms: [
-          {
-            column: undefined,
-            value: {
-              source: 'manual',
-              value: undefined
-            },
-            termType: undefined,
-            key: `params_${randomString()}`,
-            type: 'and',
-          }
-        ],
-        key: `terms_2_${randomString()}`,
+        column: undefined,
+        value: {
+          source: 'manual',
+          value: undefined
+        },
+        termType: undefined,
+        key: `params_${randomString()}`,
         type: 'and',
       }
     ],

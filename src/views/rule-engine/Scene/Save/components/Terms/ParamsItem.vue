@@ -284,8 +284,8 @@ const columnSelect = (option: any) => {
   handOptionByColumn(option)
   emit('update:value', { ...paramsValue })
   formItemContext.onFieldChange()
-  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.name][0] = option.name
-  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.name][1] = paramsValue.termType
+  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][0] = option.name
+  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][1] = paramsValue.termType
 }
 
 const termsTypeSelect = (e: { key: string, name: string }) => {
@@ -310,11 +310,12 @@ const termsTypeSelect = (e: { key: string, name: string }) => {
   }
   emit('update:value', { ...paramsValue })
   formItemContext.onFieldChange()
-  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.name][1] = e.name
+  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][1] = e.name
 
 }
 
 const valueSelect = (v: any, label: string, labelObj: Record<number, any>, option: any) => {
+  console.log(paramsValue.value?.source)
   if (paramsValue.value?.source === 'metric') {
     paramsValue.metric = option?.id
   }
@@ -325,14 +326,15 @@ const valueSelect = (v: any, label: string, labelObj: Record<number, any>, optio
     delete newValues.metric
   }
 
+  console.log(newValues)
   emit('update:value', { ...newValues })
   formItemContext.onFieldChange()
-  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.name][2] = labelObj
+  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][2] = labelObj
 }
 
 const typeSelect = (e: any) => {
   emit('update:value', { ...paramsValue })
-  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.name][3] = e.label
+  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][3] = e.label
 }
 
 const termAdd = () => {
@@ -346,17 +348,17 @@ const termAdd = () => {
     type: 'and',
     key: `params_${new Date().getTime()}`
   }
-  formModel.value.branches?.[props.branchName]?.when?.[props.whenName]?.terms?.[props.termsName]?.terms?.push(terms)
+  formModel.value.branches?.[props.branchName]?.when?.[props.whenName]?.terms?.push(terms)
   formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName].push(['', '', '', '并且'])
 }
 
 const onDelete = () => {
-  formModel.value.branches?.[props.branchName]?.when?.[props.whenName]?.terms?.[props.termsName]?.terms?.splice(props.name, 1)
-  formModel.value.options!.when[props.branchName].terms[props.whenName].terms.splice(props.name, 1)
+  formModel.value.branches?.[props.branchName]?.when?.[props.whenName]?.terms?.splice(props.termsName, 1)
+  formModel.value.options!.when[props.branchName].terms[props.whenName].terms.splice(props.termsName, 1)
 }
 
 nextTick(() => {
-  Object.assign(paramsValue, pick(props.value, ['column', 'options', 'termType', 'terms', 'type', 'value']))
+  Object.assign(paramsValue, pick(props.value, ['column', 'options', 'termType', 'terms', 'type', 'value', 'metric']))
 })
 
 </script>
