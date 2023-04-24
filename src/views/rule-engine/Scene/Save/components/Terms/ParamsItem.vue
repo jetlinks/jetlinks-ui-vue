@@ -315,7 +315,6 @@ const termsTypeSelect = (e: { key: string, name: string }) => {
 }
 
 const valueSelect = (v: any, label: string, labelObj: Record<number, any>, option: any) => {
-  console.log(paramsValue.value?.source)
   if (paramsValue.value?.source === 'metric') {
     paramsValue.metric = option?.id
   }
@@ -326,7 +325,6 @@ const valueSelect = (v: any, label: string, labelObj: Record<number, any>, optio
     delete newValues.metric
   }
 
-  console.log(newValues)
   emit('update:value', { ...newValues })
   formItemContext.onFieldChange()
   formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][2] = labelObj
