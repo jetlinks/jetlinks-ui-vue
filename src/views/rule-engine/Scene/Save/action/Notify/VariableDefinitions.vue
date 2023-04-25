@@ -8,7 +8,7 @@
         <j-form-item
             :name="`${item?.id}`"
             :label="item?.name"
-            v-for="item in variableDefinitions"
+            v-for="(item, index) in variableDefinitions"
             :key="item.id"
             :required="getType(item) !== 'file' ? true : false"
             :rules="[
@@ -22,19 +22,19 @@
                 :notify="notify"
                 v-if="getType(item) === 'user'"
                 v-model:value="modelRef[item.id]"
-                @change="(val) => onChange(val, 'user')"
+                @change="(val) => onChange(val, 'user', index)"
             />
             <Org
                 :notify="notify"
                 v-else-if="getType(item) === 'org'"
                 v-model:value="modelRef[item.id]"
-                @change="(val) => onChange(val, 'org')"
+                @change="(val) => onChange(val, 'org', index)"
             />
             <Tag
                 :notify="notify"
                 v-else-if="getType(item) === 'tag'"
                 v-model:value="modelRef[item.id]"
-                @change="(val) => onChange(val, 'tag')"
+                @change="(val) => onChange(val, 'tag', index)"
             />
             <InputFile
                 v-else-if="getType(item) === 'file'"
@@ -48,7 +48,7 @@
                 v-else
                 :item="item"
                 v-model:value="modelRef[item.id]"
-                @change="(val) => onChange(val, 'build-in')"
+                @change="(val, _options) => onChange(val, 'build-in', index, _options)"
             />
         </j-form-item>
     </j-form>
@@ -70,16 +70,20 @@ const props = defineProps({
     },
     value: {
         type: Object,
-        default: () => {},
+        default: () => ({}),
     },
     notify: {
         type: Object,
-        default: () => {},
+        default: () => ({}),
     },
     template: {
         type: Object,
-        default: () => {},
+        default: () => ({}),
     },
+    options: {
+      type: Object,
+      default: () => ({})
+    }
 });
 
 const emit = defineEmits(['update:value', 'change']);
@@ -87,15 +91,14 @@ const emit = defineEmits(['update:value', 'change']);
 const formRef = ref();
 
 const modelRef = reactive({});
+const otherColumns = ref<(string | undefined)[]>(props.options?.otherColumns || [])
 
 watchEffect(() => {
     Object.assign(modelRef, props?.value);
 });
 
 watchEffect(() => {
-    if(props?.template?.template?.sendTo && props?.template?.template?.sendTo?.length){
-        emit('change', { sendTo: props?.template?.template?.sendTo.join(' ') });
-    }
+  emit('change', { sendTo: props?.template?.template?.sendTo?.join(' ') });
 });
 
 const getType = (item: any) => {
@@ -103,7 +106,6 @@ const getType = (item: any) => {
 };
 
 const checkValue = (_rule: any, value: any, item: any) => {
-  console.log('checkValue',value)
     if(!value){
         return Promise.resolve();
     }
@@ -185,13 +187,21 @@ const checkValue = (_rule: any, value: any, item: any) => {
     return Promise.resolve();
 };
 
-const onChange = (val: any, type: any) => {
+const onChange = (val: any, type: any, index: number, options?: string) => {
+    if (type === 'build-in') {
+      otherColumns.value[index] = options
+    } else {
+      otherColumns.value[index] = undefined
+    }
+
     if (type === 'org') {
-        emit('change', { orgName: val.join(',') });
+        emit('change', { orgName: val.join(','), otherColumns: [] });
     } else if (type === 'tag') {
-        emit('change', { tagName: val });
+        emit('change', { tagName: val, otherColumns: [] });
     } else if (type === 'user') {
-        emit('change', { sendTo: val });
+        emit('change', { sendTo: val, otherColumns: [] });
+    } else {
+      emit('change', { otherColumns: otherColumns.value });
     }
 };
 

@@ -16,7 +16,7 @@
                 placeholder="请选择参数"
                 style="width: calc(100% - 120px)"
                 :fieldNames="{ label: 'name', value: 'id' }"
-                @change="(val, label) => itemOnChange(undefined, val, label)"
+                @change="(val, label, extra) => itemOnChange(undefined, val, label, extra)"
             >
                 <template #title="{ fullName, description }">
                     <j-space>
@@ -57,7 +57,7 @@
     </j-input-group>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name='NotifyBuildIn'>
 import { queryBuiltInParams } from '@/api/rule-engine/scene';
 import { useSceneStore } from '@/store/scene';
 import { storeToRefs } from 'pinia';
@@ -103,15 +103,22 @@ const sourceChange = (val: any) => {
     });
 };
 
-const itemOnChange = (val: any, _upperKey?: string, label?: any) => {
+const itemOnChange = (val: any, _upperKey?: string, label?: any, extra?: any) => {
+    const item = extra?.triggerNode?.props
+    let othersColumns = ''
+    if (item && item.metadata) {
+      othersColumns = item.column
+    }
+
     emit('update:value', {
         ...props.value,
         value: val,
         upperKey: _upperKey,
     });
+
     emit('change', {
         sendTo: label?.[0] || val,
-    });
+    }, othersColumns);
 };
 
 const treeDataFilter = (arr: any[], type: string) => {
