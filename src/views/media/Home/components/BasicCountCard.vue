@@ -15,7 +15,7 @@
             <div class="box-item">
                 <div class="label">通道数量</div>
                 <div class="value">{{ channelCount }}</div>
-                <img :src="getImage('/home/top-2.png')" alt="" />
+                <img :src="getImage('/home/product.png')" alt="" />
             </div>
         </div>
     </div>

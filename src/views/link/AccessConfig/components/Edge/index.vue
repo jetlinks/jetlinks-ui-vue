@@ -178,13 +178,7 @@
             v-if="channel !== 'edge-child-device'"
             :class="current !== 1 ? 'steps-action' : 'steps-action-save'"
         >
-            <j-button
-                v-if="[0].includes(current)"
-                style="margin-right: 8px"
-                @click="next"
-            >
-                下一步
-            </j-button>
+            <j-button v-if="current > 0" @click="prev" style="margin-right: 8px"> 上一步 </j-button>
             <PermissionButton
                 v-if="current === 1 && view === 'false'"
                 type="primary"
@@ -196,7 +190,13 @@
             >
                 保存
             </PermissionButton>
-            <j-button v-if="current > 0" @click="prev"> 上一步 </j-button>
+            <j-button
+              v-if="[0].includes(current)"
+
+              @click="next"
+            >
+              下一步
+            </j-button>
         </div>
     </div>
 </template>

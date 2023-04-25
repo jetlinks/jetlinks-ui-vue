@@ -13,19 +13,15 @@
         <AIcon type='CloseOutlined' />
       </div>
     </j-popconfirm>
-
     <j-form-item
-      v-for='(item, index) in termsData'
-      :key='item.key'
-      :name='["branches", branchName, "when", whenName, "terms", props.name, "terms", index]'
+      :name='["branches", branchName, "when", whenName, "terms", props.name]'
       :rules='rules'
     >
       <ParamsItem
-        v-model:value='formModel.branches[branchName].when[whenName].terms[props.name].terms[index]'
-        :isFirst='index === 0'
-        :isLast='index === termsData.length - 1'
-        :showDeleteBtn='termsData.length !== 1'
-        :name='index'
+        v-model:value='formModel.branches[branchName].when[whenName].terms[props.name]'
+        :isFirst='isFirst'
+        :isLast='isLast'
+        :showDeleteBtn='showDeleteBtn'
         :termsName='name'
         :whenName='whenName'
         :branchName='branchName'

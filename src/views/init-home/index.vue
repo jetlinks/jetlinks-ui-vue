@@ -135,11 +135,11 @@ const submitData = async () => {
 const judgeInitSet = async () => {
     const resp: any = await getInit();
     if (resp.status === 200 && resp.result.length) {
-        window.location.href = '/';
+        // window.location.href = '/';
     }
 };
 onBeforeMount(() => {
-    // judgeInitSet();
+    judgeInitSet();
 });
 </script>
 <style scoped lang="less">

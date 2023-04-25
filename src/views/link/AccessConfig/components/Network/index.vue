@@ -279,12 +279,11 @@
         </div>
         <div class="steps-action">
             <j-button
-                v-if="[0, 1].includes(current)"
-                type="primary"
-                style="margin-right: 8px"
-                @click="next"
+              v-if="type === 'child-device' ? current > 1 : current > 0"
+              style="margin-right: 8px"
+              @click="prev"
             >
-                下一步
+              上一步
             </j-button>
             <PermissionButton
                 v-if="current === 2 && view === 'false'"
@@ -299,10 +298,11 @@
                 保存
             </PermissionButton>
             <j-button
-                v-if="type === 'child-device' ? current > 1 : current > 0"
-                @click="prev"
+              v-if="[0, 1].includes(current)"
+              type="primary"
+              @click="next"
             >
-                上一步
+              下一步
             </j-button>
         </div>
     </div>

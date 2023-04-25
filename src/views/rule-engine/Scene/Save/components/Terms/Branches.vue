@@ -141,19 +141,13 @@ const addWhen = () => {
     type: 'and',
     terms: [
       {
-        terms: [
-          {
-            column: undefined,
-            value: {
-              source: 'fixed',
-              value: undefined
-            },
-            termType: undefined,
-            key: `params_${randomString()}`,
-            type: 'and',
-          }
-        ],
-        key: `terms_2_${randomString()}`,
+        column: undefined,
+        value: {
+          source: 'fixed',
+          value: undefined
+        },
+        termType: undefined,
+        key: `params_${randomString()}`,
         type: 'and',
       }
     ],

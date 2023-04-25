@@ -146,8 +146,8 @@ const getBackgroundColor = (code: string | number) => {
     const _color = color[code] || color.default;
     return `linear-gradient(
                 188.4deg,
-                rgba(${_color}, 0.03) 22.94%,
-                rgba(${_color}, 0) 94.62%
+                rgba(${_color}, 0.03) 30%,
+                rgba(${_color}, 0) 80%
             )`;
 };
 

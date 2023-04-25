@@ -4,7 +4,7 @@
       <j-input-search v-model:value="searchValue" placeholder="请输入名称" @search="handleSearch" allowClear></j-input-search>
     </div>
     <div>
-      <PermissionButton type="primary" :uhas-permission="`${permission}:update`" key="add" @click="handleAddClick"
+      <PermissionButton type="primary" :hasPermission="`${permission}:update`" key="add" @click="handleAddClick"
         :disabled="operateLimits('add', type)" :tooltip="{
           title: operateLimits('add', type) ? '当前的存储方式不支持新增' : '新增',
         }">

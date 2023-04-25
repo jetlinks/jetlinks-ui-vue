@@ -76,8 +76,9 @@ const props = defineProps({
             align-items: flex-end;
             justify-content: flex-end;
             img {
-                width: 100%;
+                width: 100px;
                 height: 100%;
+                transform: translateY(2px);
             }
         }
     }

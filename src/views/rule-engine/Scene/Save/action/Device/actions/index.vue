@@ -298,7 +298,7 @@ watch(
     { immediate: true },
 );
 
-const onWriteChange = (val: string) => {
+const onWriteChange = (val: string, optionColumn: string[]) => {
     modelRef.propertiesValue = val;
     emit('change', {
         propertiesName:
@@ -306,7 +306,7 @@ const onWriteChange = (val: string) => {
                 ? _function.value?.name
                 : _property.value?.name,
         propertiesValue: modelRef.propertiesValue,
-    });
+    }, optionColumn);
 };
 
 const onFormSave = () => {

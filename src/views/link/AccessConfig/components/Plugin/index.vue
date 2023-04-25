@@ -90,7 +90,6 @@
                       {
                           max: 64,
                           message: '最多可输入64个字符',
-                          trigger: 'blur',
                       },
                   ]"
                   name='name'
@@ -135,13 +134,13 @@
     </div>
     <div class="steps-action">
       <j-button
-        v-if="current === 0"
-        type="primary"
+        v-if="current > 0"
+        @click="prev"
         style="margin-right: 8px"
-        @click="next"
       >
-        下一步
+        上一步
       </j-button>
+
       <PermissionButton
         v-if="current === 1 && view === 'false'"
         type="primary"
@@ -155,10 +154,12 @@
         保存
       </PermissionButton>
       <j-button
-        v-if="current > 0"
-        @click="prev"
+        v-if="current === 0"
+        type="primary"
+
+        @click="next"
       >
-        上一步
+        下一步
       </j-button>
     </div>
   </div>
@@ -325,10 +326,10 @@ const saveData = () => {
       loading.value = true
       const resp =
         paramsId === ':id'
-          ? await save(params)
-          : await update({ ...params, id: paramsId });
+          ? await save(params).catch(() => { success: false})
+          : await update({ ...params, id: paramsId }).catch(() => { success: false});
       loading.value = false
-      if (resp.status === 200) {
+      if (resp.success) {
         onlyMessage('操作成功', 'success');
         history.back();
         if ((window as any).onTabSaveSuccess) {

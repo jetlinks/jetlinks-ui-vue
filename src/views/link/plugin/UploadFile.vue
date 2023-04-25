@@ -11,6 +11,8 @@
     :before-upload="beforeUpload"
     :disabled='loading'
     :maxCount='1'
+    :fileList='list'
+    @remove='remove'
   >
     <div>
       <j-button>上传文件</j-button>
@@ -39,6 +41,10 @@ const props = defineProps({
   disabled: {
     type: Boolean,
     default: false
+  },
+  fileName: {
+    type: String,
+    default: undefined
   }
 });
 
@@ -47,9 +53,17 @@ const paths: string = useSystem().$state.configInfo.paths?.[
   ] as string;
 
 const value = ref(props.modelValue);
+const list = ref<any>(props.fileName ? [{ name: props.fileName}] : [])
 const loading = ref(false);
 
+const remove = () => {
+  list.value = []
+  emit('update:modelValue', '');
+  emit('change', {});
+}
+
 const beforeUpload: UploadProps['beforeUpload'] = (file, fl) => {
+  list.value = fl
   const arr = file.name.split('.');
   const isFile = ['jar', 'zip'].includes(arr[arr.length - 1]); // file.type === 'application/zip' || file.type === 'application/javj-archive'
   if (!isFile) {
@@ -62,7 +76,6 @@ const handleChange = async (info: UploadChangeParam) => {
   loading.value = true;
   if (info.file.status === 'done') {
     loading.value = false;
-    console.log(info.file)
     const result = info.file.response?.result;
     const f = result.accessUrl;
     onlyMessage('上传成功！', 'success');

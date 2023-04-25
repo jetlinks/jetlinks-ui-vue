@@ -82,7 +82,10 @@ const onSave = (data: any, options?: any) => {
     const item: ActionsType = {
         ...extra,
         key: data.key,
-        options,
+        options: {
+          ...options,
+          columns: options.otherColumns.filter((item?: string) => item)
+        },
     };
     emit('add', item)
     visible.value = false

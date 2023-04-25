@@ -63,11 +63,12 @@ export const put = function <T>(url: string, data = {}) {
  * @param {Object} [data]
  * @returns {AxiosInstance}
  */
-export const patch = function <T>(url: string, data = {}) {
+export const patch = function <T>(url: string, data = {}, ext: any = {}) {
   return request<any, AxiosResponseRewrite<T>>({
     method: 'PATCH',
     url,
-    data
+    data,
+    ...ext
   })
 }
 /**

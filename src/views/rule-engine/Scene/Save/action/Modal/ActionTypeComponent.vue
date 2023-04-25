@@ -1,7 +1,7 @@
 <template>
     <div>
         <template v-if="actionType === 'device'">
-            <Device v-bind="props" :value="data?.device" @cancel="onCancel" @save="onPropsOk" />
+            <Device v-bind="props" :value="data?.device" :options='options' @cancel="onCancel" @save="onPropsOk" />
         </template>
         <template v-else-if="actionType === 'notify'">
             <Notify :options="data?.options" :value="data?.notify" @cancel="onCancel" @save="onPropsOk" />
@@ -42,6 +42,10 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    options: {
+      type: Object,
+      default: () => ({})
+    }
 });
 
 const emit = defineEmits(['cancel', 'save']);

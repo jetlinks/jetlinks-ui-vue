@@ -1436,6 +1436,63 @@ export default [
             supportDataAccess: false,
             indirectMenus: ['8ddbb67de5f65514105d47b448bfd70e']
           },
+          {
+            code: 'link/plugin',
+            name: '插件管理',
+            owner: 'iot',
+            //parentId: '1-4',
+            id: 'a20354876e9519e48f5ed6710ba6efb3',
+            sortIndex: 10,
+            url: '/iot/link/plugin',
+            icon: 'BoxPlotOutlined',
+            showPage: ['plugin-driver'],
+            permissions: [],
+            buttons: [
+              {
+                id: 'view',
+                name: '查看',
+                permissions: [
+                  {
+                    permission: 'plugin-driver',
+                    actions: ['save'],
+                  },
+                ],
+              },
+              {
+                id: 'update',
+                name: '编辑',
+                permissions: [
+                  {
+                    permission: 'plugin-driver',
+                    actions: ['save'],
+                  },
+                ],
+              },
+              {
+                id: 'delete',
+                name: '删除',
+                permissions: [
+                  {
+                    permission: 'plugin-driver',
+                    actions: ['delete'],
+                  },
+                ],
+              },
+              {
+                id: 'add',
+                name: '新增',
+                permissions: [
+                  {
+                    permission: 'plugin-driver',
+                    actions: ['save'],
+                  },
+                ],
+              },
+
+            ],
+            accessSupport: { text: "不支持", value: "unsupported" },
+            supportDataAccess: false,
+          },
         ],
       },
       {

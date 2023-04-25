@@ -276,16 +276,24 @@ const columnSelect = (option: any) => {
   } else if (termTypeChange) {
     const oldValue = isArray(paramsValue.value!.value) ? paramsValue.value!.value[0] : paramsValue.value!.value
     const value = arrayParamsKey.includes(paramsValue.termType as string) ? [ oldValue, undefined ] : oldValue
-    paramsValue.value = {
-      source: paramsValue.value?.source || tabsOptions.value[0].key,
+
+    const _source = paramsValue.value?.source || tabsOptions.value[0].key
+    const newValue: any = {
+      source: _source,
       value: value
     }
+
+    if (_source === 'metric') {
+      newValue.metric = paramsValue.value?.metric
+    }
+
+    paramsValue.value = newValue
   }
   handOptionByColumn(option)
   emit('update:value', { ...paramsValue })
   formItemContext.onFieldChange()
-  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.name][0] = option.name
-  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.name][1] = paramsValue.termType
+  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][0] = option.name
+  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][1] = paramsValue.termType
 }
 
 const termsTypeSelect = (e: { key: string, name: string }) => {
@@ -304,35 +312,41 @@ const termsTypeSelect = (e: { key: string, name: string }) => {
     }
   }
 
-  paramsValue.value = {
-    source: paramsValue.value?.source || tabsOptions.value[0].key,
+  const _source = paramsValue.value?.source || tabsOptions.value[0].key
+  const newValue: any = {
+    source: _source,
     value: value
   }
+
+  if (_source === 'metric') {
+    newValue.metric = paramsValue.value?.metric
+  }
+  paramsValue.value = newValue
   emit('update:value', { ...paramsValue })
   formItemContext.onFieldChange()
-  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.name][1] = e.name
+  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][1] = e.name
 
 }
 
 const valueSelect = (v: any, label: string, labelObj: Record<number, any>, option: any) => {
   if (paramsValue.value?.source === 'metric') {
-    paramsValue.metric = option?.id
+    paramsValue.value.metric = option?.id
   }
 
   const newValues = { ...paramsValue }
 
   if (paramsValue.value?.source !== 'metric') {
-    delete newValues.metric
+    delete newValues.value.metric
   }
 
   emit('update:value', { ...newValues })
   formItemContext.onFieldChange()
-  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.name][2] = labelObj
+  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][2] = labelObj
 }
 
 const typeSelect = (e: any) => {
   emit('update:value', { ...paramsValue })
-  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.name][3] = e.label
+  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][3] = e.label
 }
 
 const termAdd = () => {
@@ -346,17 +360,17 @@ const termAdd = () => {
     type: 'and',
     key: `params_${new Date().getTime()}`
   }
-  formModel.value.branches?.[props.branchName]?.when?.[props.whenName]?.terms?.[props.termsName]?.terms?.push(terms)
+  formModel.value.branches?.[props.branchName]?.when?.[props.whenName]?.terms?.push(terms)
   formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName].push(['', '', '', '并且'])
 }
 
 const onDelete = () => {
-  formModel.value.branches?.[props.branchName]?.when?.[props.whenName]?.terms?.[props.termsName]?.terms?.splice(props.name, 1)
-  formModel.value.options!.when[props.branchName].terms[props.whenName].terms.splice(props.name, 1)
+  formModel.value.branches?.[props.branchName]?.when?.[props.whenName]?.terms?.splice(props.termsName, 1)
+  formModel.value.options!.when[props.branchName].terms[props.whenName].terms.splice(props.termsName, 1)
 }
 
 nextTick(() => {
-  Object.assign(paramsValue, pick(props.value, ['column', 'options', 'termType', 'terms', 'type', 'value']))
+  Object.assign(paramsValue, pick(props.value, ['column', 'options', 'termType', 'terms', 'type', 'value', 'metric', 'key']))
 })
 
 </script>

@@ -102,6 +102,10 @@ const props = defineProps({
     parallel: {
         type: Boolean,
     },
+    options: {
+      type: Object,
+      default: () => ({})
+    }
 });
 
 const current = ref<number>(0);
@@ -125,6 +129,7 @@ const DeviceModel = reactive<DeviceModelType>({
 const DeviceOptions = ref<DeviceOptionType>({});
 
 const emit = defineEmits<Emit>();
+const optionColumnCache = ref<string[]>(props.options?.otherColumn || [])
 
 const onCancel = () => {
     emit('cancel');
@@ -150,6 +155,7 @@ const onSave = (_data: any) => {
         selector: DeviceModel.selector, //选择器标识
         triggerName: data.value.options?.trigger?.name || '触发设备',
         ...DeviceOptions.value,
+        otherColumns: []
     };
     const _type = _data.message.messageType;
     if (_type === 'INVOKE_FUNCTION') {
@@ -164,8 +170,9 @@ const onSave = (_data: any) => {
             (typeof _options?.propertiesValue === 'object'
                 ? JSON.stringify(_options?.propertiesValue)
                 : _options?.propertiesValue)
+      _options.otherColumns = optionColumnCache.value
     }
-    console.log(item)
+
     emit('save', item, JSON.parse(JSON.stringify(_options)));
 };
 
@@ -195,7 +202,8 @@ const onDeviceSave = (_data: any, obj?: any) => {
     DeviceOptions.value = { ...unref(DeviceOptions), ...obj };
 };
 
-const onActionsChange = (options?: any) => {
+const onActionsChange = (options?: any, optionColumn: string[]) => {
+    optionColumnCache.value = optionColumn
     const obj = {
         ...DeviceOptions.value,
         ...options,

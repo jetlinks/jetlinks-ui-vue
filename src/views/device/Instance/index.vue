@@ -271,7 +271,7 @@
     </page-container>
     <Import
         v-if="importVisible"
-        @close="importVisible = false"
+        @cancel="importVisible = false"
         @save="onRefresh"
     />
     <Export
@@ -308,7 +308,7 @@ import {
 } from '@/api/device/instance';
 import { getImage, LocalStore } from '@/utils/comm';
 import { message } from 'jetlinks-ui-components';
-import Import from './Import/index.vue';
+import Import from './Import/modal.vue';
 import Export from './Export/index.vue';
 import Process from './Process/index.vue';
 import Save from './Save/index.vue';
