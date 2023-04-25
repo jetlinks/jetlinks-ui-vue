@@ -65,6 +65,7 @@ const columns = [
         dataIndex: 'handleTime',
         key: 'handleTime',
         scopedSlots: true,
+        width: 180,
         search: {
             type: 'date',
         },
@@ -74,6 +75,7 @@ const columns = [
         title: '处理类型',
         key: 'handleType',
         scopedSlots: true,
+        width: 120,
         search: {
             type: 'select',
             options: [
@@ -96,11 +98,13 @@ const columns = [
         search: {
             type: 'date',
         },
+        width:180,
     },
     {
         title: '告警处理',
         dataIndex: 'description',
         key: 'description',
+        ellipsis: true,
         search: {
             type: 'string',
         },

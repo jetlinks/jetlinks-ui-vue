@@ -368,6 +368,7 @@
                 :branchGroup="thenName"
                 :branchesName="branchesName"
                 :data="data"
+                :options='_data.branches[branchesName].then[thenName].actions[name].options'
                 @cancel="onClose"
                 @save="onSave"
             />
@@ -377,6 +378,7 @@
                 v-bind="props"
                 v-if="!!actionType"
                 :actionType="actionType"
+                :options='_data.branches[branchesName].then[thenName].actions[name].options'
                 @save="onPropsOk"
                 @cancel="onPropsCancel"
             />
@@ -523,12 +525,17 @@ const onType = (_type: string) => {
 const onSave = (data: ActionsType, options: any) => {
   const { key, terms } = _data.value.branches![props.branchesName].then?.[props.thenName].actions?.[props.name]
   console.log({...props.options, ...options})
+
+  const columns = new Set([...(props.options?.termsColumns || []), ...(options.otherColumns.filter((item?: string) => item))])
+
   const actionItem: ActionsType = {
     ...data,
-    options: {...props.options, ...options},
+    options: {...props.options, ...options, columns: [...columns.values()]},
     key,
     terms
   }
+
+  console.log(actionItem)
   _data.value.branches![props.branchesName].then[props.thenName].actions.splice(props.name, 1, actionItem)
 
   visible.value = false;

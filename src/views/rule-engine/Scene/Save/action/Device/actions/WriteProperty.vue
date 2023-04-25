@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts" setup>
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, isObject } from 'lodash-es'
 import ParamsDropdown from '../../../components/ParamsDropdown';
 import { handleParamsData } from './index';
 const props = defineProps({
@@ -172,6 +172,7 @@ const onChange = () => {
 };
 
 const onValueChange = (val: any, label: string) => {
+  const optionColumn = isObject(val) && (val as any).metadata ? [(val as any).column] : []
     const obj = {
         [`${propertyModelRef.properties}`]: {
             value: propertyModelRef?.propertiesValue,
@@ -179,7 +180,7 @@ const onValueChange = (val: any, label: string) => {
         },
     };
     emit('update:value', obj);
-    emit('change', label || val)
+    emit('change', label || val, optionColumn)
 };
 
 watch(

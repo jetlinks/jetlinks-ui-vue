@@ -65,8 +65,8 @@
                 v-else
                 style="width: calc(100% - 120px)"
                 placeholder="请选择收信人"
-                @select="
-                    (key, node) => onChange(source, key, node?.isRelation, node?.name)
+                @change="
+                    (key, label) => onChange(source, key, undefined, label)
                 "
                 :tree-data="treeData"
                 :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
@@ -209,6 +209,7 @@ const treeData = ref<any[]>([
 ]);
 const mySource = ref<string>('relation');
 const labelMap = new Map();
+const treeDataMap = new Map()
 
 const getRelationUsers = async (notifyType: string, notifierId: string) => {
     let resp = undefined;
@@ -250,6 +251,7 @@ const getUser = async (_source: string, triggerType: string) => {
     }
     if (platformResp.status === 200) {
         newTree[0].children = platformResp.result.map((item: any) => {
+          treeDataMap.set(item.id, item)
             return {
                 ...item,
                 value: item.id,
@@ -265,6 +267,7 @@ const getUser = async (_source: string, triggerType: string) => {
             key: 'p2',
             selectable: false,
             children: relationResp.result.map((item: any) => {
+              treeDataMap.set(item.id, item)
                 return {
                     ...item,
                     value: item.id,
@@ -324,6 +327,7 @@ const onChange = (
     _name?: string,
 ) => {
     let _values: any = undefined;
+
     const _names: string[] = Array.isArray(_name) ? _name : [_name || ''];
     if (Array.isArray(_value)) {
         if (props?.notify?.notifyType === 'email') {
@@ -339,7 +343,9 @@ const onChange = (
             }
         }
     } else {
-        _values = getObj(_source, _value, isRelation);
+      const item = treeDataMap.get(_value)
+      const _isRelation = item.isRelation
+        _values = getObj(_source, _value, _isRelation);
     }
     emit('update:value', _values);
     emit('change', _names.filter((item) => !!item).join(','));

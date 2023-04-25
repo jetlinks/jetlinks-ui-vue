@@ -60,6 +60,7 @@
                             :value="formModel.variables"
                             :notify="formModel"
                             :template="template"
+                            :options='options'
                             @change="(val) => onValChange(val, 'variables')"
                             ref="variableRef"
                         />
@@ -82,7 +83,7 @@
     </j-modal>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name='NotifyIndex'>
 import NotifyWay from './NotifyWay.vue';
 import NotifyConfig from './NotifyConfig.vue';
 import NotifyTemplate from './NotifyTemplate.vue';
@@ -99,7 +100,7 @@ const props = defineProps({
     },
     options: {
         type: Object,
-        default: () => {},
+        default: () => ({}),
     },
     name: {
         type: Number,

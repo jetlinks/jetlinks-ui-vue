@@ -32,20 +32,14 @@ export const defaultBranches = [
       {
         terms: [
           {
-            terms: [
-              {
-                column: undefined,
-                value: {
-                  source: 'fixed',
-                  value: undefined
-                },
-                termType: undefined,
-                key: 'params_1',
-                type: 'and',
-              },
-            ],
+            column: undefined,
+            value: {
+              source: 'fixed',
+              value: undefined
+            },
+            termType: undefined,
+            key: 'params_1',
             type: 'and',
-            key: 'terms_1_terms_1',
           },
         ],
         type: 'and',
@@ -124,6 +118,7 @@ export const useSceneStore = defineStore('scene', () => {
           branches.push(null);
         }
       }
+      console.log(branches)
       data.value = {
         ...result,
         trigger: result.trigger || {},

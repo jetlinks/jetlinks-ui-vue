@@ -3,7 +3,7 @@
     <TitleComponent data='触发条件' style='font-size: 14px;' >
       <template #extra>
         <j-switch
-          :checked='open'
+          v-model:checked='open'
           @change='change'
           checkedChildren='开'
           unCheckedChildren='关'
@@ -60,17 +60,35 @@ import Action from '../../action/index.vue'
 
 const sceneStore = useSceneStore()
 const { data } = storeToRefs(sceneStore)
-const open = ref(false)
+const open = ref<boolean>(false)
 const columnOptions = ref<any>([])
 
 provide(ContextKey, columnOptions)
 
 const change = (e: boolean) => {
-  open.value = e
   if (!e) {
     data.value.branches!.length = 1
+    data.value.branches![0].when = []
   } else {
     data.value.branches!.push(null as any)
+    data.value.branches![0].when = [
+      {
+        terms: [
+          {
+            column: undefined,
+            value: {
+              source: 'fixed',
+              value: undefined
+            },
+            termType: undefined,
+            key: 'params_1',
+            type: 'and',
+          },
+        ],
+        type: 'and',
+        key: 'terms_1',
+      },
+    ]
   }
 }
 
@@ -119,10 +137,15 @@ watchEffect(() => {
 })
 
 watchEffect(() => {
-  open.value = !(
-    data.value.branches &&
-    data.value.branches?.length === 1
-  )
+  if (data.value.branches?.filter(item => item).length) {
+    open.value = !!data.value.branches[0].when.length
+  } else {
+    open.value = true
+  }
+})
+
+onMounted(() => {
+  console.log('terms-onMounted')
 })
 
 </script>

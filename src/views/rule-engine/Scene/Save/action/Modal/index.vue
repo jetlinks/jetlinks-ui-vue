@@ -24,6 +24,7 @@
                 v-bind="props"
                 v-if="!!actionType"
                 :actionType="actionType"
+                :options='actionOptions'
                 @save="onPropsOk"
                 @cancel="onPropsCancel"
             />
@@ -64,6 +65,10 @@ const props = defineProps({
     parallel: {
         type: Boolean,
     },
+    actionOptions: {
+      type: Object,
+      default: () => ({})
+    }
 });
 
 const emit = defineEmits(['cancel', 'save']);

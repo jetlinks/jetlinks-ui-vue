@@ -72,6 +72,13 @@
                     }"
                     :params="params"
                 >
+                  <template #completeTime="slotProps">
+                        <span>{{
+                            moment(slotProps.completeTime).format(
+                              'YYYY-MM-DD HH:mm:ss',
+                            )
+                          }}</span>
+                  </template>
                     <template #createTime="slotProps">
                         <span>{{
                             moment(slotProps.createTime).format(

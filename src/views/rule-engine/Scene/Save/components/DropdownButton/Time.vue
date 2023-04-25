@@ -10,6 +10,7 @@
       :getPopupContainer='getPopupContainer'
       popupClassName='manual-time-picker-popup'
       @change='change'
+      @ok='change'
     />
     <j-date-picker
       v-else
@@ -21,6 +22,7 @@
       :getPopupContainer='getPopupContainer'
       popupClassName='manual-time-picker-popup'
       @change='change'
+      @ok='change'
     />
   </div>
 </template>
@@ -58,6 +60,7 @@ const getPopupContainer = (trigger: HTMLElement) => {
 }
 
 const change = (e: string) => {
+  console.log('Time',e)
   myValue.value =  e
   emit('update:value', e)
   emit('change', e)

@@ -120,7 +120,7 @@ const jumpDetail = (item:any) =>{
         }
     }
     .new-alarm-item-level {
-        width: 52px;
+        width: 70px;
         padding: 2px 8px;
         color: #fff;
         text-align: center;
