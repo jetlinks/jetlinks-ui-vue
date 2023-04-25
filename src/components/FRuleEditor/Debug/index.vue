@@ -201,6 +201,7 @@ onUnmounted(() => {
   if (ws.value) {
     ws.value.unsubscribe?.();
   }
+  clearAction()
 })
 
 const options = ref<{ label: string, value: string }[]>()

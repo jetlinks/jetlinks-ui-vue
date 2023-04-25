@@ -52,7 +52,6 @@ const cpuSocket = getWebSocket(
 )
     ?.pipe(map((res: any) => res.payload))
     .subscribe((resp: any) => {
-        console.log(resp)
         cpu.value = resp.value?.systemUsage || 0;
     });
 const jvmSocket = getWebSocket(
