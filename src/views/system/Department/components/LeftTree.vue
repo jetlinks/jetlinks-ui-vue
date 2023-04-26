@@ -188,7 +188,7 @@ function delDepartment(id: string) {
 function refresh(id: string) {
     // @ts-ignore
     window?.onTabSaveSuccess && window.onTabSaveSuccess(id);
-    window.close();
+    setTimeout(() => window.close(), 300);
     getTree();
 }
 

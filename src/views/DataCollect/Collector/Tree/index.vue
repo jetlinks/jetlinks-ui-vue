@@ -25,8 +25,8 @@
                 v-model:selected-keys="selectedKeys"
                 :fieldNames="{ key: 'id' }"
                 v-if="
-                    defualtDataSource.length !== 0 ||
-                    defualtDataSource?.[0]?.children?.length !== 0
+                    !(defualtDataSource.length === 0 ||
+                    defualtDataSource?.[0]?.children?.length === 0)
                 "
                 :height="660"
                 defaultExpandAll
@@ -247,7 +247,7 @@ const handleSearch = async (value: any) => {
         collectorAll.value = res.result;
 
         if (selectedKeys.value.length === 0) {
-            selectedKeys.value = ['*'];
+            selectedKeys.value = res.result.length ? ['*'] : [];
         }
 
         //激活change事件
@@ -259,8 +259,8 @@ const handleSearch = async (value: any) => {
     }
     spinning.value = false;
 };
-
 const getChannelNoPaging = async () => {
+
     const res = await queryChannelNoPaging();
     Store.set('channelListAll', res.result);
 };
@@ -275,8 +275,14 @@ watch(
     (n, p) => {
         const key = _.isArray(n) ? n[0] : n;
         if (key) {
+          if (key !== "*") {
             const row = collectorAll.value.find((i: any) => i.id === key);
             emits('change', row);
+          } else {
+            emits('change', {
+              id: '*'
+            });
+          }
         } else {
             selectedKeys.value = p; // 防止取消
         }

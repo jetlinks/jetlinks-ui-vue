@@ -61,6 +61,13 @@ import {
 } from './tool.ts';
 import { DataType } from '../typings';
 
+const props = defineProps({
+  serviceId: {
+    type: String,
+    default: undefined
+  }
+})
+
 const chartRef = ref<Record<string, any>>({});
 const loading = ref(false);
 const data = ref<DataType>({
@@ -79,7 +86,8 @@ const getJVMEcharts = async (val: any) => {
         const _jvmOptions = {};
         const _jvmXAxis = new Set();
         if (res.result?.length) {
-            res.result.forEach((item: any) => {
+          const filterArray = res.result.filter((item : any) => item.data?.clusterNodeId === props.serviceId)
+          filterArray.forEach((item: any) => {
                 const value = item.data.value;
                 const memoryJvmHeapFree = value.memoryJvmHeapFree;
                 const memoryJvmHeapTotal = value.memoryJvmHeapTotal;
@@ -172,16 +180,14 @@ watch(
     },
     { immediate: true, deep: true },
 );
-watch(
-    () => data.value,
-    (val) => {
-        const { time } = val;
-        if (time && Array.isArray(time) && time.length === 2 && time[0]) {
-            getJVMEcharts(val);
-        }
-    },
-    { immediate: true, deep: true },
-);
+
+watchEffect(() => {
+  const time = data.value.time
+  if (time && Array.isArray(time) && time.length === 2 && time[0] && props.serviceId) {
+    getJVMEcharts(data.value);
+  }
+})
+
 </script>
 
 <style lang="less" scoped>

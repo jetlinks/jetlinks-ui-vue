@@ -69,6 +69,13 @@ import dayjs from 'dayjs';
 import * as echarts from 'echarts';
 import { DataType } from '../typings.d';
 
+const props = defineProps({
+  serviceId: {
+    type: String,
+    default: undefined
+  }
+})
+
 const chartRef = ref<Record<string, any>>({});
 const loading = ref(false);
 const data = ref<DataType>({
@@ -90,7 +97,8 @@ const getNetworkEcharts = async (val: any) => {
         const _networkOptions = {};
         const _networkXAxis = new Set();
         if (resp.result.length) {
-            resp.result.forEach((item: any) => {
+          const filterArray = resp.result.filter((item : any) => item.data?.clusterNodeId === props.serviceId)
+          filterArray.forEach((item: any) => {
                 const value = item.data.value;
                 const _data: Array<any> = [];
                 const nodeID = item.data.clusterNodeId;
@@ -191,18 +199,14 @@ watch(
     },
     { immediate: true, deep: true },
 );
-watch(
-    () => data.value,
-    (value) => {
-        const {
-            time: { time },
-        } = value;
-        if (time && Array.isArray(time) && time.length === 2 && time[0]) {
-            getNetworkEcharts(value);
-        }
-    },
-    { immediate: true, deep: true },
-);
+
+watchEffect(() => {
+  const time = data.value.time.time
+  if (time && Array.isArray(time) && time.length === 2 && time[0] && props.serviceId) {
+    getNetworkEcharts(data.value);
+  }
+})
+
 </script>
 
 <style lang="less" scoped>

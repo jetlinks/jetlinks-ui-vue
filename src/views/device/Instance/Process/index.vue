@@ -54,7 +54,7 @@ const handleCancel = () => {
 };
 
 const _percent = computed(() => {
-    return ((errCount.value + count.value) / total.value * 100).toFixed(2)
+    return total.value ? ((errCount.value + count.value) / total.value * 100).toFixed(2) : 0
 })
 
 const getData = (api: string) => {
@@ -81,6 +81,12 @@ const getData = (api: string) => {
                 break;
             default:
                 break;
+        }
+        if ((count.value + errCount.value) >= total.value) {
+          setTimeout(() => {
+            _source.close();
+            flag.value = false;
+          }, 500)
         }
     };
     _source.onerror = () => {
