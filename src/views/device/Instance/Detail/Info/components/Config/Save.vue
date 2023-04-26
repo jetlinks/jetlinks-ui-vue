@@ -21,9 +21,11 @@
         <j-form layout="vertical" ref="formRef" :model="modelRef">
             <template v-for="(item, index) in (props.config || [])" :key="index">
                 <j-form-item
-                    :name="item.property"
                     v-for="i in item.properties"
+                    :name="i.property"
                     :key="i.property"
+                    :required='!!i.type.expands?.required'
+                    :rules='!!i.type.expands?.required ? [{ required: true, message: `请输入${i.name}`}] :[]'
                 >
                     <template #label>
                         <span style="margin-right: 5px">{{ i.name }}</span>
@@ -90,7 +92,8 @@ const onClose = () => {
 };
 
 const saveBtn = () => {
-    formRef.value.validate().then(async () => {
+    formRef.value.validate().then(async (res) => {
+      if (res) {
         const values = toRaw(modelRef);
         const resp = await modify(instanceStore.current?.id || '', {
             id: instanceStore.current?.id,
@@ -100,6 +103,7 @@ const saveBtn = () => {
             message.success('操作成功！')
             emit('save');
         }
+      }
     });
 };
 </script>
