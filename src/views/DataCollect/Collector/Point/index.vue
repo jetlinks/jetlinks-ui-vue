@@ -468,7 +468,7 @@ const columns = [
 
 const subRef = ref();
 const propertyValue = ref(new Map());
-
+const cacheIds = ref<string>()
 const showBatch = ref(false);
 
 const clickBatch = () => {
@@ -657,15 +657,18 @@ const onCheckAllChange = (e: any) => {
 watch(
     () => tableRef?.value?._dataSource,
     (value) => {
+        subRef.value?.unsubscribe();
         if (value.length !== 0) {
-            subscribeProperty(value);
-            value.forEach((item: any) => {
-                item?.accessModes?.forEach((i: any) => {
-                    if (i?.value === 'read') {
-                        ReadIdMap.set(item.id, item);
-                    }
-                });
-            });
+            setTimeout(() => {
+              subscribeProperty(value);
+              value.forEach((item: any) => {
+                  item?.accessModes?.forEach((i: any) => {
+                      if (i?.value === 'read') {
+                          ReadIdMap.set(item.id, item);
+                      }
+                  });
+              });
+            }, 100)
         }
         cancelSelect();
         checkAll.value = false;
@@ -701,9 +704,7 @@ watch(
 );
 
 onUnmounted(() => {
-    if (subRef.value) {
-        subRef.value?.unsubscribe();
-    }
+  subRef.value?.unsubscribe();
 });
 
 /**

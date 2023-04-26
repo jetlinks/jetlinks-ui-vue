@@ -62,9 +62,9 @@
                 />
             </j-form-item>
             <p style="color: #616161" v-if="formData.configuration.function">
-                PLC地址:{{
+                PLC地址: {{
                     InitAddress[formData.configuration.function] +
-                        formData.pointKey || 0
+                        Number(formData.pointKey) || 0
                 }}
             </p>
             <j-form-item
