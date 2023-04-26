@@ -45,47 +45,43 @@ const subscribeNotice = () => {
             total.value += 1;
             notification.open({
                 message: resp?.payload?.topicName,
-                description: () => (
-                    <div
-                        class="ellipsis"
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => {
-                            {
-                                /* changeStatus_api('_read', [resp.id]); */
-                            }
-                            read('', resp);
-                        }}
-                    >
-                        {resp?.payload?.message}
-                    </div>
-                ),
+                description: () =>
+                  h(
+                    'div',
+                    {
+                      class: "ellipsis",
+                      style: {
+                        cursor: 'pointer'
+                      },
+                      onClick: () => {
+                        read('', resp);
+                      }
+                    },
+                    {
+                      default: () => resp?.payload?.message
+                    }
+                  )
+                ,
                 onClick: () => {
                     // changeStatus_api('_read', [resp.id])
                     read('', resp);
                 },
                 key: resp.payload.id,
-                btn: (
-                    <Button
-                        type="primary"
-                        size="small"
-                        onClick={(e) => {
-                            {
-                                /* changeStatus_api('_read', [resp.id]).then(
-                                (resp: any) => {
-                                    if (resp.status === 200) {
-                                        notification.close(resp.payload.id);
-                                        getList();
-                                    }
-                                },
-                            ); */
-                            }
-                            e.stopPropagation();
-                            read('_read', resp);
-                        }}
-                    >
-                        标记已读
-                    </Button>
-                ),
+                btn: () =>
+                  h(
+                    Button,
+                    {
+                      type: "primary",
+                      size: "small",
+                      onClick: (e: Event) => {
+                        e.stopPropagation();
+                        read('_read', resp);
+                      }
+                    },
+                    {
+                      default: () => "标记已读"
+                    }
+                  ),
             });
         });
 };
