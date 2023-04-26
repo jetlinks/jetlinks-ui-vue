@@ -12,7 +12,7 @@
     <pro-search
       :columns="columns"
       target="deviceModal"
-      @search="search"
+      @search="handleSearch"
       type="simple"
     />
     <JProTable
@@ -27,7 +27,7 @@
                     { name: 'createTime', order: 'desc' },
                 ] : [{ name: 'createTime', order: 'desc' }],
             }"
-      :params="queryParams"
+      :params="params"
       @cancelSelect="cancelSelect"
       :gridColumn="2"
       :gridColumns="[2]"
@@ -164,6 +164,7 @@ const params = ref<Record<string, any>>({
   pageSize: 4,
   terms: [],
 })
+
 const selectedRowKeys = ref<string[]>(props.accessId ? [props.accessId] : [])
 
 const getDescription = (slotProps: Record<string, any>) =>
@@ -289,7 +290,7 @@ const cancel = () => {
 };
 
 const handleSearch = (e: any) => {
-  params.value = e;
+  params.value.terms = e.terms;
 };
 
 const handleClick = (data: any) => {

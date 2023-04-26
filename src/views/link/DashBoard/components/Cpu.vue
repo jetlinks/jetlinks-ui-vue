@@ -61,6 +61,13 @@ import {
 } from './tool.ts';
 import { DataType } from '../typings';
 
+const props = defineProps({
+  serviceId: {
+    type: String,
+    default: undefined
+  }
+})
+
 const chartRef = ref<Record<string, any>>({});
 const loading = ref(false);
 const data = ref<DataType>({
@@ -79,7 +86,8 @@ const getCPUEcharts = async (val: any) => {
         const _cpuOptions = {};
         const _cpuXAxis = new Set();
         if (res.result?.length) {
-            res.result.forEach((item: any) => {
+          const filterArray = res.result.filter((item : any) => item.data?.clusterNodeId === props.serviceId)
+          filterArray.forEach((item: any) => {
                 const value = item.data.value;
                 const nodeID = item.data.clusterNodeId;
                 _cpuXAxis.add(
@@ -168,16 +176,14 @@ watch(
     },
     { immediate: true, deep: true },
 );
-watch(
-    () => data.value,
-    (val) => {
-        const { time } = val;
-        if (time && Array.isArray(time) && time.length === 2 && time[0]) {
-            getCPUEcharts(val);
-        }
-    },
-    { immediate: true, deep: true },
-);
+
+watchEffect(() => {
+  const time = data.value.time
+  if (time && Array.isArray(time) && time.length === 2 && time[0] && props.serviceId) {
+    getCPUEcharts(data.value);
+  }
+})
+
 </script>
 
 <style lang="less" scoped>

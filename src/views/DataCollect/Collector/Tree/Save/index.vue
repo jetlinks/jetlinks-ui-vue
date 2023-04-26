@@ -224,12 +224,12 @@ const handleOk = async () => {
 
     loading.value = true;
     const response = !id
-        ? await save(params)
-        : await update(id, { ...props.data, ...params });
-    if (response.status === 200) {
+        ? await save(params).catch(() => { success: false })
+        : await update(id, { ...props.data, ...params }).catch(() => { success: false });
+    loading.value = false;
+    if (response.success) {
         emit('change', true);
     }
-    loading.value = false;
 };
 
 const getTypeTooltip = (value: string) =>
