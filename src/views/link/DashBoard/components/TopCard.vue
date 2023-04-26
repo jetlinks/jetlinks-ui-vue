@@ -60,15 +60,26 @@ const topValues = ref({
     systemUsage: 0,
     systemUsageTotal: 0,
 });
+const wsRef = ref<any>()
+
+const emit = defineEmits(['serviceChange'])
 
 const serverIdChange = (val: string) => {
     serverId.value = val;
 };
 
+const unSub = () => {
+  if (wsRef.value) {
+    wsRef.value.unsubscribe()
+  }
+}
+
 const getData = () => {
     const id = 'operations-statistics-system-info-realTime';
     const topic = '/dashboard/systemMonitor/stats/info/realTime';
-    getWebSocket(id, topic, {
+    unSub()
+
+    wsRef.value = getWebSocket(id, topic, {
         type: 'all',
         serverNodeId: serverId.value,
         interval: '1s',
@@ -118,10 +129,16 @@ onMounted(() => {
       });
     }
 });
+
+onUnmounted(() => {
+  unSub()
+})
+
 watch(
     () => serverId.value,
     (val) => {
         val && getData();
+        emit('serviceChange', val)
     },
 );
 </script>
