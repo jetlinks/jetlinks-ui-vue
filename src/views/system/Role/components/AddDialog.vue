@@ -65,7 +65,7 @@ const confirm = () => {
                 if (route.query.save) {
                     // @ts-ignore
                     window?.onTabSaveSuccess(resp.result.id);
-                    window.close();
+                    setTimeout(() => window.close(), 300);
                 } else jumpPage(`system/Role/Detail`, { id: resp.result.id });
             }
         })
