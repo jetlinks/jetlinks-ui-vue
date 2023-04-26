@@ -19,7 +19,7 @@ import Tree from './Tree/index.vue';
 import Point from './Point/index.vue';
 
 const data = ref();
-const spinning = ref(true);
+const spinning = ref(false);
 
 const changeTree = (row: any) => {
     spinning.value = true;

@@ -376,7 +376,8 @@ const defaultParams = ref({
             terms: [
                 {
                     column: 'collectorId',
-                    value: props.data.id,
+                    termType: 'eq',
+                    value: !props.data?.id ? 'undefined' : (props.data.id === '*' ? undefined : props.data.id),
                 },
             ],
         },
@@ -628,10 +629,10 @@ const handleSubscribeValue = throttle((payload: any) => {
 const subscribeProperty = (value: any) => {
     const list = value.map((item: any) => item.id);
     const id = `collector-${props.data?.channelId || 'channel'}-${
-        props.data?.id || 'point'
+        (props.data?.id || (props.data && props.data.id === '*')) ? 'point' : props.data?.id
     }-data-${list.join('-')}`;
     const topic = `/collector/${props.data?.channelId || '*'}/${
-        props.data?.id || '*'
+      (props.data?.id || (props.data && props.data.id === '*')) ? '*' : props.data?.id
     }/data`;
     subRef.value = getWebSocket(id, topic, {
         pointId: list.join(','),
@@ -694,7 +695,7 @@ watch(
                           label: '订阅',
                           value: 'subscribe',
                       });
-            defaultParams.value.terms[0].terms[0].value = value.id;
+            defaultParams.value.terms[0].terms[0].value = !value.id ? 'undefined' : (value.id === '*' ? undefined : value.id);
             tableRef?.value?.reload && tableRef?.value?.reload();
             cancelSelect();
             checkAll.value = false;
