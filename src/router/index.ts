@@ -20,7 +20,6 @@ const noTokenPath = [ AccountCenterBindPath, OauthPath ]
 router.beforeEach((to, from, next) => {
   // TODO 切换路由取消请求
   const token = getToken()
-  console.log(to.path, noTokenPath.includes(to.path))
   if (noTokenPath.includes(to.path)) {
     next()
   } else if (token) {

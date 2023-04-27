@@ -14,9 +14,10 @@
                   <div class='oauth-content-header'>
                     <img :src='headerImg' />
                   </div>
+                  <h2>授权登录</h2>
                   <div class='oauth-content-content'>
                     <div class='oauth-content-content-text'>
-                      您正在授权登录,{{ appName }}将获得以下权限:
+                      您正在授权登录, {{ appName }} 将获得以下权限:
                     </div>
                     <ul>
                       <li>关联{{userName}}账号</li>
@@ -32,15 +33,16 @@
                   <div class='oauth-content-header'>
                     <img :src='headerImg' />
                   </div>
+                  <h2>授权登录</h2>
                   <div class='oauth-content-login'>
-                    <j-form layout='horizontal' size='large' :model='formModel' >
-                      <j-form-item name='username'>
+                    <j-form layout='vertical' :model='formModel' ref='formRef' >
+                      <j-form-item label='用户名' name='username' required :rules='[{ required: true, message: "请输入用户名"}]'>
                         <j-input placeholder='用户名' v-model:value='formModel.username' />
                       </j-form-item>
-                      <j-form-item name='password'>
+                      <j-form-item label='密码' name='password' required :rules='[{ required: true, message: "请输入密码"}]'>
                         <j-input-password placeholder='密码' v-model:value='formModel.password' />
                       </j-form-item>
-                      <j-form-item name='verifyCode' v-if='captcha.base64'>
+                      <j-form-item name='verifyCode' v-if='captcha.base64' required :rules='[{ required: true, message: "请输入验证码"}]'>
                         <j-input placeholder='请输入验证码' v-model:value='formModel.verifyCode' >
                           <template #addonAfter>
                             <img
@@ -72,9 +74,10 @@
 
 <script setup lang='ts' name='Oauth'>
 import { TOKEN_KEY } from '@/utils/variable'
-import { config, code, getOAuth2, initApplication, authLogin } from '@/api/login'
+import { config, code, getOAuth2, initApplication, authLogin, settingDetail } from '@/api/login'
 import { getMe_api } from '@/api/home'
 import { getImage, getToken } from '@/utils/comm'
+import Config from '../../../config/config'
 
 const spinning = ref(true)
 const isLogin = ref(false)
@@ -84,6 +87,9 @@ const appName = ref('-')
 const userName = ref('-')
 const internal = ref('false')
 const params = ref()
+
+document.title = `OAuth授权-${Config.title}`;
+headerImg.value = getImage(Config.layout.logo)
 
 type LoginParam = {
   username: string;
@@ -103,6 +109,8 @@ const captcha = reactive<{base64?: string, key?: string }>({
   base64: undefined,
   key: undefined
 })
+
+const formRef = ref()
 
 const getApplication = async (clientId: string) => {
   const res = await initApplication(clientId)
@@ -141,7 +149,6 @@ const changeAccount = () => {
 }
 
 const getLoginUser = async (data?: any) => {
-  console.log(getToken())
   if (getToken()) { // 未登录
     const res = await getMe_api()
     if (res.success) {
@@ -182,19 +189,21 @@ const getQueryVariable = (variable: any) => {
   return '';
 }
 
-const doLogin = async () => {
-  const res = await authLogin({
-    verifyKey: captcha.key,
-    ...formModel
+const doLogin = () => {
+  formRef.value.validate().then( async data => {
+    const res = await authLogin({
+      verifyKey: captcha.key,
+      ...formModel
+    })
+    if (res.success) {
+      const token = res.result.token
+      localStorage.setItem(TOKEN_KEY, token)
+      getLoginUser()
+      // goOAuth2Fn()
+    } else {
+      getCode()
+    }
   })
-  if (res.success) {
-    const token = res.result.token
-    localStorage.setItem(TOKEN_KEY, token)
-    getLoginUser()
-    goOAuth2Fn()
-  } else {
-    getCode()
-  }
 }
 
 const initPage = async () => {
@@ -213,7 +222,6 @@ const initPage = async () => {
     const url = `${origin.join('/')}${items.redirect_uri?.split('redirect=')[1]}`
     // redirectUrl = `${items.redirect_uri?.split('redirect_uri=')[0]}?redirect=${url}`
     redirectUrl = items.redirect_uri
-    console.log(origin, items.redirect_uri)
   }
   // 获取用户信息
   getLoginUser({
@@ -229,9 +237,22 @@ const initPage = async () => {
   }
 }
 
-document.title = 'OAuth授权-jetlinks';
-headerImg.value = getImage('/logo.png')
+const getSettingDetail = () => {
+  settingDetail('front').then((res: any) => {
+    if (res.status === 200) {
+      const ico: any = document.querySelector('link[rel="icon"]');
+      ico.href = res.result.ico;
+      headerImg.value = res.result.logo
+      if (res.result.title) {
+        document.title = `OAuth授权-${res.result.title}`;
+      } else {
+        document.title = 'OAuth授权';
+      }
+    }
+  });
+}
 
+getSettingDetail()
 getCode()
 initPage()
 
@@ -320,7 +341,8 @@ initPage()
       gap: 24px;
     }
     .oauth-content-login {
-      max-width: 300px;
+      width: 100%;
+      padding: 0 24px;
     }
   }
 }
