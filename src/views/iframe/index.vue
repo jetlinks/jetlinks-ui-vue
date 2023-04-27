@@ -38,10 +38,14 @@ const handle = async (appId: string, url: string) => {
     }
 };
 
+
 watchEffect(() => {
-    const params = route.path.split('/')?.[1];
-    const url = route.path.split('/').slice(2).join('/');
-    handle(params, url);
+    const matchedItem: any = route.matched?.[0]
+    if (matchedItem?.meta?.isApp) {
+      const params = route.path.split('/')?.[1];
+      const url = route.path.split('/').slice(2).join('/');
+      handle(params, url);
+    }
 });
 </script>
 
