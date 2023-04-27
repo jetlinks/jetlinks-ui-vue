@@ -758,7 +758,7 @@ const updateAccessData = async (id: string, values: any) => {
     submitLoading.value = false
   }
 
-  if (access.value?.provider === "plugin_gateway") {
+  if (access.value?.provider === "plugin_gateway" && productData.id) {
     await savePluginData(
       'product',
       access.value?.id,

@@ -43,12 +43,14 @@ const route = useRoute()
 
 const handleOk = async () => {
   if (checkKey.value) {
+    loading.value = true
     const res = await savePluginData(
       'device',
       props.accessId!,
       route.params.id as string,
       checkKey.value
     ).catch(() => ({ success: false }))
+    loading.value = false
     if (res.success) {
       emit('submit', checkKey.value)
     }

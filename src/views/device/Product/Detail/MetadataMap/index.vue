@@ -101,11 +101,11 @@ const columns = [
 ]
 
 const selectedKeys = computed(() => {
-  return dataSource.value.filter(item => !!item?.plugin).map(item => item.id)
+  return dataSource.value?.filter(item => !!item?.plugin).map(item => item.id) || []
 })
 
 const selectedPluginKeys = computed(() => {
-  return dataSource.value.filter(item => !!item?.plugin).map(item => item.plugin)
+  return dataSource.value?.filter(item => !!item?.plugin).map(item => item.plugin) || []
 })
 
 const getMetadataMapData = () => {
@@ -151,7 +151,7 @@ const getDefaultMetadata = async () => {
       type: item.valueType?.type,
       plugin: _m?.pluginId, // 插件物模型id
     }
-  })
+  }) || []
   dataSourceCache.value = dataSource.value
 }
 

@@ -145,7 +145,8 @@ const saveInkling = (id: string) => {
     instanceStore.refresh(instanceStore.current?.id);
   }
   channelId.value = id
-  giveAnInkling()
+  queryInkling()
+  inkingVisible.value = false
 }
 
 const giveAnInkling = () => {
