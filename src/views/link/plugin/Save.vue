@@ -94,7 +94,7 @@ const loading = ref(false)
 const vailId = async (_: any, value: string) => {
   if (!props.data.id && value) { // 新增校验
     const resp = await vailIdFn(value)
-    if (resp.success && resp.result) {
+    if (resp.success && resp.result && !resp.result.passed) {
       return Promise.reject('ID重复');
     }
   }

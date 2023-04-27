@@ -41,6 +41,7 @@ const handle = async (appId: string, url: string) => {
 
 watchEffect(() => {
     const matchedItem: any = route.matched?.[0]
+    console.log('iframe', matchedItem?.meta?.isApp)
     if (matchedItem?.meta?.isApp) {
       const params = route.path.split('/')?.[1];
       const url = route.path.split('/').slice(2).join('/');
