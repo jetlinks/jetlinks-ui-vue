@@ -30,10 +30,6 @@ const props = defineProps({
     type: String,
     default: undefined
   },
-  channelId: {
-    type: String,
-    default: undefined
-  },
   id: {
     type: String,
     default: undefined
@@ -49,7 +45,7 @@ const handleOk = async () => {
   if (checkKey.value) {
     const res = await savePluginData(
       'device',
-      props.channelId!,
+      props.accessId!,
       route.params.id as string,
       checkKey.value
     ).catch(() => ({ success: false }))

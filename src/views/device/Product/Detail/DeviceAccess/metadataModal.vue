@@ -136,7 +136,7 @@ const updateAccessData = async (id: string, values: any, metadata: string) => {
   if (props.access?.provider === 'plugin_gateway') {
     await savePluginData(
       'product',
-      props.access.channelId,
+      props.access.id,
       props.data.id,
       props.data.productTypeId
     ).catch(() => ({}))
