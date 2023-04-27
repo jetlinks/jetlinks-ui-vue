@@ -13,7 +13,16 @@ interface AxiosResponseRewrite<T = any[]> extends AxiosResponse<T, any> {
 
 export const SUCCESS_CODE = 200 // 成功代码
 
-const filterApiUrl = ['/system/version', '/system/config/front', '/authorize/captcha/config', '/application/sso/_all', '/authorize/captcha/image', '/application/sso/bind-code', '/authorize/login']
+const filterApiUrl = [
+  '/system/version',
+  '/system/config/front',
+  '/authorize/captcha/config',
+  '/application/sso/_all',
+  '/authorize/captcha/image',
+  '/application/sso/bind-code',
+  '/authorize/login',
+  '/application/'
+]
 
 export const request = axios.create({
   withCredentials: false,
@@ -148,10 +157,10 @@ const errorHandler = (error: any) => {
     } else if (status === 401) {
       showNotification('Unauthorized', '用户未登录', '401')
       setTimeout(() => {
-        cleanToken()
-        router.replace({
-          path: LoginPath
-        })
+        // cleanToken()
+        // router.replace({
+        //   path: LoginPath
+        // })
       }, 0)
     } else if (status === 404) {
       showNotification(error?.code, error?.response?.data?.message, '404')

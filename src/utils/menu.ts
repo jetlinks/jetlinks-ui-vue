@@ -280,7 +280,8 @@ export function filterAsyncRouter(asyncRouterMap: any, parentCode = '', level = 
         icon: route.icon,
         title: route.name,
         hideInMenu: route.isShow === false,
-        buttons: route.buttons?.map((b: any) => b.id) || []
+        buttons: route.buttons?.map((b: any) => b.id) || [],
+        isApp: hasAppId,
       },
     }
 
