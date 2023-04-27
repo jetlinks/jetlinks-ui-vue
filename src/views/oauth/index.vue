@@ -74,7 +74,7 @@
 import { TOKEN_KEY } from '@/utils/variable'
 import { config, code, getOAuth2, initApplication, authLogin } from '@/api/login'
 import { getMe_api } from '@/api/home'
-import { getImage } from '@/utils/comm'
+import { getImage, getToken } from '@/utils/comm'
 
 const spinning = ref(true)
 const isLogin = ref(false)
@@ -106,11 +106,14 @@ const captcha = reactive<{base64?: string, key?: string }>({
 
 const getApplication = async (clientId: string) => {
   const res = await initApplication(clientId)
-  if (res.success) {
+  if (res.success && res.result) {
     appName.value = res.result.name
   }
 }
 
+/**
+ * 获取验证码配置
+ */
 const getCode = async () => {
   const resp = await config()
   if (resp.result?.enabled) {
@@ -138,26 +141,33 @@ const changeAccount = () => {
 }
 
 const getLoginUser = async (data?: any) => {
-  const res = await getMe_api()
-  if (res.success) {
-    userName.value = res.result?.user.name
-    isLogin.value = true
-    getApplication(data.client_id || params.value.client_id)
-    if (data.internal === 'true' || internal.value === 'true') { // 是否走oauth2
-      goOAuth2Fn(data)
+  console.log(getToken())
+  if (getToken()) { // 未登录
+    const res = await getMe_api()
+    if (res.success) {
+      userName.value = res.result?.user.name
+      isLogin.value = true
+      getApplication(data.client_id || params.value.client_id)
+      if (data.internal === 'true' || internal.value === 'true') { // 是否走oauth2
+        goOAuth2Fn(data)
+      }
+    } else if (res.status === 401) {
+      setTimeout(() => {
+        spinning.value = false
+      })
+      getCode()
+      getApplication(data.client_id || params.value.client_id)
+    } else {
+      setTimeout(() => {
+        spinning.value = false
+      })
     }
-  } else if (res.status === 401) {
-    setTimeout(() => {
-      spinning.value = false
-    })
-    getCode()
-    getApplication(data.client_id || params.value.client_id)
   } else {
+    getApplication(data.client_id || params.value.client_id)
     setTimeout(() => {
       spinning.value = false
     })
   }
-
 }
 
 const getQueryVariable = (variable: any) => {
@@ -178,9 +188,9 @@ const doLogin = async () => {
     ...formModel
   })
   if (res.success) {
-    getLoginUser()
     const token = res.result.token
     localStorage.setItem(TOKEN_KEY, token)
+    getLoginUser()
     goOAuth2Fn()
   } else {
     getCode()
@@ -189,6 +199,7 @@ const doLogin = async () => {
 
 const initPage = async () => {
   let redirectUrl
+  // 获取url中的配置信息
   const items = {
     client_id: getQueryVariable('client_id'),
     state: getQueryVariable('state'),
@@ -204,7 +215,7 @@ const initPage = async () => {
     redirectUrl = items.redirect_uri
     console.log(origin, items.redirect_uri)
   }
-
+  // 获取用户信息
   getLoginUser({
     ...items,
     internal: getQueryVariable('internal'),

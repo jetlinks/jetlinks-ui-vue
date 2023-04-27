@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import menus, { AccountCenterBindPath, InitHomePath, LoginPath } from './menu'
+import menus, { AccountCenterBindPath, InitHomePath, LoginPath, OauthPath } from './menu'
 import { cleanToken, getToken } from '@/utils/comm'
 import { useUserInfo } from '@/store/userInfo'
 import { useSystem } from '@/store/system'
@@ -14,12 +14,14 @@ const router = createRouter({
   }
 })
 
-const filterPath = [ InitHomePath, AccountCenterBindPath ]
+const filterPath = [ InitHomePath ]
+const noTokenPath = [ AccountCenterBindPath, OauthPath ]
 
 router.beforeEach((to, from, next) => {
   // TODO 切换路由取消请求
   const token = getToken()
-  if (to.path === AccountCenterBindPath) {
+  console.log(to.path, noTokenPath.includes(to.path))
+  if (noTokenPath.includes(to.path)) {
     next()
   } else if (token) {
     if (to.path === LoginPath) {
