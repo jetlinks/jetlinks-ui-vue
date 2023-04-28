@@ -686,7 +686,7 @@ const getData = async (accessId?: string) => {
               productTypes.value = resp.result.map(item => {
                 if (pluginRes?.result?.externalId === item.id) {
                   productData.id = pluginRes?.result?.externalId
-                  productData.metadata = JSON.stringify(item.metadata || {})
+                  productData.metadata = item.metadata
                 }
                 return { ...item, label: item.name, value: item.id }
               })
@@ -724,7 +724,20 @@ const submitDevice = async () => {
     const id = productStore.current?.id;
     // 该产品是否有物模型，有则弹窗进行处理
     const _metadata = JSON.parse(productStore.current?.metadata || '{}')
-    if (_metadata.properties?.length || _metadata.events?.length || _metadata.functions?.length || _metadata.tags?.length) {
+    console.log(_metadata.properties, productData.metadata)
+    if (
+      (_metadata.properties?.length ||
+      _metadata.events?.length ||
+      _metadata.functions?.length ||
+      _metadata.tags?.length
+      ) &&
+      (
+        productData.metadata?.properties?.length ||
+        productData.metadata?.events?.length ||
+        productData.metadata?.functions?.length ||
+        productData.metadata?.tags?.length
+      )
+    ) {
       metadataModalCacheData.value = {
         id,
         values,
