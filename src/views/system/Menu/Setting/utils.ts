@@ -304,3 +304,17 @@ export const getNodeDepth = (node: any) => {
     }
     return depth;
 };
+
+
+export const handleSorts = (node: any[]) => {
+    if (!node) return []
+    return node.map((item, index) => {
+        if (item.index !== index) {
+            item.sortIndex = index
+            if (item.children) {
+                item.children = handleSorts(item.children)
+            }
+        }
+        return item
+    })
+}
