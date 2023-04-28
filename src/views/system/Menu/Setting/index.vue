@@ -10,30 +10,31 @@
             <div class="content">
                 <j-card title="菜单配置" style="width: 80%">
                     <div class="tree">
+                      <j-scrollbar>
                         <j-tree
-                            v-if="treeData.length !== 0"
-                            show-line
-                            defaultExpandAll
-                            multiple
-                            draggable
-                            :tree-data="treeData"
-                            :height="520"
-                            @select="onSelect"
-                            :selectedKeys="selectedKeys"
-                            @drop="onDrop"
-                            @dragend="onDragend"
+                          v-if="treeData.length !== 0"
+                          show-line
+                          defaultExpandAll
+                          multiple
+                          draggable
+                          :tree-data="treeData"
+                          @select="onSelect"
+                          :selectedKeys="selectedKeys"
+                          @drop="onDrop"
+                          @dragend="onDragend"
                         >
-                            <template #title="row">
-                                <div class="tree-content">
-                                    <div class="tree-content-title">
-                                        <AIcon type="HolderOutlined" />
-                                        <div style="margin-left: 8px">
-                                            {{ row.name }}
-                                        </div>
-                                    </div>
+                          <template #title="row">
+                            <div class="tree-content">
+                              <div class="tree-content-title">
+                                <AIcon type="HolderOutlined" />
+                                <div style="margin-left: 8px">
+                                  {{ row.name }}
                                 </div>
-                            </template>
+                              </div>
+                            </div>
+                          </template>
                         </j-tree>
+                      </j-scrollbar>
                     </div>
                 </j-card>
             </div>
@@ -70,6 +71,7 @@ import {
     getMaxDepth,
     mergeArr,
     findAllParentsAndChildren,
+    handleSorts
 } from './utils';
 import BaseMenu from '@/views/init-home/data/baseMenu';
 import type { AntTreeNodeDropEvent } from 'ant-design-vue/es/tree';
@@ -134,9 +136,9 @@ function filterTree(nodes: Array<any>, selectedKeys: Array<any>) {
 
 const handleOk = async () => {
     const _dataArr = filterTree(cloneDeep(treeData.value), selectedKeys.value);
-
+    const _dataSorts = handleSorts(_dataArr)
     loading.value = true;
-    const res = await updateMenus(_dataArr).catch(() => {});
+    const res = await updateMenus(_dataSorts).catch(() => {});
     if (res?.status === 200) {
         onlyMessage('操作成功', 'success');
     }
@@ -260,6 +262,7 @@ onMounted(() => {
         border-radius: 4px;
         overflow: hidden;
         width: 100%;
+        height: 540px;
 
         &-content {
             display: flex;
