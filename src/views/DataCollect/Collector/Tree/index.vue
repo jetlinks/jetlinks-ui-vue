@@ -157,19 +157,17 @@ const defualtDataSource: any = ref(_.cloneDeep(root));
 const defualtParams = {
     paging: false,
     sorts: [{ name: 'createTime', order: 'desc' }],
-    terms: [
+    terms: !!channelId ? [
         {
-            terms: !!channelId
-                ? [
+            terms: [
                       {
                           column: 'channelId',
                           value: channelId,
                       },
-                  ]
-                : [],
+                  ],
             type: 'and',
         },
-    ],
+    ] : [],
 };
 const params = ref();
 

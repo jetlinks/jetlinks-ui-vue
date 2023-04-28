@@ -680,7 +680,7 @@ const getData = async (accessId?: string) => {
       if (productStore.current?.accessProvider === 'plugin_gateway') {
         queryPluginAccessDetail(_accessId).then(async res => { //
           if (res.success) {
-            const pluginRes = await getPluginData('product', res.result.channelId, productStore.current?.id)
+            const pluginRes = await getPluginData('product', _accessId, productStore.current?.id)
             const resp = await getProductByPluginId(res.result.channelId).catch(() => ({ success: false, result: []}))
             if (resp.success) {
               productTypes.value = resp.result.map(item => {
@@ -758,10 +758,10 @@ const updateAccessData = async (id: string, values: any) => {
     submitLoading.value = false
   }
 
-  if (access.value?.provider === "plugin_gateway") {
+  if (access.value?.provider === "plugin_gateway" && productData.id) {
     await savePluginData(
       'product',
-      access.value?.channelId,
+      access.value?.id,
       productStore.current.id,
       productData.id
     ).catch(() => ({}))

@@ -21,6 +21,13 @@ export const detail = (id: string) => get(`/plugin/driver/${id}`)
  */
 export const getProductsById = (id: string) => get(`/plugin/driver/${id}/products`)
 
+/**
+ *
+ * @param type product：产品;device：设备
+ * @param pluginId 设备接入id
+ * @param internalId 产品或者设备id
+ * @param externalId  映射id
+ */
 export const savePluginData = (type: string, pluginId: string, internalId: string, externalId: string ) => patch(`/plugin/mapping/${type}/${pluginId}/${internalId}`, externalId, { headers: {'Content-Type': "text/plain"}})
 
 export const getPluginData = (type: string, pluginId: string, internalId: string ) => get(`/plugin/mapping/${type}/${pluginId}/${internalId}`)

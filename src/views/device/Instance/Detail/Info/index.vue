@@ -110,7 +110,6 @@
   <InkingModal
     v-if='inkingVisible'
     :id='inklingDeviceId'
-    :channelId='channelId'
     :accessId='instanceStore.current.accessId'
     @cancel="inkingVisible = false"
     @submit='saveInkling'
@@ -146,7 +145,8 @@ const saveInkling = (id: string) => {
     instanceStore.refresh(instanceStore.current?.id);
   }
   channelId.value = id
-  giveAnInkling()
+  queryInkling()
+  inkingVisible.value = false
 }
 
 const giveAnInkling = () => {
@@ -158,7 +158,7 @@ const queryInkling = () => {
     queryPluginAccessDetail(instanceStore.current?.accessId).then(async res => {
       if (res.success) {
         channelId.value = res.result.channelId
-        const pluginRes = await getPluginData('device', res.result.channelId, instanceStore.current?.id)
+        const pluginRes = await getPluginData('device',instanceStore.current?.accessId, instanceStore.current?.id)
         if (pluginRes.success) {
           inklingDeviceId.value = pluginRes.result?.externalId
         }

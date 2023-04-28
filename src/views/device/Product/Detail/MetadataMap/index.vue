@@ -101,11 +101,11 @@ const columns = [
 ]
 
 const selectedKeys = computed(() => {
-  return dataSource.value.filter(item => !!item?.plugin).map(item => item.id)
+  return dataSource.value?.filter(item => !!item?.plugin).map(item => item.id) || []
 })
 
 const selectedPluginKeys = computed(() => {
-  return dataSource.value.filter(item => !!item?.plugin).map(item => item.plugin)
+  return dataSource.value?.filter(item => !!item?.plugin).map(item => item.plugin) || []
 })
 
 const getMetadataMapData = () => {
@@ -124,7 +124,6 @@ const getMetadataMapData = () => {
 }
 
 const search = (value: string) => {
-  console.log(value)
   if (value) {
     dataSource.value = dataSourceCache.value.filter((item: any) => {
       return !!item.name?.includes(value)
@@ -152,7 +151,7 @@ const getDefaultMetadata = async () => {
       type: item.valueType?.type,
       plugin: _m?.pluginId, // 插件物模型id
     }
-  })
+  }) || []
   dataSourceCache.value = dataSource.value
 }
 
@@ -161,7 +160,7 @@ const getPluginMetadata = (): Promise<{ properties: any[]}> => {
     queryPluginAccessDetail(productDetail.value?.accessId!).then(async res => {
       if (res.success) {
         const _channelId = (res.result as any)!.channelId
-        const pluginRes = await getPluginData('product', _channelId, productDetail.value?.id).catch(() => ({ success: false, result: {}}))
+        const pluginRes = await getPluginData('product', productDetail.value?.accessId, productDetail.value?.id).catch(() => ({ success: false, result: {}}))
         const resp = await getProductByPluginId(_channelId).catch(() => ({ success: false, result: []}))
         if (resp.success) {
           const _item = (resp.result as any[])?.find((item: any) => item.id === (pluginRes?.result as any)?.externalId)
