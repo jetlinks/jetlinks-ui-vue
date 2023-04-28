@@ -166,7 +166,11 @@ const errorHandler = (error: any) => {
       showNotification(error?.code, error?.response?.data?.message, '404')
     }
   } else if (error.response === undefined) {
-    showNotification(error.message, (error.stack + '').substr(0, 90), undefined)
+    if (error.message.includes('timeout')) {
+      showNotification(error.message, '接口响应超时', undefined)
+    } else {
+      showNotification(error.message, (error.stack + '').substr(0, 90), undefined)
+    }
   }
   return Promise.reject(error)
 }
