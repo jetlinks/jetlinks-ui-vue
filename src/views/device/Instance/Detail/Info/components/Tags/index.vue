@@ -19,7 +19,7 @@
                 <template #label>
                     <Ellipsis>{{ `${item.name}（${item.key})` }}</Ellipsis>
                 </template>
-                <Ellipsis>{{ item?.value }}</Ellipsis>
+                <Ellipsis>{{ findName(item) }}</Ellipsis>
             </j-descriptions-item>
         </j-descriptions>
         <Save v-if="visible" @close="visible = false" @save="saveBtn" />
@@ -46,4 +46,13 @@ const saveBtn = () => {
         instanceStore.refresh(instanceStore.current.id);
     }
 };
+
+const findName = (item: any) => {
+  let name = undefined
+  if (item.dataType) {
+    const _element = item.dataType.elements?.find((a: any) => a.value === item.value)
+    name = _element?.text
+  }
+  return name
+}
 </script>
