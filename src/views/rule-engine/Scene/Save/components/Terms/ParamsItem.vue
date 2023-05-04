@@ -54,6 +54,7 @@
         :options='valueOptions'
         :metricOptions='metricOption'
         :tabsOptions='tabsOptions'
+        :metric='paramsValue.value?.metric'
         v-model:value='paramsValue.value.value'
         v-model:source='paramsValue.value.source'
         @select='valueSelect'

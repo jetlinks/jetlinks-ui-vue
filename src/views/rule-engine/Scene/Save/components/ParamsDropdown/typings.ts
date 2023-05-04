@@ -53,5 +53,9 @@ export const defaultSetting = {
   tabsOptions: {
     type: Array as PropType<Array<TabsOption>>,
     default: () => []
+  },
+  metric: {
+    type: String,
+    default: undefined
   }
 }
