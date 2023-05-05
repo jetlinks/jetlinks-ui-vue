@@ -327,7 +327,7 @@ const handleOk = async () => {
     delete data?.nspwc;
     const { codec } = data?.configuration;
 
-    if (data?.configuration.function !== 'HoldingRegisters') {
+    if (!['HoldingRegisters', 'InputRegisters'].includes(data?.configuration.function)) {
         codec.provider = 'int8';
     }
     const { interval } = formData.value.configuration;
