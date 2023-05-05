@@ -523,6 +523,9 @@ const queryAccessDetail = async (id: string) => {
     }).then((res: any) => {
         if (res.status === 200) {
             access.value = res.result.data[0];
+          if (access.value?.transportDetail?.metadata) {
+            productData.metadata = JSON.parse(access.value?.transportDetail?.metadata)
+          }
         }
     });
 };
