@@ -192,7 +192,7 @@ export const getStreamingAggType = () => server.get<Record<string, string>[]>('/
  * @pId 产品id
  * @accessId 设备接入id
  */
-export const getAccessConfig = (pId: string, accessId: string) => server.get(`/device-product/${pId}/${accessId}/config-metadata`)
+export const getAccessConfig = (pId: string, accessId: string) => server.get(`/protocol/${pId}/${accessId}/configuration`)
 
 export const getMetadataConfig = (params: {
   deviceId: string;

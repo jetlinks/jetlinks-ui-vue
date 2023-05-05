@@ -160,6 +160,7 @@
                     type="primary"
                     @click="submitDevice"
                     hasPermission="device/Instance:update"
+                    :loading='submitLoading'
                     >保存</PermissionButton
                 >
             </j-col>
@@ -246,6 +247,15 @@
       @cancel=' visible = false'
       @submit='checkAccess'
     />
+  <!-- 物模型处理方式 -->
+  <MetaDataModal
+    v-if='metadataVisible'
+    :metadata='productData.metadata'
+    :access='access'
+    :data='metadataModalCacheData'
+    @cancel=' () => { metadataVisible = false, metadataModalCacheData = {}}'
+    @submit='MetaDataModalSubmit'
+  />
 </template>
 
 <script lang="ts" setup name='AccessConfig'>
@@ -280,6 +290,7 @@ import { useMenuStore } from '@/store/menu';
 import _ from 'lodash';
 import { accessConfigTypeFilter } from '@/utils/setting';
 import AccessModal from './accessModal.vue'
+import MetaDataModal from './metadataModal.vue'
 
 const productStore = useProductStore();
 const tableRef = ref();
@@ -296,7 +307,7 @@ marked.setOptions({
 const simpleImage = ref(Empty.PRESENTED_IMAGE_SIMPLE);
 const visible = ref<boolean>(false);
 const access = ref<Record<string, any>>({});
-const accessId = ref<string>(productStore.current.accessId)
+const accessId = ref<string | undefined>(productStore.current.accessId)
 const config = ref<any>({});
 const metadata = ref<ConfigMetadata>({ properties: [] });
 const dataSource = ref<string[]>([]);
@@ -319,6 +330,15 @@ const form = reactive<Record<string, any>>({
 const formData = reactive<Record<string, any>>({
     data: productStore.current?.configuration || {},
 });
+
+const metadataVisible = ref(false)
+const metadataModalCacheData = ref()
+const submitLoading = ref(false)
+const productData = reactive<{id?: string, metadata: any}>({
+  id: undefined,
+  metadata: {} // 物模型
+})
+
 /**
  * 显示弹窗
  */
@@ -486,6 +506,9 @@ const queryAccessDetail = async (id: string) => {
     }).then((res: any) => {
         if (res.status === 200) {
             access.value = res.result.data[0];
+          if (access.value?.transportDetail?.metadata) {
+            productData.metadata = JSON.parse(access.value?.transportDetail?.metadata)
+          }
         }
     });
 };
@@ -573,9 +596,13 @@ const checkAccess = async (data: any) => {
   access.value = data.access
   metadata.value = data.metadata[0]
   config.value = data.access?.transportDetail || {}
+  productData.metadata = {}
   handleColumns()
   markdownToHtml.value = config.value?.document ? marked(config.value.document) : '';
   getGuide(!!data.metadata.length); //
+  if (data.access?.transportDetail?.metadata) {
+    productData.metadata = JSON.parse(data.access?.transportDetail?.metadata)
+  }
 }
 
 /**
@@ -644,6 +671,49 @@ const getData = async (accessId?: string) => {
     });
 };
 
+const updateAccessData = async (id: string, values: any) => {
+  const result: any = {};
+  flatObj(values, result);
+  const { storePolicy, ...extra } = result;
+  // 更新选择设备(设备接入)
+  const accessObj = {
+    ...productStore.current,
+    metadata: JSON.stringify(productData.metadata || "{}"),
+    transportProtocol: access.value?.transport,
+    protocolName: access.value?.protocolDetail?.name,
+    accessId: access.value?.id,
+    accessName: access.value?.name,
+    accessProvider: access.value?.provider,
+    messageProtocol: access.value?.protocol,
+  }
+  submitLoading.value = true
+  const updateDeviceResp = await updateDevice(accessObj).catch(() => ({ success: false}))
+
+  if (!updateDeviceResp.success) {
+    submitLoading.value = false
+  }
+
+  // 更新产品配置信息
+  const resp = await modify(id || '', {
+    id: id,
+    configuration: { ...extra },
+    storePolicy: storePolicy,
+  });
+  submitLoading.value = false
+  if (resp.status === 200) {
+    message.success('操作成功！');
+    productStore.current!.storePolicy = storePolicy;
+    if ((window as any).onTabSaveSuccess) {
+      if (resp.result) {
+        (window as any).onTabSaveSuccess(resp);
+        setTimeout(() => window.close(), 300);
+      }
+    } else {
+      getDetailInfo();
+    }
+  }
+}
+
 /**
  * 保存设备接入
  */
@@ -654,39 +724,30 @@ const submitDevice = async () => {
     flatObj(values, result);
     const { storePolicy, ...extra } = result;
     const id = productStore.current?.id;
+  // 该产品是否有物模型，有则弹窗进行处理
+  const _metadata = JSON.parse(productStore.current?.metadata || '{}')
     //TODO 二次确认是否覆盖物模型
-    // 更新选择设备(设备接入)
-    const accessObj = {
-      ...productStore.current,
-      transportProtocol: access.value?.transport,
-      protocolName: access.value?.protocolDetail?.name,
-      accessId: access.value?.id,
-      accessName: access.value?.name,
-      accessProvider: access.value?.provider,
-      messageProtocol: access.value?.protocol,
+  if (
+    (_metadata.properties?.length ||
+      _metadata.events?.length ||
+      _metadata.functions?.length ||
+      _metadata.tags?.length
+    ) &&
+    (
+      productData.metadata?.properties?.length ||
+      productData.metadata?.events?.length ||
+      productData.metadata?.functions?.length ||
+      productData.metadata?.tags?.length
+    )
+  ) {
+    metadataModalCacheData.value = {
+      id,
+      values
     }
-    const updateDeviceResp = await updateDevice(accessObj)
-
-    if (!updateDeviceResp.success) return
-
-    // 更新产品配置信息
-    const resp = await modify(id || '', {
-        id: id,
-        configuration: { ...extra },
-        storePolicy: storePolicy,
-    });
-    if (resp.status === 200) {
-        message.success('操作成功！');
-        productStore.current!.storePolicy = storePolicy;
-        if ((window as any).onTabSaveSuccess) {
-            if (resp.result) {
-                (window as any).onTabSaveSuccess(resp);
-                setTimeout(() => window.close(), 300);
-            }
-        } else {
-            getDetailInfo();
-        }
-    }
+    metadataVisible.value = true
+  } else {
+    updateAccessData(id, values)
+  }
 };
 
 const flatObj = (obj: any, result: any) => {
@@ -699,7 +760,15 @@ const flatObj = (obj: any, result: any) => {
     });
 };
 
-const getDetailInfo = () => {};
+const MetaDataModalSubmit = () => {
+  // 跳转物模型标签
+  productStore.tabActiveKey = 'Metadata'
+}
+
+const getDetailInfo = async () => {
+  await productStore.getDetail(productStore.detail.id)
+  MetaDataModalSubmit()
+};
 
 
 getProvidersList()

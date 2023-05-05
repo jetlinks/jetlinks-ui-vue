@@ -257,14 +257,14 @@ const findProvidersByProvider = (provider: string) => {
 const submitData = async () => {
   if (selectedRowKeys.value.length) {
     loading.value= true
-    const resp = await getAccessConfig(props.productId!, checkData.value.id).catch(() => ({ success: false, result: {}}))
+    const resp = await getAccessConfig(checkData.value.protocol, checkData.value.transport).catch(() => ({ success: false, result: {}}))
     // 返回外部组件需要的数据
     loading.value = false
     if (resp.success) {
       // const providers = findProvidersByProvider((resp.result as any)[0]?.provider)
       emit('submit', {
         access: {...checkData.value},
-        metadata: resp.result
+        metadata: [resp.result]
       })
     }
   } else {
