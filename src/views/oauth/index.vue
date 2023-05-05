@@ -154,8 +154,8 @@ const getLoginUser = async (data?: any) => {
     if (res.success) {
       userName.value = res.result?.user.name
       isLogin.value = true
-      getApplication(data.client_id || params.value.client_id)
-      if (data.internal === 'true' || internal.value === 'true') { // 是否走oauth2
+      getApplication(data?.client_id || params.value.client_id)
+      if (data?.internal === 'true' || internal.value === 'true') { // 是否走oauth2
         goOAuth2Fn(data)
       }
     } else if (res.status === 401) {
@@ -163,14 +163,14 @@ const getLoginUser = async (data?: any) => {
         spinning.value = false
       })
       getCode()
-      getApplication(data.client_id || params.value.client_id)
+      getApplication(data?.client_id || params.value.client_id)
     } else {
       setTimeout(() => {
         spinning.value = false
       })
     }
   } else {
-    getApplication(data.client_id || params.value.client_id)
+    getApplication(data?.client_id || params.value.client_id)
     setTimeout(() => {
       spinning.value = false
     })

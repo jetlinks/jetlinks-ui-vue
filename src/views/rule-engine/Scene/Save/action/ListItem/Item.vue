@@ -445,11 +445,11 @@ const emit = defineEmits(['delete', 'update']);
 const visible = ref<boolean>(false);
 const triggerVisible = ref<boolean>(false);
 const actionType = ref('');
-const eventEmitterKey = EventEmitterKeys({
+const eventEmitterKey = ref(EventEmitterKeys({
   branch: props.branchesName,
   branchGroup: props.thenName,
   action: props.name
-})
+}))
 const formItemContext = Form.useInjectFormItemContext()
 const termsOptions = computed(() => {
     if (!props.parallel) {
@@ -464,7 +464,7 @@ const termsOptions = computed(() => {
 
 const onDelete = () => {
     const key = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].key
-    EventEmitter.emit(key!, { isDelete: true })
+    EventEmitter.emit(key!, { isDelete: true }) // 发布消息
     if (props.name !== 0 && !props.parallel) { // 清空上一个串行执行动作中的options.termsColumns和terms
       _data.value.branches![props.branchesName].then[props.thenName].actions[props.name - 1].options!.termsColumns = []
       _data.value.branches![props.branchesName].then[props.thenName].actions[props.name - 1].options!.terms = []
@@ -524,7 +524,6 @@ const onType = (_type: string) => {
  */
 const onSave = (data: ActionsType, options: any) => {
   const { key, terms } = _data.value.branches![props.branchesName].then?.[props.thenName].actions?.[props.name]
-  console.log({...props.options, ...options})
 
   const columns = new Set([...(props.options?.termsColumns || []), ...(options.otherColumns.filter((item?: string) => item))])
 
@@ -535,14 +534,11 @@ const onSave = (data: ActionsType, options: any) => {
     terms
   }
 
-  console.log(actionItem)
   _data.value.branches![props.branchesName].then[props.thenName].actions.splice(props.name, 1, actionItem)
 
   visible.value = false;
 
-  if (props.parallel === false) { // 串行
-    EventEmitter.emit(eventEmitterKey, data)
-  }
+  EventEmitter.emit(eventEmitterKey.value, data) // 发布消息
 };
 
 /**

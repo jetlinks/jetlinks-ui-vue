@@ -39,7 +39,7 @@
                   v-if='(["metric", "upper"].includes(item.key) ?  metricOptions : options).length'
                   :options='["metric", "upper"].includes(item.key) ?  metricOptions : options'
                   :value='myValue'
-                  :valueName='valueName'
+                  :valueName='props.source === "metric" ? "id" : valueName'
                   @click='onSelect'
                 />
                 <div class='scene-select-empty' v-else>
@@ -114,7 +114,7 @@ const visible = ref(false)
 
 nextTick(() => {
   mySource.value = props.source
-  myValue.value = props.value
+  myValue.value =  props.source === 'metric' ? props.metric : props.value
 })
 
 const tabsChange = (e: string) => {
@@ -143,6 +143,7 @@ const valueItemChange = (e: string) => {
 const onSelect = (e: string, option: any) => {
   visible.value = false
   label.value = option[props.labelName]
+  console.log(e, option)
   emit('update:value', e)
   emit('select', e, label.value, { 0: label.value }, option)
 }
@@ -160,18 +161,22 @@ const visibleChange = (v: boolean) => {
 
 watchEffect(() => {
   const _options = ['metric', 'upper'].includes(props.source) ? props.metricOptions : props.options
-  const option = getOption(_options, props.value as string, props.valueName) // 回显label值
-  myValue.value = props.value
+  const isMetric = props.source === 'metric' // 是否为指标值
+  const _value = isMetric ? props.metric : props.value
+  const _valueName = isMetric ? 'id' : props.valueName
+  const option = getOption(_options, _value as string, _valueName) // 回显label值
+  myValue.value = isMetric ? props.metric : props.value
   mySource.value = props.source
+  console.log(option)
   if (option) {
     label.value = option[props.labelName] || option.name
     treeOpenKeys.value = openKeysByTree(_options, props.value, props.valueName)
   } else {
-    let doubleNull = false
-    if (isArray(props.value)) {
-      doubleNull = !!props.value.filter(item => !!item).length
+    if (isMetric) { // 处理指标值回显
+      label.value = props.metric !== undefined ? props.value : props.placeholder
+    } else {
+      label.value = props.value !== undefined ? props.value : props.placeholder
     }
-    label.value = props.value !== undefined && !doubleNull ? props.value : props.placeholder
   }
 })
 

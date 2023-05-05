@@ -1,6 +1,6 @@
 <template>
   <j-menu class='scene-dropdown-menus' @click='click' :selectedKeys='[myValue]'>
-    <j-menu-item v-for='item in myOptions' :key='item.value' :title='item.label'>
+    <j-menu-item v-for='item in myOptions' :key='item[valueName]' :value='item.value' :title='item.label'>
       <div>
         <Ellipsis >
           {{ item.label }}
@@ -63,12 +63,11 @@ const handleBoolean = (key: string) => {
 }
 
 const click = (e: any) => {
-  let _key = ['true', 'false'].includes(e.key) ? handleBoolean(e.key) : e.key
-  if (isString(_key) && _key.startsWith('[') && _key.endsWith(']')) {
-    _key = JSON.parse(_key)
-  }
-  const option = getOption(myOptions.value, _key, props.valueName)
-  myValue.value = e.key
+  let _key = ['true', 'false'].includes(e.item?.value) ? handleBoolean(e.item?.value) : e.item?.value
+  const findKeyValue = e.key
+  const findKey = ['true', 'false'].includes(findKeyValue) ? handleBoolean(findKeyValue) : findKeyValue
+  const option = getOption(myOptions.value, findKey, props.valueName)
+  myValue.value = findKeyValue
   emit('update:value', _key)
   emit('click', _key, {
     key: _key,

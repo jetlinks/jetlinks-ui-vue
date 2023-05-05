@@ -11,6 +11,7 @@ import { query as deviceQuery } from '@/api/device/instance'
 import noticeConfig from '@/api/notice/config'
 import noticeTemplate from '@/api/notice/template'
 import { Form } from 'jetlinks-ui-components'
+import { EventEmitter, EventSubscribeKeys } from '@/views/rule-engine/Scene/Save/util'
 const sceneStore = useSceneStore();
 const { data: _data } = storeToRefs(sceneStore);
 
@@ -30,6 +31,8 @@ const props = defineProps({
     default: 0,
   },
 });
+
+const sub = ref()
 
 const rules = [{
   validator(_: any, v?: ActionsType) {
@@ -62,13 +65,25 @@ const checkDeviceDelete = async () => {
     return
   }
   if (item?.selector === 'fixed') {
-    console.log(item)
     const deviceList = item!.selectorValues?.map(item => item.value) || []
     const deviceResp = await deviceQuery({ terms: [{ terms: [{ column: 'id', termType: 'in', value: deviceList.toString() }]}]})
     if (deviceResp.success && (deviceResp.result as any)?.total < (item!.selectorValues?.length || 0)) { // 某一个设备被删除
       _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.selectorValues = undefined
       formTouchOff()
       return
+    }
+  }
+
+  if (item!.source === 'upper') { // 如果是按变量，校验上一个设备输出的产品id
+    if (props.name === 0) {
+      formTouchOff()
+      return
+    } else {
+      const prevItem = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name - 1].device
+      if (prevItem?.productId !== item?.productId) {
+        formTouchOff()
+        return
+      }
     }
   }
 }
@@ -92,14 +107,52 @@ const checkNoticeDelete = async () => {
   }
 }
 
-nextTick(() => {
+const check = () => {
   const _executor = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.executor
-  if (_executor === 'device' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.device) {
+  if (_executor === 'device' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.device) { // 设备输出，并且有值
     checkDeviceDelete()
   } else if (_executor === 'notify' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.notify) {
-    checkNoticeDelete
+    checkNoticeDelete()
   }
-})
+}
+
+const checkPrevData = (data: any) => {
+  console.log(data)
+  const _executor = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.executor
+  if (_executor === 'device' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.device) { // 设备输出，并且有值
+    // 校验内置参数
+    // 按变量时，需校验产品id是否一致
+
+  } else if (_executor === 'notify' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.notify) {
+    // 校验内置参数
+  }
+}
+
+const subscribe = (newName: number, oldName: number) => {
+  const _key = EventSubscribeKeys({
+    branch: props.branchesName,
+    branchGroup: props.thenName,
+    action: props.name - 1
+  })
+
+  if (sub.value) {
+    const oldKey = EventSubscribeKeys({
+      branch: props.branchesName,
+      branchGroup: props.thenName,
+      action: oldName - 1
+    })
+
+    sub.value.unSubscribe(oldKey, checkPrevData)
+  }
+
+  sub.value = EventEmitter.subscribe(_key, checkPrevData)
+}
+
+watch(() => props.name, (newName, oldName) => {
+  // subscribe(newName, oldName || 0)
+}, { immediate: true })
+
+check()
 
 </script>
 

@@ -84,7 +84,7 @@
             </j-form-item>
 
             <j-form-item
-                v-if="formData.configuration.function === 'HoldingRegisters'"
+                v-if="['HoldingRegisters', 'InputRegisters'].includes(formData.configuration.function)"
                 label="数据类型"
                 :name="['configuration', 'codec', 'provider']"
                 :rules="[
@@ -327,7 +327,7 @@ const handleOk = async () => {
     delete data?.nspwc;
     const { codec } = data?.configuration;
 
-    if (data?.configuration.function !== 'HoldingRegisters') {
+    if (!['HoldingRegisters', 'InputRegisters'].includes(data?.configuration.function)) {
         codec.provider = 'int8';
     }
     const { interval } = formData.value.configuration;

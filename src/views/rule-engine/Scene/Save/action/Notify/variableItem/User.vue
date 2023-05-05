@@ -344,7 +344,7 @@ const onChange = (
         }
     } else {
       const item = treeDataMap.get(_value)
-      const _isRelation = item.isRelation
+      const _isRelation = item?.isRelation
         _values = getObj(_source, _value, _isRelation);
     }
     emit('update:value', _values);
