@@ -84,7 +84,7 @@
             </j-form-item>
 
             <j-form-item
-                v-if="formData.configuration.function === 'HoldingRegisters'"
+                v-if="['HoldingRegisters', 'InputRegisters'].includes(formData.configuration.function)"
                 label="数据类型"
                 :name="['configuration', 'codec', 'provider']"
                 :rules="[
