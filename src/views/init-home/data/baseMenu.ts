@@ -3865,50 +3865,50 @@ export default [
         accessSupport: { text: "不支持", value: "unsupported" },
         supportDataAccess: false
       },
-      {
-        code: 'system/License',
-        name: 'License管理',
-        owner: 'iot',
-        //parentId: '3',
-        id: '3-12',
-        sortIndex: 12,
-        url: '/system/License',
-        icon: 'icon-zidingyiguize',
-        showPage: ['license'],
-        permissions: [
-          {
-            permission: 'license',
-            actions: ['query', 'save'],
-          },
-        ],
-        buttons: [
-          {
-            id: 'update',
-            name: '编辑',
-            description: null,
-            permissions: [
-              {
-                permission: 'license',
-                actions: ['query', 'save'],
-              },
-            ],
-            options: null,
-          },
-
-          {
-            id: 'view',
-            name: '查看',
-            description: null,
-            permissions: [
-              {
-                permission: 'license"',
-                actions: ['query'],
-              },
-            ],
-            options: null,
-          },
-        ],
-      },
+      // {
+      //   code: 'system/License',
+      //   name: 'License管理',
+      //   owner: 'iot',
+      //   //parentId: '3',
+      //   id: '3-12',
+      //   sortIndex: 12,
+      //   url: '/system/License',
+      //   icon: 'icon-zidingyiguize',
+      //   showPage: ['license'],
+      //   permissions: [
+      //     {
+      //       permission: 'license',
+      //       actions: ['query', 'save'],
+      //     },
+      //   ],
+      //   buttons: [
+      //     {
+      //       id: 'update',
+      //       name: '编辑',
+      //       description: null,
+      //       permissions: [
+      //         {
+      //           permission: 'license',
+      //           actions: ['query', 'save'],
+      //         },
+      //       ],
+      //       options: null,
+      //     },
+      //
+      //     {
+      //       id: 'view',
+      //       name: '查看',
+      //       description: null,
+      //       permissions: [
+      //         {
+      //           permission: 'license"',
+      //           actions: ['query'],
+      //         },
+      //       ],
+      //       options: null,
+      //     },
+      //   ],
+      // },
     ],
   },
   //物联卡

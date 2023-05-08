@@ -186,9 +186,13 @@ const onDragend = (info: AntTreeNodeDropEvent) => {
 
 onMounted(() => {
     getSystemPermission_api().then((resp: any) => {
+        const filterBaseMenu = BaseMenu.filter(item => ![
+          USER_CENTER_MENU_CODE,
+          MESSAGE_SUBSCRIBE_MENU_CODE,
+        ].includes(item.code))
         baseMenu.value = filterMenu(
             resp.result.map((item: any) => JSON.parse(item).id),
-            BaseMenu,
+          filterBaseMenu,
         );
         getMenuTree_api(params).then((resp: any) => {
             if (resp.status == 200) {
@@ -205,7 +209,7 @@ onMounted(() => {
                 selectedKeys.value = systemMenuData.checkedKeys;
 
                 const AllMenu = mergeArr(
-                    cloneDeep(BaseMenu),
+                    cloneDeep(filterBaseMenu),
                     cloneDeep(systemMenu.value),
                 );
 

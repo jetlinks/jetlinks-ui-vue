@@ -1,6 +1,7 @@
+import { h } from 'vue'
 import axios from 'axios'
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable'
-import { notification as Notification } from 'jetlinks-ui-components'
+import { notification as Notification, Modal } from 'jetlinks-ui-components'
 import router from '@/router'
 import { LoginPath } from '@/router/menu'
 import { cleanToken, getToken, LocalStore } from '@/utils/comm'
@@ -21,7 +22,8 @@ const filterApiUrl = [
   '/authorize/captcha/image',
   '/application/sso/bind-code',
   '/authorize/login',
-  '/application/'
+  '/application/',
+  '/license'
 ]
 
 export const request = axios.create({
@@ -148,7 +150,23 @@ const errorHandler = (error: any) => {
   if (error.response) {
     const data = error.response.data
     const status = error.response.status
-    if (status === 403) {
+    if (data?.code === 'license required') {
+     Modal.error({
+        key: 'License',
+        title: 'License已到期或者错误',
+        content: h(
+          'a',
+          {
+            onClick: () =>
+            {
+              Modal.destroyAll?.();
+              window.location.href = '/#/init-license';
+            }
+          },
+          '请更新License'
+        )
+      })
+    } else if (status === 403) {
       showNotification('Forbidden', (data.message + '').substr(0, 90), '403')
     } else if (status === 500) {
       showNotification('Server Side Error', (data.message + '').substr(0, 90), '500')
@@ -157,13 +175,15 @@ const errorHandler = (error: any) => {
     } else if (status === 401) {
       showNotification('Unauthorized', '用户未登录', '401')
       setTimeout(() => {
-        // cleanToken()
-        // router.replace({
-        //   path: LoginPath
-        // })
+        cleanToken()
+        router.replace({
+          path: LoginPath
+        })
       }, 0)
     } else if (status === 404) {
-      showNotification(error?.code, error?.response?.data?.message, '404')
+      const data = error?.response?.data
+      const message = error?.response?.data?.message || `${data?.error} ${data?.path}`
+      showNotification(error?.code, message, '404')
     }
   } else if (error.response === undefined) {
     if (error.message.includes('timeout')) {
