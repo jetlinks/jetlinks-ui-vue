@@ -14,7 +14,7 @@
                     <j-col :span="12"><DeviceCountCard /></j-col>
                     <j-col :span="12"><BasicCountCard /></j-col>
                     <j-col :span="24" style="margin-top: 24px">
-                        <PlatformPicCard image="/images/home/content.png" />
+                        <PlatformPicCard image="/images/home/content1.svg" />
                     </j-col>
                 </j-row>
             </j-col>
