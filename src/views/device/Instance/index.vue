@@ -729,11 +729,24 @@ const onCheckChange = () => {
     _selectedRowKeys.value = [];
 };
 
+const handleGetParams = (p: any) => {
+  p?.terms.map((a: any) => {
+    return a.terms.map((b: any) => {
+      if (b.column.includes('$product-info')) {
+        b.column = 'productId'
+        b.termType = 'product-info'
+      }
+      return b
+    })
+  })
+  return p
+}
+
 const activeAllDevice = () => {
     type.value = 'active';
     const activeAPI = `${BASE_API_PATH}/device-instance/deploy?:X_Access_Token=${LocalStore.get(
         TOKEN_KEY,
-    )}&${handleParams(params.value)}`;
+    )}&${handleParams(handleGetParams(params.value))}`;
     api.value = activeAPI;
     operationVisible.value = true;
 };
