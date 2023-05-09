@@ -57,6 +57,7 @@ const getCollector = async (_val: string) => {
         return [];
     } else {
         const resp = await queryCollectorNoPaging({
+            paging: false,
             terms: [
                 {
                     terms: [
@@ -79,6 +80,7 @@ const getPoint = async (_val: string) => {
         return [];
     } else {
         const resp = await queryPointNoPaging({
+            paging: false,
             terms: [
                 {
                     terms: [
