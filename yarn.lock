@@ -3823,10 +3823,10 @@ jetlinks-store@^0.0.3:
   resolved "https://registry.npmjs.org/jetlinks-store/-/jetlinks-store-0.0.3.tgz"
   integrity sha512-AZf/soh1hmmwjBZ00fr1emuMEydeReaI6IBTGByQYhTmK1Zd5pQAxC7WLek2snRAn/HHDgJfVz2hjditKThl6Q==
 
-jetlinks-ui-components@^1.0.12:
-  version "1.0.12"
-  resolved "https://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.12.tgz#b3bd976b6ec7f6e45efe011cd3c6234734a064c2"
-  integrity sha512-P2PMuiOGRNKB58nr13UXbn1z6No3VyLJgyV5YmAtm8qmjU5WGHJDLJbYLY4lSPHbMhjGzisP4OJ4/z9rjlRZKg==
+jetlinks-ui-components@^1.0.13:
+  version "1.0.13"
+  resolved "https://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.13.tgz#9f33fe41d9c453b4db01a3d5e0a86412c13cf652"
+  integrity sha512-50QFseYmoN1OnvwbMI735q3MlUWW8tASGScfxUKDCD4c7EBr/tgU9exdW8i++ggbjvTfa8d3Lhg+L2gggLtnUQ==
   dependencies:
     "@vueuse/core" "^9.12.0"
     "@vueuse/router" "^9.13.0"
