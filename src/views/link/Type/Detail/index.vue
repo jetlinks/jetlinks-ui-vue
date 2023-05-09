@@ -1141,7 +1141,7 @@ const formRef2 = ref<FormInstance>();
 const shareCluster = ref(true);
 
 const formData = ref<FormDataType>({
-    ...FormStates,
+    ...FormStates
 });
 const hostOptionsIndex: any = ref([]);
 const clustersListIndex: any = ref([]);
@@ -1327,7 +1327,7 @@ const getSupports = async () => {
             label: item.name,
             value: item.id,
         }));
-        if (!typeOptions.value.every((item : any) => item.value === 'UDP')) {
+        if (!typeOptions.value.every((item : any) => item.value === 'UDP') && !NetworkType) {
           formData.value.type = typeOptions.value[0].value
         }
     }
@@ -1439,12 +1439,14 @@ watch(
     (value) => {
         if (value) {
             const { cluster } = dynamicValidateForm;
+          console.log('NetworkType',value)
             formData.value.type = value;
             cluster[0].configuration.host = '0.0.0.0';
         }
     },
     { deep: true, immediate: true },
 );
+
 </script>
 
 <style lang="less" scoped>
