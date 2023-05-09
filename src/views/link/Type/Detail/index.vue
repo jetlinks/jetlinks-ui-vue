@@ -1327,7 +1327,7 @@ const getSupports = async () => {
             label: item.name,
             value: item.id,
         }));
-        if (!typeOptions.value.every((item : any) => item.value === 'UDP')) {
+        if (!typeOptions.value.every((item : any) => item.value === 'UDP') && !NetworkType) {
           formData.value.type = typeOptions.value[0].value
         }
     }
