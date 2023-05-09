@@ -36,11 +36,11 @@ const sub = ref()
 
 const rules = [{
   validator(_: any, v?: ActionsType) {
-    console.log('validator',v)
     if (v?.executor === 'device') {
       if(
         !v.device?.productId ||  // 产品已删除
-        !v.device?.selectorValues // 设备已删除
+        !v.device?.selectorValues || // 设备已删除
+        (v.device.source === 'upper' && !v.device?.upperKey)
       ) {
         return Promise.reject(new Error('该数据已发生变更，请重新配置'))
       }
@@ -73,14 +73,16 @@ const checkDeviceDelete = async () => {
       return
     }
   }
-
+  console.log(item!.source, props.name)
   if (item!.source === 'upper') { // 如果是按变量，校验上一个设备输出的产品id
     if (props.name === 0) {
+      _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.upperKey = undefined
       formTouchOff()
       return
     } else {
       const prevItem = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name - 1].device
       if (prevItem?.productId !== item?.productId) {
+        _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.upperKey = undefined
         formTouchOff()
         return
       }
@@ -116,41 +118,18 @@ const check = () => {
   }
 }
 
-const checkPrevData = (data: any) => {
-  console.log(data)
-  const _executor = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.executor
-  if (_executor === 'device' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.device) { // 设备输出，并且有值
-    // 校验内置参数
-    // 按变量时，需校验产品id是否一致
-
-  } else if (_executor === 'notify' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.notify) {
-    // 校验内置参数
-  }
-}
-
-const subscribe = (newName: number, oldName: number) => {
+const subscribe = () => {
+  // 订阅上一个action
   const _key = EventSubscribeKeys({
     branch: props.branchesName,
     branchGroup: props.thenName,
-    action: props.name - 1
+    action: props.name
   })
 
-  if (sub.value) {
-    const oldKey = EventSubscribeKeys({
-      branch: props.branchesName,
-      branchGroup: props.thenName,
-      action: oldName - 1
-    })
-
-    sub.value.unSubscribe(oldKey, checkPrevData)
-  }
-
-  sub.value = EventEmitter.subscribe(_key, checkPrevData)
+  sub.value = EventEmitter.subscribe(_key, check)
 }
 
-watch(() => props.name, (newName, oldName) => {
-  // subscribe(newName, oldName || 0)
-}, { immediate: true })
+subscribe()
 
 check()
 

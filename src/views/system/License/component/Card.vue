@@ -5,9 +5,9 @@
             <div>
                 <j-descriptions bordered :column="4">
                     <j-descriptions-item label="Host" :span="4">
-                        {{ info?.host }}
+                        {{ infoData?.host }}
                     </j-descriptions-item>
-                    <template v-for="i in info?.modules" :key="i">
+                    <template v-for="i in infoData?.modules" :key="i">
                         <j-descriptions-item label="IP" :span="2">
                             {{ i.ip }}
                         </j-descriptions-item>
@@ -43,7 +43,7 @@
 
 <script lang="ts" setup>
 const props = defineProps({
-    data: {
+  infoData: {
         type: Object,
         default: {},
     },
@@ -52,16 +52,8 @@ const props = defineProps({
         default: '',
     },
 });
-let info = ref();
 let license = ref();
-watch(
-    () => {
-        props.data;
-    },
-    () => {
-        info.value = props.data;
-    },
-);
+
 watch(
     () => props.licenseData,
     () => {
