@@ -1,4 +1,3 @@
-import { h } from 'vue'
 import axios from 'axios'
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable'
 import { notification as Notification, Modal } from 'jetlinks-ui-components'
@@ -74,11 +73,12 @@ export const put = function <T>(url: string, data = {}) {
  * @param {Object} [data]
  * @returns {AxiosInstance}
  */
-export const patch = function <T>(url: string, data = {}) {
+export const patch = function <T>(url: string, data = {}, ext: any = {}) {
   return request<any, AxiosResponseRewrite<T>>({
     method: 'PATCH',
     url,
-    data
+    data,
+    ...ext
   })
 }
 /**
