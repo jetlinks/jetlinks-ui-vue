@@ -22,13 +22,14 @@
         <j-spin :spinning="spinning">
             <j-tree
                 :tree-data="defualtDataSource"
-                v-model:selected-keys="selectedKeys"
+                :selected-keys="selectedKeys"
                 :fieldNames="{ key: 'id' }"
                 v-if="
                     !(defualtDataSource.length === 0 ||
                     defualtDataSource?.[0]?.children?.length === 0)
                 "
                 :height="660"
+                @select='treeSelect'
                 defaultExpandAll
             >
                 <template #title="{ name, data }">
@@ -263,15 +264,19 @@ const getChannelNoPaging = async () => {
     Store.set('channelListAll', res.result);
 };
 
+const treeSelect = (keys: string, e: any) => {
+  selectedKeys.value = [e.node?.id]
+}
+
 onMounted(() => {
     handleSearch(_.cloneDeep(defualtParams));
     getChannelNoPaging();
 });
 
 watch(
-    () => selectedKeys.value,
+    () => selectedKeys.value[0],
     (n, p) => {
-        const key = _.isArray(n) ? n[0] : n;
+        const key = _.isArray(selectedKeys.value) ? selectedKeys.value[0] : selectedKeys.value;
         if (key) {
           if (key !== "*") {
             const row = collectorAll.value.find((i: any) => i.id === key);
@@ -281,8 +286,6 @@ watch(
               id: '*'
             });
           }
-        } else {
-            selectedKeys.value = p; // 防止取消
         }
     },
 );
