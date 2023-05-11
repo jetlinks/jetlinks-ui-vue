@@ -178,7 +178,7 @@ const source = computed(() => {
 });
 
 const triggerType = computed(() => {
-    return data?.trigger || data?.trigger?.type;
+    return data.value?.trigger?.type;
 });
 
 const relationData = computed(() => {
@@ -228,7 +228,7 @@ const getRelationUsers = async (notifyType: string, notifierId: string) => {
     }
 };
 
-const getUser = async (_source: string, triggerType: string) => {
+const getUser = async (_source: string, _triggerType: string) => {
     const newTree = [
         {
             title: '平台用户',
@@ -243,7 +243,8 @@ const getUser = async (_source: string, triggerType: string) => {
         paging: false,
         sorts: [{ name: 'name', order: 'asc' }],
     });
-    if (triggerType && triggerType === 'device' && _source === 'relation') {
+  console.log(_triggerType, _source)
+    if (_triggerType && _triggerType === 'device' && _source === 'relation') {
         relationResp = await NoticeApi.getRelationUsers({
             paging: false,
             sorts: [{ name: 'name', order: 'asc' }],
