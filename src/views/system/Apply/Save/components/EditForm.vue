@@ -1913,6 +1913,7 @@ function changeBackUpload(info: UploadChangeParam<UploadFile<any>>) {
         message.error('logo上传失败，请稍后再试');
     }
 }
+
 function clearNullProp(obj: object) {
     if (typeof obj !== 'object') return;
     for (const prop in obj) {
@@ -1930,15 +1931,19 @@ function clearNullProp(obj: object) {
  * @param value
  */
 const validateIP = (_rule: Rule, value: string) => {
-    const ipList = value?.split(/[\n,]/g).filter((i: string) => i && i.trim());
-    const errorIPList = ipList.filter(
-        (f: string) => !testIP(f.replace(/\s*/g, '')),
-    );
-    return new Promise((resolve, reject) => {
-        !errorIPList.length
-            ? resolve('')
-            : reject(`[${errorIPList}]不是正确的IP地址`);
-    });
+    if (value) {
+      const ipList = value?.split(/[\n,]/g).filter((i: string) => i && i.trim());
+      const errorIPList = ipList?.filter(
+          (f: string) => !testIP(f.replace(/\s*/g, '')),
+      );
+      return new Promise((resolve, reject) => {
+          !errorIPList?.length
+              ? resolve('')
+              : reject(`[${errorIPList}]不是正确的IP地址`);
+      });
+    } else {
+      return Promise.resolve()
+    }
 };
 </script>
 
