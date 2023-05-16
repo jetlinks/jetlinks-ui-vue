@@ -20,7 +20,7 @@ export const getParams = (params: Params, sceneModel: FormModelType): Promise<an
       if (resp.success) {
         res(resp.result as any[])
       }
-    })
+    }).catch(() => res([]))
   })
 }
 
