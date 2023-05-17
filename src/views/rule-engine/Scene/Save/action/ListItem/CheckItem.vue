@@ -48,28 +48,33 @@ const formTouchOff = () => {
 const checkDeviceDelete = async () => {
   const item = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device
   const proResp = await queryProductList({ terms: [{ terms: [{ column: 'id', termType: 'eq', value: item!.productId }]}]})
-  const productDetail = proResp?.result?.data?.[0]
   if (proResp.success && (proResp.result as any)?.total === 0 && item && item.productId) { // 产品已删除
     _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.productId = undefined
     formTouchOff()
     return
   }
 
-  const metadata = JSON.parse(productDetail?.metadata || '{}')
+  const productDetail = proResp?.result?.data?.[0]
+  let metadata = JSON.parse(productDetail?.metadata || '{}')
   if (item?.selector === 'fixed') {
     let hasDevice = false
     if (item!.selectorValues) {
       const deviceList = item!.selectorValues?.map(item => item.value) || []
       const deviceResp = await deviceQuery({ terms: [{ terms: [{ column: 'id', termType: 'in', value: deviceList.toString() }]}]})
       hasDevice = deviceResp.success && (deviceResp.result as any)?.total === (item!.selectorValues?.length || 0)
+
+      if (item!.selectorValues!.length === 1 && hasDevice) {
+        const deviceDetail = deviceResp?.result?.data?.[0]
+        metadata = JSON.parse(deviceDetail?.metadata || '{}') // 只选中一个设备，以设备物模型为准
+      }
     }
-    console.log('hasDevice', item!.selectorValues)
     if (!hasDevice) { // 某一个设备被删除
       _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.selectorValues = undefined
       _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.changeData = true
       formTouchOff()
       return
     }
+
   } else if (item!.selector === 'context') { // 如果是按变量，校验上一个设备输出的产品id
     if (props.name === 0) {
       _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.upperKey = undefined
