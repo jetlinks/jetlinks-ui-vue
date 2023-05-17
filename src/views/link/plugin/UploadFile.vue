@@ -1,7 +1,7 @@
 <template>
   <j-upload
     name="file"
-    accept=".jar"
+    accept=".jar,.zip"
     :action="uploadFile"
     :headers="{
                 [TOKEN_KEY]: LocalStore.get(TOKEN_KEY),
@@ -16,7 +16,7 @@
   >
     <div>
       <j-button>上传文件</j-button>
-      <span class='upload-tip'>格式要求：{文件名}.jar/{文件名}.zip</span>
+      <span class='upload-tip'>格式要求：.jar .zip</span>
     </div>
   </j-upload>
 
