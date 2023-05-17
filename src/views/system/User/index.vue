@@ -270,6 +270,7 @@ type modalType = '' | 'add' | 'edit' | 'reset';
 
 const handleParams = (params: any) => {
     const newParams = (params?.terms as any[])?.map((item1) => {
+        let arr: any[] = []
         item1.terms = item1.terms.map((item2: any) => {
             if (['telephone', 'email'].includes(item2.column)) {
                 return {
@@ -277,8 +278,27 @@ const handleParams = (params: any) => {
                     value: [item2],
                 };
             }
+            if (['type'].includes(item2.column) && item2.value === 'other') {
+                arr = [
+                    {
+                        ...item2,
+                        type: 'or',
+                        termType: 'isnull',
+                        value: 1,
+                    },
+                    {
+                        ...item2,
+                        type: 'or',
+                        termType: 'empty',
+                        value: 1,
+                    }
+                ]
+            }
             return item2;
         });
+        if(arr.length){
+            item1.terms = [...item1.terms, ...arr]
+        }
         return item1;
     });
     queryParams.value = { terms: newParams || [] };

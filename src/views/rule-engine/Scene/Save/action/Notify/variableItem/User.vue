@@ -38,7 +38,7 @@
                 v-if="['email'].includes(notifyType)"
                 style="width: calc(100% - 120px)"
                 placeholder="请选择收信人"
-                @change="(key, label) => onChange(source, key, false, label)"
+                @change="(key, label) => onChange(source, key, label)"
                 :tree-data="treeData"
                 :multiple="true"
                 :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
@@ -66,7 +66,7 @@
                 style="width: calc(100% - 120px)"
                 placeholder="请选择收信人"
                 @change="
-                    (key, label) => onChange(source, key, undefined, label)
+                    (key, label) => onChange(source, key, label)
                 "
                 :tree-data="treeData"
                 :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
@@ -102,7 +102,6 @@
                         onChange(
                             source,
                             val,
-                            false,
                             option?.label || option?.name,
                         )
                 "
@@ -120,7 +119,6 @@
                         onChange(
                             source,
                             val,
-                            false,
                             Array.isArray(val) ? val.join(',') : val,
                         )
                 "
@@ -132,7 +130,7 @@
                 :value="value?.value"
                 @change="
                     (e) =>
-                        onChange(source, e.target.value, false, e.target.value)
+                        onChange(source, e.target.value, e.target.value)
                 "
             ></j-input>
         </template>
@@ -183,7 +181,13 @@ const triggerType = computed(() => {
 
 const relationData = computed(() => {
     const item = props.value;
-    if (item?.source === 'relation') {
+    if(notifyType.value === 'email'){
+        if(item && Array.isArray(item) && item.length){
+            if(item[0].source === 'relation'){
+                return item.map(i => i?.relation?.objectId)
+            }
+        }
+    } else if (item?.source === 'relation') {
         const relation = item?.relation;
         if (relation) {
             if (relation.objectId) {
@@ -324,7 +328,7 @@ const getObj = (
 const onChange = (
     _source: string = 'fixed',
     _value?: string | string[],
-    isRelation?: boolean,
+    // isRelation?: boolean,
     _name?: string,
 ) => {
     let _values: any = undefined;
@@ -332,16 +336,15 @@ const onChange = (
     const _names: string[] = Array.isArray(_name) ? _name : [_name || ''];
     if (Array.isArray(_value)) {
         if (props?.notify?.notifyType === 'email') {
-            if (isRelation) {
-                const arr = _value.map((item) => {
-                    const _item = labelMap.get(item);
-                    _names.push(_item?.name || '');
-                    return getObj('relation', item, _item?.relation);
-                });
-                _values = arr;
-            } else {
-                _values = getObj(_source, _value, false);
-            }
+            _values = _value.map((item) => {
+                return {
+                    source: "relation",
+                    relation:{
+                        objectType: "user",
+                        objectId: item
+                    }
+                }
+            });
         }
     } else {
       const item = treeDataMap.get(_value)
