@@ -1,6 +1,6 @@
 <template>
     <pro-search
-        class="device-search"
+        class="device-running-search"
         type="simple"
         :columns="columns"
         target="device-instance-running-events"
@@ -112,8 +112,10 @@ const detail = (_info: any) => {
 </script>
 
 <style lang="less">
-.device-search {
+.device-running-search {
     margin: 0 0 24px 0;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
 }
 
 .device-running-event-modal {

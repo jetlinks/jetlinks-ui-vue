@@ -109,18 +109,17 @@ const check = async (): Promise<boolean> => {
   return true
 }
 
-watch(() => data.value.trigger, async (v) => {
-  console.log('device-checkItem',v?.device)
-  if (v?.device) {
+const checkInit = async () => {
+  if (data.value.trigger?.device) {
     const checkStatus = await check()
     if (!checkStatus) {
       formTouchOff()
     }
   }
-}, {
-  deep: true,
-  immediate: true
-})
+}
+
+checkInit()
+
 </script>
 
 <style scoped>
