@@ -615,11 +615,13 @@ const checkAccess = async (data: any) => {
   productTypes.value = []
   productData.id = undefined
   productData.metadata = {}
+  metadata.value = data.metadata?.[0] || {
+    properties: []
+  }
   if (data.access.channel === 'plugin') { // 插件设备
     markdownToHtml.value = ''
     productTypes.value = data.productTypes.map(item => ({ ...item, label: item.name, value: item.id}))
   } else {
-    metadata.value = data.metadata[0]
     handleColumns()
     markdownToHtml.value = config.value?.document ? marked(config.value.document) : '';
     getGuide(!!data.metadata.length); //
