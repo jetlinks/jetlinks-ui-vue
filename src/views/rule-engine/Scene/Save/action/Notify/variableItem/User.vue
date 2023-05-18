@@ -272,14 +272,15 @@ const getUser = async (_source: string, _triggerType: string) => {
             key: 'p2',
             selectable: false,
             children: relationResp.result.map((item: any) => {
-              treeDataMap.set(item.id, item)
-                return {
+                const obj = {
                     ...item,
                     value: item.id,
                     key: item.id,
                     title: item.name,
                     isRelation: true,
-                };
+                }
+                treeDataMap.set(item.id, obj)
+                return obj
             }),
         });
     }
@@ -306,7 +307,7 @@ const getObj = (
                 objectType: 'device',
                 objectSource: {
                     source: 'upper',
-                    upperKey: 'deviceId',
+                    upperKey: 'scene.deviceId',
                 },
                 related: {
                     objectType: 'user',
