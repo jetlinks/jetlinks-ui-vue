@@ -42,6 +42,7 @@ export enum ActionDeviceSelector {
   'fixed' = 'fixed',
   'tag' = 'tag',
   'relation' = 'relation',
+  'context' = 'context',
 }
 
 export enum ActionDeviceSource {
@@ -236,6 +237,7 @@ export interface NotifyProps {
   templateId: string;
   variables: Record<string, NotifyVariablesType>;
   options?: Record<string, any>;
+  changeData?: Boolean
 }
 
 export type SelectorValuesType =
@@ -264,6 +266,7 @@ export interface ActionsDeviceProps {
   upperKey?: string;
   /** 来源为relation时不能为空 */
   relation?: any;
+  changeData?: boolean
 }
 
 export interface BranchesThen {
@@ -321,6 +324,7 @@ export interface FormModelType {
    * 拓展信息,用于前端存储一些渲染数据
    */
   options?: Record<string, any>;
+  triggerType?: 'device' | 'manual' | 'timer'
   description?: string;
 }
 

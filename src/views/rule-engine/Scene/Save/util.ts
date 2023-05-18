@@ -20,7 +20,7 @@ export const getParams = (params: Params, sceneModel: FormModelType): Promise<an
       if (resp.success) {
         res(resp.result as any[])
       }
-    })
+    }).catch(() => res([]))
   })
 }
 
@@ -76,7 +76,7 @@ export const EventSubscribeKeys = (params: Params): string[] => {
     keys.push(DeviceEmitterKey)
   }
 
-  for (let i = 0; i <= params.action; i++) {
+  for (let i = 0; i <= params.action - 1; i++) {
     let key = sceneStore.data.branches?.[params.branch].then[params.branchGroup].actions[i]?.key
     if (!key) {
       const _b = `branches_${params.branch}` // branchesName

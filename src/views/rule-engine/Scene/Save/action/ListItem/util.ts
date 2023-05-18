@@ -1,4 +1,7 @@
 import { getImage } from '@/utils/comm'
+import NoticeApi from '@/api/notice/config'
+import { getParams } from '@/views/rule-engine/Scene/Save/util'
+import { getOption } from '@/views/rule-engine/Scene/Save/components/DropdownButton/util'
 
 export const iconMap = new Map();
 iconMap.set('trigger', getImage('/scene/action-bind-icon.png'));
@@ -26,3 +29,32 @@ export const typeIconMap = {
   INVOKE_FUNCTION: 'icon-zhihangdongzuoxie-1',
   WRITE_PROPERTY: 'icon-zhihangdongzuoxie',
 };
+
+export const getBuildInData = async (params: any, data: any) => {
+  const buildInData = await getParams(params, unref(data));
+
+  return function(upperKey: string, key: string ) {
+    return getOption(buildInData, upperKey, key)
+  }
+}
+
+export const getNotifyVariablesUser = (isRelationUser: boolean = false): Promise<{ platform: any[], relation: any[] }> => {
+  return new Promise(async (resolve) => {
+    let relationResp = undefined;
+    const platformResp = await NoticeApi.getPlatformUsers({
+      paging: false,
+      sorts: [{ name: 'name', order: 'asc' }],
+    });
+    if (isRelationUser) {
+      relationResp = await NoticeApi.getRelationUsers({
+        paging: false,
+        sorts: [{ name: 'name', order: 'asc' }],
+      });
+    }
+
+    resolve({
+      platform: platformResp.result || [],
+      relation: relationResp?.result || []
+    })
+  })
+}

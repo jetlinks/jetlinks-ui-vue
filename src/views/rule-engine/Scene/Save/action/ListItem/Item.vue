@@ -5,7 +5,7 @@
         :rules='rules'
       >
         <div class="actions-item">
-            <CheckItem v-bind='props'>
+            <CheckItem v-bind='props' ref='checkItemRef'>
               <div class="item-options-warp">
                   <div class="item-options-type" @click="onAdd">
                       <img
@@ -330,7 +330,7 @@
               </j-popconfirm>
             </CheckItem>
         </div>
-          </j-form-item>
+      </j-form-item>
         <template v-if="!isLast && type === 'serial'">
             <div
                 :class="[
@@ -361,7 +361,7 @@
                 </div>
             </div>
         </template>
-        <!-- 编辑 -->
+
         <template v-if="visible">
             <Modal
                 :name="name"
@@ -373,6 +373,7 @@
                 @save="onSave"
             />
         </template>
+        <!-- 编辑 -->
         <template>
             <ActionTypeComponent
                 v-bind="props"
@@ -405,7 +406,6 @@ import FilterGroup from './FilterGroup.vue';
 import { randomString } from '@/utils/utils'
 import { EventEmitter, EventEmitterKeys } from '@/views/rule-engine/Scene/Save/util'
 import CheckItem from './CheckItem.vue'
-import { Form } from 'jetlinks-ui-components'
 
 const sceneStore = useSceneStore();
 const { data: _data } = storeToRefs(sceneStore);
@@ -441,16 +441,15 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['delete', 'update']);
-
+const checkItemRef = ref()
 const visible = ref<boolean>(false);
 const triggerVisible = ref<boolean>(false);
 const actionType = ref('');
-const eventEmitterKey = EventEmitterKeys({
+const eventEmitterKey = ref(EventEmitterKeys({
   branch: props.branchesName,
   branchGroup: props.thenName,
   action: props.name
-})
-const formItemContext = Form.useInjectFormItemContext()
+}))
 const termsOptions = computed(() => {
     if (!props.parallel) {
         // 串行
@@ -464,7 +463,7 @@ const termsOptions = computed(() => {
 
 const onDelete = () => {
     const key = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].key
-    EventEmitter.emit(key!, { isDelete: true })
+    EventEmitter.emit(key!, { isDelete: true }) // 发布消息
     if (props.name !== 0 && !props.parallel) { // 清空上一个串行执行动作中的options.termsColumns和terms
       _data.value.branches![props.branchesName].then[props.thenName].actions[props.name - 1].options!.termsColumns = []
       _data.value.branches![props.branchesName].then[props.thenName].actions[props.name - 1].options!.terms = []
@@ -524,7 +523,6 @@ const onType = (_type: string) => {
  */
 const onSave = (data: ActionsType, options: any) => {
   const { key, terms } = _data.value.branches![props.branchesName].then?.[props.thenName].actions?.[props.name]
-  console.log({...props.options, ...options})
 
   const columns = new Set([...(props.options?.termsColumns || []), ...(options.otherColumns.filter((item?: string) => item))])
 
@@ -535,14 +533,10 @@ const onSave = (data: ActionsType, options: any) => {
     terms
   }
 
-  console.log(actionItem)
   _data.value.branches![props.branchesName].then[props.thenName].actions.splice(props.name, 1, actionItem)
-
+  checkItemRef.value?.formTouchOff?.()
   visible.value = false;
-
-  if (props.parallel === false) { // 串行
-    EventEmitter.emit(eventEmitterKey, data)
-  }
+  EventEmitter.emit(eventEmitterKey.value, data) // 发布消息
 };
 
 /**
@@ -563,7 +557,22 @@ const rules = [{
   validator(_: any, v?: ActionsType) {
     console.log('validator-action-item',v)
     if (v?.executor === 'device') {
-      if(v?.device?.source === 'fixed' && (!v.device?.productId || !v.device?.selectorValues)) {
+      const _device = v.device!
+      if (
+        (_device?.selector === 'fixed' && (!_device?.productId || !_device?.selectorValues?.length )) ||
+        (_device?.selector === 'context' && !_device?.upperKey) ||
+        (_device?.selector === 'relation' && !_device?.selectorValues?.length) ||
+        _device?.changeData === true
+      ) {
+        return Promise.reject(new Error('该数据已发生变更，请重新配置'))
+      }
+    } else if (v?.executor === 'notify') {
+      const _notify = v.notify
+      if (
+        !_notify?.notifierId ||
+        !_notify?.templateId ||
+        _notify?.changeData === true
+      ) {
         return Promise.reject(new Error('该数据已发生变更，请重新配置'))
       }
     }

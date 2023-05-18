@@ -110,17 +110,20 @@ export const Validator = {
     ),
     regIPv6: new RegExp(/^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/),
     regDomain: new RegExp(
-        /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i,
+        // /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i,
+      /^[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$/
     ),
     regOnlyNumber: new RegExp(/^\d+$/),
 };
 
 const validateAddress = (_rule: any, value: string): Promise<any> => {
     return new Promise(async (resolve, reject) => {
+        const _domainStr = value
+        const _domain = _domainStr.replace(/^(https?|ftp):\/\/(www\.)?/i, '')
         if (
             Validator.regIpv4.test(value) ||
             Validator.regIPv6.test(value) ||
-            Validator.regDomain.test(value)
+            Validator.regDomain.test(_domain)
         ) {
             return resolve('');
         } else {

@@ -1,6 +1,6 @@
 <template>
     <pro-search
-        class="device-search"
+        class="device-running-search"
         type="simple"
         :columns="columns"
         target="device-instance-running-events"
@@ -45,23 +45,25 @@ const events = defineProps({
 });
 const instanceStore = useInstanceStore();
 
-const columns = ref<Record<string, any>>([
-    {
-        title: '时间',
-        dataIndex: 'timestamp',
-        key: 'timestamp',
-        scopedSlots: true,
-        search: {
-            type: 'date',
-        },
+const defaultColumns = [
+  {
+    title: '时间',
+    dataIndex: 'timestamp',
+    key: 'timestamp',
+    scopedSlots: true,
+    search: {
+      type: 'date',
     },
-    {
-        title: '操作',
-        dataIndex: 'action',
-        key: 'action',
-        scopedSlots: true,
-    },
-]);
+  },
+  {
+    title: '操作',
+    dataIndex: 'action',
+    key: 'action',
+    scopedSlots: true,
+  }
+]
+
+const columns = ref<Array<Record<string, any>>>([...defaultColumns]);
 const params = ref<Record<string, any>>({});
 const visible = ref<boolean>(false);
 const info = ref<Record<string, any>>({});
@@ -70,6 +72,7 @@ const _getEventList = (_params: any) =>
     getEventList(instanceStore.current.id || '', events.data.id || '', _params);
 
 watchEffect(() => {
+  columns.value = [...defaultColumns]
     if (events.data?.valueType?.type === 'object') {
         (events.data.valueType?.properties || []).reverse().map((i: any) => {
             columns.value.splice(0, 0, {
@@ -109,8 +112,10 @@ const detail = (_info: any) => {
 </script>
 
 <style lang="less">
-.device-search {
+.device-running-search {
     margin: 0 0 24px 0;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
 }
 
 .device-running-event-modal {

@@ -20,7 +20,8 @@ watch(
             deviceId.value = newId as string;
             _control(newId).then((resp: any) => {
                 if (resp.status === 200) {
-                    const item = `http://${resp.result?.url}/#/login?token=${resp.result.token}`;
+                    const protocol = location.protocol
+                    const item = `${protocol}//${resp.result?.url}/#/login?token=${resp.result.token}`;
                     url.value = item;
                 }
             });

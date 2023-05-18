@@ -84,7 +84,7 @@ const onSave = (data: any, options?: any) => {
         key: data.key,
         options: {
           ...options,
-          columns: options.otherColumns.filter((item?: string) => item)
+          columns: options.otherColumns?.filter((item?: string) => item) || []
         },
     };
     emit('add', item)

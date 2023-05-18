@@ -157,7 +157,15 @@ watch(
     .dash-board-item {
         flex: 1;
         //margin: 24px 12px;
-        min-width: 250px;
+        min-width: calc(25% - 24px);
     }
+}
+
+@media (max-width: 1400px) {
+  .dash-board {
+    .dash-board-item {
+      min-width: calc(50% - 24px);
+    }
+  }
 }
 </style>

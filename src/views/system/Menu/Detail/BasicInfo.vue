@@ -149,7 +149,7 @@
                 :model="form.data"
                 class="basic-form permiss-form"
             >
-                <j-form-item name="accessSupport" required>
+                <j-form-item name="accessSupport" required v-if="isNoCommunity">
                     <template #label>
                         <span style="margin-right: 3px">数据权限控制</span>
                         <j-tooltip title="此菜单页面数据所对应的资产类型">
@@ -263,7 +263,6 @@ import { FormInstance } from 'ant-design-vue';
 import { message } from 'jetlinks-ui-components';
 import ChooseIconDialog from '../components/ChooseIconDialog.vue';
 import PermissChoose from '../components/PermissChoose.vue';
-
 import {
     getMenuTree_api,
     getAssetsType_api,
@@ -273,6 +272,7 @@ import {
     validCode_api,
 } from '@/api/system/menu';
 import { Rule } from 'ant-design-vue/lib/form';
+import { isNoCommunity } from '@/utils/utils';
 
 const permission = 'system/Menu';
 // 路由

@@ -60,6 +60,7 @@ import {
     addDepartment_api,
     updateDepartment_api,
 } from '@/api/system/department';
+import { onlyMessage } from '@/utils/comm'
 
 type treeType = {
     id: string;
@@ -91,6 +92,7 @@ const confirm = () => {
         ?.validate()
         .then(() => form.submit())
         .then((resp: any) => {
+            onlyMessage('操作成功')
             emits('refresh', resp.result.id);
             emits('update:visible', false);
         })

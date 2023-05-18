@@ -139,7 +139,7 @@ const judgeInitSet = async () => {
     }
 };
 onBeforeMount(() => {
-    // judgeInitSet();
+    judgeInitSet();
 });
 </script>
 <style scoped lang="less">

@@ -17,6 +17,7 @@
                         @search="networkSearch"
                     />
                     <PermissionButton
+
                         type="primary"
                         @click="addNetwork"
                         hasPermission="link/Type:add"
@@ -112,6 +113,7 @@
                         @search="procotolSearch"
                     />
                     <PermissionButton
+                      v-if='showAddBtn'
                         type="primary"
                         @click="addProcotol"
                         hasPermission="link/Protocol:add"
@@ -134,7 +136,7 @@
                             <AccessCard
                                 @checkedChange="procotolChange"
                                 :checked="procotolCurrent"
-                                :disabled='id !== ":id"'
+                                :disabled='!showAddBtn'
                                 :data="{ ...item, type: 'protocol' }"
                             >
                             </AccessCard>
@@ -352,6 +354,10 @@ const props = defineProps({
         type: Object,
         default: () => {},
     },
+    bindProduct: {
+      type: Boolean,
+      default: false
+    }
 });
 
 const clientHeight = document.body.clientHeight;
@@ -395,6 +401,10 @@ const { resetFields, validate, validateInfos } = useForm(
         description: [{ max: 200, message: '最多可输入200个字符' }],
     }),
 );
+
+const showAddBtn = computed(() => {
+  return route.query.view === 'false' && !props.bindProduct
+})
 
 const queryNetworkList = async (id: string, include: string, data = {}) => {
     const resp = await getNetworkList(

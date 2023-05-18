@@ -2,7 +2,7 @@
     <div class="product-container">
         <pro-search
             :columns="columns"
-            target="category"
+            target="category-product"
             @search="(params:any)=>queryParams = {...params}"
             style='margin-bottom: 0;'
         />

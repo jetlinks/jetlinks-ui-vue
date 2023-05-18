@@ -38,6 +38,7 @@ import {
 import { message } from 'jetlinks-ui-components';
 import { modeType } from '../typing';
 import { useDepartmentStore } from '@/store/department';
+import { onlyMessage } from '@/utils/comm';
 
 const department = useDepartmentStore();
 const emits = defineEmits([
@@ -136,11 +137,16 @@ const save = async () => {
         //             emits('refresh');
         //         });
         // fix: bug#10829
-        removeKeys.length && (await delOperations_api(removeKeys));
-        const res = await addOperations_api(addKeys);
-        if (res.success) {
-            message.success('操作成功');
-            emits('refresh');
+        if(addKeys.length || removeKeys.length) {
+            removeKeys.length && (await delOperations_api(removeKeys));
+            const res = await addOperations_api(addKeys);
+            if (res.success) {
+                message.success('操作成功');
+                emits('refresh');
+            }
+        } else {
+            onlyMessage('请选择API接口','error')
+            return
         }
     } else if (props.mode === 'appManger') {
         const removeItems = removeKeys.map((key) => ({
