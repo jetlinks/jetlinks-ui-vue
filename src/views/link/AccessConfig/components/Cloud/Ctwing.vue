@@ -177,6 +177,7 @@
                         @search="procotolSearch"
                     />
                     <PermissionButton
+                        v-if='showAddBtn'
                         type="primary"
                         @click="addProcotol"
                         hasPermission="link/Protocol:add"
@@ -199,6 +200,7 @@
                             <AccessCard
                                 @checkedChange="procotolChange"
                                 :checked="procotolCurrent"
+                                :disabled='!showAddBtn'
                                 :data="{ ...item, type: 'protocol' }"
                             >
                             </AccessCard>
@@ -352,6 +354,10 @@ const props = defineProps({
         type: Object,
         default: () => {},
     },
+    bindProduct: {
+      type: Boolean,
+      default: false
+    }
 });
 
 const formRef1 = ref<FormInstance>();
@@ -367,6 +373,10 @@ const formData = ref<Form>({
     name: '',
     description: '',
 });
+
+const showAddBtn = computed(() => {
+  return route.query.view === 'false' && !props.bindProduct
+})
 
 const current = ref(0);
 const stepCurrent = ref(0);

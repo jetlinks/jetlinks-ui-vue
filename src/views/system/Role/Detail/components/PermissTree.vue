@@ -109,6 +109,7 @@ import {
   USER_CENTER_MENU_CODE,
   MESSAGE_SUBSCRIBE_MENU_CODE
 } from '@/utils/consts'
+import { isNoCommunity } from '@/utils/utils'
 
 const emits = defineEmits(['update:selectItems']);
 const route = useRoute();
@@ -117,6 +118,7 @@ const props = defineProps({
 });
 const treeRef = ref();
 let { ctx: that, proxy } = getCurrentInstance();
+
 const columns = [
     {
         title: '菜单权限',
@@ -130,13 +132,16 @@ const columns = [
         key: 'action',
         width: '260px',
     },
-    {
+];
+
+if(isNoCommunity){
+    columns.push({
         title: '数据权限',
         dataIndex: 'data',
         key: 'data',
         width: '50%',
-    },
-];
+    })
+}
 const tableData = ref<tableItemType[]>([]);
 
 // 表头-全选

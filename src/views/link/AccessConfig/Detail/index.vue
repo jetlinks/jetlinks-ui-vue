@@ -16,11 +16,13 @@
                       <template v-if="showType === 'network'">
                         <Network
                           v-if="provider.id !== 'plugin_gateway'"
+                          :bindProduct='bindProduct'
                           :provider="provider"
                           :data="data"
                         />
                         <Plugin
                           v-else
+                          :bindProduct='bindProduct'
                           :provider="provider"
                           :data="data"
                         />
@@ -28,21 +30,25 @@
 
                         <Media
                             v-if="showType === 'media'"
+                            :bindProduct='bindProduct'
                             :provider="provider"
                             :data="data"
                         />
                         <Channel
                             v-if="showType === 'channel'"
+                            :bindProduct='bindProduct'
                             :provider="provider"
                             :data="data"
                         />
                         <Edge
                             v-if="showType === 'edge'"
+                            :bindProduct='bindProduct'
                             :provider="provider"
                             :data="data"
                         />
                         <Cloud
                             v-if="showType === 'cloud'"
+                            :bindProduct='bindProduct'
                             :provider="provider"
                             :data="data"
                         />
@@ -63,6 +69,7 @@ import Cloud from '../components/Cloud/index.vue';
 import Plugin from '../components/Plugin/index.vue'
 import { getProviders, detail } from '@/api/link/accessConfig';
 import { accessConfigTypeFilter } from '@/utils/setting';
+import { queryProductList } from '@/api/device/product';
 
 const route = useRoute();
 const id = route.params.id as string;
@@ -73,6 +80,7 @@ const loading = ref(true);
 const provider = ref({});
 const data = ref({});
 const showType: any = ref('');
+const bindProduct = ref(false)
 
 const goProviders = (param: any) => {
     showType.value = param.type;
@@ -188,8 +196,27 @@ const queryProviders = async () => {
     }
 };
 
+/**
+ * 检查是否被产品使用
+ */
+const checkBindProduct = async (_id: string) => {
+  const resp = await queryProductList({
+    paging: false,
+    terms: [{
+      column: 'accessId',
+      termType: 'eq',
+      value: _id
+    }]
+  })
+  console.log(resp.success && resp.result?.total)
+  if (resp.success && resp.result?.total) {
+    bindProduct.value = true
+  }
+}
+
 const getProvidersData = async () => {
     if (id !== ':id') {
+        checkBindProduct(id)
         getProviders().then((response: any) => {
             if (response.status === 200) {
                 const _data = response.result || [];

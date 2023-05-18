@@ -2,7 +2,7 @@
     <div>
         <pro-search
             :columns="columns"
-            target="category"
+            target="category-user"
             @search="handleParams"
             style='margin-bottom: 0;'
         />

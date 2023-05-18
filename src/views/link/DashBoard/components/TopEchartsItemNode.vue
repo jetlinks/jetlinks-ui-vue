@@ -43,18 +43,26 @@ export default {
     data() {
         return {
             options: {},
+            myChart: undefined
         };
+    },
+    beforeDestroy() {
+      window.removeEventListener('resize', this.resize)
     },
     methods: {
         createChart(val) {
             const chart = this.$refs.chartRef;
-            if (chart && Object.keys(val).length > 0) {
-                const myChart = echarts.init(chart);
-                myChart.setOption(val);
-                window.addEventListener('resize', function () {
-                    myChart.resize();
-                });
+            if (chart && Object.keys(val).length > 0 && !this.myChart) {
+              console.log('createChart')
+                this.myChart = echarts.init(chart);
+                this.myChart.setOption(val);
+                window.addEventListener('resize', this.resize);
+            } else if (this.myChart) {
+              this.myChart.setOption(val);
             }
+        },
+        resize() {
+          this.myChart?.resize();
         },
         getOptions(max, formatter, val) {
             let formatterCount = 0;

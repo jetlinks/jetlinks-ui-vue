@@ -22,13 +22,12 @@
             }}</j-tooltip>
         </div>
         <div class="checked-icon">
-            <div><CheckOutlined /></div>
+            <div><a-icon type='CheckOutlined' /></div>
         </div>
     </j-card>
 </template>
 
 <script lang="ts" setup name="AccessCard">
-import { CheckOutlined } from '@ant-design/icons-vue';
 
 const emit = defineEmits(['checkedChange']);
 
@@ -48,7 +47,9 @@ const props = defineProps({
 });
 
 const checkedChange = (id: string) => {
+  if (!props.disabled) {
     emit('checkedChange', id);
+  }
 };
 </script>
 

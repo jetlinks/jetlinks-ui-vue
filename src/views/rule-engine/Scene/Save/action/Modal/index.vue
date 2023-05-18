@@ -32,7 +32,7 @@
     </j-modal>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name='UpdateActionItemModal'>
 import { getImage } from '@/utils/comm';
 import Delay from '../Delay/index.vue';
 import Notify from '../Notify/index.vue';

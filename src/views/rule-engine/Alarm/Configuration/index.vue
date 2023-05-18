@@ -271,11 +271,11 @@ const columns = [
     },
     {
         title: '关联场景联动',
-        dataIndex: 'sceneId',
-        wdith: 250,
+        dataIndex: 'scene',
         scopedSlots: true,
         search: {
             type: 'select',
+            // defaultTermType: 'rule-bind-alarm',
             options: async () => {
                 const res = await getScene(
                     encodeQuery({
@@ -338,7 +338,23 @@ const map = {
     other: '其他',
 };
 const handleSearch = (e: any) => {
-    params.value = e;
+    const _terms = (e?.terms || []).map((item: any) => {
+        item.terms = item.terms.map((i: any) => {
+            if(i.column === 'scene'){
+                return {
+                    ...i,
+                    termType: 'rule-bind-alarm',
+                    column: 'id'
+                }
+            }
+            return i
+        })
+        return item
+    })
+    params.value = {
+        ...e,
+        terms: _terms
+    }
 };
 const queryDefaultLevel = () => {
     queryLevel().then((res) => {

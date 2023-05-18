@@ -20,12 +20,17 @@
       >
         <template #bodyCell="{ column, text, record, index }">
           <template v-if='column.dataIndex === "name"'>
-            <span class='metadata-title'>{{ text }} ({{ record.id }})</span>
+            <span class='metadata-title'>
+              <j-ellipsis>
+                {{ text }} ({{ record.id }})
+              </j-ellipsis>
+            </span>
           </template>
           <template v-if='column.dataIndex === "plugin"'>
             <j-select
               v-model:value='record.plugin'
               style='width: 100%'
+              allowClear
               @change='(id) => pluginChange(record, id)'
             >
               <j-select-option
@@ -40,26 +45,28 @@
       </j-table>
     </div>
     <div class='right'>
-      <div class='title'>
-        功能说明
-      </div>
-      <p>
-        该功能用于将插件中的
-        <b>物模型属性标识</b>与
-        <b>平台物模型属性标识</b>进行映射,当两方属性标识不一致时，可在当前页面直接修改映射管理，系统将以映射后的物模型属性进行数据处理。
-      </p>
-      <p>
-        未完成映射的属性标识“目标属性”列数据为空，代表该属性值来源以在平台配置的来源为准。
-      </p>
-      <p>
-        数据条背景亮起代表<b>标识一致</b>或<b>已完成映射</b>的属性。
-      </p>
-      <div class='title'>
-        功能图示
-      </div>
-      <div>
-        <img :src='getImage("/device/matadataMap.png")' />
-      </div>
+      <j-scrollbar>
+        <div class='title'>
+          功能说明
+        </div>
+        <p>
+          该功能用于将插件中的
+          <b>物模型属性标识</b>与
+          <b>平台物模型属性标识</b>进行映射,当两方属性标识不一致时，可在当前页面直接修改映射管理，系统将以映射后的物模型属性进行数据处理。
+        </p>
+        <p>
+          未完成映射的属性标识“目标属性”列数据为空，代表该属性值来源以在平台配置的来源为准。
+        </p>
+        <p>
+          数据条背景亮起代表<b>标识一致</b>或<b>已完成映射</b>的属性。
+        </p>
+        <div class='title'>
+          功能图示
+        </div>
+        <div>
+          <img :src='getImage("/device/matadataMap.png")' />
+        </div>
+      </j-scrollbar>
     </div>
   </div>
 </template>
@@ -87,7 +94,7 @@ const columns = [
   {
     title: '序号',
     dataIndex: 'index',
-    width: 120
+    width: 100
   },
   {
     title: '平台属性',
@@ -96,6 +103,7 @@ const columns = [
   {
     title: '目标属性',
     dataIndex: 'plugin',
+    width: 250,
     sorter: tableFilter
   }
 ]

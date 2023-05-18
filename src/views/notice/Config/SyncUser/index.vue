@@ -207,9 +207,11 @@ watch(
  * 部门点击
  */
 const onTreeSelect = (keys: any) => {
+  if (keys.length) {
     deptId.value = keys[0];
     pageSize.value = 10;
     current.value = 1;
+  }
 };
 
 // 右侧表格
