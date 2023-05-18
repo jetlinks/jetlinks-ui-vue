@@ -32,6 +32,7 @@
             <j-date-picker
                 :value="value.value"
                 allowClear
+                valueFormat='YYYY-MM-DD HH:mm:ss'
                 format="YYYY-MM-DD HH:mm:ss"
                 style="width: calc(100% - 120px)"
                 v-if="item.type === 'date'"
