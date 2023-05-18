@@ -281,9 +281,7 @@ const pluginSearch = (val: string) => {
 }
 
 const AccessChange = (id: string) => {
-  if (!props.data.id) {
-    AccessCurrent.value = id;
-  }
+  AccessCurrent.value = id;
 };
 
 const addPlugin = () => {
