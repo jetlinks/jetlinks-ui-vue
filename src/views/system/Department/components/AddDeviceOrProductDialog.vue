@@ -3,6 +3,7 @@
         class="add-device-or-product-dialog-container"
         title="绑定"
         width="1440px"
+        :maskClosable="false"
         @ok="confirm"
         :confirmLoading="loading"
         @cancel="emits('update:visible', false)"

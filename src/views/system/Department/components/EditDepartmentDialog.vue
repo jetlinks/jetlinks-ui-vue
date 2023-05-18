@@ -2,6 +2,7 @@
     <j-modal
         visible
         :title="title"
+        :maskClosable="false"
         width="520px"
         @cancel="emits('update:visible', false)"
         @ok="confirm"
