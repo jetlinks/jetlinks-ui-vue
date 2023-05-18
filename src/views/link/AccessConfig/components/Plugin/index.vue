@@ -14,6 +14,7 @@
             @search="pluginSearch"
           />
           <PermissionButton
+            v-if='showAddBtn'
             type="primary"
             @click="addPlugin"
             hasPermission="link/plugin:add"
@@ -36,7 +37,7 @@
               <AccessCard
                 @checkedChange="AccessChange"
                 :checked="AccessCurrent"
-                :disabled='paramsId !== ":id"'
+                :disabled='!showAddBtn'
                 :data="{ ...item, type: 'plugin' }"
               >
                 <template #other>
@@ -185,6 +186,10 @@ const props = defineProps({
     type: Object,
     default: () => {},
   },
+  bindProduct: {
+    type: Boolean,
+    default: false
+  }
 });
 
 const route = useRoute();
@@ -219,6 +224,10 @@ const queryPlugin = (params = {}) => {
     }
   })
 }
+
+const showAddBtn = computed(() => {
+  return route.query.view === 'false' && !props.bindProduct
+})
 
 const getRules = (item: any) => {
   let typeName = '输入'

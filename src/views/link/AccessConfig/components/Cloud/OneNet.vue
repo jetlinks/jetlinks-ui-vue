@@ -260,6 +260,7 @@
                         @search="procotolSearch"
                     />
                     <PermissionButton
+                        v-if='showAddBtn'
                         type="primary"
                         @click="addProcotol"
                         hasPermission="link/Protocol:add"
@@ -282,6 +283,7 @@
                             <AccessCard
                                 @checkedChange="procotolChange"
                                 :checked="procotolCurrent"
+                                :disabled='!showAddBtn'
                                 :data="{ ...item, type: 'protocol' }"
                             >
                             </AccessCard>
@@ -434,6 +436,10 @@ const props = defineProps({
         type: Object,
         default: () => {},
     },
+    bindProduct: {
+      type: Boolean,
+      default: false
+    }
 });
 
 const route = useRoute();
@@ -461,6 +467,10 @@ const steps = ref(['接入配置', '消息协议', '完成']);
 const procotolList: any = ref([]);
 const allProcotolList = ref([]);
 const procotolCurrent: any = ref('');
+
+const showAddBtn = computed(() => {
+  return route.query.view === 'false' && !props.bindProduct
+})
 
 const procotolChange = (id: string) => {
     procotolCurrent.value = id;

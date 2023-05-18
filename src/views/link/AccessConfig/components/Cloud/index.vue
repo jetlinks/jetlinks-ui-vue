@@ -3,11 +3,13 @@
         <Ctwing
             v-if="channel === 'Ctwing'"
             :provider="props.provider"
+            :bindProduct='bindProduct'
             :data="props.data"
         />
         <OneNet
             v-if="channel === 'OneNet'"
             :provider="props.provider"
+            :bindProduct='bindProduct'
             :data="props.data"
         />
     </div>
@@ -26,6 +28,10 @@ const props = defineProps({
         type: Object,
         default: () => {},
     },
+  bindProduct: {
+    type: Boolean,
+    default: false
+  }
 });
 
 const channel = props.provider.channel;

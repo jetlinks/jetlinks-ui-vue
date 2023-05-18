@@ -48,7 +48,18 @@
                             <j-form-item name="base-path">
                                 <template #label>
                                     <span>base-path</span>
-                                    <j-tooltip title="系统后台访问的url">
+                                    <j-tooltip >
+                                      <template #title>
+                                        <div style='word-break: break-all;'>
+                                          <div>
+                                            系统后台访问的url。
+                                          </div>
+                                          <div>
+                                           格式：{http/https}: //{前端所在服务器IP地址}:{前端暴露的服务端口}/api
+                                          </div>
+                                        </div>
+                                      </template>
+
                                         <img
                                             class="img-style"
                                             :src="
@@ -59,7 +70,7 @@
                                 </template>
                                 <j-input
                                     v-model:value="formValue['base-path']"
-                                    placeholder="输入base-path"
+                                    placeholder="{http/https}: //{前端所在服务器IP地址}:{前端暴露的服务端口}/api"
                                 />
                             </j-form-item>
                             <j-row :gutter="24" :span="24">
