@@ -130,6 +130,7 @@ import { queryList, getAccessConfig } from '@/api/device/product'
 import { message } from 'jetlinks-ui-components'
 import { useMenuStore } from '@/store/menu';
 import { getProductByPluginId } from '@/api/link/plugin'
+import { getProviders } from '@/api/link/accessConfig'
 
 type Emit = {
   (e: 'submit', data: any): void
@@ -217,6 +218,21 @@ const columns = [
     key: 'name',
     search: {
       type: 'string',
+    },
+  },
+  {
+    title: '网关类型',
+    dataIndex: 'provider',
+    key: 'provider',
+    search: {
+      type: 'select',
+      options: () => {
+        return new Promise(resolve => {
+          getProviders().then(res => {
+            resolve(res.result?.map((item: any) => ({ ...item, label: item.name, value: item.id })) || [])
+          })
+        })
+      },
     },
   },
   {

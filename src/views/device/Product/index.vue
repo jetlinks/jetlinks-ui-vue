@@ -470,8 +470,8 @@ const query = reactive({
         },
         {
             title: '接入方式',
-            key: 'accessId',
-            dataIndex: 'accessId',
+            key: 'accessName',
+            dataIndex: 'accessName',
             search: {
                 type: 'select',
                 options: async () => {
@@ -482,7 +482,7 @@ const query = reactive({
                             typeList.value = [];
                             typeList.value = resp.result.map((item: any) => ({
                                 label: item.name,
-                                value: item.id,
+                                value: item.name,
                             }));
                             res(typeList.value);
                         });
