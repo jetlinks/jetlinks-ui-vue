@@ -309,11 +309,13 @@ const submitData = () => {
         .validate()
         .then(async () => {
             // 新增
+          loading.value = true
             if (props.isAdd === 1) {
                 if (form.id === '') {
                     form.id = undefined;
                 }
                 const res = await addProduct(form);
+                loading.value = false
                 if (res.status === 200) {
                     message.success('保存成功！');
                     visible.value = false;
@@ -331,6 +333,7 @@ const submitData = () => {
                     ? form.classifiedName
                     : (form.classifiedName = '');
                 const res = await editProduct(form);
+                loading.value = false
                 if (res.status === 200) {
                     message.success('保存成功！');
                     emit('success');

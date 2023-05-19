@@ -2,6 +2,7 @@
     <j-modal
         visible
         :title="dialogTitle"
+        :maskClosable="false"
         width="675px"
         @ok="confirm"
         @cancel="emits('update:visible', false)"
@@ -97,7 +98,7 @@
                         <j-select
                             v-model:value="form.data.roleIdList"
                             mode="multiple"
-                            style="width: 100%"
+                            style="width: calc(100% - 40px)"
                             placeholder="请选择角色"
                             :options="form.roleOptions"
                         ></j-select>
@@ -115,7 +116,7 @@
                         <j-tree-select
                             v-model:value="form.data.orgIdList"
                             show-search
-                            style="width: 100%"
+                            style="width: calc(100% - 40px)"
                             placeholder="请选择组织"
                             :tree-data="form.departmentOptions"
                             :fieldNames="{ label: 'name', value: 'id' }"

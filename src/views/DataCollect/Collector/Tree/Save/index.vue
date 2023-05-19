@@ -186,7 +186,7 @@ const endianData = computed(() => {
             if (endian === 'BIG') {
                 return endianIn === 'BIG' ? 'ABCD' : 'BADC';
             } else {
-                return endianIn === 'BIG' ? 'CDBA' : 'DCBA';
+                return endianIn === 'BIG' ? 'CDAB' : 'DCBA';
             }
         } else {
             return endian === 'BIG' ? 'ABCD' : 'DCBA';

@@ -2,7 +2,7 @@
 import { defineStore } from "pinia";
 
 type DepartmentStateType = {
-    productId: string;
+    productId?: string[];
     optType: string | undefined;
     crossPageKeys: string[];
     changedApis: any;
@@ -11,7 +11,7 @@ type DepartmentStateType = {
 export const useDepartmentStore = defineStore({
     id: 'department',
     state: (): DepartmentStateType => ({
-        productId: '',
+        productId: undefined,
         // 设备资产分配弹窗操作类型: 
         // 1. optType === 'handle': 手动点击资产分配按钮; 
         // 2. optType === ': 产品资产分配后, 自动弹出设备资产分配
@@ -20,7 +20,7 @@ export const useDepartmentStore = defineStore({
         changedApis: {},
     }),
     actions: {
-        setProductId(value: string) {
+        setProductId(value?: string[]) {
             this.productId = value;
         },
         setType(value: string | undefined) {

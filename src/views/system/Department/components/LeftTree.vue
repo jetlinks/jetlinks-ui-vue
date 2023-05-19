@@ -32,7 +32,12 @@
                   :fieldNames="{ key: 'id' }"
               >
                   <template #title="{ name, data }">
-                      <span>{{ name }}</span>
+                    <div class='department-tree-item-content'>
+                      <span class='title'>
+                        <j-ellipsis>
+                          {{ name }}
+                        </j-ellipsis>
+                      </span>
                       <span class="func-btns" @click="(e) => e.stopPropagation()">
                           <PermissionButton
                               :hasPermission="`${permission}:update`"
@@ -72,6 +77,7 @@
                               <AIcon type="DeleteOutlined" />
                           </PermissionButton>
                       </span>
+                    </div>
                   </template>
               </jTree>
               <j-empty v-else description="暂无数据" />
@@ -215,13 +221,15 @@ const openDialog = (row: any = {}) => {
     dialog.selectItem = { ...row, sortIndex };
     dialog.visible = true;
 };
-init();
-function init() {
+
+const init = () => {
     getTree(save ? openDialog : undefined);
     watch(selectedKeys, (n) => {
         emits('change', n[0]);
     });
 }
+
+init();
 </script>
 
 <style lang="less" scoped>
@@ -246,17 +254,6 @@ function init() {
             flex: 1 1 auto;
 
             .ant-tree-title {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                .func-btns {
-                    display: none;
-                    font-size: 14px;
-                    .ant-btn-link {
-                        padding: 0 4px;
-                        height: 24px;
-                    }
-                }
                 &:hover {
                     .func-btns {
                         display: block;
@@ -270,6 +267,24 @@ function init() {
     .tree {
       overflow-y: auto;
       overflow-x: hidden;
+
+      .department-tree-item-content {
+        display: flex;
+        align-items: center;
+
+        .title {
+          width: calc(100% - 80px);
+        }
+        .func-btns {
+          display: none;
+          font-size: 14px;
+          width: 80px;
+          :deep(.ant-btn-link) {
+            padding: 0 4px;
+            height: 24px;
+          }
+        }
+      }
 
       .loading {
         display: flex;

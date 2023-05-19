@@ -317,17 +317,20 @@ const form = reactive({
                 };
                 form.sourceCode = resp.result.code;
             });
-        // 获取关联菜单
-        getMenuTree_api({ paging: false }).then((resp: any) => {
-            form.treeData = resp.result;
-        });
-        // 获取资产类型
-        getAssetsType_api().then((resp: any) => {
-            form.assetsType = resp.result.map((item: any) => ({
-                label: item.name,
-                value: item.id,
-            }));
-        });
+
+        if (isNoCommunity) {
+          // 获取关联菜单
+          getMenuTree_api({ paging: false }).then((resp: any) => {
+              form.treeData = resp.result;
+          });
+          // 获取资产类型
+          getAssetsType_api().then((resp: any) => {
+              form.assetsType = resp.result.map((item: any) => ({
+                  label: item.name,
+                  value: item.id,
+              }));
+          });
+        }
     },
     checkCode: async (_rule: Rule, value: string): Promise<any> => {
         if (!value) return Promise.reject('');

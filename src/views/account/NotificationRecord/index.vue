@@ -14,8 +14,9 @@
                 model="TABLE"
                 :params="queryParams"
                 :defaultParams="{
-                    'sorts[0].name': 'notifyTime',
-                    'sorts[0].order': 'desc',
+                  sorts: [{
+                    name: 'notifyTime', order: 'desc'
+                  }]
                 }"
             >
                 <template #topicProvider="slotProps">
@@ -95,6 +96,7 @@ import moment from 'moment';
 import { message } from 'ant-design-vue';
 import { useUserInfo } from '@/store/userInfo';
 import { useRouterParams } from '@/utils/hooks/useParams';
+import dayjs from 'dayjs'
 
 const { updateAlarm } = useUserInfo();
 const columns = [
@@ -132,7 +134,7 @@ const columns = [
         dataIndex: 'notifyTime',
         key: 'notifyTime',
         search: {
-            type: 'date',
+            type: 'date'
         },
         scopedSlots: true,
         ellipsis: true,

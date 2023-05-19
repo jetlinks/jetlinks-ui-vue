@@ -269,7 +269,7 @@ const columns = [
             rename: 'productId$product-info',
             type: 'select',
             handleValue(value: string) {
-                return `id is ${value}`;
+                return `id in ${value.toString()}`;
             },
             options: () =>
                 new Promise((resolve) => {

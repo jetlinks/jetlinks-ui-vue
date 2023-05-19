@@ -4,6 +4,7 @@
         title="编辑"
         width="500px"
         @ok="confirm"
+        :maskClosable="false"
         :confirmLoading="loading"
         visible
         @cancel="emits('update:visible', false)"
