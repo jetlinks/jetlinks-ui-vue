@@ -6,7 +6,7 @@
         :maskClosable="false"
         @ok="confirm"
         :confirmLoading="loading"
-        @cancel="emits('update:visible', false)"
+        @cancel="cancel"
         visible
     >
         <h5 class="row">
@@ -29,9 +29,9 @@
 
         <pro-search
             type="simple"
-            :columns="props.queryColumns"
-            target="category"
-            @search="(params:any)=>queryParams = {...params}"
+            :columns="searchColumns"
+            target="category-bind-modal"
+            @search="search"
         />
         <j-pro-table
             ref="tableRef"
@@ -176,7 +176,6 @@ const confirm = () => {
         return message.warning('请先勾选数据');
     }
 
-    console.log('table.selectedRows: ', table.selectedRows);
     const params = table.selectedRows.map((item: any) => ({
         targetType: 'org',
         targetId: props.parentId,
@@ -188,8 +187,8 @@ const confirm = () => {
         ),
     }));
 
-    // 分配产品资产后, 进入设备资产分配,默认查询第一个产品下的设备
-    departmentStore.setProductId(params[0].assetIdList[0]);
+    // 分配产品资产后, 进入设备资产分配
+    departmentStore.setProductId(table.selectedRows.map((item: any) => item.id));
 
     loading.value = true;
     bindDeviceOrProductList_api(props.assetType, params)
@@ -217,6 +216,26 @@ const columns = props.queryColumns.filter(
     (item) => item.dataIndex !== 'action',
 );
 
+const searchColumns = computed(() => {
+  return props.queryColumns.map(item => {
+    if (departmentStore.productId) {
+      if (item.dataIndex === 'productName') {
+        item.search.first = true
+        item.search.componentProps = {
+          mode: 'multiple',
+          "max-tag-count": "responsive"
+        }
+        item.search.defaultTermType = 'eq'
+        item.search.defaultOnceValue = departmentStore.productId
+
+      } else if (item.search && 'first' in item.search) {
+        delete item.search.first
+      }
+    }
+    return item
+  })
+})
+
 const queryParams = ref({});
 const table: any = {
     _selectedRowKeys: ref<string[]>([]), // 选中项的id
@@ -235,19 +254,6 @@ const table: any = {
                     // 启用批量设置
                     if (bulkBool.value) {
                         // 将已勾选的权限和批量设置的权限进行合并，并与自己可选的权限进行比对，取交集作为当前选中的权限
-                        // let newPermission = uniq([
-                        //     ...item.selectPermissions,
-                        //     ...bulkList.value,
-                        // ]);
-                        // const allPermissions = item.permissionList.map(
-                        //     (item: any) => item.value,
-                        // );
-                        // newPermission = intersection(
-                        //     newPermission,
-                        //     allPermissions,
-                        // );
-                        // item.selectPermissions = newPermission;
-
                         // fix: bug#10756
                         item.selectPermissions = n[1];
                         // 禁用单独勾选
@@ -391,99 +397,40 @@ const table: any = {
                         });
                     },
                 );
-                // getPermission_api(props.assetType, ids, parentId).then(
-                //     (perResp: any) => {
-                //         console.log('perResp: ', perResp);
-                //         console.log('props.allPermission: ', props.allPermission);
-                //         const permissionObj = {};
-                //         perResp.result.forEach((item: any) => {
-                //             permissionObj[item.assetId] = props.allPermission
-                //                 .filter((permission) =>
-                //                     item.allPermissions.includes(permission.id),
-                //                 )
-                //                 .map((item) => ({
-                //                     label: item.name,
-                //                     value: item.id,
-                //                     disabled: true,
-                //                 }));
-                //         });
-                //         data.forEach((item) => {
-                //             item.permissionList = permissionObj[item.id];
-                //             item.selectPermissions = ['read'];
-
-                //             // 产品的状态进行转换处理
-                //             if (props.assetType === 'product') {
-                //                 item.state = {
-                //                     value:
-                //                         item.state === 1
-                //                             ? 'online'
-                //                             : item.state === 0
-                //                             ? 'offline'
-                //                             : '',
-                //                     text:
-                //                         item.state === 1
-                //                             ? '正常'
-                //                             : item.state === 0
-                //                             ? '禁用'
-                //                             : '',
-                //                 };
-                //             }
-                //         });
-
-                //         resolve({
-                //             code: 200,
-                //             result: {
-                //                 data: data,
-                //                 pageIndex,
-                //                 pageSize,
-                //                 total,
-                //             },
-                //             status: 200,
-                //         });
-                //     },
-                // );
             });
         }),
     // 整理参数并获取数据
     requestFun: async (oParams: any) => {
         queryCount.value += 1;
         if (props.parentId) {
-            const terms = [
-                {
-                    terms: [
-                        {
-                            column: 'id',
-                            termType: 'dim-assets$not',
-                            value: {
-                                assetType: props.assetType,
-                                targets: [
-                                    {
-                                        type: 'org',
-                                        id: props.parentId,
-                                    },
-                                ],
-                            },
-                        },
-                        {
-                            column: 'productId$product-info',
-                            type: 'and',
-                            value: `id is ${departmentStore.productId}`,
-                        },
-                    ],
-                },
-            ];
+            let terms = [{
+              column: 'id',
+              termType: 'dim-assets$not',
+              value: {
+                assetType: props.assetType,
+                targets: [
+                  {
+                    type: 'org',
+                    id: props.parentId,
+                  },
+                ],
+              },
+              type: 'and'
+            }]
 
-            if (
-                props.assetType !== 'device' ||
-                !departmentStore.productId ||
-                queryCount.value > 1 ||
-                departmentStore.optType === 'handle'
-            ) {
-                // 非设备|产品id不存在|有其他查询操作(queryCount+1)|设备页面手动点击资产分配, 均删除产品带入的id
-                terms[0].terms.pop();
+            // if (
+            //     props.assetType !== 'device' ||
+            //     !departmentStore.productId ||
+            //     queryCount.value > 1 ||
+            //     departmentStore.optType === 'handle'
+            // ) {
+            //     // 非设备|产品id不存在|有其他查询操作(queryCount+1)|设备页面手动点击资产分配, 均删除产品带入的id
+            //     terms[0].terms.pop();
+            // }
+            if (oParams.terms && oParams.terms.length > 0) {
+              terms = [ ...oParams.terms, ...terms]
             }
-            if (oParams.terms && oParams.terms.length > 0)
-                terms.unshift({ terms: oParams.terms });
+
             const params = {
                 ...oParams,
                 sorts: [{ name: 'createTime', order: 'desc' }],
@@ -527,6 +474,15 @@ const selectChange = (keys: string[], rows: any[]) => {
     table.selectedRows = rows;
     table._selectedRowKeys.value = keys;
 };
+
+const cancel = () => {
+  departmentStore.setProductId()
+  emits('update:visible', false)
+}
+
+const search = (query: any) => {
+  queryParams.value = query
+}
 </script>
 
 <style lang="less" scoped>

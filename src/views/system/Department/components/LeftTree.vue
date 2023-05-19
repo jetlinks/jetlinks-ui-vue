@@ -221,13 +221,15 @@ const openDialog = (row: any = {}) => {
     dialog.selectItem = { ...row, sortIndex };
     dialog.visible = true;
 };
-init();
-function init() {
+
+const init = () => {
     getTree(save ? openDialog : undefined);
     watch(selectedKeys, (n) => {
         emits('change', n[0]);
     });
 }
+
+init();
 </script>
 
 <style lang="less" scoped>
@@ -274,7 +276,7 @@ function init() {
           width: calc(100% - 80px);
         }
         .func-btns {
-          //display: none;
+          display: none;
           font-size: 14px;
           width: 80px;
           :deep(.ant-btn-link) {
