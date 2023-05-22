@@ -12,16 +12,41 @@
     >
         <div class="media-live">
             <div class="media-live-video">
-                <div class="media-tool">
-                    <div class="tool-item" @click.stop="handleRecord">
-                        {{
-                            isRecord === 0
-                                ? '开始录像'
-                                : isRecord === 1
-                                ? '请求录像中'
-                                : '停止录像'
-                        }}
+                <div :class="mediaToolClass" @mouseleave='mouseleave' @mouseenter='showTool = true' >
+                  <div class="tool-item" >
+                    <template v-if='isRecord === 0'>
+                      <j-dropdown trigger='click' @visibleChange='visibleChange' @click='showToolLock = true'>
+                        <div>
+                          开始录像
+                        </div>
+                        <template #overlay>
+                          <j-menu @click="recordStart">
+                            <j-menu-item key='false'>
+                              <span style='padding-right: 12px;'>本地存储</span>
+                              <j-tooltip title='存储在设备本地'>
+                                <a-icon type='QuestionCircleOutlined' />
+                              </j-tooltip>
+                            </j-menu-item>
+                            <j-menu-item key='true'>
+                              <span style='padding-right: 12px;'>云端存储</span>
+                              <j-tooltip title='存储在服务器中'>
+                                <a-icon type='QuestionCircleOutlined' />
+                              </j-tooltip>
+                            </j-menu-item>
+                          </j-menu>
+                        </template>
+                      </j-dropdown>
+                    </template>
+                    <div v-else-if='isRecord === 1'>
+                      请求录像中
                     </div>
+                    <div v-else-if='isRecord === 2' @click.stop="recordStop">
+                      停止录像
+                    </div>
+                  </div>
+
+
+
                     <div class="tool-item" @click.stop="handleRefresh">
                         刷新
                     </div>
@@ -91,6 +116,30 @@ const player = ref();
 const url = ref('');
 // 视频类型
 const mediaType = ref<'mp4' | 'flv' | 'hls'>('mp4');
+const showTool = ref(false)
+const showToolLock = ref(false)
+
+const mouseleave = () => {
+  if (!showToolLock.value) {
+    showTool.value = false
+  }
+}
+
+const visibleChange = (v: boolean) => {
+  showTool.value = v
+}
+
+const getPopupContainer = (trigger: HTMLElement) => {
+  return trigger?.parentNode || document.body
+}
+
+const mediaToolClass = computed(() => {
+  return {
+    'media-tool': true,
+    'media-tool-show': showTool.value
+  }
+})
+
 /**
  * 媒体开始播放
  */
@@ -99,7 +148,7 @@ const mediaStart = () => {
         props.data.deviceId,
         props.data.channelId,
         mediaType.value,
-    );
+    )
 };
 
 // 录像状态
@@ -116,32 +165,39 @@ const getIsRecord = async () => {
 };
 
 /**
- * 点击录像/停止录像
+ * 开始录像
  */
-const handleRecord = async () => {
-    if (isRecord.value === 0) {
-        isRecord.value = 1;
-        const res = await channelApi.recordStart(
-            props.data.deviceId,
-            props.data.channelId,
-            { local: false },
-        );
-        if (res.success) {
-            isRecord.value = 2;
-        } else {
-            isRecord.value = 0;
-        }
-    } else if (isRecord.value === 2) {
-        const res = await channelApi.recordStop(
-            props.data.deviceId,
-            props.data.channelId,
-            { local: false },
-        );
-        if (res.success) {
-            isRecord.value = 0;
-        }
-    }
-};
+const recordStart = async ({ key }: { key: string}) => {
+  console.log(key)
+  showToolLock.value = false
+  showTool.value = false
+  isRecord.value = 1;
+  const local = key === 'true'
+  const res = await channelApi.recordStart(
+    props.data.deviceId,
+    props.data.channelId,
+    { local },
+  ).catch(() => ({ success: false }))
+  if (res.success) {
+    isRecord.value = 2;
+  } else {
+    isRecord.value = 0;
+  }
+}
+
+/**
+ * 停止录像
+ */
+const recordStop = async () => {
+  const res = await channelApi.recordStop(
+    props.data.deviceId,
+    props.data.channelId
+  );
+  if (res.success) {
+    isRecord.value = 0;
+  }
+}
+
 
 /**
  * 刷新
