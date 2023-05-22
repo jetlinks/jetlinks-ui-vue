@@ -13,7 +13,7 @@
                 name="oldPassword"
                 :rules="[
                     { required: true, message: '请输入密码' },
-                    { validator: checkMothods.old, trigger: 'blur' },
+                    { validator: checkMethods.old, trigger: 'blur' },
                 ]"
             >
                 <j-input
@@ -24,9 +24,10 @@
             <j-form-item
                 label="密码"
                 name="newPassword"
+
                 :rules="[
                     { required: true, message: '请输入密码' },
-                    { validator: checkMothods.new, trigger: 'blur' },
+                    { validator: checkMethods.new, trigger: 'blur' },
                 ]"
             >
                 <j-input-password
@@ -39,7 +40,7 @@
                 name="confirmPassword"
                 :rules="[
                     { required: true, message: '请输入确认密码' },
-                    { validator: checkMothods.confirm, trigger: 'blur' },
+                    { validator: checkMethods.confirm, trigger: 'blur' },
                 ]"
             >
                 <j-input-password
@@ -72,9 +73,9 @@ const form = ref<formType>({
     confirmPassword: '',
 });
 
-const checkMothods = {
+const checkMethods = {
     old: async (_rule: Rule, value: string) => {
-        if (!value) return Promise.reject();
+        if (!value) return Promise.reject('请输入密码');
         try {
             const resp: any = await checkOldPassword_api(value);
             if (resp.status === 200 && !resp.result.passed)
@@ -85,7 +86,7 @@ const checkMothods = {
         }
     },
     new: async (_rule: Rule, value: string) => {
-        if (!value) return Promise.reject();
+        if (!value) return Promise.reject('请输入密码');
         else if (
             form.value.confirmPassword &&
             value !== form.value.confirmPassword
@@ -134,7 +135,7 @@ const handleOk = () => {
             .finally(() => (loading.value = false));
     });
 };
-console.clear();
+
 type formType = {
     oldPassword: string;
     newPassword: string;
