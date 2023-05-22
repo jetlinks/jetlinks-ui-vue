@@ -168,7 +168,6 @@ const getIsRecord = async () => {
  * 开始录像
  */
 const recordStart = async ({ key }: { key: string}) => {
-  console.log(key)
   showToolLock.value = false
   showTool.value = false
   isRecord.value = 1;

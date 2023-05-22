@@ -81,6 +81,7 @@ watchEffect(() => {
                 dataIndex: `${i.id}_format`,
                 search: {
                     type: i?.valueType?.type || 'string',
+                    rename: i.id
                 },
             });
         });

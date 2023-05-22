@@ -293,7 +293,7 @@ const getProtocol = async () => {
 const jumpDevice = () => {
     // console.log(productStore.current?.id);
     const searchParams = {
-        column: 'productId',
+        column: 'productName',
         termType: 'eq',
         value: productStore.current?.id,
     };

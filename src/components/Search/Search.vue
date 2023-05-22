@@ -1,5 +1,5 @@
 <template>
-  <j-advanced-search
+  <AdvancedSearch
     :target='target'
     :type='type'
     :request='saveSearchHistory'
@@ -16,6 +16,7 @@
 import { PropType } from 'vue'
 import { JColumnsProps } from 'components/Table/types'
 import { saveSearchHistory, getSearchHistory, deleteSearchHistory } from '@/api/comm'
+import { AdvancedSearch } from 'jetlinks-ui-components'
 
 interface Emit {
   (e: 'search', data: any): void
