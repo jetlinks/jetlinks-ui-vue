@@ -122,6 +122,7 @@
                     :name='["configuration", item.name]'
                     :label='item.label'
                     :rules='item.rules'
+                    :required='!!item.type?.expands?.required'
                   >
                     <ValueItem v-model:modelValue='formData.configuration[item.name]' :itemType='item.type' />
                   </j-form-item>
@@ -237,7 +238,7 @@ const getRules = (item: any) => {
     typeName = '选择'
   }
 
-  if (item.required) {
+  if (item.type?.expands?.required) {
     rules.push(
         {
           required: true,
