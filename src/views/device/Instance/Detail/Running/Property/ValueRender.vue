@@ -89,7 +89,11 @@
             {{ JSON.stringify(value?.formatValue) }}
         </div>
         <div v-else :class="valueClass">
-            {{ String(value?.formatValue) }}
+          <div style='width: 100%;white-space: normal;'>
+            <j-ellipsis>
+              {{ String(value?.formatValue) }}
+            </j-ellipsis>
+          </div>
         </div>
         <ValueDetail
             v-if="visible"

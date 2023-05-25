@@ -42,7 +42,7 @@ export default {
         server.post(`/media/device/${deviceId}/${channelId}/_record`, data),
 
     // 停止录像
-    recordStop: (deviceId: string, channelId: string, data: any) =>
+    recordStop: (deviceId: string, channelId: string, data?: any) =>
         server.post(`/media/device/${deviceId}/${channelId}/_stop-record`, data),
 
     // 查询本地回放记录

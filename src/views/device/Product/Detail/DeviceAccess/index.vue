@@ -594,7 +594,9 @@ const checkAccess = async (data: any) => {
   visible.value = false
   accessId.value = data.access.id
   access.value = data.access
-  metadata.value = data.metadata[0]
+  metadata.value = data.metadata?.[0] || {
+    properties: []
+  }
   config.value = data.access?.transportDetail || {}
   productData.metadata = {}
   handleColumns()
@@ -675,10 +677,17 @@ const updateAccessData = async (id: string, values: any) => {
   const result: any = {};
   flatObj(values, result);
   const { storePolicy, ...extra } = result;
+  // 产品有物模型，设备接入没有，取产品物模型；设备接入有物模型，产品没有，取设备接入的物模型；否则取空字符串；不能为undefined或者null
+  let _metadata = ''
+  if (productStore.current?.metadata) {
+    _metadata = productStore.current?.metadata
+  } else if (productData.metadata && Object.keys(productData.metadata).length) {
+    _metadata = JSON.stringify(productData.metadata)
+  }
   // 更新选择设备(设备接入)
   const accessObj = {
     ...productStore.current,
-    metadata: JSON.stringify(productData.metadata || "{}"),
+    metadata: _metadata,
     transportProtocol: access.value?.transport,
     protocolName: access.value?.protocolDetail?.name,
     accessId: access.value?.id,
