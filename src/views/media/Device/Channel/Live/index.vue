@@ -105,6 +105,8 @@ const props = defineProps({
     },
 });
 
+const route = useRoute();
+
 const _vis = computed({
     get: () => props.visible,
     set: (val) => emit('update:visible', val),
