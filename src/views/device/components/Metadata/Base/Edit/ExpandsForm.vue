@@ -12,7 +12,7 @@
   ]">
     <j-select v-model:value="_value.type" :options="ExpandsTypeList" mode="multiple" size="small" :disabled="['manual', 'rule'].includes(_value.source)"></j-select>
   </j-form-item>
-  <j-form-item label="其他配置" v-if="config.length > 0">
+  <j-form-item label="其它配置" v-if="config.length > 0">
     <j-form-item v-for="(item, index) in config" :key="index">
       <config-param v-model:value="_value" :config="item" :name="name"></config-param>
     </j-form-item>
