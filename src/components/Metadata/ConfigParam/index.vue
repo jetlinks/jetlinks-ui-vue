@@ -9,14 +9,17 @@
       <template #content>
         <div style="max-width: 400px;" class="ant-form-vertical">
           <j-form-item v-for="item in config.properties" :name="name.concat([item.property])" :label="item.name">
-            <j-select v-model:value="value[item.property]" :options="item.type?.elements?.map((e: { 'text': string, 'value': string }) => ({
+            <template v-if='item.type?.type === "string"'>
+              <j-input v-model:value='value[item.property]' size="small" :placeholder="`请输入${item.name}`"/>
+            </template>
+            <j-select v-else v-model:value="value[item.property]" :options="item.type?.elements?.map((e: { 'text': string, 'value': string }) => ({
               label: e.text,
               value: e.value,
             }))" size="small" :placeholder="`请输入${item.name}`"></j-select>
           </j-form-item>
         </div>
       </template>
-      存储配置
+      {{ config.name || 存储配置 }}
       <AIcon type="EditOutlined" class="item-icon" />
     </j-popover>
   </j-button>
