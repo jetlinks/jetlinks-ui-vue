@@ -27,7 +27,7 @@
                                 <a-icon type='QuestionCircleOutlined' />
                               </j-tooltip>
                             </j-menu-item>
-                            <j-menu-item key='true'>
+                            <j-menu-item key='true' v-if='route.query.type !== "fixed-media"'>
                               <span style='padding-right: 12px;'>云端存储</span>
                               <j-tooltip title='存储在服务器中'>
                                 <a-icon type='QuestionCircleOutlined' />
@@ -104,6 +104,8 @@ const props = defineProps({
         default: () => ({}),
     },
 });
+
+const route = useRoute();
 
 const _vis = computed({
     get: () => props.visible,
