@@ -64,7 +64,8 @@ import { PropType } from 'vue';
 import ExpandsForm from './ExpandsForm.vue';
 import ValueTypeForm from './ValueTypeForm.vue'
 import { useProductStore } from '@/store/product';
-import { getMetadataConfig } from '@/api/device/product'
+import { useInstanceStore } from'@/store/instance'
+import { getMetadataConfig, getMetadataDeviceConfig } from '@/api/device/product'
 import JsonParam from '@/components/Metadata/JsonParam/index.vue'
 import { EventLevel, ExpandsTypeList } from '@/views/device/data';
 import { useMetadataStore } from '@/store/metadata';
@@ -97,22 +98,24 @@ if (props.modelType === 'events' || props.modelType === 'tags') {
 }
 
 const productStore = useProductStore()
+const deviceStore = useInstanceStore()
 
 const config = ref<Record<any, any>[]>([])
 const asyncOtherConfig = debounce(async () => {
-  if (props.type !== 'product') return
+
   const { valueType, id } = props.value
   const { type } = valueType || {}
-  const productId = productStore.current?.id
+  const productId = props.type === 'product' ? productStore.current?.id : deviceStore.current.id
   if (!productId || !id || !type) return
-  const resp = await getMetadataConfig({
+  const params: any = {
     deviceId: productId,
     metadata: {
       id,
       type: 'property',
       dataType: type,
     },
-  })
+  }
+  const resp = props.type === 'product' ? await getMetadataConfig(params) : await getMetadataDeviceConfig(params)
   if (resp.status === 200) {
     config.value = resp.result
   }

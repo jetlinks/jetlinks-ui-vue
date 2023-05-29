@@ -202,3 +202,13 @@ export const getMetadataConfig = (params: {
     dataType: string;
   };
 }) => server.get<Record<any, any>[]>(`/device/product/${params.deviceId}/config-metadata/${params.metadata.type}/${params.metadata.id}/${params.metadata.dataType}`)
+
+export const getMetadataDeviceConfig = (params: {
+  deviceId: string;
+  metadata: {
+    type: MetadataType | 'property';
+    id: string;
+    dataType: string;
+  };
+}) => server.get<Record<any, any>[]>(`/device/instance/${params.deviceId}/config-metadata/${params.metadata.type}/${params.metadata.id}/${params.metadata.dataType}`)
+
