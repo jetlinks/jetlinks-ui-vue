@@ -247,6 +247,8 @@ watch(
 const validateChannelId = async (_rule: Rule, value: string) => {
     // ID非必填, 没有输入ID时, 不校验ID是否存在
     if (!value) return;
+    // 编辑时不校验唯一性
+    if(!!formData.value?.id) return;
     const { result } = await ChannelApi.validateField({
         deviceId: route.query.id,
         channelId: value,

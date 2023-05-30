@@ -250,7 +250,7 @@ const getActions = (data: any) => {
             message.success('操作成功！');
             instanceRef.value?.reload();
           } else {
-            message.error('操作失败！');
+            message.error(resp?.message || '操作失败！');
           }
         },
       },

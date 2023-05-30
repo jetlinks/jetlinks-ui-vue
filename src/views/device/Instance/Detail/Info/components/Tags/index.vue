@@ -53,6 +53,6 @@ const findName = (item: any) => {
     const _element = item.dataType.elements?.find((a: any) => a.value === item.value)
     name = _element?.text
   }
-  return name
+  return name || item.value
 }
 </script>

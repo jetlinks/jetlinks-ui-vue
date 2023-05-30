@@ -13,8 +13,12 @@
                 :gridColumn="2"
                 :params="queryParams"
                 :rowSelection="{
+                    // selectedRowKeys: table._selectedRowKeys.value,
+                    // onChange:(keys:string[])=>table._selectedRowKeys.value = [...keys],
+                    // onSelectNone: table.cancelSelect
                     selectedRowKeys: table._selectedRowKeys.value,
-                    onChange:(keys:string[])=>table._selectedRowKeys.value = [...keys],
+                    onSelect: table.onSelect,
+                    onSelectAll: table.onSelectAll,
                     onSelectNone: table.cancelSelect
                 }"
                 :columns="columns"
@@ -408,6 +412,43 @@ const table = {
         table._selectedRowKeys.value = [];
         table.selectedRows = [];
     },
+    onSelect: (record: any, selected: boolean) => {
+        const arr = [...table._selectedRowKeys.value]
+        const _index = arr.findIndex(item => item === record?.id)
+        if (selected) {
+            if (!(_index > -1)) {
+                table._selectedRowKeys.value.push(record.id)
+                table.selectedRows.push(record)
+            }
+        } else {
+            if (_index > -1) { // 去掉数据
+                table._selectedRowKeys.value.splice(_index, 1)
+                table.selectedRows.splice(_index, 1)
+            }
+        }
+    },
+    onSelectAll: (selected: boolean, _: any[], changeRows: any) => {
+        if (selected) {
+            changeRows.map((i: any) => {
+                if (!table._selectedRowKeys.value.includes(i.id)) {
+                    table._selectedRowKeys.value.push(i.id)
+                    table.selectedRows.push(i)
+                }
+            })
+        } else {
+            const arr = changeRows.map((item: any) => item.id)
+            const _arr: string[] = [];
+            const _ids: string[] = [];
+            [...table.selectedRows].map((i: any) => {
+                if (!arr.includes(i?.id)) {
+                    _arr.push(i)
+                    _ids.push(i.id)
+                }
+            })
+            table._selectedRowKeys.value = _ids
+            table.selectedRows = _arr
+        }
+    },
     // 获取并整理数据
     getData: (params: object, parentId: string) =>
         new Promise((resolve) => {
@@ -496,6 +537,7 @@ const table = {
     },
     clickEdit: (row?: any) => {
         const ids = row ? [row.id] : [...table._selectedRowKeys.value];
+        if (ids.length < 1) return message.warning('请勾选需要编辑的数据');
         if (row || table.selectedRows.length === 1) {
             const permissionList =
                 row?.permission || table.selectedRows[0].permission;

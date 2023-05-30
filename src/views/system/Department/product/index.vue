@@ -14,7 +14,8 @@
                 :params="queryParams"
                 :rowSelection="{
                     selectedRowKeys: tableData._selectedRowKeys,
-                    onChange:(keys:string[])=>tableData._selectedRowKeys = [...keys],
+                    onSelect: table.onSelect,
+                    onSelectAll: table.onSelectAll,
                     onSelectNone: table.cancelSelect
                 }"
                 :columns="columns"
@@ -384,22 +385,58 @@ const table = {
     },
     // 选中
     onSelectChange: (row: any) => {
-        const selectedRowKeys = tableData._selectedRowKeys;
-        const index = selectedRowKeys.indexOf(row.id);
+        const index = tableData._selectedRowKeys.indexOf(row.id);
 
         if (index === -1) {
-            selectedRowKeys.push(row.id);
+            tableData._selectedRowKeys.push(row.id);
             tableData.selectedRows.push(row);
         } else {
-            selectedRowKeys.splice(index, 1);
+            tableData._selectedRowKeys.splice(index, 1);
             tableData.selectedRows.splice(index, 1);
         }
     },
     // 取消全选
     cancelSelect: () => {
-        console.log(1111);
+        // console.log(1111);
         tableData._selectedRowKeys = [];
         tableData.selectedRows = [];
+    },
+    onSelect: (record: any, selected: boolean) => {
+        const arr = [...tableData._selectedRowKeys]
+        const _index = arr.findIndex(item => item === record?.id)
+        if (selected) {
+            if (!(_index > -1)) {
+                tableData._selectedRowKeys.push(record.id)
+                tableData.selectedRows.push(record)
+            }
+        } else {
+            if (_index > -1) { // 去掉数据
+                tableData._selectedRowKeys.splice(_index, 1)
+                tableData.selectedRows.splice(_index, 1)
+            }
+        }
+    },
+    onSelectAll: (selected: boolean, _: any[], changeRows: any) => {
+        if (selected) {
+            changeRows.map((i: any) => {
+                if (!tableData._selectedRowKeys.includes(i.id)) {
+                    tableData._selectedRowKeys.push(i.id)
+                    tableData.selectedRows.push(i)
+                }
+            })
+        } else {
+            const arr = changeRows.map((item: any) => item.id)
+            const _arr: string[] = [];
+            const _ids: string[] = [];
+            [...tableData.selectedRows].map((i: any) => {
+                if (!arr.includes(i?.id)) {
+                    _arr.push(i)
+                    _ids.push(i.id)
+                }
+            })
+            tableData._selectedRowKeys = _ids
+            tableData.selectedRows = _arr
+        }
     },
     // 获取并整理数据
     getData: (params: object, parentId: string) =>

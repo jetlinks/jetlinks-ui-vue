@@ -114,11 +114,11 @@ const handleAdd = () => {
 
 const validateIndicator = (value: any) => {
   if (value?.range) {
-    if (!value?.value || !value?.value[0] || !value?.value[1]) {
+    if (!value?.value || (!value?.value[0] && value?.value[0] !== 0) || (!value?.value[1] && value?.value[1] !== 0)) {
       return Promise.reject(new Error('请输入指标值'));
     }
   } else {
-    if (!value?.value) {
+    if (!value?.value && value?.value !== 0) {
       return Promise.reject(new Error('请输入指标值'));
     }
   }

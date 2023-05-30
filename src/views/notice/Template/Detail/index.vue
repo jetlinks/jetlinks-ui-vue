@@ -944,6 +944,7 @@ const formRules = {
         }
       ],
       calledShowNumbers: [
+        { required: true, message: '请输入被叫显号' },
         { max: 64, message: '最多可输入64个字符' },
         {
           validator(_rule: Rule, value: string) {
