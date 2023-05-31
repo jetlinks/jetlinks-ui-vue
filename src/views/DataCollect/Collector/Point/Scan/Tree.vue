@@ -130,6 +130,7 @@ const onCheck = (checkedKeys: any, info: any) => {
             value: last ? last?.accessModes?.value : one?.accessModes || [],
             check: true,
         },
+        type: one?.type,
         configuration: {
             ...one?.configuration,
             interval: {

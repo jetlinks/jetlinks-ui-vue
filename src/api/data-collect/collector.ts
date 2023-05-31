@@ -55,3 +55,6 @@ export const scanOpcUAList = (data: any) =>
             data?.nodeId || ''
         }`,
     );
+
+export const queryTypeList = () => server.get(`/data-collect/opc/data-types`);
+

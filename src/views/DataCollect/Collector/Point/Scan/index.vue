@@ -65,6 +65,7 @@ const handleOk = async () => {
             pointKey: item.id,
             configuration: {
                 interval: item.configuration?.interval?.value,
+                type: item.type,
             },
             features: !item.features?.value ? [] : ['changedOnly'],
             accessModes: item.accessModes?.value || [],
