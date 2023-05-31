@@ -134,7 +134,6 @@ const breadcrumb = computed(() =>
 watchEffect(() => {
     if (router.currentRoute) {
       const paths = router.currentRoute.value.name as string
-      console.log(paths)
       if (paths) {
         const _metas = findRouteMeta(paths)
         state.selectedKeys = _metas.map(item => item.path)

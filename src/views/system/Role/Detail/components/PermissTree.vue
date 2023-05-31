@@ -150,6 +150,7 @@ const indeterminate = ref<boolean>(false);
 const selectAllChange = () => {
     flatTableData.forEach((item) => {
         item.granted = selectedAll.value;
+        item.indeterminate = false;
         item.buttons?.forEach((button) => {
             button.granted = selectedAll.value;
         });

@@ -6,7 +6,7 @@ export interface ConfigurationType {
     endpoint: string,
     securityPolicy: string | undefined,
     securityMode: string | undefined,
-    certificate: string | undefined,
+    certId: string | undefined,
     authType: string | undefined,
 
 }

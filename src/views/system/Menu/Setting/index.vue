@@ -213,7 +213,8 @@ onMounted(() => {
                     cloneDeep(systemMenu.value),
                 );
 
-                treeData.value = AllMenu;
+                // 处理排序
+                treeData.value = handleSorts(AllMenu);
             }
         });
     });

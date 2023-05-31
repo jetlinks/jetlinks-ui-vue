@@ -91,7 +91,7 @@
             >
         </template>
         <FullPage>
-            <j-card :bordered="false">
+            <div style="height: 100%; padding: 24px;">
                 <component
                     :is="tabs[productStore.tabActiveKey]"
                     :class="
@@ -101,7 +101,7 @@
                     "
                     v-bind="{ type: 'product' }"
                 />
-            </j-card>
+            </div>
         </FullPage>
     </page-container>
 </template>
@@ -288,7 +288,7 @@ const getProtocol = async () => {
 const jumpDevice = () => {
     // console.log(productStore.current?.id);
     const searchParams = {
-        column: 'productId',
+        column: 'productName',
         termType: 'eq',
         value: productStore.current?.id,
     };

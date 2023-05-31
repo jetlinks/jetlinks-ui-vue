@@ -111,12 +111,12 @@
             <j-form-item
                 v-if="isSecurityMode"
                 label="证书"
-                :name="['configuration', 'certificate']"
-                :rules="FormValidate.certificate"
+                :name="['configuration', 'certId']"
+                :rules="FormValidate.certId"
             >
                 <j-select
                     style="width: 100%"
-                    v-model:value="formData.configuration.certificate"
+                    v-model:value="formData.configuration.certId"
                     :options="certificateList"
                     placeholder="请选择证书"
                     allowClear
