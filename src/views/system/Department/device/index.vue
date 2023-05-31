@@ -226,6 +226,7 @@ import {
     getPermissionDict_api,
     unBindDeviceOrProduct_api,
     getDeviceProduct_api,
+    getBindingsPermission,
 } from '@/api/system/department';
 import { intersection } from 'lodash-es';
 
@@ -273,7 +274,8 @@ const columns = [
             rename: 'productId$product-info',
             type: 'select',
             handleValue(value: string) {
-                return `id in ${value.toString()}`;
+                // return `id in ${value.toString()}`
+                return value && value.length ? `id in ${value.toString()}` : undefined;
             },
             options: () =>
                 new Promise((resolve) => {
@@ -535,24 +537,35 @@ const table = {
         departmentStore.setType(type);
         dialogs.addShow = true;
     },
-    clickEdit: (row?: any) => {
+    queryPermissionList: async (ids: string[]) => {
+        const resp: any = await getBindingsPermission('device', ids)
+        if(resp.status === 200){
+            const arr = resp.result.map((item: any) => {
+                return item?.permissionInfoList?.map((i: any) => i?.id)
+            })
+            return intersection(...arr)
+        }
+        return []
+    },
+    clickEdit: async (row?: any) => {
         const ids = row ? [row.id] : [...table._selectedRowKeys.value];
         if (ids.length < 1) return message.warning('请勾选需要编辑的数据');
-        if (row || table.selectedRows.length === 1) {
-            const permissionList =
-                row?.permission || table.selectedRows[0].permission;
-            dialogs.selectIds = ids;
-            dialogs.permissList = permissionList;
-            dialogs.editShow = true;
-            return;
-        } else if (table.selectedRows.length === 0) return;
-        const permissionList = table.selectedRows.map(
-            (item) => item.permission,
-        );
-        const mixPermissionList = intersection(...permissionList) as string[];
+        // if (row || table.selectedRows.length === 1) {
+        //     const permissionList =
+        //         row?.permission || table.selectedRows[0].permission;
+        //     dialogs.selectIds = ids;
+        //     dialogs.permissList = permissionList;
+        //     dialogs.editShow = true;
+        //     return;
+        // } else if (table.selectedRows.length === 0) return;
+        // const permissionList = table.selectedRows.map(
+        //     (item) => item.permission,
+        // );
+        // const mixPermissionList = intersection(...permissionList) as string[];
 
+        const _result = await table.queryPermissionList(ids)
         dialogs.selectIds = ids;
-        dialogs.permissList = mixPermissionList;
+        dialogs.permissList = _result as string[];
         dialogs.editShow = true;
     },
     clickUnBind: (row?: any) => {

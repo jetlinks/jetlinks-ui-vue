@@ -245,6 +245,7 @@ import {
     getPermission_api,
     getPermissionDict_api,
     unBindDeviceOrProduct_api,
+    getBindingsPermission,
 } from '@/api/system/department';
 import { intersection } from 'lodash-es';
 
@@ -532,25 +533,36 @@ const table = {
             };
         }
     },
-    clickEdit: (row?: any) => {
+    queryPermissionList: async (ids: string[]) => {
+        const resp: any = await getBindingsPermission('product', ids)
+        if(resp.status === 200){
+            const arr = resp.result.map((item: any) => {
+                return item?.permissionInfoList?.map((i: any) => i?.id)
+            })
+            return intersection(...arr)
+        }
+        return []
+    },
+    clickEdit: async (row?: any) => {
         const ids = row ? [row.id] : [...tableData._selectedRowKeys];
         if (ids.length < 1) return message.warning('请勾选需要编辑的数据');
 
-        if (row || tableData.selectedRows.length === 1) {
-            const permissionList =
-                row?.permission || tableData.selectedRows[0].permission;
-            dialogs.selectIds = ids;
-            dialogs.permissList = permissionList;
-            dialogs.editShow = true;
-            return;
-        } else if (tableData.selectedRows.length === 0) return;
-        const permissionList = tableData.selectedRows.map(
-            (item) => item.permission,
-        );
-        const mixPermissionList = intersection(...permissionList) as string[];
-
+        // if (row || tableData.selectedRows.length === 1) {
+        //     const permissionList =
+        //         row?.permission || tableData.selectedRows[0].permission;
+        //     dialogs.selectIds = ids;
+        //     dialogs.permissList = permissionList;
+        //     dialogs.editShow = true;
+        //     return;
+        // } else if (tableData.selectedRows.length === 0) return;
+        // const permissionList = tableData.selectedRows.map(
+        //     (item) => item.permission,
+        // );
+        // const mixPermissionList = intersection(...permissionList) as string[];
+        
+        const _result = await table.queryPermissionList(ids)
         dialogs.selectIds = ids;
-        dialogs.permissList = mixPermissionList;
+        dialogs.permissList = _result as string[];
         dialogs.editShow = true;
     },
     clickUnBind: (row?: any) => {

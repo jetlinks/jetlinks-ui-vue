@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, omit } from 'lodash-es';
 import type {
     AntTreeNodeDropEvent,
     TreeProps,
@@ -37,6 +37,10 @@ export const mergeArr = (oldData: Array<any>, newData: Array<any>) => {
     const mergeItem: any = (oldItem: any, newItem: any) => {
         if (!oldItem) {
             return newItem;
+        }
+
+        if(oldItem && newItem){
+            oldItem = { ...oldData,...omit(newItem, ['children'])} 
         }
 
         if (!oldItem.children && newItem.children) {
@@ -312,7 +316,7 @@ export const handleSorts = (node: any[]) => {
         if (item.index !== index) {
             item.sortIndex = index
             if (item.children) {
-                item.children = handleSorts(item.children)
+                item.children = handleSorts(item.children).sort((a, b) => a.sortIndex - b.sortIndex)
             }
         }
         return item
