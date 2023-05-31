@@ -1,6 +1,8 @@
 <template>
   <div class='full-page-warp' ref='fullPage' :style='{ minHeight: `calc(100vh - ${y + 24}px)`}'>
-    <slot></slot>
+    <div class="full-page-warp-content">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -12,8 +14,13 @@ const { y } = useElementBounding(fullPage)
 
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .full-page-warp {
   background: #fff;
+  display: flex;
+  .full-page-warp-content {
+    width: 100%;
+  }
 }
+
 </style>

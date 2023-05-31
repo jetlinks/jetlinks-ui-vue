@@ -198,20 +198,24 @@ getDefaultMetadata()
 
 <style scoped lang='less'>
 .metadata-map {
-  position: relative;
+  // position: relative;
   min-height: 100%;
+  display: flex;
+  gap: 24px;
 
   .left {
-    margin-right: 424px;
+    // margin-right: 44px;
+    flex: 1;
   }
 
   .right {
-    position: absolute;
+    // position: absolute;
     border: 1px solid rgba(0, 0, 0, 0.08);
-    height: 100%;
-    width: 400px;
-    top: 0;
-    right: 0;
+    min-height: 100%;
+    min-width: 410px;
+    width: 33.33333%;
+    // top: 0;
+    // right: 0;
     padding: 16px;
 
     .title {

@@ -91,7 +91,7 @@
             >
         </template>
         <FullPage>
-            <j-card :bordered="false">
+            <div style="height: 100%; padding: 24px;">
                 <component
                     :is="tabs[productStore.tabActiveKey]"
                     :class="
@@ -101,7 +101,7 @@
                     "
                     v-bind="{ type: 'product' }"
                 />
-            </j-card>
+            </div>
         </FullPage>
     </page-container>
 </template>
