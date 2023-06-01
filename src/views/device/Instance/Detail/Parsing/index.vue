@@ -318,10 +318,17 @@ const debug = () => {
     }
 };
 
-onMounted(() => {
+// onMounted(() => {
+//     getDeviceCode();
+//     getTopic();
+// });
+
+watch(() => instanceStore.current?.id, () => {
+  if (instanceStore.current?.id) {
     getDeviceCode();
     getTopic();
-});
+  }
+}, { immediate: true })
 </script>
 
 <style scoped lang='less'>
