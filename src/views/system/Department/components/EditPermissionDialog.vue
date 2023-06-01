@@ -38,6 +38,7 @@ const props = defineProps<{
     parentId: string;
     allPermission: dictType;
     assetType: 'product' | 'device';
+    defaultPermission: string[];
 }>();
 // 弹窗相关
 const loading = ref(false);
@@ -51,10 +52,12 @@ const confirm = () => {
         })
         .finally(() => (loading.value = false));
 };
+
 const form = reactive({
     assetIdList: [...props.ids],
-    permission: [...props.permissionList],
+    permission: Array.isArray(props.defaultPermission) && props.defaultPermission?.length ? props.defaultPermission : ['read'],
 });
+
 const options = computed(() => {
     const result: optionsType = [];
     props.allPermission.forEach((item) => {

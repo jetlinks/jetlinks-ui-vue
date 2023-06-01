@@ -222,6 +222,7 @@
                 :parent-id="parentId"
                 :all-permission="tableData.permissionList"
                 asset-type="product"
+                :defaultPermission="tableData.defaultPermission"
                 @confirm="table.refresh"
             />
             <NextDialog
@@ -330,6 +331,7 @@ const tableData = reactive({
     _selectedRowKeys: [] as string[],
     selectedRows: [] as any[],
     permissionList: [] as any[],
+    defaultPermission: [] as string[]
 });
 const table = {
     init: () => {
@@ -546,20 +548,9 @@ const table = {
     clickEdit: async (row?: any) => {
         const ids = row ? [row.id] : [...tableData._selectedRowKeys];
         if (ids.length < 1) return message.warning('请勾选需要编辑的数据');
-
-        // if (row || tableData.selectedRows.length === 1) {
-        //     const permissionList =
-        //         row?.permission || tableData.selectedRows[0].permission;
-        //     dialogs.selectIds = ids;
-        //     dialogs.permissList = permissionList;
-        //     dialogs.editShow = true;
-        //     return;
-        // } else if (tableData.selectedRows.length === 0) return;
-        // const permissionList = tableData.selectedRows.map(
-        //     (item) => item.permission,
-        // );
-        // const mixPermissionList = intersection(...permissionList) as string[];
-        
+        tableData.defaultPermission = row ? row?.permission : intersection(...tableData.selectedRows.map(
+            (item) => item.permission,
+        )) as string[]
         const _result = await table.queryPermissionList(ids)
         dialogs.selectIds = ids;
         dialogs.permissList = _result as string[];

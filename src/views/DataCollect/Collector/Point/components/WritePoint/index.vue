@@ -42,13 +42,13 @@
                 v-else-if="data.provider === 'OPC_UA'"
             >
                 <j-input-number
-                    v-if="['Double', 'Float', 'LLong', 'Long', 'Integer', 'Short'].includes(valueType)"
+                    v-if="['double', 'float', 'llong', 'long', 'integer', 'short'].includes(valueType)"
                     style="width: 100%"
                     placeholder="请输入"
                     v-model:value="formData.value"
                 />
                 <j-select
-                    v-else-if="['Boolean'].includes(valueType)"
+                    v-else-if="['boolean'].includes(valueType)"
                     style="width: 100%"
                     v-model:value="formData.value"
                     :options="[
@@ -67,7 +67,7 @@
                     :filter-option="filterOption"
                 />
                 <j-date-picker
-                    v-else-if="['DateTime'].includes(valueType)"
+                    v-else-if="['datetime'].includes(valueType)"
                     style="width: 100%"
                     format="YYYY-MM-DD HH:mm:ss"
                     show-time

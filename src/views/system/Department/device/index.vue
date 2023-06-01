@@ -208,6 +208,7 @@
                 :parent-id="props.parentId"
                 :all-permission="table.permissionList.value"
                 asset-type="device"
+                :defaultPermission="table.defaultPermission"
                 @confirm="table.refresh"
             />
         </div>
@@ -274,8 +275,11 @@ const columns = [
             rename: 'productId$product-info',
             type: 'select',
             handleValue(value: string) {
-                // return `id in ${value.toString()}`
-                return value && value.length ? `id in ${value.toString()}` : undefined;
+                return value && value.length ? [{
+                    column: 'id',
+                    termType: 'in',
+                    value: `${value.toString()}`
+                }] : undefined;
             },
             options: () =>
                 new Promise((resolve) => {
@@ -344,6 +348,7 @@ const table = {
     _selectedRowKeys: ref<string[]>([]),
     selectedRows: [] as any[],
     permissionList: ref<dictType>([]),
+    defaultPermission: [] as string[],
 
     init: () => {
         table.getPermissionDict();
@@ -550,18 +555,10 @@ const table = {
     clickEdit: async (row?: any) => {
         const ids = row ? [row.id] : [...table._selectedRowKeys.value];
         if (ids.length < 1) return message.warning('请勾选需要编辑的数据');
-        // if (row || table.selectedRows.length === 1) {
-        //     const permissionList =
-        //         row?.permission || table.selectedRows[0].permission;
-        //     dialogs.selectIds = ids;
-        //     dialogs.permissList = permissionList;
-        //     dialogs.editShow = true;
-        //     return;
-        // } else if (table.selectedRows.length === 0) return;
-        // const permissionList = table.selectedRows.map(
-        //     (item) => item.permission,
-        // );
-        // const mixPermissionList = intersection(...permissionList) as string[];
+
+        table.defaultPermission = row ? row?.permission : intersection(...table.selectedRows.map(
+            (item) => item.permission,
+        )) as string[]
 
         const _result = await table.queryPermissionList(ids)
         dialogs.selectIds = ids;
