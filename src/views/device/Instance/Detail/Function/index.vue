@@ -1,6 +1,6 @@
 <template>
     <j-empty
-        v-if="!metadata || (metadata && !metadata.functions.length)"
+        v-if="!metadata || (metadata && !metadata.functions?.length)"
         style="margin-top: 50px"
     >
         <template #description>
