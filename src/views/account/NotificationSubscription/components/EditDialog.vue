@@ -46,7 +46,7 @@
                         :rules="[{ required: true, message: '请选择告警规则' }]"
                     >
                         <j-select
-                            :value="form.topicConfig.alarmConfigId?.split(',')"
+                            :value="form.topicConfig?.alarmConfigId?.split(',')"
                             :options="alarmList"
                             placeholder="请选择告警规则"
                             mode="multiple"
@@ -146,8 +146,8 @@ function init() {
 
 function onSelect(keys: string[], items: optionsType) {
     form.value.topicConfig = {
-        alarmConfigId: keys.join(','),
-        alarmConfigName: items.map((item) => item.label).join(','),
+        alarmConfigId: keys.length ? keys.join(',') : undefined,
+        alarmConfigName: items.length ? items.map((item) => item.label).join(',') : undefined,
     };
 }
 </script>

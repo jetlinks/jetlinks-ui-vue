@@ -218,15 +218,27 @@ const handleSearch = async (value: any) => {
     } else if (!!searchValue.value) {
         clickSearch = true;
         params.value = { ..._.cloneDeep(defualtParams) };
-        params.value.terms[1] = {
-            terms: [
-                {
-                    column: 'name',
-                    value: `%${searchValue.value}%`,
-                    termType: 'like',
-                },
-            ],
-        };
+        // params.value.terms[1] = {
+        //     terms: [
+        //         {
+        //             column: 'name',
+        //             value: `%${searchValue.value}%`,
+        //             termType: 'like',
+        //         },
+        //     ],
+        // };
+        params.value.terms = [
+            ...(params.value?.terms || []),
+            {
+                terms: [
+                    {
+                        column: 'name',
+                        value: `%${searchValue.value}%`,
+                        termType: 'like',
+                    },
+                ],
+            }
+        ];
     } else {
         !!value && (params.value = value);
     }

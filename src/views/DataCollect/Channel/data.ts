@@ -11,7 +11,7 @@ export const FormState: FormDataType = {
         endpoint: '',
         securityPolicy: 'None',
         securityMode: undefined,
-        certificate: undefined,
+        certId: undefined,
         authType: 'anonymous',
         username: '',
         password: '',
@@ -87,7 +87,7 @@ export const FormValidate = {
         },
         {
             validator: checkEndpoint,
-            // trigger: 'blur',
+            trigger: 'blur',
         },
     ],
 
@@ -103,7 +103,7 @@ export const FormValidate = {
             message: '请选择安全模式',
         },
     ],
-    certificate: [
+    certId: [
         {
             required: true,
             message: '请选择证书',

@@ -19,13 +19,15 @@
                 <j-select
                     style="width: 100%"
                     v-model:value="formData.configuration.type"
-                    :options="[
-                        { value: 'Number', label: '数值类型' },
-                        { value: 'DateTime', label: '时间类型' },
-                        { value: 'Array', label: '数组类型' },
-                        { value: 'String', label: '文本类型' },
-                        { value: 'Boolean', label: '布尔' },
-                    ]"
+                    :options="options
+                    // [
+                        // { value: 'Number', label: '数值类型' },
+                        // { value: 'DateTime', label: '时间类型' },
+                        // { value: 'Array', label: '数组类型' },
+                        // { value: 'String', label: '文本类型' },
+                        // { value: 'Boolean', label: '布尔' },
+                    // ]
+                    "
                     placeholder="请选择数据类型"
                     allowClear
                     show-search
@@ -98,6 +100,7 @@ import {
     savePoint,
     updatePoint,
     _validateField,
+    queryTypeList
 } from '@/api/data-collect/collector';
 import { OPCUARules } from '../../data.ts';
 import type { FormInstance } from 'ant-design-vue';
@@ -118,6 +121,7 @@ const formRef = ref<FormInstance>();
 const id = props.data.id;
 const collectorId = props.data.collectorId;
 const provider = props.data.provider;
+const options = ref([]);
 
 const formData = ref({
     name: '',
@@ -156,6 +160,19 @@ const handleCancel = () => {
 const filterOption = (input: string, option: any) => {
     return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
+
+onMounted(() => {
+    queryTypeList().then((resp: any) => {
+        if(resp.status === 200){
+            options.value = (resp?.result || []).map((item: any) => {
+                return {
+                    label: item, 
+                    value: item
+                }
+            })
+        }
+    })
+})
 
 watch(
     () => props.data,

@@ -209,7 +209,7 @@
                                                             />
                                                         </j-tooltip>
                                                     </template>
-                                                    <j-select
+                                                    <!-- <j-select
                                                         v-model:value="
                                                             cluster
                                                                 .configuration
@@ -237,7 +237,14 @@
                                                             )
                                                         "
                                                     >
-                                                    </j-select>
+                                                    </j-select> -->
+                                                    <LocalAddressSelect 
+                                                        v-model:value="cluster.configuration.host"
+                                                        :serverId="cluster.serverId"
+                                                        :shareCluster="shareCluster"
+                                                        @change="(value) => changeHost(cluster.serverId, value, index)"
+                                                        @valueChange="(value) => changeHost(cluster.serverId, value, index, true)"
+                                                    />
                                                 </j-form-item>
                                             </j-col>
                                             <j-col
@@ -1112,6 +1119,8 @@ import {
     supports,
     certificates,
     start,
+    resourceClusters,
+    resourceClustersById,
 } from '@/api/link/type';
 import {
     ParserConfiguration,
@@ -1129,6 +1138,7 @@ import {
 import { cloneDeep } from 'lodash-es';
 import type { FormData2Type, FormDataType } from '../type';
 import { Store } from 'jetlinks-store';
+import LocalAddressSelect from './LocalAddressSelect.vue';
 
 const route = useRoute();
 const NetworkType = route.query.type as string;
@@ -1147,8 +1157,9 @@ const hostOptionsIndex: any = ref([]);
 const clustersListIndex: any = ref([]);
 const typeOptions = ref([]);
 const portOptionsIndex: any = ref([]);
-let portOptionsConst: any = [];
+// let portOptionsConst: any = [];
 const certIdOptions = ref([]);
+const configClustersList = ref<any[]>([]);
 
 const dynamicValidateForm = reactive<{ cluster: FormData2Type[] }>({
     cluster: [{ ...cloneDeep(FormStates2), id: '1' }],
@@ -1178,7 +1189,7 @@ const filterPortOption = (input: string, option: any) => {
     return JSON.stringify(option.label).indexOf(input) >= 0;
 };
 
-const filterConfigByType = (data: any, type: string) => {
+const filterConfigByType = (data: any[], type: string) => {
     let _temp = type;
     if (TCPList.includes(type)) {
         _temp = 'TCP';
@@ -1197,7 +1208,7 @@ const filterConfigByType = (data: any, type: string) => {
     });
 };
 
-const getPortOptions = (portOptions: object, index = 0) => {
+const getPortOptions = (portOptions: any, index = 0) => {
     if (!portOptions) return;
     const type = formData.value.type;
     const host = dynamicValidateForm.cluster[index].configuration.host;
@@ -1227,40 +1238,57 @@ const changeType = (value: string) => {
 const updateClustersListIndex = () => {
     const { cluster } = dynamicValidateForm;
     const filters = cluster?.map((item) => item.serverId);
-    const newConfigRef = Store.get('configRef')?.filter(
+    const newConfigRef = shareCluster.value ? Store.get('configRef')?.filter(
         (item: any) => !filters.includes(item.clusterNodeId),
-    );
+    ) : configClustersList.value?.filter(
+        (item: any) => !filters.includes(item.id),
+    )
     cluster.forEach((item, index) => {
-        !item.serverId &&
-            (clustersListIndex.value[index] = newConfigRef?.map((i: any) => ({
-                value: i.clusterNodeId,
-                lable: i.clusterNodeId,
-            })));
+        clustersListIndex.value[index] = newConfigRef?.map((i: any) => {
+            if(shareCluster.value){
+                return {
+                    value: i.clusterNodeId,
+                    label: i.clusterNodeId,
+                }
+            } else {
+                return {
+                    value: i.id,
+                    label: i.name,
+                }
+            }
+        })
+        if(item.serverId) {
+            clustersListIndex.value[index].push({
+                value: item.serverId,
+                label: item.serverId
+            })
+        }
     });
 };
 
-const changeServerId = (value: string | undefined, index: number) => {
+const changeServerId = async (value: string | undefined, index: number) => {
     const { configuration } = dynamicValidateForm.cluster[index];
     configuration.host = undefined;
     configuration.port = undefined;
-    const checked = cloneDeep(portOptionsConst).find(
-        (i: any) => i.clusterNodeId === value,
-    );
-    const checkedHost = [{ value: checked?.host, lable: checked?.host }];
-    hostOptionsIndex.value[index] = checked ? checkedHost : [];
-    updateClustersListIndex();
+    hostOptionsIndex.value[index] = [];
+    if(value){
+        updateClustersListIndex();
+    }
 };
 const changeHost = (
     serverId: string | undefined,
     value: string | undefined,
     index: number,
+    flag?: boolean
 ) => {
     const { configuration } = dynamicValidateForm.cluster[index];
-    configuration.port = undefined;
-    const checked = cloneDeep(portOptionsConst).find(
-        (i: any) => i.clusterNodeId === serverId && i.host === value,
-    );
-    checked && getPortOptions([checked], index);
+    if(!flag){
+        configuration.port = undefined;
+    }
+    const checked = Store.get('resourcesClusters')?.[serverId || '']
+    if(checked){
+        getPortOptions(checked, index)
+    }
 };
 
 const changeParserType = (value: string | undefined, index: number) => {
@@ -1346,9 +1374,20 @@ const getCertificates = async () => {
 const getResourcesCurrent = () => {
     resourcesCurrent().then((resp) => {
         if (resp.status === 200) {
-            portOptionsConst = resp.result;
+            const clusterNodeId = resp.result?.[0]?.clusterNodeId
+            const resourcesClusters = Store.get('resourcesClusters') || {}
+            resourcesClusters[clusterNodeId] = resp.result
+            Store.set('resourcesClusters', resourcesClusters)
             Store.set('configRef', resp.result);
-            getPortOptions(portOptionsConst);
+            getPortOptions(Store.get('resourcesClusters')?.[clusterNodeId]);
+        }
+    });
+};
+
+const getResourcesClusters = () => {
+    resourceClusters().then((resp) => {
+        if (resp.status === 200) {
+            configClustersList.value = resp.result as any[]
         }
     });
 };
@@ -1369,22 +1408,24 @@ const getDetail = () => {
                         ...configuration,
                     };
 
-                    const configRef = Store.get('configRef').filter(
-                        (item: any) => item.host === '0.0.0.0',
-                    );
-                    getPortOptions(configRef); //更新端口
+                    // const configRef = Store.get('configRef').filter(
+                    //     (item: any) => item.host === '0.0.0.0',
+                    // );
+                    // getPortOptions(configRef); //更新端口
                 } else {
                     dynamicValidateForm.cluster = cluster;
+                    // const arr = cluster.map((item: any) => item.configuration.serverId)
                     //遍历数据更新对应的本地端口
-                    setTimeout(() => {
-                        cluster.forEach((item: any, index: number) => {
-                            const { host } = item.configuration;
-                            let configRef = Store.get('configRef').filter(
-                                (item: any) => item.host === host,
-                            );
-                            getPortOptions(configRef, index);
-                        });
-                    }, 0);
+                    // setTimeout(() => {
+                    //     cluster.forEach((item: any, index: number) => {
+                    //         const { serverId } = item.configuration
+                    //         if(!resourcesClustersMap.get(serverId)){
+                    //             // await getResourcesClustersById(serverId)
+                    //         }
+                    //         const checked = resourcesClustersMap.get(serverId)
+                    //         getPortOptions(checked, index);
+                    //     });
+                    // }, 0);
                 }
 
                 if (dynamicValidateForm.cluster.length === 1) {
@@ -1400,6 +1441,7 @@ onMounted(() => {
     getSupports();
     getCertificates();
     getResourcesCurrent();
+    getResourcesClusters();
     getDetail();
 });
 

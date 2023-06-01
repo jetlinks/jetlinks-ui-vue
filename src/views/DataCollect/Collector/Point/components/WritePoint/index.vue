@@ -39,6 +39,57 @@
                         message: `请输入${data.name}`,
                     },
                 ]"
+                v-else-if="data.provider === 'OPC_UA'"
+            >
+                <j-input-number
+                    v-if="['double', 'float', 'llong', 'long', 'integer', 'short'].includes(valueType)"
+                    style="width: 100%"
+                    placeholder="请输入"
+                    v-model:value="formData.value"
+                />
+                <j-select
+                    v-else-if="['boolean'].includes(valueType)"
+                    style="width: 100%"
+                    v-model:value="formData.value"
+                    :options="[
+                        {
+                            label: '是',
+                            value: true,
+                        },
+                        {
+                            label: '否',
+                            value: false,
+                        },
+                    ]"
+                    placeholder="请选择"
+                    allowClear
+                    show-search
+                    :filter-option="filterOption"
+                />
+                <j-date-picker
+                    v-else-if="['datetime'].includes(valueType)"
+                    style="width: 100%"
+                    format="YYYY-MM-DD HH:mm:ss"
+                    show-time
+                    placeholder="请选择"
+                    @change="onChange"
+                />
+
+                <j-input
+                    v-else
+                    placeholder="请输入"
+                    v-model:value="formData.value"
+                />
+            </j-form-item>
+            <j-form-item
+                :label="data.name"
+                name="value"
+                :rules="[
+                    {
+                        required: true,
+                        message: `请输入${data.name}`,
+                    },
+                ]"
                 v-else
             >
                 <j-input-number
@@ -111,7 +162,7 @@ const props = defineProps({
 
 const valueType: string = (
     props.data?.provider === 'OPC_UA'
-        ? props?.data?.configuration?.type || 'Number'
+        ? props?.data?.configuration?.type || 'String'
         : props.data?.configuration?.codec?.provider || 'int8'
 ).toLocaleLowerCase();
 

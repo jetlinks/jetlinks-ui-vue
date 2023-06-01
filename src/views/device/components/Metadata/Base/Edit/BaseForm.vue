@@ -47,10 +47,10 @@
   </template>
   <template v-if="modelType === 'tags'">
     <value-type-form :name="['valueType']" v-model:value="value.valueType" key="property" title="数据类型"></value-type-form>
-    <j-form-item label="标签类型" :name="['expands', 'type']" :rules="[
-      { required: true, message: '请选择标签类型' },
+    <j-form-item label="读写类型" :name="['expands', 'type']" :rules="[
+      { required: true, message: '请选择读写类型' },
     ]">
-      <j-select v-model:value="value.expands.type" :options="ExpandsTypeList" mode="multiple" size="small" placeholder="请选择标签类型"></j-select>
+      <j-select v-model:value="value.expands.type" :options="ExpandsTypeList" mode="multiple" size="small" placeholder="请选择读写类型"></j-select>
     </j-form-item>
   </template>
   <j-form-item label="说明" name="description" :rules="[
