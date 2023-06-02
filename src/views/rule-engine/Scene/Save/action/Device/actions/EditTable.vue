@@ -17,7 +17,7 @@
                 <FunctionItem
                     :builtInList="builtInList"
                     @change="onChange"
-                    :source="record.source"
+                    v-model:source="record.source"
                     :data="record"
                     v-model:value="record.value"
                 />
