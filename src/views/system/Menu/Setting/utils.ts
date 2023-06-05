@@ -40,7 +40,7 @@ export const mergeArr = (oldData: Array<any>, newData: Array<any>) => {
         }
 
         if(oldItem && newItem){
-            oldItem = { ...oldData,...omit(newItem, ['children'])} 
+            oldItem.sortIndex = newItem?.sortIndex
         }
 
         if (!oldItem.children && newItem.children) {

@@ -274,7 +274,7 @@ const getUser = async (_source: string, _triggerType: string) => {
             children: relationResp.result.map((item: any) => {
                 const obj = {
                     ...item,
-                    value: item.id,
+                    value: item.relation,
                     key: item.id,
                     title: item.name,
                     isRelation: true,

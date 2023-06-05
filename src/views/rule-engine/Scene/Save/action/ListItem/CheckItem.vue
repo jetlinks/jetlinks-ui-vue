@@ -152,8 +152,8 @@ const checkDeviceDelete = async () => {
 
   if (item!.message!.messageType === 'WRITE_PROPERTY') {
     let hasProperties = false
+    const propertiesKey = Object.keys(item!.message!.properties!)?.[0]
     if (item!.message!.properties && metadata.properties.length) {
-      const propertiesKey = Object.keys(item!.message!.properties!)?.[0]
       hasProperties = metadata.properties?.some((item: any) => item.id === propertiesKey)
     }
     if (!hasProperties) {
@@ -161,6 +161,22 @@ const checkDeviceDelete = async () => {
       _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.changeData = true
       formTouchOff()
       return
+    }
+    // 判断值-内置参数
+    const _value = item!.message!.properties?.[propertiesKey]
+    if(_value.source === 'upper') {
+      const _params = {
+        branch: props.thenName,
+        branchGroup: props.branchesName,
+        action: props.name - 1,
+      };
+      const option = (await getBuildInData(_params, _data.value))(_value?.value!, 'id')
+      if(!option) {
+        _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.message!.properties![propertiesKey] = undefined
+        _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.changeData = true
+        formTouchOff()
+        return
+      }
     }
   }
 
