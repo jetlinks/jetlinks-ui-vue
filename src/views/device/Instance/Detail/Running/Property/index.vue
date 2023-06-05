@@ -87,7 +87,7 @@ import { getProperty } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import { message } from 'ant-design-vue';
 import { getWebSocket } from '@/utils/websocket';
-import { map, throttleTime } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { queryDashboard } from '@/api/comm';
 
 const columns = [
@@ -298,6 +298,7 @@ const getDashboard = async () => {
             });
         propertyValue.value = { ...unref(propertyValue), ...obj };
     }
+    subRef.value && subRef.value?.unsubscribe();
     subscribeProperty();
     loading.value = false;
 };
@@ -314,6 +315,7 @@ const query = (params: Record<string, any>) =>
             arr = _.cloneDeep(li);
         }
         dataSource.value = arr.slice(_from, _to)
+        messageCache.clear()
         resolve({
             result: {
                 data: dataSource.value,
