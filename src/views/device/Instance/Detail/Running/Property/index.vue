@@ -251,6 +251,7 @@ const subscribeProperty = () => {
 };
 
 const getDashboard = async () => {
+    if(!dataSource.value?.length) return 
     const param = [
         {
             dashboard: 'device',
@@ -302,9 +303,10 @@ const query = (params: Record<string, any>) =>
             });
             arr = _.cloneDeep(li);
         }
+        dataSource.value = arr.slice(_from, _to)
         resolve({
             result: {
-                data: arr.slice(_from, _to),
+                data: dataSource.value,
                 pageIndex: params.pageIndex || 0,
                 pageSize: params.pageSize || 12,
                 total: arr.length,
