@@ -244,7 +244,8 @@ const save = async (step?: number) => {
         operation: typeData.data,
         selector: addModel.selector,
         selectorValues: addModel.selectorValues,
-        productId: addModel.productId
+        productId: addModel.productId,
+        source: 'fixed'
       }
       emit('save', data, _options)
       formItemContext.onFieldChange()
