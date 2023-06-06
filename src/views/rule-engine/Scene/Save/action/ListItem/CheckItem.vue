@@ -125,7 +125,8 @@ const checkDeviceDelete = async () => {
     if (item!.selectorValues && metadata?.tags?.length) {
       const values = (item!.selectorValues?.[0]?.value as any).map((item: any) => item.column)
       const tagKeys = new Set(values)
-      hasAllTags = metadata?.tags?.every((item: any) => tagKeys.has(item.id))
+      hasAllTags = [...tagKeys.values()].every((_key) => metadata?.tags.some((item: any) => item.id === _key))
+      // hasAllTags = metadata?.tags?.every((item: any) => tagKeys.has(item.id))
     }
     if (!hasAllTags) {
       _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.selectorValues = undefined

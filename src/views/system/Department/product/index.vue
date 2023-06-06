@@ -192,6 +192,7 @@
                             v-for="i in table.getActions(slotProps, 'table')"
                             :hasPermission="i.permission"
                             type="link"
+                            :key="i.key"
                             :tooltip="i?.tooltip"
                             :pop-confirm="i.popConfirm"
                             @click="i.onClick"
@@ -321,6 +322,7 @@ const columns = [
         dataIndex: 'action',
         key: 'action',
         fixed: 'right',
+        width: 100,
         scopedSlots: true,
     },
 ];
@@ -576,6 +578,7 @@ const table = {
     refresh: () => {
         nextTick(() => {
             tableRef.value.reload();
+            table.cancelSelect()
         });
     },
     addConfirm: () => {
