@@ -1,23 +1,9 @@
 <template>
-  <div
-    class='terms-params-content'
-    @mouseover='mouseover'
-    @mouseout='mouseout'
-  >
-    <j-popconfirm
-      title='确认删除？'
-      :overlayStyle='{minWidth: "180px"}'
-      @confirm='onDelete'
-    >
-      <div v-show='showDelete' class='terms-params-delete'>
-        <AIcon type='CloseOutlined' />
-      </div>
-    </j-popconfirm>
-    <j-form-item
+  <j-form-item
       :name='["branches", branchName, "when", whenName, "terms", props.name]'
       :rules='rules'
-    >
-      <ParamsItem
+  >
+    <ParamsItem
         v-model:value='formModel.branches[branchName].when[whenName].terms[props.name]'
         :isFirst='isFirst'
         :isLast='isLast'
@@ -25,9 +11,8 @@
         :termsName='name'
         :whenName='whenName'
         :branchName='branchName'
-      />
-    </j-form-item>
-  </div>
+    />
+  </j-form-item>
 </template>
 
 <script setup lang='ts' name='TermsItem'>
@@ -113,50 +98,6 @@ const rules = [
     },
   }
 ]
-
-const showDelete = ref(false)
-
-const termsData = computed(() => {
-  return props.data.terms
-})
-
-const mouseover = () => {
-  if (props.showDeleteBtn){
-    showDelete.value = true
-  }
-}
-
-const mouseout = () => {
-  if (props.showDeleteBtn){
-    showDelete.value = false
-  }
-}
-
-const onDelete = () => {
-  formModel.value.branches?.[props.branchName]?.when?.splice(props.whenName, 1)
-  formModel.value.options!.when[props.branchName].terms.splice(props.whenName, 1)
-}
-
-const addTerms = () => {
-  const terms = {
-    type: 'and',
-    terms: [
-      {
-        column: undefined,
-        value: {
-          source: 'fixed',
-          value: undefined
-        },
-        termType: undefined,
-        key: `params_${randomString()}`,
-        type: 'and',
-      }
-    ],
-    key: `terms_${randomString()}`
-  }
-  formModel.value.branches?.[props.branchName]?.when?.[props.whenName].terms?.push(terms)
-  formModel.value.options!.when[props.branchName].terms[props.whenName].terms.push(['','eq','','and'])
-}
 
 </script>
 

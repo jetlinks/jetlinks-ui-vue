@@ -1,5 +1,5 @@
 <template>
-  <div :class='["actions-terms-warp", isFirst ? "first-children" : ""]'>
+  <div :class='WarpClass'>
     <div class='actions-terms-title'>
       {{ isFirst ? '当' : '否则' }}
     </div>
@@ -30,21 +30,28 @@
 
         <div class='actions-terms-list-content'>
           <template v-if='showWhen'>
-            <WhenItem
-              v-for='(item, index) in whenData'
-              :key='item.key'
-              :name='index'
-              :showDeleteBtn='whenData.length !== 1'
-              :isFirst='index === 0'
-              :isLast='index === whenData.length -1'
-              :branchName='name'
-              :data='item'
-            />
+            <j-scrollbar>
+              <div style="display: flex; padding-top: 10px;">
+                <WhenItem
+                  v-for='(item, index) in whenData'
+                  :key='item.key'
+                  :name='index'
+                  :showDeleteBtn='whenData.length !== 1'
+                  :isFirst='index === 0'
+                  :isLast='index === whenData.length -1'
+                  :branchName='name'
+                  :data='item'
+                />
+
+              </div>
+            </j-scrollbar>
           </template>
-          <span v-else class='when-add' @click='addWhen' :style='{ padding: isFirst ? "16px 0" : 0 }'>
-            <AIcon type='PlusCircleOutlined' style='padding: 4px' />
-            添加过滤条件
-          </span>
+          <div v-else style="display: flex; padding-top: 10px;">
+            <span class='when-add' @click='addWhen' :style='{ padding: isFirst ? "16px 0" : 0 }'>
+              <AIcon type='PlusCircleOutlined' style='padding: 4px' />
+              添加过滤条件
+            </span>
+          </div>
         </div>
       </div>
       <div class='actions-branches'>
@@ -107,6 +114,14 @@ const showWhen = computed(() => {
 
 const whenData = computed(() => {
   return props.data.when
+})
+
+const WarpClass = computed(() => {
+  return {
+    'actions-terms-warp': true,
+    'first-children': props.isFirst,
+    'terms-items': (FormModel.value.branches?.length || 0) > 0
+  }
 })
 
 const onDelete = () => {

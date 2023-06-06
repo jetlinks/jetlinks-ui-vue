@@ -12,17 +12,32 @@
           @select='typeChange'
         />
       </div>
-      <TermsItem
-        v-for='(item, index) in termsData'
-        :key='item.key'
-        :branchName='branchName'
-        :whenName='props.name'
-        :name='index'
-        :showDeleteBtn='termsData.length > 1'
-        :isFirst='index === 0'
-        :isLast='index === termsData.length -1'
-        :data='item'
-      />
+      <div
+          class='terms-params-content'
+          @mouseover='mouseover'
+          @mouseout='mouseout'
+      >
+        <j-popconfirm
+            title='确认删除？'
+            :overlayStyle='{minWidth: "180px"}'
+            @confirm='onDelete'
+        >
+          <div v-show='showDelete' class='terms-params-delete'>
+            <AIcon type='CloseOutlined' />
+          </div>
+        </j-popconfirm>
+        <TermsItem
+          v-for='(item, index) in termsData'
+          :key='item.key'
+          :branchName='branchName'
+          :whenName='props.name'
+          :name='index'
+          :showDeleteBtn='termsData.length > 1'
+          :isFirst='index === 0'
+          :isLast='index === termsData.length -1'
+          :data='item'
+        />
+      </div>
       <div class='terms-group-add' @click='addWhen' v-if='isLast'>
         <div class='terms-content'>
           <AIcon type='PlusOutlined' />
@@ -80,12 +95,31 @@ const props = defineProps({
   }
 })
 
+const showDelete = ref(false)
+
+const mouseover = () => {
+  if (props.showDeleteBtn){
+    showDelete.value = true
+  }
+}
+
+const mouseout = () => {
+  if (props.showDeleteBtn){
+    showDelete.value = false
+  }
+}
+
 const termsData = computed(() => {
   return props.data.terms
 })
 
 const typeChange = (e: any) => {
   formModel.value.options!.when[props.name].terms[props.name].termType = e.label
+}
+
+const onDelete = () => {
+  formModel.value.branches?.[props.branchName]?.when?.splice(props.name, 1)
+  formModel.value.options!.when[props.branchName].terms.splice(props.name, 1)
 }
 
 const addWhen = () => {
