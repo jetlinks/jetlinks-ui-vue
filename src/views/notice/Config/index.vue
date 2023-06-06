@@ -233,7 +233,7 @@ const columns = [
         title: '配置名称',
         dataIndex: 'name',
         key: 'name',
-        width: 100,
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -280,7 +280,7 @@ const columns = [
         title: '操作',
         key: 'action',
         fixed: 'right',
-        width: 250,
+        width: 200,
         scopedSlots: true,
     },
 ];

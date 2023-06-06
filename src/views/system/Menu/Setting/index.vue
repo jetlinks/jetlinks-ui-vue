@@ -71,7 +71,8 @@ import {
     getMaxDepth,
     mergeArr,
     findAllParentsAndChildren,
-    handleSorts
+    handleSorts,
+    handleSortsArr
 } from './utils';
 import BaseMenu from '@/views/init-home/data/baseMenu';
 import type { AntTreeNodeDropEvent } from 'ant-design-vue/es/tree';
@@ -214,7 +215,7 @@ onMounted(() => {
                 );
 
                 // 处理排序
-                treeData.value = handleSorts(AllMenu);
+                treeData.value = handleSortsArr(AllMenu);
             }
         });
     });

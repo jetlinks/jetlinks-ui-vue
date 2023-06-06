@@ -32,7 +32,7 @@
                         </PermissionButton>
                     </template>
                     <template #type="slotProps">
-                        {{ slotProps.type.name }}
+                        {{ slotProps.type?.name }}
                     </template>
                     <template #status="slotProps">
                         <BadgeStatus
@@ -220,6 +220,7 @@ const columns = [
         dataIndex: 'action',
         key: 'action',
         fixed: 'right',
+        width: 150,
         scopedSlots: true,
     },
 ];
