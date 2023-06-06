@@ -77,13 +77,14 @@
                                 />
                             </template>
                         </Guide>
-                        <LineChart
-                            v-if="flowData.length !== 0"
-                            :showX="true"
-                            :showY="true"
-                            style="min-height: 490px"
-                            :chartData="flowData"
-                        />
+                        <FullPage v-if="flowData.length !== 0">
+                            <LineChart
+                                :showX="true"
+                                :showY="true"
+                                style="min-height: 490px"
+                                :chartData="flowData"
+                            />
+                        </FullPage>
                         <div class="empty-body" v-else>
                             <j-empty :image="Empty.PRESENTED_IMAGE_SIMPLE" />
                         </div>

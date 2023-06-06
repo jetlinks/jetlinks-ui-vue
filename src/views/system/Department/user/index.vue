@@ -147,7 +147,7 @@ const columns = [
         dataIndex: 'action',
         key: 'action',
         scopedSlots: true,
-        width: '200px',
+        width: 80,
     },
 ];
 // 搜索参数
