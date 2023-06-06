@@ -142,7 +142,7 @@ const columns = [
         title: '操作',
         key: 'action',
         fixed: 'right',
-        width: 250,
+        width: 120,
         scopedSlots: true,
     },
 ];

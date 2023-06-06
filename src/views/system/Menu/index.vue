@@ -162,7 +162,7 @@ const columns = [
         key: 'action',
         fixed: 'right',
         scopedSlots: true,
-        width: 200,
+        width: 150,
     },
 ];
 const queryParams = ref({ terms: [] });

@@ -117,7 +117,7 @@ const columns = [
         title: '操作',
         dataIndex: 'action',
         key: 'action',
-        width: 200,
+        width: 120,
         fixed: 'right',
         scopedSlots: true,
     },

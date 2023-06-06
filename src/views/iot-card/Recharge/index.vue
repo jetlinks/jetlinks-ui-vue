@@ -118,6 +118,7 @@ const columns = [
         dataIndex: 'createTime',
         key: 'createTime',
         scopedSlots: true,
+        width: 200,
         search: {
             type: 'date',
         },
@@ -126,6 +127,7 @@ const columns = [
         title: '操作',
         key: 'action',
         fixed: 'right',
+        width: 60,
         scopedSlots: true,
     },
 ];

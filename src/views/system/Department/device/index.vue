@@ -173,7 +173,7 @@
                     }}</span>
                 </template>
                 <template #action="slotProps">
-                    <j-space :size="16">
+                    <j-space>
                         <PermissionButton
                             v-for="i in table.getActions(slotProps, 'table')"
                             :hasPermission="i.permission"
@@ -338,6 +338,7 @@ const columns = [
         dataIndex: 'action',
         key: 'action',
         fixed: 'right',
+        width: 150,
         scopedSlots: true,
     },
 ];

@@ -322,6 +322,7 @@ const columns = [
         dataIndex: 'action',
         key: 'action',
         fixed: 'right',
+        width: 100,
         scopedSlots: true,
     },
 ];
