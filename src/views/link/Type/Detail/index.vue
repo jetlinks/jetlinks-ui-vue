@@ -41,7 +41,7 @@
                                     />
                                 </j-form-item>
                             </j-col>
-                            <j-col :span="24">
+                            <j-col :span="24" v-if="isNoCommunity">
                                 <j-form-item
                                     name="shareCluster"
                                     :rules="Rules.shareCluster"
@@ -1139,6 +1139,7 @@ import { cloneDeep } from 'lodash-es';
 import type { FormData2Type, FormDataType } from '../type';
 import { Store } from 'jetlinks-store';
 import LocalAddressSelect from './LocalAddressSelect.vue';
+import { isNoCommunity } from '@/utils/utils';
 
 const route = useRoute();
 const NetworkType = route.query.type as string;
@@ -1441,7 +1442,9 @@ onMounted(() => {
     getSupports();
     getCertificates();
     getResourcesCurrent();
-    getResourcesClusters();
+    if(isNoCommunity){
+        getResourcesClusters();
+    }
     getDetail();
 });
 
