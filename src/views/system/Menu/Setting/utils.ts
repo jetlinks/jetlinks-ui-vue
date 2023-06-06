@@ -39,7 +39,7 @@ export const mergeArr = (oldData: Array<any>, newData: Array<any>) => {
             return newItem;
         }
 
-        if (oldItem && newItem) {
+        if(oldItem && newItem){
             oldItem.sortIndex = newItem?.sortIndex
         }
 
@@ -78,7 +78,7 @@ export const mergeArr = (oldData: Array<any>, newData: Array<any>) => {
 
         return oldItem
     };
-
+    
     for (const newItem of newData) {
         const oldItem = oldData.find((item) => item.code === newItem.code);
         mergedData.push(mergeItem(oldItem, newItem));
@@ -311,9 +311,22 @@ export const getNodeDepth = (node: any) => {
 
 export const handleSorts = (node: any[]) => {
     if (!node) return []
+    return node.map((item, index) => {
+        if (item.index !== index) {
+            item.sortIndex = index
+            if (item.children) {
+                item.children = handleSorts(item.children).sort((a, b) => a.sortIndex - b.sortIndex)
+            }
+        }
+        return item
+    })
+}
+
+export const handleSortsArr = (node: any[]) => {
+    if (!node) return []
     return node.sort((a, b) => a.sortIndex - b.sortIndex).map((item) => {
         if (item.children) {
-            item.children = handleSorts(item.children)
+            item.children = handleSortsArr(item.children)
         }
         return item
     })
