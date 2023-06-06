@@ -62,7 +62,8 @@ const check = async (): Promise<boolean> => {
     let hasProperties = false
     if (metadata.properties.length) {
       if (deviceTrigger.operation?.readProperties && deviceTrigger.operation?.readProperties.length) {
-        hasProperties = metadata.properties.every((item: any) => deviceTrigger.operation!.readProperties!.includes(item.id))
+        // hasProperties = metadata.properties.every((item: any) => deviceTrigger.operation!.readProperties!.includes(item.id))
+        hasProperties = deviceTrigger.operation!.readProperties.every(_id => metadata.properties.some((item: any) => item.id === _id))
       } else if (deviceTrigger.operation?.writeProperties && Object.keys(deviceTrigger.operation?.writeProperties).length) {
         const key = Object.keys(deviceTrigger.operation?.writeProperties)[0]
         hasProperties = metadata.properties.some((item: any) => key ===item.id)

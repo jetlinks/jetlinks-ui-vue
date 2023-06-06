@@ -584,6 +584,7 @@ const table = {
     refresh: () => {
         nextTick(() => {
             tableRef.value.reload();
+            table.cancelSelect()
         });
     },
 };

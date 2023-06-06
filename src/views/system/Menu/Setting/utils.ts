@@ -39,7 +39,7 @@ export const mergeArr = (oldData: Array<any>, newData: Array<any>) => {
             return newItem;
         }
 
-        if(oldItem && newItem){
+        if (oldItem && newItem) {
             oldItem.sortIndex = newItem?.sortIndex
         }
 
@@ -60,9 +60,7 @@ export const mergeArr = (oldData: Array<any>, newData: Array<any>) => {
                     (child) => child.code === oldChild.code,
                 );
                 if (index !== -1) {
-                    mergedChildren.push(
-                        mergeItem(oldChild, newChildren[index]),
-                    );
+                    mergedChildren.push(mergeItem(oldChild, newChildren[index]));
                     newChildren.splice(index, 1);
                 } else {
                     //防止重复code，系统已经选中的code不能再从old中添加
@@ -71,13 +69,14 @@ export const mergeArr = (oldData: Array<any>, newData: Array<any>) => {
                     }
                 }
             }
+
             return {
                 ...oldItem,
                 children: mergedChildren.concat(newChildren),
             };
         }
 
-        return oldItem;
+        return oldItem
     };
 
     for (const newItem of newData) {
@@ -102,7 +101,7 @@ export const mergeArr = (oldData: Array<any>, newData: Array<any>) => {
         }
     }
 
-    return mergedData;
+    return mergedData
 };
 
 /**
@@ -312,12 +311,9 @@ export const getNodeDepth = (node: any) => {
 
 export const handleSorts = (node: any[]) => {
     if (!node) return []
-    return node.map((item, index) => {
-        if (item.index !== index) {
-            item.sortIndex = index
-            if (item.children) {
-                item.children = handleSorts(item.children).sort((a, b) => a.sortIndex - b.sortIndex)
-            }
+    return node.sort((a, b) => a.sortIndex - b.sortIndex).map((item) => {
+        if (item.children) {
+            item.children = handleSorts(item.children)
         }
         return item
     })
