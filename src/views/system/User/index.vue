@@ -32,7 +32,7 @@
                         </PermissionButton>
                     </template>
                     <template #type="slotProps">
-                        {{ slotProps.type.name }}
+                        {{ slotProps.type?.name }}
                     </template>
                     <template #status="slotProps">
                         <BadgeStatus
