@@ -1,5 +1,7 @@
 import { cloneDeep } from 'lodash-es'
 import { BlankLayoutPage, BasicLayoutPage } from 'components/Layout'
+import { isNoCommunity } from '@/utils/utils'
+
 const pagesComponent = import.meta.glob('../views/**/*.vue');
 
 /**
@@ -204,6 +206,16 @@ const findDetailRoutes = (routes: any[]): any[] => {
     }
   })
   return newRoutes
+}
+
+const filterMenus = ['device/DashBoard']
+export const filterCommunityMenus = (menuData: any[]) => {
+  return menuData.filter(item => {
+    if (item.children) {
+      item.children = filterCommunityMenus(item.children)
+    }
+    return !filterMenus.includes(item.code)
+  })
 }
 
 export const findCodeRoute = (asyncRouterMap: any[]) => {

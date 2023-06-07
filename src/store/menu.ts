@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia'
 import { queryOwnThree } from '@/api/system/menu'
-import { filterAsyncRouter, findCodeRoute, MenuItem } from '@/utils/menu'
+import {filterAsyncRouter, filterCommunityMenus, findCodeRoute, MenuItem} from '@/utils/menu'
 import { cloneDeep, isArray } from 'lodash-es'
 import { usePermissionStore } from './permission'
 import router from '@/router'
 import { onlyMessage } from '@/utils/comm'
 import { AccountMenu, NotificationRecordCode, NotificationSubscriptionCode } from '@/router/menu'
 import { MESSAGE_SUBSCRIBE_MENU_CODE, USER_CENTER_MENU_CODE } from '@/utils/consts'
+import {isNoCommunity} from "@/utils/utils";
 
 const defaultOwnParams = [
   {
@@ -95,15 +96,19 @@ export const useMenuStore = defineStore({
         const resp = await queryOwnThree({ paging: false, terms: defaultOwnParams })
         if (resp.success) {
           const permission = usePermissionStore()
+          let resultData = resp.result
+          if (!isNoCommunity) {
+            resultData = filterCommunityMenus(resultData)
+          }
           permission.permissions = {}
-          const { menusData, silderMenus } = filterAsyncRouter(resp.result)
+          const { menusData, silderMenus } = filterAsyncRouter(resultData)
 
           // 是否存在通知订阅
-          const hasMessageSub = resp.result.some((item: { code: string }) => item.code === MESSAGE_SUBSCRIBE_MENU_CODE)
+          const hasMessageSub = resultData.some((item: { code: string }) => item.code === MESSAGE_SUBSCRIBE_MENU_CODE)
           if (!hasMessageSub) {
             AccountMenu.children = AccountMenu.children.filter((item: { code: string }) => ![NotificationSubscriptionCode, NotificationRecordCode].includes(item.code) )
           }
-          this.menus = findCodeRoute([...resp.result, AccountMenu])
+          this.menus = findCodeRoute([...resultData, AccountMenu])
           Object.keys(this.menus).forEach((item) => {
             const _item = this.menus[item]
             if (_item.buttons?.length) {

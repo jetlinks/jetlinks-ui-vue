@@ -61,10 +61,15 @@ import {
 } from './tool.ts';
 import { DataType } from '../typings';
 
+
 const props = defineProps({
   serviceId: {
     type: String,
     default: undefined
+  },
+  isNoCommunity: {
+    type:Boolean,
+    default: false
   }
 })
 
@@ -86,7 +91,8 @@ const getCPUEcharts = async (val: any) => {
         const _cpuOptions = {};
         const _cpuXAxis = new Set();
         if (res.result?.length) {
-          const filterArray = res.result.filter((item : any) => item.data?.clusterNodeId === props.serviceId)
+          // 根据服务节点来筛选数据
+          const filterArray = props.isNoCommunity ? res.result.filter((item : any) => item.data?.clusterNodeId === props.serviceId) : res.result
           filterArray.forEach((item: any) => {
                 const value = item.data.value;
                 const nodeID = item.data.clusterNodeId;
@@ -97,7 +103,7 @@ const getCPUEcharts = async (val: any) => {
                 if (!_cpuOptions[nodeID]) {
                     _cpuOptions[nodeID] = [];
                 }
-                _cpuOptions[nodeID].push(
+                _cpuOptions[nodeID]?.push(
                     Number(value.cpuSystemUsage).toFixed(2),
                 );
             });
@@ -179,8 +185,10 @@ watch(
 
 watchEffect(() => {
   const time = data.value.time
-  if (time && Array.isArray(time) && time.length === 2 && time[0] && props.serviceId) {
-    getCPUEcharts(data.value);
+  if (time && Array.isArray(time) && time.length === 2 && time[0]) {
+    if (!props.isNoCommunity || props.serviceId) {
+      getCPUEcharts(data.value);
+    }
   }
 })
 
