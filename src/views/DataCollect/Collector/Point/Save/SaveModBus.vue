@@ -23,7 +23,12 @@
             <j-form-item
                 label="功能码"
                 :name="['configuration', 'function']"
-                :rules="ModBusRules.function"
+                :rules="[
+                  ...ModBusRules.function,
+                  {
+                    validator: checkFunction
+                  }
+                ]"
             >
                 <j-select
                     style="width: 100%"
@@ -43,7 +48,8 @@
             </j-form-item>
             <j-form-item
                 label="地址"
-                :name="['pointKey']"
+                name="address"
+                :validateFirst="true"
                 :rules="[
                     ...ModBusRules.pointKey,
                     {
@@ -55,17 +61,14 @@
                 <j-input-number
                     style="width: 100%"
                     placeholder="请输入地址"
-                    v-model:value="formData.pointKey"
+                    v-model:value="formData.address"
                     :min="0"
                     :max="999999999"
                     :precision="0"
                 />
             </j-form-item>
             <p style="color: #616161" v-if="formData.configuration.function">
-                PLC地址: {{
-                    InitAddress[formData.configuration.function] +
-                        Number(formData.pointKey) || 0
-                }}
+                PLC地址: {{ plc }}
             </p>
             <j-form-item
                 label="寄存器数量"
@@ -287,7 +290,7 @@ const formRef = ref<FormInstance>();
 const id = props.data.id;
 const collectorId = props.data.collectorId;
 const provider = props.data.provider;
-const oldPointKey = props.data.pointKey;
+const oldPointKey = props.data?.configuration?.parameter?.address;
 
 const InitAddress = {
     Coils: 1,
@@ -305,7 +308,7 @@ const formData = ref({
             quantity: 1,
             writeByteCount: '',
             byteCount: 2,
-            address: '',
+            address: undefined,
         },
         codec: {
             provider: undefined,
@@ -315,12 +318,18 @@ const formData = ref({
             },
         },
     },
+    address: undefined,
     pointKey: undefined,
     accessModes: [],
     nspwc: false,
     features: [],
     description: '',
 });
+
+const plc = computed(() =>{
+  const configuration = formData.value.configuration
+  return configuration.function !== undefined && formData.value.address !== undefined ? InitAddress[configuration.function] + Number(formData.value.address) : 0
+})
 
 const handleOk = async () => {
     const data = await formRef.value?.validate();
@@ -337,15 +346,16 @@ const handleOk = async () => {
         provider,
         collectorId,
         interval,
+        pointKey: plc.value,
     };
 
-    // address是多余字段，但是react版本上使用到了这个字段
     params.configuration.parameter = {
-        ...params.configuration.parameter,
-        address: data?.pointKey,
+      ...params.configuration.parameter,
+      address: data?.address,
     };
 
     loading.value = true;
+
     const response = !id
         ? await savePointBatch(params).catch(() => {})
         : await updatePoint(id, { ...props.data, ...params }).catch(() => {});
@@ -394,13 +404,23 @@ const checkProvider = (_rule: Rule, value: string): Promise<any> =>
         }
     });
 
+const checkFunction = (_: any, value: string) => {
+  if (value) {
+    formRef.value!.validateFields('address')
+  }
+  return Promise.resolve('');
+}
 const checkPointKey = (_rule: Rule, value: string): Promise<any> =>
     new Promise(async (resolve, reject) => {
+      console.log(value, formData.value!.configuration?.function)
         if (value || Number(value) === 0) {
             if (Number(oldPointKey) === Number(value)) return resolve('');
             if (typeof value === 'object') return resolve('');
+            if (!formData.value!.configuration?.function) return resolve('');
+
+            const plc = InitAddress[formData.value!.configuration?.function] + Number(value)
             const res: any = await _validateField(collectorId, {
-                pointKey: value,
+                pointKey: plc,
             });
             return res.result?.passed ? resolve('') : reject(res.result.reason);
         } else {
@@ -443,6 +463,7 @@ watch(
             const { writeByteCount, byteCount } =
                 _value.configuration.parameter;
             formData.value = _value;
+          formData.value.address = _value.configuration?.parameter?.address
             if (!!_value.accessModes[0]?.value) {
                 formData.value.accessModes = value.accessModes.map(
                     (i: any) => i.value,

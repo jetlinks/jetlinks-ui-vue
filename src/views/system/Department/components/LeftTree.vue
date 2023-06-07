@@ -126,9 +126,7 @@ function getTree(cb?: Function) {
             { column: 'name$LIKE', value: `%${searchValue.value}%` },
         ];
     }
-
     treeMap.clear()
-
     getTreeData_api(params)
         .then((resp: any) => {
             selectedKeys.value = [resp.result[0].id];
@@ -193,7 +191,6 @@ function delDepartment(id: string) {
         getTree();
     });
 }
-
 function refresh(id: string) {
     // @ts-ignore
     window?.onTabSaveSuccess && window.onTabSaveSuccess(id);
