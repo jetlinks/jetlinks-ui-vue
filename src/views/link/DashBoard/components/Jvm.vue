@@ -65,6 +65,10 @@ const props = defineProps({
   serviceId: {
     type: String,
     default: undefined
+  },
+  isNoCommunity: {
+    type:Boolean,
+    default: false
   }
 })
 
@@ -86,7 +90,7 @@ const getJVMEcharts = async (val: any) => {
         const _jvmOptions = {};
         const _jvmXAxis = new Set();
         if (res.result?.length) {
-          const filterArray = res.result.filter((item : any) => item.data?.clusterNodeId === props.serviceId)
+          const filterArray =  props.isNoCommunity ? res.result.filter((item : any) => item.data?.clusterNodeId === props.serviceId) : res.result
           filterArray.forEach((item: any) => {
                 const value = item.data.value;
                 const memoryJvmHeapFree = value.memoryJvmHeapFree;
@@ -104,7 +108,7 @@ const getJVMEcharts = async (val: any) => {
                 _jvmXAxis.add(
                     dayjs(value.timestamp).format('YYYY-MM-DD HH:mm'),
                 );
-                _jvmOptions[nodeID].push(_value);
+                _jvmOptions[nodeID]?.push(_value);
             });
             handleJVMOptions(_jvmOptions, [..._jvmXAxis.keys()]);
         } else {
@@ -183,8 +187,10 @@ watch(
 
 watchEffect(() => {
   const time = data.value.time
-  if (time && Array.isArray(time) && time.length === 2 && time[0] && props.serviceId) {
-    getJVMEcharts(data.value);
+  if (time && Array.isArray(time) && time.length === 2 && time[0]) {
+    if (!props.isNoCommunity || props.serviceId) {
+      getJVMEcharts(data.value);
+    }
   }
 })
 

@@ -449,7 +449,6 @@ const query = reactive({
             key: 'id',
             search: {
                 type: 'string',
-                defaultTermType: 'eq',
             },
         },
         {
@@ -458,7 +457,7 @@ const query = reactive({
             dataIndex: 'accessProvider',
             search: {
                 type: 'select',
-                options: () => {
+                options: async () => {
                     return new Promise((resolve) => {
                         getProviders().then((resp: any) => {
                             const data = resp.result || [];

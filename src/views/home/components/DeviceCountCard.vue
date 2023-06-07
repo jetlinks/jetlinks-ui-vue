@@ -1,7 +1,7 @@
 <template>
     <div class="device-count-container">
         <h5 class="title">设备统计</h5>
-        <span class="detail" @click="jumpPage('device/DashBoard')"> 详情 </span>
+        <span class="detail" @click="jumpPage('device/DashBoard')" v-if="isNoCommunity"> 详情 </span>
 
         <div class="box-list">
             <div class="box-item">
@@ -21,6 +21,7 @@
 <script setup lang="ts">
 import { getDeviceCount_api, getProductCount_api } from '@/api/home';
 import { useMenuStore } from '@/store/menu';
+import { isNoCommunity } from '@/utils/utils'
 
 const { jumpPage } = useMenuStore();
 const projectNum = ref(0);
