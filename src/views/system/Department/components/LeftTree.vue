@@ -127,6 +127,8 @@ function getTree(cb?: Function) {
         ];
     }
 
+    treeMap.clear()
+
     getTreeData_api(params)
         .then((resp: any) => {
             selectedKeys.value = [resp.result[0].id];
@@ -191,6 +193,7 @@ function delDepartment(id: string) {
         getTree();
     });
 }
+
 function refresh(id: string) {
     // @ts-ignore
     window?.onTabSaveSuccess && window.onTabSaveSuccess(id);
