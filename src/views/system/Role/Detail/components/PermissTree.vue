@@ -118,6 +118,7 @@ const props = defineProps({
 });
 const treeRef = ref();
 let { ctx: that, proxy } = getCurrentInstance();
+const flatTableData: tableItemType[] = []; // 表格数据的扁平化版本--浅克隆   方便进行对表格数据进行操作
 
 const columns = [
     {
@@ -227,8 +228,6 @@ const resetBulk = () => {
     bulkShow.value = false;
 };
 // ------------下面为表格内容部分------------------
-const flatTableData: tableItemType[] = []; // 表格数据的扁平化版本--浅克隆   方便进行对表格数据进行操作
-
 const init = () => {
     getAllPermiss();
     // 监听权限的修改情况，产生修改后反馈给父组件
@@ -407,8 +406,8 @@ function actionChange(row: tableItemType) {
  * 将树形结构的表格数据拍扁为一个普通数组
  * @param treeData
  */
-function treeToSimple(treeData: tableItemType[]) {
-    treeData.forEach((item) => {
+function treeToSimple(_treeData: tableItemType[]) {
+    _treeData.forEach((item) => {
         // 数据权限回填
         if (item.accessSupport && item.accessSupport.value === 'support') {
             const select =
@@ -416,21 +415,27 @@ function treeToSimple(treeData: tableItemType[]) {
                 {};
             item.selectAccesses = select.supportId || '';
         }
-        if (item.buttons && item.buttons.length > 0) setStatus(item, 'buttons');
-        else setStatus(item, 'children');
+        if (item.buttons && item.buttons.length > 0) {
+            setStatus(item, 'buttons');
+        } else {
+            setStatus(item, 'children');
+        }
+        if(item.children){
+            treeToSimple(item.children);
+        }
         flatTableData.push(item);
-        item.children && treeToSimple(item.children);
     });
-    // console.log('flatTableData: ', flatTableData);
     // 根据所有权限, 取assetAccesses并集数据
-    let assets: any[] = [];
-    flatTableData?.forEach((item: any) => {
-        assets = [...assets, ...item.assetAccesses];
-    });
-    bulkOptions.value = uniqBy(assets, 'supportId')?.map((m: any) => ({
-        label: m.name,
-        value: m.supportId,
-    }));
+    if(isNoCommunity){
+        let assets: any[] = [];
+        flatTableData?.forEach((item: any) => {
+            assets = [...assets, ...item.assetAccesses];
+        });
+        bulkOptions.value = uniqBy(assets, 'supportId')?.map((m: any) => ({
+            label: m.name,
+            value: m.supportId,
+        }));
+    }
 }
 /**
  * 设置子节点的状态
