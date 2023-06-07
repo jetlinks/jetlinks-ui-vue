@@ -243,12 +243,13 @@ const checkNoticeDelete = async () => {
           const itemType = variableDefinitionsMap.get(variableKey)
           let hasUser = false
 
+          console.log(itemType, notifyType)
           if (itemType === 'user') { // 微信用户，钉钉用户
             let resp = undefined;
-            if (notifyType === 'dingTalk') {
-              resp = await noticeConfig.queryDingTalkUsers(item!.notifierId);
+            if (['dingTalk', 'weixin'].includes(notifyType)) {
+              resp = notifyType === 'dingTalk' ? await noticeConfig.queryDingTalkUsers(item!.notifierId) : await noticeConfig.queryWechatUsers(item!.notifierId);
             } else {
-              resp = await noticeConfig.queryWechatUsers(item!.notifierId);
+              hasUser = true
             }
 
             if (resp && resp.success) {
@@ -267,10 +268,10 @@ const checkNoticeDelete = async () => {
 
           if (itemType === 'org') { // 组织
             let resp = undefined;
-            if (notifyType === 'dingTalk') {
-              resp = await noticeConfig.dingTalkDept(item!.notifierId)
+            if (['dingTalk', 'weixin'].includes(notifyType)) {
+              resp = notifyType === 'dingTalk' ? await noticeConfig.dingTalkDept(item!.notifierId) : await noticeConfig.weChatDept(item!.notifierId)
             } else {
-              resp = await noticeConfig.weChatDept(item!.notifierId)
+              hasUser = true
             }
 
             if (resp && resp.success) {
