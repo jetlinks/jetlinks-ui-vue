@@ -16,12 +16,6 @@
             >
                 <div class="upload-image-content" :style="props.style">
                     <template v-if="imageUrl">
-                        <!-- <div class="upload-image"
-                        :style="{
-                            backgroundSize: props.backgroundSize,
-                            backgroundImage: `url(${imageUrl})`
-                        }"
-                        ></div> -->
                         <img :src="imageUrl" class="upload-image" />
                         <div class="upload-image-mask">点击修改</div>
                     </template>
@@ -52,6 +46,12 @@
             </div>
         </div>
     </div>
+  <ImageCropper
+    v-if="cropperVisible"
+    :img="cropperImg"
+    @cancel="cropperVisible = false"
+    @ok="saveImage"
+  />
 </template>
 
 <script lang="ts" setup name='JProUpload'>
@@ -59,8 +59,9 @@ import { UploadChangeParam, UploadProps } from 'ant-design-vue';
 import { message } from 'jetlinks-ui-components';
 import { FILE_UPLOAD } from '@/api/comm';
 import { TOKEN_KEY } from '@/utils/variable';
-import { LocalStore } from '@/utils/comm';
+import {getBase64, LocalStore} from '@/utils/comm';
 import { CSSProperties } from 'vue';
+import ImageCropper from './Cropper.vue'
 
 type Emits = {
     (e: 'update:modelValue', data: string): void;
@@ -100,6 +101,9 @@ const loading = ref<boolean>(false);
 const imageUrl = ref<string>(props?.modelValue || '');
 const imageTypes = props.types ? props.types : ['image/jpeg', 'image/png'];
 
+const cropperImg = ref()
+const cropperVisible = ref(false)
+
 watch(
     () => props.modelValue,
     (newValue) => {
@@ -129,6 +133,7 @@ const handleChange = (info: UploadChangeParam) => {
 
 const beforeUpload = (file: UploadProps['fileList'][number]) => {
     const isType = imageTypes.includes(file.type);
+    const maxSize = props.size || 4
     if (!isType) {
         if (props.errorMessage) {
             message.error(props.errorMessage);
@@ -137,12 +142,25 @@ const beforeUpload = (file: UploadProps['fileList'][number]) => {
         }
         return false;
     }
-    const isSize = file.size / 1024 / 1024 < (props.size || 4);
+    const isSize = file.size / 1024 / 1024 < maxSize;
     if (!isSize) {
-        message.error(`图片大小必须小于${props.size || 4}M`);
+        message.error(`图片大小必须小于${maxSize}M`);
     }
-    return isType && isSize;
+
+    getBase64(file, (base64Url) => {
+      cropperImg.value = base64Url
+      cropperVisible.value = true
+    })
+
+    return false;
 };
+
+
+const saveImage = (url: string) => {
+  cropperVisible.value = false
+  imageUrl.value = url
+  emit('update:modelValue', url);
+}
 </script>
 
 <style lang="less" scoped>
