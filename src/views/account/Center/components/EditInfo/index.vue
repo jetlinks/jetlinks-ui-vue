@@ -4,7 +4,7 @@
         title="编辑"
         @ok="handleOk"
         width="770px"
-        @cancel="emits('update:visible', false)"
+        @cancel="emits('close')"
         :confirmLoading="loading"
     >
         <j-form :model="form" layout="vertical" ref="formRef">
@@ -80,7 +80,12 @@
                     <j-form-item
                         label="邮箱"
                         name="email"
-                        :rules="[{ type: 'email',message:'邮箱不是一个有效的email' }]"
+                        :rules="[
+                            {
+                                type: 'email',
+                                message: '邮箱不是一个有效的email',
+                            },
+                        ]"
                     >
                         <j-input
                             v-model:value="form.email"
@@ -95,28 +100,30 @@
 
 <script setup lang="ts">
 import { updateMeInfo_api } from '@/api/account/center';
-import { message } from 'ant-design-vue';
-import { FormInstance } from 'ant-design-vue/es';
-import { userInfoType } from '../typing';
+import { onlyMessage } from '@/utils/comm';
 
-const emits = defineEmits(['ok', 'update:visible']);
-const props = defineProps<{
-    visible: boolean;
-    data: userInfoType;
-}>();
-const loading = ref(false)
+const emits = defineEmits(['save', 'close']);
+const props = defineProps({
+    data: {
+        type: Object,
+        default: () => {},
+    },
+});
+const loading = ref(false);
 const form = ref(props.data);
-const formRef = ref<FormInstance>();
+const formRef = ref<any>();
+
 const handleOk = () => {
     formRef.value?.validate().then(() => {
-        loading.value = true
-        updateMeInfo_api(form.value).then((resp) => {
-            if (resp.status === 200) {
-                message.success('保存成功');
-                emits('ok');
-                emits('update:visible', false);
-            }
-        }).finally(()=>loading.value = false)
+        loading.value = true;
+        updateMeInfo_api(form.value)
+            .then((resp) => {
+                if (resp.status === 200) {
+                    onlyMessage('保存成功', 'success');
+                    emits('save');
+                }
+            })
+            .finally(() => (loading.value = false));
     });
 };
 </script>

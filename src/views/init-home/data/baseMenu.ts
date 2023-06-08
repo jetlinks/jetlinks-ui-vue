@@ -3922,6 +3922,99 @@ export default [
         accessSupport: { text: "不支持", value: "unsupported" },
         supportDataAccess: false
       },
+      {
+        code: 'system/NoticeRule',
+        name: '通知规则',
+        owner: 'iot',
+        id: 'system/NoticeRule',
+        sortIndex: 11,
+        url: '/system/NoticeRule',
+        icon: 'icon-yingyongguanli',
+        showPage: ['application'],
+        permissions: [],
+        buttons: [
+          {
+            id: 'delete',
+            name: '删除',
+            permissions: [
+              // {
+              //   permission: 'application',
+              //   actions: ['query', 'delete'],
+              // },
+            ],
+          },
+          {
+            id: 'add',
+            name: '新增',
+            permissions: [
+              // {
+              //   permission: 'role',
+              //   actions: ['query'],
+              // },
+              // {
+              //   permission: 'menu',
+              //   actions: ['query'],
+              // },
+              // {
+              //   permission: 'application',
+              //   actions: ['query', 'save'],
+              // },
+              // {
+              //   permission: 'open-api',
+              //   actions: ['query', 'save', 'delete'],
+              // },
+            ],
+          },
+          {
+            id: 'update',
+            name: '编辑',
+            permissions: [
+              // {
+              //   permission: 'role',
+              //   actions: ['query'],
+              // },
+              // {
+              //   permission: 'menu',
+              //   actions: ['query'],
+              // },
+              // {
+              //   permission: 'application',
+              //   actions: ['query', 'save'],
+              // },
+              // {
+              //   permission: 'open-api',
+              //   actions: ['query', 'save', 'delete'],
+              // },
+            ],
+          },
+          {
+            id: 'view',
+            name: '查看',
+            permissions: [
+              // {
+              //   permission: 'application',
+              //   actions: ['query'],
+              // },
+              // {
+              //   permission: 'role',
+              //   actions: ['query'],
+              // },
+            ],
+          },
+          {
+            id: 'action',
+            name: '启/禁用',
+            permissions: [
+              // {
+              //   permission: 'application',
+              //   actions: ['save'],
+              // },
+            ],
+          },
+        ],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
+      },
       // {
       //   code: 'system/License',
       //   name: 'License管理',

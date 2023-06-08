@@ -5,7 +5,7 @@
         @ok="handleOk"
         width="520px"
         :confirmLoading="loading"
-        @cancel="emits('update:visible', false)"
+        @cancel="emits('close')"
     >
         <j-form :model="form" layout="vertical" ref="formRef">
             <j-form-item
@@ -24,7 +24,6 @@
             <j-form-item
                 label="密码"
                 name="newPassword"
-
                 :rules="[
                     { required: true, message: '请输入密码' },
                     { validator: checkMethods.new, trigger: 'blur' },
@@ -58,15 +57,18 @@ import {
     checkOldPassword_api,
     validateField_api,
 } from '@/api/account/center';
-import { FormInstance, message } from 'ant-design-vue';
-import { Rule } from 'ant-design-vue/lib/form';
+import { onlyMessage } from '@/utils/comm';
 
-const emits = defineEmits(['ok', 'update:visible']);
-const props = defineProps<{
-    visible: boolean;
-}>();
+type formType = {
+    oldPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+};
+
+const emits = defineEmits(['save', 'close']);
+
 const loading = ref(false);
-const formRef = ref<FormInstance>();
+const formRef = ref<any>();
 const form = ref<formType>({
     oldPassword: '',
     newPassword: '',
@@ -74,7 +76,7 @@ const form = ref<formType>({
 });
 
 const checkMethods = {
-    old: async (_rule: Rule, value: string) => {
+    old: async (_rule: any, value: string) => {
         if (!value) return Promise.reject('请输入密码');
         try {
             const resp: any = await checkOldPassword_api(value);
@@ -85,7 +87,7 @@ const checkMethods = {
             return Promise.reject('验证失败');
         }
     },
-    new: async (_rule: Rule, value: string) => {
+    new: async (_rule: any, value: string) => {
         if (!value) return Promise.reject('请输入密码');
         else if (
             form.value.confirmPassword &&
@@ -101,7 +103,7 @@ const checkMethods = {
             return Promise.reject('验证失败');
         }
     },
-    confirm: async (_rule: Rule, value: string) => {
+    confirm: async (_rule: any, value: string) => {
         if (!value) return Promise.reject();
         else if (form.value.newPassword && value !== form.value.newPassword) {
             formRef.value?.validate('newPassword');
@@ -127,19 +129,12 @@ const handleOk = () => {
         updateMepsd_api(params)
             .then((resp) => {
                 if (resp.status === 200) {
-                    message.success('保存成功');
-                    emits('ok');
-                    emits('update:visible', false);
+                    onlyMessage('保存成功', 'success');
+                    emits('save');
                 }
             })
             .finally(() => (loading.value = false));
     });
-};
-
-type formType = {
-    oldPassword: string;
-    newPassword: string;
-    confirmPassword: string;
 };
 </script>
 

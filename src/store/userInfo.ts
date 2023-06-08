@@ -19,6 +19,11 @@ export const useUserInfo = defineStore('userInfo', {
             roles: [],
             token: '',
             user: {},
+            name: '',
+            orgList: [],
+            roleList: [],
+            telephone: '',
+            email: ''
         },
         alarmUpdateCount: 0
     }),

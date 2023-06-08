@@ -4,6 +4,7 @@
             <pro-search
                 :columns="columns"
                 target="category"
+                style="padding: 0"
                 @search="(params:any)=>queryParams = {...params}"
             />
 
@@ -13,12 +14,16 @@
                 :request="getList_api"
                 model="TABLE"
                 :params="queryParams"
+                :bodyStyle="{padding: 0}"
                 :defaultParams="{
                   sorts: [{
                     name: 'notifyTime', order: 'desc'
                   }]
                 }"
             >
+                <template #headerTitle>
+                    <j-button type="primary">全部已读</j-button>
+                </template>
                 <template #topicProvider="slotProps">
                     {{ slotProps.topicName }}
                 </template>
