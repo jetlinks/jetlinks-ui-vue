@@ -133,7 +133,7 @@ const handleChange = (info: UploadChangeParam) => {
 
 const beforeUpload = (file: UploadProps['fileList'][number]) => {
     const isType = imageTypes.includes(file.type);
-    const maxSize = props.size || 4
+    const maxSize = props.size || 2 // 最大值
     if (!isType) {
         if (props.errorMessage) {
             message.error(props.errorMessage);
