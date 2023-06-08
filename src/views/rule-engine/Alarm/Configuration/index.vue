@@ -124,18 +124,18 @@
                     <template #level="slotProps">
                         <j-tooltip
                             placement="topLeft"
-                            :title="(Store.get('default-level') || []).find((item: any) => item?.level === slotProps.level)?.title ||
+                            :title="(Store.get('default-level') || []).find((item) => item?.level === slotProps.level)?.title ||
             slotProps.level"
                         >
                             <div class="ellipsis">
-                                {{ (Store.get('default-level') || []).find((item: any) => item?.level === slotProps.level)?.title ||
+                                {{ (Store.get('default-level') || []).find((item) => item?.level === slotProps.level)?.title ||
             slotProps.level }}
                             </div>
                         </j-tooltip>
                     </template>
-                    <template #sceneId="slotProps">
+                    <template #scene="slotProps">
                         <span
-                            >{{(slotProps?.scene || []).map((item: any) => item?.name).join(',') || ''}}</span
+                            >{{(slotProps?.scene || []).map((item) => item?.name).join(',') || ''}}</span
                         >
                     </template>
                     <template #state="slotProps">
@@ -273,6 +273,7 @@ const columns = [
         title: '关联场景联动',
         dataIndex: 'scene',
         scopedSlots: true,
+        key: 'scene',
         search: {
             type: 'select',
             // defaultTermType: 'rule-bind-alarm',
