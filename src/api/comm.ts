@@ -35,3 +35,5 @@ export const systemVersion = () => server.get<{edition?: string}>('/system/versi
  * @returns 
  */
 export const queryDashboard = (data: Record<string, any>) => server.post(`/dashboard/_multi`, data)
+
+export const fileUpload = (data: any) => server.post('/file/static', data)
