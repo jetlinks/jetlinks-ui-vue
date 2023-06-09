@@ -424,10 +424,11 @@ const form = reactive<formType>({
                 ];
 
                 save_api(params)
-                    .then((resp) => {
+                    .then(async (resp) => {
                         if (resp.status === 200) {
                             message.success('保存成功');
-                            form.getDetails();
+                            await system.getSystemConfig()
+                            await form.getDetails();
                         }
                     })
                     .finally(() => (form.saveLoading = false));
