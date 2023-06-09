@@ -226,6 +226,10 @@ const typeOptions = [
         label: '第三方应用',
         value: 'third-party',
     },
+    {
+        label: '小程序应用',
+        value: 'wechat-miniapp',
+    },
 ];
 const columns = [
     {

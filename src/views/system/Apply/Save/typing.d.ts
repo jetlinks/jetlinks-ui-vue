@@ -3,6 +3,7 @@ export type applyType = 'internal-standalone'
     | 'internal-integrated'
     | 'dingtalk-ent-app'
     | 'third-party'
+    | 'wechat-miniapp'
 export type dictType = {
     id: string;
     name: string;
@@ -20,6 +21,7 @@ export type formType = {
     id?:string,
     name: string;
     provider: applyType;
+    logoUrl: string,
     integrationModes: string[];
     config?: string;
     description: string;

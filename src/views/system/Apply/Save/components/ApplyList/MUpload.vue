@@ -1,13 +1,12 @@
 <template>
-    <div class="upload-image-warp">
-        <div class="upload-image-border" :style="borderStyle">
+    <div class="upload-image-warp" @click.stop>
+        <div class="upload-image-border" :style="borderStyle" @click.stop>
             <j-upload
                 name="file"
                 list-type="picture-card"
                 class="avatar-uploader"
                 :show-upload-list="false"
                 :before-upload="beforeUpload"
-                @change="handleChange"
                 :action="FILE_UPLOAD"
                 :headers="{
                     'X-Access-Token': LocalStore.get(TOKEN_KEY),
@@ -17,24 +16,13 @@
                 <div class="upload-image-content" :style="props.style">
                     <template v-if="imageUrl">
                         <img :src="imageUrl" width="100%" class="upload-image" />
-                        <div class="upload-image-mask">点击修改</div>
+                        <div v-if="imageUrl === defaultValue" class="upload-image-mask">替换图标</div>
+                        <div v-else @click.stop="onDelete" class="upload-image-mask">删除图标</div>
                     </template>
                     <template v-else>
                         <AIcon
                             type="LoadingOutlined"
                             v-if="loading"
-                            style="font-size: 20px"
-                        />
-                        <template v-else-if="bgImage">
-                            <div
-                                class="upload-image"
-                                :style="`background-image: url(${bgImage});`"
-                            ></div>
-                            <div class="upload-image-mask">点击修改</div>
-                        </template>
-                        <AIcon
-                            v-else
-                            type="PlusOutlined"
                             style="font-size: 20px"
                         />
                     </template>
@@ -55,16 +43,17 @@
 </template>
 
 <script lang="ts" setup name='JProUpload'>
-import { UploadChangeParam, UploadProps } from 'ant-design-vue';
+import { UploadProps } from 'ant-design-vue';
 import { message } from 'jetlinks-ui-components';
 import { FILE_UPLOAD } from '@/api/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import {getBase64, LocalStore} from '@/utils/comm';
 import { CSSProperties } from 'vue';
-import ImageCropper from './Cropper.vue';
+import ImageCropper from '@/components/Upload/Cropper.vue';
 
 type Emits = {
     (e: 'update:modelValue', data: string): void;
+    (e: 'change', data: string): void;
 };
 interface JUploadProps extends UploadProps {
     modelValue: string;
@@ -73,8 +62,9 @@ interface JUploadProps extends UploadProps {
     errorMessage?: string;
     size?: number;
     style?: CSSProperties;
-    bgImage?: string;
+    // bgImage?: string;
     borderStyle?:CSSProperties;
+    defaultValue?: string;
 }
 
 const emit = defineEmits<Emits>();
@@ -88,10 +78,10 @@ const props: JUploadProps = defineProps({
         type: Boolean,
         default: false,
     },
-    bgImage: {
-        type: String,
-        default: '',
-    },
+    // bgImage: {
+    //     type: String,
+    //     default: '',
+    // },
     accept:{
         type: String,
         default: undefined
@@ -99,6 +89,10 @@ const props: JUploadProps = defineProps({
     borderStyle: {
         type: Object,
         default: undefined
+    },
+    defaultValue: {
+        type: String,
+        default: '',
     }
 });
 
@@ -112,7 +106,6 @@ const cropperVisible = ref(false)
 watch(
     () => props.modelValue,
     (newValue) => {
-        console.log(newValue);
         imageUrl.value = newValue;
     },
     {
@@ -121,20 +114,10 @@ watch(
     },
 );
 
-const handleChange = (info: UploadChangeParam) => {
-    if (info.file.status === 'uploading') {
-        loading.value = true;
-    }
-    if (info.file.status === 'done') {
-        imageUrl.value = info.file.response?.result;
-        loading.value = false;
-        emit('update:modelValue', info.file.response?.result);
-    }
-    if (info.file.status === 'error') {
-        loading.value = false;
-        message.error('上传失败');
-    }
-};
+const onDelete = () => {
+    emit('update:modelValue', props.defaultValue || '');
+    emit('change', props.defaultValue || '');
+}
 
 const beforeUpload = (file: UploadProps['fileList'][number]) => {
     const isType = imageTypes.includes(file.type);
@@ -165,6 +148,7 @@ const saveImage = (url: string) => {
   cropperVisible.value = false
   imageUrl.value = url
   emit('update:modelValue', url);
+  emit('change', url);
 }
 </script>
 

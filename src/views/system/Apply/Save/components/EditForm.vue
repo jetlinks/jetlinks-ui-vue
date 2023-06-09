@@ -36,59 +36,7 @@
                     },
                 ]"
             >
-                <j-radio-group
-                    v-model:value="form.data.provider"
-                    class="radio-container"
-                    :disabled="!!routeQuery.id"
-                >
-                    <j-radio-button value="internal-standalone">
-                        <div>
-                            <j-image
-                                :preview="false"
-                                :src="getImage('/apply/provider1.png')"
-                                width="64px"
-                                height="64px"
-                            />
-                            <p>内部独立应用</p>
-                        </div>
-                    </j-radio-button>
-                    <j-radio-button value="internal-integrated">
-                        <div>
-                            <j-image
-                                :preview="false"
-                                :src="getImage('/apply/provider2.png')"
-                            />
-                            <p>内部集成应用</p>
-                        </div>
-                    </j-radio-button>
-                    <j-radio-button value="wechat-webapp">
-                        <div>
-                            <j-image
-                                :preview="false"
-                                :src="getImage('/apply/provider4.png')"
-                            />
-                            <p>微信网站应用</p>
-                        </div>
-                    </j-radio-button>
-                    <j-radio-button value="dingtalk-ent-app">
-                        <div>
-                            <j-image
-                                :preview="false"
-                                :src="getImage('/apply/provider3.png')"
-                            />
-                            <p>钉钉企业内部应用</p>
-                        </div>
-                    </j-radio-button>
-                    <j-radio-button value="third-party">
-                        <div>
-                            <j-image
-                                :preview="false"
-                                :src="getImage('/apply/provider5.png')"
-                            />
-                            <p>第三方应用</p>
-                        </div>
-                    </j-radio-button>
-                </j-radio-group>
+                <ApplyList v-model:photoUrl="form.data.logoUrl" v-model:value="form.data.provider" :disabled="!!routeQuery.id" />
             </j-form-item>
             <j-form-item
                 label="接入方式"
@@ -106,7 +54,7 @@
                 />
             </j-form-item>
 
-            <j-collapse v-model:activeKey="form.integrationModesISO">
+            <j-collapse>
                 <!-- 页面集成 -->
                 <j-collapse-panel
                     key="page"
@@ -1049,7 +997,7 @@
                                 placeholder="请输入token地址"
                             />
                         </j-form-item>
-                        <j-form-item label="logo">
+                        <!-- <j-form-item label="logo">
                             <j-upload
                                 v-model:file-list="form.fileList"
                                 accept=".jpg,.png"
@@ -1086,7 +1034,7 @@
                                     </div>
                                 </div>
                             </j-upload>
-                        </j-form-item>
+                        </j-form-item> -->
 
                         <j-form-item
                             label="用户信息地址"
@@ -1231,7 +1179,7 @@
                         </j-form-item>
                         <!-- 非微信 -->
                         <j-form-item
-                            v-if="form.data.provider !== 'wechat-webapp'"
+                            v-if="form.data.provider !== 'wechat-webapp' && form.data.provider !== 'wechat-miniapp'"
                             class="resetLabel"
                             :name="['sso', 'configuration', 'appKey']"
                             :rules="[
@@ -1265,6 +1213,7 @@
                             v-if="
                                 form.data.provider === 'wechat-webapp' ||
                                 form.data.provider === 'dingtalk-ent-app'
+                                || 'wechat-miniapp'
                             "
                             class="resetLabel"
                             :name="['sso', 'configuration', 'appSecret']"
@@ -1466,6 +1415,7 @@ import { randomString } from '@/utils/utils';
 import { cloneDeep, difference } from 'lodash';
 import { useMenuStore } from '@/store/menu';
 import { Rule } from 'ant-design-vue/lib/form';
+import ApplyList from './ApplyList/index.vue';
 
 const emit = defineEmits(['changeApplyType']);
 const routeQuery = useRoute().query;
@@ -1478,6 +1428,7 @@ const rolePermission = 'system/Role';
 const initForm: formType = {
     name: '',
     provider: 'internal-standalone',
+    logoUrl: getImage('/apply/provider1.png'),
     integrationModes: [],
     description: '',
     page: {
@@ -1561,7 +1512,7 @@ const initForm: formType = {
 const formRef = ref<FormInstance>();
 const form = reactive({
     data: { ...initForm },
-    integrationModesISO: [] as string[], // 接入方式镜像  折叠面板使用
+    // integrationModesISO: [] as string[], // 接入方式镜像  折叠面板使用
     roleIdList: [] as optionsType, // 角色列表
     orgIdList: [] as dictType, // 组织列表
 
@@ -1622,7 +1573,7 @@ const joinOptions = computed(() => {
                 value: 'apiClient',
             },
         ];
-    else if (form.data.provider === 'wechat-webapp')
+    else if (form.data.provider === 'wechat-webapp' || form.data.provider === 'wechat-miniapp')
         return [
             {
                 label: '单点登录',
@@ -1697,9 +1648,9 @@ function init() {
             }
             emit('changeApplyType', n);
             if (routeQuery.id) return;
-            if (n === 'wechat-webapp' || n === 'dingtalk-ent-app') {
+            if (['wechat-webapp', 'dingtalk-ent-app', 'wechat-miniapp'].includes(n)) {
                 form.data.integrationModes = ['ssoClient'];
-                form.integrationModesISO = ['ssoClient'];
+                // form.integrationModesISO = ['ssoClient'];
             } else form.data.integrationModes = [];
         },
         { immediate: true },
@@ -1711,7 +1662,7 @@ function init() {
                 if (!n.includes(key)) form.errorNumInfo[key].clear();
             });
 
-            form.integrationModesISO = [...n];
+            // form.integrationModesISO = [...n];
         },
     );
 }
@@ -1888,31 +1839,31 @@ function getErrorNum(
     }
 }
 
-const imageTypes = ref(['image/jpg', 'image/png', 'image/jpeg']);
-const beforeLogoUpload = (file: any) => {
-    const isType: any = imageTypes.value.includes(file.type);
-    if (!isType) {
-        message.error(`请上传.jpg.png格式的图片`);
-        return false;
-    }
-    const isSize = file.size / 1024 / 1024 < 4;
-    if (!isSize) {
-        message.error(`图片大小必须小于${4}M`);
-    }
-    return isType && isSize;
-};
-function changeBackUpload(info: UploadChangeParam<UploadFile<any>>) {
-    if (info.file.status === 'uploading') {
-        form.uploadLoading = true;
-    } else if (info.file.status === 'done') {
-        info.file.url = info.file.response?.result;
-        form.uploadLoading = false;
-        form.data.logoUrl = info.file.response?.result;
-    } else if (info.file.status === 'error') {
-        form.uploadLoading = false;
-        message.error('logo上传失败，请稍后再试');
-    }
-}
+// const imageTypes = ref(['image/jpg', 'image/png', 'image/jpeg']);
+// const beforeLogoUpload = (file: any) => {
+//     const isType: any = imageTypes.value.includes(file.type);
+//     if (!isType) {
+//         message.error(`请上传.jpg.png格式的图片`);
+//         return false;
+//     }
+//     const isSize = file.size / 1024 / 1024 < 4;
+//     if (!isSize) {
+//         message.error(`图片大小必须小于${4}M`);
+//     }
+//     return isType && isSize;
+// };
+// function changeBackUpload(info: UploadChangeParam<UploadFile<any>>) {
+//     if (info.file.status === 'uploading') {
+//         form.uploadLoading = true;
+//     } else if (info.file.status === 'done') {
+//         info.file.url = info.file.response?.result;
+//         form.uploadLoading = false;
+//         form.data.logoUrl = info.file.response?.result;
+//     } else if (info.file.status === 'error') {
+//         form.uploadLoading = false;
+//         message.error('logo上传失败，请稍后再试');
+//     }
+// }
 
 function clearNullProp(obj: object) {
     if (typeof obj !== 'object') return;
@@ -1962,59 +1913,20 @@ const validateIP = (_rule: Rule, value: string) => {
             :deep(.ant-form-item-control) {
                 .ant-form-item-control-input-content {
                     display: flex;
-                    .ant-upload-select-picture-card {
-                        width: auto;
-                        height: auto;
-                        max-width: 150px;
-                        max-height: 150px;
+                    // .ant-upload-select-picture-card {
+                    //     width: auto;
+                    //     height: auto;
+                    //     max-width: 150px;
+                    //     max-height: 150px;
 
-                        > .ant-upload {
-                            height: 150px;
-                        }
-                    }
+                    //     > .ant-upload {
+                    //         height: 150px;
+                    //     }
+                    // }
                 }
             }
         }
-        .radio-container {
-            .ant-radio-button-wrapper {
-                height: 120px;
-                width: 120px;
-                padding: 0 15px;
-                box-sizing: content-box;
-                margin-right: 20px;
-                color: #000;
 
-                &.ant-radio-button-wrapper-disabled {
-                    opacity: 0.5;
-                }
-
-                &.ant-radio-button-wrapper-checked {
-                    background-color: #fff;
-                    border: 1px solid #1d39c4;
-                    opacity: 1;
-                }
-
-                > :last-child {
-                    width: 100%;
-                    height: 100%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-
-                    > div {
-                        width: 100%;
-                        text-align: center;
-                    }
-                    :deep(.ant-image) {
-                        width: 64px;
-                        height: 64px;
-                    }
-                    p {
-                        margin: 0;
-                    }
-                }
-            }
-        }
         :deep(.ant-collapse-header) {
             > span {
                 position: relative;
