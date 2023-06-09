@@ -172,11 +172,13 @@ import {
   settingDetail, userDetail
 } from '@/api/login'
 import { useUserInfo } from '@/store/userInfo';
+import { useSystem } from '@/store/system'
 import { LocalStore } from '@/utils/comm';
 import { BASE_API_PATH, TOKEN_KEY, Version_Code } from '@/utils/variable';
 import { SystemConst } from '@/utils/consts';
 
 const store = useUserInfo();
+const systemStore = useSystem();
 const router = useRouter();
 const bgImage = getImage('/logo.png');
 const viewLogo = getImage('/view-logo.png');
@@ -310,18 +312,7 @@ const getOpen = () => {
             }
         }
     });
-    settingDetail('front').then((res: any) => {
-        if (res.status === 200) {
-            const ico: any = document.querySelector('link[rel="icon"]');
-            ico.href = res.result.ico;
-            basis.value = res.result;
-            if (res.result.title) {
-                document.title = res.result.title;
-            } else {
-                document.title = '';
-            }
-        }
-    });
+    systemStore.getFront()
 };
 
 const handleClickOther = (item: any) => {
