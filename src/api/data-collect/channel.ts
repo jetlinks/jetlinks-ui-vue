@@ -13,7 +13,7 @@ export const update = (id: string, data: any) =>
 
 export const getProviders = () => server.get(`/gateway/device/providers`);
 
-export const queryOptionsList = (type: strimg) =>
+export const queryOptionsList = (type: string) =>
     server.get(`/data-collect/opc/${type}`);
 
 export const validateField = (data: any) =>
