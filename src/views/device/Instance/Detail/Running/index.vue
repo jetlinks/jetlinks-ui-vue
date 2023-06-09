@@ -117,8 +117,10 @@ const tabChange = (key: string) => {
 .property-box {
     display: flex;
     overflow: hidden;
+    min-height: 100%;
     .property-box-left {
         width: 200px;
+        min-height: 100%;
     }
     .property-box-right {
         flex: 1;

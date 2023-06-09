@@ -98,13 +98,13 @@
             />
         </template>
         <FullPage>
-            <j-card :bordered="false">
+            <div style="padding: 24px;height: 100%">
                 <component
                     :is="tabs[instanceStore.tabActiveKey]"
                     v-bind="{ type: 'device' }"
                     @onJump="onTabChange"
                 />
-            </j-card>
+            </div>
         </FullPage>
     </page-container>
 </template>

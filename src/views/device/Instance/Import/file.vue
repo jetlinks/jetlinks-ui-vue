@@ -1,7 +1,7 @@
 <template>
   <div class='file'>
     <j-form layout='vertical'>
-      <j-form-item label='文件格式' >
+      <!-- <j-form-item label='文件格式' >
         <div class='file-type-label'>
           <a-radio-group class='file-type-radio' v-model:value="modelRef.file.fileType" >
             <a-radio-button value="xlsx">xlsx</a-radio-button>
@@ -9,42 +9,60 @@
           </a-radio-group>
           <a-checkbox v-model:checked="modelRef.file.autoDeploy">自动启用</a-checkbox>
         </div>
-      </j-form-item>
-      <j-form-item label="文件上传">
-        <j-upload
-          v-model:fileList="modelRef.upload"
-          name="file"
-          :action="FILE_UPLOAD"
-          :headers="{
-                  'X-Access-Token': LocalStore.get(TOKEN_KEY),
-              }"
-          :maxCount="1"
-          :showUploadList="false"
-          @change="uploadChange"
-          :accept="
-                  modelRef?.file?.fileType ? `.${modelRef?.file?.fileType}` : '.xlsx'
-              "
-          :before-upload="beforeUpload"
-          :disabled='disabled'
-        >
-          <j-button style='width: 760px;'>
-            <template #icon><AIcon type="UploadOutlined" /></template>
-            上传文件
-          </j-button>
-        </j-upload>
-      </j-form-item>
+      </j-form-item> -->
       <j-form-item label='下载模板'>
         <div class='file-download'>
-          <j-button @click="downFile('xlsx')">.xlsx</j-button>
-          <j-button @click="downFile('csv')">.csv</j-button>
+          <j-button @click="downFile('xlsx')">模板格式.xlsx</j-button>
+          <j-button @click="downFile('csv')">模板格式.csv</j-button>
         </div>
       </j-form-item>
+      <j-row type="flex">
+        <j-col :flex="600">
+          <j-form-item label="文件上传">
+            <a-upload-dragger
+              v-model:fileList="modelRef.upload"
+              name="file"
+              :action="FILE_UPLOAD"
+              :headers="{
+                      'X-Access-Token': LocalStore.get(TOKEN_KEY),
+                  }"
+              :maxCount="1"
+              :showUploadList="false"
+              @change="uploadChange"
+              :accept="
+                      modelRef?.file?.fileType ? `.${modelRef?.file?.fileType}` : '.xlsx'
+                  "
+              :before-upload="beforeUpload"
+              :disabled='disabled'
+              @drop="handleDrop"
+            >
+              <div style="height: 115px; line-height: 115px;">
+                <template v-if="!modelRef.upload.length">
+                  点击或拖拽上传文件
+                </template>
+                <template v-else>
+                  重传
+                </template>
+              </div>
+            </a-upload-dragger>
+          </j-form-item>
+        </j-col>
+        <j-col flex="auto">
+          <j-form-item>
+            <a-checkbox style="margin: 30px 0 0 30px;" v-model:checked="modelRef.file.autoDeploy">导入并启用</a-checkbox>
+          </j-form-item>
+        </j-col>
+      </j-row>
     </j-form>
     <div v-if="importLoading">
-      <j-badge v-if="flag" status="processing" text="进行中" />
-      <j-badge v-else status="success" text="已完成" />
-      <span>总数量：{{ count }}</span>
-      <p style="color: red">{{ errMessage }}</p>
+      <!-- <j-badge v-if="flag" status="processing" text="正在导入" />
+      <j-badge v-else status="success" text="导入完成" /> -->
+      <div v-if="flag">正在导入</div>
+      <div v-else>导入完成</div>
+      <!-- <span>总数量：{{ count }}</span>
+      <p style="color: red">{{ errMessage }}</p> -->
+      <div>导入成功：{{ count }} 个</div>
+      <div>导入失败：{{ count }} 个<a style="margin-left: 20px;">下载</a></div>
     </div>
   </div>
 </template>
@@ -105,6 +123,10 @@ const beforeUpload = (_file: any) => {
   return (isCsv && fileType !== 'xlsx') || (isXlsx && fileType !== 'csv');
 };
 
+const handleDrop = () => {
+
+}
+
 const submitData = async (fileUrl: string) => {
   if (!!fileUrl) {
     count.value = 0;
@@ -140,7 +162,7 @@ const submitData = async (fileUrl: string) => {
 
 const uploadChange = async (info: Record<string, any>) => {
   disabled.value = true
-  console.log(info.file)
+  // console.log(info.file)
   if (info.file.status === 'done') {
     const resp: any = info.file.response || { result: '' };
     await submitData(resp?.result || '');
