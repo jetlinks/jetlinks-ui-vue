@@ -50,7 +50,7 @@
           功能说明
         </div>
         <p>
-          该功能用于将插件中的
+          该功能用于将{{'协议包'}}中的
           <b>物模型属性标识</b>与
           <b>平台物模型属性标识</b>进行映射,当两方属性标识不一致时，可在当前页面直接修改映射管理，系统将以映射后的物模型属性进行数据处理。
         </p>
@@ -73,22 +73,17 @@
 
 <script setup lang='ts' name='MetadataMap'>
 import { storeToRefs } from 'pinia'
-import { useProductStore } from '@/store/product';
 import { detail as queryPluginAccessDetail } from '@/api/link/accessConfig'
-import { getPluginData, getProductByPluginId } from '@/api/link/plugin'
+// import { getPluginData, getProductByPluginId } from '@/api/link/plugin'
 import { getImage, onlyMessage } from '@/utils/comm'
-import { getMetadateMapById, metadateMapById } from '@/api/device/instance'
+import { getMetadateMapById, metadateMapById, getProtocolMetadata } from '@/api/device/instance'
+import { useInstanceStore } from '@/store/instance';
 
-const productStore = useProductStore();
-const { current: productDetail } = storeToRefs(productStore)
+const deviceStore = useInstanceStore()
+const { current: deviceDetail } = storeToRefs(deviceStore)
 const dataSourceCache = ref([])
 const dataSource = ref([])
 const pluginOptions = ref<any[]>([])
-
-const tableFilter = (value: string, record: any) => {
-  console.log(value, record)
-  return true
-}
 
 const columns = [
   {
@@ -104,23 +99,31 @@ const columns = [
     title: '目标属性',
     dataIndex: 'plugin',
     width: 250,
-    sorter: tableFilter
+    sorter: {
+      compare: (a, b) => (a.plugin?.length || 0) - (b.plugin?.length || 0)
+    }
   }
 ]
 
 const selectedKeys = computed(() => {
-  return dataSource.value?.filter(item => !!item?.plugin).map(item => item.id) || []
+  return dataSource.value?.filter((item: any) => !!item?.plugin).map((i: any) => i.id) || []
 })
 
 const selectedPluginKeys = computed(() => {
-  return dataSource.value?.filter(item => !!item?.plugin).map(item => item.plugin) || []
+  return dataSource.value?.filter((item: any) => !!item?.plugin).map((i: any) => i.plugin) || []
 })
+
+const metadata = computed(() => {
+  return JSON.parse(deviceDetail.value?.metadata || '{}')
+})
+
+const _id = deviceDetail.value?.id
 
 const getMetadataMapData = () => {
   return new Promise(resolve => {
-    getMetadateMapById('product', productDetail.value?.id).then(res => {
+    getMetadateMapById('device', _id).then((res: any) => {
       if (res.success) {
-        resolve(res.result?.filter(item => item.customMapping)?.map(item => {
+        resolve(res.result?.filter((i: any) => i.customMapping)?.map((item: any) => {
           return {
             id: item.metadataId,
             pluginId: item.originalId
@@ -142,8 +145,7 @@ const search = (value: string) => {
 }
 
 const getDefaultMetadata = async () => {
-  const metadata = JSON.parse(productDetail.value?.metadata || '{}')
-  const properties = metadata.properties
+  const properties = metadata.value?.properties
   const pluginMedata = await getPluginMetadata()
   const pluginProperties = pluginMedata?.properties || []
   const metadataMap = await getMetadataMapData()
@@ -165,27 +167,21 @@ const getDefaultMetadata = async () => {
 
 const getPluginMetadata = (): Promise<{ properties: any[]}> => {
   return new Promise(resolve => {
-    queryPluginAccessDetail(productDetail.value?.accessId!).then(async res => {
-      if (res.success) {
-        const _channelId = (res.result as any)!.channelId
-        const pluginRes = await getPluginData('product', productDetail.value?.accessId || '', productDetail.value?.id).catch(() => ({ success: false, result: {}}))
-        const resp = await getProductByPluginId(_channelId).catch(() => ({ success: false, result: []}))
-        if (resp.success) {
-          const _item = (resp.result as any[])?.find((item: any) => item.id === (pluginRes?.result as any)?.externalId)
-
-          resolve(_item ? _item.metadata : { properties: [] })
-        }
+    const transport = deviceDetail.value?.transport
+    getProtocolMetadata(deviceDetail.value?.protocol || '', transport).then((res: any) => {
+      if(res.success){
+        resolve(JSON.parse(res?.result || '{}'))
       }
       resolve({ properties: [] })
     })
   })
-}
+} 
 
 const pluginChange = async (value: any, id: string) => {
-  const res = await metadateMapById('product', productDetail.value?.id, [{
+  const res = await metadateMapById('device', _id, [{
     metadataType: 'property',
     metadataId: value.id,
-    originalId: id
+    originalId: id || null
   }])
   if (res.success) {
     onlyMessage('操作成功')

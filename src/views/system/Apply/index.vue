@@ -102,15 +102,18 @@
                                                     ) in item.children"
                                                     :key="i"
                                                 >
-                                                    <j-button
-                                                        type="link"
-                                                        @click="o.onClick"
-                                                    >
-                                                        <AIcon :type="o.icon" />
-                                                        <span>{{
-                                                            o.text
-                                                        }}</span>
-                                                    </j-button>
+                                                    <j-tooltip :title="o?.tooltip?.title">
+                                                        <j-button
+                                                            type="link"
+                                                            @click="o.onClick"
+                                                            :disabled="o.disabled"
+                                                        >
+                                                            <AIcon :type="o.icon" />
+                                                            <span>{{
+                                                                o.text
+                                                            }}</span>
+                                                        </j-button>
+                                                    </j-tooltip>
                                                 </j-menu-item>
                                             </j-menu>
                                         </template>
@@ -165,6 +168,7 @@
                                 )"
                                 :hasPermission="i.permission"
                                 type="link"
+                                :key="i.key"
                                 :tooltip="i.tooltip"
                                 :pop-confirm="i.popConfirm"
                                 @click="i.onClick"
@@ -181,9 +185,9 @@
             <MenuDialog
                 v-if="dialogVisible"
                 v-model:visible="dialogVisible"
-                :id="selectId"
-                :provider="selectProvider"
                 mode="edit"
+                :data="current"
+                @refresh="table.refresh"
             />
         </div>
     </page-container>
@@ -196,8 +200,8 @@ import {
     getApplyList_api,
     changeApplyStatus_api,
     delApply_api,
+    queryType
 } from '@/api/system/apply';
-import { ActionsType } from '@/components/Table';
 import { getImage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import { message } from 'jetlinks-ui-components';
@@ -205,32 +209,46 @@ import BadgeStatus from '@/components/BadgeStatus/index.vue';
 
 const menuStory = useMenuStore();
 const permission = 'system/Apply';
-const typeOptions = [
-    {
-        label: '内部独立应用',
-        value: 'internal-standalone',
-    },
-    {
-        label: '微信网站应用',
-        value: 'wechat-webapp',
-    },
-    {
-        label: '内部集成应用',
-        value: 'internal-integrated',
-    },
-    {
-        label: '钉钉企业内部应用',
-        value: 'dingtalk-ent-app',
-    },
-    {
-        label: '第三方应用',
-        value: 'third-party',
-    },
-    {
-        label: '小程序应用',
-        value: 'wechat-miniapp',
-    },
-];
+// const typeOptions = [
+//     {
+//         label: '内部独立应用',
+//         value: 'internal-standalone',
+//     },
+//     {
+//         label: '微信网站应用',
+//         value: 'wechat-webapp',
+//     },
+//     {
+//         label: '内部集成应用',
+//         value: 'internal-integrated',
+//     },
+//     {
+//         label: '钉钉企业内部应用',
+//         value: 'dingtalk-ent-app',
+//     },
+//     {
+//         label: '第三方应用',
+//         value: 'third-party',
+//     },
+//     {
+//         label: '小程序应用',
+//         value: 'wechat-miniapp',
+//     },
+// ];
+
+const typeOptions = ref<any[]>([])
+
+onMounted(() => {
+    queryType().then((resp: any) => {
+        if(resp.status === 200){
+            const arr = resp.result.map((item: any) => ({
+                label: item.name,
+                value: item.provider,
+            }))
+            typeOptions.value = arr
+        }
+    });
+})
 const columns = [
     {
         title: '名称',
@@ -247,10 +265,20 @@ const columns = [
         dataIndex: 'provider',
         key: 'provider',
         ellipsis: true,
-        fixed: 'left',
         search: {
             type: 'select',
             options: typeOptions,
+            // options: () =>
+            //     new Promise((resolve) => {
+            //         queryType().then((resp: any) => {
+            //             resolve(
+            //                 resp.result.map((item: any) => ({
+            //                     label: item.name,
+            //                     value: item.provider,
+            //                 })),
+            //             );
+            //         });
+            //     }),
         },
         scopedSlots: true,
     },
@@ -296,6 +324,7 @@ const columns = [
 const queryParams = ref({});
 
 const tableRef = ref();
+const current = ref<any>({})
 const table = {
     refresh: () => {
         tableRef.value.reload(queryParams.value);
@@ -383,12 +412,14 @@ const table = {
                 key: 'page',
                 text: '集成菜单',
                 tooltip: {
-                    title: '集成菜单',
+                    title: !disabled ? '请先启用' : '集成菜单',
                 },
                 icon: 'MenuUnfoldOutlined',
+                disabled: !disabled,
                 onClick: () => {
                     selectId.value = data.id;
                     selectProvider.value = data.provider;
+                    current.value = data
                     dialogVisible.value = true;
                 },
             });
@@ -441,7 +472,7 @@ const table = {
     },
     getTypeLabel: (val: string) => {
         if (!val) return '';
-        return typeOptions.find((item) => item.value === val)?.label;
+        return typeOptions.value?.find((item) => item?.value === val)?.label;
     },
 };
 const dialogVisible = ref(false);

@@ -10,7 +10,7 @@
             />
             <j-tabs
                 tab-position="left"
-                style="height: 600px"
+                style="height: 500px"
                 v-if="tabList.length"
                 v-model:activeKey="activeKey"
                 :tabBarStyle="{ width: '200px' }"
@@ -120,7 +120,10 @@ const tabChange = (key: string) => {
     min-height: 100%;
     .property-box-left {
         width: 200px;
-        min-height: 100%;
+
+        // :deep(.jet-tabs) {
+        //     height: 100%;
+        // }
     }
     .property-box-right {
         flex: 1;

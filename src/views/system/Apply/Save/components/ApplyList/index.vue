@@ -6,14 +6,14 @@
         @change="onChange"
     >
         <j-radio-button
-            v-for="item in list"
+            v-for="item in options"
             :value="item.value"
             :key="item.value"
         >
             <div class="radio-container-item" @click.stop>
                 <div>
                     <MUpload
-                        :defaultValue="item.imgUrl"
+                        :defaultValue="defaultImg[item.value]"
                         :borderStyle="{
                             width: '90px',
                             height: '90px',
@@ -25,7 +25,7 @@
                         @change="(_url) => onImgChange(_url, item.value)"
                     />
                 </div>
-                <span>{{ item.text }}</span>
+                <span>{{ item.label }}</span>
             </div>
         </j-radio-button>
     </j-radio-group>
@@ -33,6 +33,7 @@
 
 <script lang="ts" setup>
 import { getImage } from '@/utils/comm';
+import { PropType } from 'vue';
 import MUpload from './MUpload.vue';
 
 const props = defineProps({
@@ -48,50 +49,24 @@ const props = defineProps({
         type: String,
         default: getImage('/apply/provider1.png'),
     },
+    options: {
+        type: Array as PropType<any[]>,
+        default: () => []
+    }
 });
 
 const emit = defineEmits(['update:value', 'update:photoUrl']);
-const list = [
-    {
-        value: 'internal-standalone',
-        text: '内部独立应用',
-        imgUrl: getImage('/apply/provider1.png'),
-    },
-    {
-        value: 'internal-integrated',
-        text: '内部集成应用',
-        imgUrl: getImage('/apply/provider2.png'),
-    },
-    {
-        value: 'wechat-webapp',
-        text: '微信网站应用',
-        imgUrl: getImage('/apply/provider4.png'),
-    },
-    {
-        value: 'dingtalk-ent-app',
-        text: '钉钉企业内部应用',
-        imgUrl: getImage('/apply/provider3.png'),
-    },
-    {
-        value: 'third-party',
-        text: '第三方应用',
-        imgUrl: getImage('/apply/provider5.png'),
-    },
-    {
-        value: 'wechat-miniapp',
-        text: '小程序应用',
-        imgUrl: getImage('/apply/provider1.png'),
-    },
-];
 
-const urlValue = ref({
+const defaultImg = {
     'internal-standalone': getImage('/apply/provider1.png'),
     'internal-integrated': getImage('/apply/provider2.png'),
     'wechat-webapp': getImage('/apply/provider4.png'),
     'dingtalk-ent-app': getImage('/apply/provider3.png'),
     'third-party': getImage('/apply/provider5.png'),
     'wechat-miniapp': getImage('/apply/provider1.png'),
-});
+}
+
+const urlValue = ref<any>({...defaultImg});
 const _value = ref<string>('');
 
 watchEffect(() => {

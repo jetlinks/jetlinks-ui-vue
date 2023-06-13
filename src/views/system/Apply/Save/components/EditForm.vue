@@ -36,7 +36,7 @@
                     },
                 ]"
             >
-                <ApplyList v-model:photoUrl="form.data.logoUrl" v-model:value="form.data.provider" :disabled="!!routeQuery.id" />
+                <ApplyList :options="typeOptions" v-model:photoUrl="form.data.logoUrl" v-model:value="form.data.provider" :disabled="!!routeQuery.id" />
             </j-form-item>
             <j-form-item
                 label="接入方式"
@@ -1380,17 +1380,15 @@
             <MenuDialog
                 v-if="dialog.visible"
                 v-model:visible="dialog.visible"
-                :id="dialog.selectId"
-                :provider="dialog.selectProvider"
+                :data="dialog.current"
                 :mode="routeQuery.id ? 'edit' : 'add'"
+                @refresh="menuStory.jumpPage('system/Apply')"
             />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
-import { LocalStore, filterSelectNode, onlyMessage } from '@/utils/comm'
 import { testIP } from '@/utils/validate';
 
 import {
@@ -1398,6 +1396,7 @@ import {
     addApp_api,
     updateApp_api,
     getAppInfo_api,
+    queryType,
 } from '@/api/system/apply';
 import FormLabel from './FormLabel.vue';
 import RequestTable from './RequestTable.vue';
@@ -1405,11 +1404,6 @@ import MenuDialog from '../../componenets/MenuDialog.vue';
 import { getImage } from '@/utils/comm';
 import type { formType, dictType, optionsType } from '../typing';
 import { getRoleList_api } from '@/api/system/user';
-import {
-    FormInstance,
-    UploadChangeParam,
-    UploadFile,
-} from 'ant-design-vue';
 import { message } from 'jetlinks-ui-components'
 import { randomString } from '@/utils/utils';
 import { cloneDeep, difference } from 'lodash';
@@ -1424,6 +1418,8 @@ const menuStory = useMenuStore();
 const deptPermission = 'system/Department';
 const rolePermission = 'system/Role';
 
+const typeOptions = ref<any[]>([])
+
 // 初始化表单
 const initForm: formType = {
     name: '',
@@ -1436,6 +1432,7 @@ const initForm: formType = {
         baseUrl: '',
         routeType: 'hash',
         parameters: [],
+        configuration: {}
     },
     apiClient: {
         // API客户端
@@ -1509,7 +1506,7 @@ const initForm: formType = {
         defaultPasswd: '', // 默认密码
     },
 };
-const formRef = ref<FormInstance>();
+const formRef = ref<any>();
 const form = reactive({
     data: { ...initForm },
     // integrationModesISO: [] as string[], // 接入方式镜像  折叠面板使用
@@ -1541,77 +1538,32 @@ const paramsValidator = () => {
     });
 };
 
+onMounted(() => {
+    queryType().then((resp: any) => {
+        if(resp.status === 200){
+            const arr = resp.result.map((item: any) => ({
+                label: item.name,
+                value: item.provider,
+                integrationModes: item.integrationModes?.map((i: any) => {
+                    return {
+                        label: i.text,
+                        value: i.value
+                    }
+                })
+            }))
+            typeOptions.value = arr
+        }
+    });
+})
+
 // 接入方式的选项
 const joinOptions = computed(() => {
-    if (form.data.provider === 'internal-standalone')
-        return [
-            {
-                label: '页面集成',
-                value: 'page',
-            },
-            {
-                label: 'API客户端',
-                value: 'apiClient',
-            },
-            {
-                label: 'API服务',
-                value: 'apiServer',
-            },
-            {
-                label: '单点登录',
-                value: 'ssoClient',
-            },
-        ];
-    else if (form.data.provider === 'internal-integrated')
-        return [
-            {
-                label: '页面集成',
-                value: 'page',
-            },
-            {
-                label: 'API客户端',
-                value: 'apiClient',
-            },
-        ];
-    else if (form.data.provider === 'wechat-webapp' || form.data.provider === 'wechat-miniapp')
-        return [
-            {
-                label: '单点登录',
-                value: 'ssoClient',
-            },
-        ];
-    else if (form.data.provider === 'dingtalk-ent-app')
-        return [
-            {
-                label: '单点登录',
-                value: 'ssoClient',
-            },
-        ];
-    else if (form.data.provider === 'third-party')
-        return [
-            {
-                label: '页面集成',
-                value: 'page',
-            },
-            {
-                label: 'API客户端',
-                value: 'apiClient',
-            },
-            {
-                label: 'API服务',
-                value: 'apiServer',
-            },
-            {
-                label: '单点登录',
-                value: 'ssoClient',
-            },
-        ];
+    return typeOptions.value.find(item => form.data?.provider === item.value)?.integrationModes || []
 });
 
 const dialog = reactive({
     visible: false,
-    selectId: '',
-    selectProvider: '' as any,
+    current: {}
 });
 
 init();
@@ -1810,9 +1762,10 @@ function clickSave() {
             if (resp.status === 200) {
                 const isPage = params.integrationModes.includes('page');
                 if (isPage) {
-                    // form.data = params;
-                    dialog.selectId = routeQuery.id || resp.result.id;
-                    dialog.selectProvider = form.data.provider;
+                    dialog.current = {
+                        ...params,
+                        id: routeQuery.id || resp.result.id
+                    }
                     dialog.visible = true;
                 } else {
                     message.success('保存成功');

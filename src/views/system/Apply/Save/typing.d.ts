@@ -28,7 +28,8 @@ export type formType = {
     page: { // 页面集成
         baseUrl: string,
         routeType: 'hash' | 'history',
-        parameters: optionsType
+        parameters: optionsType,
+        configuration: any
     },
     apiClient: { // API客户端
         baseUrl: string, // 接口地址	

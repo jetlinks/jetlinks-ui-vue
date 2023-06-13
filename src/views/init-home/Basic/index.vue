@@ -41,7 +41,17 @@
                 <j-form-item name="basePath" v-bind="validateInfos.basePath">
                     <template #label>
                         <span>base-path</span>
-                        <j-tooltip title="系统后台访问的url">
+                        <j-tooltip>
+                            <template #title>
+                                <div style='word-break: break-all;'>
+                                    <div>
+                                    系统后台访问的url。
+                                    </div>
+                                    <div>
+                                    格式：{http/https}: //{前端所在服务器IP地址}:{前端暴露的服务端口}/api
+                                    </div>
+                                </div>
+                            </template>
                             <img
                                 class="img-style"
                                 :src="getImage('/init-home/mark.png')"
@@ -50,7 +60,7 @@
                     </template>
                     <j-input
                         v-model:value="form.basePath"
-                        placeholder="请输入base-path"
+                        placeholder="格式：{http/https}: //{前端所在服务器IP地址}:{前端暴露的服务端口}/api"
                     />
                 </j-form-item>
                 <j-row :gutter="24" :span="24">
@@ -253,13 +263,12 @@
 </template>
 <script setup lang="ts">
 import { modalState, formState, logoState } from '../data/interface';
-import { getImage } from '@/utils/comm.ts';
 import { Form, message } from 'jetlinks-ui-components';
 import { FILE_UPLOAD } from '@/api/comm';
 import {
     save,
 } from '@/api/initHome';
-import { LocalStore } from '@/utils/comm';
+import { LocalStore, getImage } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import { SystemConst } from '@/utils/consts';
 const formRef = ref();

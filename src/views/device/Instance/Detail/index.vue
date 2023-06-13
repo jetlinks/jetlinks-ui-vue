@@ -114,6 +114,7 @@ import { useInstanceStore } from '@/store/instance';
 import Info from './Info/index.vue';
 import Running from './Running/index.vue';
 import Metadata from '../../components/Metadata/index.vue';
+import MetadataMap from './MetadataMap/index.vue';
 import ChildDevice from './ChildDevice/index.vue';
 import Diagnose from './Diagnose/index.vue';
 import Function from './Function/index.vue';
@@ -179,6 +180,7 @@ const tabs = {
     EdgeMap,
     Parsing,
     Log,
+    MetadataMap
 };
 
 const getStatus = (id: string) => {
@@ -253,6 +255,15 @@ const getDetail = () => {
             key: 'EdgeMap',
             tab: '边缘端映射',
         });
+    }
+
+    if (
+        instanceStore.current?.features?.find(
+            (item: any) => item?.id === 'diffMetadataSameProduct',
+        ) &&
+        !keys.includes('MetadataMap')
+    ) {
+        list.value.push({ key: 'MetadataMap', tab: '物模型映射'});
     }
 };
 
