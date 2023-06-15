@@ -237,7 +237,7 @@ const codeConfig = ref(false);
 
 const loading = ref(false);
 const bindings = ref<any[]>();
-const basis = ref<any>({});
+// const basis = ref<any>({});
 
 const defaultImg = getImage('/apply/provider1.png');
 const iconMap = new Map();
@@ -266,7 +266,8 @@ const onFinish = async () => {
             if (userResp.result?.username === 'admin') {
               const resp: any = await getInitSet();
               if (resp.status === 200 && !resp.result.length) {
-                window.location.href = '/#/init-home';
+                // window.location.href = '/#/init-home';
+                router.push('/init-home')
                 return;
               }
             }
@@ -275,7 +276,8 @@ const onFinish = async () => {
               ...res.result
             });
           }
-            window.location.href = '/';
+            // window.location.href = '/';
+          router.push('/')
         }
     } catch (error) {
         form.verifyCode = '';
@@ -315,6 +317,9 @@ const getOpen = () => {
     systemStore.getFront()
 };
 
+const basis = computed(() => {
+  return systemStore.configInfo['front'] || {}
+})
 const handleClickOther = (item: any) => {
     LocalStore.set('onLogin', 'no');
     window.open(`${BASE_API_PATH}/application/sso/${item.id}/login`);
