@@ -1,7 +1,5 @@
 <template>
-  <j-form-item label="读写类型" required>
-
-  </j-form-item>
+  <ReadType />
   <j-form-item label="触发属性" required>
 
   </j-form-item>
@@ -22,6 +20,7 @@
 </template>
 
 <script setup lang="ts" name="Rule">
+import { ReadType } from '../components'
 
 </script>
 
