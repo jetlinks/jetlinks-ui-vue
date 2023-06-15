@@ -7,8 +7,8 @@
         { label: 'write', value: '写' },
         { label: 'report', value: '上报' },
       ]"
-    :disaled="disabled"
-    placeholder="请选择读写类型"
+      :disaled="disabled"
+      placeholder="请选择读写类型"
       @change="onChange"
   />
 </j-form-item>
