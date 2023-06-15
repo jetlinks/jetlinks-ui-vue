@@ -97,9 +97,9 @@ export const useMenuStore = defineStore({
         if (resp.success) {
           const permission = usePermissionStore()
           let resultData = resp.result
-          if (!isNoCommunity) {
-            resultData = filterCommunityMenus(resultData)
-          }
+          // if (!isNoCommunity) {
+          //   resultData = filterCommunityMenus(resultData)
+          // }
           permission.permissions = {}
           const { menusData, silderMenus } = filterAsyncRouter(resultData)
 
