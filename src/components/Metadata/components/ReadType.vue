@@ -1,13 +1,14 @@
 <template>
-<j-form-item :name="['expands','type']" label="读写类型" required>
+<j-form-item name="type" label="读写类型" required>
   <j-select
       v-model:value="myValue"
+      mode="multiple"
       :options="[
-        { label: 'read', value: '读' },
-        { label: 'write', value: '写' },
-        { label: 'report', value: '上报' },
+        { value: 'read', label: '读' },
+        { value: 'write', label: '写' },
+        { value: 'report', label: '上报' },
       ]"
-      :disaled="disabled"
+      :disabled="disabled"
       placeholder="请选择读写类型"
       @change="onChange"
   />

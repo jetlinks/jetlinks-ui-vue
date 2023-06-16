@@ -51,7 +51,8 @@ import { message } from 'ant-design-vue'
 import { useInstanceStore } from '@/store/instance'
 import Import from './Import/index.vue'
 import Cat from './Cat/index.vue'
-import BaseMetadata from './Base/index.vue'
+// import BaseMetadata from './Base/index.vue'
+import BaseMetadata from './Base/Base.vue'
 import { useMetadataStore } from '@/store/metadata'
 
 const route = useRoute()
