@@ -70,7 +70,6 @@ const handleOk = async () => {
         ...form.checkedMenu,
         ...form.half,
     ]);
-    console.log(items)
     if (form.checkedSystem) {
         if (items && items.length !== 0) {
             loading.value = true;

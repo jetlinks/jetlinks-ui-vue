@@ -29,7 +29,7 @@
                         <j-tooltip title="配置后平台可调用高德地图GIS服务">
                             <img
                                 class="img-style"
-                                :src="getImage('/init-home/mark.png')"
+                                :src="'/images/init-home/mark.png'"
                             />
                         </j-tooltip>
                     </template>
@@ -54,7 +54,7 @@
                             </template>
                             <img
                                 class="img-style"
-                                :src="getImage('/init-home/mark.png')"
+                                :src="'/images/init-home/mark.png'"
                             />
                         </j-tooltip>
                     </template>
@@ -141,7 +141,7 @@
                                 <j-tooltip title="浏览器tab页中显示的图片元素">
                                     <img
                                         class="img-style"
-                                        :src="getImage('/init-home/mark.png')"
+                                        :src="'/images/init-home/mark.png'"
                                     />
                                 </j-tooltip>
                             </template>
@@ -289,9 +289,9 @@ const form = ref<formState>({
     headerTheme: 'light',
     apikey: '',
     basePath: `${window.location.origin}/api`,
-    logo: getImage('/logo.png'),
-    ico: getImage('/favicon.ico'),
-    background: getImage('/login.png'),
+    logo: '/logo.png',
+    ico: '/favicon.ico',
+    background: '/images/login.png',
 });
 const rulesFrom = ref({
     title: [

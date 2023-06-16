@@ -11,30 +11,33 @@
         </j-steps>
         <div style="margin: 20px">
             <template v-if="current === 0">
-                <NotifyWay v-model:value="formModel.notifyType" />
+                <NotifyWay
+                    v-model:value="formModel.channelProvider"
+                    v-model:name="formModel.name"
+                />
             </template>
             <template v-if="current === 1">
                 <NotifyConfig
-                    v-model:value="formModel.notifierId"
-                    :notifyType="formModel.notifyType"
+                    v-model:value="formModel.channelConfiguration.notifierId"
+                    :notifyType="formModel.channelProvider"
                 />
             </template>
             <template v-if="current === 2">
                 <NotifyTemplate
-                    v-model:value="formModel.templateId"
-                    :notifierId="formModel.notifierId"
+                    v-model:value="formModel.channelConfiguration.templateId"
+                    :notifierId="formModel.channelConfiguration.notifierId"
                 />
             </template>
             <template v-if="current === 3">
                 <VariableDefinitions
                     :variableDefinitions="_variableDefinitions"
-                    :value="formModel.variables"
+                    :value="formModel.channelConfiguration.variables"
                     :notify="formModel"
                     ref="variableRef"
                 />
             </template>
             <template v-if="current === 4">
-                <Role v-model="formModel.role" />
+                <Role v-model="formModel.grant.role.idList" />
             </template>
         </div>
         <template #footer>
@@ -63,8 +66,28 @@ import VariableDefinitions from './components/VariableDefinitions.vue';
 import Role from '../Role/index.vue';
 import { onlyMessage } from '@/utils/comm';
 import Template from '@/api/notice/template';
+import { variableMap } from '../../data';
+
+type GrantType = {
+    role: {
+        idList?: string[];
+    };
+};
+
+type ConfigurationType = {
+    notifierId: string;
+    templateId: string;
+    variables: any;
+};
 
 const emit = defineEmits(['close', 'save']);
+
+const props = defineProps({
+    data: {
+        type: Object,
+        default: () => {},
+    },
+});
 
 const stepList = [
     '选择通知方式',
@@ -75,39 +98,74 @@ const stepList = [
 ];
 const current = ref<number>(0);
 const variable = ref([]);
-const formModel = reactive({
-    notifyType: '',
-    notifierId: '',
-    templateId: '',
-    variables: undefined,
-    role: [],
+const formModel = reactive<{
+    id?: string;
+    name: string;
+    channelConfiguration: Partial<ConfigurationType>;
+    grant: GrantType;
+    channelProvider: string;
+}>({
+    name: '',
+    channelProvider: '',
+    grant: {
+        role: {},
+    },
+    channelConfiguration: {},
 });
 const variableRef = ref();
 
 const _variableDefinitions = computed(() => {
-    const arr = ['user', 'org']
+    const arr = ['user', 'org'];
     return variable.value.filter((item: any) => {
-        const _type = item.expands?.businessType || item.type || ''
-        return !arr.includes(_type)
-    })
-})
+        const _type = item.expands?.businessType || item.type || '';
+        return !arr.includes(_type);
+    });
+});
+
+const handleVariable = (obj: any) => {
+    const arr = ['user', 'org'];
+    const _array = variable.value.filter((item: any) => {
+        const _type = item.expands?.businessType || item.type || '';
+        return arr.includes(_type);
+    }).map((i: any) => i?.id);
+    const _variable = variableMap.get(formModel.channelProvider)
+    const _obj = {};
+    [...new Set([..._array, _variable]).values()].map((item: string) => {
+        _obj[item] = {
+            source: 'relation',
+            relation: {
+                objectType: 'user',
+                objectSource: {
+                    source: 'upper',
+                    upperKey: 'subscriber',
+                },
+            },
+        };
+    });
+    formModel.channelConfiguration.variables = {
+        ..._obj,
+        ...obj,
+    };
+};
 
 const jumpStep = async (val: number) => {
     if (val === 1) {
-        if (formModel.notifyType) {
+        if (formModel.channelProvider) {
             current.value = val;
         } else {
             onlyMessage('请选择通知方式', 'error');
         }
     } else if (val === 2) {
-        if (formModel.notifierId) {
+        if (formModel.channelConfiguration.notifierId) {
             current.value = val;
         } else {
             onlyMessage('请选择通知配置', 'error');
         }
     } else if (val === 3) {
-        if (formModel.templateId) {
-            const resp = await Template.getTemplateDetail(formModel.templateId);
+        if (formModel.channelConfiguration.templateId) {
+            const resp = await Template.getTemplateDetail(
+                formModel.channelConfiguration.templateId,
+            );
             if (resp.status === 200) {
                 variable.value = resp.result?.variableDefinitions || [];
                 current.value = val;
@@ -116,18 +174,28 @@ const jumpStep = async (val: number) => {
             onlyMessage('请选择通知模板', 'error');
         }
     } else if (val === 4) {
-        if (_variableDefinitions.value.length) {
-            formModel.variables = await variableRef.value.onSave();
-            if (formModel.variables) {
-                current.value = val;
+        if (variable.value.length) {
+            if (_variableDefinitions.value.length) {
+                const obj = await variableRef.value.onSave();
+                if (obj) {
+                    handleVariable(obj);
+                    current.value = val;
+                } else {
+                    onlyMessage('请配置模版变量', 'error');
+                }
             } else {
-                onlyMessage('请配置模版变量', 'error');
+                handleVariable({});
+                current.value = val;
             }
         } else {
             current.value = val;
         }
     }
 };
+
+watchEffect(() => {
+    Object.assign(formModel, props.data);
+});
 
 const onPrev = () => {
     current.value -= 1;
@@ -142,10 +210,6 @@ const onChange = (cur: number) => {
 };
 
 const onSave = () => {
-    if (formModel.role.length) {
-        emit('save');
-    } else {
-        onlyMessage('请配置角色权限', 'error');
-    }
+    emit('save', formModel);
 };
 </script>

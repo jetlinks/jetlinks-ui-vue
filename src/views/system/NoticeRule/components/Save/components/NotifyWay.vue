@@ -6,7 +6,7 @@
                 v-for="item in options"
                 class="notify-type-item"
                 :class="{ active: notifyType === item.value }"
-                @click="onSelect(item.value)"
+                @click="onSelect(item.value, item.label)"
             >
                 <div class="notify-type-item-image">
                     <img :width="106" :src="item.iconUrl" />
@@ -18,19 +18,15 @@
 </template>
 
 <script lang="ts" setup>
-import { getImage } from '@/utils/comm';
-import notice from '@/api/notice/config';
-
-const iconMap = new Map();
-iconMap.set('dingTalk', getImage('/notice/dingtalk.png'));
-iconMap.set('weixin', getImage('/notice/wechat.png'));
-iconMap.set('email', getImage('/notice/email.png'));
-iconMap.set('voice', getImage('/notice/voice.png'));
-iconMap.set('sms', getImage('/notice/sms.png'));
-iconMap.set('webhook', getImage('/notice/webhook.png'));
+import { queryChannelProviders } from '@/api/system/noticeRule';
+import { iconMap } from '../../../data';
 
 const props = defineProps({
     value: {
+        type: String,
+        default: '',
+    },
+    name: {
         type: String,
         default: '',
     },
@@ -40,7 +36,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['update:value', 'change']);
+const emit = defineEmits(['update:value', 'change', 'update:name']);
 
 const loading = ref<boolean>(false);
 const notifyType = ref('');
@@ -54,18 +50,19 @@ watch(
     { deep: true, immediate: true },
 );
 
-const onSelect = (val: string) => {
+const onSelect = (val: string, name: string) => {
     if (!props.disabled) {
         emit('update:value', val);
-        emit('change', val);
+        emit('update:name', name);
+        emit('change', {label: name, value: val});
     }
 };
 
 onMounted(() => {
     loading.value = true;
-    notice.queryMessageType().then((resp) => {
+    queryChannelProviders().then((resp) => {
         if (resp.status === 200) {
-            options.value = (resp.result as any[]).filter(i => i.id !== 'webhook').map((item) => {
+            options.value = (resp.result as any[]).filter(i => i.id !== 'inside-mail').map((item) => {
                 return {
                     label: item.name,
                     value: item.id,

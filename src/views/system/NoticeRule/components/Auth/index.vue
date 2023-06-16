@@ -12,19 +12,28 @@
 
 <script lang="ts" setup>
 import { onlyMessage } from '@/utils/comm';
-import Role from '../Role/index.vue'
+import { PropType } from 'vue';
+import Role from '../Role/index.vue';
 
 const emit = defineEmits(['close', 'save']);
+const props = defineProps({
+    data: {
+        type: Array as PropType<string[]>,
+        default: () => [],
+    },
+});
 
 const _selectedRowKeys = ref<string[]>([]);
-const checked = ref<boolean>(false);
+
+watchEffect(() => {
+    _selectedRowKeys.value = props.data || [];
+});
 
 const onSave = () => {
-    if(_selectedRowKeys.value.length) {
-        emit('save', _selectedRowKeys.value);
-    } else {
-        onlyMessage('请配置角色权限', 'error')
-    }
+    // if(_selectedRowKeys.value.length) {
+    emit('save', _selectedRowKeys.value);
+    // } else {
+    //     onlyMessage('请配置角色权限', 'error')
+    // }
 };
-
 </script>

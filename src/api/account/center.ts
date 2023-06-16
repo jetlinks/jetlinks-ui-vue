@@ -30,3 +30,8 @@ export const checkOldPassword_api = (password:string) => server.post(`/user/me/p
         'Content-Type': 'text/plain'
     }
 });
+
+// 我的订阅
+// 查询当前用户可访问的通道配置
+export const getAllNotice = () => server.get(`/notify/channel/all`);
+

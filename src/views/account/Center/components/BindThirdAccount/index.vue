@@ -1,39 +1,42 @@
 <template>
     <div class="box">
         <div class="content">
-            <div class="content-item" v-for="item in bindList" :key="item.id">
-                <div class="content-item-left">
-                    <img
-                        :src="item.logoUrl || getImage(bindIcon[item.provider])"
-                        style="height: 50px; width: 50px"
-                        width="50px"
-                        height="50px"
-                        alt=""
-                    />
-                    <Ellipsis style="max-width: 200px; font-size: 22px">{{
-                        item?.name
-                    }}</Ellipsis>
+            <template v-if="bindList.length">
+                <div class="content-item" v-for="item in bindList" :key="item.id">
+                    <div class="content-item-left">
+                        <img
+                            :src="item.logoUrl || getImage(bindIcon[item.provider])"
+                            style="height: 50px; width: 50px"
+                            width="50px"
+                            height="50px"
+                            alt=""
+                        />
+                        <Ellipsis style="max-width: 200px; font-size: 22px">{{
+                            item?.name
+                        }}</Ellipsis>
+                        <div>
+                            <j-tag v-if="item.bound">已绑定</j-tag>
+                            <j-tag v-else>未绑定</j-tag>
+                        </div>
+                        <div v-if="item.others?.name">
+                            绑定名：{{ item.others?.name }}
+                        </div>
+                    </div>
                     <div>
-                        <j-tag v-if="item.bound">已绑定</j-tag>
-                        <j-tag v-else>未绑定</j-tag>
-                    </div>
-                    <div v-if="item.others?.name">
-                        绑定名：{{ item.others?.name }}
+                        <j-popconfirm
+                            v-if="item.bound"
+                            title="确认解除绑定嘛?"
+                            @confirm="() => unBind(item.id)"
+                        >
+                            <j-button>解除绑定</j-button>
+                        </j-popconfirm>
+                        <j-button v-else type="primary" @click="clickBind(item.id)"
+                            >立即绑定</j-button
+                        >
                     </div>
                 </div>
-                <div>
-                    <j-popconfirm
-                        v-if="item.bound"
-                        title="确认解除绑定嘛?"
-                        @confirm="() => unBind(item.id)"
-                    >
-                        <j-button>解除绑定</j-button>
-                    </j-popconfirm>
-                    <j-button v-else type="primary" @click="clickBind(item.id)"
-                        >立即绑定</j-button
-                    >
-                </div>
-            </div>
+            </template>
+            <j-empty style="margin: 200px 0;" />
         </div>
     </div>
 </template>

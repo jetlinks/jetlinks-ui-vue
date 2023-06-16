@@ -1,8 +1,11 @@
 <template>
     <div style="margin-top: 24px;">
-        <j-tabs tab-position="left">
-            <j-tab-pane v-for="item in tabs" :key="item.key" :tab="item.tab"><NotificationRecord /></j-tab-pane>
+        <j-tabs tab-position="left" v-if="tabs.length">
+            <j-tab-pane v-for="item in tabs" :key="item.key" :tab="item.tab">
+                <NotificationRecord />
+            </j-tab-pane>
         </j-tabs>
+        <j-empty v-else />
     </div>
 </template>
 

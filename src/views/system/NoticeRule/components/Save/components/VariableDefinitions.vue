@@ -34,6 +34,7 @@
             <BuildIn
                 v-else
                 :item="item"
+                :providerId="props.notify?.providerId"
                 v-model:value="modelRef[item.id]"
             />
         </j-form-item>
@@ -71,6 +72,7 @@ const formRef = ref();
 const modelRef = reactive({});
 
 watchEffect(() => {
+    console.log(props.notify, '123')
     Object.assign(modelRef, props?.value);
 });
 

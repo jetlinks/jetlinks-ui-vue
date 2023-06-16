@@ -16,16 +16,8 @@
                 placeholder="请选择参数"
                 style="width: calc(100% - 120px)"
                 :fieldNames="{ label: 'name', value: 'id' }"
-                @change="(val, label, extra) => itemOnChange(undefined, val, label, extra)"
+                @change="(val) => itemOnChange(undefined, val)"
             >
-                <template #title="{ fullName, description }">
-                    <j-space>
-                        {{ fullName }}
-                        <span style="color: grey; margin-left: 5px">{{
-                            description
-                        }}</span>
-                    </j-space>
-                </template>
             </j-tree-select>
         </template>
         <template v-else>
@@ -59,12 +51,7 @@
 </template>
 
 <script lang="ts" setup name='NotifyBuildIn'>
-import { queryBuiltInParams } from '@/api/rule-engine/scene';
-import { useSceneStore } from '@/store/scene';
-import { storeToRefs } from 'pinia';
-
-const sceneStore = useSceneStore();
-const { data } = storeToRefs(sceneStore);
+import { queryConfigVariables } from '@/api/system/noticeRule';
 
 const props = defineProps({
     value: {
@@ -85,9 +72,13 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
+    providerId: {
+        type: String,
+        default: ''
+    }
 });
 
-const emit = defineEmits(['update:value', 'change']);
+const emit = defineEmits(['update:value']);
 
 const source = computed(() => {
     return props.value?.source || 'fixed';
@@ -104,53 +95,12 @@ const sourceChange = (val: any) => {
     });
 };
 
-const itemOnChange = (val: any, _upperKey?: string, label?: any, extra?: any) => {
-    const item = extra?.triggerNode?.props
-    let othersColumns = ''
-    if (item && item.metadata) {
-      othersColumns = item.column
-    }
-
+const itemOnChange = (val: any, _upperKey?: string) => {
     emit('update:value', {
         ...props.value,
         value: val,
         upperKey: _upperKey,
     });
-
-    emit('change', {
-        sendTo: label?.[0] || val,
-    }, othersColumns);
-};
-
-const treeDataFilter = (arr: any[], type: string) => {
-    if (Array.isArray(arr) && arr.length) {
-        const list: any[] = [];
-        arr.map((item: any) => {
-            if (item.children) {
-                const children = treeDataFilter(item.children, type);
-                if (children.length) {
-                    list.push({
-                        ...item,
-                        title: item.name,
-                        value: item.id,
-                        disabled: true,
-                        children,
-                    });
-                }
-            } else {
-                if (
-                    item.type === type ||
-                    (type === 'double' &&
-                        ['int', 'float', 'double', 'long'].includes(item.type))
-                ) {
-                    list.push(item);
-                }
-            }
-        });
-        return list;
-    } else {
-        return [];
-    }
 };
 
 watch(
@@ -158,17 +108,16 @@ watch(
     (newVal) => {
         const v = newVal;
         if (v === 'upper') {
-            const params =
-                props.name - 1 >= 0 ? { action: props.name - 1 } : undefined;
-            queryBuiltInParams(unref(data), params).then((resp) => {
+            queryConfigVariables(props.providerId).then(resp => {
                 if (resp.status === 200) {
-                    const arr = treeDataFilter(
-                        resp.result as any[],
-                        props.item.expands?.businessType || props.item?.type,
-                    );
-                    builtInList.value = arr;
+                    builtInList.value = (resp.result as any[]).map(item => {
+                        return {
+                            ...item,
+                            id: 'detail.' + item.id // 为了方便传到后端
+                        }
+                    })
                 }
-            });
+            })
         }
     },
     { deep: true, immediate: true },

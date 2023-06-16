@@ -74,6 +74,7 @@
 <script lang="ts" setup>
 import ConfigApi from '@/api/notice/config';
 import { MSG_TYPE, NOTICE_METHOD } from '@/views/notice/const';
+import { noticeType } from '../../../data';
 const props = defineProps({
     notifyType: {
         type: String,
@@ -135,7 +136,7 @@ const query = (e: Record<string, any>) =>
                     {
                         termType: 'eq',
                         column: 'type',
-                        value: props.notifyType,
+                        value: noticeType.get(props.notifyType),
                     },
                 ],
             },
