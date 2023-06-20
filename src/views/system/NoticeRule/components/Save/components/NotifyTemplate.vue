@@ -6,13 +6,17 @@
         @search="handleSearch"
         class="action-search"
     />
+    <div class="alert">
+        <AIcon type="InfoCircleOutlined" />
+        已规定固定收信人的模板在当前页面将被过滤
+    </div>
     <div style="height: 400px; overflow-y: auto">
         <JProTable
             :columns="columns"
             :request="(e) => handleData(e)"
             model="CARD"
             :bodyStyle="{
-                padding: 0
+                padding: 0,
             }"
             :params="params"
             :gridColumn="2"
@@ -74,6 +78,7 @@
 <script lang="ts" setup>
 import TemplateApi from '@/api/notice/template';
 import { MSG_TYPE, NOTICE_METHOD } from '@/views/notice/const';
+import { _variableMap } from '../../../data';
 const props = defineProps({
     notifierId: {
         type: String,
@@ -152,14 +157,19 @@ const handleData = async (e: any) => {
         { name: 'id', value: props.value },
         { name: 'createTime', order: 'desc' },
     ];
-    const resp = await TemplateApi.getListByConfigId(props.notifierId, {
+    const resp = await TemplateApi.getListVariableByConfigId(props.notifierId, {
         ...e,
         sorts: sorts,
+    });
+    const result = (resp?.result || []).filter((item: any) => {
+        const _variable = _variableMap.get(item.type);
+        const arr = item?.variableDefinitions?.map((i: any) => i?.id) || [];
+        return arr.includes(_variable);
     });
     return {
         code: resp.message,
         result: {
-            data: resp.result ? resp.result : [],
+            data: result,
             pageIndex: 0,
             pageSize: resp.result.length,
             total: resp.result.length,
@@ -192,5 +202,13 @@ watch(
 .notify-logo {
     width: 88px;
     height: 88px;
+}
+.alert {
+    height: 40px;
+    padding-left: 10px;
+    margin-bottom: 10px;
+    color: rgba(0, 0, 0, 0.55);
+    line-height: 40px;
+    background-color: #f6f6f6;
 }
 </style>

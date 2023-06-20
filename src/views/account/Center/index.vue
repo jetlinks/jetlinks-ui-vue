@@ -4,19 +4,23 @@
             <div class="person-header-item">
                 <div class="person-header-item-info">
                     <div class="person-header-item-info-left">
-                        <j-avatar :size="64">
-                            <template #icon
-                                ><AIcon type="UserOutlined"
-                            /></template>
-                        </j-avatar>
+                        <UploadAvatar
+                            :accept="
+                                imageTypes && imageTypes.length
+                                    ? imageTypes.toString()
+                                    : ''
+                            "
+                            :modelValue="user.userInfos?.avatar"
+                            @change="onAvatarChange"
+                        />
                     </div>
                     <div class="person-header-item-info-right">
                         <div class="person-header-item-info-right-top">
-                            <span>xx部门 · xx角色</span>
+                            <span>{{ _org }}部门 · {{ _role }}角色</span>
                         </div>
                         <div class="person-header-item-info-right-info">
-                            <div>用户名 {{user.userInfos?.username}}</div>
-                            <div>账号ID {{user.userInfos?.id}}</div>
+                            <div>用户名 {{ user.userInfos?.username }}</div>
+                            <div>账号ID {{ user.userInfos?.id }}</div>
                         </div>
                     </div>
                 </div>
@@ -27,7 +31,7 @@
                                 @click="onActivated(item.key)"
                                 v-for="item in list"
                                 :type="
-                                    activeKey === item.key
+                                    user.tabKey === item.key
                                         ? 'primary'
                                         : 'default'
                                 "
@@ -39,21 +43,25 @@
                     <div class="person-header-item-action-right">
                         <j-space :size="24">
                             <j-tooltip title="查看详情"
-                                ><j-button @click="visible = true" shape="circle"
+                                ><j-button
+                                    @click="visible = true"
+                                    shape="circle"
                                     ><AIcon
                                         style="font-size: 24px"
                                         type="FileSearchOutlined" /></j-button
                             ></j-tooltip>
                             <j-tooltip title="编辑资料"
-                                ><j-button shape="circle"
-                                @click="editInfoVisible = true"
+                                ><j-button
+                                    shape="circle"
+                                    @click="editInfoVisible = true"
                                     ><AIcon
                                         style="font-size: 24px"
                                         type="FormOutlined" /></j-button
                             ></j-tooltip>
                             <j-tooltip title="修改密码"
-                                ><j-button shape="circle"
-                                @click="editPasswordVisible = true"
+                                ><j-button
+                                    shape="circle"
+                                    @click="editPasswordVisible = true"
                                     ><AIcon
                                         style="font-size: 24px"
                                         type="LockOutlined" /></j-button
@@ -67,14 +75,23 @@
             <div class="person-content-item">
                 <FullPage>
                     <div class="person-content-item-content">
-                        <component :is="tabs[activeKey]" />
+                        <component :is="tabs[user.tabKey]" />
                     </div>
                 </FullPage>
             </div>
         </div>
-        <Detail v-if="visible" @close="visible = false"/>
-        <EditInfo v-if="editInfoVisible" :data="user.userInfos" @close="editInfoVisible = false" @save="onSave" />
-        <EditPassword v-if="editPasswordVisible" @close="editPasswordVisible = false" @save="onPasswordSave" />
+        <Detail v-if="visible" @close="visible = false" />
+        <EditInfo
+            v-if="editInfoVisible"
+            :data="user.userInfos"
+            @close="editInfoVisible = false"
+            @save="onSave"
+        />
+        <EditPassword
+            v-if="editPasswordVisible"
+            @close="editPasswordVisible = false"
+            @save="onPasswordSave"
+        />
     </div>
 </template>
 
@@ -87,6 +104,19 @@ import Detail from './components/Detail/index.vue';
 import EditInfo from './components/EditInfo/index.vue';
 import EditPassword from './components/EditPassword/index.vue';
 import { useUserInfo } from '@/store/userInfo';
+import UploadAvatar from './components/UploadAvatar/index.vue';
+import { updateMeInfo_api } from '@/api/account/center';
+import { onlyMessage } from '@/utils/comm';
+import { useRouterParams } from '@/utils/hooks/useParams';
+
+const imageTypes = reactive([
+    'image/jpeg',
+    'image/png',
+    'image/jpg',
+    'image/jfif',
+    'image/pjp',
+    'image/pjpeg',
+]);
 
 const user = useUserInfo();
 
@@ -117,23 +147,59 @@ const tabs = {
     StationMessage,
 };
 
-const activeKey = ref<KeyType>('HomeView');
+const router = useRouterParams()
+
+// const activeKey = ref<KeyType>('HomeView');
 const visible = ref<boolean>(false);
 const editInfoVisible = ref<boolean>(false);
 const editPasswordVisible = ref<boolean>(false);
 
 const onActivated = (_key: KeyType) => {
-    activeKey.value = _key;
+    user.tabKey = _key;
 };
 
+const _org = computed(() => {
+    return user.userInfos?.orgList
+        ?.map((item: any) => {
+            return item?.name;
+        })
+        .join(',');
+});
+
+const _role = computed(() => {
+    return user.userInfos?.roleList
+        ?.map((item: any) => {
+            return item?.name;
+        })
+        .join(',');
+});
+
 const onSave = () => {
-    user.getUserInfo()
-    editInfoVisible.value = false
-}
+    user.getUserInfo();
+    editInfoVisible.value = false;
+};
 
 const onPasswordSave = () => {
-    editPasswordVisible.value = false
-}
+    editPasswordVisible.value = false;
+};
+
+const onAvatarChange = (url: string) => {
+    updateMeInfo_api({
+        ...user.userInfos,
+        avatar: url,
+    }).then((resp) => {
+        if (resp.status === 200) {
+            onlyMessage('操作成功', 'success');
+            user.getUserInfo();
+        }
+    });
+};
+
+watchEffect(() => {
+    if(router.params.value?.tabKey) {
+        user.tabKey = router.params.value?.tabKey
+    }
+})
 </script>
 
 <style lang="less" scoped>

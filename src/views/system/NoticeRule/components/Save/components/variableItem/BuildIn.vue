@@ -110,7 +110,13 @@ watch(
         if (v === 'upper') {
             queryConfigVariables(props.providerId).then(resp => {
                 if (resp.status === 200) {
-                    builtInList.value = (resp.result as any[]).map(item => {
+                    // 避免数据id相同，去重
+                    const _set = new Set((resp.result as any[]).map(item => item?.id))
+                    const arr = [..._set.values()].map(item => {
+                        const _arr = (resp.result as any[]).reverse()
+                        return _arr.find(i => i.id === item)
+                    })
+                    builtInList.value = arr.map(item => {
                         return {
                             ...item,
                             id: 'detail.' + item.id // 为了方便传到后端

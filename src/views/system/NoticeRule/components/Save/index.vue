@@ -52,7 +52,7 @@
                     v-if="current !== stepList.length - 1"
                     >下一步</j-button
                 >
-                <j-button type="primary" @click="onSave" v-else>确认</j-button>
+                <j-button :loading="loading" type="primary" @click="onSave" v-else>确认</j-button>
             </j-space>
         </template>
     </j-modal>
@@ -87,6 +87,10 @@ const props = defineProps({
         type: Object,
         default: () => {},
     },
+    loading: {
+        type: Boolean,
+        default: false
+    }
 });
 
 const stepList = [

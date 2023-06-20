@@ -36,7 +36,7 @@
                     </div>
                 </div>
             </template>
-            <j-empty style="margin: 200px 0;" />
+            <j-empty v-else style="margin: 200px 0;" />
         </div>
     </div>
 </template>

@@ -18,49 +18,85 @@
                 <template #card="slotProps">
                     <div class="box-item">
                         <div class="box-item-img">
-                            <j-popover
-                                trigger="click"
-                                :visible="show?.[slotProps?.id]"
-                                @visibleChange="onVisibleChange(slotProps)"
-                            >
-                                <img
-                                    :src="
-                                        getImage(
-                                            `/notice/${noticeType.get(
+                            <j-dropdown placement="top" :trigger="['click']">
+                                <!-- :visible="show?.[slotProps?.id]"
+                                @visibleChange="onVisibleChange(slotProps)" -->
+                                <div>
+                                    <img
+                                        :src="
+                                            iconMap.get(
                                                 slotProps?.channelProvider,
-                                            )}.png`,
-                                        )
-                                    "
-                                />
-                                <template
-                                    #content
-                                    v-if="
+                                            )
+                                        "
+                                    />
+                                    <div
+                                        :class="{
+                                            disabled: !notifyChannels?.includes(
+                                                slotProps?.id,
+                                            ),
+                                        }"
+                                    ></div>
+                                </div>
+                                <!-- v-if="
                                         notifyChannels?.includes(
                                             slotProps?.id,
                                         ) &&
                                         slotProps?.channelProvider !==
                                             'inside-mail'
-                                    "
-                                >
-                                    <div>
-                                        <PermissionButton
-                                            type="link"
-                                            :hasPermission="true"
-                                            @click="onUnSubscribe(slotProps)"
+                                    " -->
+                                <template #overlay>
+                                    <j-menu>
+                                        <j-menu-item
+                                            v-if="
+                                                !notifyChannels?.includes(
+                                                    slotProps?.id,
+                                                )
+                                            "
                                         >
-                                            取消订阅
-                                        </PermissionButton>
-                                    </div>
-                                    <div>
-                                        <PermissionButton
-                                            type="link"
-                                            :hasPermission="true"
-                                        >
-                                            更换接收账号
-                                        </PermissionButton>
-                                    </div>
+                                            <PermissionButton
+                                                type="link"
+                                                :hasPermission="true"
+                                                @click="
+                                                    onCheckChange(slotProps)
+                                                "
+                                            >
+                                                订阅
+                                            </PermissionButton>
+                                        </j-menu-item>
+                                        <template v-else>
+                                            <j-menu-item>
+                                                <PermissionButton
+                                                    type="link"
+                                                    :hasPermission="true"
+                                                    @click="
+                                                        onUnSubscribe(slotProps)
+                                                    "
+                                                >
+                                                    取消订阅
+                                                </PermissionButton>
+                                            </j-menu-item>
+                                            <j-menu-item
+                                                v-if="
+                                                    slotProps.channelProvider !==
+                                                    'inside-mail'
+                                                "
+                                            >
+                                                <PermissionButton
+                                                    type="link"
+                                                    :hasPermission="true"
+                                                    @click="
+                                                        onAccountChange(
+                                                            slotProps,
+                                                        )
+                                                    "
+                                                >
+                                                    更换接收账号
+                                                </PermissionButton>
+                                            </j-menu-item>
+                                        </template>
+                                    </j-menu>
                                 </template>
-                            </j-popover>
+                            </j-dropdown>
                             <div class="box-item-checked">
                                 <j-checkbox
                                     :checked="
@@ -68,13 +104,6 @@
                                     "
                                 ></j-checkbox>
                             </div>
-                            <div
-                                :class="{
-                                    disabled: !notifyChannels?.includes(
-                                        slotProps?.id,
-                                    ),
-                                }"
-                            ></div>
                         </div>
                         <div class="box-item-text">
                             {{ slotProps?.name }}
@@ -91,26 +120,36 @@
         :current="current"
         @close="visible = false"
     />
+    <EditInfo
+        v-if="editInfoVisible"
+        :data="user.userInfos"
+        @close="editInfoVisible = false"
+        @save="onSave"
+    />
 </template>
 
 <script lang="ts" setup>
 import { getImage, onlyMessage } from '@/utils/comm';
 import MCarousel from '@/components/MCarousel/index.vue';
 import Unsubscribe from './Unsubscribe.vue';
-import { remove_api, save_api } from '@/api/account/notificationSubscription';
+import {
+    getIsBindThird,
+    save_api,
+} from '@/api/account/notificationSubscription';
 import { useUserInfo } from '@/store/userInfo';
+import EditInfo from '../../EditInfo/index.vue';
 
-const noticeType = new Map();
-noticeType.set('notifier-dingTalk', 'dingtalk');
-noticeType.set('notifier-weixin', 'wechat');
-noticeType.set('notifier-email', 'email');
-noticeType.set('notifier-voice', 'voice');
-noticeType.set('notifier-sms', 'sms');
-noticeType.set('inside-mail', 'inside-mail');
+const iconMap = new Map();
+iconMap.set('notifier-dingTalk', getImage('/notice/dingtalk.png'));
+iconMap.set('notifier-weixin', getImage('/notice/wechat.png'));
+iconMap.set('notifier-email', getImage('/notice/email.png'));
+iconMap.set('notifier-voice', getImage('/notice/voice.png'));
+iconMap.set('notifier-sms', getImage('/notice/sms.png'));
+iconMap.set('inside-mail', getImage('/notice/inside-mail.png'));
 
 const current = ref<any>({});
 const visible = ref<boolean>(false);
-const show = ref<any>()
+const editInfoVisible = ref<boolean>(false);
 
 const user = useUserInfo();
 
@@ -154,8 +193,8 @@ const onUnSubscribe = async (obj: any) => {
     //     onlyMessage('操作成功');
     //     emits('refresh');
     // }
-    const _set = new Set(props.subscribe?.notifyChannels || [])
-    _set.delete(obj?.id)
+    const _set = new Set(props.subscribe?.notifyChannels || []);
+    _set.delete(obj?.id);
     const _obj = {
         subscribeName: obj.name,
         topicProvider: props.data?.provider,
@@ -188,6 +227,18 @@ const onCheckChange = async (_data: any) => {
             }
         } else {
             // 钉钉和微信
+            const resp: any = await getIsBindThird();
+            if (resp.status === 200) {
+                const _item = (resp?.result || []).find((item: any) => {
+                    return (
+                        _data?.channelConfiguration?.notifierId ===
+                        item?.provider
+                    );
+                });
+                if (_item) {
+                    _bind = true;
+                }
+            }
         }
     }
     if (_data?.channelProvider === 'inside-mail' || _bind) {
@@ -198,17 +249,24 @@ const onCheckChange = async (_data: any) => {
     }
 };
 
-const onVisibleChange = (_data: any) => {
-    show.value = {}
-    if (notifyChannels.value?.includes(_data?.id)) {
-        if (_data?.channelProvider === 'inside-mail') {
-            onUnSubscribe(_data);
-        } else {
-            show.value[_data.id] = true
-        }
+// 更换绑定账号
+const onAccountChange = (_data: any) => {
+    current.value = _data;
+    if (
+        ['notifier-voice', 'notifier-sms', 'notifier-email'].includes(
+            _data?.channelProvider,
+        )
+    ) {
+        editInfoVisible.value = true;
     } else {
-        onCheckChange(_data)
+        visible.value = true;
     }
+};
+
+const onSave = () => {
+    editInfoVisible.value = false;
+    // 重新绑定
+    onUnSubscribe(current.value);
 };
 </script>
 

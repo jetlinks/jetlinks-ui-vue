@@ -3823,10 +3823,10 @@ jetlinks-store@^0.0.3:
   resolved "https://registry.npmjs.org/jetlinks-store/-/jetlinks-store-0.0.3.tgz"
   integrity sha512-AZf/soh1hmmwjBZ00fr1emuMEydeReaI6IBTGByQYhTmK1Zd5pQAxC7WLek2snRAn/HHDgJfVz2hjditKThl6Q==
 
-jetlinks-ui-components@^1.0.23:
-  version "1.0.23"
-  resolved "https://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.23.tgz#029f45a61316e3bf3b4c75959d41d7d76068fcbe"
-  integrity sha512-6OGDn8/kAmjlHMoeIp5B4L6EeucbqKFxqnYys4MqmtEvco/d5Pr8rzmJEav6bZmGkN21YWNHpwkhX3yrQt2F+g==
+jetlinks-ui-components@^1.0.24:
+  version "1.0.24"
+  resolved "http://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.24.tgz#97580bed720526b50b3244440c7ae16d3d0a26c0"
+  integrity sha512-7ccv/eu9moZZFzCRuBa8Pe4NLd/knDARWwJaivH+qgkPSIIdij0Wax27zFwoRqivsDzbOAs2iRButcwSNvR9AQ==
   dependencies:
     "@vueuse/core" "^9.12.0"
     "@vueuse/router" "^9.13.0"
@@ -3834,6 +3834,7 @@ jetlinks-ui-components@^1.0.23:
     colorpicker-v3 "^2.10.2"
     lodash-es "^4.17.21"
     monaco-editor "^0.35.0"
+    vuedraggable "^4.1.0"
 
 js-cookie@^3.0.1:
   version "3.0.1"
@@ -6162,6 +6163,11 @@ socks@^2.6.2:
     ip "^2.0.0"
     smart-buffer "^4.2.0"
 
+sortablejs@1.14.0:
+  version "1.14.0"
+  resolved "http://registry.jetlinks.cn/sortablejs/-/sortablejs-1.14.0.tgz#6d2e17ccbdb25f464734df621d4f35d4ab35b3d8"
+  integrity sha512-pBXvQCs5/33fdN1/39pPL0NZF20LeRbLQ5jtnheIPN9JQAaufGjKdWduZn4U7wCtVuzKhmRkI0DFYHYRbB2H1w==
+
 source-map-js@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/source-map-js/-/source-map-js-1.0.2.tgz"
@@ -7047,6 +7053,13 @@ vue@^3.2.37, vue@^3.2.45:
     "@vue/runtime-dom" "3.2.45"
     "@vue/server-renderer" "3.2.45"
     "@vue/shared" "3.2.45"
+
+vuedraggable@^4.1.0:
+  version "4.1.0"
+  resolved "http://registry.jetlinks.cn/vuedraggable/-/vuedraggable-4.1.0.tgz#edece68adb8a4d9e06accff9dfc9040e66852270"
+  integrity sha512-FU5HCWBmsf20GpP3eudURW3WdWTKIbEIQxh9/8GE806hydR9qZqRRxRE3RjqX7PkuLuMQG/A7n3cfj9rCEchww==
+  dependencies:
+    sortablejs "1.14.0"
 
 walk-up-path@^1.0.0:
   version "1.0.0"

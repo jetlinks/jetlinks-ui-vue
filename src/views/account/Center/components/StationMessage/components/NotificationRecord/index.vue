@@ -14,12 +14,8 @@
                 :request="getList_api"
                 model="TABLE"
                 :params="queryParams"
-                :bodyStyle="{padding: 0}"
-                :defaultParams="{
-                  sorts: [{
-                    name: 'notifyTime', order: 'desc'
-                  }]
-                }"
+                :bodyStyle="{ padding: 0 }"
+                :defaultParams="defaultParams"
             >
                 <template #headerTitle>
                     <j-button type="primary">全部已读</j-button>
@@ -29,7 +25,7 @@
                 </template>
                 <template #notifyTime="slotProps">
                     {{
-                        moment(slotProps.notifyTime).format(
+                        dayjs(slotProps.notifyTime).format(
                             'YYYY-MM-DD HH:mm:ss',
                         )
                     }}
@@ -54,7 +50,7 @@
                                         ? '未读'
                                         : '已读'
                                 }`,
-                                onConfirm: () => table.changeStatus(slotProps),
+                                onConfirm: () => changeStatus(slotProps),
                             }"
                             :tooltip="{
                                 title:
@@ -70,18 +66,18 @@
                             :tooltip="{
                                 title: '查看',
                             }"
-                            @click="table.view(slotProps)"
+                            @click="view(slotProps)"
                         >
                             <AIcon type="SearchOutlined" />
                         </PermissionButton>
                     </j-space>
                 </template>
             </j-pro-table>
-
             <ViewDialog
                 v-if="viewVisible"
                 v-model:visible="viewVisible"
                 :data="viewItem"
+                :type="type"
             />
         </div>
     </page-container>
@@ -94,16 +90,37 @@ import {
     getList_api,
     changeStatus_api,
 } from '@/api/account/notificationRecord';
-import { getTypeList_api } from '@/api/account/notificationSubscription';
-import { optionItem } from '@/views/rule-engine/Scene/typings';
-import { dictItemType } from '@/views/system/DataSource/typing';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { message } from 'ant-design-vue';
 import { useUserInfo } from '@/store/userInfo';
 import { useRouterParams } from '@/utils/hooks/useParams';
-import dayjs from 'dayjs'
+import { getTypeList_api } from '@/api/account/notificationSubscription';
 
-const { updateAlarm } = useUserInfo();
+const user = useUserInfo();
+
+const props = defineProps({
+    type: {
+        type: String,
+        default: '',
+    },
+});
+
+const getType = computed(() => {
+    if (props.type === 'system-business') {
+        return ['device-transparent-codec'];
+    } else if (props.type === 'system-monitor') {
+        return ['system-event'];
+    } else {
+        return [
+            'alarm-product',
+            'alarm-device',
+            'alarm-other',
+            'alarm-org',
+            'alarm',
+        ];
+    }
+});
+
 const columns = [
     {
         title: '类型',
@@ -114,11 +131,13 @@ const columns = [
             options: () =>
                 getTypeList_api().then((resp: any) =>
                     resp.result
-                        .map((item: dictItemType) => ({
+                        .map((item: any) => ({
                             label: item.name,
                             value: item.id,
                         }))
-                        .filter((item: optionItem) => item.value === 'alarm'),
+                        .filter((item: any) =>
+                            [...getType.value].includes(item?.value),
+                        ),
                 ),
         },
         scopedSlots: true,
@@ -139,7 +158,7 @@ const columns = [
         dataIndex: 'notifyTime',
         key: 'notifyTime',
         search: {
-            type: 'date'
+            type: 'date',
         },
         scopedSlots: true,
         ellipsis: true,
@@ -173,37 +192,59 @@ const columns = [
         width: '200px',
     },
 ];
-const queryParams = ref({});
-
-const tableRef = ref();
-const table = {
-    changeStatus: (row: any) => {
-        const type = row.state.value === 'read' ? '_unread' : '_read';
-        changeStatus_api(type, [row.id]).then((resp: any) => {
-            if (resp.status === 200) {
-                message.success('操作成功！');
-                table.refresh();
-                updateAlarm();
-            }
-        });
-    },
-    view: (row: any) => {
-        console.log('row: ', row);
-        viewItem.value = row;
-        viewVisible.value = true;
-    },
-    refresh: () => {
-        tableRef.value && tableRef.value.reload();
-    },
-};
 
 const viewVisible = ref<boolean>(false);
 const viewItem = ref<any>({});
 
 const routerParams = useRouterParams();
+
+const defaultParams = {
+    sorts: [{ name: 'notifyTime', order: 'desc' }],
+    terms: [
+        {
+            terms: [
+                {
+                    column: 'topicProvider',
+                    value: getType.value,
+                    termType: 'in',
+                },
+            ],
+            type: 'and',
+        },
+    ],
+};
+const queryParams = ref({});
+
+const tableRef = ref();
+
+const view = (row: any) => {
+    viewItem.value = row;
+    viewVisible.value = true;
+};
+const refresh = () => {
+    tableRef.value && tableRef.value.reload();
+};
+
+const changeStatus = (row: any) => {
+    const type = row.state.value === 'read' ? '_unread' : '_read';
+    changeStatus_api(type, [row.id]).then((resp: any) => {
+        if (resp.status === 200) {
+            message.success('操作成功！');
+            refresh();
+            user.updateAlarm();
+        }
+    });
+};
+
+watchEffect(() => {
+    if(user.messageInfo?.id) {
+        view(user.messageInfo)
+    }
+})
+
 onMounted(() => {
     if (routerParams.params?.value.row) {
-        table.view(routerParams.params?.value.row);
+        view(routerParams.params?.value.row);
     }
 });
 </script>

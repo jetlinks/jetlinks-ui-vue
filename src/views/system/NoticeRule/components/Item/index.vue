@@ -5,7 +5,13 @@
                 {{ data?.name }}
             </div>
             <div>
-                <j-switch @change="onSwitchChange" :checked="checked" />
+                <j-tooltip :title="!action ? '暂无权限，请联系管理员' : ''">
+                    <j-switch
+                        :disabled="!action"
+                        @change="onSwitchChange"
+                        :checked="checked"
+                    />
+                </j-tooltip>
             </div>
         </div>
         <div class="child-item-right" v-if="checked">
@@ -17,15 +23,16 @@
                                 <img
                                     style="width: 100%"
                                     :src="
-                                        getImage(
-                                            `/notice/${noticeType.get(
-                                                slotProps?.channelProvider,
-                                            )}.png`,
-                                        )
+                                        iconMap.get(slotProps?.channelProvider)
                                     "
                                 />
                             </div>
-                            <template #overlay v-if="slotProps?.channelProvider !== 'inside-mail'">
+                            <template
+                                #overlay
+                                v-if="
+                                    slotProps?.channelProvider !== 'inside-mail'
+                                "
+                            >
                                 <j-menu mode="">
                                     <j-menu-item>
                                         <PermissionButton
@@ -40,7 +47,9 @@
                                         <PermissionButton
                                             @click="onEdit(slotProps)"
                                             type="link"
-                                            :hasPermission="true"
+                                            :hasPermission="[
+                                                'system/NoticeRule:update',
+                                            ]"
                                         >
                                             编辑
                                         </PermissionButton>
@@ -50,7 +59,9 @@
                                             @click="onDelete(slotProps.id)"
                                             danger
                                             type="link"
-                                            :hasPermission="true"
+                                            :hasPermission="[
+                                                'system/NoticeRule:delete',
+                                            ]"
                                         >
                                             删除
                                         </PermissionButton>
@@ -65,29 +76,51 @@
                 </template>
                 <template #add>
                     <div class="box-item">
-                        <div @click="onAdd" class="box-item-img">
-                            <AIcon
-                                style="font-size: 20px"
-                                type="PlusOutlined"
-                            />
+                        <div class="box-item-img">
+                            <j-tooltip
+                                :title="!add ? '暂无权限，请联系管理员' : ''"
+                            >
+                                <j-button
+                                    :disabled="!add"
+                                    type="text"
+                                    @click="onAdd"
+                                >
+                                    <AIcon
+                                        style="font-size: 20px"
+                                        type="PlusOutlined"
+                                    />
+                                </j-button>
+                            </j-tooltip>
                         </div>
                         <div class="box-item-text"></div>
                     </div>
                 </template>
             </MCarousel>
 
-            <div
-                class="child-item-right-auth"
-                :class="{ active: auth.length }"
-                @click="onAuth"
-            >
-                <AIcon type="UserOutlined" />
-                <span>权限控制</span>
+            <div class="child-item-right-auth" :class="{ active: auth.length }">
+                <j-tooltip :title="!update ? '暂无权限，请联系管理员' : ''">
+                    <j-button :disabled="!update" type="text" @click="onAuth">
+                        <div class="child-item-right-auth-btn">
+                            <AIcon type="UserOutlined" />
+                            <span>权限控制</span>
+                        </div>
+                    </j-button>
+                </j-tooltip>
             </div>
         </div>
     </div>
-    <Save :data="current" v-if="visible" @close="visible = false" @save="onSave" />
-    <Detail :data="current" v-if="detailVisible" @close="detailVisible = false" />
+    <Save
+        :data="current"
+        v-if="visible"
+        @close="visible = false"
+        @save="onSave"
+        :loading="loading"
+    />
+    <Detail
+        :data="current"
+        v-if="detailVisible"
+        @close="detailVisible = false"
+    />
     <Auth
         v-if="authVisible"
         :data="data?.grant?.role?.idList"
@@ -101,7 +134,7 @@ import MCarousel from '@/components/MCarousel/index.vue';
 import Save from '../Save/index.vue';
 import Detail from '../Detail/index.vue';
 import Auth from '../Auth/index.vue';
-import { noticeType } from '../../data';
+import { iconMap } from '../../data';
 import { getImage, onlyMessage } from '@/utils/comm';
 import {
     saveChannelConfig,
@@ -111,6 +144,7 @@ import {
     updateChannelConfig,
 } from '@/api/system/noticeRule';
 import { Modal } from 'jetlinks-ui-components';
+import { usePermissionStore } from '@/store/permission';
 
 const props = defineProps({
     data: {
@@ -128,6 +162,13 @@ const current = ref<any>({});
 
 const checked = ref<boolean>(false);
 const auth = ref<string[]>([]);
+const loading = ref<boolean>(false);
+
+const permission = usePermissionStore();
+
+const action = permission.hasPermission('system/NoticeRule:action');
+const add = permission.hasPermission('system/NoticeRule:add');
+const update = permission.hasPermission('system/NoticeRule:update');
 
 watchEffect(() => {
     checked.value = props.data?.state?.value === 'enabled';
@@ -137,17 +178,17 @@ watchEffect(() => {
 const onAdd = () => {
     visible.value = true;
     current.value = {
-        providerId: props.data.id
-    }
+        providerId: props.data.id,
+    };
 };
 
 const onView = (dt: any) => {
-    current.value = dt
+    current.value = dt;
     detailVisible.value = true;
 };
 
 const onEdit = (dt: any) => {
-    current.value = dt
+    current.value = dt;
     visible.value = true;
 };
 
@@ -241,13 +282,16 @@ const onSwitchChange = (e: boolean) => {
 };
 
 const onSave = (_data: any) => {
-    updateChannelConfig(props.data.id, {...props.data, ..._data}).then((resp) => {
+    loading.value = true
+    updateChannelConfig(props.data.id, [_data]).then((resp) => {
         if (resp.status === 200) {
             onlyMessage('操作成功！', 'success');
             visible.value = false;
             emits('refresh');
         }
-    });
+    }).finally(() => {
+        loading.value = false
+    })
 };
 </script>
 
@@ -297,17 +341,19 @@ const onSave = (_data: any) => {
 
         .child-item-right-auth {
             margin-left: 20px;
-            height: 78px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            &:hover {
-                color: @primary-color-hover;
-            }
-            &.active {
-                color: @primary-color;
+            .child-item-right-auth-btn {
+                height: 78px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                &:hover {
+                    color: @primary-color-hover;
+                }
+                &.active {
+                    color: @primary-color;
+                }
             }
         }
     }

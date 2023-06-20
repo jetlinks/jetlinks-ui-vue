@@ -90,6 +90,12 @@ export const useMenuStore = defineStore({
         console.warn(`没有找到对应的页面: ${name}`)
       }
     },
+    routerPush(name: string, params?: Record<string, any>, query?: Record<string, any>) {
+      this.params = { [name]: params || {}}
+        router.push({
+          name, params, query, state: { params }
+        })
+    },
     queryMenuTree(isCommunity = false): Promise<any[]> {
       return new Promise(async (res) => {
         //过滤非集成的菜单

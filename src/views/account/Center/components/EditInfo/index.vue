@@ -101,6 +101,7 @@
 <script setup lang="ts">
 import { updateMeInfo_api } from '@/api/account/center';
 import { onlyMessage } from '@/utils/comm';
+import { cloneDeep } from 'lodash-es';
 
 const emits = defineEmits(['save', 'close']);
 const props = defineProps({
@@ -110,8 +111,9 @@ const props = defineProps({
     },
 });
 const loading = ref(false);
-const form = ref(props.data);
+const form = ref<any>(cloneDeep(props.data));
 const formRef = ref<any>();
+
 
 const handleOk = () => {
     formRef.value?.validate().then(() => {

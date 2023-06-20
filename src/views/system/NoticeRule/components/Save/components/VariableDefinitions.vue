@@ -72,7 +72,6 @@ const formRef = ref();
 const modelRef = reactive({});
 
 watchEffect(() => {
-    console.log(props.notify, '123')
     Object.assign(modelRef, props?.value);
 });
 

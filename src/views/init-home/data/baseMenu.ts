@@ -3924,91 +3924,101 @@ export default [
       },
       {
         code: 'system/NoticeRule',
-        name: '通知规则',
+        name: '订阅管理',
         owner: 'iot',
-        id: 'system/NoticeRule',
-        sortIndex: 11,
+        id: '522f790d4422a608d491bc9e2fa12b4e',
+        sortIndex: 12,
         url: '/system/NoticeRule',
-        icon: 'icon-yingyongguanli',
-        showPage: ['application'],
+        icon: 'CopyOutlined',
+        showPage: ['notify-channel'],
         permissions: [],
         buttons: [
           {
             id: 'delete',
             name: '删除',
             permissions: [
-              // {
-              //   permission: 'application',
-              //   actions: ['query', 'delete'],
-              // },
+              {
+                permission: 'role',
+                actions: ['query'],
+              },
+              {
+                permission: 'notify-channel',
+                actions: ['save', 'delete'],
+              },
+              {
+                permission: 'notifier',
+                actions: ['query'],
+              },
+              {
+                permission: 'template',
+                actions: ['query'],
+              },
             ],
           },
           {
             id: 'add',
             name: '新增',
             permissions: [
-              // {
-              //   permission: 'role',
-              //   actions: ['query'],
-              // },
-              // {
-              //   permission: 'menu',
-              //   actions: ['query'],
-              // },
-              // {
-              //   permission: 'application',
-              //   actions: ['query', 'save'],
-              // },
-              // {
-              //   permission: 'open-api',
-              //   actions: ['query', 'save', 'delete'],
-              // },
+              {
+                permission: 'role',
+                actions: ['query'],
+              },
+              {
+                permission: 'notify-channel',
+                actions: ['save'],
+              },
+              {
+                permission: 'notifier',
+                actions: ['query'],
+              },
+              {
+                permission: 'template',
+                actions: ['query'],
+              },
             ],
           },
           {
             id: 'update',
             name: '编辑',
             permissions: [
-              // {
-              //   permission: 'role',
-              //   actions: ['query'],
-              // },
-              // {
-              //   permission: 'menu',
-              //   actions: ['query'],
-              // },
-              // {
-              //   permission: 'application',
-              //   actions: ['query', 'save'],
-              // },
-              // {
-              //   permission: 'open-api',
-              //   actions: ['query', 'save', 'delete'],
-              // },
-            ],
-          },
-          {
-            id: 'view',
-            name: '查看',
-            permissions: [
-              // {
-              //   permission: 'application',
-              //   actions: ['query'],
-              // },
-              // {
-              //   permission: 'role',
-              //   actions: ['query'],
-              // },
+              {
+                permission: 'role',
+                actions: ['query'],
+              },
+              {
+                permission: 'notify-channel',
+                actions: ['save', 'query'],
+              },
+              {
+                permission: 'notifier',
+                actions: ['query'],
+              },
+              {
+                permission: 'template',
+                actions: ['query'],
+              },
             ],
           },
           {
             id: 'action',
             name: '启/禁用',
             permissions: [
-              // {
-              //   permission: 'application',
-              //   actions: ['save'],
-              // },
+              {
+                permission: 'role',
+                actions: ['query'],
+              },
+              {
+                permission: 'notify-channel',
+                actions: ['save'],
+              },
+              {
+                permission: 'notifier',
+                actions: ['query'],
+              },
+              {
+                permission: 'template',
+                actions: ['query'],
+              },
             ],
           },
         ],

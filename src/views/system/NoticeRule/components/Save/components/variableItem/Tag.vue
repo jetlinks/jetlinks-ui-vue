@@ -43,7 +43,7 @@ watch(
 );
 
 watch(
-    () => props.notify.notifierId,
+    () => props.notify.channelConfiguration?.notifierId,
     (newVal) => {
         if (newVal) {
             getDepartment(newVal);

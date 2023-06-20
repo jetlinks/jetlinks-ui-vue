@@ -138,7 +138,7 @@
             <div class="card" v-if="isNoCommunity">
                 <h3>绑定三方账号</h3>
                 <div class="content">
-                    <div class="account-card" v-for="item in bindList">
+                    <div class="account-card" v-for="item in bindList" :key="item.id">
                         <img
                             :src="item.logoUrl || getImage(bindIcon[item.provider])"
                             style="height: 50px;width: 50px"
