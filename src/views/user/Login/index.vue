@@ -266,8 +266,8 @@ const onFinish = async () => {
             if (userResp.result?.username === 'admin') {
               const resp: any = await getInitSet();
               if (resp.status === 200 && !resp.result.length) {
-                // window.location.href = '/#/init-home';
-                router.push('/init-home')
+                window.location.href = '/#/init-home';
+                // router.push('/init-home')
                 return;
               }
             }
@@ -276,8 +276,8 @@ const onFinish = async () => {
               ...res.result
             });
           }
-            // window.location.href = '/';
-          router.push('/')
+            window.location.href = '/';
+          // router.push('/')
         }
     } catch (error) {
         form.verifyCode = '';
