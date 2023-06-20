@@ -97,10 +97,10 @@
                 </template>
             </MCarousel>
 
-            <div class="child-item-right-auth" :class="{ active: auth.length }">
+            <div class="child-item-right-auth">
                 <j-tooltip :title="!update ? '暂无权限，请联系管理员' : ''">
                     <j-button :disabled="!update" type="text" @click="onAuth">
-                        <div class="child-item-right-auth-btn">
+                        <div class="child-item-right-auth-btn" :class="{ active: auth.length }">
                             <AIcon type="UserOutlined" />
                             <span>权限控制</span>
                         </div>

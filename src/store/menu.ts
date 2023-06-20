@@ -6,7 +6,7 @@ import { usePermissionStore } from './permission'
 import router from '@/router'
 import { onlyMessage } from '@/utils/comm'
 // import { AccountMenu, NotificationRecordCode, NotificationSubscriptionCode } from '@/router/menu'
-import { MESSAGE_SUBSCRIBE_MENU_CODE, USER_CENTER_MENU_CODE } from '@/utils/consts'
+import { USER_CENTER_MENU_CODE } from '@/utils/consts'
 import {isNoCommunity} from "@/utils/utils";
 
 const defaultOwnParams = [
@@ -109,11 +109,6 @@ export const useMenuStore = defineStore({
           permission.permissions = {}
           const { menusData, silderMenus } = filterAsyncRouter(resultData)
 
-          // 是否存在通知订阅
-          // const hasMessageSub = resultData.some((item: { code: string }) => item.code === MESSAGE_SUBSCRIBE_MENU_CODE)
-          // if (!hasMessageSub) {
-          //   AccountMenu.children = AccountMenu.children.filter((item: { code: string }) => ![NotificationSubscriptionCode, NotificationRecordCode].includes(item.code) )
-          // }
           this.menus = findCodeRoute([...resultData]) // AccountMenu
           Object.keys(this.menus).forEach((item) => {
             const _item = this.menus[item]
@@ -130,7 +125,7 @@ export const useMenuStore = defineStore({
             }
           })
           // menusData.push(AccountMenu)
-          this.siderMenus = silderMenus.filter((item: { name: string }) => ![USER_CENTER_MENU_CODE, MESSAGE_SUBSCRIBE_MENU_CODE].includes(item.name))
+          this.siderMenus = silderMenus.filter((item: { name: string }) => ![USER_CENTER_MENU_CODE].includes(item.name))
           res(menusData)
         }
       })

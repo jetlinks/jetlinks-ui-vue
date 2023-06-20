@@ -18,7 +18,7 @@
                 :defaultParams="defaultParams"
             >
                 <template #headerTitle>
-                    <j-button type="primary">全部已读</j-button>
+                    <j-button @click="onAllRead" type="primary">全部已读</j-button>
                 </template>
                 <template #topicProvider="slotProps">
                     {{ slotProps.topicName }}
@@ -241,6 +241,10 @@ watchEffect(() => {
         view(user.messageInfo)
     }
 })
+
+const onAllRead = () => {
+    
+}
 
 onMounted(() => {
     if (routerParams.params?.value.row) {

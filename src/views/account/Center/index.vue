@@ -58,14 +58,19 @@
                                         style="font-size: 24px"
                                         type="FormOutlined" /></j-button
                             ></j-tooltip>
-                            <j-tooltip title="修改密码"
-                                ><j-button
-                                    shape="circle"
-                                    @click="editPasswordVisible = true"
-                                    ><AIcon
-                                        style="font-size: 24px"
-                                        type="LockOutlined" /></j-button
-                            ></j-tooltip>
+                            <PermissionButton
+                                shape="circle"
+                                :hasPermission="`${USER_CENTER_MENU_CODE}:${USER_CENTER_MENU_BUTTON_CODE}`"
+                                :tooltip="{
+                                    title: '修改密码'
+                                }"
+                                @click="editPasswordVisible = true"
+                            >
+                                <AIcon
+                                    style="font-size: 24px"
+                                    type="LockOutlined"
+                                />
+                            </PermissionButton>
                         </j-space>
                     </div>
                 </div>
@@ -108,6 +113,10 @@ import UploadAvatar from './components/UploadAvatar/index.vue';
 import { updateMeInfo_api } from '@/api/account/center';
 import { onlyMessage } from '@/utils/comm';
 import { useRouterParams } from '@/utils/hooks/useParams';
+import {
+  USER_CENTER_MENU_BUTTON_CODE,
+  USER_CENTER_MENU_CODE
+} from '@/utils/consts'
 
 const imageTypes = reactive([
     'image/jpeg',
@@ -147,7 +156,7 @@ const tabs = {
     StationMessage,
 };
 
-const router = useRouterParams()
+const router = useRouterParams();
 
 // const activeKey = ref<KeyType>('HomeView');
 const visible = ref<boolean>(false);
@@ -196,10 +205,10 @@ const onAvatarChange = (url: string) => {
 };
 
 watchEffect(() => {
-    if(router.params.value?.tabKey) {
-        user.tabKey = router.params.value?.tabKey
+    if (router.params.value?.tabKey) {
+        user.tabKey = router.params.value?.tabKey;
     }
-})
+});
 </script>
 
 <style lang="less" scoped>
@@ -266,7 +275,7 @@ watchEffect(() => {
                 }
 
                 .person-header-item-action-right {
-                    button {
+                    :deep(button) {
                         height: 50px;
                         width: 50px;
                     }
