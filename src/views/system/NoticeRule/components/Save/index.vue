@@ -12,20 +12,23 @@
         <div style="margin: 20px">
             <template v-if="current === 0">
                 <NotifyWay
-                    v-model:value="formModel.channelProvider"
-                    v-model:name="formModel.name"
+                    :value="formModel.channelProvider"
+                    :name="formModel.name"
+                    @change="onWayChange"
                 />
             </template>
             <template v-if="current === 1">
                 <NotifyConfig
-                    v-model:value="formModel.channelConfiguration.notifierId"
+                    :value="formModel.channelConfiguration.notifierId"
                     :notifyType="formModel.channelProvider"
+                    @change="onConfigChange"
                 />
             </template>
             <template v-if="current === 2">
                 <NotifyTemplate
-                    v-model:value="formModel.channelConfiguration.templateId"
+                    :value="formModel.channelConfiguration.templateId"
                     :notifierId="formModel.channelConfiguration.notifierId"
+                    @change="onTemplateChange"
                 />
             </template>
             <template v-if="current === 3">
@@ -52,7 +55,13 @@
                     v-if="current !== stepList.length - 1"
                     >下一步</j-button
                 >
-                <j-button :loading="loading" type="primary" @click="onSave" v-else>确认</j-button>
+                <j-button
+                    :loading="loading"
+                    type="primary"
+                    @click="onSave"
+                    v-else
+                    >确认</j-button
+                >
             </j-space>
         </template>
     </j-modal>
@@ -89,8 +98,8 @@ const props = defineProps({
     },
     loading: {
         type: Boolean,
-        default: false
-    }
+        default: false,
+    },
 });
 
 const stepList = [
@@ -128,11 +137,13 @@ const _variableDefinitions = computed(() => {
 
 const handleVariable = (obj: any) => {
     const arr = ['user', 'org'];
-    const _array = variable.value.filter((item: any) => {
-        const _type = item.expands?.businessType || item.type || '';
-        return arr.includes(_type);
-    }).map((i: any) => i?.id);
-    const _variable = variableMap.get(formModel.channelProvider)
+    const _array = variable.value
+        .filter((item: any) => {
+            const _type = item.expands?.businessType || item.type || '';
+            return arr.includes(_type);
+        })
+        .map((i: any) => i?.id);
+    const _variable = variableMap.get(formModel.channelProvider);
     const _obj = {};
     [...new Set([..._array, _variable]).values()].map((item: string) => {
         _obj[item] = {
@@ -153,7 +164,9 @@ const handleVariable = (obj: any) => {
 };
 
 const jumpStep = async (val: number) => {
-    if (val === 1) {
+    if (val === 0) {
+        current.value = val;
+    } else if (val === 1) {
         if (formModel.channelProvider) {
             current.value = val;
         } else {
@@ -195,6 +208,34 @@ const jumpStep = async (val: number) => {
             current.value = val;
         }
     }
+};
+
+const onWayChange = (obj: any) => {
+    // 如果数据变化，清除后面的值
+    if (formModel.channelProvider !== obj.value) {
+        formModel.channelConfiguration.notifierId = '';
+        formModel.channelConfiguration.templateId = '';
+        formModel.channelConfiguration.variables = {};
+    }
+    formModel.channelProvider = obj?.value;
+    formModel.name = obj?.label;
+};
+
+const onConfigChange = (obj: any) => {
+    // 如果数据变化，清除后面的值
+    if (formModel.channelConfiguration?.notifierId !== obj?.value) {
+        formModel.channelConfiguration.templateId = '';
+        formModel.channelConfiguration.variables = {};
+    }
+    formModel.channelConfiguration.notifierId = obj?.value;
+};
+
+const onTemplateChange = (obj: any) => {
+    // 如果数据变化，清除后面的值
+    if (formModel.channelConfiguration?.templateId !== obj?.value) {
+        formModel.channelConfiguration.variables = {};
+    }
+    formModel.channelConfiguration.templateId = obj?.value
 };
 
 watchEffect(() => {

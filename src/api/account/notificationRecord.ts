@@ -7,6 +7,9 @@ export const getList_api = (data: any): any => server.post(`/notifications/_quer
 // 修改记录状态
 export const changeStatus_api = (type: '_read' | '_unread', data: string[]): any => server.post(`/notifications/${type}`, data)
 
+export const changeAllStatus = (type: '_read' | '_unread', data: string[]): any => server.post(`/notifications/${type}/provider`, data)
+
+
 // 查询告警记录详情
 export const getDetail = (id: string): any => server.get(`/alarm/record/${id}`)
 

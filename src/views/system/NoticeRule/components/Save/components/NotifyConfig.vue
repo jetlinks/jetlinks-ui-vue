@@ -159,11 +159,11 @@ const handleClick = (dt: any) => {
     if (_selectedRowKeys.value.includes(dt.id)) {
         _selectedRowKeys.value = [];
         emit('update:value', undefined);
-        emit('change', { provider: undefined });
+        emit('change', { provider: undefined, value: undefined });
     } else {
         _selectedRowKeys.value = [dt.id];
         emit('update:value', dt.id);
-        emit('change', { provider: dt?.provider });
+        emit('change', { provider: dt?.provider, value: dt.id });
     }
 };
 

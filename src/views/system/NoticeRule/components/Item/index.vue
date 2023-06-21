@@ -100,7 +100,10 @@
             <div class="child-item-right-auth">
                 <j-tooltip :title="!update ? '暂无权限，请联系管理员' : ''">
                     <j-button :disabled="!update" type="text" @click="onAuth">
-                        <div class="child-item-right-auth-btn" :class="{ active: auth.length }">
+                        <div
+                            class="child-item-right-auth-btn"
+                            :class="{ active: auth.length }"
+                        >
                             <AIcon type="UserOutlined" />
                             <span>权限控制</span>
                         </div>
@@ -143,8 +146,10 @@ import {
     editChannelConfig,
     updateChannelConfig,
 } from '@/api/system/noticeRule';
-import { Modal } from 'jetlinks-ui-components';
+import { Modal, Checkbox } from 'jetlinks-ui-components';
 import { usePermissionStore } from '@/store/permission';
+import { LocalStore } from '@/utils/comm';
+import { useUserInfo } from '@/store/userInfo';
 
 const props = defineProps({
     data: {
@@ -165,6 +170,7 @@ const auth = ref<string[]>([]);
 const loading = ref<boolean>(false);
 
 const permission = usePermissionStore();
+const user = useUserInfo();
 
 const action = permission.hasPermission('system/NoticeRule:action');
 const add = permission.hasPermission('system/NoticeRule:add');
@@ -224,74 +230,116 @@ const onAuthSave = (_data: string[]) => {
     });
 };
 
-const onSwitchChange = (e: boolean) => {
-    Modal.confirm({
-        title: e
-            ? '开启后默认平台所有用户都能接收到该通知'
-            : '关闭后平台所有用户都不能接收到该通知',
-        cancelText: '取消',
-        okText: e ? '确认开启' : '确认关闭',
-        onOk() {
-            if (e) {
-                // enable
-                if (
-                    props.data.id &&
-                    props.data.channels?.length &&
-                    props.data.channels.find(
-                        (item: any) => item.channelProvider === 'inside-mail',
-                    )
-                ) {
-                    actionChannelConfig(props.data.id, 'enable').then(
-                        (resp) => {
-                            if (resp.status === 200) {
-                                onlyMessage('操作成功！');
-                                emits('refresh');
-                            }
-                        },
-                    );
-                } else {
-                    const obj = {
-                        ...props.data,
-                        state: 'enabled',
-                        channels: [
-                            {
-                                name: '站内信',
-                                channelProvider: 'inside-mail',
-                                grant: {},
-                            },
-                        ],
-                    };
-                    saveChannelConfig([obj]).then((resp) => {
-                        if (resp.status === 200) {
-                            onlyMessage('操作成功！', 'success');
-                            emits('refresh');
-                        }
-                    });
+const onAction = (e: boolean) => {
+    if (e) {
+        // enable
+        if (
+            props.data.id &&
+            props.data.channels?.length &&
+            props.data.channels.find(
+                (item: any) => item.channelProvider === 'inside-mail',
+            )
+        ) {
+            actionChannelConfig(props.data.id, 'enable').then((resp) => {
+                if (resp.status === 200) {
+                    onlyMessage('操作成功！');
+                    emits('refresh');
                 }
-            } else {
-                actionChannelConfig(props.data.id, 'disable').then((resp) => {
-                    if (resp.status === 200) {
-                        onlyMessage('操作成功！');
-                        emits('refresh');
-                    }
-                });
+            });
+        } else {
+            const obj = {
+                ...props.data,
+                state: 'enabled',
+                channels: [
+                    {
+                        name: '站内信',
+                        channelProvider: 'inside-mail',
+                        grant: {},
+                    },
+                ],
+            };
+            saveChannelConfig([obj]).then((resp) => {
+                if (resp.status === 200) {
+                    onlyMessage('操作成功！', 'success');
+                    emits('refresh');
+                }
+            });
+        }
+    } else {
+        actionChannelConfig(props.data.id, 'disable').then((resp) => {
+            if (resp.status === 200) {
+                onlyMessage('操作成功！');
+                emits('refresh');
             }
-        },
-        onCancel() {},
-    });
+        });
+    }
+};
+
+const onSwitchChange = (e: boolean) => {
+    const _value = LocalStore.get(user.userInfos?.username) || {};
+    let _checked: boolean = e ? _value?.open : _value?.close;
+    if (_checked) {
+        onAction(e);
+    } else {
+        Modal.confirm({
+            title: e
+                ? '开启后默认平台所有用户都能接收到该通知'
+                : '关闭后平台所有用户都不能接收到该通知',
+            cancelText: '取消',
+            okText: e ? '确认开启' : '确认关闭',
+            content: h(
+                'div',
+                {
+                    style: {
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        marginTop: '20px',
+                    },
+                },
+                [
+                    h(
+                        Checkbox,
+                        {
+                            onChange: (_e: any) => {
+                                LocalStore.set(
+                                    user.userInfos?.username,
+                                    e
+                                        ? {
+                                              ..._value,
+                                              open: _e.target?.checked,
+                                          }
+                                        : {
+                                              ..._value,
+                                              close: _e.target?.checked,
+                                          },
+                                );
+                            },
+                        },
+                        '不再提示',
+                    ),
+                ],
+            ),
+            onOk() {
+                onAction(e);
+            },
+            onCancel() {},
+        });
+    }
 };
 
 const onSave = (_data: any) => {
-    loading.value = true
-    updateChannelConfig(props.data.id, [_data]).then((resp) => {
-        if (resp.status === 200) {
-            onlyMessage('操作成功！', 'success');
-            visible.value = false;
-            emits('refresh');
-        }
-    }).finally(() => {
-        loading.value = false
-    })
+    loading.value = true;
+    updateChannelConfig(props.data.id, [_data])
+        .then((resp) => {
+            if (resp.status === 200) {
+                onlyMessage('操作成功！', 'success');
+                visible.value = false;
+                emits('refresh');
+            }
+        })
+        .finally(() => {
+            loading.value = false;
+        });
 };
 </script>
 

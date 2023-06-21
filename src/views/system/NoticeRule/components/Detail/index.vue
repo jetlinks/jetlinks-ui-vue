@@ -97,7 +97,7 @@ const handleSearch = async () => {
                 .map((item: string) => {
                     return (resp?.result || []).find((i: any) => i?.id === item)?.name
                 })
-                ?.join(',');
+                ?.join(',') || '未配置权限'
         }
     }
 };

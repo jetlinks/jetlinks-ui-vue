@@ -11,7 +11,6 @@
 </template>
 
 <script lang="ts" setup>
-import { onlyMessage } from '@/utils/comm';
 import { PropType } from 'vue';
 import Role from '../Role/index.vue';
 

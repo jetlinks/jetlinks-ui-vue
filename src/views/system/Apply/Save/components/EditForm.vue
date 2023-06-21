@@ -1372,6 +1372,7 @@
             v-if="routeQuery.view !== 'true'"
             @click="clickSave"
             type="primary"
+            :loading="loading"
         >
             保存
         </j-button>
@@ -1418,7 +1419,9 @@ const menuStory = useMenuStore();
 const deptPermission = 'system/Department';
 const rolePermission = 'system/Role';
 
-const typeOptions = ref<any[]>([])
+const typeOptions = ref<any[]>([]);
+
+const loading = ref<boolean>(false);
 
 // 初始化表单
 const initForm: formType = {
@@ -1755,6 +1758,7 @@ function clickSave() {
             }));
         }
 
+        loading.value = true
         const request = routeQuery.id
             ? updateApp_api(routeQuery.id as string, params)
             : addApp_api(params);
@@ -1772,7 +1776,9 @@ function clickSave() {
                     menuStory.jumpPage('system/Apply');
                 }
             }
-        });
+        }).finally(() => {
+            loading.value = false
+        })
     });
 }
 function getErrorNum(

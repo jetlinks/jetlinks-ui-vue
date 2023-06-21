@@ -86,6 +86,7 @@ const onSearch = (e: any) => {
 // 取消全选
 const cancelSelect = () => {
     _selectedRowKeys.value = [];
+    emit('update:modelValue', []);
 };
 
 const onSelect = (record: any, selected: boolean) => {

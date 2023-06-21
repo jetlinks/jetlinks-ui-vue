@@ -5,7 +5,7 @@
                 :columns="columns"
                 target="category"
                 style="padding: 0"
-                @search="(params:any)=>queryParams = {...params}"
+                @search="queryParams"
             />
 
             <j-pro-table
@@ -18,7 +18,9 @@
                 :defaultParams="defaultParams"
             >
                 <template #headerTitle>
-                    <j-button @click="onAllRead" type="primary">全部已读</j-button>
+                    <j-popconfirm title="确认全部已读？" @confirm="onAllRead">
+                        <j-button type="primary">全部已读</j-button>
+                    </j-popconfirm>
                 </template>
                 <template #topicProvider="slotProps">
                     {{ slotProps.topicName }}
@@ -89,12 +91,13 @@ import PermissionButton from '@/components/PermissionButton/index.vue';
 import {
     getList_api,
     changeStatus_api,
+    changeAllStatus
 } from '@/api/account/notificationRecord';
 import dayjs from 'dayjs';
-import { message } from 'ant-design-vue';
 import { useUserInfo } from '@/store/userInfo';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { getTypeList_api } from '@/api/account/notificationSubscription';
+import { onlyMessage } from '@/utils/comm';
 
 const user = useUserInfo();
 
@@ -229,7 +232,7 @@ const changeStatus = (row: any) => {
     const type = row.state.value === 'read' ? '_unread' : '_read';
     changeStatus_api(type, [row.id]).then((resp: any) => {
         if (resp.status === 200) {
-            message.success('操作成功！');
+            onlyMessage('操作成功！');
             refresh();
             user.updateAlarm();
         }
@@ -242,9 +245,13 @@ watchEffect(() => {
     }
 })
 
-const onAllRead = () => {
-    
-}
+const onAllRead = async () => {
+    const resp = await changeAllStatus('_read', getType.value)
+    if(resp.status === 200){
+        onlyMessage('操作成功！')
+        refresh()
+    }
+}   
 
 onMounted(() => {
     if (routerParams.params?.value.row) {

@@ -138,12 +138,12 @@ const handleClick = (dt: any) => {
     if (_selectedRowKeys.value.includes(dt.id)) {
         _selectedRowKeys.value = [];
         emit('update:value', undefined);
-        emit('change', { templateName: undefined });
+        emit('change', { templateName: undefined, value: undefined });
         emit('update:detail', undefined);
     } else {
         _selectedRowKeys.value = [dt.id];
         emit('update:value', dt.id);
-        emit('change', { templateName: dt?.name });
+        emit('change', { templateName: dt?.name, value: dt?.id });
         emit('update:detail', dt);
     }
 };
