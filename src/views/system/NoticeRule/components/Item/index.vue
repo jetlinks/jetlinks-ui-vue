@@ -371,6 +371,7 @@ const onSave = (_data: any) => {
 
         .box-item {
             margin-left: 10px;
+            cursor: pointer;
             .box-item-img {
                 background-color: #fff;
                 width: 48px;
@@ -389,6 +390,10 @@ const onSave = (_data: any) => {
 
         .child-item-right-auth {
             margin-left: 20px;
+
+            :deep(.ant-btn) {
+                height: 78px;
+            }
             .child-item-right-auth-btn {
                 height: 78px;
                 display: flex;

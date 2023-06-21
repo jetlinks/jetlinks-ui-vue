@@ -229,8 +229,9 @@ watch(
 
 .code {
     width: 100%;
-    height: 500px;
+    height: 600px;
     display: flex;
+    margin-top: 30px;
     justify-content: center;
 
     .code-item {
