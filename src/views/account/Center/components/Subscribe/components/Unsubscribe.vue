@@ -3,7 +3,7 @@
         <template v-if="getType === 'notifier-dingTalk'">
             <!-- <div class="tip">请先绑定钉钉账号</div> -->
             <j-spin :spinning="loading">
-                <div class="code">
+                <div class="code" style="height: 600px;">
                     <iframe
                         id="notifier_iframe"
                         class="code-item"
@@ -18,7 +18,7 @@
         <template v-else-if="getType === 'notifier-weixin'">
             <!-- <div class="tip">请先绑定企业微信账号</div> -->
             <j-spin :spinning="loading">
-                <div class="code">
+                <div class="code" style="height: 450px">
                     <iframe
                         id="notifier_iframe"
                         class="code-item"
@@ -145,6 +145,7 @@ const updateIframeStyle = () => {
     ) as HTMLIFrameElement;
     iframe.onload = () => {
         const currentUrl = iframe?.contentWindow?.location?.search || '';
+        console.log(currentUrl)
         let authCode = '';
         if (currentUrl.startsWith('?')) {
             currentUrl
@@ -229,7 +230,6 @@ watch(
 
 .code {
     width: 100%;
-    height: 600px;
     display: flex;
     margin-top: 30px;
     justify-content: center;
