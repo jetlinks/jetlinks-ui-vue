@@ -25,8 +25,7 @@
       </PermissionButton>
     </div>
   </div>
-    <j-table  :data-source="dataSource" :columns="columns" row-key="id" model="TABLE" size="small"
-             :pagination="false">
+    <j-data-table  :data-source="dataSource" :columns="columns" row-key="id" serial>
       <template #bodyCell="{ column, record }">
         <template v-if="column.dataIndex === 'id'">
           <div style="width: 100px"><j-ellipsis>{{ record.id || '-' }}</j-ellipsis></div>
@@ -43,9 +42,7 @@
         <template v-if="column.dataIndex === 'async'">
           {{ record.async ? '是' : '否' }}
         </template>
-        <template v-if="column.dataIndex === 'valueType'">
-          {{ record.valueType?.type }}
-        </template>
+
         <template v-if="column.dataIndex === 'source'">
           {{ sourceMap[record.expands?.source] }}
           <Rule v-if="record.expands?.source==='rule'" v-model:value="record.expands" />
@@ -59,7 +56,10 @@
         <template v-if="column.dataIndex === 'action'">
         </template>
       </template>
-    </j-table>
+      <template #valueType="{ data }">
+        {{ data.record.valueType.type }}
+      </template>
+    </j-data-table>
 </template>
 
 <script setup lang="ts" name="BaseMetadata">

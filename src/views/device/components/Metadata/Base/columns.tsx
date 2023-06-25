@@ -1,4 +1,15 @@
 import { ColumnProps } from "ant-design-vue/es/table";
+import { DataType } from './components'
+interface DataTableColumnProps extends ColumnProps {
+  type?: string,
+  components?: {
+    name: any
+    [key:string]: any
+  }
+  form?: {
+    rules: any[]
+  }
+}
 
 const SourceMap = {
   device: '设备',
@@ -12,32 +23,29 @@ const type = {
   report: '上报',
 };
 
-const BaseColumns: ColumnProps[] = [
+const BaseColumns: DataTableColumnProps[] = [
   {
     title: '标识',
     dataIndex: 'id',
-    width: 100
+    width: 150,
+    type: 'text'
   },
   {
     title: '名称',
     dataIndex: 'name',
-    width: 200
-  },
-  {
-    title: '说明',
-    dataIndex: 'description',
-    width: 200
+    width: 200,
+    type: 'text'
   },
 ];
 
-const EventColumns: ColumnProps[] = BaseColumns.concat([
+const EventColumns: DataTableColumnProps[] = BaseColumns.concat([
   {
     title: '事件级别',
     dataIndex: 'level',
   },
 ]);
 
-const FunctionColumns: ColumnProps[] = BaseColumns.concat([
+const FunctionColumns: DataTableColumnProps[] = BaseColumns.concat([
   {
     title: '是否异步',
     dataIndex: 'async',
@@ -49,10 +57,14 @@ const FunctionColumns: ColumnProps[] = BaseColumns.concat([
   // },
 ]);
 
-const PropertyColumns: ColumnProps[] = BaseColumns.concat([
+const PropertyColumns: DataTableColumnProps[] = BaseColumns.concat([
   {
     title: '数据类型',
     dataIndex: 'valueType',
+    type: 'components',
+    components: {
+      name: DataType
+    }
   },
   {
     title: '属性来源',
@@ -64,7 +76,7 @@ const PropertyColumns: ColumnProps[] = BaseColumns.concat([
   },
 ]);
 
-const TagColumns: ColumnProps[] = BaseColumns.concat([
+const TagColumns: DataTableColumnProps[] = BaseColumns.concat([
   {
     title: '数据类型',
     dataIndex: 'valueType',
@@ -75,7 +87,7 @@ const TagColumns: ColumnProps[] = BaseColumns.concat([
   },
 ]);
 
-const MetadataMapping = new Map<string, ColumnProps[]>();
+const MetadataMapping = new Map<string, DataTableColumnProps[]>();
 MetadataMapping.set('properties', PropertyColumns);
 MetadataMapping.set('events', EventColumns);
 MetadataMapping.set('tags', TagColumns);
