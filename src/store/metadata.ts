@@ -21,7 +21,7 @@ export const useMetadataStore = defineStore({
       action: 'add',
       import: false,
       importMetadata: false,
-    } as MetadataModelType 
+    } as MetadataModelType
   }),
   actions: {
     set(key: string, value: any) {

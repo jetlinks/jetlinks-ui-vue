@@ -24,12 +24,12 @@
       <j-form-item :label="spanLabel" :name="name.concat(['window', 'span'])" :rules="[
         { required: true, message: '请输入窗口长度' },
       ]">
-        <j-input-number v-model:value="value.window.span" size="small" style="width: 100%;"></j-input-number>
+        <j-input-number stringMode v-model:value="value.window.span" size="small" style="width: 100%;"></j-input-number>
       </j-form-item>
       <j-form-item :label="everyLabel" :name="name.concat(['window', 'every'])" :rules="[
         { required: true, message: '请输入步长' },
       ]">
-        <j-input-number v-model:value="value.window.every" size="small" style="width: 100%;"></j-input-number>
+        <j-input-number stringMode :maxlength="10" v-model:value="value.window.every" size="small" style="width: 100%;"></j-input-number>
       </j-form-item>
     </template>
   </template>

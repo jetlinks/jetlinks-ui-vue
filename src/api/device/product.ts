@@ -212,3 +212,12 @@ export const getMetadataDeviceConfig = (params: {
   };
 }) => server.get<Record<any, any>[]>(`/device/instance/${params.deviceId}/config-metadata/${params.metadata.type}/${params.metadata.id}/${params.metadata.dataType}`)
 
+/**
+ * 规则属性
+ */
+export const saveProductVirtualProperty = (productId: string, data: any[]) => server.patch(`/virtual/property/product/${productId}/_batch`, data)
+
+export const queryProductVirtualProperty = (productId: string, propertyId: string) => server.get(`/virtual/property/product/${productId}/${propertyId}`)
+
+
+

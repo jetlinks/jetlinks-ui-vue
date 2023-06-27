@@ -1,10 +1,10 @@
 import { ColumnProps } from "ant-design-vue/es/table";
-import { DataType } from './components'
+import { DataType, Source } from './components'
 interface DataTableColumnProps extends ColumnProps {
   type?: string,
   components?: {
     name: any
-    [key:string]: any
+    [key: string]: any
   }
   form?: {
     rules: any[]
@@ -68,7 +68,36 @@ const PropertyColumns: DataTableColumnProps[] = BaseColumns.concat([
   },
   {
     title: '属性来源',
-    dataIndex: 'source',
+    dataIndex: 'expands',
+    type: 'components',
+    components: {
+      name: Source
+    },
+    form: {
+      rules: [
+        {
+          validator: async (_: Record<string, any>, value: any) => {
+            if (value.source) {
+              if(value.source !== 'rule') {
+                if(value.type?.length) {
+                  return Promise.resolve();
+                } else {
+                  return Promise.reject('请选择读写类型');
+                }
+              } else {
+                if(value.virtualRule?.rule?.script) {
+                  return Promise.resolve();
+                }else {
+                  return Promise.reject('请配置规则');
+                }
+              }
+            } else {
+              return Promise.reject('请选择属性来源');
+            }
+          }
+        },
+      ]
+    }
   },
   {
     title: '读写类型',

@@ -13,7 +13,7 @@ const useMetadata = (type: 'device' | 'product', key?: MetadataType): {
 
     const data = computed(() => {
         const _metadataStr = type === 'product' ? productStore.current?.metadata : instanceStore.current.metadata
-        const _metadata = JSON.parse(_metadataStr)
+        const _metadata = JSON.parse(_metadataStr || '{}')
         console.log(_metadata)
         return (key ? _metadata[key] : []) as MetadataItem[]
     })

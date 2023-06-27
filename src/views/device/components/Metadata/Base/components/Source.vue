@@ -1,58 +1,138 @@
 <template>
-  <j-popconfirm-modal @confirm="confirm" bodyStyle="width: 450px">
-    <template #content>
-      <j-form ref="formRef" layout="vertical" :model="formData">
-        <ReadType v-model:value="formData.type" :disabled="value.source === 'manual'" />
-      </j-form>
-    </template>
-    <j-button style="padding: 4px 8px;">
-      <AIcon type="EditOutlined" />
-    </j-button>
-  </j-popconfirm-modal>
+    <div class="metadata-source">
+        <j-select
+            v-model:value="myValue"
+            :options="PropertySource"
+            placeholder="请选择来源"
+            @change="onChange"
+            :disabled="false"
+        >
+        </j-select>
+        <j-popconfirm-modal
+            @confirm="confirm"
+            :bodyStyle="{width: '450px', height: myValue === 'rule' ? '300px' : '80px'}"
+        >
+            <template #content>
+                <j-scrollbar v-if="myValue">
+                    <VirtualRule
+                        :value="value"
+                        :source="myValue"
+                        :dataSource="dataSource"
+                        ref="virtualRuleRef"
+                    />
+                </j-scrollbar>
+            </template>
+            <j-button :disabled="!myValue" type="link" style="padding: 4px 8px">
+                <AIcon type="EditOutlined" />
+            </j-button>
+        </j-popconfirm-modal>
+    </div>
 </template>
 
 <script setup lang="ts" name="MetadataSource">
+import { isNoCommunity } from '@/utils/utils';
+import VirtualRule from './VirtualRule/index.vue';
 
-import { ReadType } from '@/components/Metadata/components'
+const PropertySource: { label: string; value: string }[] = isNoCommunity
+    ? [
+          {
+              value: 'device',
+              label: '设备',
+          },
+          {
+              value: 'manual',
+              label: '手动',
+          },
+          {
+              value: 'rule',
+              label: '规则',
+          },
+      ]
+    : [
+          {
+              value: 'device',
+              label: '设备',
+          },
+          {
+              value: 'manual',
+              label: '手动',
+          },
+      ];
+
+type SourceType = 'device' | 'manual' | 'rule' | '';
 
 type Emit = {
-  (e: 'update:value', data: Record<string, any>): void
-}
+    (e: 'update:value', data: Record<string, any>): void;
+};
 
 const props = defineProps({
-  value: {
-    type: Object,
-    default: () => ({})
-  }
-})
+    value: {
+        type: Object,
+        default: () => {},
+    },
+    dataSource: {
+        type: Array,
+        default: () => [],
+    },
+});
 
-const emit = defineEmits<Emit>()
-const formRef = ref<any>(null)
+const emit = defineEmits<Emit>();
 
-const formData = reactive<{
-  type?: string[]
-}>({
-  type: props.value.source === 'manual' ? ['write'] : []
-})
+const myValue = ref<SourceType>('');
+const type = ref<string>('');
+const virtualRuleRef = ref<any>(null);
 
-const confirm = () => {
-  return new Promise(async (resolve, reject) => {
-    const data = await formRef.value!.validate().catch(() => {
-      reject()
-    })
-    if (data) {
-      emit('update:value', formData)
-      resolve(true)
-    }
-  })
-}
+const onChange = (keys: SourceType) => {
+    myValue.value = keys;
+    emit('update:value', {
+        ...props.value,
+        expands: {
+            ...props.value?.expands,
+            source: keys,
+            type:
+                keys === 'manual'
+                    ? ['write']
+                    : keys === 'rule'
+                    ? ['report']
+                    : [],
+        },
+    });
+};
 
-watch(() => props.value, () => {
-  Object.assign(formData, props.value)
-}, { immediate: true })
+const confirm = async () => {
+    return new Promise(async (resolve, reject) => {
+        const data = await virtualRuleRef?.value.onSave().catch(() => {
+            reject();
+        });
+        if (data) {
+            const obj = {
+                ...props.value,
+                expands: {
+                    ...props.value?.expands,
+                    ...data,
+                },
+            };
+            emit('update:value', obj);
+            resolve(true);
+        } else {
+            reject()
+        }
+    });
+};
 
+watch(
+    () => props.value,
+    () => {
+        myValue.value = props.value?.expands?.source || '';
+        type.value = props.value?.expands?.type || [];
+    },
+    { immediate: true },
+);
 </script>
 
 <style scoped>
-
+.metadata-source {
+    display: flex;
+    align-items: center;
+}
 </style>
