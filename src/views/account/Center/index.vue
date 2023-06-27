@@ -60,7 +60,7 @@
                             ></j-tooltip>
                             <PermissionButton
                                 shape="circle"
-                                :hasPermission="`${USER_CENTER_MENU_CODE}:${USER_CENTER_MENU_BUTTON_CODE}`"
+                                v-if="permission"
                                 :tooltip="{
                                     title: '修改密码'
                                 }"
@@ -117,6 +117,7 @@ import {
   USER_CENTER_MENU_BUTTON_CODE,
   USER_CENTER_MENU_CODE
 } from '@/utils/consts'
+import { usePermissionStore } from '@/store/permission';
 
 const imageTypes = reactive([
     'image/jpeg',
@@ -162,6 +163,9 @@ const router = useRouterParams();
 const visible = ref<boolean>(false);
 const editInfoVisible = ref<boolean>(false);
 const editPasswordVisible = ref<boolean>(false);
+
+const hasPermission = usePermissionStore().hasPermission;
+const permission = () => hasPermission(`${USER_CENTER_MENU_CODE}:${USER_CENTER_MENU_BUTTON_CODE}`);
 
 const onActivated = (_key: KeyType) => {
     user.tabKey = _key;
