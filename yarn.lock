@@ -3825,8 +3825,8 @@ jetlinks-store@^0.0.3:
 
 jetlinks-ui-components@^1.0.24:
   version "1.0.24"
-  resolved "http://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.24.tgz#43d2654c269afd87a910f4ce2b0f011ecac4482c"
-  integrity sha512-wPjIgV1ubIRSBLRtjGB3tqqaxPuFrnbx7HpiXAUzLb6Pyn5PxIgUZPUzlXdPIpe+WzomNIlRjFV+/WyV/xaA3w==
+  resolved "http://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.24.tgz#747dbd3c6d8af389d4eb02ffc37e9ee9a8da94c5"
+  integrity sha512-gJ+IJ90p6Q8YQJxfBjep3BCBHg/conxYOHv3v0aiGrzKzdidSk075OcXxOx7bIeAWoqBbY1uCNhYfnhFWCwVIQ==
   dependencies:
     "@vueuse/core" "^9.12.0"
     "@vueuse/router" "^9.13.0"
@@ -6166,7 +6166,7 @@ socks@^2.6.2:
 
 sortablejs@1.14.0:
   version "1.14.0"
-  resolved "https://registry.jetlinks.cn/sortablejs/-/sortablejs-1.14.0.tgz#6d2e17ccbdb25f464734df621d4f35d4ab35b3d8"
+  resolved "http://registry.jetlinks.cn/sortablejs/-/sortablejs-1.14.0.tgz#6d2e17ccbdb25f464734df621d4f35d4ab35b3d8"
   integrity sha512-pBXvQCs5/33fdN1/39pPL0NZF20LeRbLQ5jtnheIPN9JQAaufGjKdWduZn4U7wCtVuzKhmRkI0DFYHYRbB2H1w==
 
 sortablejs@^1.15.0:
@@ -7062,7 +7062,7 @@ vue@^3.2.37, vue@^3.2.45:
 
 vuedraggable@^4.1.0:
   version "4.1.0"
-  resolved "https://registry.jetlinks.cn/vuedraggable/-/vuedraggable-4.1.0.tgz#edece68adb8a4d9e06accff9dfc9040e66852270"
+  resolved "http://registry.jetlinks.cn/vuedraggable/-/vuedraggable-4.1.0.tgz#edece68adb8a4d9e06accff9dfc9040e66852270"
   integrity sha512-FU5HCWBmsf20GpP3eudURW3WdWTKIbEIQxh9/8GE806hydR9qZqRRxRE3RjqX7PkuLuMQG/A7n3cfj9rCEchww==
   dependencies:
     sortablejs "1.14.0"

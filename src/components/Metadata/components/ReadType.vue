@@ -3,11 +3,7 @@
   <j-select
       v-model:value="myValue"
       mode="multiple"
-      :options="[
-        { value: 'read', label: '读' },
-        { value: 'write', label: '写' },
-        { value: 'report', label: '上报' },
-      ]"
+      :options="options"
       :disabled="disabled"
       placeholder="请选择读写类型"
       @change="onChange"
@@ -31,6 +27,10 @@ const props = defineProps({
   },
   value: {
     type: Array as PropType<Array<string>>,
+    default: () => []
+  },
+  options: {
+    type: Array as PropType<Array<{label: string, value: string}>>,
     default: () => []
   }
 })

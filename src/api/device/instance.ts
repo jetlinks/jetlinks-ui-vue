@@ -580,10 +580,18 @@ export const getDeviceNumber = (data?:any) => server.post<number>('/device-insta
  */
 export const importDeviceByPlugin = (productId: string, data: any[]) => server.post(`/device/instance/plugin/${productId}/import`, data)
 
-export const metadateMapById = (productId: string, data: ant[]) => server.patch(`/device/metadata/mapping/product/${productId}`, data)
+export const metadateMapById = (productId: string, data: any[]) => server.patch(`/device/metadata/mapping/product/${productId}`, data)
 
 export const getMetadateMapById = (productId: string) => server.get(`/device/metadata/mapping/product/${productId}`)
 
 export const getInkingDevices = (data: string[]) => server.post('/plugin/mapping/device/_all', data)
+
+/**
+ * 规则属性
+ */
+export const saveDeviceVirtualProperty = (productId: string, deviceId: string, data: any[]) => server.patch(`/virtual/property/product/${productId}/${deviceId}/_batch`, data)
+
+export const queryDeviceVirtualProperty = (productId: string, deviceId: string, propertyId: string) => server.get(`/virtual/property/product/${productId}/${deviceId}/${propertyId}`)
+
 
 

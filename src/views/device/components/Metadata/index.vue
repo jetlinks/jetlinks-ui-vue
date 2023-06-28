@@ -68,6 +68,8 @@ const permission = computed(() => props.type === 'device' ? 'device/Instance' : 
 const visible = ref(false)
 const cat = ref(false)
 
+provide('_metadataType', props.type)
+
 // 重置物模型
 const resetMetadata = async () => {
   const { id } = route.params
