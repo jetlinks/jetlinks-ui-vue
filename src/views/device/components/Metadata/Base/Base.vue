@@ -92,14 +92,20 @@
             {{ sourceMap?.[data.record?.expands?.source] || '' }}
         </template>
         <template #inputs="{ data }">
-        {{ data.record.inputs.map(item => item.name).join(',') }}
-      </template>
-      <template #output="{ data }">
-        {{ data.record.output.type }}
-      </template>
-      <template #async="{ data }">
-        {{ data.record.async ? '是' : '否' }}
-      </template>
+          {{ data.record.inputs.map(item => item.name).join(',') }}
+        </template>
+        <template #output="{ data }">
+          {{ data.record.output.type }}
+        </template>
+        <template #async="{ data }">
+          {{ data.record.async ? '是' : '否' }}
+        </template>
+        <template #expands="{ data }" v-if="type === 'events'">
+          {{ levelMap?.[data.record.expands?.level] || '-' }}
+        </template>
+        <template #properties="{ data }">
+          {{ data.record.valueType.properties.map(item => item.name).join(',') }}
+        </template>
     </j-data-table>
 </template>
 

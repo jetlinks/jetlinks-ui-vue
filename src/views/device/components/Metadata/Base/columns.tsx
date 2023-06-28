@@ -1,6 +1,8 @@
 import { ColumnProps } from "ant-design-vue/es/table";
 import { DataType, Source } from './components'
 import { DataTableObject } from 'jetlinks-ui-components';
+import SelectColumn from './components/Events/SelectColumn.vue';
+import { EventLevel } from "@/views/device/data";
 interface DataTableColumnProps extends ColumnProps {
   type?: string,
   components?: {
@@ -42,15 +44,68 @@ const BaseColumns: DataTableColumnProps[] = [
 const EventColumns: DataTableColumnProps[] = BaseColumns.concat([
   {
     title: '事件级别',
-    dataIndex: 'level',
+    dataIndex: 'expands',
+    type: 'components',
+    components: {
+      name: SelectColumn,
+      props: {
+        options: EventLevel
+      }
+    }
   },
+  {
+    title: '输出参数',
+    dataIndex: 'valueType',
+  },
+  {
+    title: '配置参数',
+    dataIndex: 'properties',
+    type: 'components',
+    components: {
+      name: DataTableObject,
+      props: {
+        columns: [
+          { title: '参数标识', dataIndex: 'id', type: 'text' },
+          { title: '参数名称', dataIndex: 'name', type: 'text' },
+          {
+              title: '数据类型',
+              type: 'components',
+              dataIndex: ['valueType', 'type'],
+          },
+          {
+            title: '其他配置',
+            type: 'components',
+            dataIndex: ['valueType'],
+
+          },
+          {
+            title: '操作'
+          }
+        ],
+      }
+    }
+  },
+  {
+    title: '说明',
+    dataIndex: 'description',
+    type: 'text',
+  }
 ]);
 
 const FunctionColumns: DataTableColumnProps[] = BaseColumns.concat([
   {
     title: '是否异步',
     dataIndex: 'async',
-    type: 'TypeSelect',
+    type: 'components',
+    components: {
+      name: SelectColumn,
+      props: {
+        options: [
+          { label: '是', value: true },
+          { label: '否', value: false }
+        ]
+      }
+    }
   },
   {
     title: '输入参数',
@@ -153,11 +208,20 @@ const TagColumns: DataTableColumnProps[] = BaseColumns.concat([
   {
     title: '数据类型',
     dataIndex: 'valueType',
+    type: 'components',
+    components: {
+      name: DataType,
+    }
   },
   {
     title: '读写类型',
     dataIndex: 'type',
   },
+  {
+    title: '说明',
+    dataIndex: 'description',
+    type: 'text',
+  }
 ]);
 
 const MetadataMapping = new Map<string, DataTableColumnProps[]>();
