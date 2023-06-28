@@ -1,5 +1,6 @@
 import { ColumnProps } from "ant-design-vue/es/table";
-import { DataType } from './components'
+import { DataType } from './components';
+import { DataTableObject } from 'jetlinks-ui-components';
 interface DataTableColumnProps extends ColumnProps {
   type?: string,
   components?: {
@@ -49,7 +50,50 @@ const FunctionColumns: DataTableColumnProps[] = BaseColumns.concat([
   {
     title: '是否异步',
     dataIndex: 'async',
+    type: 'TypeSelect',
   },
+  {
+    title: '输入参数',
+    dataIndex: 'inputs',
+    type: 'components',
+    components: {
+      name: DataTableObject,
+      props: {
+        columns: [
+          { title: '参数标识', dataIndex: 'id', type: 'text' },
+          { title: '参数名称', dataIndex: 'name', type: 'text' },
+          {
+              title: '数据类型',
+              type: 'components',
+              dataIndex: ['valueType', 'type'],
+
+          },
+          {
+            title: '其他配置',
+            type: 'components',
+            dataIndex: ['valueType'],
+
+          },
+          {
+            title: '操作'
+          }
+        ]
+      }
+    }
+  },
+  {
+    title: '输出参数',
+    dataIndex: 'output',
+    type: 'components',
+    components: {
+      name: DataType
+    }
+  },
+  {
+    title: '说明',
+    dataIndex: 'description',
+    type: 'text',
+  }
   // {
   //   title: '读写类型',
   //   dataIndex: 'expands',

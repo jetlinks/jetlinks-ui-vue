@@ -1,62 +1,136 @@
 <template>
-  <div class="metadata-type">
-    <DataTableTypeSelect v-model:value="type" @change="typeChange" />
-    <DataTableArray v-if="type === 'array'" />
-    <DataTableObject v-else-if="type === 'object'" />
-    <DataTableEnum v-else-if="type === 'enum'" />
-    <DataTableBoolean v-else-if="type === 'object'" />
-    <DataTableDouble v-else-if="['float', 'double'].includes(type)" />
-    <DataTableInteger v-else-if="['int', 'long'].includes(type)" />
-    <DataTableFile v-else-if="type === 'file'" />
-    <DataTableDate v-else-if="type === 'date'" />
-    <DataTableString v-else-if="type === 'string'" />
-  </div>
+    <div class="metadata-type">
+        <DataTableTypeSelect v-model:value="type" @change="typeChange" />
+        <DataTableArray
+            v-if="type === 'array'"
+            v-model:value="data.elementType.type"
+        />
+        <DataTableObject
+            v-else-if="type === 'object'"
+            :value="value.properties"
+            :columns="[
+                { title: '参数标识', dataIndex: 'id', type: 'text' },
+                { title: '参数名称', dataIndex: 'name', type: 'text' },
+                {
+                    title: '数据类型',
+                    type: 'components',
+                    dataIndex: ['valueType', 'type'],
+                    components: {
+                      name: DataTableTypeSelect,
+                    }
+                },
+                {
+                  title: '其他配置',
+                  type: 'components',
+                  dataIndex: ['valueType'],
+                  components: {
+                    name: DataTypeObjectChild
+                  }
+                },
+                {
+                  title: '操作'
+                }
+            ]"
+        />
+        <DataTableEnum v-else-if="type === 'enum'" v-model:value="data" />
+        <DataTableBoolean v-else-if="type === 'boolean'" v-model:value="data" />
+        <DataTableDouble
+            v-else-if="['float', 'double'].includes(type)"
+            :options="options"
+            v-model:value="data"
+        />
+        <DataTableInteger
+            v-else-if="['int', 'long'].includes(type)"
+            :options="options"
+            v-model:value="data.unit"
+        />
+        <DataTableFile v-else-if="type === 'file'" v-model:value="data.fileType"/>
+        <DataTableDate v-else-if="type === 'date'" />
+        <DataTableString
+            v-else-if="['string', 'password'].includes(type)"
+            v-model:value="data.expands.maxLength"
+        />
+    </div>
 </template>
 
 <script setup lang="ts" name="MetadataDataType">
+import { getUnit } from '@/api/device/instance';
 import {
-  DataTableTypeSelect,
-  DataTableArray,
-  DataTableString,
-  DataTableInteger,
-  DataTableDouble,
-  DataTableBoolean,
-  DataTableEnum,
-  DataTableFile,
-  DataTableDate,
-  DataTableObject,
-} from 'jetlinks-ui-components'
+    DataTableTypeSelect,
+    DataTableArray,
+    DataTableString,
+    DataTableInteger,
+    DataTableDouble,
+    DataTableBoolean,
+    DataTableEnum,
+    DataTableFile,
+    DataTableDate,
+    DataTableObject,
+} from 'jetlinks-ui-components';
+import DataTypeObjectChild from './DataTypeObjectChild.vue';
+import { cloneDeep } from 'lodash-es';
 
 const props = defineProps({
-  value: {
-    type: Object,
-    default: () => ({})
-  }
-})
+    value: {
+        type: Object,
+        default: () => ({}),
+    },
+});
 
-const emit = defineEmits(['update:value'])
+const options = ref<{ label: string; value: string }[]>([]);
+const emit = defineEmits(['update:value']);
 
-const type = ref(props.value?.type)
-const elements = ref(props.value?.elements)
+const type = ref(props.value?.type);
+const elements = ref(props.value?.elements);
+const unit = ref(props.value?.unit);
+
+const data = ref(cloneDeep(props.value));
 
 const typeChange = () => {
-  emit('update:value', {
-    type: type,
+    emit('update:value', {
+        type: type,
+    });
+};
 
-  })
-}
+watch(
+    () => props.value,
+    () => {
+        type.value = props.value?.type;
+        elements.value = props.value?.elements;
+        if (['float', 'double', 'int', 'long'].includes(type.value)) {
+            const res = getUnit().then((res) => {
+                if (res.success) {
+                    options.value = res.result.map((item) => ({
+                        label: item.description,
+                        value: item.id,
+                    }));
+                }
+            });
+        }
+    },
+    { immediate: true, deep: true },
+);
 
-watch(() => props.value, () => {
-  type.value = props.value?.type
-  elements.value = props.value?.elements
-}, { immediate: true, deep: true})
-
+watch(
+    () => data.value,
+    () => {
+      let result = {...data.value};
+        if(type.value == 'boolean') {
+          result = {...data.value.value}
+        }
+        emit('update:value', {
+            ...result,
+            type: type,
+        });
+    },
+    { deep: true },
+);
 </script>
 
 <style scoped>
 .metadata-type {
-  display: flex;
-  gap: 12px;
-  align-items: center;
+    display: flex;
+    gap: 12px;
+    align-items: center;
 }
 </style>

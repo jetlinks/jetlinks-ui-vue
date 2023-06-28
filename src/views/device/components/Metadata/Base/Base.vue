@@ -26,7 +26,7 @@
     </div>
   </div>
     <j-data-table  :data-source="dataSource" :columns="columns" row-key="id" serial>
-      <template #bodyCell="{ column, record }">
+      <!-- <template #bodyCell="{ column, record }">
         <template v-if="column.dataIndex === 'id'">
           <div style="width: 100px"><j-ellipsis>{{ record.id || '-' }}</j-ellipsis></div>
         </template>
@@ -55,9 +55,18 @@
         </template>
         <template v-if="column.dataIndex === 'action'">
         </template>
-      </template>
+      </template> -->
       <template #valueType="{ data }">
         {{ data.record.valueType.type }}
+      </template>
+      <template #inputs="{ data }">
+        {{ data.record.inputs.map(item => item.name).join(',') }}
+      </template>
+      <template #output="{ data }">
+        {{ data.record.output.type }}
+      </template>
+      <template #async="{ data }">
+        {{ data.record.async ? '是' : '否' }}
       </template>
     </j-data-table>
 </template>
