@@ -51,8 +51,8 @@ const bindList = ref<any[]>([]);
 const bindIcon = {
     'dingtalk-ent-app': '/notice/dingtalk.png',
     'wechat-webapp': '/notice/wechat.png',
-    'internal-standalone': '/apply/provider1.png',
-    'third-party': '/apply/provider5.png',
+    'internal-standalone': '/apply/internal-standalone.png',
+    'third-party': '/apply/third-party.png',
 };
 const unBind = (id: string) => {
     unBind_api(id).then((resp) => {

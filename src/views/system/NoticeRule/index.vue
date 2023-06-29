@@ -30,12 +30,13 @@
                             >
                             <div class="child">
                                 <template
-                                    v-for="child in item.children"
+                                    v-for="(child, index) in item.children"
                                     :key="child.provider"
                                 >
                                     <Item
                                         :data="data.find(i => i?.provider === child?.provider)"
                                         @refresh="onRefresh"
+                                        :isLast="index === item.children?.length"
                                     />
                                 </template>
                             </div>
@@ -156,13 +157,18 @@ onMounted(() => {
     background-color: #f6f6f6;
 }
 .custom {
-    background: #f7f7f7;
+    // background: #f7f7f7;
     border-radius: 4px;
     border: 0;
     overflow: hidden;
 }
 .child {
     background-color: white;
-    padding: 10px;
+}
+
+.content-collapse {
+    :deep(.ant-collapse-content > .ant-collapse-content-box) {
+        padding: 0;
+    }
 }
 </style>

@@ -16,69 +16,41 @@
                     </div>
                     <div class="person-header-item-info-right">
                         <div class="person-header-item-info-right-top">
-                            <span>{{ _org }}部门 · {{ _role }}角色</span>
+                            Hi, {{ user.userInfos?.name }}
                         </div>
                         <div class="person-header-item-info-right-info">
-                            <div>用户名 {{ user.userInfos?.username }}</div>
-                            <div>账号ID {{ user.userInfos?.id }}</div>
+                            <span>{{ _org }}部门 · {{ _role }}角色</span>
                         </div>
                     </div>
                 </div>
                 <div class="person-header-item-action">
-                    <div class="person-header-item-action-left">
-                        <j-space>
-                            <j-button
-                                @click="onActivated(item.key)"
-                                v-for="item in list"
-                                :type="
-                                    user.tabKey === item.key
-                                        ? 'primary'
-                                        : 'default'
-                                "
-                                :key="item.key"
-                                >{{ item.title }}</j-button
-                            >
-                        </j-space>
-                    </div>
-                    <div class="person-header-item-action-right">
-                        <j-space :size="24">
-                            <j-tooltip title="查看详情"
-                                ><j-button
-                                    @click="visible = true"
-                                    shape="circle"
-                                    ><AIcon
-                                        style="font-size: 24px"
-                                        type="FileSearchOutlined" /></j-button
-                            ></j-tooltip>
-                            <j-tooltip title="编辑资料"
-                                ><j-button
-                                    shape="circle"
-                                    @click="editInfoVisible = true"
-                                    ><AIcon
-                                        style="font-size: 24px"
-                                        type="FormOutlined" /></j-button
-                            ></j-tooltip>
-                            <PermissionButton
-                                shape="circle"
-                                v-if="permission"
-                                :tooltip="{
-                                    title: '修改密码'
-                                }"
-                                @click="editPasswordVisible = true"
-                            >
-                                <AIcon
-                                    style="font-size: 24px"
-                                    type="LockOutlined"
-                                />
-                            </PermissionButton>
-                        </j-space>
-                    </div>
+                    <j-space :size="24">
+                        <j-button type="primary" @click="visible = true"
+                            >查看详情</j-button
+                        >
+                        <j-button @click="editInfoVisible = true"
+                            >编辑资料</j-button
+                        >
+                        <PermissionButton
+                            v-if="permission"
+                            @click="editPasswordVisible = true"
+                        >
+                            修改密码
+                        </PermissionButton>
+                    </j-space>
                 </div>
             </div>
         </div>
         <div class="person-content">
             <div class="person-content-item">
                 <FullPage>
+                    <j-tabs v-model:activeKey="user.tabKey" type="card">
+                        <j-tab-pane
+                            v-for="item in list"
+                            :key="item.key"
+                            :tab="item.title"
+                        />
+                    </j-tabs>
                     <div class="person-content-item-content">
                         <component :is="tabs[user.tabKey]" />
                     </div>
@@ -114,9 +86,9 @@ import { updateMeInfo_api } from '@/api/account/center';
 import { onlyMessage } from '@/utils/comm';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import {
-  USER_CENTER_MENU_BUTTON_CODE,
-  USER_CENTER_MENU_CODE
-} from '@/utils/consts'
+    USER_CENTER_MENU_BUTTON_CODE,
+    USER_CENTER_MENU_CODE,
+} from '@/utils/consts';
 import { usePermissionStore } from '@/store/permission';
 
 const imageTypes = reactive([
@@ -165,7 +137,8 @@ const editInfoVisible = ref<boolean>(false);
 const editPasswordVisible = ref<boolean>(false);
 
 const hasPermission = usePermissionStore().hasPermission;
-const permission = () => hasPermission(`${USER_CENTER_MENU_CODE}:${USER_CENTER_MENU_BUTTON_CODE}`);
+const permission = () =>
+    hasPermission(`${USER_CENTER_MENU_CODE}:${USER_CENTER_MENU_BUTTON_CODE}`);
 
 const onActivated = (_key: KeyType) => {
     user.tabKey = _key;
@@ -219,15 +192,16 @@ watchEffect(() => {
 .person {
     .person-header {
         width: 100%;
-        height: 150px;
+        height: 156px;
         padding: 0 150px;
-        background-color: rgba(2, 125, 180, 0.368);
+        background-color: #fff;
 
         .person-header-item {
-            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             height: 100%;
             .person-header-item-info {
-                padding-top: 30px;
                 display: flex;
                 .person-header-item-info-left {
                     margin-right: 30px;
@@ -238,61 +212,43 @@ watchEffect(() => {
                     flex-direction: column;
                     justify-content: space-between;
                     .person-header-item-info-right-top {
-                        span {
-                            background-color: rgba(
-                                255,
-                                255,
-                                128,
-                                0.43137254901960786
-                            );
-                            border-radius: 5px;
-                            padding: 0 10px;
-                        }
+                        display: flex;
+                        font-size: 26px;
+                        color: #1d2129;
+                        font-weight: 500;
+                        // > :not(:last-child) {
+                        //     margin-right: 20px;
+                        // }
                     }
                     .person-header-item-info-right-info {
-                        color: #fff;
-                        display: flex;
-                        font-size: 16px;
-                        > :not(:last-child) {
-                            margin-right: 20px;
+                        span {
+                            background-color: #f7f8fa;
+                            border-radius: 5px;
+                            padding: 0 10px;
                         }
                     }
                 }
             }
 
             .person-header-item-action {
-                position: absolute;
-                width: 100%;
-                height: 50px;
-                z-index: 2;
-                left: 0;
-                bottom: -25px;
-                padding: 0 50px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                .person-header-item-action-left {
-                    button {
-                        height: 35px;
-                        padding: 0 40px;
-                    }
-                }
-
-                .person-header-item-action-right {
-                    :deep(button) {
-                        height: 50px;
-                        width: 50px;
-                    }
+                button {
+                    width: 110px;
                 }
             }
         }
     }
 
+    .person-content-item {
+        padding: 10px;
+        background-color: #fff;
+    }
+
     .person-content {
         width: 100%;
-        padding: 0 150px;
+        padding: 0 260px;
+        // margin-top: 15px;
         .person-content-item-content {
-            padding: 20px;
+            padding: 0 20px;
         }
     }
 }

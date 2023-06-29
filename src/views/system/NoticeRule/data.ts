@@ -1,12 +1,12 @@
 import { getImage } from "@/utils/comm";
 
 const iconMap = new Map();
-iconMap.set('notifier-dingTalk', getImage('/notice/dingtalk.png'));
-iconMap.set('notifier-weixin', getImage('/notice/wechat.png'));
-iconMap.set('notifier-email', getImage('/notice/email.png'));
-iconMap.set('notifier-voice', getImage('/notice/voice.png'));
-iconMap.set('notifier-sms', getImage('/notice/sms.png'));
-iconMap.set('inside-mail', getImage('/notice/inside-mail.png'));
+iconMap.set('notifier-dingTalk', getImage('/notice-rule/dingtalk.png'));
+iconMap.set('notifier-weixin', getImage('/notice-rule/wechat.png'));
+iconMap.set('notifier-email', getImage('/notice-rule/email.png'));
+iconMap.set('notifier-voice', getImage('/notice-rule/voice.png'));
+iconMap.set('notifier-sms', getImage('/notice-rule/sms.png'));
+iconMap.set('inside-mail', getImage('/notice-rule/inside-mail.png'));
 
 const noticeType = new Map();
 noticeType.set('notifier-dingTalk', 'dingTalk');

@@ -19,8 +19,6 @@
                     <div class="box-item">
                         <div class="box-item-img">
                             <j-dropdown placement="top" :trigger="['click']">
-                                <!-- :visible="show?.[slotProps?.id]"
-                                @visibleChange="onVisibleChange(slotProps)" -->
                                 <div>
                                     <img
                                         :src="
@@ -28,6 +26,7 @@
                                                 slotProps?.channelProvider,
                                             )
                                         "
+                                        style="width: 60px;"
                                     />
                                     <div
                                         :class="{
@@ -37,13 +36,6 @@
                                         }"
                                     ></div>
                                 </div>
-                                <!-- v-if="
-                                        notifyChannels?.includes(
-                                            slotProps?.id,
-                                        ) &&
-                                        slotProps?.channelProvider !==
-                                            'inside-mail'
-                                    " -->
                                 <template #overlay>
                                     <j-menu>
                                         <j-menu-item
@@ -97,13 +89,13 @@
                                     </j-menu>
                                 </template>
                             </j-dropdown>
-                            <div class="box-item-checked">
+                            <!-- <div class="box-item-checked">
                                 <j-checkbox
                                     :checked="
                                         notifyChannels?.includes(slotProps?.id)
                                     "
                                 ></j-checkbox>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="box-item-text">
                             {{ slotProps?.name }}
@@ -140,12 +132,12 @@ import { useUserInfo } from '@/store/userInfo';
 import EditInfo from '../../EditInfo/index.vue';
 
 const iconMap = new Map();
-iconMap.set('notifier-dingTalk', getImage('/notice/dingtalk.png'));
-iconMap.set('notifier-weixin', getImage('/notice/wechat.png'));
-iconMap.set('notifier-email', getImage('/notice/email.png'));
-iconMap.set('notifier-voice', getImage('/notice/voice.png'));
-iconMap.set('notifier-sms', getImage('/notice/sms.png'));
-iconMap.set('inside-mail', getImage('/notice/inside-mail.png'));
+iconMap.set('notifier-dingTalk', getImage('/notice-rule/dingtalk.png'));
+iconMap.set('notifier-weixin', getImage('/notice-rule/wechat.png'));
+iconMap.set('notifier-email', getImage('/notice-rule/email.png'));
+iconMap.set('notifier-voice', getImage('/notice-rule/voice.png'));
+iconMap.set('notifier-sms', getImage('/notice-rule/sms.png'));
+iconMap.set('inside-mail', getImage('/notice-rule/inside-mail.png'));
 
 const current = ref<any>({});
 const visible = ref<boolean>(false);
@@ -303,30 +295,21 @@ const onSave = () => {
         .box-item {
             margin-left: 10px;
             .box-item-img {
-                width: 48px;
-                height: 48px;
+                width: 60px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 position: relative;
 
                 img {
-                    width: 100%;
                     z-index: 1;
-                }
-
-                .box-item-checked {
-                    position: absolute;
-                    top: -10px;
-                    right: -10px;
-                    z-index: 3;
                 }
 
                 .disabled {
                     background-color: rgba(#000, 0.38);
                     position: absolute;
-                    width: 48px;
-                    height: 48px;
+                    width: 60px;
+                    height: 60px;
                     z-index: 2;
                     top: 0;
                     left: 0;

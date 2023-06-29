@@ -1,5 +1,5 @@
 <template>
-    <div class="child-item">
+    <div class="child-item" :class="{'border': !isLast}">
         <div class="child-item-left">
             <div style="font-weight: 600">
                 {{ data?.name }}
@@ -156,6 +156,10 @@ const props = defineProps({
         type: Object,
         default: () => {},
     },
+    isLast: {
+        type: Boolean,
+        default: false,
+    }
 });
 
 const emits = defineEmits(['refresh']);
@@ -347,7 +351,6 @@ const onSave = (_data: any) => {
 .child-item {
     padding: 10px 20px;
     margin: 5px;
-    background: #f7f7f7;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -409,6 +412,10 @@ const onSave = (_data: any) => {
                 }
             }
         }
+    }
+
+    &.border {
+        box-shadow: 0px 1px 0px 0px #E2E2E2;
     }
 }
 </style>
