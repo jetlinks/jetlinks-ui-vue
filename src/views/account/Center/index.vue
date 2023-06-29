@@ -19,31 +19,44 @@
                             Hi, {{ user.userInfos?.name }}
                         </div>
                         <div class="person-header-item-info-right-info">
-                            <span>{{ _org }}部门 · {{ _role }}角色</span>
+                            <div>
+                                <j-tag
+                                    v-for="i in user.userInfos?.orgList || []"
+                                    :key="i?.id"
+                                    >{{ i?.name }}</j-tag
+                                >
+                            </div>
+                            <div>
+                                <j-tag
+                                    v-for="i in user.userInfos?.roleList || []"
+                                    :key="i?.id"
+                                    >{{ i?.name }}</j-tag
+                                >
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="person-header-item-action">
                     <j-space :size="24">
-                        <j-button type="primary" @click="visible = true"
+                        <j-button class="btn" @click="visible = true"
                             >查看详情</j-button
                         >
                         <j-button @click="editInfoVisible = true"
                             >编辑资料</j-button
                         >
-                        <PermissionButton
+                        <j-button
                             v-if="permission"
                             @click="editPasswordVisible = true"
                         >
                             修改密码
-                        </PermissionButton>
+                        </j-button>
                     </j-space>
                 </div>
             </div>
         </div>
         <div class="person-content">
             <div class="person-content-item">
-                <FullPage>
+                <div class="person-content-item-content">
                     <j-tabs v-model:activeKey="user.tabKey" type="card">
                         <j-tab-pane
                             v-for="item in list"
@@ -51,10 +64,10 @@
                             :tab="item.title"
                         />
                     </j-tabs>
-                    <div class="person-content-item-content">
+                    <j-scrollbar :height="`calc(100% - 51px)`">
                         <component :is="tabs[user.tabKey]" />
-                    </div>
-                </FullPage>
+                    </j-scrollbar>
+                </div>
             </div>
         </div>
         <Detail v-if="visible" @close="visible = false" />
@@ -136,29 +149,9 @@ const visible = ref<boolean>(false);
 const editInfoVisible = ref<boolean>(false);
 const editPasswordVisible = ref<boolean>(false);
 
-const hasPermission = usePermissionStore().hasPermission;
-const permission = () =>
-    hasPermission(`${USER_CENTER_MENU_CODE}:${USER_CENTER_MENU_BUTTON_CODE}`);
-
-const onActivated = (_key: KeyType) => {
-    user.tabKey = _key;
-};
-
-const _org = computed(() => {
-    return user.userInfos?.orgList
-        ?.map((item: any) => {
-            return item?.name;
-        })
-        .join(',');
-});
-
-const _role = computed(() => {
-    return user.userInfos?.roleList
-        ?.map((item: any) => {
-            return item?.name;
-        })
-        .join(',');
-});
+const permission = usePermissionStore().hasPermission(
+    `${USER_CENTER_MENU_CODE}:${USER_CENTER_MENU_BUTTON_CODE}`,
+);
 
 const onSave = () => {
     user.getUserInfo();
@@ -186,14 +179,19 @@ watchEffect(() => {
         user.tabKey = router.params.value?.tabKey;
     }
 });
+
+onUnmounted(() => {
+    user.tabKey = 'HomeView'
+})
 </script>
 
 <style lang="less" scoped>
+@padding: 14%;
 .person {
     .person-header {
         width: 100%;
         height: 156px;
-        padding: 0 150px;
+        padding: 0 @padding;
         background-color: #fff;
 
         .person-header-item {
@@ -210,21 +208,15 @@ watchEffect(() => {
                 .person-header-item-info-right {
                     display: flex;
                     flex-direction: column;
-                    justify-content: space-between;
                     .person-header-item-info-right-top {
                         display: flex;
                         font-size: 26px;
                         color: #1d2129;
                         font-weight: 500;
-                        // > :not(:last-child) {
-                        //     margin-right: 20px;
-                        // }
                     }
                     .person-header-item-info-right-info {
-                        span {
-                            background-color: #f7f8fa;
-                            border-radius: 5px;
-                            padding: 0 10px;
+                        div {
+                            margin: 5px 0;
                         }
                     }
                 }
@@ -233,23 +225,35 @@ watchEffect(() => {
             .person-header-item-action {
                 button {
                     width: 110px;
+                    background-color: #ebeef4;
+                    color: #333333;
+                    border: none;
+                }
+
+                .btn {
+                    background-color: @primary-color;
+                    color: #fff;
                 }
             }
         }
     }
 
     .person-content-item {
-        padding: 10px;
+        padding: 10px 20px;
         background-color: #fff;
+        overflow: hidden;
     }
 
     .person-content {
         width: 100%;
-        padding: 0 260px;
-        // margin-top: 15px;
-        .person-content-item-content {
-            padding: 0 20px;
-        }
+        padding: 0 @padding;
+        margin-top: 15px;
+    }
+
+    .person-content-item-content {
+        height: calc(100vh - 251px);
+        width: 100%;
+        padding: 10px 0;
     }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
-    <div class="child-item" :class="{'border': !isLast}">
+    <div class="child-item" :class="{ border: !isLast }">
         <div class="child-item-left">
-            <div style="font-weight: 600">
+            <div style="color: #333333">
                 {{ data?.name }}
             </div>
             <div>
@@ -14,7 +14,7 @@
                 </j-tooltip>
             </div>
         </div>
-        <div class="child-item-right" v-if="checked">
+        <div class="child-item-right" :class="{ 'disabled': !checked }">
             <MCarousel :data="data?.channels">
                 <template #card="slotProps">
                     <div class="box-item">
@@ -74,28 +74,21 @@
                         </div>
                     </div>
                 </template>
-                <template #add>
-                    <div class="box-item">
-                        <div class="box-item-img">
-                            <j-tooltip
-                                :title="!add ? '暂无权限，请联系管理员' : ''"
-                            >
-                                <j-button
-                                    :disabled="!add"
-                                    type="text"
-                                    @click="onAdd"
-                                >
-                                    <AIcon
-                                        style="font-size: 20px"
-                                        type="PlusOutlined"
-                                    />
-                                </j-button>
-                            </j-tooltip>
-                        </div>
-                        <div class="box-item-text"></div>
-                    </div>
-                </template>
             </MCarousel>
+
+            <div class="box-item-add">
+                <div class="box-item-img">
+                    <j-tooltip :title="!add ? '暂无权限，请联系管理员' : ''">
+                        <j-button :disabled="!add" type="text" @click="onAdd">
+                            <AIcon
+                                style="font-size: 20px"
+                                type="PlusOutlined"
+                            />
+                        </j-button>
+                    </j-tooltip>
+                </div>
+                <div class="box-item-text"></div>
+            </div>
 
             <div class="child-item-right-auth">
                 <j-tooltip :title="!update ? '暂无权限，请联系管理员' : ''">
@@ -159,7 +152,7 @@ const props = defineProps({
     isLast: {
         type: Boolean,
         default: false,
-    }
+    },
 });
 
 const emits = defineEmits(['refresh']);
@@ -349,8 +342,7 @@ const onSave = (_data: any) => {
 
 <style lang="less" scoped>
 .child-item {
-    padding: 10px 20px;
-    margin: 5px;
+    padding: 0 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -371,14 +363,15 @@ const onSave = (_data: any) => {
 
     .child-item-right {
         display: flex;
+        align-items: center;
 
         .box-item {
             margin-left: 10px;
             cursor: pointer;
             .box-item-img {
                 background-color: #fff;
-                width: 48px;
-                height: 48px;
+                width: 32px;
+                height: 32px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -387,8 +380,19 @@ const onSave = (_data: any) => {
             .box-item-text {
                 width: 100%;
                 text-align: center;
-                height: 20px;
+                color: #666666;
+                font-size: 12px;
             }
+        }
+
+        .box-item-add {
+            cursor: pointer;
+            margin-left: 16px;
+            background-color: #F8F9FC;
+            width: 54px;
+            height: 54px;
+            display: flex;
+            align-items: center;
         }
 
         .child-item-right-auth {
@@ -412,10 +416,14 @@ const onSave = (_data: any) => {
                 }
             }
         }
+
+        &.disabled {
+            filter: grayscale(100%);
+        }
     }
 
     &.border {
-        box-shadow: 0px 1px 0px 0px #E2E2E2;
+        box-shadow: 0px 1px 0px 0px #e2e2e2;
     }
 }
 </style>

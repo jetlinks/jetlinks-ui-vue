@@ -285,14 +285,6 @@ const getProtocol = async () => {
         if (productStore.current?.accessProvider === 'plugin_gateway') {
           list.value.push({ key: 'MetadataMap', tab: '物模型映射'})
         }
-    //     if (
-    //     instanceStore.current?.features?.find(
-    //         (item: any) => item?.id === 'diffMetadataSameProduct',
-    //     ) &&
-    //     !keys.includes('MetadataMap')
-    // ) {
-    //     list.value.push({ key: 'MetadataMap', tab: '物模型映射'});
-    // }
     }
 };
 /**

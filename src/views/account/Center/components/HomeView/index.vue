@@ -73,17 +73,17 @@ onMounted(() => {
 <style lang="less" scoped>
 .choose-view {
     width: 100%;
-    padding: 48px 90px;
+    padding: 4% 9% 0 9%;
     box-sizing: border-box;
     .view-content {
         display: flex;
         justify-content: space-between;
         .select-item {
             cursor: pointer;
-            // width: 312px;
+            width: 30%;
 
             img {
-                width: 312px;
+                width: 100%;
                 background-size: cover;
             }
         }

@@ -1,88 +1,81 @@
 <template>
-    <page-container>
-        <div class="notification-record-container">
-            <pro-search
-                :columns="columns"
-                target="category"
-                style="padding: 0"
-                @search="queryParams"
-            />
-
-            <j-pro-table
-                ref="tableRef"
-                :columns="columns"
-                :request="getList_api"
-                model="TABLE"
-                :params="queryParams"
-                :bodyStyle="{ padding: 0 }"
-                :defaultParams="defaultParams"
-            >
-                <template #headerTitle>
-                    <j-popconfirm title="确认全部已读？" @confirm="onAllRead">
-                        <j-button type="primary">全部已读</j-button>
-                    </j-popconfirm>
-                </template>
-                <template #topicProvider="slotProps">
-                    {{ slotProps.topicName }}
-                </template>
-                <template #notifyTime="slotProps">
-                    {{
-                        dayjs(slotProps.notifyTime).format(
-                            'YYYY-MM-DD HH:mm:ss',
-                        )
-                    }}
-                </template>
-                <template #state="slotProps">
-                    <BadgeStatus
-                        :status="slotProps.state.value"
-                        :text="slotProps.state.text"
-                        :statusNames="{
-                            read: 'success',
-                            unread: 'error',
+    <div class="notification-record-container">
+        <pro-search
+            :columns="columns"
+            :target="type"
+            style="padding: 0"
+            @search="(e) => (queryParams = e)"
+        />
+        <j-pro-table
+            ref="tableRef"
+            :columns="columns"
+            :request="getList_api"
+            model="TABLE"
+            :params="queryParams"
+            :bodyStyle="{ padding: 0 }"
+            :defaultParams="defaultParams"
+        >
+            <template #rightExtraRender>
+                <j-popconfirm title="确认全部已读？" @confirm="onAllRead">
+                    <j-button type="primary">全部已读</j-button>
+                </j-popconfirm>
+            </template>
+            <template #topicProvider="slotProps">
+                {{ slotProps.topicName }}
+            </template>
+            <template #notifyTime="slotProps">
+                {{ dayjs(slotProps.notifyTime).format('YYYY-MM-DD HH:mm:ss') }}
+            </template>
+            <template #state="slotProps">
+                <BadgeStatus
+                    :status="slotProps.state.value"
+                    :text="slotProps.state.text"
+                    :statusNames="{
+                        read: 'success',
+                        unread: 'error',
+                    }"
+                ></BadgeStatus>
+            </template>
+            <template #action="slotProps">
+                <j-space :size="16">
+                    <PermissionButton
+                        type="link"
+                        :popConfirm="{
+                            title: `确认标为${
+                                slotProps.state.value === 'read'
+                                    ? '未读'
+                                    : '已读'
+                            }`,
+                            onConfirm: () => changeStatus(slotProps),
                         }"
-                    ></BadgeStatus>
-                </template>
-                <template #action="slotProps">
-                    <j-space :size="16">
-                        <PermissionButton
-                            type="link"
-                            :popConfirm="{
-                                title: `确认标为${
-                                    slotProps.state.value === 'read'
-                                        ? '未读'
-                                        : '已读'
-                                }`,
-                                onConfirm: () => changeStatus(slotProps),
-                            }"
-                            :tooltip="{
-                                title:
-                                    slotProps.state.value === 'read'
-                                        ? '标为未读'
-                                        : '标为已读',
-                            }"
-                        >
-                            <AIcon type="icon-a-PIZHU1" />
-                        </PermissionButton>
-                        <PermissionButton
-                            type="link"
-                            :tooltip="{
-                                title: '查看',
-                            }"
-                            @click="view(slotProps)"
-                        >
-                            <AIcon type="SearchOutlined" />
-                        </PermissionButton>
-                    </j-space>
-                </template>
-            </j-pro-table>
-            <ViewDialog
-                v-if="viewVisible"
-                v-model:visible="viewVisible"
-                :data="viewItem"
-                :type="type"
-            />
-        </div>
-    </page-container>
+                        :tooltip="{
+                            title:
+                                slotProps.state.value === 'read'
+                                    ? '标为未读'
+                                    : '标为已读',
+                        }"
+                    >
+                        <AIcon type="icon-a-PIZHU1" />
+                    </PermissionButton>
+                    <PermissionButton
+                        type="link"
+                        :tooltip="{
+                            title: '查看',
+                        }"
+                        @click="view(slotProps)"
+                    >
+                        <AIcon type="SearchOutlined" />
+                    </PermissionButton>
+                </j-space>
+            </template>
+        </j-pro-table>
+        <ViewDialog
+            v-if="viewVisible"
+            v-model:visible="viewVisible"
+            :data="viewItem"
+            :type="type"
+        />
+    </div>
 </template>
 
 <script setup lang="ts" name="NotificationRecord">
@@ -91,7 +84,7 @@ import PermissionButton from '@/components/PermissionButton/index.vue';
 import {
     getList_api,
     changeStatus_api,
-    changeAllStatus
+    changeAllStatus,
 } from '@/api/account/notificationRecord';
 import dayjs from 'dayjs';
 import { useUserInfo } from '@/store/userInfo';
@@ -115,11 +108,11 @@ const getType = computed(() => {
         return ['system-event'];
     } else {
         return [
+            'alarm',
             'alarm-product',
             'alarm-device',
             'alarm-other',
             'alarm-org',
-            'alarm',
         ];
     }
 });
@@ -132,16 +125,18 @@ const columns = [
         search: {
             type: 'select',
             options: () =>
-                getTypeList_api().then((resp: any) =>
-                    resp.result
+                getTypeList_api().then((resp: any) => {
+                    return resp.result
                         .map((item: any) => ({
                             label: item.name,
                             value: item.id,
                         }))
-                        .filter((item: any) =>
-                            [...getType.value].includes(item?.value),
-                        ),
-                ),
+                        .filter((item: any) => {
+                            return [...getType.value].includes(item?.value)
+                        }).sort((a: any, b: any) => {
+                            return b?.value?.length - a?.value?.length
+                        });
+                }),
         },
         scopedSlots: true,
         ellipsis: true,
@@ -240,18 +235,18 @@ const changeStatus = (row: any) => {
 };
 
 watchEffect(() => {
-    if(user.messageInfo?.id) {
-        view(user.messageInfo)
+    if (user.messageInfo?.id) {
+        view(user.messageInfo);
     }
-})
+});
 
 const onAllRead = async () => {
-    const resp = await changeAllStatus('_read', getType.value)
-    if(resp.status === 200){
-        onlyMessage('操作成功！')
-        refresh()
+    const resp = await changeAllStatus('_read', getType.value);
+    if (resp.status === 200) {
+        onlyMessage('操作成功！');
+        refresh();
     }
-}   
+};
 
 onMounted(() => {
     if (routerParams.params?.value.row) {
