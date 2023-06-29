@@ -100,7 +100,7 @@
         :current="current"
         @close="visible = false"
     />
-    <Detail @save="onSave" @close="_visible = false" v-if="_visible" :current="current" :data="props.data" />
+    <Detail @unsubscribe="onUnSubscribe" @save="onSave" @close="_visible = false" v-if="_visible" :current="current" :data="props.data" />
 </template>
 
 <script lang="ts" setup>
@@ -157,17 +157,13 @@ const onSubscribe = async (obj: any) => {
     if (resp.status === 200) {
         onlyMessage('操作成功');
         emits('refresh');
+        _visible.value = false
     } else {
         onlyMessage('操作失败', 'error');
     }
 };
 
 const onUnSubscribe = async (obj: any) => {
-    // const resp = await remove_api(id);
-    // if (resp.status === 200) {
-    //     onlyMessage('操作成功');
-    //     emits('refresh');
-    // }
     const _set = new Set(props.subscribe?.notifyChannels || []);
     _set.delete(obj?.id);
     const _obj = {
@@ -179,6 +175,7 @@ const onUnSubscribe = async (obj: any) => {
     };
     const resp = await save_api(_obj);
     if (resp.status === 200) {
+        _visible.value = false
         onlyMessage('操作成功');
         emits('refresh');
     } else {

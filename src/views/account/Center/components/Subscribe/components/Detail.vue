@@ -7,13 +7,13 @@
             <!-- <div class="tip">请先绑定企业微信账号</div> -->
         </template>
         <template v-else-if="getType === 'notifier-email'">
-           <div class="tip"> 绑定账号：{{ user.userInfos.email }}</div>
+           <div class="tip"> 绑定账号：{{ user.userInfos?.email }}</div>
         </template>
         <template v-else>
-            <div class="tip">绑定账号：{{ user.userInfos.telephone }}</div>
+            <div class="tip">绑定账号：{{ user.userInfos?.telephone }}</div>
         </template>
         <template #footer>
-            <j-button @click="emit('unsubscribe', )">取消订阅</j-button>
+            <j-button @click="emit('unsubscribe', current)">取消订阅</j-button>
             <j-button
                 @click="onBind"
                 type="primary"

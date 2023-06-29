@@ -100,6 +100,7 @@ const onBind = () => {
 
 const onSave = () => {
     editInfoVisible.value = false;
+    user.getUserInfo();
     emit('save', props.current);
     emit('close');
 };
