@@ -14,7 +14,7 @@
                 </j-tooltip>
             </div>
         </div>
-        <div class="child-item-right" :class="{ 'disabled': !checked }">
+        <div class="child-item-right" :class="{ disabled: !checked }">
             <MCarousel :data="data?.channels">
                 <template #card="slotProps">
                     <div class="box-item">
@@ -111,6 +111,7 @@
         @close="visible = false"
         @save="onSave"
         :loading="loading"
+        :provider="provider"
     />
     <Detail
         :data="current"
@@ -153,6 +154,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    provider: {
+        type: String,
+        default: ''
+    }
 });
 
 const emits = defineEmits(['refresh']);
@@ -215,7 +220,7 @@ const onAuthSave = (_data: string[]) => {
             role: {
                 idList: _data || [],
             },
-            permissions: [],
+            permissions: props.provider === 'alarm' ? [{ id: 'alarm-config', actions: ['query'] }] : [],
         },
     };
     editChannelConfig(props.data.id, obj).then((resp) => {
@@ -388,7 +393,7 @@ const onSave = (_data: any) => {
         .box-item-add {
             cursor: pointer;
             margin-left: 16px;
-            background-color: #F8F9FC;
+            background-color: #f8f9fc;
             width: 54px;
             height: 54px;
             display: flex;

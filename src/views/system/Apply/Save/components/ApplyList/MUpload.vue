@@ -166,6 +166,7 @@ const saveImage = (url: string) => {
 .upload-image-warp {
     display: flex;
     justify-content: flex-start;
+    
 
     .upload-image-border {
         position: relative;
@@ -173,7 +174,6 @@ const saveImage = (url: string) => {
         height: @height;
         overflow: hidden;
         border-radius: 5px;
-        // border: @border;
         transition: all 0.3s;
 
         &:hover {
@@ -197,9 +197,7 @@ const saveImage = (url: string) => {
             flex-direction: column;
             width: 100%;
             height: 100%;
-            // background-color: rgba(#000, 0.06);
             cursor: pointer;
-            // padding: 8px;
 
             .upload-image-mask {
                 .flex-center();
@@ -212,13 +210,13 @@ const saveImage = (url: string) => {
                 height: 100%;
                 color: #fff;
                 font-size: 14px;
+                border-radius: 5px;
                 background-color: @mask-color;
             }
 
             .upload-image {
                 width: 100%;
                 height: 100%;
-                //border-radius: 50%;
                 background-repeat: no-repeat;
                 background-position: center;
                 background-size: cover;
@@ -232,7 +230,6 @@ const saveImage = (url: string) => {
 
     .upload-loading-mask {
         .flex-center();
-
         position: absolute;
         top: 0;
         left: 0;
@@ -240,6 +237,7 @@ const saveImage = (url: string) => {
         width: 100%;
         height: 100%;
         color: #fff;
+        border-radius: 15px;
         background-color: @mask-color;
     }
 }

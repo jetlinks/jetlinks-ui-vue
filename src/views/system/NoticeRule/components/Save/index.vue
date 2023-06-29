@@ -81,6 +81,7 @@ type GrantType = {
     role: {
         idList?: string[];
     };
+    permissions: any[];
 };
 
 type ConfigurationType = {
@@ -99,6 +100,10 @@ const props = defineProps({
     loading: {
         type: Boolean,
         default: false,
+    },
+    provider: {
+        type: String,
+        default: '',
     },
 });
 
@@ -121,6 +126,7 @@ const formModel = reactive<{
     name: '',
     channelProvider: '',
     grant: {
+        permissions: [],
         role: {},
     },
     channelConfiguration: {},
@@ -235,7 +241,7 @@ const onTemplateChange = (obj: any) => {
     if (formModel.channelConfiguration?.templateId !== obj?.value) {
         formModel.channelConfiguration.variables = {};
     }
-    formModel.channelConfiguration.templateId = obj?.value
+    formModel.channelConfiguration.templateId = obj?.value;
 };
 
 watchEffect(() => {
@@ -255,6 +261,10 @@ const onChange = (cur: number) => {
 };
 
 const onSave = () => {
+    formModel.grant.permissions =
+        props.provider === 'alarm'
+            ? [{ id: 'alarm-config', actions: ['query'] }]
+            : [];
     emit('save', formModel);
 };
 </script>

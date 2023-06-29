@@ -1282,13 +1282,15 @@ const changeHost = (
     index: number,
     flag?: boolean
 ) => {
-    const { configuration } = dynamicValidateForm.cluster[index];
-    if(!flag){
-        configuration.port = undefined;
-    }
-    const checked = Store.get('resourcesClusters')?.[serverId || '']
-    if(checked){
-        getPortOptions(checked, index)
+    if(dynamicValidateForm.cluster?.[index]){
+        const { configuration } = dynamicValidateForm.cluster?.[index];
+        if(!flag){
+            configuration.port = undefined;
+        }
+        const checked = Store.get('resourcesClusters')?.[serverId || '']
+        if(checked){
+            getPortOptions(checked, index)
+        }
     }
 };
 

@@ -1,34 +1,30 @@
 <template>
-    <j-radio-group
-        :value="_value"
-        class="radio-container"
-        :disabled="disabled"
-        @change="onChange"
-    >
-        <j-radio-button
+    <div :value="_value" class="radio-container" :disabled="disabled">
+        <div
             v-for="item in options"
             :value="item.value"
             :key="item.value"
+            class="radio-container-item"
+            @click="onChange(item.value)"
+            :class="{ active: item.value === _value }"
         >
-            <div class="radio-container-item" @click.stop>
-                <div>
-                    <MUpload
-                        :defaultValue="defaultImg[item.value]"
-                        :borderStyle="{
-                            width: '90px',
-                            height: '90px',
-                            border: 'none',
-                        }"
-                        :disabled="!disabled ? false : (item.value === _value ? false : true)"
-                        accept="image/jpeg,image/png"
-                        :modelValue="urlValue[item.value]"
-                        @change="(_url) => onImgChange(_url, item.value)"
-                    />
-                </div>
-                <span>{{ item.label }}</span>
+            <div>
+                <MUpload
+                    :defaultValue="defaultImg[item.value]"
+                    :borderStyle="{
+                        width: '64px',
+                        height: '64px',
+                        border: 'none',
+                    }"
+                    :disabled="!(item.value === _value)"
+                    accept="image/jpeg,image/png"
+                    :modelValue="urlValue[item.value]"
+                    @change="(_url) => onImgChange(_url, item.value)"
+                />
             </div>
-        </j-radio-button>
-    </j-radio-group>
+            <span>{{ item.label }}</span>
+        </div>
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -51,8 +47,8 @@ const props = defineProps({
     },
     options: {
         type: Array as PropType<any[]>,
-        default: () => []
-    }
+        default: () => [],
+    },
 });
 
 const emit = defineEmits(['update:value', 'update:photoUrl']);
@@ -64,9 +60,9 @@ const defaultImg = {
     'dingtalk-ent-app': getImage('/apply/dingtalk-ent-app.png'),
     'third-party': getImage('/apply/third-party.png'),
     'wechat-miniapp': getImage('/apply/wechat-miniapp.png'),
-}
+};
 
-const urlValue = ref<any>({...defaultImg});
+const urlValue = ref<any>({ ...defaultImg });
 const _value = ref<string>('');
 
 watchEffect(() => {
@@ -76,7 +72,7 @@ watchEffect(() => {
 watch(
     () => props.photoUrl,
     (newValue) => {
-        urlValue.value[props.value] = newValue
+        urlValue.value[props.value] = newValue;
     },
     {
         deep: true,
@@ -85,7 +81,7 @@ watch(
 );
 
 const onChange = (e: any) => {
-    emit('update:value', e.target.value);
+    emit('update:value', e);
 };
 
 const onImgChange = (url: string, _key: string) => {
@@ -99,18 +95,34 @@ const onImgChange = (url: string, _key: string) => {
 
 <style lang="less" scoped>
 .radio-container {
+    display: flex;
+    flex-wrap: wrap;
+
     .radio-container-item {
         display: flex;
+        padding: 8px 0;
         flex-direction: column;
         align-items: center;
-    }
-    .ant-radio-button-wrapper {
-        height: auto;
         width: 120px;
-        padding: 12px 6px;
-        box-sizing: content-box;
-        margin: 20px 20px 0 0;
-        color: #000;
+        border-radius: 6px;
+        margin-right: 8px;
+        margin-top: 8px;
+        cursor: pointer;
+
+        span {
+            color: #333333;
+            opacity: 0.85;
+            margin-top: 8px;
+        }
+
+        &.active {
+            background: #f2f4f7;
+            border: 1px solid #adb8c7;
+        }
+    }
+
+    .radio-container-item:hover {
+        background-color: #f2f4f7;
     }
 }
 </style>

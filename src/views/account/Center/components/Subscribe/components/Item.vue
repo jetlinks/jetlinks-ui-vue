@@ -57,7 +57,7 @@
                                         <template v-else>
                                             <j-menu-item>
                                                 <PermissionButton
-                                                    type="link"
+                                                    type="text"
                                                     :hasPermission="true"
                                                     @click="
                                                         onUnSubscribe(slotProps)
@@ -75,13 +75,9 @@
                                                 <PermissionButton
                                                     type="link"
                                                     :hasPermission="true"
-                                                    @click="
-                                                        onAccountChange(
-                                                            slotProps,
-                                                        )
-                                                    "
+                                                    @click="onDetail(slotProps)"
                                                 >
-                                                    更换接收账号
+                                                    查看详情
                                                 </PermissionButton>
                                             </j-menu-item>
                                         </template>
@@ -104,24 +100,19 @@
         :current="current"
         @close="visible = false"
     />
-    <EditInfo
-        v-if="editInfoVisible"
-        :data="user.userInfos"
-        @close="editInfoVisible = false"
-        @save="onSave"
-    />
+    <Detail @save="onSave" @close="_visible = false" v-if="_visible" :current="current" :data="props.data" />
 </template>
 
 <script lang="ts" setup>
 import { getImage, onlyMessage } from '@/utils/comm';
 import MCarousel from '@/components/MCarousel/index.vue';
 import Unsubscribe from './Unsubscribe.vue';
+import Detail from './Detail.vue';
 import {
     getIsBindThird,
     save_api,
 } from '@/api/account/notificationSubscription';
 import { useUserInfo } from '@/store/userInfo';
-import EditInfo from '../../EditInfo/index.vue';
 
 const iconMap = new Map();
 iconMap.set('notifier-dingTalk', getImage('/notice-rule/dingtalk.png'));
@@ -133,7 +124,7 @@ iconMap.set('inside-mail', getImage('/notice-rule/inside-mail.png'));
 
 const current = ref<any>({});
 const visible = ref<boolean>(false);
-const editInfoVisible = ref<boolean>(false);
+const _visible = ref<boolean>(false);
 
 const user = useUserInfo();
 
@@ -233,34 +224,23 @@ const onCheckChange = async (_data: any) => {
     }
 };
 
-// 更换绑定账号
-const onAccountChange = (_data: any) => {
-    current.value = _data;
-    if (
-        ['notifier-voice', 'notifier-sms', 'notifier-email'].includes(
-            _data?.channelProvider,
-        )
-    ) {
-        editInfoVisible.value = true;
-    } else {
-        visible.value = true;
-    }
+const onDetail = (dt: any) => {
+    current.value = dt;
+    _visible.value = true
 };
 
 const onSave = () => {
-    editInfoVisible.value = false;
-    // 重新绑定
-    onUnSubscribe(current.value);
-};
+
+}
 </script>
 
 <style lang="less" scoped>
 .child-item {
-    padding: 0 20px;
+    padding: 5px 20px 0 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0px 1px 0px 0px #E2E2E2;
+    box-shadow: 0px 1px 0px 0px #e2e2e2;
 
     .child-item-left {
         display: flex;
@@ -293,6 +273,7 @@ const onSave = () => {
 
                 img {
                     z-index: 1;
+                    cursor: pointer;
                 }
 
                 .disabled {
@@ -307,7 +288,6 @@ const onSave = () => {
                 text-align: center;
                 color: #666666;
                 font-size: 12px;
-                
             }
         }
     }

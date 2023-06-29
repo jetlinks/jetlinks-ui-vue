@@ -35,6 +35,7 @@
                                         :data="data.find(i => i?.provider === child?.provider)"
                                         @refresh="onRefresh"
                                         :isLast="index === item.children?.length"
+                                        :provider="item.provider"
                                     />
                                 </template>
                             </div>
