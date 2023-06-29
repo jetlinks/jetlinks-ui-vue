@@ -1427,7 +1427,7 @@ const loading = ref<boolean>(false);
 const initForm: formType = {
     name: '',
     provider: 'internal-standalone',
-    logoUrl: getImage('/apply/provider1.png'),
+    logoUrl: getImage('/apply/internal-standalone.png'),
     integrationModes: [],
     description: '',
     page: {

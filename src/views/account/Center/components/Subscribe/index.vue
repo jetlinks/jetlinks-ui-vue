@@ -1,13 +1,13 @@
 <template>
     <j-spin :spinning="loading">
-        <div style="margin-top: 24px">
+        <div>
             <div class="alert">
                 <AIcon type="InfoCircleOutlined" />
                 你可以在该页面选择需要订阅的主题及接收通知的方式。
             </div>
-            <div style="margin-top: 20px">
+            <div class="content-collapse">
                 <template v-if="dataSource.length">
-                    <j-collapse :bordered="false" v-model:activeKey="activeKey">
+                    <j-collapse :bordered="false" v-model:activeKey="activeKey" expand-icon-position="right">
                         <template #expandIcon="{ isActive }">
                             <AIcon
                                 type="CaretRightOutlined"
@@ -22,6 +22,7 @@
                             v-for="item in dataSource"
                             :key="item.provider"
                             class="custom"
+                            :header="item.name"
                         >
                             <template #header
                                 ><h3>{{ item.name }}</h3></template
@@ -120,13 +121,19 @@ onMounted(() => {
     background-color: #f6f6f6;
 }
 .custom {
-    background: #f7f7f7;
-    border-radius: 4px;
+    background: #F7F8FA;
     border: 0;
     overflow: hidden;
+    color: #333333;
 }
 .child {
     background-color: white;
-    padding: 10px;
+    padding-bottom: 24px;
+}
+
+.content-collapse {
+    :deep(.ant-collapse-content > .ant-collapse-content-box) {
+        padding: 0;
+    }
 }
 </style>

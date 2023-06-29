@@ -47,7 +47,7 @@ const props = defineProps({
     },
     photoUrl: {
         type: String,
-        default: getImage('/apply/provider1.png'),
+        default: getImage('/apply/internal-standalone.png'),
     },
     options: {
         type: Array as PropType<any[]>,
@@ -58,12 +58,12 @@ const props = defineProps({
 const emit = defineEmits(['update:value', 'update:photoUrl']);
 
 const defaultImg = {
-    'internal-standalone': getImage('/apply/provider1.png'),
-    'internal-integrated': getImage('/apply/provider2.png'),
-    'wechat-webapp': getImage('/apply/provider4.png'),
-    'dingtalk-ent-app': getImage('/apply/provider3.png'),
-    'third-party': getImage('/apply/provider5.png'),
-    'wechat-miniapp': getImage('/apply/provider1.png'),
+    'internal-standalone': getImage('/apply/internal-standalone.png'),
+    'internal-integrated': getImage('/apply/internal-integrated.png'),
+    'wechat-webapp': getImage('/apply/wechat-webapp.png'),
+    'dingtalk-ent-app': getImage('/apply/dingtalk-ent-app.png'),
+    'third-party': getImage('/apply/third-party.png'),
+    'wechat-miniapp': getImage('/apply/wechat-miniapp.png'),
 }
 
 const urlValue = ref<any>({...defaultImg});

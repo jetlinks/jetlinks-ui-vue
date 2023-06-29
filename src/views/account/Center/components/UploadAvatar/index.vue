@@ -154,8 +154,8 @@ const saveImage = (url: string) => {
 <style lang="less" scoped>
 @border: 1px dashed @border-color-base;
 @mask-color: rgba(#000, 0.35);
-@with: 66px;
-@height: 66px;
+@with: 96px;
+@height: 96px;
 
 .flex-center() {
     align-items: center;

@@ -172,7 +172,7 @@ const saveImage = (url: string) => {
         width: @with;
         height: @height;
         overflow: hidden;
-        //border-radius: 50%;
+        border-radius: 5px;
         // border: @border;
         transition: all 0.3s;
 
@@ -197,9 +197,9 @@ const saveImage = (url: string) => {
             flex-direction: column;
             width: 100%;
             height: 100%;
-            background-color: rgba(#000, 0.06);
+            // background-color: rgba(#000, 0.06);
             cursor: pointer;
-            padding: 8px;
+            // padding: 8px;
 
             .upload-image-mask {
                 .flex-center();
@@ -211,7 +211,7 @@ const saveImage = (url: string) => {
                 width: 100%;
                 height: 100%;
                 color: #fff;
-                font-size: 16px;
+                font-size: 14px;
                 background-color: @mask-color;
             }
 

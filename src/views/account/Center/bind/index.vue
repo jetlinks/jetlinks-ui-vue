@@ -37,7 +37,7 @@
                 :src="
                                     iconMap.get(
                                         bindUser?.applicationProvider,
-                                    ) || getImage('/apply/provider1.png')
+                                    ) || getImage('/apply/internal-standalone.png')
                                 "
               />
               <p>账号：{{ bindUser?.result?.userId || '-' }}</p>
@@ -153,8 +153,8 @@ interface formData {
 const iconMap = new Map()
 iconMap.set('dingtalk-ent-app', getImage('/notice/dingtalk.png'))
 iconMap.set('wechat-webapp', getImage('/notice/wechat.png'))
-iconMap.set('internal-standalone', getImage('/apply/provider1.png'))
-iconMap.set('third-party', getImage('/apply/provider5.png'))
+iconMap.set('internal-standalone', getImage('/apply/internal-standalone.png'))
+iconMap.set('third-party', getImage('/apply/third-party.png'))
 
 const token = computed(() => LocalStore.get(TOKEN_KEY))
 

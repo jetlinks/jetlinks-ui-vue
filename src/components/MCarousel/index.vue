@@ -1,14 +1,11 @@
 <template>
     <div class="box">
-        <div class="box-item" v-if="data.length > showLength">
+        <div class="box-item" v-if="pageIndex > 0">
             <j-button
                 @click="onLeft"
-                type="primary"
-                :disabled="!(pageIndex > 0)"
                 shape="circle"
                 class="box-item-action"
-                ><AIcon type="LeftOutlined"
-            /></j-button>
+                >+{{ pageIndex * showLength }}</j-button>
         </div>
         <div class="box-item" v-for="item in getData" :key="item.id">
             <slot name="card" v-bind="item"></slot>
@@ -16,15 +13,12 @@
         <div class="box-item">
             <slot name="add"></slot>
         </div>
-        <div class="box-item" v-if="data.length > showLength">
+        <div class="box-item" v-if="(pageIndex + 1) * showLength < data.length">
             <j-button
-                :disabled="!(pageIndex + showLength < data.length)"
-                type="primary"
                 shape="circle"
                 class="box-item-action"
                 @click="onRight"
-                ><AIcon type="RightOutlined"
-            /></j-button>
+                >+{{ data.length - (pageIndex + 1) * showLength }}</j-button>
         </div>
     </div>
 </template>
@@ -43,15 +37,13 @@ const props = defineProps({
     },
 });
 
-// const emit = defineEmits(['add']);
-
 const pageIndex = ref<number>(0);
 
 const getData = computed(() => {
-    const start = pageIndex.value >= 0 ? pageIndex.value : 0;
+    const start = pageIndex.value >= 0 ? pageIndex.value * props.showLength : 0;
     const end =
-        props.showLength + pageIndex.value < props.data.length
-            ? props.showLength + pageIndex.value
+        (pageIndex.value + 1) * props.showLength < props.data.length
+            ? props.showLength * (pageIndex.value + 1)
             : props.data.length;
     return props.data.slice(start, end);
 });
@@ -69,10 +61,6 @@ const onLeft = () => {
         pageIndex.value -= 1;
     }
 };
-
-// const onAdd = () => {
-//     emit('add');
-// };
 </script>
 
 <style scoped lang="less">

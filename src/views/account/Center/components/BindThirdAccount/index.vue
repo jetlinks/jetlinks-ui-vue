@@ -2,27 +2,32 @@
     <div class="box">
         <div class="content">
             <template v-if="bindList.length">
-                <div class="content-item" v-for="item in bindList" :key="item.id">
+                <div
+                    class="content-item"
+                    v-for="item in bindList"
+                    :key="item.id"
+                >
                     <div class="content-item-left">
                         <img
-                            :src="item.logoUrl || getImage(bindIcon[item.provider])"
-                            style="height: 50px; width: 50px"
-                            width="50px"
-                            height="50px"
+                            :src="
+                                item.logoUrl ||
+                                getImage(bindIcon[item.provider])
+                            "
+                            style="height: 24px; width: 24px"
                             alt=""
                         />
-                        <Ellipsis style="max-width: 200px; font-size: 22px">{{
+                        <Ellipsis style="max-width: 200px; color: #333; margin: 0 8px 0 6px">{{
                             item?.name
                         }}</Ellipsis>
                         <div>
-                            <j-tag v-if="item.bound">已绑定</j-tag>
-                            <j-tag v-else>未绑定</j-tag>
+                            <span v-if="item.bound" style="color: #2BA245">已绑定</span>
+                            <span v-else style="color: #999">未绑定</span>
                         </div>
-                        <div v-if="item.others?.name">
-                            绑定名：{{ item.others?.name }}
+                        <div v-if="item.others?.name" style="color: #666666">
+                            {{ item.others?.name }}（已绑定的用户名）
                         </div>
                     </div>
-                    <div>
+                    <div class="content-item-right">
                         <j-popconfirm
                             v-if="item.bound"
                             title="确认解除绑定嘛?"
@@ -30,13 +35,17 @@
                         >
                             <j-button>解除绑定</j-button>
                         </j-popconfirm>
-                        <j-button v-else type="primary" @click="clickBind(item.id)"
+                        <j-button
+                            v-else
+                            ghost
+                            type="primary"
+                            @click="clickBind(item.id)"
                             >立即绑定</j-button
                         >
                     </div>
                 </div>
             </template>
-            <j-empty v-else style="margin: 200px 0;" />
+            <j-empty v-else style="margin: 200px 0" />
         </div>
     </div>
 </template>
@@ -51,8 +60,8 @@ const bindList = ref<any[]>([]);
 const bindIcon = {
     'dingtalk-ent-app': '/notice/dingtalk.png',
     'wechat-webapp': '/notice/wechat.png',
-    'internal-standalone': '/apply/provider1.png',
-    'third-party': '/apply/provider5.png',
+    'internal-standalone': '/apply/internal-standalone.png',
+    'third-party': '/apply/third-party.png',
 };
 const unBind = (id: string) => {
     unBind_api(id).then((resp) => {
@@ -93,23 +102,31 @@ onMounted(() => {
 .box {
     display: flex;
     justify-content: center;
+    width: 100%;
     .content {
-        margin-top: 24px;
-        width: 80%;
-
+        width: 100%;
         .content-item {
             width: 100%;
-            margin: 10px 0;
+            margin-bottom: 16px;
             padding: 15px;
-            border: 1px solid #f0f0f0;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            height: 60px;
+            border-radius: 6px;
+            background: #f7f8fa;
 
             .content-item-left {
                 display: flex;
                 gap: 24px;
                 align-items: center;
+            }
+        }
+
+        .content-item-right {
+            button:hover {
+                background-color: @primary-color;
+                color: #fff;
             }
         }
     }

@@ -9,8 +9,8 @@
                     </div>
                 </div>
                 <div class="content-collapse">
-                    <j-collapse :bordered="false" v-model:activeKey="activeKey">
-                        <template #expandIcon="{ isActive }">
+                    <j-collapse :bordered="false" v-model:activeKey="activeKey" expand-icon-position="right">
+                        <!-- <template #expandIcon="{ isActive }">
                             <AIcon
                                 type="CaretRightOutlined"
                                 :style="{
@@ -19,23 +19,22 @@
                                     }deg)`,
                                 }"
                             />
-                        </template>
+                        </template> -->
                         <j-collapse-panel
                             v-for="item in dataSource"
                             :key="item.provider"
                             class="custom"
+                            :header="item.name"
                         >
-                            <template #header
-                                ><h3>{{ item.name }}</h3></template
-                            >
                             <div class="child">
                                 <template
-                                    v-for="child in item.children"
+                                    v-for="(child, index) in item.children"
                                     :key="child.provider"
                                 >
                                     <Item
                                         :data="data.find(i => i?.provider === child?.provider)"
                                         @refresh="onRefresh"
+                                        :isLast="index === item.children?.length"
                                     />
                                 </template>
                             </div>
@@ -156,13 +155,19 @@ onMounted(() => {
     background-color: #f6f6f6;
 }
 .custom {
-    background: #f7f7f7;
-    border-radius: 4px;
+    background: #F7F8FA;
     border: 0;
     overflow: hidden;
+    color: #333333;
 }
 .child {
     background-color: white;
-    padding: 10px;
+    padding-bottom: 24px;
+}
+
+.content-collapse {
+    :deep(.ant-collapse-content > .ant-collapse-content-box) {
+        padding: 0;
+    }
 }
 </style>

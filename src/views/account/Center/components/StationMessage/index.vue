@@ -1,5 +1,5 @@
 <template>
-    <div style="margin-top: 24px">
+    <div>
         <j-tabs
             tab-position="left"
             v-if="tabs.length"

@@ -1,13 +1,13 @@
 <template>
     <div class="child-item">
         <div class="child-item-left">
-            <div style="font-weight: 600">
+            <div style="color: #333333">
                 {{ data?.name }}
             </div>
             <div class="child-item-left-auth" v-if="data?.description">
                 <j-tooltip :title="data.description">
                     <AIcon
-                        style="font-size: 20px"
+                        style="font-size: 16px"
                         type="ExclamationCircleOutlined"
                     />
                 </j-tooltip>
@@ -19,31 +19,22 @@
                     <div class="box-item">
                         <div class="box-item-img">
                             <j-dropdown placement="top" :trigger="['click']">
-                                <!-- :visible="show?.[slotProps?.id]"
-                                @visibleChange="onVisibleChange(slotProps)" -->
-                                <div>
+                                <div
+                                    :class="{
+                                        disabled: !notifyChannels?.includes(
+                                            slotProps?.id,
+                                        ),
+                                    }"
+                                >
                                     <img
                                         :src="
                                             iconMap.get(
                                                 slotProps?.channelProvider,
                                             )
                                         "
+                                        style="width: 32px"
                                     />
-                                    <div
-                                        :class="{
-                                            disabled: !notifyChannels?.includes(
-                                                slotProps?.id,
-                                            ),
-                                        }"
-                                    ></div>
                                 </div>
-                                <!-- v-if="
-                                        notifyChannels?.includes(
-                                            slotProps?.id,
-                                        ) &&
-                                        slotProps?.channelProvider !==
-                                            'inside-mail'
-                                    " -->
                                 <template #overlay>
                                     <j-menu>
                                         <j-menu-item
@@ -97,13 +88,6 @@
                                     </j-menu>
                                 </template>
                             </j-dropdown>
-                            <div class="box-item-checked">
-                                <j-checkbox
-                                    :checked="
-                                        notifyChannels?.includes(slotProps?.id)
-                                    "
-                                ></j-checkbox>
-                            </div>
                         </div>
                         <div class="box-item-text">
                             {{ slotProps?.name }}
@@ -140,12 +124,12 @@ import { useUserInfo } from '@/store/userInfo';
 import EditInfo from '../../EditInfo/index.vue';
 
 const iconMap = new Map();
-iconMap.set('notifier-dingTalk', getImage('/notice/dingtalk.png'));
-iconMap.set('notifier-weixin', getImage('/notice/wechat.png'));
-iconMap.set('notifier-email', getImage('/notice/email.png'));
-iconMap.set('notifier-voice', getImage('/notice/voice.png'));
-iconMap.set('notifier-sms', getImage('/notice/sms.png'));
-iconMap.set('inside-mail', getImage('/notice/inside-mail.png'));
+iconMap.set('notifier-dingTalk', getImage('/notice-rule/dingtalk.png'));
+iconMap.set('notifier-weixin', getImage('/notice-rule/wechat.png'));
+iconMap.set('notifier-email', getImage('/notice-rule/email.png'));
+iconMap.set('notifier-voice', getImage('/notice-rule/voice.png'));
+iconMap.set('notifier-sms', getImage('/notice-rule/sms.png'));
+iconMap.set('inside-mail', getImage('/notice-rule/inside-mail.png'));
 
 const current = ref<any>({});
 const visible = ref<boolean>(false);
@@ -272,17 +256,15 @@ const onSave = () => {
 
 <style lang="less" scoped>
 .child-item {
-    padding: 10px 20px;
-    margin: 5px;
-    background: #f7f7f7;
+    padding: 0 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0px 1px 0px 0px #E2E2E2;
 
     .child-item-left {
         display: flex;
         align-items: center;
-        height: 80px;
 
         div {
             display: flex;
@@ -303,40 +285,29 @@ const onSave = () => {
         .box-item {
             margin-left: 10px;
             .box-item-img {
-                width: 48px;
-                height: 48px;
+                width: 60px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 position: relative;
 
                 img {
-                    width: 100%;
                     z-index: 1;
                 }
 
-                .box-item-checked {
-                    position: absolute;
-                    top: -10px;
-                    right: -10px;
-                    z-index: 3;
-                }
-
                 .disabled {
-                    background-color: rgba(#000, 0.38);
-                    position: absolute;
-                    width: 48px;
-                    height: 48px;
-                    z-index: 2;
-                    top: 0;
-                    left: 0;
+                    filter: grayscale(100%);
+                    // filter: brightness(0);
+                    // opacity: 50%;
                 }
             }
 
             .box-item-text {
                 width: 100%;
                 text-align: center;
-                height: 20px;
+                color: #666666;
+                font-size: 12px;
+                
             }
         }
     }

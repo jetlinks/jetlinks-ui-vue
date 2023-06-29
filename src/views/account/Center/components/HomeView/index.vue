@@ -1,34 +1,31 @@
 <template>
     <div class="choose-view">
-        <j-row class="view-content" :gutter="24">
-            <j-col
+        <div class="view-content">
+            <div
                 :span="8"
                 class="select-item"
-                :class="{ selected: currentView === 'device' }"
                 @click="currentView = 'device'"
             >
-                <img :src="getImage('/home/device.png')" alt="" />
-            </j-col>
-            <j-col
+                <img :src="getImage(`/home/home-view/device${currentView === 'device' ? '-active' : ''}.png`)" alt="" />
+            </div>
+            <div
                 :span="8"
                 class="select-item"
-                :class="{ selected: currentView === 'ops' }"
                 @click="currentView = 'ops'"
             >
-                <img :src="getImage('/home/ops.png')" alt="" />
-            </j-col>
-            <j-col
+                <img :src="getImage(`/home/home-view/ops${currentView === 'ops' ? '-active' : ''}.png`)" alt="" />
+            </div>
+            <div
                 :span="8"
                 class="select-item"
-                :class="{
-                    selected: currentView === 'comprehensive',
-                }"
                 @click="currentView = 'comprehensive'"
             >
-                <img :src="getImage('/home/comprehensive.png')" alt="" />
-            </j-col>
-        </j-row>
-        <j-button type="primary" class="btn" @click="confirm">确定</j-button>
+                <img :src="getImage(`/home/home-view/comprehensive${currentView === 'comprehensive' ? '-active' : ''}.png`)" alt="" />
+            </div>
+        </div>
+        <div class="btn">
+            <j-button type="primary" @click="confirm">保存修改</j-button>
+        </div>
     </div>
 </template>
 
@@ -76,28 +73,26 @@ onMounted(() => {
 <style lang="less" scoped>
 .choose-view {
     width: 100%;
-    margin-top: 30px;
-    padding: 48px 150px;
+    padding: 4% 9% 0 9%;
     box-sizing: border-box;
     .view-content {
         display: flex;
-        flex-flow: row wrap;
+        justify-content: space-between;
         .select-item {
-            border: 2px solid transparent;
+            cursor: pointer;
+            width: 30%;
+
             img {
                 width: 100%;
                 background-size: cover;
-            }
-
-            &.selected {
-                border-color: #10239e;
             }
         }
     }
 
     .btn {
-        display: block;
-        margin: 48px auto;
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 68px;
     }
 }
 </style>
