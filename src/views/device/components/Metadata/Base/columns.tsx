@@ -1,5 +1,5 @@
 import { ColumnProps } from "ant-design-vue/es/table";
-import { DataType, Source } from './components'
+import { DataType, Source, InputParams } from './components'
 import { DataTableObject } from 'jetlinks-ui-components';
 import SelectColumn from './components/Events/SelectColumn.vue';
 import { EventLevel } from "@/views/device/data";
@@ -112,7 +112,7 @@ const FunctionColumns: DataTableColumnProps[] = BaseColumns.concat([
     dataIndex: 'inputs',
     type: 'components',
     components: {
-      name: DataTableObject,
+      name: InputParams,
       props: {
         columns: [
           { title: '参数标识', dataIndex: 'id', type: 'text' },

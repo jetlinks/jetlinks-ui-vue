@@ -3,11 +3,11 @@
         <DataTableTypeSelect v-model:value="type" @change="typeChange" />
         <DataTableArray
             v-if="type === 'array'"
-            v-model:value="data.elementType.type"
+            v-model:value="data.elementType"
         />
         <DataTableObject
             v-else-if="type === 'object'"
-            :value="value.properties"
+            v-model:value="data.properties"
             :columns="[
                 { title: '参数标识', dataIndex: 'id', type: 'text' },
                 { title: '参数名称', dataIndex: 'name', type: 'text' },
@@ -22,7 +22,7 @@
                 {
                   title: '其他配置',
                   type: 'components',
-                  dataIndex: ['valueType'],
+                  dataIndex: 'valueType',
                   components: {
                     name: DataTypeObjectChild
                   }
@@ -45,7 +45,7 @@
             v-model:value="data.unit"
         />
         <DataTableFile v-else-if="type === 'file'" v-model:value="data.fileType"/>
-        <DataTableDate v-else-if="type === 'date'" />
+        <DataTableDate v-else-if="type === 'date'" v-model:value="data.date"/>
         <DataTableString
             v-else-if="['string', 'password'].includes(type)"
             v-model:value="data.expands.maxLength"
@@ -55,6 +55,7 @@
 
 <script setup lang="ts" name="MetadataDataType">
 import { getUnit } from '@/api/device/instance';
+import { InputParams } from '../components'
 import {
     DataTableTypeSelect,
     DataTableArray,
@@ -80,23 +81,22 @@ const props = defineProps({
 const options = ref<{ label: string; value: string }[]>([]);
 const emit = defineEmits(['update:value']);
 
-const type = ref(props.value?.type);
-const elements = ref(props.value?.elements);
-const unit = ref(props.value?.unit);
-
-const data = ref(cloneDeep(props.value));
+const type = ref(props.value?.valueType.type);
+const elements = ref(props.value?.valueType.elements);
+const data = ref(cloneDeep(props.value.valueType));
 
 const typeChange = () => {
     emit('update:value', {
-        type: type,
+        ...props.value,
+        valueType: { ...data.value, type: type.value }
     });
 };
 
 watch(
     () => props.value,
     () => {
-        type.value = props.value?.type;
-        elements.value = props.value?.elements;
+        type.value = props.value?.valueType.type;
+        // elements.value = props.value?.valueType.elements;
         if (['float', 'double', 'int', 'long'].includes(type.value)) {
             const res = getUnit().then((res) => {
                 if (res.success) {
@@ -114,13 +114,13 @@ watch(
 watch(
     () => data.value,
     () => {
-      let result = {...data.value};
-        if(type.value == 'boolean') {
-          result = {...data.value.value}
-        }
+      let result = {...data.value.value};
+        // if(type.value == 'boolean') {
+        //   result = {...data.value}
+        // }
         emit('update:value', {
-            ...result,
-            type: type,
+            ...props.value,
+            valueType: {...result, type: type.value},
         });
     },
     { deep: true },

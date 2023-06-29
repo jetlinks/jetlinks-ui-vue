@@ -13,7 +13,7 @@ import { ref, watch } from 'vue';
 
 
 type Emits = {
-  (e: 'update:value', data: string): void;
+  (e: 'update:value', data: Record<string, any>): void;
   (e: 'change', data: string): void;
 };
 
@@ -35,10 +35,10 @@ const props = defineProps({
 
 });
 
-const value = ref(props.value);
+const value = ref(props.value.async);
 
 const change = (v: string) => {
-  emit('update:value', v);
+  emit('update:value', {...props.value, async: value.value});
   emit('change', v);
 };
 
@@ -46,7 +46,7 @@ const change = (v: string) => {
 watch(
   () => props.value,
   (newV) => {
-      value.value = props.value;
+      value.value = props.value.async;
   },
   { immediate: true },
 );

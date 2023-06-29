@@ -92,10 +92,10 @@
             {{ sourceMap?.[data.record?.expands?.source] || '' }}
         </template>
         <template #inputs="{ data }">
-          {{ data.record.inputs.map(item => item.name).join(',') }}
+          {{ data.record.inputs?.map(item => item.name).join(',') }}
         </template>
         <template #output="{ data }">
-          {{ data.record.output.type }}
+          {{ data.record.output?.type }}
         </template>
         <template #async="{ data }">
           {{ data.record.async ? '是' : '否' }}
@@ -104,7 +104,7 @@
           {{ levelMap?.[data.record.expands?.level] || '-' }}
         </template>
         <template #properties="{ data }">
-          {{ data.record.valueType.properties.map(item => item.name).join(',') }}
+          {{ data.record.valueType.properties?.map(item => item.name).join(',') }}
         </template>
     </j-data-table>
 </template>
