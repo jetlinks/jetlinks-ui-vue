@@ -104,17 +104,30 @@
         <template #action="{data}">
           <j-space>
             <PermissionButton
+                :has-permission="`${permission}:add`"
+                type="link"
+                key="edit"
+                style="padding: 0"
+                :disabled="operateLimits('add', type)"
+                @click="copyItem(data.index)"
+                :tooltip="{
+                  title: operateLimits('add', type) ? '当前的存储方式不支持复制' : '复制',
+                }"
+            >
+              <AIcon type="CopyOutlined" />
+            </PermissionButton>
+            <PermissionButton
                 :has-permission="`${permission}:update`"
                 type="link"
                 key="edit"
                 style="padding: 0"
-                :disabled="operateLimits('updata', type)"
+                :disabled="operateLimits('add', type)"
                 @click="handleAddClick(data.index)"
                 :tooltip="{
-                  title: operateLimits('updata', type) ? '当前的存储方式不支持新增' : '新增',
+                  title: operateLimits('add', type) ? '当前的存储方式不支持新增' : '新增',
                 }"
             >
-              <AIcon type="EditOutlined" />
+              <AIcon type="PlusSquareOutlined" />
             </PermissionButton>
             <PermissionButton
                 :has-permission="`${permission}:delete`"
@@ -160,6 +173,7 @@ import { useMetadataStore } from '@/store/metadata';
 import { DeviceInstance } from '@/views/device/Instance/typings';
 import { onlyMessage } from '@/utils/comm';
 import {omit} from "lodash-es";
+import {useAction} from "@/views/device/components/Metadata/Base/hooks/useAction";
 
 const props = defineProps({
     // target: {
@@ -188,6 +202,8 @@ const productStore = useProductStore()
 const dataSource = ref<MetadataItem[]>(metadata.value || []);
 const tableRef = ref();
 const columns = computed(() => MetadataMapping.get(props.type!));
+
+const { addAction, copyAction, removeAction } = useAction(tableRef)
 
 provide('_dataSource', dataSource.value)
 
@@ -219,15 +235,15 @@ const handleAddClick = (index?: number) => {
     }
   }
 
-  tableRef.value?.addItem(newObject, index)
+  tableRef.value?.addItem?.(newObject, index)
 };
 
 const copyItem = (record: any, index: number) => {
-  tableRef.value?.addItem(index + 1, omit(record, ['_uuid']))
+  copyAction(omit(record, ['_uuid']), index)
 }
 
 const removeItem = (index: number) => {
-  tableRef.value?.remove(index)
+  removeAction(index)
 }
 
 const handleSaveClick = async () => {
