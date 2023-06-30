@@ -111,6 +111,15 @@ export default {
 </a>
 ```
 
+### 去掉导航栏右上角jetlinks文档
+
+在`src\components\Layout\BasicLayoutPage.vue`文件
+在第23行左右，注释以下代码
+
+```javascript
+<!-- <AIcon type="QuestionCircleOutlined" @click="toDoc" /> -->
+```
+
 ### 新增菜单
 
 新增或者修改菜单有两种方式，第一个是代码内的初始化菜单，第二个系统管理的菜单管理
