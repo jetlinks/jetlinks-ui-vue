@@ -1,5 +1,5 @@
 import { ColumnProps } from "ant-design-vue/es/table";
-import { DataType, Source, InputParams, OutputParams, ConfigParams } from './components'
+import { DataType, Source, InputParams, OtherSetting, OutputParams, ConfigParams } from './components'
 import SelectColumn from './components/Events/SelectColumn.vue';
 import AsyncSelect from './components/Function/AsyncSelect.vue';
 import { EventLevel } from "@/views/device/data";
@@ -69,6 +69,11 @@ const EventColumns: DataTableColumnProps[] = BaseColumns.concat([
     title: '说明',
     dataIndex: 'description',
     type: 'text',
+  },
+  {
+    title: '操作',
+    dataIndex: 'action',
+    width: 120
   }
 ]);
 
@@ -107,6 +112,11 @@ const FunctionColumns: DataTableColumnProps[] = BaseColumns.concat([
     title: '说明',
     dataIndex: 'description',
     type: 'text',
+  },
+  {
+    title: '操作',
+    dataIndex: 'action',
+    width: 120
   }
   // {
   //   title: '读写类型',
@@ -158,9 +168,19 @@ const PropertyColumns: DataTableColumnProps[] = BaseColumns.concat([
     }
   },
   {
-    title: '读写类型',
-    dataIndex: 'type',
+    title: '其它配置',
+    dataIndex: 'other',
+    type: 'components',
+    width: 100,
+    components: {
+      name: OtherSetting
+    },
   },
+  {
+    title: '操作',
+    dataIndex: 'action',
+    width: 120
+  }
 ]);
 
 const TagColumns: DataTableColumnProps[] = BaseColumns.concat([
@@ -180,6 +200,11 @@ const TagColumns: DataTableColumnProps[] = BaseColumns.concat([
     title: '说明',
     dataIndex: 'description',
     type: 'text',
+  },
+  {
+    title: '操作',
+    dataIndex: 'action',
+    width: 120
   }
 ]);
 
