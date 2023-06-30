@@ -218,19 +218,16 @@ const handleAddClick = (index?: number) => {
       type: undefined
     }
   }
-  if (index !== undefined) {
-    dataSource.value.splice(index + 1, 0, newObject)
-  } else {
-    dataSource.value.push(newObject)
-  }
+
+  tableRef.value?.addItem(newObject, index)
 };
 
 const copyItem = (record: any, index: number) => {
-  dataSource.value.splice(index + 1, 0, omit(record, ['_uuid']))
+  tableRef.value?.addItem(index + 1, omit(record, ['_uuid']))
 }
 
 const removeItem = (index: number) => {
-  dataSource.value.splice(index, 1)
+  tableRef.value?.remove(index)
 }
 
 const handleSaveClick = async () => {
