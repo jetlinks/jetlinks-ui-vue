@@ -200,7 +200,7 @@ const PropertyColumns: DataTableColumnProps[] = BaseColumns.concat([
   },
   {
     title: '其它配置',
-    dataIndex: 'type',
+    dataIndex: 'other',
     type: 'components',
     width: 100,
     components: {

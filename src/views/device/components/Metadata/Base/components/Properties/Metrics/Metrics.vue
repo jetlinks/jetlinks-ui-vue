@@ -96,11 +96,12 @@ const addItem = () => {
     range: 'false',
     value: undefined,
   }
-  tableRef.value?.addItem(data)
+  dataSource.value.push(data)
 }
 
 const deleteItem = (index: number) => {
-  dataSource.value = dataSource.value.slice(index, 1)
+  console.log(index)
+  dataSource.value = dataSource.value.slice(index - 1, 1)
 }
 
 const cancel = () => {

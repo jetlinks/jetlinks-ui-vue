@@ -98,6 +98,44 @@
         <template #properties="{ data }">
           {{ data.record.valueType.properties?.map(item => item.name).join(',') }}
         </template>
+        <template #other="{ data, }">
+          配置
+        </template>
+        <template #action="{data}">
+          <j-space>
+            <PermissionButton
+                :has-permission="`${permission}:update`"
+                type="link"
+                key="edit"
+                style="padding: 0"
+                :disabled="operateLimits('updata', type)"
+                @click="handleAddClick(data.index)"
+                :tooltip="{
+                  title: operateLimits('updata', type) ? '当前的存储方式不支持新增' : '新增',
+                }"
+            >
+              <AIcon type="EditOutlined" />
+            </PermissionButton>
+            <PermissionButton
+                :has-permission="`${permission}:delete`"
+                type="link"
+                key="delete"
+                style="padding: 0"
+                danger
+                :pop-confirm="{
+                title: '确认删除？',
+                onConfirm: async () => {
+                    await removeItem(data.record);
+                  },
+                }"
+                :tooltip="{
+                  title: '删除',
+                }"
+            >
+              <AIcon type="DeleteOutlined" />
+            </PermissionButton>
+          </j-space>
+        </template>
     </j-data-table>
 </template>
 
@@ -110,9 +148,9 @@ import type {
 import type { PropType } from 'vue';
 import { useMetadata, useOperateLimits } from './hooks';
 import MetadataMapping from './columns';
-import { levelMap, sourceMap, expandsType } from './utils';
+import { levelMap, sourceMap, expandsType, limitsMap } from './utils';
 import Rule from '@/components/Metadata/Rule';
-import { Source } from './components';
+import { Source, OtherSetting } from './components';
 import { saveProductVirtualProperty } from '@/api/device/product';
 import { saveDeviceVirtualProperty } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
@@ -121,6 +159,7 @@ import { asyncUpdateMetadata, updateMetadata } from '../metadata';
 import { useMetadataStore } from '@/store/metadata';
 import { DeviceInstance } from '@/views/device/Instance/typings';
 import { onlyMessage } from '@/utils/comm';
+import {omit} from "lodash-es";
 
 const props = defineProps({
     // target: {
@@ -150,6 +189,15 @@ const dataSource = ref<MetadataItem[]>(metadata.value);
 const tableRef = ref();
 const columns = computed(() => MetadataMapping.get(props.type!));
 
+provide('_dataSource', dataSource.value)
+
+const operateLimits = (action: 'add' | 'updata', types: MetadataType) => {
+  return (
+      target === 'device' &&
+      (instanceStore.detail.features || []).find((item: { id: string; name: string }) => item.id === limitsMap.get(`${types}-${action}`))
+  );
+};
+
 const handleSearch = (searchValue: string) => {
     dataSource.value = searchValue
         ? metadata.value
@@ -158,8 +206,9 @@ const handleSearch = (searchValue: string) => {
         : metadata.value;
 };
 
-const handleAddClick = () => {
-  dataSource.value.push({
+const handleAddClick = (index?: number) => {
+
+  const newObject = {
     id: undefined,
     name: undefined,
     expands: {
@@ -168,8 +217,21 @@ const handleAddClick = () => {
     valueType: {
       type: undefined
     }
-  })
+  }
+  if (index !== undefined) {
+    dataSource.value.splice(index + 1, 0, newObject)
+  } else {
+    dataSource.value.push(newObject)
+  }
 };
+
+const copyItem = (record: any, index: number) => {
+  dataSource.value.splice(index + 1, 0, omit(record, ['_uuid']))
+}
+
+const removeItem = (index: number) => {
+  dataSource.value.splice(index, 1)
+}
 
 const handleSaveClick = async () => {
     const resp = await tableRef.value.getData().finally(() => {
@@ -214,8 +276,7 @@ const handleSaveClick = async () => {
         }
       }
       const _detail: ProductItem | DeviceInstance = target === 'device' ? instanceStore.detail : productStore.current
-      const type = metadataStore.model.type
-      const _data = updateMetadata(type, arr, _detail, updateStore)
+      const _data = updateMetadata(props.type!, arr, _detail, updateStore)
       const result = await asyncUpdateMetadata(target, _data)
       if(result.success) {
         onlyMessage('操作成功！')

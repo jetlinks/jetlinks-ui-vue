@@ -224,6 +224,8 @@ const formData = reactive<{
     virtualRule: undefined,
 });
 
+const dataSource = inject<any[]>('_dataSource')
+
 const typeOptions = computed(() => {
     if (props.source === 'manual') {
         return [{ value: 'write', label: '写' }];
@@ -239,7 +241,7 @@ const typeOptions = computed(() => {
 });
 
 const options = computed(() => {
-    return props.dataSource.filter((item: any) => item?.id !== props.value?.id);
+    return dataSource?.filter((item: any) => item?.id !== props.value?.id);
 });
 
 const handleSearch = async () => {

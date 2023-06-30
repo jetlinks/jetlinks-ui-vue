@@ -1,5 +1,5 @@
 <template>
-  <j-collapse-panel v-for="item in config" key="1" :header="item.name">
+  <j-collapse-panel v-for="(item, index) in config" :key="'store_'+index" :header="item.name">
     <j-table
         :columns="columns"
         :data-source="item.properties"
@@ -7,9 +7,9 @@
         rowKey="id"
     >
       <template #bodyCell="{ column, record, index }">
-        <template v-if="column.dataIndex === 'type'">{{ record.type?.type }}</template>
+        <template v-if="column.dataIndex === 'type'">{{ record.type?.name }}</template>
         <ValueItem
-            v-else-if="column.dataIndex === 'type'"
+            v-else-if="column.dataIndex === 'value'"
             v-model:modelValue="configValue.value[record.property]"
             :itemType="record.type?.type"
             :options="(record?.type?.elements || []).map((a:any) => ({
@@ -28,6 +28,7 @@ import {useInstanceStore} from "store/instance";
 import type { PropType } from "vue";
 import { defineExpose } from 'vue'
 import {getMetadataConfig, getMetadataDeviceConfig} from "@/api/device/product";
+import { omit } from 'lodash-es'
 
 const props = defineProps({
   type: {
@@ -37,6 +38,10 @@ const props = defineProps({
   record: {
     type: Object as PropType<any>,
     default: undefined
+  },
+  visible: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -67,7 +72,7 @@ const getConfig = async () => {
   const { type, record } = props
   const id = type === 'product' ? productStore.current?.id : deviceStore.current.id
   console.log(record.id, id, record.valueType)
-  if(!record.id || !id || record.valueType.type) return
+  if(!record.id || !id || !record.valueType.type) return
 
   const params: any = {
     deviceId: id,
@@ -94,16 +99,19 @@ const getConfig = async () => {
   }
 }
 
+watch(() => props.visible, () => {
+  if (props.visible) {
+    configValue.value = omit(props.record?.expands, ['source', 'type', 'metrics'])
+    getConfig()
+  }
+}, { immediate: true })
+
 const getData = () => {
   return configValue.value
 }
 
 defineExpose({
   getData
-})
-
-onMounted(() => {
-  getConfig()
 })
 
 </script>
