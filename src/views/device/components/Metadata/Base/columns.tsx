@@ -1,5 +1,5 @@
 import { ColumnProps } from "ant-design-vue/es/table";
-import { DataType, Source, InputParams } from './components'
+import { DataType, Source, InputParams, OtherSetting } from './components'
 import { DataTableObject } from 'jetlinks-ui-components';
 import SelectColumn from './components/Events/SelectColumn.vue';
 import { EventLevel } from "@/views/device/data";
@@ -199,9 +199,19 @@ const PropertyColumns: DataTableColumnProps[] = BaseColumns.concat([
     }
   },
   {
-    title: '读写类型',
+    title: '其它配置',
     dataIndex: 'type',
+    type: 'components',
+    width: 100,
+    components: {
+      name: OtherSetting
+    },
   },
+  {
+    title: '操作',
+    dataIndex: 'action',
+    width: 120
+  }
 ]);
 
 const TagColumns: DataTableColumnProps[] = BaseColumns.concat([

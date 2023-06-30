@@ -1,52 +1,44 @@
 <template>
-    <div class="table-header">
-        <div>
-            <j-input-search
-                placeholder="请输入名称"
-                @search="handleSearch"
-                allowClear
-            />
-        </div>
-        <div>
-            <PermissionButton
-                type="primary"
-                v-if="!dataSource.length"
-                :hasPermission="`${permission}:update`"
-                key="add"
-                @click="handleAddClick"
-                :disabled="hasOperate('add', type)"
-                :tooltip="{
-                    title: hasOperate('add', type)
-                        ? '当前的存储方式不支持新增'
-                        : '新增',
-                }"
-            >
-                新增
-            </PermissionButton>
-            <PermissionButton
-                type="primary"
-                :hasPermission="`${permission}:update`"
-                key="update"
-                v-else
-                @click="handleSaveClick"
-                :disabled="hasOperate('add', type)"
-                :tooltip="{
-                    title: hasOperate('add', type)
-                        ? '当前的存储方式不支持新增'
-                        : '保存',
-                }"
-            >
-                保存
-            </PermissionButton>
-        </div>
-    </div>
     <j-data-table
         ref="tableRef"
         :data-source="dataSource"
         :columns="columns"
         row-key="id"
+        :height="560"
         serial
     >
+        <template #expand>
+          <PermissionButton
+              type="primary"
+              v-if="!dataSource.length"
+              :hasPermission="`${permission}:update`"
+              key="add"
+              @click="handleAddClick"
+              :disabled="hasOperate('add', type)"
+              :tooltip="{
+                    title: hasOperate('add', type)
+                        ? '当前的存储方式不支持新增'
+                        : '新增',
+                }"
+          >
+            新增
+          </PermissionButton>
+          <PermissionButton
+              type="primary"
+              :hasPermission="`${permission}:update`"
+              key="update"
+              v-else
+              @click="handleSaveClick"
+              :disabled="hasOperate('add', type)"
+              :tooltip="{
+                    title: hasOperate('add', type)
+                        ? '当前的存储方式不支持新增'
+                        : '保存',
+                }"
+          >
+            保存
+          </PermissionButton>
+        </template>
         <template #bodyCell="{ column, record }">
             <template v-if="column.dataIndex === 'id'">
                 <div style="width: 100px">
