@@ -14,7 +14,7 @@
             :bodyStyle="{
                 padding: 0,
             }"
-            
+            :alertRender='false'
             :params="params"
             :gridColumn="2"
             :rowSelection="{

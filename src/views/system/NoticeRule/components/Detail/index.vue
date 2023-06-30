@@ -14,7 +14,7 @@
                 obj.content 
             }}</j-descriptions-item>
             <j-descriptions-item label="模板变量">
-                <div v-for="item in obj.variables" :key="item?.value">{{ item?.name }}: {{ item?.value }}</div>
+                <div v-for="item in obj.variables" :key="item?.value">{{ item?.name }} - {{ item?.value }}</div>
             </j-descriptions-item>
             <j-descriptions-item label="用户权限">{{
                 obj.role
@@ -50,7 +50,7 @@ const obj = reactive<{
     template: '',
     content: '',
     variables: [],
-    role: '',
+    role: '未配置权限',
 });
 
 const handleSearch = async () => {
@@ -97,7 +97,7 @@ const handleSearch = async () => {
                 .map((item: string) => {
                     return (resp?.result || []).find((i: any) => i?.id === item)?.name
                 })
-                ?.join(',') || '未配置权限'
+                ?.join(';') || '未配置权限'
         }
     }
 };

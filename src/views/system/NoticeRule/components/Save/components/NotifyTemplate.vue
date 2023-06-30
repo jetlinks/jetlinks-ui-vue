@@ -18,6 +18,7 @@
             :bodyStyle="{
                 padding: 0,
             }"
+            :alertRender="false"
             :params="params"
             :gridColumn="2"
             :noPagination="true"
@@ -68,6 +69,11 @@
                                 </Ellipsis>
                             </j-col>
                         </j-row>
+                        <div style="height: 30px">
+                            <j-ellipsis :lineClamp="2">
+                                {{ slotProps.template?.message || '' }}
+                            </j-ellipsis>
+                        </div>
                     </template>
                 </CardBox>
             </template>
