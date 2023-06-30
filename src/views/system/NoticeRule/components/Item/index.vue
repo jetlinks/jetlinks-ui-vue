@@ -1,110 +1,125 @@
 <template>
-    <div class="child-item" :class="{ border: !isLast }">
-        <div class="child-item-left">
-            <div style="color: #333333">
-                {{ data?.name }}
+    <j-spin :spinning="spinning">
+        <div class="child-item" :class="{ border: !isLast }">
+            <div class="child-item-left">
+                <div style="color: #333333">
+                    {{ data?.name }}
+                </div>
+                <div>
+                    <j-tooltip :title="!action ? '暂无权限，请联系管理员' : ''">
+                        <j-switch
+                            :disabled="!action"
+                            @change="onSwitchChange"
+                            :checked="checked"
+                        />
+                    </j-tooltip>
+                </div>
             </div>
-            <div>
-                <j-tooltip :title="!action ? '暂无权限，请联系管理员' : ''">
-                    <j-switch
-                        :disabled="!action"
-                        @change="onSwitchChange"
-                        :checked="checked"
-                    />
-                </j-tooltip>
-            </div>
-        </div>
-        <div class="child-item-right" :class="{ disabled: !checked }">
-            <MCarousel :data="data?.channels">
-                <template #card="slotProps">
-                    <div class="box-item">
-                        <j-dropdown>
-                            <div class="box-item-img">
-                                <img
-                                    style="width: 100%"
-                                    :src="
-                                        iconMap.get(slotProps?.channelProvider)
+            <div class="child-item-right" :class="{ disabled: !checked }">
+                <MCarousel :data="data?.channels">
+                    <template #card="slotProps">
+                        <div class="box-item">
+                            <j-dropdown>
+                                <div class="box-item-img">
+                                    <img
+                                        style="width: 100%"
+                                        :src="
+                                            iconMap.get(
+                                                slotProps?.channelProvider,
+                                            )
+                                        "
+                                    />
+                                </div>
+                                <template
+                                    #overlay
+                                    v-if="
+                                        slotProps?.channelProvider !==
+                                        'inside-mail'
                                     "
-                                />
+                                >
+                                    <j-menu mode="">
+                                        <j-menu-item>
+                                            <PermissionButton
+                                                @click="onView(slotProps)"
+                                                type="link"
+                                                :hasPermission="true"
+                                            >
+                                                查看
+                                            </PermissionButton>
+                                        </j-menu-item>
+                                        <j-menu-item>
+                                            <PermissionButton
+                                                @click="onEdit(slotProps)"
+                                                type="link"
+                                                :hasPermission="[
+                                                    'system/NoticeRule:update',
+                                                ]"
+                                            >
+                                                编辑
+                                            </PermissionButton>
+                                        </j-menu-item>
+                                        <j-menu-item>
+                                            <PermissionButton
+                                                @click="onDelete(slotProps.id)"
+                                                danger
+                                                type="link"
+                                                :hasPermission="[
+                                                    'system/NoticeRule:delete',
+                                                ]"
+                                            >
+                                                删除
+                                            </PermissionButton>
+                                        </j-menu-item>
+                                    </j-menu>
+                                </template>
+                            </j-dropdown>
+                            <div class="box-item-text">
+                                {{ slotProps?.name }}
                             </div>
-                            <template
-                                #overlay
-                                v-if="
-                                    slotProps?.channelProvider !== 'inside-mail'
-                                "
-                            >
-                                <j-menu mode="">
-                                    <j-menu-item>
-                                        <PermissionButton
-                                            @click="onView(slotProps)"
-                                            type="link"
-                                            :hasPermission="true"
-                                        >
-                                            查看
-                                        </PermissionButton>
-                                    </j-menu-item>
-                                    <j-menu-item>
-                                        <PermissionButton
-                                            @click="onEdit(slotProps)"
-                                            type="link"
-                                            :hasPermission="[
-                                                'system/NoticeRule:update',
-                                            ]"
-                                        >
-                                            编辑
-                                        </PermissionButton>
-                                    </j-menu-item>
-                                    <j-menu-item>
-                                        <PermissionButton
-                                            @click="onDelete(slotProps.id)"
-                                            danger
-                                            type="link"
-                                            :hasPermission="[
-                                                'system/NoticeRule:delete',
-                                            ]"
-                                        >
-                                            删除
-                                        </PermissionButton>
-                                    </j-menu-item>
-                                </j-menu>
-                            </template>
-                        </j-dropdown>
-                        <div class="box-item-text">
-                            {{ slotProps?.name }}
                         </div>
-                    </div>
-                </template>
-            </MCarousel>
+                    </template>
+                </MCarousel>
 
-            <div class="box-item-add">
-                <div class="box-item-img">
-                    <j-tooltip :title="!add ? '暂无权限，请联系管理员' : ''">
-                        <j-button :disabled="!add" type="text" @click="onAdd">
-                            <AIcon
-                                style="font-size: 20px"
-                                type="PlusOutlined"
-                            />
+                <div class="box-item-add">
+                    <div class="box-item-img">
+                        <j-tooltip
+                            :title="!add ? '暂无权限，请联系管理员' : ''"
+                        >
+                            <j-button
+                                :disabled="!add"
+                                type="text"
+                                @click="onAdd"
+                            >
+                                <AIcon
+                                    style="font-size: 20px"
+                                    type="PlusOutlined"
+                                />
+                            </j-button>
+                        </j-tooltip>
+                    </div>
+                    <div class="box-item-text"></div>
+                </div>
+
+                <div class="child-item-right-auth">
+                    <j-tooltip :title="!update ? '暂无权限，请联系管理员' : ''">
+                        <j-button
+                            :disabled="!update"
+                            type="text"
+                            @click="onAuth"
+                        >
+                            <div
+                                class="child-item-right-auth-btn"
+                                :class="{ active: auth.length }"
+                            >
+                                <AIcon type="UserOutlined" />
+                                <span>权限控制</span>
+                            </div>
                         </j-button>
                     </j-tooltip>
                 </div>
-                <div class="box-item-text"></div>
-            </div>
-
-            <div class="child-item-right-auth">
-                <j-tooltip :title="!update ? '暂无权限，请联系管理员' : ''">
-                    <j-button :disabled="!update" type="text" @click="onAuth">
-                        <div
-                            class="child-item-right-auth-btn"
-                            :class="{ active: auth.length }"
-                        >
-                            <AIcon type="UserOutlined" />
-                            <span>权限控制</span>
-                        </div>
-                    </j-button>
-                </j-tooltip>
             </div>
         </div>
-    </div>
+    </j-spin>
     <Save
         :data="current"
         v-if="visible"
@@ -156,8 +171,8 @@ const props = defineProps({
     },
     provider: {
         type: String,
-        default: ''
-    }
+        default: '',
+    },
 });
 
 const emits = defineEmits(['refresh']);
@@ -170,6 +185,7 @@ const current = ref<any>({});
 const checked = ref<boolean>(false);
 const auth = ref<string[]>([]);
 const loading = ref<boolean>(false);
+const spinning = ref<boolean>(false);
 
 const permission = usePermissionStore();
 const user = useUserInfo();
@@ -220,16 +236,24 @@ const onAuthSave = (_data: string[]) => {
             role: {
                 idList: _data || [],
             },
-            permissions: props.provider === 'alarm' ? [{ id: 'alarm-config', actions: ['query'] }] : [],
+            permissions:
+                props.provider === 'alarm'
+                    ? [{ id: 'alarm-config', actions: ['query'] }]
+                    : [],
         },
     };
-    editChannelConfig(props.data.id, obj).then((resp) => {
-        if (resp.status === 200) {
-            onlyMessage('操作成功！', 'success');
-            authVisible.value = false;
-            emits('refresh');
-        }
-    });
+    spinning.value = true;
+    editChannelConfig(props.data.id, obj)
+        .then((resp) => {
+            if (resp.status === 200) {
+                onlyMessage('操作成功！', 'success');
+                authVisible.value = false;
+                emits('refresh');
+            }
+        })
+        .finally(() => {
+            spinning.value = false;
+        });
 };
 
 const onAction = (e: boolean) => {
@@ -242,16 +266,35 @@ const onAction = (e: boolean) => {
                 (item: any) => item.channelProvider === 'inside-mail',
             )
         ) {
-            actionChannelConfig(props.data.id, 'enable').then((resp) => {
-                if (resp.status === 200) {
-                    onlyMessage('操作成功！');
-                    emits('refresh');
-                }
-            });
+            spinning.value = true;
+            actionChannelConfig(props.data.id, 'enable')
+                .then((resp) => {
+                    if (resp.status === 200) {
+                        onlyMessage('操作成功！');
+                        emits('refresh');
+                    }
+                })
+                .finally(() => {
+                    spinning.value = false;
+                });
         } else {
             const obj = {
                 ...props.data,
                 state: 'enabled',
+                grant:
+                    !props.data.grant?.role && props.provider === 'alarm'
+                        ? {
+                              role: {
+                                  idList: [],
+                              },
+                              permissions: [
+                                  {
+                                      id: 'alarm-config',
+                                      actions: ['query'],
+                                  },
+                              ],
+                          }
+                        : props.data.grant,
                 channels: [
                     {
                         name: '站内信',
@@ -260,12 +303,17 @@ const onAction = (e: boolean) => {
                     },
                 ],
             };
-            saveChannelConfig([obj]).then((resp) => {
-                if (resp.status === 200) {
-                    onlyMessage('操作成功！', 'success');
-                    emits('refresh');
-                }
-            });
+            spinning.value = true;
+            saveChannelConfig([obj])
+                .then((resp) => {
+                    if (resp.status === 200) {
+                        onlyMessage('操作成功！', 'success');
+                        emits('refresh');
+                    }
+                })
+                .finally(() => {
+                    spinning.value = false;
+                });
         }
     } else {
         actionChannelConfig(props.data.id, 'disable').then((resp) => {

@@ -1357,7 +1357,7 @@
                                     @click="
                                         clickAddItem(
                                             form.data.sso.orgIdList,
-                                            'Role',
+                                            'Department',
                                         )
                                     "
                                     class="add-item"
@@ -1709,9 +1709,12 @@ function getOrgIdList() {
 function clickAddItem(data: string[], target: string) {
     const tab: any = window.open(`${origin}/#/system/${target}?save=true`);
     tab.onTabSaveSuccess = (value: string) => {
-        data.push(value);
-        if (target === 'Role') getRoleIdList();
-        else getOrgIdList();
+        if (target === 'Role') {
+            getRoleIdList();
+        } else {
+            getOrgIdList()
+        }
+        data.push(value)
     };
 }
 // 保存

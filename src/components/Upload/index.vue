@@ -150,6 +150,7 @@ const beforeUpload = (file: UploadProps['fileList'][number]) => {
     const isSize = file.size / 1024 / 1024 < maxSize;
     if (!isSize) {
         message.error(`图片大小必须小于${maxSize}M`);
+        return false
     }
 
     getBase64(file, (base64Url) => {

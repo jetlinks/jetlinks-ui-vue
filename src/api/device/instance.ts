@@ -580,9 +580,9 @@ export const getDeviceNumber = (data?:any) => server.post<number>('/device-insta
  */
 export const importDeviceByPlugin = (productId: string, data: any[]) => server.post(`/device/instance/plugin/${productId}/import`, data)
 
-export const metadateMapById = (type: 'device' | 'product', productId: string, data: any[]) => server.patch(`/device/metadata/mapping/${type}/${productId}`, data)
+export const metadataMapById = (type: 'device' | 'product', productId: string, data: any[]) => server.patch(`/device/metadata/mapping/${type}/${productId}`, data)
 
-export const getMetadateMapById = (type: 'device' | 'product', productId: string) => server.get(`/device/metadata/mapping/${type}/${productId}`)
+export const getMetadataMapById = (type: 'device' | 'product', productId: string) => server.get(`/device/metadata/mapping/${type}/${productId}`)
 
 export const getInkingDevices = (data: string[]) => server.post('/plugin/mapping/device/_all', data)
 
