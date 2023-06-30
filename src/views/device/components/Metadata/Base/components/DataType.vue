@@ -14,15 +14,15 @@
                 {
                     title: '数据类型',
                     type: 'components',
-                    dataIndex: ['valueType', 'type'],
+                    dataIndex: 'valueType',
                     components: {
-                      name: DataTableTypeSelect,
+                      name: ValueObject,
                     }
                 },
                 {
                   title: '其他配置',
                   type: 'components',
-                  dataIndex: 'valueType',
+                  dataIndex: 'config',
                   components: {
                     name: DataTypeObjectChild
                   }
@@ -31,7 +31,14 @@
                   title: '操作'
                 }
             ]"
-        />
+        >
+            <template #valueType="{ data }">
+                {{ data.data.record.valueType?.type }}
+            </template>
+            <template #config="{ data }">
+                <OtherConfigInfo :value="data.data.record.valueType"></OtherConfigInfo>
+            </template>
+        </DataTableObject>
         <DataTableEnum v-else-if="type === 'enum'" v-model:value="data" />
         <DataTableBoolean v-else-if="type === 'boolean'" v-model:value="data" />
         <DataTableDouble
@@ -55,7 +62,7 @@
 
 <script setup lang="ts" name="MetadataDataType">
 import { getUnit } from '@/api/device/instance';
-import { InputParams } from '../components'
+import { InputParams, ValueObject, OtherConfigInfo } from '../components'
 import {
     DataTableTypeSelect,
     DataTableArray,
@@ -114,7 +121,7 @@ watch(
 watch(
     () => data.value,
     () => {
-      let result = {...data.value.value};
+      let result = {...data.value};
         // if(type.value == 'boolean') {
         //   result = {...data.value}
         // }

@@ -259,7 +259,7 @@ const handleSearch = async () => {
     if (resp && resp.status === 200) {
         formData.virtualRule = {
             triggerProperties: resp?.result?.triggerProperties?.length ? resp?.result?.triggerProperties : ['*'],
-            rule: resp?.result?.rule
+            rule: resp?.result?.rule ? resp?.result?.rule : initData.rule,
         }
     }
 };
@@ -296,6 +296,7 @@ watch(
     (newVal: SourceType) => {
         if (newVal === 'rule') {
             formData.virtualRule = initData;
+            console.log(formData.virtualRule);
             handleSearch();
         } else {
             formData.virtualRule = undefined;
@@ -303,6 +304,7 @@ watch(
     },
     {
         immediate: true,
+        deep: true
     },
 );
 

@@ -1,7 +1,7 @@
 import { ColumnProps } from "ant-design-vue/es/table";
-import { DataType, Source, InputParams } from './components'
-import { DataTableObject } from 'jetlinks-ui-components';
+import { DataType, Source, InputParams, OutputParams, ConfigParams } from './components'
 import SelectColumn from './components/Events/SelectColumn.vue';
+import AsyncSelect from './components/Function/AsyncSelect.vue';
 import { EventLevel } from "@/views/device/data";
 interface DataTableColumnProps extends ColumnProps {
   type?: string,
@@ -62,27 +62,7 @@ const EventColumns: DataTableColumnProps[] = BaseColumns.concat([
     dataIndex: 'properties',
     type: 'components',
     components: {
-      name: DataTableObject,
-      props: {
-        columns: [
-          { title: '参数标识', dataIndex: 'id', type: 'text' },
-          { title: '参数名称', dataIndex: 'name', type: 'text' },
-          {
-              title: '数据类型',
-              type: 'components',
-              dataIndex: ['valueType', 'type'],
-          },
-          {
-            title: '其他配置',
-            type: 'components',
-            dataIndex: ['valueType'],
-
-          },
-          {
-            title: '操作'
-          }
-        ],
-      }
+      name: ConfigParams,
     }
   },
   {
@@ -98,7 +78,7 @@ const FunctionColumns: DataTableColumnProps[] = BaseColumns.concat([
     dataIndex: 'async',
     type: 'components',
     components: {
-      name: SelectColumn,
+      name: AsyncSelect,
       props: {
         options: [
           { label: '是', value: true },
@@ -113,27 +93,6 @@ const FunctionColumns: DataTableColumnProps[] = BaseColumns.concat([
     type: 'components',
     components: {
       name: InputParams,
-      props: {
-        columns: [
-          { title: '参数标识', dataIndex: 'id', type: 'text' },
-          { title: '参数名称', dataIndex: 'name', type: 'text' },
-          {
-              title: '数据类型',
-              type: 'components',
-              dataIndex: ['valueType', 'type'],
-
-          },
-          {
-            title: '其他配置',
-            type: 'components',
-            dataIndex: ['valueType'],
-
-          },
-          {
-            title: '操作'
-          }
-        ]
-      }
     }
   },
   {
@@ -141,7 +100,7 @@ const FunctionColumns: DataTableColumnProps[] = BaseColumns.concat([
     dataIndex: 'output',
     type: 'components',
     components: {
-      name: DataType
+      name: OutputParams
     }
   },
   {

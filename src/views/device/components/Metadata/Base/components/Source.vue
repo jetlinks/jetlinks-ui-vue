@@ -9,6 +9,7 @@
         >
         </j-select>
         <j-popconfirm-modal
+            v-if="myValue != 'manual'"
             @confirm="confirm"
             :bodyStyle="{width: '450px', height: myValue === 'rule' ? '300px' : '80px'}"
         >

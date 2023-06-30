@@ -154,7 +154,7 @@ const metadataStore = useMetadataStore()
 const instanceStore = useInstanceStore()
 const productStore = useProductStore()
 
-const dataSource = ref<MetadataItem[]>(metadata.value);
+const dataSource = ref<MetadataItem[]>(metadata.value || []);
 const tableRef = ref();
 const columns = computed(() => MetadataMapping.get(props.type!));
 
