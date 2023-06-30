@@ -35,10 +35,10 @@ const props = defineProps({
 
 });
 
-const value = ref(props.value.async);
+const value = ref(props.value.expands?.level);
 
 const change = (v: string) => {
-  emit('update:value', {...props.value, async: value.value});
+  emit('update:value', {...props.value, expands: {...props.value.expands, level: v}});
   emit('change', v);
 };
 
@@ -46,7 +46,7 @@ const change = (v: string) => {
 watch(
   () => props.value,
   (newV) => {
-      value.value = props.value.async;
+      value.value = props.value.expands?.level;
   },
   { immediate: true },
 );
