@@ -89,6 +89,11 @@ const EventColumns: DataTableColumnProps[] = BaseColumns.concat([
     title: '说明',
     dataIndex: 'description',
     type: 'text',
+  },
+  {
+    title: '操作',
+    dataIndex: 'action',
+    width: 120
   }
 ]);
 
@@ -148,6 +153,11 @@ const FunctionColumns: DataTableColumnProps[] = BaseColumns.concat([
     title: '说明',
     dataIndex: 'description',
     type: 'text',
+  },
+  {
+    title: '操作',
+    dataIndex: 'action',
+    width: 120
   }
   // {
   //   title: '读写类型',
@@ -231,6 +241,11 @@ const TagColumns: DataTableColumnProps[] = BaseColumns.concat([
     title: '说明',
     dataIndex: 'description',
     type: 'text',
+  },
+  {
+    title: '操作',
+    dataIndex: 'action',
+    width: 120
   }
 ]);
 
