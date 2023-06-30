@@ -94,7 +94,8 @@ export default defineConfig(({ mode}) => {
               [env.VITE_APP_BASE_API]: {
                   // target: 'http://192.168.32.226:8844',
                   // target: 'http://192.168.32.244:8881',
-                  target: 'http://120.77.179.54:8844', // 120测试
+                  target: 'http://192.168.32.163:8844', //张季本地
+                //   target: 'http://120.77.179.54:8844', // 120测试
                   // target: 'http://192.168.33.46:8844', // 本地开发环境
                   ws: 'ws://192.168.33.46:8844',
                   changeOrigin: true,

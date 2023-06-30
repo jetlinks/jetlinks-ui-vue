@@ -8,18 +8,32 @@
       </template>
       <template #content>
         <div style="max-width: 400px;" class="ant-form-vertical">
-          <j-form-item v-for="item in config.properties" :name="name.concat([item.property])" :label="item.name">
-            <template v-if='item.type?.type === "string"'>
+          <j-form-item v-for="item in config.properties" :key="item.property" :name="name.concat([item.property])" :label="item.name">
+            <!-- <template v-if='item.type?.type === "string"'>
               <j-input v-model:value='value[item.property]' size="small" :placeholder="`请输入${item.name}`"/>
             </template>
-            <j-select v-else v-model:value="value[item.property]" :options="item.type?.elements?.map((e: { 'text': string, 'value': string }) => ({
+            <template v-else-if='item.type?.type === "int"'>
+              <j-input-number style="width: 100%;" v-model:value='value[item.property]' size="small" :placeholder="`请输入${item.name}`"/>
+            </template>
+            <j-select v-else :mode="item.type?.multi ? 'multiple' : ''" v-model:value="value[item.property]" :options="item.type?.elements?.map((e: { 'text': string, 'value': string }) => ({
               label: e.text,
               value: e.value,
-            }))" size="small" :placeholder="`请输入${item.name}`"></j-select>
+            }))" size="small" :placeholder="`请输入${item.name}`"></j-select> -->
+            <ValueItem
+                v-model:modelValue="value[item.property]"
+                :itemType="item.type?.type"
+                :mode="item?.type?.multi ? 'multiple' : ''"
+                :options="
+                    item.type?.elements?.map(e => ({
+                      label: e.text,
+                      value: e.value,
+                    }))
+                "
+            />
           </j-form-item>
         </div>
       </template>
-      {{ config.name || 存储配置 }}
+      {{ config.name || '存储配置' }}
       <AIcon type="EditOutlined" class="item-icon" />
     </j-popover>
   </j-button>

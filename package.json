@@ -27,6 +27,7 @@
     "jetlinks-store": "^0.0.3",
     "jetlinks-ui-components": "^1.0.21",
     "js-cookie": "^3.0.1",
+    "jsencrypt": "^3.3.2",
     "less": "^4.1.3",
     "less-loader": "^11.1.0",
     "lodash-es": "^4.17.21",
