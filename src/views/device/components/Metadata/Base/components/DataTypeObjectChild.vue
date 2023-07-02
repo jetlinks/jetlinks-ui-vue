@@ -1,25 +1,27 @@
 <template>
-    <j-space>
-        <OtherConfigInfo :value="formData"></OtherConfigInfo>
+    <div class="values">
+        <div class="values-test">
+            {{ text }}
+        </div>
+        <!-- <OtherConfigInfo :value="formData"></OtherConfigInfo> -->
         <DataTableEnum v-if="formData.type === 'enum'" v-model:value="formData" />
-        <DataTableBoolean v-else-if="formData.type === 'boolean'" v-model:value="formData" />
-        <DataTableDouble
-            v-else-if="['float', 'double'].includes(formData.type)"
-            :options="options"
-            v-model:value="formData"
-        />
-        <DataTableInteger
-            v-else-if="['int', 'long'].includes(formData.type)"
-            :options="options"
-            v-model:value="formData.unit"
-        />
-        <DataTableFile v-else-if="formData.type === 'file'" v-model:value="formData.fileType"/>
-        <DataTableDate v-else-if="formData.type === 'date'" v-model:value="formData.date"/>
-        <DataTableString
-            v-else-if="['string', 'password'].includes(formData.type)"
-            v-model:value="formData.expands.maxLength"
-        />
-    </j-space>
+            <DataTableBoolean v-else-if="formData.type === 'boolean'" v-model:value="formData" />
+            <DataTableDouble
+                v-else-if="['float', 'double'].includes(formData.type)"
+                :options="options"
+                v-model:value="formData"
+            />
+            <DataTableArray
+                v-else-if="formData.type === 'array'"
+                v-model:value="formData.unit"
+            />
+            <DataTableFile v-else-if="formData.type === 'file'" v-model:value="formData.fileType"/>
+            <DataTableDate v-else-if="formData.type === 'date'" v-model:value="formData.date"/>
+            <DataTableString
+                v-else-if="['string', 'password'].includes(formData.type)"
+                v-model:value="formData.expands.maxLength"
+            />
+    </div>
 </template>
 
 <script setup lang="ts" name="DataTypeObjectChild">
@@ -27,7 +29,7 @@ import { getUnit } from '@/api/device/instance';
 import { OtherConfigInfo } from '../components'
 import {
     DataTableString,
-    DataTableInteger,
+    DataTableArray,
     DataTableDouble,
     DataTableBoolean,
     DataTableEnum,
@@ -76,8 +78,8 @@ const props = defineProps({
 //     }
 
 // });
-const formData = ref(props.value.valueType);
-const type = ref(props.value.valueType?.type);
+const formData = ref(props.value?.valueType);
+const type = ref(props.value?.valueType?.type);
 
 
 
@@ -85,10 +87,34 @@ console.log(props.value);
 const emit = defineEmits(['update:value', 'cancel']);
 
 const options = ref<{ label: string; value: string }[]>([]);
+
+const text = computed(() => {
+    console.log(props.value);
+    const value = props.value?.valueType
+    if (value) {
+        switch(type.value) {
+            case 'float':
+            case 'double':
+                return value.scale;
+            case 'boolean':
+                return value?.trueText ? `${ value?.trueText }-${ value.trueValue }; ${ value.falseText }-${ value.falseValue }` : '';
+            case 'string':
+            case 'password':
+                return value?.expands?.maxLength;
+            case 'int':
+            case 'long':
+                return '无'
+        }
+    } else {
+        return ''
+    }
+    
+})
+
 watch(
-    () => formData.value.type,
+    () => formData.value?.type,
     () => {
-        if (['float', 'double', 'int', 'long'].includes(formData.value.type)) {
+        if (formData.value?.type && ['float', 'double', 'int', 'long'].includes(formData.value.type)) {
             const res = getUnit().then((res) => {
                 if (res.success) {
                     options.value = res.result.map((item) => ({
@@ -108,10 +134,14 @@ watch(() => formData.value, () => {
 
 </script>
 
-<style scoped>
-.metadata-type {
+<style scoped lang="less">
+.values {
     display: flex;
     gap: 12px;
     align-items: center;
+
+    .values-test {
+        flex: 1;
+    }
 }
 </style>

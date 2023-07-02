@@ -30,14 +30,14 @@
               </template>
             </j-table>
           </j-collapse-panel>
-          <j-collapse-panel key="metrics">
+          <j-collapse-panel key="metrics" v-if="showMetrics">
             <template #header>
               指标配置
               <j-tooltip title="场景联动页面可引用指标配置作为触发条件">
                 <AIcon type="ExclamationCircleOutlined" style="padding-left: 12px;padding-top: 4px;" />
               </j-tooltip>
             </template>
-            <Metrics ref="metricsRef" :value="myValue.expands?.metrics" />
+            <Metrics ref="metricsRef" :value="myValue.expands?.metrics" :type="props.value?.valueType?.type"/>
           </j-collapse-panel>
         </j-collapse>
       </j-scrollbar>
@@ -81,6 +81,10 @@ const visible = ref(false)
 
 const config = ref<any>([])
 const configValue = ref(props.value?.expands)
+
+const showMetrics = computed(() => {
+  return ['int', 'long', 'float', 'double', 'string', 'boolean', 'date'].includes(props.value?.valueType?.type as any)
+})
 
 const columns = ref([
   {

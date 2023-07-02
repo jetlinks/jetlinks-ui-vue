@@ -3,11 +3,11 @@
         <DataTableTypeSelect v-model:value="type" @change="typeChange" />
         <DataTableArray
             v-if="type === 'array'"
-            v-model:value="data.elementType"
+            v-model:value="_valueType.elementType"
         />
         <DataTableObject
             v-else-if="type === 'object'"
-            v-model:value="data.properties"
+            v-model:value="_valueType.properties"
             :columns="[
                 { title: '参数标识', dataIndex: 'id', type: 'text' },
                 { title: '参数名称', dataIndex: 'name', type: 'text' },
@@ -33,30 +33,30 @@
             ]"
         >
             <template #valueType="{ data }">
-                {{ data.data.record.valueType?.type }}
+                {{ data.record.valueType?.type }}
             </template>
             <template #config="{ data }">
-                <OtherConfigInfo :value="data.data.record.valueType"></OtherConfigInfo>
+                <OtherConfigInfo :value="data.record.valueType"></OtherConfigInfo>
             </template>
         </DataTableObject>
-        <DataTableEnum v-else-if="type === 'enum'" v-model:value="data" />
-        <DataTableBoolean v-else-if="type === 'boolean'" v-model:value="data" />
+        <DataTableEnum v-else-if="type === 'enum'" v-model:value="_valueType" />
+        <DataTableBoolean v-else-if="type === 'boolean'" v-model:value="_valueType" />
         <DataTableDouble
             v-else-if="['float', 'double'].includes(type)"
             :options="options"
-            v-model:value="data"
+            v-model:value="_valueType"
         />
         <DataTableInteger
             v-else-if="['int', 'long'].includes(type)"
             :options="options"
-            v-model:value="data.unit"
+            v-model:value="_valueType.unit"
         />
-        <DataTableFile v-else-if="type === 'file'" v-model:value="data.fileType"/>
-        <DataTableDate v-else-if="type === 'date'" v-model:value="data.date"/>
-        <DataTableString
+        <DataTableFile v-else-if="type === 'file'" v-model:value="_valueType.fileType"/>
+        <DataTableDate v-else-if="type === 'date'" v-model:value="_valueType.date"/>
+        <!-- <DataTableString
             v-else-if="['string', 'password'].includes(type)"
             v-model:value="data.expands.maxLength"
-        />
+        /> -->
     </div>
 </template>
 
@@ -88,14 +88,15 @@ const props = defineProps({
 const options = ref<{ label: string; value: string }[]>([]);
 const emit = defineEmits(['update:value']);
 
-const type = ref(props.value?.valueType.type);
-const elements = ref(props.value?.valueType.elements);
-const data = ref(cloneDeep(props.value.valueType));
+const type = ref(props.value?.valueType?.type);
+const elements = ref(props.value?.valueType?.elements);
+const _valueType = ref(cloneDeep(props.value.valueType));
 
-const typeChange = () => {
+const typeChange = (e: string) => {
+    console.log(e);
     emit('update:value', {
         ...props.value,
-        valueType: { ...data.value, type: type.value }
+        valueType: { ..._valueType.value, type: e }
     });
 };
 
@@ -119,9 +120,9 @@ watch(
 );
 
 watch(
-    () => data.value,
+    () => _valueType.value,
     () => {
-      let result = {...data.value};
+      let result = {..._valueType.value};
         // if(type.value == 'boolean') {
         //   result = {...data.value}
         // }
@@ -134,10 +135,14 @@ watch(
 );
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .metadata-type {
     display: flex;
     gap: 12px;
     align-items: center;
+
+    .j-data-table-config--icon {
+        padding-right: 12px;
+    }
 }
 </style>

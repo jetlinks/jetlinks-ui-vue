@@ -2,7 +2,7 @@
   <div>
     <j-data-table
         :dataSource="dataSource"
-        :columns="columns"
+        :columns="newColumns"
         :showTool="false"
         :serial="true"
         ref="tableRef"
@@ -30,13 +30,17 @@
 </template>
 
 <script setup name="Metrics" lang="ts">
-import { defineExpose } from 'vue'
+import { defineExpose, provide } from 'vue'
 import MetricValueItem from './ValueItem.vue'
 
 const props = defineProps({
   value: {
     type: Array,
     default: () => []
+  },
+  type: {
+    type: String,
+    default: undefined
   }
 })
 
@@ -45,7 +49,9 @@ const emit = defineEmits(['update:value'])
 const dataSource = ref<any[]>([])
 const tableRef = ref()
 
-const columns = [
+provide('metricsType', props.type)
+
+const columns: any = [
   {
     title: '指标标识',
     dataIndex: 'id',
@@ -57,20 +63,7 @@ const columns = [
     dataIndex: 'name',
     type: 'text'
   },
-  {
-    title: '指标值',
-    dataIndex: 'range',
-    width: 120,
-    type: 'booleanSelect',
-    components: {
-      props: {
-        trueText: '范围值',
-        trueValue: 'true',
-        falseText: '固定值',
-        falseValue: 'false',
-      }
-    }
-  },
+
   {
     title: '指标配置',
     dataIndex: 'value',
@@ -85,7 +78,31 @@ const columns = [
     dataIndex: 'action',
     width: 60,
   },
-];
+]
+
+
+const newColumns = computed(() => {
+  if (props.type && !['string', 'boolean', 'date'].includes(props.type)) {
+    const data = [...columns]
+    data.splice(1, 0, {
+        title: '指标值',
+        dataIndex: 'range',
+        width: 120,
+        type: 'booleanSelect',
+        components: {
+          props: {
+            trueText: '范围值',
+            trueValue: 'true',
+            falseText: '固定值',
+            falseValue: 'false',
+          }
+        }
+    })
+    console.log(data);
+    return data
+  }
+  return columns
+})
 
 const rules = []
 

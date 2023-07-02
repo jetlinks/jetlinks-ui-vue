@@ -7,30 +7,18 @@
     <template #content>
       <j-form ref="formRef" :model="formData">
         <j-form-item v-if="value.range === 'false'" name="value" :rule="[{ required: true, message: '请输入指标值'}]">
-          <j-input-number
-              v-model:value="formData.value"
-              :precision="0"
-              style="width: 100%"
-          />
+          <Item v-model:value="formData.value" />
         </j-form-item>
         <div v-else class="data-table-boolean-item">
           <div class="data-table-boolean-item--value">
             <j-form-item :name="['rangeValue', 0]" :rule="[{ required: true, message: '请输入指标值'}]">
-              <j-input-number
-                  v-model:value="formData.rangeValue[0]"
-                  :precision="0"
-                  style="width: 100%"
-              />
+              <Item v-model:value="formData.rangeValue[0]" />
             </j-form-item>
           </div>
           <div>-</div>
           <div class="data-table-boolean-item--value">
             <j-form-item :name="['rangeValue', 1]" :rule="[{ required: true, message: '请输入指标值'}]">
-              <j-input-number
-                  v-model:value="formData.rangeValue[1]"
-                  :precision="0"
-                  style="width: 100%"
-              />
+              <Item v-model:value="formData.rangeValue[1]" />
             </j-form-item>
           </div>
         </div>
@@ -40,9 +28,10 @@
   </j-popconfirm-modal>
 </template>
 
-<script setup lang="ts" name="MetricValueItem">
+<script setup lang="ts" name="MetricValueItems">
 import { reactive } from 'vue';
 import type { PropType } from 'vue';
+import Item from './item.vue'
 
 type ValueType = number | Array<number | undefined> | undefined;
 
@@ -58,6 +47,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits<Emit>();
+
+
 
 const formData = reactive<{
   value: ValueType;
@@ -88,7 +79,7 @@ const confirm = () => {
 };
 
 watch(() => props.value.range,(value, oldValue) => {
-  if (value !== oldValue) {
+  if (value !== oldValue  ) {
     if (value === 'false') {
       formData.value = undefined
     } else {
