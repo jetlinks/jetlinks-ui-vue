@@ -9,15 +9,16 @@
             v-else-if="type === 'object'"
             v-model:value="_valueType.properties"
             :columns="[
-                { title: '参数标识', dataIndex: 'id', type: 'text' },
-                { title: '参数名称', dataIndex: 'name', type: 'text' },
+                { title: '参数标识', dataIndex: 'id', type: 'text', width: 100 },
+                { title: '参数名称', dataIndex: 'name', type: 'text', width: 100 },
                 {
                     title: '数据类型',
                     type: 'components',
                     dataIndex: 'valueType',
                     components: {
                       name: ValueObject,
-                    }
+                    },
+                    width: 100
                 },
                 {
                   title: '其他配置',
@@ -25,10 +26,13 @@
                   dataIndex: 'config',
                   components: {
                     name: DataTypeObjectChild
-                  }
+                  },
+                  width: 100
                 },
                 {
-                  title: '操作'
+                  title: '操作',
+                  dataIndex: 'action',
+                  width: 60
                 }
             ]"
         >

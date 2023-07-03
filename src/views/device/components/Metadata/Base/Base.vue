@@ -109,7 +109,7 @@
                 key="edit"
                 style="padding: 0"
                 :disabled="operateLimits('add', type)"
-                @click="copyItem(data.index)"
+                @click="copyItem(data.record, data.index)"
                 :tooltip="{
                   title: operateLimits('add', type) ? '当前的存储方式不支持复制' : '复制',
                 }"

@@ -13,7 +13,7 @@
       <template #value="{data}">
         {{ data.record.range === 'true' ? data.record.value.toString() : data.record.value }}
       </template>
-      <template #action="data">
+      <template #action="{data}">
         <j-button
             type="link"
             @click="() => deleteItem(data.index)"
@@ -113,12 +113,12 @@ const addItem = () => {
     range: 'false',
     value: undefined,
   }
-  dataSource.value.push(data)
+
+  tableRef.value.addItem(data)
 }
 
 const deleteItem = (index: number) => {
-  console.log(index)
-  dataSource.value = dataSource.value.slice(index - 1, 1)
+  tableRef.value.removeItem(index)
 }
 
 const cancel = () => {
