@@ -281,7 +281,7 @@ const handleAddClick = (_data: any, index?: number) => {
 const copyItem = (record: any, index: number) => {
   const copyData = omit(record, ['_uuid'])
   copyData.id = `copy_${copyData.id}`
-  handleAddClick(omit(record, ['_uuid']), index)
+  handleAddClick(copyData, index)
 }
 
 const removeItem = (index: number) => {
