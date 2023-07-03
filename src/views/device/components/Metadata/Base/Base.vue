@@ -3,7 +3,6 @@
         ref="tableRef"
         :data-source="dataSource"
         :columns="columns"
-        row-key="id"
         :height="560"
         serial
     >
@@ -122,12 +121,24 @@
                 key="edit"
                 style="padding: 0"
                 :disabled="operateLimits('add', type)"
-                @click="handleAddClick(data.index)"
+                @click="handleAddClick(null, data.index)"
                 :tooltip="{
                   title: operateLimits('add', type) ? '当前的存储方式不支持新增' : '新增',
                 }"
             >
               <AIcon type="PlusSquareOutlined" />
+            </PermissionButton>
+            <PermissionButton
+                :has-permission="true"
+                type="link"
+                key="edit"
+                style="padding: 0"
+                @click="showDetail(data.record)"
+                :tooltip="{
+                  title: '详情',
+                }"
+            >
+              <AIcon type="FileSearchOutlined" />
             </PermissionButton>
             <PermissionButton
                 :has-permission="`${permission}:delete`"
@@ -138,7 +149,7 @@
                 :pop-confirm="{
                 title: '确认删除？',
                 onConfirm: async () => {
-                    await removeItem(data.record);
+                    await removeItem(data.index);
                   },
                 }"
                 :tooltip="{
@@ -150,6 +161,11 @@
           </j-space>
         </template>
     </j-data-table>
+    <PropertiesModal
+        v-if="type === 'properties' && detailData.visible"
+        :data="detailData.data"
+        @cancel="cancelDetailModal"
+    />
 </template>
 
 <script setup lang="ts" name="BaseMetadata">
@@ -174,6 +190,7 @@ import { DeviceInstance } from '@/views/device/Instance/typings';
 import { onlyMessage } from '@/utils/comm';
 import {omit} from "lodash-es";
 import {useAction} from "@/views/device/components/Metadata/Base/hooks/useAction";
+import { PropertiesModal } from './DetailModal'
 
 const props = defineProps({
     // target: {
@@ -203,9 +220,23 @@ const dataSource = ref<MetadataItem[]>(metadata.value || []);
 const tableRef = ref();
 const columns = computed(() => MetadataMapping.get(props.type!));
 
+const detailData = reactive({
+  data: {},
+  visible:false
+})
 const { addAction, copyAction, removeAction } = useAction(tableRef)
 
 provide('_dataSource', dataSource.value)
+
+const showDetail = (data: any) => {
+  detailData.data = data
+  detailData.visible = true
+}
+
+const cancelDetailModal = () => {
+  detailData.data = {}
+  detailData.visible = false
+}
 
 const operateLimits = (action: 'add' | 'updata', types: MetadataType) => {
   return (
@@ -222,9 +253,9 @@ const handleSearch = (searchValue: string) => {
         : metadata.value;
 };
 
-const handleAddClick = (index?: number) => {
+const handleAddClick = (_data: any, index?: number) => {
 
-  const newObject = {
+  const newObject = _data || {
     id: undefined,
     name: undefined,
     expands: {
@@ -236,14 +267,28 @@ const handleAddClick = (index?: number) => {
   }
 
   tableRef.value?.addItem?.(newObject, index)
+
+  const data = [...dataSource.value];
+
+  if (index !== undefined) {
+    data.splice(index + 1, 0, newObject);
+  } else {
+    data.push(newObject);
+  }
+  dataSource.value = data
 };
 
 const copyItem = (record: any, index: number) => {
-  copyAction(omit(record, ['_uuid']), index)
+  const copyData = omit(record, ['_uuid'])
+  copyData.id = `copy_${copyData.id}`
+  handleAddClick(omit(record, ['_uuid']), index)
 }
 
 const removeItem = (index: number) => {
-  removeAction(index)
+  const data = [...dataSource.value];
+  console.log(index)
+  data.splice(index, 1);
+  dataSource.value = data
 }
 
 const handleSaveClick = async () => {
