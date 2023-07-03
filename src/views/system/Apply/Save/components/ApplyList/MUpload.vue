@@ -1,6 +1,6 @@
 <template>
-    <div class="upload-image-warp" @click.stop>
-        <div class="upload-image-border" :style="borderStyle" @click.stop>
+    <div class="upload-image-warp" >
+        <div class="upload-image-border" :style="borderStyle">
             <j-upload
                 name="file"
                 list-type="picture-card"
@@ -39,7 +39,7 @@
     :img="cropperImg"
     @cancel="cropperVisible = false"
     @ok="saveImage"
-    title="更换图片"
+    title="更改图标"
   />
 </template>
 

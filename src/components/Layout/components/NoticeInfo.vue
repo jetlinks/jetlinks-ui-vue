@@ -58,7 +58,7 @@ const tab = [
     },
     {
         key: 'system-monitor',
-        tab: '系统运维',
+        tab: '系统监控',
         type: ['system-event'],
     },
     {

@@ -76,6 +76,7 @@ import Role from '../Role/index.vue';
 import { onlyMessage } from '@/utils/comm';
 import Template from '@/api/notice/template';
 import { variableMap } from '../../data';
+import { cloneDeep } from 'lodash-es';
 
 type GrantType = {
     role: {
@@ -245,7 +246,7 @@ const onTemplateChange = (obj: any) => {
 };
 
 watchEffect(() => {
-    Object.assign(formModel, props.data);
+    Object.assign(formModel, cloneDeep(props.data));
 });
 
 const onPrev = () => {

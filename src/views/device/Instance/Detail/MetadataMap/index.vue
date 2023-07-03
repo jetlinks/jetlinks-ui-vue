@@ -20,14 +20,19 @@
             >
                 <template #headerCell="{ column }">
                     <template v-if="column.dataIndex === 'original'">
-                        <span>
-                            目标属性<j-tooltip title="协议包中物模型下的属性">
-                                <AIcon
-                                    style="margin-left: 10px"
-                                    type="QuestionCircleOutlined"
-                                />
-                            </j-tooltip>
-                        </span>
+                        <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                            <span>
+                                目标属性<j-tooltip
+                                    title="协议包中物模型下的属性"
+                                >
+                                    <AIcon
+                                        style="margin-left: 10px"
+                                        type="QuestionCircleOutlined"
+                                    />
+                                </j-tooltip>
+                            </span>
+                            <!-- <AIcon type="FilterOutlined" /> -->
+                        </div>
                     </template>
                 </template>
                 <template #bodyCell="{ column, text, record }">
@@ -120,6 +125,29 @@ const columns = [
             compare: (a, b) =>
                 (a.original?.length || 0) - (b.original?.length || 0),
         },
+        // filters: [
+        //     {
+        //         text: '置顶已映射数据',
+        //         value: true,
+        //     },
+        //     {
+        //         text: '置顶未映射数据',
+        //         value: false,
+        //     },
+        // ],
+        // filterMultiple: false,
+        // onFilter: (value: string) => {
+        //     const _dataSource = cloneDeep(dataSource.value).sort((a: any, b: any) => {
+        //         if(!value) {
+        //             return (a.original ? 1 : -1) - (b.original ? 1 : -1)
+        //         } else {
+        //             return (b.original ? 1 : -1) - (a.original ? 1 : -1)
+        //         }
+        //     })
+        //     console.log(value)
+        //     dataSource.value = _dataSource
+        //     return true
+        // },
     },
 ];
 

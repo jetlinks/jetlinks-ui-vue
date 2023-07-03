@@ -226,8 +226,8 @@ const onDetail = (dt: any) => {
     _visible.value = true
 };
 
-const onSave = () => {
-
+const onSave = (dt: any) => {
+    onSubscribe(dt);
 }
 </script>
 
