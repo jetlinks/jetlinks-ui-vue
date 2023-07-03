@@ -27,6 +27,7 @@
             <template v-if="current === 2">
                 <NotifyTemplate
                     :value="formModel.channelConfiguration.templateId"
+                    :notifyType="formModel.channelProvider"
                     :notifierId="formModel.channelConfiguration.notifierId"
                     @change="onTemplateChange"
                 />

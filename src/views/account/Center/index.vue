@@ -19,18 +19,20 @@
                             Hi, {{ user.userInfos?.name }}
                         </div>
                         <div class="person-header-item-info-right-info">
-                            <div>
-                                <j-tag
+                            <!-- <div class="tag-box">
+                                <div
                                     v-for="i in user.userInfos?.orgList || []"
                                     :key="i?.id"
-                                    >{{ i?.name }}</j-tag
+                                    class="tag"
+                                    >{{ i?.name }}</div
                                 >
-                            </div>
-                            <div>
-                                <j-tag
+                            </div> -->
+                            <div class="tag-box">
+                                <div
                                     v-for="i in user.userInfos?.roleList || []"
                                     :key="i?.id"
-                                    >{{ i?.name }}</j-tag
+                                    class="tag"
+                                    ><j-ellipsis>{{ i?.name }}</j-ellipsis></div
                                 >
                             </div>
                         </div>
@@ -216,8 +218,17 @@ onUnmounted(() => {
                         font-weight: 500;
                     }
                     .person-header-item-info-right-info {
-                        div {
-                            margin: 5px 0;
+                        .tag-box {
+                            margin-top: 15px;
+                            display: flex;
+
+                            .tag {
+                                background-color: #F7F8FA;
+                                border-radius: 32px;
+                                margin-right: 8px;
+                                padding: 0 14px;
+                                color: #333333;
+                            }
                         }
                     }
                 }

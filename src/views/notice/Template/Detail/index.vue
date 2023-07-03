@@ -42,6 +42,7 @@
                                 :options="msgType"
                                 v-model="formData.provider"
                                 @change="handleProviderChange"
+                                :disabled="flag"
                             />
                         </j-form-item>
                         <j-form-item
@@ -65,6 +66,7 @@
                                 v-model:value="formData.configId"
                                 placeholder="请选择绑定配置"
                                 @change="handleConfigChange"
+                                :disabled="flag"
                             >
                                 <j-select-option
                                     v-for="(item, index) in configList"
@@ -767,6 +769,8 @@ const router = useRouter();
 const route = useRoute();
 const useForm = Form.useForm;
 const formRef = ref()
+
+const flag = ref<boolean>(false)
 // 消息类型
 const msgType = ref([
     {
@@ -854,7 +858,12 @@ const resetPublicFiles = () => {
             break;
     }
 
-    formData.value.configId = undefined;
+    if(route.query?.notifierId){
+        formData.value.configId = route.query?.notifierId as string
+        flag.value = true
+    } else {
+        formData.value.configId = undefined;
+    }
     formData.value.variableDefinitions = [];
     handleMessageTypeChange();
     // console.log('formData.value.template: ', formData.value.template);
@@ -868,7 +877,7 @@ watch(
         formData.value.provider =
             route.params.id !== ':id'
                 ? formData.value.provider
-                : msgType.value[0].value;
+                : msgType.value?.[0]?.value;
 
         if (val !== 'email') getConfigList();
 
@@ -1239,7 +1248,13 @@ const handleSubmit = () => {
 
       if (res?.success) {
         message.success('保存成功');
-        router.back();
+        if (route.query?.notifyType) {
+            // @ts-ignore
+            window?.onTabSaveSuccess(res.result);
+            setTimeout(() => window.close(), 300);
+        } else {
+            router.back();
+        }
       }
     })
     .catch((err) => {
@@ -1249,4 +1264,21 @@ const handleSubmit = () => {
       btnLoading.value = false;
     });
 };
+
+watchEffect(() => {
+    if(route.query?.notifyType) {
+        formData.value.type = route.query.notifyType as string;
+        if(route.query.notifyType === 'dingTalk') {
+            formData.value.provider = 'dingTalkMessage';
+            flag.value = true
+        } else {
+            flag.value = false
+        }
+        handleTypeChange()
+    }
+    if(route.query?.notifierId){
+        formData.value.configId = route.query?.notifierId as string
+        flag.value = true
+    }
+})
 </script>

@@ -262,7 +262,7 @@ const onSave = (dt: any) => {
         .box-item {
             margin-left: 10px;
             .box-item-img {
-                width: 60px;
+                width: 50px;
                 display: flex;
                 justify-content: center;
                 align-items: center;

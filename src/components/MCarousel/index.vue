@@ -1,11 +1,9 @@
 <template>
     <div class="box">
         <div class="box-item" v-if="pageIndex > 0">
-            <j-button
-                @click="onLeft"
-                shape="circle"
-                class="box-item-action"
-                >+{{ pageIndex * showLength }}</j-button>
+            <div class="box-item-action" @click="onLeft">
+                <AIcon type="LeftOutlined" />
+            </div>
         </div>
         <div class="box-item" v-for="item in getData" :key="item.id">
             <slot name="card" v-bind="item"></slot>
@@ -14,11 +12,9 @@
             <slot name="add"></slot>
         </div>
         <div class="box-item" v-if="(pageIndex + 1) * showLength < data.length">
-            <j-button
-                shape="circle"
-                class="box-item-action"
-                @click="onRight"
-                >+{{ data.length - (pageIndex + 1) * showLength }}</j-button>
+            <div class="box-item-action" @click="onRight">
+                <AIcon type="RightOutlined" />
+            </div>
         </div>
     </div>
 </template>
@@ -70,6 +66,16 @@ const onLeft = () => {
     margin: 5px;
     .box-item {
         margin-left: 10px;
+
+        .box-item-action {
+            width: 12px;
+            background-color: #F7F8FA;
+            padding: 15px 0;
+            text-align: center;
+            font-size: 12px;
+            color: #666666;
+            cursor: pointer;
+        }
     }
 }
 </style>

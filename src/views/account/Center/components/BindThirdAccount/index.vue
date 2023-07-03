@@ -89,7 +89,11 @@ const clickBind = (id: string) => {
  */
 function getSsoBinds() {
     getSsoBinds_api().then((resp: any) => {
-        if (resp.status === 200) bindList.value = resp.result;
+        if (resp.status === 200) {
+            bindList.value = resp.result.filter((item: any) => {
+                return !item.features.includes('ssoUnsupportedRedirect')
+            })
+        } 
     });
 }
 

@@ -39,7 +39,7 @@
                                 :options="msgType"
                                 v-model="formData.provider"
                                 @change="handleProviderChange"
-                                :disabled="route.query.provider"
+                                :disabled="flag"
                             />
                         </j-form-item>
                         <!-- 钉钉 -->
@@ -340,6 +340,7 @@ import Doc from './doc/index';
 const router = useRouter();
 const route = useRoute();
 const useForm = Form.useForm;
+const flag = ref<boolean>(false)
 
 // 消息类型
 const msgType = ref([
@@ -550,7 +551,7 @@ const handleSubmit = () => {
             }
             if (res?.success) {
                 message.success('保存成功');
-                if (route.query.notifyType) {
+                if (route.query?.notifyType) {
                     // @ts-ignore
                     window?.onTabSaveSuccess(res.result);
                     setTimeout(() => window.close(), 300);
@@ -569,10 +570,14 @@ const handleSubmit = () => {
 
 watchEffect(() => {
     if(route.query?.notifyType) {
-        formData.value.type = route.query.notifyType as string
-    }
-    if(route.query?.provider) {
-        formData.value.provider = route.query.provider as string
+        formData.value.type = route.query.notifyType as string;
+        if(route.query.notifyType === 'dingTalk') {
+            formData.value.provider = 'dingTalkMessage';
+            flag.value = true
+        } else {
+            flag.value = false
+        }
+        handleTypeChange()
     }
 })
 </script>
