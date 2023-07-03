@@ -209,9 +209,14 @@ watch(
     width: 88px;
     height: 88px;
 }
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 .alert {
     height: 40px;
-    padding-left: 10px;
+    padding: 0 20px 0 10px;
     margin-bottom: 10px;
     color: rgba(0, 0, 0, 0.55);
     line-height: 40px;
