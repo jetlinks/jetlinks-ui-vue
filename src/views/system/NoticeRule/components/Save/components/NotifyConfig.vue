@@ -11,13 +11,13 @@
             <AIcon type="InfoCircleOutlined" />
             钉钉群机器人类型的配置在当前页面将被过滤
         </div>
-        <!-- <PermissionButton
+        <PermissionButton
             @click="onAdd"
             type="primary"
             :hasPermission="['notice/Config:add']"
         >
             新增
-        </PermissionButton> -->
+        </PermissionButton>
     </div>
     <div style="height: 400px; overflow-y: auto">
         <JProTable
@@ -27,6 +27,7 @@
             :bodyStyle="{
                 padding: 0,
             }"
+            ref="tableRef"
             :alertRender="false"
             :params="params"
             :gridColumn="2"
@@ -111,6 +112,7 @@ const getMethodTxt = (type: string) => {
 
 const params = ref<Record<string, any>>({});
 const _selectedRowKeys = ref<string[]>([]);
+const tableRef = ref<any>();
 
 const columns = [
     {
@@ -187,9 +189,12 @@ const handleClick = (dt: any) => {
 };
 
 const onAdd = () => {
-    const tab: any = window.open(`${origin}/#/iot/notice/Config/detail/:id?notifyType=${noticeType.get(props.notifyType)}&provider=${props.notifyType === 'notifier-dingTalk' ? 'dingTalkRobotWebHook' : ''}`);
+    const tab: any = window.open(`${origin}/#/iot/notice/Config/detail/:id?notifyType=${noticeType.get(props.notifyType)}`);
     tab.onTabSaveSuccess = (value: any) => {
-        console.log(value)
+        _selectedRowKeys.value = [value.id];
+        emit('update:value', value.id);
+        emit('change', { provider: value?.provider, value: value.id });
+        tableRef.value?.reload()
     };
 };
 
