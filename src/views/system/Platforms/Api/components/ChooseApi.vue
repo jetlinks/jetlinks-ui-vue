@@ -151,11 +151,11 @@ const save = async () => {
     } else if (props.mode === 'appManger') {
         const removeItems = removeKeys.map((key) => ({
             id: key,
-            permissions: props.changedApis[key]?.security,
+            permissions: props.changedApis[key]?.security?props.changedApis[key]?.security:[],
         }));
         const addItems = addKeys.map((key) => ({
             id: key,
-            permissions: props.changedApis[key]?.security,
+            permissions: props.changedApis[key]?.security?props.changedApis[key]?.security:[],
         }));
         Promise.all([
             updateOperations_api(code, '_delete', { operations: removeItems }),
