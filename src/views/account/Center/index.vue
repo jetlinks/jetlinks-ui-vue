@@ -182,6 +182,7 @@ watchEffect(() => {
 
 onUnmounted(() => {
     user.tabKey = 'HomeView'
+    user.other.tabKey = ''
 })
 </script>
 

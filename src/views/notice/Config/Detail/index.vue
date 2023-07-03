@@ -12,7 +12,7 @@
                             <j-select
                                 v-model:value="formData.type"
                                 placeholder="请选择通知方式"
-                                :disabled="!!formData.id"
+                                :disabled="_disabled"
                                 @change="handleTypeChange"
                             >
                                 <j-select-option
@@ -39,6 +39,7 @@
                                 :options="msgType"
                                 v-model="formData.provider"
                                 @change="handleProviderChange"
+                                :disabled="route.query.provider"
                             />
                         </j-form-item>
                         <!-- 钉钉 -->
@@ -197,7 +198,7 @@
                                     v-model:value="
                                         formData.configuration.sender
                                     "
-                                    placeholder="请输入发件人"
+                                    placeholder="username@domain.com"
                                 />
                             </j-form-item>
                             <j-form-item
@@ -473,6 +474,10 @@ const handleTypeChange = () => {
     }, 0);
 };
 
+const _disabled = computed(() => {
+    return !!formData.value?.id || route.query?.notifyType
+})
+
 /**
  * 通知类型改变
  */
@@ -545,7 +550,13 @@ const handleSubmit = () => {
             }
             if (res?.success) {
                 message.success('保存成功');
-                router.back();
+                if (route.query.notifyType) {
+                    // @ts-ignore
+                    window?.onTabSaveSuccess(res.result);
+                    setTimeout(() => window.close(), 300);
+                } else {
+                    router.back();
+                }
             }
         })
         .catch((err) => {
@@ -555,4 +566,13 @@ const handleSubmit = () => {
             btnLoading.value = false;
         });
 };
+
+watchEffect(() => {
+    if(route.query?.notifyType) {
+        formData.value.type = route.query.notifyType as string
+    }
+    if(route.query?.provider) {
+        formData.value.provider = route.query.provider as string
+    }
+})
 </script>

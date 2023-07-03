@@ -8,13 +8,13 @@
         <j-form-item
             :name="`${item?.id}`"
             :label="item?.name"
-            v-for="(item) in variableDefinitions"
+            v-for="item in variableDefinitions"
             :key="item.id"
-            :required="getType(item) !== 'file' ? true : false"
             :rules="[
                 {
+                    required: getType(item) !== 'file' ? true : false,
                     validator: (_rule, value) => checkValue(_rule, value, item),
-                    trigger: ['blur', 'change'],
+                    trigger: ['change'],
                 },
             ]"
         >
@@ -80,12 +80,11 @@ const getType = (item: any) => {
 };
 
 const checkValue = (_rule: any, value: any, item: any) => {
-    if(!value){
-        return Promise.resolve();
-    }
     const type = item.expands?.businessType || item?.type;
     if (type === 'file') {
         return Promise.resolve();
+    } else if (type === 'string' && !value) {
+        return Promise.reject(new Error('请输入' + item.name));
     } else if (type === 'link') {
         if (!value) {
             return Promise.reject(new Error('请输入' + item.name));
@@ -128,11 +127,14 @@ const checkValue = (_rule: any, value: any, item: any) => {
 
 const onSave = () =>
     new Promise((resolve, reject) => {
-        formRef.value?.validate().then((_data: any) => {
-            resolve(_data);
-        }).catch(() => {
-            reject(false)
-        })
+        formRef.value
+            ?.validate()
+            .then((_data: any) => {
+                resolve(_data);
+            })
+            .catch(() => {
+                reject(false);
+            });
     });
 
 defineExpose({ onSave });

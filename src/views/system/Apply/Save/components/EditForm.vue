@@ -1554,8 +1554,7 @@ const paramsValidator = () => {
         paramsValid.value ? resolve('') : reject('请输入完整的请求参数');
     });
 };
-
-onMounted(() => {
+const getType = () => {
     queryType().then((resp: any) => {
         if (resp.status === 200) {
             const arr = resp.result.map((item: any) => ({
@@ -1571,6 +1570,16 @@ onMounted(() => {
             typeOptions.value = arr;
         }
     });
+}
+ 
+onMounted(() => {
+    getType();
+    getRoleIdList();
+    getOrgIdList();
+    if (routeQuery.id) {
+        getInfo(routeQuery.id as string);
+    }
+    
 });
 
 // 接入方式的选项
@@ -1586,64 +1595,55 @@ const dialog = reactive({
     current: {},
 });
 
-init();
+watch(
+    () => form.data.provider,
+    (n) => {
+        if (!form.data.id) {
+            // 新增时, 切换应用类型, 清空公用字段的值
+            form.data.page.baseUrl = '';
+            form.data.apiClient.baseUrl = '';
+            form.data.page.parameters = [];
+            form.data.apiClient.parameters = [];
+            form.data.apiClient.authConfig.oauth2.authorizationUrl = '';
+            form.data.sso.configuration.oauth2.authorizationUrl = '';
+            form.data.apiClient.authConfig.oauth2.clientId = '';
+            form.data.sso.configuration.oauth2.clientId = '';
+            form.data.apiClient.authConfig.oauth2.clientSecret = '';
+            form.data.sso.configuration.oauth2.clientSecret = '';
+            form.data.apiClient.headers = [];
+            form.data.apiServer.roleIdList = [];
+            form.data.apiServer.orgIdList = [];
+            form.data.description = '';
+            form.data.apiServer.redirectUri = '';
+            form.data.sso.configuration.appSecret = '';
 
-function init() {
-    getRoleIdList();
-    getOrgIdList();
+            // formRef.value?.resetFields();
+        }
+        emit('changeApplyType', n);
+        if (routeQuery.id) return;
+        if (
+            [
+                'wechat-webapp',
+                'dingtalk-ent-app',
+                'wechat-miniapp',
+            ].includes(n)
+        ) {
+            form.data.integrationModes = ['ssoClient'];
+            // form.integrationModesISO = ['ssoClient'];
+        } else form.data.integrationModes = [];
+    },
+    { immediate: true },
+);
+watch(
+    () => form.data.integrationModes,
+    (n, o) => {
+        o.forEach((key) => {
+            if (!n.includes(key)) form.errorNumInfo[key].clear();
+        });
 
-    if (routeQuery.id) getInfo(routeQuery.id as string);
-
-    watch(
-        () => form.data.provider,
-        (n) => {
-            if (!form.data.id) {
-                // 新增时, 切换应用类型, 清空公用字段的值
-                form.data.page.baseUrl = '';
-                form.data.apiClient.baseUrl = '';
-                form.data.page.parameters = [];
-                form.data.apiClient.parameters = [];
-                form.data.apiClient.authConfig.oauth2.authorizationUrl = '';
-                form.data.sso.configuration.oauth2.authorizationUrl = '';
-                form.data.apiClient.authConfig.oauth2.clientId = '';
-                form.data.sso.configuration.oauth2.clientId = '';
-                form.data.apiClient.authConfig.oauth2.clientSecret = '';
-                form.data.sso.configuration.oauth2.clientSecret = '';
-                form.data.apiClient.headers = [];
-                form.data.apiServer.roleIdList = [];
-                form.data.apiServer.orgIdList = [];
-                form.data.description = '';
-                form.data.apiServer.redirectUri = '';
-                form.data.sso.configuration.appSecret = '';
-
-                // formRef.value?.resetFields();
-            }
-            emit('changeApplyType', n);
-            if (routeQuery.id) return;
-            if (
-                [
-                    'wechat-webapp',
-                    'dingtalk-ent-app',
-                    'wechat-miniapp',
-                ].includes(n)
-            ) {
-                form.data.integrationModes = ['ssoClient'];
-                // form.integrationModesISO = ['ssoClient'];
-            } else form.data.integrationModes = [];
-        },
-        { immediate: true },
-    );
-    watch(
-        () => form.data.integrationModes,
-        (n, o) => {
-            o.forEach((key) => {
-                if (!n.includes(key)) form.errorNumInfo[key].clear();
-            });
-
-            // form.integrationModesISO = [...n];
-        },
-    );
-}
+        // form.integrationModesISO = [...n];
+    },
+);
 
 function getInfo(id: string) {
     getAppInfo_api(id).then((resp: any) => {

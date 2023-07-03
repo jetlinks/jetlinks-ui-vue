@@ -7,7 +7,11 @@
         >
             <j-tab-pane v-for="item in tab" :key="item.key">
                 <template #tab>
-                    <NoticeTab :refresh="refreshObj[item.key]" :tab="item?.tab" :type="item.type" />
+                    <NoticeTab
+                        :refresh="refreshObj[item.key]"
+                        :tab="item?.tab"
+                        :type="item.type"
+                    />
                 </template>
                 <j-spin :spinning="loading">
                     <div class="content">
@@ -24,7 +28,7 @@
                             <j-empty />
                         </div>
                         <div class="btns">
-                            <span @click="onMore">查看更多</span>
+                            <span @click="onMore(item.key)">查看更多</span>
                         </div>
                     </div>
                 </j-spin>
@@ -36,6 +40,7 @@
 <script setup lang="ts">
 import { getList_api } from '@/api/account/notificationRecord';
 import { useMenuStore } from '@/store/menu';
+import { useUserInfo } from '@/store/userInfo';
 import { cloneDeep } from 'lodash-es';
 import NoticeItem from './NoticeItem.vue';
 import NoticeTab from './NoticeTab.vue';
@@ -69,16 +74,19 @@ const tab = [
 ];
 
 const refreshObj = ref({
-    'alarm': true,
+    alarm: true,
     'system-monitor': true,
-    'system-business': true
-})
+    'system-business': true,
+});
 
 const loading = ref(false);
 const total = ref(0);
 const list = ref<any[]>([]);
 const activeKey = ref<DataType>('alarm');
 const menuStory = useMenuStore();
+const route = useRoute();
+
+const userInfo = useUserInfo();
 
 const getData = (type: string[]) => {
     loading.value = true;
@@ -121,18 +129,28 @@ onMounted(() => {
 });
 
 const onRefresh = (id: string) => {
-    const flag = cloneDeep(refreshObj.value[id])
+    const flag = cloneDeep(refreshObj.value[id]);
     refreshObj.value = {
         ...refreshObj.value,
-        [id]: !flag
-    }
-}
+        [id]: !flag,
+    };
+};
 
-const onMore = () => {
-    menuStory.routerPush('account/center', {
-        tabKey: 'StationMessage',
-    });
-    emits('action')
+const onMore = (key: string) => {
+    // 判断当前是否为/account/center
+    if (route.path === '/account/center') {
+        userInfo.tabKey = 'StationMessage';
+        userInfo.other.tabKey = key;
+    } else {
+        menuStory.routerPush('account/center', {
+            tabKey: 'StationMessage',
+            other: {
+                tabKey: key,
+            },
+        });
+    }
+
+    emits('action');
 };
 </script>
 
