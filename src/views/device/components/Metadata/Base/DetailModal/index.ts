@@ -1,0 +1,1 @@
+export { default as PropertiesModal } from './PropertiesModal.vue'

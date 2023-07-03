@@ -30,13 +30,12 @@ const BaseColumns: DataTableColumnProps[] = [
   {
     title: '标识',
     dataIndex: 'id',
-    width: 150,
     type: 'text'
   },
   {
     title: '名称',
     dataIndex: 'name',
-    width: 200,
+    width: 300,
     type: 'text'
   },
 ];
@@ -132,7 +131,8 @@ const PropertyColumns: DataTableColumnProps[] = BaseColumns.concat([
     type: 'components',
     components: {
       name: DataType
-    }
+    },
+    width: 200
   },
   {
     title: '属性来源',
@@ -165,7 +165,8 @@ const PropertyColumns: DataTableColumnProps[] = BaseColumns.concat([
           }
         },
       ]
-    }
+    },
+    width: 150
   },
   {
     title: '其它配置',
