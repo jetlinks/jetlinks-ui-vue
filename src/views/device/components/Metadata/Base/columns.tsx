@@ -132,7 +132,7 @@ const PropertyColumns: DataTableColumnProps[] = BaseColumns.concat([
     components: {
       name: DataType
     },
-    width: 200
+    width: 230
   },
   {
     title: '属性来源',

@@ -236,7 +236,7 @@ const table = reactive({
             key: 'act',
         },
     ],
-    data: props.data.id ? [...props.data.actions] : [...defaultAction],
+    data: props.data.id ? [...(props.data.actions || [])] : [...defaultAction],
     clickRemove: (index: number) => {
         pager.total -= 1;
         table.data.splice(index, 1);

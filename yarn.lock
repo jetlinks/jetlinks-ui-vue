@@ -3825,8 +3825,8 @@ jetlinks-store@^0.0.3:
 
 jetlinks-ui-components@^1.0.24:
   version "1.0.24"
-  resolved "http://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.24.tgz#7cf4c22f37f47e49fc186b6de667e527bc2d7b95"
-  integrity sha512-mP33feZvyCJbrSO+xzVdiSX62t/ZPCsWXtdYNHXsLPu7sBx7ZgeTaMYxY3xNNECTEEiA1WqCfuQWXA5h6Claaw==
+  resolved "http://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.24.tgz#ff46844f8f1b9f6e4358b099014cbe5cc80b9630"
+  integrity sha512-oc9MeVwJqar4LIICQWfNHFtD76h/Yl5v+xaj4u5xjIhDpvs1vwz/em9eHwToQ/yVCUShaexmweOOzhAN7od1cw==
   dependencies:
     "@vueuse/core" "^9.12.0"
     "@vueuse/router" "^9.13.0"

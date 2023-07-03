@@ -84,7 +84,7 @@ const columns: any = [
 const newColumns = computed(() => {
   if (props.type && !['string', 'boolean', 'date'].includes(props.type)) {
     const data = [...columns]
-    data.splice(1, 0, {
+    data.splice(2, 0, {
         title: '指标值',
         dataIndex: 'range',
         width: 120,

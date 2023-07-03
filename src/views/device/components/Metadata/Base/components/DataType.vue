@@ -4,6 +4,7 @@
         <DataTableArray
             v-if="type === 'array'"
             v-model:value="_valueType.elementType"
+            @confirm="valueChange"
         />
         <DataTableObject
             v-else-if="type === 'object'"
@@ -35,6 +36,7 @@
                   width: 60
                 }
             ]"
+            @confirm="valueChange"
         >
             <template #valueType="{ data }">
                 {{ data.record.valueType?.type }}
@@ -43,20 +45,22 @@
                 <OtherConfigInfo :value="data.record.valueType"></OtherConfigInfo>
             </template>
         </DataTableObject>
-        <DataTableEnum v-else-if="type === 'enum'" v-model:value="_valueType" />
-        <DataTableBoolean v-else-if="type === 'boolean'" v-model:value="_valueType" />
+        <DataTableEnum v-else-if="type === 'enum'" v-model:value="_valueType" @confirm="valueChange"/>
+        <DataTableBoolean v-else-if="type === 'boolean'" v-model:value="_valueType" @confirm="valueChange"/>
         <DataTableDouble
             v-else-if="['float', 'double'].includes(type)"
             :options="options"
             v-model:value="_valueType"
+            @confirm="valueChange"
         />
         <DataTableInteger
             v-else-if="['int', 'long'].includes(type)"
             :options="options"
             v-model:value="_valueType.unit"
+            @confirm="valueChange"
         />
-        <DataTableFile v-else-if="type === 'file'" v-model:value="_valueType.fileType"/>
-        <DataTableDate v-else-if="type === 'date'" v-model:value="_valueType.date"/>
+        <DataTableFile v-else-if="type === 'file'" v-model:value="_valueType.fileType" @confirm="valueChange"/>
+        <DataTableDate v-else-if="type === 'date'" v-model:value="_valueType.date" @confirm="valueChange"/>
         <!-- <DataTableString
             v-else-if="['string', 'password'].includes(type)"
             v-model:value="data.expands.maxLength"
@@ -104,10 +108,18 @@ const typeChange = (e: string) => {
     });
 };
 
+const valueChange = () => {
+  emit('update:value', {
+    ...props.value,
+    valueType: {...(_valueType.value || {}), type: type.value},
+  });
+}
+
 watch(
-    () => props.value,
+    () => JSON.stringify(props.value),
     () => {
-        type.value = props.value?.valueType.type;
+        type.value = props.value?.valueType?.type;
+        _valueType.value = props.value?.valueType
         // elements.value = props.value?.valueType.elements;
         if (['float', 'double', 'int', 'long'].includes(type.value)) {
             const res = getUnit().then((res) => {
@@ -123,20 +135,6 @@ watch(
     { immediate: true, deep: true },
 );
 
-watch(
-    () => _valueType.value,
-    () => {
-      let result = {..._valueType.value};
-        // if(type.value == 'boolean') {
-        //   result = {...data.value}
-        // }
-        emit('update:value', {
-            ...props.value,
-            valueType: {...result, type: type.value},
-        });
-    },
-    { deep: true },
-);
 </script>
 
 <style scoped lang="less">
@@ -145,7 +143,7 @@ watch(
     gap: 12px;
     align-items: center;
 
-    .j-data-table-config--icon {
+    :deep(.j-data-table-config--icon) {
         padding-right: 12px;
     }
 }
