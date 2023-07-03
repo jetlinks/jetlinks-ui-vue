@@ -20,17 +20,48 @@
       >
         <template #headerCell="{ column }">
           <template v-if="column.dataIndex === 'plugin'">
-              <span>
-                  目标属性<j-tooltip title="插件中物模型下的属性">
-                      <AIcon
-                          style="margin-left: 10px"
-                          type="QuestionCircleOutlined"
-                      />
-                  </j-tooltip>
-              </span>
+              <div
+                  style="
+                      width: 100%;
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                  "
+              >
+                <span>
+                    目标属性<j-tooltip title="插件中物模型下的属性">
+                        <AIcon
+                            style="margin-left: 10px"
+                            type="QuestionCircleOutlined"
+                        />
+                    </j-tooltip>
+                </span>
+                <j-tag
+                    v-if="filterValue !== undefined"
+                    color="#87d068"
+                    closable
+                    @close="onClose"
+                    ><AIcon type="ArrowUpOutlined" /><span>{{
+                        filterValue ? '已映射' : '未映射'
+                    }}</span></j-tag
+                >
+                <j-dropdown v-else>
+                    <AIcon type="FilterOutlined" />
+                    <template #overlay>
+                        <j-menu @click="onFilter">
+                            <j-menu-item :key="true"
+                                >置顶已映射数据</j-menu-item
+                            >
+                            <j-menu-item :key="false"
+                                >置顶未映射数据</j-menu-item
+                            >
+                        </j-menu>
+                    </template>
+                </j-dropdown>
+              </div>
           </template>
         </template>
-        <template #bodyCell="{ column, text, record, index }">
+        <template #bodyCell="{ column, text, record }">
           <template v-if='column.dataIndex === "name"'>
             <span class='metadata-title'>
               <j-ellipsis>
@@ -50,7 +81,11 @@
                 :key='index + "_" + item.id'
                 :value='item.value'
                 :disabled='selectedPluginKeys.includes(item.id)'
-              >{{ item.label }} ({{ item.id }})</j-select-option>
+              ><j-tooltip :title="selectedPluginKeys.includes(item.id) ? '该属性已绑定平台属性' : ''">
+                      {{ item.label }} ({{
+                          item.id
+                      }})
+                  </j-tooltip></j-select-option>
             </j-select>
           </template>
         </template>
@@ -90,6 +125,7 @@ import { detail as queryPluginAccessDetail } from '@/api/link/accessConfig'
 import { getPluginData, getProductByPluginId } from '@/api/link/plugin'
 import { getImage, onlyMessage } from '@/utils/comm'
 import { getMetadataMapById, metadataMapById } from '@/api/device/instance'
+import { cloneDeep } from 'lodash-es';
 
 const productStore = useProductStore();
 const { current: productDetail } = storeToRefs(productStore)
@@ -97,9 +133,12 @@ const dataSourceCache = ref([])
 const dataSource = ref([])
 const pluginOptions = ref<any[]>([])
 
-const tableFilter = (value: string, record: any) => {
-  return true
-}
+const filterValue = ref<boolean | undefined>(undefined);
+const originalData = ref([]);
+
+// const tableFilter = (value: string, record: any) => {
+//   return true
+// }
 
 const columns = [
   {
@@ -115,7 +154,7 @@ const columns = [
     title: '目标属性',
     dataIndex: 'plugin',
     width: 250,
-    sorter: tableFilter
+    // sorter: tableFilter
   }
 ]
 
@@ -213,6 +252,25 @@ const pluginChange = async (value: any, id: string) => {
     onlyMessage('操作成功')
   }
 }
+
+const onFilter = ({ key }: any) => {
+    originalData.value = dataSource.value
+    const _dataSource = cloneDeep(dataSource.value).sort((a: any, b: any) => {
+        if (!key) {
+            return (a.plugin ? 1 : -1) - (b.plugin ? 1 : -1);
+        } else {
+            return (b.plugin ? 1 : -1) - (a.plugin ? 1 : -1);
+        }
+    });
+
+    dataSource.value = _dataSource;
+    filterValue.value = key;
+};
+
+const onClose = () => {
+    filterValue.value = undefined;
+    dataSource.value = originalData.value;
+};
 
 onMounted(() => {
   getDefaultMetadata()

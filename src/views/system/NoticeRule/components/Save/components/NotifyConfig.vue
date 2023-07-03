@@ -138,6 +138,12 @@ const query = (e: Record<string, any>) =>
                         column: 'type',
                         value: noticeType.get(props.notifyType),
                     },
+                    {
+                        termType: 'not',
+                        column: 'provider',
+                        type: 'and',
+                        value: 'dingTalkRobotWebHook',
+                    }
                 ],
             },
         ],

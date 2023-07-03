@@ -20,7 +20,14 @@
             >
                 <template #headerCell="{ column }">
                     <template v-if="column.dataIndex === 'original'">
-                        <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                        <div
+                            style="
+                                width: 100%;
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                            "
+                        >
                             <span>
                                 目标属性<j-tooltip
                                     title="协议包中物模型下的属性"
@@ -31,7 +38,28 @@
                                     />
                                 </j-tooltip>
                             </span>
-                            <!-- <AIcon type="FilterOutlined" /> -->
+                            <j-tag
+                                v-if="filterValue !== undefined"
+                                color="#87d068"
+                                closable
+                                @close="onClose"
+                                ><AIcon type="ArrowUpOutlined" /><span>{{
+                                    filterValue ? '已映射' : '未映射'
+                                }}</span></j-tag
+                            >
+                            <j-dropdown v-else>
+                                <AIcon type="FilterOutlined" />
+                                <template #overlay>
+                                    <j-menu @click="onFilter">
+                                        <j-menu-item :key="true"
+                                            >置顶已映射数据</j-menu-item
+                                        >
+                                        <j-menu-item :key="false"
+                                            >置顶未映射数据</j-menu-item
+                                        >
+                                    </j-menu>
+                                </template>
+                            </j-dropdown>
                         </div>
                     </template>
                 </template>
@@ -58,7 +86,8 @@
                                 :disabled="
                                     selectedOriginalKeys.includes(item.id)
                                 "
-                                >{{ item.label }} ({{
+                                >
+                                {{ item.label }} ({{
                                     item.id
                                 }})</j-select-option
                             >
@@ -100,12 +129,16 @@ import {
     getProtocolMetadata,
 } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
+import { cloneDeep } from 'lodash-es';
 
 const deviceStore = useInstanceStore();
 const { current: deviceDetail } = storeToRefs(deviceStore);
 const dataSourceCache = ref([]);
 const dataSource = ref([]);
 const targetOptions = ref<any[]>([]);
+
+const filterValue = ref<boolean | undefined>(undefined);
+const originalData = ref([]);
 
 const columns = [
     {
@@ -121,33 +154,6 @@ const columns = [
         title: '目标属性',
         dataIndex: 'original',
         width: 250,
-        sorter: {
-            compare: (a, b) =>
-                (a.original?.length || 0) - (b.original?.length || 0),
-        },
-        // filters: [
-        //     {
-        //         text: '置顶已映射数据',
-        //         value: true,
-        //     },
-        //     {
-        //         text: '置顶未映射数据',
-        //         value: false,
-        //     },
-        // ],
-        // filterMultiple: false,
-        // onFilter: (value: string) => {
-        //     const _dataSource = cloneDeep(dataSource.value).sort((a: any, b: any) => {
-        //         if(!value) {
-        //             return (a.original ? 1 : -1) - (b.original ? 1 : -1)
-        //         } else {
-        //             return (b.original ? 1 : -1) - (a.original ? 1 : -1)
-        //         }
-        //     })
-        //     console.log(value)
-        //     dataSource.value = _dataSource
-        //     return true
-        // },
     },
 ];
 
@@ -204,6 +210,9 @@ const search = (value: string) => {
 
 const getDefaultMetadata = async () => {
     const properties = metadata.value?.properties;
+    if (!deviceDetail.value?.protocol) {
+        return;
+    }
     const _metadata = await getMetadata();
     const _properties = _metadata?.properties || [];
     const metadataMap: any = await getMetadataMapData();
@@ -264,6 +273,25 @@ const onChange = async (value: any, id: string) => {
     if (res.success) {
         onlyMessage('操作成功');
     }
+};
+
+const onFilter = ({ key }: any) => {
+    originalData.value = dataSource.value
+    const _dataSource = cloneDeep(dataSource.value).sort((a: any, b: any) => {
+        if (!key) {
+            return (a.original ? 1 : -1) - (b.original ? 1 : -1);
+        } else {
+            return (b.original ? 1 : -1) - (a.original ? 1 : -1);
+        }
+    });
+
+    dataSource.value = _dataSource;
+    filterValue.value = key;
+};
+
+const onClose = () => {
+    filterValue.value = undefined;
+    dataSource.value = originalData.value;
 };
 
 onMounted(() => {

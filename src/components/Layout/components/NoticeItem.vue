@@ -21,7 +21,7 @@
                         }}
                     </div>
                 </div>
-                <p>{{ props.data?.message }}</p>
+                <div class="message">{{ props.data?.message }}</div>
             </div>
             <div class="list-item-right">
                 <j-button @click.stop="detail">查看详情</j-button>
@@ -100,7 +100,7 @@ const read = (type: '_read' | '_unread') => {
 .list-items {
     width: 312px;
     overflow: hidden;
-    height: 100px;
+    height: 80px;
     border-bottom: 1px solid #f0f0f0;
     margin: 0 24px;
     box-sizing: content-box;
@@ -116,7 +116,7 @@ const read = (type: '_read' | '_unread') => {
     .list-item-left {
         padding: 12px 0;
         width: 312px;
-        height: 100px;
+        height: 80px;
         .header {
             display: flex;
             align-items: center;
@@ -143,7 +143,7 @@ const read = (type: '_read' | '_unread') => {
             }
         }
 
-        p {
+        .message {
             font-size: 12px;
         }
     }
