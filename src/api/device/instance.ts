@@ -588,4 +588,11 @@ export const getInkingDevices = (data: string[]) => server.post('/plugin/mapping
 
 export const getProtocolMetadata = (id: string, transport: string) => server.get(`/protocol/${id}/${transport}/metadata`)
 
+/**
+ * 规则属性
+ */
+export const saveDeviceVirtualProperty = (productId: string, deviceId: string, data: any[]) => server.patch(`/virtual/property/product/${productId}/${deviceId}/_batch`, data)
+
+export const queryDeviceVirtualProperty = (productId: string, deviceId: string, propertyId: string) => server.get(`/virtual/property/product/${productId}/${deviceId}/${propertyId}`)
+
 
