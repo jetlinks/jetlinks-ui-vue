@@ -1,6 +1,4 @@
 import {
-  MESSAGE_SUBSCRIBE_MENU_BUTTON_CODE,
-  MESSAGE_SUBSCRIBE_MENU_CODE,
   USER_CENTER_MENU_BUTTON_CODE,
   USER_CENTER_MENU_CODE
 } from '@/utils/consts'
@@ -11,7 +9,7 @@ export const USER_CENTER_MENU_DATA = {
   supportDataAccess: false,
   code: USER_CENTER_MENU_CODE,
   name: '个人中心',
-  url: '/user-center',
+  url: '/account/center',
   sortIndex: 9999,
   granted: true,
   buttons: [
@@ -30,28 +28,6 @@ export const USER_CENTER_MENU_DATA = {
       ]
     }
   ]
-}
-
-export const MESSAGE_SUBSCRIBE_MENU_DATA = {
-  id: '23a1f2c7123e56731f890',
-  accessSupport: { value: 'unsupported', label: '不支持'},
-  supportDataAccess: false,
-  code: MESSAGE_SUBSCRIBE_MENU_CODE,
-  name: '通知订阅',
-  url: '/message-subscribe',
-  buttons: [
-    {
-      id: MESSAGE_SUBSCRIBE_MENU_BUTTON_CODE,
-      name: '查看',
-      permissions: [
-        {
-          permission: 'alarm-config',
-          actions: ['query']
-        }
-      ]
-    }
-  ],
-  sortIndex: 9998
 }
 
 export default [
@@ -3915,6 +3891,109 @@ export default [
               {
                 permission: 'application',
                 actions: ['save'],
+              },
+            ],
+          },
+        ],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
+      },
+      {
+        code: 'system/NoticeRule',
+        name: '订阅管理',
+        owner: 'iot',
+        id: '522f790d4422a608d491bc9e2fa12b4e',
+        sortIndex: 12,
+        url: '/system/NoticeRule',
+        icon: 'CopyOutlined',
+        showPage: ['notify-channel'],
+        permissions: [],
+        buttons: [
+          {
+            id: 'delete',
+            name: '删除',
+            permissions: [
+              {
+                permission: 'role',
+                actions: ['query'],
+              },
+              {
+                permission: 'notify-channel',
+                actions: ['save', 'delete'],
+              },
+              {
+                permission: 'notifier',
+                actions: ['query'],
+              },
+              {
+                permission: 'template',
+                actions: ['query'],
+              },
+            ],
+          },
+          {
+            id: 'add',
+            name: '新增',
+            permissions: [
+              {
+                permission: 'role',
+                actions: ['query'],
+              },
+              {
+                permission: 'notify-channel',
+                actions: ['save'],
+              },
+              {
+                permission: 'notifier',
+                actions: ['query'],
+              },
+              {
+                permission: 'template',
+                actions: ['query'],
+              },
+            ],
+          },
+          {
+            id: 'update',
+            name: '编辑',
+            permissions: [
+              {
+                permission: 'role',
+                actions: ['query'],
+              },
+              {
+                permission: 'notify-channel',
+                actions: ['save', 'query'],
+              },
+              {
+                permission: 'notifier',
+                actions: ['query'],
+              },
+              {
+                permission: 'template',
+                actions: ['query'],
+              },
+            ],
+          },
+          {
+            id: 'action',
+            name: '启/禁用',
+            permissions: [
+              {
+                permission: 'role',
+                actions: ['query'],
+              },
+              {
+                permission: 'notify-channel',
+                actions: ['save'],
+              },
+              {
+                permission: 'notifier',
+                actions: ['query'],
+              },
+              {
+                permission: 'template',
+                actions: ['query'],
               },
             ],
           },

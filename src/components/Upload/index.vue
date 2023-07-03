@@ -1,6 +1,6 @@
 <template>
     <div class="upload-image-warp">
-        <div class="upload-image-border">
+        <div class="upload-image-border" :style="borderStyle">
             <j-upload
                 name="file"
                 list-type="picture-card"
@@ -16,7 +16,7 @@
             >
                 <div class="upload-image-content" :style="props.style">
                     <template v-if="imageUrl">
-                        <img :src="imageUrl" class="upload-image" />
+                        <img :src="imageUrl" width="100%" class="upload-image" />
                         <div class="upload-image-mask">点击修改</div>
                     </template>
                     <template v-else>
@@ -61,7 +61,7 @@ import { FILE_UPLOAD } from '@/api/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import {getBase64, LocalStore} from '@/utils/comm';
 import { CSSProperties } from 'vue';
-import ImageCropper from './Cropper.vue'
+import ImageCropper from './Cropper.vue';
 
 type Emits = {
     (e: 'update:modelValue', data: string): void;
@@ -74,6 +74,7 @@ interface JUploadProps extends UploadProps {
     size?: number;
     style?: CSSProperties;
     bgImage?: string;
+    borderStyle?:CSSProperties;
 }
 
 const emit = defineEmits<Emits>();
@@ -93,6 +94,10 @@ const props: JUploadProps = defineProps({
     },
     accept:{
         type: String,
+        default: undefined
+    },
+    borderStyle: {
+        type: Object,
         default: undefined
     }
 });
@@ -145,6 +150,7 @@ const beforeUpload = (file: UploadProps['fileList'][number]) => {
     const isSize = file.size / 1024 / 1024 < maxSize;
     if (!isSize) {
         message.error(`图片大小必须小于${maxSize}M`);
+        return false
     }
 
     getBase64(file, (base64Url) => {

@@ -1,6 +1,6 @@
 <template>
   <j-modal
-      title="图片编辑"
+      :title="title"
       visible
       :width="400"
       @cancel="cancel"
@@ -29,6 +29,10 @@ import { fileUpload } from '@/api/comm';
 const props = defineProps({
   img: {
     type: String
+  },
+  title: {
+    type: String,
+    default: '图片编辑'
   }
 })
 

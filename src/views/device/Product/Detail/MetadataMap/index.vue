@@ -18,6 +18,18 @@
         }'
         rowKey='id'
       >
+        <template #headerCell="{ column }">
+          <template v-if="column.dataIndex === 'plugin'">
+              <span>
+                  目标属性<j-tooltip title="插件中物模型下的属性">
+                      <AIcon
+                          style="margin-left: 10px"
+                          type="QuestionCircleOutlined"
+                      />
+                  </j-tooltip>
+              </span>
+          </template>
+        </template>
         <template #bodyCell="{ column, text, record, index }">
           <template v-if='column.dataIndex === "name"'>
             <span class='metadata-title'>
@@ -77,7 +89,7 @@ import { useProductStore } from '@/store/product';
 import { detail as queryPluginAccessDetail } from '@/api/link/accessConfig'
 import { getPluginData, getProductByPluginId } from '@/api/link/plugin'
 import { getImage, onlyMessage } from '@/utils/comm'
-import { getMetadateMapById, metadateMapById } from '@/api/device/instance'
+import { getMetadataMapById, metadataMapById } from '@/api/device/instance'
 
 const productStore = useProductStore();
 const { current: productDetail } = storeToRefs(productStore)
@@ -86,7 +98,6 @@ const dataSource = ref([])
 const pluginOptions = ref<any[]>([])
 
 const tableFilter = (value: string, record: any) => {
-  console.log(value, record)
   return true
 }
 
@@ -118,7 +129,7 @@ const selectedPluginKeys = computed(() => {
 
 const getMetadataMapData = () => {
   return new Promise(resolve => {
-    getMetadateMapById(productDetail.value?.id).then(res => {
+    getMetadataMapById('product', productDetail.value?.id).then(res => {
       if (res.success) {
         resolve(res.result?.filter(item => item.customMapping)?.map(item => {
           return {
@@ -144,12 +155,23 @@ const search = (value: string) => {
 const getDefaultMetadata = async () => {
   const metadata = JSON.parse(productDetail.value?.metadata || '{}')
   const properties = metadata.properties
-  const pluginMedata = await getPluginMetadata()
-  const pluginProperties = pluginMedata?.properties || []
-  const metadataMap = await getMetadataMapData()
+  const pluginMetadata = await getPluginMetadata()
+  const pluginProperties = pluginMetadata?.properties || []
+  const metadataMap: any = await getMetadataMapData()
   pluginOptions.value = pluginProperties.map(item => ({...item, label: item.name, value: item.id}))
 
-  const concatProperties = [ ...pluginProperties.map(item => ({ id: item.id, pluginId: item.id})), ...metadataMap]
+  // const concatProperties = [ ...pluginProperties.map(item => ({ id: item.id, pluginId: item.id})), ...metadataMap]
+  const concatProperties = [...metadataMap];
+    const arr = concatProperties.map((item) => item.id);
+    const _arr = concatProperties.map((item) => item.pluginId);
+
+    pluginProperties.map((item) => {
+        // 添加默认映射，但是该选项还没被其他属性映射
+        if (!arr.includes(item.id) && !_arr.includes(item.id)) {
+            concatProperties.push({ id: item.id, pluginId: item.id });
+        }
+    });
+
   dataSource.value = properties?.map((item: any, index: number) => {
     const _m = concatProperties.find(p => p.id === item.id)
     return {
@@ -168,7 +190,7 @@ const getPluginMetadata = (): Promise<{ properties: any[]}> => {
     queryPluginAccessDetail(productDetail.value?.accessId!).then(async res => {
       if (res.success) {
         const _channelId = (res.result as any)!.channelId
-        const pluginRes = await getPluginData('product', productDetail.value?.accessId, productDetail.value?.id).catch(() => ({ success: false, result: {}}))
+        const pluginRes = await getPluginData('product', productDetail.value?.accessId || '', productDetail.value?.id).catch(() => ({ success: false, result: {}}))
         const resp = await getProductByPluginId(_channelId).catch(() => ({ success: false, result: []}))
         if (resp.success) {
           const _item = (resp.result as any[])?.find((item: any) => item.id === (pluginRes?.result as any)?.externalId)
@@ -182,7 +204,7 @@ const getPluginMetadata = (): Promise<{ properties: any[]}> => {
 }
 
 const pluginChange = async (value: any, id: string) => {
-  const res = await metadateMapById(productDetail.value?.id, [{
+  const res = await metadataMapById('product', productDetail.value?.id, [{
     metadataType: 'property',
     metadataId: value.id,
     originalId: id
@@ -192,7 +214,9 @@ const pluginChange = async (value: any, id: string) => {
   }
 }
 
-getDefaultMetadata()
+onMounted(() => {
+  getDefaultMetadata()
+})
 
 </script>
 

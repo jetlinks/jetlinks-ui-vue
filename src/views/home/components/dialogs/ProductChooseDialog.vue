@@ -5,20 +5,21 @@
         width="700px"
         @ok="confirm"
         @cancel="emits('update:visible', false)"
-        :filter-option="filterOption"
         :maskClosable="false"
         class="access-method-dialog-container"
     >
-        <j-form :model="form" name="basic" autocomplete="off" layout="vertical">
+        <j-form :model="form" ref="formRef" layout="vertical">
             <j-form-item
                 label="产品"
                 name="productId"
-                :rules="[{ required: true, message: '该字段是必填字段' }]"
+                :rules="[{ required: true, message: '请选择产品' }]"
             >
                 <j-select
                     v-model:value="form.productId"
                     style="width: 100%"
+                    show-search
                     :options="productList"
+                    placeholder="请选择产品"
                 >
                 </j-select>
             </j-form-item>
@@ -35,13 +36,10 @@ const props = defineProps<{
     visible: boolean;
 }>();
 
-const confirm = () => {
-    emits('confirm', form.value.productId);
-    emits('update:visible', false);
-};
+const formRef = ref<any>()
 
-const form = ref({
-    productId: '',
+const form = reactive({
+    productId: undefined,
 });
 
 const productList = ref<[productItem] | []>([]);
@@ -56,10 +54,14 @@ const getOptions = () => {
     });
 };
 
-const filterOption = (input: string, option: any) => {
-    return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-};
 getOptions();
+
+const confirm = () => {
+    formRef.value?.validate().then(() => {
+        emits('confirm', form.productId);
+        emits('update:visible', false);
+    })
+};
 </script>
 
 <style lang="less" scoped>

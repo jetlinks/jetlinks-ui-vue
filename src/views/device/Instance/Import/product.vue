@@ -6,7 +6,7 @@
     class="device-import-product"
     target="device-import-product"
   />
-  <j-divider style='margin: 0' />
+  <div class="alert">请选择产品，本次批量导入的设备将成为该产品的所属设备</div>
   <j-scrollbar :height='400'>
     <j-pro-table
       model='CARD'
@@ -180,5 +180,14 @@ const handleClick = (detail: any) => {
   margin-bottom: 0;
   padding-right: 0px;
   padding-left: 0px;
+}
+
+.alert {
+    height: 40px;
+    padding-left: 10px;
+    margin-bottom: 10px;
+    color: rgba(0, 0, 0, 0.55);
+    line-height: 40px;
+    background-color: #f6f6f6;
 }
 </style>

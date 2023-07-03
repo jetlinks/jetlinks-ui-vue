@@ -337,6 +337,8 @@ import { settingDetail } from '@/api/login';
 const action = `${BASE_API_PATH}/file/static`;
 const headers = { [TOKEN_KEY]: LocalStore.get(TOKEN_KEY) };
 const formRef = ref();
+const system = useSystem();
+
 const form = reactive<formType>({
     formValue: {
         title: '',
@@ -378,10 +380,10 @@ const form = reactive<formType>({
     iconLoading: false, // 页签加载状态
     saveLoading: false,
     getDetails: async () => {
-        const system = useSystem();
-        await system.getSystemConfig();
-        await settingDetail('front');
-        const configInfo = system.$state.configInfo;
+
+        // await system.getSystemConfig();
+        // await settingDetail('front');
+        const configInfo = system.configInfo;
         form.formValue = {
             title: configInfo.front?.title,
             headerTheme: configInfo.front?.headerTheme,
@@ -422,10 +424,11 @@ const form = reactive<formType>({
                 ];
 
                 save_api(params)
-                    .then((resp) => {
+                    .then(async (resp) => {
                         if (resp.status === 200) {
                             message.success('保存成功');
-                            form.getDetails();
+                            await system.getSystemConfig()
+                            await form.getDetails();
                         }
                     })
                     .finally(() => (form.saveLoading = false));

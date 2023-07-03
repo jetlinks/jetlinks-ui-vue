@@ -5,8 +5,8 @@ import { cloneDeep, isArray } from 'lodash-es'
 import { usePermissionStore } from './permission'
 import router from '@/router'
 import { onlyMessage } from '@/utils/comm'
-import { AccountMenu, NotificationRecordCode, NotificationSubscriptionCode } from '@/router/menu'
-import { MESSAGE_SUBSCRIBE_MENU_CODE, USER_CENTER_MENU_CODE } from '@/utils/consts'
+// import { AccountMenu, NotificationRecordCode, NotificationSubscriptionCode } from '@/router/menu'
+import { USER_CENTER_MENU_CODE } from '@/utils/consts'
 import {isNoCommunity} from "@/utils/utils";
 
 const defaultOwnParams = [
@@ -90,6 +90,12 @@ export const useMenuStore = defineStore({
         console.warn(`没有找到对应的页面: ${name}`)
       }
     },
+    routerPush(name: string, params?: Record<string, any>, query?: Record<string, any>) {
+      this.params = { [name]: params || {}}
+        router.push({
+          name, params, query, state: { params }
+        })
+    },
     queryMenuTree(isCommunity = false): Promise<any[]> {
       return new Promise(async (res) => {
         //过滤非集成的菜单
@@ -97,18 +103,13 @@ export const useMenuStore = defineStore({
         if (resp.success) {
           const permission = usePermissionStore()
           let resultData = resp.result
-          if (!isNoCommunity) {
-            resultData = filterCommunityMenus(resultData)
-          }
+          // if (!isNoCommunity) {
+          //   resultData = filterCommunityMenus(resultData)
+          // }
           permission.permissions = {}
           const { menusData, silderMenus } = filterAsyncRouter(resultData)
 
-          // 是否存在通知订阅
-          const hasMessageSub = resultData.some((item: { code: string }) => item.code === MESSAGE_SUBSCRIBE_MENU_CODE)
-          if (!hasMessageSub) {
-            AccountMenu.children = AccountMenu.children.filter((item: { code: string }) => ![NotificationSubscriptionCode, NotificationRecordCode].includes(item.code) )
-          }
-          this.menus = findCodeRoute([...resultData, AccountMenu])
+          this.menus = findCodeRoute([...resultData]) // AccountMenu
           Object.keys(this.menus).forEach((item) => {
             const _item = this.menus[item]
             if (_item.buttons?.length) {
@@ -123,8 +124,8 @@ export const useMenuStore = defineStore({
               hideInMenu: true
             }
           })
-          menusData.push(AccountMenu)
-          this.siderMenus = silderMenus.filter((item: { name: string }) => ![USER_CENTER_MENU_CODE, MESSAGE_SUBSCRIBE_MENU_CODE].includes(item.name))
+          // menusData.push(AccountMenu)
+          this.siderMenus = silderMenus.filter((item: { name: string }) => ![USER_CENTER_MENU_CODE].includes(item.name))
           res(menusData)
         }
       })

@@ -169,14 +169,18 @@ import {
   getInitSet,
   systemVersion,
   bindInfo,
-  settingDetail, userDetail
+  settingDetail, userDetail,
+  authLoginConfig
 } from '@/api/login'
 import { useUserInfo } from '@/store/userInfo';
+import { useSystem } from '@/store/system'
 import { LocalStore } from '@/utils/comm';
 import { BASE_API_PATH, TOKEN_KEY, Version_Code } from '@/utils/variable';
 import { SystemConst } from '@/utils/consts';
+import {encrypt} from '@/utils/encrypt'
 
 const store = useUserInfo();
+const systemStore = useSystem();
 const router = useRouter();
 const bgImage = getImage('/logo.png');
 const viewLogo = getImage('/view-logo.png');
@@ -196,6 +200,12 @@ const form = reactive({
     verifyCode: '',
     verifyKey: '',
 });
+
+const  RsaConfig = reactive<any>({
+    enabled:false, //是否加密
+    publicKey:'', //rsa公钥,使用此公钥对密码进行加密
+    id:'' //密钥ID
+})
 
 const rules = {
   username: [
@@ -235,19 +245,27 @@ const codeConfig = ref(false);
 
 const loading = ref(false);
 const bindings = ref<any[]>();
-const basis = ref<any>({});
+// const basis = ref<any>({});
 
-const defaultImg = getImage('/apply/provider1.png');
+const defaultImg = getImage('/apply/internal-standalone.png');
 const iconMap = new Map();
 iconMap.set('dingtalk-ent-app', getImage('/bind/dingtalk.png'));
 iconMap.set('wechat-webapp', getImage('/bind/wechat-webapp.png'));
-iconMap.set('internal-standalone', getImage('/apply/provider1.png'));
-iconMap.set('third-party', getImage('/apply/provider5.png'));
+iconMap.set('internal-standalone', getImage('/apply/internal-standalone.png'));
+iconMap.set('third-party', getImage('/apply/third-party.png'));
+iconMap.set('wechat-miniapp', getImage('/apply/wechat-miniapp.png'));
 
 const onFinish = async () => {
     try {
         loading.value = true;
-        const res: any = await authLogin(form);
+
+        const data = {
+            ...form,
+            password:RsaConfig.enabled?encrypt(form.password,RsaConfig.publicKey):form.password,
+            encryptId:RsaConfig.enabled?RsaConfig.id:undefined
+        }
+
+        const res: any = await authLogin(data);
         loading.value = false;
         if (res.success) {
           LocalStore.set(TOKEN_KEY, res?.result.token);
@@ -265,6 +283,7 @@ const onFinish = async () => {
               const resp: any = await getInitSet();
               if (resp.status === 200 && !resp.result.length) {
                 window.location.href = '/#/init-home';
+                // router.push('/init-home')
                 return;
               }
             }
@@ -274,11 +293,13 @@ const onFinish = async () => {
             });
           }
             window.location.href = '/';
+          // router.push('/')
         }
     } catch (error) {
         form.verifyCode = '';
         getCode();
         loading.value = false;
+        getRsa()
     }
 };
 
@@ -310,20 +331,24 @@ const getOpen = () => {
             }
         }
     });
-    settingDetail('front').then((res: any) => {
-        if (res.status === 200) {
-            const ico: any = document.querySelector('link[rel="icon"]');
-            ico.href = res.result.ico;
-            basis.value = res.result;
-            if (res.result.title) {
-                document.title = res.result.title;
-            } else {
-                document.title = '';
-            }
-        }
-    });
+    systemStore.getFront()
 };
 
+//获取加密信息
+const getRsa =async () =>{
+    const res:any = await authLoginConfig()
+    if(res.status === 200){
+        if(res.result?.encrypt){
+            RsaConfig.enabled = res.result?.encrypt.enabled
+            RsaConfig.publicKey = res.result?.encrypt.publicKey
+            RsaConfig.id = res.result?.encrypt.id
+        }
+    }
+}
+
+const basis = computed(() => {
+  return systemStore.configInfo['front'] || {}
+})
 const handleClickOther = (item: any) => {
     LocalStore.set('onLogin', 'no');
     window.open(`${BASE_API_PATH}/application/sso/${item.id}/login`);
@@ -356,6 +381,11 @@ watch(
 getOpen();
 getCode();
 screenRotation(screenWidth.value, screenHeight.value);
+
+onMounted(()=>{
+    getRsa()
+})
+
 </script>
 
 <style scoped lang="less">
