@@ -129,6 +129,7 @@
               <AIcon type="PlusSquareOutlined" />
             </PermissionButton>
             <PermissionButton
+                v-if="type !== 'tags'"
                 :has-permission="true"
                 type="link"
                 key="edit"
