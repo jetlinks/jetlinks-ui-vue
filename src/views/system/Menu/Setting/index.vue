@@ -79,7 +79,6 @@ import type { AntTreeNodeDropEvent } from 'ant-design-vue/es/tree';
 import { cloneDeep } from 'lodash';
 import { onlyMessage } from '@/utils/comm';
 import {
-    MESSAGE_SUBSCRIBE_MENU_CODE,
     USER_CENTER_MENU_CODE,
 } from '@/utils/consts';
 
@@ -189,7 +188,6 @@ onMounted(() => {
     getSystemPermission_api().then((resp: any) => {
         const filterBaseMenu = BaseMenu.filter(item => ![
           USER_CENTER_MENU_CODE,
-          MESSAGE_SUBSCRIBE_MENU_CODE,
         ].includes(item.code))
         baseMenu.value = filterMenu(
             resp.result.map((item: any) => JSON.parse(item).id),
@@ -200,8 +198,7 @@ onMounted(() => {
                 systemMenu.value = resp.result?.filter(
                     (item: { code: string }) =>
                         ![
-                            USER_CENTER_MENU_CODE,
-                            MESSAGE_SUBSCRIBE_MENU_CODE,
+                            USER_CENTER_MENU_CODE
                         ].includes(item.code),
                 );
                 //初始化菜单

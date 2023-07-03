@@ -84,7 +84,7 @@ import { getMenuTree_api, delMenuInfo_api } from '@/api/system/menu';
 import { message } from 'jetlinks-ui-components';
 import dayjs from 'dayjs';
 import { useUserInfo } from '@/store/userInfo';
-import { MESSAGE_SUBSCRIBE_MENU_CODE, USER_CENTER_MENU_CODE } from '@/utils/consts'
+import { USER_CENTER_MENU_CODE } from '@/utils/consts'
 import { storeToRefs } from 'pinia';
 
 const permission = 'system/Menu';
@@ -212,7 +212,7 @@ const table = reactive({
         return {
             code: resp.message,
             result: {
-                data: resp.result?.filter((item: { code: string }) => ![USER_CENTER_MENU_CODE, MESSAGE_SUBSCRIBE_MENU_CODE].includes(item.code)),
+                data: resp.result?.filter((item: { code: string }) => ![USER_CENTER_MENU_CODE].includes(item.code)),
                 pageIndex: resp.pageIndex,
                 pageSize: resp.pageSize,
                 total: resp.total,

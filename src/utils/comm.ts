@@ -175,3 +175,13 @@ export const openKeysByTree = (data: any[], search: any, searchKey: string = 'id
   findKey(filterTree)
   return openKeys
 }
+
+export const getBase64 = (img: File, callback: (base64Url: string) => void) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(img);
+
+  reader.onload = (result: any) => {
+    console.log(result)
+    callback(result.target.result)
+  }
+}

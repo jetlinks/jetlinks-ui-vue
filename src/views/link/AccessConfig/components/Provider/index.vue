@@ -27,9 +27,9 @@
                                         {{ item.name }}
                                     </div>
                                     <div class="desc">
-                                        <j-tooltip :title="item.description">
-                                            {{ item.description || '' }}
-                                        </j-tooltip>
+                                        <j-ellipsis :lineClamp="2">
+                                          {{ item.description || '' }}
+                                        </j-ellipsis>
                                     </div>
                                 </div>
                             </div>
@@ -174,11 +174,8 @@ const click = (value: object) => {
                 font-style: normal;
                 font-weight: 400;
                 font-size: 12px;
-                line-height: 20px;
                 color: #666666;
-                overflow: hidden;
-                white-space: nowrap;
-                text-overflow: ellipsis;
+                height: 40px;
             }
         }
     }

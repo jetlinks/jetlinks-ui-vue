@@ -156,6 +156,9 @@
             <div>4、单点登录</div>
             <div>通过<span>第三方平台账号</span>登录到物联网平台。</div>
         </div>
+        <div v-show="props.type === 'wechat-miniapp'">
+            暂未开发
+        </div>
     </div>
 </template>
 

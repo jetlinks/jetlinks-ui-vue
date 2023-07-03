@@ -3823,10 +3823,10 @@ jetlinks-store@^0.0.3:
   resolved "https://registry.npmjs.org/jetlinks-store/-/jetlinks-store-0.0.3.tgz"
   integrity sha512-AZf/soh1hmmwjBZ00fr1emuMEydeReaI6IBTGByQYhTmK1Zd5pQAxC7WLek2snRAn/HHDgJfVz2hjditKThl6Q==
 
-jetlinks-ui-components@^1.0.21:
-  version "1.0.21"
-  resolved "https://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.21.tgz#e2dc28682db91b4b05332fb8ec76faa2a2f4dcd2"
-  integrity sha512-nlVGo2ze6e4YFPOyqS1GVCpaH9P4VGPMGYJIucTEjjMb/QqPmkwS7HcwyDX3kvb6Acb+dG5oQZlscMHIGqv0YQ==
+jetlinks-ui-components@^1.0.24:
+  version "1.0.24"
+  resolved "http://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.24.tgz#7cf4c22f37f47e49fc186b6de667e527bc2d7b95"
+  integrity sha512-mP33feZvyCJbrSO+xzVdiSX62t/ZPCsWXtdYNHXsLPu7sBx7ZgeTaMYxY3xNNECTEEiA1WqCfuQWXA5h6Claaw==
   dependencies:
     "@vueuse/core" "^9.12.0"
     "@vueuse/router" "^9.13.0"
@@ -3834,6 +3834,8 @@ jetlinks-ui-components@^1.0.21:
     colorpicker-v3 "^2.10.2"
     lodash-es "^4.17.21"
     monaco-editor "^0.35.0"
+    sortablejs "^1.15.0"
+    vuedraggable "^4.1.0"
 
 js-cookie@^3.0.1:
   version "3.0.1"
@@ -6167,6 +6169,16 @@ socks@^2.6.2:
     ip "^2.0.0"
     smart-buffer "^4.2.0"
 
+sortablejs@1.14.0:
+  version "1.14.0"
+  resolved "http://registry.jetlinks.cn/sortablejs/-/sortablejs-1.14.0.tgz#6d2e17ccbdb25f464734df621d4f35d4ab35b3d8"
+  integrity sha512-pBXvQCs5/33fdN1/39pPL0NZF20LeRbLQ5jtnheIPN9JQAaufGjKdWduZn4U7wCtVuzKhmRkI0DFYHYRbB2H1w==
+
+sortablejs@^1.15.0:
+  version "1.15.0"
+  resolved "http://registry.jetlinks.cn/sortablejs/-/sortablejs-1.15.0.tgz#53230b8aa3502bb77a29e2005808ffdb4a5f7e2a"
+  integrity sha512-bv9qgVMjUMf89wAvM6AxVvS/4MX3sPeN0+agqShejLU5z5GX4C75ow1O2e5k4L6XItUyAK3gH6AxSbXrOM5e8w==
+
 source-map-js@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/source-map-js/-/source-map-js-1.0.2.tgz"
@@ -6950,6 +6962,11 @@ vite@^4.0.0:
   optionalDependencies:
     fsevents "~2.3.2"
 
+vue-cropper@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.jetlinks.cn/vue-cropper/-/vue-cropper-1.0.9.tgz#de402c57cadc221e9a2063399ff35bb04220ef22"
+  integrity sha512-JhQwxmjqmQohzI7sAp5O/Rfdxuw5HOEYkKjnp/De7iCi6c8Mv6M3N9HpMt9xgWCFchX3/DfXBv2axCZOCg3G8Q==
+
 vue-demi@*:
   version "0.13.11"
   resolved "https://registry.npmjs.org/vue-demi/-/vue-demi-0.13.11.tgz"
@@ -7047,6 +7064,13 @@ vue@^3.2.37, vue@^3.2.45:
     "@vue/runtime-dom" "3.2.45"
     "@vue/server-renderer" "3.2.45"
     "@vue/shared" "3.2.45"
+
+vuedraggable@^4.1.0:
+  version "4.1.0"
+  resolved "http://registry.jetlinks.cn/vuedraggable/-/vuedraggable-4.1.0.tgz#edece68adb8a4d9e06accff9dfc9040e66852270"
+  integrity sha512-FU5HCWBmsf20GpP3eudURW3WdWTKIbEIQxh9/8GE806hydR9qZqRRxRE3RjqX7PkuLuMQG/A7n3cfj9rCEchww==
+  dependencies:
+    sortablejs "1.14.0"
 
 walk-up-path@^1.0.0:
   version "1.0.0"

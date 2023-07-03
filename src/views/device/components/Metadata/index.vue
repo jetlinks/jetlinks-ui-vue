@@ -51,7 +51,8 @@ import { message } from 'ant-design-vue'
 import { useInstanceStore } from '@/store/instance'
 import Import from './Import/index.vue'
 import Cat from './Cat/index.vue'
-import BaseMetadata from './Base/index.vue'
+// import BaseMetadata from './Base/index.vue'
+import BaseMetadata from './Base/Base.vue'
 import { useMetadataStore } from '@/store/metadata'
 
 const route = useRoute()
@@ -66,6 +67,8 @@ const props = defineProps<Props>()
 const permission = computed(() => props.type === 'device' ? 'device/Instance' : 'device/Product')
 const visible = ref(false)
 const cat = ref(false)
+
+provide('_metadataType', props.type)
 
 // 重置物模型
 const resetMetadata = async () => {
