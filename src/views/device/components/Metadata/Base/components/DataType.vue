@@ -1,6 +1,8 @@
 <template>
     <div class="metadata-type">
+      <div class="metadata-type-select">
         <DataTableTypeSelect v-model:value="type" @change="typeChange" />
+      </div>
         <DataTableArray
             v-if="type === 'array'"
             v-model:value="_valueType.elementType"
@@ -143,8 +145,12 @@ watch(
     gap: 12px;
     align-items: center;
 
-    :deep(.j-data-table-config--icon) {
-        padding-right: 12px;
+    .metadata-type-select {
+      flex: 1;
     }
+
+  :deep(.j-data-table-config--icon) {
+    padding-right: 12px;
+  }
 }
 </style>

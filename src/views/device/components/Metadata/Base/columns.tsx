@@ -1,17 +1,18 @@
 import { ColumnProps } from "ant-design-vue/es/table";
-import { DataType, Source, InputParams, OtherSetting, OutputParams, ConfigParams } from './components'
+import { DataType, Source, InputParams, OtherSetting, OutputParams, ConfigParams, TagsType } from './components'
 import SelectColumn from './components/Events/SelectColumn.vue';
 import AsyncSelect from './components/Function/AsyncSelect.vue';
 import { EventLevel } from "@/views/device/data";
 interface DataTableColumnProps extends ColumnProps {
   type?: string,
   components?: {
-    name: any
+    name?: any
     [key: string]: any
   }
   form?: {
     rules: any[]
-  }
+  },
+  options?: any[]
 }
 
 const SourceMap = {
@@ -54,7 +55,8 @@ const EventColumns: DataTableColumnProps[] = BaseColumns.concat([
   },
   {
     title: '输出参数',
-    dataIndex: 'valueType',
+    dataIndex: 'outInput',
+    type: 'components',
   },
   {
     title: '配置参数',
@@ -195,7 +197,11 @@ const TagColumns: DataTableColumnProps[] = BaseColumns.concat([
   },
   {
     title: '读写类型',
-    dataIndex: 'type',
+    dataIndex: 'readType',
+    type: 'components',
+    components: {
+      name: TagsType
+    }
   },
   {
     title: '说明',

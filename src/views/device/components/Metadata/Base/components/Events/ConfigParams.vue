@@ -1,12 +1,14 @@
 <template>
     <div class="metadata-config-params">
+      <div class="metadata-config-value">
         {{ value?.map((item: any) => item.name).join(',') }}
-        <DataTableObject v-model:value="value" :columns="columns">
+      </div>
+        <DataTableObject v-model:value="value" :columns="columns" @confirm="confirm">
             <template #valueType="{ data }">
-                <span>{{ data.data.record.valueType?.type }}</span>
+                <span>{{ data.record.valueType?.type }}</span>
             </template>
             <template #config="{ data }">
-                <OtherConfigInfo :value="data.data.record.valueType"></OtherConfigInfo>
+                <OtherConfigInfo :value="data.record.valueType"></OtherConfigInfo>
             </template>
         </DataTableObject>
     </div>
@@ -41,6 +43,8 @@ const columns = [
     },
     {
         title: '操作',
+        dataIndex: 'action',
+        width: 80
     },
 ];
 
@@ -72,6 +76,16 @@ const change = (v: string) => {
     emit('change', v);
 };
 
+const confirm = () => {
+  emit('update:value', {
+    ...props.value,
+    valueType: {
+      properties: value.value,
+      type: props.value.valueType.type,
+    }
+  })
+}
+
 watch(
     () => props.value,
     (newV) => {
@@ -80,15 +94,17 @@ watch(
     { immediate: true },
 );
 
-watch(() => value.value, () => {
-    emit('update:value', {
-        ...props.value,
-        valueType: {
-            properties: value.value,
-            type: props.value.valueType.type,
-        }
-    })
-})
 </script>
 
-<style scoped></style>
+<style scoped lang="less">
+.metadata-config-params {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding-right: 12px;
+
+  .metadata-config-value {
+    flex: 1;
+  }
+}
+</style>

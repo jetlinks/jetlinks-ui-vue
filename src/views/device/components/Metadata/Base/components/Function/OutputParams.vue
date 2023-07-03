@@ -1,9 +1,12 @@
 <template>
     <div class="metadata-type">
+      <div class="metadata-type-select">
         <DataTableTypeSelect v-model:value="type" @change="typeChange" />
+      </div>
         <DataTableArray
             v-if="type === 'array'"
             v-model:value="data.elementType"
+            @confirm="valueChange"
         />
         <DataTableObject
             v-else-if="type === 'object'"
@@ -31,24 +34,28 @@
                   title: '操作'
                 }
             ]"
+            @confirm="valueChange"
         />
-        <DataTableEnum v-else-if="type === 'enum'" v-model:value="data" />
-        <DataTableBoolean v-else-if="type === 'boolean'" v-model:value="data" />
+        <DataTableEnum v-else-if="type === 'enum'" v-model:value="data" @confirm="valueChange"/>
+        <DataTableBoolean v-else-if="type === 'boolean'" v-model:value="data" @confirm="valueChange"/>
         <DataTableDouble
             v-else-if="['float', 'double'].includes(type)"
             :options="options"
             v-model:value="data"
+            @confirm="valueChange"
         />
         <DataTableInteger
             v-else-if="['int', 'long'].includes(type)"
             :options="options"
             v-model:value="data.unit"
+            @confirm="valueChange"
         />
-        <DataTableFile v-else-if="type === 'file'" v-model:value="data.fileType"/>
-        <DataTableDate v-else-if="type === 'date'" v-model:value="data.date"/>
+        <DataTableFile v-else-if="type === 'file'" v-model:value="data.fileType" @confirm="valueChange"/>
+        <DataTableDate v-else-if="type === 'date'" v-model:value="data.date" @confirm="valueChange"/>
         <DataTableString
             v-else-if="['string', 'password'].includes(type)"
             v-model:value="data.expands.maxLength"
+            @confirm="valueChange"
         />
     </div>
 </template>
@@ -80,8 +87,8 @@ const props = defineProps({
 const options = ref<{ label: string; value: string }[]>([]);
 const emit = defineEmits(['update:value']);
 
-const type = ref(props.value?.output.type);
-const data = ref(cloneDeep(props.value.output));
+const type = ref(props.value?.output?.type);
+const data = ref(cloneDeep(props.value?.output));
 
 const typeChange = () => {
     emit('update:value', {
@@ -93,7 +100,8 @@ const typeChange = () => {
 watch(
     () => props.value,
     () => {
-        type.value = props.value?.output.type;
+        type.value = props.value?.output?.type;
+        data.value = props.value?.output
         if (['float', 'double', 'int', 'long'].includes(type.value)) {
             const res = getUnit().then((res) => {
                 if (res.success) {
@@ -108,22 +116,28 @@ watch(
     { immediate: true, deep: true },
 );
 
-watch(
-    () => data.value,
-    (newVal) => {
-        emit('update:value', {
-            ...props.value,
-            output: {...newVal, type: type.value},
-        });
-    },
-    { deep: true },
-);
+const valueChange = () => {
+  emit('update:value', {
+    ...props.value,
+    output: {...data.value, type: type.value},
+  });
+}
+
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .metadata-type {
-    display: flex;
-    gap: 12px;
-    align-items: center;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+
+  .metadata-type-select {
+    flex: 1;
+  }
+
+  :deep(.j-data-table-config--icon) {
+    padding-right: 12px;
+  }
 }
 </style>

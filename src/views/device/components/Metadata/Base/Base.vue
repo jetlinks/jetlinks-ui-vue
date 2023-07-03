@@ -12,7 +12,7 @@
               v-if="!dataSource.length"
               :hasPermission="`${permission}:update`"
               key="add"
-              @click="handleAddClick"
+              @click="handleAddClick()"
               :disabled="hasOperate('add', type)"
               :tooltip="{
                     title: hasOperate('add', type)
@@ -74,6 +74,7 @@
                     {{ expandsType[item] }}
                 </j-tag>
             </template>
+
             <template v-if="column.dataIndex === 'action'"> </template>
         </template>
         <template #valueType="{ data }">
@@ -95,9 +96,17 @@
           {{ levelMap?.[data.record.expands?.level] || '-' }}
         </template>
         <template #properties="{ data }">
-          {{ data.record.valueType.properties?.map(item => item.name).join(',') }}
+          {{ data.record.valueType?.properties?.map(item => item.name).join(',') }}
         </template>
-        <template #other="{ data, }">
+        <template #outInput>
+          object
+        </template>
+        <template #readType="{data}">
+          <j-tag v-for="item in data.record?.expands?.type || []" :key="item">
+            {{ expandsType[item] }}
+          </j-tag>
+        </template>
+        <template #other="{ data }">
           配置
         </template>
         <template #action="{data}">
@@ -254,9 +263,8 @@ const handleSearch = (searchValue: string) => {
         : metadata.value;
 };
 
-const handleAddClick = (_data: any, index?: number) => {
-
-  const newObject = _data || {
+const getDataByType = () => {
+  let _data: any = {
     id: undefined,
     name: undefined,
     expands: {
@@ -266,6 +274,50 @@ const handleAddClick = (_data: any, index?: number) => {
       type: undefined
     }
   }
+
+  if (props.type === 'functions') {
+    _data = {
+      id: undefined,
+      name: undefined,
+      async: false,
+      inputs: [],
+      output: {
+        type: undefined
+      }
+    }
+  } else if (props.type === 'events') {
+    _data = {
+      id: undefined,
+      name: undefined,
+      async: false,
+      valueType: {
+        type: 'object',
+        properties: []
+      },
+      expands: {
+        level: undefined
+      }
+
+    }
+  } else if (props.type === 'tags') {
+    _data = {
+      id: undefined,
+      name: undefined,
+      valueType: {
+        type: undefined
+      },
+      expands: {
+        type: undefined
+      }
+    }
+  }
+
+  return _data
+}
+
+const handleAddClick = (_data?: any, index?: number) => {
+
+  const newObject = _data || getDataByType()
 
   tableRef.value?.addItem?.(newObject, index)
 
@@ -299,7 +351,7 @@ const handleSaveClick = async () => {
     if(resp && resp.length) {
       const virtual: any[] = [];
       const arr = resp.map((item: any) => {
-        if(item.expands.virtualRule) {
+        if(item.expands?.virtualRule) {
           virtual.push({
             ...item.expands.virtualRule,
             propertyId: item.id

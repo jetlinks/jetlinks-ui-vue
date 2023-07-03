@@ -7,3 +7,4 @@ export { default as OutputParams } from './Function/OutputParams.vue';
 export { default as ValueObject } from './Events/ValueObject.vue';
 export { default as OtherConfigInfo } from './Events/OtherConfigInfo.vue';
 export { default as ConfigParams } from './Events/ConfigParams.vue';
+export { default as TagsType } from './Tags/Type.vue'

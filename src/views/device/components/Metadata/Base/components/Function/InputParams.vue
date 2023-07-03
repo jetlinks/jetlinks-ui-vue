@@ -1,13 +1,19 @@
 <template>
-    {{ value?.map((item) => item.name).join(',') }}
+  <div class="input-params">
+    <div class="input-params-text">
+      {{ value?.map((item) => item.name).join(',') }}
+    </div>
     <DataTableObject v-model:value="value" :columns="columns">
-        <template #valueType="{ data }">
-            <span>{{ data.data.record.valueType?.type }}</span>
-        </template>
-        <template #config="{ data }">
-            <OtherConfigInfo :value="data.data.record.valueType"></OtherConfigInfo>
-        </template>
+      <template #valueType="{ data }">
+        <span>{{ data.record.valueType?.type }}</span>
+      </template>
+      <template #config="{ data }">
+        <OtherConfigInfo :value="data.record.valueType"></OtherConfigInfo>
+      </template>
     </DataTableObject>
+  </div>
+
+
 </template>
 
 <script setup lang="ts" name="InputParams">
@@ -39,6 +45,8 @@ const columns = [
     },
     {
         title: '操作',
+        dataIndex: 'action',
+        width: 80
     },
 ];
 
@@ -87,4 +95,18 @@ watch(() => value.value, () => {
 })
 </script>
 
-<style scoped></style>
+<style scoped lang="less">
+.input-params{
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  .input-params-text {
+    flex: 1;
+  }
+
+  :deep(.j-data-table-config--icon) {
+    padding-right: 12px;
+  }
+}
+</style>
