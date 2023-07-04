@@ -1,6 +1,6 @@
 <template>
     <j-spin :spinning="loading">
-        <div class="notify-type-warp" :class="{ disabled: disabled }">
+        <div class="notify-type-warp">
             <div
                 :key="item.id"
                 v-for="item in options"
@@ -9,7 +9,7 @@
                 @click="onSelect(item.value, item.label)"
             >
                 <div class="notify-type-item-image">
-                    <img :width="106" :src="item.iconUrl" />
+                    <img :width="64" :src="item.iconUrl" />
                 </div>
                 <div class="notify-type-item-title">{{item.label}}</div>
             </div>
@@ -80,53 +80,40 @@ onMounted(() => {
 .notify-type-warp {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px 24px;
   width: 100%;
+  padding: 50px 200px;
+  gap: 16px 24px;
 
   .notify-type-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 172px;
-    border: 1px solid #e0e4e8;
-    border-radius: 2px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: all 0.3s;
+    width: 96px;
+    padding: 8px 16px;
 
     .notify-type-item-title {
-      margin-bottom: 8px;
-      font-weight: 500;
       font-size: 14px;
+      color: #333333;
+      width: 100%;
+      text-align: center;
     }
 
     .notify-type-item-image {
-      width: 106px;
-      margin: 16px 33px;
+      width: 100%;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: center;
     }
 
     &:hover {
-      color: @primary-color-hover;
-      opacity: 0.8;
+      background-color: #F2F4F7;
     }
 
     &.active {
-      border-color: @primary-color-active;
-      opacity: 1;
-    }
-  }
-
-  &.disabled {
-    .notify-type-item {
-      cursor: not-allowed;
-
-      &:hover {
-        color: initial;
-        opacity: 0.6;
-      }
-
-      &.active {
-        opacity: 1;
-      }
+      background-color: #F2F4F7;
+      border: 1px solid #ADB8C7;
     }
   }
 }

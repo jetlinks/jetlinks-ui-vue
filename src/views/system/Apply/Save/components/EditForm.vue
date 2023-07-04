@@ -40,7 +40,7 @@
                     :options="typeOptions"
                     v-model:photoUrl="form.data.logoUrl"
                     v-model:value="form.data.provider"
-                    :disabled="!!routeQuery.id"
+                    :disabled="!!routeQuery.id || !!routeQuery?.provider"
                 />
             </j-form-item>
             <j-form-item
@@ -53,13 +53,14 @@
                     },
                 ]"
             >
-                <j-checkbox-group
+                <j-check-button
                     v-model:value="form.data.integrationModes"
                     :options="joinOptions"
+                    :multiple="true"
                 />
             </j-form-item>
 
-            <j-collapse style="margin-bottom: 20px">
+            <j-collapse style="margin-bottom: 20px;">
                 <j-collapse-panel
                     v-for="(item, index) in form.data.integrationModes"
                     :key="item + index"
@@ -1417,7 +1418,7 @@ import FormLabel from './FormLabel.vue';
 import RequestTable from './RequestTable.vue';
 import MenuDialog from '../../componenets/MenuDialog.vue';
 import { getImage } from '@/utils/comm';
-import type { formType, dictType, optionsType } from '../typing';
+import type { formType, dictType, optionsType, applyType } from '../typing';
 import { getRoleList_api } from '@/api/system/user';
 import { message } from 'jetlinks-ui-components';
 import { randomString } from '@/utils/utils';
@@ -1554,32 +1555,39 @@ const paramsValidator = () => {
         paramsValid.value ? resolve('') : reject('请输入完整的请求参数');
     });
 };
-const getType = () => {
-    queryType().then((resp: any) => {
-        if (resp.status === 200) {
-            const arr = resp.result.map((item: any) => ({
-                label: item.name,
-                value: item.provider,
-                integrationModes: item.integrationModes?.map((i: any) => {
-                    return {
-                        label: i.text,
-                        value: i.value,
-                    };
-                }),
-            }));
-            typeOptions.value = arr;
-        }
-    });
+const getType = async () => {
+    const resp: any = await queryType();
+    if (resp.status === 200) {
+        const arr = resp.result.map((item: any) => ({
+            label: item.name,
+            value: item.provider,
+            integrationModes: item.integrationModes?.map((i: any) => {
+                return {
+                    label: i.text,
+                    value: i.value,
+                };
+            }),
+        }));
+        typeOptions.value = arr;
+    }
 }
  
-onMounted(() => {
-    getType();
+onMounted(async () => {
+    await getType();
     getRoleIdList();
     getOrgIdList();
     if (routeQuery.id) {
         getInfo(routeQuery.id as string);
     }
-    
+    if(routeQuery.provider){
+        form.data.provider = routeQuery?.provider as applyType;
+        if(routeQuery.photoUrl) {
+            form.data.logoUrl = routeQuery?.photoUrl as string;
+        } 
+        typeOptions.value = typeOptions.value.filter((i: any) => {
+            return i.value === routeQuery.provider;
+        });
+    }
 });
 
 // 接入方式的选项

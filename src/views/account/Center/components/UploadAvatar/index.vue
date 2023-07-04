@@ -39,6 +39,7 @@
         :img="cropperImg"
         @cancel="cropperVisible = false"
         @ok="saveImage"
+        title="更换头像"
     />
 </template>
 

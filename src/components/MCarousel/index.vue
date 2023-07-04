@@ -75,6 +75,10 @@ const onLeft = () => {
             font-size: 12px;
             color: #666666;
             cursor: pointer;
+            &:hover {
+                background-color: #EFF2FE;
+                color: @primary-color;
+            }
         }
     }
 }

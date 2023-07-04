@@ -12,6 +12,7 @@ export const USER_CENTER_MENU_DATA = {
   url: '/account/center',
   sortIndex: 9999,
   granted: true,
+  owner: 'iot',
   buttons: [
     {
       id: USER_CENTER_MENU_BUTTON_CODE,

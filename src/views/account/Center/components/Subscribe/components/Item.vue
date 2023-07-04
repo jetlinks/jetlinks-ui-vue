@@ -7,7 +7,7 @@
             <div class="child-item-left-auth" v-if="data?.description">
                 <j-tooltip :title="data.description">
                     <AIcon
-                        style="font-size: 16px"
+                        style="font-size: 16px; color: rgba(0, 0, 0, .3)"
                         type="ExclamationCircleOutlined"
                     />
                 </j-tooltip>
@@ -86,7 +86,9 @@
                             </j-dropdown>
                         </div>
                         <div class="box-item-text">
-                            {{ slotProps?.name }}
+                            <j-ellipsis style="width: 50px;">
+                                {{ slotProps?.name }}
+                            </j-ellipsis>
                         </div>
                     </div>
                 </template>
@@ -245,7 +247,7 @@ const onSave = (dt: any) => {
 
         div {
             display: flex;
-            margin-right: 30px;
+            margin-right: 8px;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -260,7 +262,7 @@ const onSave = (dt: any) => {
         display: flex;
 
         .box-item {
-            margin-left: 10px;
+            // margin: 0 5px;
             .box-item-img {
                 width: 50px;
                 display: flex;

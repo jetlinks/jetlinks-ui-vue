@@ -87,7 +87,7 @@
                                 </template>
                             </j-dropdown>
                             <div class="box-item-text">
-                                {{ slotProps?.name }}
+                                <j-ellipsis>{{ slotProps?.name }}</j-ellipsis>
                             </div>
                         </div>
                     </template>
@@ -453,8 +453,13 @@ const onSave = (_data: any) => {
         align-items: center;
 
         .box-item {
-            margin-left: 10px;
             cursor: pointer;
+            width: 48px;
+            margin: 0 2px;
+            display: flex;
+            justify-content: space-between;
+            flex-direction: column;
+            align-items: center;
             .box-item-img {
                 background-color: #fff;
                 width: 32px;
@@ -474,7 +479,6 @@ const onSave = (_data: any) => {
 
         .box-item-add {
             cursor: pointer;
-            margin-left: 16px;
             background-color: #f8f9fc;
             width: 54px;
             height: 54px;

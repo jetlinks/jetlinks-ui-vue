@@ -32,6 +32,7 @@
 <script lang="ts" setup>
 import { getMe_api, getView_api, setView_api } from '@/api/home';
 import { getImage, onlyMessage } from '@/utils/comm';
+
 const currentView = ref<string>('');
 const isApiUser = ref<boolean>();
 
@@ -93,6 +94,11 @@ onMounted(() => {
         display: flex;
         justify-content: flex-end;
         margin-top: 68px;
+
+        button {
+            background-color: @primary-2;
+            color: @primary-color-hover;
+        }
     }
 }
 </style>

@@ -1,10 +1,10 @@
 <template>
-    <j-modal visible @cancel="emit('close')">
+    <j-modal width="350px" visible @cancel="emit('close')" :footer="null">
         <template v-if="getType === 'notifier-dingTalk'">
-            <!-- <div class="tip">请先绑定钉钉账号</div> -->
+            <div class="tip">暂未开发</div>
         </template>
         <template v-else-if="getType === 'notifier-weixin'">
-            <!-- <div class="tip">请先绑定企业微信账号</div> -->
+            <div class="tip">暂未开发</div>
         </template>
         <template v-else-if="getType === 'notifier-email'">
            <div class="tip"> 绑定账号：{{ user.userInfos?.email }}</div>
@@ -12,7 +12,7 @@
         <template v-else>
             <div class="tip">绑定账号：{{ user.userInfos?.telephone }}</div>
         </template>
-        <template #footer>
+        <div class="btn">
             <j-button @click="emit('unsubscribe', current)">取消订阅</j-button>
             <j-button
                 @click="onBind"
@@ -27,7 +27,7 @@
                 >更换绑定账号</j-button
             >
             <j-button v-else @click="emit('close')">确定</j-button>
-        </template>
+        </div>
     </j-modal>
     <EditInfo
         v-if="editInfoVisible"
@@ -102,19 +102,12 @@ watch(
 <style lang="less" scoped>
 .tip {
     width: 100%;
-    margin-top: 30px;
-    // font-size: 14px;
-    // color: #7f7f7f;
+    margin: 30px 0;
 }
 
-.code {
-    width: 100%;
+.btn {
     display: flex;
-    margin-top: 30px;
-    justify-content: center;
-
-    .code-item {
-        border: none;
-    }
+    gap: 12px;
+    justify-content: flex-end;
 }
 </style>

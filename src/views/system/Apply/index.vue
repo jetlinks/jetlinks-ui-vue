@@ -22,7 +22,7 @@
                             <PermissionButton
                                 :hasPermission="`${permission}:add`"
                                 type="primary"
-                                @click="() => table.toSave()"
+                                @click="() => table.toAdd()"
                             >
                                 <AIcon type="PlusOutlined" />新增
                             </PermissionButton>
@@ -134,7 +134,7 @@
                                 </j-tooltip>
                             </template>
 
-                            <template #mark>
+                            <!-- <template #mark>
                                 <AIcon
                                     type="EyeOutlined"
                                     style="font-size: 24px"
@@ -142,7 +142,7 @@
                                         () => table.toSave(slotProps.id, true)
                                     "
                                 />
-                            </template>
+                            </template> -->
                         </CardBox>
                     </template>
 
@@ -190,6 +190,7 @@
                 @refresh="table.refresh"
             />
         </div>
+        <Add v-if="visible" @close="visible = false" />
     </page-container>
 </template>
 
@@ -206,37 +207,13 @@ import { getImage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import { message } from 'jetlinks-ui-components';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
+import Add from './Save/Add.vue';
 
 const menuStory = useMenuStore();
 const permission = 'system/Apply';
-// const typeOptions = [
-//     {
-//         label: '内部独立应用',
-//         value: 'internal-standalone',
-//     },
-//     {
-//         label: '微信网站应用',
-//         value: 'wechat-webapp',
-//     },
-//     {
-//         label: '内部集成应用',
-//         value: 'internal-integrated',
-//     },
-//     {
-//         label: '钉钉企业内部应用',
-//         value: 'dingtalk-ent-app',
-//     },
-//     {
-//         label: '第三方应用',
-//         value: 'third-party',
-//     },
-//     {
-//         label: '小程序应用',
-//         value: 'wechat-miniapp',
-//     },
-// ];
 
 const typeOptions = ref<any[]>([])
+const visible = ref<boolean>(false)
 
 onMounted(() => {
     queryType().then((resp: any) => {
@@ -328,6 +305,9 @@ const current = ref<any>({})
 const table = {
     refresh: () => {
         tableRef.value.reload(queryParams.value);
+    },
+    toAdd: () => {
+        visible.value = true
     },
     toSave: (id?: string, view = false) => {
         if (id) menuStory.jumpPage('system/Apply/Save', {}, { id, view });

@@ -1,6 +1,6 @@
 <template>
     <j-spin :spinning="loading">
-        <div>
+        <div style="padding: 0 10px">
             <div class="alert">
                 <AIcon type="InfoCircleOutlined" />
                 你可以在该页面选择需要订阅的主题及接收通知的方式。
@@ -24,9 +24,6 @@
                             class="custom"
                             :header="item.name"
                         >
-                            <template #header
-                                ><h3>{{ item.name }}</h3></template
-                            >
                             <div class="child">
                                 <template
                                     v-for="child in item.children"
@@ -116,9 +113,8 @@ onMounted(() => {
     height: 40px;
     padding-left: 10px;
     margin-bottom: 10px;
-    color: rgba(0, 0, 0, 0.55);
+    color: #999999;
     line-height: 40px;
-    background-color: #f6f6f6;
 }
 .custom {
     background: #F7F8FA;

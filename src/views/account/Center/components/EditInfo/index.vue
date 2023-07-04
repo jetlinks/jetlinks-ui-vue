@@ -122,7 +122,7 @@ const handleOk = () => {
             .then((resp) => {
                 if (resp.status === 200) {
                     onlyMessage('保存成功', 'success');
-                    emits('save');
+                    emits('save', form.value);
                 }
             })
             .finally(() => (loading.value = false));

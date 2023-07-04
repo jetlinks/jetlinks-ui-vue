@@ -150,10 +150,11 @@ const read = (type: '_read' | '_unread') => {
 
     .list-item-right {
         width: 100px;
-        padding: 12px 12px 12px 0;
+        padding: 6px 12px 6px 0;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        
     }
 }
 </style>
