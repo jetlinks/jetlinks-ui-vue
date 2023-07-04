@@ -11,6 +11,7 @@ interface DataTableColumnProps extends ColumnProps {
   }
   form?: {
     rules: any[]
+    [key: string]: any
   },
   options?: any[]
 }
@@ -56,7 +57,6 @@ const EventColumns: DataTableColumnProps[] = BaseColumns.concat([
   {
     title: '输出参数',
     dataIndex: 'outInput',
-    type: 'components',
   },
   {
     title: '配置参数',
@@ -144,6 +144,7 @@ const PropertyColumns: DataTableColumnProps[] = BaseColumns.concat([
       name: Source
     },
     form: {
+      required: true,
       rules: [
         {
           validator: async (_: Record<string, any>, value: any) => {

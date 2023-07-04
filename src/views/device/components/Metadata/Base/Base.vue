@@ -176,6 +176,16 @@
         :data="detailData.data"
         @cancel="cancelDetailModal"
     />
+    <FunctionModal
+        v-else-if="type === 'functions' && detailData.visible"
+        :data="detailData.data"
+        @cancel="cancelDetailModal"
+    />
+    <EventModal
+        v-else-if="type === 'events' && detailData.visible"
+        :data="detailData.data"
+        @cancel="cancelDetailModal"
+    />
 </template>
 
 <script setup lang="ts" name="BaseMetadata">
@@ -200,7 +210,7 @@ import { DeviceInstance } from '@/views/device/Instance/typings';
 import { onlyMessage } from '@/utils/comm';
 import {omit} from "lodash-es";
 import {useAction} from "@/views/device/components/Metadata/Base/hooks/useAction";
-import { PropertiesModal } from './DetailModal'
+import { PropertiesModal, FunctionModal, EventModal } from './DetailModal'
 
 const props = defineProps({
     // target: {
@@ -333,7 +343,7 @@ const handleAddClick = (_data?: any, index?: number) => {
 
 const copyItem = (record: any, index: number) => {
   const copyData = omit(record, ['_uuid'])
-  copyData.id = `copy_${copyData.id}`
+  copyData.id = `copy_${copyData.id}`.slice(0,64)
   handleAddClick(copyData, index)
 }
 
@@ -390,6 +400,7 @@ const handleSaveClick = async () => {
       const _data = updateMetadata(props.type!, arr, _detail, updateStore)
       const result = await asyncUpdateMetadata(target, _data)
       if(result.success) {
+        dataSource.value = resp
         onlyMessage('操作成功！')
       }
     }

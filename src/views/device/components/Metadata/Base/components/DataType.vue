@@ -6,6 +6,7 @@
         <DataTableArray
             v-if="type === 'array'"
             v-model:value="_valueType.elementType"
+            :unitOptions="options"
             @confirm="valueChange"
         />
         <DataTableObject
@@ -14,6 +15,7 @@
             :columns="[
                 { title: '参数标识', dataIndex: 'id', type: 'text', width: 100 },
                 { title: '参数名称', dataIndex: 'name', type: 'text', width: 100 },
+                { title: '填写约束', dataIndex: 'required', type: 'booleanSelect', width: 100, components: { props: { tureTitle: '必填', falseTitle: '不必填' }} },
                 {
                     title: '数据类型',
                     type: 'components',
@@ -111,6 +113,10 @@ const typeChange = (e: string) => {
 };
 
 const valueChange = () => {
+  console.log({
+    ...props.value,
+    valueType: {...(_valueType.value || {}), type: type.value},
+  })
   emit('update:value', {
     ...props.value,
     valueType: {...(_valueType.value || {}), type: type.value},

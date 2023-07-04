@@ -113,6 +113,7 @@ const confirm = async () => {
                     ...data,
                 },
             };
+          console.log(obj)
             emit('update:value', obj);
             resolve(true);
         } else {
