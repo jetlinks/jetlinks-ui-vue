@@ -262,7 +262,7 @@ const onWayChange = (obj: any) => {
         formModel.channelConfiguration.variables = {};
     }
     formModel.channelProvider = obj?.value;
-    formModel.name = obj?.label;
+    // formModel.name = obj?.label;
 };
 
 const onConfigChange = (obj: any) => {

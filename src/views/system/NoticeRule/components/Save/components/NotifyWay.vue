@@ -107,13 +107,12 @@ onMounted(() => {
       justify-content: center;
     }
 
-    &:hover {
-      background-color: #F2F4F7;
-    }
+    // &:hover {
+    //   background-color: #F2F4F7;
+    // }
 
     &.active {
-      background-color: #F2F4F7;
-      border: 1px solid #ADB8C7;
+      border: 1px solid #2F54EB;
     }
   }
 }
