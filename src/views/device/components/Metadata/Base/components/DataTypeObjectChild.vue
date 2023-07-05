@@ -4,7 +4,7 @@
             {{ text }}
         </div>
         <!-- <OtherConfigInfo :value="formData"></OtherConfigInfo> -->
-        <DataTableEnum v-if="formData.type === 'enum'" v-model:value="formData" />
+            <DataTableEnum v-if="formData.type === 'enum'" v-model:value="formData" />
             <DataTableBoolean v-else-if="formData.type === 'boolean'" v-model:value="formData" />
             <DataTableDouble
                 v-else-if="['float', 'double'].includes(formData.type)"

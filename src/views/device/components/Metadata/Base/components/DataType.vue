@@ -15,7 +15,18 @@
             :columns="[
                 { title: '参数标识', dataIndex: 'id', type: 'text', width: 100 },
                 { title: '参数名称', dataIndex: 'name', type: 'text', width: 100 },
-                { title: '填写约束', dataIndex: 'required', type: 'booleanSelect', width: 100, components: { props: { tureTitle: '必填', falseTitle: '不必填' }} },
+                {
+                  title: '填写约束',
+                  dataIndex: 'required',
+                  type: 'components',
+                  width: 100,
+                  components: {
+                    name: ConstraintSelect,
+                    props: {
+                      name: ['expands', 'required']
+                    }
+                  }
+                },
                 {
                     title: '数据类型',
                     type: 'components',
@@ -65,16 +76,16 @@
         />
         <DataTableFile v-else-if="type === 'file'" v-model:value="_valueType.fileType" @confirm="valueChange"/>
         <DataTableDate v-else-if="type === 'date'" v-model:value="_valueType.date" @confirm="valueChange"/>
-        <!-- <DataTableString
+        <DataTableString
             v-else-if="['string', 'password'].includes(type)"
-            v-model:value="data.expands.maxLength"
-        /> -->
+            v-model:value="_valueType.maxLength"
+        />
     </div>
 </template>
 
 <script setup lang="ts" name="MetadataDataType">
 import { getUnit } from '@/api/device/instance';
-import { InputParams, ValueObject, OtherConfigInfo } from '../components'
+import {InputParams, ValueObject, OtherConfigInfo, ConstraintSelect} from '../components'
 import {
     DataTableTypeSelect,
     DataTableArray,

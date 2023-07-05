@@ -124,6 +124,7 @@ const getConfig = async () => {
 
     config.value = resp.result
     if (resp.result.length && !configValue.value) {
+      activeKey.value = ['store_0']
       resp.result.forEach(a => {
         if (a.properties) {
           a.properties.forEach(b => {
@@ -131,6 +132,8 @@ const getConfig = async () => {
           })
         }
       })
+    } else if (showMetrics.value) {
+      activeKey.value = ['metrics']
     }
   }
 }
@@ -167,7 +170,7 @@ const confirm = () => {
 
 const visibleChange = (e: boolean) => {
   if (e) {
-    configValue.value = omit(props.value?.expands, ['source', 'type', 'metrics'])
+    configValue.value = omit(props.value?.expands, ['source', 'type', 'metrics', 'required'])
     getConfig()
   }
 }

@@ -14,6 +14,7 @@
             :columns="[
                 { title: '参数标识', dataIndex: 'id', type: 'text' },
                 { title: '参数名称', dataIndex: 'name', type: 'text' },
+
                 {
                     title: '数据类型',
                     type: 'components',
@@ -74,6 +75,7 @@ import {
     DataTableDate,
     DataTableObject,
 } from 'jetlinks-ui-components';
+
 import DataTypeObjectChild from '../DataTypeObjectChild.vue';
 import { cloneDeep } from 'lodash-es';
 

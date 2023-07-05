@@ -1,7 +1,7 @@
 <template>
     <j-data-table
         ref="tableRef"
-        :data-source="dataSource"
+        v-model:data-source="dataSource"
         :columns="columns"
         :height="560"
         serial
@@ -107,7 +107,7 @@
           </j-tag>
         </template>
         <template #other="{ data }">
-          配置
+          <OtherSetting v-model:value="dataSource[data.index]" />
         </template>
         <template #action="{data}">
           <j-space>
@@ -196,7 +196,7 @@ import type {
 } from '@/views/device/Product/typings';
 import type { PropType } from 'vue';
 import { useMetadata, useOperateLimits } from './hooks';
-import MetadataMapping from './columns';
+import { useColumns } from './columns';
 import { levelMap, sourceMap, expandsType, limitsMap } from './utils';
 import Rule from '@/components/Metadata/Rule';
 import { Source, OtherSetting } from './components';
@@ -238,7 +238,9 @@ const productStore = useProductStore()
 
 const dataSource = ref<MetadataItem[]>(metadata.value || []);
 const tableRef = ref();
-const columns = computed(() => MetadataMapping.get(props.type!));
+
+// const columns = computed(() => MetadataMapping.get(props.type!));
+const {columns} = useColumns(props.type, target, dataSource.value, metadata.value)
 
 const detailData = reactive({
   data: {},
@@ -325,18 +327,23 @@ const getDataByType = () => {
   return _data
 }
 
-const handleAddClick = (_data?: any, index?: number) => {
+const handleAddClick = async (_data?: any, index?: number) => {
 
   const newObject = _data || getDataByType()
 
-  tableRef.value?.addItem?.(newObject, index)
+  // tableRef.value?.addItem?.(newObject, index)
 
   const data = [...dataSource.value];
 
   if (index !== undefined) {
-    data.splice(index + 1, 0, newObject);
+    //  校验
+    const _data = await tableRef.value.getData()
+    console.log(_data)
+    if (_data) {
+      data.splice(index + 1, 0, newObject);
+    }
   } else {
-    data.push(newObject);
+      data.push(newObject);
   }
   dataSource.value = data
 };

@@ -1,5 +1,5 @@
 <template>
-    <DataTableTypeSelect v-model:value="type" :filter="['object', 'array']">
+    <DataTableTypeSelect v-model:value="type" :filter="['object']">
         
     </DataTableTypeSelect>
 </template>

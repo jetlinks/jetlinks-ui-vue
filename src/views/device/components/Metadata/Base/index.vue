@@ -70,7 +70,7 @@
 </template>
 <script setup lang="ts" name="BaseMetadata">
 import type { MetadataItem, MetadataType } from '@/views/device/Product/typings'
-import MetadataMapping from './columns'
+import { useColumns } from './columns';
 import { useInstanceStore } from '@/store/instance'
 import { useProductStore } from '@/store/product'
 import { useMetadataStore } from '@/store/metadata'
@@ -124,7 +124,8 @@ const pagination = {
   defaultPageSize: 10,
   size: 'small',
 } as TablePaginationConfig
-const columns = computed(() => MetadataMapping.get(type)!.concat(actions))
+// const columns = computed(() => MetadataMapping.get(type)!.concat(actions))
+const { columns } = useColumns(type)
 const items = computed(() => JSON.parse((target === 'product' ? productStore.current?.metadata : instanceStore.current.metadata) || '{}'))
 const searchValue = ref<string>()
 const handleSearch = (searchValue: string) => {
