@@ -4,6 +4,8 @@ import SelectColumn from './components/Events/SelectColumn.vue';
 import AsyncSelect from './components/Function/AsyncSelect.vue';
 import { EventLevel } from "@/views/device/data";
 import {MetadataType} from "@/views/device/Product/typings";
+import rule from "components/Metadata/Rule";
+import {Ref} from "vue";
 interface DataTableColumnProps extends ColumnProps {
   type?: string,
   components?: {
@@ -30,7 +32,7 @@ const type = {
   report: '上报',
 };
 
-export const useColumns = (type?: MetadataType, target?: 'device' | 'product', dataSource?: any[], noEditor?: any[]) => {
+export const useColumns = (type?: MetadataType, target?: 'device' | 'product', dataSource?: Ref<any[]>, noEditor?: any[]) => {
 
   const BaseColumns: DataTableColumnProps[] = [
     {
@@ -39,8 +41,11 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', d
       type: 'text',
       form: {
         rules: [{
-          validator(_:any,value: any) {
-            const hasId = dataSource?.find?.((item) => item.id === value)
+          validator(va:any,value: any) {
+            const fieldIndex = va.field.split('.')[1]
+            const oldValue = (dataSource!.value || []).filter((_, index) => index != fieldIndex)
+            console.log(oldValue)
+            const hasId = oldValue.some((item) => item.id === value)
             if (value) {
               if (hasId) {
                 return Promise.reject('标识重复')
@@ -239,18 +244,26 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', d
     }
   ]);
 
-  const columns = computed(() => {
+  const columns = ref<any[]>([])
+
+  watch(() => JSON.stringify(dataSource!.value), () => {
+    console.log(dataSource!.value)
     switch(type) {
       case 'properties':
-        return PropertyColumns;
+        columns.value = PropertyColumns
+        break ;
       case 'events':
-        return EventColumns
+        columns.value = EventColumns
+        break ;
       case 'tags':
-        return TagColumns
+        columns.value = TagColumns
+        break ;
       case 'functions':
-        return FunctionColumns
+        columns.value = FunctionColumns
+        break ;
     }
-  })
+  }, { immediate: true })
+
   return {columns}
 }
 

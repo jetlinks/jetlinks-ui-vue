@@ -4,6 +4,9 @@
         v-model:data-source="dataSource"
         :columns="columns"
         :height="560"
+        :searchProps="{
+          placeholder: '请输入搜索名称'
+        }"
         serial
     >
         <template #expand>
@@ -240,7 +243,7 @@ const dataSource = ref<MetadataItem[]>(metadata.value || []);
 const tableRef = ref();
 
 // const columns = computed(() => MetadataMapping.get(props.type!));
-const {columns} = useColumns(props.type, target, dataSource.value, metadata.value)
+const {columns} = useColumns(props.type, target, dataSource, metadata.value)
 
 const detailData = reactive({
   data: {},
@@ -356,7 +359,6 @@ const copyItem = (record: any, index: number) => {
 
 const removeItem = (index: number) => {
   const data = [...dataSource.value];
-  console.log(index)
   data.splice(index, 1);
   dataSource.value = data
 }

@@ -75,7 +75,7 @@
             @confirm="valueChange"
         />
         <DataTableFile v-else-if="type === 'file'" v-model:value="_valueType.fileType" @confirm="valueChange"/>
-        <DataTableDate v-else-if="type === 'date'" v-model:value="_valueType.date" @confirm="valueChange"/>
+        <DataTableDate v-else-if="type === 'date'" v-model:value="_valueType.format" @confirm="valueChange"/>
         <DataTableString
             v-else-if="['string', 'password'].includes(type)"
             v-model:value="_valueType.maxLength"
@@ -116,18 +116,51 @@ const elements = ref(props.value?.valueType?.elements);
 const _valueType = ref(cloneDeep(props.value.valueType));
 
 const typeChange = (e: string) => {
-    console.log(e);
+
+    let obj: any = {}
+    switch (e) {
+      case 'array':
+        obj.elementType = {}
+        break;
+      case 'object':
+        obj.properties = []
+        break;
+      case 'enum':
+        obj.elements = []
+        break;
+      case 'float':
+      case 'double':
+        obj.scale = 2
+        obj.unit = undefined
+      case 'int':
+      case 'long':
+        obj.unit = undefined
+        break;
+      case 'file':
+        obj.fileType = undefined
+        break;
+      case 'date':
+        obj.format = undefined
+        break;
+      case 'string':
+      case 'password':
+        obj.maxLength = undefined
+        break;
+      case 'boolean':
+        obj.trueText = '是'
+        obj.trueValue = 'true'
+        obj.falseText = '否'
+        obj.falseValue = 'false'
+        break;
+    }
+    _valueType.value = obj
     emit('update:value', {
         ...props.value,
-        valueType: { ..._valueType.value, type: e }
+        valueType: { ...obj, type: e }
     });
 };
 
 const valueChange = () => {
-  console.log({
-    ...props.value,
-    valueType: {...(_valueType.value || {}), type: type.value},
-  })
   emit('update:value', {
     ...props.value,
     valueType: {...(_valueType.value || {}), type: type.value},
