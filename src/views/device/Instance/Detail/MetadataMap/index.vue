@@ -7,94 +7,103 @@
                 allowClear
                 @search="search"
             />
-            <j-table
-                :columns="columns"
-                :data-source="dataSource"
-                :pagination="false"
-                :rowSelection="{
-                    selectedRowKeys: selectedKeys,
-                    hideSelectAll: true,
-                    columnWidth: 0,
-                }"
-                rowKey="id"
-            >
-                <template #headerCell="{ column }">
-                    <template v-if="column.dataIndex === 'original'">
-                        <div
-                            style="
-                                width: 100%;
-                                display: flex;
-                                justify-content: space-between;
-                                align-items: center;
-                            "
-                        >
-                            <span>
-                                目标属性<j-tooltip
-                                    title="协议包中物模型下的属性"
+            <div class="box">
+                <j-scrollbar height="100%">
+                    <j-table
+                        :columns="columns"
+                        :data-source="dataSource"
+                        :pagination="false"
+                        :rowSelection="{
+                            selectedRowKeys: selectedKeys,
+                            hideSelectAll: true,
+                            columnWidth: 0,
+                        }"
+                        rowKey="id"
+                        :customRow="customRow"
+                    >
+                        <template #headerCell="{ column }">
+                            <template v-if="column.dataIndex === 'original'">
+                                <div
+                                    style="
+                                        width: 100%;
+                                        display: flex;
+                                        justify-content: space-between;
+                                        align-items: center;
+                                    "
                                 >
-                                    <AIcon
-                                        style="margin-left: 10px"
-                                        type="QuestionCircleOutlined"
-                                    />
-                                </j-tooltip>
-                            </span>
-                            <j-tag
-                                v-if="filterValue !== undefined"
-                                color="#87d068"
-                                closable
-                                @close="onClose"
-                                ><AIcon type="ArrowUpOutlined" /><span>{{
-                                    filterValue ? '已映射' : '未映射'
-                                }}</span></j-tag
-                            >
-                            <j-dropdown v-else>
-                                <AIcon type="FilterOutlined" />
-                                <template #overlay>
-                                    <j-menu @click="onFilter">
-                                        <j-menu-item :key="true"
-                                            >置顶已映射数据</j-menu-item
+                                    <span>
+                                        目标属性<j-tooltip
+                                            title="协议包中物模型下的属性"
                                         >
-                                        <j-menu-item :key="false"
-                                            >置顶未映射数据</j-menu-item
-                                        >
-                                    </j-menu>
-                                </template>
-                            </j-dropdown>
-                        </div>
-                    </template>
-                </template>
-                <template #bodyCell="{ column, text, record }">
-                    <template v-if="column.dataIndex === 'name'">
-                        <span class="metadata-title">
-                            <j-ellipsis>
-                                {{ text }} ({{ record.id }})
-                            </j-ellipsis>
-                        </span>
-                    </template>
-                    <template v-if="column.dataIndex === 'original'">
-                        <j-select
-                            v-model:value="record.original"
-                            style="width: 100%"
-                            allowClear
-                            @change="(id) => onChange(record, id)"
-                            placeholder="请选择"
-                        >
-                            <j-select-option
-                                v-for="(item, index) in targetOptions"
-                                :key="index + '_' + item.id"
-                                :value="item.value"
-                                :disabled="
-                                    selectedOriginalKeys.includes(item.id)
-                                "
+                                            <AIcon
+                                                style="margin-left: 10px"
+                                                type="QuestionCircleOutlined"
+                                            />
+                                        </j-tooltip>
+                                    </span>
+                                    <j-tag
+                                        v-if="filterValue !== undefined"
+                                        color="#87d068"
+                                        closable
+                                        @close="onClose"
+                                        ><AIcon
+                                            type="ArrowUpOutlined"
+                                        /><span>{{
+                                            filterValue ? '已映射' : '未映射'
+                                        }}</span></j-tag
+                                    >
+                                    <j-dropdown v-else>
+                                        <AIcon type="FilterOutlined" />
+                                        <template #overlay>
+                                            <j-menu @click="onFilter">
+                                                <j-menu-item :key="true"
+                                                    >置顶已映射数据</j-menu-item
+                                                >
+                                                <j-menu-item :key="false"
+                                                    >置顶未映射数据</j-menu-item
+                                                >
+                                            </j-menu>
+                                        </template>
+                                    </j-dropdown>
+                                </div>
+                            </template>
+                        </template>
+                        <template #bodyCell="{ column, text, record }">
+                            <template v-if="column.dataIndex === 'name'">
+                                <span class="metadata-title" ref="title">
+                                    <j-ellipsis>
+                                        {{ text }} ({{ record.id }})
+                                    </j-ellipsis>
+                                </span>
+                            </template>
+                            <template v-if="column.dataIndex === 'original'">
+                                <j-select
+                                    v-model:value="record.original"
+                                    style="width: 100%"
+                                    allowClear
+                                    @change="(id) => onChange(record, id)"
+                                    placeholder="请选择"
                                 >
-                                {{ item.label }} ({{
-                                    item.id
-                                }})</j-select-option
-                            >
-                        </j-select>
-                    </template>
-                </template>
-            </j-table>
+                                    <j-select-option
+                                        v-for="(item, index) in targetOptions"
+                                        :key="index + '_' + item.id"
+                                        :value="item.value"
+                                        :disabled="
+                                            selectedOriginalKeys.includes(
+                                                item.id,
+                                            )
+                                        "
+                                    >
+                                        {{ item.label }} ({{
+                                            item.id
+                                        }})</j-select-option
+                                    >
+                                </j-select>
+                            </template>
+                        </template>
+                    </j-table>
+                </j-scrollbar>
+            </div>
         </div>
         <div class="right">
             <j-scrollbar>
@@ -139,6 +148,8 @@ const targetOptions = ref<any[]>([]);
 
 const filterValue = ref<boolean | undefined>(undefined);
 const originalData = ref([]);
+
+const _value = ref<any>(undefined);
 
 const columns = [
     {
@@ -198,13 +209,22 @@ const getMetadataMapData = () => {
     });
 };
 
+const customRow = (record: any) => {
+    return {
+        id: record.id,
+        class: _value.value === record.name ? 'metadata-search-row' : '',
+    };
+};
+
 const search = (value: string) => {
     if (value) {
-        dataSource.value = dataSourceCache.value.filter((item: any) => {
-            return !!item.name?.includes(value);
+        const _item: any = dataSourceCache.value.find((item: any) => {
+            return value === item.name;
         });
+        _value.value = _item.name;
+        document.getElementById(_item?.id)?.scrollIntoView(); // 滚动到可视区域
     } else {
-        dataSource.value = dataSourceCache.value;
+        _value.value = undefined;
     }
 };
 
@@ -276,7 +296,7 @@ const onChange = async (value: any, id: string) => {
 };
 
 const onFilter = ({ key }: any) => {
-    originalData.value = dataSource.value
+    originalData.value = dataSource.value;
     const _dataSource = cloneDeep(dataSource.value).sort((a: any, b: any) => {
         if (!key) {
             return (a.original ? 1 : -1) - (b.original ? 1 : -1);
@@ -301,14 +321,24 @@ onMounted(() => {
 
 <style scoped lang='less'>
 .metadata-map {
-    // position: relative;
     min-height: 100%;
     display: flex;
     gap: 24px;
 
     .left {
-        // margin-right: 44px;
         flex: 1;
+        height: 100%;
+
+        .box {
+            height: calc(100vh - 388px);
+            overflow: hidden;
+
+            :deep(.metadata-search-row) {
+                td {
+                    background: #ffff80 !important;
+                }
+            }
+        }
     }
 
     .right {

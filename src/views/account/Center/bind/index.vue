@@ -35,10 +35,11 @@
             <div class='info-body'>
               <img
                 :src="
-                                    iconMap.get(
-                                        bindUser?.applicationProvider,
-                                    ) || getImage('/apply/internal-standalone.png')
-                                "
+                bindUser?.avatar ||
+                    iconMap.get(
+                        bindUser?.applicationProvider,
+                    ) || getImage('/apply/internal-standalone.png')
+                "
               />
               <p>账号：{{ bindUser?.result?.userId || '-' }}</p>
               <p>用户名：{{ bindUser?.result?.name || '-' }}</p>
@@ -62,7 +63,7 @@
               :src="getImage('/bind/Vector.png')"
             />
             <img
-              :src='iconMap.get(bindUser?.applicationProvider)'
+              :src='bindUser?.avatar || iconMap.get(bindUser?.applicationProvider)'
             />
           </div>
           <div class='desc'>

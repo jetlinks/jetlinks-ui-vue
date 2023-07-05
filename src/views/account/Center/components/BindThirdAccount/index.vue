@@ -128,10 +128,13 @@ onMounted(() => {
         }
 
         .content-item-right {
-            button:hover {
-                background-color: @primary-color;
-                color: #fff;
+            :deep(button) {
+                &:hover {
+                    background-color: @primary-color;
+                    color: #fff;
+                }
             }
+            
         }
     }
 }

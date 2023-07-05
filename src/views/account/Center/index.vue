@@ -16,25 +16,12 @@
                     </div>
                     <div class="person-header-item-info-right">
                         <div class="person-header-item-info-right-top">
-                            Hi, {{ user.userInfos?.name }}
+                            <j-ellipsis>
+                                Hi, {{ user.userInfos?.name }}
+                            </j-ellipsis>
                         </div>
                         <div class="person-header-item-info-right-info">
-                            <!-- <div class="tag-box">
-                                <div
-                                    v-for="i in user.userInfos?.orgList || []"
-                                    :key="i?.id"
-                                    class="tag"
-                                    >{{ i?.name }}</div
-                                >
-                            </div> -->
-                            <div class="tag-box">
-                                <div
-                                    v-for="i in user.userInfos?.roleList || []"
-                                    :key="i?.id"
-                                    class="tag"
-                                    ><j-ellipsis>{{ i?.name }}</j-ellipsis></div
-                                >
-                            </div>
+                            <RoleShow :value="user.userInfos?.roleList || []" />
                         </div>
                     </div>
                 </div>
@@ -105,6 +92,7 @@ import {
     USER_CENTER_MENU_CODE,
 } from '@/utils/consts';
 import { usePermissionStore } from '@/store/permission';
+import RoleShow from './components/RoleShow/index.vue';
 
 const imageTypes = reactive([
     'image/jpeg',
@@ -204,6 +192,7 @@ onUnmounted(() => {
             height: 100%;
             .person-header-item-info {
                 display: flex;
+                width: calc(100% - 380px);
                 .person-header-item-info-left {
                     margin-right: 30px;
                 }
@@ -211,25 +200,16 @@ onUnmounted(() => {
                 .person-header-item-info-right {
                     display: flex;
                     flex-direction: column;
+                    width: calc(100% - 126px);
                     .person-header-item-info-right-top {
                         display: flex;
                         font-size: 26px;
                         color: #1d2129;
                         font-weight: 500;
+                        width: 100%;
                     }
                     .person-header-item-info-right-info {
-                        .tag-box {
-                            margin-top: 15px;
-                            display: flex;
-
-                            .tag {
-                                background-color: #F7F8FA;
-                                border-radius: 32px;
-                                margin-right: 8px;
-                                padding: 0 14px;
-                                color: #333333;
-                            }
-                        }
+                        width: 100%;
                     }
                 }
             }

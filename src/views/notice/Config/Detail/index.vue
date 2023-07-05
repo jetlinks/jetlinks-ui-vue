@@ -429,7 +429,12 @@ const formRules = ref({
     'configuration.host': [{ required: true, message: '请输入服务器地址', trigger: 'blur' }],
     'configuration.sender': [
         { required: true, message: '请输入发件人', trigger: 'blur' },
-        { max: 64, message: '最多可输入64个字符' },
+        // { max: 64, message: '最多可输入64个字符' },
+        {
+            pattern:
+                /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
+            message: '请输入正确的邮箱',
+        },
     ],
     'configuration.username': [
         { required: true, message: '请输入用户名', trigger: 'blur' },

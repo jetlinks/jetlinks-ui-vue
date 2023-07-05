@@ -71,7 +71,7 @@ const props = defineProps({
     },
     gridColumn: {
         type: Number,
-        default: 2
+        default: 3
     }
 });
 
