@@ -5,7 +5,7 @@
             :options="PropertySource"
             placeholder="请选择来源"
             @change="onChange"
-            :disabled="false"
+            :disabled="disabled"
         >
         </j-select>
         <j-popconfirm-modal
@@ -75,6 +75,10 @@ const props = defineProps({
         type: Array,
         default: () => [],
     },
+    noEdit: {
+        type: Array,
+        default: () => [],
+    }
 });
 
 const emit = defineEmits<Emit>();
@@ -82,6 +86,12 @@ const emit = defineEmits<Emit>();
 const myValue = ref<SourceType>('');
 const type = ref<string>('');
 const virtualRuleRef = ref<any>(null);
+
+const disabled = computed(() => {
+    console.log(props.value);
+    console.log(props.noEdit);
+    return props.noEdit?.length ? props.noEdit.includes(props.value._sortIndex) :false
+})
 
 const onChange = (keys: SourceType) => {
     myValue.value = keys;

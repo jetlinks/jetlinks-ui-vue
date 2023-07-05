@@ -7,6 +7,9 @@
       <template #valueType="{ data }">
         <span>{{ data.record.valueType?.type }}</span>
       </template>
+      <template #required="{ data }">
+        <span>{{ data.record.expands?.required ? "是": '否' }}</span>
+      </template>
       <template #config="{ data }">
         <OtherConfigInfo :value="data.record.valueType"></OtherConfigInfo>
       </template>
@@ -25,8 +28,8 @@ import {
 import { ConstraintSelect, OtherConfigInfo, ValueObject } from '../index'
 
 const columns = [
-    { title: '参数标识', dataIndex: 'id', type: 'text' },
-    { title: '参数名称', dataIndex: 'name', type: 'text' },
+    { title: '参数标识', dataIndex: 'id', type: 'text', form: { required: true, rules: [{ required: true, message: '请输入标识'}]} },
+    { title: '参数名称', dataIndex: 'name', type: 'text', form: { required: true, rules: [{ required: true, message: '请输入名称'}]} },
     {
       title: '填写约束',
       dataIndex: 'required',

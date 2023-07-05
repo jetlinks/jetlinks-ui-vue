@@ -30,12 +30,14 @@ const myValue = ref()
 
 const change = () => {
   const newData = { ...props.value }
-  set(newData, name, myValue.value)
+  set(newData, props.name, myValue.value)
+  console.log(newData);
   emit('update:value', newData)
 }
 
 watch(() => JSON.stringify(props.data), () => {
-  myValue.value = get(props.data, name)
+  console.log(props.value, props.name);
+  myValue.value = get(props.value, props.name) || false
 }, { immediate: true })
 
 </script>

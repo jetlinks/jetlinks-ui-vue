@@ -32,7 +32,7 @@ const type = {
   report: '上报',
 };
 
-export const useColumns = (type?: MetadataType, target?: 'device' | 'product', dataSource?: Ref<any[]>, noEditor?: any[]) => {
+export const useColumns = (type?: MetadataType, target?: 'device' | 'product', dataSource?: Ref<any[]>, noEdit?: Ref<any>) => {
 
   const BaseColumns: DataTableColumnProps[] = [
     {
@@ -40,6 +40,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', d
       dataIndex: 'id',
       type: 'text',
       form: {
+        required: true,
         rules: [{
           validator(va:any,value: any) {
             const fieldIndex = va.field.split('.')[1]
@@ -55,6 +56,10 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', d
             return Promise.reject('请输入标识')
           }
         }]
+      },
+      doubleClick(record) {
+        const ids = (noEdit?.value?.id || []) as any[]
+        return !ids.includes(record._sortIndex)
       }
     },
     {
@@ -63,6 +68,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', d
       width: 300,
       type: 'text',
       form: {
+        required: true,
         rules: [{
           required: true,
           message: '请输入名称'
@@ -163,6 +169,18 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', d
       components: {
         name: DataType
       },
+      form: {
+        required: true,
+        rules: [{
+          validator(_: any, value: any) {
+            console.log('validator',value)
+            if (!value?.valueType?.type) {
+              return Promise.reject('请选择数据类型')
+            }
+            return Promise.resolve()
+          }
+        }]
+      },
       width: 230
     },
     {
@@ -170,7 +188,10 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', d
       dataIndex: 'expands',
       type: 'components',
       components: {
-        name: Source
+        name: Source,
+        props: {
+          noEdit: noEdit?.value?.source || []
+        }
       },
       doubleClick(){
         return target !== 'device'
@@ -247,7 +268,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', d
   const columns = ref<any[]>([])
 
   watch(() => JSON.stringify(dataSource!.value), () => {
-    console.log(dataSource!.value)
+    console.log(noEdit!.value)
     switch(type) {
       case 'properties':
         columns.value = PropertyColumns

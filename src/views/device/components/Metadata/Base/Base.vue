@@ -232,7 +232,7 @@ const props = defineProps({
 
 const target = inject<'device' | 'product'>('_metadataType', 'product');
 
-const { data: metadata } = useMetadata(target, props.type);
+const { data: metadata, noEdit } = useMetadata(target, props.type);
 const { hasOperate } = useOperateLimits(target);
 
 const metadataStore = useMetadataStore()
@@ -243,7 +243,7 @@ const dataSource = ref<MetadataItem[]>(metadata.value || []);
 const tableRef = ref();
 
 // const columns = computed(() => MetadataMapping.get(props.type!));
-const {columns} = useColumns(props.type, target, dataSource, metadata.value)
+const {columns} = useColumns(props.type, target, dataSource, noEdit)
 
 const detailData = reactive({
   data: {},
@@ -334,7 +334,7 @@ const handleAddClick = async (_data?: any, index?: number) => {
 
   const newObject = _data || getDataByType()
 
-  // tableRef.value?.addItem?.(newObject, index)
+  
 
   const data = [...dataSource.value];
 
@@ -349,6 +349,8 @@ const handleAddClick = async (_data?: any, index?: number) => {
       data.push(newObject);
   }
   dataSource.value = data
+  const _index = index !== undefined ? index + 1 : 0
+  tableRef.value?.addItemAll?.(_index)
 };
 
 const copyItem = (record: any, index: number) => {
