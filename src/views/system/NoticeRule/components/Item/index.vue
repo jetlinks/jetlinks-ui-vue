@@ -480,10 +480,11 @@ const onSave = (_data: any) => {
         .box-item-add {
             cursor: pointer;
             background-color: #f8f9fc;
-            width: 54px;
+            // width: 54px;
             height: 54px;
             display: flex;
             align-items: center;
+            margin-left: 12px;
         }
 
         &.disabled {

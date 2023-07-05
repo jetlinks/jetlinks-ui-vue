@@ -1,6 +1,6 @@
 <template>
     <div class="box">
-        <div class="box-item" v-if="pageIndex > 0">
+        <div class="box-btn" v-if="pageIndex > 0">
             <div class="box-item-action" @click="onLeft">
                 <AIcon type="LeftOutlined" />
             </div>
@@ -11,7 +11,7 @@
         <div class="box-item">
             <slot name="add"></slot>
         </div>
-        <div class="box-item" v-if="(pageIndex + 1) * showLength < data.length">
+        <div class="box-btn" v-if="(pageIndex + 1) * showLength < data.length">
             <div class="box-item-action" @click="onRight">
                 <AIcon type="RightOutlined" />
             </div>
@@ -63,10 +63,14 @@ const onLeft = () => {
 .box {
     display: flex;
     align-items: center;
-    margin: 5px;
+    margin: 5px 0;
     .box-item {
-        margin-left: 10px;
+        margin: 0 6px;
+        max-width: 48px;
+    }
 
+    .box-btn {
+        margin-right: 12px;
         .box-item-action {
             width: 12px;
             background-color: #F7F8FA;

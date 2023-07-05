@@ -153,7 +153,7 @@ onMounted(() => {
     margin-bottom: 10px;
     color: rgba(0, 0, 0, 0.55);
     line-height: 40px;
-    background-color: #f6f6f6;
+    // background-color: #f6f6f6;
 }
 .custom {
     background: #F7F8FA;

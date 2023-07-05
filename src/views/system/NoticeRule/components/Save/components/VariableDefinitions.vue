@@ -1,45 +1,48 @@
 <template>
-    <j-form
-        v-if="variableDefinitions.length"
-        :layout="'vertical'"
-        ref="formRef"
-        :model="modelRef"
-    >
-        <j-form-item
-            :name="`${item?.id}`"
-            :label="item?.name"
-            v-for="item in variableDefinitions"
-            :key="item.id"
-            :rules="[
-                {
-                    required: getType(item) !== 'file' ? true : false,
-                    validator: (_rule, value) => checkValue(_rule, value, item),
-                    trigger: ['change'],
-                },
-            ]"
+    <div style="padding: 50px 200px">
+        <j-form
+            v-if="variableDefinitions.length"
+            :layout="'vertical'"
+            ref="formRef"
+            :model="modelRef"
         >
-            <Tag
-                :notify="notify"
-                v-if="getType(item) === 'tag'"
-                v-model:value="modelRef[item.id]"
-            />
-            <InputFile
-                v-else-if="getType(item) === 'file'"
-                v-model:value="modelRef[item.id]"
-            />
-            <j-input
-                v-else-if="getType(item) === 'link'"
-                v-model:value="modelRef[item.id]"
-            />
-            <BuildIn
-                v-else
-                :item="item"
-                :providerId="props.notify?.providerId"
-                v-model:value="modelRef[item.id]"
-            />
-        </j-form-item>
-    </j-form>
-    <j-empty v-else style="margin: 20px 0" description="当前模版暂无变量" />
+            <j-form-item
+                :name="`${item?.id}`"
+                :label="item?.name"
+                v-for="item in variableDefinitions"
+                :key="item.id"
+                :rules="[
+                    {
+                        required: getType(item) !== 'file' ? true : false,
+                        validator: (_rule, value) =>
+                            checkValue(_rule, value, item),
+                        trigger: ['change'],
+                    },
+                ]"
+            >
+                <Tag
+                    :notify="notify"
+                    v-if="getType(item) === 'tag'"
+                    v-model:value="modelRef[item.id]"
+                />
+                <InputFile
+                    v-else-if="getType(item) === 'file'"
+                    v-model:value="modelRef[item.id]"
+                />
+                <j-input
+                    v-else-if="getType(item) === 'link'"
+                    v-model:value="modelRef[item.id]"
+                />
+                <BuildIn
+                    v-else
+                    :item="item"
+                    :providerId="props.notify?.providerId"
+                    v-model:value="modelRef[item.id]"
+                />
+            </j-form-item>
+        </j-form>
+        <j-empty v-else style="margin: 20px 0" description="当前模版暂无变量" />
+    </div>
 </template>
 
 <script lang="ts" setup>

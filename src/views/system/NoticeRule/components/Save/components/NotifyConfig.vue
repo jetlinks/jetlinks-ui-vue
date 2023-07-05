@@ -1,16 +1,13 @@
 <template>
-    <pro-search
-        :columns="columns"
-        type="simple"
-        target="action-notice-config"
-        @search="handleSearch"
-        class="action-search"
-    />
     <div class="header">
-        <div class="alert">
-            <AIcon type="InfoCircleOutlined" />
-            钉钉群机器人类型的配置在当前页面将被过滤
-        </div>
+        <pro-search
+            :columns="columns"
+            type="simple"
+            target="action-notice-config"
+            @search="handleSearch"
+            class="action-search"
+            style="padding-bottom: 0"
+        />
         <PermissionButton
             @click="onAdd"
             type="primary"
@@ -18,6 +15,10 @@
         >
             新增
         </PermissionButton>
+    </div>
+    <div class="alert">
+        <AIcon type="InfoCircleOutlined" />
+        钉钉群机器人类型的配置在当前页面将被过滤
     </div>
     <div style="height: 400px; overflow-y: auto">
         <JProTable
@@ -30,7 +31,7 @@
             ref="tableRef"
             :alertRender="false"
             :params="params"
-            :gridColumn="2"
+            :gridColumn="3"
             :rowSelection="{
                 selectedRowKeys: _selectedRowKeys,
                 onChange: onSelectChange,
@@ -189,12 +190,16 @@ const handleClick = (dt: any) => {
 };
 
 const onAdd = () => {
-    const tab: any = window.open(`${origin}/#/iot/notice/Config/detail/:id?notifyType=${noticeType.get(props.notifyType)}`);
+    const tab: any = window.open(
+        `${origin}/#/iot/notice/Config/detail/:id?notifyType=${noticeType.get(
+            props.notifyType,
+        )}`,
+    );
     tab.onTabSaveSuccess = (value: any) => {
         _selectedRowKeys.value = [value.id];
         emit('update:value', value.id);
         emit('change', { provider: value?.provider, value: value.id });
-        tableRef.value?.reload()
+        tableRef.value?.reload();
     };
 };
 
@@ -214,11 +219,7 @@ watch(
 );
 </script>
 
-<style lang="less">
-.action-search {
-    padding: 0;
-}
-
+<style lang="less" scoped>
 .notify-logo {
     width: 88px;
     height: 88px;

@@ -1,16 +1,12 @@
 <template>
-    <pro-search
-        :columns="columns"
-        type="simple"
-        target="action-notice-template"
-        @search="handleSearch"
-        class="action-search"
-    />
     <div class="header">
-        <div class="alert">
-            <AIcon type="InfoCircleOutlined" />
-            已规定固定收信人的模板在当前页面将被过滤
-        </div>
+        <pro-search
+            :columns="columns"
+            type="simple"
+            target="action-notice-template"
+            @search="handleSearch"
+            style="padding-bottom: 0"
+        />
         <PermissionButton
             @click="onAdd"
             type="primary"
@@ -18,6 +14,10 @@
         >
             新增
         </PermissionButton>
+    </div>
+    <div class="alert">
+        <AIcon type="InfoCircleOutlined" />
+        已规定固定收信人的模板在当前页面将被过滤
     </div>
     <div style="height: 400px; overflow-y: auto">
         <JProTable
@@ -30,7 +30,7 @@
             ref="tableRef"
             :alertRender="false"
             :params="params"
-            :gridColumn="2"
+            :gridColumn="3"
             :noPagination="true"
             :rowSelection="{
                 selectedRowKeys: _selectedRowKeys,
@@ -201,13 +201,17 @@ const handleData = async (e: any) => {
 };
 
 const onAdd = () => {
-    const tab: any = window.open(`${origin}/#/iot/notice/Template/detail/:id?notifyType=${noticeType.get(props.notifyType)}&notifierId=${props.notifierId}`);
+    const tab: any = window.open(
+        `${origin}/#/iot/notice/Template/detail/:id?notifyType=${noticeType.get(
+            props.notifyType,
+        )}&notifierId=${props.notifierId}`,
+    );
     tab.onTabSaveSuccess = (value: any) => {
         _selectedRowKeys.value = [value.id];
         emit('update:value', value.id);
         emit('change', { templateName: value?.name, value: value?.id });
         emit('update:detail', value);
-        tableRef.value?.reload()
+        tableRef.value?.reload();
     };
 };
 

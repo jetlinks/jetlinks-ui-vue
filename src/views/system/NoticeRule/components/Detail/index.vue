@@ -1,25 +1,35 @@
 <template>
-    <j-modal :width="800" visible title="配置详情" @cancel="emit('close')">
-        <j-descriptions bordered :column="2">
-            <j-descriptions-item label="通知方式">{{
-                data.name
-            }}</j-descriptions-item>
-            <j-descriptions-item label="通知配置">{{
-                obj.notifier
-            }}</j-descriptions-item>
-            <j-descriptions-item label="通知模板">{{
-                obj.template
-            }}</j-descriptions-item>
-            <j-descriptions-item label="模版内容">{{ 
-                obj.content 
-            }}</j-descriptions-item>
-            <j-descriptions-item label="模板变量">
-                <div v-for="item in obj.variables" :key="item?.value">{{ item?.name }} - {{ item?.value }}</div>
-            </j-descriptions-item>
-            <j-descriptions-item label="用户权限">{{
-                obj.role
-            }}</j-descriptions-item>
-        </j-descriptions>
+    <j-modal :width="644" visible title="配置详情" @cancel="emit('close')">
+        <div class="detail">
+            <div class="item">
+                <div class="label">通知方式</div>
+                <div class="value">
+                    <j-ellipsis :lineClamp="2">{{ data.name }}</j-ellipsis>
+                </div>
+            </div>
+            <div class="item">
+                <div class="label">通知配置</div>
+                <div class="value">
+                    <j-ellipsis :lineClamp="2">{{ obj.notifier }}</j-ellipsis>
+                </div>
+            </div>
+            <div class="item">
+                <div class="label">通知模板</div>
+                <div class="value"><j-ellipsis :lineClamp="2">{{ obj.template }}</j-ellipsis></div>
+            </div>
+            <div class="item">
+                <div class="label">模版内容</div>
+                <div class="value"><j-ellipsis :lineClamp="2">{{ obj.content }}</j-ellipsis></div>
+            </div>
+            <div class="item">
+                <div class="label">模板变量</div>
+                <div class="value"><j-ellipsis :lineClamp="2">{{ variables }}</j-ellipsis></div>
+            </div>
+            <div class="item">
+                <div class="label">用户权限</div>
+                <div class="value"><j-ellipsis :lineClamp="2">{{ obj.role }}</j-ellipsis></div>
+            </div>
+        </div>
         <template #footer>
             <j-button type="primary" @click="emit('close')">确定</j-button>
         </template>
@@ -43,7 +53,7 @@ const obj = reactive<{
     notifier: string;
     template: string;
     content: string;
-    variables: any[],
+    variables: any[];
     role: string;
 }>({
     notifier: '',
@@ -93,16 +103,55 @@ const handleSearch = async () => {
     if (props.data?.grant?.role?.idList?.length) {
         const resp: any = await getRoleList_api();
         if (resp.status === 200) {
-            obj.role = props.data?.grant?.role?.idList
-                .map((item: string) => {
-                    return (resp?.result || []).find((i: any) => i?.id === item)?.name
-                })
-                ?.join(';') || '未配置权限'
+            obj.role =
+                props.data?.grant?.role?.idList
+                    .map((item: string) => {
+                        return (resp?.result || []).find(
+                            (i: any) => i?.id === item,
+                        )?.name;
+                    })
+                    ?.join(';') || '未配置权限';
         }
     }
 };
+
+const variables = computed(() => {
+    return obj.variables
+        .map((item) => {
+            return `${item?.name} - ${item?.value}`;
+        })
+        .join(';');
+});
 
 onMounted(() => {
     handleSearch();
 });
 </script>
+
+<style lang="less" scoped>
+.detail {
+    border: 1px solid #ebeef3;
+    border-radius: 2px;
+    .item {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        padding: 14px 16px;
+        border-bottom: 1px solid #ebeef3;
+        gap: 24px;
+        .label {
+            color: #333333;
+            width: 125px;
+        }
+
+        .value {
+            color: #666666;
+            text-align: right;
+        }
+
+        &:last-child{
+            border: none;
+        }
+    }
+}
+</style>
