@@ -77,10 +77,15 @@ const change = (v: string) => {
 };
 
 const confirm = () => {
+  const newObject = value.value.map((item) => {
+    const { config, action, ...extra } = item
+    return extra
+  })
+
   emit('update:value', {
     ...props.value,
     valueType: {
-      properties: value.value,
+      properties: newObject,
       type: props.value.valueType.type,
     }
   })

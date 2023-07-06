@@ -174,7 +174,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', d
         rules: [{
           validator(_: any, value: any) {
             console.log('validator',value)
-            if (!value?.valueType?.type) {
+            if (!value?.type) {
               return Promise.reject('请选择数据类型')
             }
             return Promise.resolve()

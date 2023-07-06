@@ -16,34 +16,18 @@
       <a-descriptions-item label="属性标识">{{ data.id }}</a-descriptions-item>
       <a-descriptions-item label="属性名称">{{ data.name }}</a-descriptions-item>
       <a-descriptions-item label="属性类型">{{ data.valueType.type }}</a-descriptions-item>
-      <a-descriptions-item v-if="['int', 'long', 'float', 'double'].includes(data.valueType.type)" label="单位">{{ data.valueType?.unit }}</a-descriptions-item>
+      <a-descriptions-item v-if="['int', 'long', 'float', 'double'].includes(data.valueType.type)" label="单位">{{ unitLabel }}</a-descriptions-item>
       <a-descriptions-item v-if="['float', 'double'].includes(data.valueType.type)" label="精度">{{ data.valueType?.scale }}</a-descriptions-item>
       <a-descriptions-item v-if="['string', 'password'].includes(data.valueType.type)" label="最大长度">{{ data.valueType?.maxLength }}</a-descriptions-item>
       <a-descriptions-item v-if="data.valueType.type === 'file'" label="文件类型">{{ data.valueType?.fileType }}</a-descriptions-item>
       <a-descriptions-item v-if="data.valueType.type === 'date'" label="格式">{{ data.valueType?.format }}</a-descriptions-item>
       <a-descriptions-item
           v-if="
-          ['enum', 'object', 'boolean'].includes(data.valueType.type) ||
-          (data.valueType.type === 'array' &&  data.valueType.elementType === 'enum')
-          "
+          ['enum', 'object', 'boolean', 'array'].includes(data.valueType.type)"
       >
-        <j-table
-            :columns="dataTypeTable.columns"
-            :dataSource="dataTypeTable.dataSource"
-            :pagination="false"
-            size="small"
-        >
-          <template #bodyCell="{ column, record }">
-            <template v-if="column.dataIndex === 'type'">
-              {{ record.valueType?.type }}
-            </template>
-            <template v-if="column.dataIndex === 'valueType'">
-              <OtherConfigInfo :value="record.valueType" />
-            </template>
-          </template>
-        </j-table>
+        <JsonView :value="dataTypeTable.dataSource"/>
       </a-descriptions-item>
-      <a-descriptions-item label="来源">
+      <a-descriptions-item label="属性来源">
         {{ sourceMap[data.expands.source] }}
       </a-descriptions-item>
       <a-descriptions-item label="读写类型">{{ readTypeText }}</a-descriptions-item>
@@ -70,6 +54,8 @@
 import {OtherConfigInfo} from "@/views/device/components/Metadata/Base/components";
 import {omit} from "lodash-es";
 import {watch} from "vue";
+import JsonView from './JsonView.vue'
+import {getUnit} from "@/api/device/instance";
 
 const props = defineProps({
   data: {
@@ -95,6 +81,8 @@ const readTypeText = computed(() => {
 
   return props.data?.expands?.type?.map?.((key: string) => type[key]).join('、')
 })
+
+const unitLabel = ref('')
 
 const dataTypeTable = reactive<{ columns: any[], dataSource: any }>({
   columns: [],
@@ -135,7 +123,7 @@ const handleDataTable = (type: string) => {
         { title: 'Value', dataIndex: 'value'},
         { title: 'Text', dataIndex: 'text'},
       ]
-      dataTypeTable.dataSource = [{ unit: props.data.valueType?.unit }]
+      dataTypeTable.dataSource = props.data.valueType?.elements
       break;
     case 'object':
       dataTypeTable.columns = [
@@ -143,13 +131,32 @@ const handleDataTable = (type: string) => {
         { title: '名称', dataIndex: 'name'},
         { title: '名称', dataIndex: 'name'},
       ]
-      dataTypeTable.dataSource = [{ unit: props.data.valueType?.unit, scale: props.data.valueType?.scale }]
+      dataTypeTable.dataSource = props.data.valueType?.properties
+          break;
+    case 'boolean':
+      dataTypeTable.dataSource = {
+        ...props.data.valueType
+      }
       break;
   }
 }
 
+
 watch(() => props.data.valueType.type, () => {
+  const type = props.data.valueType.type
   handleDataTable(props.data.valueType.type === 'array' ? props.data.valueType.elementType : props.data.valueType.type)
+
+  if (['float', 'double', 'int', 'long'].includes(type)) {
+    getUnit().then((res) => {
+      if (res.success) {
+        res.result.map((item) => {
+          if (item.id === props.data.valueType?.unit) {
+            unitLabel.value = item.description
+          }
+        })
+      }
+    });
+  }
 }, { immediate: true })
 
 const cancel = () => {

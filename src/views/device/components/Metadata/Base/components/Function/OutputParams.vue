@@ -55,7 +55,7 @@
         <DataTableDate v-else-if="type === 'date'" v-model:value="data.date" @confirm="valueChange"/>
         <DataTableString
             v-else-if="['string', 'password'].includes(type)"
-            v-model:value="data.expands.maxLength"
+            v-model:value="data.maxLength"
             @confirm="valueChange"
         />
     </div>
@@ -119,6 +119,10 @@ watch(
 );
 
 const valueChange = () => {
+  console.log({
+    ...props.value,
+    output: {...data.value, type: type.value},
+  })
   emit('update:value', {
     ...props.value,
     output: {...data.value, type: type.value},

@@ -16,7 +16,8 @@ const useMetadata = (type: 'device' | 'product', key?: MetadataType, ): {
     const data = computed(() => {
         const _metadataStr = type === 'product' ? productStore.current?.metadata : instanceStore.current.metadata
         const _metadata = JSON.parse(_metadataStr || '{}')
-        const newMetadata = (key ? _metadata[key] : []) as MetadataItem[]
+        const newMetadata = (key ? _metadata?.[key] || [] : []) as MetadataItem[]
+        console.log(key, _metadata, newMetadata)
         const indexs = newMetadata.map((item, index) => index)
         noEdit.value.id = indexs
         if (key === 'properties') {

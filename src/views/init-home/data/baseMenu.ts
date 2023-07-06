@@ -1431,7 +1431,7 @@ export default [
                 permissions: [
                   {
                     permission: 'plugin-driver',
-                    actions: ['save'],
+                    actions: ['view'],
                   },
                 ],
               },

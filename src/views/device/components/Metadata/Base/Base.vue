@@ -160,9 +160,9 @@
                 style="padding: 0"
                 danger
                 :pop-confirm="{
-                title: '确认删除？',
+                title: dataSource.length === 1 ? '这是最后一条数据了，确认删除？' : '确认删除？',
                 onConfirm: async () => {
-                    await removeItem(data.index);
+                    await removeItem(data.index, dataSource.length === 1);
                   },
                 }"
                 :tooltip="{
@@ -354,22 +354,29 @@ const handleAddClick = async (_data?: any, index?: number) => {
 };
 
 const copyItem = (record: any, index: number) => {
-  const copyData = omit(record, ['_uuid'])
+  const copyData = omit(record, ['_uuid', '_sortIndex'])
   copyData.id = `copy_${copyData.id}`.slice(0,64)
   handleAddClick(copyData, index)
 }
 
-const removeItem = (index: number) => {
+const removeItem = (index: number, isSave: false) => {
   const data = [...dataSource.value];
   data.splice(index, 1);
   dataSource.value = data
+  if (isSave) {
+    handleSaveClick()
+  }
 }
 
 const handleSaveClick = async () => {
-    const resp = await tableRef.value.getData().finally(() => {
+    let resp = []
+    if (dataSource.value.length) {
+      resp = await tableRef.value.getData().finally(() => {
 
-    });
-    if(resp && resp.length) {
+      });
+    }
+    if(resp) {
+
       const virtual: any[] = [];
       const arr = resp.map((item: any) => {
         if(item.expands?.virtualRule) {
@@ -408,7 +415,8 @@ const handleSaveClick = async () => {
         }
       }
       const _detail: ProductItem | DeviceInstance = target === 'device' ? instanceStore.detail : productStore.current
-      const _data = updateMetadata(props.type!, arr, _detail, updateStore)
+      let _data = updateMetadata(props.type!, arr, _detail, updateStore)
+
       const result = await asyncUpdateMetadata(target, _data)
       if(result.success) {
         dataSource.value = resp

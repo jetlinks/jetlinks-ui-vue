@@ -16,18 +16,6 @@
                 { title: '参数标识', dataIndex: 'id', type: 'text', width: 100 },
                 { title: '参数名称', dataIndex: 'name', type: 'text', width: 100 },
                 {
-                  title: '填写约束',
-                  dataIndex: 'required',
-                  type: 'components',
-                  width: 100,
-                  components: {
-                    name: ConstraintSelect,
-                    props: {
-                      name: ['expands', 'required']
-                    }
-                  }
-                },
-                {
                     title: '数据类型',
                     type: 'components',
                     dataIndex: 'valueType',

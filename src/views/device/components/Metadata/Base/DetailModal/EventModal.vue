@@ -19,22 +19,7 @@
       <a-descriptions-item label="事件级别">{{ EventLevel[data.expands.level] }}</a-descriptions-item>
       <a-descriptions-item label="输出参数"></a-descriptions-item>
       <a-descriptions-item>
-        <j-table
-            :columns="dataTypeTable.columns"
-            :dataSource="dataTypeTable.dataSource"
-            :pagination="false"
-            :scroll="{y: 200}"
-            size="small"
-        >
-          <template #bodyCell="{ column, record }">
-            <template v-if="column.dataIndex === 'type'">
-              {{ record.valueType?.type }}
-            </template>
-            <template v-if="column.dataIndex === 'valueType'">
-              <OtherConfigInfo :value="record.valueType" />
-            </template>
-          </template>
-        </j-table>
+        <JsonView :value="dataTypeTable.dataSource"/>
       </a-descriptions-item>
     </j-descriptions>
     <template #footer>
@@ -44,7 +29,7 @@
 </template>
 
 <script setup lang="ts" name="EventModal">
-import {OtherConfigInfo} from "@/views/device/components/Metadata/Base/components";
+import JsonView from "./JsonView.vue";
 
 const props = defineProps({
   data: {
@@ -59,13 +44,7 @@ const EventLevel = {
   urgent: '紧急'
 }
 
-const dataTypeTable = reactive<{ columns: any[], dataSource: any }>({
-  columns: [
-    { title: '参数标识', dataIndex: 'id', width: 150, ellipsis: true },
-    { title: '参数名称', dataIndex: 'name', width: 150, ellipsis: true },
-    { title: '数据类型', dataIndex: 'type', width: 100 },
-    { title: '其它配置', dataIndex: 'valueType', ellipsis: true },
-  ],
+const dataTypeTable = reactive<{ dataSource: any }>({
   dataSource: props.data?.valueType?.properties || []
 })
 
