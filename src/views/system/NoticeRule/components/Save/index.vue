@@ -233,17 +233,43 @@ const jumpStep = async (val: number) => {
         if (!formModel.channelConfiguration.templateId) {
             onlyMessage('请选择通知模板', 'error');
             return;
+        } else {
+            // 查询变量
+            const resp = await Template.getTemplateDetail(formModel.channelConfiguration.templateId);
+            if (resp.status === 200) {
+                variable.value = resp.result?.variableDefinitions || [];
+            }
         }
     }
     if (val >= 4) {
         if (variable.value.length) {
             if (_variableDefinitions.value.length) {
-                const obj = await variableRef.value.onSave();
-                if (obj) {
-                    handleVariable(obj);
+                if(variableRef.value) {
+                    const obj = await variableRef.value?.onSave();
+                    if (obj) {
+                        handleVariable(obj);
+                    } else {
+                        onlyMessage('请配置模版变量', 'error');
+                        return;
+                    }
                 } else {
-                    onlyMessage('请配置模版变量', 'error');
-                    return;
+                    const flag = _variableDefinitions.value.every((item: any) => {
+                        const _value = formModel.channelConfiguration.variables[item.id];
+                        if(!_value) {
+                            return false
+                        }
+                        if(_value.source === 'fixed') {
+                            return _value.value !== undefined
+                        }
+                        if(_value.source === 'upper') {
+                            return _value.upperKey !== undefined
+                        }
+                        return true
+                    })
+                    if(!flag) {
+                        onlyMessage('请配置模版变量', 'error');
+                        return
+                    }
                 }
             } else {
                 handleVariable({});

@@ -210,6 +210,7 @@ onUnmounted(() => {
                         color: #1d2129;
                         font-weight: 500;
                         width: 100%;
+                        margin-top: 10px;
                     }
                     .person-header-item-info-right-info {
                         width: 100%;
