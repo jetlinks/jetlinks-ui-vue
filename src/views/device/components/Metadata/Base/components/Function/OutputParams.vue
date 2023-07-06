@@ -18,7 +18,7 @@
                 {
                     title: '数据类型',
                     type: 'components',
-                    dataIndex: ['valueType', 'type'],
+                    dataIndex: 'valueTypes',
                     components: {
                       name: DataTableTypeSelect,
                     }
@@ -36,6 +36,7 @@
                 }
             ]"
             @confirm="valueChange"
+            :onAdd="addItem"
         />
         <DataTableEnum v-else-if="type === 'enum'" v-model:value="data" @confirm="valueChange"/>
         <DataTableBoolean v-else-if="type === 'boolean'" v-model:value="data" @confirm="valueChange"/>
@@ -119,6 +120,16 @@ watch(
     },
     { immediate: true, deep: true },
 );
+
+const addItem = () => {
+  return {
+    id: undefined,
+    name: undefined,
+    valueType: {
+      type: undefined
+    }
+  }
+}
 
 const valueChange = () => {
 

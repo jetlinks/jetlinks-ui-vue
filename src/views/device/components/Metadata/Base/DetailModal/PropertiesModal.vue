@@ -138,13 +138,16 @@ const handleDataTable = (type: string) => {
         ...props.data.valueType
       }
       break;
+    case 'array':
+      dataTypeTable.dataSource = props.data.valueType.elementType
+      break;
   }
 }
 
 
 watch(() => props.data.valueType.type, () => {
   const type = props.data.valueType.type
-  handleDataTable(props.data.valueType.type === 'array' ? props.data.valueType.elementType : props.data.valueType.type)
+  handleDataTable(props.data.valueType.type)
 
   if (['float', 'double', 'int', 'long'].includes(type)) {
     getUnit().then((res) => {
