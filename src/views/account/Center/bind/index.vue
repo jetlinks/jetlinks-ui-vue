@@ -25,7 +25,7 @@
                 shape="square"
                 style="margin-bottom: 16px;"
                 :src="
-                bindUser?.avatar ||
+                bindUser.result?.avatar ||
                     iconMap.get(
                         bindUser?.applicationProvider,
                     ) || getImage('/apply/internal-standalone.png')
