@@ -170,10 +170,8 @@ const queryTypeList = async () => {
     if (resp.status === 200) {
         const provider = resp.result.map((i: any) => i.provider) || [];
         const arr = tab.filter((item: any) => {
-            const _arr = [...provider, item.type]
-            return new Set(_arr).size < _arr.length
+            return item.type.some((i: any) => provider.includes(i))
         });
-
         tabs.value = arr;
         if(arr.length > 0) {
             subscribeNotice();
