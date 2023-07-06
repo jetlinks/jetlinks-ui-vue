@@ -137,10 +137,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', d
     {
       title: '配置参数',
       dataIndex: 'properties',
-      type: 'components',
-      components: {
-        name: ConfigParams,
-      }
+      width: 100
     },
     {
       title: '说明',

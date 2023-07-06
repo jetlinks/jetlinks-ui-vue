@@ -1,6 +1,6 @@
 <template>
   <DataTableTypeSelect
-      v-model="myValue"
+      v-model:value="myValue"
       :filter="['object']"
       @change="change"
   />
@@ -26,11 +26,17 @@ const myValue = ref()
 const change = (e: string) => {
   const obj = typeSelectChange(e)
   const _data = {...props.value}
-  _data.valueType = obj
+  myValue.value = e
+  _data.valueType = {
+    type: e,
+    ...obj
+  }
   emit('update:value', _data)
 }
 
 watch(() => props.value, () => {
+  console.log(props.value);
+  
   myValue.value = props.value?.valueType?.type
 }, { immediate: true, deep: true})
 

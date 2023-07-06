@@ -18,6 +18,7 @@
               @click="handleAddClick()"
               :disabled="hasOperate('add', type)"
               :tooltip="{
+                    placement: hasOperate('add', type) ? 'topRight' : 'top',
                     title: hasOperate('add', type)
                         ? '当前的存储方式不支持新增'
                         : '新增',
@@ -36,6 +37,7 @@
                     title: hasOperate('add', type)
                         ? '当前的存储方式不支持新增'
                         : '保存',
+                    placement: hasOperate('add', type) ? 'topRight' : 'top',
                 }"
           >
             保存
@@ -88,7 +90,6 @@
         </template>
         <template #inputs="{ data }">
           <InputParams v-model:value="dataSource[data.index]" />
-          {{ data.record.inputs?.map(item => item.name).join(',') }}
         </template>
         <template #output="{ data }">
           {{ data.record.output?.type }}
@@ -100,7 +101,7 @@
           {{ levelMap?.[data.record.expands?.level] || '-' }}
         </template>
         <template #properties="{ data }">
-          {{ data.record.valueType?.properties?.map(item => item.name).join(',') }}
+          <ConfigParams v-model:value="dataSource[data.index]" />
         </template>
         <template #outInput>
           object
@@ -203,7 +204,7 @@ import { useMetadata, useOperateLimits } from './hooks';
 import { useColumns } from './columns';
 import { levelMap, sourceMap, expandsType, limitsMap } from './utils';
 import Rule from '@/components/Metadata/Rule';
-import { Source, OtherSetting, InputParams } from './components';
+import { Source, OtherSetting, InputParams, ConfigParams } from './components';
 import { saveProductVirtualProperty } from '@/api/device/product';
 import { saveDeviceVirtualProperty } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';

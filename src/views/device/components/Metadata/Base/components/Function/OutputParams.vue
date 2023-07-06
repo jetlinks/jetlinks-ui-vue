@@ -12,13 +12,34 @@
             v-else-if="type === 'object'"
             v-model:value="data.properties"
             :columns="[
-                { title: '参数标识', dataIndex: 'id', type: 'text' },
-                { title: '参数名称', dataIndex: 'name', type: 'text' },
-
+                { 
+                  title: '参数标识',
+                  dataIndex: 'id',
+                  type: 'text',
+                  form: {
+                      required: true,
+                      rules: [{
+                          required: true,
+                          message: '请输入参数标识'
+                      }]
+                  }
+              },
+              { 
+                  title: '参数名称',
+                  dataIndex: 'name',
+                  type: 'text',
+                  form: {
+                      required: true,
+                      rules: [{
+                          required: true,
+                          message: '请输入参数标识名称'
+                      }]
+                  }
+              },
                 {
                     title: '数据类型',
                     type: 'components',
-                    dataIndex: 'valueTypes',
+                    dataIndex: 'valueType',
                     components: {
                       name: Type,
                     }
@@ -26,7 +47,7 @@
                 {
                   title: '其他配置',
                   type: 'components',
-                  dataIndex: 'valueType',
+                  dataIndex: 'config',
                   components: {
                     name: DataTypeObjectChild
                   }
@@ -39,7 +60,14 @@
             ]"
             @confirm="valueChange"
             :onAdd="addItem"
-        />
+        >
+        <template #valueType="{ data }">
+          <span>{{ data.record.valueType?.type }}</span>
+        </template>
+          <template #config="{ data }">
+            <OtherConfigInfo :value="data.record.valueType"></OtherConfigInfo>
+          </template>
+        </DataTableObject>
         <DataTableEnum v-else-if="type === 'enum'" v-model:value="data" @confirm="valueChange"/>
         <DataTableBoolean v-else-if="type === 'boolean'" v-model:value="data" @confirm="valueChange"/>
         <DataTableDouble
@@ -82,6 +110,7 @@ import {
 import DataTypeObjectChild from '../DataTypeObjectChild.vue';
 import { cloneDeep } from 'lodash-es';
 import {typeSelectChange} from "@/views/device/components/Metadata/Base/columns";
+import { OtherConfigInfo } from '../index'
 import Type from './Type.vue'
 
 const props = defineProps({

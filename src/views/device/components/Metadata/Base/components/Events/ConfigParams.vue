@@ -1,17 +1,16 @@
 <template>
-    <div class="metadata-config-params">
-      <div class="metadata-config-value">
-        {{ value?.map((item: any) => item.name).join(',') }}
-      </div>
-        <DataTableObject v-model:value="value" :columns="columns" @confirm="confirm">
+    <DataTableObject v-model:value="value" :columns="columns" @confirm="confirm">
             <template #valueType="{ data }">
                 <span>{{ data.record.valueType?.type }}</span>
             </template>
             <template #config="{ data }">
                 <OtherConfigInfo :value="data.record.valueType"></OtherConfigInfo>
             </template>
+            <j-button>
+      <AIcon type="SettingOutlined" />
+      配置
+    </j-button>
         </DataTableObject>
-    </div>
 </template>
 
 <script setup lang="ts" name="InputParams">
@@ -23,8 +22,30 @@ import {
 import { OtherConfigInfo, ValueObject } from '../index'
 
 const columns = [
-    { title: '参数标识', dataIndex: 'id', type: 'text' },
-    { title: '参数名称', dataIndex: 'name', type: 'text' },
+    { 
+        title: '参数标识',
+        dataIndex: 'id',
+        type: 'text',
+        form: {
+            required: true,
+            rules: [{
+                required: true,
+                message: '请输入参数标识'
+            }]
+        }
+    },
+    { 
+        title: '参数名称',
+        dataIndex: 'name',
+        type: 'text',
+        form: {
+            required: true,
+            rules: [{
+                required: true,
+                message: '请输入参数标识名称'
+            }]
+        }
+    },
     {
         title: '数据类型',
         type: 'components',
