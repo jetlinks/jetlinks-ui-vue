@@ -67,6 +67,7 @@
                 <j-collapse-panel
                     v-for="(item, index) in form.data.integrationModes"
                     :key="item + index"
+                    :forceRender="true"
                 >
                     <template #header>
                         <span>
@@ -1226,11 +1227,7 @@
 
                             <!-- 钉钉 + 微信 -->
                             <j-form-item
-                                v-if="
-                                    form.data.provider === 'wechat-webapp' ||
-                                    form.data.provider === 'dingtalk-ent-app' ||
-                                    'wechat-miniapp'
-                                "
+                                v-if="['wechat-miniapp', 'wechat-webapp', 'dingtalk-ent-app'].includes(form.data?.provider)"
                                 class="resetLabel"
                                 :name="['sso', 'configuration', 'appSecret']"
                                 :rules="[
@@ -1297,14 +1294,17 @@
                                         required: true,
                                         message: '请输入默认密码',
                                     },
+                                    // {
+                                    //     min: 8,
+                                    //     message: '最少输入8个字符',
+                                    // },
+                                    // {
+                                    //     max: 64,
+                                    //     message: '最多可输入64个字符',
+                                    // },
                                     {
-                                        min: 8,
-                                        message: '最少输入8个字符',
-                                    },
-                                    {
-                                        max: 64,
-                                        message: '最多可输入64个字符',
-                                    },
+                                        validator: checkPassword,
+                                    }
                                 ]"
                             >
                                 <j-input
@@ -1408,7 +1408,7 @@
 </template>
 
 <script setup lang="ts">
-import { testIP } from '@/utils/validate';
+import { passwordRegEx, testIP } from '@/utils/validate';
 
 import {
     getDepartmentList_api,
@@ -1590,6 +1590,19 @@ onMounted(async () => {
     }
 });
 
+const checkPassword = (_rule: Rule, value: string) =>  {
+    return new Promise((resolve, reject) => {
+        if (!value) return resolve('');
+        else if (value.length > 64) return reject('最多可输入64个字符');
+        else if (value.length < 8) return reject('密码不能少于8位');
+        else if (!passwordRegEx(value)) {
+            return reject('密码必须包含大小写英文和数字');
+        } else {
+            resolve('')
+        }
+    })
+}
+
 // 接入方式的选项
 const joinOptions = computed(() => {
     return (
@@ -1756,7 +1769,7 @@ function clickSave() {
                     params.integrationModes.includes('apiServer') &&
                     params.integrationModes.length === 2)
             ) {
-                return message.warning('配置单点登录需同时配置API客服端');
+                return message.warning('配置单点登录需同时配置API客户端');
             }
         }
 
