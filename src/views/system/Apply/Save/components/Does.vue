@@ -84,33 +84,27 @@
                 </a>
             </div>
             <h1>1.概述</h1>
-            <div>钉钉企业内部应用适用于通过钉钉登录<span>物联网平台</span></div>
+            <div>配置成功后，用户可以采用钉钉扫码授权的方式登录<span>物联网平台</span></div>
             <div class="image">
                 <j-image width="100%" :src="img4" />
             </div>
-            <h1>2.接入方式说明</h1>
-            <div>1、单点登录</div>
-            <div>通过钉钉账号登录到物联网平台。</div>
         </div>
         <div v-show="props.type === 'wechat-webapp'">
             <div class="url">
                 微信开放平台：
                 <a
-                    href="https://open.weixin.qq.com"
+                    href="https://open.weixin.qq.com/cgi-bin/frame?t=home/web_tmpl&lang=zh_CN"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    https://open.weixin.qq.com
+                    https://open.weixin.qq.com/cgi-bin/frame?t=home/web_tmpl&lang=zh_CN
                 </a>
             </div>
             <h1>1.概述</h1>
-            <div>微信网站应用适用于通过微信授权登录<span>物联网平台</span></div>
+            <div>配置成功后，用户可以采用微信扫码授权的方式登录<span>物联网平台</span></div>
             <div class="image">
                 <j-image width="100%" :src="img3" />
             </div>
-            <h1>2.接入方式说明</h1>
-            <div>1、单点登录</div>
-            <div>通过微信账号登录到物联网平台。</div>
         </div>
         <div v-show="props.type === 'third-party'">
             <h1>1. 概述</h1>
@@ -157,7 +151,21 @@
             <div>通过<span>第三方平台账号</span>登录到物联网平台。</div>
         </div>
         <div v-show="props.type === 'wechat-miniapp'">
-            暂未开发
+            <div class="url">
+                小程序开放平台:
+                <a
+                    href="https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/user-login/code2Session.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/user-login/code2Session.html
+                </a>
+            </div>
+            <h1>1.概述</h1>
+            <div>配置成功后，平台用户可以在微信小程序中授权登录<span>物联网平台</span></div>
+            <div class="image">
+                <j-image width="100%" :src="img3" />
+            </div>
         </div>
     </div>
 </template>
@@ -180,6 +188,7 @@ const img5 = getImage('/apply/5.png');
 .does-container {
     padding: 24px;
     overflow-y: auto;
+    height: 100%;
     color: rgba(#000, 0.8);
     font-size: 14px;
     background-color: #fafafa;
@@ -188,6 +197,7 @@ const img5 = getImage('/apply/5.png');
         padding: 8px 16px;
         color: #2f54eb;
         background-color: rgba(#a7bdf7, 0.2);
+        word-wrap: break-word;
     }
 
     h1 {

@@ -16,7 +16,7 @@
                 </template>
                 <j-spin :spinning="loading">
                     <div class="content">
-                        <j-scrollbar class="list" max-height="400" v-if="total">
+                        <j-scrollbar class="list" :max-height="450" v-if="total">
                             <template v-for="i in list" :key="i.id">
                                 <NoticeItem
                                     :data="i"
@@ -179,7 +179,7 @@ const onMore = (key: string) => {
 
     .content {
         .list {
-            max-height: 400px;
+            max-height: 450px;
             overflow: auto;
             padding: 0;
             margin: 0;
