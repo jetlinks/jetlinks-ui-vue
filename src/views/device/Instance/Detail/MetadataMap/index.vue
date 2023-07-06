@@ -212,17 +212,19 @@ const getMetadataMapData = () => {
 const customRow = (record: any) => {
     return {
         id: record.id,
-        class: _value.value === record.name ? 'metadata-search-row' : '',
+        class: _value.value === record?.name ? 'metadata-search-row' : '',
     };
 };
 
 const search = (value: string) => {
     if (value) {
         const _item: any = dataSourceCache.value.find((item: any) => {
-            return value === item.name;
+            return value === item?.name;
         });
-        _value.value = _item.name;
-        document.getElementById(_item?.id)?.scrollIntoView(); // 滚动到可视区域
+       if(_item) {
+            _value.value = _item?.name;
+            document.getElementById(_item?.id)?.scrollIntoView(); // 滚动到可视区域
+       }
     } else {
         _value.value = undefined;
     }
@@ -239,7 +241,7 @@ const getDefaultMetadata = async () => {
 
     targetOptions.value = _properties.map((item) => ({
         ...item,
-        label: item.name,
+        label: item?.name,
         value: item.id,
     }));
 
@@ -260,7 +262,7 @@ const getDefaultMetadata = async () => {
             return {
                 index: index + 1,
                 id: item.id, // 产品物模型id
-                name: item.name,
+                name: item?.name,
                 type: item.valueType?.type,
                 original: _m?.originalId, // 协议包物模型id
             };

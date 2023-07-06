@@ -231,7 +231,7 @@ watch(
 );
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .action-search {
     padding: 0;
 }
