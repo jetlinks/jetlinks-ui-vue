@@ -87,6 +87,7 @@
             {{ sourceMap?.[data.record?.expands?.source] || '' }}
         </template>
         <template #inputs="{ data }">
+          <InputParams v-model:value="dataSource[data.index]" />
           {{ data.record.inputs?.map(item => item.name).join(',') }}
         </template>
         <template #output="{ data }">
@@ -202,7 +203,7 @@ import { useMetadata, useOperateLimits } from './hooks';
 import { useColumns } from './columns';
 import { levelMap, sourceMap, expandsType, limitsMap } from './utils';
 import Rule from '@/components/Metadata/Rule';
-import { Source, OtherSetting } from './components';
+import { Source, OtherSetting, InputParams } from './components';
 import { saveProductVirtualProperty } from '@/api/device/product';
 import { saveDeviceVirtualProperty } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';

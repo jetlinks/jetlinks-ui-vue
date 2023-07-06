@@ -1,22 +1,19 @@
 <template>
-  <div class="input-params">
-    <div class="input-params-text">
-      {{ dataSource?.map((item) => item.name).join(',') }}
-    </div>
-    <DataTableObject v-model:value="dataSource" :columns="columns" :onAdd="addItem" width="700px" @confirm="confirm">
-      <template #valueType="{ data }">
-        <span>{{ data.record.valueType?.type }}</span>
-      </template>
-      <template #required="{ data }">
-        <span>{{ data.record.expands?.required ? "是": '否' }}</span>
-      </template>
-      <template #config="{ data }">
-        <OtherConfigInfo :value="data.record.valueType"></OtherConfigInfo>
-      </template>
-    </DataTableObject>
-  </div>
-
-
+  <DataTableObject v-model:value="dataSource" :columns="columns" :onAdd="addItem" width="700px" @confirm="confirm">
+    <template #valueType="{ data }">
+      <span>{{ data.record.valueType?.type }}</span>
+    </template>
+    <template #required="{ data }">
+      <span>{{ data.record.expands?.required ? "是": '否' }}</span>
+    </template>
+    <template #config="{ data }">
+      <OtherConfigInfo :value="data.record.valueType"></OtherConfigInfo>
+    </template>
+    <j-button>
+      <AIcon type="SettingOutlined" />
+      配置
+    </j-button>
+  </DataTableObject>
 </template>
 
 <script setup lang="ts" name="InputParams">

@@ -172,10 +172,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', d
     {
       title: '输入参数',
       dataIndex: 'inputs',
-      type: 'components',
-      components: {
-        name: InputParams,
-      }
+      width: 120
     },
     {
       title: '输出参数',

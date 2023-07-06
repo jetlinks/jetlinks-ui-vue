@@ -3,7 +3,7 @@
         <div class="values-test">
             {{ text }}
         </div>
-        <!-- <OtherConfigInfo :value="formData"></OtherConfigInfo> -->
+            <OtherConfigInfo :value="formData"></OtherConfigInfo>
             <DataTableEnum v-if="formData.type === 'enum'" v-model:value="formData" />
             <DataTableBoolean v-else-if="formData.type === 'boolean'" v-model:value="formData" />
             <DataTableDouble

@@ -20,7 +20,7 @@
                     type: 'components',
                     dataIndex: 'valueTypes',
                     components: {
-                      name: DataTableTypeSelect,
+                      name: Type,
                     }
                 },
                 {
@@ -32,7 +32,9 @@
                   }
                 },
                 {
-                  title: '操作'
+                  title: '操作',
+                  dataIndex: 'action',
+                  width: 60
                 }
             ]"
             @confirm="valueChange"
@@ -65,7 +67,7 @@
 <script setup lang="ts" name="OutPutParams">
 import { getUnit } from '@/api/device/instance';
 import {
-    DataTableTypeSelect,
+  DataTableTypeSelect,
     DataTableArray,
     DataTableString,
     DataTableInteger,
@@ -80,6 +82,7 @@ import {
 import DataTypeObjectChild from '../DataTypeObjectChild.vue';
 import { cloneDeep } from 'lodash-es';
 import {typeSelectChange} from "@/views/device/components/Metadata/Base/columns";
+import Type from './Type.vue'
 
 const props = defineProps({
     value: {
