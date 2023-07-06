@@ -1,50 +1,34 @@
 <template>
     <div class="list-items">
-        <div class="list-box">
-            <div
-                class="list-item"
-                @click="onMove"
-                :style="{
-                    transform: `translate(${num}px, 0)`,
-                }"
-            >
-                <div class="list-item-left">
-                    <div class="header">
-                        <div class="title">
-                            <span>{{ props.data?.topicName }}</span>
-                            <span style="margin-left: 5px">
-                                {{
-                                    dayjs(props.data?.notifyTime).format(
-                                        'YYYY-MM-DD HH:mm:ss',
-                                    )
-                                }}
-                            </span>
-                        </div>
-                        <div :class="[state === 'unread' ? 'unread' : 'read']">
-                            {{ state === 'unread' ? '未读' : '已读' }}
-                        </div>
+        <div
+            class="list-item"
+            @click="onMove"
+            :style="{
+                transform: `translate(${num}px, 0)`,
+            }"
+        >
+            <div class="list-item-left">
+                <div class="header">
+                    <div class="title">
+                        <div>{{ props.data?.topicName }}</div>
+                        <span :style="{color: state === 'unread' ? 'red' : '#AAAAAA'}">{{ state === 'unread' ? '未读' : '已读' }}</span>
                     </div>
-                    <div class="message">
-                        <j-ellipsis :lineClamp="2">{{ props.data?.message }}</j-ellipsis>
+                    <div class="time">
+                        {{
+                            dayjs(props.data?.notifyTime).format(
+                                'YYYY-MM-DD HH:mm:ss',
+                            )
+                        }}
                     </div>
                 </div>
-                <div class="list-item-right">
-                    <j-button
-                        size="small"
-                        @click.stop="detail"
-                        style="margin-bottom: 5px"
-                        >查看详情</j-button
-                    >
-                    <j-button
-                        size="small"
-                        v-if="state === 'unread'"
-                        @click.stop="read('_read')"
-                        >标为已读</j-button
-                    >
-                    <j-button size="small" v-else @click.stop="read('_unread')"
-                        >标为未读</j-button
-                    >
-                </div>
+                <j-ellipsis :lineClamp="2">
+                    {{ props.data?.message }}
+                </j-ellipsis>
+            </div>
+            <div class="list-item-right">
+                <j-button style="margin-bottom: 5px;" class="btn" @click.stop="detail">查看详情</j-button>
+                <j-button class="btn" v-if="state === 'unread'" @click.stop="read('_read')">标为已读</j-button>
+                <j-button class="btn" v-else @click.stop="read('_unread')">标为未读</j-button>
             </div>
         </div>
     </div>
@@ -73,11 +57,11 @@ const props = defineProps({
 
 const num = ref<-100 | 0>(0);
 
-const state = ref(props.data.state?.value);
+const state = ref(props.data.state?.value)
 
 watchEffect(() => {
-    state.value = props.data.state?.value;
-});
+    state.value = props.data.state?.value
+})
 
 const onMove = () => {
     num.value = num.value === 0 ? -100 : 0;
@@ -100,15 +84,15 @@ const detail = () => {
 const read = (type: '_read' | '_unread') => {
     changeStatus_api(type, [props.data.id]).then((resp: any) => {
         if (resp.status === 200) {
-            if (type === '_read') {
+            if(type === '_read') {
                 userInfo.alarmUpdateCount -= 1;
             } else {
                 userInfo.alarmUpdateCount += 1;
             }
             num.value = 0;
-            state.value = type === '_read' ? 'read' : 'unread';
+            state.value = type === '_read' ? 'read' : 'unread'
             onlyMessage('操作成功！');
-            emits('refresh');
+            emits('refresh')
         }
     });
 };
@@ -116,72 +100,67 @@ const read = (type: '_read' | '_unread') => {
 
 <style lang="less" scoped>
 .list-items {
-    width: 100%;
-    border-bottom: 1px solid #f0f0f0;
-    padding: 0 16px;
-
-    &:hover {
-        background-color: #f9faff;
-    }
-}
-
-.list-box {
+    width: 312px;
     overflow: hidden;
-    width: 100%;
+    border-bottom: 1px solid #f0f0f0;
+    margin: 0 24px;
+    box-sizing: content-box;
+
+    // &:hover {
+    //     background-color: #F9FAFF;
+    // }
 }
 .list-item {
     list-style: none;
     cursor: pointer;
     display: flex;
-    width: calc(100% + 124px);
+    width: 412px;
     transition: all 0.3s;
+    gap: 24px;
 
     .list-item-left {
         padding: 12px 0;
-        margin-right: 16px;
-        width: calc(100% - 124px);
+        width: 312px;
+        // height: 100px;
         .header {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            // margin-bottom: 10px;
+
             .title {
                 display: flex;
                 align-items: center;
-                color: #333333;
+                div {
+                    color: rgba(0, 0, 0, 0.85);
+                    font-size: 14px;
+                    font-weight: bold;
+                    margin-right: 10px;
+                }
+                span {
+                    color: red;
+                    font-size: 13px;
+                }
             }
-
-            .unread {
-                color: #666666;
-                width: 40px;
-                height: 22px;
-                text-align: center;
+            .time {
                 font-size: 12px;
-                background-color: #f2f3f5;
-                line-height: 22px;
+                color: rgba(0, 0, 0, 0.45);
             }
-
-            .read {
-                color: @primary-color;
-                width: 40px;
-                height: 22px;
-                text-align: center;
-                line-height: 22px;
-                font-size: 12px;
-                background-color: #f1f4ff;
-            }
-        }
-
-        .message {
-            color: #666666;
         }
     }
 
     .list-item-right {
-        width: 84px;
-        padding: 5px 0;
+        width: 100px;
+        padding: 5px 12px 5px 0;
         display: flex;
         flex-direction: column;
         justify-content: center;
+
+        .btn {
+            border: none;
+            background-color: #F1F4FF;
+            color: @primary-color;
+        }
     }
 }
 </style>
