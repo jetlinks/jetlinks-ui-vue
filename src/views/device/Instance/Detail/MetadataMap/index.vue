@@ -1,12 +1,12 @@
 <template>
     <div class="metadata-map">
         <div class="left">
-            <j-input-search
-                style="width: 350px; margin-bottom: 24px"
-                placeholder="搜索平台属性名称"
-                allowClear
-                @search="search"
-            />
+            <j-space style="margin-bottom: 24px">
+                <j-select @change="onSearchChange" show-search allow-clear placeholder="请选择属性名称" style="width: 250px;">
+                    <j-select-option :label="item.name" v-for="item in dataSourceCache" :value="item?.id" :key="item?.id">{{item?.name}}</j-select-option>
+                </j-select>
+                <j-button type="primary" @click="onSearch"><AIcon type="SearchOutlined" /></j-button>
+            </j-space>
             <div class="box">
                 <j-scrollbar height="100%">
                     <j-table
@@ -150,6 +150,7 @@ const filterValue = ref<boolean | undefined>(undefined);
 const originalData = ref([]);
 
 const _value = ref<any>(undefined);
+const searchValue = ref<any>(undefined);
 
 const columns = [
     {
@@ -216,10 +217,14 @@ const customRow = (record: any) => {
     };
 };
 
-const search = (value: string) => {
-    if (value) {
+const onSearchChange = (_: any, options: any) => {
+    searchValue.value = options?.label
+}
+
+const onSearch = () => {
+    if (searchValue.value) {
         const _item: any = dataSourceCache.value.find((item: any) => {
-            return value === item?.name;
+            return searchValue.value === item?.name;
         });
        if(_item) {
             _value.value = _item?.name;
