@@ -32,6 +32,47 @@ const type = {
   report: '上报',
 };
 
+export const typeSelectChange = (type: string) => {
+  let obj: any = {}
+  switch (type) {
+    case 'array':
+      obj.elementType = {}
+      break;
+    case 'object':
+      obj.properties = []
+      break;
+    case 'enum':
+      obj.elements = []
+      break;
+    case 'float':
+    case 'double':
+      obj.scale = 2
+      obj.unit = undefined
+      break;
+    case 'int':
+    case 'long':
+      obj.unit = undefined
+      break;
+    case 'file':
+      obj.fileType = undefined
+      break;
+    case 'date':
+      obj.format = undefined
+      break;
+    case 'string':
+    case 'password':
+      obj.maxLength = undefined
+      break;
+    case 'boolean':
+      obj.trueText = '是'
+      obj.trueValue = 'true'
+      obj.falseText = '否'
+      obj.falseValue = 'false'
+      break;
+  }
+  return obj
+}
+
 export const useColumns = (type?: MetadataType, target?: 'device' | 'product', dataSource?: Ref<any[]>, noEdit?: Ref<any>) => {
 
   const BaseColumns: DataTableColumnProps[] = [

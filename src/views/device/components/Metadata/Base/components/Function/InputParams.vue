@@ -3,7 +3,7 @@
     <div class="input-params-text">
       {{ value?.map((item) => item.name).join(',') }}
     </div>
-    <DataTableObject v-model:value="value" :columns="columns">
+    <DataTableObject v-model:value="value" :columns="columns" :addItem="addItem" c>
       <template #valueType="{ data }">
         <span>{{ data.record.valueType?.type }}</span>
       </template>
@@ -26,6 +26,19 @@ import {
     DataTableObject,
 } from 'jetlinks-ui-components';
 import { ConstraintSelect, OtherConfigInfo, ValueObject } from '../index'
+
+const addItem = () => {
+  return {
+    id: undefined,
+    name: undefined,
+    valueType: {
+
+    },
+    expands: {
+      required: false
+    }
+  }
+}
 
 const columns = [
     { title: '参数标识', dataIndex: 'id', type: 'text', form: { required: true, rules: [{ required: true, message: '请输入标识'}]} },

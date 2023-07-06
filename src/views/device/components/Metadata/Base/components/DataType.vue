@@ -88,6 +88,7 @@ import {
 } from 'jetlinks-ui-components';
 import DataTypeObjectChild from './DataTypeObjectChild.vue';
 import { cloneDeep } from 'lodash-es';
+import { typeSelectChange } from '../columns'
 
 const props = defineProps({
     value: {
@@ -105,42 +106,7 @@ const _valueType = ref(cloneDeep(props.value.valueType));
 
 const typeChange = (e: string) => {
 
-    let obj: any = {}
-    switch (e) {
-      case 'array':
-        obj.elementType = {}
-        break;
-      case 'object':
-        obj.properties = []
-        break;
-      case 'enum':
-        obj.elements = []
-        break;
-      case 'float':
-      case 'double':
-        obj.scale = 2
-        obj.unit = undefined
-      case 'int':
-      case 'long':
-        obj.unit = undefined
-        break;
-      case 'file':
-        obj.fileType = undefined
-        break;
-      case 'date':
-        obj.format = undefined
-        break;
-      case 'string':
-      case 'password':
-        obj.maxLength = undefined
-        break;
-      case 'boolean':
-        obj.trueText = '是'
-        obj.trueValue = 'true'
-        obj.falseText = '否'
-        obj.falseValue = 'false'
-        break;
-    }
+    let obj: any = typeSelectChange(e)
     _valueType.value = obj
     emit('update:value', {
         ...props.value,
