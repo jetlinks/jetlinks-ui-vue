@@ -169,6 +169,10 @@ watchEffect(() => {
     }
 });
 
+onMounted(() => {
+    user.getUserInfo();
+})
+
 onUnmounted(() => {
     user.tabKey = 'HomeView'
     user.other.tabKey = ''

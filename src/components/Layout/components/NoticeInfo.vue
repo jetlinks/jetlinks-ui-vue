@@ -4,8 +4,9 @@
             v-model:activeKey="activeKey"
             :destroyInactiveTabPane="true"
             @change="onChange"
+            v-if="tabs.length"
         >
-            <j-tab-pane v-for="item in tab" :key="item.key">
+            <j-tab-pane v-for="item in tabs" :key="item.key">
                 <template #tab>
                     <NoticeTab
                         :refresh="refreshObj[item.key]"
@@ -23,18 +24,32 @@
                                     @refresh="onRefresh(item.key)"
                                 />
                             </template>
-                            <div v-if="list.length < 12" style="color: #666666; text-align: center; padding: 8px;">这是最后一条数据了</div>
+                            <div
+                                v-if="list.length < 12"
+                                style="
+                                    color: #666666;
+                                    text-align: center;
+                                    padding: 8px;
+                                "
+                            >
+                                这是最后一条数据了
+                            </div>
                         </j-scrollbar>
                         <div class="no-data" v-else>
                             <j-empty />
                         </div>
                         <div class="btns">
-                            <j-button type="link" @click="onMore(item.key)">查看更多</j-button>
+                            <j-button type="link" @click="onMore(item.key)"
+                                >查看更多</j-button
+                            >
                         </div>
                     </div>
                 </j-spin>
             </j-tab-pane>
         </j-tabs>
+        <div class="no-data" v-else>
+            <j-empty />
+        </div>
     </div>
 </template>
 
@@ -50,30 +65,6 @@ const emits = defineEmits(['action']);
 
 type DataType = 'alarm' | 'system-monitor' | 'system-business';
 
-const tab = [
-    {
-        key: 'alarm',
-        tab: '告警',
-        type: [
-            'alarm-product',
-            'alarm-device',
-            'alarm-other',
-            'alarm-org',
-            'alarm',
-        ],
-    },
-    {
-        key: 'system-monitor',
-        tab: '系统监控',
-        type: ['system-event'],
-    },
-    {
-        key: 'system-business',
-        tab: '业务监控',
-        type: ['device-transparent-codec'],
-    },
-];
-
 const refreshObj = ref({
     alarm: true,
     'system-monitor': true,
@@ -88,6 +79,13 @@ const menuStory = useMenuStore();
 const route = useRoute();
 
 const userInfo = useUserInfo();
+
+const props = defineProps({
+    tabs: {
+        type: Array,
+        default: () => []
+    }
+})
 
 const getData = (type: string[]) => {
     loading.value = true;
@@ -121,11 +119,11 @@ const getData = (type: string[]) => {
 };
 
 const onChange = (_key: string) => {
-    const type = tab.find((item) => item.key === _key)?.type || [];
+    const type = props.tabs.find((item: any) => item.key === _key)?.type || [];
     getData(type);
 };
 
-onMounted(() => {
+onMounted(async () => {
     onChange('alarm');
 });
 

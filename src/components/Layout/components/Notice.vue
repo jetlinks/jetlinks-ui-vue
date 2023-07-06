@@ -11,7 +11,7 @@
             </j-badge>
             <template #overlay>
                 <div>
-                    <NoticeInfo @action="handleRead" />
+                    <NoticeInfo :tabs="tabs" @action="handleRead" />
                 </div>
             </template>
         </j-dropdown>
@@ -27,6 +27,7 @@ import { changeStatus_api } from '@/api/account/notificationRecord';
 import { useUserInfo } from '@/store/userInfo';
 
 import { useMenuStore } from '@/store/menu';
+import { getAllNotice } from '@/api/account/center';
 
 const updateCount = computed(() => useUserInfo().alarmUpdateCount);
 const menuStory = useMenuStore();
@@ -100,6 +101,7 @@ const read = (type: string, data: any) => {
 
 // 查询未读数量
 const getList = () => {
+    if(tabs.value.length <= 0) return;
     loading.value = true; 
     const params = {
         sorts: [{
@@ -137,9 +139,51 @@ const handleRead = () => {
 
 watch(updateCount, () => getList());
 
+const tab = [
+    {
+        key: 'alarm',
+        tab: '告警',
+        type: [
+            'alarm-product',
+            'alarm-device',
+            'alarm-other',
+            'alarm-org',
+            'alarm',
+        ],
+    },
+    {
+        key: 'system-monitor',
+        tab: '系统监控',
+        type: ['system-event'],
+    },
+    {
+        key: 'system-business',
+        tab: '业务监控',
+        type: ['device-transparent-codec'],
+    },
+];
+
+const tabs = ref<any>([]);
+
+const queryTypeList = async () => {
+    const resp: any = await getAllNotice();
+    if (resp.status === 200) {
+        const provider = resp.result.map((i: any) => i.provider) || [];
+        const arr = tab.filter((item: any) => {
+            const _arr = [...provider, item.type]
+            return new Set(_arr).size < _arr.length
+        });
+
+        tabs.value = arr;
+        if(arr.length > 0) {
+            subscribeNotice();
+            getList();
+        }
+    }
+};
+
 onMounted(() => {
-    subscribeNotice();
-    getList();
+    queryTypeList()
 })
 </script>
 
