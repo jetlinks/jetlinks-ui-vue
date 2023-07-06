@@ -3,7 +3,7 @@
     <div class="input-params-text">
       {{ value?.map((item) => item.name).join(',') }}
     </div>
-    <DataTableObject v-model:value="value" :columns="columns" :addItem="addItem" c>
+    <DataTableObject v-model:value="value" :columns="columns" :addItem="addItem" :width="700">
       <template #valueType="{ data }">
         <span>{{ data.record.valueType?.type }}</span>
       </template>
