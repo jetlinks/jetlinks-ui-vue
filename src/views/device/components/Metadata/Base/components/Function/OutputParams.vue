@@ -78,6 +78,7 @@ import {
 
 import DataTypeObjectChild from '../DataTypeObjectChild.vue';
 import { cloneDeep } from 'lodash-es';
+import {typeSelectChange} from "@/views/device/components/Metadata/Base/columns";
 
 const props = defineProps({
     value: {
@@ -92,7 +93,8 @@ const emit = defineEmits(['update:value']);
 const type = ref(props.value?.output?.type);
 const data = ref(cloneDeep(props.value?.output));
 
-const typeChange = () => {
+const typeChange = (e: string) => {
+    data.value = typeSelectChange(e)
     emit('update:value', {
         ...props.value,
         output: { ...data.value, type: type.value }
@@ -119,10 +121,7 @@ watch(
 );
 
 const valueChange = () => {
-  console.log({
-    ...props.value,
-    output: {...data.value, type: type.value},
-  })
+
   emit('update:value', {
     ...props.value,
     output: {...data.value, type: type.value},

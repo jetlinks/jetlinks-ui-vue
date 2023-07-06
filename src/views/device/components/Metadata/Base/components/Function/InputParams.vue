@@ -3,7 +3,7 @@
     <div class="input-params-text">
       {{ value?.map((item) => item.name).join(',') }}
     </div>
-    <DataTableObject v-model:value="value" :columns="columns" :addItem="addItem" :width="700">
+    <DataTableObject v-model:value="value" :columns="columns" :addItem="addItem" width="700px" @confirm="confirm">
       <template #valueType="{ data }">
         <span>{{ data.record.valueType?.type }}</span>
       </template>
@@ -74,7 +74,7 @@ const columns = [
     {
         title: '操作',
         dataIndex: 'action',
-        width: 80
+        width: 60
     },
 ];
 
@@ -114,13 +114,13 @@ watch(
     { immediate: true },
 );
 
-watch(() => value.value, () => {
-    console.log(value.value);
-    emit('update:value', {
-        ...props.value,
-        inputs: value.value
-    })
-})
+const confirm = (v: any) => {
+  console.log(v)
+  emit('update:value', {
+    ...props.value,
+    inputs: value.value
+  })
+}
 </script>
 
 <style scoped lang="less">
