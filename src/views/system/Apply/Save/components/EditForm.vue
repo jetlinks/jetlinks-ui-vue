@@ -43,23 +43,26 @@
                     :disabled="!!routeQuery.id || !!routeQuery?.provider"
                 />
             </j-form-item>
-            <j-form-item
-                label="接入方式"
-                name="integrationModes"
-                :rules="[
-                    {
-                        required: true,
-                        message: '请选择接入方式',
-                    },
-                ]"
-            >
-                <j-check-button
-                    v-model:value="form.data.integrationModes"
-                    :options="joinOptions"
-                    :multiple="true"
-                />
-            </j-form-item>
-
+            <j-row>
+                <j-col :span="joinOptions.length >= 3 ? 24 : 6 * joinOptions.length">
+                    <j-form-item
+                        label="接入方式"
+                        name="integrationModes"
+                        :rules="[
+                            {
+                                required: true,
+                                message: '请选择接入方式',
+                            },
+                        ]"
+                    >
+                            <j-check-button
+                                v-model:value="form.data.integrationModes"
+                                :options="joinOptions"
+                                :multiple="true"
+                            />
+                    </j-form-item>
+                </j-col>
+            </j-row>
             <j-collapse style="margin-bottom: 20px;">
                 <j-collapse-panel
                     v-for="(item, index) in form.data.integrationModes"
@@ -1581,9 +1584,6 @@ onMounted(async () => {
     }
     if(routeQuery.provider){
         form.data.provider = routeQuery?.provider as applyType;
-        if(routeQuery.photoUrl) {
-            form.data.logoUrl = routeQuery?.photoUrl as string;
-        } 
         typeOptions.value = typeOptions.value.filter((i: any) => {
             return i.value === routeQuery.provider;
         });

@@ -69,7 +69,6 @@
         <EditPassword
             v-if="editPasswordVisible"
             @close="editPasswordVisible = false"
-            @save="onPasswordSave"
         />
     </div>
 </template>
@@ -148,9 +147,9 @@ const onSave = () => {
     editInfoVisible.value = false;
 };
 
-const onPasswordSave = () => {
-    editPasswordVisible.value = false;
-};
+// const onPasswordSave = () => {
+//     editPasswordVisible.value = false;
+// };
 
 const onAvatarChange = (url: string) => {
     updateMeInfo_api({

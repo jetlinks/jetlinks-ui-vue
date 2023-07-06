@@ -1,7 +1,7 @@
 <template>
     <j-modal visible @cancel="emit('close')" :closable="false">
         <div style="padding: 30px;">
-            <div style="display: flex; margin-bottom: 32px">
+            <div style="display: flex; padding-bottom: 24px; margin-bottom: 24px; border-bottom: 1px solid #E4E7F6">
                 <j-avatar :size="100" :src="userInfos.avatar"></j-avatar>
                 <div style="margin-left: 24px;">
                     <div class="name">{{ userInfos.name }}</div>

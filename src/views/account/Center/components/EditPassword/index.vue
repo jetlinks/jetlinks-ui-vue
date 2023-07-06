@@ -17,7 +17,11 @@
                     progress-dot
                     @change="onChange"
                 >
-                    <j-step :title="item" v-for="(item, index) in list" :key="item">
+                    <j-step
+                        :title="item"
+                        v-for="(item, index) in list"
+                        :key="item"
+                    >
                         <template #description>
                             <span v-if="current === index">进行中</span>
                             <span v-if="current < index">未开始</span>
@@ -96,6 +100,8 @@ import {
     validateField_api,
 } from '@/api/account/center';
 import { onlyMessage } from '@/utils/comm';
+import { Modal } from 'jetlinks-ui-components';
+import { LoginPath } from '@/router/menu';
 
 type formType = {
     oldPassword: string;
@@ -103,9 +109,10 @@ type formType = {
     confirmPassword: string;
 };
 
-const emits = defineEmits(['save', 'close']);
+const emits = defineEmits(['close']);
+const router = useRouter();
 
-const list = ['验证密码',  '设置密码', '二次确认']
+const list = ['验证密码', '设置密码', '二次确认'];
 
 const loading = ref(false);
 const formRef = ref<any>();
@@ -191,7 +198,15 @@ const handleOk = () => {
             .then((resp) => {
                 if (resp.status === 200) {
                     onlyMessage('保存成功', 'success');
-                    emits('save');
+                    emits('close')
+                    Modal.warning({
+                        content: '密码已重置，请重新登录',
+                        okText: '确定',
+                        onOk() {
+                            localStorage.clear();
+                            router.push(LoginPath);
+                        },
+                    });
                 }
             })
             .finally(() => (loading.value = false));

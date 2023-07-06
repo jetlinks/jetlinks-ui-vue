@@ -6,7 +6,7 @@
         @cancel="emit('close')"
         @ok="onSave"
     >
-        <ApplyList v-model:photoUrl="photoUrl" :options="typeOptions" v-model:value="type" />
+        <ApplyList type="add" :options="typeOptions" v-model:value="type" />
     </j-modal>
 </template>
 
@@ -21,12 +21,11 @@ const emit = defineEmits(['close']);
 const menuStory = useMenuStore();
 
 const type = ref('');
-const photoUrl = ref('');
 const typeOptions = ref<any[]>([]);
 
 const onSave = () => {
     if(type.value){
-        menuStory.jumpPage('system/Apply/Save', {}, { provider: type.value, photoUrl: photoUrl.value });
+        menuStory.jumpPage('system/Apply/Save', {}, { provider: type.value });
     } else {
         onlyMessage('请先选择应用类型', 'error')
     }

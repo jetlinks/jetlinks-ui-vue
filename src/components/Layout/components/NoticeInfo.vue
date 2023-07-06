@@ -23,12 +23,13 @@
                                     @refresh="onRefresh(item.key)"
                                 />
                             </template>
+                            <div v-if="list.length < 12" style="color: #666666; text-align: center; padding: 8px;">这是最后一条数据了</div>
                         </j-scrollbar>
                         <div class="no-data" v-else>
                             <j-empty />
                         </div>
                         <div class="btns">
-                            <span @click="onMore(item.key)">查看更多</span>
+                            <j-button type="link" @click="onMore(item.key)">查看更多</j-button>
                         </div>
                     </div>
                 </j-spin>
@@ -192,17 +193,8 @@ const onMore = (key: string) => {
         .btns {
             display: flex;
             height: 46px;
-            line-height: 46px;
-            span {
-                display: block;
-                width: 100%;
-                text-align: center;
-                cursor: pointer;
-
-                // &:first-child {
-                //     border-right: 1px solid #f0f0f0;
-                // }
-            }
+            justify-content: center;
+            align-items: center;
         }
     }
 }
