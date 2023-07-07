@@ -90,7 +90,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', d
             const hasId = oldValue.some((item) => item.id === value)
             if (value) {
               if (hasId) {
-                return Promise.reject('标识重复')
+                return Promise.reject('该标识存在')
               }
               return Promise.resolve()
             }

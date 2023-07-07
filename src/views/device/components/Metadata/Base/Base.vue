@@ -162,6 +162,7 @@
                 style="padding: 0"
                 danger
                 :pop-confirm="{
+                  placement: 'topRight',
                 title: dataSource.length === 1 ? '这是最后一条数据了，确认删除？' : '确认删除？',
                 onConfirm: async () => {
                     await removeItem(data.index, dataSource.length === 1);

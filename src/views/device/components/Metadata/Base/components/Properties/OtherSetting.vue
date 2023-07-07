@@ -7,8 +7,8 @@
       @visibleChange="visibleChange"
   >
     <template #content>
-      <j-scrollbar height="350">
-        <j-collapse v-model:activeKey="activeKey" >
+      <j-scrollbar height="350"   v-if="showMetrics || config.length > 0">
+        <j-collapse v-model:activeKey="activeKey">
           <j-collapse-panel v-for="(item, index) in config" :key="'store_'+index" :header="item.name">
             <j-table
                 :columns="columns"
@@ -40,7 +40,14 @@
             <Metrics ref="metricsRef" :value="myValue.expands?.metrics" :type="props.value?.valueType?.type"/>
           </j-collapse-panel>
         </j-collapse>
+
       </j-scrollbar>
+      <div v-else style="padding-top: 24px">
+        <j-empty
+            description="没有动态配置项"
+        />
+      </div>
+
     </template>
     <j-button>
       <AIcon type="SettingOutlined" />
@@ -123,8 +130,13 @@ const getConfig = async () => {
   if (resp.status === 200) {
 
     config.value = resp.result
-    if (resp.result.length && !configValue.value) {
+    if (resp.result.length) {
       activeKey.value = ['store_0']
+    } else if (showMetrics.value) {
+      activeKey.value = ['metrics']
+    }
+
+    if (resp.result.length && !configValue.value) {
       resp.result.forEach(a => {
         if (a.properties) {
           a.properties.forEach(b => {
@@ -132,8 +144,6 @@ const getConfig = async () => {
           })
         }
       })
-    } else if (showMetrics.value) {
-      activeKey.value = ['metrics']
     }
   }
 }

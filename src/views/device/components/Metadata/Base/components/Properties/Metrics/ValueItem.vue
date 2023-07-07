@@ -71,7 +71,7 @@ const showText = computed(() => {
   if (props.value.range === 'false') {
     return props.value.value || ''
   } else {
-    return props.value.value[0] ? props.value.value.join('-') : ''
+    return props.value.value?.[0] ? props.value.value.join('-') : ''
   }
 })
 

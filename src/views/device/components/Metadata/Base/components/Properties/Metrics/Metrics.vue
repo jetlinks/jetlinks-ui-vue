@@ -11,7 +11,7 @@
         {{ data.record.range === 'true' ? '范围值' : '固定值'}}
       </template>
       <template #value="{data}">
-        {{ data.record.range === 'true' ? data.record.value.toString() : data.record.value }}
+        {{ data.record.range === 'true' ? data.record.value?.toString() : data.record.value }}
       </template>
       <template #action="{data}">
         <j-button
