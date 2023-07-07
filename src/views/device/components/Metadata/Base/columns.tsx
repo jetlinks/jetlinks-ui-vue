@@ -32,6 +32,36 @@ const type = {
   report: '上报',
 };
 
+export const handleTypeValue = (type:string, value: any = {}) => {
+  let obj: any = {}
+  switch (type) {
+    case 'array':
+      obj.elementType = value
+      break;
+    case 'object':
+      obj.properties = value
+      break;
+    case 'int':
+    case 'long':
+      obj.unit = value
+      break;
+    case 'file':
+      obj.fileType = value
+      break;
+    case 'date':
+      obj.format = value
+      break;
+    case 'string':
+    case 'password':
+      obj.maxLength = value
+      break;
+    default:
+      obj = value
+      break;
+  }
+  return obj
+}
+
 export const typeSelectChange = (type: string) => {
   let obj: any = {}
   switch (type) {

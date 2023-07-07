@@ -1,5 +1,5 @@
 <template>
-  <DataTableObject v-model:value="dataSource" :columns="columns" :onAdd="addItem" width="700px" @confirm="confirm">
+  <DataTableObject :value="dataSource" :columns="columns" :onAdd="addItem" width="700px" @confirm="confirm">
     <template #valueType="{ data }">
       <span>{{ data.record.valueType?.type }}</span>
     </template>
@@ -7,7 +7,7 @@
       <span>{{ data.record.expands?.required ? "是": '否' }}</span>
     </template>
     <template #config="{ data }">
-      <OtherConfigInfo :value="data.record.valueType"></OtherConfigInfo>
+      <ConfigModal v-model:value="data.record" />
     </template>
     <j-button>
       <AIcon type="SettingOutlined" />
@@ -18,26 +18,12 @@
 
 <script setup lang="ts" name="InputParams">
 import type { PropType } from 'vue';
-import DataTypeObjectChild from '../DataTypeObjectChild.vue'
+import ConfigModal from '@/views/device/components/Metadata/Base/components/ConfigModal.vue'
 import {
     DataTableObject,
 } from 'jetlinks-ui-components';
 import { ConstraintSelect, OtherConfigInfo, ValueObject } from '../index'
 
-const addItem = () => {
-  return {
-    id: undefined,
-    name: undefined,
-    valueType: {
-
-    },
-    expands: {
-      required: false
-    }
-  }
-}
-
-const columns = ref()
 
 type Emits = {
     (e: 'update:value', data: Record<string, any>): void;
@@ -60,6 +46,76 @@ const props = defineProps({
     },
 });
 
+
+const addItem = () => {
+  return {
+    id: undefined,
+    name: undefined,
+    valueType: {
+
+    },
+    expands: {
+      required: false
+    }
+  }
+}
+
+const columns = ref([
+  {
+    title: '参数标识',
+    dataIndex: 'id',
+    type: 'text',
+    form: {
+      required: true,
+      rules: [
+        { required: true, message: '请输入标识' },
+        {
+          validator(va:any,value: any) {
+            const fieldIndex = va.field.split('.')[1]
+            const oldValue = (dataSource!.value || []).filter((_, index) => index != fieldIndex)
+            console.log(dataSource!.value)
+            const hasId = oldValue.some((item) => item.id === value)
+            if (value) {
+              if (hasId) {
+                return Promise.reject('该标识存在')
+              }
+              return Promise.resolve()
+            }
+            return Promise.reject('请输入标识')
+          }
+        },
+      ]
+    }
+  },
+  { title: '参数名称', dataIndex: 'name', type: 'text', form: { required: true, rules: [{ required: true, message: '请输入名称'}]} },
+  {
+    title: '填写约束',
+    dataIndex: 'required',
+    type: 'components',
+    width: 100,
+    components: {
+      name: ConstraintSelect,
+    }
+  },
+  {
+    title: '数据类型',
+    type: 'components',
+    dataIndex: 'valueType',
+    components: {
+      name: ValueObject,
+    },
+  },
+  {
+    title: '其他配置',
+    dataIndex: 'config',
+  },
+  {
+    title: '操作',
+    dataIndex: 'action',
+    width: 60
+  },
+])
+
 const dataSource = ref(props.value);
 
 const change = (v: string) => {
@@ -68,76 +124,19 @@ const change = (v: string) => {
 };
 
 watch(
-    () => props.value,
+    () => JSON.stringify(props.value),
     (newV) => {
+      console.log('inputParams-change')
       dataSource.value = props.value.inputs;
     },
     { immediate: true },
 );
 
-watch(() => JSON.stringify(dataSource.value), () => {
-  columns.value = [
-    {
-      title: '参数标识',
-      dataIndex: 'id',
-      type: 'text',
-      form: {
-        required: true,
-        rules: [
-          { required: true, message: '请输入标识' },
-          {
-            validator(va:any,value: any) {
-              const fieldIndex = va.field.split('.')[1]
-              const oldValue = (dataSource!.value || []).filter((_, index) => index != fieldIndex)
-              console.log(dataSource!.value)
-              const hasId = oldValue.some((item) => item.id === value)
-              if (value) {
-                if (hasId) {
-                  return Promise.reject('该标识存在')
-                }
-                return Promise.resolve()
-              }
-              return Promise.reject('请输入标识')
-            }
-          },
-        ]
-      }
-    },
-    { title: '参数名称', dataIndex: 'name', type: 'text', form: { required: true, rules: [{ required: true, message: '请输入名称'}]} },
-    {
-      title: '填写约束',
-      dataIndex: 'required',
-      type: 'components',
-      width: 100,
-      components: {
-        name: ConstraintSelect,
-      }
-    },
-    {
-      title: '数据类型',
-      type: 'components',
-      dataIndex: 'valueType',
-      components: {
-        name: ValueObject,
-      },
-    },
-    {
-      title: '其他配置',
-      dataIndex: 'config',
-    },
-    {
-      title: '操作',
-      dataIndex: 'action',
-      width: 60
-    },
-  ]
-}, { immediate: true})
-
 const confirm = (v: any) => {
-  console.log(v)
+  console.log('inputParams',v)
   emit('update:value', {
     ...props.value,
-    inputs: dataSource.value
+    inputs: v
   })
 }
 </script>

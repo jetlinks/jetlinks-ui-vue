@@ -135,7 +135,7 @@ const handleDataTable = (type: string) => {
           break;
     case 'boolean':
       dataTypeTable.dataSource = {
-        ...props.data.valueType
+        ...omit(props.data.valueType, ['type'])
       }
       break;
     case 'array':

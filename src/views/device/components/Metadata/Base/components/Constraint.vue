@@ -20,7 +20,7 @@ const props = defineProps({
   },
   name: {
     type: [String, Array],
-    default: 'required'
+    default: ['expands','required']
   }
 })
 
@@ -28,10 +28,10 @@ const emit = defineEmits(['update:value'])
 
 const myValue = ref()
 
-const change = () => {
+const change = (e) => {
   const newData = { ...props.value }
   set(newData, props.name, myValue.value)
-  console.log(newData);
+  console.log(newData, e);
   emit('update:value', newData)
 }
 

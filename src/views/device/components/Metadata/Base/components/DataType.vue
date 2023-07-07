@@ -8,64 +8,14 @@
             v-model:value="_valueType.elementType"
             :unitOptions="options"
             placement="topRight"
-            @confirm="valueChange"
+            @confirm="(data) => {valueChange(data, 'array')}"
         />
         <DataTableObject
             v-else-if="type === 'object'"
             :value="_valueType.properties"
             placement="topRight"
-            :columns="[
-                {
-                  title: '参数标识',
-                  dataIndex: 'id',
-                  type: 'text',
-                  width: 100,
-                  form: {
-                    required: true,
-                    rules: [{
-                      callback() {
-
-                      }
-                    }]
-                  }
-                },
-                {
-                  title: '参数名称',
-                  dataIndex: 'name',
-                  type: 'text',
-                  width: 100,
-                  form: {
-                    required: true,
-                    rules: [{
-                      required: true,
-                      message: '请输入参数名称'
-                    }]
-                  }
-                },
-                {
-                    title: '数据类型',
-                    type: 'components',
-                    dataIndex: 'valueType',
-                    components: {
-                      name: ValueObject,
-                      props: {
-                        filter: ['object']
-                      }
-                    },
-                    width: 100
-                },
-                {
-                  title: '其他配置',
-                  dataIndex: 'config',
-                  width: 100
-                },
-                {
-                  title: '操作',
-                  dataIndex: 'action',
-                  width: 60
-                }
-            ]"
-            @confirm="valueChange"
+            :columns="columns"
+            @confirm="(data) => {valueChange(data, 'object')}"
         >
             <template #valueType="{ data }">
                 {{ data.record.valueType?.type }}
@@ -75,28 +25,29 @@
               <ConfigModal v-model:value="data.record" />
             </template>
         </DataTableObject>
-        <DataTableEnum v-else-if="type === 'enum'" v-model:value="_valueType" placement="topRight" @confirm="valueChange"/>
-        <DataTableBoolean v-else-if="type === 'boolean'" v-model:value="_valueType" placement="topRight" @confirm="valueChange"/>
+        <DataTableEnum v-else-if="type === 'enum'" v-model:value="_valueType" placement="topRight" @confirm="(data) => {valueChange(data, 'enum')}"/>
+        <DataTableBoolean v-else-if="type === 'boolean'" v-model:value="_valueType" placement="topRight" @confirm="(data) => {valueChange(data, 'boolean')}" />
         <DataTableDouble
             v-else-if="['float', 'double'].includes(type)"
             :options="options"
             v-model:value="_valueType"
             placement="topRight"
-            @confirm="valueChange"
+            @confirm="(data) => {valueChange(data, 'float')}"
         />
         <DataTableInteger
             v-else-if="['int', 'long'].includes(type)"
             :options="options"
             v-model:value="_valueType.unit"
             placement="topRight"
-            @confirm="valueChange"
+            @confirm="(data) => {valueChange(data, 'int')}"
         />
-        <DataTableFile v-else-if="type === 'file'" v-model:value="_valueType.fileType" placement="topRight" @confirm="valueChange"/>
-        <DataTableDate v-else-if="type === 'date'" v-model:value="_valueType.format" placement="topRight" @confirm="valueChange"/>
+        <DataTableFile v-else-if="type === 'file'" v-model:value="_valueType.fileType" placement="topRight" @confirm="(data) => {valueChange(data, 'file')}"/>
+        <DataTableDate v-else-if="type === 'date'" v-model:value="_valueType.format" placement="topRight" @confirm="(data) => {valueChange(data, 'date')}"/>
         <DataTableString
             v-else-if="['string', 'password'].includes(type)"
             v-model:value="_valueType.maxLength"
             placement="topRight"
+            @confirm="(data) => {valueChange(data, 'string')}"
         />
     </div>
 </template>
@@ -117,7 +68,7 @@ import {
     DataTableObject,
 } from 'jetlinks-ui-components';
 import { cloneDeep } from 'lodash-es';
-import { typeSelectChange } from '../columns'
+import {handleTypeValue, typeSelectChange} from '../columns'
 import ConfigModal from './ConfigModal.vue'
 
 const props = defineProps({
@@ -126,6 +77,56 @@ const props = defineProps({
         default: () => ({}),
     },
 });
+
+const columns = [{
+  title: '参数标识',
+  dataIndex: 'id',
+  type: 'text',
+  width: 100,
+  form: {
+    required: true,
+    rules: [{
+      callback() {
+        return Promise.resolve()
+      }
+    }]
+  }
+},
+  {
+    title: '参数名称',
+    dataIndex: 'name',
+    type: 'text',
+    width: 100,
+    form: {
+      required: true,
+      rules: [{
+        required: true,
+        message: '请输入参数名称'
+      }]
+    }
+  },
+  {
+    title: '数据类型',
+    type: 'components',
+    dataIndex: 'valueType',
+    components: {
+      name: ValueObject,
+      props: {
+        filter: ['object']
+      }
+    },
+    width: 100
+  },
+  {
+    title: '其他配置',
+    dataIndex: 'config',
+    width: 100
+  },
+  {
+    title: '操作',
+    dataIndex: 'action',
+    width: 60
+  }]
 
 const options = ref<{ label: string; value: string }[]>([]);
 const emit = defineEmits(['update:value']);
@@ -144,10 +145,13 @@ const typeChange = (e: string) => {
     });
 };
 
-const valueChange = () => {
+const valueChange = (_data: any, _type: string) => {
+  console.log(_type, _data)
+  const newData = handleTypeValue(_type, _data)
+  console.log('dataType',{...newData, type: type.value})
   emit('update:value', {
     ...props.value,
-    valueType: {...(_valueType.value || {}), type: type.value},
+    valueType: {...newData, type: type.value},
   });
 }
 
