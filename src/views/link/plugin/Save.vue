@@ -15,26 +15,26 @@
           :rules='IdRules'
         >
           <template #label>
-                                <span>
-                                    插件ID
-                                    <j-tooltip
-                                      title='若不填写，系统将自动生成唯一ID'
-                                    >
-                                        <AIcon
-                                          type='QuestionCircleOutlined'
-                                          style='margin-left: 2px'
-                                        />
-                                    </j-tooltip>
-                                </span>
+            <span>
+                插件ID
+                <j-tooltip
+                  title='若不填写，系统将自动生成唯一ID'
+                >
+                    <AIcon
+                      type='QuestionCircleOutlined'
+                      style='margin-left: 2px'
+                    />
+                </j-tooltip>
+            </span>
           </template>
-          <j-input v-model:value='modelRef.id' :disabled='!!data.id' />
+          <j-input placeholder="请输入插件ID" v-model:value='modelRef.id' :disabled='!!data.id' />
         </j-form-item>
         <j-form-item
           label='插件名称'
           name='name'
           :rules="nameRules"
         >
-          <j-input v-model:value='modelRef.name' />
+          <j-input placeholder="请输入插件名称" v-model:value='modelRef.name' />
         </j-form-item>
         <j-form-item
           label='文件'
@@ -135,6 +135,7 @@ const handleSave = async () => {
   const data = await formRef.value.validate()
   if (data) {
     loading.value = true
+    modelRef.id = modelRef.id ? modelRef.id : null;
     const resp = props.data.id ? await update(modelRef).catch(() => { success: false }) : await add(modelRef).catch(() => { success: false })
     loading.value = false
     if (resp.success) {
