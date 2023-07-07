@@ -181,7 +181,7 @@ const variableRef = ref();
 const formRef = ref();
 
 const _variableDefinitions = computed(() => {
-    const arr = ['user', 'org'];
+    const arr = ['user', 'org', 'tag'];
     return variable.value.filter((item: any) => {
         const _type = item.expands?.businessType || item.type || '';
         return !arr.includes(_type);
@@ -189,7 +189,7 @@ const _variableDefinitions = computed(() => {
 });
 
 const handleVariable = (obj: any) => {
-    const arr = ['user', 'org'];
+    const arr = ['user', 'org', 'tag'];
     const _array = variable.value
         .filter((item: any) => {
             const _type = item.expands?.businessType || item.type || '';
