@@ -353,7 +353,7 @@ const form = reactive<formType>({
         title: [
             {
                 required: true,
-                message: '名称必填',
+                message: '请输入系统名称',
             },
             {
                 max: 64,

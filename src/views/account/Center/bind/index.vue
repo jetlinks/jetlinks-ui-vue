@@ -1,7 +1,7 @@
 <!-- 第三方账户绑定 -->
 <template>
   <div class='page-container'>
-    <div class='content'>
+    <div class='content-bind'>
       <div class='title'>第三方账户绑定</div>
       <!-- 已登录-绑定三方账号 -->
       <template v-if='!!token'>
@@ -323,7 +323,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
 
-  .content {
+  .content-bind {
     box-sizing: border-box;
     width: 928px;
     min-height: 510px;

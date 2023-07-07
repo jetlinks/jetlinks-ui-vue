@@ -49,7 +49,7 @@
                                         <j-form-item
                                             :name="['table', index, 'value']"
                                             :rules="{
-                                                required: true,
+                                                required: record.required,
                                                 message: '该字段为必填字段',
                                             }"
                                             has-feedback
@@ -172,9 +172,10 @@ const newFunctions = computed(() => {
                         ? tableItem['json']?.['properties'][0]
                         : undefined,
                 value: undefined,
+                required: tableItem.expands?.required
             });
         }
-
+        
         result.push({
             ...func,
             table: array,

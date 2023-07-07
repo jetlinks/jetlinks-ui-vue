@@ -199,8 +199,8 @@
                             validator: checkName,
                         },
                         {
-                            pattern: /^\w+$/,
-                            message: '名称只能由数字、字母、下划线、中划线组成',
+                            pattern: /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/,
+                            message: '名称只能由英文、汉字、下划线、数字组成',
                             trigger: 'change',
                         },
                     ]"
@@ -445,8 +445,8 @@ watch(
             });
             leftData.treeData = [
                 {
-                    title: info.data.shareConfig.schema,
-                    key: info.data.shareConfig.schema,
+                    title: info.data.shareConfig?.schema,
+                    key: info.data.shareConfig?.schema,
                     root: true,
                     children: list.map((item) => ({
                         title: item.name,
@@ -461,8 +461,8 @@ watch(
         } else {
             leftData.treeData = [
                 {
-                    title: info.data.shareConfig.schema,
-                    key: info.data.shareConfig.schema,
+                    title: info.data.shareConfig?.schema,
+                    key: info.data.shareConfig?.schema,
                     root: true,
                     children: leftData.sourceTree.map((item) => ({
                         title: item.name,

@@ -22,7 +22,7 @@
                     <ValueRender
                         type="table"
                         :data="_props.data"
-                        :value="{ formatValue: record.value }"
+                        :value="{ ...record }"
                     />
                 </template>
                 <template v-else-if="column.key === 'action'">

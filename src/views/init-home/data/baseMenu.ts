@@ -13,6 +13,12 @@ export const USER_CENTER_MENU_DATA = {
   sortIndex: 9999,
   granted: true,
   owner: 'iot',
+  permissions: [
+    {
+      permission: 'system_config',
+      actions: ['query'],
+    },
+  ],
   buttons: [
     {
       id: USER_CENTER_MENU_BUTTON_CODE,

@@ -94,7 +94,11 @@
             </j-row>
             <j-row :gutter="24" v-if="form.IsShow('add', 'edit')">
                 <j-col :span="12">
-                    <j-form-item name="roleIdList" label="角色" class="flex">
+                    <j-form-item name="roleIdList" label="角色" class="flex" 
+                        :rules="[
+                            { required: true, message: '请选择角色' },
+                        ]"
+                    >
                         <j-select
                             v-model:value="form.data.roleIdList"
                             mode="multiple"
