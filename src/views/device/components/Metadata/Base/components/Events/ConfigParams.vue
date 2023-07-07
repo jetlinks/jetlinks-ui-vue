@@ -4,22 +4,23 @@
                 <span>{{ data.record.valueType?.type }}</span>
             </template>
             <template #config="{ data }">
-                <OtherConfigInfo :value="data.record.valueType"></OtherConfigInfo>
+                <ConfigModal v-model:value="data.record" />
             </template>
             <j-button>
-      <AIcon type="SettingOutlined" />
-      配置
-    </j-button>
+                <AIcon type="SettingOutlined" />
+                配置
+            </j-button>
         </DataTableObject>
 </template>
 
 <script setup lang="ts" name="InputParams">
 import type { PropType } from 'vue';
-import DataTypeObjectChild from '../DataTypeObjectChild.vue'
 import {
     DataTableObject,
 } from 'jetlinks-ui-components';
-import { OtherConfigInfo, ValueObject } from '../index'
+import { ValueObject } from '../index'
+
+import ConfigModal from '@/views/device/components/Metadata/Base/components/ConfigModal.vue'
 
 const columns = [
     { 
@@ -29,8 +30,18 @@ const columns = [
         form: {
             required: true,
             rules: [{
-                required: true,
-                message: '请输入参数标识'
+                callback(rule:any,value: any, _dataSource: any[]) {
+                    if (value) {
+                    const field = rule.field.split('.')
+                    const fieldIndex = Number(field[1])
+                    const hasId = _dataSource.some((item, index) => item.id === value && fieldIndex !== index)
+                    if (hasId) {
+                        return Promise.reject('该标识存在')
+                    }
+                    return Promise.resolve()
+                    }
+                    return Promise.reject('请输入标识')
+                }
             }]
         }
     },
@@ -52,15 +63,14 @@ const columns = [
         dataIndex: 'valueType',
         components: {
             name: ValueObject,
+            props: {
+                filter: ['object']
+            }
         },
     },
     {
         title: '其他配置',
         dataIndex: 'config',
-        type: 'components',
-        components: {
-            name: DataTypeObjectChild
-        }
     },
     {
         title: '操作',
@@ -91,18 +101,21 @@ const props = defineProps({
 });
 
 const value = ref(props.value.valueType?.properties);
+const type = computed(() => {
+    return props.value.valueType?.type
+})
 
 const change = (v: string) => {
     emit('update:value', { ...props.value, async: value.value });
     emit('change', v);
 };
 
-const confirm = () => {
-  const newObject = value.value.map((item) => {
-    const { config, action, ...extra } = item
+const confirm = (data: any) => {
+  const newObject = data.map((item) => {
+    const { config, action, _sortIndex, ...extra } = item
     return extra
   })
-
+  
   emit('update:value', {
     ...props.value,
     valueType: {

@@ -4,7 +4,7 @@ import SelectColumn from './components/Events/SelectColumn.vue';
 import AsyncSelect from './components/Function/AsyncSelect.vue';
 import { EventLevel } from "@/views/device/data";
 import {MetadataType} from "@/views/device/Product/typings";
-import rule from "components/Metadata/Rule";
+import { getUnit } from '@/api/device/instance';
 import {Ref} from "vue";
 interface DataTableColumnProps extends ColumnProps {
   type?: string,
@@ -350,6 +350,25 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
   }, { immediate: true })
 
   return {columns}
+}
+
+export const useUnit = (type: Ref<string>) => {
+  const unitOptions = ref<Array<{ label: string, value: any }>>([])
+
+  watch(() => type.value, () => {
+    if (['float', 'double', 'int', 'long'].includes(type.value) && !unitOptions.value.length) {
+      getUnit().then((res) => {
+        if (res.success) {
+          unitOptions.value = res.result.map((item: any) => ({
+                label: item.description,
+                value: item.id,
+            }));
+      }
+    });
+  }
+  })
+
+  return { unitOptions }
 }
 
 

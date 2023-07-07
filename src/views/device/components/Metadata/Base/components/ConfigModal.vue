@@ -2,7 +2,7 @@
   <DataTableArray
       v-if="type === 'array'"
       v-model:value="myValue.elementType"
-      :unitOptions="options"
+      :unitOptions="unitOptions"
       placement="topRight"
       @confirm="valueChange"
   >
@@ -17,8 +17,44 @@
       placement="topRight"
       :onAdd="objectAdd"
       :columns="[
-                { title: '参数标识', dataIndex: 'id', type: 'text', width: 100 },
-                { title: '参数名称', dataIndex: 'name', type: 'text', width: 100 },
+                {
+                  title: '参数标识',
+                  dataIndex: 'id',
+                  type: 'text',
+                  width: 100,
+                  form: {
+                    required: true,
+                    rules: [
+                      {
+                        callback(rule:any,value: any, _dataSource: any[]) {
+                          if (value) {
+                            const field = rule.field.split('.')
+                            const fieldIndex = Number(field[1])
+                            const hasId = _dataSource.some((item, index) => item.id === value && fieldIndex !== index)
+                            if (hasId) {
+                              return Promise.reject('该标识存在')
+                            }
+                            return Promise.resolve()
+                          }
+                          return Promise.reject('请输入标识')
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  title: '参数名称',
+                  dataIndex: 'name',
+                  type: 'text',
+                  width: 100,
+                  form: {
+                    required: true,
+                    rules: [{
+                          required: true,
+                          message: '请输入参数名称'
+                      }]
+                  }
+                },
                 {
                     title: '数据类型',
                     type: 'components',
@@ -83,7 +119,7 @@
   </DataTableBoolean>
   <DataTableDouble
       v-else-if="['float', 'double'].includes(type)"
-      :options="options"
+      :options="unitOptions"
       v-model:value="myValue"
       placement="topRight"
       @confirm="valueChange"
@@ -95,7 +131,7 @@
   </DataTableDouble>
   <DataTableInteger
       v-else-if="['int', 'long'].includes(type)"
-      :options="options"
+      :options="unitOptions"
       v-model:value="myValue.unit"
       placement="topRight"
       @confirm="valueChange"
@@ -171,6 +207,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:value'])
+import {useUnit} from "@/views/device/components/Metadata/Base/columns";
 
 const objectAdd = () => {
   return {
@@ -185,6 +222,8 @@ const objectAdd = () => {
 const options = ref([])
 
 const type = ref(props.value?.[props.valueKey]?.type)
+
+const { unitOptions } = useUnit(type)
 
 const myValue = ref(props.value?.[props.valueKey])
 

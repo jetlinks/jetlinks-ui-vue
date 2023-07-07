@@ -89,7 +89,7 @@
             {{ sourceMap?.[data.record?.expands?.source] || '' }}
         </template>
         <template #inputs="{ data }">
-          <InputParams v-model:value="dataSource[data.index]" />
+          <InputParams v-model:value="data.record" />
         </template>
         <template #output="{ data }">
           {{ data.record.output?.type }}
@@ -101,7 +101,7 @@
           {{ levelMap?.[data.record.expands?.level] || '-' }}
         </template>
         <template #properties="{ data }">
-          <ConfigParams v-model:value="dataSource[data.index]" />
+          <ConfigParams v-model:value="data.record" />
         </template>
         <template #outInput>
           object
@@ -112,7 +112,7 @@
           </j-tag>
         </template>
         <template #other="{ data }">
-          <OtherSetting v-model:value="dataSource[data.index]" />
+          <OtherSetting v-model:value="data.record" />
         </template>
         <template #action="{data}">
           <j-space>

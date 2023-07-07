@@ -11,6 +11,7 @@
         <DataTableObject
             v-else-if="type === 'object'"
             v-model:value="data.properties"
+            placement="topRight"
             :columns="[
                 { 
                   title: '参数标识',
@@ -19,8 +20,18 @@
                   form: {
                       required: true,
                       rules: [{
-                          required: true,
-                          message: '请输入参数标识'
+                        callback(rule:any,value: any, dataSource: any[]) {
+                          if (value) {
+                            const field = rule.field.split('.')
+                            const fieldIndex = Number(field[1])
+                            const hasId = dataSource.some((item, index) => item.id === value && fieldIndex !== index)
+                            if (hasId) {
+                              return Promise.reject('该标识存在')
+                            }
+                            return Promise.resolve()
+                          }
+                          return Promise.reject('请输入标识')
+                        }
                       }]
                   }
               },
@@ -32,7 +43,7 @@
                       required: true,
                       rules: [{
                           required: true,
-                          message: '请输入参数标识名称'
+                          message: '请输入参数名称'
                       }]
                   }
               },
@@ -42,15 +53,18 @@
                     dataIndex: 'valueType',
                     components: {
                       name: Type,
-                    }
+                    },
+                    form: {
+                      required: true,
+                      rules: [{
+                          required: true,
+                          message: '请选择数据类型'
+                      }]
+                  }
                 },
                 {
                   title: '其他配置',
-                  type: 'components',
                   dataIndex: 'config',
-                  components: {
-                    name: DataTypeObjectChild
-                  }
                 },
                 {
                   title: '操作',
@@ -61,24 +75,24 @@
             @confirm="valueChange"
             :onAdd="addItem"
         >
-        <template #valueType="{ data }">
-          <span>{{ data.record.valueType?.type }}</span>
-        </template>
+          <template #valueType="{ data }">
+            <span>{{ data.record.valueType?.type }}</span>
+          </template>
           <template #config="{ data }">
-            <OtherConfigInfo :value="data.record.valueType"></OtherConfigInfo>
+            <ConfigModal v-model:value="data.record" />
           </template>
         </DataTableObject>
         <DataTableEnum v-else-if="type === 'enum'" v-model:value="data" @confirm="valueChange"/>
         <DataTableBoolean v-else-if="type === 'boolean'" v-model:value="data" @confirm="valueChange"/>
         <DataTableDouble
             v-else-if="['float', 'double'].includes(type)"
-            :options="options"
+            :options="unitOptions"
             v-model:value="data"
             @confirm="valueChange"
         />
         <DataTableInteger
             v-else-if="['int', 'long'].includes(type)"
-            :options="options"
+            :options="unitOptions"
             v-model:value="data.unit"
             @confirm="valueChange"
         />
@@ -107,10 +121,9 @@ import {
     DataTableObject,
 } from 'jetlinks-ui-components';
 
-import DataTypeObjectChild from '../DataTypeObjectChild.vue';
+import ConfigModal from '@/views/device/components/Metadata/Base/components/ConfigModal.vue'
 import { cloneDeep } from 'lodash-es';
-import {typeSelectChange} from "@/views/device/components/Metadata/Base/columns";
-import { OtherConfigInfo } from '../index'
+import {typeSelectChange, useUnit} from "@/views/device/components/Metadata/Base/columns";
 import Type from './Type.vue'
 
 const props = defineProps({
@@ -120,11 +133,14 @@ const props = defineProps({
     },
 });
 
+
 const options = ref<{ label: string; value: string }[]>([]);
 const emit = defineEmits(['update:value']);
 
 const type = ref(props.value?.output?.type);
 const data = ref(cloneDeep(props.value?.output));
+
+const { unitOptions } = useUnit(type)
 
 const typeChange = (e: string) => {
     data.value = typeSelectChange(e)
@@ -139,16 +155,16 @@ watch(
     () => {
         type.value = props.value?.output?.type;
         data.value = props.value?.output
-        if (['float', 'double', 'int', 'long'].includes(type.value)) {
-            const res = getUnit().then((res) => {
-                if (res.success) {
-                    options.value = res.result.map((item) => ({
-                        label: item.description,
-                        value: item.id,
-                    }));
-                }
-            });
-        }
+        // if (['float', 'double', 'int', 'long'].includes(type.value)) {
+        //     const res = getUnit().then((res) => {
+        //         if (res.success) {
+        //             options.value = res.result.map((item) => ({
+        //                 label: item.description,
+        //                 value: item.id,
+        //             }));
+        //         }
+        //     });
+        // }
     },
     { immediate: true, deep: true },
 );

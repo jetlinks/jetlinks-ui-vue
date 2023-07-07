@@ -22,7 +22,7 @@ import ConfigModal from '@/views/device/components/Metadata/Base/components/Conf
 import {
     DataTableObject,
 } from 'jetlinks-ui-components';
-import { ConstraintSelect, OtherConfigInfo, ValueObject } from '../index'
+import { ConstraintSelect, ValueObject } from '../index'
 
 
 type Emits = {
@@ -70,12 +70,11 @@ const columns = ref([
       rules: [
         { required: true, message: '请输入标识' },
         {
-          validator(va:any,value: any) {
-            const fieldIndex = va.field.split('.')[1]
-            const oldValue = (dataSource!.value || []).filter((_, index) => index != fieldIndex)
-            console.log(dataSource!.value)
-            const hasId = oldValue.some((item) => item.id === value)
+          callback(rule:any,value: any, _dataSource: any[]) {
             if (value) {
+              const field = rule.field.split('.')
+              const fieldIndex = Number(field[1])
+              const hasId = _dataSource.some((item, index) => item.id === value && fieldIndex !== index)
               if (hasId) {
                 return Promise.reject('该标识存在')
               }
@@ -103,6 +102,9 @@ const columns = ref([
     dataIndex: 'valueType',
     components: {
       name: ValueObject,
+      form: {
+        required: true
+      }
     },
   },
   {

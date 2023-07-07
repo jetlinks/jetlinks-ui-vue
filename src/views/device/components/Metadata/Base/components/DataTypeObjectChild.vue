@@ -29,7 +29,6 @@
 
 <script setup lang="ts" name="DataTypeObjectChild">
 import { getUnit } from '@/api/device/instance';
-import { OtherConfigInfo } from '../components'
 import {
     DataTableString,
     DataTableArray,

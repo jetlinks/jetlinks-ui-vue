@@ -6,7 +6,7 @@
         <DataTableArray
             v-if="type === 'array'"
             v-model:value="_valueType.elementType"
-            :unitOptions="options"
+            :unitOptions="unitOptions"
             placement="topRight"
             @confirm="(data) => {valueChange(data, 'array')}"
         />
@@ -22,7 +22,7 @@
             </template>
             <template #config="{ data }">
 <!--                <OtherConfigInfo :value="data.record.valueType"></OtherConfigInfo>-->
-              <ConfigModal v-model:value="data.record" />
+              <ConfigModal v-model:value="data.record" :unitOptions="unitOptions" />
             </template>
         </DataTableObject>
         <DataTableEnum v-else-if="type === 'enum'" v-model:value="_valueType" placement="topRight" @confirm="(data) => {valueChange(data, 'enum')}"/>
@@ -68,7 +68,7 @@ import {
     DataTableObject,
 } from 'jetlinks-ui-components';
 import { cloneDeep } from 'lodash-es';
-import {handleTypeValue, typeSelectChange} from '../columns'
+import {handleTypeValue, typeSelectChange, useUnit } from '../columns'
 import ConfigModal from './ConfigModal.vue'
 
 const props = defineProps({
@@ -155,22 +155,24 @@ const valueChange = (_data: any, _type: string) => {
   });
 }
 
+const { unitOptions } = useUnit(type)
+
 watch(
     () => JSON.stringify(props.value),
     () => {
         type.value = props.value?.valueType?.type;
         _valueType.value = props.value?.valueType
         // elements.value = props.value?.valueType.elements;
-        if (['float', 'double', 'int', 'long'].includes(type.value)) {
-            const res = getUnit().then((res) => {
-                if (res.success) {
-                    options.value = res.result.map((item) => ({
-                        label: item.description,
-                        value: item.id,
-                    }));
-                }
-            });
-        }
+        // if (['float', 'double', 'int', 'long'].includes(type.value)) {
+        //     const res = getUnit().then((res) => {
+        //         if (res.success) {
+        //             options.value = res.result.map((item) => ({
+        //                 label: item.description,
+        //                 value: item.id,
+        //             }));
+        //         }
+        //     });
+        // }
     },
     { immediate: true },
 );
