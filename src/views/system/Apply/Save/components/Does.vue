@@ -164,7 +164,7 @@
             <h1>1.概述</h1>
             <div>配置成功后，平台用户可以在微信小程序中授权登录<span>物联网平台</span></div>
             <div class="image">
-                <j-image width="100%" :src="img3" />
+                <j-image width="100%" :src="img6" />
             </div>
         </div>
     </div>
@@ -182,6 +182,7 @@ const img2 = getImage('/apply/2.png');
 const img3 = getImage('/apply/3.png');
 const img4 = getImage('/apply/4.png');
 const img5 = getImage('/apply/5.png');
+const img6 = getImage('/apply/6.png');
 </script>
 
 <style lang="less" scoped>

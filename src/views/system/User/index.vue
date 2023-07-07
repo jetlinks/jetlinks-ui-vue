@@ -186,7 +186,7 @@ const columns = [
             type: 'select',
             options: [
                 {
-                    label: '启用',
+                    label: '正常',
                     value: 1,
                 },
                 {

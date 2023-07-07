@@ -131,8 +131,10 @@ import { message } from 'ant-design-vue'
 
 import { applicationInfo, bindAccount } from '@/api/bind'
 import { code, authLogin, userDetail } from '@/api/login'
+import { useSystem } from '@/store/system'
 
-const useForm = Form.useForm
+const useForm = Form.useForm;
+const systemStore = useSystem();
 
 interface formData {
   username: string;
@@ -290,9 +292,12 @@ const goRedirect = () => {
   }
 }
 
-getAppInfo()
-getCode()
-getDetail()
+onMounted(() => {
+  getAppInfo()
+  getCode()
+  getDetail()
+  systemStore.getFront()
+})
 
 </script>
 
