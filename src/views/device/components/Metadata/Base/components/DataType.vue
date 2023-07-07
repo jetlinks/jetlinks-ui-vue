@@ -12,27 +12,51 @@
         />
         <DataTableObject
             v-else-if="type === 'object'"
-            v-model:value="_valueType.properties"
+            :value="_valueType.properties"
             placement="topRight"
             :columns="[
-                { title: '参数标识', dataIndex: 'id', type: 'text', width: 100 },
-                { title: '参数名称', dataIndex: 'name', type: 'text', width: 100 },
+                {
+                  title: '参数标识',
+                  dataIndex: 'id',
+                  type: 'text',
+                  width: 100,
+                  form: {
+                    required: true,
+                    rules: [{
+                      callback() {
+
+                      }
+                    }]
+                  }
+                },
+                {
+                  title: '参数名称',
+                  dataIndex: 'name',
+                  type: 'text',
+                  width: 100,
+                  form: {
+                    required: true,
+                    rules: [{
+                      required: true,
+                      message: '请输入参数名称'
+                    }]
+                  }
+                },
                 {
                     title: '数据类型',
                     type: 'components',
                     dataIndex: 'valueType',
                     components: {
                       name: ValueObject,
+                      props: {
+                        filter: ['object']
+                      }
                     },
                     width: 100
                 },
                 {
                   title: '其他配置',
-                  type: 'components',
                   dataIndex: 'config',
-                  components: {
-                    name: DataTypeObjectChild
-                  },
                   width: 100
                 },
                 {
@@ -47,7 +71,8 @@
                 {{ data.record.valueType?.type }}
             </template>
             <template #config="{ data }">
-                <OtherConfigInfo :value="data.record.valueType"></OtherConfigInfo>
+<!--                <OtherConfigInfo :value="data.record.valueType"></OtherConfigInfo>-->
+              <ConfigModal v-model:value="data.record" />
             </template>
         </DataTableObject>
         <DataTableEnum v-else-if="type === 'enum'" v-model:value="_valueType" placement="topRight" @confirm="valueChange"/>
@@ -78,7 +103,7 @@
 
 <script setup lang="ts" name="MetadataDataType">
 import { getUnit } from '@/api/device/instance';
-import {InputParams, ValueObject, OtherConfigInfo, ConstraintSelect} from '../components'
+import { ValueObject } from '../components'
 import {
     DataTableTypeSelect,
     DataTableArray,
@@ -91,9 +116,9 @@ import {
     DataTableDate,
     DataTableObject,
 } from 'jetlinks-ui-components';
-import DataTypeObjectChild from './DataTypeObjectChild.vue';
 import { cloneDeep } from 'lodash-es';
 import { typeSelectChange } from '../columns'
+import ConfigModal from './ConfigModal.vue'
 
 const props = defineProps({
     value: {
@@ -143,7 +168,7 @@ watch(
             });
         }
     },
-    { immediate: true, deep: true },
+    { immediate: true },
 );
 
 </script>

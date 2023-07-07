@@ -21,7 +21,7 @@
             <DataTableDate v-else-if="formData.type === 'date'" v-model:value="formData.date" placement="topRight"/>
             <DataTableString
                 v-else-if="['string', 'password'].includes(formData.type)"
-                v-model:value="formData.expands.maxLength"
+                v-model:value="formData.maxLength"
                 placement="topRight"
             />
     </div>
@@ -103,7 +103,7 @@ const text = computed(() => {
                 return value?.trueText ? `${ value?.trueText }-${ value.trueValue }; ${ value.falseText }-${ value.falseValue }` : '';
             case 'string':
             case 'password':
-                return value?.expands?.maxLength;
+                return value?.maxLength;
             case 'int':
             case 'long':
                 return '无'

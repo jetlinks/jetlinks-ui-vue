@@ -1,5 +1,5 @@
 <template>
-    <DataTableTypeSelect v-model:value="type" :filter="['object']" @change="change">
+    <DataTableTypeSelect v-model:value="type" @change="change" :filter="filter">
         
     </DataTableTypeSelect>
 </template>
@@ -33,6 +33,10 @@ const props = defineProps({
         type: Array as PropType<{ label: string; value: string }[]>,
         default: () => [],
     },
+    filter: {
+      type: Array,
+      default: undefined
+    }
 });
 
 

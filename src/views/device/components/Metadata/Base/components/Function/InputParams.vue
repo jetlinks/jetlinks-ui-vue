@@ -111,9 +111,6 @@ watch(() => JSON.stringify(dataSource.value), () => {
       width: 100,
       components: {
         name: ConstraintSelect,
-        props: {
-          name: ['expands', 'required']
-        }
       }
     },
     {

@@ -73,7 +73,7 @@ export const typeSelectChange = (type: string) => {
   return obj
 }
 
-export const useColumns = (type?: MetadataType, target?: 'device' | 'product', dataSource?: Ref<any[]>, noEdit?: Ref<any>) => {
+export const useColumns = (type?: MetadataType, target?: 'device' | 'product', noEdit?: Ref<any>) => {
 
   const BaseColumns: DataTableColumnProps[] = [
     {
@@ -83,12 +83,11 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', d
       form: {
         required: true,
         rules: [{
-          validator(va:any,value: any) {
-            const fieldIndex = va.field.split('.')[1]
-            const oldValue = (dataSource!.value || []).filter((_, index) => index != fieldIndex)
-            console.log(oldValue)
-            const hasId = oldValue.some((item) => item.id === value)
+          callback(rule:any,value: any, dataSource: any[]) {
             if (value) {
+              const field = rule.field.split('.')
+              const fieldIndex = Number(field[1])
+              const hasId = dataSource.some((item, index) => item.id === value && fieldIndex !== index)
               if (hasId) {
                 return Promise.reject('该标识存在')
               }
@@ -302,7 +301,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', d
 
   const columns = ref<any[]>([])
 
-  watch(() => JSON.stringify(dataSource!.value), () => {
+  watch(() => JSON.stringify(noEdit!.value), () => {
     console.log(noEdit!.value)
     switch(type) {
       case 'properties':

@@ -1,7 +1,7 @@
 <template>
     <j-data-table
         ref="tableRef"
-        v-model:data-source="dataSource"
+        :data-source="dataSource"
         :columns="columns"
         :height="560"
         :searchProps="{
@@ -246,7 +246,7 @@ const dataSource = ref<MetadataItem[]>(metadata.value || []);
 const tableRef = ref();
 
 // const columns = computed(() => MetadataMapping.get(props.type!));
-const {columns} = useColumns(props.type, target, dataSource, noEdit)
+const {columns} = useColumns(props.type, target, noEdit)
 
 const detailData = reactive({
   data: {},
