@@ -3,20 +3,25 @@
         <div class="tag-box" ref="box">
             <div v-for="(item, i) in value" :key="item.id" ref="tags">
                 <div v-if="i != _index" class="tag">
-                    {{ item.name }}
+                    {{ item?.name }}
                 </div>
                 <div
                     v-else
                     class="tag-ellipsis"
                     :style="
                         i === _index
-                            ? {
-                                  width: `${offWidth}px`,
-                              }
+                            ? (offWidth
+                                ? {
+                                      width: `${offWidth}px`,
+                                  }
+                                : {
+                                      background: 'none',
+                                      color: 'white',
+                                  })
                             : {}
                     "
                 >
-                    {{ item.name }}
+                    {{ offWidth ? item?.name : '...' }}
                 </div>
             </div>
         </div>
@@ -45,7 +50,7 @@ const onResize = ({ width }: { width: number }) => {
         const val = item?.offsetWidth - (total - width);
         if (total >= width) {
             _index.value = i;
-            offWidth.value = val;
+            offWidth.value = val > 40 ? val : 0;
             break;
         }
     }

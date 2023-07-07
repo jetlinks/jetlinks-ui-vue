@@ -193,6 +193,7 @@ onUnmounted(() => {
             justify-content: space-between;
             align-items: center;
             height: 100%;
+            gap: 12px;
             .person-header-item-info {
                 display: flex;
                 width: calc(100% - 380px);

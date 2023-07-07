@@ -430,7 +430,7 @@
                                     >
                                         <template #label>
                                             <span>
-                                                模板ID
+                                                {{ formData.template.templateType === 'voice' ? '语音ID' : '模板ID' }}
                                                 <j-tooltip
                                                     title="阿里云内部分配的唯一ID标识"
                                                 >
@@ -953,7 +953,7 @@ const formRules = {
         }
       ],
       calledShowNumbers: [
-        { required: true, message: '请输入被叫显号' },
+        // { required: true, message: '请输入被叫显号' },
         { max: 64, message: '最多可输入64个字符' },
         {
           validator(_rule: Rule, value: string) {
