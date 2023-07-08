@@ -37,7 +37,7 @@
                 <AIcon type="ExclamationCircleOutlined" style="padding-left: 12px;padding-top: 4px;" />
               </j-tooltip>
             </template>
-            <Metrics ref="metricsRef" :value="myValue.expands?.metrics" :type="props.value?.valueType?.type"/>
+            <Metrics ref="metricsRef" :value="myValue.metrics" :type="props.type"/>
           </j-collapse-panel>
         </j-collapse>
 
@@ -49,10 +49,7 @@
       </div>
 
     </template>
-    <j-button>
-      <AIcon type="SettingOutlined" />
-      配置
-    </j-button>
+    <ModelButton />
   </j-popconfirm-modal>
 </template>
 
@@ -63,12 +60,17 @@ import {cloneDeep} from "lodash";
 import {useProductStore} from "store/product";
 import {useInstanceStore} from "store/instance";
 import {getMetadataConfig, getMetadataDeviceConfig} from "@/api/device/product";
+import ModelButton from '@/views/device/components/Metadata/Base/components/ModelButton.vue'
 import {omit} from "lodash-es";
 
 const props = defineProps({
   value: {
     type: Object,
     default: () => ({})
+  },
+  type: {
+    type: String,
+    default: undefined
   }
 })
 
@@ -90,7 +92,7 @@ const config = ref<any>([])
 const configValue = ref(props.value?.expands)
 
 const showMetrics = computed(() => {
-  return ['int', 'long', 'float', 'double', 'string', 'boolean', 'date'].includes(props.value?.valueType?.type as any)
+  return ['int', 'long', 'float', 'double', 'string', 'boolean', 'date'].includes(props.type as any)
 })
 
 const columns = ref([
@@ -114,15 +116,14 @@ const columns = ref([
 const getConfig = async () => {
   const record = props.value
   const id = type === 'product' ? productStore.current?.id : deviceStore.current.id
-  console.log(record.id, id, record.valueType)
-  if(!record.id || !id || !record.valueType.type) return
+  if(!record.id || !id || !record.type) return
 
   const params: any = {
     deviceId: id,
     metadata: {
       id: record.id,
       type: 'property',
-      dataType: record.valueType.type,
+      dataType: record.type,
     },
   }
 
@@ -162,17 +163,12 @@ const confirm = () => {
       if (metrics) {
         expands.metrics = metrics
       }
-      console.log(expands)
       emit('update:value', {
         ...props.value,
-        expands: {
-          ...(props.value.expands || {}),
-          ...expands
-        }
+        ...expands
       })
       resolve(true)
     } catch (err) {
-      console.log(err)
       reject(false)
     }
   })
@@ -180,18 +176,16 @@ const confirm = () => {
 
 const visibleChange = (e: boolean) => {
   if (e) {
-    configValue.value = omit(props.value?.expands, ['source', 'type', 'metrics', 'required'])
+    configValue.value = omit(props.value, ['source', 'type', 'metrics', 'required'])
     getConfig()
   }
 }
 
 const cancel = () => {
-  console.log(props.value)
   myValue.value = cloneDeep(props.value)
 }
 
 watch(() => props.value, () => {
-  console.log(props.value)
   myValue.value = cloneDeep(props.value)
 }, {immediate: true, deep: true})
 

@@ -3,6 +3,7 @@
       visible
       title="功能详情"
       width="650px"
+      :maskClosable="false"
       @cancel="cancel"
       @ok="ok"
   >

@@ -6,6 +6,7 @@ import { EventLevel } from "@/views/device/data";
 import {MetadataType} from "@/views/device/Product/typings";
 import { getUnit } from '@/api/device/instance';
 import {Ref} from "vue";
+import {omit} from "lodash-es";
 interface DataTableColumnProps extends ColumnProps {
   type?: string,
   components?: {
@@ -39,7 +40,9 @@ export const handleTypeValue = (type:string, value: any = {}) => {
       obj.elementType = value
       break;
     case 'object':
-      obj.properties = value
+      obj.properties = (value || []).map((item: any) => {
+        return omit(item, ['config', 'action', '_sortIndex'])
+      })
       break;
     case 'int':
     case 'long':
@@ -119,13 +122,19 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
               const fieldIndex = Number(field[1])
               const hasId = dataSource.some((item, index) => item.id === value && fieldIndex !== index)
               if (hasId) {
-                return Promise.reject('该标识存在')
+                return Promise.reject('该标识已存在')
               }
               return Promise.resolve()
             }
             return Promise.reject('请输入标识')
-          }
-        }]
+          },
+        },
+          { max: 64, message: '最多可输入64个字符' },
+          {
+            pattern: /^[a-zA-Z0-9_\-]+$/,
+            message: 'ID只能由数字、字母、下划线、中划线组成',
+          },
+        ]
       },
       doubleClick(record) {
         const ids = (noEdit?.value?.id || []) as any[]
@@ -139,10 +148,13 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       type: 'text',
       form: {
         required: true,
-        rules: [{
-          required: true,
-          message: '请输入名称'
-        }]
+        rules: [
+            {
+            required: true,
+            message: '请输入名称'
+          },
+          { max: 64, message: '最多可输入64个字符' },
+        ]
       }
     },
   ];
@@ -262,9 +274,10 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       },
       form: {
         required: true,
-        rules: [
+        rules: target !== 'device' ? [
           {
             validator: async (_: Record<string, any>, value: any) => {
+              console.log('expands',value)
               if (value.source) {
                 if(value.source !== 'rule') {
                   if(value.type?.length) {
@@ -284,7 +297,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
               }
             }
           },
-        ]
+        ]: []
       },
       width: 150
     },
@@ -307,7 +320,19 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       type: 'components',
       components: {
         name: DataType,
-      }
+      },
+      form: {
+        required: true,
+        rules: [{
+          validator(_: any, value: any) {
+            console.log('validator',value)
+            if (!value?.type) {
+              return Promise.reject('请选择数据类型')
+            }
+            return Promise.resolve()
+          }
+        }]
+      },
     },
     {
       title: '读写类型',
@@ -332,7 +357,6 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
   const columns = ref<any[]>([])
 
   watch(() => JSON.stringify(noEdit!.value), () => {
-    console.log(noEdit!.value)
     switch(type) {
       case 'properties':
         columns.value = PropertyColumns
@@ -356,21 +380,39 @@ export const useUnit = (type: Ref<string>) => {
   const unitOptions = ref<Array<{ label: string, value: any }>>([])
 
   watch(() => type.value, () => {
+    console.log('type.value',type.value)
     if (['float', 'double', 'int', 'long'].includes(type.value) && !unitOptions.value.length) {
       getUnit().then((res) => {
         if (res.success) {
           unitOptions.value = res.result.map((item: any) => ({
                 label: item.description,
                 value: item.id,
-            }));
-      }
-    });
-  }
-  })
+          }));
+        }
+      });
+    }
+  }, { immediate: true })
+
 
   return { unitOptions }
 }
 
+
+export const TypeStringMap = {
+  int: 'int(整数型)',
+  long: 'long(长整数型)',
+  float: 'float(单精度浮点型)',
+  double: 'double(双精度浮点数)',
+  string: 'text(字符串)',
+  boolean: 'boolean(布尔型)',
+  date: 'date(时间型)',
+  enum: 'enum(枚举)',
+  array: 'array(数组)',
+  object: 'object(结构体)',
+  file: 'file(文件)',
+  password: 'password(密码)',
+  geoPoint: 'geoPoint(地理位置)',
+}
 
 // const MetadataMapping = new Map<string, DataTableColumnProps[]>();
 // MetadataMapping.set('properties', PropertyColumns);

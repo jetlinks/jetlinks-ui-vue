@@ -1,19 +1,16 @@
 <template>
     <DataTableObject v-model:value="value" :columns="columns" @confirm="confirm">
             <template #valueType="{ data }">
-                <span>{{ data.record.valueType?.type }}</span>
+                <span>{{ TypeStringMap[data.record.valueType?.type] }}</span>
             </template>
             <template #config="{ data }">
-                <ConfigModal v-model:value="data.record" />
+                <ConfigModal v-model:value="data.record.valueType" :showOther="false" />
             </template>
-            <j-button>
-                <AIcon type="SettingOutlined" />
-                配置
-            </j-button>
+            <ModelButton />
         </DataTableObject>
 </template>
 
-<script setup lang="ts" name="InputParams">
+<script setup lang="ts" name="ConfigParams">
 import type { PropType } from 'vue';
 import {
     DataTableObject,
@@ -21,6 +18,9 @@ import {
 import { ValueObject } from '../index'
 
 import ConfigModal from '@/views/device/components/Metadata/Base/components/ConfigModal.vue'
+import ModelButton from '@/views/device/components/Metadata/Base/components/ModelButton.vue'
+import {omit} from "lodash-es";
+import {TypeStringMap} from "../../columns";
 
 const columns = [
     { 
@@ -36,13 +36,19 @@ const columns = [
                     const fieldIndex = Number(field[1])
                     const hasId = _dataSource.some((item, index) => item.id === value && fieldIndex !== index)
                     if (hasId) {
-                        return Promise.reject('该标识存在')
+                        return Promise.reject('该标识已存在')
                     }
                     return Promise.resolve()
                     }
                     return Promise.reject('请输入标识')
                 }
-            }]
+            },
+              { max: 64, message: '最多可输入64个字符' },
+              {
+                pattern: /^[a-zA-Z0-9_\-]+$/,
+                message: 'ID只能由数字、字母、下划线、中划线组成',
+              },
+            ]
         }
     },
     { 
@@ -53,8 +59,10 @@ const columns = [
             required: true,
             rules: [{
                 required: true,
-                message: '请输入参数标识名称'
-            }]
+                message: '请输入参数名称'
+            },
+              { max: 64, message: '最多可输入64个字符' },
+            ]
         }
     },
     {
@@ -63,10 +71,19 @@ const columns = [
         dataIndex: 'valueType',
         components: {
             name: ValueObject,
-            props: {
-                filter: ['object']
-            }
         },
+      form: {
+        required: true,
+        rules: [{
+          validator(_: any, value: any) {
+            console.log('validator',value)
+            if (!value?.type) {
+              return Promise.reject('请选择数据类型')
+            }
+            return Promise.resolve()
+          }
+        }]
+      }
     },
     {
         title: '其他配置',
@@ -87,8 +104,8 @@ type Emits = {
 const emit = defineEmits<Emits>();
 const props = defineProps({
     value: {
-        type: Object as PropType<Record<string, any>>,
-        default: () => {},
+        type: Object,
+        default: () => ({}),
     },
     placeholder: {
         type: String,
@@ -100,35 +117,26 @@ const props = defineProps({
     },
 });
 
-const value = ref(props.value.valueType?.properties);
-const type = computed(() => {
-    return props.value.valueType?.type
-})
-
-const change = (v: string) => {
-    emit('update:value', { ...props.value, async: value.value });
-    emit('change', v);
-};
+const value = ref(props.value.properties);
 
 const confirm = (data: any) => {
+  console.log('ConfigParams',data)
   const newObject = data.map((item) => {
-    const { config, action, _sortIndex, ...extra } = item
-    return extra
+    return omit(item, ['_sortIndex', 'config', 'action'])
   })
+
+  console.log('ConfigParams',newObject)
   
   emit('update:value', {
-    ...props.value,
-    valueType: {
-      properties: newObject,
-      type: props.value.valueType.type,
-    }
+    properties: newObject,
+    type: 'object',
   })
 }
 
 watch(
     () => props.value,
     (newV) => {
-        value.value = props.value.valueType?.properties;
+        value.value = props.value.properties;
     },
     { immediate: true },
 );

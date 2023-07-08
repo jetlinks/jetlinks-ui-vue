@@ -2,7 +2,7 @@
   <j-modal
       visible
       :maskClosable="false"
-      title="属性详情"
+      title="标签详情"
       @cancel="cancel"
       @ok="ok"
   >
@@ -14,9 +14,9 @@
           justifyContent: 'end'
         }"
     >
-      <a-descriptions-item label="属性标识">{{ data.id }}</a-descriptions-item>
-      <a-descriptions-item label="属性名称">{{ data.name }}</a-descriptions-item>
-      <a-descriptions-item label="属性类型">{{ TypeStringMap[data.valueType.type] }}</a-descriptions-item>
+      <a-descriptions-item label="标签标识">{{ data.id }}</a-descriptions-item>
+      <a-descriptions-item label="标签名称">{{ data.name }}</a-descriptions-item>
+      <a-descriptions-item label="标签类型">{{ data.valueType.type }}</a-descriptions-item>
       <a-descriptions-item v-if="['int', 'long', 'float', 'double'].includes(data.valueType.type)" label="单位">{{ unitLabel }}</a-descriptions-item>
       <a-descriptions-item v-if="['float', 'double'].includes(data.valueType.type)" label="精度">{{ data.valueType?.scale }}</a-descriptions-item>
       <a-descriptions-item v-if="['string', 'password'].includes(data.valueType.type)" label="最大长度">{{ data.valueType?.maxLength }}</a-descriptions-item>
@@ -28,26 +28,7 @@
       >
         <JsonView :value="dataTypeTable.dataSource"/>
       </a-descriptions-item>
-      <a-descriptions-item label="属性来源">
-        {{ sourceMap[data.expands.source] }}
-      </a-descriptions-item>
       <a-descriptions-item label="读写类型">{{ readTypeText }}</a-descriptions-item>
-      <a-descriptions-item v-if="showSetting" label="存储方式">{{ data.id }}</a-descriptions-item>
-      <a-descriptions-item v-if="showMetrics" label="指标配置"></a-descriptions-item>
-      <a-descriptions-item v-if="showMetrics">
-        <j-table
-            :columns="metrics.columns"
-            :dataSource="metrics.dataSource"
-            :pagination="false"
-            size="small"
-        >
-          <template #bodyCell="{column, record}">
-            <span v-if="column.dataIndex === 'value'">
-              {{ record.range === 'true' ? record.value?.join('-') : record.value }}
-            </span>
-          </template>
-        </j-table>
-      </a-descriptions-item>
     </j-descriptions>
     <template #footer>
       <j-button type="primary" @click="ok">确认</j-button>
@@ -55,13 +36,12 @@
   </j-modal>
 </template>
 
-<script setup lang="ts" name="PropertiesModal">
+<script setup lang="ts" name="TagsModal">
 import {OtherConfigInfo} from "@/views/device/components/Metadata/Base/components";
 import {omit} from "lodash-es";
 import {watch} from "vue";
 import JsonView from './JsonView.vue'
 import {getUnit} from "@/api/device/instance";
-import {TypeStringMap} from "@/views/device/components/Metadata/Base/columns";
 
 const props = defineProps({
   data: {
@@ -73,9 +53,9 @@ const props = defineProps({
 const emit = defineEmits(['cancel'])
 
 const sourceMap = {
-    'device': '设备',
-    'manual': '手动',
-    'rule': '规则',
+  'device': '设备',
+  'manual': '手动',
+  'rule': '规则',
 }
 
 const readTypeText = computed(() => {
@@ -99,27 +79,15 @@ const metrics = reactive<{ columns: any[], dataSource: any }>({
   columns: [
     { title: '指标标识', dataIndex: 'id' },
     { title: '指标名称', dataIndex: 'name' },
-    { title: '指标值', dataIndex: 'value' },
+    { title: '指标治', dataIndex: 'value' },
   ],
   dataSource: []
 })
 
-const showMetrics = computed(() => {
-  const show = props.data?.expands?.metrics?.length
-  if (show) {
-      metrics.dataSource = props.data?.expands?.metrics
-  }
-  return show
-})
 
 const showSetting = computed(() => {
   const setting = omit((props.data?.expands || {}), ['type', 'source'])
   return Object.values(setting).length
-})
-
-const settingValue = computed(() => {
-  console.log(showSetting.value)
-  return ''
 })
 
 const handleDataTable = (type: string) => {
@@ -138,7 +106,7 @@ const handleDataTable = (type: string) => {
         { title: '名称', dataIndex: 'name'},
       ]
       dataTypeTable.dataSource = props.data.valueType?.properties
-          break;
+      break;
     case 'boolean':
       dataTypeTable.dataSource = {
         ...omit(props.data.valueType, ['type'])

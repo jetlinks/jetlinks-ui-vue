@@ -12,10 +12,10 @@
         <template #expand>
           <PermissionButton
               type="primary"
-              v-if="!dataSource.length"
+              v-if="!showSave"
               :hasPermission="`${permission}:update`"
               key="add"
-              @click="handleAddClick()"
+
               :disabled="hasOperate('add', type)"
               :tooltip="{
                     placement: hasOperate('add', type) ? 'topRight' : 'top',
@@ -23,6 +23,7 @@
                         ? '当前的存储方式不支持新增'
                         : '新增',
                 }"
+              @click="handleAddClick()"
           >
             新增
           </PermissionButton>
@@ -31,7 +32,8 @@
               :hasPermission="`${permission}:update`"
               key="update"
               v-else
-              @click="handleSaveClick"
+              :loading="loading"
+
               :disabled="hasOperate('add', type)"
               :tooltip="{
                     title: hasOperate('add', type)
@@ -39,6 +41,7 @@
                         : '保存',
                     placement: hasOperate('add', type) ? 'topRight' : 'top',
                 }"
+              @click="handleSaveClick"
           >
             保存
           </PermissionButton>
@@ -89,7 +92,7 @@
             {{ sourceMap?.[data.record?.expands?.source] || '' }}
         </template>
         <template #inputs="{ data }">
-          <InputParams v-model:value="data.record" />
+          <InputParams v-model:value="data.record.inputs" />
         </template>
         <template #output="{ data }">
           {{ data.record.output?.type }}
@@ -101,7 +104,7 @@
           {{ levelMap?.[data.record.expands?.level] || '-' }}
         </template>
         <template #properties="{ data }">
-          <ConfigParams v-model:value="data.record" />
+          <ConfigParams v-model:value="data.record.valueType" />
         </template>
         <template #outInput>
           object
@@ -112,7 +115,7 @@
           </j-tag>
         </template>
         <template #other="{ data }">
-          <OtherSetting v-model:value="data.record" />
+          <OtherSetting v-model:value="data.record.expands" :type="data.record.valueType.type" />
         </template>
         <template #action="{data}">
           <j-space>
@@ -143,7 +146,6 @@
               <AIcon type="PlusSquareOutlined" />
             </PermissionButton>
             <PermissionButton
-                v-if="type !== 'tags'"
                 :has-permission="true"
                 type="link"
                 key="edit"
@@ -163,9 +165,9 @@
                 danger
                 :pop-confirm="{
                   placement: 'topRight',
-                title: dataSource.length === 1 ? '这是最后一条数据了，确认删除？' : '确认删除？',
+                title: showSave ? '这是最后一条数据了，确认删除？' : '确认删除？',
                 onConfirm: async () => {
-                    await removeItem(data.index, dataSource.length === 1);
+                    await removeItem(data.index, showSave);
                   },
                 }"
                 :tooltip="{
@@ -189,6 +191,11 @@
     />
     <EventModal
         v-else-if="type === 'events' && detailData.visible"
+        :data="detailData.data"
+        @cancel="cancelDetailModal"
+    />
+    <TagsModal
+        v-else-if="type === 'tags' && detailData.visible"
         :data="detailData.data"
         @cancel="cancelDetailModal"
     />
@@ -216,13 +223,13 @@ import { DeviceInstance } from '@/views/device/Instance/typings';
 import { onlyMessage } from '@/utils/comm';
 import {omit} from "lodash-es";
 import {useAction} from "@/views/device/components/Metadata/Base/hooks/useAction";
-import { PropertiesModal, FunctionModal, EventModal } from './DetailModal'
+import { PropertiesModal, FunctionModal, EventModal, TagsModal } from './DetailModal'
 
 const props = defineProps({
-    // target: {
-    //     type: String as PropType<'device' | 'product'>,
-    //     default: 'product',
-    // },
+    target: {
+        type: String as PropType<'device' | 'product'>,
+        default: 'product',
+    },
     type: {
         type: String as PropType<MetadataType>,
         default: undefined,
@@ -233,10 +240,10 @@ const props = defineProps({
     },
 });
 
-const target = inject<'device' | 'product'>('_metadataType', 'product');
+const _target = inject<'device' | 'product'>('_metadataType', props.target);
 
-const { data: metadata, noEdit } = useMetadata(target, props.type);
-const { hasOperate } = useOperateLimits(target);
+const { data: metadata, noEdit } = useMetadata(_target, props.type);
+const { hasOperate } = useOperateLimits(_target);
 
 const metadataStore = useMetadataStore()
 const instanceStore = useInstanceStore()
@@ -244,14 +251,18 @@ const productStore = useProductStore()
 
 const dataSource = ref<MetadataItem[]>(metadata.value || []);
 const tableRef = ref();
+const loading = ref(false)
 
 // const columns = computed(() => MetadataMapping.get(props.type!));
-const {columns} = useColumns(props.type, target, noEdit)
+const {columns} = useColumns(props.type, _target, noEdit)
 
 const detailData = reactive({
   data: {},
   visible:false
 })
+
+const showSave = ref(!!metadata.value.length)
+
 const { addAction, copyAction, removeAction } = useAction(tableRef)
 
 provide('_dataSource', dataSource.value)
@@ -268,7 +279,7 @@ const cancelDetailModal = () => {
 
 const operateLimits = (action: 'add' | 'updata', types: MetadataType) => {
   return (
-      target === 'device' &&
+      _target === 'device' &&
       (instanceStore.detail.features || []).find((item: { id: string; name: string }) => item.id === limitsMap.get(`${types}-${action}`))
   );
 };
@@ -339,21 +350,23 @@ const handleAddClick = async (_data?: any, index?: number) => {
 
   
 
-  const data = [...dataSource.value];
-
-  if (index !== undefined) {
-    //  校验
-    const _data = await tableRef.value.getData()
-    console.log(_data)
-    if (_data) {
-      data.splice(index + 1, 0, newObject);
-    }
-  } else {
-      data.push(newObject);
-  }
-  dataSource.value = data
-  const _index = index !== undefined ? index + 1 : 0
-  tableRef.value?.addItemAll?.(_index)
+  // const data = [...dataSource.value];
+  //
+  // if (index !== undefined) {
+  //   //  校验
+  //   const _data = await tableRef.value.getData()
+  //   console.log(_data)
+  //   if (_data) {
+  //     data.splice(index + 1, 0, newObject);
+  //   }
+  // } else {
+  //     data.push(newObject);
+  // }
+  // dataSource.value = data
+  tableRef.value.addItem(newObject, index)
+  showSave.value = true
+  // const _index = index !== undefined ? index + 1 : 0
+  // tableRef.value?.addItemAll?.(_index)
 };
 
 const copyItem = (record: any, index: number) => {
@@ -363,9 +376,13 @@ const copyItem = (record: any, index: number) => {
 }
 
 const removeItem = (index: number, isSave: false) => {
-  const data = [...dataSource.value];
-  data.splice(index, 1);
-  dataSource.value = data
+  // const data = [...dataSource.value];
+  // data.splice(index, 1);
+  // dataSource.value = data
+  const _data = tableRef.value.removeItem(index)
+  if (_data.length === 0) {
+    showSave.value = false
+  }
   if (isSave) {
     handleSaveClick()
   }
@@ -399,7 +416,7 @@ const handleSaveClick = async () => {
       // 保存规则
       if(virtual.length) {
         let res = undefined
-        if(target === 'device') {
+        if(_target === 'device') {
           res = await saveDeviceVirtualProperty(instanceStore.current.productId, instanceStore.current.id, virtual)
         } else {
           res = await saveProductVirtualProperty(productStore.current.id, virtual)
@@ -407,7 +424,7 @@ const handleSaveClick = async () => {
       }
       // 保存属性
       const updateStore = (metadata: string) => {
-        if (target === 'device') {
+        if (_target === 'device') {
           const detail = instanceStore.current
           detail.metadata = metadata
           instanceStore.setCurrent(detail)
@@ -417,10 +434,12 @@ const handleSaveClick = async () => {
           productStore.setCurrent(detail)
         }
       }
-      const _detail: ProductItem | DeviceInstance = target === 'device' ? instanceStore.detail : productStore.current
+      const _detail: ProductItem | DeviceInstance = _target === 'device' ? instanceStore.detail : productStore.current
       let _data = updateMetadata(props.type!, arr, _detail, updateStore)
-
-      const result = await asyncUpdateMetadata(target, _data)
+      loading.value = true
+      const result = await asyncUpdateMetadata(_target, _data).finally(() => {
+        loading.value = false
+      })
       if(result.success) {
         dataSource.value = resp
         onlyMessage('操作成功！')

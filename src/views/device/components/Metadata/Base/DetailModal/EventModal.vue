@@ -1,6 +1,7 @@
 <template>
   <j-modal
       visible
+      :maskClosable="false"
       title="事件详情"
       width="650px"
       @cancel="cancel"

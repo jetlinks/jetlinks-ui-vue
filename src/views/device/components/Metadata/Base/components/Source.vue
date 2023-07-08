@@ -8,31 +8,32 @@
             :disabled="disabled"
         >
         </j-select>
-        <j-popconfirm-modal
-            v-if="myValue != 'manual'"
-            @confirm="confirm"
-            :bodyStyle="{width: '450px', height: myValue === 'rule' ? '300px' : '80px'}"
-        >
-            <template #content>
-                <j-scrollbar v-if="myValue">
-                    <VirtualRule
-                        :value="value"
-                        :source="myValue"
-                        :dataSource="dataSource"
-                        ref="virtualRuleRef"
-                    />
-                </j-scrollbar>
-            </template>
-            <j-button :disabled="!myValue" type="link" style="padding: 4px 8px">
-                <AIcon type="EditOutlined" />
-            </j-button>
-        </j-popconfirm-modal>
+      <j-popconfirm-modal
+          v-if="myValue != 'manual'"
+          @confirm="confirm"
+          :bodyStyle="{width: '450px', height: myValue === 'rule' ? '300px' : '80px'}"
+      >
+        <template #content>
+          <j-scrollbar v-if="myValue">
+            <VirtualRule
+                :value="value"
+                :source="myValue"
+                :dataSource="dataSource"
+                ref="virtualRuleRef"
+            />
+          </j-scrollbar>
+        </template>
+        <j-button :disabled="!myValue" type="link" style="padding: 4px 8px">
+          <AIcon type="EditOutlined" />
+        </j-button>
+      </j-popconfirm-modal>
     </div>
 </template>
 
 <script setup lang="ts" name="MetadataSource">
 import { isNoCommunity } from '@/utils/utils';
 import VirtualRule from './VirtualRule/index.vue';
+import { Form } from 'jetlinks-ui-components'
 
 const PropertySource: { label: string; value: string }[] = isNoCommunity
     ? [
@@ -82,6 +83,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits<Emit>();
+const formItemContext = Form.useInjectFormItemContext();
 
 const myValue = ref<SourceType>('');
 const type = ref<string>('');
@@ -93,20 +95,27 @@ const disabled = computed(() => {
     return props.noEdit?.length ? props.noEdit.includes(props.value._sortIndex) :false
 })
 
+const updateValue = (data: any) => {
+  emit('update:value', {
+    ...props.value,
+    expands: {
+      ...(props.value?.expands || {}),
+      ...data
+    }
+  })
+  formItemContext.onFieldChange()
+}
+
 const onChange = (keys: SourceType) => {
     myValue.value = keys;
-    emit('update:value', {
-        ...props.value,
-        expands: {
-            ...props.value?.expands,
-            source: keys,
-            type:
-                keys === 'manual'
-                    ? ['write']
-                    : keys === 'rule'
-                    ? ['report']
-                    : [],
-        },
+  updateValue({
+    source: keys,
+    type:
+        keys === 'manual'
+            ? ['write']
+            : keys === 'rule'
+                ? ['report']
+                : [],
     });
 };
 
@@ -116,15 +125,11 @@ const confirm = async () => {
             reject();
         });
         if (data) {
-            const obj = {
-                ...props.value,
-                expands: {
-                    ...props.value?.expands,
-                    ...data,
-                },
-            };
-          console.log(obj)
-            emit('update:value', obj);
+          console.log(data)
+          updateValue({
+            source: myValue.value,
+            ...data
+          });
             resolve(true);
         } else {
             reject()

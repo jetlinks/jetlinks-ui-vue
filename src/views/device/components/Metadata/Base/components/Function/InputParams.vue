@@ -1,18 +1,15 @@
 <template>
-  <DataTableObject :value="dataSource" :columns="columns" :onAdd="addItem" width="700px" @confirm="confirm">
+  <DataTableObject :value="value" :columns="columns" :onAdd="addItem" width="700px" @confirm="confirm">
     <template #valueType="{ data }">
-      <span>{{ data.record.valueType?.type }}</span>
+      <span>{{ TypeStringMap[data.record.valueType?.type] }}</span>
     </template>
     <template #required="{ data }">
       <span>{{ data.record.expands?.required ? "是": '否' }}</span>
     </template>
     <template #config="{ data }">
-      <ConfigModal v-model:value="data.record" />
+      <ConfigModal v-model:value="data.record.valueType" :showOther="false" />
     </template>
-    <j-button>
-      <AIcon type="SettingOutlined" />
-      配置
-    </j-button>
+    <ModelButton />
   </DataTableObject>
 </template>
 
@@ -23,7 +20,8 @@ import {
     DataTableObject,
 } from 'jetlinks-ui-components';
 import { ConstraintSelect, ValueObject } from '../index'
-
+import {TypeStringMap} from "../../columns";
+import ModelButton from '@/views/device/components/Metadata/Base/components/ModelButton.vue'
 
 type Emits = {
     (e: 'update:value', data: Record<string, any>): void;
@@ -33,8 +31,8 @@ type Emits = {
 const emit = defineEmits<Emits>();
 const props = defineProps({
     value: {
-        type: Object as PropType<Record<string, any>>,
-        default: () => {},
+        type: Array,
+        default: () => [],
     },
     placeholder: {
         type: String,
@@ -68,7 +66,6 @@ const columns = ref([
     form: {
       required: true,
       rules: [
-        { required: true, message: '请输入标识' },
         {
           callback(rule:any,value: any, _dataSource: any[]) {
             if (value) {
@@ -76,17 +73,30 @@ const columns = ref([
               const fieldIndex = Number(field[1])
               const hasId = _dataSource.some((item, index) => item.id === value && fieldIndex !== index)
               if (hasId) {
-                return Promise.reject('该标识存在')
+                return Promise.reject('该标识已存在')
               }
               return Promise.resolve()
             }
             return Promise.reject('请输入标识')
           }
         },
+        { max: 64, message: '最多可输入64个字符' },
+        {
+          pattern: /^[a-zA-Z0-9_\-]+$/,
+          message: 'ID只能由数字、字母、下划线、中划线组成',
+        },
       ]
     }
   },
-  { title: '参数名称', dataIndex: 'name', type: 'text', form: { required: true, rules: [{ required: true, message: '请输入名称'}]} },
+  {
+    title: '参数名称',
+    dataIndex: 'name',
+    type: 'text',
+    form: {
+      required: true,
+      rules: [{ required: true, message: '请输入名称'}, { max: 64, message: '最多可输入64个字符' },]
+    }
+  },
   {
     title: '填写约束',
     dataIndex: 'required',
@@ -102,9 +112,18 @@ const columns = ref([
     dataIndex: 'valueType',
     components: {
       name: ValueObject,
-      form: {
-        required: true
-      }
+    },
+    form: {
+      required: true,
+      rules: [{
+        validator(_: any, value: any) {
+          console.log('validator',value)
+          if (!value?.type) {
+            return Promise.reject('请选择数据类型')
+          }
+          return Promise.resolve()
+        }
+      }]
     },
   },
   {
@@ -118,28 +137,20 @@ const columns = ref([
   },
 ])
 
-const dataSource = ref(props.value);
+// const dataSource = ref(props.value.inputs);
 
-const change = (v: string) => {
-    emit('update:value', { ...props.value, async: dataSource.value });
-    emit('change', v);
-};
-
-watch(
-    () => JSON.stringify(props.value),
-    (newV) => {
-      console.log('inputParams-change')
-      dataSource.value = props.value.inputs;
-    },
-    { immediate: true },
-);
+// watch(
+//     () => JSON.stringify(props.value),
+//     (newV) => {
+//       console.log('inputParams-change', props.value.inputs)
+//       dataSource.value = props.value.inputs;
+//     },
+//     { immediate: true },
+// );
 
 const confirm = (v: any) => {
   console.log('inputParams',v)
-  emit('update:value', {
-    ...props.value,
-    inputs: v
-  })
+  emit('update:value', v)
 }
 </script>
 

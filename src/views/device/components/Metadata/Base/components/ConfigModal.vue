@@ -6,94 +6,23 @@
       placement="topRight"
       @confirm="valueChange"
   >
-    <j-button>
-      <AIcon type="SettingOutlined" />
-      配置
-    </j-button>
+    <ModelButton />
   </DataTableArray>
   <DataTableObject
-      v-else-if="type === 'object'"
+      v-else-if="type === 'object' && showOther"
       :value="myValue.properties"
       placement="topRight"
       :onAdd="objectAdd"
-      :columns="[
-                {
-                  title: '参数标识',
-                  dataIndex: 'id',
-                  type: 'text',
-                  width: 100,
-                  form: {
-                    required: true,
-                    rules: [
-                      {
-                        callback(rule:any,value: any, _dataSource: any[]) {
-                          if (value) {
-                            const field = rule.field.split('.')
-                            const fieldIndex = Number(field[1])
-                            const hasId = _dataSource.some((item, index) => item.id === value && fieldIndex !== index)
-                            if (hasId) {
-                              return Promise.reject('该标识存在')
-                            }
-                            return Promise.resolve()
-                          }
-                          return Promise.reject('请输入标识')
-                        }
-                      }
-                    ]
-                  }
-                },
-                {
-                  title: '参数名称',
-                  dataIndex: 'name',
-                  type: 'text',
-                  width: 100,
-                  form: {
-                    required: true,
-                    rules: [{
-                          required: true,
-                          message: '请输入参数名称'
-                      }]
-                  }
-                },
-                {
-                    title: '数据类型',
-                    type: 'components',
-                    dataIndex: 'valueType',
-                    components: {
-                      name: ValueObject,
-                      props: {
-                        filter: ['object']
-                      }
-                    },
-                    width: 100
-                },
-                {
-                  title: '其他配置',
-                  type: 'components',
-                  dataIndex: 'config',
-                  components: {
-                    name: DataTypeObjectChild
-                  },
-                  width: 100
-                },
-                {
-                  title: '操作',
-                  dataIndex: 'action',
-                  width: 60
-                }
-            ]"
+      :columns="columns"
       @confirm="valueChange"
   >
     <template #valueType="{ data }">
-      {{ data.record.valueType?.type }}
+      {{ TypeStringMap[data.record.valueType?.type] }}
     </template>
     <template #config="{ data }">
       <OtherConfigInfo :value="data.record.valueType"></OtherConfigInfo>
     </template>
-    <j-button>
-      <AIcon type="SettingOutlined" />
-      配置
-    </j-button>
+    <ModelButton />
   </DataTableObject>
   <DataTableEnum
       v-else-if="type === 'enum'"
@@ -101,10 +30,7 @@
       placement="topRight"
       @confirm="valueChange"
   >
-    <j-button>
-      <AIcon type="SettingOutlined" />
-      配置
-    </j-button>
+    <ModelButton />
   </DataTableEnum>
   <DataTableBoolean
       v-else-if="type === 'boolean'"
@@ -112,34 +38,26 @@
       placement="topRight"
       @confirm="valueChange"
   >
-    <j-button>
-      <AIcon type="SettingOutlined" />
-      配置
-    </j-button>
+    <ModelButton />
   </DataTableBoolean>
   <DataTableDouble
       v-else-if="['float', 'double'].includes(type)"
       :options="unitOptions"
+      :showUnit="false"
       v-model:value="myValue"
       placement="topRight"
       @confirm="valueChange"
   >
-    <j-button>
-      <AIcon type="SettingOutlined" />
-      配置
-    </j-button>
+    <ModelButton />
   </DataTableDouble>
   <DataTableInteger
-      v-else-if="['int', 'long'].includes(type)"
+      v-else-if="['int', 'long'].includes(type)  && showOther"
       :options="unitOptions"
       v-model:value="myValue.unit"
       placement="topRight"
       @confirm="valueChange"
   >
-    <j-button>
-      <AIcon type="SettingOutlined" />
-      配置
-    </j-button>
+    <ModelButton />
   </DataTableInteger>
   <DataTableFile
       v-else-if="type === 'file'"
@@ -147,10 +65,7 @@
       placement="topRight"
       @confirm="valueChange"
   >
-    <j-button>
-      <AIcon type="SettingOutlined" />
-      配置
-    </j-button>
+    <ModelButton />
   </DataTableFile>
   <DataTableDate
       v-else-if="type === 'date'"
@@ -158,20 +73,14 @@
       placement="topRight"
       @confirm="valueChange"
   >
-    <j-button>
-      <AIcon type="SettingOutlined" />
-      配置
-    </j-button>
+    <ModelButton />
   </DataTableDate>
   <DataTableString
       v-else-if="['string', 'password'].includes(type)"
       v-model:value="myValue.maxLength"
       placement="topRight"
   >
-    <j-button>
-      <AIcon type="SettingOutlined" />
-      配置
-    </j-button>
+    <ModelButton />
   </DataTableString>
   <span v-else>
     无
@@ -203,11 +112,16 @@ const props = defineProps({
   valueKey: {
     type: String,
     default: 'valueType'
+  },
+  showOther: {
+    type: Boolean,
+    default: true
   }
 })
 
 const emit = defineEmits(['update:value'])
-import {useUnit} from "@/views/device/components/Metadata/Base/columns";
+import {handleTypeValue, TypeStringMap, useUnit} from "@/views/device/components/Metadata/Base/columns";
+import ModelButton from '@/views/device/components/Metadata/Base/components/ModelButton.vue'
 
 const objectAdd = () => {
   return {
@@ -221,20 +135,113 @@ const objectAdd = () => {
 
 const options = ref([])
 
-const type = ref(props.value?.[props.valueKey]?.type)
+const type = ref(props.value?.type)
 
 const { unitOptions } = useUnit(type)
 
-const myValue = ref(props.value?.[props.valueKey])
+const myValue = ref(props.value)
 
-const valueChange = () => {
+const columns = [
+  {
+    title: '参数标识',
+    dataIndex: 'id',
+    type: 'text',
+    width: 100,
+    form: {
+      required: true,
+      rules: [
+        {
+          callback(rule:any,value: any, _dataSource: any[]) {
+            if (value) {
+              const field = rule.field.split('.')
+              const fieldIndex = Number(field[1])
+              const hasId = _dataSource.some((item, index) => item.id === value && fieldIndex !== index)
+              if (hasId) {
+                return Promise.reject('该标识已存在')
+              }
+              return Promise.resolve()
+            }
+            return Promise.reject('请输入标识')
+          }
+        },
+        { max: 64, message: '最多可输入64个字符' },
+        {
+          pattern: /^[a-zA-Z0-9_\-]+$/,
+          message: 'ID只能由数字、字母、下划线、中划线组成',
+        },
+      ]
+    }
+  },
+  {
+    title: '参数名称',
+    dataIndex: 'name',
+    type: 'text',
+    width: 100,
+    form: {
+      required: true,
+      rules: [{
+        required: true,
+        message: '请输入参数名称'
+      },
+        { max: 64, message: '最多可输入64个字符' }
+      ]
+    }
+  },
+  {
+    title: '数据类型',
+    type: 'components',
+    dataIndex: 'valueType',
+    components: {
+      name: ValueObject,
+    },
+    form: {
+      required: true,
+      rules: [{
+        validator(_: any, value: any) {
+          console.log('validator',value)
+          if (!value?.type) {
+            return Promise.reject('请选择数据类型')
+          }
+          return Promise.resolve()
+        }
+      }]
+    },
+    width: 100
+  },
+  {
+    title: '其他配置',
+    type: 'components',
+    dataIndex: 'config',
+    components: {
+      name: DataTypeObjectChild
+    },
+    width: 100
+  },
+  {
+    title: '操作',
+    dataIndex: 'action',
+    width: 60
+  }
+]
 
+const valueChange = (data: any) => {
+  console.log('configModal - confirm',data, props.value, type.value)
+  const newObj = handleTypeValue(type.value, data)
+  console.log('configModal - newObj', newObj)
+  console.log('configModal - newObj2', {
+    type: type.value,
+    ...newObj
+  })
+  emit('update:value', {
+    type: type.value,
+    ...newObj
+  })
 }
 
 watch(() => JSON.stringify(props.value), () => {
   console.log(props.value)
-  type.value = props.value?.[props.valueKey]?.type
-  myValue.value = props.value?.[props.valueKey]
+  type.value = props.value?.type
+  myValue.value = props.value
 })
 
 </script>

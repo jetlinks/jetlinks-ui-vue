@@ -331,8 +331,9 @@ const submitData = () => {
                 form.classifiedName
                     ? form.classifiedName
                     : (form.classifiedName = '');
-                const res = await editProduct(form);
-                loading.value = false
+                const res = await editProduct(form).finally(() => {
+                  loading.value = false
+                });
                 if (res.status === 200) {
                     message.success('保存成功！');
                     emit('success');

@@ -1,7 +1,6 @@
 <template>
   <DataTableTypeSelect
       v-model:value="myValue"
-      :filter="['object']"
       @change="change"
   />
 </template>

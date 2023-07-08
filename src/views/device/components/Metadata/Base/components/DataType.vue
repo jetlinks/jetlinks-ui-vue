@@ -18,25 +18,25 @@
             @confirm="(data) => {valueChange(data, 'object')}"
         >
             <template #valueType="{ data }">
-                {{ data.record.valueType?.type }}
+                {{ TypeStringMap[data.record.valueType?.type] }}
             </template>
             <template #config="{ data }">
 <!--                <OtherConfigInfo :value="data.record.valueType"></OtherConfigInfo>-->
-              <ConfigModal v-model:value="data.record" :unitOptions="unitOptions" />
+              <ConfigModal v-model:value="data.record.valueType" :showOther="false" />
             </template>
         </DataTableObject>
         <DataTableEnum v-else-if="type === 'enum'" v-model:value="_valueType" placement="topRight" @confirm="(data) => {valueChange(data, 'enum')}"/>
         <DataTableBoolean v-else-if="type === 'boolean'" v-model:value="_valueType" placement="topRight" @confirm="(data) => {valueChange(data, 'boolean')}" />
         <DataTableDouble
             v-else-if="['float', 'double'].includes(type)"
-            :options="options"
+            :options="unitOptions"
             v-model:value="_valueType"
             placement="topRight"
             @confirm="(data) => {valueChange(data, 'float')}"
         />
         <DataTableInteger
             v-else-if="['int', 'long'].includes(type)"
-            :options="options"
+            :options="unitOptions"
             v-model:value="_valueType.unit"
             placement="topRight"
             @confirm="(data) => {valueChange(data, 'int')}"
@@ -68,8 +68,9 @@ import {
     DataTableObject,
 } from 'jetlinks-ui-components';
 import { cloneDeep } from 'lodash-es';
-import {handleTypeValue, typeSelectChange, useUnit } from '../columns'
+import {handleTypeValue, typeSelectChange, TypeStringMap, useUnit} from '../columns'
 import ConfigModal from './ConfigModal.vue'
+import { Form } from 'jetlinks-ui-components'
 
 const props = defineProps({
     value: {
@@ -77,6 +78,8 @@ const props = defineProps({
         default: () => ({}),
     },
 });
+
+const formItemContext = Form.useInjectFormItemContext();
 
 const columns = [{
   title: '参数标识',
@@ -86,10 +89,25 @@ const columns = [{
   form: {
     required: true,
     rules: [{
-      callback() {
-        return Promise.resolve()
-      }
-    }]
+      callback(rule:any,value: any, dataSource: any[]) {
+        if (value) {
+          const field = rule.field.split('.')
+          const fieldIndex = Number(field[1])
+          const hasId = dataSource.some((item, index) => item.id === value && fieldIndex !== index)
+          if (hasId) {
+            return Promise.reject('该标识已存在')
+          }
+          return Promise.resolve()
+        }
+        return Promise.reject('请输入标识')
+      },
+    },
+      { max: 64, message: '最多可输入64个字符' },
+      {
+        pattern: /^[a-zA-Z0-9_\-]+$/,
+        message: 'ID只能由数字、字母、下划线、中划线组成',
+      },
+    ]
   }
 },
   {
@@ -102,7 +120,9 @@ const columns = [{
       rules: [{
         required: true,
         message: '请输入参数名称'
-      }]
+      },
+        { max: 64, message: '最多可输入64个字符' },
+      ]
     }
   },
   {
@@ -111,9 +131,18 @@ const columns = [{
     dataIndex: 'valueType',
     components: {
       name: ValueObject,
-      props: {
-        filter: ['object']
-      }
+    },
+    form: {
+      required: true,
+      rules: [{
+        validator(_: any, value: any) {
+          console.log('validator',value)
+          if (!value?.type) {
+            return Promise.reject('请选择数据类型')
+          }
+          return Promise.resolve()
+        }
+      }]
     },
     width: 100
   },
@@ -143,16 +172,16 @@ const typeChange = (e: string) => {
         ...props.value,
         valueType: { ...obj, type: e }
     });
+    formItemContext.onFieldChange()
 };
 
 const valueChange = (_data: any, _type: string) => {
-  console.log(_type, _data)
   const newData = handleTypeValue(_type, _data)
-  console.log('dataType',{...newData, type: type.value})
   emit('update:value', {
     ...props.value,
     valueType: {...newData, type: type.value},
   });
+  formItemContext.onFieldChange()
 }
 
 const { unitOptions } = useUnit(type)
