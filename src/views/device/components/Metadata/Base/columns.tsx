@@ -7,6 +7,8 @@ import {MetadataType} from "@/views/device/Product/typings";
 import { getUnit } from '@/api/device/instance';
 import {Ref} from "vue";
 import {omit} from "lodash-es";
+import { message } from 'jetlinks-ui-components'
+import { onlyMessage } from "@/utils/comm";
 interface DataTableColumnProps extends ColumnProps {
   type?: string,
   components?: {
@@ -106,7 +108,16 @@ export const typeSelectChange = (type: string) => {
   return obj
 }
 
-export const useColumns = (type?: MetadataType, target?: 'device' | 'product', noEdit?: Ref<any>) => {
+const isExtendsProdcut = (index: string, productKeys: string, type: string) => {
+  const vailKeys = productKeys[type] || []
+  if (vailKeys.includes(index)) {
+    onlyMessage('继承自产品物模型的数据不支持修改', 'warning')
+    return true
+  }
+  return false
+}
+
+export const useColumns = (type?: MetadataType, target?: 'device' | 'product', noEdit?: Ref<any>, productNoEdit?: Ref<any>) => {
 
   const BaseColumns: DataTableColumnProps[] = [
     {
@@ -137,6 +148,9 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         ]
       },
       doubleClick(record) {
+        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'id')) {
+          return false
+        }
         const ids = (noEdit?.value?.id || []) as any[]
         return !ids.includes(record._sortIndex)
       }
@@ -155,6 +169,12 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
           },
           { max: 64, message: '最多可输入64个字符' },
         ]
+      },
+      doubleClick(record) {
+        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'name')) {
+          return false
+        }
+        return true
       }
     },
   ];
@@ -169,6 +189,12 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         props: {
           options: EventLevel
         }
+      },
+      doubleClick(record) {
+        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'expands')) {
+          return false
+        }
+        return true
       }
     },
     {
@@ -184,6 +210,12 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       title: '说明',
       dataIndex: 'description',
       type: 'text',
+      doubleClick(record) {
+        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'description')) {
+          return false
+        }
+        return true
+      }
     },
     {
       title: '操作',
@@ -205,6 +237,12 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
             { label: '否', value: false }
           ]
         }
+      },
+      doubleClick(record) {
+        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'async')) {
+          return false
+        }
+        return true
       }
     },
     {
@@ -218,12 +256,24 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       type: 'components',
       components: {
         name: OutputParams
+      },
+      doubleClick(record) {
+        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'output')) {
+          return false
+        }
+        return true
       }
     },
     {
       title: '说明',
       dataIndex: 'description',
       type: 'text',
+      doubleClick(record) {
+        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'description')) {
+          return false
+        }
+        return true
+      }
     },
     {
       title: '操作',
@@ -257,7 +307,13 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
           }
         }]
       },
-      width: 230
+      width: 230,
+      doubleClick(record) {
+        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'valueType')) {
+          return false
+        }
+        return true
+      }
     },
     {
       title: '属性来源',
@@ -269,8 +325,9 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
           noEdit: noEdit?.value?.source || []
         }
       },
-      doubleClick(){
-        return target !== 'device'
+      doubleClick(record){
+        console.log(record);
+        return target !== 'device' ||  (target === 'device' && record.expands.source === 'rule')
       },
       form: {
         required: true,
@@ -333,6 +390,12 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
           }
         }]
       },
+      doubleClick(record) {
+        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'valueType')) {
+          return false
+        }
+        return true
+      }
     },
     {
       title: '读写类型',
@@ -340,12 +403,24 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       type: 'components',
       components: {
         name: TagsType
+      },
+      doubleClick(record) {
+        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'readType')) {
+          return false
+        }
+        return true
       }
     },
     {
       title: '说明',
       dataIndex: 'description',
       type: 'text',
+      doubleClick(record) {
+        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'description')) {
+          return false
+        }
+        return true
+      }
     },
     {
       title: '操作',

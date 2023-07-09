@@ -2,6 +2,7 @@
   <j-popconfirm-modal
       body-style="padding-top:4px;width:600px;"
       placement="topRight"
+      :disabled="disabled"
       @confirm="confirm"
       @cancel="cancel"
       @visibleChange="visibleChange"
@@ -49,7 +50,7 @@
       </div>
 
     </template>
-    <ModelButton />
+    <ModelButton :disabled="disabled"/>
   </j-popconfirm-modal>
 </template>
 
@@ -71,7 +72,11 @@ const props = defineProps({
   type: {
     type: String,
     default: undefined
-  }
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
 })
 
 const type = inject('_metadataType')

@@ -1,5 +1,5 @@
 <template>
-  <j-button type="link" stype="padding-left: 0;">
+  <j-button type="link" style="padding-left: 0;" :disabled="disabled">
     <AIcon type="SettingOutlined" />
     配置
   </j-button>
@@ -7,6 +7,12 @@
 
 <script setup name="ModelButton">
 
+const props = defineProps({
+  disabled: {
+    type: Boolean,
+    default: false
+  }
+})
 </script>
 
 <style scoped>

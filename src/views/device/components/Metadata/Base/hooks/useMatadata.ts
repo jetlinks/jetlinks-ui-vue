@@ -7,11 +7,13 @@ const useMetadata = (type: 'device' | 'product', key?: MetadataType, ): {
     data: ComputedRef<MetadataItem[]>,
     metadata: Ref<Partial<DeviceMetadata>>,
     noEdit: Ref<any>
+    productNoEdit: Ref<any>
 } => {
     const instanceStore = useInstanceStore()
     const productStore = useProductStore()
     const metadata = ref<Partial<DeviceMetadata>>({})
     const noEdit = ref<any>({})
+    const productNoEdit = ref<any>({})
 
     const data = computed(() => {
         const _metadataStr = type === 'product' ? productStore.current?.metadata : instanceStore.current.metadata
@@ -19,7 +21,8 @@ const useMetadata = (type: 'device' | 'product', key?: MetadataType, ): {
         const newMetadata = (key ? _metadata?.[key] || [] : []) as MetadataItem[]
 
         const indexKeys = newMetadata.map((item, index) => index)
-
+        noEdit.value = {}
+        productNoEdit.value = {}
         noEdit.value.id = indexKeys
 
         if (key === 'properties') {
@@ -30,31 +33,31 @@ const useMetadata = (type: 'device' | 'product', key?: MetadataType, ): {
             const productMetadata: any = JSON.parse(instanceStore.current.productMetadata)
             const metaArray = key ? productMetadata[key] : []
             const productIndexKeys = metaArray?.map((item:any, index: number) => index) || []
-            noEdit.value.id = productIndexKeys
-            noEdit.value.name = productIndexKeys
+            productNoEdit.value.id = productIndexKeys
+            productNoEdit.value.name = productIndexKeys
             if (key === 'properties') {
-                noEdit.value.valueType = productIndexKeys
-                noEdit.value.expands = productIndexKeys
+                productNoEdit.value.valueType = productIndexKeys
+                productNoEdit.value.expands = productIndexKeys
             }
 
             if (key === 'functions') {
-                noEdit.value.async = productIndexKeys
-                noEdit.value.inputs = productIndexKeys
-                noEdit.value.output = productIndexKeys
-                noEdit.value.description = productIndexKeys
+                productNoEdit.value.async = productIndexKeys
+                productNoEdit.value.inputs = productIndexKeys
+                productNoEdit.value.output = productIndexKeys
+                productNoEdit.value.description = productIndexKeys
             }
 
             if (key === 'events') {
-                noEdit.value.expands = productIndexKeys
-                noEdit.value.outInput = productIndexKeys
-                noEdit.value.properties = productIndexKeys
-                noEdit.value.description = productIndexKeys
+                productNoEdit.value.expands = productIndexKeys
+                productNoEdit.value.outInput = productIndexKeys
+                productNoEdit.value.properties = productIndexKeys
+                productNoEdit.value.description = productIndexKeys
             }
 
             if (key === 'tags') {
-                noEdit.value.valueType = productIndexKeys
-                noEdit.value.readType = productIndexKeys
-                noEdit.value.description = productIndexKeys
+                productNoEdit.value.valueType = productIndexKeys
+                productNoEdit.value.readType = productIndexKeys
+                productNoEdit.value.description = productIndexKeys
             }
         }
 
@@ -64,7 +67,8 @@ const useMetadata = (type: 'device' | 'product', key?: MetadataType, ): {
     return {
         data,
         metadata,
-        noEdit
+        noEdit,
+        productNoEdit
     }
 }
 export default useMetadata

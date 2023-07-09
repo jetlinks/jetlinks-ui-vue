@@ -115,7 +115,20 @@
           </j-tag>
         </template>
         <template #other="{ data }">
-          <OtherSetting v-model:value="data.record.expands" :type="data.record.valueType.type" />
+          <j-tooltip
+            v-if="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex)"
+            title="继承自产品物模型的数据不支持删除"
+          >
+            <ModelButton :disabled="true"/>
+          </j-tooltip>
+          <OtherSetting
+           v-model:value="data.record.expands"
+           :type="data.record.valueType.type"
+          :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex)"
+           :tooltip="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex) ? {
+              title: '继承自产品物模型的数据不支持删除',
+            } : undefined"
+          />
         </template>
         <template #action="{data}">
           <j-space>
@@ -124,7 +137,7 @@
                 type="link"
                 key="edit"
                 style="padding: 0"
-                :disabled="operateLimits('add', type)"
+                :disabled="!!operateLimits('add', type)"
                 @click="copyItem(data.record, data.index)"
                 :tooltip="{
                   title: operateLimits('add', type) ? '当前的存储方式不支持复制' : '复制',
@@ -137,7 +150,7 @@
                 type="link"
                 key="edit"
                 style="padding: 0"
-                :disabled="operateLimits('add', type)"
+                :disabled="!!operateLimits('add', type)"
                 @click="handleAddClick(null, data.index)"
                 :tooltip="{
                   title: operateLimits('add', type) ? '当前的存储方式不支持新增' : '新增',
@@ -165,14 +178,16 @@
                 danger
                 :pop-confirm="{
                   placement: 'topRight',
-                title: showSave ? '这是最后一条数据了，确认删除？' : '确认删除？',
-                onConfirm: async () => {
-                    await removeItem(data.index, showSave);
-                  },
-                }"
+                  title: showSave ? '这是最后一条数据了，确认删除？' : '确认删除？',
+                  onConfirm: async () => {
+                      await removeItem(data.index, showSave);
+                    },
+                  }"
                 :tooltip="{
-                  title: '删除',
+                  placement: 'topRight',
+                  title: target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex) ? '继承自产品物模型的数据不支持删除' :'删除',
                 }"
+                :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex)"
             >
               <AIcon type="DeleteOutlined" />
             </PermissionButton>
@@ -242,7 +257,7 @@ const props = defineProps({
 
 const _target = inject<'device' | 'product'>('_metadataType', props.target);
 
-const { data: metadata, noEdit } = useMetadata(_target, props.type);
+const { data: metadata, noEdit, productNoEdit } = useMetadata(_target, props.type);
 const { hasOperate } = useOperateLimits(_target);
 
 const metadataStore = useMetadataStore()
@@ -254,7 +269,7 @@ const tableRef = ref();
 const loading = ref(false)
 
 // const columns = computed(() => MetadataMapping.get(props.type!));
-const {columns} = useColumns(props.type, _target, noEdit)
+const {columns} = useColumns(props.type, _target, noEdit, productNoEdit)
 
 const detailData = reactive({
   data: {},
