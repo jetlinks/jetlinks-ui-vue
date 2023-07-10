@@ -122,6 +122,7 @@ const props = defineProps({
 const emit = defineEmits(['update:value'])
 import {handleTypeValue, TypeStringMap, useUnit} from "@/views/device/components/Metadata/Base/columns";
 import ModelButton from '@/views/device/components/Metadata/Base/components/ModelButton.vue'
+import {omit} from "lodash-es";
 
 const objectAdd = () => {
   return {
@@ -198,13 +199,15 @@ const columns = [
       required: true,
       rules: [{
         validator(_: any, value: any) {
-          console.log('validator',value)
           if (!value?.type) {
             return Promise.reject('请选择数据类型')
           }
           return Promise.resolve()
         }
       }]
+    },
+    control(newValue: any, oldValue: any) {
+      return newValue.valueType.type !== oldValue?.valueType?.type
     },
     width: 100
   },
@@ -215,7 +218,17 @@ const columns = [
     components: {
       name: DataTypeObjectChild
     },
-    width: 100
+    width: 100,
+    control(newValue: any, oldValue: any) {
+      if (newValue && !oldValue) {
+        return true
+      } else if (newValue && oldValue) {
+        const newObj = omit(newValue.valueType, ['type'])
+        const oldObj = omit(oldValue.valueType, ['type'])
+        return JSON.stringify(newObj) !== JSON.stringify(oldObj)
+      }
+      return false
+    },
   },
   {
     title: '操作',

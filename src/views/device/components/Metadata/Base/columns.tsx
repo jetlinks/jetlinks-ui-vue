@@ -6,9 +6,10 @@ import { EventLevel } from "@/views/device/data";
 import {MetadataType} from "@/views/device/Product/typings";
 import { getUnit } from '@/api/device/instance';
 import {Ref} from "vue";
-import {omit} from "lodash-es";
+import {omit, pick} from "lodash-es";
 import { message } from 'jetlinks-ui-components'
 import { onlyMessage } from "@/utils/comm";
+import {cloneDeep} from "lodash";
 interface DataTableColumnProps extends ColumnProps {
   type?: string,
   components?: {
@@ -21,6 +22,7 @@ interface DataTableColumnProps extends ColumnProps {
   },
   options?: any[]
   doubleClick?: (record: any, index: number, dataIndex: string) => boolean
+  control?: (newValue: any, oldValue: any) => Boolean
 }
 
 const SourceMap = {
@@ -195,7 +197,10 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
           return false
         }
         return true
-      }
+      },
+      control(newValue, oldValue) {
+        return newValue.expands.level !== oldValue?.expands?.level
+      },
     },
     {
       title: '输出参数',
@@ -204,7 +209,15 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
     {
       title: '配置参数',
       dataIndex: 'properties',
-      width: 100
+      width: 100,
+      control(newValue, oldValue) {
+        if (newValue && !oldValue) {
+          return true
+        } else if (newValue && oldValue) {
+          return JSON.stringify(newValue.valueType) !== JSON.stringify(oldValue.valueType)
+        }
+        return false
+      },
     },
     {
       title: '说明',
@@ -239,16 +252,25 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         }
       },
       doubleClick(record) {
-        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'async')) {
-          return false
-        }
-        return true
-      }
+        return !isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'async');
+
+      },
+      control(newValue, oldValue) {
+        return newValue.async !== oldValue?.async
+      },
     },
     {
       title: '输入参数',
       dataIndex: 'inputs',
-      width: 120
+      width: 120,
+      control(newValue, oldValue) {
+        if (newValue && !oldValue) {
+          return true
+        } else if (newValue && oldValue) {
+          return JSON.stringify(newValue.inputs) !== JSON.stringify(oldValue.inputs)
+        }
+        return false
+      },
     },
     {
       title: '输出参数',
@@ -258,11 +280,16 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         name: OutputParams
       },
       doubleClick(record) {
-        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'output')) {
-          return false
+        return !isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'output');
+      },
+      control(newValue, oldValue) {
+        if (newValue && !oldValue) {
+          return true
+        } else if (newValue && oldValue) {
+          return JSON.stringify(newValue.output) !== JSON.stringify(oldValue.output)
         }
-        return true
-      }
+        return false
+      },
     },
     {
       title: '说明',
@@ -299,7 +326,6 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         required: true,
         rules: [{
           validator(_: any, value: any) {
-            console.log('validator',value)
             if (!value?.type) {
               return Promise.reject('请选择数据类型')
             }
@@ -322,19 +348,25 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       components: {
         name: Source,
         props: {
-          noEdit: noEdit?.value?.source || []
+          noEdit: noEdit?.value?.source || [],
+          target: target
         }
       },
-      // doubleClick(record){
-      //   console.log(record);
-      //   return target !== 'device' ||  (target === 'device' && record.expands.source === 'rule')
-      // },
+      doubleClick(record){
+        if (target !== 'device') {
+          return true
+        } else {
+          if (record.expands.source === 'rule') {
+            return true
+          }
+          return !isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'expands')
+        }
+      },
       form: {
-        required: target !== 'device',
+        required: true,
         rules: target !== 'device' ? [
           {
             validator: async (_: Record<string, any>, value: any) => {
-              console.log('expands',value)
               if (value.source) {
                 if(value.source !== 'rule') {
                   if(value.type?.length) {
@@ -356,12 +388,35 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
           },
         ]: []
       },
+      control(newValue, oldValue) {
+        if (newValue && !oldValue) {
+          return true
+        } else if (newValue && oldValue) {
+          const keys = ['source', 'type', 'virtualRule']
+          const newObj = pick(cloneDeep(newValue.expands), keys)
+          const oldObj = pick(cloneDeep(oldValue.expands), keys)
+          return JSON.stringify(newObj) !== JSON.stringify(oldObj)
+        }
+        return false
+      },
       width: 150
     },
     {
       title: '其它配置',
       dataIndex: 'other',
       width: 100,
+      control(newValue, oldValue) {
+        if (!oldValue) {
+          return true
+        } else if (newValue && oldValue) {
+          // 仅留下存储和指标值
+          const keys = ['source', 'type', 'virtualRule', 'metrics', 'required']
+          const newObj = omit(cloneDeep(newValue.expands), keys)
+          const oldObj = omit(cloneDeep(oldValue.expands), keys)
+          return JSON.stringify(newObj) !== JSON.stringify(oldObj)
+        }
+        return false
+      },
     },
     {
       title: '操作',
@@ -382,7 +437,6 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         required: true,
         rules: [{
           validator(_: any, value: any) {
-            console.log('validator',value)
             if (!value?.type) {
               return Promise.reject('请选择数据类型')
             }
@@ -395,7 +449,15 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
           return false
         }
         return true
-      }
+      },
+      control(newValue, oldValue) {
+        if (newValue && !oldValue) {
+          return true
+        } else if (newValue && oldValue) {
+          return JSON.stringify(newValue.valueType) !== JSON.stringify(oldValue.valueType)
+        }
+        return false
+      },
     },
     {
       title: '读写类型',
@@ -409,7 +471,30 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
           return false
         }
         return true
-      }
+      },
+      form: {
+        required: true,
+        rules: [{
+          callback(rule:any,value: any, dataSource: any[]) {
+            const field = rule.field.split('.')
+            const fieldIndex = Number(field[1])
+            const values = dataSource.find((item, index) => index === fieldIndex)
+
+            if (!values?.expands?.type?.length) {
+              return Promise.reject('请选择读写类型')
+            }
+            return Promise.resolve()
+          }
+        }]
+      },
+      control(newValue, oldValue) {
+        if (newValue && !oldValue) {
+          return true
+        } else if (newValue && oldValue) {
+          return JSON.stringify(newValue.expands) !== JSON.stringify(oldValue.expands)
+        }
+        return false
+      },
     },
     {
       title: '说明',
@@ -455,7 +540,6 @@ export const useUnit = (type: Ref<string>) => {
   const unitOptions = ref<Array<{ label: string, value: any }>>([])
 
   watch(() => type.value, () => {
-    console.log('type.value',type.value)
     if (['float', 'double', 'int', 'long'].includes(type.value) && !unitOptions.value.length) {
       getUnit().then((res) => {
         if (res.success) {

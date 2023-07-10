@@ -72,22 +72,34 @@ const columns = [
         components: {
             name: ValueObject,
         },
-      form: {
-        required: true,
-        rules: [{
-          validator(_: any, value: any) {
-            console.log('validator',value)
-            if (!value?.type) {
-              return Promise.reject('请选择数据类型')
+        form: {
+          required: true,
+          rules: [{
+            validator(_: any, value: any) {
+              if (!value?.type) {
+                return Promise.reject('请选择数据类型')
+              }
+              return Promise.resolve()
             }
-            return Promise.resolve()
-          }
-        }]
-      }
+          }]
+        },
+      control(newValue: any, oldValue: any) {
+        return oldValue.valueType.type !== oldValue?.valueType?.type
+      },
     },
     {
         title: '其他配置',
         dataIndex: 'config',
+        control(newValue: any, oldValue: any) {
+          if (newValue && !oldValue) {
+            return true
+          } else if (newValue && oldValue) {
+            const newObj = omit(newValue.valueType, ['type'])
+            const oldObj = omit(oldValue.valueType, ['type'])
+            return JSON.stringify(newObj) !== JSON.stringify(oldObj)
+          }
+          return false
+        },
     },
     {
         title: '操作',

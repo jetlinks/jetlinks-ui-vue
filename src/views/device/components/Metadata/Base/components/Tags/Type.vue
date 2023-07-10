@@ -8,7 +8,7 @@
         { label: '上报', value: 'report'},
       ]"
       placeholder="请选择读写类型"
-      @blur="onChange"
+      @change="onChange"
   />
 </template>
 

@@ -46,47 +46,8 @@
             保存
           </PermissionButton>
         </template>
-        <template #bodyCell="{ column, record }">
-            <template v-if="column.dataIndex === 'id'">
-                <div style="width: 100px">
-                    <j-ellipsis>{{ record.id || '-' }}</j-ellipsis>
-                </div>
-            </template>
-            <template v-if="column.dataIndex === 'name'">
-                <div style="width: 200px">
-                    <j-ellipsis>{{ record.name || '-' }}</j-ellipsis>
-                </div>
-            </template>
-            <template v-if="column.dataIndex === 'description'">
-                <div style="width: 200px">
-                    <j-ellipsis>{{ record.description || '-' }}</j-ellipsis>
-                </div>
-            </template>
-            <template v-if="column.dataIndex === 'level'">
-                {{ levelMap[record.expands?.level] || '-' }}
-            </template>
-            <template v-if="column.dataIndex === 'async'">
-                {{ record.async ? '是' : '否' }}
-            </template>
-
-            <template v-if="column.dataIndex === 'source'">
-                {{ sourceMap[record.expands?.source] }}
-                <Rule
-                    v-if="record.expands?.source === 'rule'"
-                    v-model:value="record.expands"
-                />
-                <Source v-else v-model:value="record.expands" />
-            </template>
-            <template v-if="column.dataIndex === 'type'">
-                <j-tag v-for="item in record.expands?.type || []" :key="item">
-                    {{ expandsType[item] }}
-                </j-tag>
-            </template>
-
-            <template v-if="column.dataIndex === 'action'"> </template>
-        </template>
         <template #valueType="{ data }">
-            {{ data.record.valueType?.type }}
+            {{ TypeStringMap[data.record.valueType?.type] }}
         </template>
         <template #expands="{ data }">
             {{ sourceMap?.[data.record?.expands?.source] || '' }}
@@ -128,6 +89,7 @@
           <OtherSetting
               v-else
            v-model:value="data.record.expands"
+              :id="data.record.id"
            :type="data.record.valueType.type"
           :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex)"
            :tooltip="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex) ? {
@@ -183,9 +145,9 @@
                 danger
                 :pop-confirm="{
                   placement: 'topRight',
-                  title: showSave ? '这是最后一条数据了，确认删除？' : '确认删除？',
+                  title: showLastDelete ? '这是最后一条数据了，确认删除？' : '确认删除？',
                   onConfirm: async () => {
-                      await removeItem(data.index, showSave);
+                      await removeItem(data.index);
                     },
                   }"
                 :tooltip="{
@@ -221,7 +183,7 @@
     />
 </template>
 
-<script setup lang="ts" name="BaseMetadata">
+<script setup lang="ts" name="MetadataBase">
 import type {
     MetadataItem,
     MetadataType,
@@ -229,7 +191,7 @@ import type {
 } from '@/views/device/Product/typings';
 import type { PropType } from 'vue';
 import { useMetadata, useOperateLimits } from './hooks';
-import { useColumns } from './columns';
+import {TypeStringMap, useColumns} from './columns';
 import { levelMap, sourceMap, expandsType, limitsMap } from './utils';
 import Rule from '@/components/Metadata/Rule';
 import { Source, OtherSetting, InputParams, ConfigParams } from './components';
@@ -244,7 +206,6 @@ import { onlyMessage } from '@/utils/comm';
 import {omit} from "lodash-es";
 import {useAction} from "@/views/device/components/Metadata/Base/hooks/useAction";
 import { PropertiesModal, FunctionModal, EventModal, TagsModal } from './DetailModal'
-import ModelButton from '@/views/device/components/Metadata/Base/components/ModelButton.vue'
 
 const props = defineProps({
     target: {
@@ -282,7 +243,9 @@ const detailData = reactive({
   visible:false
 })
 
-const showSave = ref(!!metadata.value.length)
+const showSave = ref(metadata.value.length !== 0)
+
+const showLastDelete = ref(false)
 
 const { addAction, copyAction, removeAction } = useAction(tableRef)
 
@@ -345,7 +308,7 @@ const getDataByType = () => {
         properties: []
       },
       expands: {
-        level: undefined
+        level: 'ordinary'
       }
 
     }
@@ -384,7 +347,10 @@ const handleAddClick = async (_data?: any, index?: number) => {
   //     data.push(newObject);
   // }
   // dataSource.value = data
-  tableRef.value.addItem(newObject, index)
+  const _addData = await tableRef.value.addItem(newObject, index)
+  if (_addData.length === 1) {
+    showLastDelete.value = true
+  }
   showSave.value = true
   // const _index = index !== undefined ? index + 1 : 0
   // tableRef.value?.addItemAll?.(_index)
@@ -396,26 +362,25 @@ const copyItem = (record: any, index: number) => {
   handleAddClick(copyData, index)
 }
 
-const removeItem = (index: number, isSave: false) => {
+const removeItem = (index: number) => {
   // const data = [...dataSource.value];
   // data.splice(index, 1);
   // dataSource.value = data
   const _data = tableRef.value.removeItem(index)
+  if (_data.length === 1) {
+    showLastDelete.value = true
+  }
   if (_data.length === 0) {
     showSave.value = false
-  }
-  if (isSave) {
+
     handleSaveClick()
   }
 }
 
 const handleSaveClick = async () => {
-    let resp = []
-    if (dataSource.value.length) {
-      resp = await tableRef.value.getData().finally(() => {
+    let resp = await tableRef.value.getData().finally(() => {
 
-      });
-    }
+    });
     if(resp) {
 
       const virtual: any[] = [];
@@ -463,6 +428,7 @@ const handleSaveClick = async () => {
       })
       if(result.success) {
         dataSource.value = resp
+        tableRef.value.cleanEditStatus()
         onlyMessage('操作成功！')
       }
     }

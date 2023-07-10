@@ -79,6 +79,10 @@ const props = defineProps({
     noEdit: {
         type: Array,
         default: () => [],
+    },
+    target: {
+        type: String,
+       default: undefined
     }
 });
 
@@ -90,9 +94,11 @@ const type = ref<string>('');
 const virtualRuleRef = ref<any>(null);
 
 const disabled = computed(() => {
-    console.log(props.value);
-    console.log(props.noEdit);
-    return props.noEdit?.length ? props.noEdit.includes(props.value._sortIndex) :false
+
+    if (props.target === 'device') {
+      return true
+    }
+    return props.noEdit?.length ? props.noEdit.includes(props.value._sortIndex) : false
 })
 
 const updateValue = (data: any) => {

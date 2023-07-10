@@ -22,6 +22,7 @@ import {
 import { ConstraintSelect, ValueObject } from '../index'
 import {TypeStringMap} from "../../columns";
 import ModelButton from '@/views/device/components/Metadata/Base/components/ModelButton.vue'
+import {omit} from "lodash-es";
 
 type Emits = {
     (e: 'update:value', data: Record<string, any>): void;
@@ -104,7 +105,10 @@ const columns = ref([
     width: 100,
     components: {
       name: ConstraintSelect,
-    }
+    },
+    control(newValue: any, oldValue: any) {
+      return newValue.expands.required !== oldValue?.expands?.required
+    },
   },
   {
     title: '数据类型',
@@ -125,10 +129,23 @@ const columns = ref([
         }
       }]
     },
+    control(newValue: any, oldValue: any) {
+      return newValue.valueType.type !== oldValue?.valueType?.type
+    },
   },
   {
     title: '其他配置',
     dataIndex: 'config',
+    control(newValue: any, oldValue: any) {
+      if (newValue && !oldValue) {
+        return true
+      } else if (newValue && oldValue) {
+        const newObj = omit(newValue.valueType, ['type', 'required'])
+        const oldObj = omit(oldValue.valueType, ['type', 'required'])
+        return JSON.stringify(newObj) !== JSON.stringify(oldObj)
+      }
+      return false
+    },
   },
   {
     title: '操作',

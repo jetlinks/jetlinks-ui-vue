@@ -63,7 +63,7 @@ import {
 } from 'jetlinks-ui-components';
 
 import ConfigModal from '@/views/device/components/Metadata/Base/components/ConfigModal.vue'
-import { cloneDeep } from 'lodash-es';
+import {cloneDeep, omit} from 'lodash-es';
 import {typeSelectChange, TypeStringMap, useUnit} from "@/views/device/components/Metadata/Base/columns";
 import Type from './Type.vue'
 
@@ -152,11 +152,24 @@ const columns = [
           return Promise.resolve()
         }
       }]
-    }
+    },
+    control(newValue: any, oldValue: any) {
+      return newValue.valueType.type !== oldValue?.valueType?.type
+    },
   },
   {
     title: '其他配置',
     dataIndex: 'config',
+    control(newValue: any, oldValue: any) {
+      if (newValue && !oldValue) {
+        return true
+      } else if (newValue && oldValue) {
+        const newObj = omit(newValue.valueType, ['type'])
+        const oldObj = omit(oldValue.valueType, ['type'])
+        return JSON.stringify(newObj) !== JSON.stringify(oldObj)
+      }
+      return false
+    },
   },
   {
     title: '操作',

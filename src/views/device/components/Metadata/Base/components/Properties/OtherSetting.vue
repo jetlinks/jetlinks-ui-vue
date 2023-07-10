@@ -77,6 +77,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  id: {
+    type: String,
+    default: undefined
+  },
 })
 
 const type = inject('_metadataType')
@@ -119,16 +123,16 @@ const columns = ref([
 ]);
 
 const getConfig = async () => {
-  const record = props.value
   const id = type === 'product' ? productStore.current?.id : deviceStore.current.id
-  if(!record.id || !id || !record.type) return
+  console.log(props.id, id, props.type)
+  if(!props.id || !id || !props.type) return
 
   const params: any = {
     deviceId: id,
     metadata: {
-      id: record.id,
+      id: props.id,
       type: 'property',
-      dataType: record.type,
+      dataType: props.type,
     },
   }
 
