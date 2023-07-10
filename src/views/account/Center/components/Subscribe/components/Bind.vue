@@ -104,6 +104,7 @@ const updateIframeStyle = () => {
     ) as HTMLIFrameElement;
     iframe.onload = () => {
         const currentUrl = iframe?.contentWindow?.location?.search || '';
+        console.log(currentUrl)
         let authCode = '';
         if (currentUrl.startsWith('?')) {
             currentUrl

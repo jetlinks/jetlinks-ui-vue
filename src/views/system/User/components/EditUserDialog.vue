@@ -96,7 +96,7 @@
                 <j-col :span="12">
                     <j-form-item name="roleIdList" label="角色" class="flex" 
                         :rules="[
-                            { required: true, message: '请选择角色' },
+                            { required: form.data.username !== 'admin', message: '请选择角色' },
                         ]"
                     >
                         <j-select
@@ -105,6 +105,7 @@
                             style="width: calc(100% - 40px)"
                             placeholder="请选择角色"
                             :options="form.roleOptions"
+                            :disabled="form.data.username === 'admin'"
                         ></j-select>
 
                         <PermissionButton
