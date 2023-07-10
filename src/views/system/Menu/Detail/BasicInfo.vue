@@ -5,6 +5,7 @@
             <j-form ref="basicFormRef" :model="form.data" class="basic-form">
                 <div class="row" style="display: flex">
                     <j-form-item
+                        ref="uploadIcon"
                         label="菜单图标"
                         name="icon"
                         :rules="[
@@ -252,7 +253,7 @@
         <ChooseIconDialog
             v-if="dialogVisible"
             v-model:visible="dialogVisible"
-            @confirm="(typeStr:string)=>form.data.icon = typeStr"
+            @confirm="(typeStr:string)=>choseIcon(typeStr)"
         />
     </div>
 </template>
@@ -289,6 +290,7 @@ const routeParams = {
 // 表单
 const basicFormRef = ref<FormInstance>();
 const permissFormRef = ref<FormInstance>();
+const uploadIcon = ref<FormInstance>();
 const form = reactive({
     data: {
         name: '',
@@ -394,6 +396,10 @@ const form = reactive({
 });
 form.init();
 
+const choseIcon = (typeStr:string) =>{
+    form.data.icon = typeStr;
+    uploadIcon.value?.clearValidate();
+}
 // 弹窗
 const dialogVisible = ref(false);
 
