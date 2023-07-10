@@ -118,14 +118,15 @@ import { Form } from 'jetlinks-ui-components';
 import { getImage } from '@/utils/comm.ts';
 import DialogTips from '../DialogTips/index.vue';
 import { useProductStore } from '@/store/product';
-import { filterTreeSelectNode, filterSelectNode, onlyMessage } from '@/utils/comm';
-import { FILE_UPLOAD } from '@/api/comm';
+import { filterSelectNode, onlyMessage } from '@/utils/comm';
 import { isInput } from '@/utils/regular';
 import type { Rule } from 'ant-design-vue/es/form';
 import { queryProductId, addProduct, editProduct } from '@/api/device/product';
 import encodeQuery from '@/utils/encodeQuery';
+
 const productStore = useProductStore();
 const emit = defineEmits(['success']);
+
 const props = defineProps({
     title: {
         type: String,
@@ -272,7 +273,7 @@ const show = (data: any) => {
         form.classifiedName = data.classifiedName;
         form.photoUrl = data.photoUrl || photoValue.value;
         form.deviceType = data.deviceType.value;
-        form.describe = form.describe;
+        form.describe = data.describe;
         form.id = data.id;
         idDisabled.value = true;
     } else if (props.isAdd === 1) {
