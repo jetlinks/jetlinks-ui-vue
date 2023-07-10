@@ -2006,7 +2006,7 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
+            accessSupport: { text: "间接支持", value: "indirect" },
             supportDataAccess: false
           },
         ],
@@ -2363,10 +2363,10 @@ export default [
                     permission: 'rule-scene',
                     actions: ['query', 'delete'],
                   },
-                  {
-                    permission: 'alarm-config',
-                    actions: ['query'],
-                  },
+                  // {
+                  //   permission: 'alarm-config',
+                  //   actions: ['query'],
+                  // },
                 ],
               },
               {
