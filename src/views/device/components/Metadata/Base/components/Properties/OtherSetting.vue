@@ -48,8 +48,8 @@
             description="没有动态配置项"
         />
       </div>
-
     </template>
+
     <ModelButton :disabled="disabled"/>
   </j-popconfirm-modal>
 </template>

@@ -119,9 +119,14 @@
             v-if="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex)"
             title="继承自产品物模型的数据不支持删除"
           >
-            <ModelButton :disabled="true"/>
+<!--            <ModelButton :disabled="true"/>-->
+            <j-button :disabled="true" type="link" style="padding-left: 0;">
+              <AIcon type="SettingOutlined" />
+              配置
+            </j-button>
           </j-tooltip>
           <OtherSetting
+              v-else
            v-model:value="data.record.expands"
            :type="data.record.valueType.type"
           :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex)"
@@ -239,6 +244,7 @@ import { onlyMessage } from '@/utils/comm';
 import {omit} from "lodash-es";
 import {useAction} from "@/views/device/components/Metadata/Base/hooks/useAction";
 import { PropertiesModal, FunctionModal, EventModal, TagsModal } from './DetailModal'
+import ModelButton from '@/views/device/components/Metadata/Base/components/ModelButton.vue'
 
 const props = defineProps({
     target: {

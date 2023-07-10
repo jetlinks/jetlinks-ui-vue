@@ -325,12 +325,12 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
           noEdit: noEdit?.value?.source || []
         }
       },
-      doubleClick(record){
-        console.log(record);
-        return target !== 'device' ||  (target === 'device' && record.expands.source === 'rule')
-      },
+      // doubleClick(record){
+      //   console.log(record);
+      //   return target !== 'device' ||  (target === 'device' && record.expands.source === 'rule')
+      // },
       form: {
-        required: true,
+        required: target !== 'device',
         rules: target !== 'device' ? [
           {
             validator: async (_: Record<string, any>, value: any) => {
