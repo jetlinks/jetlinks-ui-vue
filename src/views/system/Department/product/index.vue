@@ -89,25 +89,25 @@
                         </template>
                         <template #content>
                             <h3 class="card-item-content-title" style='margin-bottom: 18px;'>
-                              <Ellipsis style="width: calc(100% - 100px);"
-                              >
                                 {{ slotProps.name }}
-                              </Ellipsis>
                             </h3>
                             <j-row>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">ID</div>
+                                    <Ellipsis style="width: calc(100% - 20px);">
                                     <div
                                         style="cursor: pointer"
                                         class="card-item-content-value"
                                     >
                                         {{ slotProps.id }}
                                     </div>
+                                    </Ellipsis>
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
                                         资产权限
                                     </div>
+                                    <Ellipsis style="width: calc(100% - 20px);">
                                     <div
                                         style="cursor: pointer"
                                         class="card-item-content-value"
@@ -119,6 +119,7 @@
                                             )
                                         }}
                                     </div>
+                                    </Ellipsis>
                                 </j-col>
                             </j-row>
                         </template>
@@ -297,7 +298,7 @@ const columns = [
         dataIndex: 'state',
         key: 'state',
         ellipsis: true,
-        width: '80px',
+        width: 80,
         search: {
             type: 'select',
             options: [

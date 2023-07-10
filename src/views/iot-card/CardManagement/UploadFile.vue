@@ -102,6 +102,7 @@ const uploadChange = async (info: Record<string, any>) => {
             .then((response: any) => {
                 count.value = response.result?.total || 0
                 onlyMessage('导入成功');
+                errMessage.value = '';
             })
             .catch((err) => {
                 errMessage.value = err?.response?.data?.message || '导入失败'

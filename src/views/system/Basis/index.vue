@@ -458,11 +458,11 @@ const uploader: uploaderType = {
             uploader.imageTypes
                 .map((m: string) => m.split('.')[1])
                 .filter((typeStr) => file.type.includes(typeStr)).length > 0;
-        const sizeBool = file.size / 1024 / 1024 < 4;
+        const sizeBool = file.size / 1024 / 1024 < 2;
         if (!typeBool) {
             onlyMessage(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`, 'error');
         } else if (!sizeBool) {
-            onlyMessage(`图片大小必须小于4M`, 'error');
+            onlyMessage(`图片大小必须小于2M`, 'error');
         }
         return typeBool && sizeBool;
     },

@@ -93,25 +93,25 @@
                         </template>
                         <template #content>
                             <h3 class="card-item-content-title" style='margin-bottom: 18px;'>
-                              <Ellipsis style="width: calc(100% - 100px);"
-                              >
-                                {{ slotProps.name }}
-                              </Ellipsis>
+                                {{ slotProps.name }}  
                             </h3>
                             <j-row>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">ID</div>
+                                    <Ellipsis style="width: calc(100% - 20px);">
                                     <div
                                         style="cursor: pointer"
                                         class="card-item-content-value"
                                     >
                                         {{ slotProps.id }}
                                     </div>
+                                    </Ellipsis>
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
                                         资产权限
                                     </div>
+                                    <Ellipsis style="width: calc(100% - 20px);">
                                     <div
                                         style="cursor: pointer"
                                         class="card-item-content-value"
@@ -123,6 +123,7 @@
                                             )
                                         }}
                                     </div>
+                                    </Ellipsis>
                                 </j-col>
                             </j-row>
                         </template>
@@ -303,7 +304,6 @@ const columns = [
         key: 'permission',
         ellipsis: true,
         scopedSlots: true,
-        width: 300,
     },
     {
         title: '注册时间',
@@ -311,7 +311,6 @@ const columns = [
         key: 'registryTime',
         ellipsis: true,
         scopedSlots: true,
-        width: 200,
         search: {
             type: 'date',
         },
@@ -330,6 +329,7 @@ const columns = [
             ],
         },
         scopedSlots: true,
+        width:80
     },
 
     {
