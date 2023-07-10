@@ -606,29 +606,30 @@ const saveRef = ref();
 const handleSearch = (e: any) => {
 
   const newTerms = cloneDeep(e)
-
-  newTerms.terms.forEach((a : any) => {
-      a.terms = a.terms.map((b: any) => {
-        if (b.column === 'id$dim-assets') {
-          const value = b.value
-          b = {
-            column: 'id',
-            termType: 'dim-assets',
-            value: {
-              assetType: 'product',
-              targets: [
-                {
-                  type: 'org',
-                  id: value,
-                },
-              ],
-            },
+  if (newTerms.terms?.length) {
+    newTerms.terms.forEach((a : any) => {
+        a.terms = a.terms.map((b: any) => {
+          if (b.column === 'id$dim-assets') {
+            const value = b.value
+            b = {
+              column: 'id',
+              termType: 'dim-assets',
+              value: {
+                assetType: 'product',
+                targets: [
+                  {
+                    type: 'org',
+                    id: value,
+                  },
+                ],
+              },
+            }
           }
-        }
-        return b
-      })
-  })
-  console.log(newTerms)
+          return b
+        })
+    })
+  }
+
   params.value = newTerms;
 };
 const routerParams = useRouterParams();
