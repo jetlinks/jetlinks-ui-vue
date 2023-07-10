@@ -143,7 +143,6 @@
 import ChannelApi from '@/api/media/channel';
 import type { ActionsType } from '@/views/device/Instance/typings';
 import { useMenuStore } from 'store/menu';
-import { message } from 'jetlinks-ui-components';
 import Save from './Save.vue';
 import Live from './Live/index.vue';
 import Tree from './Tree/index.vue';

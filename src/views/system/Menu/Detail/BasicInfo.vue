@@ -260,7 +260,6 @@
 <script setup lang="ts">
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import { FormInstance } from 'ant-design-vue';
-import { message } from 'jetlinks-ui-components';
 import ChooseIconDialog from '../components/ChooseIconDialog.vue';
 import PermissChoose from '../components/PermissChoose.vue';
 import {
