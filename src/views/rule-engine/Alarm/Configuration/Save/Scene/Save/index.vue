@@ -15,8 +15,8 @@
                 :request="query"
                 :rowSelection="{
                     selectedRowKeys: _selectedRowKeys,
+                    onChange: onSelectChange
                 }"
-                @cancelSelect="cancelSelect"
                 :gridColumns="[1, 1, 1]"
                 :defaultParams="{
                     sorts: [
@@ -189,13 +189,12 @@ const handleClick = (dt: any) => {
     } else {
         _selectedRowKeys.value = [..._selectedRowKeys.value, dt.id];
     }
-    console.log(_selectedRowKeys.value);
 };
 /**
  * 取消选择事件
  */
-const cancelSelect = () => {
-    _selectedRowKeys.value = [];
+const onSelectChange = (arr: any[]) => {
+    _selectedRowKeys.value = arr
 };
 const log = () => {};
 log();

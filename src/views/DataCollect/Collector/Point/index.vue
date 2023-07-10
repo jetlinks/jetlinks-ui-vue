@@ -16,7 +16,6 @@
                         selectedRowKeys: _selectedRowKeys,
                         onChange: onSelectChange,
                     }"
-                    @cancelSelect="cancelSelect"
                 >
                     <template #headerTitle>
                         <j-space>

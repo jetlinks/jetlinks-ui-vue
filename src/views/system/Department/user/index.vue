@@ -16,7 +16,6 @@
                     selectedRowKeys: table._selectedRowKeys,
                     onChange: table.onSelectChange,
                 }"
-                @cancelSelect="table.cancelSelect"
                 model="TABLE"
                 :defaultParams="{
                     pageSize: 10,

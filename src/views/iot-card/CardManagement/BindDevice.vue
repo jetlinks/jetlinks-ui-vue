@@ -23,7 +23,6 @@
           selectedRowKeys: _selectedRowKeys,
           onSelect: onSelectChange,
       }"
-        @cancelSelect='cancelSelect'
         :params='params'
       >
         <template #registryTime='slotProps'>

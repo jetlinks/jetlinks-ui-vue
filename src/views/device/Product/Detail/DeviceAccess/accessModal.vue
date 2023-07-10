@@ -28,7 +28,6 @@
                 ] : [{ name: 'createTime', order: 'desc' }],
             }"
       :params="params"
-      @cancelSelect="cancelSelect"
       :gridColumn="2"
       :gridColumns="[2]"
     >
@@ -316,10 +315,10 @@ const handleClick = (data: any) => {
   checkData.value = {...data}
 }
 
-const cancelSelect = () => {
-  selectedRowKeys.value = []
-  checkData.value = {}
-}
+// const cancelSelect = () => {
+//   selectedRowKeys.value = []
+//   checkData.value = {}
+// }
 
 /**
  * 打开标签新增

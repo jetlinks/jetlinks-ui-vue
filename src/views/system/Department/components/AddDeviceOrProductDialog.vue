@@ -42,7 +42,6 @@
                 selectedRowKeys: table._selectedRowKeys.value,
                 onChange: selectChange,
             }"
-            @cancelSelect="table.cancelSelect"
             :columns="columns"
         >
             <template #card="slotProps">
