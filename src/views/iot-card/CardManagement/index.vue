@@ -21,7 +21,6 @@
                       }
                     : false
             "
-            @cancelSelect="cancelSelect"
             :params="params"
             :gridColumn="3"
         >

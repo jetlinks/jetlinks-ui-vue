@@ -15,7 +15,8 @@
                 :request="query"
                 :rowSelection="{
                     selectedRowKeys: _selectedRowKeys,
-                    onChange: onSelectChange
+                    onSelectNone: onSelectChange,
+                    // onChange: onChange,
                 }"
                 :gridColumns="[1, 1, 1]"
                 :defaultParams="{
@@ -40,6 +41,7 @@
                             started: 'processing',
                             disable: 'error',
                         }"
+                        :disabled="slotProps.state?.value === 'disable'"
                     >
                         <template #type>
                             <span
@@ -82,9 +84,10 @@
 </template>
 
 <script lang="ts" setup>
-import { query } from '@/api/rule-engine/scene';
-import { bindScene } from '@/api/rule-engine/configuration';
 import { getImage, onlyMessage } from '@/utils/comm';
+import { query } from '@/api/rule-engine/scene';
+import { _execute } from '@/api/rule-engine/configuration';
+
 const columns = [
     {
         title: '名称',
@@ -98,23 +101,6 @@ const columns = [
         title: '触发方式',
         dataIndex: 'triggerType',
         key: 'triggerType',
-        search: {
-            type: 'select',
-            options: [
-                {
-                    label: '手动触发',
-                    value: 'manual',
-                },
-                {
-                    label: '定时触发',
-                    value: 'timer',
-                },
-                {
-                    label: '设备触发',
-                    value: 'device',
-                },
-            ],
-        },
     },
     {
         title: '状态',
@@ -136,32 +122,32 @@ const columns = [
     },
 ];
 const props = defineProps({
-    id: {
-        type: String,
-    },
-    type: {
-        type: String,
+    data: {
+        type: Object,
+        default: () => {},
     },
 });
+
 const terms = [
     {
         terms: [
             {
                 column: 'id',
-                termType: 'alarm-bind-rule$not',
-                value: props.id,
-                type: 'and',
+                termType: 'alarm-bind-rule',
+                value: props.data?.id,
             },
             {
                 column: 'triggerType',
                 termType: 'eq',
-                value: props.type === 'other' ? undefined : 'device',
+                value: props.data?.sceneTriggerType,
             },
         ],
         type: 'and',
     },
 ];
+
 const params = ref();
+
 const typeMap = new Map();
 typeMap.set('manual', {
     text: '手动触发',
@@ -169,20 +155,13 @@ typeMap.set('manual', {
     icon: getImage('/scene/trigger-type-icon/manual.png'),
     tip: '适用于第三方平台向物联网平台下发指令控制设备',
 });
-typeMap.set('timer', {
-    text: '定时触发',
-    img: getImage('/scene/scene-timer.png'),
-    icon: getImage('/scene/trigger-type-icon/timing.png'),
-    tip: '适用于定期执行固定任务',
-});
-typeMap.set('device', {
-    text: '设备触发',
-    img: getImage('/scene/scene-device.png'),
-    icon: getImage('/scene/trigger-type-icon/device.png'),
-    tip: '适用于设备数据或行为满足触发条件时，执行指定的动作',
-});
+
 const _selectedRowKeys = ref<string[]>([]);
+
 const handleClick = (dt: any) => {
+    if(dt.state?.value === 'disable') {
+        return
+    }
     if (_selectedRowKeys.value.includes(dt.id)) {
         const _index = _selectedRowKeys.value.findIndex((i) => i === dt.id);
         _selectedRowKeys.value.splice(_index, 1);
@@ -193,37 +172,36 @@ const handleClick = (dt: any) => {
 /**
  * 取消选择事件
  */
-const onSelectChange = (arr: any[]) => {
-    _selectedRowKeys.value = arr
+const onSelectChange = () => {
+    _selectedRowKeys.value = [];
 };
-const log = () => {};
-log();
+
 const handleSearch = (e: any) => {
     params.value = e;
 };
-const emit = defineEmits(['closeSave', 'saveScene']);
+const emit = defineEmits(['close', 'save']);
 /**
  * 保存选中关联场景
  */
 const saveCorrelation = async () => {
     if (_selectedRowKeys.value.length > 0) {
-        const list = _selectedRowKeys.value.map((item: any) => {
-            return {
-                alarmId: props.id,
-                ruleId: item,
-            };
+        const scene = _selectedRowKeys.value.map((i) => {
+            return { id: i };
         });
-        const res = await bindScene([...list]);
-        if (res.status === 200) {
-            onlyMessage('操作成功');
-            emit('saveScene');
-        }
+        _execute(scene).then((res) => {
+            if (res.status === 200) {
+                onlyMessage('操作成功');
+                emit('save');
+            } else {
+                onlyMessage('操作失败', 'error');
+            }
+        });
     } else {
         onlyMessage('请选择至少一条数据', 'error');
     }
 };
 const closeModal = () => {
-    emit('closeSave');
+    emit('close');
 };
 </script>
 <style lang="less" scoped>

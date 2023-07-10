@@ -2,10 +2,24 @@
     <div class="metadata-map">
         <div class="left">
             <j-space style="margin-bottom: 24px">
-                <j-select @change="onSearchChange" show-search allow-clear placeholder="请选择属性名称" style="width: 250px;">
-                    <j-select-option :label="item.name" v-for="item in dataSourceCache" :value="item?.id" :key="item?.id">{{item?.name}}</j-select-option>
+                <j-select
+                    @change="onSearchChange"
+                    show-search
+                    allow-clear
+                    placeholder="请选择属性名称"
+                    style="width: 250px"
+                >
+                    <j-select-option
+                        :label="item.name"
+                        v-for="item in dataSourceCache"
+                        :value="item?.id"
+                        :key="item?.id"
+                        >{{ item?.name }}</j-select-option
+                    >
                 </j-select>
-                <j-button type="primary" @click="onSearch"><AIcon type="SearchOutlined" /></j-button>
+                <j-button type="primary" @click="onSearch"
+                    ><AIcon type="SearchOutlined"
+                /></j-button>
             </j-space>
             <div class="box">
                 <j-scrollbar height="100%">
@@ -151,6 +165,7 @@ const originalData = ref([]);
 
 const _value = ref<any>(undefined);
 const searchValue = ref<any>(undefined);
+const _delTag = ref<boolean>(false);
 
 const columns = [
     {
@@ -202,6 +217,7 @@ const getMetadataMapData = () => {
                             return {
                                 id: item.metadataId,
                                 originalId: item.originalId,
+                                customMapping: item.customMapping,
                             };
                         }) || [],
                 );
@@ -218,18 +234,18 @@ const customRow = (record: any) => {
 };
 
 const onSearchChange = (_: any, options: any) => {
-    searchValue.value = options?.label
-}
+    searchValue.value = options?.label;
+};
 
 const onSearch = () => {
     if (searchValue.value) {
         const _item: any = dataSourceCache.value.find((item: any) => {
             return searchValue.value === item?.name;
         });
-       if(_item) {
+        if (_item) {
             _value.value = _item?.name;
             document.getElementById(_item?.id)?.scrollIntoView(); // 滚动到可视区域
-       }
+        }
     } else {
         _value.value = undefined;
     }
@@ -251,16 +267,23 @@ const getDefaultMetadata = async () => {
     }));
 
     const concatProperties = [...metadataMap];
-    const arr = concatProperties.map((item) => item.id);
-    const _arr = concatProperties.map((item) => item.originalId);
 
-    _properties.map((item) => {
-        // 添加默认映射，但是该选项还没被其他属性映射
-        if (!arr.includes(item.id) && !_arr.includes(item.id)) {
-            concatProperties.push({ id: item.id, originalId: item.id });
-        }
-    });
+    if (!concatProperties.length) {
+        _delTag.value = true;
+        const arr = concatProperties.map((item) => item.id);
+        const _arr = concatProperties.map((item) => item.originalId);
 
+        _properties.map((item) => {
+            // 添加默认映射，但是该选项还没被其他属性映射
+            if (!arr.includes(item.id) && !_arr.includes(item.id)) {
+                concatProperties.push({
+                    id: item.id,
+                    originalId: item.id,
+                    customMapping: item?.customMapping,
+                });
+            }
+        });
+    }
     dataSource.value =
         properties?.map((item: any, index: number) => {
             const _m = concatProperties.find((p) => p.id === item.id);
@@ -269,6 +292,7 @@ const getDefaultMetadata = async () => {
                 id: item.id, // 产品物模型id
                 name: item?.name,
                 type: item.valueType?.type,
+                customMapping: _m?.customMapping,
                 original: _m?.originalId, // 协议包物模型id
             };
         }) || [];
@@ -289,16 +313,24 @@ const getMetadata = (): Promise<{ properties: any[] }> => {
     });
 };
 
-const onChange = async (value: any, id: string) => {
-    const res = await metadataMapById('device', _id, [
-        {
-            metadataType: 'property',
-            metadataId: value.id,
-            originalId: id || null,
-        },
-    ]);
-    if (res.success) {
+const onMapData = async (arr: any[], flag?: boolean) => {
+    const res = await metadataMapById('device', _id, arr);
+    if (res.success && flag) {
         onlyMessage('操作成功');
+    }
+};
+
+const onChange = async (value: any, id: string) => {
+    if ((!id && value?.customMapping) || id) {
+        // 映射 / 取消映射
+        const arr = [
+            {
+                metadataType: 'property',
+                metadataId: value.id,
+                originalId: id,
+            },
+        ];
+        onMapData(arr, true);
     }
 };
 
@@ -323,6 +355,20 @@ const onClose = () => {
 
 onMounted(() => {
     getDefaultMetadata();
+});
+
+onUnmounted(() => {
+    if (_delTag.value) {
+        // 保存数据
+        const arr = dataSourceCache.value.filter((i: any) => i?.original).map((item: any) => {
+            return {
+                metadataType: 'property',
+                metadataId: item.id,
+                originalId: item.original,
+            }
+        })
+        onMapData(arr)
+    }
 });
 </script>
 

@@ -32,7 +32,6 @@
                 selectedRowKeys: _selectedRowKeys,
                 onChange: onSelectChange,
             }"
-            @cancelSelect="cancelSelect"
             :params="params"
             :model="'TABLE'"
         >

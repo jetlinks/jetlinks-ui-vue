@@ -16,7 +16,6 @@
                 selectedRowKeys: selectedRowKeys,
                 onChange: (keys:string[])=>selectedRowKeys = keys,
             }"
-            @cancelSelect="selectedRowKeys = []"
             size="small"
         >
             <template #headerTitle>

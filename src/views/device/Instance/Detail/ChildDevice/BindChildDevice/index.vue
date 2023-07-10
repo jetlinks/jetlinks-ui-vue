@@ -65,7 +65,6 @@
                     selectedRowKeys: _selectedRowKeys,
                     onChange: onSelectChange,
                 }"
-                @cancelSelect="cancelSelect"
                 :params="params"
             >
                 <template #registryTime="slotProps">

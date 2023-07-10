@@ -14,11 +14,23 @@
             <j-checkbox-group v-model:value="bulkList" :options="options" />
         </div>
 
-        <pro-search type="simple" :columns="searchColumns" target="category-bind-modal" @search="search" />
-        <j-pro-table ref="tableRef" :request="table.requestFun" :gridColumn="2" :params="queryParams" :rowSelection="{
-            selectedRowKeys: table._selectedRowKeys.value,
-            onSelect: selectChange
-        }" @cancelSelect="table.cancelSelect" :columns="columns">
+        <pro-search
+            type="simple"
+            :columns="searchColumns"
+            target="category-bind-modal"
+            @search="search"
+        />
+        <j-pro-table
+            ref="tableRef"
+            :request="table.requestFun"
+            :gridColumn="2"
+            :params="queryParams"
+            :rowSelection="{
+                selectedRowKeys: table._selectedRowKeys.value,
+                onChange: selectChange,
+            }"
+            :columns="columns"
+        >
             <template #card="slotProps">
                 <CardBox :value="slotProps" :actions="[{ key: 1 }]" v-bind="slotProps" :active="table._selectedRowKeys.value.includes(slotProps.id)
                     " @click="table.onSelectChange" :status="slotProps.state?.value"
