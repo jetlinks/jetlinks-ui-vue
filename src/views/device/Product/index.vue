@@ -197,6 +197,7 @@ import { useMenuStore } from 'store/menu';
 import { useRoute } from 'vue-router';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { accessConfigTypeFilter } from '@/utils/setting';
+import {cloneDeep} from "lodash";
 /**
  * 表格数据
  */
@@ -603,7 +604,32 @@ const query = reactive({
 });
 const saveRef = ref();
 const handleSearch = (e: any) => {
-    params.value = e;
+
+  const newTerms = cloneDeep(e)
+
+  newTerms.terms.forEach((a : any) => {
+      a.terms = a.terms.map((b: any) => {
+        if (b.column === 'id$dim-assets') {
+          const value = b.value
+          b = {
+            column: 'id',
+            termType: 'dim-assets',
+            value: {
+              assetType: 'product',
+              targets: [
+                {
+                  type: 'org',
+                  id: value,
+                },
+              ],
+            },
+          }
+        }
+        return b
+      })
+  })
+  console.log(newTerms)
+  params.value = newTerms;
 };
 const routerParams = useRouterParams();
 onMounted(() => {
