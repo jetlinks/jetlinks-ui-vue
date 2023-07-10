@@ -40,7 +40,6 @@
                 selectedRowKeys: _selectedRowKeys,
                 onChange: onSelectChange,
             }"
-            @cancelSelect="_selectedRowKeys = []"
             :pagination="{
                 showSizeChanger: true,
                 pageSizeOptions: ['10', '20', '50', '100'],

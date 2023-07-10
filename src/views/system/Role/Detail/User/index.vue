@@ -16,15 +16,7 @@
                 selectedRowKeys: selectedRowKeys,
                 onChange: (keys:string[])=>selectedRowKeys = keys,
             }"
-            @cancelSelect="selectedRowKeys = []"
             size="small"
-            :defaultParams="{
-                pageSize: 10,
-            }"
-            :pagination="{
-                showSizeChanger: true,
-                pageSizeOptions: ['10', '20', '50', '100'],
-            }"
         >
             <template #headerTitle>
                 <j-space>
@@ -191,6 +183,7 @@ const table = {
 
 // 弹窗相关
 const dialogVisible = ref(false);
+
 </script>
 
 <style lang="less" scoped>

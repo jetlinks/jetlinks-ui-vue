@@ -44,6 +44,7 @@
             <j-form-item
                 label="地址"
                 :name="['pointKey']"
+                validateFirst
                 :rules="[
                     ...ModBusRules.pointKey,
                     {

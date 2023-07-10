@@ -151,6 +151,7 @@ const pluginOptions = ref<any[]>([]);
 const filterValue = ref<boolean | undefined>(undefined);
 const originalData = ref([]);
 const searchValue = ref<any>(undefined);
+const _delTag = ref<boolean>(false);
 
 // const tableFilter = (value: string, record: any) => {
 //   return true
@@ -203,6 +204,7 @@ const getMetadataMapData = () => {
                             return {
                                 id: item.metadataId,
                                 pluginId: item.originalId,
+                                customMapping: item?.customMapping,
                             };
                         }) || [],
                 );
@@ -250,16 +252,18 @@ const getDefaultMetadata = async () => {
 
     // const concatProperties = [ ...pluginProperties.map(item => ({ id: item.id, pluginId: item.id})), ...metadataMap]
     const concatProperties = [...metadataMap];
-    const arr = concatProperties.map((item) => item.id);
-    const _arr = concatProperties.map((item) => item.pluginId);
+    if(!concatProperties.length) {
+        _delTag.value = true
+        const arr = concatProperties.map((item) => item.id);
+        const _arr = concatProperties.map((item) => item.pluginId);
 
-    pluginProperties.map((item) => {
-        // 添加默认映射，但是该选项还没被其他属性映射
-        if (!arr.includes(item.id) && !_arr.includes(item.id)) {
-            concatProperties.push({ id: item.id, pluginId: item.id });
-        }
-    });
-
+        pluginProperties.map((item) => {
+            // 添加默认映射，但是该选项还没被其他属性映射
+            if (!arr.includes(item.id) && !_arr.includes(item.id)) {
+                concatProperties.push({ id: item.id, pluginId: item.id, customMapping: item?.customMapping, });
+            }
+        });
+    }
     dataSource.value =
         properties?.map((item: any, index: number) => {
             const _m = concatProperties.find((p) => p.id === item.id);
@@ -268,6 +272,7 @@ const getDefaultMetadata = async () => {
                 id: item.id, // 产品物模型id
                 name: item?.name,
                 type: item.valueType?.type,
+                customMapping: _m?.customMapping,
                 plugin: _m?.pluginId, // 插件物模型id
             };
         }) || [];
@@ -304,16 +309,24 @@ const getPluginMetadata = (): Promise<{ properties: any[] }> => {
     });
 };
 
-const pluginChange = async (value: any, id: string) => {
-    const res = await metadataMapById('product', productDetail.value?.id, [
-        {
-            metadataType: 'property',
-            metadataId: value.id,
-            originalId: id,
-        },
-    ]);
-    if (res.success) {
+const onMapData = async (arr: any[], flag?: boolean) => {
+    const res = await metadataMapById('product', productDetail.value?.id, arr);
+    if (res.success && flag) {
         onlyMessage('操作成功');
+    }
+};
+
+const pluginChange = async (value: any, id: string) => {
+    if ((!id && value?.customMapping) || id) {
+        // 映射 / 取消映射
+        const arr = [
+            {
+                metadataType: 'property',
+                metadataId: value.id,
+                originalId: id,
+            },
+        ];
+        onMapData(arr, true)
     }
 };
 
@@ -338,6 +351,20 @@ const onClose = () => {
 
 onMounted(() => {
     getDefaultMetadata();
+});
+
+onUnmounted(() => {
+    if (_delTag.value) {
+        // 保存数据
+        const arr = dataSourceCache.value.filter((i: any) => i?.plugin).map((item: any) => {
+            return {
+                metadataType: 'property',
+                metadataId: item.id,
+                originalId: item.plugin,
+            }
+        })
+        onMapData(arr)
+    }
 });
 </script>
 

@@ -1,42 +1,19 @@
 <template>
-    <j-modal
-        visible
-        title="新增"
-        width="1000px"
-        @ok="confirm"
-        @cancel="emits('update:visible', false)"
-    >
+    <j-modal visible title="新增" width="1000px" @ok="confirm" @cancel="emits('update:visible', false)">
         <!-- <j-advanced-search
             :columns="columns"
             type="simple"
             @search="(params:any)=>queryParams = {...params}"
         /> -->
-        <pro-search
-            :columns="columns"
-            target="simple"
-            @search="(params:any)=>queryParams = {...params}"
-        />
+        <pro-search :columns="columns" target="simple" @search="(params: any) => queryParams = { ...params }" />
 
-        <j-pro-table
-            ref="tableRef"
-            :columns="columns"
-            :request="getUserList"
-            model="TABLE"
-            :params="queryParams"
+        <j-pro-table ref="tableRef" :columns="columns" :request="getUserList" model="TABLE" :params="queryParams"
             :rowSelection="{
                 selectedRowKeys: selectedRowKeys,
                 onSelect: changeSelect,
-            }"
-            @cancelSelect="selectedRowKeys = []"
-            :defaultParams="{
-                pageSize: 10,
-            }"
-            :pagination="{
-                pageSizeOptions: ['10', '20', '50', '100'],
-                showSizeChanger: true,
-                hideOnSinglePage: false,
-            }"
-        >
+                onSelectAll: selectAll,
+                onSelectNone: ()=>selectedRowKeys = []
+            }">
         </j-pro-table>
     </j-modal>
 </template>
@@ -71,7 +48,7 @@ const columns = [
 ];
 const queryParams = ref({});
 
-const selectedRowKeys = ref<string[]>([]);
+const selectedRowKeys = ref<any>([]);
 const getUserList = (oParams: any) => {
     const params = {
         ...oParams,
@@ -117,4 +94,25 @@ const changeSelect = (item: any, state: boolean) => {
     }
     selectedRowKeys.value = [...arr.values()];
 };
+
+const selectAll = (selected: Boolean, selectedRows: any,changeRows:any) => {
+    if (selected) {
+            changeRows.map((i: any) => {
+                if (!selectedRowKeys.value.includes(i.id)) {
+                    selectedRowKeys.value.push(i.id)
+                }
+            })
+        } else {
+            const arr = changeRows.map((item: any) => item.id)
+            const _ids: string[] = [];
+            selectedRowKeys.value.map((i: any) => {
+                if (!arr.includes(i)) {   
+                    _ids.push(i)
+                }
+            })
+            selectedRowKeys.value = _ids
+            
+        }
+        
+}
 </script>

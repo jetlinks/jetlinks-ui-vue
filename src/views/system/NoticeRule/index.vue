@@ -24,8 +24,13 @@
                             v-for="item in dataSource"
                             :key="item.provider"
                             class="custom"
-                            :header="item.name"
                         >
+                            <template #header>
+                                <div>
+                                    {{ item.name }}
+                                    <span style="margin-left: 10px;" class="alert" v-if="item.provider === 'alarm'">注意：接收人需要有告警配置页面查询权限，才能收到告警类通知</span>
+                                </div>
+                            </template>
                             <div class="child">
                                 <template
                                     v-for="(child, index) in item.children"
