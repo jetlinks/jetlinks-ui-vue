@@ -9,13 +9,12 @@
         @cancel="close"
         okText="确定"
         cancelText="取消"
-        v-bind="layout"
         width="650px"
         :confirmLoading="loading"
     >
         <div style="margin-top: 10px">
             <j-form
-                :layout="'vertical'"
+                layout="vertical"
                 :model="form"
                 :rules="rules"
                 ref="formRef"

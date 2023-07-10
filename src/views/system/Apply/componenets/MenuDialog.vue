@@ -10,13 +10,14 @@
     >
         <j-select
             v-model:value="form.checkedSystem"
-            @change="(value:string) => value && getTree(value)"
+            @change="(value) => value && getTree(value)"
             style="width: 200px"
             placeholder="请选择集成系统"
         >
             <j-select-option
                 v-for="item in form.systemList"
                 :value="item.value"
+                :key="item.value"
                 >{{ item.label }}</j-select-option
             >
         </j-select>
@@ -29,8 +30,9 @@
             v-model:expandedKeys="form.expandedKeys"
             checkable
             :tree-data="form.menuTree"
-            :fieldNames="{ key: 'id', title: 'name' }"
+            :fieldNames="{ key: 'code', title: 'name' }"
             @check="treeCheck"
+            :height="300"
         >
             <template #title="{ name }">
                 <span>{{ name }}</span>
@@ -41,13 +43,13 @@
 
 <script setup lang="ts">
 import { optionItemType } from '@/views/system/DataSource/typing';
-import { applyType } from '../Save/typing';
 import {
     getOwner_api,
     getOwnerStandalone_api,
     getOwnerTree_api,
     getOwnerTreeStandalone_api,
     saveOwnerMenu_api,
+    updateApp_api,
 } from '@/api/system/apply';
 import { CheckInfo } from 'ant-design-vue/lib/vc-tree/props';
 import { useMenuStore } from '@/store/menu';
@@ -55,16 +57,15 @@ import { message } from 'jetlinks-ui-components';
 import { getMenuTree_api } from '@/api/system/menu';
 
 const menuStory = useMenuStore();
-const emits = defineEmits(['update:visible']);
+const emits = defineEmits(['update:visible', 'refresh']);
 const props = defineProps<{
     mode: 'add' | 'edit';
     visible: boolean;
-    id: string;
-    provider: applyType;
+    data: any;
 }>();
 // 弹窗相关
 const loading = ref(false);
-const handleOk = () => {
+const handleOk = async () => {
     const items = filterTree(form.menuTree, [
         ...form.checkedMenu,
         ...form.half,
@@ -72,14 +73,23 @@ const handleOk = () => {
     if (form.checkedSystem) {
         if (items && items.length !== 0) {
             loading.value = true;
-            saveOwnerMenu_api('iot', form.id, items)
-                .then((resp) => {
-                    if (resp.status === 200) {
-                        message.success('操作成功');
-                        emits('update:visible', false);
+            const resp = await saveOwnerMenu_api('iot', form.id, items).finally(() => (loading.value = false));
+            await updateApp_api(form.id as string, {
+                ...props.data,
+                integrationModes: props.data?.integrationModes?.map((item: any) => item?.value || item),
+                page: {
+                    ...props.data?.page,
+                    configuration: {
+                        checkedSystem: form.checkedSystem
                     }
-                })
-                .finally(() => (loading.value = false));
+                }
+            })
+            if (resp.status === 200) {
+                // 保存集成菜单
+                message.success('操作成功');
+                emits('update:visible', false);
+                emits('refresh')
+            }
         } else {
             message.warning('请勾选配置菜单');
         }
@@ -94,21 +104,16 @@ const cancel = () => {
 };
 
 const form = reactive({
-    id: props.id,
+    id: props.data?.id,
     checkedSystem: undefined as undefined | string,
     checkedMenu: [] as string[],
     expandedKeys: [] as string[],
     half: [] as string[],
 
-    provider: props.provider,
+    provider: props.data?.provider,
     systemList: [] as optionItemType[],
     menuTree: [] as any[],
 });
-
-if (props.id) {
-    getSystemList();
-    getMenus();
-}
 /**
  * 与集成系统关联的菜单
  * @param params
@@ -120,26 +125,26 @@ function getTree(params: string) {
             : getOwnerTree_api(params);
     api.then((resp: any) => {
         form.menuTree = resp.result;
-        form.expandedKeys = resp.result.map((item: any) => item.id);
+        form.expandedKeys = resp.result.map((item: any) => item?.code);
     });
 }
 /**
  * 获取当前用户可访问菜单
  */
-function getMenus() {
+function getMenus(id: string) {
     const params = {
         terms: [
             {
                 column: 'appId',
-                value: form.id,
+                value: id,
             },
         ],
     };
     getMenuTree_api(params).then((resp: any) => {
         if (resp.status === 200) {
-            form.menuTree = resp.result;
-            const keys = resp.result.map((item: any) => item.id) as string[];
-            form.expandedKeys = keys;
+            // form.menuTree = resp.result;
+            const keys = resp.result.map((item: any) => item?.code) as string[];
+            // form.expandedKeys = keys;
             form.checkedMenu = keys;
         }
     });
@@ -147,10 +152,10 @@ function getMenus() {
 /**
  * 获取集成系统选项
  */
-function getSystemList() {
+function getSystemList(id: string) {
     const api =
         form.provider === 'internal-standalone'
-            ? getOwnerStandalone_api(form.id, ['iot'])
+            ? getOwnerStandalone_api(id, ['iot'])
             : getOwner_api(['iot']);
 
     api.then((resp: any) => {
@@ -162,9 +167,23 @@ function getSystemList() {
         }
     });
 }
+
+watch(() => props.data, (newVal: any) => {
+    form.checkedSystem = newVal?.page.configuration?.checkedSystem
+    if(form.checkedSystem){
+        getTree(form.checkedSystem)
+    }
+    if(newVal?.id) {
+        getSystemList(newVal?.id);
+        getMenus(newVal?.id);
+    }
+}, {
+    deep: true,
+    immediate: true
+})
 // 树选中事件
 function treeCheck(checkedKeys: any, e: CheckInfo) {
-    form.checkedMenu = checkedKeys;
+    form.checkedMenu = checkedKeys
     form.half = e.halfCheckedKeys as string[];
 }
 //过滤节点-默认带上父节点
@@ -174,7 +193,7 @@ function filterTree(nodes: any[], list: any[]) {
     }
     return nodes.filter((it) => {
         // 不符合条件的直接砍掉
-        if (list.indexOf(it.id) <= -1) {
+        if (list.indexOf(it.code) <= -1) {
             return false;
         }
         // 符合条件的保留，并且需要递归处理其子节点

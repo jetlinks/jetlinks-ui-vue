@@ -143,6 +143,7 @@ const refreshMetadata = () => {
   //       : await detail(route.params.id as string);
   const result = target === 'product' ? productStore.current?.metadata : instanceStore.current.metadata
   const item = JSON.parse(result || '{}') as MetadataItem[]
+  console.log(item)
   data.value = item[type]?.sort((a: any, b: any) => b?.sortsIndex - a?.sortsIndex)
   loading.value = false
 }

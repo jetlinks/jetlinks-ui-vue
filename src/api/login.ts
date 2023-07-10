@@ -61,3 +61,10 @@ export const loginout_api = () => server.get<any>('/user-token/reset')
 export const getOAuth2 = (params: any) => server.get<any>('/oauth2/authorize', params)
 
 export const initApplication = (clientId: string | number) => server.get<{name: string}>(`/application/${clientId}/info`)
+
+
+/**
+ * 登录加密信息
+ * @returns 
+ */
+export const authLoginConfig = () => server.get(`/authorize/login/configs`)

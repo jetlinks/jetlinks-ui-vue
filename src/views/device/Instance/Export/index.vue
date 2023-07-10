@@ -83,6 +83,10 @@ watch(
     { immediate: true, deep: true },
 );
 
+const productName = computed(() => {
+    return productList.value.find(item => item.id === modelRef.product)?.name || ''
+})
+
 const handleOk = async () => {
     const params = encodeQuery(props.data);
     // downloadFile(
@@ -97,7 +101,7 @@ const handleOk = async () => {
     if (res) {
         const blob = new Blob([res], { type: modelRef.fileType });
         const url = URL.createObjectURL(blob);
-        downloadFileByUrl(url, `设备实例`, modelRef.fileType);
+        downloadFileByUrl(url, `${productName.value ? (productName.value  + '下设备') : '设备实例'}`, modelRef.fileType);
         emit('close');
     }
 };

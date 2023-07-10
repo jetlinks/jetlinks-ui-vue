@@ -52,10 +52,10 @@
                     <j-checkbox
                         v-model:checked="record.granted"
                         :indeterminate="record.indeterminate"
-                        :disabled='record.code === USER_CENTER_MENU_CODE'
                         @change="menuChange(record, true)"
                         >{{ record.name }}</j-checkbox
                     >
+                    <!-- :disabled='record.code === USER_CENTER_MENU_CODE' -->
                 </div>
 
                 <div v-else-if="column.key === 'action'">
@@ -64,9 +64,10 @@
                             v-for="button in record.buttons"
                             v-model:checked="button.granted"
                             @change="actionChange(record)"
-                            :disabled='[USER_CENTER_MENU_BUTTON_CODE].includes(button.id)'
+                            :key="button.id"
                             >{{ button.name }}</j-checkbox
                         >
+                        <!-- :disabled='[USER_CENTER_MENU_BUTTON_CODE].includes(button.id)' -->
                     </div>
                 </div>
 
@@ -82,6 +83,7 @@
                             <j-radio
                                 :value="asset.supportId"
                                 v-for="asset in record.assetAccesses"
+                                :key="asset.name"
                                 >{{ asset.name }}</j-radio
                             >
                         </j-radio-group>
@@ -104,10 +106,8 @@ import { cloneDeep, uniqBy } from 'lodash-es';
 import { getPrimissTree_api } from '@/api/system/role';
 import { getCurrentInstance } from 'vue';
 import {
-  USER_CENTER_MENU_BUTTON_CODE,
-  MESSAGE_SUBSCRIBE_MENU_BUTTON_CODE,
-  USER_CENTER_MENU_CODE,
-  MESSAGE_SUBSCRIBE_MENU_CODE
+//   USER_CENTER_MENU_BUTTON_CODE,
+  USER_CENTER_MENU_CODE
 } from '@/utils/consts'
 import { isNoCommunity } from '@/utils/utils'
 
@@ -172,7 +172,6 @@ const selectAllChange = () => {
             });
         }
     });
-    // console.log('selectAllChange: ', flatTableData);
     indeterminate.value = false;
     emits(
         'update:selectItems',
@@ -215,7 +214,6 @@ const bulkChange = () => {
             });
         }
     });
-    // console.log('bulkChange: ', flatTableData);
     emits(
         'update:selectItems',
         flatTableData.filter((item) => item.granted),
@@ -237,9 +235,9 @@ const init = () => {
             // 深克隆表格数据的扁平版  因为会做一些改动 该改动只用于反馈给父组件，本组件无需变化
             const selected = cloneDeep(flatTableData).filter(
                 (item: any) =>
-                    (item.granted && item.parentId) ||
-                    (item.indeterminate && item.buttons) ||
-                  item.code === USER_CENTER_MENU_CODE || item.code === MESSAGE_SUBSCRIBE_MENU_CODE, // 放开个人中心以及消息订阅
+                    // (item.granted && item.parentId) ||
+                    (item.indeterminate && item.buttons) 
+                    || (item.granted), // 放开个人中心
             );
 
             selected.forEach((item) => {
@@ -278,10 +276,10 @@ function getAllPermiss() {
         const _result = resp.result
         // 默认选中个人中心相关设置
         tableData.value = _result.map((item: { code: string , buttons: any[], granted: boolean}) => {
-          if (item.code === USER_CENTER_MENU_CODE) {
-            item.granted = true
-            item.buttons = item.buttons.map( b => ({...b, granted: true, enabled: true}))
-          }
+        //   if (item.code === USER_CENTER_MENU_CODE) {
+        //     item.granted = true
+        //     item.buttons = item.buttons.map( b => ({...b, granted: true, enabled: true}))
+        //   }
           return item
         });
 
@@ -320,7 +318,7 @@ function menuChange(
     if (row.buttons && row.buttons.length > 0) setStatus(row, 'buttons');
     else setStatus(row, 'children');
     // 更新数据权限
-    updataAuthority(row);
+    updateAuthority(row);
     // if (row.accessSupport && row.accessSupport.value === 'support') {
     //     // 如果当前数据权限已有值，且菜单权限没有被选中或被半选   则清空对应的数据权限
     //     if (row.selectAccesses && !row.granted && !row.indeterminate)
@@ -358,6 +356,7 @@ function menuChange(
         selectedAll.value = false;
         indeterminate.value = false;
     }
+
     emits('update:selectItems', selectList); // 选中的项传回父组件
     treeRef.value.$forceUpdate();
 }
@@ -365,7 +364,7 @@ function menuChange(
 /**
  * 更新权限
  */
-const updataAuthority = (row: any) => {
+const updateAuthority = (row: any) => {
     if (row.accessSupport && row.accessSupport.value === 'support') {
         // 如果当前数据权限已有值，且菜单权限没有被选中或被半选   则清空对应的数据权限
         if (row.selectAccesses && !row.granted && !row.indeterminate)
@@ -375,7 +374,7 @@ const updataAuthority = (row: any) => {
             row.selectAccesses = 'creator';
     }
     if (row.children?.length > 0) {
-        row.children?.forEach((item) => {
+        row.children?.forEach((item: any) => {
             if (item.accessSupport && item.accessSupport.value === 'support') {
                 // 如果当前数据权限已有值，且菜单权限没有被选中或被半选   则清空对应的数据权限
                 if (item.selectAccesses && !item.granted && !item.indeterminate)
@@ -388,7 +387,7 @@ const updataAuthority = (row: any) => {
                     item.selectAccesses = 'creator';
             }
             if (item.children) {
-                updataAuthority(item.children);
+                updateAuthority(item.children);
             }
         });
     }
@@ -439,12 +438,12 @@ function treeToSimple(_treeData: tableItemType[]) {
 }
 /**
  * 设置子节点的状态
- * @param childrens
+ * @param _children
  * @param value
  */
-function setChildrenChecked(childrens: tableItemType[], value: boolean) {
-    if (childrens.length < 1) return;
-    childrens.forEach((item) => {
+function setChildrenChecked(_children: tableItemType[], value: boolean) {
+    if (_children.length < 1) return;
+    _children.forEach((item) => {
         item.granted = value;
         item.indeterminate = false;
         if (item.buttons && item.buttons.length > 0)
@@ -457,7 +456,6 @@ function setChildrenChecked(childrens: tableItemType[], value: boolean) {
                     i.granted = true;
                 }
             });
-            // console.log( item.assetAccesses);
         }
         item.children && setChildrenChecked(item.children, value);
     });

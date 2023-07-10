@@ -20,3 +20,22 @@ export const getAlarmList_api = () => server.post(`/alarm/config/_query/no-pagin
     sorts: [{ name: 'createTime', order: 'desc' }],
     paging: false,
 });
+
+// 判断获取当前用户绑定信
+export const getIsBindThird = () => server.get(`/user/third-party/me`);
+
+// 生成OAuth2授权URL
+export const getWechatOAuth2 = (configId: string, templateId: string, url: string) => server.get(`/notifier/wechat/corp/${configId}/${templateId}/oauth2/binding-user-url?redirectUri=${url}`);
+
+export const getDingTalkOAuth2 = (configId: string, url: string) => server.get(`/notifier/dingtalk/corp/${configId}/oauth2/binding-user-url?authCode=${url}`);
+
+// 获取oauth2授权的用户绑定码
+
+export const getUserBind = (type: 'wechat' | 'dingtalk', params: any) => server.get(`/notifier/${type}/corp/oauth2/user-bind-code`, params);
+
+// 根据绑定码绑定当前用户
+export const bindThirdParty = (type: string, provider: string, bindCode: string) => server.post(`/user/third-party/me/${type}/${provider}/${bindCode}/_bind`);
+
+
+
+

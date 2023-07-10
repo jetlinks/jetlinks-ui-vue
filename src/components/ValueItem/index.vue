@@ -3,6 +3,7 @@
     <div class="value-item-warp">
         <j-select
             v-if="typeMap.get(itemType) === 'select'"
+            :mode="mode"
             v-model:value="myValue"
             :options="options"
             allowClear
@@ -139,6 +140,11 @@ const props = defineProps({
         type: Array as PropType<DefaultOptionType[]>,
         default: () => [],
     },
+    // 多选框
+    mode: {
+        type: String as PropType<'multiple' | 'tags' | 'combobox' | ''>,
+        default: ''
+    }
 });
 // type Props = {
 //     itemData?: Object;

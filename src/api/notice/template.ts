@@ -25,4 +25,5 @@ export default {
     // 短信获取签名
     getSigns: (id: any) => get(`/notifier/sms/aliyun/${id}/signs`),
     getListByConfigId: (id: string, data: any): any => post(`/notifier/template/${id}/_query`, data),
+    getListVariableByConfigId: (id: string, data?: any): any => post(`/notifier/template/${id}/detail/_query`, data),
 }
