@@ -23,6 +23,7 @@
                         width="100%"
                         height="100%"
                         :src="url"
+                        sandbox="allow-scripts allow-same-origin allow-popups"
                         v-if="!loading"
                     ></iframe>
                 </div>
