@@ -80,8 +80,7 @@ import {
 } from '@/api/rule-engine/configuration';
 import { queryLevel } from '@/api/rule-engine/config';
 import { query } from '@/api/rule-engine/scene';
-import { getImage } from '@/utils/comm';
-import { message } from 'jetlinks-ui-components';
+import { getImage, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import { useRoute } from 'vue-router';
 import { useAlarmConfigurationStore } from '@/store/alarm';
@@ -204,7 +203,7 @@ const handleSave = async () => {
                 ? await updata(form.value)
                 : await save(form.value);
             if (res.status === 200) {
-                message.success('操作成功,请配置关联的场景联动');
+                onlyMessage('操作成功,请配置关联的场景联动');
                 loading.value = false;
                 if (res.result?.id) {
                     menuStory.jumpPage(

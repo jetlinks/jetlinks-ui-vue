@@ -84,8 +84,7 @@
 <script lang="ts" setup>
 import { query } from '@/api/rule-engine/scene';
 import { bindScene } from '@/api/rule-engine/configuration';
-import { getImage } from '@/utils/comm';
-import { message } from 'jetlinks-ui-components';
+import { getImage, onlyMessage } from '@/utils/comm';
 const columns = [
     {
         title: '名称',
@@ -217,11 +216,11 @@ const saveCorrelation = async () => {
         });
         const res = await bindScene([...list]);
         if (res.status === 200) {
-            message.success('操作成功');
+            onlyMessage('操作成功');
             emit('saveScene');
         }
     } else {
-        message.error('请选择至少一条数据');
+        onlyMessage('请选择至少一条数据', 'error');
     }
 };
 const closeModal = () => {

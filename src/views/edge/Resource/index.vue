@@ -156,10 +156,9 @@
   
 <script lang="ts" setup>
 import { queryNoPagingPost } from '@/api/device/instance';
-import { message } from 'jetlinks-ui-components';
 import { ActionsType } from '@/views/device/Instance/typings';
 import { useMenuStore } from '@/store/menu';
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import dayjs from 'dayjs';
 import { query, _delete, _start, _stop } from '@/api/edge/resource';
 import Save from './Save/index.vue';
@@ -340,10 +339,10 @@ const getActions = (
                         response = await _start([data.id]);
                     }
                     if (response && response.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         edgeResourceRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },
@@ -363,10 +362,10 @@ const getActions = (
                 onConfirm: async () => {
                     const resp = await _delete(data.id);
                     if (resp.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         edgeResourceRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },

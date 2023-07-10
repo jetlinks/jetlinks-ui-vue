@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 import { getUserByRole_api, bindUser_api } from '@/api/system/role';
-import { message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
 
 const emits = defineEmits(['refresh', 'update:visible']);
 const props = defineProps<{
@@ -96,11 +96,11 @@ const getUserList = (oParams: any) => {
 
 const confirm = () => {
     if (selectedRowKeys.value.length < 1) {
-        message.error('请至少选择一项');
+        onlyMessage('请至少选择一项', 'error');
     } else {
         bindUser_api(props.roleId, selectedRowKeys.value).then((resp) => {
             if (resp.status === 200) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 emits('refresh');
                 emits('update:visible', false);
             }

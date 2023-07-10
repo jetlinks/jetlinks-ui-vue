@@ -274,7 +274,7 @@
 <script lang="ts" setup name='AccessConfig'>
 import { useProductStore } from '@/store/product';
 import { ConfigMetadata } from '@/views/device/Product/typings';
-import { Empty, message } from 'jetlinks-ui-components';
+import { Empty } from 'jetlinks-ui-components';
 import Title from '../Title/index.vue';
 import { usePermissionStore } from '@/store/permission';
 import { steps, steps1 } from './util';
@@ -306,6 +306,7 @@ import AccessModal from './accessModal.vue'
 import MetaDataModal from './metadataModal.vue'
 import { getPluginData, getProductByPluginId, savePluginData } from '@/api/link/plugin'
 import { detail as queryPluginAccessDetail } from '@/api/link/accessConfig'
+import { onlyMessage } from '@/utils/comm';
 
 const productStore = useProductStore();
 const tableRef = ref();
@@ -799,7 +800,7 @@ const updateAccessData = async (id: string, values: any) => {
   });
   submitLoading.value = false
   if (resp.status === 200) {
-    message.success('操作成功！');
+    onlyMessage('操作成功！');
     productStore.current!.storePolicy = storePolicy;
     if ((window as any).onTabSaveSuccess) {
       if (resp.result) {

@@ -35,7 +35,6 @@ import {
     delOperations_api,
     updateOperations_api,
 } from '@/api/system/apiPage';
-import { message } from 'jetlinks-ui-components';
 import { modeType } from '../typing';
 import { useDepartmentStore } from '@/store/department';
 import { onlyMessage } from '@/utils/comm';
@@ -133,7 +132,7 @@ const save = async () => {
         //     delOperations_api(removeKeys)
         //         .finally(() => addOperations_api(addKeys))
         //         .then(() => {
-        //             message.success('操作成功');
+        //             onlyMessage('操作成功');
         //             emits('refresh');
         //         });
         // fix: bug#10829
@@ -141,7 +140,7 @@ const save = async () => {
             removeKeys.length && (await delOperations_api(removeKeys));
             const res = await addOperations_api(addKeys);
             if (res.success) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 emits('refresh');
             }
         } else {
@@ -162,7 +161,7 @@ const save = async () => {
             updateOperations_api(code, '_add', { operations: addItems }),
         ]).then((resps) => {
             if (resps[0].status === 200 && resps[1].status === 200) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 emits('refresh');
             }
         });

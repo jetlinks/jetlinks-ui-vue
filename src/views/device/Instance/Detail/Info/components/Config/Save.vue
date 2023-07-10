@@ -56,7 +56,7 @@
 <script lang="ts" setup>
 import { modify } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
-import { message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
 
 const emit = defineEmits(['close', 'save']);
 
@@ -100,7 +100,7 @@ const saveBtn = () => {
             configuration: { ...values }
         })
         if(resp.status === 200){
-            message.success('操作成功！')
+            onlyMessage('操作成功！')
             emit('save');
         }
       }

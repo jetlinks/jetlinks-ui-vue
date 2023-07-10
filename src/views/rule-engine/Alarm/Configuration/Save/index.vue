@@ -21,13 +21,13 @@ import Base from './Base/index.vue';
 import Scene from './Scene/index.vue';
 import Log from './Log/indev.vue';
 import { useRoute } from 'vue-router';
-import { message } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 const route = useRoute();
 const changeTabs = (e: any) => {
     if (route.query?.id) {
         activeKey.value = e;
     } else {
-        message.error('请先保存基础配置');
+        onlyMessage('请先保存基础配置', 'error');
     }
 };
 const activeKey = ref('1');

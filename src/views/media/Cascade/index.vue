@@ -153,8 +153,7 @@
 <script setup lang="ts">
 import CascadeApi from '@/api/media/cascade';
 import type { ActionsType } from '@/views/device/Instance/typings';
-import { message } from 'jetlinks-ui-components';
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import Publish from './Publish/index.vue';
 
 import { useMenuStore } from 'store/menu';
@@ -353,10 +352,10 @@ const getActions = (
                             : await CascadeApi.enabled(data.id);
 
                     if (res.success) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         listRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },
@@ -376,10 +375,10 @@ const getActions = (
                 onConfirm: async () => {
                     const resp = await CascadeApi.del(data.id);
                     if (resp.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         listRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },

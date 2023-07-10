@@ -132,9 +132,9 @@
 <script lang="ts" setup>
 import PlatformType from '@/views/iot-card/components/PlatformType.vue';
 import { queryById, save, update } from '@/api/iot-card/platform';
-import { message } from 'jetlinks-ui-components';
 import Doc from '../doc/index.vue';
 import { platformTypeList } from '../../data'
+import { onlyMessage } from '@/utils/comm';
 
 const router = useRouter();
 const route = useRoute();
@@ -219,7 +219,7 @@ const handleSave = async () => {
             ? await save(formData)
             : await update({ id: route.params.id, ...formData });
     if (res.status === 200) {
-        message.success('保存成功！');
+        onlyMessage('保存成功！');
         router.back();
     }
     saveBtnLoading.value = false;

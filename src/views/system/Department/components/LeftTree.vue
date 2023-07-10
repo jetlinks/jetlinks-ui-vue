@@ -100,8 +100,7 @@ import { getTreeData_api, delDepartment_api } from '@/api/system/department';
 import { debounce, cloneDeep, omit } from 'lodash-es';
 import { ArrayToTree } from '@/utils/utils';
 import EditDepartmentDialog from './EditDepartmentDialog.vue';
-
-import { message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
 
 const permission = 'system/Department';
 
@@ -129,7 +128,7 @@ function getTree(cb?: Function) {
     treeMap.clear()
     getTreeData_api(params)
         .then((resp: any) => {
-            selectedKeys.value = [resp.result[0].id];
+            selectedKeys.value = [resp.result[0]?.id];
             sourceTree.value = resp.result.sort((a: any, b: any) =>
                 a.sortIndex === b.sortIndex
                     ? b.createTime - a.createTime
@@ -187,7 +186,7 @@ function handleTreeMap(_data: any[]) {
 // 删除部门
 function delDepartment(id: string) {
     delDepartment_api(id).then(() => {
-        message.success('操作成功');
+        onlyMessage('操作成功');
         getTree();
     });
 }
@@ -273,8 +272,9 @@ init();
         align-items: center;
 
         .title {
-          width: calc(100% - 80px);
-        }
+                flex: 1;
+                min-width: 80px;
+            }
         .func-btns {
           display: none;
           font-size: 14px;

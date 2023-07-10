@@ -1420,10 +1420,9 @@ import {
 import FormLabel from './FormLabel.vue';
 import RequestTable from './RequestTable.vue';
 import MenuDialog from '../../componenets/MenuDialog.vue';
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import type { formType, dictType, optionsType, applyType } from '../typing';
 import { getRoleList_api } from '@/api/system/user';
-import { message } from 'jetlinks-ui-components';
 import { randomString } from '@/utils/utils';
 import { cloneDeep, difference } from 'lodash';
 import { useMenuStore } from '@/store/menu';
@@ -1769,7 +1768,7 @@ function clickSave() {
                     params.integrationModes.includes('apiServer') &&
                     params.integrationModes.length === 2)
             ) {
-                return message.warning('配置单点登录需同时配置API客户端');
+                return onlyMessage('配置单点登录需同时配置API客户端', 'warning');
             }
         }
 
@@ -1823,7 +1822,7 @@ function clickSave() {
                         };
                         dialog.visible = true;
                     } else {
-                        message.success('保存成功');
+                        onlyMessage('保存成功');
                         menuStory.jumpPage('system/Apply');
                     }
                 }
@@ -1849,32 +1848,6 @@ function getErrorNum(
         } else if (!set.has(key)) set.add(key);
     }
 }
-
-// const imageTypes = ref(['image/jpg', 'image/png', 'image/jpeg']);
-// const beforeLogoUpload = (file: any) => {
-//     const isType: any = imageTypes.value.includes(file.type);
-//     if (!isType) {
-//         message.error(`请上传.jpg.png格式的图片`);
-//         return false;
-//     }
-//     const isSize = file.size / 1024 / 1024 < 4;
-//     if (!isSize) {
-//         message.error(`图片大小必须小于${4}M`);
-//     }
-//     return isType && isSize;
-// };
-// function changeBackUpload(info: UploadChangeParam<UploadFile<any>>) {
-//     if (info.file.status === 'uploading') {
-//         form.uploadLoading = true;
-//     } else if (info.file.status === 'done') {
-//         info.file.url = info.file.response?.result;
-//         form.uploadLoading = false;
-//         form.data.logoUrl = info.file.response?.result;
-//     } else if (info.file.status === 'error') {
-//         form.uploadLoading = false;
-//         message.error('logo上传失败，请稍后再试');
-//     }
-// }
 
 function clearNullProp(obj: object) {
     if (typeof obj !== 'object') return;

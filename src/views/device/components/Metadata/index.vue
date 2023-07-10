@@ -47,7 +47,7 @@
 <script setup lang="ts" name="Metadata">
 import PermissionButton from '@/components/PermissionButton/index.vue'
 import { deleteMetadata } from '@/api/device/instance.js'
-import { message } from 'ant-design-vue'
+import { message } from 'jetlinks-ui-components';
 import { useInstanceStore } from '@/store/instance'
 import Import from './Import/index.vue'
 import Cat from './Cat/index.vue'

@@ -75,10 +75,11 @@ import { useInstanceStore } from '@/store/instance'
 import { useProductStore } from '@/store/product'
 import { useMetadataStore } from '@/store/metadata'
 import PermissionButton from '@/components/PermissionButton/index.vue'
-import { TablePaginationConfig, message } from 'ant-design-vue/es'
+import { TablePaginationConfig } from 'ant-design-vue/es'
 import { asyncUpdateMetadata, removeMetadata } from '../metadata'
 import Edit from './Edit/index.vue'
 import { ColumnProps } from 'ant-design-vue/es/table'
+import { onlyMessage } from '@/utils/comm';
 interface Props {
   type: MetadataType;
   target: 'product' | 'device';
@@ -164,7 +165,7 @@ const handleAddClick = () => {
   metadataStore.set('type', type)
   metadataStore.set('action', 'add')
   if (props.target === 'device' && !instanceStore.detail?.independentMetadata) {
-    message.warning('修改物模型后会脱离产品物模型')
+    onlyMessage('修改物模型后会脱离产品物模型', 'warning')
   }
 }
 
@@ -186,7 +187,7 @@ const handleEditClick = (record: MetadataItem) => {
   metadataStore.model.type = type;
   metadataStore.model.action = 'edit';
   if (props.target === 'device' && !instanceStore.detail?.independentMetadata) {
-    message.warning('修改物模型后会脱离产品物模型');
+    onlyMessage('修改物模型后会脱离产品物模型', 'warning');
   }
 }
 
@@ -213,13 +214,13 @@ const removeItem = async (record: MetadataItem) => {
   const _currentData = removeMetadata(type, [record], target === 'device' ? instanceStore.current : productStore.detail);
   const result = await asyncUpdateMetadata(target, _currentData);
   if (result.status === 200) {
-    message.success('操作成功！');
+    onlyMessage('操作成功！');
     // Store.set(SystemConst.REFRESH_METADATA_TABLE, true);
     metadataStore.model.edit = false;
     metadataStore.model.item = {};
     resetMetadata();
   } else {
-    message.error('操作失败！');
+    onlyMessage('操作失败！', 'error');
   }
 };
 </script>

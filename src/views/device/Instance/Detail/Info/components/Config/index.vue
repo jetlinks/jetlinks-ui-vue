@@ -101,8 +101,8 @@ import {
     _deploy,
     configurationReset,
 } from '@/api/device/instance';
-import { message } from 'jetlinks-ui-components';
 import Save from './Save.vue';
+import { onlyMessage } from '@/utils/comm';
 
 const instanceStore = useInstanceStore();
 const visible = ref<boolean>(false);
@@ -132,7 +132,7 @@ const deployBtn = async () => {
     if (instanceStore.current.id) {
         const resp = await _deploy(instanceStore.current.id);
         if (resp.status === 200) {
-            message.success('操作成功');
+            onlyMessage('操作成功');
             instanceStore.refresh(instanceStore.current.id);
         }
     }
@@ -142,7 +142,7 @@ const resetBtn = async () => {
     if (instanceStore.current.id) {
         const resp = await configurationReset(instanceStore.current.id);
         if (resp.status === 200) {
-            message.success('恢复默认配置成功');
+            onlyMessage('恢复默认配置成功');
             instanceStore.refresh(instanceStore.current.id);
         }
     }

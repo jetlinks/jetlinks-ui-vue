@@ -82,7 +82,6 @@ import { LocalStore, onlyMessage } from '@/utils/comm';
 import { downloadFileByUrl } from '@/utils/utils';
 import { deviceImport, templateDownload } from '@/api/device/instance';
 import { EventSourcePolyfill } from 'event-source-polyfill';
-import { message } from 'jetlinks-ui-components';
 
 const props = defineProps({
     product: {
@@ -173,7 +172,7 @@ const submitData = async (fileUrl: string) => {
         };
         source.onopen = () => {};
     } else {
-        message.error('请先上传文件');
+        onlyMessage('请先上传文件', 'error');
     }
 };
 

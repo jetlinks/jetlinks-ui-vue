@@ -323,9 +323,8 @@
 </template>
 
 <script setup lang="ts">
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import { Form } from 'jetlinks-ui-components';
-import { message } from 'jetlinks-ui-components';
 import type { ConfigFormData } from '../types';
 import {
     NOTICE_METHOD,
@@ -555,7 +554,7 @@ const handleSubmit = () => {
                 res = await configApi.update(formData.value);
             }
             if (res?.success) {
-                message.success('保存成功');
+                onlyMessage('保存成功');
                 if (route.query?.notifyType) {
                     // @ts-ignore
                     window?.onTabSaveSuccess(res.result);

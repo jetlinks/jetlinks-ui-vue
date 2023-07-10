@@ -306,8 +306,7 @@ import {
     batchDeployDevice,
     batchDeleteDevice,
 } from '@/api/device/instance';
-import { getImage, LocalStore } from '@/utils/comm';
-import { message } from 'jetlinks-ui-components';
+import { getImage, LocalStore, onlyMessage } from '@/utils/comm';
 import Import from './Import/modal.vue';
 import Export from './Export/index.vue';
 import Process from './Process/index.vue';
@@ -671,10 +670,10 @@ const getActions = (
                         response = await _deploy(data.id);
                     }
                     if (response && response.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         instanceRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },
@@ -694,10 +693,10 @@ const getActions = (
                 onConfirm: async () => {
                     const resp = await _delete(data.id);
                     if (resp.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         instanceRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },
@@ -763,12 +762,12 @@ const syncDeviceStatus = () => {
 
 const delSelectedDevice = async () => {
     if (!_selectedRowKeys.value.length) {
-        message.error('请选择设备');
+        onlyMessage('请选择设备', 'error');
         return;
     }
     const resp = await batchDeleteDevice(_selectedRowKeys.value);
     if (resp.status === 200) {
-        message.success('操作成功！');
+        onlyMessage('操作成功！');
         _selectedRowKeys.value = [];
         instanceRef.value?.reload();
     }
@@ -776,12 +775,12 @@ const delSelectedDevice = async () => {
 
 // const activeSelectedDevice = async () => {
 //     if(!_selectedRowKeys.value.length){
-//         message.error('请选择设备')
+//         onlyMessage('请选择设备', 'error')
 //         return
 //     }
 //     const resp = await batchDeployDevice(_selectedRowKeys.value);
 //     if (resp.status === 200) {
-//         message.success('操作成功！');
+//         onlyMessage('操作成功！');
 //         _selectedRowKeys.value = [];
 //         instanceRef.value?.reload();
 //     }
@@ -789,12 +788,12 @@ const delSelectedDevice = async () => {
 
 const disabledSelectedDevice = async () => {
     if (!_selectedRowKeys.value.length) {
-        message.error('请选择设备');
+        onlyMessage('请选择设备', 'error');
         return;
     }
     const resp = await batchUndeployDevice(_selectedRowKeys.value);
     if (resp.status === 200) {
-        message.success('操作成功！');
+        onlyMessage('操作成功！');
         _selectedRowKeys.value = [];
         instanceRef.value?.reload();
     }

@@ -61,11 +61,10 @@ import { queryNoPagingPost, convertMetadata, modify } from '@/api/device/product
 import type { DefaultOptionType } from 'ant-design-vue/es/select';
 import type { UploadProps, UploadFile, UploadChangeParam } from 'ant-design-vue/es';
 import type { DeviceMetadata } from '@/views/device/Product/typings'
-import { message } from 'jetlinks-ui-components';
 import { useInstanceStore } from '@/store/instance'
 import { useProductStore } from '@/store/product';
 import { FILE_UPLOAD } from '@/api/comm';
-import { getToken } from '@/utils/comm';
+import { getToken, onlyMessage } from '@/utils/comm';
 import { useMetadataStore } from '@/store/metadata';
 
 const route = useRoute()
@@ -216,12 +215,12 @@ const handleImport = async () => {
           result = await modify(id as string, { id, metadata: JSON.stringify(metadata) }).catch(err => err)
         }
         if (result.success) {
-          message.success('导入成功')
+          onlyMessage('导入成功')
         }
         loading.value = false
       } else {
         loading.value = false
-        // message.error('物模型数据不正确!')
+        // onlyMessage('物模型数据不正确!', 'error')
         return
       }
       if (props?.type === 'device') {
@@ -239,7 +238,7 @@ const handleImport = async () => {
         if (
           !(!!_object?.properties || !!_object?.events || !!_object?.functions || !!_object?.tags)
         ) {
-          message.error('物模型数据不正确')
+          onlyMessage('物模型数据不正确', 'error')
           loading.value = false;
           return;
         }
@@ -257,7 +256,7 @@ const handleImport = async () => {
         }
         loading.value = false
         if (resp.success) {
-          message.success('导入成功')
+          onlyMessage('导入成功')
         }
         if (props?.type === 'device') {
           await instanceStore.refresh(id as string)
@@ -270,7 +269,7 @@ const handleImport = async () => {
         close();
       } catch (e) {
         loading.value = false
-        message.error(e === 'error' ? '物模型数据不正确' : '上传json格式的物模型文件')
+        onlyMessage(e === 'error' ? '物模型数据不正确' : '上传json格式的物模型文件', 'error')
       }
     }
   })

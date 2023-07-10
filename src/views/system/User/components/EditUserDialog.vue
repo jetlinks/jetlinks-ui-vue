@@ -191,7 +191,6 @@
 <script setup lang="ts">
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import { FormInstance } from 'ant-design-vue';
-import { message } from 'jetlinks-ui-components';
 import {
     validateField_api,
     getRoleList_api,
@@ -205,7 +204,7 @@ import { Rule } from 'ant-design-vue/es/form';
 import { DefaultOptionType } from 'ant-design-vue/es/vc-tree-select/TreeSelect';
 import { AxiosResponse } from 'axios';
 import { passwordRegEx } from '@/utils/validate';
-import { filterSelectNode } from '@/utils/comm';
+import { filterSelectNode, onlyMessage } from '@/utils/comm';
 
 const deptPermission = 'system/Department';
 const rolePermission = 'system/Role';
@@ -231,7 +230,7 @@ const confirm = () => {
         .then(() => form.submit())
         .then((resp: any) => {
             if (resp.status === 200) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 emits('confirm');
                 emits('update:visible', false);
             }

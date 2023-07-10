@@ -36,10 +36,9 @@
 
 <script lang='ts' setup name='MetadataModal'>
 import { useProductStore } from '@/store/product';
-import { getImage } from '@/utils/comm'
+import { getImage, onlyMessage } from '@/utils/comm'
 import { storeToRefs } from 'pinia'
 import { modify, updateDevice } from '@/api/device/product'
-import { message } from 'jetlinks-ui-components'
 import { savePluginData } from '@/api/link/plugin'
 
 type Emit = {
@@ -150,7 +149,7 @@ const updateAccessData = async (id: string, values: any, metadata: string) => {
   });
   loading.value = false
   if (resp.status === 200) {
-    message.success('操作成功！');
+    onlyMessage('操作成功！');
     productStore.current!.storePolicy = storePolicy;
     if ((window as any).onTabSaveSuccess) {
       if (resp.result) {

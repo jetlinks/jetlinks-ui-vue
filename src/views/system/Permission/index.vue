@@ -150,7 +150,6 @@
 <script setup lang="ts">
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import EditDialog from './components/EditDialog.vue';
-import { message } from 'jetlinks-ui-components';
 import {
     getPermission_api,
     editPermission_api,
@@ -159,6 +158,7 @@ import {
 } from '@/api/system/permission';
 import { downloadObject } from '@/utils/utils';
 import { usePermissionStore } from '@/store/permission';
+import { onlyMessage } from '@/utils/comm';
 
 const permission = 'system/Permission';
 const hasPermission = usePermissionStore().hasPermission;
@@ -231,15 +231,15 @@ const table = {
                     const data = JSON.parse(result.target.result);
                     editPermission_api(data).then((resp) => {
                         if (resp.status === 200) {
-                            message.success('导入成功');
+                            onlyMessage('导入成功');
                             table.refresh();
                         }
                     });
                 } catch (error) {
-                    message.error('导入失败，请重试！');
+                    onlyMessage('导入失败，请重试！', 'error');
                 }
             };
-        } else message.error('请上传json格式');
+        } else onlyMessage('请上传json格式', 'error');
         return false;
     },
     // 导出数据
@@ -251,9 +251,9 @@ const table = {
         exportPermission_api(params).then((resp) => {
             if (resp.status === 200) {
                 downloadObject(resp.result as any, '权限数据');
-                message.success('导出成功');
+                onlyMessage('导出成功');
             } else {
-                message.error('导出错误');
+                onlyMessage('导出错误', 'error');
             }
         });
     },
@@ -264,7 +264,7 @@ const table = {
             status: row.status ? 0 : 1,
         };
         editPermission_api(params).then(() => {
-            message.success('操作成功');
+            onlyMessage('操作成功');
             tableRef.value.reload();
         });
     },
@@ -273,7 +273,7 @@ const table = {
         delPermission_api(row.id).then((resp: any) => {
             if (resp.status === 200) {
                 tableRef.value?.reload();
-                message.success('操作成功!');
+                onlyMessage('操作成功!');
             }
         });
     },

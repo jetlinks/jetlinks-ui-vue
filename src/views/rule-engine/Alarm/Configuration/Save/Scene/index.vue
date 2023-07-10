@@ -99,8 +99,7 @@ import { query } from '@/api/rule-engine/scene';
 import { unbindScene } from '@/api/rule-engine/configuration';
 import { useRoute } from 'vue-router';
 import type { ActionsType } from '@/components/Table';
-import { getImage } from '@/utils/comm';
-import { message } from 'jetlinks-ui-components';
+import { getImage, onlyMessage } from '@/utils/comm';
 import Save from './Save/index.vue';
 import { useAlarmConfigurationStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
@@ -157,7 +156,7 @@ const getActions = (
                 onConfirm: async () => {
                     const res = await unbindScene(id, [data.id]);
                     if (res.status === 200) {
-                        message.success('操作成功');
+                        onlyMessage('操作成功');
                         actionRef.value.reload();
                     }
                 },

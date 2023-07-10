@@ -51,8 +51,8 @@
 
 <script setup lang="ts">
 import { query, bindDevice } from '@/api/device/instance';
+import { onlyMessage } from '@/utils/comm';
 import dayjs from 'dayjs';
-import { message } from 'jetlinks-ui-components';
 
 const emit = defineEmits(['cancel', 'ok']);
 
@@ -151,7 +151,7 @@ const onSelectChange = (keys: string[]) => {
 
 const handleOk = () => {
     if (_selectedRowKeys.value.length === 0) {
-        message.warning('请选择需要绑定的设备');
+        onlyMessage('请选择需要绑定的设备', 'warning');
         return;
     }
     btnLoading.value = true;
@@ -159,7 +159,7 @@ const handleOk = () => {
         .then((resp) => {
             if(resp.status === 200){
                 emit('ok', _selectedRowKeys.value[0]);
-                message.success('操作成功');
+                onlyMessage('操作成功');
             }
         })
         .finally(() => {

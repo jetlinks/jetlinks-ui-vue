@@ -14,7 +14,6 @@ import { useInstanceStore } from '@/store/instance';
 import { useMetadataStore } from '@/store/metadata';
 import { useProductStore } from '@/store/product';
 import { ProductItem } from '@/views/device/Product/typings';
-import { message } from 'jetlinks-ui-components';
 import type { FormInstance } from 'ant-design-vue/es';
 import { updateMetadata, asyncUpdateMetadata } from '../../metadata'
 import { detail } from '@/api/device/instance';
@@ -23,6 +22,7 @@ import BaseForm from './BaseForm.vue';
 import { PropType } from 'vue';
 import { _deploy } from '@/api/device/product';
 import { cloneDeep } from 'lodash';
+import { onlyMessage } from '@/utils/comm';
 
 const props = defineProps({
   type: {
@@ -79,7 +79,7 @@ const save = reactive({
       const list = (_metadata[type] as any[]) || []
       if (formValue.id) {
         if (metadataStore.model.action === 'add' && list.some(item => item.id === formValue.id)) {
-          message.error('标识已存在')
+          onlyMessage('标识已存在', 'error')
           save.loading = false
           return
         }
@@ -116,20 +116,14 @@ const save = reactive({
             const res = await _deploy(id as string)
             if (res.success) {
               save.resetMetadata();
-              message.success({
-                key: 'metadata',
-                content: '操作成功！',
-              });
+              onlyMessage('操作成功！');
             } else {
-              message.error('操作失败！');
+              onlyMessage('操作失败！', 'error');
             }
             // Store.set('product-deploy', deploy);
           } else {
             // save.resetMetadata();
-            message.success({
-              key: 'metadata',
-              content: '操作成功！',
-            });
+            onlyMessage('操作成功！');
           }
           metadataStore.set('edit', false)
           metadataStore.set('item', {})
@@ -138,7 +132,7 @@ const save = reactive({
           // }
         }
       } else {
-        message.error('操作失败！');
+        onlyMessage('操作失败！', 'error');
       }
       save.loading = false
     })

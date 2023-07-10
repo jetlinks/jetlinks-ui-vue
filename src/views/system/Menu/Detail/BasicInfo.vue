@@ -5,6 +5,7 @@
             <j-form ref="basicFormRef" :model="form.data" class="basic-form">
                 <div class="row" style="display: flex">
                     <j-form-item
+                        ref="uploadIcon"
                         label="菜单图标"
                         name="icon"
                         :rules="[
@@ -252,7 +253,7 @@
         <ChooseIconDialog
             v-if="dialogVisible"
             v-model:visible="dialogVisible"
-            @confirm="(typeStr:string)=>form.data.icon = typeStr"
+            @confirm="(typeStr:string)=>choseIcon(typeStr)"
         />
     </div>
 </template>
@@ -273,6 +274,7 @@ import {
 } from '@/api/system/menu';
 import { Rule } from 'ant-design-vue/lib/form';
 import { isNoCommunity } from '@/utils/utils';
+import { onlyMessage } from '@/utils/comm';
 
 const permission = 'system/Menu';
 // 路由
@@ -288,6 +290,7 @@ const routeParams = {
 // 表单
 const basicFormRef = ref<FormInstance>();
 const permissFormRef = ref<FormInstance>();
+const uploadIcon = ref<FormInstance>();
 const form = reactive({
     data: {
         name: '',
@@ -373,7 +376,7 @@ const form = reactive({
                 api(params)
                     .then((resp: any) => {
                         if (resp.status === 200) {
-                            message.success('操作成功！');
+                            onlyMessage('操作成功！');
                             // 新增后刷新页面，编辑则不需要
                             if (!routeParams.id) {
                                 router.push(
@@ -383,7 +386,7 @@ const form = reactive({
                                 form.init();
                             }
                         } else {
-                            message.error('操作失败！');
+                            onlyMessage('操作失败！', 'error');
                         }
                     })
                     .finally(() => (form.saveLoading = false));
@@ -393,6 +396,10 @@ const form = reactive({
 });
 form.init();
 
+const choseIcon = (typeStr:string) =>{
+    form.data.icon = typeStr;
+    uploadIcon.value?.clearValidate();
+}
 // 弹窗
 const dialogVisible = ref(false);
 

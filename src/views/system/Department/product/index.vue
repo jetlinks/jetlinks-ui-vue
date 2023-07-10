@@ -89,25 +89,25 @@
                         </template>
                         <template #content>
                             <h3 class="card-item-content-title" style='margin-bottom: 18px;'>
-                              <Ellipsis style="width: calc(100% - 100px);"
-                              >
                                 {{ slotProps.name }}
-                              </Ellipsis>
                             </h3>
                             <j-row>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">ID</div>
+                                    <Ellipsis style="width: calc(100% - 20px);">
                                     <div
                                         style="cursor: pointer"
                                         class="card-item-content-value"
                                     >
                                         {{ slotProps.id }}
                                     </div>
+                                    </Ellipsis>
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
                                         资产权限
                                     </div>
+                                    <Ellipsis style="width: calc(100% - 20px);">
                                     <div
                                         style="cursor: pointer"
                                         class="card-item-content-value"
@@ -119,6 +119,7 @@
                                             )
                                         }}
                                     </div>
+                                    </Ellipsis>
                                 </j-col>
                             </j-row>
                         </template>
@@ -241,7 +242,7 @@ import PermissionButton from '@/components/PermissionButton/index.vue';
 import AddDeviceOrProductDialog from '../components/AddDeviceOrProductDialog.vue';
 import EditPermissionDialog from '../components/EditPermissionDialog.vue';
 import NextDialog from '../components/NextDialog.vue';
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import {
     getDeviceOrProductList_api,
     getPermission_api,
@@ -250,9 +251,6 @@ import {
     getBindingsPermission,
 } from '@/api/system/department';
 import { intersection } from 'lodash-es';
-
-import type { dictType } from '../typing.d.ts';
-import { message } from 'jetlinks-ui-components';
 
 const permission = 'system/Department';
 
@@ -300,7 +298,7 @@ const columns = [
         dataIndex: 'state',
         key: 'state',
         ellipsis: true,
-        width: '80px',
+        width: 80,
         search: {
             type: 'select',
             options: [
@@ -549,7 +547,7 @@ const table = {
     },
     clickEdit: async (row?: any) => {
         const ids = row ? [row.id] : [...tableData._selectedRowKeys];
-        if (ids.length < 1) return message.warning('请勾选需要编辑的数据');
+        if (ids.length < 1) return onlyMessage('请勾选需要编辑的数据', 'warning');
         tableData.defaultPermission = row ? row?.permission : intersection(...tableData.selectedRows.map(
             (item) => item.permission,
         )) as string[]
@@ -560,7 +558,7 @@ const table = {
     },
     clickUnBind: (row?: any) => {
         const ids = row ? [row.id] : [...tableData._selectedRowKeys];
-        if (ids.length < 1) return message.warning('请勾选需要解绑的数据');
+        if (ids.length < 1) return onlyMessage('请勾选需要解绑的数据', 'warning');
         const params = [
             {
                 targetType: 'org',
@@ -571,7 +569,7 @@ const table = {
         ];
         unBindDeviceOrProduct_api('product', params).then(() => {
             tableData._selectedRowKeys = [];
-            message.success('操作成功');
+            onlyMessage('操作成功');
             table.refresh();
         });
     },

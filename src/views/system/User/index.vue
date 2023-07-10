@@ -132,7 +132,7 @@ import {
     changeUserStatus_api,
     deleteUser_api,
 } from '@/api/system/user';
-import { message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
 
 const permission = 'system/User';
 
@@ -240,14 +240,14 @@ const table = {
             id,
         };
         changeUserStatus_api(params).then(() => {
-            message.success('操作成功');
+            onlyMessage('操作成功');
             table.refresh();
         });
     },
     // 删除
     clickDel: (id: string) => {
         deleteUser_api(id).then(() => {
-            message.success('操作成功');
+            onlyMessage('操作成功');
             table.refresh();
         });
     },

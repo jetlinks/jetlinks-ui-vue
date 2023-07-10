@@ -85,10 +85,10 @@ import Detail from './Detail/index.vue';
 import Indicators from './Indicators.vue';
 import { getProperty } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
-import { message } from 'ant-design-vue';
 import { getWebSocket } from '@/utils/websocket';
 import { map } from 'rxjs/operators';
 import { queryDashboard } from '@/api/comm';
+import { onlyMessage } from '@/utils/comm';
 
 const columns = [
     {
@@ -194,7 +194,7 @@ const getActions = (data: Partial<Record<string, any>>) => {
                         data.id,
                     );
                     if (resp.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                     }
                 }
             },

@@ -158,7 +158,7 @@ import {
     changeStatus_api,
     delDataSource_api,
 } from '@/api/system/dataSource';
-import { message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
 
 const permission = 'system/DataSource';
 
@@ -269,7 +269,7 @@ const table = {
         delDataSource_api(row.id as string).then((resp: any) => {
             if (resp.status === 200) {
                 tableRef.value?.reload();
-                message.success('操作成功!');
+                onlyMessage('操作成功!');
             }
         });
     },
@@ -277,7 +277,7 @@ const table = {
         const status = row.state.value === 'enabled' ? '_disable' : '_enable';
 
         changeStatus_api(row.id as string, status).then(() => {
-            message.success('操作成功');
+            onlyMessage('操作成功');
             table.refresh();
         });
     },

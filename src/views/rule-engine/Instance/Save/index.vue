@@ -40,8 +40,7 @@
 
 <script lang="ts" setup>
 import { saveRule, modify } from '@/api/rule-engine/instance';
-import { getImage } from '@/utils/comm';
-import { message } from 'jetlinks-ui-components';
+import { getImage, onlyMessage } from '@/utils/comm';
 
 const emit = defineEmits(['success', 'closeSave']);
 const props = defineProps({
@@ -80,21 +79,21 @@ const handleSave = () => {
                 let resp = await saveRule(modelRef.value);
                 loading.value = false;
                 if (resp.status === 200) {
-                    message.success('操作成功！');
+                    onlyMessage('操作成功！');
                     emit('closeSave');
                     emit('success');
                 } else {
-                    message.error('操作失败');
+                    onlyMessage('操作失败', 'error');
                 }
             } else {
                 let resp = await modify(modelRef.value?.id, modelRef.value);
                 loading.value = false;
                 if (resp.status === 200) {
-                    message.success('操作成功！');
+                    onlyMessage('操作成功！');
                     emit('closeSave');
                     emit('success');
                 } else {
-                    message.error('操作失败！');
+                    onlyMessage('操作失败！', 'error');
                 }
             }
         })

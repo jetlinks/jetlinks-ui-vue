@@ -738,9 +738,9 @@
 </template>
 
 <script setup lang="ts">
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import { UploadChangeParam } from 'ant-design-vue';
-import { message, Form } from 'jetlinks-ui-components';
+import { Form } from 'jetlinks-ui-components';
 import type { IVariableDefinitions, TemplateFormData } from '../types';
 import {
     NOTICE_METHOD,
@@ -1247,7 +1247,7 @@ const handleSubmit = () => {
         : await templateApi.save(formData.value);
 
       if (res?.success) {
-        message.success('保存成功');
+        onlyMessage('保存成功');
         if (route.query?.notifyType) {
             // @ts-ignore
             window?.onTabSaveSuccess(res.result);

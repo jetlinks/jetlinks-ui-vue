@@ -226,7 +226,6 @@ import {
 import { onlyMessage } from '@/utils/comm';
 import { randomString } from '@/utils/utils';
 import { FormInstance } from 'ant-design-vue';
-import { message } from 'jetlinks-ui-components';
 import { DataNode } from 'ant-design-vue/lib/tree';
 import _ from 'lodash';
 import { cloneDeep } from 'lodash';
@@ -400,7 +399,7 @@ const clickSave = () => {
         };
         saveTable_api(id, params).then((resp) => {
             if (resp.status === 200) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 queryTables(params.name);
             }
         });

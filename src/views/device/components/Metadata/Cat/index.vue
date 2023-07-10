@@ -26,13 +26,13 @@
   </j-drawer>
 </template>
 <script setup lang="ts" name="Cat">
-import { message } from 'ant-design-vue/es';
 import { downloadObject } from '@/utils/utils'
 import { useInstanceStore } from '@/store/instance';
 import { useProductStore } from '@/store/product';
 import type { Key } from 'ant-design-vue/es/_util/type';
 import { convertMetadata, getCodecs, detail as productDetail } from '@/api/device/product';
 import { detail } from '@/api/device/instance'
+import { onlyMessage } from '@/utils/comm';
 
 interface Props {
   visible: boolean;
@@ -81,7 +81,7 @@ const handleExport = async () => {
       'YYYY/MM/DD',
     );
   } catch (e) {
-    message.error('请先配置物模型');
+    onlyMessage('请先配置物模型', 'error');
   }
 }
 

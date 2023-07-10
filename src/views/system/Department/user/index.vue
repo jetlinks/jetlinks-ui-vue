@@ -91,7 +91,7 @@
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import AddBindUserDialog from './components/AddBindUserDialog.vue';
 import { getBindUserList_api, unBindUser_api } from '@/api/system/department';
-import { message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
 
 const permission = 'system/Department';
 
@@ -203,10 +203,10 @@ const table = reactive({
     },
     unBind: (row?: any) => {
         const ids = row ? [row.id] : table._selectedRowKeys;
-        if (ids.length < 1) return message.warning('请勾选需要解绑的数据');
+        if (ids.length < 1) return onlyMessage('请勾选需要解绑的数据', 'warning');
 
         unBindUser_api(props.parentId, ids).then(() => {
-            message.success('操作成功');
+            onlyMessage('操作成功');
             table.refresh();
         });
     },

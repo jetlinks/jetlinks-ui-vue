@@ -10,7 +10,9 @@
             <div class="list-item-left">
                 <div class="header">
                     <div class="title">
-                        <div>{{ props.data?.topicName }}</div>
+                        <div>
+                            {{ props.data?.topicName }}
+                        </div>
                         <span :style="{color: state === 'unread' ? 'red' : '#AAAAAA'}">{{ state === 'unread' ? '未读' : '已读' }}</span>
                     </div>
                     <div class="time">
@@ -126,25 +128,31 @@ const read = (type: '_read' | '_unread') => {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            // margin-bottom: 10px;
-
             .title {
                 display: flex;
                 align-items: center;
+                width: calc(100% - 120px);
+                
                 div {
                     color: rgba(0, 0, 0, 0.85);
                     font-size: 14px;
                     font-weight: bold;
                     margin-right: 10px;
+                    max-width: calc(100% - 40px);
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
                 }
                 span {
                     color: red;
                     font-size: 13px;
+                    width: 30px;
                 }
             }
             .time {
                 font-size: 12px;
                 color: rgba(0, 0, 0, 0.45);
+                width: 120px;
             }
         }
     }

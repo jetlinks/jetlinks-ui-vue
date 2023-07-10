@@ -134,8 +134,7 @@
 <script lang="ts" setup>
 import { queryNoPagingPost } from '@/api/device/product';
 import { isExists, update } from '@/api/device/instance';
-import { getImage } from '@/utils/comm';
-import { message } from 'jetlinks-ui-components';
+import { getImage, onlyMessage } from '@/utils/comm';
 
 const emit = defineEmits(['close', 'save']);
 const props = defineProps({
@@ -217,7 +216,7 @@ const handleSave = () => {
                 loading.value = false;
             });
             if (resp.status === 200) {
-                message.success('操作成功！');
+                onlyMessage('操作成功！');
                 emit('save');
                 formRef.value.resetFields();
             }

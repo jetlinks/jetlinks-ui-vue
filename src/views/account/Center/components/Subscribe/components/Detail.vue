@@ -1,13 +1,13 @@
 <template>
     <j-modal width="350px" visible @cancel="emit('close')" :footer="null">
         <template v-if="getType === 'notifier-dingTalk'">
-            <div class="tip">暂未开发</div>
+            <div class="tip">绑定账号：{{ info }}</div>
         </template>
         <template v-else-if="getType === 'notifier-weixin'">
-            <div class="tip">暂未开发</div>
+            <div class="tip">绑定账号：{{ info }}</div>
         </template>
         <template v-else-if="getType === 'notifier-email'">
-           <div class="tip"> 绑定账号：{{ user.userInfos?.email }}</div>
+            <div class="tip">绑定账号：{{ user.userInfos?.email }}</div>
         </template>
         <template v-else>
             <div class="tip">绑定账号：{{ user.userInfos?.telephone }}</div>
@@ -17,16 +17,8 @@
             <j-button
                 @click="onBind"
                 type="primary"
-                v-if="
-                    [
-                        'notifier-email',
-                        'notifier-voice',
-                        'notifier-sms',
-                    ].includes(getType)
-                "
                 >更换绑定账号</j-button
             >
-            <j-button v-else @click="emit('close')">确定</j-button>
         </div>
     </j-modal>
     <EditInfo
@@ -35,14 +27,24 @@
         @close="editInfoVisible = false"
         @save="onSave"
     />
+    <Bind
+        @close="visible = false"
+        v-if="visible"
+        :data="props.data"
+        :current="current"
+        @save="onBindSave"
+    />
 </template>
 
 <script lang="ts" setup>
+import { getIsBindThird } from '@/api/account/notificationSubscription';
 import { useUserInfo } from '@/store/userInfo';
 import EditInfo from '../../EditInfo/index.vue';
+import Bind from './Bind.vue';
 
 const user = useUserInfo();
 const emit = defineEmits(['close', 'save', 'unsubscribe']);
+const info = ref<any>(null);
 const props = defineProps({
     data: {
         // 外层数据
@@ -57,13 +59,22 @@ const props = defineProps({
 });
 
 const editInfoVisible = ref<boolean>(false);
+const visible = ref<boolean>(false);
 
 const getType = computed(() => {
     return props.current?.channelProvider;
 });
 
 const onBind = () => {
-    editInfoVisible.value = true;
+    if (
+        ['notifier-voice', 'notifier-sms', 'notifier-email'].includes(
+            props.current?.channelProvider,
+        )
+    ) {
+        editInfoVisible.value = true;
+    } else {
+        visible.value = true
+    }
 };
 
 const onSave = () => {
@@ -73,24 +84,34 @@ const onSave = () => {
     emit('close');
 };
 
-// 更换绑定账号
-const onAccountChange = (_data: any) => {
-    // current.value = _data;
-    // if (
-    //     ['notifier-voice', 'notifier-sms', 'notifier-email'].includes(
-    //         _data?.channelProvider,
-    //     )
-    // ) {
-    //     editInfoVisible.value = true;
-    // } else {
-    //     visible.value = true;
-    // }
+const onBindSave = () => {
+    emit('save', props.current);
+    emit('close');
+}
+
+const handleSearch = async () => {
+    if (
+        !['notifier-voice', 'notifier-sms', 'notifier-email'].includes(
+            props.current?.channelProvider,
+        )
+    ) {
+        const resp: any = await getIsBindThird();
+        const _item = (resp?.result || []).find((item: any) => {
+            return (
+                props.current?.channelConfiguration?.notifierId ===
+                item?.provider
+            );
+        });
+        if (_item) {
+            info.value = _item?.providerName
+        }
+    }
 };
 
 watch(
     () => props.current,
     () => {
-        // handleSearch();
+        handleSearch();
     },
     {
         immediate: true,

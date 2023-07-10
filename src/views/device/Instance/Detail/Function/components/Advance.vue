@@ -45,9 +45,9 @@
 
 <script setup lang="ts">
 import { ComponentInternalInstance } from 'vue';
-import { message } from 'jetlinks-ui-components';
 import { useInstanceStore } from '@/store/instance';
 import { execute } from '@/api/device/instance';
+import { onlyMessage } from '@/utils/comm';
 
 const instanceStore = useInstanceStore();
 const route = useRoute();
@@ -115,7 +115,7 @@ const handleExecute = async (func: any) => {
         JSON.parse(func.json),
     );
     if (!success) return;
-    message.success('操作成功');
+    onlyMessage('操作成功');
     func.executeResult = result instanceof Array ? result[0] : result;
     proxy?.$forceUpdate();
 };

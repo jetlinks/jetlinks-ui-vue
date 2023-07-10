@@ -80,7 +80,7 @@
 import { queryTree, deleteTree } from '@/api/device/category';
 import type { ActionsType } from '@/components/Table/index.vue';
 import ModifyModal from './components/modifyModal/index.vue';
-import { message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
 const expandedRowKeys = ref<any>([]);
 const tableRef = ref<Record<string, any>>({});
 const modifyRef = ref();
@@ -194,10 +194,10 @@ const getActions = (
                 onConfirm: async () => {
                     const resp = await deleteTree(data.id);
                     if (resp.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         tableRef.value.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },

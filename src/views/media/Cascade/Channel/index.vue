@@ -156,8 +156,8 @@
 
 <script setup lang="ts">
 import CascadeApi from '@/api/media/cascade';
+import { onlyMessage } from '@/utils/comm';
 import type { ActionsType } from '@/views/device/Instance/typings';
-import { message } from 'jetlinks-ui-components';
 import BindChannel from './BindChannel/index.vue';
 
 const route = useRoute();
@@ -275,10 +275,10 @@ const getActions = (
                         [data.channelId],
                     );
                     if (resp.success) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         listRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },
@@ -292,7 +292,7 @@ const getActions = (
  */
 const handleMultipleUnbind = async () => {
     if (!_selectedRowKeys.value.length) {
-        message.error('请先选择需要解绑的通道列表');
+        onlyMessage('请先选择需要解绑的通道列表', 'error');
         return;
     }
     const channelIds = listRef.value?._dataSource
@@ -303,10 +303,10 @@ const handleMultipleUnbind = async () => {
         channelIds,
     );
     if (resp.success) {
-        message.success('操作成功！');
+        onlyMessage('操作成功！');
         listRef.value?.reload();
     } else {
-        message.error('操作失败！');
+        onlyMessage('操作失败！', 'error');
     }
 };
 
@@ -316,7 +316,7 @@ const handleMultipleUnbind = async () => {
 const gbID = ref('');
 const loading = ref(false);
 const handleSave = async (data: any) => {
-    if (!gbID.value) message.error('请输入国标ID');
+    if (!gbID.value) onlyMessage('请输入国标ID', 'error');
     if (!valid.value?.passed) return;
 
     loading.value = true;
@@ -325,12 +325,12 @@ const handleSave = async (data: any) => {
     });
     loading.value = false;
     if (resp.success) {
-        message.success('操作成功！');
+        onlyMessage('操作成功！');
         listRef.value?.reload();
         valid.value = undefined;
         gbID.value = '';
     } else {
-        message.error('操作失败！');
+        onlyMessage('操作失败！', 'error');
     }
 };
 
