@@ -135,9 +135,9 @@
 <script setup lang="ts" name="SyncUser">
 import configApi from '@/api/notice/config';
 import { PropType } from 'vue';
-import { message } from 'jetlinks-ui-components';
 import type { ActionsType } from '@/views/device/Instance/typings';
 import { Form } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 
 const useForm = Form.useForm;
 
@@ -268,7 +268,7 @@ const getActions = (
                     configApi
                         .unBindUser({ bindingId: data.bindId }, data.bindId)
                         .then(() => {
-                            message.success('操作成功');
+                            onlyMessage('操作成功');
                             getTableData();
                         });
                 },
@@ -298,12 +298,12 @@ const handleAutoBind = async () => {
 
     if (props.data.type === 'dingTalk') {
         configApi.dingTalkBindUser(params, props.data.id).then(() => {
-            message.success('操作成功');
+            onlyMessage('操作成功');
             getTableData();
         });
     } else if (props.data.type === 'weixin') {
         configApi.weChatBindUser(params, props.data.id).then(() => {
-            message.success('操作成功');
+            onlyMessage('操作成功');
             getTableData();
         });
     }
@@ -473,7 +473,7 @@ const handleBindSubmit = () => {
             configApi
                 .dingTalkBindUser([params], props.data.id)
                 .then(() => {
-                    message.success('操作成功');
+                    onlyMessage('操作成功');
                     bindVis.value = false;
                     getTableData();
                 })
@@ -484,7 +484,7 @@ const handleBindSubmit = () => {
             configApi
                 .weChatBindUser([params], props.data.id)
                 .then(() => {
-                    message.success('操作成功');
+                    onlyMessage('操作成功');
                     bindVis.value = false;
                     getTableData();
                 })

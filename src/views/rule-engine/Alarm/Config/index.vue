@@ -82,10 +82,9 @@
 </template>
 
 <script lang="ts" setup>
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import { queryLevel, saveLevel } from '@/api/rule-engine/config';
 import { LevelItem } from './typing';
-import { message } from 'jetlinks-ui-components';
 import Io from './Io/index.vue';
 const list = ref([
     {
@@ -110,7 +109,7 @@ getAlarmLevel();
 const handleSaveLevel = async () => {
     saveLevel(levels.value).then((res) => {
         if (res.status === 200) {
-            message.success('操作成功');
+            onlyMessage('操作成功');
         }
     });
 };

@@ -85,8 +85,8 @@
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import AddUserDialog from '../components/AddUserDialog.vue';
 import { getUserByRole_api, unbindUser_api } from '@/api/system/role';
-import { message } from 'jetlinks-ui-components';
 import dayjs from 'dayjs';
+import { onlyMessage } from '@/utils/comm';
 
 const roleId = useRoute().params.id as string;
 
@@ -172,12 +172,12 @@ const table = {
     unbind: (ids?: string[]) => {
         const data = ids ? ids : selectedRowKeys.value;
         if (!data.length) {
-            message.warning('请勾选数据');
+            onlyMessage('请勾选数据', 'warning');
             return;
         }
         unbindUser_api(roleId, data).then((resp) => {
             if (resp.status === 200) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 table.refresh();
             }
         });

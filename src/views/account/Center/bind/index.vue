@@ -124,10 +124,9 @@
 </template>
 
 <script setup lang='ts' name='AccountBind'>
-import { getImage, LocalStore } from '@/utils/comm'
+import { getImage, LocalStore, onlyMessage } from '@/utils/comm'
 import { TOKEN_KEY } from '@/utils/variable'
 import { Form } from 'ant-design-vue'
-import { message } from 'ant-design-vue'
 
 import { applicationInfo, bindAccount } from '@/api/bind'
 import { code, authLogin, userDetail } from '@/api/login'
@@ -196,7 +195,7 @@ const handleBind = async () => {
   const code = getUrlCode()
   const res = await bindAccount(code)
   console.log('bindAccount: ', res)
-  message.success('绑定成功')
+  onlyMessage('绑定成功')
   goRedirect()
   setTimeout(() => window.close(), 1000)
 }
@@ -263,7 +262,7 @@ const handleLoginBind = () => {
       const res = await authLogin(params)
       console.log('res: ', res)
       if (res.success) {
-        message.success('登录成功')
+        onlyMessage('登录成功')
         LocalStore.set(TOKEN_KEY, res.result!.token as string)
         goRedirect()
       }

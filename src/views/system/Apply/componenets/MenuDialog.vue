@@ -53,8 +53,8 @@ import {
 } from '@/api/system/apply';
 import { CheckInfo } from 'ant-design-vue/lib/vc-tree/props';
 import { useMenuStore } from '@/store/menu';
-import { message } from 'jetlinks-ui-components';
 import { getMenuTree_api } from '@/api/system/menu';
+import { onlyMessage } from '@/utils/comm';
 
 const menuStory = useMenuStore();
 const emits = defineEmits(['update:visible', 'refresh']);
@@ -86,15 +86,15 @@ const handleOk = async () => {
             })
             if (resp.status === 200) {
                 // 保存集成菜单
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 emits('update:visible', false);
                 emits('refresh')
             }
         } else {
-            message.warning('请勾选配置菜单');
+            onlyMessage('请勾选配置菜单', 'warning');
         }
     } else {
-        message.warning('请选择所属系统');
+        onlyMessage('请选择所属系统', 'warning');
     }
 };
 const cancel = () => {

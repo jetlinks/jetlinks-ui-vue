@@ -124,7 +124,7 @@
 </template>
 
 <script setup lang="ts">
-import { FormInstance, message } from 'ant-design-vue';
+import { FormInstance } from 'ant-design-vue';
 import { Rule } from 'ant-design-vue/es/form';
 
 import {
@@ -133,6 +133,7 @@ import {
     addPermission_api,
 } from '@/api/system/permission';
 import { cloneDeep } from 'lodash-es';
+import { onlyMessage } from '@/utils/comm';
 
 const defaultAction = [
     { action: 'query', name: '查询', describe: '查询' },
@@ -154,7 +155,7 @@ const confirm = () => {
         .then(() => form.submit())
         .then((resp) => {
             if (resp.status === 200) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 emits('refresh');
                 emits('update:visible', false);
             }

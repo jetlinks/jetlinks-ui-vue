@@ -93,9 +93,9 @@ import { usePermissionStore } from '@/store/permission';
 import type { bootConfig, recommendList } from '@/views/home/typing';
 
 import deviceApi from '@/api/media/device';
-import { message } from 'jetlinks-ui-components';
 
 import { useMenuStore } from 'store/menu';
+import { onlyMessage } from '@/utils/comm';
 
 const menuStory = useMenuStore();
 
@@ -140,7 +140,7 @@ const deviceStepDetails: recommendList[] = [
             if (hasPermission('media/Device:view')) {
                 visible.value = true;
             } else {
-                message.warning('暂无权限，请联系管理员');
+                onlyMessage('暂无权限，请联系管理员', 'warning');
             }
         },
     },
@@ -218,7 +218,7 @@ const handleSubmit = () => {
             },
         );
     } else {
-        message.warning('请选择设备');
+        onlyMessage('请选择设备', 'warning');
     }
 };
 </script>

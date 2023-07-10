@@ -124,8 +124,7 @@ import EdgeMap from './EdgeMap/index.vue';
 import Parsing from './Parsing/index.vue';
 import Log from './Log/index.vue';
 import { _deploy, _disconnect } from '@/api/device/instance';
-import { message } from 'jetlinks-ui-components';
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import { getWebSocket } from '@/utils/websocket';
 import { useMenuStore } from '@/store/menu';
 import { useRouterParams } from '@/utils/hooks/useParams';
@@ -305,7 +304,7 @@ const handleAction = async () => {
     if (instanceStore.current?.id) {
         const resp = await _deploy(instanceStore.current?.id);
         if (resp.status === 200) {
-            message.success('操作成功！');
+            onlyMessage('操作成功！');
             instanceStore.refresh(instanceStore.current?.id);
         }
     }
@@ -315,7 +314,7 @@ const handleDisconnect = async () => {
     if (instanceStore.current?.id) {
         const resp = await _disconnect(instanceStore.current?.id);
         if (resp.status === 200) {
-            message.success('操作成功！');
+            onlyMessage('操作成功！');
             instanceStore.refresh(instanceStore.current?.id);
         }
     }
@@ -324,7 +323,7 @@ const handleDisconnect = async () => {
 const handleRefresh = async () => {
     if (instanceStore.current?.id) {
         await instanceStore.refresh(instanceStore.current?.id);
-        message.success('操作成功');
+        onlyMessage('操作成功');
     }
 };
 

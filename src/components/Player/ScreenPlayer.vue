@@ -149,9 +149,9 @@ import {
     getSearchHistory,
     saveSearchHistory,
 } from '@/api/comm';
-import { message } from 'jetlinks-ui-components';
 import LivePlayer from '@/components/Player/index.vue';
 import MediaTool from '@/components/Player/mediaTool.vue';
+import { onlyMessage } from '@/utils/comm';
 
 type Player = {
     id?: string;
@@ -347,10 +347,10 @@ const saveHistory = async () => {
             if (res.success) {
                 visible.value = false;
                 getHistory();
-                message.success('保存成功');
+                onlyMessage('保存成功');
                 formRef.value.resetFields();
             } else {
-                message.error('保存失败');
+                onlyMessage('保存失败', 'error');
             }
         })
         .catch((err: any) => {

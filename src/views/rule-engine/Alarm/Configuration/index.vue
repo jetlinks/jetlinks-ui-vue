@@ -198,8 +198,7 @@ import {
 import { queryLevel } from '@/api/rule-engine/config';
 import { Store } from 'jetlinks-store';
 import type { ActionsType } from '@/components/Table/index.vue';
-import { message } from 'jetlinks-ui-components';
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import encodeQuery from '@/utils/encodeQuery';
 const params = ref<Record<string, any>>({});
@@ -393,10 +392,10 @@ const getActions = (
                         });
                     _execute(scene).then((res) => {
                         if (res.status === 200) {
-                            message.success('操作成功');
+                            onlyMessage('操作成功');
                             tableRef.value?.reload();
                         } else {
-                            message.error('操作失败');
+                            onlyMessage('操作失败', 'error');
                         }
                     });
                 },
@@ -443,10 +442,10 @@ const getActions = (
                         response = await _disable(data.id);
                     }
                     if (response && response.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         tableRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },
@@ -466,10 +465,10 @@ const getActions = (
                 onConfirm: async () => {
                     const resp = await remove(data.id);
                     if (resp.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         tableRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },

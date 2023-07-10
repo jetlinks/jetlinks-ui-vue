@@ -46,7 +46,6 @@ import {
     templateDownload,
 } from '@/api/device/instance';
 import { EventSourcePolyfill } from 'event-source-polyfill';
-import { message } from 'jetlinks-ui-components';
 
 type Emits = {
     (e: 'update:modelValue', data: string[]): void;
@@ -138,7 +137,7 @@ const submitData = async (fileUrl: string) => {
         };
         source.onopen = () => {};
     } else {
-        message.error('请先上传文件');
+        onlyMessage('请先上传文件', 'error');
     }
 };
 

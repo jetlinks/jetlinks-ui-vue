@@ -273,6 +273,7 @@ import {
 } from '@/api/system/menu';
 import { Rule } from 'ant-design-vue/lib/form';
 import { isNoCommunity } from '@/utils/utils';
+import { onlyMessage } from '@/utils/comm';
 
 const permission = 'system/Menu';
 // 路由
@@ -373,7 +374,7 @@ const form = reactive({
                 api(params)
                     .then((resp: any) => {
                         if (resp.status === 200) {
-                            message.success('操作成功！');
+                            onlyMessage('操作成功！');
                             // 新增后刷新页面，编辑则不需要
                             if (!routeParams.id) {
                                 router.push(
@@ -383,7 +384,7 @@ const form = reactive({
                                 form.init();
                             }
                         } else {
-                            message.error('操作失败！');
+                            onlyMessage('操作失败！', 'error');
                         }
                     })
                     .finally(() => (form.saveLoading = false));

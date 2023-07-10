@@ -167,9 +167,8 @@
 </template>
 
 <script setup lang="ts">
-import { message } from 'jetlinks-ui-components';
 import DeviceApi from '@/api/media/device';
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import { gatewayType } from '@/views/media/Device/typings';
 import { providerType } from '../const';
 import { usePermissionStore } from '@/store/permission';
@@ -296,7 +295,7 @@ const handleOk = () => {
                 );
                 if (deployResp.success) {
                     emit('save', { ...res.result });
-                    message.success('操作成功');
+                    onlyMessage('操作成功');
                     handleCancel();
                 }
             }

@@ -558,8 +558,7 @@
 </template>
 
 <script setup lang="ts">
-import { getImage } from '@/utils/comm';
-import { message } from 'jetlinks-ui-components';
+import { getImage, onlyMessage } from '@/utils/comm';
 import CascadeApi from '@/api/media/cascade';
 
 const router = useRouter();
@@ -753,7 +752,7 @@ const handleSubmit = () => {
             btnLoading.value = true;
             CascadeApi[id ? 'update' : 'save'](params)
                 .then(() => {
-                    message.success('操作成功');
+                    onlyMessage('操作成功');
                     router.back();
                 })
                 .finally(() => {

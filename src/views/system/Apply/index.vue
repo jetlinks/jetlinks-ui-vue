@@ -203,9 +203,8 @@ import {
     delApply_api,
     queryType
 } from '@/api/system/apply';
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
-import { message } from 'jetlinks-ui-components';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
 import Add from './Save/Add.vue';
 
@@ -317,7 +316,7 @@ const table = {
         const state = row.state.value === 'enabled' ? 'disabled' : 'enabled';
         changeApplyStatus_api(row.id, { state }).then((resp: any) => {
             if (resp.status === 200) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 table.refresh();
             }
         });
@@ -325,7 +324,7 @@ const table = {
     clickDel: (row: any) => {
         delApply_api(row.id).then((resp: any) => {
             if (resp.status === 200) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 table.refresh();
             }
         });

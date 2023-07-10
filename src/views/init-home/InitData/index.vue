@@ -117,7 +117,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import {
     saveNetwork,
     getResourcesCurrent,
@@ -131,7 +131,6 @@ import {
 } from '@/api/initHome';
 import { modalState } from '../data/interface';
 import type { Rule } from 'ant-design-vue/es/form';
-import { message } from 'jetlinks-ui-components';
 const formRef = ref();
 /**
  * 初始化数据状态
@@ -321,7 +320,7 @@ const saveCurrentData = () => {
 const { optionPorts, isSucessInit } = toRefs(initialization);
 const handelSave = () => {
     formRef.value.validate().then(() => {
-        message.success('保存成功');
+        onlyMessage('保存成功');
         flag.value = true;
         visible.value = false;
     });

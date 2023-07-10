@@ -52,7 +52,7 @@ import Manual from './Manual/index.vue'
 import Timer from './Timer/index.vue'
 import { modify } from '@/api/rule-engine/scene'
 import { useMenuStore } from '@/store/menu'
-import { message } from 'jetlinks-ui-components'
+import { onlyMessage } from '@/utils/comm';
 
 const sceneStore = useSceneStore()
 const menuStore = useMenuStore()
@@ -73,8 +73,8 @@ const save = async () => {
     })
     loading.value = false
     if (resp.success) {
-      menuStore.jumpPage('rule-engine/Scene')
-      message.success('操作成功')
+      menuStore.jumpPage('rule-engine/Scene');
+      onlyMessage('操作成功');
     }
   }
 }

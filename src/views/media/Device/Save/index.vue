@@ -297,8 +297,7 @@
 </template>
 
 <script setup lang="ts">
-import { getImage } from '@/utils/comm';
-import { message } from 'jetlinks-ui-components';
+import { getImage, onlyMessage } from '@/utils/comm';
 import DeviceApi from '@/api/media/device';
 import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
 import type { ProductType } from '@/views/media/Device/typings';
@@ -417,7 +416,7 @@ const handleSubmit = () => {
                 ? await DeviceApi.save(params)
                 : await DeviceApi.update(params);
             if (res?.success) {
-                message.success('保存成功');
+                onlyMessage('保存成功');
                 history.back();
             }
         })

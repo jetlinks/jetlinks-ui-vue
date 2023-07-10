@@ -142,7 +142,7 @@
 </template>
 
 <script setup lang="ts">
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import { uniq, intersection } from 'lodash-es';
 import {
     getDeviceOrProductList_api,
@@ -151,7 +151,6 @@ import {
     bindDeviceOrProductList_api,
     getBindingsPermission,
 } from '@/api/system/department';
-import { message } from 'jetlinks-ui-components';
 import { dictType } from '../typing';
 import { useDepartmentStore } from '@/store/department';
 import dayjs from 'dayjs';
@@ -173,7 +172,7 @@ const queryCount = ref(0);
 
 const confirm = () => {
     if (table.selectedRows.length < 1) {
-        return message.warning('请先勾选数据');
+        return onlyMessage('请先勾选数据', 'warning');
     }
 
     const params = table.selectedRows.map((item: any) => ({
@@ -193,7 +192,7 @@ const confirm = () => {
     loading.value = true;
     bindDeviceOrProductList_api(props.assetType, params)
         .then(() => {
-            message.success('操作成功');
+            onlyMessage('操作成功');
             emits('confirm');
             emits('update:visible', false);
         })
@@ -299,7 +298,7 @@ const table: any = {
     onSelectChange: (row: any) => {
         // 若该项的可选权限中没有分享权限，则不支持任何操作
         if (!row.permissionList.find((item: any) => item.value === 'share')) {
-            message.warning('该资产不支持共享');
+            onlyMessage('该资产不支持共享', 'warning');
             return;
         }
         const selectedRowKeys = table._selectedRowKeys.value;

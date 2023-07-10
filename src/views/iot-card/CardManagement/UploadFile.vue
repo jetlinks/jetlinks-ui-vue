@@ -42,7 +42,6 @@ import { TOKEN_KEY } from '@/utils/variable';
 import { LocalStore, onlyMessage } from '@/utils/comm';
 import { downloadFileByUrl } from '@/utils/utils';
 import { exportCard, _import } from '@/api/iot-card/cardManagement';
-import { message } from 'jetlinks-ui-components';
 
 type Emits = {
     (e: 'update:modelValue', data: string[]): void;
@@ -102,7 +101,7 @@ const uploadChange = async (info: Record<string, any>) => {
         _import(props.product, { fileUrl: resp.result })
             .then((response: any) => {
                 count.value = response.result?.total || 0
-                message.success('导入成功');
+                onlyMessage('导入成功');
             })
             .catch((err) => {
                 errMessage.value = err?.response?.data?.message || '导入失败'

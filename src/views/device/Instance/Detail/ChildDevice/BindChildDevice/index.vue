@@ -91,9 +91,9 @@
 <script setup lang="ts">
 import { query, bindDevice } from '@/api/device/instance';
 import moment from 'moment';
-import { message } from 'jetlinks-ui-components';
 import { useInstanceStore } from '@/store/instance';
 import { storeToRefs } from 'pinia';
+import { onlyMessage } from '@/utils/comm';
 
 const instanceStore = useInstanceStore();
 const { detail } = storeToRefs(instanceStore);
@@ -177,7 +177,7 @@ const cancelSelect = () => {
 
 const handleOk = () => {
     if (_selectedRowKeys.value.length === 0) {
-        message.warning('请选择需要绑定的设备');
+        onlyMessage('请选择需要绑定的设备', 'warning');
         return;
     }
     btnLoading.value = true;
@@ -185,7 +185,7 @@ const handleOk = () => {
         .then((resp) => {
             emit('change', true);
             cancelSelect();
-            message.success('操作成功');
+            onlyMessage('操作成功');
         })
         .finally(() => {
             btnLoading.value = false;

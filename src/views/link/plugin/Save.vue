@@ -75,8 +75,8 @@ import { ID_Rule, Max_Length_64, Max_Length_200, RequiredStringFn } from '@/comp
 import UploadFile from './UploadFile.vue'
 import { FileUploadResult } from '@/views/link/plugin/typings'
 import { add, update, vailIdFn } from '@/api/link/plugin'
-import { message } from 'jetlinks-ui-components'
 import { TypeMap } from './util'
+import { onlyMessage } from '@/utils/comm'
 
 const props = defineProps({
   data: {
@@ -139,7 +139,7 @@ const handleSave = async () => {
     const resp = props.data.id ? await update(modelRef).catch(() => { success: false }) : await add(modelRef).catch(() => { success: false })
     loading.value = false
     if (resp.success) {
-      message.success('操作成功！');
+      onlyMessage('操作成功！');
       if (route.query.save && (window as any).onTabSaveSuccess) {
         (window as any).onTabSaveSuccess(resp);
         setTimeout(() => window.close(), 300);

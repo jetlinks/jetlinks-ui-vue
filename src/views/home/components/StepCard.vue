@@ -26,9 +26,9 @@
 
 <script setup lang="ts">
 import { PropType } from 'vue';
-import { message } from 'ant-design-vue';
 import { recommendList } from '../typing';
 import { useMenuStore } from '@/store/menu';
+import { onlyMessage } from '@/utils/comm';
 
 const { jumpPage: _jumpPage } = useMenuStore();
 
@@ -41,7 +41,7 @@ const props = defineProps({
 // 跳转页面
 const jumpPage = (row: recommendList) => {
     if (row.auth === false) {
-        return message.warning('暂无权限，请联系管理员');
+        return onlyMessage('暂无权限，请联系管理员', 'warning');
     }
     row.onClick ? row.onClick(row) : _jumpPage(row.linkUrl, row.params);
 };

@@ -116,10 +116,10 @@ import type { ActionsType } from '@/components/Table';
 import { query, unbindDevice, unbindBatchDevice } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import { storeToRefs } from 'pinia';
-import { message } from 'ant-design-vue';
 import BindChildDevice from './BindChildDevice/index.vue';
 import { usePermissionStore } from '@/store/permission';
 import SaveChild from './SaveChild/index.vue';
+import { onlyMessage } from '@/utils/comm';
 
 const instanceStore = useInstanceStore();
 const { detail } = storeToRefs(instanceStore);
@@ -242,7 +242,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                     );
                     if (resp.status === 200) {
                         childDeviceRef.value?.reload();
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                     }
                 },
             },
@@ -281,12 +281,12 @@ const handleUnBind = async () => {
             _selectedRowKeys.value,
         );
         if (resp.status === 200) {
-            message.success('操作成功！');
+            onlyMessage('操作成功！');
             cancelSelect();
             childDeviceRef.value?.reload();
         }
     } else {
-        message.warning('请勾选需要解绑的数据');
+        onlyMessage('请勾选需要解绑的数据', 'warning');
     }
 };
 

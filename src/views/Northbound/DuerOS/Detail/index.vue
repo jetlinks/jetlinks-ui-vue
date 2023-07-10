@@ -487,8 +487,8 @@ import {
     detail,
 } from '@/api/northbound/dueros';
 import _ from 'lodash';
-import { message } from 'jetlinks-ui-components';
 import { useMenuStore } from '@/store/menu';
+import { onlyMessage } from '@/utils/comm';
 
 const menuStory = useMenuStore();
 const route = useRoute();
@@ -708,7 +708,7 @@ const saveBtn = async () => {
                     loading.value = false;
                 });
                 if (resp.status === 200) {
-                    message.success('操作成功！');
+                    onlyMessage('操作成功！');
                     formRef.value.resetFields();
                     menuStory.jumpPage('Northbound/DuerOS');
                 }

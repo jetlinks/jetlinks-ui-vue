@@ -100,8 +100,7 @@ import { getTreeData_api, delDepartment_api } from '@/api/system/department';
 import { debounce, cloneDeep, omit } from 'lodash-es';
 import { ArrayToTree } from '@/utils/utils';
 import EditDepartmentDialog from './EditDepartmentDialog.vue';
-
-import { message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
 
 const permission = 'system/Department';
 
@@ -187,7 +186,7 @@ function handleTreeMap(_data: any[]) {
 // 删除部门
 function delDepartment(id: string) {
     delDepartment_api(id).then(() => {
-        message.success('操作成功');
+        onlyMessage('操作成功');
         getTree();
     });
 }
