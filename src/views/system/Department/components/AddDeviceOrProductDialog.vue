@@ -27,7 +27,9 @@
             :params="queryParams"
             :rowSelection="{
                 selectedRowKeys: table._selectedRowKeys.value,
-                onChange: selectChange,
+                onSelect: selectChange,
+                onSelectNone: ()=> table._selectedRowKeys.value = [],
+                onSelectAll: selectAll
             }"
             :columns="columns"
         >
@@ -422,14 +424,33 @@ table.init();
 // };
 // fix: bug#10749
 const selectChange = (record: any,selected: boolean,selectedRows: any,) => {
+    const arr = new Set(table._selectedRowKeys.value);
     if(selected){
-        table._selectedRowKeys.value.push(record?.id) 
+        arr.add(record.id)
     }else{
-        
+        arr.delete(record.id)
     }
-    console.log(record,selected,selectedRows);
+    table._selectedRowKeys.value = [...arr.values()]
 };
 
+const selectAll = (selected: Boolean, selectedRows: any,changeRows:any) => {
+    if (selected) {
+            changeRows.map((i: any) => {
+                if (!table._selectedRowKeys.value.includes(i.id)) {
+                    table._selectedRowKeys.value.push(i.id)
+                }
+            })
+        } else {
+            const arr = changeRows.map((item: any) => item.id)
+            const _ids: string[] = [];
+            table._selectedRowKeys.value.map((i: any) => {
+                if (!arr.includes(i)) {   
+                    _ids.push(i)
+                }
+            })
+            table._selectedRowKeys.value = _ids
+        }     
+}
 const cancel = () => {
     departmentStore.setProductId()
     emits('update:visible', false)

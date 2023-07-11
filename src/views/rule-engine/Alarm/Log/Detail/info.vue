@@ -51,8 +51,8 @@
             <j-descriptions-item label="告警流水" :span="2"
                 ><div style="max-height: 500px; overflow-y: auto">
                     <JsonViewer
-                        :value="JSON.parse(data?.alarmInfo || '{}')"
-                        :expand-depth="5"
+                        :value="data"
+                        :expanded="true" :expandDepth="4" 
                     ></JsonViewer></div
             ></j-descriptions-item>
         </j-descriptions>
@@ -67,6 +67,10 @@ const props = defineProps({
     data: Object,
     description: String,
 });
+const data = computed(()=>{
+    return JSON.parse(props.data?.alarmInfo);
+})
+
 const emit = defineEmits(['close']);
 const closeModal = () => {
     emit('close');

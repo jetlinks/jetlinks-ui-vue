@@ -265,7 +265,7 @@ init();
 
     .tree {
       overflow-y: auto;
-      overflow-x: hidden;
+      overflow-x: auto;
 
       .department-tree-item-content {
         display: flex;
@@ -274,11 +274,13 @@ init();
         .title {
                 flex: 1;
                 min-width: 80px;
+                margin-right: 80px;
             }
         .func-btns {
           display: none;
           font-size: 14px;
           width: 80px;
+          margin-left: -80px;
           :deep(.ant-btn-link) {
             padding: 0 4px;
             height: 24px;

@@ -182,6 +182,7 @@ type Emits = {
     (e: 'update:productId', data: string): void;
     (e: 'close'): void;
     (e: 'save', data: Record<string, any>): void;
+    (e: 'update:password',data:string):void
 };
 const emit = defineEmits<Emits>();
 
@@ -288,8 +289,10 @@ const handleOk = () => {
         .then(async () => {
             btnLoading.value = true;
             const res = await DeviceApi.saveProduct(formData.value);
+            console.log(res)
             if (res.success) {
                 emit('update:productId', res.result.id);
+                emit('update:password', res.result.configuration.access_pwd)
                 const deployResp = await DeviceApi.deployProductById(
                     res.result.id,
                 );

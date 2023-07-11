@@ -290,6 +290,7 @@
         <SaveProduct
             v-model:visible="saveProductVis"
             v-model:productId="formData.productId"
+            v-model:password="formData.others.access_pwd"
             :channel="formData.channel"
             @close="getProductList"
         />

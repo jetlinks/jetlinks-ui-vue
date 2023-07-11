@@ -112,7 +112,6 @@ const selectAll = (selected: Boolean, selectedRows: any,changeRows:any) => {
             })
             selectedRowKeys.value = _ids
             
-        }
-        
+        }     
 }
 </script>
