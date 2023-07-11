@@ -27,8 +27,8 @@
             :params="queryParams"
             :rowSelection="{
                 selectedRowKeys: table._selectedRowKeys.value,
-                onSelect: selectChange,
-                onSelectNone: ()=> table._selectedRowKeys.value = [],
+                onSelect: table.onSelectChange,
+                onSelectNone: table.cancelSelect,
                 onSelectAll: selectAll
             }"
             :columns="columns"
@@ -266,6 +266,7 @@ const table: any = {
             selectedRowKeys.splice(index, 1);
             table.selectedRows.splice(index, 1);
         }
+        table._selectedRowKeys.value = selectedRowKeys
     },
     // 取消全选
     cancelSelect: () => {
@@ -438,17 +439,21 @@ const selectAll = (selected: Boolean, selectedRows: any,changeRows:any) => {
             changeRows.map((i: any) => {
                 if (!table._selectedRowKeys.value.includes(i.id)) {
                     table._selectedRowKeys.value.push(i.id)
+                    table.selectedRows.push(i)
                 }
             })
         } else {
             const arr = changeRows.map((item: any) => item.id)
             const _ids: string[] = [];
-            table._selectedRowKeys.value.map((i: any) => {
-                if (!arr.includes(i)) {   
-                    _ids.push(i)
+            const _row: any[] = [];
+            table.selectedRows.map((i: any) => {
+                if (!arr.includes(i.id)) {   
+                    _ids.push(i.id)
+                    _row.push(i)
                 }
             })
-            table._selectedRowKeys.value = _ids
+            table._selectedRowKeys.value = _ids;
+            table.selectedRows = _row;
         }     
 }
 const cancel = () => {

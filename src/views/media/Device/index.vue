@@ -54,7 +54,9 @@
                                     <div class="card-item-content-text">
                                         厂商
                                     </div>
-                                    <div>{{ slotProps.manufacturer }}</div>
+                                    <Ellipsis style="width: calc(100% - 20px);">
+                                        <div>{{ slotProps.manufacturer }}</div>
+                                    </Ellipsis>
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
@@ -66,7 +68,7 @@
                                     <div class="card-item-content-text">
                                         型号
                                     </div>
-                                    <Ellipsis>{{ slotProps.model }}</Ellipsis>
+                                    <Ellipsis style="width: calc(100% - 20px);">{{ slotProps.model }}</Ellipsis>
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
@@ -186,6 +188,7 @@ const columns = [
         search: {
             type: 'string',
         },
+        ellipsis: true,
     },
     {
         title: '名称',
@@ -195,12 +198,14 @@ const columns = [
             type: 'string',
             first: true,
         },
+        ellipsis: true,
     },
     {
         title: '接入方式',
         dataIndex: 'provider',
         key: 'provider',
         scopedSlots: true,
+        width:120,
         search: {
             type: 'select',
             options: PROVIDER_OPTIONS,
@@ -223,12 +228,14 @@ const columns = [
         search: {
             type: 'string',
         },
+        ellipsis: true,
     },
     {
         title: '产品名称',
         dataIndex: 'productId',
         key: 'productId',
         scopedSlots: true,
+        ellipsis: true,
         search: {
             type: 'select',
             options: () =>
