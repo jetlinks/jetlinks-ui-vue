@@ -4,7 +4,7 @@
         v-model:openKeys="state.openKeys"
         v-model:collapsed="state.collapsed"
         v-model:selectedKeys="state.selectedKeys"
-        :headerHeight='60'
+        :headerHeight='layout.headerHeight'
         :pure="state.pure"
         :breadcrumb="{ routes: breadcrumb }"
         @backClick='routerBack'
@@ -54,11 +54,11 @@ const route = useRoute();
 const menu = useMenuStore();
 
 const system = useSystem();
-const {configInfo} = storeToRefs(system);
+const {configInfo,layout} = storeToRefs(system);
 
 const layoutConf = reactive({
     theme: DefaultSetting.layout.theme,
-    siderWidth: DefaultSetting.layout.siderWidth,
+    siderWidth: layout.value.siderWidth,
     logo: DefaultSetting.layout.logo,
     title: DefaultSetting.layout.title,
     menuData: [...clearMenuItem(menu.siderMenus), AccountMenu],
