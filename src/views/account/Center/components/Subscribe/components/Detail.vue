@@ -1,16 +1,16 @@
 <template>
-    <j-modal width="350px" visible @cancel="emit('close')" :footer="null">
+    <div style="width: 300px">
         <template v-if="getType === 'notifier-dingTalk'">
-            <div class="tip">绑定账号：{{ info }}</div>
+            <div class="tip"><j-ellipsis :lineClamp="2">绑定账号：{{ info }}</j-ellipsis></div>
         </template>
         <template v-else-if="getType === 'notifier-weixin'">
-            <div class="tip">绑定账号：{{ info }}</div>
+            <div class="tip"><j-ellipsis :lineClamp="2">绑定账号：{{ info }}</j-ellipsis></div>
         </template>
         <template v-else-if="getType === 'notifier-email'">
-            <div class="tip">绑定账号：{{ user.userInfos?.email }}</div>
+            <div class="tip"><j-ellipsis :lineClamp="2">绑定账号：{{ user.userInfos?.email }}</j-ellipsis></div>
         </template>
         <template v-else>
-            <div class="tip">绑定账号：{{ user.userInfos?.telephone }}</div>
+            <div class="tip"><j-ellipsis :lineClamp="2">绑定账号：{{ user.userInfos?.telephone }}</j-ellipsis></div>
         </template>
         <div class="btn">
             <j-button @click="emit('unsubscribe', current)">取消订阅</j-button>
@@ -20,7 +20,7 @@
                 >更换绑定账号</j-button
             >
         </div>
-    </j-modal>
+    </div>
     <EditInfo
         v-if="editInfoVisible"
         :data="user.userInfos"
@@ -43,7 +43,7 @@ import EditInfo from '../../EditInfo/index.vue';
 import Bind from './Bind.vue';
 
 const user = useUserInfo();
-const emit = defineEmits(['close', 'save', 'unsubscribe']);
+const emit = defineEmits(['save', 'unsubscribe', 'close']);
 const info = ref<any>(null);
 const props = defineProps({
     data: {
@@ -75,18 +75,17 @@ const onBind = () => {
     } else {
         visible.value = true
     }
+    emit('close')
 };
 
 const onSave = () => {
     editInfoVisible.value = false;
     user.getUserInfo();
     emit('save', props.current);
-    emit('close');
 };
 
 const onBindSave = () => {
     emit('save', props.current);
-    emit('close');
 }
 
 const handleSearch = async () => {
@@ -123,7 +122,7 @@ watch(
 <style lang="less" scoped>
 .tip {
     width: 100%;
-    margin: 30px 0;
+    margin: 20px 0;
 }
 
 .btn {

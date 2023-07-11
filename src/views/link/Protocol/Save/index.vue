@@ -131,6 +131,7 @@ const formData = ref<FormDataType>({
 });
 const changeType = (value: Array<string>) => {
     formData.value.type = value[0];
+    formData.value.configuration.location = '';
 };
 
 const onSubmit = async () => {
@@ -168,12 +169,6 @@ const handleCancel = () => {
     emit('change', false);
 };
 
-watch(
-    () => formData.value.type,
-    () => {
-        formData.value.configuration.location = '';
-    },
-);
 watch(
     () => props.data,
     (value) => {

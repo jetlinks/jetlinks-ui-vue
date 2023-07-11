@@ -15,7 +15,13 @@
                     </j-tooltip>
                 </div>
                 <div class="child-item-left-auth" :class="{ disabled: !checked }">
-                    <j-tooltip :title="!update ? '暂无权限，请联系管理员' : ''">
+                    <j-tooltip>
+                        <template #title>
+                            <span v-if="!update">暂无权限，请联系管理员</span>
+                            <div v-else>
+                                用于配制外层权限<br />未配置外层权限将执行通知方式中配置的权限<br />配置外层权限后将覆盖所有通知方式中配置的权限
+                            </div>
+                        </template>
                         <j-button
                             :disabled="!update || !checked"
                             type="text"

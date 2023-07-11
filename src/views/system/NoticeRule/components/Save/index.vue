@@ -8,11 +8,18 @@
     >
         <div style="background-color: #f8f9fc; padding: 25px 100px">
             <j-steps :current="current" size="small" @change="onChange">
-                <j-step
-                    v-for="(item, index) in stepList"
-                    :title="item"
-                    :key="item"
-                >
+                <j-step v-for="(item, index) in stepList" :key="item">
+                    <template #title>
+                        {{ item
+                        }}<j-tooltip
+                            v-if="index === 4"
+                            >
+                            <template #title>
+                                <span>内层权限配置<br />外层权限已配置的情况下，将取外层权限与当前页面分配权限的交集，向对应角色发送通知。<br />外层权限未配置的情况下，将按此处配置的权限发送通知。</span>
+                            </template>
+                            <AIcon type="QuestionCircleOutlined"
+                        /></j-tooltip>
+                    </template>
                     <template #description>
                         <span v-if="current === index">进行中</span>
                         <span v-if="current < index">未开始</span>
@@ -52,7 +59,11 @@
                 />
             </template>
             <template v-if="current === 4">
-                <Role v-model="formModel.grant.role.idList" />
+                <div class="alert">
+                    <AIcon type="InfoCircleOutlined" />
+                    已规定固定收信人的模板在当前页面将被过滤
+                </div>
+                <Role type="add" v-model="formModel.grant.role.idList" />
             </template>
             <template v-if="current === 5">
                 <div>
@@ -235,7 +246,9 @@ const jumpStep = async (val: number) => {
             return;
         } else {
             // 查询变量
-            const resp = await Template.getTemplateDetail(formModel.channelConfiguration.templateId);
+            const resp = await Template.getTemplateDetail(
+                formModel.channelConfiguration.templateId,
+            );
             if (resp.status === 200) {
                 variable.value = resp.result?.variableDefinitions || [];
             }
@@ -244,7 +257,7 @@ const jumpStep = async (val: number) => {
     if (val >= 4) {
         if (variable.value.length) {
             if (_variableDefinitions.value.length) {
-                if(variableRef.value) {
+                if (variableRef.value) {
                     const obj = await variableRef.value?.onSave();
                     if (obj) {
                         handleVariable(obj);
@@ -253,22 +266,27 @@ const jumpStep = async (val: number) => {
                         return;
                     }
                 } else {
-                    const flag = _variableDefinitions.value.every((item: any) => {
-                        const _value = formModel.channelConfiguration.variables[item.id];
-                        if(!_value) {
-                            return false
-                        }
-                        if(_value.source === 'fixed') {
-                            return _value.value !== undefined
-                        }
-                        if(_value.source === 'upper') {
-                            return _value.upperKey !== undefined
-                        }
-                        return true
-                    })
-                    if(!flag) {
+                    const flag = _variableDefinitions.value.every(
+                        (item: any) => {
+                            const _value =
+                                formModel.channelConfiguration.variables[
+                                    item.id
+                                ];
+                            if (!_value) {
+                                return false;
+                            }
+                            if (_value.source === 'fixed') {
+                                return _value.value !== undefined;
+                            }
+                            if (_value.source === 'upper') {
+                                return _value.upperKey !== undefined;
+                            }
+                            return true;
+                        },
+                    );
+                    if (!flag) {
                         onlyMessage('请配置模版变量', 'error');
-                        return
+                        return;
                     }
                 }
             } else {
@@ -333,3 +351,14 @@ const onSave = async () => {
     emit('save', formModel);
 };
 </script>
+
+<style lang="less" scoped>
+.alert {
+    height: 40px;
+    padding: 0 20px 0 10px;
+    margin-bottom: 10px;
+    color: rgba(0, 0, 0, 0.55);
+    line-height: 40px;
+    background-color: #f6f6f6;
+}
+</style>

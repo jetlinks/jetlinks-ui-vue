@@ -25,7 +25,6 @@
                         :src="url"
                         v-if="!loading"
                     ></iframe>
-                    <!-- sandbox="allow-forms allow-scripts allow-same-origin allow-popups" -->
                 </div>
             </j-spin>
         </template>
@@ -105,7 +104,6 @@ const updateIframeStyle = () => {
     ) as HTMLIFrameElement;
     iframe.onload = () => {
         const currentUrl = iframe?.contentWindow?.location?.search || '';
-        console.log(currentUrl)
         let authCode = '';
         if (currentUrl.startsWith('?')) {
             currentUrl
