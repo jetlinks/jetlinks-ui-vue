@@ -297,13 +297,13 @@ const closeBindDevice = (val: boolean) => {
     }
 };
 
-const getChildren = async () => {
-  const { id} = instanceStore.detail
-  const data = await queryByParent(id)
-  if (data.success) {
-    parentIds.value.concat(data.result)
-  }
-}
+// const getChildren = async () => {
+//   const { id} = instanceStore.detail
+//   const data = await queryByParent(id)
+//   if (data.success) {
+//     parentIds.value.concat(data.result)
+//   }
+// }
 const closeChildSave = () => {
     childVisible.value = false;
 };
