@@ -57,7 +57,7 @@
 
             <pro-search
                 :columns="columns"
-                target="search"
+                target="search-task-detail"
                 @search="handleSearch"
             />
             <FullPage>

@@ -122,7 +122,7 @@
                     placeholder="请输入请求超时时间配置"
                     v-model:value="formData.configuration.requsetTimeout"
                     addon-after="ms"
-                    :max="9999999999999998"
+                    :max="2147483648"
                     :min="1"
                 />
             </j-form-item>

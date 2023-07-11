@@ -125,7 +125,8 @@
                             placeholder="请输入"
                             allowClear
                             addon-after="ms"
-                            :max="9999999999999998"
+                            :max="2147483647"
+                            :min="1"
                             :disabled="
                                 index !== 0 &&
                                 record.configuration[dataIndex].check

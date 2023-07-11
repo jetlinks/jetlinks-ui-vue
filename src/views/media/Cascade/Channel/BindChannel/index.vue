@@ -10,7 +10,7 @@
         @cancel="_vis = false"
         :confirmLoading="loading"
     >
-        <pro-search :columns="columns" target="media" @search="handleSearch" />
+        <pro-search :columns="columns" target="media-bind" @search="handleSearch" />
 
         <JProTable
             ref="listRef"

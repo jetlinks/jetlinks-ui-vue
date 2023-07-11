@@ -3,7 +3,7 @@
         <div class="apply-container">
             <pro-search
                 :columns="columns"
-                target="category"
+                target="system-apply"
                 @search="(params:any)=>queryParams = {...params}"
             />
             <FullPage>

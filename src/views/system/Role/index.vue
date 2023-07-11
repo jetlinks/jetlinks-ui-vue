@@ -3,7 +3,7 @@
         <div class="role-container">
             <pro-search
                 :columns="columns"
-                target="category"
+                target="system-role"
                 @search="(params:any)=>queryParams = {...params}"
             />
             <FullPage>

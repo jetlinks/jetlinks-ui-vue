@@ -1,6 +1,6 @@
 <template>
     <j-spin :spinning="spinning">
-        <pro-search :columns="columns" target="search" @search="handleSearch" />
+        <pro-search :columns="columns" target="search-point" @search="handleSearch" />
         <FullPage>
             <j-scrollbar height="680">
                 <j-pro-table

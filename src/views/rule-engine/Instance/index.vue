@@ -3,7 +3,7 @@
         <div>
             <pro-search
                 :columns="query.columns"
-                target="device-instance"
+                target="rule-engine-instance"
                 @search="handleSearch"
             />
             <FullPage>

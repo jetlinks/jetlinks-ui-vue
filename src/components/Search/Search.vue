@@ -2,8 +2,8 @@
   <j-advanced-search
     :target='target'
     :type='type'
-    :request='saveSearchHistory'
-    :historyRequest='getSearchHistory'
+    :request='(data) => saveSearchHistory(data, target)'
+    :historyRequest='() => getSearchHistory(target)'
     :deleteRequest='deleteSearchHistory'
     :columns='columns'
     :class='props.class'

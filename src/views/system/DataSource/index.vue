@@ -3,7 +3,7 @@
         <div class="data-source-container">
             <pro-search
                 :columns="columns"
-                target="category"
+                target="system-data-source"
                 @search="(params:any)=>queryParams = {...params}"
             />
             <FullPage>

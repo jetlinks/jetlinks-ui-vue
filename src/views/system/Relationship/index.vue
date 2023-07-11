@@ -3,7 +3,7 @@
         <div class="relationship-container">
             <pro-search
                 :columns="columns"
-                target="category"
+                target="system-relationship"
                 @search="(params:any)=>queryParams = {...params}"
             />
             <FullPage>

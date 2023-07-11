@@ -3,7 +3,7 @@
         <div>
             <pro-search
                 :columns="columns"
-                target="search"
+                target="search-firmware"
                 @search="handleSearch"
             />
             <FullPage>

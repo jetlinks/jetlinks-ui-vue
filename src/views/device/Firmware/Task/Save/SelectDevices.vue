@@ -24,7 +24,7 @@
     >
         <pro-search
             :columns="columns"
-            target="search"
+            target="search-select-device"
             @search="handleSearch"
             type="simple"
         />

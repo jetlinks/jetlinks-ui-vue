@@ -3,7 +3,7 @@
         <div class="user-container">
             <pro-search
                 :columns="columns"
-                target="category"
+                target="system-user"
                 @search="handleParams"
             />
             <FullPage>

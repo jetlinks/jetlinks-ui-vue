@@ -1,6 +1,6 @@
 <template>
     <page-container>
-        <pro-search :columns="columns" target="search" @search="handleSearch" />
+        <pro-search :columns="columns" target="search-firmware-task" @search="handleSearch" />
         <j-pro-table
             ref="tableRef"
             model="TABLE"

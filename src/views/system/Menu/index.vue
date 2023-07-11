@@ -3,7 +3,7 @@
         <div class="menu-container">
             <pro-search
                 :columns="columns"
-                target="category"
+                target="system-menu"
                 @search="handleSearch"
             />
             <FullPage>

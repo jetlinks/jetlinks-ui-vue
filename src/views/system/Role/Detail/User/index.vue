@@ -2,7 +2,7 @@
     <div class="role-user-container">
         <pro-search
             :columns="columns"
-            target="category"
+            target="system-role-user"
             @search="(params:any)=>queryParams = {...params}"
         />
 
