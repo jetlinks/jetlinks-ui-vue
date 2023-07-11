@@ -20,8 +20,8 @@ export type optionsType = {
 export type formType = {
     id?:string,
     name: string;
-    provider: applyType;
-    logoUrl: string,
+    provider: applyType | undefined;
+    logoUrl: string | undefined,
     integrationModes: string[];
     config?: string;
     description: string;

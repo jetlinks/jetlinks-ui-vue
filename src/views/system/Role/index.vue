@@ -76,8 +76,8 @@
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import AddDialog from './components/AddDialog.vue';
 import { getRoleList_api, delRole_api } from '@/api/system/role';
-import { message } from 'jetlinks-ui-components';
 import { useMenuStore } from '@/store/menu';
+import { onlyMessage } from '@/utils/comm';
 
 const permission = 'system/Role';
 const { jumpPage } = useMenuStore();
@@ -129,7 +129,7 @@ const clickDel = (row: any) => {
     delRole_api(row.id).then((resp: any) => {
         if (resp.status === 200) {
             tableRef.value?.reload();
-            message.success('操作成功!');
+            onlyMessage('操作成功!');
         }
     });
 };

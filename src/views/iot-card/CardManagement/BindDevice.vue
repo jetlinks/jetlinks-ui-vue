@@ -23,7 +23,6 @@
           selectedRowKeys: _selectedRowKeys,
           onSelect: onSelectChange,
       }"
-        @cancelSelect='cancelSelect'
         :params='params'
       >
         <template #registryTime='slotProps'>
@@ -46,7 +45,7 @@
 <script setup lang='ts'>
 import { queryUnbounded, bind } from '@/api/iot-card/cardManagement'
 import moment from 'moment'
-import { message } from 'jetlinks-ui-components'
+import { onlyMessage } from '@/utils/comm'
 
 const emit = defineEmits(['change'])
 
@@ -130,7 +129,7 @@ const handleOk = () => {
   bind(props.cardId, _selectedRowKeys.value[0])
     .then((resp: any) => {
       if (resp.status === 200) {
-        message.success('操作成功')
+        onlyMessage('操作成功')
         emit('change', true)
       }
     })

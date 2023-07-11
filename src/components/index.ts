@@ -9,6 +9,7 @@ import NormalUpload from './NormalUpload/index.vue'
 import FileFormat from './FileFormat/index.vue'
 import JProUpload from './Upload/index.vue'
 import { BasicLayoutPage, BlankLayoutPage, FullPage } from './Layout'
+import RadioCard from './RadioCard/index.vue'
 import { PageContainer, AIcon, Ellipsis } from 'jetlinks-ui-components'
 // import Ellipsis from './Ellipsis/index.vue'
 import JEmpty from './Empty/index.vue'
@@ -39,5 +40,6 @@ export default  {
             .component('ValueItem', ValueItem)
             .component('RowPagination', RowPagination)
             .component('FullPage', FullPage)
+            .component('RadioCard', RadioCard)
     }
 }

@@ -40,7 +40,6 @@
                 selectedRowKeys: _selectedRowKeys,
                 onChange: onSelectChange,
             }"
-            @cancelSelect="_selectedRowKeys = []"
             :pagination="{
                 showSizeChanger: true,
                 pageSizeOptions: ['10', '20', '50', '100'],
@@ -67,7 +66,7 @@
 
 <script setup lang="ts">
 import CascadeApi from '@/api/media/cascade';
-import { message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
 import { PropType } from 'vue';
 
 const route = useRoute();
@@ -171,7 +170,7 @@ const onSelectChange = (keys: string[]) => {
 const loading = ref(false);
 const handleSave = async () => {
     if (!_selectedRowKeys.value.length) {
-        message.error('请勾选数据');
+        onlyMessage('请勾选数据', 'error');
         return;
     }
     loading.value = true;
@@ -181,11 +180,11 @@ const handleSave = async () => {
     );
     loading.value = false;
     if (resp.success) {
-        message.success('操作成功！');
+        onlyMessage('操作成功！');
         _vis.value = false;
         emit('submit');
     } else {
-        message.error('操作失败！');
+        onlyMessage('操作失败！', 'error');
     }
 };
 </script>

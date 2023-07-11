@@ -150,8 +150,7 @@ import {
     queryTypes,
 } from '@/api/northbound/dueros';
 import type { ActionsType } from '@/views/device/Instance/typings';
-import { getImage } from '@/utils/comm';
-import { message } from 'jetlinks-ui-components';
+import { getImage, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from 'store/menu';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
 
@@ -303,10 +302,10 @@ const getActions = (
                         response = await _deploy(data.id);
                     }
                     if (response && response.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         instanceRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },
@@ -326,10 +325,10 @@ const getActions = (
                 onConfirm: async () => {
                     const resp = await _delete(data.id);
                     if (resp.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         instanceRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },

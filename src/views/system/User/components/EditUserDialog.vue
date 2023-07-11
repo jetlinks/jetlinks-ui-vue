@@ -94,13 +94,18 @@
             </j-row>
             <j-row :gutter="24" v-if="form.IsShow('add', 'edit')">
                 <j-col :span="12">
-                    <j-form-item name="roleIdList" label="角色" class="flex">
+                    <j-form-item name="roleIdList" label="角色" class="flex" 
+                        :rules="[
+                            { required: form.data.username !== 'admin', message: '请选择角色' },
+                        ]"
+                    >
                         <j-select
                             v-model:value="form.data.roleIdList"
                             mode="multiple"
                             style="width: calc(100% - 40px)"
                             placeholder="请选择角色"
                             :options="form.roleOptions"
+                            :disabled="form.data.username === 'admin'"
                         ></j-select>
 
                         <PermissionButton
@@ -186,7 +191,6 @@
 <script setup lang="ts">
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import { FormInstance } from 'ant-design-vue';
-import { message } from 'jetlinks-ui-components';
 import {
     validateField_api,
     getRoleList_api,
@@ -200,7 +204,7 @@ import { Rule } from 'ant-design-vue/es/form';
 import { DefaultOptionType } from 'ant-design-vue/es/vc-tree-select/TreeSelect';
 import { AxiosResponse } from 'axios';
 import { passwordRegEx } from '@/utils/validate';
-import { filterSelectNode } from '@/utils/comm';
+import { filterSelectNode, onlyMessage } from '@/utils/comm';
 
 const deptPermission = 'system/Department';
 const rolePermission = 'system/Role';
@@ -226,7 +230,7 @@ const confirm = () => {
         .then(() => form.submit())
         .then((resp: any) => {
             if (resp.status === 200) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 emits('confirm');
                 emits('update:visible', false);
             }

@@ -426,7 +426,7 @@ import {
     queryProductList,
 } from '@/api/northbound/alicloud';
 import _ from 'lodash';
-import { message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
 
 const router = useRouter();
 const route = useRoute();
@@ -547,7 +547,7 @@ const saveBtn = () => {
                 loading.value = false;
             });
             if (resp.status === 200) {
-                message.success('操作成功！');
+                onlyMessage('操作成功！');
                 formRef.value.resetFields();
                 router.push('/iot/northbound/AliCloud');
             }

@@ -7,6 +7,9 @@
                 placeholder="搜索关键字"
             />
             <div class="tree">
+              <j-scrollbar>
+
+
                 <j-tree
                     @select="selectTree"
                     :field-names="{ title: 'name', key: 'id' }"
@@ -25,6 +28,9 @@
                             >
                                 <j-popover
                                     v-if="node.type === 'property'"
+                                    :overlayStyle="{
+                                      zIndex: 1200
+                                    }"
                                     placement="right"
                                     title="请选择使用值"
                                 >
@@ -54,14 +60,15 @@
                                             </j-tooltip>
                                         </j-space>
                                     </template>
-                                    <a>添加</a>
+                                    <a class="has-property">添加</a>
                                 </j-popover>
 
-                                <a v-else @click="addClick(node)"> 添加 </a>
+                                <a class="no-property" v-else @click.stop="addClick(node)"> 添加 </a>
                             </div>
                         </div>
                     </template>
                 </j-tree>
+              </j-scrollbar>
             </div>
         </div>
         <div class="right">
@@ -114,6 +121,7 @@ const lastClick = (node: OperatorItem) => {
     emit('addOperatorValue', `$lastState("${node.id}")`);
 };
 const addClick = (node: OperatorItem) => {
+  console.log(node)
     emit('addOperatorValue', node.code);
 };
 
@@ -179,7 +187,7 @@ watch(
         .tree {
 
             height: 300px;
-            overflow-y: auto;
+            //overflow-y: auto;
 
             .node {
                 display: flex;
@@ -196,5 +204,10 @@ watch(
     .right {
       padding: 20px;
     }
+}
+</style>
+<style>
+.rule-popover {
+  z-index: 1200;
 }
 </style>

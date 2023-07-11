@@ -2,75 +2,72 @@
     <j-modal
         visible
         title="详情"
-        width="1000px"
-        @ok="emits('update:visible', false)"
+        width="754px"
         @cancel="emits('update:visible', false)"
         class="view-dialog-container"
     >
         <template v-if="type === 'alarm'">
-            <j-row v-if="data?.topicProvider === 'alarm-device'">
-                <j-col :span="4" class="label">告警设备</j-col>
-                <j-col :span="8" class="value">
-                    {{ data?.targetName || '' }}
-                </j-col>
-                <j-col :span="4" class="label">设备ID</j-col>
-                <j-col :span="8" class="value">
-                    {{ data?.targetId || '' }}
-                </j-col>
-            </j-row>
-            <j-row>
-                <j-col :span="4" class="label">告警名称</j-col>
-                <j-col :span="8" class="value">
-                    {{ data?.alarmName || data?.alarmConfigName || '' }}
-                </j-col>
-                <j-col :span="4" class="label">告警时间</j-col>
-                <j-col :span="8" class="value">
-                    {{ dayjs(data?.alarmTime).format('YYYY-MM-DD HH:mm:ss') }}
-                </j-col>
-
-                <j-col :span="4" class="label">告警级别</j-col>
-                <j-col :span="8" class="value">
-                    {{
-                        (levelList.length > 0 && getLevelLabel(data.level)) ||
-                        ''
-                    }}
-                </j-col>
-                <j-col :span="4" class="label">告警说明</j-col>
-                <j-col :span="8" class="value">{{
-                    data?.description || ''
-                }}</j-col>
-
-                <j-col
-                    :span="4"
-                    class="label"
-                    style="display: flex; height: 440px; align-items: center"
-                    >告警流水</j-col
-                >
-                <j-col
-                    :span="20"
-                    class="value"
-                    style="max-height: 440px; overflow: auto"
-                >
-                    <JsonViewer :value="JSON.parse(data?.alarmInfo || '{}')" />
-                </j-col>
-            </j-row>
+            <j-descriptions
+                :column="2"
+                :contentStyle="{
+                    color: '#333333',
+                }"
+                :labelStyle="{
+                    color: 'rgba(0, 0, 0, 0.6)',
+                    width: '72px',
+                }"
+            >
+                <template v-if="data?.topicProvider === 'alarm-device'">
+                    <j-descriptions-item label="告警设备">
+                        <j-ellipsis>{{ data?.targetName || ''}}</j-ellipsis>
+                    </j-descriptions-item>
+                    <j-descriptions-item label="设备ID">
+                        <j-ellipsis>
+                            {{ data?.targetId || '' }}
+                        </j-ellipsis>
+                    </j-descriptions-item>
+                </template>
+                <j-descriptions-item label="告警名称">
+                    <j-ellipsis>
+                        {{ data?.alarmName || data?.alarmConfigName || '' }}
+                    </j-ellipsis>
+                </j-descriptions-item>
+                <j-descriptions-item label="告警时间">{{
+                    dayjs(data?.alarmTime).format('YYYY-MM-DD HH:mm:ss')
+                }}</j-descriptions-item>
+                <j-descriptions-item label="告警级别">{{
+                    (levelList.length > 0 && getLevelLabel(data.level)) || ''
+                }}</j-descriptions-item>
+                <j-descriptions-item label="告警说明">
+                    <j-ellipsis>
+                        {{ data?.description || '' }}
+                    </j-ellipsis>
+                </j-descriptions-item>
+            </j-descriptions>
+            <div>
+                <div class="label">告警流水:</div>
+                <div style="padding: 10px; background-color: #fafafa">
+                    <j-scrollbar height="200px">
+                        <JsonViewer
+                            style="background-color: #fafafa"
+                            :value="JSON.parse(data?.alarmInfo || '{}')"
+                        />
+                    </j-scrollbar>
+                </div>
+            </div>
         </template>
         <template v-else>
-            <j-row>
-                <j-col
-                    :span="4"
-                    class="label"
-                    style="display: flex; height: 440px; align-items: center"
-                    >通知流水</j-col
-                >
-                <j-col
-                    :span="20"
-                    class="value"
-                    style="max-height: 440px; overflow: auto"
-                >
-                    <JsonViewer :value="JSON.parse(data?.alarmInfo || '{}')" />
-                </j-col>
-            </j-row>
+            <div>
+                <div class="label">通知流水:</div>
+                <div style="padding: 10px; background-color: #fafafa">
+                    <j-scrollbar height="200px">
+                        <JsonViewer :value="JSON.parse(data?.alarmInfo || '{}')" />
+                    </j-scrollbar>
+                </div>
+            </div>
+        </template>
+        <template #footer>
+            <j-button type="primary" @click="emits('update:visible', false)">确定</j-button>
         </template>
     </j-modal>
 </template>
@@ -110,14 +107,14 @@ const getLevelLabel = (id: number) => {
 
 <style lang="less" scoped>
 .view-dialog-container {
-    .ant-row {
-        .ant-col {
-            padding: 16px 24px;
-            border-right: 1px solid #f0f0f0;
-        }
-        .label {
-            background-color: #fafafa;
-        }
+    .label {
+        width: 100%;
+        color: rgba(0, 0, 0, 0.6);
+        margin-bottom: 8px;
+    }
+
+    .value {
+        color: #333333;
     }
 }
 </style>

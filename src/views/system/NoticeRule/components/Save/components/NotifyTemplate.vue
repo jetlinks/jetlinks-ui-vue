@@ -1,11 +1,20 @@
 <template>
-    <pro-search
-        :columns="columns"
-        type="simple"
-        target="action-notice-template"
-        @search="handleSearch"
-        class="action-search"
-    />
+    <div class="header">
+        <pro-search
+            :columns="columns"
+            type="simple"
+            target="action-notice-template"
+            @search="handleSearch"
+            style="padding-bottom: 0"
+        />
+        <PermissionButton
+            @click="onAdd"
+            type="primary"
+            :hasPermission="['notice/Template:add']"
+        >
+            新增
+        </PermissionButton>
+    </div>
     <div class="alert">
         <AIcon type="InfoCircleOutlined" />
         已规定固定收信人的模板在当前页面将被过滤
@@ -18,9 +27,10 @@
             :bodyStyle="{
                 padding: 0,
             }"
+            ref="tableRef"
             :alertRender="false"
             :params="params"
-            :gridColumn="2"
+            :gridColumn="3"
             :noPagination="true"
             :rowSelection="{
                 selectedRowKeys: _selectedRowKeys,
@@ -84,13 +94,17 @@
 <script lang="ts" setup>
 import TemplateApi from '@/api/notice/template';
 import { MSG_TYPE, NOTICE_METHOD } from '@/views/notice/const';
-import { _variableMap } from '../../../data';
+import { noticeType, _variableMap } from '../../../data';
 const props = defineProps({
     notifierId: {
         type: String,
         default: '',
     },
     value: {
+        type: String,
+        default: '',
+    },
+    notifyType: {
         type: String,
         default: '',
     },
@@ -105,6 +119,8 @@ const getLogo = (type: string, provider: string) => {
 const getMethodTxt = (type: string) => {
     return NOTICE_METHOD.find((f) => f.value === type)?.label;
 };
+
+const tableRef = ref<any>();
 
 const params = ref<Record<string, any>>({});
 const _selectedRowKeys = ref<string[]>([]);
@@ -184,6 +200,21 @@ const handleData = async (e: any) => {
     };
 };
 
+const onAdd = () => {
+    const tab: any = window.open(
+        `${origin}/#/iot/notice/Template/detail/:id?notifyType=${noticeType.get(
+            props.notifyType,
+        )}&notifierId=${props.notifierId}`,
+    );
+    tab.onTabSaveSuccess = (value: any) => {
+        _selectedRowKeys.value = [value.id];
+        emit('update:value', value.id);
+        emit('change', { templateName: value?.name, value: value?.id });
+        emit('update:detail', value);
+        tableRef.value?.reload();
+    };
+};
+
 watch(
     () => props.value,
     (newValue) => {
@@ -200,7 +231,7 @@ watch(
 );
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .action-search {
     padding: 0;
 }
@@ -209,9 +240,14 @@ watch(
     width: 88px;
     height: 88px;
 }
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 .alert {
     height: 40px;
-    padding-left: 10px;
+    padding: 0 20px 0 10px;
     margin-bottom: 10px;
     color: rgba(0, 0, 0, 0.55);
     line-height: 40px;

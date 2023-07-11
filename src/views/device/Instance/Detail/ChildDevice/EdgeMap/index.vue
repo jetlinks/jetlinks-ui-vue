@@ -132,8 +132,8 @@ import {
 } from '@/api/device/instance';
 import MSelect from './MSelect.vue';
 import PatchMapping from './PatchMapping.vue';
-import { message } from 'jetlinks-ui-components';
 import { inject } from 'vue';
+import { onlyMessage } from '@/utils/comm';
 const columns = [
     {
         title: '名称',
@@ -225,7 +225,7 @@ const unbind = async (id: string) => {
             },
         );
         if (resp.status === 200) {
-            message.success('操作成功！');
+            onlyMessage('操作成功！');
             _emit('getEdgeMap');
         }
     }
@@ -248,7 +248,7 @@ const onSave = async () => {
     if (form.value) {
         formRef.value.validateFields().then(async () => {
             if (modelRef.dataSource.length === 0) {
-                message.error('请配置物模型');
+                onlyMessage('请配置物模型', 'error');
             } else {
                 channelList.value.forEach((item: any) => {
                     modelRef.dataSource.forEach((i: any) => {
@@ -290,7 +290,7 @@ const onSave = async () => {
 const save = async (item: any) => {
     const res = await saveEdgeMap(instanceStore.current.id, item);
     if (res.status === 200) {
-        message.success('保存成功');
+        onlyMessage('保存成功');
         _emit('close');
     }
 };

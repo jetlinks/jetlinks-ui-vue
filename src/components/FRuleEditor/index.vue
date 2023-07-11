@@ -82,6 +82,7 @@ const aggType = computed(() => {
 
 const editor = ref();
 const addOperatorValue = (val: string) => {
+  console.log(val)
     editor.value.addOperatorValue(val);
 };
 </script>

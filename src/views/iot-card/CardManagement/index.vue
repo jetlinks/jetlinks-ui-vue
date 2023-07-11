@@ -21,7 +21,6 @@
                       }
                     : false
             "
-            @cancelSelect="cancelSelect"
             :params="params"
             :gridColumn="3"
         >
@@ -415,9 +414,8 @@ import {
     removeCards,
     unbind,
 } from '@/api/iot-card/cardManagement';
-import { message } from 'jetlinks-ui-components';
 import type { CardManagement } from './typing';
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import BindDevice from './BindDevice.vue';
 import Import from './Import.vue';
 import Export from './Export.vue';
@@ -635,7 +633,7 @@ const getActions = (
                       onConfirm: async () => {
                           unbind(data.id).then((resp: any) => {
                               if (resp.status === 200) {
-                                  message.success('操作成功');
+                                  onlyMessage('操作成功');
                                   cardManageRef.value?.reload();
                               }
                           });
@@ -687,21 +685,21 @@ const getActions = (
                     if (data.cardStateType?.value === 'toBeActivated') {
                         changeDeploy(data.id).then((resp) => {
                             if (resp.status === 200) {
-                                message.success('操作成功');
+                                onlyMessage('操作成功');
                                 cardManageRef.value?.reload();
                             }
                         });
                     } else if (data.cardStateType?.value === 'deactivate') {
                         resumption(data.id).then((resp) => {
                             if (resp.status === 200) {
-                                message.success('操作成功');
+                                onlyMessage('操作成功');
                                 cardManageRef.value?.reload();
                             }
                         });
                     } else {
                         unDeploy(data.id).then((resp) => {
                             if (resp.status === 200) {
-                                message.success('操作成功');
+                                onlyMessage('操作成功');
                                 cardManageRef.value?.reload();
                             }
                         });
@@ -722,10 +720,10 @@ const getActions = (
                 onConfirm: async () => {
                     const resp: any = await del(data.id);
                     if (resp.status === 200) {
-                        message.success('操作成功');
+                        onlyMessage('操作成功');
                         cardManageRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },
@@ -833,7 +831,7 @@ const bindDevice = (val: boolean) => {
  */
 const handleActive = () => {
     if (!_selectedRowKeys.value.length) {
-      return message.warn('请选择数据');
+      return onlyMessage('请选择数据', 'warning');
     }
     if (
         _selectedRowKeys.value.length >= 10 &&
@@ -841,11 +839,11 @@ const handleActive = () => {
     ) {
         changeDeployBatch(_selectedRowKeys.value).then((res: any) => {
             if (res.status === 200) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
             }
         });
     } else {
-        message.warn('仅支持同一个运营商下且最少10条数据,最多100条数据');
+        onlyMessage('仅支持同一个运营商下且最少10条数据,最多100条数据', 'warning');
     }
 };
 
@@ -859,11 +857,11 @@ const handleStop = () => {
     ) {
         unDeployBatch(_selectedRowKeys.value).then((res: any) => {
             if (res.status === 200) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
             }
         });
     } else {
-        message.warn('仅支持同一个运营商下且最少10条数据,最多100条数据');
+        onlyMessage('仅支持同一个运营商下且最少10条数据,最多100条数据', 'warning');
     }
 };
 
@@ -877,11 +875,11 @@ const handleResumption = () => {
     ) {
         resumptionBatch(_selectedRowKeys.value).then((res: any) => {
             if (res.status === 200) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
             }
         });
     } else {
-        message.warn('仅支持同一个运营商下且最少10条数据,最多100条数据');
+        onlyMessage('仅支持同一个运营商下且最少10条数据,最多100条数据', 'warning');
     }
 };
 
@@ -892,7 +890,7 @@ const handleSync = () => {
     sync().then((res: any) => {
         if (res.status === 200) {
             cardManageRef.value?.reload();
-            message.success('同步状态成功');
+            onlyMessage('同步状态成功');
         }
     });
 };
@@ -902,12 +900,12 @@ const handleSync = () => {
  */
 const handelRemove = async () => {
     if (!_selectedRowKeys.value.length) {
-        message.error('请选择数据');
+        onlyMessage('请选择数据', 'error');
         return;
     }
     const resp = await removeCards(_selectedRowKeys.value.map( v => ({ id:v })));
     if (resp.status === 200) {
-        message.success('操作成功');
+        onlyMessage('操作成功');
         _selectedRowKeys.value = [];
         // _selectedRow.value = [];
         cardManageRef.value?.reload();

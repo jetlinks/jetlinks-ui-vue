@@ -1,37 +1,63 @@
 <template>
-    <pro-search
-        style="padding: 0"
-        type="simple"
-        :columns="columns"
-        target="category"
-        @search="onSearch"
-    />
-    <j-pro-table
-        ref="tableRef"
-        :columns="columns"
-        :request="queryRoleList"
-        model="TABLE"
-        :params="params"
-        :bodyStyle="{ padding: 0 }"
-        :scroll="{ y: 500 }"
-        :defaultParams="{
-            // pageSize: 10,
-            sorts: [
-                { name: 'createTime', order: 'desc' },
-                { name: 'id', order: 'desc' },
-            ],
-        }"
-        :rowSelection="{
-            selectedRowKeys: _selectedRowKeys,
-            onSelect: onSelect,
-            onSelectAll: onSelectAll,
-            onSelectNone: cancelSelect,
-        }"
-    >
-        <!-- <template #headerTitle>
-                <j-checkbox v-model:checked="checked">全选</j-checkbox>
-            </template> -->
-    </j-pro-table>
+    <div class="role">
+        <j-input-search
+            allowClear
+            @search="onSearch"
+            placeholder="请输入名称"
+        />
+        <div class="role-alert">
+            <j-alert type="info">
+                <template #message>
+                    <div class="header">
+                        <j-checkbox
+                            :indeterminate="indeterminate"
+                            :checked="checked"
+                            @change="onSelectAll"
+                            >全选</j-checkbox
+                        >
+                        <j-space v-if="_selectedRowKeys.length">
+                            <span>已选择{{ _selectedRowKeys.length }}项</span>
+                            <j-button
+                                style="padding: 0; height: 22px"
+                                type="link"
+                                @click="cancelSelect"
+                                >取消选择</j-button
+                            >
+                        </j-space>
+                    </div>
+                </template>
+            </j-alert>
+        </div>
+        <j-scrollbar height="400px">
+            <j-pro-table
+                ref="tableRef"
+                :columns="columns"
+                :request="queryRoleList"
+                model="CARD"
+                :params="params"
+                :bodyStyle="{ padding: 0 }"
+                :gridColumn="gridColumn"
+                :alertRender="false"
+                :defaultParams="{
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                }"
+                :rowSelection="{
+                    selectedRowKeys: _selectedRowKeys,
+                }"
+            >
+                <template #card="slotProps">
+                    <div class="card">
+                        <j-checkbox
+                            :checked="_selectedRowKeys.includes(slotProps?.id)"
+                            @change="(e) => onSelect(e, slotProps)"
+                        >
+                            <j-ellipsis>{{ slotProps.name }}</j-ellipsis>
+                        </j-checkbox>
+                    </div>
+                </template>
+            </j-pro-table>
+        </j-scrollbar>
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -43,12 +69,35 @@ const props = defineProps({
         type: Array as PropType<string[]>,
         default: () => [],
     },
+    gridColumn: {
+        type: Number,
+        default: 3
+    }
 });
 
 const emit = defineEmits(['update:modelValue']);
 
 const params = ref<any>();
 const _selectedRowKeys = ref<string[]>([]);
+const tableRef = ref();
+
+const dataSource = computed(() => {
+    return tableRef.value?._dataSource || [];
+});
+
+const indeterminate = computed(() => {
+    return (
+        dataSource.value.some((item: any) => {
+            return _selectedRowKeys.value.includes(item.id);
+        }) && !checked.value
+    );
+});
+
+const checked = computed(() => {
+    return dataSource.value.every((item: any) => {
+        return _selectedRowKeys.value.includes(item.id);
+    });
+});
 
 watchEffect(() => {
     _selectedRowKeys.value = props?.modelValue || [];
@@ -79,8 +128,16 @@ const columns = [
     },
 ];
 
-const onSearch = (e: any) => {
-    params.value = e;
+const onSearch = (val: any) => {
+    params.value = {
+        terms: [
+            {
+                column: 'name',
+                termType: 'like',
+                value: `%${val}%`,
+            },
+        ],
+    };
 };
 
 // 取消全选
@@ -89,8 +146,9 @@ const cancelSelect = () => {
     emit('update:modelValue', []);
 };
 
-const onSelect = (record: any, selected: boolean) => {
+const onSelect = (e: any, record: any) => {
     const _set = new Set(_selectedRowKeys.value);
+    const selected = e.target.checked;
     if (selected) {
         _set.add(record.id);
     } else {
@@ -99,9 +157,10 @@ const onSelect = (record: any, selected: boolean) => {
     emit('update:modelValue', [..._set.values()]);
 };
 
-const onSelectAll = (selected: boolean, _: any[], _keys: any[]) => {
+const onSelectAll = (e: any) => {
+    const selected = e.target.checked;
     const _set = new Set(_selectedRowKeys.value);
-    const arr = _keys.map((item: any) => item?.id);
+    const arr = dataSource.value.map((item: any) => item?.id);
     if (selected) {
         arr.map((i: any) => {
             _set.add(i);
@@ -114,3 +173,27 @@ const onSelectAll = (selected: boolean, _: any[], _keys: any[]) => {
     emit('update:modelValue', [..._set.values()]);
 };
 </script>
+
+<style lang="less" scoped>
+.role {
+    :deep(.jtable-content) {
+        padding: 2px 0 16px 0;
+    }
+    :deep(.jtable-card-items) {
+        grid-gap: 2px !important;
+    }
+
+    .role-alert {
+        margin-top: 16px;
+    }
+
+    .header {
+        display: flex;
+    }
+}
+.card {
+    width: 100%;
+    background-color: #f8f9fc;
+    padding: 10px 16px;
+}
+</style>

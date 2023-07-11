@@ -33,11 +33,11 @@
 </template>
 
 <script setup lang="ts">
-import { message } from 'jetlinks-ui-components';
 import type { recordsItemType } from './typings';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import { useElementSize } from '@vueuse/core';
+import { onlyMessage } from '@/utils/comm';
 
 export type TimeChangeType = {
     endTime: Dayjs;
@@ -185,7 +185,7 @@ watch(
                         );
                     } else {
                         props.onChange(undefined);
-                        message.error('没有可播放的视频资源');
+                        onlyMessage('没有可播放的视频资源', 'error');
                     }
                 } else {
                     onChange(
@@ -199,7 +199,7 @@ watch(
         } else if (localToServer && localToServer.startTime) {
             // 本地跳转云端但是无资源
             props.onChange(undefined);
-            message.error('没有可播放的视频资源');
+            onlyMessage('没有可播放的视频资源', 'error');
             list.value = [];
         } else {
             // 啥都没有

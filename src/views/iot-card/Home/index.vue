@@ -88,14 +88,13 @@
 </template>
 
 <script setup lang="ts" name='IotCardHome'>
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import Guide from '../components/Guide.vue';
 import moment from 'moment';
 import { queryFlow, list } from '@/api/iot-card/home';
 import * as echarts from 'echarts';
 import { useMenuStore } from '@/store/menu';
 import { usePermissionStore } from '@/store/permission';
-import { message } from 'jetlinks-ui-components'
 
 const { proxy } = <any>getCurrentInstance();
 
@@ -180,7 +179,7 @@ const pieChartData = ref<any[]>([
 
 const jumpPage = (data: GuideItemProps) => {
     if (!data.auth){
-        message.warning('暂无权限，请联系管理员');
+        onlyMessage('暂无权限，请联系管理员', 'warning');
         return
     }
     if (data.key === 'EQUIPMENT') {

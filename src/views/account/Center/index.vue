@@ -16,23 +16,12 @@
                     </div>
                     <div class="person-header-item-info-right">
                         <div class="person-header-item-info-right-top">
-                            Hi, {{ user.userInfos?.name }}
+                            <j-ellipsis>
+                                Hi, {{ user.userInfos?.name }}
+                            </j-ellipsis>
                         </div>
                         <div class="person-header-item-info-right-info">
-                            <div>
-                                <j-tag
-                                    v-for="i in user.userInfos?.orgList || []"
-                                    :key="i?.id"
-                                    >{{ i?.name }}</j-tag
-                                >
-                            </div>
-                            <div>
-                                <j-tag
-                                    v-for="i in user.userInfos?.roleList || []"
-                                    :key="i?.id"
-                                    >{{ i?.name }}</j-tag
-                                >
-                            </div>
+                            <RoleShow :value="user.userInfos?.roleList || []" />
                         </div>
                     </div>
                 </div>
@@ -80,7 +69,6 @@
         <EditPassword
             v-if="editPasswordVisible"
             @close="editPasswordVisible = false"
-            @save="onPasswordSave"
         />
     </div>
 </template>
@@ -103,6 +91,7 @@ import {
     USER_CENTER_MENU_CODE,
 } from '@/utils/consts';
 import { usePermissionStore } from '@/store/permission';
+import RoleShow from './components/RoleShow/index.vue';
 
 const imageTypes = reactive([
     'image/jpeg',
@@ -158,9 +147,9 @@ const onSave = () => {
     editInfoVisible.value = false;
 };
 
-const onPasswordSave = () => {
-    editPasswordVisible.value = false;
-};
+// const onPasswordSave = () => {
+//     editPasswordVisible.value = false;
+// };
 
 const onAvatarChange = (url: string) => {
     updateMeInfo_api({
@@ -180,8 +169,13 @@ watchEffect(() => {
     }
 });
 
+onMounted(() => {
+    user.getUserInfo();
+})
+
 onUnmounted(() => {
     user.tabKey = 'HomeView'
+    user.other.tabKey = ''
 })
 </script>
 
@@ -199,8 +193,10 @@ onUnmounted(() => {
             justify-content: space-between;
             align-items: center;
             height: 100%;
+            gap: 12px;
             .person-header-item-info {
                 display: flex;
+                width: calc(100% - 380px);
                 .person-header-item-info-left {
                     margin-right: 30px;
                 }
@@ -208,16 +204,17 @@ onUnmounted(() => {
                 .person-header-item-info-right {
                     display: flex;
                     flex-direction: column;
+                    width: calc(100% - 126px);
                     .person-header-item-info-right-top {
                         display: flex;
                         font-size: 26px;
                         color: #1d2129;
                         font-weight: 500;
+                        width: 100%;
+                        margin-top: 10px;
                     }
                     .person-header-item-info-right-info {
-                        div {
-                            margin: 5px 0;
-                        }
+                        width: 100%;
                     }
                 }
             }

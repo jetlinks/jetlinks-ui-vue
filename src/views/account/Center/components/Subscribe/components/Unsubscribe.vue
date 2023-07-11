@@ -1,34 +1,10 @@
 <template>
-    <j-modal width="900px" visible @cancel="emit('close')">
+    <j-modal :width="'384px'" visible @cancel="emit('close')" :footer="null">
         <template v-if="getType === 'notifier-dingTalk'">
-            <!-- <div class="tip">请先绑定钉钉账号</div> -->
-            <j-spin :spinning="loading">
-                <div class="code" style="height: 600px;">
-                    <iframe
-                        id="notifier_iframe"
-                        class="code-item"
-                        width="100%"
-                        height="100%"
-                        :src="url"
-                        v-if="!loading"
-                    ></iframe>
-                </div>
-            </j-spin>
+            <div class="tip">请先绑定钉钉账号</div>
         </template>
         <template v-else-if="getType === 'notifier-weixin'">
-            <!-- <div class="tip">请先绑定企业微信账号</div> -->
-            <j-spin :spinning="loading">
-                <div class="code" style="height: 450px">
-                    <iframe
-                        id="notifier_iframe"
-                        class="code-item"
-                        width="100%"
-                        height="100%"
-                        :src="url"
-                        v-if="!loading"
-                    ></iframe>
-                </div>
-            </j-spin>
+            <div class="tip">请先绑定企业微信账号</div>
         </template>
         <template v-else-if="getType === 'notifier-email'">
             <div class="tip">请先绑定邮箱</div>
@@ -36,43 +12,37 @@
         <template v-else>
             <div class="tip">请先绑定手机号</div>
         </template>
-        <template #footer>
-            <j-button @click="emit('close')">取消</j-button>
-            <j-button
-                @click="onBind"
-                type="primary"
-                v-if="
-                    [
-                        'notifier-email',
-                        'notifier-voice',
-                        'notifier-sms',
-                    ].includes(getType)
-                "
-                >立即绑定</j-button
-            >
-            <j-button v-else @click="emit('close')">确定</j-button>
-        </template>
+        <div class="btn">
+            <j-space>
+                <j-button @click="emit('close')">取消</j-button>
+                <j-button @click="onBind" type="primary">立即绑定</j-button>
+            </j-space>
+        </div>
         <EditInfo
             v-if="editInfoVisible"
             :data="user.userInfos"
             @close="editInfoVisible = false"
             @save="onSave"
         />
+        <Bind
+            @close="visible = false"
+            v-if="visible"
+            :data="props.data"
+            :current="current"
+            @save="onBindSave"
+        />
     </j-modal>
 </template>
 
 <script lang="ts" setup>
-import {
-    bindThirdParty,
-    getDingTalkOAuth2,
-    getUserBind,
-    getWechatOAuth2,
-} from '@/api/account/notificationSubscription';
 import { useUserInfo } from '@/store/userInfo';
+import { onlyMessage } from '@/utils/comm';
 import EditInfo from '../../EditInfo/index.vue';
+import Bind from './Bind.vue';
 
 const user = useUserInfo();
 const emit = defineEmits(['close', 'save']);
+
 const props = defineProps({
     data: {
         // 外层数据
@@ -87,146 +57,42 @@ const props = defineProps({
 });
 
 const editInfoVisible = ref<boolean>(false);
-const url = ref<string>('');
-const loading = ref<boolean>(false);
+const visible = ref<boolean>(false);
 
 const getType = computed(() => {
     return props.current?.channelProvider;
 });
 
 const onBind = () => {
-    editInfoVisible.value = true;
+    if (!['notifier-dingTalk', 'notifier-weixin'].includes(getType.value)) {
+        editInfoVisible.value = true;
+    } else {
+        visible.value = true;
+    }
 };
 
-const onSave = () => {
+const onSave = (info: any) => {
     editInfoVisible.value = false;
     user.getUserInfo();
-    emit('save', props.current);
+    if((getType.value === 'notifier-email' && info.email) || (['notifier-voice', 'notifier-sms'].includes(getType.value) && info.telephone)) {
+        emit('save', props.current);
+        emit('close');
+    }
+};
+
+const onBindSave = (cur: any) => {
+    visible.value = false;
+    emit('save', cur);
     emit('close');
-};
-
-const onBindHandle = (
-    type: 'notifier-weixin' | 'notifier-dingTalk',
-    code: string,
-) => {
-    getUserBind(type === 'notifier-dingTalk' ? 'dingtalk' : 'wechat', {
-        authCode: code,
-        configId: props.current?.channelConfiguration.notifierId,
-    })
-        .then((resp) => {
-            if (resp.status === 200) {
-                const _bindCode = (resp?.result || '') as string;
-                if (_bindCode) {
-                    bindThirdParty(
-                        type,
-                        props.current?.channelConfiguration.notifierId,
-                        _bindCode,
-                    )
-                        .then((response) => {
-                            if (response.status === 200) {
-                                // 订阅
-                                emit('save', props.current);
-                                emit('close');
-                            }
-                        })
-                        .finally(() => {
-                            loading.value = false;
-                        });
-                }
-            }
-        })
-        .catch(() => {
-            loading.value = false;
-        });
-};
-
-const updateIframeStyle = () => {
-    const iframe = document.querySelector(
-        '#notifier_iframe',
-    ) as HTMLIFrameElement;
-    iframe.onload = () => {
-        const currentUrl = iframe?.contentWindow?.location?.search || '';
-        console.log(currentUrl)
-        let authCode = '';
-        if (currentUrl.startsWith('?')) {
-            currentUrl
-                .substring(1)
-                .split('&')
-                .map((item) => {
-                    if (
-                        props.current?.channelProvider === 'notifier-dingTalk'
-                    ) {
-                        if (item.split('=')?.[0] === 'authCode') {
-                            authCode = item.split('=')?.[1] || '';
-                        }
-                    } else {
-                        if (item.split('=')?.[0] === 'code') {
-                            authCode = item.split('=')?.[1] || '';
-                        }
-                    }
-                });
-        }
-
-        if (authCode) {
-            loading.value = true;
-            onBindHandle(props.current?.channelProvider, authCode);
-        }
-    };
-};
-
-const handleSearch = async () => {
-    if (props.current?.channelProvider === 'notifier-weixin') {
-        loading.value = true;
-        const resp = await getWechatOAuth2(
-            props.current?.channelConfiguration.notifierId,
-            props.current?.channelConfiguration.templateId,
-            location.href
-        ).finally(() => {
-            loading.value = false;
-        });
-        if (resp.status === 200) {
-            url.value = resp.result as string;
-            nextTick(() => {
-                updateIframeStyle();
-            });
-        }
-    }
-    if (props.current?.channelProvider === 'notifier-dingTalk') {
-        loading.value = true;
-        const resp = await getDingTalkOAuth2(
-            props.current?.channelConfiguration.notifierId,
-            location.href,
-        ).finally(() => {
-            loading.value = false;
-        });
-        if (resp.status === 200) {
-            url.value = resp.result as string;
-            nextTick(() => {
-                updateIframeStyle();
-            });
-        }
-    }
-};
-
-watch(
-    () => props.current,
-    () => {
-        handleSearch();
-    },
-    {
-        immediate: true,
-        deep: true,
-    },
-);
+}
 </script>
 
 <style lang="less" scoped>
 .tip {
     width: 100%;
-    margin: 80px 0;
-    text-align: center;
-    font-size: 14px;
-    color: #7f7f7f;
+    margin: 30px 0;
+    font-size: 16px;
+    color: #333333;
 }
 
 .code {
@@ -234,9 +100,10 @@ watch(
     display: flex;
     margin-top: 30px;
     justify-content: center;
+}
 
-    .code-item {
-        border: none;
-    }
+.btn {
+    display: flex;
+    justify-content: flex-end;
 }
 </style>

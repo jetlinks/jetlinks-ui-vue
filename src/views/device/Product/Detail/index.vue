@@ -120,9 +120,7 @@ import {
     getDeviceNumber,
     getProtocolDetail,
 } from '@/api/device/product';
-import { message } from 'jetlinks-ui-components';
-import { getImage, handleParamsToString } from '@/utils/comm';
-import encodeQuery from '@/utils/encodeQuery';
+import { getImage, handleParamsToString, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import { useRouterParams } from '@/utils/hooks/useParams';
 
@@ -199,7 +197,7 @@ const handleDeploy = async () => {
     if (productStore.current.id) {
         const resp = await _deploy(productStore.current.id);
         if (resp.status === 200) {
-            message.success('操作成功！');
+            onlyMessage('操作成功！');
             productStore.refresh(productStore.current.id);
         }
     }
@@ -212,7 +210,7 @@ const handleUndeploy = async () => {
     if (productStore.current.id) {
         const resp = await _undeploy(productStore.current.id);
         if (resp.status === 200) {
-            message.success('操作成功！');
+            onlyMessage('操作成功！');
             productStore.refresh(productStore.current.id);
         }
     }

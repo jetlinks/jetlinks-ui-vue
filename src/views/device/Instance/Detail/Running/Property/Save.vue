@@ -36,7 +36,7 @@
 <script lang="ts" setup>
 import { setProperty } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
-import { message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
 
 const props = defineProps({
     data: {
@@ -105,7 +105,7 @@ const handleSave = () => {
                 loading.value = false;
             });
             if (resp.status === 200) {
-                message.success('操作成功！');
+                onlyMessage('操作成功！');
                 emit('close');
                 formRef.value.resetFields();
             }

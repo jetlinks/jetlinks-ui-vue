@@ -9,13 +9,23 @@ import { SystemConst } from '@/utils/consts'
 type SystemStateType = {
     isCommunity: boolean;
     configInfo: Partial<ConfigInfoType>;
+    layout:{
+        siderWidth: string | number | undefined; // 左侧菜单栏宽度
+        headerHeight: string | number | undefined; // 头部高度
+        collapsedWidth: string | number | undefined;
+    }
 }
 
 export const useSystem = defineStore('system', {
     state: (): SystemStateType => ({
         isCommunity: false,
         // configInfo: [] as any[]
-        configInfo: {}
+        configInfo: {},
+        layout:{
+            siderWidth: 208, // 左侧菜单栏宽度
+            headerHeight: 60, // 头部高度
+            collapsedWidth: 48,
+        }
     }),
     actions: {
         getSystemVersion(): Promise<any[]> {

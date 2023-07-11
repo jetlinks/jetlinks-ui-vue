@@ -6,6 +6,7 @@
         @ok="confirm"
         @cancel="emits('update:visible', false)"
         :confirmLoading="loading"
+        destroyOnClose
         class="edit-dialog-container"
     >
         <j-form ref="formRef" :model="form.data" layout="vertical">
@@ -123,7 +124,7 @@
 </template>
 
 <script setup lang="ts">
-import { FormInstance, message } from 'ant-design-vue';
+import { FormInstance } from 'ant-design-vue';
 import { Rule } from 'ant-design-vue/es/form';
 
 import {
@@ -131,6 +132,8 @@ import {
     editPermission_api,
     addPermission_api,
 } from '@/api/system/permission';
+import { cloneDeep } from 'lodash-es';
+import { onlyMessage } from '@/utils/comm';
 
 const defaultAction = [
     { action: 'query', name: '查询', describe: '查询' },
@@ -144,7 +147,7 @@ const props = defineProps<{
 }>();
 
 const loading = ref(false);
-const dialogTitle = computed(() => (props.data.id ? '编辑' : '新增'));
+const dialogTitle = computed(() => (props.data?.id ? '编辑' : '新增'));
 const confirm = () => {
     loading.value = true;
     formRef.value
@@ -152,7 +155,7 @@ const confirm = () => {
         .then(() => form.submit())
         .then((resp) => {
             if (resp.status === 200) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 emits('refresh');
                 emits('update:visible', false);
             }
@@ -165,7 +168,7 @@ const form = reactive({
     data: {
         name: '',
         id: '',
-        ...props.data,
+        ...props?.data,
         actionTableData: computed(() => {
             const startIndex = (pager.current - 1) * pager.pageSize;
             const endIndex = Math.min(
@@ -183,7 +186,7 @@ const form = reactive({
             if (!id) return Promise.reject('请输入标识(ID)');
             else if (id.length > 64)
                 return Promise.reject('最多可输入64个字符');
-            else if (props.data.id && props.data.id === form.data.id)
+            else if (props.data?.id && props.data?.id === form.data?.id)
                 return Promise.resolve();
             else {
                 const resp: any = await checkId_api({ id });
@@ -197,7 +200,7 @@ const form = reactive({
             ...form.data,
             actions: table.data.filter((item: any) => item.action && item.name),
         };
-        const api = props.data.id ? editPermission_api : addPermission_api;
+        const api = props.data?.id ? editPermission_api : addPermission_api;
 
         return api(params);
     },
@@ -236,7 +239,7 @@ const table = reactive({
             key: 'act',
         },
     ],
-    data: props.data.id ? [...props.data.actions] : [...defaultAction],
+    data: props.data?.id ? cloneDeep([...(props.data?.actions || [])]) : [...defaultAction],
     clickRemove: (index: number) => {
         pager.total -= 1;
         table.data.splice(index, 1);

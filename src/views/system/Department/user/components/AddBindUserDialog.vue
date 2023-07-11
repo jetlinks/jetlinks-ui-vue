@@ -25,7 +25,6 @@
                     selectedRowKeys: table._selectedRowKeys,
                     onChange: table.onSelectChange,
                 }"
-                @cancelSelect="table.cancelSelect"
                 model="TABLE"
                 :defaultParams="{
                     pageSize: 10,
@@ -42,8 +41,8 @@
 
 <script setup lang="ts">
 import { bindUser_api, getBindUserList_api } from '@/api/system/department';
-import { message } from 'jetlinks-ui-components';
 import { useDepartmentStore } from '@/store/department';
+import { onlyMessage } from '@/utils/comm';
 
 const department = useDepartmentStore();
 
@@ -60,7 +59,7 @@ const confirm = () => {
         loading.value = true;
         bindUser_api(props.parentId, department.crossPageKeys)
             .then(() => {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 emits('confirm');
                 emits('update:visible', false);
                 // table._selectedRowKeys = [];
@@ -69,7 +68,7 @@ const confirm = () => {
             .finally(() => (loading.value = false));
     } else {
         // emits('update:visible', false);
-        message.warning('请选择要绑定的用户');
+        onlyMessage('请选择要绑定的用户', 'warning');
     }
 };
 

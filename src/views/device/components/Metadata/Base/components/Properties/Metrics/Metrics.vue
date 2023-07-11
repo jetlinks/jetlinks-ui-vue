@@ -11,7 +11,7 @@
         {{ data.record.range === 'true' ? '范围值' : '固定值'}}
       </template>
       <template #value="{data}">
-        {{ data.record.range === 'true' ? data.record.value.toString() : data.record.value }}
+        {{ data.record.range === 'true' ? data.record.value?.join('-') : data.record.value }}
       </template>
       <template #action="{data}">
         <j-button
@@ -22,7 +22,7 @@
         </j-button>
       </template>
     </j-data-table>
-    <j-button style="width: 100%;margin-top: 16px;" @click="addItem">
+    <j-button style="width: 100%;margin-top: 16px;" @click="addItem" >
       <template #icon><AIcon type="PlusOutlined" /></template>
       添加指标值
     </j-button>
@@ -84,7 +84,7 @@ const columns: any = [
 const newColumns = computed(() => {
   if (props.type && !['string', 'boolean', 'date'].includes(props.type)) {
     const data = [...columns]
-    data.splice(1, 0, {
+    data.splice(2, 0, {
         title: '指标值',
         dataIndex: 'range',
         width: 120,

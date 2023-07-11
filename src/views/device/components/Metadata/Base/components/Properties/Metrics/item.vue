@@ -3,6 +3,7 @@
         v-if="type === 'string'"
         v-model:value="myValue"
         :maxLength="64"
+        placeholder="请输入"
         @change="change"
     />
     <j-input-number
@@ -10,12 +11,22 @@
         v-model:value="myValue"
         :precision="0"
         style="width: 100%"
+        placeholder="请输入"
         @change="change"
+    />
+    <j-select
+        v-else-if="type === 'boolean'"
+        placeholder="请选择"
+        :options="[
+            { label: '否', value: 'false'},
+            { label: '是', value: 'true'},
+        ]"
     />
     <j-date-picker
         v-else-if="type === 'date' "
         v-model:value="myValue"
         show-time
+        placeholder="请选择"
         @change="change"
     />
 </template>

@@ -49,7 +49,7 @@
                                         <j-form-item
                                             :name="['table', index, 'value']"
                                             :rules="{
-                                                required: true,
+                                                required: record.required,
                                                 message: '该字段为必填字段',
                                             }"
                                             has-feedback
@@ -106,9 +106,9 @@
 
 <script setup lang="ts">
 import { ComponentInternalInstance } from 'vue';
-import { message } from 'jetlinks-ui-components';
 import { useInstanceStore } from '@/store/instance';
 import { execute } from '@/api/device/instance';
+import { onlyMessage } from '@/utils/comm';
 
 const instanceStore = useInstanceStore();
 const route = useRoute();
@@ -172,9 +172,10 @@ const newFunctions = computed(() => {
                         ? tableItem['json']?.['properties'][0]
                         : undefined,
                 value: undefined,
+                required: tableItem.expands?.required
             });
         }
-
+        
         result.push({
             ...func,
             table: array,
@@ -206,7 +207,7 @@ const handleExecute = async (func: any) => {
                 obj,
             );
             if (!success) return;
-            message.success('操作成功');
+            onlyMessage('操作成功');
             executeResult.value = result instanceof Array ? result[0] : result;
             proxy?.$forceUpdate();
         })

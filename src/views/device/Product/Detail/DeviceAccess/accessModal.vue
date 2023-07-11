@@ -28,7 +28,6 @@
                 ] : [{ name: 'createTime', order: 'desc' }],
             }"
       :params="params"
-      @cancelSelect="cancelSelect"
       :gridColumn="2"
       :gridColumns="[2]"
     >
@@ -125,9 +124,8 @@
 
 <script setup lang='ts' name='accessModal'>
 import type { PropType } from 'vue'
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import { queryList, getAccessConfig } from '@/api/device/product'
-import { message } from 'jetlinks-ui-components'
 import { useMenuStore } from '@/store/menu';
 import { getProductByPluginId } from '@/api/link/plugin'
 import { getProviders } from '@/api/link/accessConfig'
@@ -297,7 +295,7 @@ const submitData = async () => {
       }
     }
   } else {
-    message.error('请选择接入方式');
+    onlyMessage('请选择接入方式', 'error');
   }
 }
 
@@ -317,10 +315,10 @@ const handleClick = (data: any) => {
   checkData.value = {...data}
 }
 
-const cancelSelect = () => {
-  selectedRowKeys.value = []
-  checkData.value = {}
-}
+// const cancelSelect = () => {
+//   selectedRowKeys.value = []
+//   checkData.value = {}
+// }
 
 /**
  * 打开标签新增

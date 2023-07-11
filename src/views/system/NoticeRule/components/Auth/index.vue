@@ -1,12 +1,12 @@
 <template>
     <j-modal
-        :width="900"
+        :width="540"
         visible
         title="权限控制"
         @cancel="emit('close')"
         @ok="onSave"
     >
-        <Role v-model="_selectedRowKeys" />
+        <Role v-model="_selectedRowKeys" :gridColumn="1" />
     </j-modal>
 </template>
 
@@ -29,10 +29,6 @@ watchEffect(() => {
 });
 
 const onSave = () => {
-    // if(_selectedRowKeys.value.length) {
     emit('save', _selectedRowKeys.value);
-    // } else {
-    //     onlyMessage('请配置角色权限', 'error')
-    // }
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <DataTableTypeSelect v-model:value="type" :filter="['object', 'array']">
+    <DataTableTypeSelect v-model:value="type" @change="change" :filter="filter">
         
     </DataTableTypeSelect>
 </template>
@@ -11,6 +11,7 @@ import {
     DataTableObject,
 } from 'jetlinks-ui-components';
 import { DataType } from '../index'
+import {typeSelectChange} from "@/views/device/components/Metadata/Base/columns";
 
 
 type Emits = {
@@ -32,10 +33,26 @@ const props = defineProps({
         type: Array as PropType<{ label: string; value: string }[]>,
         default: () => [],
     },
+    filter: {
+      type: Array,
+      default: undefined
+    }
 });
 
 
 const type = ref(props.value.valueType?.type || null);
+
+const change = (e: string) => {
+  console.log(e)
+  const obj = typeSelectChange(e)
+  emit('update:value', {
+    ...props.value,
+    valueType: {
+      type: type.value,
+      ...obj
+    }
+  })
+}
 
 watch(
     () => props.value,
@@ -45,12 +62,6 @@ watch(
     { immediate: true },
 );
 
-watch(() => type.value, () => {
-    emit('update:value', {
-        ...props.value,
-        valueType: { type: type.value}
-    })
-})
 </script>
 
 <style scoped></style>

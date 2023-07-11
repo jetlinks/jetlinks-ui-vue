@@ -1,14 +1,14 @@
 <template>
     <div class="file">
         <j-form layout="vertical">
-            <j-form-item label="下载模板">
-                <div class="file-download">
-                    <j-button @click="downFile('xlsx')">模板格式.xlsx</j-button>
-                    <j-button @click="downFile('csv')">模板格式.csv</j-button>
-                </div>
-            </j-form-item>
-            <j-form-item label="文件上传">
-                <!-- 导入系统已存在的设备数据，不会更改已存在设备的所属产品信息 -->
+            <j-form-item>
+                <template #label>
+                    <div>
+                        文件上传
+                        <div class="alert"><AIcon style="margin-right: 5px;" type="InfoCircleOutlined" />导入系统已存在的设备数据，不会更改已存在设备的所属产品信息</div>
+                    </div>
+                </template>
+                
                 <a-upload-dragger
                     v-model:fileList="modelRef.upload"
                     name="file"
@@ -28,15 +28,10 @@
                     :disabled="disabled"
                     @drop="handleDrop"
                 >
-                    <div
-                        style="
-                            height: 115px;
-                            line-height: 115px;
-                            color: #666666;
-                        "
-                    >
-                        <!-- <AIcon style="font-size: 20px;" type="PlusCircleOutlined" /> -->
-                        点击或拖拽上传文件
+                    <div class="dragger-box">
+                        <AIcon class="icon" type="PlusCircleFilled" />
+                        <span style="margin: 16px 0 8px 0">点击或拖拽上传文件</span>
+                        <span>格式：.xlsx, .csv</span>
                     </div>
                 </a-upload-dragger>
             </j-form-item>
@@ -45,23 +40,38 @@
                     >导入并启用</j-checkbox
                 >
             </div>
+            <div v-if="importLoading" class="result">
+                <div v-if="flag">
+                    <j-spin size="small" style="margin-right: 10px" />正在导入
+                </div>
+                <div v-else>
+                    <AIcon
+                        style="
+                            color: #08e21e;
+                            margin-right: 10px;
+                            font-size: 16px;
+                        "
+                        type="CheckCircleOutlined"
+                    />导入完成
+                </div>
+                <div>导入成功：{{ count }} 个</div>
+                <div>
+                    导入失败：<span style="color: #ff595e">{{ errCount }}</span>
+                    个<a
+                        v-if="errMessage && !flag && errCount > 0"
+                        style="margin-left: 20px"
+                        @click="downError"
+                        >下载</a
+                    >
+                </div>
+            </div>
+            <j-form-item label="下载模板">
+                <div class="file-download">
+                    <j-button class="btn" @click="downFile('xlsx')">模板格式.xlsx</j-button>
+                    <j-button class="btn" @click="downFile('csv')">模板格式.csv</j-button>
+                </div>
+            </j-form-item>
         </j-form>
-        <div v-if="importLoading" class="result">
-            <div v-if="flag">
-                <j-spin size="small" style="margin-right: 10px" />正在导入
-            </div>
-            <div v-else>
-                <AIcon
-                    style="color: #08e21e; margin-right: 10px; font-size: 16px"
-                    type="CheckCircleOutlined"
-                />导入完成
-            </div>
-            <div>导入成功：{{ count }} 个</div>
-            <div>
-                导入失败：<span style="color: #ff595e">{{ errCount }}</span>
-                个<a v-if="errMessage && !flag && errCount > 0" style="margin-left: 20px" @click="downError">下载</a>
-            </div>
-        </div>
     </div>
 </template>
 
@@ -72,7 +82,6 @@ import { LocalStore, onlyMessage } from '@/utils/comm';
 import { downloadFileByUrl } from '@/utils/utils';
 import { deviceImport, templateDownload } from '@/api/device/instance';
 import { EventSourcePolyfill } from 'event-source-polyfill';
-import { message } from 'jetlinks-ui-components';
 
 const props = defineProps({
     product: {
@@ -125,8 +134,8 @@ const beforeUpload = (_file: any) => {
 const handleDrop = () => {};
 
 const downError = () => {
-  window.open(errMessage.value)
-}
+    window.open(errMessage.value);
+};
 
 const submitData = async (fileUrl: string) => {
     if (!!fileUrl) {
@@ -147,7 +156,7 @@ const submitData = async (fileUrl: string) => {
                 count.value = dt;
             } else {
                 if (res.detailFile) {
-                  errMessage.value = res.detailFile
+                    errMessage.value = res.detailFile;
                 } else {
                     et += 1;
                     errCount.value = et;
@@ -163,7 +172,7 @@ const submitData = async (fileUrl: string) => {
         };
         source.onopen = () => {};
     } else {
-        message.error('请先上传文件');
+        onlyMessage('请先上传文件', 'error');
     }
 };
 
@@ -196,9 +205,23 @@ const uploadChange = async (info: Record<string, any>) => {
     .file-download {
         display: flex;
         gap: 16px;
-        > button {
-            flex: 1;
-            min-width: 0;
+        .btn {
+            border: none;
+            background-color: #ECECF0;
+            width: 152px;
+            color: #666666;
+        }
+    }
+
+    .dragger-box {
+        margin: 46px 0;
+        display: flex;
+        flex-direction: column;
+        color: #666666;
+
+        .icon {
+            font-size: 30px; 
+            color: @primary-color;
         }
     }
 
@@ -206,6 +229,22 @@ const uploadChange = async (info: Record<string, any>) => {
         div {
             margin: 5px 0;
             color: #605e5c;
+        }
+    }
+
+    .alert {
+        height: 40px;
+        width: 100%;
+        padding: 0 20px 0 10px;
+        color: rgba(0, 0, 0, 0.55);
+        line-height: 40px;
+        background-color: #f6f6f6;
+    }
+
+    :deep(.ant-form-item) {
+        .ant-upload.ant-upload-drag {
+            background: #F8F9FC;
+            border: 1px dashed rgba(212, 219, 243, 0.7);
         }
     }
 }

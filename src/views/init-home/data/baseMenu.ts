@@ -12,6 +12,13 @@ export const USER_CENTER_MENU_DATA = {
   url: '/account/center',
   sortIndex: 9999,
   granted: true,
+  owner: 'iot',
+  permissions: [
+    {
+      permission: 'system_config',
+      actions: ['query'],
+    },
+  ],
   buttons: [
     {
       id: USER_CENTER_MENU_BUTTON_CODE,
@@ -1430,7 +1437,7 @@ export default [
                 permissions: [
                   {
                     permission: 'plugin-driver',
-                    actions: ['save'],
+                    actions: ['view'],
                   },
                 ],
               },
@@ -1999,7 +2006,7 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
+            accessSupport: { text: "间接支持", value: "indirect" },
             supportDataAccess: false
           },
         ],
@@ -2356,10 +2363,10 @@ export default [
                     permission: 'rule-scene',
                     actions: ['query', 'delete'],
                   },
-                  {
-                    permission: 'alarm-config',
-                    actions: ['query'],
-                  },
+                  // {
+                  //   permission: 'alarm-config',
+                  //   actions: ['query'],
+                  // },
                 ],
               },
               {

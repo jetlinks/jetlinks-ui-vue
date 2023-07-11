@@ -1,19 +1,30 @@
 <template>
     <j-modal
-        :width="900"
+        :width="1056"
         visible
         title="配置通知方式"
         @cancel="emit('close')"
-        @ok="onSave"
+        :bodyStyle="{ padding: 0 }"
     >
-        <j-steps :current="current" size="small" @change="onChange">
-            <j-step v-for="item in stepList" :title="item" :key="item" />
-        </j-steps>
+        <div style="background-color: #f8f9fc; padding: 25px 100px">
+            <j-steps :current="current" size="small" @change="onChange">
+                <j-step
+                    v-for="(item, index) in stepList"
+                    :title="item"
+                    :key="item"
+                >
+                    <template #description>
+                        <span v-if="current === index">进行中</span>
+                        <span v-if="current < index">未开始</span>
+                        <span v-if="current > index">已完成</span>
+                    </template>
+                </j-step>
+            </j-steps>
+        </div>
         <div style="margin: 20px">
             <template v-if="current === 0">
                 <NotifyWay
                     :value="formModel.channelProvider"
-                    :name="formModel.name"
                     @change="onWayChange"
                 />
             </template>
@@ -27,6 +38,7 @@
             <template v-if="current === 2">
                 <NotifyTemplate
                     :value="formModel.channelConfiguration.templateId"
+                    :notifyType="formModel.channelProvider"
                     :notifierId="formModel.channelConfiguration.notifierId"
                     @change="onTemplateChange"
                 />
@@ -41,6 +53,38 @@
             </template>
             <template v-if="current === 4">
                 <Role v-model="formModel.grant.role.idList" />
+            </template>
+            <template v-if="current === 5">
+                <div>
+                    <div class="alert">
+                        <AIcon type="InfoCircleOutlined" />
+                        被分配了接收权限的用户将根据名称判断是否订阅该通知
+                    </div>
+                    <div style="margin: 50px 200px">
+                        <j-form
+                            ref="formRef"
+                            :model="formModel"
+                            layout="vertical"
+                        >
+                            <j-form-item
+                                name="name"
+                                label="名称"
+                                :rules="[
+                                    { required: true, message: '请输入名称' },
+                                    {
+                                        max: 8,
+                                        message: '最多可输入8个字符',
+                                    },
+                                ]"
+                            >
+                                <j-input
+                                    v-model:value="formModel.name"
+                                    placeholder="请输入名称"
+                                />
+                            </j-form-item>
+                        </j-form>
+                    </div>
+                </div>
             </template>
         </div>
         <template #footer>
@@ -114,6 +158,7 @@ const stepList = [
     '选择通知模板',
     '配置模板变量',
     '配置用户权限',
+    '完成',
 ];
 const current = ref<number>(0);
 const variable = ref([]);
@@ -133,9 +178,10 @@ const formModel = reactive<{
     channelConfiguration: {},
 });
 const variableRef = ref();
+const formRef = ref();
 
 const _variableDefinitions = computed(() => {
-    const arr = ['user', 'org'];
+    const arr = ['user', 'org', 'tag'];
     return variable.value.filter((item: any) => {
         const _type = item.expands?.businessType || item.type || '';
         return !arr.includes(_type);
@@ -143,7 +189,7 @@ const _variableDefinitions = computed(() => {
 });
 
 const handleVariable = (obj: any) => {
-    const arr = ['user', 'org'];
+    const arr = ['user', 'org', 'tag'];
     const _array = variable.value
         .filter((item: any) => {
             const _type = item.expands?.businessType || item.type || '';
@@ -171,50 +217,67 @@ const handleVariable = (obj: any) => {
 };
 
 const jumpStep = async (val: number) => {
-    if (val === 0) {
-        current.value = val;
-    } else if (val === 1) {
-        if (formModel.channelProvider) {
-            current.value = val;
-        } else {
+    if (val >= 1) {
+        if (!formModel.channelProvider) {
             onlyMessage('请选择通知方式', 'error');
+            return;
         }
-    } else if (val === 2) {
-        if (formModel.channelConfiguration.notifierId) {
-            current.value = val;
-        } else {
+    }
+    if (val >= 2) {
+        if (!formModel.channelConfiguration.notifierId) {
             onlyMessage('请选择通知配置', 'error');
+            return;
         }
-    } else if (val === 3) {
-        if (formModel.channelConfiguration.templateId) {
-            const resp = await Template.getTemplateDetail(
-                formModel.channelConfiguration.templateId,
-            );
+    }
+    if (val >= 3) {
+        if (!formModel.channelConfiguration.templateId) {
+            onlyMessage('请选择通知模板', 'error');
+            return;
+        } else {
+            // 查询变量
+            const resp = await Template.getTemplateDetail(formModel.channelConfiguration.templateId);
             if (resp.status === 200) {
                 variable.value = resp.result?.variableDefinitions || [];
-                current.value = val;
             }
-        } else {
-            onlyMessage('请选择通知模板', 'error');
         }
-    } else if (val === 4) {
+    }
+    if (val >= 4) {
         if (variable.value.length) {
             if (_variableDefinitions.value.length) {
-                const obj = await variableRef.value.onSave();
-                if (obj) {
-                    handleVariable(obj);
-                    current.value = val;
+                if(variableRef.value) {
+                    const obj = await variableRef.value?.onSave();
+                    if (obj) {
+                        handleVariable(obj);
+                    } else {
+                        onlyMessage('请配置模版变量', 'error');
+                        return;
+                    }
                 } else {
-                    onlyMessage('请配置模版变量', 'error');
+                    const flag = _variableDefinitions.value.every((item: any) => {
+                        const _value = formModel.channelConfiguration.variables[item.id];
+                        if(!_value) {
+                            return false
+                        }
+                        if(_value.source === 'fixed') {
+                            return _value.value !== undefined
+                        }
+                        if(_value.source === 'upper') {
+                            return _value.upperKey !== undefined
+                        }
+                        return true
+                    })
+                    if(!flag) {
+                        onlyMessage('请配置模版变量', 'error');
+                        return
+                    }
                 }
             } else {
                 handleVariable({});
-                current.value = val;
             }
-        } else {
-            current.value = val;
         }
     }
+
+    current.value = val;
 };
 
 const onWayChange = (obj: any) => {
@@ -225,7 +288,7 @@ const onWayChange = (obj: any) => {
         formModel.channelConfiguration.variables = {};
     }
     formModel.channelProvider = obj?.value;
-    formModel.name = obj?.label;
+    // formModel.name = obj?.label;
 };
 
 const onConfigChange = (obj: any) => {
@@ -261,7 +324,8 @@ const onChange = (cur: number) => {
     jumpStep(cur);
 };
 
-const onSave = () => {
+const onSave = async () => {
+    await formRef.value?.validate();
     formModel.grant.permissions =
         props.provider === 'alarm'
             ? [{ id: 'alarm-config', actions: ['query'] }]

@@ -45,10 +45,9 @@
 
 <script lang="ts" setup name='JProUpload'>
 import { UploadProps } from 'ant-design-vue';
-import { message } from 'jetlinks-ui-components';
 import { FILE_UPLOAD } from '@/api/comm';
 import { TOKEN_KEY } from '@/utils/variable';
-import {getBase64, LocalStore} from '@/utils/comm';
+import {getBase64, LocalStore, onlyMessage} from '@/utils/comm';
 import { CSSProperties } from 'vue';
 import ImageCropper from '@/components/Upload/Cropper.vue';
 
@@ -125,15 +124,15 @@ const beforeUpload = (file: UploadProps['fileList'][number]) => {
     const maxSize = props.size || 2 // 最大值
     if (!isType) {
         if (props.errorMessage) {
-            message.error(props.errorMessage);
+            onlyMessage(props.errorMessage, 'error');
         } else {
-            message.error(`请上传正确格式的图片`);
+            onlyMessage(`请上传正确格式的图片`, 'error');
         }
         return false;
     }
     const isSize = file.size / 1024 / 1024 < maxSize;
     if (!isSize) {
-        message.error(`图片大小必须小于${maxSize}M`);
+        onlyMessage(`图片大小必须小于${maxSize}M`, 'error');
         return false
     }
 

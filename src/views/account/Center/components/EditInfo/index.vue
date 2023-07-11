@@ -41,7 +41,7 @@
                             :value="
                                 form.roleList.map((item) => item.name).join(',')
                             "
-                            placeholder="请输入角色"
+                            placeholder="请选择角色"
                             disabled
                         />
                     </j-form-item>
@@ -52,7 +52,7 @@
                             :value="
                                 form.orgList.map((item) => item.name).join(',')
                             "
-                            placeholder="请输入组织"
+                            placeholder="请选择组织"
                             disabled
                         />
                     </j-form-item>
@@ -122,7 +122,7 @@ const handleOk = () => {
             .then((resp) => {
                 if (resp.status === 200) {
                     onlyMessage('保存成功', 'success');
-                    emits('save');
+                    emits('save', form.value);
                 }
             })
             .finally(() => (loading.value = false));

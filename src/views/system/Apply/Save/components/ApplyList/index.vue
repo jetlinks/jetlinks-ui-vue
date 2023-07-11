@@ -8,7 +8,7 @@
             @click="onChange(item.value)"
             :class="{ active: item.value === _value }"
         >
-            <div>
+            <div v-if="type === 'edit'">
                 <MUpload
                     :defaultValue="defaultImg[item.value]"
                     :borderStyle="{
@@ -21,6 +21,9 @@
                     :modelValue="urlValue[item.value]"
                     @change="(_url) => onImgChange(_url, item.value)"
                 />
+            </div>
+            <div v-else>
+                <j-avatar :src="urlValue[item.value] || defaultImg[item.value]" shape="square" :size="64" />
             </div>
             <span>{{ item.label }}</span>
         </div>
@@ -49,6 +52,10 @@ const props = defineProps({
         type: Array as PropType<any[]>,
         default: () => [],
     },
+    type: {
+        type: String,
+        default: 'edit'
+    }
 });
 
 const emit = defineEmits(['update:value', 'update:photoUrl']);

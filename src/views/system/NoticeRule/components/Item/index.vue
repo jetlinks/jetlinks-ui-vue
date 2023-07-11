@@ -14,6 +14,19 @@
                         />
                     </j-tooltip>
                 </div>
+                <div class="child-item-left-auth" :class="{ disabled: !checked }">
+                    <j-tooltip :title="!update ? '暂无权限，请联系管理员' : ''">
+                        <j-button
+                            :disabled="!update || !checked"
+                            type="text"
+                            @click="onAuth"
+                        >
+                            <span v-if="!auth.length" class="child-item-left-auth-lock" ><AIcon type="LockFilled" /></span>
+                            <span v-else class="child-item-left-auth-key"><AIcon type="KeyOutlined" /></span>
+                            <span class="child-item-left-auth-text">权限控制</span>
+                        </j-button>
+                    </j-tooltip>
+                </div>
             </div>
             <div class="child-item-right" :class="{ disabled: !checked }">
                 <MCarousel :data="data?.channels">
@@ -74,7 +87,7 @@
                                 </template>
                             </j-dropdown>
                             <div class="box-item-text">
-                                {{ slotProps?.name }}
+                                <j-ellipsis>{{ slotProps?.name }}</j-ellipsis>
                             </div>
                         </div>
                     </template>
@@ -98,24 +111,6 @@
                         </j-tooltip>
                     </div>
                     <div class="box-item-text"></div>
-                </div>
-
-                <div class="child-item-right-auth">
-                    <j-tooltip :title="!update ? '暂无权限，请联系管理员' : ''">
-                        <j-button
-                            :disabled="!update"
-                            type="text"
-                            @click="onAuth"
-                        >
-                            <div
-                                class="child-item-right-auth-btn"
-                                :class="{ active: auth.length }"
-                            >
-                                <AIcon type="UserOutlined" />
-                                <span>权限控制</span>
-                            </div>
-                        </j-button>
-                    </j-tooltip>
                 </div>
             </div>
         </div>
@@ -299,7 +294,17 @@ const onAction = (e: boolean) => {
                     {
                         name: '站内信',
                         channelProvider: 'inside-mail',
-                        grant: {},
+                        grant: {
+                            role: {
+                                idList: [],
+                            },
+                            permissions: [
+                                {
+                                    id: 'alarm-config',
+                                    actions: ['query'],
+                                },
+                            ],
+                        },
                     },
                 ],
             };
@@ -407,10 +412,39 @@ const onSave = (_data: any) => {
 
         div {
             display: flex;
-            margin-right: 30px;
+            margin-right: 24px;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+        }
+
+        .child-item-left-auth {
+            // margin-left: 20px;
+
+            :deep(.ant-btn) {
+                height: 78px;
+            }
+
+            .child-item-left-auth-text {
+                color: #666666;
+            }
+            .child-item-left-auth-key {
+                color: #00C800;
+                font-size: 18px;
+                margin-right: 10px;
+            }
+
+            .child-item-left-auth-lock{
+                color: @primary-color;
+                font-size: 18px;
+                margin-right: 10px;
+            }
+
+            &.disabled {
+                .child-item-left-auth-key, .child-item-left-auth-lock {
+                    color: #666666 !important;
+                }
+            }
         }
     }
 
@@ -419,8 +453,13 @@ const onSave = (_data: any) => {
         align-items: center;
 
         .box-item {
-            margin-left: 10px;
             cursor: pointer;
+            width: 48px;
+            margin: 0 2px;
+            display: flex;
+            justify-content: space-between;
+            flex-direction: column;
+            align-items: center;
             .box-item-img {
                 background-color: #fff;
                 width: 32px;
@@ -440,34 +479,12 @@ const onSave = (_data: any) => {
 
         .box-item-add {
             cursor: pointer;
-            margin-left: 16px;
             background-color: #f8f9fc;
-            width: 54px;
+            // width: 54px;
             height: 54px;
             display: flex;
             align-items: center;
-        }
-
-        .child-item-right-auth {
-            margin-left: 20px;
-
-            :deep(.ant-btn) {
-                height: 78px;
-            }
-            .child-item-right-auth-btn {
-                height: 78px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                &:hover {
-                    color: @primary-color-hover;
-                }
-                &.active {
-                    color: @primary-color;
-                }
-            }
+            margin-left: 12px;
         }
 
         &.disabled {

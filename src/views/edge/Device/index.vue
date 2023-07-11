@@ -208,10 +208,9 @@
 <script lang="ts" setup>
 import { queryGatewayList, queryNoPagingPost } from '@/api/device/product';
 import { queryTree } from '@/api/device/category';
-import { message } from 'jetlinks-ui-components';
 import { ActionsType } from '@/views/device/Instance/typings';
 import { useMenuStore } from '@/store/menu';
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import dayjs from 'dayjs';
 import { query, _delete, _deploy, _undeploy } from '@/api/device/instance';
 import { restPassword } from '@/api/edge/device';
@@ -440,10 +439,10 @@ const getActions = (
                         response = await _deploy(data.id);
                     }
                     if (response && response.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         edgeDeviceRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },
@@ -475,7 +474,7 @@ const getActions = (
                 onConfirm: async () => {
                     restPassword(data.id).then((resp: any) => {
                         if (resp.status === 200) {
-                            message.success('操作成功！');
+                            onlyMessage('操作成功！');
                             edgeDeviceRef.value?.reload();
                         }
                     });
@@ -499,10 +498,10 @@ const getActions = (
             onConfirm: async () => {
                 const resp = await _delete(data.id);
                 if (resp.status === 200) {
-                    message.success('操作成功！');
+                    onlyMessage('操作成功！');
                     edgeDeviceRef.value?.reload();
                 } else {
-                    message.error('操作失败！');
+                    onlyMessage('操作失败！', 'error');
                 }
             },
         },

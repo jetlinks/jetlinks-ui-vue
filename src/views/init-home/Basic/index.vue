@@ -263,12 +263,12 @@
 </template>
 <script setup lang="ts">
 import { modalState, formState, logoState } from '../data/interface';
-import { Form, message } from 'jetlinks-ui-components';
+import { Form } from 'jetlinks-ui-components';
 import { FILE_UPLOAD } from '@/api/comm';
 import {
     save,
 } from '@/api/initHome';
-import { LocalStore, getImage } from '@/utils/comm';
+import { LocalStore, getImage, onlyMessage } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import { SystemConst } from '@/utils/consts';
 const formRef = ref();
@@ -375,12 +375,12 @@ const saveBasicInfo = () => {
 const beforeLogoUpload = (file: any) => {
     const isType: any = imageTypes.value.includes(file.type);
     if (!isType) {
-        message.error(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`);
+        onlyMessage(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`, 'error');
         return false;
     }
     const isSize = file.size / 1024 / 1024 < 4;
     if (!isSize) {
-        message.error(`图片大小必须小于${4}M`);
+        onlyMessage(`图片大小必须小于${4}M`, 'error');
     }
     return isType && isSize;
 };
@@ -404,12 +404,12 @@ const handleChangeLogo = (info: any) => {
 const beforeIconUpload = (file: any) => {
     const isType = iconTypes.value.includes(file.type);
     if (!isType) {
-        message.error('请上传ico格式的图片');
+        onlyMessage('请上传ico格式的图片', 'error');
         return false;
     }
     const isSize = file.size / 1024 / 1024 < 1;
     if (!isSize) {
-        message.error('支持1M以内的图片');
+        onlyMessage('支持1M以内的图片', 'error');
     }
     return isType && isSize;
 };
@@ -432,12 +432,12 @@ const changeIconUpload = (info: any) => {
 const beforeBackUpload = (file: any) => {
     const isType = imageTypes.value.includes(file.type);
     if (!isType) {
-        message.error(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`);
+        onlyMessage(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`, 'error');
         return false;
     }
     const isSize = file.size / 1024 / 1024 < 4;
     if (!isSize) {
-        message.error(`图片大小必须小于${4}M`);
+        onlyMessage(`图片大小必须小于${4}M`, 'error');
     }
     return isType && isSize;
 };

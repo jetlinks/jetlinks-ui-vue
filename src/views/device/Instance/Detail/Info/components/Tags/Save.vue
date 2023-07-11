@@ -49,9 +49,9 @@
 
 <script lang="ts" setup>
 import { useInstanceStore } from '@/store/instance';
-import { message } from 'jetlinks-ui-components';
 import _ from 'lodash';
 import { saveTags, delTags } from '@/api/device/instance'
+import { onlyMessage } from '@/utils/comm';
 
 const emit = defineEmits(['close', 'save']);
 
@@ -93,7 +93,7 @@ const handleOk = async () => {
             // 填值
             const resp = await saveTags(instanceStore.current?.id || '', list);
             if (resp.status === 200) {
-              message.success('操作成功！');
+                onlyMessage('操作成功！');
             }
           }
           const _list = (dataSource.value || []).filter((item: any) => item?.key && !item?.value);

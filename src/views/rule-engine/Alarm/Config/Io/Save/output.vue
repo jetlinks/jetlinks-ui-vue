@@ -60,7 +60,8 @@
 
 <script lang="ts" setup>
 import { saveOutputData } from '@/api/rule-engine/config';
-import { Form, message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
+import { Form } from 'jetlinks-ui-components';
 const formRef = ref();
 const useForm = Form.useForm;
 const Myprops = defineProps({
@@ -99,7 +100,7 @@ const save = () => {
             exchangeType: 'producer',
         }).then((res) => {
             if (res.status === 200) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 emit('saveSuc');
             }
         });

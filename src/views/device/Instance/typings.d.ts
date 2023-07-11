@@ -10,6 +10,7 @@ export type DeviceInstance = {
   protocolName: string;
   security: any;
   deriveMetadata: string;
+  productMetadata: string;
   metadata: string;
   binds: any;
   state: {

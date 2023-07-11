@@ -2,13 +2,14 @@
   <j-popconfirm-modal
       body-style="padding-top:4px;width:600px;"
       placement="topRight"
+      :disabled="disabled"
       @confirm="confirm"
       @cancel="cancel"
       @visibleChange="visibleChange"
   >
     <template #content>
-      <j-scrollbar height="350">
-        <j-collapse v-model:activeKey="activeKey" >
+      <j-scrollbar height="350"   v-if="showMetrics || config.length > 0">
+        <j-collapse v-model:activeKey="activeKey">
           <j-collapse-panel v-for="(item, index) in config" :key="'store_'+index" :header="item.name">
             <j-table
                 :columns="columns"
@@ -37,15 +38,19 @@
                 <AIcon type="ExclamationCircleOutlined" style="padding-left: 12px;padding-top: 4px;" />
               </j-tooltip>
             </template>
-            <Metrics ref="metricsRef" :value="myValue.expands?.metrics" :type="props.value?.valueType?.type"/>
+            <Metrics ref="metricsRef" :value="myValue.metrics" :type="props.type"/>
           </j-collapse-panel>
         </j-collapse>
+
       </j-scrollbar>
+      <div v-else style="padding-top: 24px">
+        <j-empty
+            description="没有动态配置项"
+        />
+      </div>
     </template>
-    <j-button>
-      <AIcon type="SettingOutlined" />
-      配置
-    </j-button>
+
+    <ModelButton :disabled="disabled"/>
   </j-popconfirm-modal>
 </template>
 
@@ -56,13 +61,26 @@ import {cloneDeep} from "lodash";
 import {useProductStore} from "store/product";
 import {useInstanceStore} from "store/instance";
 import {getMetadataConfig, getMetadataDeviceConfig} from "@/api/device/product";
+import ModelButton from '@/views/device/components/Metadata/Base/components/ModelButton.vue'
 import {omit} from "lodash-es";
 
 const props = defineProps({
   value: {
     type: Object,
     default: () => ({})
-  }
+  },
+  type: {
+    type: String,
+    default: undefined
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  id: {
+    type: String,
+    default: undefined
+  },
 })
 
 const type = inject('_metadataType')
@@ -83,7 +101,7 @@ const config = ref<any>([])
 const configValue = ref(props.value?.expands)
 
 const showMetrics = computed(() => {
-  return ['int', 'long', 'float', 'double', 'string', 'boolean', 'date'].includes(props.value?.valueType?.type as any)
+  return ['int', 'long', 'float', 'double', 'string', 'boolean', 'date'].includes(props.type as any)
 })
 
 const columns = ref([
@@ -105,17 +123,16 @@ const columns = ref([
 ]);
 
 const getConfig = async () => {
-  const record = props.value
   const id = type === 'product' ? productStore.current?.id : deviceStore.current.id
-  console.log(record.id, id, record.valueType)
-  if(!record.id || !id || !record.valueType.type) return
+  console.log(props.id, id, props.type)
+  if(!props.id || !id || !props.type) return
 
   const params: any = {
     deviceId: id,
     metadata: {
-      id: record.id,
+      id: props.id,
       type: 'property',
-      dataType: record.valueType.type,
+      dataType: props.type,
     },
   }
 
@@ -123,6 +140,12 @@ const getConfig = async () => {
   if (resp.status === 200) {
 
     config.value = resp.result
+    if (resp.result.length) {
+      activeKey.value = ['store_0']
+    } else if (showMetrics.value) {
+      activeKey.value = ['metrics']
+    }
+
     if (resp.result.length && !configValue.value) {
       resp.result.forEach(a => {
         if (a.properties) {
@@ -149,17 +172,12 @@ const confirm = () => {
       if (metrics) {
         expands.metrics = metrics
       }
-      console.log(expands)
       emit('update:value', {
         ...props.value,
-        expands: {
-          ...(props.value.expands || {}),
-          ...expands
-        }
+        ...expands
       })
       resolve(true)
     } catch (err) {
-      console.log(err)
       reject(false)
     }
   })
@@ -167,18 +185,16 @@ const confirm = () => {
 
 const visibleChange = (e: boolean) => {
   if (e) {
-    configValue.value = omit(props.value?.expands, ['source', 'type', 'metrics'])
+    configValue.value = omit(props.value, ['source', 'type', 'metrics', 'required'])
     getConfig()
   }
 }
 
 const cancel = () => {
-  console.log(props.value)
   myValue.value = cloneDeep(props.value)
 }
 
 watch(() => props.value, () => {
-  console.log(props.value)
   myValue.value = cloneDeep(props.value)
 }, {immediate: true, deep: true})
 

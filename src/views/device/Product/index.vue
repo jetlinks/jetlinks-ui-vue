@@ -174,8 +174,7 @@
 <script setup lang="ts">
 import server from '@/utils/request';
 import type { ActionsType } from '@/components/Table/index.vue';
-import { getImage } from '@/utils/comm';
-import { message } from 'jetlinks-ui-components';
+import { getImage, onlyMessage } from '@/utils/comm';
 import {
     getProviders,
     category,
@@ -198,6 +197,7 @@ import { useMenuStore } from 'store/menu';
 import { useRoute } from 'vue-router';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { accessConfigTypeFilter } from '@/utils/setting';
+import {cloneDeep} from "lodash";
 /**
  * 表格数据
  */
@@ -334,10 +334,10 @@ const getActions = (
                         response = await _deploy(data.id);
                     }
                     if (response && response.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         tableRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },
@@ -354,10 +354,10 @@ const getActions = (
                 onConfirm: async () => {
                     const resp = await deleteProduct(data.id);
                     if (resp.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         tableRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },
@@ -390,7 +390,7 @@ const beforeUpload = (file: any) => {
         const text = result.target?.result;
         console.log('text: ', text);
         if (!file.type.includes('json')) {
-            message.error('请上传json格式文件');
+            onlyMessage('请上传json格式文件', 'error');
             return false;
         }
         try {
@@ -398,18 +398,18 @@ const beforeUpload = (file: any) => {
             // 设置导入的产品状态为未发布
             data.state = 0;
             if (Array.isArray(data)) {
-                message.error('请上传json格式文件');
+                onlyMessage('请上传json格式文件', 'error');
                 return false;
             }
             delete data.state;
             const res = await updateDevice(data);
             if (res.status === 200) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 tableRef.value?.reload();
             }
             return true;
         } catch {
-            // message.error('请上传json格式文件');
+            // onlyMessage('请上传json格式文件', 'error');
         }
         return true;
     };
@@ -604,7 +604,33 @@ const query = reactive({
 });
 const saveRef = ref();
 const handleSearch = (e: any) => {
-    params.value = e;
+
+  const newTerms = cloneDeep(e)
+  if (newTerms.terms?.length) {
+    newTerms.terms.forEach((a : any) => {
+        a.terms = a.terms.map((b: any) => {
+          if (b.column === 'id$dim-assets') {
+            const value = b.value
+            b = {
+              column: 'id',
+              termType: 'dim-assets',
+              value: {
+                assetType: 'product',
+                targets: [
+                  {
+                    type: 'org',
+                    id: value,
+                  },
+                ],
+              },
+            }
+          }
+          return b
+        })
+    })
+  }
+
+  params.value = newTerms;
 };
 const routerParams = useRouterParams();
 onMounted(() => {

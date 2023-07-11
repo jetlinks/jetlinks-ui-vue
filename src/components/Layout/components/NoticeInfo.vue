@@ -4,14 +4,19 @@
             v-model:activeKey="activeKey"
             :destroyInactiveTabPane="true"
             @change="onChange"
+            v-if="tabs.length"
         >
-            <j-tab-pane v-for="item in tab" :key="item.key">
+            <j-tab-pane v-for="item in tabs" :key="item.key">
                 <template #tab>
-                    <NoticeTab :refresh="refreshObj[item.key]" :tab="item?.tab" :type="item.type" />
+                    <NoticeTab
+                        :refresh="refreshObj[item.key]"
+                        :tab="item?.tab"
+                        :type="item.type"
+                    />
                 </template>
                 <j-spin :spinning="loading">
                     <div class="content">
-                        <j-scrollbar class="list" max-height="400" v-if="total">
+                        <j-scrollbar class="list" :max-height="450" v-if="total">
                             <template v-for="i in list" :key="i.id">
                                 <NoticeItem
                                     :data="i"
@@ -19,23 +24,39 @@
                                     @refresh="onRefresh(item.key)"
                                 />
                             </template>
+                            <div
+                                v-if="list.length < 12"
+                                style="
+                                    color: #666666;
+                                    text-align: center;
+                                    padding: 8px;
+                                "
+                            >
+                                这是最后一条数据了
+                            </div>
                         </j-scrollbar>
                         <div class="no-data" v-else>
                             <j-empty />
                         </div>
                         <div class="btns">
-                            <span @click="onMore">查看更多</span>
+                            <j-button type="link" @click="onMore(item.key)"
+                                >查看更多</j-button
+                            >
                         </div>
                     </div>
                 </j-spin>
             </j-tab-pane>
         </j-tabs>
+        <div class="no-data" v-else>
+            <j-empty />
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { getList_api } from '@/api/account/notificationRecord';
 import { useMenuStore } from '@/store/menu';
+import { useUserInfo } from '@/store/userInfo';
 import { cloneDeep } from 'lodash-es';
 import NoticeItem from './NoticeItem.vue';
 import NoticeTab from './NoticeTab.vue';
@@ -44,41 +65,27 @@ const emits = defineEmits(['action']);
 
 type DataType = 'alarm' | 'system-monitor' | 'system-business';
 
-const tab = [
-    {
-        key: 'alarm',
-        tab: '告警',
-        type: [
-            'alarm-product',
-            'alarm-device',
-            'alarm-other',
-            'alarm-org',
-            'alarm',
-        ],
-    },
-    {
-        key: 'system-monitor',
-        tab: '系统监控',
-        type: ['system-event'],
-    },
-    {
-        key: 'system-business',
-        tab: '业务监控',
-        type: ['device-transparent-codec'],
-    },
-];
-
 const refreshObj = ref({
-    'alarm': true,
+    alarm: true,
     'system-monitor': true,
-    'system-business': true
-})
+    'system-business': true,
+});
 
 const loading = ref(false);
 const total = ref(0);
 const list = ref<any[]>([]);
 const activeKey = ref<DataType>('alarm');
 const menuStory = useMenuStore();
+const route = useRoute();
+
+const userInfo = useUserInfo();
+
+const props = defineProps({
+    tabs: {
+        type: Array,
+        default: () => []
+    }
+})
 
 const getData = (type: string[]) => {
     loading.value = true;
@@ -112,27 +119,37 @@ const getData = (type: string[]) => {
 };
 
 const onChange = (_key: string) => {
-    const type = tab.find((item) => item.key === _key)?.type || [];
+    const type = props.tabs.find((item: any) => item.key === _key)?.type || [];
     getData(type);
 };
 
-onMounted(() => {
+onMounted(async () => {
     onChange('alarm');
 });
 
 const onRefresh = (id: string) => {
-    const flag = cloneDeep(refreshObj.value[id])
+    const flag = cloneDeep(refreshObj.value[id]);
     refreshObj.value = {
         ...refreshObj.value,
-        [id]: !flag
-    }
-}
+        [id]: !flag,
+    };
+};
 
-const onMore = () => {
-    menuStory.routerPush('account/center', {
-        tabKey: 'StationMessage',
-    });
-    emits('action')
+const onMore = (key: string) => {
+    // 判断当前是否为/account/center
+    if (route.path === '/account/center') {
+        userInfo.tabKey = 'StationMessage';
+        userInfo.other.tabKey = key;
+    } else {
+        menuStory.routerPush('account/center', {
+            tabKey: 'StationMessage',
+            other: {
+                tabKey: key,
+            },
+        });
+    }
+
+    emits('action');
 };
 </script>
 
@@ -162,7 +179,7 @@ const onMore = () => {
 
     .content {
         .list {
-            max-height: 400px;
+            max-height: 450px;
             overflow: auto;
             padding: 0;
             margin: 0;
@@ -174,17 +191,8 @@ const onMore = () => {
         .btns {
             display: flex;
             height: 46px;
-            line-height: 46px;
-            span {
-                display: block;
-                width: 100%;
-                text-align: center;
-                cursor: pointer;
-
-                // &:first-child {
-                //     border-right: 1px solid #f0f0f0;
-                // }
-            }
+            justify-content: center;
+            align-items: center;
         }
     }
 }

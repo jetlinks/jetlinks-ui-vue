@@ -112,13 +112,13 @@ import type {
     TemplateFormData,
     IVariableDefinitions,
 } from '@/views/notice/Template/types';
-import { message } from 'jetlinks-ui-components';
 
 import ToUser from '@/views/notice/Template/Detail/components/ToUser.vue';
 import ToOrg from '@/views/notice/Template/Detail/components/ToOrg.vue';
 import ToTag from '@/views/notice/Template/Detail/components/ToTag.vue';
 import type { Rule } from 'ant-design-vue/es/form';
 import { phoneRegEx } from '@/utils/validate';
+import { onlyMessage } from '@/utils/comm';
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
@@ -246,7 +246,7 @@ const handleOk = () => {
             ConfigApi.debug(params, props.data.id, formData.value.templateId)
                 .then((res) => {
                     if (res.success) {
-                        message.success('操作成功');
+                        onlyMessage('操作成功');
                         handleCancel();
                     }
                 })

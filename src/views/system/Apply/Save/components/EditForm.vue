@@ -40,29 +40,34 @@
                     :options="typeOptions"
                     v-model:photoUrl="form.data.logoUrl"
                     v-model:value="form.data.provider"
-                    :disabled="!!routeQuery.id"
+                    :disabled="!!routeQuery.id || !!routeQuery?.provider"
                 />
             </j-form-item>
-            <j-form-item
-                label="接入方式"
-                name="integrationModes"
-                :rules="[
-                    {
-                        required: true,
-                        message: '请选择接入方式',
-                    },
-                ]"
-            >
-                <j-checkbox-group
-                    v-model:value="form.data.integrationModes"
-                    :options="joinOptions"
-                />
-            </j-form-item>
-
-            <j-collapse style="margin-bottom: 20px">
+            <j-row>
+                <j-col :span="joinOptions.length >= 3 ? 24 : 6 * joinOptions.length">
+                    <j-form-item
+                        label="接入方式"
+                        name="integrationModes"
+                        :rules="[
+                            {
+                                required: true,
+                                message: '请选择接入方式',
+                            },
+                        ]"
+                    >
+                            <j-check-button
+                                v-model:value="form.data.integrationModes"
+                                :options="joinOptions"
+                                :multiple="true"
+                            />
+                    </j-form-item>
+                </j-col>
+            </j-row>
+            <j-collapse style="margin-bottom: 20px;">
                 <j-collapse-panel
                     v-for="(item, index) in form.data.integrationModes"
                     :key="item + index"
+                    :forceRender="true"
                 >
                     <template #header>
                         <span>
@@ -1222,11 +1227,7 @@
 
                             <!-- 钉钉 + 微信 -->
                             <j-form-item
-                                v-if="
-                                    form.data.provider === 'wechat-webapp' ||
-                                    form.data.provider === 'dingtalk-ent-app' ||
-                                    'wechat-miniapp'
-                                "
+                                v-if="['wechat-miniapp', 'wechat-webapp', 'dingtalk-ent-app'].includes(form.data?.provider)"
                                 class="resetLabel"
                                 :name="['sso', 'configuration', 'appSecret']"
                                 :rules="[
@@ -1293,14 +1294,17 @@
                                         required: true,
                                         message: '请输入默认密码',
                                     },
+                                    // {
+                                    //     min: 8,
+                                    //     message: '最少输入8个字符',
+                                    // },
+                                    // {
+                                    //     max: 64,
+                                    //     message: '最多可输入64个字符',
+                                    // },
                                     {
-                                        min: 8,
-                                        message: '最少输入8个字符',
-                                    },
-                                    {
-                                        max: 64,
-                                        message: '最多可输入64个字符',
-                                    },
+                                        validator: checkPassword,
+                                    }
                                 ]"
                             >
                                 <j-input
@@ -1404,7 +1408,7 @@
 </template>
 
 <script setup lang="ts">
-import { testIP } from '@/utils/validate';
+import { passwordRegEx, testIP } from '@/utils/validate';
 
 import {
     getDepartmentList_api,
@@ -1416,10 +1420,9 @@ import {
 import FormLabel from './FormLabel.vue';
 import RequestTable from './RequestTable.vue';
 import MenuDialog from '../../componenets/MenuDialog.vue';
-import { getImage } from '@/utils/comm';
-import type { formType, dictType, optionsType } from '../typing';
+import { getImage, onlyMessage } from '@/utils/comm';
+import type { formType, dictType, optionsType, applyType } from '../typing';
 import { getRoleList_api } from '@/api/system/user';
-import { message } from 'jetlinks-ui-components';
 import { randomString } from '@/utils/utils';
 import { cloneDeep, difference } from 'lodash';
 import { useMenuStore } from '@/store/menu';
@@ -1554,24 +1557,50 @@ const paramsValidator = () => {
         paramsValid.value ? resolve('') : reject('请输入完整的请求参数');
     });
 };
-
-onMounted(() => {
-    queryType().then((resp: any) => {
-        if (resp.status === 200) {
-            const arr = resp.result.map((item: any) => ({
-                label: item.name,
-                value: item.provider,
-                integrationModes: item.integrationModes?.map((i: any) => {
-                    return {
-                        label: i.text,
-                        value: i.value,
-                    };
-                }),
-            }));
-            typeOptions.value = arr;
-        }
-    });
+const getType = async () => {
+    const resp: any = await queryType();
+    if (resp.status === 200) {
+        const arr = resp.result.map((item: any) => ({
+            label: item.name,
+            value: item.provider,
+            integrationModes: item.integrationModes?.map((i: any) => {
+                return {
+                    label: i.text,
+                    value: i.value,
+                };
+            }),
+        }));
+        typeOptions.value = arr;
+    }
+}
+ 
+onMounted(async () => {
+    await getType();
+    getRoleIdList();
+    getOrgIdList();
+    if (routeQuery.id) {
+        getInfo(routeQuery.id as string);
+    }
+    if(routeQuery.provider){
+        form.data.provider = routeQuery?.provider as applyType;
+        typeOptions.value = typeOptions.value.filter((i: any) => {
+            return i.value === routeQuery.provider;
+        });
+    }
 });
+
+const checkPassword = (_rule: Rule, value: string) =>  {
+    return new Promise((resolve, reject) => {
+        if (!value) return resolve('');
+        else if (value.length > 64) return reject('最多可输入64个字符');
+        else if (value.length < 8) return reject('密码不能少于8位');
+        else if (!passwordRegEx(value)) {
+            return reject('密码必须包含大小写英文和数字');
+        } else {
+            resolve('')
+        }
+    })
+}
 
 // 接入方式的选项
 const joinOptions = computed(() => {
@@ -1586,64 +1615,55 @@ const dialog = reactive({
     current: {},
 });
 
-init();
+watch(
+    () => form.data.provider,
+    (n) => {
+        if (!form.data.id) {
+            // 新增时, 切换应用类型, 清空公用字段的值
+            form.data.page.baseUrl = '';
+            form.data.apiClient.baseUrl = '';
+            form.data.page.parameters = [];
+            form.data.apiClient.parameters = [];
+            form.data.apiClient.authConfig.oauth2.authorizationUrl = '';
+            form.data.sso.configuration.oauth2.authorizationUrl = '';
+            form.data.apiClient.authConfig.oauth2.clientId = '';
+            form.data.sso.configuration.oauth2.clientId = '';
+            form.data.apiClient.authConfig.oauth2.clientSecret = '';
+            form.data.sso.configuration.oauth2.clientSecret = '';
+            form.data.apiClient.headers = [];
+            form.data.apiServer.roleIdList = [];
+            form.data.apiServer.orgIdList = [];
+            form.data.description = '';
+            form.data.apiServer.redirectUri = '';
+            form.data.sso.configuration.appSecret = '';
 
-function init() {
-    getRoleIdList();
-    getOrgIdList();
+            // formRef.value?.resetFields();
+        }
+        emit('changeApplyType', n);
+        if (routeQuery.id) return;
+        if (
+            [
+                'wechat-webapp',
+                'dingtalk-ent-app',
+                'wechat-miniapp',
+            ].includes(n)
+        ) {
+            form.data.integrationModes = ['ssoClient'];
+            // form.integrationModesISO = ['ssoClient'];
+        } else form.data.integrationModes = [];
+    },
+    { immediate: true },
+);
+watch(
+    () => form.data.integrationModes,
+    (n, o) => {
+        o.forEach((key) => {
+            if (!n.includes(key)) form.errorNumInfo[key].clear();
+        });
 
-    if (routeQuery.id) getInfo(routeQuery.id as string);
-
-    watch(
-        () => form.data.provider,
-        (n) => {
-            if (!form.data.id) {
-                // 新增时, 切换应用类型, 清空公用字段的值
-                form.data.page.baseUrl = '';
-                form.data.apiClient.baseUrl = '';
-                form.data.page.parameters = [];
-                form.data.apiClient.parameters = [];
-                form.data.apiClient.authConfig.oauth2.authorizationUrl = '';
-                form.data.sso.configuration.oauth2.authorizationUrl = '';
-                form.data.apiClient.authConfig.oauth2.clientId = '';
-                form.data.sso.configuration.oauth2.clientId = '';
-                form.data.apiClient.authConfig.oauth2.clientSecret = '';
-                form.data.sso.configuration.oauth2.clientSecret = '';
-                form.data.apiClient.headers = [];
-                form.data.apiServer.roleIdList = [];
-                form.data.apiServer.orgIdList = [];
-                form.data.description = '';
-                form.data.apiServer.redirectUri = '';
-                form.data.sso.configuration.appSecret = '';
-
-                // formRef.value?.resetFields();
-            }
-            emit('changeApplyType', n);
-            if (routeQuery.id) return;
-            if (
-                [
-                    'wechat-webapp',
-                    'dingtalk-ent-app',
-                    'wechat-miniapp',
-                ].includes(n)
-            ) {
-                form.data.integrationModes = ['ssoClient'];
-                // form.integrationModesISO = ['ssoClient'];
-            } else form.data.integrationModes = [];
-        },
-        { immediate: true },
-    );
-    watch(
-        () => form.data.integrationModes,
-        (n, o) => {
-            o.forEach((key) => {
-                if (!n.includes(key)) form.errorNumInfo[key].clear();
-            });
-
-            // form.integrationModesISO = [...n];
-        },
-    );
-}
+        // form.integrationModesISO = [...n];
+    },
+);
 
 function getInfo(id: string) {
     getAppInfo_api(id).then((resp: any) => {
@@ -1748,7 +1768,7 @@ function clickSave() {
                     params.integrationModes.includes('apiServer') &&
                     params.integrationModes.length === 2)
             ) {
-                return message.warning('配置单点登录需同时配置API客服端');
+                return onlyMessage('配置单点登录需同时配置API客户端', 'warning');
             }
         }
 
@@ -1802,7 +1822,7 @@ function clickSave() {
                         };
                         dialog.visible = true;
                     } else {
-                        message.success('保存成功');
+                        onlyMessage('保存成功');
                         menuStory.jumpPage('system/Apply');
                     }
                 }
@@ -1828,32 +1848,6 @@ function getErrorNum(
         } else if (!set.has(key)) set.add(key);
     }
 }
-
-// const imageTypes = ref(['image/jpg', 'image/png', 'image/jpeg']);
-// const beforeLogoUpload = (file: any) => {
-//     const isType: any = imageTypes.value.includes(file.type);
-//     if (!isType) {
-//         message.error(`请上传.jpg.png格式的图片`);
-//         return false;
-//     }
-//     const isSize = file.size / 1024 / 1024 < 4;
-//     if (!isSize) {
-//         message.error(`图片大小必须小于${4}M`);
-//     }
-//     return isType && isSize;
-// };
-// function changeBackUpload(info: UploadChangeParam<UploadFile<any>>) {
-//     if (info.file.status === 'uploading') {
-//         form.uploadLoading = true;
-//     } else if (info.file.status === 'done') {
-//         info.file.url = info.file.response?.result;
-//         form.uploadLoading = false;
-//         form.data.logoUrl = info.file.response?.result;
-//     } else if (info.file.status === 'error') {
-//         form.uploadLoading = false;
-//         message.error('logo上传失败，请稍后再试');
-//     }
-// }
 
 function clearNullProp(obj: object) {
     if (typeof obj !== 'object') return;

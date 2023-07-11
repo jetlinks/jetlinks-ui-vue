@@ -164,8 +164,7 @@
 <script setup lang="ts">
 import DeviceApi from '@/api/media/device';
 import type { ActionsType } from '@/views/device/Instance/typings';
-import { message } from 'jetlinks-ui-components';
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
 import { providerType } from './const';
 import encodeQuery from '@/utils/encodeQuery';
@@ -375,7 +374,7 @@ const getActions = (
             onClick: async () => {
                 const res = await DeviceApi.updateChannels(data.id);
                 if (res.success) {
-                    message.success('通道更新成功');
+                    onlyMessage('通道更新成功');
                     listRef.value?.reload();
                 }
             },
@@ -393,10 +392,10 @@ const getActions = (
                 onConfirm: async () => {
                     const resp = await DeviceApi.del(data.id);
                     if (resp.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         listRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },

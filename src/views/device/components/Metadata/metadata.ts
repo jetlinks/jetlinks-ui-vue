@@ -36,9 +36,11 @@ import type { DeviceMetadata, MetadataItem, MetadataType, ProductItem } from "..
   } else {
     console.warn('未触发物模型修改');
   }
-  console.log('config', config, type)
+  console.log('updateMetadata', config, type)
   // @ts-ignore
-  metadata[type] = config.sort((a, b) => b?.sortsIndex - a?.sortsIndex);
+  // metadata[type] = config.sort((a, b) => b?.sortsIndex - a?.sortsIndex);
+  metadata[type] = item.sort((a, b) => b?.sortsIndex - a?.sortsIndex);
+  console.log('updateMetadata',metadata)
   data.metadata = JSON.stringify(metadata);
   onEvent?.(data.metadata)
   return data;

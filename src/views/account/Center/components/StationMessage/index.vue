@@ -4,8 +4,13 @@
             tab-position="left"
             v-if="tabs.length"
             :destroyInactiveTabPane="true"
+            v-model:activeKey="user.other.tabKey"
         >
-            <j-tab-pane v-for="item in tabs" :key="item.provider" :tab="item.name">
+            <j-tab-pane
+                v-for="item in tabs"
+                :key="item.provider"
+                :tab="item.name"
+            >
                 <NotificationRecord :type="item.provider" />
             </j-tab-pane>
         </j-tabs>
@@ -17,9 +22,13 @@
 import NotificationRecord from './components/NotificationRecord/index.vue';
 import { initData } from '../data';
 import { getAllNotice } from '@/api/account/center';
+import { useRouterParams } from '@/utils/hooks/useParams';
+import { useUserInfo } from '@/store/userInfo';
 
 const tabs = ref<any[]>([]);
-
+const router = useRouterParams();
+const user = useUserInfo();
+    
 const queryTypeList = () => {
     getAllNotice().then((resp: any) => {
         if (resp.status === 200) {
@@ -48,10 +57,20 @@ const queryTypeList = () => {
                         children: item.children.filter((lt: any) => lt?.id),
                     };
                 });
-            tabs.value = arr
+            if (!user.other.tabKey) {
+                user.other.tabKey = arr?.[0]?.provider;
+            }
+
+            tabs.value = arr;
         }
     });
 };
+
+watchEffect(() => {
+    if (router.params.value?.other?.tabKey) {
+        user.other.tabKey = router.params.value?.other?.tabKey
+    }
+});
 
 onMounted(() => {
     queryTypeList();

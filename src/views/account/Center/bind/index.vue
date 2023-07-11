@@ -1,49 +1,39 @@
 <!-- 第三方账户绑定 -->
 <template>
   <div class='page-container'>
-    <div class='content'>
+    <div class='content-bind'>
       <div class='title'>第三方账户绑定</div>
       <!-- 已登录-绑定三方账号 -->
       <template v-if='!!token'>
         <div class='info'>
-          <j-card style='width: 280px'>
-            <template #title>
-              <div class='info-head'>
-                <img :src="getImage('/bind/Rectangle.png')" />
-                <span>个人信息</span>
-              </div>
-            </template>
-            <div class='info-body'>
-              <img
+          <div class='info-body'>
+              <j-avatar
+                :size="86"
+                style="margin-bottom: 16px;"
                 :src="
-                                    user?.avatar ||
-                                    getImage('/bind/jetlinksLogo.png')
-                                "
+                    user?.avatar ||
+                    getImage('/bind/jetlinksLogo.png')
+                "
               />
-              <p>账号：{{ user?.username }}</p>
-              <p>用户名：{{ user?.name }}</p>
+              <div class="info-body-item"><span>账号：</span><j-ellipsis :lineClamp="2">{{ user?.username || '-' }}</j-ellipsis></div>
+              <div class="info-body-item"><span>用户名：</span><j-ellipsis :lineClamp="2">{{ user?.name || "-" }}</j-ellipsis></div>
             </div>
-          </j-card>
           <img :src="getImage('/bind/Vector.png')" />
-          <j-card style='width: 280px'>
-            <template #title>
-              <div class='info-head'>
-                <img :src="getImage('/bind/Rectangle.png')" />
-                <span>三方账户信息</span>
-              </div>
-            </template>
-            <div class='info-body'>
-              <img
+          <div class='info-body'>
+              <j-avatar
+                :size="86"
+                shape="square"
+                style="margin-bottom: 16px;"
                 :src="
-                                    iconMap.get(
-                                        bindUser?.applicationProvider,
-                                    ) || getImage('/apply/internal-standalone.png')
-                                "
+                bindUser.result?.avatar ||
+                    iconMap.get(
+                        bindUser?.applicationProvider,
+                    ) || getImage('/apply/internal-standalone.png')
+                "
               />
-              <p>账号：{{ bindUser?.result?.userId || '-' }}</p>
-              <p>用户名：{{ bindUser?.result?.name || '-' }}</p>
+              <div class="info-body-item"><span>账号：</span><j-ellipsis :lineClamp="2">{{ bindUser?.result?.userId || '' }}</j-ellipsis></div>
+              <div class="info-body-item"><span>用户名：</span><j-ellipsis :lineClamp="2">{{ bindUser?.result?.name || '' }}</j-ellipsis></div>
             </div>
-          </j-card>
         </div>
         <div class='btn'>
           <j-button type='primary' @click='handleBind'
@@ -62,7 +52,7 @@
               :src="getImage('/bind/Vector.png')"
             />
             <img
-              :src='iconMap.get(bindUser?.applicationProvider)'
+              :src='bindUser?.avatar || iconMap.get(bindUser?.applicationProvider)'
             />
           </div>
           <div class='desc'>
@@ -134,15 +124,16 @@
 </template>
 
 <script setup lang='ts' name='AccountBind'>
-import { getImage, LocalStore } from '@/utils/comm'
+import { getImage, LocalStore, onlyMessage } from '@/utils/comm'
 import { TOKEN_KEY } from '@/utils/variable'
 import { Form } from 'ant-design-vue'
-import { message } from 'ant-design-vue'
 
 import { applicationInfo, bindAccount } from '@/api/bind'
 import { code, authLogin, userDetail } from '@/api/login'
+import { useSystem } from '@/store/system'
 
-const useForm = Form.useForm
+const useForm = Form.useForm;
+const systemStore = useSystem();
 
 interface formData {
   username: string;
@@ -204,7 +195,7 @@ const handleBind = async () => {
   const code = getUrlCode()
   const res = await bindAccount(code)
   console.log('bindAccount: ', res)
-  message.success('绑定成功')
+  onlyMessage('绑定成功')
   goRedirect()
   setTimeout(() => window.close(), 1000)
 }
@@ -271,7 +262,7 @@ const handleLoginBind = () => {
       const res = await authLogin(params)
       console.log('res: ', res)
       if (res.success) {
-        message.success('登录成功')
+        onlyMessage('登录成功')
         LocalStore.set(TOKEN_KEY, res.result!.token as string)
         goRedirect()
       }
@@ -300,9 +291,12 @@ const goRedirect = () => {
   }
 }
 
-getAppInfo()
-getCode()
-getDetail()
+onMounted(() => {
+  getAppInfo()
+  getCode()
+  getDetail()
+  systemStore.getFront()
+})
 
 </script>
 
@@ -328,19 +322,19 @@ getDetail()
   align-items: center;
   justify-content: center;
 
-  .content {
+  .content-bind {
     box-sizing: border-box;
-    width: 850px;
+    width: 928px;
     min-height: 510px;
     background: #fff;
-    border: 1px solid #e0e4e8;
-    border-radius: 2px;
+    border-radius: 22px;
+    padding: 40px;
 
     .title {
-      margin: 30px 0;
-      color: #0f1222;
+      margin-bottom: 30px;
+      color: #333333;
       font-weight: 400;
-      font-size: 20px;
+      font-size: 22px;
       font-family: 'PingFang SC';
       font-style: normal;
       line-height: 25px;
@@ -351,24 +345,28 @@ getDetail()
     .info {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 20px;
+      justify-content: space-between;
+      padding: 86px 0;
 
-      &-head {
-        display: flex;
-        align-items: baseline;
-        gap: 10px;
+      img {
+        width: 69px;
       }
 
       &-body {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
+        width: 317px;
 
-        img {
-          width: 70px;
-          height: 70px;
+        &-item {
+          display: flex;
+          color: #333333;
+
+          span {
+            color: #666666;
+            white-space: nowrap;
+          }
         }
       }
     }

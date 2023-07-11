@@ -143,12 +143,12 @@
 import ChannelApi from '@/api/media/channel';
 import type { ActionsType } from '@/views/device/Instance/typings';
 import { useMenuStore } from 'store/menu';
-import { message } from 'jetlinks-ui-components';
 import Save from './Save.vue';
 import Live from './Live/index.vue';
 import Tree from './Tree/index.vue';
 import { cloneDeep } from 'lodash-es';
 import { useElementSize } from '@vueuse/core';
+import { onlyMessage } from '@/utils/comm';
 
 const menuStory = useMenuStore();
 const route = useRoute();
@@ -294,10 +294,10 @@ const getActions = (
                 onConfirm: async () => {
                     const resp = await ChannelApi.del(data.id);
                     if (resp.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         listRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },

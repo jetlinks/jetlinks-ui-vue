@@ -134,9 +134,8 @@
 
 <script setup lang='ts' name='PluginIndex'>
 import SaveModal from './Save.vue'
-import { getImage } from '@/utils/comm'
+import { getImage, onlyMessage } from '@/utils/comm'
 import { queryPage, removeFn, getTypes } from '@/api/link/plugin'
-import { message } from 'jetlinks-ui-components'
 import { TypeMap } from './util'
 
 const route = useRoute()
@@ -247,10 +246,10 @@ const getActions = (data: any) => {
         onConfirm: async () => {
           const resp = await removeFn(data.id);
           if (resp.status === 200) {
-            message.success('操作成功！');
+            onlyMessage('操作成功！');
             instanceRef.value?.reload();
           } else {
-            message.error(resp?.message || '操作失败！');
+            onlyMessage(resp?.message || '操作失败！', 'error');
           }
         },
       },

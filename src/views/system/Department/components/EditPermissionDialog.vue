@@ -28,7 +28,7 @@
 <script setup lang="ts">
 import type { dictType, optionsType } from '../typing';
 import { updatePermission_api } from '@/api/system/department';
-import { message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
 
 const emits = defineEmits(['confirm', 'update:visible']);
 const props = defineProps<{
@@ -46,7 +46,7 @@ const confirm = () => {
     loading.value = true;
     updatePermission_api(props.assetType, props.parentId, form)
         .then(() => {
-            message.success('操作成功');
+            onlyMessage('操作成功');
             emits('confirm');
             emits('update:visible', false);
         })

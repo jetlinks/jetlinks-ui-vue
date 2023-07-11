@@ -57,7 +57,7 @@
 
 <script lang="ts" setup>
 import { treeEdgeMap, saveEdgeMap, addDevice } from '@/api/device/instance';
-import { message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
 const _props = defineProps({
     metaData: {
         type: Array,
@@ -132,7 +132,7 @@ const _delete = (_key: string) => {
 
 const handleClick = async () => {
     if (!rightList.value.length) {
-        message.warning('请选择采集器');
+        onlyMessage('请选择采集器', 'warning');
     } else {
         const params: any[] = [];
         rightList.value.map((item: any) => {
@@ -159,11 +159,11 @@ const handleClick = async () => {
                     requestList: filterParms,
                 });
                 if (res.status === 200) {
-                    message.success('操作成功');
+                    onlyMessage('操作成功');
                     _emits('save');
                 }
             } else {
-                message.error('暂无对应属性的映射');
+                onlyMessage('暂无对应属性的映射', 'error');
             }
         } else {
             if (filterParms && filterParms.length !== 0) {
@@ -175,12 +175,12 @@ const handleClick = async () => {
                         requestList: filterParms,
                     });
                     if (res.status === 200) {
-                        message.success('操作成功');
+                        onlyMessage('操作成功');
                         _emits('save');
                     }
                 }
             } else {
-                message.error('暂无对应属性的映射');
+                onlyMessage('暂无对应属性的映射', 'error');
             }
         }
     }

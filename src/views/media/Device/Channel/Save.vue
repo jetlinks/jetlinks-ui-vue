@@ -167,8 +167,8 @@
 <script setup lang="ts">
 import ChannelApi from '@/api/media/channel';
 import { PropType } from 'vue';
-import { message } from 'jetlinks-ui-components';
 import type { Rule } from 'ant-design-vue/es/form';
+import { onlyMessage } from '@/utils/comm';
 
 const route = useRoute();
 
@@ -305,11 +305,11 @@ const handleSubmit = () => {
                 : await ChannelApi.save(extraFormData);
             btnLoading.value = false;
             if (res.success) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 _vis.value = false;
                 emit('submit');
             } else {
-                message.error('操作失败');
+                onlyMessage('操作失败', 'error');
             }
         })
         .catch((err: any) => {

@@ -10,7 +10,9 @@
             <div class="list-item-left">
                 <div class="header">
                     <div class="title">
-                        <div>{{ props.data?.topicName }}</div>
+                        <div>
+                            {{ props.data?.topicName }}
+                        </div>
                         <span :style="{color: state === 'unread' ? 'red' : '#AAAAAA'}">{{ state === 'unread' ? '未读' : '已读' }}</span>
                     </div>
                     <div class="time">
@@ -21,12 +23,14 @@
                         }}
                     </div>
                 </div>
-                <div class="message">{{ props.data?.message }}</div>
+                <j-ellipsis :lineClamp="2">
+                    {{ props.data?.message }}
+                </j-ellipsis>
             </div>
             <div class="list-item-right">
-                <j-button @click.stop="detail">查看详情</j-button>
-                <j-button v-if="state === 'unread'" @click.stop="read('_read')">标为已读</j-button>
-                <j-button v-else @click.stop="read('_unread')">标为未读</j-button>
+                <j-button style="margin-bottom: 5px;" class="btn" @click.stop="detail">查看详情</j-button>
+                <j-button class="btn" v-if="state === 'unread'" @click.stop="read('_read')">标为已读</j-button>
+                <j-button class="btn" v-else @click.stop="read('_unread')">标为未读</j-button>
             </div>
         </div>
     </div>
@@ -100,10 +104,13 @@ const read = (type: '_read' | '_unread') => {
 .list-items {
     width: 312px;
     overflow: hidden;
-    height: 80px;
     border-bottom: 1px solid #f0f0f0;
     margin: 0 24px;
     box-sizing: content-box;
+
+    // &:hover {
+    //     background-color: #F9FAFF;
+    // }
 }
 .list-item {
     list-style: none;
@@ -116,44 +123,52 @@ const read = (type: '_read' | '_unread') => {
     .list-item-left {
         padding: 12px 0;
         width: 312px;
-        height: 80px;
+        // height: 100px;
         .header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 10px;
-
             .title {
                 display: flex;
                 align-items: center;
+                width: calc(100% - 120px);
+                
                 div {
                     color: rgba(0, 0, 0, 0.85);
                     font-size: 14px;
                     font-weight: bold;
                     margin-right: 10px;
+                    max-width: calc(100% - 40px);
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
                 }
                 span {
                     color: red;
                     font-size: 13px;
+                    width: 30px;
                 }
             }
             .time {
                 font-size: 12px;
                 color: rgba(0, 0, 0, 0.45);
+                width: 120px;
             }
-        }
-
-        .message {
-            font-size: 12px;
         }
     }
 
     .list-item-right {
         width: 100px;
-        padding: 12px 12px 12px 0;
+        padding: 5px 12px 5px 0;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: center;
+
+        .btn {
+            border: none;
+            background-color: #F1F4FF;
+            color: @primary-color;
+        }
     }
 }
 </style>

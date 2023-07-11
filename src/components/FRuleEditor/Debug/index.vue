@@ -105,13 +105,12 @@
 </template>
 <script setup lang="ts" name="Debug">
 import { PropType } from 'vue';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons-vue';
 import { useProductStore } from '@/store/product';
-import { message } from 'jetlinks-ui-components';
 import { useRuleEditorStore } from '@/store/ruleEditor';
 import moment from 'moment';
 import { getWebSocket } from '@/utils/websocket';
 import { PropertyMetadata } from '@/views/device/Product/typings';
+import { onlyMessage } from '@/utils/comm';
 
 const props = defineProps({
     virtualRule: Object as PropType<Record<any, any>>,
@@ -176,7 +175,7 @@ const runScript = () => {
     }
     if (!props.virtualRule?.script) {
         isBeginning.value = true;
-        message.warning('请编辑规则');
+        onlyMessage('请编辑规则', 'warning');
         return;
     }
     ws.value = getWebSocket(

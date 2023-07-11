@@ -3,30 +3,32 @@
         <div class="values-test">
             {{ text }}
         </div>
-        <!-- <OtherConfigInfo :value="formData"></OtherConfigInfo> -->
-        <DataTableEnum v-if="formData.type === 'enum'" v-model:value="formData" />
-            <DataTableBoolean v-else-if="formData.type === 'boolean'" v-model:value="formData" />
+            <!-- <OtherConfigInfo :value="formData"></OtherConfigInfo> -->
+            <DataTableEnum placement="topRight" v-if="formData.type === 'enum'" v-model:value="formData" />
+            <DataTableBoolean placement="topRight" v-else-if="formData.type === 'boolean'" v-model:value="formData" />
             <DataTableDouble
+                placement="topRight"
                 v-else-if="['float', 'double'].includes(formData.type)"
                 :options="options"
                 v-model:value="formData"
             />
             <DataTableArray
                 v-else-if="formData.type === 'array'"
+                placement="topRight"
                 v-model:value="formData.unit"
             />
-            <DataTableFile v-else-if="formData.type === 'file'" v-model:value="formData.fileType"/>
-            <DataTableDate v-else-if="formData.type === 'date'" v-model:value="formData.date"/>
+            <DataTableFile v-else-if="formData.type === 'file'" v-model:value="formData.fileType" placement="topRight"/>
+            <DataTableDate v-else-if="formData.type === 'date'" v-model:value="formData.date" placement="topRight"/>
             <DataTableString
                 v-else-if="['string', 'password'].includes(formData.type)"
-                v-model:value="formData.expands.maxLength"
+                v-model:value="formData.maxLength"
+                placement="topRight"
             />
     </div>
 </template>
 
 <script setup lang="ts" name="DataTypeObjectChild">
 import { getUnit } from '@/api/device/instance';
-import { OtherConfigInfo } from '../components'
 import {
     DataTableString,
     DataTableArray,
@@ -83,13 +85,13 @@ const type = ref(props.value?.valueType?.type);
 
 
 
-console.log(props.value);
+console.log('dataTypeObject1', formData.value);
 const emit = defineEmits(['update:value', 'cancel']);
 
 const options = ref<{ label: string; value: string }[]>([]);
 
 const text = computed(() => {
-    console.log(props.value);
+    console.log('dataTypeObject2', formData.value);
     const value = props.value?.valueType
     if (value) {
         switch(type.value) {
@@ -100,7 +102,7 @@ const text = computed(() => {
                 return value?.trueText ? `${ value?.trueText }-${ value.trueValue }; ${ value.falseText }-${ value.falseValue }` : '';
             case 'string':
             case 'password':
-                return value?.expands?.maxLength;
+                return value?.maxLength;
             case 'int':
             case 'long':
                 return '无'
@@ -114,6 +116,7 @@ const text = computed(() => {
 watch(
     () => formData.value?.type,
     () => {
+        console.log('dataTypeObject3', formData.value);
         if (formData.value?.type && ['float', 'double', 'int', 'long'].includes(formData.value.type)) {
             const res = getUnit().then((res) => {
                 if (res.success) {

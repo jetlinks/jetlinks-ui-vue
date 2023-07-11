@@ -116,17 +116,17 @@
 import { category } from '@/api/device/product';
 import { Form } from 'jetlinks-ui-components';
 import { getImage } from '@/utils/comm.ts';
-import { message } from 'jetlinks-ui-components';
 import DialogTips from '../DialogTips/index.vue';
 import { useProductStore } from '@/store/product';
-import { filterTreeSelectNode, filterSelectNode } from '@/utils/comm';
-import { FILE_UPLOAD } from '@/api/comm';
+import { filterSelectNode, onlyMessage } from '@/utils/comm';
 import { isInput } from '@/utils/regular';
 import type { Rule } from 'ant-design-vue/es/form';
 import { queryProductId, addProduct, editProduct } from '@/api/device/product';
 import encodeQuery from '@/utils/encodeQuery';
+
 const productStore = useProductStore();
 const emit = defineEmits(['success']);
+
 const props = defineProps({
     title: {
         type: String,
@@ -273,7 +273,7 @@ const show = (data: any) => {
         form.classifiedName = data.classifiedName;
         form.photoUrl = data.photoUrl || photoValue.value;
         form.deviceType = data.deviceType.value;
-        form.describe = form.describe;
+        form.describe = data.describe;
         form.id = data.id;
         idDisabled.value = true;
     } else if (props.isAdd === 1) {
@@ -316,12 +316,12 @@ const submitData = () => {
                 const res = await addProduct(form);
                 loading.value = false
                 if (res.status === 200) {
-                    message.success('保存成功！');
+                    onlyMessage('保存成功！');
                     visible.value = false;
                     emit('success');
                     dialogRef.value.show(res.result.id);
                 } else {
-                    message.error('操作失败');
+                    onlyMessage('操作失败', 'error');
                 }
             } else if (props.isAdd === 2) {
                 // 编辑
@@ -331,14 +331,15 @@ const submitData = () => {
                 form.classifiedName
                     ? form.classifiedName
                     : (form.classifiedName = '');
-                const res = await editProduct(form);
-                loading.value = false
+                const res = await editProduct(form).finally(() => {
+                  loading.value = false
+                });
                 if (res.status === 200) {
-                    message.success('保存成功！');
+                    onlyMessage('保存成功！');
                     emit('success');
                     visible.value = false;
                 } else {
-                    message.error('操作失败');
+                    onlyMessage('操作失败', 'error');
                 }
             }
         })

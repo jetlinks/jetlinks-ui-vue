@@ -78,8 +78,8 @@ import {
     getRelationshipList_api,
     delRelation_api,
 } from '@/api/system/relationship';
-import { message } from 'jetlinks-ui-components';
 import EditDialog from './components/EditDialog.vue';
+import { onlyMessage } from '@/utils/comm';
 
 const permission = 'system/Relationship';
 
@@ -163,9 +163,9 @@ const table = {
         delRelation_api(row.id).then((resp: any) => {
             if (resp.status === 200) {
                 tableRef.value?.reload();
-                message.success('操作成功!');
+                onlyMessage('操作成功!');
             } else {
-                message.error(resp.message);
+                onlyMessage(resp.message, 'error');
             }
         });
     },

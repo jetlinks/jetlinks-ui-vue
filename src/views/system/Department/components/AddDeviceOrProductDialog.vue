@@ -1,14 +1,6 @@
 <template>
-    <j-modal
-        class="add-device-or-product-dialog-container"
-        title="绑定"
-        width="1440px"
-        :maskClosable="false"
-        @ok="confirm"
-        :confirmLoading="loading"
-        @cancel="cancel"
-        visible
-    >
+    <j-modal class="add-device-or-product-dialog-container" title="绑定" width="1440px" :maskClosable="false" @ok="confirm"
+        :confirmLoading="loading" @cancel="cancel" visible>
         <h5 class="row">
             <AIcon type="ExclamationCircleOutlined" style="margin-right: 6px" />
             只能分配有“共享”权限的资产数据
@@ -16,12 +8,7 @@
 
         <div class="row">
             <span style="margin-right: 8px">批量配置</span>
-            <j-switch
-                v-model:checked="bulkBool"
-                checked-children="开"
-                un-checked-children="关"
-                style="width: 56px"
-            />
+            <j-switch v-model:checked="bulkBool" checked-children="开" un-checked-children="关" style="width: 56px" />
         </div>
         <div v-show="bulkBool">
             <j-checkbox-group v-model:value="bulkList" :options="options" />
@@ -42,48 +29,31 @@
                 selectedRowKeys: table._selectedRowKeys.value,
                 onChange: selectChange,
             }"
-            @cancelSelect="table.cancelSelect"
             :columns="columns"
         >
             <template #card="slotProps">
-                <CardBox
-                    :value="slotProps"
-                    :actions="[{ key: 1 }]"
-                    v-bind="slotProps"
-                    :active="
-                        table._selectedRowKeys.value.includes(slotProps.id)
-                    "
-                    @click="table.onSelectChange"
-                    :status="slotProps.state?.value"
-                    :statusText="slotProps.state?.text"
-                    :statusNames="{
+                <CardBox :value="slotProps" :actions="[{ key: 1 }]" v-bind="slotProps" :active="table._selectedRowKeys.value.includes(slotProps.id)
+                    " @click="table.onSelectChange" :status="slotProps.state?.value"
+                    :statusText="slotProps.state?.text" :statusNames="{
                         online: 'processing',
                         offline: 'error',
                         notActive: 'warning',
-                    }"
-                >
+                    }">
                     <template #img>
                         <slot name="img">
-                            <img
-                                :src="getImage('/device-product.png')"
-                                style="cursor: pointer"
-                            />
+                            <img :src="getImage('/device-product.png')" style="cursor: pointer" />
                         </slot>
                     </template>
                     <template #content>
                         <h3 class="card-item-content-title" style='margin-bottom: 18px;'>
-                          <Ellipsis style="width: calc(100% - 100px);"
-                          >
-                            {{ slotProps.name }}
-                          </Ellipsis>
+                            <Ellipsis style="width: calc(100% - 100px);">
+                                {{ slotProps.name }}
+                            </Ellipsis>
                         </h3>
                         <j-row>
                             <j-col :span="12">
                                 <div class="card-item-content-text">ID</div>
-                                <div
-                                    style="cursor: pointer"
-                                    class="card-item-content-value"
-                                >
+                                <div style="cursor: pointer" class="card-item-content-value">
                                     {{ slotProps.id }}
                                 </div>
                             </j-col>
@@ -91,17 +61,10 @@
                                 <div class="card-item-content-text">
                                     资产权限
                                 </div>
-                                <div
-                                    style="cursor: pointer"
-                                    class="card-item-content-value"
-                                    @click="(e) => e.stopPropagation()"
-                                >
-                                    <j-checkbox-group
-                                        v-model:value="
-                                            slotProps.selectPermissions
-                                        "
-                                        :options="slotProps.permissionList"
-                                    />
+                                <div style="cursor: pointer" class="card-item-content-value"
+                                    @click="(e) => e.stopPropagation()">
+                                    <j-checkbox-group v-model:value="slotProps.selectPermissions
+                                        " :options="slotProps.permissionList" />
                                 </div>
                             </j-col>
                         </j-row>
@@ -110,27 +73,16 @@
             </template>
 
             <template #permission="slotProps">
-                <div
-                    style="cursor: pointer"
-                    class="card-item-content-value"
-                    @click="(e) => e.stopPropagation()"
-                >
-                    <j-checkbox-group
-                        v-model:value="slotProps.selectPermissions"
-                        :options="slotProps.permissionList"
-                    />
+                <div style="cursor: pointer" class="card-item-content-value" @click="(e) => e.stopPropagation()">
+                    <j-checkbox-group v-model:value="slotProps.selectPermissions" :options="slotProps.permissionList" />
                 </div>
             </template>
             <template #state="slotProps">
-                <BadgeStatus
-                    :status="slotProps.state.value"
-                    :text="slotProps.state.text"
-                    :statusNames="{
-                        online: 'processing',
-                        offline: 'error',
-                        notActive: 'warning',
-                    }"
-                ></BadgeStatus>
+                <BadgeStatus :status="slotProps.state.value" :text="slotProps.state.text" :statusNames="{
+                    online: 'processing',
+                    offline: 'error',
+                    notActive: 'warning',
+                }"></BadgeStatus>
             </template>
             <template #registryTime="slotProps">
                 <span>{{
@@ -142,7 +94,7 @@
 </template>
 
 <script setup lang="ts">
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import { uniq, intersection } from 'lodash-es';
 import {
     getDeviceOrProductList_api,
@@ -151,7 +103,6 @@ import {
     bindDeviceOrProductList_api,
     getBindingsPermission,
 } from '@/api/system/department';
-import { message } from 'jetlinks-ui-components';
 import { dictType } from '../typing';
 import { useDepartmentStore } from '@/store/department';
 import dayjs from 'dayjs';
@@ -173,7 +124,7 @@ const queryCount = ref(0);
 
 const confirm = () => {
     if (table.selectedRows.length < 1) {
-        return message.warning('请先勾选数据');
+        return onlyMessage('请先勾选数据', 'warning');
     }
 
     const params = table.selectedRows.map((item: any) => ({
@@ -193,7 +144,7 @@ const confirm = () => {
     loading.value = true;
     bindDeviceOrProductList_api(props.assetType, params)
         .then(() => {
-            message.success('操作成功');
+            onlyMessage('操作成功');
             emits('confirm');
             emits('update:visible', false);
         })
@@ -217,23 +168,23 @@ const columns = props.queryColumns.filter(
 );
 
 const searchColumns = computed(() => {
-  return props.queryColumns.map(item => {
-    if (departmentStore.productId) {
-      if (item.dataIndex === 'productName') {
-        item.search.first = true
-        item.search.componentProps = {
-          mode: 'multiple',
-          "max-tag-count": "responsive"
-        }
-        item.search.defaultTermType = 'eq'
-        item.search.defaultOnceValue = departmentStore.productId
+    return props.queryColumns.map(item => {
+        if (departmentStore.productId) {
+            if (item.dataIndex === 'productName') {
+                item.search.first = true
+                item.search.componentProps = {
+                    mode: 'multiple',
+                    "max-tag-count": "responsive"
+                }
+                item.search.defaultTermType = 'eq'
+                item.search.defaultOnceValue = departmentStore.productId
 
-      } else if (item.search && 'first' in item.search) {
-        delete item.search.first
-      }
-    }
-    return item
-  })
+            } else if (item.search && 'first' in item.search) {
+                delete item.search.first
+            }
+        }
+        return item
+    })
 })
 
 const queryParams = ref({});
@@ -299,7 +250,7 @@ const table: any = {
     onSelectChange: (row: any) => {
         // 若该项的可选权限中没有分享权限，则不支持任何操作
         if (!row.permissionList.find((item: any) => item.value === 'share')) {
-            message.warning('该资产不支持共享');
+            onlyMessage('该资产不支持共享', 'warning');
             return;
         }
         const selectedRowKeys = table._selectedRowKeys.value;
@@ -372,14 +323,14 @@ const table: any = {
                                         item.state === 1
                                             ? 'online'
                                             : item.state === 0
-                                            ? 'offline'
-                                            : '',
+                                                ? 'offline'
+                                                : '',
                                     text:
                                         item.state === 1
                                             ? '正常'
                                             : item.state === 0
-                                            ? '禁用'
-                                            : '',
+                                                ? '禁用'
+                                                : '',
                                 };
                             }
                         });
@@ -404,18 +355,18 @@ const table: any = {
         queryCount.value += 1;
         if (props.parentId) {
             let terms = [{
-              column: 'id',
-              termType: 'dim-assets$not',
-              value: {
-                assetType: props.assetType,
-                targets: [
-                  {
-                    type: 'org',
-                    id: props.parentId,
-                  },
-                ],
-              },
-              type: 'and'
+                column: 'id',
+                termType: 'dim-assets$not',
+                value: {
+                    assetType: props.assetType,
+                    targets: [
+                        {
+                            type: 'org',
+                            id: props.parentId,
+                        },
+                    ],
+                },
+                type: 'and'
             }]
 
             // if (
@@ -428,7 +379,7 @@ const table: any = {
             //     terms[0].terms.pop();
             // }
             if (oParams.terms && oParams.terms.length > 0) {
-              terms = [ ...oParams.terms, ...terms]
+                terms = [...oParams.terms, ...terms]
             }
 
             const params = {
@@ -470,18 +421,22 @@ table.init();
 //     table._selectedRowKeys.value = okRows.map((item) => item.id);
 // };
 // fix: bug#10749
-const selectChange = (keys: string[], rows: any[]) => {
-    table.selectedRows = rows;
-    table._selectedRowKeys.value = keys;
+const selectChange = (record: any,selected: boolean,selectedRows: any,) => {
+    if(selected){
+        table._selectedRowKeys.value.push(record?.id) 
+    }else{
+        
+    }
+    console.log(record,selected,selectedRows);
 };
 
 const cancel = () => {
-  departmentStore.setProductId()
-  emits('update:visible', false)
+    departmentStore.setProductId()
+    emits('update:visible', false)
 }
 
 const search = (query: any) => {
-  queryParams.value = query
+    queryParams.value = query
 }
 </script>
 
@@ -491,11 +446,13 @@ const search = (query: any) => {
         height: calc(100vh - 400px);
         overflow-y: auto;
     }
+
     h5 {
         padding: 12px;
         background-color: #f6f6f6;
         font-size: 14px;
     }
+
     .row {
         margin-bottom: 12px;
     }
