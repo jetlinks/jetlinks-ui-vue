@@ -168,9 +168,9 @@
                 </template>
                 <template #registryTime="slotProps">
                     <span>{{
-                        dayjs(slotProps.registryTime).format(
+                        slotProps.registryTime ? dayjs(slotProps.registryTime).format(
                             'YYYY-MM-DD YY:mm:ss',
-                        )
+                        ) : '-'
                     }}</span>
                 </template>
                 <template #action="slotProps">

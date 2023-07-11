@@ -410,7 +410,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
           return true
         } else if (newValue && oldValue) {
           // 仅留下存储和指标值
-          const keys = ['source', 'type', 'virtualRule', 'metrics', 'required']
+          const keys = ['source', 'type', 'virtualRule', 'required']
           const newObj = omit(cloneDeep(newValue.expands), keys)
           const oldObj = omit(cloneDeep(oldValue.expands), keys)
           return JSON.stringify(newObj) !== JSON.stringify(oldObj)

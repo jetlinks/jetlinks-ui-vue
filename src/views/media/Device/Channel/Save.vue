@@ -8,6 +8,7 @@
         okText="确定"
         @ok="handleSubmit"
         @cancel="handleCancel"
+        :confirmLoading="loading"
     >
         <j-form ref="formRef" :model="formData" layout="vertical">
             <j-row :gutter="10">
@@ -208,6 +209,7 @@ const formData = ref({
     media_username: '',
 });
 
+const loading = ref<boolean>(false)
 watch(
     () => props.channelData,
     (val: any) => {
@@ -279,11 +281,11 @@ const validateUrl = async (_rule: Rule, value: string) => {
 /**
  * 提交
  */
-const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
     formRef.value
         .validate()
         .then(async () => {
+            loading.value = true;
             const {
                 media_url,
                 media_password,
@@ -299,20 +301,20 @@ const handleSubmit = () => {
                     media_username,
                 };
             }
-            btnLoading.value = true;
             const res = formData.value.id
                 ? await ChannelApi.update(formData.value.id, extraFormData)
                 : await ChannelApi.save(extraFormData);
-            btnLoading.value = false;
             if (res.success) {
                 onlyMessage('操作成功');
                 _vis.value = false;
                 emit('submit');
             } else {
+                loading.value = false;
                 onlyMessage('操作失败', 'error');
             }
         })
         .catch((err: any) => {
+            loading.value = false;
             console.log('err: ', err);
         });
 };
