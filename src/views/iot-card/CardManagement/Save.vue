@@ -104,6 +104,7 @@ import {
     edit,
 } from '@/api/iot-card/cardManagement';
 import { onlyMessage } from '@/utils/comm';
+import { OperatorList, TypeList } from '@/views/iot-card/data';
 
 const emit = defineEmits(['change']);
 const props = defineProps({
