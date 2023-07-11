@@ -463,7 +463,7 @@ const columns = [
         width: 200,
         search: {
             type: 'string',
-            defaultTermType: 'eq'
+            termOptions: ['eq'],
         },
     },
     {
