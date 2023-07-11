@@ -202,13 +202,15 @@ const modelRef = reactive({
 
 const property = ref<any>({});
 
-const onPropertyChange = (val: string) => {
+const onPropertyChange = (val: string, flag?: boolean) => {
     if (val) {
         const _item = props.metadata?.properties.find(
             (item: any) => item.id === val,
         );
         property.value = _item || {};
-        modelRef.message.value = undefined
+        if(!flag){
+            modelRef.message.value = undefined
+        }
     }
 };
 
@@ -227,7 +229,7 @@ watch(
         if (newVal) {
             Object.assign(modelRef, newVal);
             if (newVal?.message?.properties) {
-                onPropertyChange(newVal?.message?.properties);
+                onPropertyChange(newVal?.message?.properties, true);
             }
         }
     },
@@ -263,6 +265,7 @@ const saveBtn = () =>
                         resolve(false);
                     });
                 }
+                console.log(_data)
                 emit('update:modelValue', _data)
                 resolve(_data);
             })
