@@ -129,6 +129,7 @@ import {
     edgeChannel,
     addDevice,
     editDevice,
+    saveDeviceMapping
 } from '@/api/device/instance';
 import MSelect from './MSelect.vue';
 import PatchMapping from './PatchMapping.vue';
@@ -274,6 +275,12 @@ const onSave = async () => {
                     const array = modelRef.dataSource.filter(
                         (item: any) => item.channelId,
                     );
+                    const params = {
+                      info: [
+                        { deviceId: resq.result?.id, deviceName: formData.name }
+                      ]
+                    }
+                    const res = await saveDeviceMapping(instanceStore.current.id, params)
                     const submitData = {
                         deviceId: instanceStore.current.parentId
                             ? instanceStore.current.parentId
