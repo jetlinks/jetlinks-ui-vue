@@ -555,7 +555,6 @@ const onPropsCancel = () => {
 
 const rules = [{
   validator(_: any, v?: ActionsType) {
-    console.log('validator-action-item',v)
     if (v?.executor === 'device') {
       const _device = v.device!
       if (
