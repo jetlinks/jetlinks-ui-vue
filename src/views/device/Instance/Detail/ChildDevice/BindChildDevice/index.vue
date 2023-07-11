@@ -88,7 +88,7 @@
 </template>
 
 <script setup lang="ts" name="BindChildDevice">
-import { query, queryByParent, bindDevice } from '@/api/device/instance';
+import { query, queryByParent, bindDevice, queryDeviceMapping, saveDeviceMapping } from '@/api/device/instance';
 import moment from 'moment';
 import { useInstanceStore } from '@/store/instance';
 import { storeToRefs } from 'pinia';
@@ -187,15 +187,28 @@ const handleOk = () => {
         return;
     }
     btnLoading.value = true;
-    bindDevice(detail.value.id, _selectedRowKeys.value)
-        .then((resp) => {
-            emit('change', true);
-            cancelSelect();
-            onlyMessage('操作成功');
+    queryDeviceMapping(instanceStore.current.id)
+    .then(res => {
+      const arr = bindDeviceRef.value?._dataSource.filter(item => {
+          return !res.result?.[0]?.find(val => val.deviceId === item.id) && _selectedRowKeys.value.includes(item.id);
+        }).map(item => {
+          return {
+            deviceId: item.id,
+            deviceName: item.name
+          }
         })
-        .finally(() => {
-            btnLoading.value = false;
-        });
+      return saveDeviceMapping(instanceStore.current.id, {info: arr})
+    })
+    .then(res => {
+      return bindDevice(detail.value.id, _selectedRowKeys.value)
+    }).then(res => {
+      emit('change', true);
+      cancelSelect();
+      onlyMessage('操作成功');
+    })
+    .finally(() => {
+        btnLoading.value = false;
+    });
 };
 
 const handleCancel = () => {

@@ -252,6 +252,17 @@ export const unbindBatchDevice = (deviceId: string, data: Record<string, any>) =
  */
 export const bindDevice = (deviceId: string, data: Record<string, any>) => server.post(`/device/gateway/${deviceId}/bind`, data)
 
+
+/**
+ * 查询是否存在云端映射设备
+ */
+export const queryDeviceMapping = (deviceId: string, data?: any) => server.post(`/edge/operations/${deviceId}/device-mapping-list/invoke`, data)
+
+/**
+ * 批量保存云端映射设备
+ */
+export const saveDeviceMapping = (deviceId: string, data: any) => server.post(`/edge/operations/${deviceId}/device-mapping-save-batch/invoke`, data)
+
 /**
  * 获取产品列表
  * @param data
