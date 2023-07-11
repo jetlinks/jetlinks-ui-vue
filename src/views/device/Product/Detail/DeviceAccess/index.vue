@@ -130,7 +130,7 @@
                         <j-select
                             placeholder="请选择"
                             v-if="item.type.type === 'enum'"
-                            v-model:value="formData.data[item.name]"
+                            v-model:value="formData.data[item.property]"
                         >
                             <j-select-option
                                 v-for="el in item?.type?.type === 'enum' &&
@@ -346,6 +346,10 @@ const form = reactive<Record<string, any>>({
 const formData = reactive<Record<string, any>>({
     data: productStore.current?.configuration || {},
 });
+const fun = () =>{
+    console.log(formData.data,productStore.current?.configuration)
+}
+fun()
 // 产品类型
 const productTypes = ref([])
 const productData = reactive({
@@ -662,10 +666,10 @@ const getData = async (accessId?: string) => {
                         item.name === '流传输模式' &&
                         (!productStore.current?.configuration ||
                             !productStore.current?.configuration.hasOwnProperty(
-                                item.name,
+                                item.property,
                             ))
                     ) {
-                        formData.data[item.name] =
+                        formData.data[item.property] =
                             item.type.expands?.defaultValue;
                     }
                 });

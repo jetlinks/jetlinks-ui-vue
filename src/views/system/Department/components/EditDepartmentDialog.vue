@@ -175,6 +175,7 @@ const form = reactive({
 
     submit: () => {
         const api = form.data.id ? updateDepartment_api : addDepartment_api;
+        form.data.parentId =  form.data.parentId ? form.data.parentId : '';
         return api(form.data);
     },
 });

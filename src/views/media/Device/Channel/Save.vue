@@ -307,6 +307,7 @@ const handleSubmit = () => {
             if (res.success) {
                 onlyMessage('操作成功');
                 _vis.value = false;
+                loading.value = false;
                 emit('submit');
             } else {
                 loading.value = false;

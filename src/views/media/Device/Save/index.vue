@@ -396,9 +396,11 @@ const handleSubmit = () => {
             : { id, streamMode, manufacturer, model, firmware, ...extraParams };
     } else {
         // 国标
-        params = !id
-            ? { others, id, ...extraParams }
-            : {
+        const getParmas = () =>{
+                if(others?.stream_mode){
+                    others.stream_mode = streamMode
+                }
+                return{
                   others,
                   id,
                   streamMode,
@@ -407,6 +409,10 @@ const handleSubmit = () => {
                   firmware,
                   ...extraParams,
               };
+            }
+        params = !id
+            ? { others, id, ...extraParams }
+            : getParmas()
     }
 
     formRef.value
