@@ -304,12 +304,12 @@ const onAction = (e: boolean) => {
                             role: {
                                 idList: [],
                             },
-                            permissions: [
+                            permissions: props.provider === 'alarm' ? [
                                 {
                                     id: 'alarm-config',
                                     actions: ['query'],
                                 },
-                            ],
+                            ] : [],
                         },
                     },
                 ],

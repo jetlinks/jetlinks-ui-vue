@@ -6,7 +6,7 @@
         @cancel="emit('close')"
         @ok="onSave"
     >
-        <Role v-model="_selectedRowKeys" :gridColumn="1" />
+        <Role v-model="_selectedRowKeys" :gridColumn="2" />
     </j-modal>
 </template>
 

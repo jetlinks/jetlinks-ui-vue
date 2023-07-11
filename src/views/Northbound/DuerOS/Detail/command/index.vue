@@ -56,7 +56,7 @@
                         placeholder="请选择属性"
                         v-model:value="modelRef.message.properties"
                         show-search
-                        @change="onPropertyChange"
+                        @change="(val) => onPropertyChange(val, false)"
                     >
                         <j-select-option
                             v-for="i in metadata?.properties || []"
@@ -89,6 +89,7 @@
                         :itemType="
                             property.valueType?.type || property.type || 'int'
                         "
+                        :placeholder="property.valueType?.type === 'array' ? '多个数据用英文,分割' : ''"
                         :options="
                             property.valueType?.type === 'enum'
                                 ? (property?.valueType?.elements || []).map(
@@ -101,8 +102,8 @@
                                   )
                                 : property.valueType?.type === 'boolean'
                                 ? [
-                                      { label: '是', value: true },
-                                      { label: '否', value: false },
+                                      { label: property.valueType?.trueText, value: property.valueType?.trueValue },
+                                      { label: property.valueType?.falseText, value: property.valueType?.falseValue },
                                   ]
                                 : undefined
                         "
@@ -208,9 +209,9 @@ const onPropertyChange = (val: string, flag?: boolean) => {
             (item: any) => item.id === val,
         );
         property.value = _item || {};
-        if(!flag){
-            modelRef.message.value = undefined
-        }
+    }
+    if(!flag){
+        modelRef.message.value = undefined
     }
 };
 
@@ -249,6 +250,7 @@ const funcChange = (val: string) => {
                 name: item.name,
                 value: undefined,
                 valueType: item?.valueType?.type,
+                required: item?.expands?.required
             };
         });
         modelRef.message.inputs = list;
@@ -265,7 +267,6 @@ const saveBtn = () =>
                         resolve(false);
                     });
                 }
-                console.log(_data)
                 emit('update:modelValue', _data)
                 resolve(_data);
             })

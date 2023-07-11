@@ -14,7 +14,7 @@
                             :name="['dataSource', index, 'value']"
                             :rules="[
                                 {
-                                    required: true,
+                                    required: record.required,
                                     message:
                                         record.type === 'enum' ||
                                         record.type === 'boolean'
