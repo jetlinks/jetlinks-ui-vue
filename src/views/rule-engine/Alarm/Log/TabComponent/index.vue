@@ -2,25 +2,25 @@
     <div class="alarm-log-card">
         <pro-search
             :columns="columns"
-            target="alarm-log"
+            :target="`alarm-log-${props.type}`"
             v-if="['all', 'detail'].includes(props.type)"
             @search="search"
         />
         <pro-search
             :columns="produtCol"
-            target="alarm-log"
+            :target="`alarm-log-${props.type}`"
             v-if="['product', 'other'].includes(props.type)"
             @search="search"
         />
         <pro-search
             :columns="deviceCol"
-            target="alarm-log"
+            target="alarm-log-device"
             v-if="props.type === 'device'"
             @search="search"
         />
         <pro-search
             :columns="orgCol"
-            target="alarm-log"
+            target="alarm-log-org"
             v-if="props.type === 'org'"
             @search="search"
         />
@@ -257,7 +257,7 @@ const deviceCol = [
         key: 'targetName',
         search: {
             type: 'select',
-            opstions: async () => {
+            options: async () => {
                 const res = await getDeviceList();
                 if (res.status === 200) {
                     return res.result.map((item: any) => ({

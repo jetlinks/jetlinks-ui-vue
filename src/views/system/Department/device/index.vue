@@ -274,10 +274,10 @@ const columns = [
         search: {
             rename: 'productId$product-info',
             type: 'select',
-            handleValue(value: string) {
+            handleValue(value: string, data: any) {
                 return value && value.length ? [{
                     column: 'id',
-                    termType: 'in',
+                    termType: data.termType === 'not' ? 'nin' : 'in',
                     value: `${value.toString()}`
                 }] : undefined;
             },
