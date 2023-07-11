@@ -78,6 +78,7 @@
         />
         <j-input
             v-else
+            :placeholder="placeholder"
             allowClear
             type="text"
             v-model:value="myValue"
@@ -144,6 +145,10 @@ const props = defineProps({
     mode: {
         type: String as PropType<'multiple' | 'tags' | 'combobox' | ''>,
         default: ''
+    },
+    placeholder: {
+        type: String,
+        default: () => '',
     }
 });
 // type Props = {

@@ -26,7 +26,7 @@ export const USER_CENTER_MENU_DATA = {
       permissions: [
         {
           permission: 'user',
-          action: ['update-self-pwd']
+          actions: ['update-self-pwd']
         },
         {
           permission: 'system_config',

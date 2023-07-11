@@ -8,6 +8,7 @@
                 noPagination
                 model="TABLE"
             >
+            <!-- :rowKey="(record) => record.id + record.method" -->
                 <template #url="slotProps">
                     <span
                         style="color: #1d39c4; cursor: pointer"
@@ -68,6 +69,11 @@ const columns = [
         key: 'summary',
     },
 ];
+
+watchEffect(() => {
+    console.log(props.tableData)
+})
+
 const rowSelection = {
     // onSelect: (record: any) => {
     //     const targetId = record.id;
