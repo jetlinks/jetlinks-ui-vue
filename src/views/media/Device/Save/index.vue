@@ -156,19 +156,26 @@
                                     </j-radio-button>
                                 </j-radio-group>
                             </j-form-item>
-                            <j-form-item label="设备厂商">
+                            <j-form-item label="设备厂商"  
+                                name="manufacturer"
+                                :rules="[{ max: 64, message: '最多可输入64位字符', trigger: 'change' }]">
                                 <j-input
                                     v-model:value="formData.manufacturer"
                                     placeholder="请输入设备厂商"
+                                   
                                 />
                             </j-form-item>
-                            <j-form-item label="设备型号">
+                            <j-form-item label="设备型号" 
+                                name="model"
+                                :rules="[{ max: 64, message: '最多可输入64位字符', trigger: 'change' }]">
                                 <j-input
                                     v-model:value="formData.model"
                                     placeholder="请输入设备型号"
                                 />
                             </j-form-item>
-                            <j-form-item label="固件版本">
+                            <j-form-item label="固件版本"
+                                name="firmware"
+                                :rules="[{ max: 64, message: '最多可输入64位字符', trigger: 'change' }]">
                                 <j-input
                                     v-model:value="formData.firmware"
                                     placeholder="请输入固件版本"

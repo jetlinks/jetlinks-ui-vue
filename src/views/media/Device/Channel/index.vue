@@ -32,7 +32,7 @@
                         :request="(e:any) => ChannelApi.list(e, route?.query.id as string)"
                         :defaultParams="{
                             pageSize: 10,
-                            sorts: [{ name: 'notifyTime', order: 'desc' }],
+                            sorts: [{ name: 'modifyTime', order: 'desc' }],
                         }"
                         :params="params"
                         :pagination="{

@@ -74,7 +74,7 @@
                     >
                         <template #description>
                             <template v-if="!isPermission"
-                                >暂无权限, 请联系管理员</template
+                                >暂无数据, 请联系管理员</template
                             >
                             <template v-else>
                                 暂无数据，请先
