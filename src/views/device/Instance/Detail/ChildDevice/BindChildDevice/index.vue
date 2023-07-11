@@ -43,7 +43,7 @@
                             terms: [
                                 {
                                     column: 'id$not',
-                                    value: detail.id,
+                                    value: parentIds.join(','),
                                     type: 'and',
                                 },
                             ],
@@ -87,12 +87,19 @@
     </j-modal>
 </template>
 
-<script setup lang="ts">
-import { query, bindDevice } from '@/api/device/instance';
+<script setup lang="ts" name="BindChildDevice">
+import { query, queryByParent, bindDevice } from '@/api/device/instance';
 import moment from 'moment';
 import { useInstanceStore } from '@/store/instance';
 import { storeToRefs } from 'pinia';
 import { onlyMessage } from '@/utils/comm';
+
+const props = defineProps({
+  parentIds: {
+    type: Array,
+    default: () => []
+  }
+})
 
 const instanceStore = useInstanceStore();
 const { detail } = storeToRefs(instanceStore);
@@ -194,6 +201,7 @@ const handleOk = () => {
 const handleCancel = () => {
     emit('change', false);
 };
+
 </script>
 
 <style scoped lang="less"></style>

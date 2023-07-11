@@ -105,14 +105,14 @@
                 </j-space>
             </template>
         </JProTable>
-        <BindChildDevice v-if="visible" @change="closeBindDevice" />
+        <BindChildDevice v-if="visible" :parentIds="parentIds" @change="closeBindDevice" />
     </div>
 </template>
 
 <script setup lang="ts">
 import moment from 'moment';
 import type { ActionsType } from '@/components/Table';
-import { query, unbindDevice, unbindBatchDevice } from '@/api/device/instance';
+import {query, unbindDevice, unbindBatchDevice, queryByParent} from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import { storeToRefs } from 'pinia';
 import BindChildDevice from './BindChildDevice/index.vue';
@@ -138,6 +138,7 @@ const params = ref<Record<string, any>>({});
 const _selectedRowKeys = ref<string[]>([]);
 const visible = ref<boolean>(false);
 const _current = ref({});
+const parentIds = ref<any[]>([instanceStore.detail.id])
 
 const columns = [
     {
@@ -296,6 +297,13 @@ const closeBindDevice = (val: boolean) => {
     }
 };
 
+const getChildren = async () => {
+  const { id} = instanceStore.detail
+  const data = await queryByParent(id)
+  if (data.success) {
+    parentIds.value.concat(data.result)
+  }
+}
 const closeChildSave = () => {
     childVisible.value = false;
 };

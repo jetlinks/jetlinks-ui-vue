@@ -595,4 +595,4 @@ export const saveDeviceVirtualProperty = (productId: string, deviceId: string, d
 
 export const queryDeviceVirtualProperty = (productId: string, deviceId: string, propertyId: string) => server.get(`/virtual/property/product/${productId}/${deviceId}/${propertyId}`)
 
-
+export const queryByParent = (deviceId: string) => server.get(`/device/gateway/${deviceId}/parent`)
