@@ -3,7 +3,7 @@
         <div style="padding: 0 10px">
             <div class="alert">
                 <AIcon type="InfoCircleOutlined" />
-                注意：接收人需要有告警配置页面的查询权限，才能收到告警类通知
+                你可以在该页面选择需要订阅的主题及接收通知的方式。
             </div>
             <div class="content-collapse">
                 <template v-if="dataSource.length">

@@ -413,6 +413,7 @@
                                         formData.template.templateType
                                     "
                                     placeholder="请选择类型"
+                                    @change="onVoiceTemplateTypeChange"
                                 >
                                     <j-select-option
                                         v-for="(item, index) in VOICE_TYPE"
@@ -1019,6 +1020,11 @@ watch(
     },
 );
 
+const onVoiceTemplateTypeChange = () => {
+    formData.value.template.ttsmessage = undefined
+    formData.value.variableDefinitions = []
+}
+
 /**
  * 将需要提取变量的字段值拼接为一个字符串, 用于统一提取变量
  */
@@ -1205,6 +1211,8 @@ const getSignsList = async () => {
  * 表单提交
  */
 const btnLoading = ref<boolean>(false);
+
+
 const handleSubmit = () => {
     // 变量列表存在, 且存在空值
     if (

@@ -75,6 +75,7 @@ import { getImage } from '@/utils/comm';
       padding: 8px 16px;
       color: #2f54eb;
       background-color: rgba(#a7bdf7, 0.2);
+      // white-space: wrap;
     }
 
     h1 {

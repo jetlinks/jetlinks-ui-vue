@@ -164,8 +164,9 @@ const onSubmit = async () => {
         ...params,
         firmwareId,
         productId,
-    });
-    loading.value = false;
+    }).finally(() => {
+        loading.value = false;
+    })
     resp.success && emit('change', true);
 };
 

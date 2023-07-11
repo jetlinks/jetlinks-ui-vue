@@ -1,33 +1,75 @@
 <template>
     <div class="role">
-        <j-input-search
-            allowClear
-            @search="onSearch"
-            placeholder="请输入名称"
-        />
-        <div class="role-alert">
-            <j-alert type="info">
-                <template #message>
-                    <div class="header">
-                        <j-checkbox
-                            :indeterminate="indeterminate"
-                            :checked="checked"
-                            @change="onSelectAll"
-                            >全选</j-checkbox
-                        >
-                        <j-space v-if="_selectedRowKeys.length">
-                            <span>已选择{{ _selectedRowKeys.length }}项</span>
-                            <j-button
-                                style="padding: 0; height: 22px"
-                                type="link"
-                                @click="cancelSelect"
-                                >取消选择</j-button
+        <template v-if="type !== 'add'">
+            <j-input-search
+                allowClear
+                @search="onSearch"
+                placeholder="请输入名称"
+            />
+            <div class="role-alert">
+                <j-alert type="info">
+                    <template #message>
+                        <div class="header">
+                            <j-checkbox
+                                :indeterminate="indeterminate"
+                                :checked="checked"
+                                @change="onSelectAll"
+                                >全选</j-checkbox
                             >
-                        </j-space>
-                    </div>
-                </template>
-            </j-alert>
-        </div>
+                            <j-space v-if="_selectedRowKeys.length">
+                                <span
+                                    >已选择{{ _selectedRowKeys.length }}项</span
+                                >
+                                <j-button
+                                    style="padding: 0; height: 22px"
+                                    type="link"
+                                    @click="cancelSelect"
+                                    >取消选择</j-button
+                                >
+                            </j-space>
+                        </div>
+                    </template>
+                </j-alert>
+            </div>
+        </template>
+        <template v-else>
+            <div class="role-alert" style="margin-bottom: 10px;">
+                <j-alert type="info">
+                    <template #message>
+                        <div style="justify-content: space-between; display: flex; align-items: center;">
+                            <j-input-search
+                                allowClear
+                                @search="onSearch"
+                                placeholder="请输入名称"
+                                style="width: 300px"
+                            />
+                            <j-space>
+                                <template v-if="_selectedRowKeys.length">
+                                    <span
+                                        >已选择{{
+                                            _selectedRowKeys.length
+                                        }}项</span
+                                    >
+                                    <j-button
+                                        style="padding: 0; height: 22px"
+                                        type="link"
+                                        @click="cancelSelect"
+                                        >取消选择</j-button
+                                    >
+                                </template>
+
+                                <j-checkbox
+                                    :indeterminate="indeterminate"
+                                    :checked="checked"
+                                    @change="onSelectAll"
+                                    >全选</j-checkbox
+                                >
+                            </j-space>
+                        </div>
+                    </template>
+                </j-alert>
+            </div>
+        </template>
         <j-scrollbar height="400px">
             <j-pro-table
                 ref="tableRef"
@@ -71,8 +113,12 @@ const props = defineProps({
     },
     gridColumn: {
         type: Number,
-        default: 3
-    }
+        default: 3,
+    },
+    type: {
+        type: String,
+        default: '',
+    },
 });
 
 const emit = defineEmits(['update:modelValue']);
