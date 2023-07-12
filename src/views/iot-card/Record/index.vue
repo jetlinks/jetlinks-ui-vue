@@ -14,9 +14,6 @@
               :defaultParams="{
                       sorts: [{ name: 'time', order: 'desc' }],
                   }"
-              :pagination="{
-                      showSizeChanger: true,
-                  }"
               :params="params"
               :model="'TABLE'"
           >

@@ -45,9 +45,6 @@
                 onSelect: onSelect,
                 onSelectAll: onAllSelect,
             }"
-            :pagination="{
-                showSizeChanger: true,
-            }"
         >
             <template #headerTitle>
                 <h3>通道列表</h3>

@@ -34,9 +34,6 @@
                             sorts: [{ name: 'modifyTime', order: 'desc' }],
                         }"
                         :params="params"
-                        :pagination="{
-                            showSizeChanger: true,
-                        }"
                     >
                         <template #headerTitle>
                             <j-tooltip
