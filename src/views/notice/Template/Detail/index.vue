@@ -974,7 +974,7 @@ const formRules = {
         }
       ],
       code: [{ required: true, message: '请选择模板'}],
-      signName: [{ required: true, message: '请输入签名' }],
+      signName: [{ required: true, message: '请选择签名' }],
       phoneNumber: [
         { max: 64, message: '最多可输入64个字符' },
         {

@@ -43,7 +43,7 @@
         >
           <template #bodyCell="{column, record}">
             <span v-if="column.dataIndex === 'value'">
-              {{ record.range === 'true' ? record.value?.join('-') : record.value }}
+              {{ record.range === true ? record.value?.join('-') : record.value }}
             </span>
           </template>
         </j-table>

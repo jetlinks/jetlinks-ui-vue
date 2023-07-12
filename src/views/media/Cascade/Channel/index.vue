@@ -9,7 +9,6 @@
                 :columns="columns"
                 :request="(e:any) => CascadeApi.queryBindChannel(route?.query.id as string, e)"
                 :defaultParams="{
-                    pageSize: 10,
                     sorts: [{ name: 'name', order: 'desc' }],
                 }"
                 :params="params"
@@ -19,7 +18,6 @@
                 }"
                 :pagination="{
                     showSizeChanger: true,
-                    pageSizeOptions: ['10', '20', '50', '100'],
                 }"
             >
                 <template #headerTitle>

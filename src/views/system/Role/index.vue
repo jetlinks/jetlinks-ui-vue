@@ -14,7 +14,6 @@
                     model="TABLE"
                     :params="queryParams"
                     :defaultParams="{
-                        pageSize: 10,
                         sorts: [
                             { name: 'createTime', order: 'desc' },
                             { name: 'id', order: 'desc' },
@@ -22,7 +21,6 @@
                     }"
                     :pagination="{
                         showSizeChanger: true,
-                        pageSizeOptions: ['10', '20', '50', '100'],
                     }"
                 >
                     <template #headerTitle>

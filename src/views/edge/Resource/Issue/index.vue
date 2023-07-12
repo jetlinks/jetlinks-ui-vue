@@ -33,7 +33,6 @@
             }"
             :pagination="{
                 showSizeChanger: true,
-                pageSizeOptions: ['10', '20', '50', '100'],
             }"
         >
             <template #state="slotProps">
@@ -68,7 +67,6 @@ import Result from './Result.vue';
 import { queryNoPagingPost } from '@/api/device/product';
 
 const defaultParams = {
-    pageSize: 10,
     sorts: [{ name: 'registerTime', order: 'desc' }],
     terms: [
         {

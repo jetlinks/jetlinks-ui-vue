@@ -261,7 +261,7 @@ const table = reactive({
 
 const pager = reactive({
     current: 1,
-    pageSize: 10,
+    pageSize: 12,
     total: table.data.length,
 });
 const pageArr = computed(() => {

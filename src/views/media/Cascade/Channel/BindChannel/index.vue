@@ -22,7 +22,6 @@
             :columns="columns"
             :request="CascadeApi.queryChannelList"
             :defaultParams="{
-                pageSize: 10,
                 sorts: [{ name: 'name', order: 'desc' }],
                 terms: [
                     {
@@ -48,7 +47,6 @@
             }"
             :pagination="{
                 showSizeChanger: true,
-                pageSizeOptions: ['10', '20', '50', '100'],
             }"
         >
             <template #headerTitle>

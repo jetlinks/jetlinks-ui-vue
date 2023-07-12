@@ -31,13 +31,11 @@
                         :columns="columns"
                         :request="(e:any) => ChannelApi.list(e, route?.query.id as string)"
                         :defaultParams="{
-                            pageSize: 10,
                             sorts: [{ name: 'modifyTime', order: 'desc' }],
                         }"
                         :params="params"
                         :pagination="{
                             showSizeChanger: true,
-                            pageSizeOptions: ['10', '20', '50', '100'],
                         }"
                     >
                         <template #headerTitle>
