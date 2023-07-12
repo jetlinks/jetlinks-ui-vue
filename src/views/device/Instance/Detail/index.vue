@@ -128,6 +128,7 @@ import { getImage, onlyMessage } from '@/utils/comm';
 import { getWebSocket } from '@/utils/websocket';
 import { useMenuStore } from '@/store/menu';
 import { useRouterParams } from '@/utils/hooks/useParams';
+import { EventEmitter } from '@/utils/utils'
 
 const menuStory = useMenuStore();
 
@@ -297,7 +298,13 @@ onMounted(() => {
 });
 
 const onTabChange = (e: string) => {
-    instanceStore.tabActiveKey = e;
+    if (instanceStore.tabActiveKey === 'Metadata') {
+      EventEmitter.emit('MetadataTabs', () => {
+        instanceStore.tabActiveKey = e;
+      })
+    } else {
+      instanceStore.tabActiveKey = e;
+    }
 };
 
 const handleAction = async () => {

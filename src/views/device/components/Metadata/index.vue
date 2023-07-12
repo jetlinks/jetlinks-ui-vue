@@ -14,7 +14,7 @@
 <!--          </div>-->
 <!--        </j-tooltip>-->
 <!--      </div>-->
-      <j-tabs class="metadataNav" destroyInactiveTabPane type="card">
+      <j-tabs class="metadataNav" :activeKey="metadataStore.tabActiveKey" destroyInactiveTabPane type="card" @change="tabsChange">
         <template #rightExtra>
           <j-space>
             <PermissionButton v-if="type === 'device' && instanceStore.detail?.independentMetadata"
@@ -54,6 +54,7 @@ import Cat from './Cat/index.vue'
 // import BaseMetadata from './Base/index.vue'
 import BaseMetadata from './Base/Base.vue'
 import { useMetadataStore } from '@/store/metadata'
+import {EventEmitter} from "@/utils/utils";
 
 const route = useRoute()
 const instanceStore = useInstanceStore()
@@ -85,6 +86,13 @@ const resetMetadata = async () => {
     // }, 400)
   }
 }
+
+const tabsChange = (e: string) => {
+  EventEmitter.emit('MetadataTabs', () => {
+    metadataStore.tabActiveKey = e;
+  })
+}
+
 </script>
 <style scoped lang="less">
 .device-detail-metadata {

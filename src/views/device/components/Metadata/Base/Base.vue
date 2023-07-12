@@ -8,6 +8,7 @@
           placeholder: '请输入搜索名称'
         }"
         serial
+        @editStatus="editStatusChange"
     >
         <template #expand>
           <PermissionButton
@@ -16,12 +17,12 @@
               :hasPermission="`${permission}:update`"
               key="add"
 
-              :disabled="hasOperate('add', type)"
+              :disabled="hasOperate('add', type) || !editStatus"
               :tooltip="{
                     placement: hasOperate('add', type) ? 'topRight' : 'top',
                     title: hasOperate('add', type)
                         ? '当前的存储方式不支持新增'
-                        : '新增',
+                        : !editStatus ? '暂无改动数据': '新增',
                 }"
               @click="handleAddClick()"
           >
@@ -34,11 +35,11 @@
               v-else
               :loading="loading"
 
-              :disabled="hasOperate('add', type)"
+              :disabled="hasOperate('add', type) || !editStatus"
               :tooltip="{
                     title: hasOperate('add', type)
                         ? '当前的存储方式不支持新增'
-                        : '保存',
+                        : !editStatus ? '暂无改动数据': '保存',
                     placement: hasOperate('add', type) ? 'topRight' : 'top',
                 }"
               @click="handleSaveClick"
@@ -190,10 +191,10 @@ import type {
     ProductItem,
 } from '@/views/device/Product/typings';
 import type { PropType } from 'vue';
+import { onBeforeRouteLeave } from 'vue-router'
 import { useMetadata, useOperateLimits } from './hooks';
 import {TypeStringMap, useColumns} from './columns';
 import { levelMap, sourceMap, expandsType, limitsMap } from './utils';
-import Rule from '@/components/Metadata/Rule';
 import { Source, OtherSetting, InputParams, ConfigParams } from './components';
 import { saveProductVirtualProperty } from '@/api/device/product';
 import { saveDeviceVirtualProperty } from '@/api/device/instance';
@@ -204,8 +205,9 @@ import { useMetadataStore } from '@/store/metadata';
 import { DeviceInstance } from '@/views/device/Instance/typings';
 import { onlyMessage } from '@/utils/comm';
 import {omit} from "lodash-es";
-import {useAction} from "@/views/device/components/Metadata/Base/hooks/useAction";
 import { PropertiesModal, FunctionModal, EventModal, TagsModal } from './DetailModal'
+import { Modal } from 'jetlinks-ui-components'
+import {EventEmitter} from "@/utils/utils";
 
 const props = defineProps({
     target: {
@@ -234,6 +236,7 @@ const productStore = useProductStore()
 const dataSource = ref<MetadataItem[]>(metadata.value || []);
 const tableRef = ref();
 const loading = ref(false)
+const editStatus = ref(false) // 编辑表格的编辑状态
 
 // const columns = computed(() => MetadataMapping.get(props.type!));
 const {columns} = useColumns(props.type, _target, noEdit, productNoEdit)
@@ -246,8 +249,6 @@ const detailData = reactive({
 const showSave = ref(metadata.value.length !== 0)
 
 const showLastDelete = ref(false)
-
-const { addAction, copyAction, removeAction } = useAction(tableRef)
 
 provide('_dataSource', dataSource.value)
 
@@ -377,7 +378,11 @@ const removeItem = (index: number) => {
   }
 }
 
-const handleSaveClick = async () => {
+const editStatusChange = (status: boolean) => {
+  editStatus.value = status
+}
+
+const handleSaveClick = async (next?: Function) => {
     let resp = await tableRef.value.getData().finally(() => {
 
     });
@@ -430,9 +435,41 @@ const handleSaveClick = async () => {
         dataSource.value = resp
         tableRef.value.cleanEditStatus()
         onlyMessage('操作成功！')
+        next?.()
       }
     }
 };
+
+const tabsChange = inject('tabsChange')
+
+const parentTabsChange = (next?: Function) => {
+  if (editStatus.value) {
+    Modal.confirm({
+      content: '页面改动数据未保存',
+      okText: '保存',
+      cancelText: '不保存',
+      onOk: () => {
+        handleSaveClick(next as Function)
+      },
+      onCancel: () => {
+        (next as Function)?.()
+      }
+    })
+  } else {
+    (next as Function)?.()
+  }
+}
+
+EventEmitter.subscribe(['MetadataTabs'], parentTabsChange)
+
+onUnmounted(() => {
+  EventEmitter.unSubscribe(['MetadataTabs'], parentTabsChange)
+})
+
+onBeforeRouteLeave((to, from, next) => {
+  parentTabsChange(next as Function)
+})
+
 </script>
 
 <style scoped>

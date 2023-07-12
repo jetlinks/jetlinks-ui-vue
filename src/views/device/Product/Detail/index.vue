@@ -123,6 +123,7 @@ import {
 import { getImage, handleParamsToString, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import { useRouterParams } from '@/utils/hooks/useParams';
+import {EventEmitter} from "@/utils/utils";
 
 const menuStory = useMenuStore();
 const route = useRoute();
@@ -187,7 +188,13 @@ const onBack = () => {
 };
 
 const onTabChange = (e: string) => {
+  if (productStore.tabActiveKey === 'Metadata') {
+    EventEmitter.emit('MetadataTabs', () => {
+      productStore.tabActiveKey = e;
+    })
+  } else {
     productStore.tabActiveKey = e;
+  }
 };
 
 /**

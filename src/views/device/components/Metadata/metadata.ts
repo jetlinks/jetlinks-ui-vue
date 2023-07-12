@@ -35,22 +35,22 @@ const filterProductMetadata = (data: any[], productMetaData: any[]) => {
 
   if (productMetaData) {
     if (productMetaData.properties && productMetaData.properties.length) {
-      metadata.properties = filterProductMetadata(metadata.properties, productMetaData.properties)
+      metadata.properties = filterProductMetadata(item, productMetaData.properties)
     }
     if (productMetaData.functions && productMetaData.functions.length) {
-      metadata.functions = filterProductMetadata(metadata.functions, productMetaData.functions)
+      metadata.functions = filterProductMetadata(item, productMetaData.functions)
     }
     if (productMetaData.events && productMetaData.events.length) {
-      metadata.events = filterProductMetadata(metadata.events, productMetaData.events)
+      metadata.events = filterProductMetadata(item, productMetaData.events)
     }
     if (productMetaData.tags && productMetaData.tags.length) {
-      metadata.tags = filterProductMetadata(metadata.tags, productMetaData.tags)
+      metadata.tags = filterProductMetadata(item, productMetaData.tags)
     }
+  } else {
+    metadata[type] = item as any
   }
-
-  console.log(metadata)
+  console.log(metadata, type)
   metadata[type] = metadata[type].sort((a, b) => b?.sortsIndex - a?.sortsIndex) as any[]
-  console.log('updateMetadata',metadata)
   data.metadata = JSON.stringify(metadata);
   onEvent?.(data.metadata)
   return data;
