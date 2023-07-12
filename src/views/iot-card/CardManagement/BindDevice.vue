@@ -13,9 +13,6 @@
         :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
-        :pagination="{
-                    showSizeChanger: true,
-                }"
         :rowSelection="{
           type: 'radio',
           selectedRowKeys: _selectedRowKeys,

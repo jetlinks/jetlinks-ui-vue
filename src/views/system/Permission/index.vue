@@ -16,9 +16,6 @@
                     :defaultParams="{
                         sorts: [{ name: 'id', order: 'asc' }],
                     }"
-                    :pagination="{
-                        showSizeChanger: true,
-                    }"
                 >
                     <template #headerTitle>
                         <PermissionButton

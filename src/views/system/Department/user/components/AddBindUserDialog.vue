@@ -31,9 +31,6 @@
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
-                :pagination="{
-                    showSizeChanger: true,
-                }"
             />
         </div>
     </j-modal>

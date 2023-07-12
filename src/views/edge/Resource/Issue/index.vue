@@ -31,9 +31,6 @@
                 selectedRowKeys: _selectedRowKeys,
                 onChange: onSelectChange,
             }"
-            :pagination="{
-                showSizeChanger: true,
-            }"
         >
             <template #state="slotProps">
                 <j-badge

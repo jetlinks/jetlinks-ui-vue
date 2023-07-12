@@ -11,9 +11,6 @@
           :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
-          :pagination="{
-                    showSizeChanger: true,
-                }"
           :params="params"
         >
             <template #headerTitle>

@@ -17,9 +17,6 @@
                     onChange: table.onSelectChange,
                 }"
                 model="TABLE"
-                :pagination="{
-                    showSizeChanger: true,
-                }"
             >
                 <template #headerTitle>
                     <PermissionButton

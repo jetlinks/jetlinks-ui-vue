@@ -19,9 +19,6 @@
                             { name: 'id', order: 'desc' },
                         ],
                     }"
-                    :pagination="{
-                        showSizeChanger: true,
-                    }"
                 >
                     <template #headerTitle>
                         <PermissionButton
