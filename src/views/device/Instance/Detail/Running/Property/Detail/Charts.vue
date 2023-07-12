@@ -72,7 +72,7 @@ const queryChartsAggList = async () => {
             {
                 property: prop.data.id,
                 alias: prop.data.id,
-                agg: agg.value,
+                agg: _type.value ? agg.value : 'COUNT',
             },
         ],
         query: {
