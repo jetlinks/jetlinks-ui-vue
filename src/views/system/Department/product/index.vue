@@ -11,6 +11,10 @@
                 ref="tableRef"
                 :request="table.requestFun"
                 :gridColumn="2"
+                :scroll="{
+                    x:true,
+                    y:610,
+                }"
                 :params="queryParams"
                 :rowSelection="{
                     selectedRowKeys: tableData._selectedRowKeys,
@@ -613,6 +617,7 @@ watch(
 
 <style lang="less" scoped>
 .product-container {
+    :deep(.ant-table td) { white-space: nowrap; }
     :deep(.ant-table-tbody) {
         .ant-table-cell {
             .ant-space-item {
