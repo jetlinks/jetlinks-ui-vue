@@ -9,17 +9,12 @@
                 :columns="columns"
                 :request="(e:any) => CascadeApi.queryBindChannel(route?.query.id as string, e)"
                 :defaultParams="{
-                    pageSize: 10,
                     sorts: [{ name: 'name', order: 'desc' }],
                 }"
                 :params="params"
                 :rowSelection="{
                     selectedRowKeys: _selectedRowKeys,
                     onChange: onSelectChange,
-                }"
-                :pagination="{
-                    showSizeChanger: true,
-                    pageSizeOptions: ['10', '20', '50', '100'],
                 }"
             >
                 <template #headerTitle>
@@ -168,6 +163,7 @@ const columns = [
         key: 'deviceName',
         // width: 200,
         // fixed: 'left',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -175,6 +171,7 @@ const columns = [
     {
         title: '通道名称',
         dataIndex: 'name',
+        ellipsis: true,
         key: 'name',
         search: {
             type: 'string',
@@ -185,6 +182,7 @@ const columns = [
         title: '国标ID',
         dataIndex: 'channelId',
         key: 'channelId',
+        ellipsis: true,
         scopedSlots: true,
         headerCell: 'gbChannelIdHeader', // 表头单元格插槽
         search: {
@@ -195,6 +193,7 @@ const columns = [
         title: '安装地址',
         dataIndex: 'address',
         key: 'address',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -203,6 +202,7 @@ const columns = [
         title: '厂商',
         dataIndex: 'manufacturer',
         key: 'manufacturer',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -212,6 +212,7 @@ const columns = [
         dataIndex: 'status',
         key: 'status',
         scopedSlots: true,
+        width: 150,
         search: {
             type: 'select',
             options: [
@@ -226,6 +227,7 @@ const columns = [
     {
         title: '操作',
         key: 'action',
+        width: 100,
         scopedSlots: true,
     },
 ];

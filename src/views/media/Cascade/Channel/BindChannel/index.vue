@@ -10,7 +10,11 @@
         @cancel="_vis = false"
         :confirmLoading="loading"
     >
-        <pro-search :columns="columns" target="media-bind" @search="handleSearch" />
+        <pro-search
+            :columns="columns"
+            target="media-bind"
+            @search="handleSearch"
+        />
 
         <JProTable
             ref="listRef"
@@ -18,7 +22,7 @@
             :columns="columns"
             :request="CascadeApi.queryChannelList"
             :defaultParams="{
-                sorts: [{ name: 'name', order: 'desc' }],
+                sorts: [{ name: 'deviceName', order: 'asc' }, { name: 'name', order: 'asc' }],
                 terms: [
                     {
                         column: 'id',
@@ -37,10 +41,9 @@
             :params="params"
             :rowSelection="{
                 selectedRowKeys: _selectedRowKeys,
-                onChange: onSelectChange,
-            }"
-            :pagination="{
-                showSizeChanger: true,
+                onSelectNone: onSelectNone,
+                onSelect: onSelect,
+                onSelectAll: onAllSelect,
             }"
         >
             <template #headerTitle>
@@ -101,6 +104,7 @@ const columns = [
         title: '设备名称',
         dataIndex: 'deviceName',
         key: 'deviceName',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -109,6 +113,7 @@ const columns = [
         title: '通道名称',
         dataIndex: 'name',
         key: 'name',
+        ellipsis: true,
         search: {
             type: 'string',
             first: true,
@@ -118,6 +123,7 @@ const columns = [
         title: '安装地址',
         dataIndex: 'address',
         key: 'address',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -126,6 +132,7 @@ const columns = [
         title: '厂商',
         dataIndex: 'manufacturer',
         key: 'manufacturer',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -135,6 +142,7 @@ const columns = [
         dataIndex: 'status',
         key: 'status',
         scopedSlots: true,
+        width: 150,
         search: {
             type: 'select',
             options: [
@@ -161,8 +169,31 @@ const handleSearch = (e: any) => {
 const listRef = ref();
 const _selectedRowKeys = ref<string[]>([]);
 
-const onSelectChange = (keys: string[]) => {
-    _selectedRowKeys.value = [...keys];
+const onSelectNone = () => {
+    _selectedRowKeys.value = [];
+};
+
+const onSelect = (record: any, selected: boolean) => {
+    const _set = new Set([..._selectedRowKeys.value])
+    if (selected) {
+        _set.add(record.id)
+    } else {
+        _set.delete(record.id)
+    }
+    _selectedRowKeys.value = [..._set]
+};
+
+const onAllSelect = (selected: boolean, _: any, keys: any[]) => {
+    const _keys = keys.map(item => item.id) || []
+    const _set = new Set([..._selectedRowKeys.value])
+    _keys.map((i: any) => {
+        if(selected) {
+            _set.add(i)
+        } else {
+            _set.delete(i)
+        }
+    });
+    _selectedRowKeys.value = [..._set]
 };
 
 const loading = ref(false);

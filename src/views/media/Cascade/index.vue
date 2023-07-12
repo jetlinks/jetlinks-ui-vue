@@ -56,16 +56,20 @@
                                 {{ slotProps.name }}
                             </h3>
                             <p>通道数量：{{ slotProps.count || 0 }}</p>
-                            <Ellipsis>
-                                <j-badge
-                                    :text="`sip:${slotProps.sipConfigs[0]?.sipId}@${slotProps.sipConfigs[0]?.hostAndPort}`"
-                                    :status="
-                                        slotProps.status?.value === 'enabled'
-                                            ? 'success'
-                                            : 'error'
-                                    "
-                                />
-                            </Ellipsis>
+                            <j-badge
+                                :status="
+                                    slotProps.status?.value === 'enabled'
+                                        ? 'success'
+                                        : 'error'
+                                "
+                                style="display: flex; align-items: center;"
+                            >
+                                <template #text>
+                                    <j-ellipsis>
+                                        {{ `sip:${slotProps.sipConfigs[0]?.sipId}@${slotProps.sipConfigs[0]?.hostAndPort}` }}
+                                    </j-ellipsis>
+                                </template>
+                            </j-badge>
                         </template>
                         <template #actions="item">
                             <PermissionButton
@@ -170,6 +174,7 @@ const columns = [
         key: 'name',
         width: 200,
         fixed: 'left',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -179,12 +184,14 @@ const columns = [
         dataIndex: 'sipId',
         key: 'sipId',
         scopedSlots: true,
+        ellipsis: true,
     },
     {
         title: '上级SIP 地址',
         dataIndex: 'publicHost',
         key: 'publicHost',
         scopedSlots: true,
+        ellipsis: true,
     },
     {
         title: '通道数量',

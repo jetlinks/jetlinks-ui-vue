@@ -11,12 +11,7 @@
         :request='queryUnbounded'
         model='TABLE'
         :defaultParams="{
-                    pageSize: 10,
                     sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
-        :pagination="{
-                    showSizeChanger: true,
-                    pageSizeOptions: ['10', '20', '50', '100'],
                 }"
         :rowSelection="{
           type: 'radio',

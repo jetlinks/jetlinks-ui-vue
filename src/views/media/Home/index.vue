@@ -57,9 +57,6 @@
                     }
                 }"
                 :alertRender="false"
-                :pagination="{
-                    showSizeChanger: true,
-                }"
             >
                 <template #channelNumber="slotProps">
                     <span>{{ slotProps.channelNumber || 0 }}</span>

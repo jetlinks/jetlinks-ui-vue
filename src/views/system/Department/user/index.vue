@@ -17,13 +17,6 @@
                     onChange: table.onSelectChange,
                 }"
                 model="TABLE"
-                :defaultParams="{
-                    pageSize: 10,
-                }"
-                :pagination="{
-                    showSizeChanger: true,
-                    pageSizeOptions: ['10', '20', '50', '100'],
-                }"
             >
                 <template #headerTitle>
                     <PermissionButton

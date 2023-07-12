@@ -8,10 +8,10 @@
         ref="tableRef"
     >
       <template #range="{data}">
-        {{ data.record.range === 'true' ? '范围值' : '固定值'}}
+        {{ data.record.range === true ? '范围值' : '固定值'}}
       </template>
       <template #value="{data}">
-        {{ data.record.range === 'true' ? data.record.value?.join('-') : data.record.value }}
+        {{ data.record.range === true ? data.record.value?.join('-') : data.record.value }}
       </template>
       <template #action="{data}">
         <j-button
@@ -92,9 +92,9 @@ const newColumns = computed(() => {
         components: {
           props: {
             trueText: '范围值',
-            trueValue: 'true',
+            trueValue: true,
             falseText: '固定值',
-            falseValue: 'false',
+            falseValue: false,
           }
         }
     })

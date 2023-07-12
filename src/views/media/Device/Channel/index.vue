@@ -34,9 +34,6 @@
                             sorts: [{ name: 'modifyTime', order: 'desc' }],
                         }"
                         :params="params"
-                        :pagination="{
-                            showSizeChanger: true,
-                        }"
                     >
                         <template #headerTitle>
                             <j-tooltip
@@ -156,6 +153,7 @@ const columns = [
         title: '通道ID',
         dataIndex: 'channelId',
         key: 'channelId',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -164,6 +162,7 @@ const columns = [
         title: '名称',
         dataIndex: 'name',
         key: 'name',
+        ellipsis: true,
         search: {
             type: 'string',
             first: true,
@@ -173,6 +172,7 @@ const columns = [
         title: '厂商',
         dataIndex: 'manufacturer',
         key: 'manufacturer',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -180,6 +180,7 @@ const columns = [
     {
         title: '安装地址',
         dataIndex: 'address',
+        ellipsis: true,
         key: 'address',
         search: {
             type: 'string',
@@ -190,6 +191,7 @@ const columns = [
         dataIndex: 'status',
         key: 'status',
         scopedSlots: true,
+        width: 150,
         search: {
             type: 'select',
             options: [
@@ -204,6 +206,7 @@ const columns = [
     {
         title: '操作',
         key: 'action',
+        width: 200,
         scopedSlots: true,
     },
 ];

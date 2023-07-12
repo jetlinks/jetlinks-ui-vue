@@ -59,26 +59,26 @@ const formData = reactive<{
   value: ValueType;
   rangeValue: ValueType;
 }>({
-  value: props.value.range === 'false' ? props.value.value : undefined,
-  rangeValue: props.value.range === 'true'
-      ? props.value.value || [undefined, undefined]
+  value: props.value?.range === false ? props.value?.value : undefined,
+  rangeValue: props.value?.range === true
+      ? props.value?.value || [undefined, undefined]
       : [undefined, undefined],
 });
 
 const formRef = ref()
 
 const showText = computed(() => {
-  if (props.value.range === 'false') {
-    return props.value.value || ''
+  if (props.value.range === false) {
+    return props.value?.value || ''
   } else {
-    return props.value.value?.[0] ? props.value.value.join('-') : ''
+    return props.value?.value?.[0] ? props.value.value.join('-') : ''
   }
 })
 
 const confirm = () => {
   return new Promise((resolve, reject) => {
     formRef.value.validate().then(() => {
-      const value = props.value.range === 'true' ? formData.rangeValue : formData.value
+      const value = props.value.range === true ? formData.rangeValue : formData.value
       emit('update:value', {
         ...props.value,
         value: value
@@ -93,7 +93,7 @@ const confirm = () => {
 
 watch(() => props.value.range,(value, oldValue) => {
   if (value !== oldValue  ) {
-    if (value === 'false') {
+    if (value === false) {
       formData.value = undefined
     } else {
       formData.rangeValue = [undefined, undefined]

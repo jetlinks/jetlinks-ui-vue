@@ -9,14 +9,10 @@
             :columns="columns"
             :request="(e:any) => templateApi.getHistory(e, data.id)"
             :defaultParams="{
-                pageSize: 5,
                 sorts: [{ name: 'notifyTime', order: 'desc' }],
                 terms: [{ column: 'notifyType$IN', value: data.type }],
             }"
             :params="params"
-            :pagination="{
-                pageSizeOptions: ['5', '10', '20', '50', '100'],
-            }"
         >
             <template #notifyTime="slotProps">
                 {{ moment(slotProps.notifyTime).format('YYYY-MM-DD HH:mm:ss') }}
