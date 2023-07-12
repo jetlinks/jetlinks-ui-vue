@@ -47,7 +47,7 @@
                             total: dataSource.length,
                             current: current,
                             pageSize: pageSize,
-                            pageSizeOptions: ['10', '20', '50', '100'],
+                            pageSizeOptions: ['12', '24', '48', '96'],
                             showSizeChanger: true,
                             hideOnSinglePage: false,
                             showTotal: (total: number, range: number) => `第 ${range[0]} - ${range[1]} 条/总共 ${total} 条`,
@@ -209,7 +209,7 @@ watch(
 const onTreeSelect = (keys: any) => {
   if (keys.length) {
     deptId.value = keys[0];
-    pageSize.value = 10;
+    pageSize.value = 12;
     current.value = 1;
   }
 };
@@ -401,7 +401,7 @@ const getTableData = (terms?: any) => {
  * 前端分页
  */
 const current = ref(1);
-const pageSize = ref(10);
+const pageSize = ref(12);
 const handleTableChange = (pagination: any) => {
     current.value = pagination.current;
     pageSize.value = pagination.pageSize;

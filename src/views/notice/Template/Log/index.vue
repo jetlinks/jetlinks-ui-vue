@@ -35,7 +35,7 @@
                 <AIcon
                     type="ExclamationCircleOutlined"
                     style="color: #1d39c4; cursor: pointer"
-                    @click="handleDetail(slotProps.context,slotProps)"
+                    @click="handleDetail(slotProps)"
                 />
             </template>
         </JProTable>
@@ -47,7 +47,7 @@ import templateApi from '@/api/notice/template';
 import { PropType } from 'vue';
 import moment from 'moment';
 import { Modal } from 'jetlinks-ui-components';
-import JsonViewer from 'vue-json-viewer';
+import Record from './components/Record.vue'
 type Emits = {
     (e: 'update:visible', data: boolean): void;
 };
@@ -127,31 +127,6 @@ const handleSearch = (e: any) => {
     params.value = e;
 };
 
-const typeObj = {
-    weixin: 'wechat',
-    dingTalk: 'dingtalk',
-};
-/**
- * 查看用户名
- */
-const userList = ref([])
-const departmentList = ref([])
-const queryUser = (id:any,notifyType:any,goal:any) =>{
-    goal ==='user' ? templateApi.getUser(
-        typeObj[notifyType],
-        id,
-    ).then((res:any)=>{
-        if(res.status === 200){
-            userList.value = res.result
-        }
-    }) : templateApi.getDept(typeObj[notifyType],
-        id,).then((res:any)=>{
-        if(res.status === 200){
-            departmentList.value = res.result
-        }
-    })
-}
-
 /**
  * 查看错误信息
  */
@@ -173,25 +148,13 @@ const handleError = (e: any) => {
 /**
  * 查看详情
  */
-const handleDetail =async (e: any,data:any) => {
-    if(e.hasOwnProperty('userIdList')){
-        await queryUser(data.notifierId,data.notifyType,'user')
-        userList.value.forEach((item:any)=>{
-            item.id === e.userIdList ? e.userIdList = item.name : ''
-        })
-    }
-    if(e.hasOwnProperty('departmentIdList')){
-       
-    }
-   
+const handleDetail = (data:any) => {
     Modal.info({
         title: '详情信息',
         content: h(
-            JsonViewer,
+            Record,
             {
-                value:JSON.stringify(e,null,1),
-                expanded:"true",
-                expandDepth:"4", 
+                data:data,
                 style: {
                     maxHeight: '300px',
                     overflowY: 'auto',

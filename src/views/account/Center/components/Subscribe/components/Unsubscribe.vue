@@ -36,7 +36,6 @@
 
 <script lang="ts" setup>
 import { useUserInfo } from '@/store/userInfo';
-import { onlyMessage } from '@/utils/comm';
 import EditInfo from '../../EditInfo/index.vue';
 import Bind from './Bind.vue';
 
