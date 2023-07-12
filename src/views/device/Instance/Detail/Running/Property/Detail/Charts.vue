@@ -199,9 +199,9 @@ const getOptions = (arr: any[]) => {
 };
 
 watch(
-    () => [cycle, agg],
-    ([newCycle, newAgg]) => {
-        if (newCycle.value === '*' && _type.value) {
+    () => [cycle.value, agg.value, prop.time],
+    ([newCycle]) => {
+        if (newCycle === '*' && _type.value) {
             queryChartsList();
         } else {
             queryChartsAggList();

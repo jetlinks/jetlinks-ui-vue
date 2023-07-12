@@ -55,7 +55,8 @@
                     v-model:value="formData.interval"
                     addon-after="ms"
                     :max="2147483648"
-                    :min="1"
+                    :min="0"
+                    :precision="0"
                 />
             </j-form-item>
 

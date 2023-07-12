@@ -190,6 +190,8 @@ const handlUpdate = async (data: any) => {
     });
     if (resp.status === 200) {
         handleSearch(params.value);
+        const _item = collectorAll.value.find((i: any) => i?.id === selectedKeys.value?.[0])
+        emits('change', _item)
         onlyMessage('操作成功', 'success');
     }
 };

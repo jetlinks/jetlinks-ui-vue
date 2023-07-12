@@ -87,7 +87,7 @@ import { bindScene } from '@/api/rule-engine/configuration';
 import { getImage, onlyMessage } from '@/utils/comm';
 const columns = [
     {
-        title: '名称',
+        title: '场景名称',
         dataIndex: 'name',
         key: 'name',
         search: {

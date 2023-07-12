@@ -59,7 +59,7 @@
                     v-model:value="formData.configuration.interval"
                     addon-after="ms"
                     :max="2147483648"
-                    :min="1"
+                    :min="0"
                 />
             </j-form-item>
             <j-form-item label="" :name="['features']">
