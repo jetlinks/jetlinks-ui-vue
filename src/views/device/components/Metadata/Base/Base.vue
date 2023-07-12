@@ -17,12 +17,12 @@
               :hasPermission="`${permission}:update`"
               key="add"
 
-              :disabled="hasOperate('add', type) || !editStatus"
+              :disabled="hasOperate('add', type)"
               :tooltip="{
                     placement: hasOperate('add', type) ? 'topRight' : 'top',
                     title: hasOperate('add', type)
                         ? '当前的存储方式不支持新增'
-                        : !editStatus ? '暂无改动数据': '新增',
+                        : '新增',
                 }"
               @click="handleAddClick()"
           >
