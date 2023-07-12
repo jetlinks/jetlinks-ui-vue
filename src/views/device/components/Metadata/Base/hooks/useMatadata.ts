@@ -35,6 +35,7 @@ const useMetadata = (type: 'device' | 'product', key?: MetadataType, ): {
             const productMetadata: any = JSON.parse(instanceStore.current.productMetadata)
             const metaArray = key ? productMetadata[key] : []
             const productIndexKeys = metaArray?.map((item:any, index: number) => index) || []
+            productNoEdit.value.ids = metaArray?.map((item: any) => item.id) || []
             productNoEdit.value.id = productIndexKeys
             productNoEdit.value.name = productIndexKeys
             if (key === 'properties') {

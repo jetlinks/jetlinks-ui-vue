@@ -1,19 +1,19 @@
 <template>
     <div class='device-detail-metadata' style="position: relative;">
-      <div class="tips">
-        <j-tooltip :title="instanceStore.detail?.independentMetadata && type === 'device'
-        ? '该设备已脱离产品物模型，修改产品物模型对该设备无影响'
-        : '设备会默认继承产品的物模型，修改设备物模型后将脱离产品物模型'">
-          <div class="ellipsis" style='color: #999;'>
-            <AIcon type="InfoCircleOutlined" style="margin-right: 3px" />
-            {{
-              instanceStore.detail?.independentMetadata && type === 'device'
-                ? '该设备已脱离产品物模型，修改产品物模型对该设备无影响'
-                : '设备会默认继承产品的物模型，修改设备物模型后将脱离产品物模型'
-            }}
-          </div>
-        </j-tooltip>
-      </div>
+<!--      <div class="tips">-->
+<!--        <j-tooltip :title="instanceStore.detail?.independentMetadata && type === 'device'-->
+<!--        ? '该设备已脱离产品物模型，修改产品物模型对该设备无影响'-->
+<!--        : '设备会默认继承产品的物模型，修改设备物模型后将脱离产品物模型'">-->
+<!--          <div class="ellipsis" style='color: #999;'>-->
+<!--            <AIcon type="InfoCircleOutlined" style="margin-right: 3px" />-->
+<!--            {{-->
+<!--              instanceStore.detail?.independentMetadata && type === 'device'-->
+<!--                ? '该设备已脱离产品物模型，修改产品物模型对该设备无影响'-->
+<!--                : '设备会默认继承产品的物模型，修改设备物模型后将脱离产品物模型'-->
+<!--            }}-->
+<!--          </div>-->
+<!--        </j-tooltip>-->
+<!--      </div>-->
       <j-tabs class="metadataNav" destroyInactiveTabPane type="card">
         <template #rightExtra>
           <j-space>

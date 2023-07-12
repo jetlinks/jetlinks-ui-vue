@@ -59,9 +59,9 @@ const formData = reactive<{
   value: ValueType;
   rangeValue: ValueType;
 }>({
-  value: props.value.range === false ? props.value.value : undefined,
-  rangeValue: props.value.range === true
-      ? props.value.value || [undefined, undefined]
+  value: props.value?.range === false ? props.value?.value : undefined,
+  rangeValue: props.value?.range === true
+      ? props.value?.value || [undefined, undefined]
       : [undefined, undefined],
 });
 
@@ -69,9 +69,9 @@ const formRef = ref()
 
 const showText = computed(() => {
   if (props.value.range === false) {
-    return props.value.value || ''
+    return props.value?.value || ''
   } else {
-    return props.value.value?.[0] ? props.value.value.join('-') : ''
+    return props.value?.value?.[0] ? props.value.value.join('-') : ''
   }
 })
 
