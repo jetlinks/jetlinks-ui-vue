@@ -157,6 +157,7 @@ const columns = [
         title: 'ID',
         dataIndex: 'id',
         key: 'id',
+        ellipsis:true,
         search: {
             type: 'string',
             defaultTermType: 'eq',
@@ -166,6 +167,7 @@ const columns = [
         title: '名称',
         dataIndex: 'name',
         key: 'name',
+        ellipsis:true,
         search: {
             type: 'string',
             first: true,
@@ -175,6 +177,7 @@ const columns = [
         title: '通道数量',
         dataIndex: 'channelNumber',
         key: 'channelNumber',
+        width:100,
         scopedSlots: true,
     },
     {
@@ -192,6 +195,7 @@ const columns = [
                 return v;
             },
         },
+        width:80
     },
 ];
 const params = ref<Record<string, any>>({});

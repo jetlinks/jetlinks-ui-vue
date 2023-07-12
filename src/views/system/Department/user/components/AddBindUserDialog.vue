@@ -23,7 +23,9 @@
                 :params="queryParams"
                 :rowSelection="{
                     selectedRowKeys: table._selectedRowKeys,
-                    onChange: table.onSelectChange,
+                    onSelect: table.onSelectChange,
+                    onSelectNone:() => table._selectedRowKeys = [],
+                    onSelectAll:selectAll
                 }"
                 model="TABLE"
                 :defaultParams="{
@@ -55,15 +57,15 @@ const props = defineProps<{
 // 弹窗相关
 const loading = ref(false);
 const confirm = () => {
-    if (department.crossPageKeys.length && props.parentId) {
+    if (table._selectedRowKeys && props.parentId) {
         loading.value = true;
-        bindUser_api(props.parentId, department.crossPageKeys)
+        bindUser_api(props.parentId,table._selectedRowKeys)
             .then(() => {
                 onlyMessage('操作成功');
                 emits('confirm');
                 emits('update:visible', false);
                 // table._selectedRowKeys = [];
-                department.setSelectedKeys([]);
+                table._selectedRowKeys = []
             })
             .finally(() => (loading.value = false));
     } else {
@@ -102,7 +104,6 @@ const table = reactive({
     _selectedRowKeys: [] as string[],
 
     requestFun: async (oParams: any) => {
-        table.cancelSelect();
         if (props.parentId) {
             const params = {
                 ...oParams,
@@ -138,25 +139,45 @@ const table = reactive({
             };
         }
     },
-    onSelectChange: (keys: string[]) => {
+    onSelectChange: (row: any[],selected:Boolean) => {
         // console.log('手动选择改变: ', keys);
         // table._selectedRowKeys = keys;
-        department.setSelectedKeys(keys, keys.length ? 'concat' : '');
-    },
-    cancelSelect: () => {
-        // console.log('分页会 取消选择', 1111111111);
-        // table._selectedRowKeys = [];
-        department.setSelectedKeys([], 'concat');
+        // department.setSelectedKeys(keys, keys.length ? 'concat' : '');
+        const arr = new Set(table._selectedRowKeys)
+        if(selected){
+            arr.add(row.id)
+        }else{
+            arr.delete(row.id)
+        }
+        table._selectedRowKeys = [...arr.values()];
     },
 });
+const selectAll = (selected: Boolean, selectedRows: any,changeRows:any) => {
+    if (selected) {
+            changeRows.map((i: any) => {
+                if (!table._selectedRowKeys.includes(i.id)) {
+                    table._selectedRowKeys.push(i.id)
+                }
+            })
+        } else {
+            const arr = changeRows.map((item: any) => item.id)
+            const _ids: string[] = [];
+            table._selectedRowKeys.map((i: any) => {
+                if (!arr.includes(i)) {   
+                    _ids.push(i)
+                }
+            })
+            table._selectedRowKeys = _ids;
+        }     
+}
 
-watch(
-    () => department.crossPageKeys,
-    (val: string[]) => {
-        // console.log('crossPageKeys: ', val);
-        table._selectedRowKeys = val;
-    },
-);
+// watch(
+//     () => department.crossPageKeys,
+//     (val: string[]) => {
+//         // console.log('crossPageKeys: ', val);
+//         table._selectedRowKeys = val;
+//     },
+// );
 </script>
 
 <style lang="less" scoped>
