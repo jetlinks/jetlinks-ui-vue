@@ -75,17 +75,20 @@ const onBind = () => {
     } else {
         visible.value = true
     }
-    emit('close')
+    
 };
 
 const onSave = () => {
     editInfoVisible.value = false;
     user.getUserInfo();
     emit('save', props.current);
+    emit('close')
 };
 
 const onBindSave = () => {
+    visible.value = false
     emit('save', props.current);
+    emit('close')
 }
 
 const handleSearch = async () => {

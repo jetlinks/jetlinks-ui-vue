@@ -1,5 +1,5 @@
 <template>
-    <j-modal :width="'900px'" visible @cancel="emit('close')">
+    <j-modal :width="'900px'" visible @cancel="emit('close')" :zIndex="1100">
         <template v-if="getType === 'notifier-dingTalk'">
             <j-spin :spinning="loading">
                 <div class="code" style="height: 600px;">
@@ -44,6 +44,7 @@ import {
 } from '@/api/account/notificationSubscription';
 
 const emit = defineEmits(['close', 'save']);
+
 const props = defineProps({
     data: {
         // 外层数据
@@ -103,6 +104,7 @@ const updateIframeStyle = () => {
         '#notifier_iframe',
     ) as HTMLIFrameElement;
     iframe.onload = () => {
+        console.log(iframe?.contentWindow)
         const currentUrl = iframe?.contentWindow?.location?.search || '';
         let authCode = '';
         if (currentUrl.startsWith('?')) {
