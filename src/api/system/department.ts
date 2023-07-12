@@ -5,7 +5,7 @@ export const getTreeData_api = (data: object) => server.post(`/organization/_all
 // 新增部门
 export const addDepartment_api = (data: object) => server.post(`/organization`, data);
 // 更新部门
-export const updateDepartment_api = (data: object) => server.patch(`/organization`, data);
+export const updateDepartment_api = (data: any) => server.put(`/organization/${data.id}`, data);
 // 删除部门
 export const delDepartment_api = (id: string) => server.remove(`/organization/${id}`);
 
