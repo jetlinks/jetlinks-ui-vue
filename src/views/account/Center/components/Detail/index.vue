@@ -4,9 +4,9 @@
             <div style="display: flex; padding-bottom: 24px; margin-bottom: 24px; border-bottom: 1px solid #E4E7F6">
                 <j-avatar :size="100" :src="userInfos.avatar"></j-avatar>
                 <div style="margin-left: 24px;">
-                    <div class="name">{{ userInfos.name }}</div>
-                    <div class="subTitle">用户名: {{ userInfos?.username }}</div>
-                    <div class="subTitle">账号ID: {{ userInfos?.id }}</div>
+                    <div class="name"><j-ellipsis>{{ userInfos.name }}</j-ellipsis></div>
+                    <div class="subTitle"><j-ellipsis>用户名: {{ userInfos?.username }}</j-ellipsis></div>
+                    <!-- <div class="subTitle">账号ID: {{ userInfos?.id }}</div> -->
                 </div>
             </div>
             <j-descriptions
@@ -69,10 +69,10 @@ const org = computed(() => {
     color: #1D2129;
     font-weight: 500;
     font-size: 26px;
+    margin: 15px 0 10px 0;
 }
 
 .subTitle {
     color: rgba(0, 0, 0, 0.6);
-    margin-top: 5px;
 }
 </style>
