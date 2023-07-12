@@ -123,7 +123,7 @@
                         placeholder="请选择功能"
                         v-model:value="modelRef.message.functionId"
                         show-search
-                        @change="funcChange"
+                        @change="(e) => funcChange(e)"
                     >
                         <j-select-option
                             v-for="i in metadata?.functions || []"
@@ -216,12 +216,33 @@ const onPropertyChange = (val: string, flag?: boolean) => {
 };
 
 const onTypeChange = () => {
-    modelRef.message = {
-        properties: undefined,
-        functionId: undefined,
-        inputs: [],
-        value: undefined,
-    };
+    // 需要记住之前的选择, 所以注释了该代码
+    // modelRef.message = {
+    //     properties: undefined,
+    //     functionId: undefined,
+    //     inputs: [],
+    //     value: undefined,
+    // };
+};
+
+const funcChange = (val: string, _inputs?: any[]) => {
+    if (val) {
+        const arr =
+            props.metadata?.functions.find((item: any) => item.id === val)
+                ?.inputs || [];
+        const list = arr.map((item: any) => {
+            const _item = _inputs?.find(i => i.id === item.id)
+            return {
+                id: item.id,
+                name: item.name,
+                value: undefined,
+                valueType: item?.valueType?.type,
+                ..._item,
+                required: item?.expands?.required
+            };
+        });
+        modelRef.message.inputs = list;
+    }
 };
 
 watch(
@@ -232,30 +253,15 @@ watch(
             if (newVal?.message?.properties) {
                 onPropertyChange(newVal?.message?.properties, true);
             }
+            if (newVal?.message?.functionId) {
+                funcChange(newVal?.message?.functionId, newVal?.message?.inputs);
+            }
         }
     },
     {
         immediate: true,
     },
 );
-
-const funcChange = (val: string) => {
-    if (val) {
-        const arr =
-            props.metadata?.functions.find((item: any) => item.id === val)
-                ?.inputs || [];
-        const list = arr.map((item: any) => {
-            return {
-                id: item.id,
-                name: item.name,
-                value: undefined,
-                valueType: item?.valueType?.type,
-                required: item?.expands?.required
-            };
-        });
-        modelRef.message.inputs = list;
-    }
-};
 
 const saveBtn = () =>
     new Promise((resolve) => {

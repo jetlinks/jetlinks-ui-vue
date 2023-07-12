@@ -302,8 +302,8 @@ const handleSubmit = () => {
                 };
             }
             const res = formData.value.id
-                ? await ChannelApi.update(formData.value.id, extraFormData)
-                : await ChannelApi.save(extraFormData);
+                ? await ChannelApi.update(formData.value.id, extraFormData).finally(() => {loading.value = false;})
+                : await ChannelApi.save(extraFormData).finally(() => {loading.value = false;});
             if (res.success) {
                 onlyMessage('操作成功');
                 _vis.value = false;
