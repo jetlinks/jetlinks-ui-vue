@@ -46,7 +46,7 @@
                             />
                         </j-form-item>
                         <j-form-item
-                            name='configId'
+                            :name="formData.provider === 'dingTalkRobotWebHook'? '':'configId'"
                             v-if="formData.type !== 'email'"
                         >
                             <template #label>
