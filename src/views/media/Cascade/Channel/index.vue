@@ -215,6 +215,7 @@ const columns = [
         dataIndex: 'status',
         key: 'status',
         scopedSlots: true,
+        width: 150,
         search: {
             type: 'select',
             options: [
@@ -229,6 +230,7 @@ const columns = [
     {
         title: '操作',
         key: 'action',
+        width: 100,
         scopedSlots: true,
     },
 ];

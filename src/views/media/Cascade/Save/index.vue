@@ -428,6 +428,10 @@
                                             required: true,
                                             message: '请输入心跳周期',
                                         },
+                                        {
+                                            pattern: /^[1-9]\d*$/,
+                                            message: '请输入1~10000的整数',
+                                        }
                                     ]"
                                 >
                                     <j-input-number
@@ -450,6 +454,10 @@
                                             required: true,
                                             message: '请输入注册间隔',
                                         },
+                                        {
+                                            pattern: /^[1-9]\d*$/,
+                                            message: '请输入1~10000的整数',
+                                        }
                                     ]"
                                 >
                                     <j-input-number

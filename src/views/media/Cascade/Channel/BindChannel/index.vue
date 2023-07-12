@@ -22,7 +22,7 @@
             :columns="columns"
             :request="CascadeApi.queryChannelList"
             :defaultParams="{
-                sorts: [{ name: 'name', order: 'desc' }],
+                sorts: [{ name: 'deviceName', order: 'asc' }, { name: 'name', order: 'asc' }],
                 terms: [
                     {
                         column: 'id',
@@ -145,6 +145,7 @@ const columns = [
         dataIndex: 'status',
         key: 'status',
         scopedSlots: true,
+        width: 150,
         search: {
             type: 'select',
             options: [
