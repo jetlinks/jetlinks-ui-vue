@@ -230,6 +230,7 @@
                 asset-type="product"
                 :defaultPermission="tableData.defaultPermission"
                 @confirm="table.refresh"
+                @next="next"
             />
             <NextDialog
                 v-if="dialogs.nextShow"
@@ -613,6 +614,9 @@ watch(
         if (!val) tableData.selectedRows = [];
     },
 );
+const next = (data:any) =>{
+    
+}
 </script>
 
 <style lang="less" scoped>

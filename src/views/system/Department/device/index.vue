@@ -277,7 +277,7 @@ const columns = [
             handleValue(value: string, data: any) {
                 return value && value.length ? [{
                     column: 'id',
-                    termType: data.termType === 'not' ? 'nin' : 'in',
+                    termType: data?.termType === 'not' ? 'nin' : 'in',
                     value: `${value.toString()}`
                 }] : undefined;
             },

@@ -111,7 +111,7 @@ import dayjs from 'dayjs';
 
 const departmentStore = useDepartmentStore();
 
-const emits = defineEmits(['confirm', 'update:visible']);
+const emits = defineEmits(['confirm', 'update:visible','next']);
 const props = defineProps<{
     visible: boolean;
     queryColumns: any[];
@@ -149,6 +149,7 @@ const confirm = () => {
             onlyMessage('操作成功');
             emits('confirm');
             emits('update:visible', false);
+            emits('next',table.selectedRows.map((item: any) => item.id))
         })
         .finally(() => {
             loading.value = false;
@@ -457,13 +458,19 @@ const selectAll = (selected: Boolean, selectedRows: any,changeRows:any) => {
         }     
 }
 const cancel = () => {
-    departmentStore.setProductId()
+    departmentStore.setProductId(undefined)
     emits('update:visible', false)
 }
 
 const search = (query: any) => {
     queryParams.value = query
 }
+onUnmounted(()=>{
+    if(props.assetType ==='device'){
+        departmentStore.setProductId(undefined)
+    }
+    console.log(departmentStore.productId)
+})
 </script>
 
 <style lang="less" scoped>

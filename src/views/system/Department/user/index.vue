@@ -14,7 +14,9 @@
                 :params="queryParams"
                 :rowSelection="{
                     selectedRowKeys: table._selectedRowKeys,
-                    onChange: table.onSelectChange,
+                    onSelect: table.onSelectChange,
+                    onSelectAll: selectAll,
+                    onSelectNone: () => table._selectedRowKeys = []
                 }"
                 model="TABLE"
             >
@@ -156,7 +158,6 @@ const table = reactive({
     _selectedRowKeys: [] as string[],
 
     requestFun: async (oParams: any) => {
-        table.cancelSelect();
         if (props.parentId) {
             const params = {
                 ...oParams,
@@ -199,14 +200,19 @@ const table = reactive({
 
         unBindUser_api(props.parentId, ids).then(() => {
             onlyMessage('操作成功');
+            table._selectedRowKeys = []
             table.refresh();
         });
     },
-    onSelectChange: (keys: string[]) => {
-        table._selectedRowKeys = keys;
-    },
-    cancelSelect: () => {
-        table._selectedRowKeys = [];
+    onSelectChange: (row:any,selected:Boolean) => {
+        const arr = new Set(table._selectedRowKeys);
+        console.log(row)
+        if(selected){
+            arr.add(row.id)
+        }else{
+            arr.delete(row.id)
+        }
+        table._selectedRowKeys = [...arr.values()]
     },
     // 刷新列表
     refresh: () => {
@@ -216,10 +222,29 @@ const table = reactive({
 
 const dialogVisible = ref(false);
 
+const selectAll = (selected: Boolean, selectedRows: any,changeRows:any) => {
+    if (selected) {
+            changeRows.map((i: any) => {
+                if (!table._selectedRowKeys.includes(i.id)) {
+                    table._selectedRowKeys.push(i.id)
+                }
+            })
+        } else {
+            const arr = changeRows.map((item: any) => item.id)
+            const _ids: string[] = [];
+            table._selectedRowKeys.map((i: any) => {
+                if (!arr.includes(i)) {   
+                    _ids.push(i)
+                }
+            })
+            table._selectedRowKeys = _ids;
+        }     
+}
 watch(
     () => props.parentId,
     () => {
         table.refresh();
+        table._selectedRowKeys = []
     },
 );
 </script>

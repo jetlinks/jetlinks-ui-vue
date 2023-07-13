@@ -288,7 +288,8 @@
                             </j-form-item>
                             <j-form-item label="请求头">
                                 <EditTable
-                                    v-model:headers="
+                                    ref="editTable"
+                                    :headers="
                                         formData.configuration.headers
                                     "
                                 />
@@ -340,6 +341,7 @@ const router = useRouter();
 const route = useRoute();
 const useForm = Form.useForm;
 const flag = ref<boolean>(false)
+const editTable = ref();
 
 // 消息类型
 const msgType = ref([
@@ -544,7 +546,8 @@ const resetPublicFiles = () => {
  */
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
-    validate()
+    if(editTable.value.validate()){
+        validate()
         .then(async () => {
             btnLoading.value = true;
             let res;
@@ -570,6 +573,59 @@ const handleSubmit = () => {
         .finally(() => {
             btnLoading.value = false;
         });
+    }
+    // Promise.all([validate(),editTable.value.validate()]).then(async()=>{
+    //     btnLoading.value = true;
+    //         let res;
+    //         if (!formData.value.id) {
+    //             res = await configApi.save(formData.value);
+    //         } else {
+    //             res = await configApi.update(formData.value);
+    //         }
+    //         if (res?.success) {
+    //             onlyMessage('保存成功');
+    //             if (route.query?.notifyType) {
+    //                 // @ts-ignore
+    //                 window?.onTabSaveSuccess(res.result);
+    //                 setTimeout(() => window.close(), 300);
+    //             } else {
+    //                 router.back();
+    //             }
+    //         }
+    // }) .catch((err) => {
+    //         console.log('err: ', err);
+    //     })
+    //     .finally(() => {
+    //         btnLoading.value = false;
+    //     });
+    // validate()
+    //     .then(async () => {
+    //         const a = editTable.value.validate();
+    //         console.log(a);
+    //         btnLoading.value = true;
+    //         let res;
+    //         if (!formData.value.id) {
+    //             res = await configApi.save(formData.value);
+    //         } else {
+    //             res = await configApi.update(formData.value);
+    //         }
+    //         if (res?.success) {
+    //             onlyMessage('保存成功');
+    //             if (route.query?.notifyType) {
+    //                 // @ts-ignore
+    //                 window?.onTabSaveSuccess(res.result);
+    //                 setTimeout(() => window.close(), 300);
+    //             } else {
+    //                 router.back();
+    //             }
+    //         }
+    //     })
+    //     .catch((err) => {
+    //         console.log('err: ', err);
+    //     })
+    //     .finally(() => {
+    //         btnLoading.value = false;
+    //     });
 };
 
 watchEffect(() => {
