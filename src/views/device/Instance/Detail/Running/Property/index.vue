@@ -5,7 +5,7 @@
             :request="query"
             :params="_params"
             :bodyStyle="{ padding: '0 0 0 20px' }"
-            :scroll="{y : 400}"
+            :scroll="{y : 450}"
         >
             <template #headerTitle>
                 <j-input-search

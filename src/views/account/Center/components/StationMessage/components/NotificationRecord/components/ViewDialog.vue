@@ -6,7 +6,17 @@
         @cancel="emits('update:visible', false)"
         class="view-dialog-container"
     >
-        <template v-if="type === 'alarm'">
+        <template v-if="['device-transparent-codec', 'system-event'].includes(data?.topicProvider)">
+            <div>
+                <div class="label">通知流水:</div>
+                <div style="padding: 10px; background-color: #fafafa">
+                    <j-scrollbar height="200px">
+                        <JsonViewer :value="data" />
+                    </j-scrollbar>
+                </div>
+            </div>
+        </template>
+        <template v-else>
             <j-descriptions
                 :column="2"
                 :contentStyle="{
@@ -19,28 +29,28 @@
             >
                 <template v-if="data?.topicProvider === 'alarm-device'">
                     <j-descriptions-item label="告警设备">
-                        <j-ellipsis>{{ data?.targetName || ''}}</j-ellipsis>
+                        <j-ellipsis>{{ _data?.targetName || ''}}</j-ellipsis>
                     </j-descriptions-item>
                     <j-descriptions-item label="设备ID">
                         <j-ellipsis>
-                            {{ data?.targetId || '' }}
+                            {{ _data?.targetId || '' }}
                         </j-ellipsis>
                     </j-descriptions-item>
                 </template>
                 <j-descriptions-item label="告警名称">
                     <j-ellipsis>
-                        {{ data?.alarmName || data?.alarmConfigName || '' }}
+                        {{ _data?.alarmName || _data?.alarmConfigName || '' }}
                     </j-ellipsis>
                 </j-descriptions-item>
                 <j-descriptions-item label="告警时间">{{
-                    dayjs(data?.alarmTime).format('YYYY-MM-DD HH:mm:ss')
+                    dayjs(_data?.alarmTime).format('YYYY-MM-DD HH:mm:ss')
                 }}</j-descriptions-item>
                 <j-descriptions-item label="告警级别">{{
-                    (levelList.length > 0 && getLevelLabel(data.level)) || ''
+                    (levelList.length > 0 && getLevelLabel(_data.level)) || ''
                 }}</j-descriptions-item>
                 <j-descriptions-item label="告警说明">
                     <j-ellipsis>
-                        {{ data?.description || '' }}
+                        {{ _data?.description || '' }}
                     </j-ellipsis>
                 </j-descriptions-item>
             </j-descriptions>
@@ -50,18 +60,8 @@
                     <j-scrollbar height="200px">
                         <JsonViewer
                             style="background-color: #fafafa"
-                            :value="JSON.parse(data?.alarmInfo || '{}')"
+                            :value="JSON.parse(_data?.alarmInfo || '{}')"
                         />
-                    </j-scrollbar>
-                </div>
-            </div>
-        </template>
-        <template v-else>
-            <div>
-                <div class="label">通知流水:</div>
-                <div style="padding: 10px; background-color: #fafafa">
-                    <j-scrollbar height="200px">
-                        <JsonViewer :value="data" />
                     </j-scrollbar>
                 </div>
             </div>
@@ -87,7 +87,7 @@ const props = defineProps<{
 
 const levelList = ref<any[]>([]);
 
-const data = computed(() => {
+const _data = computed(() => {
     if (props.data.detailJson) return JSON.parse(props.data.detailJson);
     else return props.data?.detail || props.data;
 });

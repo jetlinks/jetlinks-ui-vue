@@ -29,7 +29,7 @@
                         <Detail
                             @unsubscribe="onUnSubscribe"
                             @save="onSave"
-                            v-if="current?.channelProvider !== 'inside-mail'"
+                            v-if="current?.channelProvider !== 'inside-mail' && popoverVisible"
                             :current="current"
                             :data="props.data"
                             @close="popoverVisible = false"

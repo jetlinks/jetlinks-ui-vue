@@ -110,16 +110,20 @@ const handleSearch = async () => {
     }
 };
 
-watch(
-    () => props.current,
-    () => {
-        handleSearch();
-    },
-    {
-        immediate: true,
-        deep: true,
-    },
-);
+onMounted(() => {
+    handleSearch()
+})
+
+// watch(
+//     () => props.current,
+//     () => {
+//         handleSearch();
+//     },
+//     {
+//         immediate: true,
+//         deep: true,
+//     },
+// );
 </script>
 
 <style lang="less" scoped>

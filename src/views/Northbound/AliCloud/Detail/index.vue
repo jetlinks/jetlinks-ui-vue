@@ -6,6 +6,37 @@
                     <div class="left">
                         <div class="left-content">
                             <TitleComponent data="基本信息" />
+                            <j-alert
+                                v-if="_error && modelRef?.id"
+                                style="margin: 10px 0"
+                                type="warning"
+                            >
+                                <template #message>
+                                    <div
+                                        style="
+                                            display: flex;
+                                            justify-content: space-between;
+                                            align-items: center;
+                                        "
+                                    >
+                                        <span
+                                            style="
+                                                width: calc(100% - 100px);
+                                                text-align: center;
+                                            "
+                                            >{{ _error }}</span
+                                        >
+                                        <j-popconfirm
+                                            title="确认启用"
+                                            @confirm="onActiveProduct"
+                                        >
+                                            <j-button size="small"
+                                                >立即启用</j-button
+                                            >
+                                        </j-popconfirm>
+                                    </div>
+                                </template>
+                            </j-alert>
                             <j-form
                                 :layout="'vertical'"
                                 ref="formRef"
@@ -244,12 +275,14 @@
                                             v-if="modelRef.mappings.length"
                                             :activeKey="activeKey"
                                             @change="onCollChange"
+
                                         >
                                             <j-collapse-panel
                                                 v-for="(
                                                     item, index
                                                 ) in modelRef.mappings"
                                                 :key="index"
+                                                :forceRender="false"
                                                 :header="
                                                     item.productKey
                                                         ? aliyunProductList.find(
@@ -317,13 +350,21 @@
                                                                 index,
                                                                 'productId',
                                                             ]"
-                                                            :rules="{
-                                                                required: true,
-                                                                message:
-                                                                    '请选择平台产品',
-                                                            }"
+                                                            :rules="[
+                                                                {
+                                                                    required: true,
+                                                                    message:
+                                                                        '请选择平台产品',
+                                                                },
+                                                                {
+                                                                    validator:
+                                                                        _validator,
+                                                                    trigger:
+                                                                        'change',
+                                                                },
+                                                            ]"
                                                         >
-                                                            <j-select
+                                                            <!-- <j-select
                                                                 placeholder="请选择平台产品"
                                                                 v-model:value="
                                                                     item.productId
@@ -346,7 +387,18 @@
                                                                         i.name
                                                                     }}</j-select-option
                                                                 >
-                                                            </j-select>
+                                                            </j-select> -->
+                                                            <MSelect
+                                                                v-model:value="
+                                                                    item.productId
+                                                                "
+                                                                :options="
+                                                                    getPlatProduct(
+                                                                        item.productId ||
+                                                                            '',
+                                                                    )
+                                                                "
+                                                            />
                                                         </j-form-item>
                                                     </j-col>
                                                 </j-row>
@@ -427,11 +479,15 @@ import {
 } from '@/api/northbound/alicloud';
 import _ from 'lodash';
 import { onlyMessage } from '@/utils/comm';
+import MSelect from '../../components/MSelect/index.vue';
+import { _deploy } from '@/api/device/product';
 
 const router = useRouter();
 const route = useRoute();
 
 const formRef = ref();
+const _error = ref<string>('');
+const _set = new Set()
 
 const modelRef = reactive({
     id: undefined,
@@ -531,6 +587,37 @@ const onCollChange = (_key: string[]) => {
     activeKey.value = _key;
 };
 
+const onActiveProduct = () => {
+    const arr = [..._set].map(async (i: any) => {
+        return await _deploy(i)
+    })
+    Promise.all(arr).then((res) => {
+        if(res.map(i => i?.status === 200).length === _set.size) {
+            onlyMessage('操作成功！')
+            _error.value = ''
+        }
+        _set.clear()
+    }).catch((error) => {
+        onlyMessage('操作失败', 'error')
+    })
+};
+
+const _validator = (_rule: any, value: string): Promise<any> =>
+    new Promise((resolve, reject) => {
+        const _item = productList.value.find((item) => item.id === value);
+        if (!_item) {
+            return reject('关联产品已被删除，请重新选择');
+        } else {
+            if (!_item?.state) {
+                _set.add(value)
+                _error.value = `当前选择的部分产品为禁用状态`;
+            } else {
+                _error.value = '';
+            }
+        }
+        return resolve('');
+    });
+
 const saveBtn = () => {
     formRef.value
         .validate()
@@ -574,6 +661,7 @@ watch(
                 getAliyunProduct(_data?.accessConfig);
             }
             Object.assign(modelRef, _data);
+            activeKey.value = (_data?.mappings || []).map((_: any, index: number) => index)
         }
     },
     { immediate: true, deep: true },

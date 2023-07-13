@@ -153,7 +153,7 @@
         />
     </page-container>
 </template>
-  
+
 <script lang="ts" setup>
 import { queryNoPagingPost } from '@/api/device/instance';
 import { ActionsType } from '@/views/device/Instance/typings';
@@ -210,7 +210,20 @@ const columns = [
         key: 'category',
         search: {
             type: 'select',
-            options: options,
+            options: () =>
+                new Promise((resolve) => {
+                    query({
+                        paging: false,
+                        sotrs: [{ name: 'createTime', order: 'desc' }],
+                    }).then((resp: any) => {
+                        resolve(
+                            resp.result.data.map((item: any) => ({
+                                label: item.category,
+                                value: item.category
+                            }))
+                        )
+                    });
+                }),
         },
     },
     {
@@ -396,6 +409,4 @@ const onRefresh = () => {
 };
 </script>
 
-<style lang="less" scoped>
-</style>
-
+<style lang="less" scoped></style>

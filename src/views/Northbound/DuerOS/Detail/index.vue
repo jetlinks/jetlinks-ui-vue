@@ -6,6 +6,37 @@
                     <div class="left">
                         <div class="left-content">
                             <TitleComponent data="基本信息" />
+                            <j-alert
+                                v-if="_error && modelRef?.id"
+                                style="margin: 10px 0"
+                                type="warning"
+                            >
+                                <template #message>
+                                    <div
+                                        style="
+                                            display: flex;
+                                            justify-content: space-between;
+                                            align-items: center;
+                                        "
+                                    >
+                                        <span
+                                            style="
+                                                width: calc(100% - 100px);
+                                                text-align: center;
+                                            "
+                                            >{{ _error }}</span
+                                        >
+                                        <j-popconfirm
+                                            title="确认启用"
+                                            @confirm="onActiveProduct"
+                                        >
+                                            <j-button size="small"
+                                                >立即启用</j-button
+                                            >
+                                        </j-popconfirm>
+                                    </div>
+                                </template>
+                            </j-alert>
                             <j-form
                                 :layout="'vertical'"
                                 ref="formRef"
@@ -42,33 +73,22 @@
                                                     required: true,
                                                     message: '请选择产品',
                                                 },
-                                                // {
-                                                //     validator: _validator,
-                                                //     trigger: 'change',
-                                                // },
+                                                {
+                                                    validator: _validator,
+                                                    trigger: 'change',
+                                                },
                                             ]"
                                         >
-                                            <j-select
+                                            <MSelect
+                                                v-model:value="modelRef.id"
+                                                :options="productList"
                                                 :disabled="
                                                     type !== 'edit' &&
                                                     modelRef.id &&
                                                     modelRef.id !== ':id'
                                                 "
-                                                placeholder="请选择产品"
-                                                v-model:value="modelRef.id"
-                                                show-search
                                                 @change="productChange"
-                                            >
-                                                <j-select-option
-                                                    v-for="item in productList"
-                                                    :key="item.id"
-                                                    :value="item.id"
-                                                    :label="item.name"
-                                                    >{{
-                                                        item.name
-                                                    }}</j-select-option
-                                                >
-                                            </j-select>
+                                            />
                                         </j-form-item>
                                     </j-col>
                                     <j-col :span="12">
@@ -407,13 +427,15 @@
                                                                 index,
                                                                 'target',
                                                             ]"
-                                                            :rules="{
-                                                                required: true,
-                                                                message:
-                                                                    '请选择平台属性',
-                                                            }"
+                                                            :rules="[
+                                                                {
+                                                                    required: true,
+                                                                    message:
+                                                                        '请选择平台属性',
+                                                                },
+                                                            ]"
                                                         >
-                                                            <j-select
+                                                            <!-- <j-select
                                                                 placeholder="请选择平台属性"
                                                                 v-model:value="
                                                                     item.target
@@ -432,7 +454,16 @@
                                                                         i.name
                                                                     }}</j-select-option
                                                                 >
-                                                            </j-select>
+                                                            </j-select> -->
+                                                            <MSelect
+                                                                v-model:value="
+                                                                    item.target
+                                                                "
+                                                                type="target"
+                                                                :options="
+                                                                    getProductProperties(item.target)
+                                                                "
+                                                            />
                                                         </j-form-item>
                                                     </j-col>
                                                 </j-row>
@@ -514,6 +545,8 @@ import {
 import _, { cloneDeep } from 'lodash';
 import { useMenuStore } from '@/store/menu';
 import { onlyMessage } from '@/utils/comm';
+import MSelect from '../../components/MSelect/index.vue';
+import { _deploy } from '@/api/device/product';
 
 const menuStory = useMenuStore();
 const route = useRoute();
@@ -555,6 +588,8 @@ const loading = ref<boolean>(false);
 const type = ref<'edit' | 'view'>('edit');
 const actionActiveKey = ref<string[]>(['0']);
 const propertyActiveKey = ref<string[]>(['0']);
+
+const _error = ref<string>('');
 
 const onPropertyCollChange = (_key: string[]) => {
     propertyActiveKey.value = _key;
@@ -652,12 +687,20 @@ const findApplianceType = computed(() => {
     return typeList.value.find((item) => item.id === modelRef.applianceType);
 });
 
-const findProductMetadata = computed(() => {
+const findProduct = computed(() => {
     if (!modelRef.id) return;
     const _product = productList.value?.find(
         (item: any) => item.id === modelRef.id,
     );
-    return _product?.metadata && JSON.parse(_product.metadata || '{}');
+    return _product;
+});
+
+const findProductMetadata = computed(() => {
+    if (!modelRef.id) return;
+    return (
+        findProduct.value?.metadata &&
+        JSON.parse(findProduct.value?.metadata || '{}')
+    );
 });
 
 // 查询产品列表
@@ -717,18 +760,34 @@ const getTypesActions = (val: string) => {
     return list || [];
 };
 
-// const _validator = (_rule: any, value: string): Promise<any> =>
-//     new Promise((resolve, reject) => {
-//         const _item = productList.value.find((item) => item.id === value);
-//         if (!_item) {
-//             return reject('该产品已被删除');
-//         } 
-//         return resolve('');
-//     });
+const onActiveProduct = () => {
+    if (modelRef.id) {
+        _deploy(modelRef.id).then((resp) => {
+            if (resp.status === 200) {
+                onlyMessage('操作成功！');
+                getProduct(modelRef.id);
+                _error.value = '';
+            }
+        });
+    }
+};
 
-watchEffect(() => {
-    console.log(modelRef.id)
-})
+const _validator = (_rule: any, value: string): Promise<any> =>
+    new Promise((resolve, reject) => {
+        const _item = productList.value.find((item) => item.id === value);
+        if (!_item) {
+            productChange(value);
+            return reject('关联产品已被删除，请重新选择');
+        } else {
+            if (!_item?.state) {
+                _error.value = `当前选择的${_item.name}产品为禁用状态`;
+                // return reject(`当前选择的${_item.name}产品为禁用状态`)
+            } else {
+                _error.value = '';
+            }
+        }
+        return resolve('');
+    });
 
 const saveBtn = async () => {
     const tasks: any[] = [];

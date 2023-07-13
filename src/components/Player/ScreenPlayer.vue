@@ -458,4 +458,10 @@ defineExpose({
 
 <style lang="less" scoped>
 @import './index.less';
+:deep(.live-player-stretch-btn){
+  display: none;
+}
+:deep(.vjs-icon-spinner){
+  display: none;
+}
 </style>
