@@ -34,7 +34,7 @@
             <template #action="slotProps">
                 <AIcon
                     type="ExclamationCircleOutlined"
-                    style="color: #1d39c4; cursor: pointer"
+                    :class="Object.keys(slotProps.context).length == 0 ? 'disableIcon' : 'Icon'"
                     @click="handleDetail(slotProps)"
                 />
             </template>
@@ -148,8 +148,24 @@ const handleError = (e: any) => {
 /**
  * 查看详情
  */
-const handleDetail = (data:any) => {
-    Modal.info({
+ const handleDetail = (data: any) => {
+    if(Object.keys(data.context).length == 0){
+        Modal.info({
+        title: '详情信息',
+        content: h(
+            "p",
+            {
+               
+                style: {
+                    maxHeight: '300px',
+                    overflowY: 'auto',
+                },
+            },
+            '模板中不存在变量'
+        ),
+    });
+    }else{
+        Modal.info({
         title: '详情信息',
         content: h(
             Record,
@@ -162,5 +178,16 @@ const handleDetail = (data:any) => {
             },
         ),
     });
+    }  
 };
 </script>
+<style lang="less" scoped>
+.disableIcon{
+    color:darkgrey ;
+    cursor:pointer;
+}
+.Icon{
+    color:#1d39c4;
+    cursor:pointer;
+}
+</style>
