@@ -84,12 +84,24 @@ const columns = [
           }]
         },
       control(newValue: any, oldValue: any) {
-        return oldValue.valueType.type !== oldValue?.valueType?.type
+        return newValue.valueType?.type !== oldValue?.valueType?.type
       },
     },
     {
         title: '其他配置',
         dataIndex: 'config',
+        form: {
+          required: true,
+          rules: [{
+            validator(_: any, value: any) {
+              console.log(value)
+              // if (!value?.type) {
+                return Promise.reject('请选择数据类型')
+              // }
+              // return Promise.resolve()
+            }
+          }]
+        },
         control(newValue: any, oldValue: any) {
           if (newValue && !oldValue) {
             return true

@@ -350,7 +350,7 @@ const table: any = {
                             code: 200,
                             result: {
                                 data: data.sort(
-                                    (a, b) => a.createTime - b.createTime,
+                                    (a, b) =>  b.createTime - a.createTime
                                 ),
                                 pageIndex,
                                 pageSize,

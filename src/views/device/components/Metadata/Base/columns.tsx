@@ -210,6 +210,17 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       title: '配置参数',
       dataIndex: 'properties',
       width: 100,
+      form: {
+        required: true,
+        rules: [{
+          validator(_: any, value: any) {
+            // if (!value?.type) {
+              return Promise.reject('请选择数据类型')
+            // }
+            // return Promise.resolve()
+          }
+        }]
+      },
       control(newValue, oldValue) {
         if (newValue && !oldValue) {
           return true
