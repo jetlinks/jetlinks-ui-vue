@@ -197,6 +197,7 @@ import { FormValidate, FormState } from '../data';
 import type { FormInstance } from 'ant-design-vue';
 import type { FormDataType } from '../type.d';
 import { cloneDeep, isArray } from 'lodash-es';
+import { protocolList } from '@/utils/consts';
 
 const props = defineProps({
     data: {
@@ -281,17 +282,13 @@ const getCertificateList = async () => {
 const getProvidersList = async () => {
     const resp: any = await getProviders();
     if (resp.status === 200) {
-        const list = [
-            { label: 'OPC UA', value: 'OPC_UA' },
-            { label: 'Modbus TCP', value: 'MODBUS_TCP' },
-        ];
         const arr = resp.result
             .filter(
                 (item: any) => item.id === 'modbus-tcp' || item.id === 'opc-ua',
             )
-            .map((it: any) => (it?.id === 'opc-ua' ? 'OPC_UA' : 'MODBUS_TCP'));
-        const providers: any = list.filter((item: any) =>
-            arr.includes(item.value),
+            .map((it: any) => it.id);
+        const providers: any = protocolList.filter((item: any) =>
+            arr.includes(item.alias),
         );
         providersList.value = providers;
         if (arr.includes('OPC_UA')) {

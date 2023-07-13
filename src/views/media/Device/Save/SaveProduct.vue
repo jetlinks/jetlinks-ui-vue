@@ -323,7 +323,7 @@ const handleAdd = () => {
     );
     tab.onTabSaveSuccess = async (value: any) => {
         await getGatewayList();
-        handleClick(value?.result);
+        handleClick(gatewayList.value?.[0]);
     };
 };
 </script>

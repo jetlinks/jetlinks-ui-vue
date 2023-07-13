@@ -546,7 +546,34 @@ const resetPublicFiles = () => {
  */
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
-    if(editTable.value.validate()){
+    if(formData.value.type === 'webhook') {
+        Promise.all([editTable.value.validate(),validate()]).then(async (result:any) => {
+            formData.value.configuration.headers = result[0]
+            btnLoading.value = true;
+            let res;
+            if (!formData.value.id) {
+                res = await configApi.save(formData.value);
+            } else {
+                res = await configApi.update(formData.value);
+            }
+            if (res?.success) {
+                onlyMessage('保存成功');
+                if (route.query?.notifyType) {
+                    // @ts-ignore
+                    window?.onTabSaveSuccess(res.result);
+                    setTimeout(() => window.close(), 300);
+                } else {
+                    router.back();
+                }
+            }
+        })
+        .catch((err:any) => {
+            console.log('err: ', err);
+        })
+        .finally(() => {
+            btnLoading.value = false;
+        }); 
+    }else{
         validate()
         .then(async () => {
             btnLoading.value = true;
@@ -567,65 +594,13 @@ const handleSubmit = () => {
                 }
             }
         })
-        .catch((err) => {
+        .catch((err:any) => {
             console.log('err: ', err);
         })
         .finally(() => {
             btnLoading.value = false;
         });
-    }
-    // Promise.all([validate(),editTable.value.validate()]).then(async()=>{
-    //     btnLoading.value = true;
-    //         let res;
-    //         if (!formData.value.id) {
-    //             res = await configApi.save(formData.value);
-    //         } else {
-    //             res = await configApi.update(formData.value);
-    //         }
-    //         if (res?.success) {
-    //             onlyMessage('保存成功');
-    //             if (route.query?.notifyType) {
-    //                 // @ts-ignore
-    //                 window?.onTabSaveSuccess(res.result);
-    //                 setTimeout(() => window.close(), 300);
-    //             } else {
-    //                 router.back();
-    //             }
-    //         }
-    // }) .catch((err) => {
-    //         console.log('err: ', err);
-    //     })
-    //     .finally(() => {
-    //         btnLoading.value = false;
-    //     });
-    // validate()
-    //     .then(async () => {
-    //         const a = editTable.value.validate();
-    //         console.log(a);
-    //         btnLoading.value = true;
-    //         let res;
-    //         if (!formData.value.id) {
-    //             res = await configApi.save(formData.value);
-    //         } else {
-    //             res = await configApi.update(formData.value);
-    //         }
-    //         if (res?.success) {
-    //             onlyMessage('保存成功');
-    //             if (route.query?.notifyType) {
-    //                 // @ts-ignore
-    //                 window?.onTabSaveSuccess(res.result);
-    //                 setTimeout(() => window.close(), 300);
-    //             } else {
-    //                 router.back();
-    //             }
-    //         }
-    //     })
-    //     .catch((err) => {
-    //         console.log('err: ', err);
-    //     })
-    //     .finally(() => {
-    //         btnLoading.value = false;
-    //     });
+    }  
 };
 
 watchEffect(() => {

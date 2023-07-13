@@ -187,6 +187,7 @@ const columns = [
             options: [
                 { label: '在线', value: 'online' },
                 { label: '离线', value: 'offline' },
+                { label: '禁用', value: 'notActive'}
             ],
             handleValue: (v: any) => {
                 return v;

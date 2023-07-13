@@ -81,6 +81,8 @@ import { onlyMessage } from '@/utils/comm';
 import {
     USER_CENTER_MENU_CODE,
 } from '@/utils/consts';
+import { protocolList } from '@/utils/consts';
+import { getProviders } from '@/api/data-collect/channel';
 
 const selectedKeys: any = ref([]);
 const treeData = ref<any>([]);
@@ -111,6 +113,17 @@ const params = {
     ],
 };
 
+/**
+ * 查询支持的协议
+ */
+let filterProtocolList: any[] = [];
+const getProvidersFn = async () => {
+    const res: any = await getProviders();
+    filterProtocolList = protocolList.filter((item) => {
+        return res.result?.find((val: any) => item.alias == val.id);
+    })
+}
+getProvidersFn();
 function filterTree(nodes: Array<any>, selectedKeys: Array<any>) {
     const filtered = [];
     for (let i = 0; i < nodes.length; i++) {
@@ -206,17 +219,29 @@ onMounted(() => {
                 const systemMenuData = initData(systemMenu.value);
                 selectedKeys.value = systemMenuData.checkedKeys;
 
-                const AllMenu = mergeArr(
+                const AllMenu = filterMenus(mergeArr(
                     cloneDeep(filterBaseMenu),
                     cloneDeep(systemMenu.value),
-                );
-
+                ))
+                console.log(AllMenu);
                 // 处理排序
                 treeData.value = handleSortsArr(AllMenu);
             }
         });
     });
 });
+const filterMenus = (menus: any[]) => {
+    return menus.filter((item) => {
+        if (item.children) {
+            item.children = filterMenus(item.children);
+        }
+        if (!filterProtocolList.length && item.code == 'link/DataCollect') {
+            debugger
+            return false;
+        }
+        return item
+    });
+};
 </script>
 
 <style lang="less" scoped>

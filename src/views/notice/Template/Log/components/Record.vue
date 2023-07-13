@@ -27,7 +27,6 @@ const replaceData = async (data: any) => {
     context.value = data.context
     if (context.value.detailJson) {
         context.value.detailJson = context.value.detailJson.replace(/\\\"/g, '\"')
-
     }
     if (context.value.hasOwnProperty('userIdList') || context.value.hasOwnProperty('toUser')) {
         templateApi.getUser(
