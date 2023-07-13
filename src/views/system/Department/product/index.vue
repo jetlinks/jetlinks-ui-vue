@@ -219,6 +219,7 @@
                 :all-permission="tableData.permissionList"
                 asset-type="product"
                 @confirm="table.addConfirm"
+                @next="nextAction"
             />
             <EditPermissionDialog
                 v-if="dialogs.editShow"
@@ -230,12 +231,11 @@
                 asset-type="product"
                 :defaultPermission="tableData.defaultPermission"
                 @confirm="table.refresh"
-                @next="next"
             />
             <NextDialog
                 v-if="dialogs.nextShow"
                 v-model:visible="dialogs.nextShow"
-                @confirm="emits('openDeviceBind')"
+                @confirm="nextConfirm"
             />
         </div>
     </div>
@@ -256,9 +256,10 @@ import {
     getBindingsPermission,
 } from '@/api/system/department';
 import { intersection } from 'lodash-es';
-
+import { useDepartmentStore } from '@/store/department';
 const permission = 'system/Department';
 
+const departmentStore = useDepartmentStore();
 const emits = defineEmits(['openDeviceBind']);
 const props = defineProps<{
     parentId: string;
@@ -614,8 +615,14 @@ watch(
         if (!val) tableData.selectedRows = [];
     },
 );
-const next = (data:any) =>{
-    
+let Temporary:any = '';
+
+const nextAction = (data:any) =>{
+    Temporary = data
+}
+const nextConfirm = () =>{
+    departmentStore.setProductId(Temporary);
+    emits('openDeviceBind')
 }
 </script>
 
