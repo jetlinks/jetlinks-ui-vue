@@ -90,11 +90,38 @@ import { _execute } from '@/api/rule-engine/configuration';
 
 const columns = [
     {
-        title: '名称',
+        title: '场景名称',
         dataIndex: 'name',
         key: 'name',
         search: {
-            type: 'string',
+            type: 'select',
+            options: async () => {
+              const res = await query(
+                  {
+                        sorts: [
+                          {
+                            name: 'createTime',
+                            order: 'desc',
+                          },
+                        ],
+                        terms: [
+                          {
+                            column: 'id',
+                            termType: 'alarm-bind-rule$not',
+                            value: props.data?.id,
+                          },
+                          { column: 'triggerType', termType: 'eq', value: 'manual' }
+                        ]
+                      }
+              );
+              if (res.status === 200) {
+                  return res.result.data.map((item: any) => ({
+                      label: item.name,
+                      value: item.id,
+                  }));
+              }
+              return []
+            }
         },
     },
     {
@@ -133,7 +160,7 @@ const terms = [
         terms: [
             {
                 column: 'id',
-                termType: 'alarm-bind-rule',
+                termType: 'alarm-bind-rule$not',
                 value: props.data?.id,
             },
             {

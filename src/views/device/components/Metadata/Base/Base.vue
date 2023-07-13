@@ -42,7 +42,7 @@
                         : !editStatus ? '暂无改动数据': '保存',
                     placement: hasOperate('add', type) ? 'topRight' : 'top',
                 }"
-              @click="handleSaveClick"
+              @click="handleSaveClick()"
           >
             保存
           </PermissionButton>

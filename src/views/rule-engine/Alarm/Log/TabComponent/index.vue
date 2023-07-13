@@ -7,21 +7,27 @@
             @search="search"
         />
         <pro-search
-            :columns="produtCol"
+            :columns="productCol"
             :target="`alarm-log-${props.type}`"
-            v-if="['product', 'other'].includes(props.type)"
+            v-else-if="props.type === 'product'"
             @search="search"
         />
         <pro-search
             :columns="deviceCol"
             target="alarm-log-device"
-            v-if="props.type === 'device'"
+            v-else-if="props.type === 'device'"
             @search="search"
         />
         <pro-search
             :columns="orgCol"
             target="alarm-log-org"
-            v-if="props.type === 'org'"
+            v-else-if="props.type === 'org'"
+            @search="search"
+        />
+        <pro-search
+            :columns="otherCol"
+            :target="`alarm-log-${props.type}`"
+            v-else-if="props.type === 'other'"
             @search="search"
         />
         <FullPage>
@@ -194,11 +200,23 @@ titleMap.set('other', '其他');
 titleMap.set('org', '组织');
 const columns = [
     {
-        title: '名称',
-        dataIndex: 'alarmName',
-        key: 'alarmName',
+        title: '告警级别',
+        dataIndex: 'level',
+        key: 'level',
         search: {
-            type: 'string',
+            type: 'select',
+            options: async () => {
+              const res = await queryLevel()
+              if (res.success && res.result?.levels) {
+                return  (res.result.levels as any[]).map((item: any) => {
+                  return {
+                    label: item.title,
+                    value: item.level
+                  }
+                })
+              }
+              return []
+            }
         },
     },
     {
@@ -228,20 +246,28 @@ const columns = [
         },
     },
 ];
-const produtCol = [
+const productCol = [
     ...columns,
     {
         title: '产品名称',
-        dataIndex: 'targetName',
-        key: 'targetName',
+        dataIndex: 'sourceId',
+        key: 'sourceId',
         search: {
             type: 'select',
             options: async () => {
-                const resq = await getProductList();
-                if (resq.status === 200) {
-                    return resq.result.map((item: any) => ({
-                        label: item.name,
-                        value: item.name,
+                const resp = await handleSearch({
+                  sorts: [{ name: 'alarmTime', order: 'desc' }],
+                  terms: [{
+                    column: "targetType",
+                    termType: "eq",
+                    type: "and",
+                    value: "product",
+                  }]
+                });
+                if (resp.status === 200) {
+                    return resp.result.data.map((item: any) => ({
+                        label: item.sourceName,
+                        value: item.sourceId,
                     }));
                 }
                 return [];
@@ -253,20 +279,28 @@ const deviceCol = [
     ...columns,
     {
         title: '设备名称',
-        dataIndex: 'targetName',
-        key: 'targetName',
+        dataIndex: 'sourceId',
+        key: 'sourceId',
         search: {
-            type: 'select',
-            options: async () => {
-                const res = await getDeviceList();
-                if (res.status === 200) {
-                    return res.result.map((item: any) => ({
-                        label: item.name,
-                        value: item.name,
-                    }));
-                }
-                return [];
-            },
+          type: 'select',
+          options: async () => {
+            const resp = await handleSearch({
+              sorts: [{ name: 'alarmTime', order: 'desc' }],
+              terms: [{
+                column: "targetType",
+                termType: "eq",
+                type: "and",
+                value: "device",
+              }]
+            });
+            if (resp.status === 200) {
+              return resp.result.data.map((item: any) => ({
+                label: item.sourceName,
+                value: item.sourceId,
+              }));
+            }
+            return [];
+          },
         },
     },
 ];
@@ -274,23 +308,61 @@ const orgCol = [
     ...columns,
     {
         title: '组织名称',
-        dataIndex: 'targetName',
-        key: 'targetName',
+        dataIndex: 'sourceId',
+        key: 'sourceId',
         search: {
-            type: 'select',
-            options: async () => {
-                const res = await getOrgList();
-                if (res.status === 200) {
-                    return res.result.map((item: any) => ({
-                        label: item.name,
-                        value: item.name,
-                    }));
-                }
-                return [];
-            },
+          type: 'select',
+          options: async () => {
+            const resp = await handleSearch({
+              sorts: [{ name: 'alarmTime', order: 'desc' }],
+              terms: [{
+                column: "targetType",
+                termType: "eq",
+                type: "and",
+                value: "org",
+              }]
+            });
+            if (resp.status === 200) {
+              return resp.result.data.map((item: any) => ({
+                label: item.sourceName,
+                value: item.sourceId,
+              }));
+            }
+            return [];
+          },
         },
     },
 ];
+
+const otherCol = [
+  ...columns,
+  {
+    title: '组织名称',
+    dataIndex: 'sourceId',
+    key: 'sourceId',
+    search: {
+      type: 'select',
+      options: async () => {
+        const resp = await handleSearch({
+          sorts: [{ name: 'alarmTime', order: 'desc' }],
+          terms: [{
+            column: "targetType",
+            termType: "eq",
+            type: "and",
+            value: "other",
+          }]
+        });
+        if (resp.status === 200) {
+          return resp.result.data.map((item: any) => ({
+            label: item.sourceName,
+            value: item.sourceId,
+          }));
+        }
+        return [];
+      },
+    },
+  },
+]
 
 let params: any = ref({
     sorts: [{ name: 'alarmTime', order: 'desc' }],
