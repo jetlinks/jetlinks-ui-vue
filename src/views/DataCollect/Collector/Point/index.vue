@@ -337,7 +337,7 @@ import BatchUpdate from './components/BatchUpdate/index.vue';
 import SaveModBus from './Save/SaveModBus.vue';
 import SaveOPCUA from './Save/SaveOPCUA.vue';
 import Scan from './Scan/index.vue';
-import { colorMap } from '../data.ts';
+import { colorMap } from '../data';
 import { cloneDeep, isNumber, throttle } from 'lodash-es';
 import { getWebSocket } from '@/utils/websocket';
 import { map } from 'rxjs/operators';
@@ -440,14 +440,6 @@ const columns = [
                 {
                     label: '运行中',
                     value: 'running',
-                },
-                {
-                    label: '部分错误',
-                    value: 'partialError',
-                },
-                {
-                    label: '错误',
-                    value: 'failed',
                 },
                 {
                     label: '已停止',
