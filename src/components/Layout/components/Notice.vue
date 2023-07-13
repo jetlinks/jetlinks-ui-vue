@@ -28,6 +28,7 @@ import { useUserInfo } from '@/store/userInfo';
 
 import { useMenuStore } from '@/store/menu';
 import { getAllNotice } from '@/api/account/center';
+import { flatten } from 'lodash-es';
 
 const updateCount = computed(() => useUserInfo().alarmUpdateCount);
 const menuStory = useMenuStore();
@@ -99,46 +100,6 @@ const read = (type: string, data: any) => {
     });
 };
 
-// 查询未读数量
-const getList = () => {
-    if(tabs.value.length <= 0) return;
-    loading.value = true; 
-    const params = {
-        sorts: [{
-          name: 'notifyTime',
-          order: 'desc'
-        }],
-        terms: [
-            {
-                terms: [
-                    {
-                        type: 'or',
-                        value: 'unread',
-                        termType: 'eq',
-                        column: 'state',
-                    },
-                ],
-            },
-        ],
-    };
-    getList_api(params)
-        .then((resp: any) => {
-            total.value = resp.result.total;
-        })
-        .finally(() => (loading.value = false));
-};
-
-const visibleChange = (bool: boolean) => {
-    bool && getList();
-};
-
-const handleRead = () => {
-    visible.value = false;
-    getList();
-};
-
-watch(updateCount, () => getList());
-
 const tab = [
     {
         key: 'alarm',
@@ -162,6 +123,56 @@ const tab = [
         type: ['device-transparent-codec'],
     },
 ];
+
+// 查询未读数量
+const getList = () => {
+    if(tabs.value.length <= 0) return;
+    loading.value = true; 
+    const params = {
+        sorts: [{
+          name: 'notifyTime',
+          order: 'desc'
+        }],
+        terms: [
+            {
+                terms: [
+                    {
+                        type: 'and',
+                        value: 'unread',
+                        termType: 'eq',
+                        column: 'state',
+                    },
+                ],
+            },
+            {
+                terms: [
+                    {
+                        type: 'and',
+                        value: flatten(tabs.value.map((i: any) => i?.type)),
+                        termType: 'in',
+                        column: 'topicProvider',
+                    },
+                ],
+            },
+        ],
+    };
+    getList_api(params)
+        .then((resp: any) => {
+            total.value = resp.result.total;
+        })
+        .finally(() => (loading.value = false));
+};
+
+const visibleChange = (bool: boolean) => {
+    bool && getList();
+};
+
+const handleRead = () => {
+    visible.value = false;
+    getList();
+};
+
+watch(updateCount, () => getList());
 
 const tabs = ref<any>([]);
 

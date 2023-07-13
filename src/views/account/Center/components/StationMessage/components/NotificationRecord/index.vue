@@ -245,6 +245,7 @@ const onAllRead = async () => {
     if (resp.status === 200) {
         onlyMessage('操作成功！');
         refresh();
+        user.updateAlarm();
     }
 };
 

@@ -16,7 +16,7 @@
                 </template>
                 <j-spin :spinning="loading">
                     <div class="content">
-                        <j-scrollbar class="list" :max-height="450" v-if="total">
+                        <j-scrollbar class="list" :max-height="450" v-if="list.length">
                             <template v-for="i in list" :key="i.id">
                                 <NoticeItem
                                     :data="i"
@@ -66,19 +66,10 @@ const emits = defineEmits(['action']);
 type DataType = 'alarm' | 'system-monitor' | 'system-business';
 
 const refreshObj = ref({
-    alarm: true,
+    'alarm': true,
     'system-monitor': true,
     'system-business': true,
 });
-
-const loading = ref(false);
-const total = ref(0);
-const list = ref<any[]>([]);
-const activeKey = ref<DataType>('alarm');
-const menuStory = useMenuStore();
-const route = useRoute();
-
-const userInfo = useUserInfo();
 
 const props = defineProps({
     tabs: {
@@ -86,6 +77,15 @@ const props = defineProps({
         default: () => []
     }
 })
+
+const loading = ref(false);
+const total = ref(0);
+const list = ref<any[]>([]);
+const activeKey = ref<DataType>(props.tabs?.[0]?.key || 'alarm');
+const menuStory = useMenuStore();
+const route = useRoute();
+
+const userInfo = useUserInfo();
 
 const getData = (type: string[]) => {
     loading.value = true;
@@ -124,7 +124,7 @@ const onChange = (_key: string) => {
 };
 
 onMounted(async () => {
-    onChange('alarm');
+    onChange(props.tabs?.[0]?.key || "alarm");
 });
 
 const onRefresh = (id: string) => {
