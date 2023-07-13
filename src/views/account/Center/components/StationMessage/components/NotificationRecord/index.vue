@@ -254,6 +254,10 @@ onMounted(() => {
         view(routerParams.params?.value.row);
     }
 });
+onUnmounted(() => {
+    user.messageInfo = {}
+    viewVisible.value = false
+})
 </script>
 
 <style lang="less" scoped>

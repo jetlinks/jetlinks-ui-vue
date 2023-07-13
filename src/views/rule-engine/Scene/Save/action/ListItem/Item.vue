@@ -524,7 +524,7 @@ const onType = (_type: string) => {
 const onSave = (data: ActionsType, options: any) => {
   const { key, terms } = _data.value.branches![props.branchesName].then?.[props.thenName].actions?.[props.name]
 
-  const columns = new Set([...(props.options?.termsColumns || []), ...(options.otherColumns.filter((item?: string) => item))])
+  const columns = new Set([...(props.options?.termsColumns || []), ...(options?.otherColumns?.filter?.((item?: string) => item) || [])])
 
   const actionItem: ActionsType = {
     ...data,
