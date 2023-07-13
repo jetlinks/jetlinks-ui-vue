@@ -1,7 +1,7 @@
 <template>
     <j-modal
         visible
-        title="新增"
+        title="选择触发场景"
         okText="确定"
         cancelText="取消"
         :width="1000"
@@ -159,7 +159,9 @@ typeMap.set('manual', {
 const _selectedRowKeys = ref<string[]>([]);
 
 const handleClick = (dt: any) => {
+   
     if(dt.state?.value === 'disable') {
+        onlyMessage('该场景为禁用状态，无法触发告警','error')
         return
     }
     if (_selectedRowKeys.value.includes(dt.id)) {
