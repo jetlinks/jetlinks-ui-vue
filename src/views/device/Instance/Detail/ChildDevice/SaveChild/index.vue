@@ -146,7 +146,7 @@ const selectChange = (e: any) => {
         visible.value = true;
     }
     const item = productList.value.filter((i: any) => i.id === e)[0];
-    const array = JSON.parse(item.metadata || [])?.properties?.map(
+    const array = JSON.parse(item.metadata || '{}')?.properties?.map(
         (i: any) => ({
             metadataType: 'property',
             metadataName: `${i.name}(${i.id})`,

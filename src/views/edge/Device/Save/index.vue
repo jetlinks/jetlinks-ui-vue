@@ -13,7 +13,7 @@
                 <j-row type="flex">
                     <j-col flex="180px">
                         <j-form-item name="photoUrl">
-                            <JProUpload accept="image/jpeg,image/png" v-model="modelRef.photoUrl" />
+                            <JProUpload accept="image/jpeg,image/png" v-model="modelRef.photoUrl" :size="4"/>
                         </j-form-item>
                     </j-col>
                     <j-col flex="auto">

@@ -1,5 +1,5 @@
 <template>
-    <j-spin :spinning="loading" v-if="_metadata.length">
+    <j-spin :spinning="loading" v-if="_metadata?.length">
         <j-card :bordered="false">
             <template #title>
                 <TitleComponent data="点位映射"></TitleComponent>
