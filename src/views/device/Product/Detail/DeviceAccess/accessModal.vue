@@ -66,42 +66,44 @@
                 {{ slotProps.name }}
               </h3>
             </Ellipsis>
-            <j-row>
-              <j-col :span="12" v-if="slotProps.channelInfo">
-                <div class="card-item-content-text">
-                  {{ slotProps.channelInfo?.name }}
-                </div>
-                <Ellipsis style="width: calc(100% - 20px)">
-                  <div>
+            <div style="height: 95px">
+              <j-row>
+                <j-col :span="12" v-if="slotProps.channelInfo">
+                  <div class="card-item-content-text">
+                    {{ slotProps.channelInfo?.name }}
+                  </div>
+                  <Ellipsis style="width: calc(100% - 20px)">
+                    <div>
+                      {{
+                        slotProps.channelInfo?.addresses
+                          ? slotProps.channelInfo
+                            ?.addresses[0].address
+                          : ''
+                      }}
+                    </div>
+                  </Ellipsis>
+                </j-col>
+                <j-col :span="12">
+                  <div class="card-item-content-text">协议</div>
+                  <div>{{ slotProps.protocolDetail?.name }}</div>
+                </j-col>
+              </j-row>
+              <j-row>
+                <j-col :span="24">
+                  <Ellipsis style="width: calc(100% - 50px)"
+                  >
+                    <div class="context-access">
                     {{
-                      slotProps.channelInfo?.addresses
-                        ? slotProps.channelInfo
-                          ?.addresses[0].address
-                        : ''
+                        getDescription(
+                          slotProps,
+                        )
                     }}
                   </div>
-                </Ellipsis>
-              </j-col>
-              <j-col :span="12">
-                <div class="card-item-content-text">协议</div>
-                <div>{{ slotProps.protocolDetail?.name }}</div>
-              </j-col>
-            </j-row>
-            <j-row>
-              <j-col :span="24">
-                <Ellipsis style="width: calc(100% - 50px)"
-                >
-                  <div class="context-access">
-                  {{
-                      getDescription(
-                        slotProps,
-                      )
-                  }}
-                </div>
-                </Ellipsis
-                >
-              </j-col>
-            </j-row>
+                  </Ellipsis
+                  >
+                </j-col>
+              </j-row>
+            </div>
           </template>
         </CardBox>
       </template>

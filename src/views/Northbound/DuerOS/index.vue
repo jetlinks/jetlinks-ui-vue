@@ -146,13 +146,13 @@ import {
     _undeploy,
     _deploy,
     _delete,
-    queryProductList,
     queryTypes,
 } from '@/api/northbound/dueros';
 import type { ActionsType } from '@/views/device/Instance/typings';
 import { getImage, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from 'store/menu';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
+import { queryNoPagingPost } from '@/api/device/product';
 
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -174,9 +174,10 @@ const columns = [
         key: 'productName',
         search: {
             type: 'select',
+            rename: 'id',
             options: () =>
                 new Promise((resolve) => {
-                    queryProductList().then((resp: any) => {
+                    queryNoPagingPost({}).then((resp: any) => {
                         resolve(
                             resp.result.map((item: any) => ({
                                 label: item.name,

@@ -61,7 +61,7 @@
                 <div class="label">通知流水:</div>
                 <div style="padding: 10px; background-color: #fafafa">
                     <j-scrollbar height="200px">
-                        <JsonViewer :value="JSON.parse(data?.alarmInfo || '{}')" />
+                        <JsonViewer :value="data" />
                     </j-scrollbar>
                 </div>
             </div>

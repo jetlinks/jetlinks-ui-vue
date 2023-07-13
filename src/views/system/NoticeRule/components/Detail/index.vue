@@ -15,19 +15,27 @@
             </div>
             <div class="item">
                 <div class="label">通知模板</div>
-                <div class="value"><j-ellipsis :lineClamp="2">{{ obj.template }}</j-ellipsis></div>
+                <div class="value">
+                    <j-ellipsis :lineClamp="2">{{ obj.template }}</j-ellipsis>
+                </div>
             </div>
             <div class="item">
                 <div class="label">模版内容</div>
-                <div class="value"><j-ellipsis :lineClamp="2">{{ obj.content }}</j-ellipsis></div>
+                <div class="value">
+                    <j-ellipsis :lineClamp="2">{{ obj.content }}</j-ellipsis>
+                </div>
             </div>
             <div class="item">
                 <div class="label">模板变量</div>
-                <div class="value"><j-ellipsis :lineClamp="2">{{ variables }}</j-ellipsis></div>
+                <div class="value">
+                    <j-ellipsis :lineClamp="2">{{ variables }}</j-ellipsis>
+                </div>
             </div>
             <div class="item">
                 <div class="label">用户权限</div>
-                <div class="value"><j-ellipsis :lineClamp="2">{{ obj.role }}</j-ellipsis></div>
+                <div class="value">
+                    <j-ellipsis :lineClamp="2">{{ obj.role }}</j-ellipsis>
+                </div>
             </div>
         </div>
         <template #footer>
@@ -39,6 +47,7 @@
 <script lang="ts" setup>
 import ConfigApi from '@/api/notice/config';
 import TemplateApi from '@/api/notice/template';
+import { queryConfigVariables } from '@/api/system/noticeRule';
 import { getRoleList_api } from '@/api/system/user';
 
 const props = defineProps({
@@ -48,6 +57,7 @@ const props = defineProps({
     },
 });
 const emit = defineEmits(['close', 'save']);
+const builtInList = ref<any[]>([]);
 
 const obj = reactive<{
     notifier: string;
@@ -85,14 +95,42 @@ const handleSearch = async () => {
                 resp.result?.variableDefinitions?.length &&
                 props.data?.channelConfiguration?.variables
             ) {
+                const config = props.data?.channelConfiguration?.variables
+                const t = Object.keys(config)?.find(
+                    (i: any) => config?.[i]?.source === 'upper',
+                );
+                if (t && !builtInList.value.length) {
+                    const _variables = await queryConfigVariables(
+                        props.data.providerId,
+                    );
+                    if (_variables.status === 200) {
+                        // 避免数据id相同，去重
+                        const _set = new Set(
+                            (_variables.result as any[]).map(
+                                (item) => item?.id,
+                            ),
+                        );
+                        const arr = [..._set.values()].map((item) => {
+                            const _arr = (_variables.result as any[]).reverse();
+                            return _arr.find((i) => i.id === item);
+                        });
+                        builtInList.value = arr.map((item) => {
+                            return {
+                                ...item,
+                                id: 'detail.' + item.id, // 为了方便传到后端
+                            };
+                        });
+                    }
+                }
                 obj.variables = (resp.result?.variableDefinitions || []).map(
                     (item: any) => {
+                        const _item =
+                            config?.[
+                                item?.id
+                            ];
                         return {
                             name: item.name,
-                            value:
-                                props.data?.channelConfiguration?.variables?.[
-                                    item?.id
-                                ]?.value || '',
+                            value: _item?.value || builtInList.value.find(i => _item.upperKey === i.id)?.name || _item.upperKey,
                         };
                     },
                 );
@@ -149,7 +187,7 @@ onMounted(() => {
             text-align: right;
         }
 
-        &:last-child{
+        &:last-child {
             border: none;
         }
     }
