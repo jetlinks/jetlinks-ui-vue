@@ -179,6 +179,7 @@
                                                 "
                                                 placeholder="请输入端口"
                                                 style="width: 100%"
+                                                :precision="0"
                                             />
                                         </j-col>
                                     </j-row>
@@ -284,6 +285,7 @@
                                                 "
                                                 placeholder="请输入端口"
                                                 style="width: 100%"
+                                                :precision="0"
                                             />
                                         </j-col>
                                     </j-row>
@@ -670,8 +672,8 @@ onMounted(() => {
     getDetail();
 });
 
-const regDomain =
-    /[j-zA-Z0-9][-j-zA-Z0-9]{0,62}(\.[j-zA-Z0-9][-j-zA-Z0-9]{0,62})+\.?/;
+const regDomain = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\.|$)){4}$/
+    // /[j-zA-Z0-9][-j-zA-Z0-9]{0,62}(\.[j-zA-Z0-9][-j-zA-Z0-9]{0,62})+\.?/;
 /**
  * 上级SIP地址 字段验证
  * @param _
@@ -700,10 +702,10 @@ const checkHost = (host: string, port: string | number | undefined) => {
     } else if (!host) {
         return Promise.reject(new Error('请输入IP 地址'));
     } else if (host && !regDomain.test(host)) {
-        return Promise.reject(new Error('请输入正确的IP地址'));
+        return Promise.reject(new Error('请输入0.0.0.0~255.255.255.255的IP地址'));
     } else if (!port) {
         return Promise.reject(new Error('请输入端口'));
-    } else if ((host && Number(host) < 1) || Number(host) > 65535) {
+    } else if ((port && Number(port) < 1) || Number(port) > 65535) {
         return Promise.reject(new Error('端口请输入1~65535之间的正整数'));
     }
     return Promise.resolve();
@@ -739,8 +741,8 @@ const handleSubmit = () => {
                 id,
                 cascadeName,
                 proxyStream,
-                publicHost,
-                publicPort,
+                // publicHost,
+                // publicPort,
                 ...extraFormData
             } = formData.value;
             const params = {
@@ -750,10 +752,10 @@ const handleSubmit = () => {
                 sipConfigs: [
                     {
                         ...extraFormData,
-                        remotePublic: {
-                            host: publicHost,
-                            port: publicPort,
-                        },
+                        // remotePublic: {
+                        //     host: publicHost,
+                        //     port: publicPort,
+                        // },
                     },
                 ],
             };

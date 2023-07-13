@@ -60,6 +60,12 @@ const getUserList = (oParams: any) => {
                         column: 'id$in-dimension$role$not',
                         value: props.roleId,
                     },
+                    {
+                        column: 'username',
+                        value: 'admin',
+                        termType: 'not',
+                        type: 'and'
+                    }
                 ],
             },
         ],
