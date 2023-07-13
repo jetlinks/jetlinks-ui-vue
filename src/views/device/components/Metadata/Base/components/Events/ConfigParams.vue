@@ -20,7 +20,7 @@ import { ValueObject } from '../index'
 import ConfigModal from '@/views/device/components/Metadata/Base/components/ConfigModal.vue'
 import ModelButton from '@/views/device/components/Metadata/Base/components/ModelButton.vue'
 import {omit} from "lodash-es";
-import {TypeStringMap} from "../../columns";
+import {TypeStringMap, validatorConfig} from "../../columns";
 
 const columns = [
     { 
@@ -93,10 +93,14 @@ const columns = [
         form: {
           required: true,
           rules: [{
-            validator(_: any, value: any) {
-              console.log(value)
+            callback(rule: any, value: any, dataSource: any[]) {
+              const field = rule.field.split('.')
+              const fieldIndex = Number(field[1])
+              const record = dataSource[fieldIndex]
+              console.log(record)
+              return validatorConfig(record.valueType)
               // if (!value?.type) {
-                return Promise.reject('请选择数据类型')
+              //   return Promise.reject('请选择数据类型')
               // }
               // return Promise.resolve()
             }

@@ -14,7 +14,7 @@
 <!--          </div>-->
 <!--        </j-tooltip>-->
 <!--      </div>-->
-      <j-tabs class="metadataNav" :activeKey="metadataStore.tabActiveKey" destroyInactiveTabPane type="card" @change="tabsChange">
+      <j-tabs class="metadataNav" :activeKey="tabActiveKey" destroyInactiveTabPane type="card" @change="tabsChange">
         <template #rightExtra>
           <j-space>
             <PermissionButton v-if="type === 'device' && instanceStore.detail?.independentMetadata"
@@ -68,6 +68,7 @@ const props = defineProps<Props>()
 const permission = computed(() => props.type === 'device' ? 'device/Instance' : 'device/Product')
 const visible = ref(false)
 const cat = ref(false)
+const tabActiveKey = ref('properties')
 
 provide('_metadataType', props.type)
 
@@ -89,7 +90,7 @@ const resetMetadata = async () => {
 
 const tabsChange = (e: string) => {
   EventEmitter.emit('MetadataTabs', () => {
-    metadataStore.tabActiveKey = e;
+    tabActiveKey.value = e;
   })
 }
 

@@ -337,9 +337,9 @@ const orgCol = [
 const otherCol = [
   ...columns,
   {
-    title: '组织名称',
-    dataIndex: 'sourceId',
-    key: 'sourceId',
+    title: '场景名称',
+    dataIndex: 'targetId',
+    key: 'targetId',
     search: {
       type: 'select',
       options: async () => {
@@ -354,8 +354,8 @@ const otherCol = [
         });
         if (resp.status === 200) {
           return resp.result.data.map((item: any) => ({
-            label: item.sourceName,
-            value: item.sourceId,
+            label: item.targetName,
+            value: item.targetId,
           }));
         }
         return [];

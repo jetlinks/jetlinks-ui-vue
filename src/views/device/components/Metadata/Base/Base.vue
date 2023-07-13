@@ -448,6 +448,7 @@ const parentTabsChange = (next?: Function) => {
       content: '页面改动数据未保存',
       okText: '保存',
       cancelText: '不保存',
+      zIndex: 1400,
       onOk: () => {
         handleSaveClick(next as Function)
       },

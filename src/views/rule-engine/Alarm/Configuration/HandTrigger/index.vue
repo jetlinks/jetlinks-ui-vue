@@ -107,7 +107,7 @@ const columns = [
                         terms: [
                           {
                             column: 'id',
-                            termType: 'alarm-bind-rule$not',
+                            termType: 'alarm-bind-rule',
                             value: props.data?.id,
                           },
                           { column: 'triggerType', termType: 'eq', value: 'manual' }
@@ -160,7 +160,7 @@ const terms = [
         terms: [
             {
                 column: 'id',
-                termType: 'alarm-bind-rule$not',
+                termType: 'alarm-bind-rule',
                 value: props.data?.id,
             },
             {

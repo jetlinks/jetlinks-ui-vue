@@ -37,6 +37,17 @@ const type = {
   report: '上报',
 };
 
+export const validatorConfig = (value: any) => {
+  if (value.type === 'enum' && !value.elements?.length) {
+    return Promise.reject('请添加枚举项')
+  }
+  if (value.type === 'array' && !value.elementType?.type) {
+    return Promise.reject('请选择元素类型')
+  }
+
+  return Promise.resolve()
+}
+
 export const handleTypeValue = (type:string, value: any = {}) => {
   let obj: any = {}
   switch (type) {
@@ -213,9 +224,18 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       form: {
         required: true,
         rules: [{
-          validator(_: any, value: any) {
+          callback(rule: any, value: any, dataSource: any[]) {
+            const field = rule.field.split('.')
+            const fieldIndex = Number(field[1])
+            const record = dataSource[fieldIndex]
+
+            console.log(record)
+            if (!record.valueType.properties.length) {
+              return Promise.reject('请添加配置参数')
+            }
+
+            return Promise.resolve()
             // if (!value?.type) {
-              return Promise.reject('请选择数据类型')
             // }
             // return Promise.resolve()
           }
