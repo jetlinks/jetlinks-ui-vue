@@ -177,7 +177,7 @@ const columns = [
             rename: 'id',
             options: () =>
                 new Promise((resolve) => {
-                    queryNoPagingPost({}).then((resp: any) => {
+                    queryNoPagingPost({paging: false}).then((resp: any) => {
                         resolve(
                             resp.result.map((item: any) => ({
                                 label: item.name,
