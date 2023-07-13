@@ -37,7 +37,7 @@
                             }
                         "
                         :on-time-update="
-                            (e: any) => {
+                            (e) => {
                                 playTime = e;
                             }
                         "

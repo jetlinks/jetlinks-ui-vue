@@ -51,6 +51,8 @@ const props = defineProps({
     },
 });
 
+
+const data = ref();
 const tableRef = ref();
 
 const columns = [
@@ -69,14 +71,15 @@ const columns = [
         fixed: 'right',
     },
 ];
-const dataSource = reactive({
-    table:props.headers
-});
 const handleHeader= (data:any) =>{
     return data.map((item:any)=>{
         return {...item,_key: randomString()}
     })
 }
+const dataSource = reactive({
+    table:props.headers.length > 0 ? handleHeader(props.headers) : ''
+});
+
 watch(()=>JSON.stringify(props.headers),()=>{
     dataSource.table = handleHeader(props.headers)
 })
@@ -85,7 +88,7 @@ const handleDelete = (id: number) => {
     dataSource.table.splice(idx, 1);
 };
 const valueChange = () =>{
-  return  dataSource.table.map((item:any)=>{
+    data.value  =  dataSource.table.map((item:any)=>{
         const {_key,...extra}=item;
         return extra
     })
@@ -98,14 +101,17 @@ const handleAdd = () => {
     });
 };
 const validate = () =>{
+   return new Promise((resolve:any,reject:any)=>{
     tableRef.value.validate().then(()=>{
-        return valueChange()
+        valueChange()
+        resolve(data.value)
     }).catch((err:any)=>{
-        return false
+        reject(false)
     })
+   })
 }
 defineExpose({
-    validate
+    validate,
 })
 </script>
 

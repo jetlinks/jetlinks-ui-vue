@@ -7,7 +7,7 @@
                 ref="listRef"
                 model="table"
                 :columns="columns"
-                :request="(e:any) => CascadeApi.queryBindChannel(route?.query.id as string, e)"
+                :request="(e) => CascadeApi.queryBindChannel(route?.query.id, e)"
                 :defaultParams="{
                     sorts: [{ name: 'name', order: 'desc' }],
                 }"

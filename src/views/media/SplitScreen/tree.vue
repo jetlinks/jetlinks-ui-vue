@@ -8,6 +8,7 @@
             :loadData="onLoadData"
             :fieldNames="{ title: 'name', key: 'id' }"
             @select="onSelect"
+            v-model:expandedKeys="expandedKeys"
         >
             <template #title="{id, name}">
                 <div class="name"><AIcon
@@ -27,6 +28,12 @@ import cascadeApi from '@/api/media/cascade';
 type Emits = {
     (e: 'onSelect', data: { dId: string; cId: string }): void;
 };
+
+/**
+ * 默认展开第一个
+ */
+ const expandedKeys = ref<any[]>([]); // 展开的key
+//  const selectedKeys = ref<any[]>([]); // 选中的key
 
 const emit = defineEmits<Emits>();
 
@@ -80,6 +87,16 @@ const getDeviceList = async () => {
                     ...extra,
                 };
             });
+        getChildren(treeData.value[0].id,{
+            pageIndex: 0,
+            pageSize: 100,
+            terms: [
+                {
+                    column: 'deviceId',
+                    value: treeData.value[0].id,
+                },
+            ],
+        },true)
     }
 };
 getDeviceList();
@@ -120,7 +137,7 @@ const updateTreeData = (
  * @param key
  * @param params
  */
-const getChildren = (key: any, params: any): Promise<any> => {
+const getChildren = (key: any, params: any, first?:any): Promise<any> => {
     return new Promise(async (resolve) => {
         const res = await cascadeApi.queryChannelList(params);
         if (res.status === 200) {
@@ -142,6 +159,11 @@ const getChildren = (key: any, params: any): Promise<any> => {
                         pageIndex: params.pageIndex + 1,
                     });
                 }, 50);
+            }
+            if(first){
+                expandedKeys.value.push(treeData.value[0].id)
+                // selectedKeys.value.push(treeData.value[0].children[0].id)
+                // emit('onSelect', { dId: treeData.value[0].children[0].deviceId, cId: treeData.value[0].children[0].channelId });
             }
             resolve(res.result);
         }
@@ -171,6 +193,7 @@ const onLoadData = ({ key, children }: any): Promise<void> => {
         resolve();
     });
 };
+
 </script>
 
 <style lang="less" scoped>

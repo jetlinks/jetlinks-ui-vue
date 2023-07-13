@@ -141,15 +141,18 @@ const confirm = () => {
     }));
 
     // 分配产品资产后, 进入设备资产分配
-    departmentStore.setProductId(table.selectedRows.map((item: any) => item.id));
+    // departmentStore.setProductId(table.selectedRows.map((item: any) => item.id));
 
     loading.value = true;
     bindDeviceOrProductList_api(props.assetType, params)
         .then(() => {
             onlyMessage('操作成功');
             emits('confirm');
-            emits('update:visible', false);
             emits('next',table.selectedRows.map((item: any) => item.id))
+            if(props.assetType === 'device'){
+                departmentStore.setProductId(undefined)
+            }
+            emits('update:visible', false);
         })
         .finally(() => {
             loading.value = false;
@@ -172,7 +175,7 @@ const columns = props.queryColumns.filter(
 
 const searchColumns = computed(() => {
     return props.queryColumns.map(item => {
-        if (departmentStore.productId) {
+        if (departmentStore.productId) {    
             if (item.dataIndex === 'productName') {
                 item.search.first = true
                 item.search.componentProps = {
@@ -184,6 +187,11 @@ const searchColumns = computed(() => {
 
             } else if (item.search && 'first' in item.search) {
                 delete item.search.first
+            }
+         }
+        else{
+            if (item.dataIndex === 'productName'){
+                item.search.defaultOnceValue = ''
             }
         }
         return item
@@ -459,18 +467,18 @@ const selectAll = (selected: Boolean, selectedRows: any,changeRows:any) => {
 }
 const cancel = () => {
     departmentStore.setProductId(undefined)
+    console.log(departmentStore.productId)
     emits('update:visible', false)
 }
 
 const search = (query: any) => {
     queryParams.value = query
 }
-onUnmounted(()=>{
-    if(props.assetType ==='device'){
-        departmentStore.setProductId(undefined)
-    }
-    console.log(departmentStore.productId)
-})
+// onUnmounted(()=>{
+//     if(props.assetType ==='device'){
+//         departmentStore.setProductId(undefined)
+//     }
+// })
 </script>
 
 <style lang="less" scoped>
