@@ -1,5 +1,5 @@
 <template>
-    <j-spin :spinning="loading" v-if="metadata.properties.length">
+    <j-spin :spinning="loading" v-if="metadata.properties?.length">
         <j-card :bordered="false" style="padding: 0">
             <template #extra>
                 <j-space>
@@ -263,7 +263,7 @@ const channelList = ref<any[]>([]);
 
 const _properties = computed(() => {
     const _cur = current.value >= 1 ? current.value : 1;
-    return metadata.properties.slice((_cur - 1) * 10, _cur * 10);
+    return metadata.properties?.slice((_cur - 1) * 10, _cur * 10) || [];
 });
 
 const modelRef = reactive<{

@@ -4,7 +4,7 @@
     :type='type'
     :request='(data) => saveSearchHistory(data, target)'
     :historyRequest='() => getSearchHistory(target)'
-    :deleteRequest='deleteSearchHistory'
+    :deleteRequest='(_target: string, id: string) => deleteSearchHistory(target, id)'
     :columns='columns'
     :class='props.class'
     style='padding-top: 18px; padding-bottom: 18px;'

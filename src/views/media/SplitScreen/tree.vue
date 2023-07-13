@@ -10,11 +10,13 @@
             @select="onSelect"
             v-model:expandedKeys="expandedKeys"
         >
-            <template #icon="{ id, selected }">
-                <AIcon
-                    type="VideoCameraOutlined"
+            <template #title="{id, name}">
+                <div class="name"><AIcon
+                    type="VideoCameraOutlined" style="margin-right: 5px;"
                     v-if="!treeData.find((f: any) => f.id === id)"
-                />
+                /><j-ellipsis>{{ name }}</j-ellipsis></div>
+            </template>
+            <template #icon>
             </template>
         </j-tree>
     </div>
@@ -196,4 +198,9 @@ const onLoadData = ({ key, children }: any): Promise<void> => {
 
 <style lang="less" scoped>
 @import './index.less';
+
+.name {
+    display: flex;
+    align-items: center;
+}
 </style>

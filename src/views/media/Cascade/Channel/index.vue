@@ -7,7 +7,7 @@
                 ref="listRef"
                 model="table"
                 :columns="columns"
-                :request="(e:any) => CascadeApi.queryBindChannel(route?.query.id as string, e)"
+                :request="(e) => CascadeApi.queryBindChannel(route?.query.id, e)"
                 :defaultParams="{
                     sorts: [{ name: 'name', order: 'desc' }],
                 }"
@@ -44,7 +44,7 @@
                     </j-tooltip>
                 </template>
                 <template #channelId="slotProps">
-                    <j-space>
+                    <div style="display: flex; align-items: center;">
                         <Ellipsis style="width: 150px">
                             {{ slotProps.gbChannelId }}
                         </Ellipsis>
@@ -92,7 +92,7 @@
                                 <AIcon type="EditOutlined" />
                             </j-button>
                         </j-popover>
-                    </j-space>
+                    </div>
                 </template>
                 <template #status="slotProps">
                     <j-space>
@@ -182,8 +182,8 @@ const columns = [
         title: '国标ID',
         dataIndex: 'channelId',
         key: 'channelId',
-        ellipsis: true,
         scopedSlots: true,
+        width: 200,
         headerCell: 'gbChannelIdHeader', // 表头单元格插槽
         search: {
             type: 'string',

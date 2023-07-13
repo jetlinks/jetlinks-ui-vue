@@ -61,16 +61,16 @@
             </slot>
           </template>
           <template #content>
-            <Ellipsis style="width: calc(100% - 100px)">
+            <div style="height: 110px">
+              <Ellipsis style="width: calc(100% - 100px)">
               <h3 style="font-weight: 600">
                 {{ slotProps.name }}
               </h3>
             </Ellipsis>
-            <div style="height: 95px">
-              <j-row>
+            <j-row>
                 <j-col :span="12" v-if="slotProps.channelInfo">
                   <div class="card-item-content-text">
-                    {{ slotProps.channelInfo?.name }}
+                    <j-ellipsis>{{ slotProps.channelInfo?.name }}</j-ellipsis>
                   </div>
                   <Ellipsis style="width: calc(100% - 20px)">
                     <div>
@@ -90,8 +90,7 @@
               </j-row>
               <j-row>
                 <j-col :span="24">
-                  <Ellipsis style="width: calc(100% - 50px)"
-                  >
+                  <j-ellipsis style="width: calc(100% - 50px)">
                     <div class="context-access">
                     {{
                         getDescription(
@@ -99,8 +98,7 @@
                         )
                     }}
                   </div>
-                  </Ellipsis
-                  >
+                  </j-ellipsis>
                 </j-col>
               </j-row>
             </div>
@@ -341,5 +339,4 @@ const add = () => {
 </script>
 
 <style scoped>
-
 </style>

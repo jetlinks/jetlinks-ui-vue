@@ -13,7 +13,7 @@
                 <j-row type="flex">
                     <j-col flex="180px">
                         <j-form-item name="photoUrl">
-                            <JProUpload accept="image/jpeg,image/png" v-model="modelRef.photoUrl" />
+                            <JProUpload accept="image/jpeg,image/png" v-model="modelRef.photoUrl" :size="4"/>
                         </j-form-item>
                     </j-col>
                     <j-col flex="auto">
@@ -184,7 +184,7 @@ const vailId = async (_: Record<string, any>, value: string) => {
     if (!props?.data?.id && value) {
         const resp = await isExists(value);
         if (resp.status === 200 && resp.result) {
-            return Promise.reject('ID重复');
+            return Promise.reject('该ID已存在');
         } else {
             return Promise.resolve();
         }
