@@ -21,13 +21,13 @@
                         </div>
                         <template #overlay>
                           <j-menu @click="recordStart">
-                            <j-menu-item key='false' v-if='route.query.type !== "fixed-media"'>
+                            <j-menu-item key='true' v-if='route.query.type !== "fixed-media"'>
                               <span style='padding-right: 12px;'>本地存储</span>
                               <j-tooltip title='存储在设备本地'>
                                 <a-icon type='QuestionCircleOutlined' />
                               </j-tooltip>
                             </j-menu-item>
-                            <j-menu-item key='true'>
+                            <j-menu-item key='false'>
                               <span style='padding-right: 12px;'>云端存储</span>
                               <j-tooltip title='存储在服务器中'>
                                 <a-icon type='QuestionCircleOutlined' />
