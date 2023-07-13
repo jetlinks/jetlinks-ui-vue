@@ -98,6 +98,10 @@ const props: JUploadProps = defineProps({
     borderStyle: {
         type: Object,
         default: undefined
+    },
+    size: {
+        type: Number,
+        default: undefined,
     }
 });
 
