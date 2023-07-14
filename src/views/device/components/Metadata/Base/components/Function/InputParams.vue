@@ -17,10 +17,10 @@
 import type { PropType } from 'vue';
 import ConfigModal from '@/views/device/components/Metadata/Base/components/ConfigModal.vue'
 import {
-    DataTableObject,
+    DataTableObject, Form
 } from 'jetlinks-ui-components';
 import { ConstraintSelect, ValueObject } from '../index'
-import {TypeStringMap} from "../../columns";
+import {TypeStringMap, validatorConfig} from "../../columns";
 import ModelButton from '@/views/device/components/Metadata/Base/components/ModelButton.vue'
 import {omit} from "lodash-es";
 
@@ -44,7 +44,7 @@ const props = defineProps({
         default: () => [],
     },
 });
-
+const formItemContext = Form.useInjectFormItemContext();
 
 const addItem = () => {
   return {
@@ -121,7 +121,6 @@ const columns = ref([
       required: true,
       rules: [{
         validator(_: any, value: any) {
-          console.log('validator',value)
           if (!value?.type) {
             return Promise.reject('请选择数据类型')
           }
@@ -136,6 +135,18 @@ const columns = ref([
   {
     title: '其他配置',
     dataIndex: 'config',
+    form: {
+      required: true,
+      rules: [{
+        callback(rule:any,value: any, dataSource: any[]) {
+          const field = rule.field.split('.')
+          const fieldIndex = Number(field[1])
+
+          const values = dataSource.find((item, index) => index === fieldIndex)
+          return validatorConfig(values.valueType)
+        }
+      }]
+    },
     control(newValue: any, oldValue: any) {
       if (newValue && !oldValue) {
         return true
@@ -168,6 +179,7 @@ const columns = ref([
 const confirm = (v: any) => {
   console.log('inputParams',v)
   emit('update:value', v)
+  formItemContext.onFieldChange()
 }
 </script>
 

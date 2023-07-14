@@ -37,12 +37,16 @@ const type = {
   report: '上报',
 };
 
-export const validatorConfig = (value: any) => {
+export const validatorConfig = (value: any, isObject: boolean = false) => {
   if (value.type === 'enum' && !value.elements?.length) {
     return Promise.reject('请添加枚举项')
   }
   if (value.type === 'array' && !value.elementType?.type) {
     return Promise.reject('请选择元素类型')
+  }
+
+  if (isObject && value.type === 'object' && !value.properties?.length) {
+    return Promise.reject('请添加元素类型')
   }
 
   return Promise.resolve()
@@ -227,17 +231,13 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
           callback(rule: any, value: any, dataSource: any[]) {
             const field = rule.field.split('.')
             const fieldIndex = Number(field[1])
-            const record = dataSource[fieldIndex]
+            const record = dataSource.find((item, index) => index === fieldIndex)
 
-            console.log(record)
             if (!record.valueType.properties.length) {
               return Promise.reject('请添加配置参数')
             }
 
             return Promise.resolve()
-            // if (!value?.type) {
-            // }
-            // return Promise.resolve()
           }
         }]
       },
@@ -294,6 +294,22 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       title: '输入参数',
       dataIndex: 'inputs',
       width: 120,
+      form: {
+        required: true,
+        rules: [{
+          callback(rule:any,value: any, dataSource: any[]) {
+            const field = rule.field.split('.')
+            const fieldIndex = Number(field[1])
+
+            const values = dataSource.find((item, index) => index === fieldIndex)
+
+            return validatorConfig({
+              type: 'object',
+              properties: values.inputs
+            }, true)
+          }
+        }]
+      },
       control(newValue, oldValue) {
         if (newValue && !oldValue) {
           return true
@@ -309,6 +325,18 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       type: 'components',
       components: {
         name: OutputParams
+      },
+      form: {
+        rules: [{
+          callback(rule:any,value: any, dataSource: any[]) {
+            const field = rule.field.split('.')
+            const fieldIndex = Number(field[1])
+
+            const values = dataSource.find((item, index) => index === fieldIndex)
+
+            return validatorConfig(values.output)
+          }
+        }]
       },
       doubleClick(record) {
         return !isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'output');
@@ -360,7 +388,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
             if (!value?.type) {
               return Promise.reject('请选择数据类型')
             }
-            return Promise.resolve()
+            return validatorConfig(value, true)
           }
         }]
       },
@@ -471,7 +499,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
             if (!value?.type) {
               return Promise.reject('请选择数据类型')
             }
-            return Promise.resolve()
+            return validatorConfig(value, true)
           }
         }]
       },

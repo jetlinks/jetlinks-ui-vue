@@ -64,7 +64,12 @@ import {
 
 import ConfigModal from '@/views/device/components/Metadata/Base/components/ConfigModal.vue'
 import {cloneDeep, omit} from 'lodash-es';
-import {typeSelectChange, TypeStringMap, useUnit} from "@/views/device/components/Metadata/Base/columns";
+import {
+  typeSelectChange,
+  TypeStringMap,
+  useUnit,
+  validatorConfig
+} from "@/views/device/components/Metadata/Base/columns";
 import Type from './Type.vue'
 
 const props = defineProps({
@@ -160,6 +165,18 @@ const columns = [
   {
     title: '其他配置',
     dataIndex: 'config',
+    form: {
+      required: true,
+      rules: [{
+        callback(rule:any,value: any, dataSource: any[]) {
+          const field = rule.field.split('.')
+          const fieldIndex = Number(field[1])
+          const values = dataSource.find((item, index) => index === fieldIndex)
+
+          return validatorConfig(values.valueType)
+        }
+      }]
+    },
     control(newValue: any, oldValue: any) {
       if (newValue && !oldValue) {
         return true

@@ -99,10 +99,14 @@ import {
   DataTableFile,
   DataTableDate,
   DataTableObject,
+  Form
 } from 'jetlinks-ui-components';
 import ValueObject from '@/views/device/components/Metadata/Base/components/Events/ValueObject.vue'
 import DataTypeObjectChild from '@/views/device/components/Metadata/Base/components/DataTypeObjectChild.vue'
 import OtherConfigInfo from './Events/OtherConfigInfo.vue'
+import {handleTypeValue, TypeStringMap, useUnit} from "@/views/device/components/Metadata/Base/columns";
+import ModelButton from '@/views/device/components/Metadata/Base/components/ModelButton.vue'
+import {omit} from "lodash-es";
 
 const props = defineProps({
   value: {
@@ -120,10 +124,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:value'])
-import {handleTypeValue, TypeStringMap, useUnit} from "@/views/device/components/Metadata/Base/columns";
-import ModelButton from '@/views/device/components/Metadata/Base/components/ModelButton.vue'
-import {omit} from "lodash-es";
 
+const formItemContext = Form.useInjectFormItemContext();
 const objectAdd = () => {
   return {
     id: undefined,
@@ -238,17 +240,14 @@ const columns = [
 ]
 
 const valueChange = (data: any) => {
-  console.log('configModal - confirm',data, props.value, type.value)
   const newObj = handleTypeValue(type.value, data)
-  console.log('configModal - newObj', newObj)
-  console.log('configModal - newObj2', {
-    type: type.value,
-    ...newObj
-  })
+
+
   emit('update:value', {
     type: type.value,
     ...newObj
   })
+  formItemContext.onFieldChange()
 }
 
 watch(() => JSON.stringify(props.value), () => {

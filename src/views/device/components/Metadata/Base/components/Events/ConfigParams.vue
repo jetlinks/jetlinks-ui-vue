@@ -13,7 +13,7 @@
 <script setup lang="ts" name="ConfigParams">
 import type { PropType } from 'vue';
 import {
-    DataTableObject,
+  DataTableObject, Form,
 } from 'jetlinks-ui-components';
 import { ValueObject } from '../index'
 
@@ -97,12 +97,7 @@ const columns = [
               const field = rule.field.split('.')
               const fieldIndex = Number(field[1])
               const record = dataSource[fieldIndex]
-              console.log(record)
               return validatorConfig(record.valueType)
-              // if (!value?.type) {
-              //   return Promise.reject('请选择数据类型')
-              // }
-              // return Promise.resolve()
             }
           }]
         },
@@ -146,10 +141,11 @@ const props = defineProps({
 });
 
 const value = ref(props.value.properties);
+const formItemContext = Form.useInjectFormItemContext();
 
 const confirm = (data: any) => {
   console.log('ConfigParams',data)
-  const newObject = data.map((item) => {
+  const newObject = data.map((item: any) => {
     return omit(item, ['_sortIndex', 'config', 'action'])
   })
 
@@ -159,6 +155,7 @@ const confirm = (data: any) => {
     properties: newObject,
     type: 'object',
   })
+  formItemContext.onFieldChange()
 }
 
 watch(
