@@ -38,6 +38,10 @@ const type = {
 };
 
 export const validatorConfig = (value: any, isObject: boolean = false) => {
+  if (!value) {
+    return Promise.resolve()
+  }
+
   if (value.type === 'enum' && !value.elements?.length) {
     return Promise.reject('请添加枚举项')
   }

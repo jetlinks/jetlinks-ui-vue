@@ -104,7 +104,7 @@
     </div>
 </template>
 <script setup lang="ts" name="Debug">
-import { PropType } from 'vue';
+import {PropType, Ref} from 'vue';
 import { useProductStore } from '@/store/product';
 import { useRuleEditorStore } from '@/store/ruleEditor';
 import moment from 'moment';
@@ -160,7 +160,7 @@ const deleteItem = (index: number) => {
 const ws = ref();
 
 const virtualIdRef = ref(new Date().getTime());
-
+const medataSource = inject<Ref<any[]>>('_dataSource')
 const productStore = useProductStore();
 const ruleEditorStore = useRuleEditorStore();
 const runScript = () => {
@@ -254,9 +254,9 @@ onUnmounted(() => {
 const options = ref<{ text: string; value: string }[]>([]);
 
 const getProperty = () => {
-    const metadata = productStore.current.metadata || '{}';
-    const _p: PropertyMetadata[] = JSON.parse(metadata).properties || [];
-    options.value = _p
+    // const metadata = productStore.current.metadata || '{}';
+    // const _p: PropertyMetadata[] = JSON.parse(metadata).properties || [];
+    options.value = (medataSource.value || [])
         .filter((p) => p.id !== props.id)
         .map((item) => ({
             text: item.name,

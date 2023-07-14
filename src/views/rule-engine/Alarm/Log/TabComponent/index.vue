@@ -1,35 +1,11 @@
 <template>
     <div class="alarm-log-card">
         <pro-search
-            :columns="columns"
+            :columns="newColumns"
             :target="`alarm-log-${props.type}`"
-            v-if="['all', 'detail'].includes(props.type)"
             @search="search"
         />
-        <pro-search
-            :columns="productCol"
-            :target="`alarm-log-${props.type}`"
-            v-else-if="props.type === 'product'"
-            @search="search"
-        />
-        <pro-search
-            :columns="deviceCol"
-            target="alarm-log-device"
-            v-else-if="props.type === 'device'"
-            @search="search"
-        />
-        <pro-search
-            :columns="orgCol"
-            target="alarm-log-org"
-            v-else-if="props.type === 'org'"
-            @search="search"
-        />
-        <pro-search
-            :columns="otherCol"
-            :target="`alarm-log-${props.type}`"
-            v-else-if="props.type === 'other'"
-            @search="search"
-        />
+
         <FullPage>
             <JProTable
                 :columns="columns"
@@ -246,123 +222,76 @@ const columns = [
         },
     },
 ];
-const productCol = [
-    ...columns,
-    {
-        title: '产品名称',
-        dataIndex: 'sourceId',
-        key: 'sourceId',
-        search: {
-            type: 'select',
-            options: async () => {
-                const resp = await handleSearch({
-                  sorts: [{ name: 'alarmTime', order: 'desc' }],
-                  terms: [{
-                    column: "targetType",
-                    termType: "eq",
-                    type: "and",
-                    value: "product",
-                  }]
-                });
-                if (resp.status === 200) {
-                    return resp.result.data.map((item: any) => ({
-                        label: item.sourceName,
-                        value: item.sourceId,
-                    }));
-                }
-                return [];
-            },
-        },
-    },
-];
-const deviceCol = [
-    ...columns,
-    {
-        title: '设备名称',
-        dataIndex: 'sourceId',
-        key: 'sourceId',
-        search: {
-          type: 'select',
-          options: async () => {
-            const resp = await handleSearch({
-              sorts: [{ name: 'alarmTime', order: 'desc' }],
-              terms: [{
-                column: "targetType",
-                termType: "eq",
-                type: "and",
-                value: "device",
-              }]
-            });
-            if (resp.status === 200) {
-              return resp.result.data.map((item: any) => ({
-                label: item.sourceName,
-                value: item.sourceId,
-              }));
-            }
-            return [];
-          },
-        },
-    },
-];
-const orgCol = [
-    ...columns,
-    {
-        title: '组织名称',
-        dataIndex: 'sourceId',
-        key: 'sourceId',
-        search: {
-          type: 'select',
-          options: async () => {
-            const resp = await handleSearch({
-              sorts: [{ name: 'alarmTime', order: 'desc' }],
-              terms: [{
-                column: "targetType",
-                termType: "eq",
-                type: "and",
-                value: "org",
-              }]
-            });
-            if (resp.status === 200) {
-              return resp.result.data.map((item: any) => ({
-                label: item.sourceName,
-                value: item.sourceId,
-              }));
-            }
-            return [];
-          },
-        },
-    },
-];
 
-const otherCol = [
-  ...columns,
-  {
-    title: '场景名称',
+const newColumns = computed(() => {
+
+  const otherColumns = {
+    title: '产品名称',
     dataIndex: 'targetId',
     key: 'targetId',
     search: {
       type: 'select',
       options: async () => {
-        const resp = await handleSearch({
-          sorts: [{ name: 'alarmTime', order: 'desc' }],
-          terms: [{
+        const termType = [
+          {
             column: "targetType",
             termType: "eq",
             type: "and",
-            value: "other",
-          }]
+            value: props.type,
+          }
+        ]
+
+        if (props.id) {
+          termType.push({
+            termType: 'eq',
+            column: 'alarmConfigId',
+            value: props.id,
+            type: 'and',
+          },)
+        }
+
+        const resp: any = await handleSearch({
+          sorts: [{ name: 'alarmTime', order: 'desc' }],
+          terms: termType
         });
+        const listMap: Map<string, any> = new Map()
+
         if (resp.status === 200) {
-          return resp.result.data.map((item: any) => ({
-            label: item.targetName,
-            value: item.targetId,
-          }));
+          resp.result.data.forEach(item => {
+            if (item.targetId) {
+              listMap.set(item.targetId, {
+                label: item.targetName,
+                value: item.targetId,
+              })
+            }
+
+          })
+
+          return [...listMap.values()]
+
         }
         return [];
       },
     },
-  },
-]
+  }
+
+  switch(props.type) {
+    case 'device':
+      otherColumns.title = '设备名称'
+          break;
+    case 'org':
+      otherColumns.title = '组织名称'
+      break;
+    case 'other':
+      otherColumns.title = '场景名称'
+      break;
+  }
+
+  return ['all', 'detail'].includes(props.type) ? columns : [
+    otherColumns,
+    ...columns,
+  ]
+})
 
 let params: any = ref({
     sorts: [{ name: 'alarmTime', order: 'desc' }],

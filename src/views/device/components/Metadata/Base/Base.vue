@@ -9,6 +9,7 @@
         }"
         serial
         @editStatus="editStatusChange"
+        @change="(data) => dataSourceCache = data"
     >
         <template #expand>
           <PermissionButton
@@ -249,8 +250,9 @@ const detailData = reactive({
 const showSave = ref(metadata.value.length !== 0)
 
 const showLastDelete = ref(false)
+const dataSourceCache = ref<any[]>([])
 
-provide('_dataSource', dataSource.value)
+provide('_dataSource', dataSourceCache)
 
 const showDetail = (data: any) => {
   detailData.data = data

@@ -90,10 +90,14 @@ const route = useRoute();
 let selectDisable = ref(false);
 const alarmConfigurationStore = useAlarmConfigurationStore();
 let { configurationData } = storeToRefs(alarmConfigurationStore);
+
+const emit = defineEmits(['change'])
+
 const queryData = () => {
     if (route.query?.id) {
         detail(route.query?.id).then((res) => {
             if (res.status === 200) {
+                emit('change', res?.result?.targetType)
                 form.value = res?.result;
                 // form.level = res?.result?.level;
                 // form.name = res?.result?.name;
@@ -205,6 +209,7 @@ const handleSave = async () => {
             if (res.status === 200) {
                 onlyMessage('操作成功,请配置关联的场景联动');
                 loading.value = false;
+              emit('change', form.value.targetType)
                 if (res.result?.id) {
                     menuStory.jumpPage(
                         'rule-engine/Alarm/Configuration/Save',
