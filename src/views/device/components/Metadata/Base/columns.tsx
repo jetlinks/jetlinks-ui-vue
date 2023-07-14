@@ -50,7 +50,11 @@ export const validatorConfig = (value: any, isObject: boolean = false) => {
   }
 
   if (isObject && value.type === 'object' && !value.properties?.length) {
-    return Promise.reject('请添加元素类型')
+    return Promise.reject('请添加参数')
+  }
+
+  if (value.type === 'file' && !value.fileType) {
+    return Promise.reject('请选择文件类型')
   }
 
   return Promise.resolve()
