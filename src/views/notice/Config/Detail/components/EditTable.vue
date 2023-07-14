@@ -77,7 +77,7 @@ const handleHeader= (data:any) =>{
     })
 }
 const dataSource = reactive({
-    table:props.headers.length > 0 ? handleHeader(props.headers) : ''
+    table:props.headers.length > 0 ? handleHeader(props.headers) : []
 });
 
 watch(()=>JSON.stringify(props.headers),()=>{
@@ -102,12 +102,17 @@ const handleAdd = () => {
 };
 const validate = () =>{
    return new Promise((resolve:any,reject:any)=>{
-    tableRef.value.validate().then(()=>{
+    if(dataSource.table){
+        tableRef.value.validate().then(()=>{
         valueChange()
         resolve(data.value)
     }).catch((err:any)=>{
+        console.log(err);
         reject(false)
     })
+    }else{
+        resolve([])
+    }
    })
 }
 defineExpose({

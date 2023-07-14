@@ -10,22 +10,28 @@
                         message: '请选择指令类型',
                     }"
                 >
-                    <j-select
-                        placeholder="请选择指令类型"
+                    <MSelect
                         v-model:value="modelRef.messageType"
-                        show-search
+                        :options="_options"
                         @change="onTypeChange"
-                    >
-                        <j-select-option value="READ_PROPERTY"
-                            >读取属性</j-select-option
-                        >
-                        <j-select-option value="WRITE_PROPERTY"
-                            >修改属性</j-select-option
-                        >
-                        <j-select-option value="INVOKE_FUNCTION"
-                            >调用功能</j-select-option
-                        >
-                    </j-select>
+                        type="messageType"
+                    />
+                    <!-- // <j-select
+                    //     placeholder="请选择指令类型"
+                    //     v-model:value="modelRef.messageType"
+                    //     show-search
+                    //     @change="onTypeChange"
+                    // >
+                    //     <j-select-option value="READ_PROPERTY"
+                    //         >读取属性</j-select-option
+                    //     >
+                    //     <j-select-option value="WRITE_PROPERTY"
+                    //         >修改属性</j-select-option
+                    //     >
+                    //     <j-select-option value="INVOKE_FUNCTION"
+                    //         >调用功能</j-select-option
+                    //     >
+                    // </j-select> -->
                 </j-form-item>
             </j-col>
             <j-col
@@ -89,7 +95,11 @@
                         :itemType="
                             property.valueType?.type || property.type || 'int'
                         "
-                        :placeholder="property.valueType?.type === 'array' ? '多个数据用英文,分割' : ''"
+                        :placeholder="
+                            property.valueType?.type === 'array'
+                                ? '多个数据用英文,分割'
+                                : ''
+                        "
                         :options="
                             property.valueType?.type === 'enum'
                                 ? (property?.valueType?.elements || []).map(
@@ -102,15 +112,25 @@
                                   )
                                 : property.valueType?.type === 'boolean'
                                 ? [
-                                      { label: property.valueType?.trueText, value: property.valueType?.trueValue },
-                                      { label: property.valueType?.falseText, value: property.valueType?.falseValue },
+                                      {
+                                          label: property.valueType?.trueText,
+                                          value: property.valueType?.trueValue,
+                                      },
+                                      {
+                                          label: property.valueType?.falseText,
+                                          value: property.valueType?.falseValue,
+                                      },
                                   ]
                                 : undefined
                         "
                     />
                 </j-form-item>
             </j-col>
-            <j-col :span="24" v-if="modelRef.messageType === 'INVOKE_FUNCTION'" class="inputs">
+            <j-col
+                :span="24"
+                v-if="modelRef.messageType === 'INVOKE_FUNCTION'"
+                class="inputs"
+            >
                 <j-form-item
                     :name="['message', 'functionId']"
                     label="功能"
@@ -164,6 +184,7 @@
 
 <script lang="ts" setup>
 import EditTable from './EditTable.vue';
+import MSelect from '../../../components/MSelect/index.vue';
 
 const formRef = ref();
 
@@ -187,7 +208,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue']);
 
 const editRef = ref();
 
@@ -210,11 +231,25 @@ const onPropertyChange = (val: string, flag?: boolean) => {
         );
         property.value = _item || {};
     }
-    if(!flag){
-        modelRef.message.value = undefined
+    if (!flag) {
+        modelRef.message.value = undefined;
     }
 };
 
+const _options = [
+    {
+        id: 'READ_PROPERTY',
+        name: '读取属性',
+    },
+    {
+        id: 'WRITE_PROPERTY',
+        name: '修改属性',
+    },
+    {
+        id: 'INVOKE_FUNCTION',
+        name: '调用功能',
+    },
+];
 const onTypeChange = () => {
     // 需要记住之前的选择, 所以注释了该代码
     // modelRef.message = {
@@ -231,14 +266,14 @@ const funcChange = (val: string, _inputs?: any[]) => {
             props.metadata?.functions.find((item: any) => item.id === val)
                 ?.inputs || [];
         const list = arr.map((item: any) => {
-            const _item = _inputs?.find(i => i.id === item.id)
+            const _item = _inputs?.find((i) => i.id === item.id);
             return {
                 id: item.id,
                 name: item.name,
                 value: undefined,
                 valueType: item?.valueType?.type,
                 ..._item,
-                required: item?.expands?.required
+                required: item?.expands?.required,
             };
         });
         modelRef.message.inputs = list;
@@ -254,7 +289,10 @@ watch(
                 onPropertyChange(newVal?.message?.properties, true);
             }
             if (newVal?.message?.functionId) {
-                funcChange(newVal?.message?.functionId, newVal?.message?.inputs);
+                funcChange(
+                    newVal?.message?.functionId,
+                    newVal?.message?.inputs,
+                );
             }
         }
     },
@@ -273,7 +311,7 @@ const saveBtn = () =>
                         resolve(false);
                     });
                 }
-                emit('update:modelValue', _data)
+                emit('update:modelValue', _data);
                 resolve(_data);
             })
             .catch((err: any) => {

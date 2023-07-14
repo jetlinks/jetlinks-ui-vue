@@ -191,20 +191,26 @@ const formModel = reactive<{
 const variableRef = ref();
 const formRef = ref();
 
+const _getType = computed(() => {
+    if(['notifier-dingTalk'].includes(props.data?.channelProvider)) {
+        return ['user', 'tag']
+    } else {
+        return ['user', 'org', 'tag']
+    }
+})
+
 const _variableDefinitions = computed(() => {
-    const arr = ['user', 'org', 'tag'];
     return variable.value.filter((item: any) => {
         const _type = item.expands?.businessType || item.type || '';
-        return !arr.includes(_type);
+        return !['user', 'org', 'tag'].includes(_type);
     });
 });
 
 const handleVariable = (obj: any) => {
-    const arr = ['user', 'org', 'tag'];
     const _array = variable.value
         .filter((item: any) => {
             const _type = item.expands?.businessType || item.type || '';
-            return arr.includes(_type);
+            return _getType.value.includes(_type);
         })
         .map((i: any) => i?.id);
     const _variable = variableMap.get(formModel.channelProvider);

@@ -132,6 +132,16 @@ const validateAddress = (_rule: any, value: string): Promise<any> => {
     });
 };
 
+const sizeValidator = (_rule:any, value: number):Promise<any> =>{
+    return new Promise(async(resolve,reject)=>{
+        const posReg = /^\d+$/;
+        if(posReg.test(value.toString()) && value >= 0 && value <=65535 ){
+            return resolve('');
+        }else {
+            return reject(_rule.message);
+        }
+    })
+} 
 export const Rules = {
     name: [
         {
@@ -313,6 +323,11 @@ export const Rules = {
             required: true,
             message: '请输入长度值',
         },
+        {
+            validator:sizeValidator,
+            message:'请输入0~65535之间的正整数',
+            trigger:'change'
+        }
     ],
     length: [
         {
