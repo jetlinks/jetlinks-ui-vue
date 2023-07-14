@@ -75,6 +75,7 @@
                     ]"
                     show-search
                     placeholder="请选择窗口类型"
+                    @select="windowTypeChange"
                 />
             </j-form-item>
             <template
@@ -226,6 +227,13 @@ const formData = reactive<{
 
 const dataSource = inject<Ref<any[]>>('_dataSource')
 
+const windowTypeChange = () => {
+  formData.virtualRule!.rule.window = {
+    span: undefined,
+    every: undefined
+  }
+}
+
 const typeOptions = computed(() => {
     if (props.source === 'manual') {
         return [{ value: 'write', label: '写' }];
@@ -241,7 +249,6 @@ const typeOptions = computed(() => {
 });
 
 const options = computed(() => {
-  console.log('options', dataSource?.value)
     return (dataSource?.value || []).filter((item: any) => item?.id !== props.value?.id);
 });
 
