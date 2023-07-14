@@ -169,15 +169,13 @@ import {
   getInitSet,
   systemVersion,
   bindInfo,
-  settingDetail, userDetail,
-  authLoginConfig
+  settingDetail, userDetail
 } from '@/api/login'
 import { useUserInfo } from '@/store/userInfo';
 import { useSystem } from '@/store/system'
 import { LocalStore } from '@/utils/comm';
 import { BASE_API_PATH, TOKEN_KEY, Version_Code } from '@/utils/variable';
 import { SystemConst } from '@/utils/consts';
-import {encrypt} from '@/utils/encrypt'
 
 const store = useUserInfo();
 const systemStore = useSystem();
@@ -200,12 +198,6 @@ const form = reactive({
     verifyCode: '',
     verifyKey: '',
 });
-
-const  RsaConfig = reactive<any>({
-    enabled:false, //是否加密
-    publicKey:'', //rsa公钥,使用此公钥对密码进行加密
-    id:'' //密钥ID
-})
 
 const rules = {
   username: [
@@ -257,14 +249,7 @@ iconMap.set('third-party', getImage('/apply/provider5.png'));
 const onFinish = async () => {
     try {
         loading.value = true;
-
-        const data = {
-            ...form,
-            password:RsaConfig.enabled?encrypt(form.password,RsaConfig.publicKey):form.password,
-            encryptId:RsaConfig.enabled?RsaConfig.id:undefined
-        }
-
-        const res: any = await authLogin(data);
+        const res: any = await authLogin(form);
         loading.value = false;
         if (res.success) {
           LocalStore.set(TOKEN_KEY, res?.result.token);
@@ -298,7 +283,6 @@ const onFinish = async () => {
         form.verifyCode = '';
         getCode();
         loading.value = false;
-        getRsa()
     }
 };
 
@@ -332,18 +316,6 @@ const getOpen = () => {
     });
     systemStore.getFront()
 };
-
-//获取加密信息
-const getRsa =async () =>{
-    const res:any = await authLoginConfig()
-    if(res.status === 200){
-        if(res.result?.encrypt){
-            RsaConfig.enabled = res.result?.encrypt.enabled
-            RsaConfig.publicKey = res.result?.encrypt.publicKey
-            RsaConfig.id = res.result?.encrypt.id
-        }
-    }
-}
 
 const basis = computed(() => {
   return systemStore.configInfo['front'] || {}
@@ -380,11 +352,6 @@ watch(
 getOpen();
 getCode();
 screenRotation(screenWidth.value, screenHeight.value);
-
-onMounted(()=>{
-    getRsa()
-})
-
 </script>
 
 <style scoped lang="less">
