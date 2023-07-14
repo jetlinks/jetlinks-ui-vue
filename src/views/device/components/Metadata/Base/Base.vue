@@ -209,6 +209,7 @@ import {omit} from "lodash-es";
 import { PropertiesModal, FunctionModal, EventModal, TagsModal } from './DetailModal'
 import { Modal } from 'jetlinks-ui-components'
 import {EventEmitter} from "@/utils/utils";
+import {watch} from "vue";
 
 const props = defineProps({
     target: {
@@ -468,6 +469,10 @@ EventEmitter.subscribe(['MetadataTabs'], parentTabsChange)
 onUnmounted(() => {
   EventEmitter.unSubscribe(['MetadataTabs'], parentTabsChange)
 })
+
+watch(() => metadata.value, () => {
+  dataSource.value = metadata.value
+}, { immediate: true })
 
 onBeforeRouteLeave((to, from, next) => {
   parentTabsChange(next as Function)

@@ -2,9 +2,10 @@ import {DeviceMetadata, MetadataItem, MetadataType} from "@/views/device/Product
 import {useInstanceStore} from "store/instance";
 import {useProductStore} from "store/product";
 import type { Ref, ComputedRef } from "vue";
+import { storeToRefs } from 'pinia'
 
 const useMetadata = (type: 'device' | 'product', key?: MetadataType, ): {
-    data: ComputedRef<MetadataItem[]>,
+    data: Ref<MetadataItem[]>,
     metadata: Ref<Partial<DeviceMetadata>>,
     noEdit: Ref<any>
     productNoEdit: Ref<any>
@@ -14,11 +15,14 @@ const useMetadata = (type: 'device' | 'product', key?: MetadataType, ): {
     const metadata = ref<Partial<DeviceMetadata>>({})
     const noEdit = ref<any>({})
     const productNoEdit = ref<any>({})
+    const data = ref<MetadataItem[]>([])
+    const { current: instanceCurrent } = storeToRefs(instanceStore)
+    const { current: productCurrent } = storeToRefs(productStore)
 
-    const data = computed(() => {
-        const _metadataStr = type === 'product' ? productStore.current?.metadata : instanceStore.current.metadata
+    const handleMetadata = (_metadataStr: string) => {
         const _metadata = JSON.parse(_metadataStr || '{}')
         const newMetadata = (key ? _metadata?.[key] || [] : []) as DeviceMetadata[]
+
 
         metadata.value = newMetadata as any
 
@@ -31,8 +35,8 @@ const useMetadata = (type: 'device' | 'product', key?: MetadataType, ): {
             noEdit.value.source = indexKeys
         }
 
-        if (type === 'device' && instanceStore.current.productMetadata) {
-            const productMetadata: any = JSON.parse(instanceStore.current.productMetadata)
+        if (type === 'device' && instanceCurrent.value.productMetadata) {
+            const productMetadata: any = JSON.parse(instanceCurrent.value.productMetadata)
             const metaArray = key ? productMetadata[key] : []
             const productIndexKeys = metaArray?.map((item:any, index: number) => index) || []
             productNoEdit.value.ids = metaArray?.map((item: any) => item.id) || []
@@ -64,9 +68,17 @@ const useMetadata = (type: 'device' | 'product', key?: MetadataType, ): {
             }
         }
 
-        return newMetadata
-    })
-    
+        data.value = newMetadata
+    }
+
+    watch(() => [instanceCurrent.value.metadata, productCurrent.value.metadata], () => {
+        if (type === 'device') {
+            handleMetadata(instanceCurrent.value.metadata)
+        } else {
+            handleMetadata(productCurrent.value.metadata)
+        }
+    }, { immediate: true})
+
     return {
         data,
         metadata,

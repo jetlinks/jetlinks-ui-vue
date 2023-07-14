@@ -77,6 +77,7 @@ interface Props {
 }
 interface Emits {
   (e: 'update:visible', data: boolean): void;
+  (e: 'submit', data: any): void;
 }
 const props = defineProps<Props>()
 const emits = defineEmits<Emits>()
