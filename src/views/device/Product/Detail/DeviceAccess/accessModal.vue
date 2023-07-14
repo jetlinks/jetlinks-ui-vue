@@ -85,7 +85,7 @@
                 </j-col>
                 <j-col :span="12">
                   <div class="card-item-content-text">协议</div>
-                  <div>{{ slotProps.protocolDetail?.name }}</div>
+                  <Ellipsis style="width:calc(100%-20px)"><div>{{ slotProps.protocolDetail?.name }}</div></Ellipsis>
                 </j-col>
               </j-row>
               <j-row>
