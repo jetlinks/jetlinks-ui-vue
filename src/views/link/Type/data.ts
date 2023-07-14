@@ -134,7 +134,7 @@ const validateAddress = (_rule: any, value: string): Promise<any> => {
 
 const sizeValidator = (_rule:any, value: number):Promise<any> =>{
     return new Promise(async(resolve,reject)=>{
-        const posReg = /^\d+$/;
+        const posReg = /^[1-9]\d*$/;
         if(posReg.test(value.toString()) && value >= 0 && value <=65535 ){
             return resolve('');
         }else {
