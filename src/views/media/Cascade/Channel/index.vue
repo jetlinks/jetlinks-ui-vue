@@ -241,7 +241,42 @@ const params = ref<Record<string, any>>({});
  * @param params
  */
 const handleSearch = (e: any) => {
-    params.value = e;
+    if(e.terms[0]?.terms[0]?.column === "gbChannelId"){
+        params.value = {terms: [
+        {
+            column: "id$gb28181-cascade-channel",
+            value: [
+                {
+                    column: "gb_channel_id",
+                    termType : e.terms[0]?.terms[0]?.termType,
+                    value: e.terms[0]?.terms[0]?.value
+                }
+            ]
+        },
+        {
+            terms: [
+                {
+                    column: "id$gb28181-cascade-channel",
+                    value: [
+                        {
+                            column: "gb_channel_id",
+                            termType: "isnull",
+                            value: "1"
+                        }
+                    ]
+                },
+                {
+                    column: "channelId",
+                    termType : e.terms[0]?.terms[0]?.termType,
+                    value: e.terms[0]?.terms[0]?.value
+                }
+            ],
+            type: "or"
+        }
+    ]}
+    }else{
+        params.value = e;
+    }
 };
 
 const listRef = ref();

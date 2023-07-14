@@ -291,7 +291,7 @@ const handleSubmit = () => {
                 media_password,
                 media_username,
                 manufacturer,
-                ptzType,
+                // ptzType,
                 ...extraFormData
             } = formData.value;
             if (media_url || media_password || media_username) {
