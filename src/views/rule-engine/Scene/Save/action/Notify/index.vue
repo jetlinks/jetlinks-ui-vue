@@ -154,6 +154,7 @@ const onValChange = (val: any, type: string) => {
     } else if (type === 'templateId') {
         formModel.variables = [];
     }
+    console.log(val)
     formModel.options = {
         ...unref(formModel.options),
         ...val,

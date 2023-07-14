@@ -39,7 +39,7 @@ const props = defineProps({
     }
 })
 
-const emits = defineEmits(['update:value', 'change']);
+const emits = defineEmits(['update:value', 'change', 'error']);
 
 const formItemContext = Form.useInjectFormItemContext()
 
@@ -65,6 +65,7 @@ watchEffect(() => {
         if(props.value){
             formTouchOff()
         }
+        emits('error', props.value)
     }
 })
 

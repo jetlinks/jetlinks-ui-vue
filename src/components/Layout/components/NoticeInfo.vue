@@ -20,6 +20,7 @@
                             <template v-for="i in list" :key="i.id">
                                 <NoticeItem
                                     :data="i"
+                                    :type="item.key"
                                     @action="emits('action')"
                                     @refresh="onRefresh(item.key)"
                                 />
