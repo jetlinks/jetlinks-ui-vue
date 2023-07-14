@@ -8,10 +8,10 @@
             @change="onChange"
             :pagination="{
                 current: (dataSource?.pageIndex || 0) + 1,
-                pageSize: dataSource?.pageSize || 10,
+                pageSize: dataSource?.pageSize || 12,
                 showSizeChanger: true,
                 total: dataSource?.total || 0,
-                pageSizeOptions: ['8', '12', '24', '60', '100']
+                pageSizeOptions: ['12', '24', '48', '96']
             }"
         >
             <template #bodyCell="{ column, record }">
@@ -92,7 +92,7 @@ const _props = defineProps({
 const instanceStore = useInstanceStore();
 const dataSource = ref({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 12,
     data: [],
     total: 0
 });
@@ -158,7 +158,7 @@ watch(
     ([newVal]) => {
         if (newVal) {
             queryPropertyData({
-                pageSize: _props.data.valueType?.type === 'file' ? 5 : 10,
+                pageSize: 12,
                 pageIndex: 0,
             });
         }

@@ -1,14 +1,14 @@
 <template>
     <div>
         <j-dropdown placement="bottomRight">
-            <div style="cursor: pointer;height: 100%;">
+            <div style="cursor: pointer;height: 100%;white-space: nowrap;overflow: hidden;text-overflow:ellipsis; max-width: 170px;" >
                 <j-avatar
                     :src="userInfo.userInfos?.avatar"
                     alt=""
                     :size="24"
                     style="margin-right: 12px"
                 />
-                <span>{{ userInfo.userInfos?.name }}</span>
+                    <span>{{ userInfo.userInfos?.name }}</span>
             </div>
             <template #overlay>
                 <j-menu>
@@ -43,4 +43,5 @@ const logOut = () => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>
