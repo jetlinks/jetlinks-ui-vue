@@ -250,7 +250,7 @@ const detailData = reactive({
 const showSave = ref(metadata.value.length !== 0)
 
 const showLastDelete = ref(false)
-const dataSourceCache = ref<any[]>([])
+const dataSourceCache = ref<any[]>(metadata.value)
 
 provide('_dataSource', dataSourceCache)
 

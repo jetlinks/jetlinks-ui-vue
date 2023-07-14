@@ -153,11 +153,14 @@
                                         },
                                     ]"
                                 >
-                                    <j-input
+                                    <j-input-number
                                         style="width: 105%"
                                         v-model:value="
                                             formState.hostPort.publicHost
                                         "
+                                        :max="65535"
+                                        :min="1"
+                                        :precision="0"
                                         placeholder="请输入IP地址"
                                     />
                                 </j-form-item>

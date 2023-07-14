@@ -129,7 +129,7 @@ const property = ref<propertyType[]>([]);
 
 const columns = [
     {
-        title: '属性ID',
+        title: '属性名称',
         dataIndex: 'id',
         key: 'id',
     },
@@ -251,19 +251,22 @@ onUnmounted(() => {
     clearAction();
 });
 
-const options = ref<{ text: string; value: string }[]>([]);
+const options = computed(() => {
+  return (medataSource.value || [])
+      .filter((p) => p.id !== props.id)
+      .map((item) => ({
+        text: item.name,
+        value: item.id,
+      }));
+})
 
-const getProperty = () => {
-    // const metadata = productStore.current.metadata || '{}';
-    // const _p: PropertyMetadata[] = JSON.parse(metadata).properties || [];
-    options.value = (medataSource.value || [])
-        .filter((p) => p.id !== props.id)
-        .map((item) => ({
-            text: item.name,
-            value: item.id,
-        }));
-};
-getProperty();
+// const getProperty = () => {
+//     // const metadata = productStore.current.metadata || '{}';
+//     // const _p: PropertyMetadata[] = JSON.parse(metadata).properties || [];
+//   console.log(medataSource.value)
+//     options.value =
+// };
+// getProperty();
 </script>
 <style lang="less" scoped>
 .debug-container {
