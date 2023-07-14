@@ -1,12 +1,11 @@
 <template>
     <j-modal
-        :zIndex="1200"
+        :zIndex="1030"
         :mask-closable="false"
         visible
         width="70vw"
         title="编辑规则"
         @cancel="handleCancel"
-        @ok="handleOk"
     >
         <div class="header" v-if="virtualRule?.windowType && virtualRule?.windowType !== 'undefined'">
             <div class="header-item">
@@ -41,9 +40,16 @@
                         script: _value,
                     }"
                     :id="id"
+                    @success="onSuccess"
                 />
             </div>
         </div>
+        <template #footer>
+            <j-space>
+                <j-button @click="handleCancel">取消</j-button>
+                <j-button :disabled="_disabled" @click="handleOk" type="primary">确定</j-button>
+            </j-space>
+        </template>
     </j-modal>
 </template>
 <script setup lang="ts" name="FRuleEditor">
@@ -65,10 +71,12 @@ const props = defineProps({
 });
 
 const _value = ref<string | undefined>(props.value);
+const _disabled = ref<boolean>(true);
 
 const handleCancel = () => {
     emit('close');
 };
+
 const handleOk = () => {
     emit('save', _value.value);
 };
@@ -82,9 +90,20 @@ const aggType = computed(() => {
 
 const editor = ref();
 const addOperatorValue = (val: string) => {
-  console.log(val)
     editor.value.addOperatorValue(val);
 };
+
+watchEffect(() => {
+    console.log(props.value, _value.value, 'hhhhh')
+})
+
+watch(() => _value.value, () => {
+    _disabled.value = true
+})
+
+const onSuccess = (bool: boolean) => {
+    _disabled.value = bool;
+}
 </script>
 <style lang="less" scoped>
 .header {

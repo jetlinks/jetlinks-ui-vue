@@ -112,7 +112,7 @@
                                     collapsible="header"
                                 >
                                     <j-collapse-panel
-                                        :key="cluster.id"
+                                        :key="(cluster.serverId || '') + index"
                                         :show-arrow="!formData.shareCluster"
                                     >
                                         <template #header v-if="!shareCluster">

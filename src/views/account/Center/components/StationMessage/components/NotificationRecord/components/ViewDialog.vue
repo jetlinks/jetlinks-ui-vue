@@ -97,12 +97,16 @@ const getLevel = () => {
         if (resp.status === 200) levelList.value = resp.result.levels;
     });
 };
-getLevel();
 const getLevelLabel = (id: number) => {
     if (levelList.value.length < 1 || !id) return '';
     const obj = levelList.value.find((item) => item.level === id);
     return obj?.title;
 };
+onMounted(() => {
+    if(!['device-transparent-codec', 'system-event'].includes(props?.data?.topicProvider)){
+        getLevel();
+    }
+})
 </script>
 
 <style lang="less" scoped>

@@ -131,7 +131,6 @@ const confirm = async () => {
             reject();
         });
         if (data) {
-          console.log(data)
           updateValue({
             source: myValue.value,
             ...data

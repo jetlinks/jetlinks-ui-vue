@@ -33,7 +33,7 @@
                                 :options="options"
                                 v-model:value="record.id"
                                 size="small"
-                                style="width: 100%"
+                                style="width: 100%; z-index: 1400 !important"
                             />
                         </template>
                         <template v-if="column.key === 'current'">
@@ -75,7 +75,7 @@
                     <div>运行结果</div>
                 </div>
                 <div class="action">
-                    <div>
+                    <div v-if="virtualRule?.script">
                         <a v-if="isBeginning" @click="beginAction">
                             开始运行
                         </a>
@@ -116,6 +116,7 @@ const props = defineProps({
     virtualRule: Object as PropType<Record<any, any>>,
     id: String,
 });
+const emits = defineEmits(['success'])
 
 const isBeginning = ref(true);
 
@@ -195,6 +196,7 @@ const runScript = () => {
             time: new Date().getTime(),
             content: JSON.stringify(data.payload),
         });
+        emits('success', false)
         if (props.virtualRule?.type !== 'window') {
             stopAction();
         }
@@ -249,14 +251,15 @@ onUnmounted(() => {
     clearAction();
 });
 
-const options = ref<{ label: string; value: string }[]>();
+const options = ref<{ text: string; value: string }[]>([]);
+
 const getProperty = () => {
     const metadata = productStore.current.metadata || '{}';
     const _p: PropertyMetadata[] = JSON.parse(metadata).properties || [];
     options.value = _p
         .filter((p) => p.id !== props.id)
         .map((item) => ({
-            label: item.name,
+            text: item.name,
             value: item.id,
         }));
 };

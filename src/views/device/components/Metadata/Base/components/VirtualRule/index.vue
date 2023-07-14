@@ -56,7 +56,7 @@
             >
                 <Rule
                     v-model:value="formData.virtualRule.rule.script"
-                    :virtualRule="formData.virtualRule.rule"
+                    :virtualRule="_virtualRule.virtualRule.rule"
                     :id="value.id"
                     :aggList="aggList"
                 />
@@ -310,6 +310,24 @@ watch(
     },
 );
 
+const _virtualRule = computed(() => {
+    const flag = formData?.virtualRule?.rule?.windowType !== 'undefined';
+    return {
+        type: formData?.type,
+        virtualRule: {
+            type: flag ? 'window' : 'script',
+            rule: {
+                ...formData?.virtualRule?.rule,
+                isVirtualRule: flag,
+                type: flag ? 'window' : 'script',
+            },
+            triggerProperties: formData?.virtualRule?.triggerProperties.includes('*')
+                ? []
+                : formData?.virtualRule?.triggerProperties,
+        },
+    };
+});
+
 const onSave = () => {
     return new Promise(async (resolve, reject) => {
         const data = await formRef.value!.validate().catch(() => {
@@ -317,22 +335,7 @@ const onSave = () => {
         });
         if (data) {
             if (data.virtualRule) {
-                const flag = data.virtualRule.rule.windowType !== 'undefined'
-                resolve({
-                    type: data.type,
-                    virtualRule: {
-                        type: flag ? 'window' : 'script',
-                        rule: {
-                            ...data.virtualRule.rule,
-                            isVirtualRule: flag,
-                            type: flag ? 'window' : 'script',
-                        },
-                        triggerProperties:
-                            data.virtualRule?.triggerProperties.includes('*')
-                                ? []
-                                : data.virtualRule?.triggerProperties,
-                    },
-                });
+                resolve(_virtualRule.value);
             } else {
                 resolve({
                     type: data.type,
