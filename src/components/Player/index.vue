@@ -86,3 +86,11 @@ defineExpose({
     paused,
 });
 </script>
+<style lang="less" scoped>
+:deep(.live-player-stretch-btn){
+  display: none;
+}
+:deep(.vjs-icon-spinner){
+  display: none;
+}
+</style>

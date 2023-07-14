@@ -25,10 +25,18 @@
                 </j-tag>
             </template>
             <template #username="slotProps">
-                <j-tag color="geekblue">
-                    {{ slotProps.context.userName }}
-                </j-tag>
+                
+                    <!-- <j-tag color="geekblue"> -->  
+                    <div class="userName">
+                        <Ellipsis style="max-width: 100px;">
+                        {{ slotProps.context.userName }}
+                    </Ellipsis>
+                     <!-- </j-tag> -->
+                </div>
             </template>
+                   
+                   
+               
             <template #action="slotProps">
                 <j-space :size="16">
                     <j-tooltip
@@ -92,7 +100,7 @@
             <j-descriptions-item label="请求耗时">
                 {{
                     descriptionsData?.responseTime -
-                    descriptionsData?.responseTime +
+                    descriptionsData?.requestTime +
                     'ms'
                 }}
             </j-descriptions-item>
@@ -276,3 +284,20 @@ const handleSearch = (e: any) => {
     params.value = modifySearchColumnValue(e, column);
 };
 </script>
+<style scoped lang="less">
+.userName{
+    color: #1d39c4;
+    background: #f0f5ff;
+    border-color: #adc6ff;
+    list-style: none;
+    font-feature-settings: 'tnum';
+    display: inline-block;
+    height: auto;
+    margin-right: 8px;
+    padding: 0 7px;
+    font-size: 12px;
+    line-height: 20px;border: 1px solid #d9d9d9;
+    border-radius: 2px;
+    opacity: 1;
+}
+</style>
