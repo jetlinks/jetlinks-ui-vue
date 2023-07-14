@@ -130,7 +130,7 @@
             :channelData="channelData"
             @submit="listRef.reload()"
         />
-        <Live v-model:visible="playerVis" :data="channelData" />
+        <Live v-model:visible="playerVis" :data="playData" />
     </page-container>
 </template>
 
@@ -223,12 +223,14 @@ const handleSearch = (e: any) => {
 
 const saveVis = ref(false);
 const handleAdd = () => {
+    channelData.value = undefined
     saveVis.value = true;
 };
 
 const listRef = ref();
 const playerVis = ref(false);
 const channelData = ref();
+const playData = ref();
 
 /**
  * 表格操作按钮
@@ -261,7 +263,7 @@ const getActions = (
             },
             icon: 'VideoCameraOutlined',
             onClick: () => {
-                channelData.value = cloneDeep(data);
+                playData.value = cloneDeep(data);
                 playerVis.value = true;
             },
         },
