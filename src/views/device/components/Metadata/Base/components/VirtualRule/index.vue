@@ -159,7 +159,7 @@ import {
 } from '@/api/device/product';
 import { useInstanceStore } from '@/store/instance';
 import { useProductStore } from '@/store/product';
-import { PropType } from 'vue';
+import {PropType, Ref} from 'vue';
 import { ReadType } from '@/components/Metadata/components';
 
 type SourceType = 'device' | 'manual' | 'rule';
@@ -224,7 +224,7 @@ const formData = reactive<{
     virtualRule: undefined,
 });
 
-const dataSource = inject<any[]>('_dataSource')
+const dataSource = inject<Ref<any[]>>('_dataSource')
 
 const typeOptions = computed(() => {
     if (props.source === 'manual') {
@@ -241,7 +241,8 @@ const typeOptions = computed(() => {
 });
 
 const options = computed(() => {
-    return dataSource?.filter((item: any) => item?.id !== props.value?.id);
+  console.log('options', dataSource?.value)
+    return (dataSource?.value || []).filter((item: any) => item?.id !== props.value?.id);
 });
 
 const handleSearch = async () => {
