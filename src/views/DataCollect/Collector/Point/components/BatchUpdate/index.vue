@@ -4,6 +4,7 @@
         :visible="true"
         width="700px"
         @cancel="handleCancel"
+        :destroyOnClose="true"
     >
         <div class="sizeText">
             将批量修改
@@ -86,7 +87,6 @@
 <script lang="ts" setup>
 import type { FormInstance } from 'ant-design-vue';
 import { savePointBatch } from '@/api/data-collect/collector';
-import { Rule } from 'ant-design-vue/lib/form';
 import { cloneDeep, isObject } from 'lodash';
 import { regOnlyNumber } from '../../../data';
 
@@ -106,15 +106,6 @@ const formData = ref({
     interval: undefined,
     features: [],
 });
-
-const checkLength = (_rule: Rule, value: string): Promise<any> =>
-    new Promise(async (resolve, reject) => {
-        if (value) {
-            return String(value).length > 64
-                ? reject('最多可输入64个字符')
-                : resolve('');
-        }
-    });
 
 const handleOk = async () => {
     const data = cloneDeep(formData.value);
@@ -136,7 +127,11 @@ const handleOk = async () => {
                     );
                 }
             }
-            features.length !== 0 && (i.features = data.features);
+            if(features.length !== 0) {
+                i.features = data.features
+            } else {
+                i.features = i.features.map((it: any) =>it.value)
+            }
             if (!!interval || Number(interval) === 0) {
                 i.interval = data.interval;
                 i.configuration = {
@@ -156,10 +151,6 @@ const handleOk = async () => {
 
 const handleCancel = () => {
     emit('change', false);
-};
-
-const filterOption = (input: string, option: any) => {
-    return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
 </script>
 
