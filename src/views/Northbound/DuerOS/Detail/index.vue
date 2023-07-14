@@ -7,7 +7,7 @@
                         <div class="left-content">
                             <TitleComponent data="基本信息" />
                             <j-alert
-                                v-if="_error && modelRef?.id"
+                                v-if="_error && modelRef?.id && productPermission()"
                                 style="margin: 10px 0"
                                 type="warning"
                             >
@@ -26,14 +26,16 @@
                                             "
                                             >{{ _error }}</span
                                         >
-                                        <j-popconfirm
-                                            title="确认启用"
-                                            @confirm="onActiveProduct"
+                                        <PermissionButton
+                                            :popConfirm="{
+                                                title: '确认启用',
+                                                onConfirm: onActiveProduct,
+                                            }"
+                                            size="small"
+                                            :hasPermission="'device/Product:action'"
                                         >
-                                            <j-button size="small"
-                                                >立即启用</j-button
-                                            >
-                                        </j-popconfirm>
+                                            立即启用
+                                        </PermissionButton>
                                     </div>
                                 </template>
                             </j-alert>
@@ -461,7 +463,9 @@
                                                                 "
                                                                 type="target"
                                                                 :options="
-                                                                    getProductProperties(item.target)
+                                                                    getProductProperties(
+                                                                        item.target,
+                                                                    )
                                                                 "
                                                             />
                                                         </j-form-item>
@@ -547,11 +551,15 @@ import { useMenuStore } from '@/store/menu';
 import { onlyMessage } from '@/utils/comm';
 import MSelect from '../../components/MSelect/index.vue';
 import { _deploy } from '@/api/device/product';
+import { usePermissionStore } from '@/store/permission';
 
 const menuStory = useMenuStore();
 const route = useRoute();
 
 const formRef = ref();
+
+const hasPermission = usePermissionStore().hasPermission;
+const productPermission = () => hasPermission(`device/Product:action`);
 
 const modelRef = reactive({
     id: undefined,

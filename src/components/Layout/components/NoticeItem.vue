@@ -55,6 +55,10 @@ const props = defineProps({
         type: Object,
         default: () => {},
     },
+    type: {
+        type: String,
+        default: "alarm"
+    }
 });
 
 const num = ref<-100 | 0>(0);
@@ -74,10 +78,14 @@ const detail = () => {
     if (route.path === '/account/center') {
         userInfo.tabKey = 'StationMessage';
         userInfo.messageInfo = props.data;
+        userInfo.other.tabKey = props.type;
     } else {
         menuStory.routerPush('account/center', {
             row: props.data,
             tabKey: 'StationMessage',
+            other: {
+                tabKey: props.type
+            }
         });
     }
     emits('action');

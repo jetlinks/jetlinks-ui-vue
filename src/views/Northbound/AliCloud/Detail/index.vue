@@ -7,7 +7,7 @@
                         <div class="left-content">
                             <TitleComponent data="基本信息" />
                             <j-alert
-                                v-if="_error && modelRef?.id"
+                                v-if="!!_error && modelRef?.id && productPermission()"
                                 style="margin: 10px 0"
                                 type="warning"
                             >
@@ -26,14 +26,16 @@
                                             "
                                             >{{ _error }}</span
                                         >
-                                        <j-popconfirm
-                                            title="确认启用"
-                                            @confirm="onActiveProduct"
+                                        <PermissionButton
+                                            :popConfirm="{
+                                                title: '确认启用',
+                                                onConfirm: onActiveProduct,
+                                            }"
+                                            size="small"
+                                            :hasPermission="'device/Product:action'"
                                         >
-                                            <j-button size="small"
-                                                >立即启用</j-button
-                                            >
-                                        </j-popconfirm>
+                                            立即启用
+                                        </PermissionButton>
                                     </div>
                                 </template>
                             </j-alert>
@@ -275,7 +277,6 @@
                                             v-if="modelRef.mappings.length"
                                             :activeKey="activeKey"
                                             @change="onCollChange"
-
                                         >
                                             <j-collapse-panel
                                                 v-for="(
@@ -398,6 +399,9 @@
                                                                             '',
                                                                     )
                                                                 "
+                                                                @error="
+                                                                    onPlatError
+                                                                "
                                                             />
                                                         </j-form-item>
                                                     </j-col>
@@ -481,13 +485,16 @@ import _ from 'lodash';
 import { onlyMessage } from '@/utils/comm';
 import MSelect from '../../components/MSelect/index.vue';
 import { _deploy } from '@/api/device/product';
+import { usePermissionStore } from '@/store/permission';
 
 const router = useRouter();
 const route = useRoute();
 
 const formRef = ref();
-const _error = ref<string>('');
-const _set = new Set()
+const _errorSet = ref<Set<string>>(new Set());
+
+const hasPermission = usePermissionStore().hasPermission;
+const productPermission = () => hasPermission(`device/Product:action`);
 
 const modelRef = reactive({
     id: undefined,
@@ -587,33 +594,34 @@ const onCollChange = (_key: string[]) => {
     activeKey.value = _key;
 };
 
-const onActiveProduct = () => {
-    const arr = [..._set].map(async (i: any) => {
-        return await _deploy(i)
-    })
-    Promise.all(arr).then((res) => {
-        if(res.map(i => i?.status === 200).length === _set.size) {
-            onlyMessage('操作成功！')
-            _error.value = ''
+const _error = computed(() => {
+    return _errorSet.value.size ? `当前选择的部分产品为禁用状态` : ''
+})
+
+const onActiveProduct = async () => {
+    [..._errorSet.value.values()].forEach(async (i: any) => {
+        const resp = await _deploy(i).catch((error) => {
+            onlyMessage('操作失败', 'error');
+        });
+        if(resp?.status === 200) {
+            _errorSet.value.delete(i)
+            onlyMessage('操作成功！');
         }
-        _set.clear()
-    }).catch((error) => {
-        onlyMessage('操作失败', 'error')
-    })
+    });
+    await getProduct();
 };
 
+const onPlatError = (val: any) => {
+    const _item = productList.value.find((item) => item.id === val);
+    if (val && _item && !_item?.state) {
+        _errorSet.value.add(val)
+    }
+};
 const _validator = (_rule: any, value: string): Promise<any> =>
     new Promise((resolve, reject) => {
         const _item = productList.value.find((item) => item.id === value);
         if (!_item) {
             return reject('关联产品已被删除，请重新选择');
-        } else {
-            if (!_item?.state) {
-                _set.add(value)
-                _error.value = `当前选择的部分产品为禁用状态`;
-            } else {
-                _error.value = '';
-            }
         }
         return resolve('');
     });
@@ -661,7 +669,9 @@ watch(
                 getAliyunProduct(_data?.accessConfig);
             }
             Object.assign(modelRef, _data);
-            activeKey.value = (_data?.mappings || []).map((_: any, index: number) => index)
+            activeKey.value = (_data?.mappings || []).map(
+                (_: any, index: number) => index,
+            );
         }
     },
     { immediate: true, deep: true },

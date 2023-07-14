@@ -57,7 +57,6 @@
                                     <Ellipsis
                                         style="
                                             width: calc(100% - 100px);
-                                            margin-bottom: 20px;
                                         "
                                     >
                                         <span class="card-title">
@@ -113,16 +112,15 @@
                                             <Ellipsis
                                                 style="
                                                     width: calc(100% - 10px);
-                                                    display: flex;
-                                                    margin-top: 4px;
                                                 "
+                                                :lineClamp="2"
                                             >
-                                                <span>
+                                                <div>
                                                     {{
                                                         slotProps.protocolDetail
                                                             .name
                                                     }}
-                                                </span>
+                                                </div>
                                             </Ellipsis>
                                         </j-col>
                                     </j-row>

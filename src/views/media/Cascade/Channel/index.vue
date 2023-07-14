@@ -14,7 +14,9 @@
                 :params="params"
                 :rowSelection="{
                     selectedRowKeys: _selectedRowKeys,
-                    onChange: onSelectChange,
+                    onSelect: onSelectChange,
+                    onSelectAll: selectAll,
+                    onSelectNone: cancelSelectAll,
                 }"
             >
                 <template #headerTitle>
@@ -246,10 +248,44 @@ const listRef = ref();
 const _selectedRowKeys = ref<string[]>([]);
 const bindVis = ref(false);
 
-const onSelectChange = (keys: string[]) => {
-    _selectedRowKeys.value = [...keys];
+const channelIdMap = new Map();
+const onSelectChange = (row: any,selected:Boolean) => {
+    const arr = new Set(_selectedRowKeys.value);
+    if(selected){
+        arr.add(row.id)
+        channelIdMap.set(row.id,row.channelId)
+    }else{
+        arr.delete(row.id)
+        channelIdMap.delete(row.id)
+    }
+    _selectedRowKeys.value = [...arr.values()];
 };
+const selectAll = (selected: Boolean, selectedRows: any,changeRows:any) => {
+    if (selected) {
+            changeRows.map((i: any) => {
+                if (!_selectedRowKeys.value.includes(i.id)) {
+                    _selectedRowKeys.value.push(i.id)
+                    channelIdMap.set(i.id,i.channelId)
+                }
+            })
+        } else {
+            const arr = changeRows.map((item: any) => item.id)
+            const _ids: string[] = [];
+            _selectedRowKeys.value.map((i: any) => {
+                if (!arr.includes(i)) {   
+                    _ids.push(i)
+                }else{
+                    channelIdMap.delete(i)
+                }
+            })
+            _selectedRowKeys.value = _ids;
+        }     
+}
 
+const cancelSelectAll = () =>{
+    _selectedRowKeys.value = [];
+    channelIdMap.clear();
+}
 /**
  * 表格操作按钮
  * @param data 表格数据项
@@ -296,15 +332,16 @@ const handleMultipleUnbind = async () => {
         onlyMessage('请先选择需要解绑的通道列表', 'error');
         return;
     }
-    const channelIds = listRef.value?._dataSource
-        .filter((f: any) => _selectedRowKeys.value.includes(f.id))
-        .map((m: any) => m.channelId);
+    // const channelIds = listRef.value?._dataSource
+    //     .filter((f: any) => _selectedRowKeys.value.includes(f.id))
+    //     .map((m: any) => m.channelId);
     const resp = await CascadeApi.unbindChannel(
         route.query.id as string,
-        channelIds,
+       [...channelIdMap.values()]
     );
     if (resp.success) {
         onlyMessage('操作成功！');
+        _selectedRowKeys.value = []
         listRef.value?.reload();
     } else {
         onlyMessage('操作失败！', 'error');
