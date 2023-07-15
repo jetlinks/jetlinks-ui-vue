@@ -101,7 +101,7 @@
 import type { PropType } from 'vue'
 import dayjs from 'dayjs'
 import WhenOption from './WhenOption.vue'
-import { cloneDeep } from 'lodash-es'
+import {cloneDeep, pick} from 'lodash-es'
 import type { OperationTimer } from '../../../typings'
 import { isCron } from '@/utils/regular'
 import { defineExpose } from 'vue'
@@ -109,7 +109,7 @@ import { defineExpose } from 'vue'
 type NameType = string[] | string
 
 type Emit = {
-  (e: 'update:value', data: OperationTimer): void
+  (e: 'update:value', data: Partial<OperationTimer>): void
 }
 
 const props = defineProps({
@@ -175,18 +175,20 @@ const showPeriod = computed(() => {
 const updateValue = () => {
 
   const cloneValue = cloneDeep(formModel)
+  let keys: string[] = ['trigger']
   if (cloneValue.trigger === 'cron') {
-    delete cloneValue.when
+    keys.push('cron')
   } else {
-    delete cloneValue.cron
+    keys = keys.concat(['mod', 'when'])
+
+    if (cloneValue.mod === 'period') {
+      keys.push('once')
+    } else {
+      keys.push('period')
+    }
   }
 
-  if (cloneValue.mod === 'period') {
-    delete cloneValue.once
-  } else {
-    delete cloneValue.period
-  }
-  emit('update:value', cloneValue)
+  emit('update:value', pick(cloneValue, keys))
 }
 
 const triggerChange = () => {
