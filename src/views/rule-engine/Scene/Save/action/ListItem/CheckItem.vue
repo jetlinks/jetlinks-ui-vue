@@ -67,7 +67,7 @@ const checkDeviceDelete = async () => {
 
       if (item!.selectorValues!.length === 1 && hasDevice) {
         const deviceDetail = deviceResp?.result?.data?.[0]
-        metadata = JSON.parse(deviceDetail?.metadata || '{}') // 只选中一个设备，以设备物模型为准
+        metadata = JSON.parse(deviceDetail?.deriveMetadata || '{}') // 只选中一个设备，以设备物模型为准
       }
     }
     if (!hasDevice) { // 某一个设备被删除
