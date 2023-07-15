@@ -6,6 +6,7 @@
     okText="确定"
     cancelText="取消"
     :confirmLoading='loading'
+    :maskClosable="false"
     @ok="submitData"
     @cancel="cancel"
   >

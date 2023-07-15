@@ -137,6 +137,7 @@ const routerParams = useRouterParams();
 const instanceStore = useInstanceStore();
 
 const statusMap = new Map();
+
 statusMap.set('online', 'success');
 statusMap.set('offline', 'error');
 statusMap.set('notActive', 'warning');
@@ -276,7 +277,7 @@ const initPage = async (newId: any) => {
 }
 
 onBeforeRouteUpdate((to: any) => {
-  if (to.params?.id) {
+  if (to.params?.id!==instanceStore.current.id) {
     initPage(to.params?.id)
   }
 })
