@@ -604,6 +604,6 @@ export const getProtocolMetadata = (id: string, transport: string) => server.get
  */
 export const saveDeviceVirtualProperty = (productId: string, deviceId: string, data: any[]) => server.patch(`/virtual/property/product/${productId}/${deviceId}/_batch`, data)
 
-export const queryDeviceVirtualProperty = (productId: string, deviceId: string, propertyId: string) => server.get(`/virtual/property/product/${productId}/${deviceId}/${propertyId}`)
+export const queryDeviceVirtualProperty = (productId: string, deviceId: string, propertyId: string) => server.get(`/virtual/property/device/${productId}/${deviceId}/${propertyId}`)
 
 export const queryByParent = (deviceId: string) => server.get(`/device/gateway/${deviceId}/parent`)

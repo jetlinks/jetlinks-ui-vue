@@ -254,25 +254,26 @@ const options = computed(() => {
 
 const handleSearch = async () => {
     let resp: any = undefined;
-    if (target === 'product') {
+    try {
+      if (target === 'product') {
         resp = await queryProductVirtualProperty(
             productStore.current?.id,
             props.value?.id,
         );
-    } else {
+      } else {
         resp = await queryDeviceVirtualProperty(
             instanceStore.current?.productId,
             instanceStore.current?.id,
             props.value?.id,
         );
-    }
-    if (resp && resp.status === 200 && resp.result) {
+      }
+      if (resp && resp.status === 200 && resp.result) {
         formData.virtualRule = {
-            triggerProperties: resp.result.triggerProperties,
-            rule: resp.result.rule,
+          triggerProperties: resp.result.triggerProperties,
+          rule: resp.result.rule,
         }
-    } else {
-      console.log(props.value)
+      }
+    } catch (err) {
       formData.virtualRule = {
         triggerProperties: props.value?.expands?.virtualRule?.triggerProperties || ['*'],
         rule: props.value?.expands?.virtualRule?.rule || initData.rule
