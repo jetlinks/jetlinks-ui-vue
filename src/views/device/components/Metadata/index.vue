@@ -17,9 +17,13 @@
       <j-tabs class="metadataNav" :activeKey="tabActiveKey" destroyInactiveTabPane type="card" @change="tabsChange">
         <template #rightExtra>
           <j-space>
-            <PermissionButton v-if="type === 'device' && instanceStore.detail?.independentMetadata"
-              :hasPermission="`${permission}:update`" :popConfirm="{ title: '确认重置？', onConfirm: resetMetadata, }"
-              :tooltip="{ title: '重置后将使用产品的物模型配置' }" key="reload">
+            <PermissionButton
+                v-if="showReset"
+              key="reload"
+                :hasPermission="`${permission}:update`"
+              :popConfirm="{ title: '确认重置？', onConfirm: resetMetadata, }"
+                :tooltip="{ title: '重置后将使用产品的物模型配置' }"
+            >
               重置操作
             </PermissionButton>
             <PermissionButton :hasPermission="`${permission}:update`" @click="visible = true" key="import">快速导入</PermissionButton>
@@ -55,6 +59,7 @@ import Cat from './Cat/index.vue'
 import BaseMetadata from './Base/Base.vue'
 import { useMetadataStore } from '@/store/metadata'
 import {EventEmitter} from "@/utils/utils";
+import {isEqual} from "lodash-es";
 
 const route = useRoute()
 const instanceStore = useInstanceStore()
@@ -72,11 +77,23 @@ const tabActiveKey = ref('properties')
 
 provide('_metadataType', props.type)
 
+const showReset = computed(() => {
+  if (props.type === 'device' && instanceStore.current.productMetadata) {
+    console.log(instanceStore.current)
+    const proMetadata = JSON.parse(instanceStore.current.productMetadata)
+    const _metadata = JSON.parse(instanceStore.current.metadata)
+    return !isEqual(_metadata, proMetadata)
+  }
+
+  return false
+})
+
 // 重置物模型
 const resetMetadata = async () => {
   const { id } = route.params
   const resp = await deleteMetadata(id as string)
   if (resp.status === 200) {
+
     message.info('操作成功')
     instanceStore.refresh(id as string).then(() => {
       metadataStore.set('importMetadata', true)
