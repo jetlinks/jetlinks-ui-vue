@@ -29,7 +29,8 @@
                 >
                     <template #bodyCell="{ column, record, index }">
                         <template v-if="column.key === 'id'">
-                            <j-auto-complete
+                            <j-select
+                                showSearch
                                 :options="options"
                                 v-model:value="record.id"
                                 size="small"
@@ -255,7 +256,7 @@ const options = computed(() => {
   return (medataSource.value || [])
       .filter((p) => p.id !== props.id)
       .map((item) => ({
-        text: item.name,
+        label: item.name,
         value: item.id,
       }));
 })

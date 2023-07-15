@@ -434,6 +434,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         rules: target !== 'device' ? [
           {
             validator: async (_: Record<string, any>, value: any) => {
+              console.log('value', value)
               if (value.source) {
                 if(value.source !== 'rule') {
                   if(value.type?.length) {

@@ -37,6 +37,7 @@
 import { reactive } from 'vue';
 import type { PropType } from 'vue';
 import Item from './item.vue'
+import {Form} from "jetlinks-ui-components";
 
 type ValueType = number | Array<number | undefined> | undefined;
 
@@ -52,7 +53,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits<Emit>();
-
+const formItemContext = Form.useInjectFormItemContext();
 
 
 const formData = reactive<{
@@ -83,6 +84,7 @@ const confirm = () => {
         ...props.value,
         value: value
       });
+      formItemContext.onFieldChange()
       resolve(true)
     }).catch(() => {
       reject()

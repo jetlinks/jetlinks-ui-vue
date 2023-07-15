@@ -249,7 +249,6 @@ const typeOptions = computed(() => {
 });
 
 const options = computed(() => {
-  console.log('virtualRule',dataSource?.value)
     return (dataSource?.value || []).filter((item: any) => item?.id !== props.value?.id);
 });
 
@@ -267,11 +266,17 @@ const handleSearch = async () => {
             props.value?.id,
         );
     }
-    if (resp && resp.status === 200) {
+    if (resp && resp.status === 200 && resp.result) {
         formData.virtualRule = {
-            triggerProperties: resp?.result?.triggerProperties?.length ? resp?.result?.triggerProperties : ['*'],
-            rule: resp?.result?.rule ? resp?.result?.rule : initData.rule,
+            triggerProperties: resp.result.triggerProperties,
+            rule: resp.result.rule,
         }
+    } else {
+      console.log(props.value)
+      formData.virtualRule = {
+        triggerProperties: props.value?.expands?.virtualRule?.triggerProperties || ['*'],
+        rule: props.value?.expands?.virtualRule?.rule || initData.rule
+      }
     }
 };
 

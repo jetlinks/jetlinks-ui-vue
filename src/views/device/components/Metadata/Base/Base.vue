@@ -399,13 +399,14 @@ const handleSaveClick = async (next?: Function) => {
             propertyId: item.id
           })
         }
-        return {
-          ...item,
-          expands: {
-            ...item.expands,
-            virtualRule: undefined
-          }
-        }
+        // return {
+        //   ...item,
+        //   expands: {
+        //     ...item.expands,
+        //     virtualRule: undefined
+        //   }
+        // }
+        return item
       })
       // 保存规则
       if(virtual.length) {
