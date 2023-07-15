@@ -214,14 +214,17 @@ const columns = [
                 new Promise((resolve) => {
                     query({
                         paging: false,
-                        sotrs: [{ name: 'createTime', order: 'desc' }],
+                        sorts: [{ name: 'createTime', order: 'desc' }],
                     }).then((resp: any) => {
-                        resolve(
-                            resp.result.data.map((item: any) => ({
-                                label: item.category,
-                                value: item.category
-                            }))
-                        )
+                      const arrMap = new Map()
+                      resp.result.data.forEach((item: any) => {
+                        const labelItem = options.find(a => a.value === item.category)
+                        arrMap.set(item.category, {
+                          label: labelItem?.label || item.category,
+                          value: item.category,
+                        })
+                      })
+                      resolve([...arrMap.values()]);
                     });
                 }),
         },
@@ -244,12 +247,14 @@ const columns = [
                             },
                         ],
                     }).then((resp: any) => {
-                        resolve(
-                            resp.result.map((item: any) => ({
-                                label: item.sourceName,
-                                value: item.sourceId,
-                            })),
-                        );
+                        const arrMap = new Map()
+                        resp.result.data.forEach((item: any) => {
+                          arrMap.set(item.sourceId, {
+                            label: item.sourceName,
+                            value: item.sourceId,
+                          })
+                        })
+                        resolve([...arrMap.values()]);
                     });
                 }),
         },
