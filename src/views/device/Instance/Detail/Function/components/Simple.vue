@@ -76,6 +76,7 @@
                             <j-space>
                                 <j-button
                                     type="primary"
+                                    :loading="loading"
                                     @click="handleExecute(func)"
                                 >
                                     执行
@@ -115,6 +116,7 @@ const route = useRoute();
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 
 const activeKey = ref('');
+const loading = ref<boolean>(false);
 // 物模型数据
 const metadata = computed(() => JSON.parse(instanceStore.detail.metadata));
 const columns = ref([
@@ -201,11 +203,17 @@ const handleExecute = async (func: any) => {
                     obj[item.id] = item.value;
                 }
             });
+            loading.value = true
             const { success, result } = await execute(
                 route.params.id as string,
                 func.id,
                 obj,
-            );
+            ).catch(() => {
+                loading.value = false
+            })
+            .finally(() => {
+                loading.value = false
+            })
             if (!success) return;
             onlyMessage('操作成功');
             executeResult.value = result instanceof Array ? result[0] : result;

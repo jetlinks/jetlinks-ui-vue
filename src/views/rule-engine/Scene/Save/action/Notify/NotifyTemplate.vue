@@ -129,13 +129,12 @@ const handleSearch = (_params: any) => {
     params.value = _params;
 };
 
-// const 
-
 const handleClick = (dt: any) => {
     if (_selectedRowKeys.value.includes(dt.id)) {
         _selectedRowKeys.value = [];
         emit('update:value', undefined);
-        emit('change', { templateName: undefined, orgName: undefined, sendTo: undefined });
+        // emit('change', { templateName: undefined, orgName: undefined, sendTo: undefined });
+        emit('change', { templateName: undefined });
         emit('update:detail', undefined);
     } else {
         // console.log(dt)

@@ -203,7 +203,6 @@ const columns = [
         dataIndex: 'deviceName',
         key: 'deviceName',
         fixed: 'left',
-        width: 200,
         ellipsis: true,
         search: {
             type: 'string',
@@ -214,7 +213,6 @@ const columns = [
         dataIndex: 'productId',
         key: 'productId',
         ellipsis: true,
-        width: 200,
         scopedSlots: true,
         // search: {
         //     type: 'select',
@@ -233,6 +231,7 @@ const columns = [
         key: 'completeTime',
         ellipsis: true,
         dataIndex: 'completeTime',
+        width: 200,
         search: {
             type: 'date',
         },
@@ -244,7 +243,6 @@ const columns = [
         key: 'progress',
         ellipsis: true,
         scopedSlots: true,
-        width: 200,
         search: {
             type: 'number',
         },
@@ -262,14 +260,14 @@ const columns = [
             })),
         },
         scopedSlots: true,
-        width: 200,
+        width: 120,
     },
 
     {
         title: '操作',
         key: 'action',
         fixed: 'right',
-        width: 200,
+        width: 120,
         scopedSlots: true,
     },
 ];
@@ -344,7 +342,9 @@ const confirm = async (e: MouseEvent) => {
     const res = await startTask(taskId, ['failed']);
     if (res.success) {
         onlyMessage('操作成功', 'success');
-        handleRefresh('failed');
+        stateList.forEach((item) => {
+            handleRefresh(item.key);
+        });
         tableRef.value.reload();
     }
 };

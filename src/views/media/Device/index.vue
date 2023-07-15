@@ -47,9 +47,9 @@
                         </template>
                         <template #content>
                             <Ellipsis style="width: calc(100% - 100px);">
-                            <h3 style="font-size: 16px;font-weight: 700;color: #315efb;">
+                            <span style="font-size: 16px;font-weight: 700">
                                 {{ slotProps.name }}
-                            </h3>
+                            </span>
                             </Ellipsis>
                             <j-row>
                                 <j-col :span="12">

@@ -25,7 +25,7 @@
                             <ValueItem
                                 v-model:modelValue="record.value"
                                 :itemType="record.type"
-                                style="width: 100%"
+                                
                                 :options="
                                     record.type === 'enum'
                                         ? (
@@ -53,7 +53,6 @@
 </template>
 
 <script lang="ts" setup>
-import { emit } from 'process';
 import { PropType } from 'vue';
 
 type Emits = {
@@ -100,8 +99,8 @@ watchEffect(() => {
 const onSave = () =>
     new Promise((resolve, reject) => {
         formRef.value?.validate().then((_data: any) => {
-            _emit('update:modelValue', _data)
-            resolve(_data);
+            _emit('update:modelValue', modelRef.dataSource)
+            resolve(true);
         }).catch(() => {
             reject(false)
         })
@@ -111,4 +110,8 @@ defineExpose({ onSave });
 </script>
 
 <style lang="less" scoped>
+:deep(.ant-form-item) {
+    margin: 0 !important;
+    height: 30px;
+}
 </style>
