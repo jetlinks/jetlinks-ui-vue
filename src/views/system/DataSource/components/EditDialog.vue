@@ -261,10 +261,16 @@ const validateAddress = (_rule: Rule, value: string): Promise<any> => {
 const getTypeOption = () => {
     getDataTypeDict_api().then((resp: any) => {
         const result = resp.result as dictItemType[];
-        form.typeOptions = result.map((item) => ({
-            label: item.name,
-            value: item.id,
-        }));
+        const options:any = []
+         result.forEach((item) => {
+            if(item.name !== 'redis'){
+                options.push({
+                label: item.name,
+                value: item.id,
+                })
+            }
+        });
+        form.typeOptions =  options
     });
 };
 

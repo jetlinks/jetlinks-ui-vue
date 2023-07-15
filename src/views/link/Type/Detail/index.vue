@@ -955,7 +955,7 @@
                                                     "
                                                 >
                                                     <j-form-item
-                                                        label="长度"
+                                                        label="字节长度"
                                                         :name="[
                                                             'cluster',
                                                             index,

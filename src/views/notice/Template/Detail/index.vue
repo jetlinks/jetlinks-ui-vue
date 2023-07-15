@@ -1244,6 +1244,9 @@ const handleSubmit = () => {
       if (formData.value.template.messageType === 'markdown') {
         formData.value.template.markdown!.text = formData.value.template.message
       }
+      if (formData.value.template.messageType === 'link'){
+        formData.value.template.link!.text = formData.value.template.message
+      }
     }
 
   formRef.value?.validate()

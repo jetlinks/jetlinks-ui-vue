@@ -69,11 +69,17 @@
                                             v-if="slotProps.channelInfo"
                                             class="card-item-content-text"
                                         >
+                                        <Ellipsis
+                                        style="
+                                            width: calc(100% - 100px);
+                                        "
+                                    >
                                             <div
                                                 class="card-item-content-text-title"
                                             >
                                                 {{ slotProps.channelInfo.name }}
                                             </div>
+                                            </Ellipsis>
                                             <Ellipsis
                                                 style="
                                                     width: calc(100% - 10px);
