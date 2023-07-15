@@ -6,6 +6,7 @@
         width="70vw"
         title="编辑规则"
         @cancel="handleCancel"
+        :destroyOnClose="true"
     >
         <div class="header" v-if="virtualRule?.windowType && virtualRule?.windowType !== 'undefined'">
             <div class="header-item">

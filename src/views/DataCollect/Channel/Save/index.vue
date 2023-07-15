@@ -291,7 +291,7 @@ const getProvidersList = async () => {
             arr.includes(item.alias),
         );
         providersList.value = providers;
-        if (arr.includes('OPC_UA')) {
+        if (arr.includes('opc-ua')) {
             getOptionsList();
         }
     }

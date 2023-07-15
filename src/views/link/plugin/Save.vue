@@ -54,7 +54,7 @@
           </div>
         </div>
         <j-form-item
-          label='说明'
+          label='描述'
           name='describe'
           :rules='Max_Length_200'
         >

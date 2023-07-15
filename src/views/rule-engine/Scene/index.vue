@@ -98,8 +98,8 @@
                     :status="slotProps.state?.value"
                     :text="slotProps.state?.text"
                     :statusNames="{
-                        enabled: 'processing',
-                        disabled: 'error',
+                        started: 'processing',
+                        disable: 'error',
                     }"
                 />
             </template>
