@@ -7,6 +7,9 @@
 
 <script setup lang="ts" name="Rule">
 import FRuleEditor from '@/components/FRuleEditor/index.vue';
+import {Form} from "jetlinks-ui-components";
+
+const formItemContext = Form.useInjectFormItemContext();
 
 interface Emits {
     (e: 'update:value', data: string | undefined): void;
@@ -26,6 +29,7 @@ const visible = ref<boolean>(false);
 const onChange = (val: string | undefined) => {
     emit('change', val)
     emit('update:value', val)
+    formItemContext.onFieldChange()
     onClose()
 }
 
