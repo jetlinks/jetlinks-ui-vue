@@ -178,6 +178,7 @@ const funcChange = (val: string) => {
 
 const saveBtn = async () => {
     const _inputs = await inputsRef.value.onSave();
+    console.log(_inputs)
     if(!_inputs){
         return 
     }
@@ -192,7 +193,7 @@ const saveBtn = async () => {
         }
 
         if (values.type === 'INVOKE_FUNCTION') {
-            const list = (modelRef.inputs || []).filter((it: any) => !!it.value);
+            const list = (modelRef?.inputs || [])?.filter((it: any) => !!it.value);
             const obj = {};
             list.map((it: any) => {
                 obj[it.id] = it.value;

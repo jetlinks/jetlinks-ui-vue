@@ -156,7 +156,7 @@ const queryPropertyData = async (params: any) => {
 watch(
     () => [_props.data.id, _props.time],
     ([newVal]) => {
-        if (newVal) {
+        if (newVal && _props.time?.length) {
             queryPropertyData({
                 pageSize: 12,
                 pageIndex: 0,

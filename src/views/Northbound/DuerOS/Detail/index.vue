@@ -7,7 +7,7 @@
                         <div class="left-content">
                             <TitleComponent data="基本信息" />
                             <j-alert
-                                v-if="_error && modelRef?.id && productPermission()"
+                                v-if="_error && modelRef?.id"
                                 style="margin: 10px 0"
                                 type="warning"
                             >
@@ -551,15 +551,11 @@ import { useMenuStore } from '@/store/menu';
 import { onlyMessage } from '@/utils/comm';
 import MSelect from '../../components/MSelect/index.vue';
 import { _deploy } from '@/api/device/product';
-import { usePermissionStore } from '@/store/permission';
 
 const menuStory = useMenuStore();
 const route = useRoute();
 
 const formRef = ref();
-
-const hasPermission = usePermissionStore().hasPermission;
-const productPermission = () => hasPermission(`device/Product:action`);
 
 const modelRef = reactive({
     id: undefined,

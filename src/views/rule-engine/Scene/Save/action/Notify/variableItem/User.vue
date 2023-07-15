@@ -184,7 +184,12 @@ const relationData = computed(() => {
     if(notifyType.value === 'email'){
         if(item && Array.isArray(item) && item.length){
             if(item[0].source === 'relation'){
-                return item.map(i => i?.relation?.objectId)
+                return item.map(i => {
+                    if(i.relation?.objectType === 'user') {
+                        return i?.relation?.objectId
+                    }
+                    return i?.relation?.related?.relation
+                })
             }
         }
     } else if (item?.source === 'relation') {
@@ -212,7 +217,6 @@ const treeData = ref<any[]>([
     },
 ]);
 const mySource = ref<string>('relation');
-const labelMap = new Map();
 const treeDataMap = new Map()
 
 const getRelationUsers = async (notifyType: string, notifierId: string) => {
@@ -247,7 +251,6 @@ const getUser = async (_source: string, _triggerType: string) => {
         paging: false,
         sorts: [{ name: 'name', order: 'asc' }],
     });
-  console.log(_triggerType, _source)
     if (_triggerType && _triggerType === 'device' && _source === 'relation') {
         relationResp = await NoticeApi.getRelationUsers({
             paging: false,
@@ -279,7 +282,7 @@ const getUser = async (_source: string, _triggerType: string) => {
                     title: item.name,
                     isRelation: true,
                 }
-                treeDataMap.set(item.id, obj)
+                treeDataMap.set(item.relation, obj)
                 return obj
             }),
         });
@@ -338,11 +341,17 @@ const onChange = (
     if (Array.isArray(_value)) {
         if (props?.notify?.notifyType === 'email') {
             _values = _value.map((item) => {
-                return {
-                    source: "relation",
-                    relation:{
-                        objectType: "user",
-                        objectId: item
+                const _item = treeDataMap.get(item)
+                const _isRelation = _item?.isRelation
+                if(_isRelation) {
+                    return getObj(_source, item, _isRelation);
+                } else {
+                    return {
+                        source: "relation",
+                        relation:{
+                            objectType: "user",
+                            objectId: item
+                        }
                     }
                 }
             });
