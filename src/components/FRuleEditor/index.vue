@@ -94,10 +94,6 @@ const addOperatorValue = (val: string) => {
     editor.value.addOperatorValue(val);
 };
 
-watchEffect(() => {
-    console.log(props.value, _value.value, 'hhhhh')
-})
-
 watch(() => _value.value, () => {
     _disabled.value = true
 })

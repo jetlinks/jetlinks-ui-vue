@@ -197,6 +197,7 @@ const runScript = () => {
         onlyMessage('请编辑规则', 'warning');
         return;
     }
+
     ws.value = getWebSocket(
         `virtual-property-debug-${props.id}-${new Date().getTime()}`,
         '/virtual-property-debug',
