@@ -4,7 +4,8 @@
             <div style="position: absolute; right: 0; top: 5px; z-index: 999">
                 <j-space>
                     <j-button type="primary" @click="onStart">开始动画</j-button>
-                    <j-button type="primary" @click="onStop">停止动画</j-button>
+                    <j-button type="primary" v-if="!stop" @click="onStop">暂停动画</j-button>
+                    <j-button type="primary" v-else @click="onResume">继续动画</j-button>
                 </j-space>
             </div>
         </div>
@@ -32,16 +33,24 @@ const prop = defineProps({
     },
 });
 
+const stop = ref<boolean>(false);
 const geoList = ref<any[]>([]);
 const loading = ref<boolean>(false);
 const amapPath = ref()
 
 const onStart = () => {
-    amapPath.value.start()
+    amapPath.value?.start()
+    stop.value = false
 }
 
 const onStop = () => {
-    amapPath.value.stop()
+    amapPath.value?.pause()
+    stop.value = true
+}
+
+const onResume = () => {
+    amapPath.value?.resume()
+    stop.value = false
 }
 
 const query = async () => {

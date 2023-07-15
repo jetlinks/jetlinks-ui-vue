@@ -76,7 +76,7 @@
                                       />
                                       钉钉
                                   </span>
-                                  向<span class="notify-text-highlight">{{
+                                  {{(options?.sendTo || options?.orgName) ? '向' : ""}}<span class="notify-text-highlight">{{
                                       options?.sendTo || ''
                                   }}</span>
                                   <span class="notify-text-highlight">{{
@@ -106,7 +106,7 @@
                                   />
                                   微信
                               </span>
-                              向<span class="notify-text-highlight">{{
+                              {{(options?.sendTo || options?.orgName || options?.tagName) ? '向' : ''}}<span class="notify-text-highlight">{{
                                   options?.sendTo || ''
                               }}</span>
                               <span class="notify-text-highlight">{{
@@ -138,7 +138,7 @@
                                   />
                                   邮件
                               </span>
-                              向<span class="notify-text-highlight">
+                              {{options?.sendTo ? '向' : ''}}<span class="notify-text-highlight">
                                 <Ellipsis style='max-width: 400px;'>
                                 {{
                                     options?.sendTo || ''
@@ -168,7 +168,7 @@
                                   />
                                   语音
                               </span>
-                              向<span class="notify-text-highlight">{{
+                              {{ options?.sendTo ? '向' : ''}}<span class="notify-text-highlight">{{
                                   options?.sendTo || ''
                               }}</span>
                               发送
@@ -194,7 +194,7 @@
                                   />
                                   短信
                               </span>
-                              向<span class="notify-text-highlight">{{
+                              {{options?.sendTo ? '向' : ''}}<span class="notify-text-highlight">{{
                                   options?.sendTo || ''
                               }}</span>
                               发送
