@@ -66,6 +66,7 @@
                     model="TABLE"
                     :columns="columns"
                     :request="history"
+                    :scroll="{ x: 1500 }"
                     :defaultParams="{
                         sorts: [{ name: 'createTime', order: 'desc' }],
                         terms: defaultParams,
@@ -74,9 +75,8 @@
                 >
                   <template #completeTime="slotProps">
                         <span>{{
-                            moment(slotProps.completeTime).format(
-                              'YYYY-MM-DD HH:mm:ss',
-                            )
+                           slotProps?.completeTime ? moment(slotProps.completeTime).format(
+                              'YYYY-MM-DD HH:mm:ss') : ""
                           }}</span>
                   </template>
                     <template #createTime="slotProps">
