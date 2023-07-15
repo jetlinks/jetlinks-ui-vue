@@ -118,12 +118,12 @@ const beforeUpload = (_file: any) => {
     const isXlsx =
         _file.type ===
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-    if (!isCsv) {
-        onlyMessage('请上传.csv格式文件', 'warning');
+    if (!isCsv && !isXlsx) {
+        onlyMessage('请上传.xlsx或.csv格式文件', 'warning');
     }
-    if (!isXlsx) {
-        onlyMessage('请上传.xlsx格式文件', 'warning');
-    }
+    // if (!isXlsx) {
+    //     onlyMessage('请上传.xlsx格式文件', 'warning');
+    // }
     // return  (isCsv && fileType !== 'xlsx') || (isXlsx && fileType !== 'csv');
     return  isCsv || isXlsx;
 };

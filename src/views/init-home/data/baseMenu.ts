@@ -973,10 +973,6 @@ export default [
                     permission: 'gb28181-cascade',
                     actions: ['query'],
                   },
-                  {
-                    permission: 'plugin-driver',
-                    actions: ['query'],
-                  },
                 ],
               },
               {
@@ -1017,10 +1013,6 @@ export default [
                   },
                   {
                     permission: 'gb28181-cascade',
-                    actions: ['query'],
-                  },
-                  {
-                    permission: 'plugin-driver',
                     actions: ['query'],
                   },
                 ],
@@ -1437,7 +1429,12 @@ export default [
             url: '/iot/link/plugin',
             icon: 'BoxPlotOutlined',
             showPage: ['plugin-driver'],
-            permissions: [],
+            permissions: [
+              {
+                permission: 'plugin-driver',
+                actions: ['query'],
+              },
+            ],
             buttons: [
               {
                 id: 'view',
