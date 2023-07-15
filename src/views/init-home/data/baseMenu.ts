@@ -973,6 +973,10 @@ export default [
                     permission: 'gb28181-cascade',
                     actions: ['query'],
                   },
+                  {
+                    permission: 'plugin-driver',
+                    actions: ['query'],
+                  },
                 ],
               },
               {
@@ -1013,6 +1017,10 @@ export default [
                   },
                   {
                     permission: 'gb28181-cascade',
+                    actions: ['query'],
+                  },
+                  {
+                    permission: 'plugin-driver',
                     actions: ['query'],
                   },
                 ],
