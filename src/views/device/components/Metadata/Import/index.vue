@@ -199,7 +199,7 @@ const operateLimits = (mdata: DeviceMetadata) => {
     return { ...item, sortsIndex: index };
   });
   (obj?.properties || []).map((item, index) => {
-    if (item.expands?.virtualRule) {
+    if (item.expands?.source === 'rule') {
       hasVirtualRule.value = true
       item.expands = omit(item.expands, ['virtualRule'])
     }
@@ -275,10 +275,12 @@ const handleImport = async () => {
         if (resp.success) {
           onlyMessage('导入成功')
           if (hasVirtualRule.value) {
-            Modal.info({
-              title: '导入数据存在虚拟属性，请及时添加虚拟属性计算规则。',
-              okText: '确认'
-            })
+            setTimeout(() => {
+              Modal.info({
+                title: '导入数据存在虚拟属性，请及时添加虚拟属性计算规则。',
+                okText: '确认'
+              })
+            }, 300)
           }
         }
         if (props?.type === 'device') {

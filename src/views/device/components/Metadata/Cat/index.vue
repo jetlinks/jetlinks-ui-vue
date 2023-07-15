@@ -77,7 +77,7 @@ const monacoValue = ref()
 const handleExport = async () => {
   try {
     downloadObject(
-      JSON.parse(value.value),
+      JSON.parse(monacoValue.value),
       `${props.type === 'device'
         ? instanceStore.current?.name
         : productStore.current?.name
@@ -92,6 +92,7 @@ const handleExport = async () => {
 const handleConvertMetadata = (key: Key) => {
   if (key === 'alink') {
     value.value = '';
+    monacoValue.value = '';
     if (metadata) {
       convertMetadata('to', 'alink', JSON.parse(metadata.value)).then(res => {
         if (res.status === 200) {
@@ -158,12 +159,14 @@ watch(
           loading.value = false
           instanceStore.setCurrent(resp.result)
           value.value = resp.result.metadata
+          hideVirtualRule(resp.result.metadata)
         });
       } else {
         productDetail(id as string).then((resp) => {
           loading.value = false
           productStore.setCurrent(resp.result)
           value.value = resp.result.metadata
+          hideVirtualRule(resp.result.metadata)
         });
       }
     }
