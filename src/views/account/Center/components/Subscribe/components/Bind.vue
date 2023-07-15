@@ -9,10 +9,9 @@
                         width="100%"
                         height="100%"
                         :src="url"
-                        sandbox="allow-forms allow-scripts allow-same-origin allow-popups"
                         v-if="!loading"
                     ></iframe> -->
-                    <Wechat :data="_current" />
+                    <Wechat :data="_current" @success="onSuccess" />
                 </div>
             </j-spin>
         </template>
@@ -45,10 +44,10 @@ import {
     getUserBind,
     getWechatOAuth2,
 } from '@/api/account/notificationSubscription';
+import { LocalStore } from '@/utils/comm';
 import Wechat from './Wechat.vue';
 
 const emit = defineEmits(['close', 'save']);
-
 const props = defineProps({
     data: {
         // 外层数据
@@ -69,7 +68,7 @@ const getType = computed(() => {
     return props.current?.channelProvider;
 });
 
-const _current = ref<any>({})
+const _current = ref<any>({});
 
 const onBindHandle = (
     type: 'notifier-weixin' | 'notifier-dingTalk',
@@ -115,11 +114,12 @@ const updateIframeStyle = () => {
         const params = Object.fromEntries(_url?.entries());
         let authCode = '';
         if (props.current?.channelProvider === 'notifier-dingTalk') {
-            authCode = params?.authCode
-        } else {
-            authCode = params?.code
-        }
-        
+            authCode = params?.authCode;
+        } 
+        // else {
+        //     authCode = params?.code;
+        // }
+
         if (authCode) {
             loading.value = true;
             onBindHandle(props.current?.channelProvider, authCode);
@@ -128,6 +128,7 @@ const updateIframeStyle = () => {
 };
 
 const handleSearch = async () => {
+    LocalStore.remove('wexin_code')
     if (props.current?.channelProvider === 'notifier-weixin') {
         loading.value = true;
         const resp: any = await getWechatOAuth2(
@@ -141,10 +142,7 @@ const handleSearch = async () => {
             const _url = new URLSearchParams(resp?.result);
             const params = Object.fromEntries(_url?.entries());
             _current.value = params;
-            // url.value = resp.result as string;
-            // nextTick(() => {
-            //     updateIframeStyle();
-            // });
+            url.value = resp.result as string;
         }
     }
     if (props.current?.channelProvider === 'notifier-dingTalk') {
@@ -163,6 +161,10 @@ const handleSearch = async () => {
         }
     }
 };
+
+const onSuccess = (code: string) => {
+    onBindHandle(props.current?.channelProvider, code);
+}
 
 watch(
     () => props.current,

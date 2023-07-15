@@ -275,6 +275,7 @@ const stopAction = () => {
     if (ws.value) {
         ws.value.unsubscribe?.();
     }
+    window.clearInterval(timer.value)
     timer.value = null
 };
 const clearAction = () => {
@@ -286,6 +287,7 @@ onUnmounted(() => {
         ws.value.unsubscribe?.();
     }
     clearAction();
+    window.clearInterval(timer.value)
     timer.value = null
 });
 
