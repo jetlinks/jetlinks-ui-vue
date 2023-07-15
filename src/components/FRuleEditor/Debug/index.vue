@@ -209,8 +209,7 @@ const runScript = () => {
             },
             properties: _properties || [],
         },
-    );
-    ws.value.subscribe((data: any) => {
+    ).subscribe((data: any) => {
         ruleEditorStore.state.log.push({
             time: new Date().getTime(),
             content: JSON.stringify(data.payload),
@@ -256,8 +255,7 @@ const runScriptAgain = async () => {
             },
             properties: _properties || [],
         },
-    );
-    wsAgain.value.subscribe((data: any) => {});
+    ).subscribe((data: any) => {});
 };
 
 const getTime = () => {
@@ -274,8 +272,6 @@ const beginAction = () => {
 };
 const stopAction = () => {
     isBeginning.value = true;
-    console.log(ws.value)
-    debugger
     if (ws.value) {
         ws.value.unsubscribe?.();
     }

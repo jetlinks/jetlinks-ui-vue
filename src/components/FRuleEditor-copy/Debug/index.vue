@@ -149,8 +149,7 @@ const runScript = () => {
         ...props.virtualRule,
       },
       properties: _properties || [],
-    })
-  ws.value.subscribe((data: any) => {
+    }).subscribe((data: any) => {
     ruleEditorStore.state.log.push({ time: new Date().getTime(), content: JSON.stringify(data.payload) });
     if (props.virtualRule?.type !== 'window') {
       stopAction()
@@ -179,8 +178,7 @@ const runScriptAgain = async () => {
         ...props.virtualRule,
       },
       properties: _properties || [],
-    })
-  wsAgain.value.subscribe((data: any) => { })
+    }).subscribe((data: any) => { })
 }
 
 const beginAction = () => {
