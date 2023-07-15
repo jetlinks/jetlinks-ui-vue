@@ -12,8 +12,9 @@
             :request="(e) => handleData(e)"
             model="CARD"
             :bodyStyle="{
-                padding: 0
+                padding: 0,
             }"
+            ref="tableRef"
             :params="params"
             :gridColumn="2"
             :noPagination="true"
@@ -83,6 +84,10 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    notifyType: {
+        type: String,
+        default: '',
+    },
 });
 
 const emit = defineEmits(['update:value', 'change', 'update:detail']);
@@ -97,6 +102,7 @@ const getMethodTxt = (type: string) => {
 
 const params = ref<Record<string, any>>({});
 const _selectedRowKeys = ref<string[]>([]);
+const tableRef = ref<any>();
 
 const columns = [
     {
@@ -129,19 +135,70 @@ const handleSearch = (_params: any) => {
     params.value = _params;
 };
 
-const handleClick = (dt: any) => {
+const typeObj = {
+    weixin: 'wechat',
+    dingTalk: 'dingtalk',
+};
+
+const queryUserList = async (id: string) => {
+    if (!(props.notifyType && props.notifierId)) return '';
+    const resp = await TemplateApi.getUser(
+        typeObj[props.notifyType],
+        props.notifierId,
+    );
+    if (resp.status === 200) {
+        return resp.result?.find((item: any) => item.id === id)?.name;
+    } else {
+        return '';
+    }
+};
+
+const queryOrgList = async (id: string) => {
+    if (!(props.notifyType && props.notifierId)) return '';
+    const resp = await TemplateApi.getDept(
+        typeObj[props.notifyType],
+        props.notifierId,
+    );
+    if (resp.status === 200) {
+        return resp.result?.find((item: any) => item.id === id)?.name;
+    } else {
+        return '';
+    }
+};
+
+const getOptions = async (dt: any) => {
+    const obj = {};
+    // 钉钉，微信
+    if (props.notifyType === 'weixin') {
+        if (dt?.template?.toParty) {
+            obj['orgName'] = await queryOrgList(dt?.template?.toParty);
+        }
+        if (dt?.template?.toUser) {
+            obj['sendTo'] = await queryUserList(dt?.template?.toUser);
+        }
+    }
+    if (props.notifyType === 'dingTalk') {
+        if (dt?.template?.departmentIdList) {
+            obj['orgName'] = await queryOrgList(dt?.template?.departmentIdList);
+        }
+        if (dt?.template?.userIdList) {
+            obj['sendTo'] = await queryUserList(dt?.template?.userIdList);
+        }
+    }
+    return obj;
+};
+
+const handleClick = async (dt: any) => {
     if (_selectedRowKeys.value.includes(dt.id)) {
         _selectedRowKeys.value = [];
         emit('update:value', undefined);
-        // emit('change', { templateName: undefined, orgName: undefined, sendTo: undefined });
-        emit('change', { templateName: undefined });
+        emit('change', { templateName: undefined, orgName: undefined, sendTo: undefined });
         emit('update:detail', undefined);
     } else {
-        // console.log(dt)
+        const obj = await getOptions(dt)
         _selectedRowKeys.value = [dt.id];
+        emit('change', { templateName: dt?.name, ...obj });
         emit('update:value', dt.id);
-        // emit('change', { templateName: dt?.name, orgName: dt.template?.departmentIdList, sendTo: dt.template?.userIdList });
-        emit('change', { templateName: dt?.name });
         emit('update:detail', dt);
     }
 };
@@ -176,6 +233,7 @@ watch(
     (newValue) => {
         if (newValue) {
             _selectedRowKeys.value = [newValue];
+            // (tableRef.value?._dataSource || []).find()
         } else {
             _selectedRowKeys.value = [];
         }

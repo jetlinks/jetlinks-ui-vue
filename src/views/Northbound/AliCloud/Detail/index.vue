@@ -613,6 +613,7 @@ const onPlatError = (val: any) => {
         _errorSet.value.add(val)
     }
 };
+
 const _validator = (_rule: any, value: string): Promise<any> =>
     new Promise((resolve, reject) => {
         const _item = productList.value.find((item) => item.id === value);
@@ -657,7 +658,7 @@ watch(
     async (newId) => {
         if (newId) {
             queryRegionsList();
-            getProduct();
+            await getProduct();
             if (newId === ':id' || !newId) return;
             const resp = await detail(newId as string);
             const _data: any = resp.result;
