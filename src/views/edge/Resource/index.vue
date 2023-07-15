@@ -44,10 +44,7 @@
                                         通讯协议
                                     </div>
                                     <Ellipsis>{{
-                                        options.find(
-                                            (i) =>
-                                                i.value === slotProps.category,
-                                        )?.label || slotProps.category
+                                        slotProps.category
                                     }}</Ellipsis>
                                 </j-col>
                                 <j-col :span="12">
@@ -97,8 +94,7 @@
                 </template>
                 <template #category="slotProps">
                     {{
-                        options.find((i) => i.value === slotProps.category)
-                            ?.label || slotProps.category
+                      slotProps.category
                     }}
                 </template>
                 <template #createTime="slotProps">
@@ -173,14 +169,6 @@ const statusMap = new Map();
 statusMap.set('enabled', 'processing');
 statusMap.set('disabled', 'error');
 
-const options = [
-    { label: 'UA接入', value: 'OPC_UA' },
-    { label: 'Modbus TCP接入', value: 'MODBUS_TCP' },
-    { label: 'S7-200接入', value: 'snap7' },
-    { label: 'BACnet接入', value: 'BACNetIp' },
-    { label: 'MODBUS_RTU接入', value: 'MODBUS_RTU' },
-];
-
 const params = ref<Record<string, any>>({});
 const edgeResourceRef = ref<Record<string, any>>({});
 const settingVisible = ref<boolean>(false);
@@ -218,9 +206,8 @@ const columns = [
                     }).then((resp: any) => {
                       const arrMap = new Map()
                       resp.result.data.forEach((item: any) => {
-                        const labelItem = options.find(a => a.value === item.category)
                         arrMap.set(item.category, {
-                          label: labelItem?.label || item.category,
+                          label: item.category,
                           value: item.category,
                         })
                       })
