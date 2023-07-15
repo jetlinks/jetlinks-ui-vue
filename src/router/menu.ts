@@ -79,5 +79,12 @@ export default [
         },
         component: () => import('@/views/oauth/index.vue')
     },
+    {
+        path: '/oauth/wechat',
+        meta: {
+            title: '微信授权页'
+        },
+        component: () => import('@/views/oauth/WeChat.vue')
+    },
     AccountMenu
 ]
