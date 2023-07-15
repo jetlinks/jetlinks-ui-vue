@@ -4,7 +4,12 @@
     <div class="import-content">
       <p class="import-tip">
         <AIcon type="ExclamationCircleOutlined" style="margin-right: 5px" />
-        导入的物模型会覆盖原来的属性、功能、事件、标签，请谨慎操作。
+        <template v-if="type === 'product'">
+          导入的物模型会覆盖原来的属性、功能、事件、标签，请谨慎操作。
+        </template>
+        <template v-else>
+          导入时会根据标识跳过继承自产品物模型的属性、功能、事件、标签。
+        </template>
       </p>
     </div>
     <j-form layout="vertical" v-model="formModel">
@@ -66,6 +71,8 @@ import { useProductStore } from '@/store/product';
 import { FILE_UPLOAD } from '@/api/comm';
 import { getToken, onlyMessage } from '@/utils/comm';
 import { useMetadataStore } from '@/store/metadata';
+import {omit} from "lodash-es";
+import { Modal } from 'jetlinks-ui-components'
 
 const route = useRoute()
 const instanceStore = useInstanceStore()
@@ -142,6 +149,7 @@ const rules = reactive({
 })
 const { validate, validateInfos } = useForm(formModel, rules);
 const fileList = ref<UploadFile[]>([])
+const hasVirtualRule = ref(false)
 
 const productList = ref<DefaultOptionType[]>([])
 
@@ -177,6 +185,7 @@ const fileChange = (info: UploadChangeParam) => {
 }
 
 const operateLimits = (mdata: DeviceMetadata) => {
+  hasVirtualRule.value = false
   const obj: DeviceMetadata = { ...mdata };
   const old = JSON.parse(instanceStore.detail?.metadata || '{}');
   const fid = instanceStore.detail?.features?.map(item => item.id);
@@ -190,6 +199,10 @@ const operateLimits = (mdata: DeviceMetadata) => {
     return { ...item, sortsIndex: index };
   });
   (obj?.properties || []).map((item, index) => {
+    if (item.expands?.virtualRule) {
+      hasVirtualRule.value = true
+      item.expands = omit(item.expands, ['virtualRule'])
+    }
     return { ...item, sortsIndex: index };
   });
   (obj?.functions || []).map((item, index) => {
@@ -244,11 +257,14 @@ const handleImport = async () => {
           return;
         }
         const { id } = route.params || {}
+        const copyOperateLimits = operateLimits(_object as DeviceMetadata)
+
         const params = {
           id,
-          metadata: JSON.stringify(operateLimits(_object as DeviceMetadata)),
+          metadata: JSON.stringify(copyOperateLimits),
         };
-        const paramsDevice = operateLimits(_object as DeviceMetadata)
+        const paramsDevice = copyOperateLimits
+
         let resp = undefined
         if (props?.type === 'device') {
           resp = await saveMetadata(id as string, paramsDevice)
@@ -258,6 +274,12 @@ const handleImport = async () => {
         loading.value = false
         if (resp.success) {
           onlyMessage('导入成功')
+          if (hasVirtualRule.value) {
+            Modal.info({
+              title: '导入数据存在虚拟属性，请及时添加虚拟属性计算规则。',
+              okText: '确认'
+            })
+          }
         }
         if (props?.type === 'device') {
           await instanceStore.refresh(id as string)
@@ -265,8 +287,6 @@ const handleImport = async () => {
           await productStore.getDetail(id as string)
         }
         metadataStore.set('importMetadata', true)
-        // Store.set(SystemConst.GET_METADATA, true)
-        // Store.set(SystemConst.REFRESH_METADATA_TABLE, true)
         close();
       } catch (e) {
         loading.value = false

@@ -109,6 +109,7 @@ const emit = defineEmits(['change']);
 const bindDeviceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const _selectedRowKeys = ref<string[]>([]);
+const _selectedRowMap = ref<any[]>([]);
 const btnLoading = ref<boolean>(false);
 
 const statusMap = new Map();
@@ -175,10 +176,13 @@ const handleSearch = (e: any) => {
 
 const onSelectChange = (keys: string[], rows: string[]) => {
     _selectedRowKeys.value = [...keys];
+  console.log(rows)
+    _selectedRowMap.value = rows.map(item => ({ deviceId: item.id, deviceName: item.name}))
 };
 
 const cancelSelect = () => {
     _selectedRowKeys.value = [];
+    _selectedRowMap.value = []
 };
 
 const handleOk = () => {
@@ -187,28 +191,36 @@ const handleOk = () => {
         return;
     }
     btnLoading.value = true;
-    queryDeviceMapping(instanceStore.current.id, )
-    .then(res => {
-      const arr = bindDeviceRef.value?._dataSource.filter(item => {
-          return !res.result?.[0]?.find(val => val.deviceId === item.id) && _selectedRowKeys.value.includes(item.id);
-        }).map(item => {
-          return {
-            deviceId: item.id,
-            deviceName: item.name
-          }
-        })
-      return saveDeviceMapping(instanceStore.current.id, {info: arr})
-    })
-    .then(res => {
-      return bindDevice(detail.value.id, _selectedRowKeys.value)
-    }).then(res => {
-      emit('change', true);
-      cancelSelect();
-      onlyMessage('操作成功');
-    })
-    .finally(() => {
+    if (instanceStore.current.accessProvider === 'official-edge-gateway') { // 网关设备
+      queryDeviceMapping(instanceStore.current.id)
+          .then(res => {
+            const arr = bindDeviceRef.value?._dataSource.filter(item => {
+              return !res.result?.[0]?.find(val => val.deviceId === item.id) && _selectedRowKeys.value.includes(item.id);
+            }).map(item => {
+              return {
+                deviceId: item.id,
+                deviceName: item.name
+              }
+            })
+            return saveDeviceMapping(instanceStore.current.id, {info: arr})
+          }).then(res => {
+            emit('change', true);
+            cancelSelect();
+            onlyMessage('操作成功');
+          })
+          .finally(() => {
+            btnLoading.value = false;
+          });
+    } else {
+      bindDevice(detail.value.id, _selectedRowKeys.value).then(res => {
+        emit('change', true);
+        cancelSelect();
+        onlyMessage('操作成功');
+      }).finally(() => {
         btnLoading.value = false;
-    });
+      });
+    }
+
 };
 
 const handleCancel = () => {
