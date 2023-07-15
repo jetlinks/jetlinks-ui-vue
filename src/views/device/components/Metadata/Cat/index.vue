@@ -18,7 +18,7 @@
       <j-tabs @change="handleConvertMetadata" destroy-inactive-tab-pane>
         <j-tab-pane v-for="item in codecs" :key="item.id" :tab="item.name">
           <div class="cat-panel">
-            <JMonacoEditor v-model="value" theme="vs" style="height: 100%" lang="javascript"></JMonacoEditor>
+            <JMonacoEditor v-model="monacoValue" lang="javascript" style="height: 100%" theme="vs"></JMonacoEditor>
           </div>
         </j-tab-pane>
       </j-tabs>
@@ -33,6 +33,8 @@ import type { Key } from 'ant-design-vue/es/_util/type';
 import { convertMetadata, getCodecs, detail as productDetail } from '@/api/device/product';
 import { detail } from '@/api/device/instance'
 import { onlyMessage } from '@/utils/comm';
+import {cloneDeep} from "lodash";
+import {omit} from "lodash-es";
 
 interface Props {
   visible: boolean;
@@ -70,6 +72,8 @@ const metadata = computed(() => {
 })
 // const metadata = metadataMap[props.type];
 const value = ref(metadata.value)
+const monacoValue = ref()
+
 const handleExport = async () => {
   try {
     downloadObject(
@@ -97,6 +101,7 @@ const handleConvertMetadata = (key: Key) => {
     }
   } else {
     value.value = metadata.value;
+    hideVirtualRule(metadata.value)
   }
 };
 
@@ -113,6 +118,7 @@ const routeChange = async (id: string) => {
         instanceStore.setCurrent(resp.result);
         const _metadata = resp.result?.metadata;
         value.value = _metadata;
+        hideVirtualRule(_metadata)
       }
     });
   }
@@ -123,6 +129,19 @@ const routeChange = async (id: string) => {
 //   (id) => routeChange(id as string),
 //   { immediate: true }
 // )
+
+const hideVirtualRule = (metadata: string) => {
+  const _metadata = JSON.parse(metadata)
+  if (_metadata.properties) {
+    _metadata.properties = _metadata.properties.map((item: any) => {
+      if (item.expands.virtualRule) {
+        item.expands = cloneDeep(omit(item.expands, ['virtualRule']))
+      }
+      return item
+    })
+  }
+  monacoValue.value = JSON.stringify(_metadata)
+}
 
 onMounted(() => {
   routeChange(route.params.id as string)
@@ -151,6 +170,10 @@ watch(
   },
   { immediate: true }
 )
+
+watch(() => metadata.value, () => {
+  hideVirtualRule(metadata.value)
+}, { immediate: true})
 </script>
 <style scoped lang="less">
 .cat-content {
