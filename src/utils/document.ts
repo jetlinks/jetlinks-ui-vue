@@ -6,5 +6,6 @@ export const createScript = (src: string) => {
         }
         script.setAttribute('type', 'text/javascript')
         script.setAttribute('src', src)
+        document.body.appendChild(script)
     })
 }

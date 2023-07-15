@@ -95,7 +95,7 @@ const handleChange = async (info: UploadChangeParam) => {
       Notification.error({
         // key: '403',
         message: '系统提示',
-        description: '系统未知错误，请反馈给管理员',
+        description: info.file.response?.message,
       });
       // emit('update:modelValue', { err:'file_upload_error'});
       loading.value = false;

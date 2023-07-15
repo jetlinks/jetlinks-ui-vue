@@ -111,7 +111,7 @@ import {
   USER_CENTER_MENU_CODE
 } from '@/utils/consts'
 import { isNoCommunity } from '@/utils/utils'
-import {useIndirectMenusMap} from "@/views/system/Role/Detail/components/util";
+import {permissionsGranted, useIndirectMenusMap} from "@/views/system/Role/Detail/components/util";
 
 const emits = defineEmits(['update:selectItems']);
 const route = useRoute();
@@ -303,12 +303,20 @@ function getAllPermiss() {
 }
 
 const hasIndirectMenus = (data: any) => {
+  let indirectMenus = []
   if (data.children) {
-    const has = data.children.find(item => item.indirectMenus)
-    console.log(has)
+    const item = data.children.find(item => item.indirectMenus)
+    indirectMenus = item.indirectMenus
   } else if (data?.indirectMenus) {
-    console.log(data.indirectMenus)
+    indirectMenus = data.indirectMenus
   }
+
+  if (indirectMenus.length) {
+      const ids = permissionsGranted(tableData.value)
+    console.log(ids, indirectMenus)
+      const inMenu = false
+  }
+
 }
 
 /**
@@ -322,7 +330,7 @@ function menuChange(
 ): undefined {
   console.log('menuChange', row)
     // 判断是否需要对子菜单及操作权限进行选择
-  hasIndirectMenus(row)
+  // hasIndirectMenus(row)
     if (setButtonBool) {
         if (row.buttons && row.buttons.length > 0)
             row.buttons.forEach((button) => {

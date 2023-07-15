@@ -28,3 +28,14 @@ export const useIndirectMenusMap = (tableData: Ref<any[]>) => {
         PermissionsMap
     }
 }
+
+export const permissionsGranted = (data: any[]) => {
+    return data.reduce((prev,current) => {
+        let ids = current.granted ? [...prev, current.id] : prev
+        if (current.children) {
+           const _ids = permissionsGranted(current.children)
+            ids = ids.concat(_ids)
+        }
+        return ids
+    }, [])
+}
