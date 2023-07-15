@@ -171,7 +171,6 @@ const showPeriod = computed(() => {
   return formModel.trigger !== 'cron' && formModel.mod === 'period'
 })
 
-
 const updateValue = () => {
 
   const cloneValue = cloneDeep(formModel)
@@ -182,9 +181,9 @@ const updateValue = () => {
     keys = keys.concat(['mod', 'when'])
 
     if (cloneValue.mod === 'period') {
-      keys.push('once')
-    } else {
       keys.push('period')
+    } else {
+      keys.push('once')
     }
   }
 
