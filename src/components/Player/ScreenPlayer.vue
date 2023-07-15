@@ -123,7 +123,7 @@
                             @click="playerActive = index"
                         >
                             <div
-                                class="media-btn-refresh"
+                                class="media-btn-refresh refreshBtn"
                                 :style="{
                                     display: item.url ? 'block' : 'none',
                                 }"
@@ -463,5 +463,11 @@ defineExpose({
 }
 :deep(.vjs-icon-spinner){
   display: none;
+}
+.refreshBtn{
+   opacity: 0;
+}
+.refreshBtn:hover{
+    opacity: 1;
 }
 </style>
