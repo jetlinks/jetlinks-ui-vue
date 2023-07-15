@@ -137,9 +137,13 @@ import SaveModal from './Save/save.vue';
 import type { SceneItem } from './typings';
 import { useMenuStore } from 'store/menu';
 import { query, _delete, _action, _execute } from '@/api/rule-engine/scene';
+import {
+  queryList,
+} from '@/api/rule-engine/configuration';
 import type { ActionsType } from '@/components/Table';
 import { getImage, onlyMessage } from '@/utils/comm';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
+import { Modal } from 'jetlinks-ui-components'
 
 const menuStory = useMenuStore();
 const visible = ref<boolean>(false);
@@ -227,6 +231,27 @@ const columns = [
     },
 ];
 
+const deleteScene = async (id: string) => {
+  const resp = await _delete(id);
+  if (resp.status === 200) {
+    onlyMessage('操作成功！');
+    sceneRef.value?.reload();
+  } else {
+    onlyMessage('操作失败！', 'error');
+  }
+}
+
+const deleteModal = (id: string) => {
+  Modal.confirm({
+    title: '改场景已绑定告警，确定删除？',
+    onOk: async () => {
+      await deleteScene(id)
+    }
+  })
+}
+
+
+
 const getActions = (
     data: Partial<Record<string, any>>,
     type: 'card' | 'table',
@@ -293,13 +318,28 @@ const getActions = (
             popConfirm: {
                 title: '确认删除?',
                 onConfirm: async () => {
-                    const resp = await _delete(data.id);
-                    if (resp.status === 200) {
-                        onlyMessage('操作成功！');
-                        sceneRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
+                  // 查询该场景是否绑定告警
+                  const resp = await queryList({
+                    pageSize: 10,
+                    pageIndex: 0,
+                    terms: [
+                      {
+                        terms: [
+                          {
+                            column: 'id',
+                            termType: 'rule-bind-alarm',
+                            value: data.id,
+                          },
+                        ]
+                      }
+                    ],
+                  })
+                  console.log(resp)
+                  if (resp.success && resp.result?.total) {
+                    await deleteModal(data.id)
+                  } else {
+                    await deleteScene(data.id)
+                  }
                 },
             },
             icon: 'DeleteOutlined',
