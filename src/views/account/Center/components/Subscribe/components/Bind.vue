@@ -3,7 +3,7 @@
         <template v-if="getType === 'notifier-weixin'">
             <j-spin :spinning="loading">
                 <div class="code" style="height: 450px">
-                    <iframe
+                    <!-- <iframe
                         id="notifier_iframe"
                         class="code-item"
                         width="100%"
@@ -11,13 +11,14 @@
                         :src="url"
                         sandbox="allow-forms allow-scripts allow-same-origin allow-popups"
                         v-if="!loading"
-                    ></iframe>
+                    ></iframe> -->
+                    <Wechat :data="_current" />
                 </div>
             </j-spin>
         </template>
         <template v-else-if="getType === 'notifier-dingTalk'">
             <j-spin :spinning="loading">
-                <div class="code" style="height: 600px;">
+                <div class="code" style="height: 600px">
                     <iframe
                         id="notifier_iframe"
                         class="code-item"
@@ -29,7 +30,7 @@
                 </div>
             </j-spin>
         </template>
-        
+
         <template #footer>
             <j-button @click="emit('close')">关闭</j-button>
             <!-- <j-button type="primary" @click="emit('close')">确定</j-button> -->
@@ -44,6 +45,7 @@ import {
     getUserBind,
     getWechatOAuth2,
 } from '@/api/account/notificationSubscription';
+import Wechat from './Wechat.vue';
 
 const emit = defineEmits(['close', 'save']);
 
@@ -66,6 +68,8 @@ const loading = ref<boolean>(false);
 const getType = computed(() => {
     return props.current?.channelProvider;
 });
+
+const _current = ref<any>({})
 
 const onBindHandle = (
     type: 'notifier-weixin' | 'notifier-dingTalk',
@@ -107,26 +111,15 @@ const updateIframeStyle = () => {
     ) as HTMLIFrameElement;
     iframe.onload = () => {
         const currentUrl = iframe?.contentWindow?.location?.search || '';
+        const _url = new URLSearchParams(currentUrl);
+        const params = Object.fromEntries(_url?.entries());
         let authCode = '';
-        if (currentUrl.startsWith('?')) {
-            currentUrl
-                .substring(1)
-                .split('&')
-                .map((item) => {
-                    if (
-                        props.current?.channelProvider === 'notifier-dingTalk'
-                    ) {
-                        if (item.split('=')?.[0] === 'authCode') {
-                            authCode = item.split('=')?.[1] || '';
-                        }
-                    } else {
-                        if (item.split('=')?.[0] === 'code') {
-                            authCode = item.split('=')?.[1] || '';
-                        }
-                    }
-                });
+        if (props.current?.channelProvider === 'notifier-dingTalk') {
+            authCode = params?.authCode
+        } else {
+            authCode = params?.code
         }
-
+        
         if (authCode) {
             loading.value = true;
             onBindHandle(props.current?.channelProvider, authCode);
@@ -137,18 +130,21 @@ const updateIframeStyle = () => {
 const handleSearch = async () => {
     if (props.current?.channelProvider === 'notifier-weixin') {
         loading.value = true;
-        const resp = await getWechatOAuth2(
+        const resp: any = await getWechatOAuth2(
             props.current?.channelConfiguration.notifierId,
             props.current?.channelConfiguration.templateId,
-            location.href
+            location.href,
         ).finally(() => {
             loading.value = false;
         });
         if (resp.status === 200) {
-            url.value = resp.result as string;
-            nextTick(() => {
-                updateIframeStyle();
-            });
+            const _url = new URLSearchParams(resp?.result);
+            const params = Object.fromEntries(_url?.entries());
+            _current.value = params;
+            // url.value = resp.result as string;
+            // nextTick(() => {
+            //     updateIframeStyle();
+            // });
         }
     }
     if (props.current?.channelProvider === 'notifier-dingTalk') {
