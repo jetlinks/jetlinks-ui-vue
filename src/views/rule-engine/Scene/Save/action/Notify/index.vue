@@ -60,7 +60,7 @@
                             :value="formModel.variables"
                             :notify="formModel"
                             :template="template"
-                            :options='options'
+                            :options='formModel.options'
                             @change="(val) => onValChange(val, 'variables')"
                             ref="variableRef"
                         />
@@ -148,13 +148,20 @@ const onValChange = (val: any, type: string) => {
         formModel.templateId = '';
         formModel.variables = [];
         formModel.notifierId = '';
+        formModel.options = {}
     } else if (type === 'notifierId') {
         formModel.templateId = '';
         formModel.variables = [];
+        formModel.options = {
+            ...val
+        }
     } else if (type === 'templateId') {
         formModel.variables = [];
+        formModel.options = {
+            provider: formModel?.options?.provider || '',
+            ...val
+        }
     }
-    console.log(val)
     formModel.options = {
         ...unref(formModel.options),
         ...val,

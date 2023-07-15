@@ -79,6 +79,12 @@ export default defineComponent({
             this.PathNavigatorRef?.moveToPoint(0, 0);
             this.PathNavigatorRef?.stop();
         },
+        pause() {
+            this.PathNavigatorRef?.pause()
+        },
+        resume() {
+            this.PathNavigatorRef?.resume()
+        }
     },
     watch: {
         pathData: {
@@ -101,6 +107,6 @@ export default defineComponent({
             deep: true,
         },
     },
-    expose: ['start', 'stop']
+    expose: ['start', 'stop', 'pause', 'resume']
 });
 </script>
