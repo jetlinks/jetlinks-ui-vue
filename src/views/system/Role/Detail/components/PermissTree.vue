@@ -48,6 +48,7 @@
             </template>
             <!-- 表格内容 -->
             <template #bodyCell="{ column, record }">
+                <div :id="record.id"></div>
                 <div v-if="column.key === 'menu'">
                     <j-checkbox
                         v-model:checked="record.granted"
@@ -110,6 +111,7 @@ import {
   USER_CENTER_MENU_CODE
 } from '@/utils/consts'
 import { isNoCommunity } from '@/utils/utils'
+import {permissionsGranted, useIndirectMenusMap} from "@/views/system/Role/Detail/components/util";
 
 const emits = defineEmits(['update:selectItems']);
 const route = useRoute();
@@ -270,6 +272,8 @@ const init = () => {
 };
 init();
 
+const { PermissionsMap } = useIndirectMenusMap(tableData)
+
 function getAllPermiss() {
     const id = route.params.id as string;
     getPrimissTree_api(id).then((resp) => {
@@ -297,6 +301,24 @@ function getAllPermiss() {
         }
     });
 }
+
+const hasIndirectMenus = (data: any) => {
+  let indirectMenus = []
+  if (data.children) {
+    const item = data.children.find(item => item.indirectMenus)
+    indirectMenus = item.indirectMenus
+  } else if (data?.indirectMenus) {
+    indirectMenus = data.indirectMenus
+  }
+
+  if (indirectMenus.length) {
+      const ids = permissionsGranted(tableData.value)
+    console.log(ids, indirectMenus)
+      const inMenu = false
+  }
+
+}
+
 /**
  * 菜单权限改变事件
  * @param row 触发的项
@@ -306,7 +328,9 @@ function menuChange(
     row: tableItemType,
     setButtonBool: boolean = true,
 ): undefined {
+  console.log('menuChange', row)
     // 判断是否需要对子菜单及操作权限进行选择
+  // hasIndirectMenus(row)
     if (setButtonBool) {
         if (row.buttons && row.buttons.length > 0)
             row.buttons.forEach((button) => {
@@ -358,7 +382,7 @@ function menuChange(
     }
 
     emits('update:selectItems', selectList); // 选中的项传回父组件
-    treeRef.value.$forceUpdate();
+    proxy?.$forceUpdate?.();
 }
 
 /**

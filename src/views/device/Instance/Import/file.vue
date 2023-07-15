@@ -19,11 +19,7 @@
                     :maxCount="1"
                     :showUploadList="false"
                     @change="uploadChange"
-                    :accept="
-                        modelRef?.file?.fileType
-                            ? `.${modelRef?.file?.fileType}`
-                            : '.xlsx'
-                    "
+                    :accept="'.xlsx,.csv'"
                     :before-upload="beforeUpload"
                     :disabled="disabled"
                     @drop="handleDrop"
@@ -117,18 +113,19 @@ const downFile = async (type: string) => {
 };
 
 const beforeUpload = (_file: any) => {
-    const fileType = modelRef.file?.fileType === 'csv' ? 'csv' : 'xlsx';
+    // const fileType = modelRef.file?.fileType === 'csv' ? 'csv' : 'xlsx';
     const isCsv = _file.type === 'text/csv';
     const isXlsx =
         _file.type ===
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-    if (!isCsv && fileType !== 'xlsx') {
-        onlyMessage('请上传.csv格式文件', 'warning');
+    if (!isCsv && !isXlsx) {
+        onlyMessage('请上传.xlsx或.csv格式文件', 'warning');
     }
-    if (!isXlsx && fileType !== 'csv') {
-        onlyMessage('请上传.xlsx格式文件', 'warning');
-    }
-    return (isCsv && fileType !== 'xlsx') || (isXlsx && fileType !== 'csv');
+    // if (!isXlsx) {
+    //     onlyMessage('请上传.xlsx格式文件', 'warning');
+    // }
+    // return  (isCsv && fileType !== 'xlsx') || (isXlsx && fileType !== 'csv');
+    return  isCsv || isXlsx;
 };
 
 const handleDrop = () => {};

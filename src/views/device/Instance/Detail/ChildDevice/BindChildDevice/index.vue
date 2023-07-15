@@ -187,7 +187,7 @@ const handleOk = () => {
         return;
     }
     btnLoading.value = true;
-    queryDeviceMapping(instanceStore.current.id)
+    queryDeviceMapping(instanceStore.current.id, )
     .then(res => {
       const arr = bindDeviceRef.value?._dataSource.filter(item => {
           return !res.result?.[0]?.find(val => val.deviceId === item.id) && _selectedRowKeys.value.includes(item.id);

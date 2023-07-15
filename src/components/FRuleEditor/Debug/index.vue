@@ -274,6 +274,8 @@ const beginAction = () => {
 };
 const stopAction = () => {
     isBeginning.value = true;
+    console.log(ws.value)
+    debugger
     if (ws.value) {
         ws.value.unsubscribe?.();
     }
