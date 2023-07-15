@@ -6,12 +6,16 @@
             @search="handleParams"
             style='margin-bottom: 0;'
         />
-        <FullPage>
+      <FullPage :extraHeight="24">
             <j-pro-table
                 ref="tableRef"
                 :columns="columns"
                 :request="table.requestFun"
                 :params="queryParams"
+                :scroll="{
+                    x:true,
+                    y:610,
+                }"
                 :rowSelection="{
                     selectedRowKeys: table._selectedRowKeys,
                     onSelect: table.onSelectChange,
