@@ -17,60 +17,66 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType } from "vue";
+import { PropType } from 'vue';
 import { Form } from 'jetlinks-ui-components';
 
 const props = defineProps({
     disabled: {
         type: Boolean,
-        default: false
+        default: false,
     },
     options: {
         type: Array as PropType<any[]>,
-        default: () => []
+        default: () => [],
     },
     value: {
         type: String,
-        default: undefined
+        default: undefined,
     },
     type: {
         type: String,
-        default: 'product'
-    }
-})
+        default: 'product',
+    },
+});
 
 const emits = defineEmits(['update:value', 'change', 'error']);
 
-const formItemContext = Form.useInjectFormItemContext()
+const formItemContext = Form.useInjectFormItemContext();
 
-const _value = ref<any>(undefined)
+const _value = ref<any>(undefined);
 
 const formTouchOff = () => {
-  formItemContext.onFieldChange()
-}
+    formItemContext.onFieldChange();
+};
 
 const _options = computed(() => {
-    if(props.type === 'product') {
-        return props.options.filter(i => i?.state || i.id === props.value)
+    if (props.type === 'product') {
+        return props.options.filter((i) => i?.state || i.id === props.value);
     } else {
-        return props.options
+        return props.options;
     }
-})
+});
 
-watchEffect(() => {
-    _value.value = props.value
-    if(props.type !== 'product') {
-        formTouchOff()
-    } else {
-        if(props.value){
-            formTouchOff()
+watch(
+    () => props.value,
+    () => {
+        _value.value = props.value;
+        if (props.type !== 'product') {
+            formTouchOff();
+        } else {
+            if (props.value) {
+                formTouchOff();
+            }
+            emits('error', props.value);
         }
-        emits('error', props.value)
+    },
+    {
+        immediate: true
     }
-})
+);
 
 const productChange = (val: any) => {
-    emits('update:value', val)
-    emits('change', val)
-}
+    emits('update:value', val);
+    emits('change', val);
+};
 </script>

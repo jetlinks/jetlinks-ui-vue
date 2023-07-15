@@ -235,7 +235,7 @@ const columns = [
             type: 'select',
             options: () =>
                 new Promise((resolve) => {
-                    queryNoPagingPost({
+                  query({
                         paging: false,
                         sorts: [
                             {
@@ -246,8 +246,8 @@ const columns = [
                     }).then((resp: any) => {
                         resolve(
                             resp.result.map((item: any) => ({
-                                label: item.name,
-                                value: item.id,
+                                label: item.sourceName,
+                                value: item.sourceId,
                             })),
                         );
                     });

@@ -74,6 +74,7 @@
             <div class="header">
                 <div class="title">
                     <div>运行结果</div>
+                    <div v-if="virtualRule?.script && !isBeginning">正在运行......</div>
                 </div>
                 <div class="action">
                     <div v-if="virtualRule?.script">
@@ -127,6 +128,7 @@ type propertyType = {
     last?: string;
 };
 const property = ref<propertyType[]>([]);
+// virtualRule?.rule?.windowType === 'undefined' ? moment(item.time).format('HH:mm:ss')
 
 const columns = [
     {

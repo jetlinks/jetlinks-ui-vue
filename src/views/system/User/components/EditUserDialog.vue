@@ -104,7 +104,7 @@
                             mode="multiple"
                             style="width: calc(100% - 40px)"
                             placeholder="请选择角色"
-                            :options="form.roleOptions"
+                            :options="_roleOptions"
                             :disabled="form.data.username === 'admin'"
                         ></j-select>
 
@@ -123,7 +123,7 @@
                             show-search
                             style="width: calc(100% - 40px)"
                             placeholder="请选择组织"
-                            :tree-data="form.departmentOptions"
+                            :tree-data="_departmentOptions"
                             :fieldNames="{ label: 'name', value: 'id' }"
                             multiple
                             :filterTreeNode="
@@ -205,6 +205,7 @@ import { DefaultOptionType } from 'ant-design-vue/es/vc-tree-select/TreeSelect';
 import { AxiosResponse } from 'axios';
 import { passwordRegEx } from '@/utils/validate';
 import { filterSelectNode, onlyMessage } from '@/utils/comm';
+import { uniqBy } from 'lodash-es';
 
 const deptPermission = 'system/Department';
 const rolePermission = 'system/Role';
@@ -279,6 +280,9 @@ const form = reactive({
     roleOptions: [] as optionType[],
     departmentOptions: [] as DefaultOptionType[],
 
+    _roleOptions: [] as optionType[],
+    _departmentOptions: [] as DefaultOptionType[],
+
     init: () => {
         form.getDepartmentList();
         form.getRoleList();
@@ -286,7 +290,6 @@ const form = reactive({
     },
     getUserInfo: () => {
         const id = props.data.id || '';
-        console.log(111);
 
         if (props.type === 'add') form.data = {} as formType;
         else if (props.type === 'reset') form.data = { id } as formType;
@@ -301,6 +304,10 @@ const form = reactive({
                         (item: dictType) => item.id,
                     ),
                 };
+                form._roleOptions = resp.result?.roleList?.map((i: any) => {
+                    return {label: i.name, value: i.id}
+                });
+                form._departmentOptions = resp.result?.orgList
                 nextTick(() => {
                     formRef.value?.clearValidate();
                 });
@@ -358,6 +365,15 @@ const form = reactive({
         };
     },
 });
+
+const _roleOptions = computed(() => {
+    return uniqBy([...form.roleOptions, ...form._roleOptions], 'value')
+})
+
+const _departmentOptions = computed(() => {
+    return uniqBy([...form.departmentOptions, ...form._departmentOptions], 'id')
+})
+
 form.init();
 
 interface AxiosResponseRewrite<T = any[]> extends AxiosResponse<T, any> {

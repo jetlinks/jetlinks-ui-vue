@@ -48,6 +48,7 @@
                         <NotifyTemplate
                             v-model:value="formModel.templateId"
                             v-model:detail="template"
+                            :notifyType="formModel.notifyType"
                             :notifierId="formModel.notifierId"
                             @change="(val) => onValChange(val, 'templateId')"
                         />
