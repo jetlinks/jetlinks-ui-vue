@@ -2,7 +2,7 @@
     <ResizeObserver @resize="onResize">
         <div class="tag-box" ref="box">
             <div v-for="(item, i) in value" :key="item.id" ref="tags">
-                <div v-if="i != _index" class="tag">
+                <div v-if="i !== _index" class="tag">
                     {{ item?.name }}
                 </div>
                 <div
@@ -21,7 +21,7 @@
                             : {}
                     "
                 >
-                    {{ offWidth ? item?.name : '...' }}
+                    {{ offWidth ? item?.name + (_index < value.length ? '...' : '') : '...' }}
                 </div>
             </div>
         </div>
@@ -51,6 +51,7 @@ const onResize = ({ width }: { width: number }) => {
         if (total >= width) {
             _index.value = i;
             offWidth.value = val > 40 ? val : 0;
+            console.log(i, offWidth.value)
             break;
         }
     }
@@ -81,6 +82,7 @@ const onResize = ({ width }: { width: number }) => {
         margin-right: 8px;
         padding: 0 14px;
         color: #333333;
+        text-align: center;
     }
 }
 </style>

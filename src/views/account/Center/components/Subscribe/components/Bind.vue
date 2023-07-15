@@ -105,9 +105,7 @@ const updateIframeStyle = () => {
     const iframe = document.querySelector(
         '#notifier_iframe',
     ) as HTMLIFrameElement;
-    console.log(iframe)
     iframe.onload = () => {
-        console.log(iframe?.contentWindow, '123')
         const currentUrl = iframe?.contentWindow?.location?.search || '';
         let authCode = '';
         if (currentUrl.startsWith('?')) {
