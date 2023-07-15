@@ -466,6 +466,7 @@ const getActions = (
                     data?.state?.value !== 'disabled'
                         ? '请先禁用该告警，再删除'
                         : '删除',
+                placement:"topLeft"
             },
             popConfirm: {
                 title: '确认删除?',
