@@ -9,13 +9,6 @@
                             请对上方规则使用的属性进行赋值
                         </div>
                     </div>
-                    <div
-                        v-if="!isBeginning && virtualRule?.type === 'window'"
-                        class="action"
-                        @click="runScriptAgain"
-                    >
-                        <a style="margin-left: 75px">发送数据</a>
-                    </div>
                 </div>
             </div>
             <div class="top-bottom">
@@ -74,9 +67,18 @@
             <div class="header">
                 <div class="title">
                     <div>运行结果</div>
-                    <div v-if="virtualRule?.script && !isBeginning">正在运行......</div>
+                    <div v-if="virtualRule?.script && !isBeginning">
+                        正在运行......
+                    </div>
                 </div>
                 <div class="action">
+                    <div
+                        v-if="!isBeginning && virtualRule?.type === 'window'"
+                        class="action"
+                        @click="runScriptAgain"
+                    >
+                        <a style="margin-left: 75px">发送数据</a>
+                    </div>
                     <div v-if="virtualRule?.script">
                         <a v-if="isBeginning" @click="beginAction">
                             开始运行
@@ -91,11 +93,21 @@
             <div class="log">
                 <j-descriptions>
                     <j-descriptions-item
-                        v-for="item in ruleEditorStore.state.log"
-                        :label="moment(item.time).format('HH:mm:ss')"
+                        v-for="(item, index) in ruleEditorStore.state.log"
                         :key="item.time"
                         :span="3"
                     >
+                        <template #label>
+                            <template v-if="!!runningState(index + 1, item._time)">
+                                {{ runningState(index + 1, item._time) }}
+                            </template>
+                            <template v-else>{{
+                                moment(item.time).format('HH:mm:ss')
+                            }}</template>
+                        </template>
+                        <div v-if="!!runningState(index + 1, item._time)">
+                            {{ moment(item.time).format('HH:mm:ss') }}
+                        </div>
                         <j-tooltip placement="top" :title="item.content">
                             {{ item.content }}
                         </j-tooltip>
@@ -106,7 +118,7 @@
     </div>
 </template>
 <script setup lang="ts" name="Debug">
-import {PropType, Ref} from 'vue';
+import { PropType, Ref } from 'vue';
 import { useProductStore } from '@/store/product';
 import { useRuleEditorStore } from '@/store/ruleEditor';
 import moment from 'moment';
@@ -118,7 +130,7 @@ const props = defineProps({
     virtualRule: Object as PropType<Record<any, any>>,
     id: String,
 });
-const emits = defineEmits(['success'])
+const emits = defineEmits(['success']);
 
 const isBeginning = ref(true);
 
@@ -128,7 +140,6 @@ type propertyType = {
     last?: string;
 };
 const property = ref<propertyType[]>([]);
-// virtualRule?.rule?.windowType === 'undefined' ? moment(item.time).format('HH:mm:ss')
 
 const columns = [
     {
@@ -163,9 +174,13 @@ const deleteItem = (index: number) => {
 const ws = ref();
 
 const virtualIdRef = ref(new Date().getTime());
-const medataSource = inject<Ref<any[]>>('_dataSource')
+const medataSource = inject<Ref<any[]>>('_dataSource');
 const productStore = useProductStore();
 const ruleEditorStore = useRuleEditorStore();
+
+const time = ref<number>(0);
+const timer = ref<any>(null);
+
 const runScript = () => {
     const metadata = productStore.current.metadata || '{}';
     const propertiesList = JSON.parse(metadata).properties || [];
@@ -198,12 +213,23 @@ const runScript = () => {
         ruleEditorStore.state.log.push({
             time: new Date().getTime(),
             content: JSON.stringify(data.payload),
+            _time: unref(time.value)
         });
-        emits('success', false)
+        emits('success', false);
         if (props.virtualRule?.type !== 'window') {
             stopAction();
         }
     });
+};
+
+const runningState = (_index: number, _time: number) => {
+    if (props.virtualRule?.windowType === 'time') {
+        return `已运行${_time}秒`;
+    }
+    if (props.virtualRule?.windowType === 'num') {
+        return `第${_index}次运行`;
+    }
+    return false;
 };
 
 const wsAgain = ref<any>();
@@ -233,15 +259,24 @@ const runScriptAgain = async () => {
     wsAgain.value.subscribe((data: any) => {});
 };
 
+const getTime = () => {
+    time.value = 0;
+    timer.value = setInterval(() => {
+        time.value += 1;
+    }, 1000);
+};
+
 const beginAction = () => {
     isBeginning.value = false;
     runScript();
+    getTime();
 };
 const stopAction = () => {
     isBeginning.value = true;
     if (ws.value) {
         ws.value.unsubscribe?.();
     }
+    timer.value = null
 };
 const clearAction = () => {
     ruleEditorStore.set('log', []);
@@ -252,16 +287,17 @@ onUnmounted(() => {
         ws.value.unsubscribe?.();
     }
     clearAction();
+    timer.value = null
 });
 
 const options = computed(() => {
-  return (medataSource.value || [])
-      .filter((p) => p.id !== props.id)
-      .map((item) => ({
-        label: item.name,
-        value: item.id,
-      }));
-})
+    return (medataSource.value || [])
+        .filter((p) => p.id !== props.id)
+        .map((item) => ({
+            label: item.name,
+            value: item.id,
+        }));
+});
 
 // const getProperty = () => {
 //     // const metadata = productStore.current.metadata || '{}';
@@ -321,7 +357,7 @@ const options = computed(() => {
         }
 
         .top-bottom {
-          padding: 10px;
+            padding: 10px;
         }
     }
 
