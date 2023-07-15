@@ -210,6 +210,7 @@ import { PropertiesModal, FunctionModal, EventModal, TagsModal } from './DetailM
 import { Modal } from 'jetlinks-ui-components'
 import {EventEmitter} from "@/utils/utils";
 import {watch} from "vue";
+import {cloneDeep} from "lodash";
 
 const props = defineProps({
     target: {
@@ -361,7 +362,7 @@ const handleAddClick = async (_data?: any, index?: number) => {
 };
 
 const copyItem = (record: any, index: number) => {
-  const copyData = omit(record, ['_uuid', '_sortIndex'])
+  const copyData = cloneDeep(omit(record, ['_uuid', '_sortIndex']))
   copyData.id = `copy_${copyData.id}`.slice(0,64)
   handleAddClick(copyData, index)
 }
