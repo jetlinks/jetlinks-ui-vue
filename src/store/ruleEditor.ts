@@ -7,6 +7,7 @@ type RuleEditorType = {
   log: {
     content: string;
     time: number;
+    _time: number;
   }[];
 };
 
