@@ -6,7 +6,7 @@
             @search="(params:any)=>queryParams = {...params}"
             style='margin-bottom: 0;'
         />
-        <FullPage>
+        <FullPage :extraHeight="24">
             <j-pro-table
                 ref="tableRef"
                 :request="table.requestFun"

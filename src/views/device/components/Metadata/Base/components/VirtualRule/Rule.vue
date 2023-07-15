@@ -29,10 +29,6 @@ const onChange = (val: string | undefined) => {
     onClose()
 }
 
-watchEffect(() => {
-    console.log(props.virtualRule, props.value, '123')
-})
-
 const onClose = () => {
     visible.value = false
 }

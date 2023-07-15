@@ -39,7 +39,7 @@
         <j-form-item
           label='文件'
           name='version'
-          :rules='[{ required: true, message: "请上传文件" }]'
+          :rules='versionRule'
         >
           <UploadFile v-model:modelValue='modelRef.version' @change='uploadChange' :fileName='data.filename' />
         </j-form-item>
@@ -112,6 +112,21 @@ const IdRules = [
     validator: vailId,
     trigger: 'blur',
   },
+]
+
+const versionRule = [
+  { required: true, message: "请上传文件" },
+  // {
+  //   validator(_: any, value: any) {
+  //     if (value) {
+  //       if (value?.err) {
+  //         return Promise.reject('文件上传失败，请重新上传')
+  //       }
+  //       return Promise.resolve()
+  //     }
+  //     return Promise.reject('请上传文件')
+  //   }
+  // }
 ]
 
 const modelRef = reactive<any>({

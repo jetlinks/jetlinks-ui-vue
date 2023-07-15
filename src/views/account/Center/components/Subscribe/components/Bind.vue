@@ -1,6 +1,21 @@
 <template>
     <j-modal :width="'900px'" visible @cancel="emit('close')" :zIndex="1100">
-        <template v-if="getType === 'notifier-dingTalk'">
+        <template v-if="getType === 'notifier-weixin'">
+            <j-spin :spinning="loading">
+                <div class="code" style="height: 450px">
+                    <iframe
+                        id="notifier_iframe"
+                        class="code-item"
+                        width="100%"
+                        height="100%"
+                        :src="url"
+                        sandbox="allow-forms allow-scripts allow-same-origin allow-popups"
+                        v-if="!loading"
+                    ></iframe>
+                </div>
+            </j-spin>
+        </template>
+        <template v-else-if="getType === 'notifier-dingTalk'">
             <j-spin :spinning="loading">
                 <div class="code" style="height: 600px;">
                     <iframe
@@ -14,20 +29,7 @@
                 </div>
             </j-spin>
         </template>
-        <template v-else-if="getType === 'notifier-weixin'">
-            <j-spin :spinning="loading">
-                <div class="code" style="height: 450px">
-                    <iframe
-                        id="notifier_iframe"
-                        class="code-item"
-                        width="100%"
-                        height="100%"
-                        :src="url"
-                        v-if="!loading"
-                    ></iframe>
-                </div>
-            </j-spin>
-        </template>
+        
         <template #footer>
             <j-button @click="emit('close')">关闭</j-button>
             <!-- <j-button type="primary" @click="emit('close')">确定</j-button> -->
@@ -103,8 +105,9 @@ const updateIframeStyle = () => {
     const iframe = document.querySelector(
         '#notifier_iframe',
     ) as HTMLIFrameElement;
+    console.log(iframe)
     iframe.onload = () => {
-        console.log(iframe?.contentWindow)
+        console.log(iframe?.contentWindow, '123')
         const currentUrl = iframe?.contentWindow?.location?.search || '';
         let authCode = '';
         if (currentUrl.startsWith('?')) {

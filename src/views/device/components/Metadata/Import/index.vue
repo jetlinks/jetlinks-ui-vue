@@ -30,7 +30,7 @@
           <j-select-option value="script">脚本</j-select-option>
         </j-select>
       </j-form-item>
-      <j-form-item label="文件上传" v-bind="validateInfos.upload" v-if="formModel.metadataType === 'file'">
+      <j-form-item v-if="formModel.type === 'import' && formModel.metadataType === 'file'" label="文件上传" v-bind="validateInfos.upload">
         <j-input v-model:value="formModel.upload">
           <template #addonAfter>
             <j-upload v-model:file-list="fileList" :before-upload="beforeUpload" accept=".json" :show-upload-list="false"
