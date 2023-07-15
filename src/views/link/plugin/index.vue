@@ -146,7 +146,7 @@ const instanceRef = ref()
 
 const columns = [
   {
-    title: 'ID',
+    title: '插件ID',
     dataIndex: 'id',
     key: 'type',
     fixed: 'left',
@@ -168,9 +168,16 @@ const columns = [
     },
   },
   {
+    title:"版本",
+    dataIndex:"version",
+    key:"version",
+    ellipsis: true
+  },
+  {
     title: '插件类型',
     dataIndex: 'type',
     key: 'type',
+    ellipsis: true,
     scopedSlots: true,
     search: {
       type: 'select',
@@ -184,7 +191,13 @@ const columns = [
     },
   },
   {
-    title: '说明',
+    title:"文件",
+    dataIndex:"filename",
+    key:'filename',
+    ellipsis: true
+  },
+  {
+    title: '描述',
     dataIndex: 'description',
     key: 'description',
     ellipsis: true,
