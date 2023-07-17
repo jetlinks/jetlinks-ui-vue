@@ -67,33 +67,7 @@ export default {
 }
 ```
 
-### 去掉可视化部分以及修改备案信息
-
-#### 去掉可视化部分
-
-在`src\views\user\Login\index.vue`文件
-
-在第140行左右，注释以下代码
-```javascript
-// <div class="bottom">
-//     <div class="view">
-//         JETLINKS团队全新力作可视化大屏系统
-//     </div>
-//     <div class="url">
-//         <div style="height: 33px">
-//             <img :src="viewLogo" />
-//         </div>
-//         <a
-//             href="https://view.jetlinks.cn/"
-//             target="_blank"
-//             rel="noopener noreferrer"
-//         >
-//             体验DEMO
-//         </a>
-//     </div>
-// </div>
-```
-
+### 去掉或修改备案信息
 
 #### 修改备案信息
 

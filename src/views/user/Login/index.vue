@@ -2,7 +2,7 @@
     <div>
         <j-spin :spinning="loading" :delay="500">
             <div class="container">
-                <div class="left">
+                <div class="left" >
                     <img
                         style="width: 100%; height: 100%"
                         :src="basis.backgroud || getImage('/login.png')"
@@ -137,7 +137,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="bottom">
+                    <div v-if="basis.recommend" class="bottom">
                         <div class="view">
                             JETLINKS团队全新力作可视化大屏系统
                         </div>
