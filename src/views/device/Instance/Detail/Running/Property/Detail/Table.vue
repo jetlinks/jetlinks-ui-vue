@@ -8,10 +8,10 @@
             @change="onChange"
             :pagination="{
                 current: (dataSource?.pageIndex || 0) + 1,
-                pageSize: dataSource?.pageSize || 10,
+                pageSize: dataSource?.pageSize || 12,
                 showSizeChanger: true,
                 total: dataSource?.total || 0,
-                pageSizeOptions: ['8', '12', '24', '60', '100']
+                pageSizeOptions: ['12', '24', '48', '96']
             }"
         >
             <template #bodyCell="{ column, record }">
@@ -22,7 +22,7 @@
                     <ValueRender
                         type="table"
                         :data="_props.data"
-                        :value="{ formatValue: record.value }"
+                        :value="{ ...record }"
                     />
                 </template>
                 <template v-else-if="column.key === 'action'">
@@ -92,7 +92,7 @@ const _props = defineProps({
 const instanceStore = useInstanceStore();
 const dataSource = ref({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 12,
     data: [],
     total: 0
 });
@@ -156,9 +156,9 @@ const queryPropertyData = async (params: any) => {
 watch(
     () => [_props.data.id, _props.time],
     ([newVal]) => {
-        if (newVal) {
+        if (newVal && _props.time?.length) {
             queryPropertyData({
-                pageSize: _props.data.valueType?.type === 'file' ? 5 : 10,
+                pageSize: 12,
                 pageIndex: 0,
             });
         }

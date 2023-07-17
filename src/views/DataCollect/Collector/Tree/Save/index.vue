@@ -122,7 +122,7 @@
                     placeholder="请输入请求超时时间配置"
                     v-model:value="formData.configuration.requsetTimeout"
                     addon-after="ms"
-                    :max="9999999999999998"
+                    :max="2147483648"
                     :min="1"
                 />
             </j-form-item>
@@ -234,10 +234,10 @@ const handleOk = async () => {
 
 const getTypeTooltip = (value: string) =>
     value === 'LowerFrequency'
-        ? '连续20次异常，降低连接频率至原有频率的1/10（重试间隔不超过1分钟），故障处理后自动恢复至设定连接频率'
+        ? '连续20次采集异常后，降低采集频率至设定频率的1/10，故障处理后，采集频率将恢复至设定频率。'
         : value === 'Break'
-        ? '连续10分钟异常，停止采集数据进入断开状态，设备重新启用后恢复采集状态'
-        : '忽略异常，保持原采集频率超时时间为5s';
+        ? '连续10分钟异常，停止采集数据进入断开状态，设备重新启用后恢复采集状态。'
+        : '忽略异常，保持原采集频率超时时间为5s。';
 
 const handleCancel = () => {
     emit('change', false);

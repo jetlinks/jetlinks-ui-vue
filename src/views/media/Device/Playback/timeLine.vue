@@ -24,8 +24,8 @@
                     "
                 ></div>
             </div>
-            <div id="btn" class="time-line-btn"></div>
-            <div id="time" class="time-line">
+            <div id="btn" v-show="timePosition" class="time-line-btn" :style="{left: timePosition + 'px' }"></div>
+            <div id="time" v-show="timePosition" class="time-line" :style="{left: (timePosition - 15) + 'px' }">
                 {{ dayjs(playTime || 0).format('HH:mm:ss') }}
             </div>
         </div>
@@ -33,11 +33,11 @@
 </template>
 
 <script setup lang="ts">
-import { message } from 'jetlinks-ui-components';
 import type { recordsItemType } from './typings';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import { useElementSize } from '@vueuse/core';
+import { onlyMessage } from '@/utils/comm';
 
 export type TimeChangeType = {
     endTime: Dayjs;
@@ -76,7 +76,7 @@ const endT = ref<number>(
     ).getTime(),
 );
 const list = ref<any[]>([]);
-const playTime = ref<number>(0);
+const _playTime = ref<number>(0);
 const LineContent = ref<HTMLDivElement>();
 const LineContentSize = useElementSize(LineContent);
 
@@ -107,7 +107,7 @@ const onChange = (
     deviceId: string,
     channelId: string,
 ) => {
-    playTime.value = startTime;
+  _playTime.value = startTime;
     props.onChange({
         startTime: dayjs(startTime),
         endTime: dayjs(endTime),
@@ -132,11 +132,11 @@ const playByStartTime = (time: any) => {
 playByStartTime(0);
 
 const onNextPlay = () => {
-    if (playTime.value) {
+    if (_playTime.value) {
         // 查找下一个视频
         const nowIndex = props.data.findIndex((item) => {
             const startTime = item.startTime || item.mediaStartTime;
-            return startTime === playTime.value;
+            return startTime === _playTime.value;
         });
         // 是否为最后一个
         if (nowIndex !== props.data.length - 1) {
@@ -185,7 +185,7 @@ watch(
                         );
                     } else {
                         props.onChange(undefined);
-                        message.error('没有可播放的视频资源');
+                        onlyMessage('没有可播放的视频资源', 'error');
                     }
                 } else {
                     onChange(
@@ -199,7 +199,7 @@ watch(
         } else if (localToServer && localToServer.startTime) {
             // 本地跳转云端但是无资源
             props.onChange(undefined);
-            message.error('没有可播放的视频资源');
+            onlyMessage('没有可播放的视频资源', 'error');
             list.value = [];
         } else {
             // 啥都没有
@@ -216,35 +216,44 @@ const getLineItemStyle = (
     const start = startTime - startT.value > 0 ? startTime - startT.value : 0;
     const _width = LineContentSize.width.value!;
     const itemWidth = ((endTime - startTime) / (24 * 3600000)) * _width;
+  console.log()
     return {
         left: `${(start / (24 * 3600000)) * _width}px`,
         width: `${itemWidth < 1 ? 1 : itemWidth}px`,
     };
 };
 
-const playTimeChange = () => {
-    if (
-        props.playTime &&
-        props.playTime >= startT.value &&
-        props.playTime <= endT.value &&
-        props.data &&
-        props.data.length
-    ) {
-        setTimeAndPosition((props.playTime - startT.value) / 3600000 / 24);
-    }
-};
-watch(
-    () => props.playTime,
-    () => {
-        playTimeChange();
-    },
-);
-watch(
-    () => startT.value,
-    () => {
-        playTimeChange();
-    },
-);
+const timePosition = computed(() => {
+  console.log(props.playTime, startT.value, LineContentSize.width.value)
+  console.log(((props.playTime - startT.value) / 3600000 / 24) * LineContentSize.width.value)
+  return ((props.playTime - startT.value) / 3600000 / 24) * LineContentSize.width.value
+})
+
+// const playTimeChange = () => {
+//     if (
+//         props.playTime &&
+//         props.playTime >= startT.value &&
+//         props.playTime <= endT.value &&
+//         props.data &&
+//         props.data.length
+//     ) {
+//       console.log(props.playTime, props.playTime - startT.value)
+//         setTimeAndPosition((props.playTime - startT.value) / 3600000 / 24);
+//     }
+// };
+
+// watch(
+//     () => props.playTime,
+//     () => {
+//         playTimeChange();
+//     },
+// );
+// watch(
+//     () => startT.value,
+//     () => {
+//         playTimeChange();
+//     },
+// );
 
 const handleProgress = (event: any, item: any) => {
     const pos = LineContent.value?.getBoundingClientRect();

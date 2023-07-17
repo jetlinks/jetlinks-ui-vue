@@ -98,13 +98,13 @@
             />
         </template>
         <FullPage>
-            <j-card :bordered="false">
+            <div style="padding: 24px;height: 100%">
                 <component
                     :is="tabs[instanceStore.tabActiveKey]"
                     v-bind="{ type: 'device' }"
                     @onJump="onTabChange"
                 />
-            </j-card>
+            </div>
         </FullPage>
     </page-container>
 </template>
@@ -114,6 +114,7 @@ import { useInstanceStore } from '@/store/instance';
 import Info from './Info/index.vue';
 import Running from './Running/index.vue';
 import Metadata from '../../components/Metadata/index.vue';
+import MetadataMap from './MetadataMap/index.vue';
 import ChildDevice from './ChildDevice/index.vue';
 import Diagnose from './Diagnose/index.vue';
 import Function from './Function/index.vue';
@@ -123,11 +124,11 @@ import EdgeMap from './EdgeMap/index.vue';
 import Parsing from './Parsing/index.vue';
 import Log from './Log/index.vue';
 import { _deploy, _disconnect } from '@/api/device/instance';
-import { message } from 'jetlinks-ui-components';
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import { getWebSocket } from '@/utils/websocket';
 import { useMenuStore } from '@/store/menu';
 import { useRouterParams } from '@/utils/hooks/useParams';
+import { EventEmitter } from '@/utils/utils'
 
 const menuStory = useMenuStore();
 
@@ -136,6 +137,7 @@ const routerParams = useRouterParams();
 const instanceStore = useInstanceStore();
 
 const statusMap = new Map();
+
 statusMap.set('online', 'success');
 statusMap.set('offline', 'error');
 statusMap.set('notActive', 'warning');
@@ -179,6 +181,7 @@ const tabs = {
     EdgeMap,
     Parsing,
     Log,
+    MetadataMap
 };
 
 const getStatus = (id: string) => {
@@ -254,6 +257,15 @@ const getDetail = () => {
             tab: '边缘端映射',
         });
     }
+
+    if (
+        instanceStore.current?.features?.find(
+            (item: any) => item?.id === 'diffMetadataSameProduct',
+        ) &&
+        !keys.includes('MetadataMap')
+    ) {
+        list.value.push({ key: 'MetadataMap', tab: '物模型映射'});
+    }
 };
 
 const initPage = async (newId: any) => {
@@ -265,7 +277,7 @@ const initPage = async (newId: any) => {
 }
 
 onBeforeRouteUpdate((to: any) => {
-  if (to.params?.id) {
+  if (to.params?.id!==instanceStore.current.id) {
     initPage(to.params?.id)
   }
 })
@@ -287,14 +299,20 @@ onMounted(() => {
 });
 
 const onTabChange = (e: string) => {
-    instanceStore.tabActiveKey = e;
+    if (instanceStore.tabActiveKey === 'Metadata') {
+      EventEmitter.emit('MetadataTabs', () => {
+        instanceStore.tabActiveKey = e;
+      })
+    } else {
+      instanceStore.tabActiveKey = e;
+    }
 };
 
 const handleAction = async () => {
     if (instanceStore.current?.id) {
         const resp = await _deploy(instanceStore.current?.id);
         if (resp.status === 200) {
-            message.success('操作成功！');
+            onlyMessage('操作成功！');
             instanceStore.refresh(instanceStore.current?.id);
         }
     }
@@ -304,7 +322,7 @@ const handleDisconnect = async () => {
     if (instanceStore.current?.id) {
         const resp = await _disconnect(instanceStore.current?.id);
         if (resp.status === 200) {
-            message.success('操作成功！');
+            onlyMessage('操作成功！');
             instanceStore.refresh(instanceStore.current?.id);
         }
     }
@@ -313,7 +331,7 @@ const handleDisconnect = async () => {
 const handleRefresh = async () => {
     if (instanceStore.current?.id) {
         await instanceStore.refresh(instanceStore.current?.id);
-        message.success('操作成功');
+        onlyMessage('操作成功');
     }
 };
 

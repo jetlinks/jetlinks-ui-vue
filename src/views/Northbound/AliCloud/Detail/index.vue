@@ -6,6 +6,39 @@
                     <div class="left">
                         <div class="left-content">
                             <TitleComponent data="基本信息" />
+                            <j-alert
+                                v-if="!!_error && modelRef?.id"
+                                style="margin: 10px 0"
+                                type="warning"
+                            >
+                                <template #message>
+                                    <div
+                                        style="
+                                            display: flex;
+                                            justify-content: space-between;
+                                            align-items: center;
+                                        "
+                                    >
+                                        <span
+                                            style="
+                                                width: calc(100% - 100px);
+                                                text-align: center;
+                                            "
+                                            >{{ _error }}</span
+                                        >
+                                        <PermissionButton
+                                            :popConfirm="{
+                                                title: '确认启用',
+                                                onConfirm: onActiveProduct,
+                                            }"
+                                            size="small"
+                                            :hasPermission="'device/Product:action'"
+                                        >
+                                            立即启用
+                                        </PermissionButton>
+                                    </div>
+                                </template>
+                            </j-alert>
                             <j-form
                                 :layout="'vertical'"
                                 ref="formRef"
@@ -250,6 +283,7 @@
                                                     item, index
                                                 ) in modelRef.mappings"
                                                 :key="index"
+                                                :forceRender="false"
                                                 :header="
                                                     item.productKey
                                                         ? aliyunProductList.find(
@@ -317,13 +351,21 @@
                                                                 index,
                                                                 'productId',
                                                             ]"
-                                                            :rules="{
-                                                                required: true,
-                                                                message:
-                                                                    '请选择平台产品',
-                                                            }"
+                                                            :rules="[
+                                                                {
+                                                                    required: true,
+                                                                    message:
+                                                                        '请选择平台产品',
+                                                                },
+                                                                {
+                                                                    validator:
+                                                                        _validator,
+                                                                    trigger:
+                                                                        'change',
+                                                                },
+                                                            ]"
                                                         >
-                                                            <j-select
+                                                            <!-- <j-select
                                                                 placeholder="请选择平台产品"
                                                                 v-model:value="
                                                                     item.productId
@@ -346,7 +388,21 @@
                                                                         i.name
                                                                     }}</j-select-option
                                                                 >
-                                                            </j-select>
+                                                            </j-select> -->
+                                                            <MSelect
+                                                                v-model:value="
+                                                                    item.productId
+                                                                "
+                                                                :options="
+                                                                    getPlatProduct(
+                                                                        item.productId ||
+                                                                            '',
+                                                                    )
+                                                                "
+                                                                @error="
+                                                                    onPlatError
+                                                                "
+                                                            />
                                                         </j-form-item>
                                                     </j-col>
                                                 </j-row>
@@ -426,12 +482,15 @@ import {
     queryProductList,
 } from '@/api/northbound/alicloud';
 import _ from 'lodash';
-import { message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
+import MSelect from '../../components/MSelect/index.vue';
+import { _deploy } from '@/api/device/product';
 
 const router = useRouter();
 const route = useRoute();
 
 const formRef = ref();
+const _errorSet = ref<Set<string>>(new Set());
 
 const modelRef = reactive({
     id: undefined,
@@ -531,6 +590,39 @@ const onCollChange = (_key: string[]) => {
     activeKey.value = _key;
 };
 
+const _error = computed(() => {
+    return _errorSet.value.size ? `当前选择的部分产品为禁用状态` : ''
+})
+
+const onActiveProduct = async () => {
+    [..._errorSet.value.values()].forEach(async (i: any) => {
+        const resp = await _deploy(i).catch((error) => {
+            onlyMessage('操作失败', 'error');
+        });
+        if(resp?.status === 200) {
+            _errorSet.value.delete(i)
+            onlyMessage('操作成功！');
+        }
+    });
+    await getProduct();
+};
+
+const onPlatError = (val: any) => {
+    const _item = productList.value.find((item) => item.id === val);
+    if (val && _item && !_item?.state) {
+        _errorSet.value.add(val)
+    }
+};
+
+const _validator = (_rule: any, value: string): Promise<any> =>
+    new Promise((resolve, reject) => {
+        const _item = productList.value.find((item) => item.id === value);
+        if (!_item) {
+            return reject('关联产品已被删除，请重新选择');
+        }
+        return resolve('');
+    });
+
 const saveBtn = () => {
     formRef.value
         .validate()
@@ -547,7 +639,7 @@ const saveBtn = () => {
                 loading.value = false;
             });
             if (resp.status === 200) {
-                message.success('操作成功！');
+                onlyMessage('操作成功！');
                 formRef.value.resetFields();
                 router.push('/iot/northbound/AliCloud');
             }
@@ -566,7 +658,7 @@ watch(
     async (newId) => {
         if (newId) {
             queryRegionsList();
-            getProduct();
+            await getProduct();
             if (newId === ':id' || !newId) return;
             const resp = await detail(newId as string);
             const _data: any = resp.result;
@@ -574,6 +666,9 @@ watch(
                 getAliyunProduct(_data?.accessConfig);
             }
             Object.assign(modelRef, _data);
+            activeKey.value = (_data?.mappings || []).map(
+                (_: any, index: number) => index,
+            );
         }
     },
     { immediate: true, deep: true },

@@ -3,7 +3,7 @@
         <div class="relationship-container">
             <pro-search
                 :columns="columns"
-                target="category"
+                target="system-relationship"
                 @search="(params:any)=>queryParams = {...params}"
             />
             <FullPage>
@@ -14,12 +14,7 @@
                     model="TABLE"
                     :params="queryParams"
                     :defaultParams="{
-                        pageSize: 10,
                         sorts: [{ name: 'createTime', order: 'desc' }],
-                    }"
-                    :pagination="{
-                        showSizeChanger: true,
-                        pageSizeOptions: ['10', '20', '50', '100'],
                     }"
                 >
                     <template #headerTitle>
@@ -78,8 +73,8 @@ import {
     getRelationshipList_api,
     delRelation_api,
 } from '@/api/system/relationship';
-import { message } from 'jetlinks-ui-components';
 import EditDialog from './components/EditDialog.vue';
+import { onlyMessage } from '@/utils/comm';
 
 const permission = 'system/Relationship';
 
@@ -163,9 +158,9 @@ const table = {
         delRelation_api(row.id).then((resp: any) => {
             if (resp.status === 200) {
                 tableRef.value?.reload();
-                message.success('操作成功!');
+                onlyMessage('操作成功!');
             } else {
-                message.error(resp.message);
+                onlyMessage(resp.message, 'error');
             }
         });
     },

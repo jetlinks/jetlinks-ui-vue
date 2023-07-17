@@ -97,7 +97,6 @@
 
 <script setup lang="ts">
 import { FormInstance } from 'ant-design-vue';
-import { message } from 'jetlinks-ui-components';
 import { Rule } from 'ant-design-vue/es/form';
 
 import {
@@ -107,6 +106,7 @@ import {
     validateField,
 } from '@/api/system/relationship';
 import { dictItemType } from '../../DataSource/typing';
+import { onlyMessage } from '@/utils/comm';
 
 const emits = defineEmits(['refresh', 'update:visible']);
 const props = defineProps<{
@@ -123,7 +123,7 @@ const confirm = () => {
         .then(() => form.submit())
         .then((resp: any) => {
             if (resp.status === 200) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 emits('refresh');
                 emits('update:visible', false);
             }

@@ -3,7 +3,7 @@
         <div class="menu-container">
             <pro-search
                 :columns="columns"
-                target="category"
+                target="system-menu"
                 @search="handleSearch"
             />
             <FullPage>
@@ -81,11 +81,11 @@
 <script setup lang="ts" name="Menu">
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import { getMenuTree_api, delMenuInfo_api } from '@/api/system/menu';
-import { message } from 'jetlinks-ui-components';
 import dayjs from 'dayjs';
 import { useUserInfo } from '@/store/userInfo';
-import { MESSAGE_SUBSCRIBE_MENU_CODE, USER_CENTER_MENU_CODE } from '@/utils/consts'
+import { USER_CENTER_MENU_CODE } from '@/utils/consts'
 import { storeToRefs } from 'pinia';
+import { onlyMessage } from '@/utils/comm';
 
 const permission = 'system/Menu';
 
@@ -212,7 +212,7 @@ const table = reactive({
         return {
             code: resp.message,
             result: {
-                data: resp.result?.filter((item: { code: string }) => ![USER_CENTER_MENU_CODE, MESSAGE_SUBSCRIBE_MENU_CODE].includes(item.code)),
+                data: resp.result?.filter((item: { code: string }) => ![USER_CENTER_MENU_CODE].includes(item.code)),
                 pageIndex: resp.pageIndex,
                 pageSize: resp.pageSize,
                 total: resp.total,
@@ -244,7 +244,7 @@ const table = reactive({
         delMenuInfo_api(row.id).then((resp: any) => {
             if (resp.status === 200) {
                 tableRef.value?.reload();
-                message.success('操作成功!');
+                onlyMessage('操作成功!');
             }
         });
     },

@@ -70,15 +70,16 @@
 </template>
 <script setup lang="ts" name="BaseMetadata">
 import type { MetadataItem, MetadataType } from '@/views/device/Product/typings'
-import MetadataMapping from './columns'
+import { useColumns } from './columns';
 import { useInstanceStore } from '@/store/instance'
 import { useProductStore } from '@/store/product'
 import { useMetadataStore } from '@/store/metadata'
 import PermissionButton from '@/components/PermissionButton/index.vue'
-import { TablePaginationConfig, message } from 'ant-design-vue/es'
+import { TablePaginationConfig } from 'ant-design-vue/es'
 import { asyncUpdateMetadata, removeMetadata } from '../metadata'
 import Edit from './Edit/index.vue'
 import { ColumnProps } from 'ant-design-vue/es/table'
+import { onlyMessage } from '@/utils/comm';
 interface Props {
   type: MetadataType;
   target: 'product' | 'device';
@@ -124,7 +125,8 @@ const pagination = {
   defaultPageSize: 10,
   size: 'small',
 } as TablePaginationConfig
-const columns = computed(() => MetadataMapping.get(type)!.concat(actions))
+// const columns = computed(() => MetadataMapping.get(type)!.concat(actions))
+const { columns } = useColumns(type)
 const items = computed(() => JSON.parse((target === 'product' ? productStore.current?.metadata : instanceStore.current.metadata) || '{}'))
 const searchValue = ref<string>()
 const handleSearch = (searchValue: string) => {
@@ -143,6 +145,7 @@ const refreshMetadata = () => {
   //       : await detail(route.params.id as string);
   const result = target === 'product' ? productStore.current?.metadata : instanceStore.current.metadata
   const item = JSON.parse(result || '{}') as MetadataItem[]
+  console.log(item)
   data.value = item[type]?.sort((a: any, b: any) => b?.sortsIndex - a?.sortsIndex)
   loading.value = false
 }
@@ -162,7 +165,7 @@ const handleAddClick = () => {
   metadataStore.set('type', type)
   metadataStore.set('action', 'add')
   if (props.target === 'device' && !instanceStore.detail?.independentMetadata) {
-    message.warning('修改物模型后会脱离产品物模型')
+    onlyMessage('修改物模型后会脱离产品物模型', 'warning')
   }
 }
 
@@ -184,7 +187,7 @@ const handleEditClick = (record: MetadataItem) => {
   metadataStore.model.type = type;
   metadataStore.model.action = 'edit';
   if (props.target === 'device' && !instanceStore.detail?.independentMetadata) {
-    message.warning('修改物模型后会脱离产品物模型');
+    onlyMessage('修改物模型后会脱离产品物模型', 'warning');
   }
 }
 
@@ -211,13 +214,13 @@ const removeItem = async (record: MetadataItem) => {
   const _currentData = removeMetadata(type, [record], target === 'device' ? instanceStore.current : productStore.detail);
   const result = await asyncUpdateMetadata(target, _currentData);
   if (result.status === 200) {
-    message.success('操作成功！');
+    onlyMessage('操作成功！');
     // Store.set(SystemConst.REFRESH_METADATA_TABLE, true);
     metadataStore.model.edit = false;
     metadataStore.model.item = {};
     resetMetadata();
   } else {
-    message.error('操作失败！');
+    onlyMessage('操作失败！', 'error');
   }
 };
 </script>

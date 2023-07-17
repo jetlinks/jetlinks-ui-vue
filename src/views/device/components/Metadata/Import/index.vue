@@ -4,7 +4,12 @@
     <div class="import-content">
       <p class="import-tip">
         <AIcon type="ExclamationCircleOutlined" style="margin-right: 5px" />
-        导入的物模型会覆盖原来的属性、功能、事件、标签，请谨慎操作。
+        <template v-if="type === 'product'">
+          导入的物模型会覆盖原来的属性、功能、事件、标签，请谨慎操作。
+        </template>
+        <template v-else>
+          导入时会根据标识跳过继承自产品物模型的属性、功能、事件、标签。
+        </template>
       </p>
     </div>
     <j-form layout="vertical" v-model="formModel">
@@ -30,7 +35,7 @@
           <j-select-option value="script">脚本</j-select-option>
         </j-select>
       </j-form-item>
-      <j-form-item label="文件上传" v-bind="validateInfos.upload" v-if="formModel.metadataType === 'file'">
+      <j-form-item v-if="formModel.type === 'import' && formModel.metadataType === 'file'" label="文件上传" v-bind="validateInfos.upload">
         <j-input v-model:value="formModel.upload">
           <template #addonAfter>
             <j-upload v-model:file-list="fileList" :before-upload="beforeUpload" accept=".json" :show-upload-list="false"
@@ -61,12 +66,13 @@ import { queryNoPagingPost, convertMetadata, modify } from '@/api/device/product
 import type { DefaultOptionType } from 'ant-design-vue/es/select';
 import type { UploadProps, UploadFile, UploadChangeParam } from 'ant-design-vue/es';
 import type { DeviceMetadata } from '@/views/device/Product/typings'
-import { message } from 'jetlinks-ui-components';
 import { useInstanceStore } from '@/store/instance'
 import { useProductStore } from '@/store/product';
 import { FILE_UPLOAD } from '@/api/comm';
-import { getToken } from '@/utils/comm';
+import { getToken, onlyMessage } from '@/utils/comm';
 import { useMetadataStore } from '@/store/metadata';
+import {omit} from "lodash-es";
+import { Modal } from 'jetlinks-ui-components'
 
 const route = useRoute()
 const instanceStore = useInstanceStore()
@@ -78,6 +84,7 @@ interface Props {
 }
 interface Emits {
   (e: 'update:visible', data: boolean): void;
+  (e: 'submit', data: any): void;
 }
 const props = defineProps<Props>()
 const emits = defineEmits<Emits>()
@@ -142,6 +149,7 @@ const rules = reactive({
 })
 const { validate, validateInfos } = useForm(formModel, rules);
 const fileList = ref<UploadFile[]>([])
+const hasVirtualRule = ref(false)
 
 const productList = ref<DefaultOptionType[]>([])
 
@@ -177,6 +185,7 @@ const fileChange = (info: UploadChangeParam) => {
 }
 
 const operateLimits = (mdata: DeviceMetadata) => {
+  hasVirtualRule.value = false
   const obj: DeviceMetadata = { ...mdata };
   const old = JSON.parse(instanceStore.detail?.metadata || '{}');
   const fid = instanceStore.detail?.features?.map(item => item.id);
@@ -190,6 +199,10 @@ const operateLimits = (mdata: DeviceMetadata) => {
     return { ...item, sortsIndex: index };
   });
   (obj?.properties || []).map((item, index) => {
+    if (item.expands?.source === 'rule') {
+      hasVirtualRule.value = true
+      item.expands = omit(item.expands, ['virtualRule'])
+    }
     return { ...item, sortsIndex: index };
   });
   (obj?.functions || []).map((item, index) => {
@@ -216,12 +229,12 @@ const handleImport = async () => {
           result = await modify(id as string, { id, metadata: JSON.stringify(metadata) }).catch(err => err)
         }
         if (result.success) {
-          message.success('导入成功')
+          onlyMessage('导入成功')
         }
         loading.value = false
       } else {
         loading.value = false
-        // message.error('物模型数据不正确!')
+        // onlyMessage('物模型数据不正确!', 'error')
         return
       }
       if (props?.type === 'device') {
@@ -239,16 +252,19 @@ const handleImport = async () => {
         if (
           !(!!_object?.properties || !!_object?.events || !!_object?.functions || !!_object?.tags)
         ) {
-          message.error('物模型数据不正确')
+          onlyMessage('物模型数据不正确', 'error')
           loading.value = false;
           return;
         }
         const { id } = route.params || {}
+        const copyOperateLimits = operateLimits(_object as DeviceMetadata)
+
         const params = {
           id,
-          metadata: JSON.stringify(operateLimits(_object as DeviceMetadata)),
+          metadata: JSON.stringify(copyOperateLimits),
         };
-        const paramsDevice = operateLimits(_object as DeviceMetadata)
+        const paramsDevice = copyOperateLimits
+
         let resp = undefined
         if (props?.type === 'device') {
           resp = await saveMetadata(id as string, paramsDevice)
@@ -257,7 +273,15 @@ const handleImport = async () => {
         }
         loading.value = false
         if (resp.success) {
-          message.success('导入成功')
+          onlyMessage('导入成功')
+          if (hasVirtualRule.value) {
+            setTimeout(() => {
+              Modal.info({
+                title: '导入数据存在虚拟属性，请及时添加虚拟属性计算规则。',
+                okText: '确认'
+              })
+            }, 300)
+          }
         }
         if (props?.type === 'device') {
           await instanceStore.refresh(id as string)
@@ -265,12 +289,10 @@ const handleImport = async () => {
           await productStore.getDetail(id as string)
         }
         metadataStore.set('importMetadata', true)
-        // Store.set(SystemConst.GET_METADATA, true)
-        // Store.set(SystemConst.REFRESH_METADATA_TABLE, true)
         close();
       } catch (e) {
         loading.value = false
-        message.error(e === 'error' ? '物模型数据不正确' : '上传json格式的物模型文件')
+        onlyMessage(e === 'error' ? '物模型数据不正确' : '上传json格式的物模型文件', 'error')
       }
     }
   })

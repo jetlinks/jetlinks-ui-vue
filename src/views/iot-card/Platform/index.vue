@@ -85,9 +85,8 @@
 </template>
 
 <script setup lang="ts">
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import type { ActionsType } from '@/components/Table';
-import { message } from 'jetlinks-ui-components';
 import { queryList, update, del } from '@/api/iot-card/platform';
 import { useMenuStore } from 'store/menu'
 const menuStory = useMenuStore()
@@ -150,7 +149,7 @@ const columns = [
 const statusUpdate = async (data: any) => {
     const res = await update(data);
     if (res.status === 200) {
-        message.success('操作成功');
+        onlyMessage('操作成功');
         platformRef.value?.reload();
     }
 };
@@ -222,10 +221,10 @@ const getActions = (
                 onConfirm: async () => {
                     const resp: any = await del(data.id);
                     if (resp.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         platformRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },

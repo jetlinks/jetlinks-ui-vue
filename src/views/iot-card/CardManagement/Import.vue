@@ -145,10 +145,10 @@ const getConfig = async () => {
         //     .then((resp: any) => {
         //         totalCount.value = resp.result.total;
         //         importStatus.value = true;
-        //         message.success('导入成功');
+        //         onlyMessage('导入成功');
         //     })
         //     .catch((err) => {
-        //         message.error(err.response.data.message || '导入失败');
+        //         onlyMessage(err.response.data.message || '导入失败', 'error');
         //     })
         //     .finally(() => {
         //         loading.value = false;

@@ -3,7 +3,7 @@
         <div class="role-container">
             <pro-search
                 :columns="columns"
-                target="category"
+                target="system-role"
                 @search="(params:any)=>queryParams = {...params}"
             />
             <FullPage>
@@ -14,15 +14,10 @@
                     model="TABLE"
                     :params="queryParams"
                     :defaultParams="{
-                        pageSize: 10,
                         sorts: [
                             { name: 'createTime', order: 'desc' },
                             { name: 'id', order: 'desc' },
                         ],
-                    }"
-                    :pagination="{
-                        showSizeChanger: true,
-                        pageSizeOptions: ['10', '20', '50', '100'],
                     }"
                 >
                     <template #headerTitle>
@@ -76,8 +71,8 @@
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import AddDialog from './components/AddDialog.vue';
 import { getRoleList_api, delRole_api } from '@/api/system/role';
-import { message } from 'jetlinks-ui-components';
 import { useMenuStore } from '@/store/menu';
+import { onlyMessage } from '@/utils/comm';
 
 const permission = 'system/Role';
 const { jumpPage } = useMenuStore();
@@ -129,7 +124,7 @@ const clickDel = (row: any) => {
     delRole_api(row.id).then((resp: any) => {
         if (resp.status === 200) {
             tableRef.value?.reload();
-            message.success('操作成功!');
+            onlyMessage('操作成功!');
         }
     });
 };

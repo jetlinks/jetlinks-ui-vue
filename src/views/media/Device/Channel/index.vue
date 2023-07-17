@@ -31,14 +31,9 @@
                         :columns="columns"
                         :request="(e:any) => ChannelApi.list(e, route?.query.id as string)"
                         :defaultParams="{
-                            pageSize: 10,
-                            sorts: [{ name: 'notifyTime', order: 'desc' }],
+                            sorts: [{ name: 'modifyTime', order: 'desc' }],
                         }"
                         :params="params"
-                        :pagination="{
-                            showSizeChanger: true,
-                            pageSizeOptions: ['10', '20', '50', '100'],
-                        }"
                     >
                         <template #headerTitle>
                             <j-tooltip
@@ -135,7 +130,7 @@
             :channelData="channelData"
             @submit="listRef.reload()"
         />
-        <Live v-model:visible="playerVis" :data="channelData" />
+        <Live v-model:visible="playerVis" :data="playData" />
     </page-container>
 </template>
 
@@ -143,12 +138,12 @@
 import ChannelApi from '@/api/media/channel';
 import type { ActionsType } from '@/views/device/Instance/typings';
 import { useMenuStore } from 'store/menu';
-import { message } from 'jetlinks-ui-components';
 import Save from './Save.vue';
 import Live from './Live/index.vue';
 import Tree from './Tree/index.vue';
 import { cloneDeep } from 'lodash-es';
 import { useElementSize } from '@vueuse/core';
+import { onlyMessage } from '@/utils/comm';
 
 const menuStory = useMenuStore();
 const route = useRoute();
@@ -158,6 +153,7 @@ const columns = [
         title: '通道ID',
         dataIndex: 'channelId',
         key: 'channelId',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -166,6 +162,7 @@ const columns = [
         title: '名称',
         dataIndex: 'name',
         key: 'name',
+        ellipsis: true,
         search: {
             type: 'string',
             first: true,
@@ -175,6 +172,7 @@ const columns = [
         title: '厂商',
         dataIndex: 'manufacturer',
         key: 'manufacturer',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -182,6 +180,7 @@ const columns = [
     {
         title: '安装地址',
         dataIndex: 'address',
+        ellipsis: true,
         key: 'address',
         search: {
             type: 'string',
@@ -192,6 +191,7 @@ const columns = [
         dataIndex: 'status',
         key: 'status',
         scopedSlots: true,
+        width: 150,
         search: {
             type: 'select',
             options: [
@@ -206,6 +206,7 @@ const columns = [
     {
         title: '操作',
         key: 'action',
+        width: 200,
         scopedSlots: true,
     },
 ];
@@ -222,12 +223,14 @@ const handleSearch = (e: any) => {
 
 const saveVis = ref(false);
 const handleAdd = () => {
+    channelData.value = undefined
     saveVis.value = true;
 };
 
 const listRef = ref();
 const playerVis = ref(false);
 const channelData = ref();
+const playData = ref();
 
 /**
  * 表格操作按钮
@@ -260,7 +263,7 @@ const getActions = (
             },
             icon: 'VideoCameraOutlined',
             onClick: () => {
-                channelData.value = cloneDeep(data);
+                playData.value = cloneDeep(data);
                 playerVis.value = true;
             },
         },
@@ -294,10 +297,10 @@ const getActions = (
                 onConfirm: async () => {
                     const resp = await ChannelApi.del(data.id);
                     if (resp.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         listRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },

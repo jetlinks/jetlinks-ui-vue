@@ -19,8 +19,19 @@ export const useUserInfo = defineStore('userInfo', {
             roles: [],
             token: '',
             user: {},
+            name: '',
+            orgList: [],
+            roleList: [],
+            telephone: '',
+            email: '',
+            avatar: ''
         },
-        alarmUpdateCount: 0
+        alarmUpdateCount: 0,
+        tabKey: 'HomeView', // 个人中心的tabKey,
+        messageInfo: {}, // 站内信的row
+        other: {
+            tabKey: '' // 站内信的tabkey
+        }
     }),
     
     actions: {

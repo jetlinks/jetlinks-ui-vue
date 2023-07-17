@@ -94,7 +94,7 @@
                                             <template #label>
                                                 通知Token
                                                 <j-tooltip
-                                                    title="自定义token,可用于验证请求是否来自OneNet"
+                                                    title="OneNet端HTTP推送配置中设置的Token"
                                                 >
                                                     <AIcon
                                                         type="QuestionCircleOutlined"

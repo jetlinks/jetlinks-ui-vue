@@ -1,4 +1,5 @@
 export interface IHeaders {
+    _key?: string;
     id?: number;
     key: string;
     value: string;

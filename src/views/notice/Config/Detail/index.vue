@@ -12,7 +12,7 @@
                             <j-select
                                 v-model:value="formData.type"
                                 placeholder="请选择通知方式"
-                                :disabled="!!formData.id"
+                                :disabled="_disabled"
                                 @change="handleTypeChange"
                             >
                                 <j-select-option
@@ -39,6 +39,7 @@
                                 :options="msgType"
                                 v-model="formData.provider"
                                 @change="handleProviderChange"
+                                :disabled="flag"
                             />
                         </j-form-item>
                         <!-- 钉钉 -->
@@ -197,7 +198,7 @@
                                     v-model:value="
                                         formData.configuration.sender
                                     "
-                                    placeholder="请输入发件人"
+                                    placeholder="username@domain.com"
                                 />
                             </j-form-item>
                             <j-form-item
@@ -287,7 +288,8 @@
                             </j-form-item>
                             <j-form-item label="请求头">
                                 <EditTable
-                                    v-model:headers="
+                                    ref="editTable"
+                                    :headers="
                                         formData.configuration.headers
                                     "
                                 />
@@ -322,9 +324,8 @@
 </template>
 
 <script setup lang="ts">
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import { Form } from 'jetlinks-ui-components';
-import { message } from 'jetlinks-ui-components';
 import type { ConfigFormData } from '../types';
 import {
     NOTICE_METHOD,
@@ -339,6 +340,8 @@ import Doc from './doc/index';
 const router = useRouter();
 const route = useRoute();
 const useForm = Form.useForm;
+const flag = ref<boolean>(false)
+const editTable = ref();
 
 // 消息类型
 const msgType = ref([
@@ -427,7 +430,12 @@ const formRules = ref({
     'configuration.host': [{ required: true, message: '请输入服务器地址', trigger: 'blur' }],
     'configuration.sender': [
         { required: true, message: '请输入发件人', trigger: 'blur' },
-        { max: 64, message: '最多可输入64个字符' },
+        // { max: 64, message: '最多可输入64个字符' },
+        {
+            pattern:
+                /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
+            message: '请输入正确的邮箱',
+        },
     ],
     'configuration.username': [
         { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -472,6 +480,10 @@ const handleTypeChange = () => {
         resetPublicFiles();
     }, 0);
 };
+
+const _disabled = computed(() => {
+    return !!formData.value?.id || route.query?.notifyType
+})
 
 /**
  * 通知类型改变
@@ -534,7 +546,35 @@ const resetPublicFiles = () => {
  */
 const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
-    validate()
+    if(formData.value.type === 'webhook') {
+        Promise.all([editTable.value.validate(),validate()]).then(async (result:any) => {
+            formData.value.configuration.headers = result[0]
+            btnLoading.value = true;
+            let res;
+            if (!formData.value.id) {
+                res = await configApi.save(formData.value);
+            } else {
+                res = await configApi.update(formData.value);
+            }
+            if (res?.success) {
+                onlyMessage('保存成功');
+                if (route.query?.notifyType) {
+                    // @ts-ignore
+                    window?.onTabSaveSuccess(res.result);
+                    setTimeout(() => window.close(), 300);
+                } else {
+                    router.back();
+                }
+            }
+        })
+        .catch((err:any) => {
+            console.log('err: ', err);
+        })
+        .finally(() => {
+            btnLoading.value = false;
+        }); 
+    }else{
+        validate()
         .then(async () => {
             btnLoading.value = true;
             let res;
@@ -544,15 +584,35 @@ const handleSubmit = () => {
                 res = await configApi.update(formData.value);
             }
             if (res?.success) {
-                message.success('保存成功');
-                router.back();
+                onlyMessage('保存成功');
+                if (route.query?.notifyType) {
+                    // @ts-ignore
+                    window?.onTabSaveSuccess(res.result);
+                    setTimeout(() => window.close(), 300);
+                } else {
+                    router.back();
+                }
             }
         })
-        .catch((err) => {
+        .catch((err:any) => {
             console.log('err: ', err);
         })
         .finally(() => {
             btnLoading.value = false;
         });
+    }  
 };
+
+watchEffect(() => {
+    if(route.query?.notifyType) {
+        formData.value.type = route.query.notifyType as string;
+        if(route.query.notifyType === 'dingTalk') {
+            formData.value.provider = 'dingTalkMessage';
+            flag.value = true
+        } else {
+            flag.value = false
+        }
+        handleTypeChange()
+    }
+})
 </script>

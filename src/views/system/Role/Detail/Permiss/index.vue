@@ -48,16 +48,17 @@
 </template>
 
 <script setup lang="ts" name="RolePermiss">
-import { FormInstance, message } from 'ant-design-vue';
+import { FormInstance } from 'ant-design-vue';
 import PermissTree from '../components/PermissTree.vue';
 import { useMenuStore } from '@/store/menu';
-import { USER_CENTER_MENU_DATA } from '@/views/init-home/data/baseMenu'
+// import { USER_CENTER_MENU_DATA } from '@/views/init-home/data/baseMenu'
 
 import {
     getRoleDetails_api,
     updateRole_api,
     updatePrimissTree_api,
 } from '@/api/system/role';
+import { onlyMessage } from '@/utils/comm';
 
 const { jumpPage } = useMenuStore();
 const route = useRoute();
@@ -72,7 +73,7 @@ const form = reactive({
         name: '',
         description: '',
     },
-    menus: [USER_CENTER_MENU_DATA],
+    menus: [], // USER_CENTER_MENU_DATA
     getForm: () => {
         getRoleDetails_api(roleId).then((resp) => {
             if (resp.status) {
@@ -86,9 +87,8 @@ const form = reactive({
             const updateTree = updatePrimissTree_api(roleId, {
                 menus: form.menus,
             });
-            // console.log(form.menus);
             Promise.all([updateRole, updateTree]).then((resp) => {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 // jumpPage(`system/Role`);
             });
         });

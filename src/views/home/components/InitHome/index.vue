@@ -3,35 +3,32 @@
         <div class="title">请选择首页视图</div>
 
         <div class="choose-view">
-            <j-row class="view-content" :gutter="24">
-                <j-col
+            <div class="view-content">
+                <div
                     :span="8"
                     class="select-item"
-                    :class="{ selected: selectValue === 'device' }"
                     @click="selectValue = 'device'"
                 >
-                    <img :src="getImage('/home/device.png')" alt="" />
-                </j-col>
-                <j-col
+                    <img :src="getImage(`/home/home-view/device${selectValue === 'device' ? '-active' : ''}.png`)" alt="" />
+                </div>
+                <div
                     :span="8"
                     class="select-item"
-                    :class="{ selected: selectValue === 'ops' }"
                     @click="selectValue = 'ops'"
                 >
-                    <img :src="getImage('/home/ops.png')" alt="" />
-                </j-col>
-                <j-col
+                    <img :src="getImage(`/home/home-view/ops${selectValue === 'ops' ? '-active' : ''}.png`)" alt="" />
+                </div>
+                <div
                     :span="8"
                     class="select-item"
-                    :class="{ selected: selectValue === 'comprehensive' }"
                     @click="selectValue = 'comprehensive'"
                 >
-                    <img :src="getImage('/home/comprehensive.png')" alt="" />
-                </j-col>
-            </j-row>
-            <j-button type="primary" class="btn" @click="confirm"
-                >确定</j-button
-            >
+                    <img :src="getImage(`/home/home-view/comprehensive${selectValue === 'comprehensive' ? '-active' : ''}.png`)" alt="" />
+                </div>
+            </div>
+            <div class="btn">
+                <j-button type="primary" @click="confirm">保存修改</j-button>
+            </div>
         </div>
     </div>
 </template>
@@ -84,25 +81,26 @@ watch(
 
     .choose-view {
         width: 100%;
+        padding: 0 9%;
+        box-sizing: border-box;
         .view-content {
             display: flex;
-            flex-flow: row wrap;
+            justify-content: space-between;
             .select-item {
-                border: 2px solid transparent;
+                cursor: pointer;
+                width: 30%;
+
                 img {
                     width: 100%;
-                }
-
-                &.selected {
-                    border-color: #10239e;
+                    background-size: cover;
                 }
             }
         }
 
         .btn {
-            display: block;
-            margin: 48px auto;
-            margin-bottom: 0;
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 68px;
         }
     }
 }

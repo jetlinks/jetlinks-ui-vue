@@ -112,7 +112,7 @@
                                     collapsible="header"
                                 >
                                     <j-collapse-panel
-                                        :key="cluster.id"
+                                        :key="index + 1"
                                         :show-arrow="!formData.shareCluster"
                                     >
                                         <template #header v-if="!shareCluster">
@@ -284,18 +284,24 @@
                                                                 .configuration
                                                                 .port
                                                         "
-                                                        :options="
-                                                            portOptionsIndex[
-                                                                index
-                                                            ]
-                                                        "
                                                         placeholder="请选择本地端口"
                                                         allowClear
                                                         show-search
                                                         :filter-option="
                                                             filterPortOption
                                                         "
-                                                    />
+                                                    >
+                                                      <j-select-option
+                                                          v-for="i in getPortList( portOptionsIndex[
+                                                                index
+                                                            ], cluster
+                                                                .configuration
+                                                                .port)"
+                                                        :value="i.value"
+                                                      >
+                                                        {{ i.label }}
+                                                      </j-select-option>
+                                                    </j-select>
                                                 </j-form-item>
                                             </j-col>
                                             <j-col
@@ -949,7 +955,7 @@
                                                     "
                                                 >
                                                     <j-form-item
-                                                        label="长度"
+                                                        label="字节长度"
                                                         :name="[
                                                             'cluster',
                                                             index,
@@ -1190,6 +1196,12 @@ const filterPortOption = (input: string, option: any) => {
     return JSON.stringify(option.label).indexOf(input) >= 0;
 };
 
+const getPortList = (list: any[], id: string) => {
+  const keys = dynamicValidateForm?.cluster?.map?.(item => item.configuration?.port) || []
+  console.log(dynamicValidateForm?.cluster, id, keys)
+  return (list || []).filter(item => item.value === id || !keys.includes(item.value) )
+}
+
 const filterConfigByType = (data: any[], type: string) => {
     let _temp = type;
     if (TCPList.includes(type)) {
@@ -1282,13 +1294,15 @@ const changeHost = (
     index: number,
     flag?: boolean
 ) => {
-    const { configuration } = dynamicValidateForm.cluster[index];
-    if(!flag){
-        configuration.port = undefined;
-    }
-    const checked = Store.get('resourcesClusters')?.[serverId || '']
-    if(checked){
-        getPortOptions(checked, index)
+    if(dynamicValidateForm.cluster?.[index]){
+        const { configuration } = dynamicValidateForm.cluster?.[index];
+        if(!flag){
+            configuration.port = undefined;
+        }
+        const checked = Store.get('resourcesClusters')?.[serverId || '']
+        if(checked){
+            getPortOptions(checked, index)
+        }
     }
 };
 

@@ -27,7 +27,7 @@ const handleOk = () => {
 };
 
 const cancel = () => {
-  departmentStore.setProductId()
+//   departmentStore.setProductId()
   emits('update:visible',false)
 }
 

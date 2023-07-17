@@ -1,0 +1,1 @@
+export { default as ReadType } from './ReadType.vue'

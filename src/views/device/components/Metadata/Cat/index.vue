@@ -18,7 +18,7 @@
       <j-tabs @change="handleConvertMetadata" destroy-inactive-tab-pane>
         <j-tab-pane v-for="item in codecs" :key="item.id" :tab="item.name">
           <div class="cat-panel">
-            <JMonacoEditor v-model="value" theme="vs" style="height: 100%" lang="javascript"></JMonacoEditor>
+            <JMonacoEditor v-model="monacoValue" lang="javascript" style="height: 100%" theme="vs"></JMonacoEditor>
           </div>
         </j-tab-pane>
       </j-tabs>
@@ -26,13 +26,15 @@
   </j-drawer>
 </template>
 <script setup lang="ts" name="Cat">
-import { message } from 'ant-design-vue/es';
 import { downloadObject } from '@/utils/utils'
 import { useInstanceStore } from '@/store/instance';
 import { useProductStore } from '@/store/product';
 import type { Key } from 'ant-design-vue/es/_util/type';
 import { convertMetadata, getCodecs, detail as productDetail } from '@/api/device/product';
 import { detail } from '@/api/device/instance'
+import { onlyMessage } from '@/utils/comm';
+import {cloneDeep} from "lodash";
+import {omit} from "lodash-es";
 
 interface Props {
   visible: boolean;
@@ -70,10 +72,12 @@ const metadata = computed(() => {
 })
 // const metadata = metadataMap[props.type];
 const value = ref(metadata.value)
+const monacoValue = ref()
+
 const handleExport = async () => {
   try {
     downloadObject(
-      JSON.parse(value.value),
+      JSON.parse(monacoValue.value),
       `${props.type === 'device'
         ? instanceStore.current?.name
         : productStore.current?.name
@@ -81,13 +85,14 @@ const handleExport = async () => {
       'YYYY/MM/DD',
     );
   } catch (e) {
-    message.error('请先配置物模型');
+    onlyMessage('请先配置物模型', 'error');
   }
 }
 
 const handleConvertMetadata = (key: Key) => {
   if (key === 'alink') {
     value.value = '';
+    monacoValue.value = '';
     if (metadata) {
       convertMetadata('to', 'alink', JSON.parse(metadata.value)).then(res => {
         if (res.status === 200) {
@@ -97,6 +102,7 @@ const handleConvertMetadata = (key: Key) => {
     }
   } else {
     value.value = metadata.value;
+    hideVirtualRule(metadata.value)
   }
 };
 
@@ -113,6 +119,7 @@ const routeChange = async (id: string) => {
         instanceStore.setCurrent(resp.result);
         const _metadata = resp.result?.metadata;
         value.value = _metadata;
+        hideVirtualRule(_metadata)
       }
     });
   }
@@ -123,6 +130,19 @@ const routeChange = async (id: string) => {
 //   (id) => routeChange(id as string),
 //   { immediate: true }
 // )
+
+const hideVirtualRule = (metadata: string) => {
+  const _metadata = JSON.parse(metadata)
+  if (_metadata.properties) {
+    _metadata.properties = _metadata.properties.map((item: any) => {
+      if (item.expands.virtualRule) {
+        item.expands = cloneDeep(omit(item.expands, ['virtualRule']))
+      }
+      return item
+    })
+  }
+  monacoValue.value = JSON.stringify(_metadata)
+}
 
 onMounted(() => {
   routeChange(route.params.id as string)
@@ -139,18 +159,24 @@ watch(
           loading.value = false
           instanceStore.setCurrent(resp.result)
           value.value = resp.result.metadata
+          hideVirtualRule(resp.result.metadata)
         });
       } else {
         productDetail(id as string).then((resp) => {
           loading.value = false
           productStore.setCurrent(resp.result)
           value.value = resp.result.metadata
+          hideVirtualRule(resp.result.metadata)
         });
       }
     }
   },
   { immediate: true }
 )
+
+watch(() => metadata.value, () => {
+  hideVirtualRule(metadata.value)
+}, { immediate: true})
 </script>
 <style scoped lang="less">
 .cat-content {

@@ -74,7 +74,7 @@
                     >
                         <template #description>
                             <template v-if="!isPermission"
-                                >暂无权限, 请联系管理员</template
+                                >暂无数据, 请联系管理员</template
                             >
                             <template v-else>
                                 暂无数据，请先
@@ -167,9 +167,8 @@
 </template>
 
 <script setup lang="ts">
-import { message } from 'jetlinks-ui-components';
 import DeviceApi from '@/api/media/device';
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import { gatewayType } from '@/views/media/Device/typings';
 import { providerType } from '../const';
 import { usePermissionStore } from '@/store/permission';
@@ -183,6 +182,7 @@ type Emits = {
     (e: 'update:productId', data: string): void;
     (e: 'close'): void;
     (e: 'save', data: Record<string, any>): void;
+    (e: 'update:password',data:string):void
 };
 const emit = defineEmits<Emits>();
 
@@ -289,14 +289,16 @@ const handleOk = () => {
         .then(async () => {
             btnLoading.value = true;
             const res = await DeviceApi.saveProduct(formData.value);
+            console.log(res)
             if (res.success) {
                 emit('update:productId', res.result.id);
+                emit('update:password', res.result.configuration.access_pwd)
                 const deployResp = await DeviceApi.deployProductById(
                     res.result.id,
                 );
                 if (deployResp.success) {
                     emit('save', { ...res.result });
-                    message.success('操作成功');
+                    onlyMessage('操作成功');
                     handleCancel();
                 }
             }
@@ -321,7 +323,7 @@ const handleAdd = () => {
     );
     tab.onTabSaveSuccess = async (value: any) => {
         await getGatewayList();
-        handleClick(value?.result);
+        handleClick(gatewayList.value?.[0]);
     };
 };
 </script>

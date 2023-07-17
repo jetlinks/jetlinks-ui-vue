@@ -3,7 +3,7 @@
         <div>
             <pro-search
                 :columns="columns"
-                target="search"
+                target="search-stream"
                 @search="handleSearch"
             />
             <FullPage>

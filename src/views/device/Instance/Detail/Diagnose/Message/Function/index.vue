@@ -104,7 +104,7 @@
                         modelRef.type === 'INVOKE_FUNCTION' && modelRef.function && modelRef.inputs.length
                     "
                 >
-                    <j-form-item
+                    <!-- <j-form-item
                         name="inputs"
                         label="参数列表"
                         :rules="{
@@ -113,7 +113,9 @@
                         }"
                     >
                         <EditTable v-model="modelRef.inputs" />
-                    </j-form-item>
+                    </j-form-item> -->
+                    <div>参数列表</div>
+                    <EditTable v-model="modelRef.inputs" ref="inputsRef" />
                 </j-col>
             </j-row>
         </j-form>
@@ -142,6 +144,8 @@ type Emits = {
 };
 const emit = defineEmits<Emits>();
 
+const inputsRef = ref<any>(null);
+
 const modelRef = reactive({
     type: undefined,
     properties: undefined,
@@ -165,25 +169,31 @@ const funcChange = (val: string) => {
                 name: item.name,
                 value: undefined,
                 valueType: item?.valueType?.type,
+                required: item?.expands?.required
             };
         });
         modelRef.inputs = list;
     }
 };
 
-const saveBtn = () => {
+const saveBtn = async () => {
+    const _inputs = await inputsRef.value.onSave();
+    console.log(_inputs)
+    if(!_inputs){
+        return 
+    }
     formRef.value.validate().then(async () => {
         const values = toRaw(modelRef);
         let _inputs: any[] = [];
         if (modelRef.inputs.length) {
-            _inputs = modelRef.inputs.filter((i: any) => !i.value);
+            _inputs = modelRef.inputs.filter((i: any) => !i.value && i?.required);
             if (_inputs.length) {
                 return;
             }
         }
 
         if (values.type === 'INVOKE_FUNCTION') {
-            const list = (modelRef.inputs || []).filter((it: any) => !!it.value);
+            const list = (modelRef?.inputs || [])?.filter((it: any) => !!it.value);
             const obj = {};
             list.map((it: any) => {
                 obj[it.id] = it.value;

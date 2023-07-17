@@ -325,9 +325,8 @@
 <script setup lang="ts" name="Basis">
 import { formType, uploaderType } from './typing';
 import { getImage } from '@/utils/comm.ts';
-import { message } from 'jetlinks-ui-components';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
-import { LocalStore } from '@/utils/comm';
+import { LocalStore, onlyMessage } from '@/utils/comm';
 
 import { save_api } from '@/api/system/basis';
 import { usePermissionStore } from '@/store/permission';
@@ -353,7 +352,7 @@ const form = reactive<formType>({
         title: [
             {
                 required: true,
-                message: '名称必填',
+                message: '请输入系统名称',
             },
             {
                 max: 64,
@@ -426,7 +425,7 @@ const form = reactive<formType>({
                 save_api(params)
                     .then(async (resp) => {
                         if (resp.status === 200) {
-                            message.success('保存成功');
+                            onlyMessage('保存成功');
                             await system.getSystemConfig()
                             await form.getDetails();
                         }
@@ -434,7 +433,7 @@ const form = reactive<formType>({
                     .finally(() => (form.saveLoading = false));
             });
         } else {
-            message.warning('暂无权限，请联系管理员');
+            onlyMessage('暂无权限，请联系管理员', 'warning');
         }
     },
 });
@@ -459,11 +458,11 @@ const uploader: uploaderType = {
             uploader.imageTypes
                 .map((m: string) => m.split('.')[1])
                 .filter((typeStr) => file.type.includes(typeStr)).length > 0;
-        const sizeBool = file.size / 1024 / 1024 < 4;
+        const sizeBool = file.size / 1024 / 1024 < 2;
         if (!typeBool) {
-            message.error(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`);
+            onlyMessage(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`, 'error');
         } else if (!sizeBool) {
-            message.error(`图片大小必须小于4M`);
+            onlyMessage(`图片大小必须小于2M`, 'error');
         }
         return typeBool && sizeBool;
     },
@@ -472,9 +471,9 @@ const uploader: uploaderType = {
         const typeBool = file.type.includes('x-icon');
         const sizeBool = file.size / 1024 / 1024 < 1;
         if (!typeBool) {
-            message.error(`请上传ico格式的图片`);
+            onlyMessage(`请上传ico格式的图片`, 'error');
         } else if (!sizeBool) {
-            message.error(`图片大小必须小于${1}M`);
+            onlyMessage(`图片大小必须小于${1}M`, 'error');
         }
         return typeBool && sizeBool;
     },
@@ -489,7 +488,7 @@ const uploader: uploaderType = {
             form.formValue.logo = info.file.response?.result;
         } else if (info.file.status === 'error') {
             form.logoLoading = false;
-            message.error('系统logo上传失败，请稍后再试');
+            onlyMessage('系统logo上传失败，请稍后再试', 'error');
         }
     },
     // 背景上传改变事件
@@ -502,7 +501,7 @@ const uploader: uploaderType = {
             form.formValue.backgroud = info.file.response?.result;
         } else if (info.file.status === 'error') {
             form.logoLoading = false;
-            message.error('背景图上传失败，请稍后再试');
+            onlyMessage('背景图上传失败，请稍后再试', 'error');
         }
     },
     // 浏览器页签上传改变事件
@@ -515,7 +514,7 @@ const uploader: uploaderType = {
             form.formValue.ico = info.file.response?.result;
         } else if (info.file.status === 'error') {
             form.logoLoading = false;
-            message.error('浏览器页签上传失败，请稍后再试');
+            onlyMessage('浏览器页签上传失败，请稍后再试', 'error');
         }
     },
 };

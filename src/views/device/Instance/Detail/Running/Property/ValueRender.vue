@@ -86,7 +86,9 @@
             "
             :class="valueClass"
         >
-            {{ JSON.stringify(value?.formatValue) }}
+            <div style='width: 100%; white-space: normal;'>
+                <j-ellipsis>{{ JSON.stringify(value?.formatValue) }}</j-ellipsis>
+            </div>
         </div>
         <div v-else :class="valueClass">
           <div style='width: 100%;white-space: normal;'>
@@ -105,8 +107,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getImage } from '@/utils/comm';
-import { message } from 'jetlinks-ui-components';
+import { getImage, onlyMessage } from '@/utils/comm';
 import ValueDetail from './ValueDetail.vue';
 import { getType, imgMap, imgList, videoList, fileList } from './index';
 
@@ -149,9 +150,9 @@ const getDetail = (_type: string) => {
     let flag: string = '';
     if (_type === 'img') {
         if (isHttps && value?.formatValue.indexOf('http:') !== -1) {
-            message.error('域名为https时，不支持访问http地址');
+            onlyMessage('域名为https时，不支持访问http地址', 'error');
         } else if (temp.value) {
-            message.error('该图片无法访问');
+            onlyMessage('该图片无法访问', 'error');
         } else {
             flag =
                 ['.jpg', '.png'].find((item) =>
@@ -162,11 +163,11 @@ const getDetail = (_type: string) => {
         }
     } else if (_type === 'video') {
         if (isHttps && value?.formatValue.indexOf('http:') !== -1) {
-            message.error('域名为https时，不支持访问http地址');
+            onlyMessage('域名为https时，不支持访问http地址', 'error');
         } else if (
             ['.rmvb', '.mvb'].some((item) => value?.formatValue.includes(item))
         ) {
-            message.error('当前仅支持播放.mp4,.flv,.m3u8格式的视频');
+            onlyMessage('当前仅支持播放.mp4,.flv,.m3u8格式的视频', 'error');
         } else {
             flag =
                 ['.m3u8', '.flv', '.mp4'].find((item) =>

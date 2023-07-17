@@ -48,6 +48,7 @@
                         <NotifyTemplate
                             v-model:value="formModel.templateId"
                             v-model:detail="template"
+                            :notifyType="formModel.notifyType"
                             :notifierId="formModel.notifierId"
                             @change="(val) => onValChange(val, 'templateId')"
                         />
@@ -60,7 +61,7 @@
                             :value="formModel.variables"
                             :notify="formModel"
                             :template="template"
-                            :options='options'
+                            :options='formModel.options'
                             @change="(val) => onValChange(val, 'variables')"
                             ref="variableRef"
                         />
@@ -148,11 +149,19 @@ const onValChange = (val: any, type: string) => {
         formModel.templateId = '';
         formModel.variables = [];
         formModel.notifierId = '';
+        formModel.options = {}
     } else if (type === 'notifierId') {
         formModel.templateId = '';
         formModel.variables = [];
+        formModel.options = {
+            ...val
+        }
     } else if (type === 'templateId') {
         formModel.variables = [];
+        formModel.options = {
+            provider: formModel?.options?.provider || '',
+            ...val
+        }
     }
     formModel.options = {
         ...unref(formModel.options),
@@ -203,6 +212,7 @@ const next = async () => {
 const onCancel = () => {
     emit('cancel');
 };
+
 const onOk = async () => {
     let _data = null
     if(variable.value.length){

@@ -47,7 +47,8 @@ const formTouchOff = () => {
  */
 const checkDeviceDelete = async () => {
   const item = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device
-  const proResp = await queryProductList({ terms: [{ terms: [{ column: 'id', termType: 'eq', value: item!.productId }]}]})
+  const proResp = await queryProductList({ terms: [{ column: 'id', termType: 'eq', value: item!.productId }]})
+
   if (proResp.success && (proResp.result as any)?.total === 0 && item && item.productId) { // 产品已删除
     _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.productId = undefined
     formTouchOff()
@@ -56,6 +57,7 @@ const checkDeviceDelete = async () => {
 
   const productDetail = proResp?.result?.data?.[0]
   let metadata = JSON.parse(productDetail?.metadata || '{}')
+
   if (item?.selector === 'fixed') {
     let hasDevice = false
     if (item!.selectorValues) {
@@ -65,7 +67,7 @@ const checkDeviceDelete = async () => {
 
       if (item!.selectorValues!.length === 1 && hasDevice) {
         const deviceDetail = deviceResp?.result?.data?.[0]
-        metadata = JSON.parse(deviceDetail?.metadata || '{}') // 只选中一个设备，以设备物模型为准
+        metadata = JSON.parse(deviceDetail?.deriveMetadata || '{}') // 只选中一个设备，以设备物模型为准
       }
     }
     if (!hasDevice) { // 某一个设备被删除
@@ -136,9 +138,11 @@ const checkDeviceDelete = async () => {
     }
   }
 
-  if (item!.message!.messageType === 'READ_PROPERTY') {
+
+  if (item!.message!.messageType === 'READ_PROPERTY' && item!.message!.properties && metadata.properties) {
     let hasProperties = false
-    if (item!.message!.properties && metadata.properties.length) {
+    console.log('checkDeviceDelete',item!.message!.properties, metadata)
+    if (item!.message!.properties && metadata.properties?.length) {
       const propertiesKey = item!.message!.properties?.[0]
       hasProperties = metadata.properties?.some((item: any) => item.id === propertiesKey)
     }
@@ -150,11 +154,11 @@ const checkDeviceDelete = async () => {
     }
 
   }
-
-  if (item!.message!.messageType === 'WRITE_PROPERTY') {
+  console.log('WRITE_PROPERTY',item, metadata)
+  if (item!.message!.messageType === 'WRITE_PROPERTY' && item!.message!.properties && metadata.properties) {
     let hasProperties = false
     const propertiesKey = Object.keys(item!.message!.properties!)?.[0]
-    if (item!.message!.properties && metadata.properties.length) {
+    if (item!.message!.properties && metadata.properties?.length) {
       hasProperties = metadata.properties?.some((item: any) => item.id === propertiesKey)
     }
     if (!hasProperties) {
@@ -165,6 +169,7 @@ const checkDeviceDelete = async () => {
     }
     // 判断值-内置参数
     const _value = item!.message!.properties?.[propertiesKey]
+    console.log('WRITE_PROPERTY',_value)
     if(_value.source === 'upper') {
       const _params = {
         branch: props.thenName,
@@ -181,7 +186,7 @@ const checkDeviceDelete = async () => {
     }
   }
 
-  if (item!.message!.messageType === 'INVOKE_FUNCTION') {
+  if (item!.message!.messageType === 'INVOKE_FUNCTION' && item!.message!.functionId && metadata.functions) {
     const functionId = item!.message!.functionId
     let hasFunctions = false
     if (functionId && metadata.functions.length) {
@@ -315,6 +320,7 @@ const checkNoticeDelete = async () => {
 
 const check = () => {
   const _executor = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.executor
+  console.log('check', _executor)
   if (_executor === 'device' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.device) { // 设备输出，并且有值
     checkDeviceDelete()
   } else if (_executor === 'notify' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.notify) {

@@ -430,6 +430,9 @@ const selectChange = () => {
                     xData.push(item.data.timeString);
                     sData.push(item.data.value);
                 });
+            const maxY = sData.sort((a,b)=>{
+                return b-a
+            })[0]
             alarmStatisticsOption.value = {
                 xAxis: {
                     type: 'category',
@@ -448,7 +451,7 @@ const selectChange = () => {
                 grid: {
                     top: '2%',
                     bottom: '5%',
-                    left: '24px',
+                    left:  maxY > 10000 ? '50px' : '40px',
                     right: '48px',
                 },
                 series: [

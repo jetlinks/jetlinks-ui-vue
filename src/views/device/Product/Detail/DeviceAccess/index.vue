@@ -130,7 +130,7 @@
                         <j-select
                             placeholder="请选择"
                             v-if="item.type.type === 'enum'"
-                            v-model:value="formData.data[item.name]"
+                            v-model:value="formData.data[item.property]"
                         >
                             <j-select-option
                                 v-for="el in item?.type?.type === 'enum' &&
@@ -274,7 +274,7 @@
 <script lang="ts" setup name='AccessConfig'>
 import { useProductStore } from '@/store/product';
 import { ConfigMetadata } from '@/views/device/Product/typings';
-import { Empty, message } from 'jetlinks-ui-components';
+import { Empty } from 'jetlinks-ui-components';
 import Title from '../Title/index.vue';
 import { usePermissionStore } from '@/store/permission';
 import { steps, steps1 } from './util';
@@ -306,6 +306,7 @@ import AccessModal from './accessModal.vue'
 import MetaDataModal from './metadataModal.vue'
 import { getPluginData, getProductByPluginId, savePluginData } from '@/api/link/plugin'
 import { detail as queryPluginAccessDetail } from '@/api/link/accessConfig'
+import { onlyMessage } from '@/utils/comm';
 
 const productStore = useProductStore();
 const tableRef = ref();
@@ -345,6 +346,10 @@ const form = reactive<Record<string, any>>({
 const formData = reactive<Record<string, any>>({
     data: productStore.current?.configuration || {},
 });
+const fun = () =>{
+    console.log(formData.data,productStore.current?.configuration)
+}
+fun()
 // 产品类型
 const productTypes = ref([])
 const productData = reactive({
@@ -661,10 +666,10 @@ const getData = async (accessId?: string) => {
                         item.name === '流传输模式' &&
                         (!productStore.current?.configuration ||
                             !productStore.current?.configuration.hasOwnProperty(
-                                item.name,
+                                item.property,
                             ))
                     ) {
-                        formData.data[item.name] =
+                        formData.data[item.property] =
                             item.type.expands?.defaultValue;
                     }
                 });
@@ -799,7 +804,7 @@ const updateAccessData = async (id: string, values: any) => {
   });
   submitLoading.value = false
   if (resp.status === 200) {
-    message.success('操作成功！');
+    onlyMessage('操作成功！');
     productStore.current!.storePolicy = storePolicy;
     if ((window as any).onTabSaveSuccess) {
       if (resp.result) {

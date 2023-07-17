@@ -58,7 +58,8 @@
                     placeholder="请输入采集频率"
                     v-model:value="formData.configuration.interval"
                     addon-after="ms"
-                    :max="9999999999999998"
+                    :max="2147483648"
+                    :min="0"
                 />
             </j-form-item>
             <j-form-item label="" :name="['features']">

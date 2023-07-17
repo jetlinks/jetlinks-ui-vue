@@ -122,7 +122,7 @@ import {
 } from '@/api/device/instance';
 import MSelect from '../MSelect.vue';
 import PatchMapping from './PatchMapping.vue';
-import { message } from 'ant-design-vue/es';
+import { onlyMessage } from '@/utils/comm';
 
 const columns = [
     {
@@ -246,7 +246,7 @@ const unbind = async (id: string) => {
             id,
         ]);
         if (resp.status === 200) {
-            message.success('操作成功！');
+            onlyMessage('操作成功！');
             handleSearch();
         }
     }
@@ -275,7 +275,7 @@ const onSave = () => {
                     arr,
                 );
                 if (resp.status === 200) {
-                    message.success('操作成功！');
+                    onlyMessage('操作成功！');
                     handleSearch();
                 }
             }

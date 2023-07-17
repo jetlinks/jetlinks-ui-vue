@@ -13,7 +13,7 @@
                 <j-row type="flex">
                     <j-col flex="180px">
                         <j-form-item name="photoUrl">
-                            <JProUpload accept="image/jpeg,image/png" v-model="modelRef.photoUrl" />
+                            <JProUpload accept="image/jpeg,image/png" v-model="modelRef.photoUrl" :size="4"/>
                         </j-form-item>
                     </j-col>
                     <j-col flex="auto">
@@ -156,8 +156,7 @@
 <script lang="ts" setup>
 import { queryNoPagingPost } from '@/api/device/product';
 import { isExists, update } from '@/api/device/instance';
-import { getImage } from '@/utils/comm';
-import { message } from 'jetlinks-ui-components';
+import { getImage, onlyMessage } from '@/utils/comm';
 import SaveProduct from '@/views/media/Device/Save/SaveProduct.vue';
 
 const emit = defineEmits(['close', 'save']);
@@ -185,7 +184,7 @@ const vailId = async (_: Record<string, any>, value: string) => {
     if (!props?.data?.id && value) {
         const resp = await isExists(value);
         if (resp.status === 200 && resp.result) {
-            return Promise.reject('ID重复');
+            return Promise.reject('该ID已存在');
         } else {
             return Promise.resolve();
         }
@@ -253,7 +252,7 @@ const handleSave = () => {
                 loading.value = false;
             });
             if (resp.status === 200) {
-                message.success('操作成功！');
+                onlyMessage('操作成功！');
                 emit('save');
                 formRef.value.resetFields();
             }

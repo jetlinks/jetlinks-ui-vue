@@ -117,8 +117,8 @@ import {
     testCode,
     saveProductCode,
 } from '@/api/device/instance';
-import { message } from 'jetlinks-ui-components';
 import { isBoolean } from 'lodash';
+import { onlyMessage } from '@/utils/comm';
 
 const defaultValue =
     '//解码函数\r\nfunction decode(context) {\r\n    //原始报文\r\n    var buffer = context.payload();\r\n    // 转为json\r\n    // var json = context.json();\r\n    //mqtt 时通过此方法获取topic\r\n    // var topic = context.topic();\r\n\r\n    // 提取变量\r\n    // var topicVars = context.pathVars("/{deviceId}/**",topic)\r\n    //温度属性\r\n    var temperature = buffer.getShort(3) * 10;\r\n    //湿度属性\r\n    var humidity = buffer.getShort(6) * 10;\r\n    return {\r\n        "temperature": temperature,\r\n        "humidity": humidity\r\n    };\r\n}\r\n';
@@ -202,7 +202,7 @@ const save = async () => {
     };
     const res = await saveProductCode(productStore.current.id, item);
     if (res.status === 200) {
-        message.success('保存成功');
+        onlyMessage('保存成功');
         getProductCode();
     }
 };
@@ -223,7 +223,7 @@ const debug = () => {
             });
             isTest.value = true;
         } else {
-            message.error('请输入topic');
+            onlyMessage('请输入topic', 'error');
         }
     } else {
         if (url.value !== '') {
@@ -240,7 +240,7 @@ const debug = () => {
             });
             isTest.value = true;
         } else {
-            message.error('请输入url');
+            onlyMessage('请输入url', 'error');
         }
     }
 };

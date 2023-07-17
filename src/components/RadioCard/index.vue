@@ -11,11 +11,8 @@
                 layout === 'horizontal'
                     ? 'm-radio-checked-item'
                     : 'm-radio-item',
-                { active: myValue === item.value },
                 checkStyle && myValue === item.value ? 'checked' : '',
-                disabled && myValue === item.value
-                    ? 'active-checked-disabled'
-                    : '',
+                { active: myValue === item.value },
                 item.disabled ? 'disabled' : '',
             ]"
             v-for="(item, index) in options"
@@ -100,9 +97,12 @@ const handleRadio = (item: any) => {
     flex-wrap: wrap;
     justify-content: space-between;
     .disabled {
-        color: rgba(0, 0, 0, 0.25);
-        border-color: #f5f5f5;
-        cursor: not-allowed;
+        >div {
+          color: rgba(0, 0, 0, 0.25);
+          border-color: #f5f5f5;
+          cursor: not-allowed;
+        }
+
     }
     &-item {
         width: 49%;
@@ -152,14 +152,14 @@ const handleRadio = (item: any) => {
     }
 }
 
-.disabled {
-    color: rgba(0, 0, 0, 0.25) !important;
-    cursor: not-allowed;
-}
-.active-checked-disabled {
-    color: rgba(0, 0, 0, 0.25) !important;
-    border: 1px #d9d9d9 solid !important;
-}
+//.disabled {
+//    color: rgba(0, 0, 0, 0.25) !important;
+//    cursor: not-allowed;
+//}
+//.active-checked-disabled {
+//    color: rgba(0, 0, 0, 0.25) !important;
+//    border: 1px #d9d9d9 solid !important;
+//}
 .checked-icon-disabled {
     color: rgba(0, 0, 0, 0.25) !important;
     border-color: #e6e6e6 !important;
@@ -169,17 +169,25 @@ const handleRadio = (item: any) => {
 
 .m-radio {
     display: flex;
+    gap: 16px;
+
+    &.disabled {
+      >div {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+    }
+
     &-item {
         width: 140px;
         height: 140px;
-        padding: 10px 15px;
-        margin-right: 15px;
+        padding: 10px 16px;
         border: 1px solid #d9d9d9;
         border-radius: 2px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 5px;
+        gap: 6px;
         cursor: pointer;
         .img {
             width: 100px;
@@ -189,6 +197,8 @@ const handleRadio = (item: any) => {
             color: #1d39c4;
             border-color: #1d39c4;
         }
+
     }
+
 }
 </style>

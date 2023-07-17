@@ -32,7 +32,6 @@
                 selectedRowKeys: _selectedRowKeys,
                 onChange: onSelectChange,
             }"
-            @cancelSelect="cancelSelect"
             :params="params"
             :model="'TABLE'"
         >
@@ -106,20 +105,20 @@
                 </j-space>
             </template>
         </JProTable>
-        <BindChildDevice v-if="visible" @change="closeBindDevice" />
+        <BindChildDevice v-if="visible" :parentIds="parentIds" @change="closeBindDevice" />
     </div>
 </template>
 
 <script setup lang="ts">
 import moment from 'moment';
 import type { ActionsType } from '@/components/Table';
-import { query, unbindDevice, unbindBatchDevice } from '@/api/device/instance';
+import {query, unbindDevice, unbindBatchDevice, queryByParent} from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import { storeToRefs } from 'pinia';
-import { message } from 'ant-design-vue';
 import BindChildDevice from './BindChildDevice/index.vue';
 import { usePermissionStore } from '@/store/permission';
 import SaveChild from './SaveChild/index.vue';
+import { onlyMessage } from '@/utils/comm';
 
 const instanceStore = useInstanceStore();
 const { detail } = storeToRefs(instanceStore);
@@ -139,6 +138,7 @@ const params = ref<Record<string, any>>({});
 const _selectedRowKeys = ref<string[]>([]);
 const visible = ref<boolean>(false);
 const _current = ref({});
+const parentIds = ref<any[]>([instanceStore.detail.id])
 
 const columns = [
     {
@@ -242,7 +242,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                     );
                     if (resp.status === 200) {
                         childDeviceRef.value?.reload();
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                     }
                 },
             },
@@ -281,12 +281,12 @@ const handleUnBind = async () => {
             _selectedRowKeys.value,
         );
         if (resp.status === 200) {
-            message.success('操作成功！');
+            onlyMessage('操作成功！');
             cancelSelect();
             childDeviceRef.value?.reload();
         }
     } else {
-        message.warning('请勾选需要解绑的数据');
+        onlyMessage('请勾选需要解绑的数据', 'warning');
     }
 };
 
@@ -297,6 +297,13 @@ const closeBindDevice = (val: boolean) => {
     }
 };
 
+// const getChildren = async () => {
+//   const { id} = instanceStore.detail
+//   const data = await queryByParent(id)
+//   if (data.success) {
+//     parentIds.value.concat(data.result)
+//   }
+// }
 const closeChildSave = () => {
     childVisible.value = false;
 };

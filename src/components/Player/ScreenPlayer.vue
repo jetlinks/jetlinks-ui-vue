@@ -123,7 +123,7 @@
                             @click="playerActive = index"
                         >
                             <div
-                                class="media-btn-refresh"
+                                class="media-btn-refresh refreshBtn"
                                 :style="{
                                     display: item.url ? 'block' : 'none',
                                 }"
@@ -149,9 +149,9 @@ import {
     getSearchHistory,
     saveSearchHistory,
 } from '@/api/comm';
-import { message } from 'jetlinks-ui-components';
 import LivePlayer from '@/components/Player/index.vue';
 import MediaTool from '@/components/Player/mediaTool.vue';
+import { onlyMessage } from '@/utils/comm';
 
 type Player = {
     id?: string;
@@ -347,10 +347,10 @@ const saveHistory = async () => {
             if (res.success) {
                 visible.value = false;
                 getHistory();
-                message.success('保存成功');
+                onlyMessage('保存成功');
                 formRef.value.resetFields();
             } else {
-                message.error('保存失败');
+                onlyMessage('保存失败', 'error');
             }
         })
         .catch((err: any) => {
@@ -458,4 +458,16 @@ defineExpose({
 
 <style lang="less" scoped>
 @import './index.less';
+:deep(.live-player-stretch-btn){
+  display: none;
+}
+:deep(.vjs-icon-spinner){
+  display: none;
+}
+.refreshBtn{
+   opacity: 0;
+}
+.refreshBtn:hover{
+    opacity: 1;
+}
 </style>

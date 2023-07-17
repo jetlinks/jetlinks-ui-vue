@@ -77,12 +77,13 @@ import type { TermsType } from '@/views/rule-engine/Scene/typings'
 import DropdownButton from '../DropdownButton'
 import { getOption } from '../DropdownButton/util'
 import ParamsDropdown, { DoubleParamsDropdown } from '../ParamsDropdown'
-import { inject } from 'vue'
+import {inject, watch} from 'vue'
 import { ContextKey, arrayParamsKey, timeTypeKeys } from './util'
 import { useSceneStore } from 'store/scene'
 import { storeToRefs } from 'pinia';
 import { Form } from 'jetlinks-ui-components'
 import { isArray, isObject, pick } from 'lodash-es'
+import {cloneDeep} from "lodash";
 
 const sceneStore = useSceneStore()
 const { data: formModel } = storeToRefs(sceneStore)
@@ -205,27 +206,25 @@ const handOptionByColumn = (option: any) => {
   }
 }
 
-watch(() => [columnOptions.value, paramsValue.column], () => {
+watch(() => JSON.stringify(columnOptions.value), () => {
   if (paramsValue.column) {
     const option = getOption(columnOptions.value, paramsValue.column, 'column')
+    const copyValue = props.value
     if (option && Object.keys(option).length) {
       handOptionByColumn(option)
-      if (props.value.error) {
-        emit('update:value', {
-          ...props.value,
-          error: false
-        })
+      if (copyValue.error) {
+        copyValue.error = false
+        emit('update:value', copyValue)
         formItemContext.onFieldChange()
       }
     } else {
-      emit('update:value', {
-        ...props.value,
-        error: true
-      })
+      copyValue.error = true
+      emit('update:value', copyValue)
       formItemContext.onFieldChange()
     }
+
   }
-}, { immediate: true, deep: true })
+}, { immediate: true })
 
 const showDouble = computed(() => {
   const isRange = paramsValue.termType ? arrayParamsKey.includes(paramsValue.termType) : false
@@ -263,11 +262,11 @@ const columnSelect = (option: any) => {
   let termTypeChange = false
   // 如果参数类型未发生变化，则不修改操作符以及值
   const termTypes = option.termTypes
+
   if (!termTypes.some((item: {id: string}) => paramsValue.termType === item.id)) { // 修改操作符
     termTypeChange = true
     paramsValue.termType = termTypes?.length ? termTypes[0].id : 'eq'
   }
-
   if (hasTypeChange) { // 类型发生变化
     paramsValue.termType = termTypes?.length ? termTypes[0].id : 'eq'
     paramsValue.value = {
@@ -292,7 +291,9 @@ const columnSelect = (option: any) => {
   }
   handOptionByColumn(option)
   emit('update:value', { ...paramsValue })
-  formItemContext.onFieldChange()
+  nextTick(() => {
+    formItemContext.onFieldChange()
+  })
   formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][0] = option.name
   formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][1] = paramsValue.termType
 }
@@ -339,7 +340,6 @@ const valueSelect = (v: any, label: string, labelObj: Record<number, any>, optio
   if (paramsValue.value?.source !== 'metric') {
     delete newValues.value.metric
   }
-
   emit('update:value', { ...newValues })
   formItemContext.onFieldChange()
   formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][2] = labelObj

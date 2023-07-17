@@ -2,10 +2,16 @@ import { saveProductMetadata } from "@/api/device/product";
 import { saveMetadata } from "@/api/device/instance";
 import type { DeviceInstance } from "../../Instance/typings";
 import type { DeviceMetadata, MetadataItem, MetadataType, ProductItem } from "../../Product/typings";
+import { differenceBy } from "lodash-es";
 
+const filterProductMetadata = (data: any[], productMetaData: any[]) => {
+  const ids = productMetaData.map((item: any) => item.id)
+  const idsSet = new Set(ids)
+  return data.filter((a) => !idsSet.has(a.id))
+}
 /**
  * 更新物模型
- * @param type 物模型类型 events
+ * @param type 物模型类型 "events" | "functions" | "properties" | "tags"
  * @param item 物模型数据 【{a},{b},{c}】
  // * @param target product、device
  * @param data product 、device [{event:[1,2,3]]
@@ -21,23 +27,30 @@ import type { DeviceMetadata, MetadataItem, MetadataType, ProductItem } from "..
 ): ProductItem | DeviceInstance => {
   if (!data) return data;
   const metadata = JSON.parse(data.metadata || '{}') as DeviceMetadata;
-  const config = (metadata[type] || []) as MetadataItem[];
-  if (item.length > 0) {
-    item.forEach((i) => {
-      const index = config.findIndex((c) => c.id === i.id);
-      if (index > -1) {
-        config[index] = i;
-        // onEvent?.('update', i);
-      } else {
-        config.push(i);
-        // onEvent?.('add', i);
-      }
-    });
-  } else {
-    console.warn('未触发物模型修改');
-  }
-  // @ts-ignore
-  metadata[type] = config.sort((a, b) => b?.sortsIndex - a?.sortsIndex);
+  // let productMetaData
+
+  // if ((data as DeviceInstance).productMetadata) {
+  //   productMetaData = JSON.parse((data as DeviceInstance).productMetadata)
+  // }
+  //
+  // if (productMetaData) {
+  //   if (productMetaData.properties && productMetaData.properties.length) {
+  //     metadata.properties = filterProductMetadata(item, productMetaData.properties)
+  //   }
+  //   if (productMetaData.functions && productMetaData.functions.length) {
+  //     metadata.functions = filterProductMetadata(item, productMetaData.functions)
+  //   }
+  //   if (productMetaData.events && productMetaData.events.length) {
+  //     metadata.events = filterProductMetadata(item, productMetaData.events)
+  //   }
+  //   if (productMetaData.tags && productMetaData.tags.length) {
+  //     metadata.tags = filterProductMetadata(item, productMetaData.tags)
+  //   }
+  // } else {
+  //   metadata[type] = item as any
+  // }
+  // console.log(metadata, type)
+  metadata[type] = (item || []).sort((a, b) => b?.sortsIndex - a?.sortsIndex) as any[]
   data.metadata = JSON.stringify(metadata);
   onEvent?.(data.metadata)
   return data;

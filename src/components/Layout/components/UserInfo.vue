@@ -1,13 +1,14 @@
 <template>
     <div>
         <j-dropdown placement="bottomRight">
-            <div style="cursor: pointer;height: 100%;">
-                <img
-                    :src="userInfo.avatar"
+            <div style="cursor: pointer;height: 100%;white-space: nowrap;overflow: hidden;text-overflow:ellipsis; max-width: 170px;" >
+                <j-avatar
+                    :src="userInfo.userInfos?.avatar"
                     alt=""
-                    style="width: 24px; margin-right: 12px"
+                    :size="24"
+                    style="margin-right: 12px"
                 />
-                <span>{{ userInfo.name }}</span>
+                    <span>{{ userInfo.userInfos?.name }}</span>
             </div>
             <template #overlay>
                 <j-menu>
@@ -32,8 +33,7 @@ import { LoginPath } from '@/router/menu'
 
 const {push} = useRouter();
 
-const userInfo = useUserInfo().$state.userInfos as any;
-
+const userInfo = useUserInfo() as any;
 
 const logOut = () => {
     loginout_api().then(() => {
@@ -43,4 +43,5 @@ const logOut = () => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>

@@ -99,7 +99,7 @@ export const templateDownload = (productId: string, type: string) => server.get(
  * @param type 文件类型
  * @returns 
  */
-export const deviceImport = (productId: string, fileUrl: string, autoDeploy: boolean) => `${BASE_API_PATH}/device-instance/${productId}/import?fileUrl=${fileUrl}&autoDeploy=${autoDeploy}&:X_Access_Token=${LocalStore.get(TOKEN_KEY)}`
+export const deviceImport = (productId: string, fileUrl: string, autoDeploy: boolean) => `${BASE_API_PATH}/device-instance/${productId}/import/_withlog?fileUrl=${fileUrl}&autoDeploy=${autoDeploy}&:X_Access_Token=${LocalStore.get(TOKEN_KEY)}`
 
 /**
  * 设备导出
@@ -251,6 +251,17 @@ export const unbindBatchDevice = (deviceId: string, data: Record<string, any>) =
  * @returns 
  */
 export const bindDevice = (deviceId: string, data: Record<string, any>) => server.post(`/device/gateway/${deviceId}/bind`, data)
+
+
+/**
+ * 查询是否存在云端映射设备
+ */
+export const queryDeviceMapping = (deviceId: string, data?: any) => server.post(`/edge/operations/${deviceId}/device-mapping-list/invoke`, data)
+
+/**
+ * 批量保存云端映射设备
+ */
+export const saveDeviceMapping = (deviceId: string, data: any) => server.post(`/edge/operations/${deviceId}/device-mapping-save-batch/invoke`, data)
 
 /**
  * 获取产品列表
@@ -576,14 +587,23 @@ export const getDeviceNumber = (data?:any) => server.post<number>('/device-insta
 /**
  * 导入映射设备
  * @param productId
- * @param data
+ * @param data/
  */
 export const importDeviceByPlugin = (productId: string, data: any[]) => server.post(`/device/instance/plugin/${productId}/import`, data)
 
-export const metadateMapById = (productId: string, data: ant[]) => server.patch(`/device/metadata/mapping/product/${productId}`, data)
+export const metadataMapById = (type: 'device' | 'product', productId: string, data: any[]) => server.patch(`/device/metadata/mapping/${type}/${productId}`, data)
 
-export const getMetadateMapById = (productId: string) => server.get(`/device/metadata/mapping/product/${productId}`)
+export const getMetadataMapById = (type: 'device' | 'product', productId: string) => server.get(`/device/metadata/mapping/${type}/${productId}`)
 
 export const getInkingDevices = (data: string[]) => server.post('/plugin/mapping/device/_all', data)
 
+export const getProtocolMetadata = (id: string, transport: string) => server.get(`/protocol/${id}/${transport}/metadata`)
 
+/**
+ * 规则属性
+ */
+export const saveDeviceVirtualProperty = (productId: string, deviceId: string, data: any[]) => server.patch(`/virtual/property/product/${productId}/${deviceId}/_batch`, data)
+
+export const queryDeviceVirtualProperty = (productId: string, deviceId: string, propertyId: string) => server.get(`/virtual/property/device/${productId}/${deviceId}/${propertyId}`)
+
+export const queryByParent = (deviceId: string) => server.get(`/device/gateway/${deviceId}/parent`)

@@ -30,9 +30,21 @@
     </j-space>
     <div style="margin-top: 20px" v-if="importLoading">
         <j-badge v-if="flag" status="processing" text="进行中" />
-        <j-badge v-else status="success" text="已完成" />
-        <span>总数量：{{ count }}</span>
-        <p style="color: red">{{ errMessage }}</p>
+        <div v-else>
+            <div>
+                <j-space size="large">
+                    <j-badge status="success" text="已完成" />
+                    <span>总数量：{{ count }}</span>
+                </j-space>
+            </div>
+            <div>
+                <j-space size="large">
+                    <j-badge status="error" text="失败&emsp;" />
+                    <span>总数量：{{ failCount }}</span>
+                    <a :href="detailFile" v-if="failCount">下载</a>
+                </j-space>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -46,7 +58,6 @@ import {
     templateDownload,
 } from '@/api/device/instance';
 import { EventSourcePolyfill } from 'event-source-polyfill';
-import { message } from 'jetlinks-ui-components';
 
 type Emits = {
     (e: 'update:modelValue', data: string[]): void;
@@ -86,7 +97,9 @@ const props = defineProps({
 const importLoading = ref<boolean>(false);
 const flag = ref<boolean>(false);
 const count = ref<number>(0);
+const failCount = ref(0);
 const errMessage = ref<string>('');
+const detailFile = ref('');
 
 const downFile = async (type: string) => {
     const res: any = await templateDownload(props.product, type);
@@ -113,6 +126,7 @@ const beforeUpload = (_file: any) => {
 const submitData = async (fileUrl: string) => {
     if (!!fileUrl) {
         count.value = 0;
+        failCount.value = 0;
         errMessage.value = '';
         flag.value = true;
         const autoDeploy = !!props?.file?.autoDeploy || false;
@@ -127,8 +141,11 @@ const submitData = async (fileUrl: string) => {
                 const temp = res.result.total;
                 dt += temp;
                 count.value = dt;
-            } else {
+            } else if(!res.success && !res.detailFile) {
+                failCount.value++;
                 errMessage.value = res.message || '失败';
+            } else if(res.detailFile) {
+                detailFile.value = res.detailFile;
             }
         };
         source.onerror = (e: { status: number }) => {
@@ -138,7 +155,7 @@ const submitData = async (fileUrl: string) => {
         };
         source.onopen = () => {};
     } else {
-        message.error('请先上传文件');
+        onlyMessage('请先上传文件', 'error');
     }
 };
 

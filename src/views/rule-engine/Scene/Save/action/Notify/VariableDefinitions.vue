@@ -98,7 +98,7 @@ watchEffect(() => {
 });
 
 watchEffect(() => {
-    if(props?.template?.template?.sendTo) {
+    if(props?.template?.template?.sendTo && Array.isArray(props?.template?.template?.sendTo) && props?.template?.template?.sendTo?.length) {
         emit('change', { sendTo: props?.template?.template?.sendTo?.join(' ') });
     }
 });

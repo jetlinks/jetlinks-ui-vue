@@ -1,5 +1,5 @@
 <template>
-    <j-spin :spinning="loading" v-if="metadata.properties.length">
+    <j-spin :spinning="loading" v-if="metadata.properties?.length">
         <j-card :bordered="false" style="padding: 0">
             <template #extra>
                 <j-space>
@@ -22,6 +22,10 @@
                         </template>
                     </template>
                     <template #bodyCell="{ column, record, index }">
+                        <template v-if="column.dataIndex === 'metadataName'">
+                            <span v-if="record.metadataName">{{ record.metadataName }}</span>
+                            <span v-else style="color: red;">{{ record.metadataId }}</span>
+                        </template>
                         <template v-if="column.dataIndex === 'channelId'">
                             <j-form-item
                                 :name="['dataSource', index, 'channelId']"
@@ -90,12 +94,12 @@
                                 <j-badge
                                     v-if="record.state.value === 'enabled'"
                                     status="success"
-                                    text="在线"
+                                    text="启用"
                                 />
                                 <j-badge
                                     v-else
                                     status="warning"
-                                    text="离线"
+                                    text="禁用"
                                 />
                             </template>
                             <j-badge v-else status="error" text="未绑定" />
@@ -184,7 +188,7 @@
             v-if="visible"
             @close="visible = false"
             @save="onPatchBind"
-            :metaData="modelRef.dataSource"
+            :metaData="metadata.properties"
             :edgeId="instanceStore.current.parentId"
         />
     </j-spin>
@@ -193,7 +197,7 @@
     </j-card>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="EdgeMap">
 import { useInstanceStore } from '@/store/instance';
 import {
     getEdgeMap,
@@ -249,7 +253,7 @@ const permissionStore = usePermissionStore();
 
 const isPermission = permissionStore.hasPermission('device/Instance:update');
 
-const current = ref<number>(0);
+const current = ref<number>(1);
 const pageSize = ref<number>(10);
 
 const instanceStore = useInstanceStore();
@@ -259,7 +263,7 @@ const channelList = ref<any[]>([]);
 
 const _properties = computed(() => {
     const _cur = current.value >= 1 ? current.value : 1;
-    return metadata.properties.slice((_cur - 1) * 10, _cur * 10);
+    return metadata.properties?.slice((_cur - 1) * 10, _cur * 10) || [];
 });
 
 const modelRef = reactive<{
@@ -304,17 +308,22 @@ const handleSearch = async (_array: any[]) => {
             loading.value = false;
         });
         if (resp.status === 200) {
-            const array = resp.result?.[0].reduce((x: any, y: any) => {
-                const metadataId = _metadata.find(
-                    (item: any) => item.metadataId === y.metadataId,
-                );
-                if (metadataId) {
-                    Object.assign(metadataId, y);
-                } else {
-                    x.push(y);
-                }
-                return x;
-            }, _metadata);
+            const array = _metadata.map((item: any) => {
+              const metadataId = resp.result?.[0].find((x: any) => x.metadataId === item.metadataId);
+              Object.assign(item, metadataId);
+              return item
+            })
+            // const array = resp.result?.[0].reduce((x: any, y: any) => {
+            //     const metadataId = _metadata.find(
+            //         (item: any) => item.metadataId === y.metadataId,
+            //     );
+            //     if (metadataId) {
+            //         Object.assign(metadataId, y);
+            //     } else {
+            //         x.push(y);
+            //     }
+            //     return x;
+            // }, _metadata);
             modelRef.dataSource = array;
         }
     }
@@ -428,14 +437,14 @@ const onRefresh = async () => {
         });
         if (resp.status === 200) {
             const arr = cloneDeep(modelRef.dataSource);
-            const array = resp.result?.[0].map((x: any) => {
-                const _item = arr.find(
+            const array = arr.map((x: any) => {
+                const _item = resp.result?.[0].find(
                     (item: any) => item.metadataId === x.metadataId,
                 );
                 if (_item) {
                     return {
-                        ..._item,
                         ...x,
+                        ..._item,
                     };
                 } else {
                     return x;

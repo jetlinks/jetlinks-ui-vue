@@ -145,3 +145,41 @@ export const ArrayToTree = (list: any[]): any[] => {
   // 返回出去
   return treeList;
 };
+
+export const EventEmitter = {
+  list: {},
+  subscribe: function(events: string[], fn: Function) {
+    const list = this.list
+    events.forEach(event => {
+      (list[event] || (list[event] = [])).push(fn)
+    })
+    return this
+  },
+  emit: function(events:string, data?: any) {
+    const list = this.list
+    const fns: Function[] = list[events] ? [...list[events]] : []
+
+    if (!fns.length) return false;
+
+    fns.forEach(fn => {
+      fn(data)
+    })
+
+    return this
+  },
+  unSubscribe: function(events:string[], fn: Function) {
+    const list = this.list
+    events.forEach(key => {
+      if (key in list) {
+        const fns = list[key]
+        for (let i = 0; i < fns.length; i++) {
+          if (fns[i] === fn) {
+            fns.splice(i, 1)
+            break;
+          }
+        }
+      }
+    })
+    return this
+  }
+}
