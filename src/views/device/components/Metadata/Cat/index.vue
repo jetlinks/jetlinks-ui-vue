@@ -132,7 +132,7 @@ const routeChange = async (id: string) => {
 // )
 
 const hideVirtualRule = (metadata: string) => {
-  const _metadata = JSON.parse(metadata)
+  const _metadata = JSON.parse(metadata || '{}')
   if (_metadata.properties) {
     _metadata.properties = _metadata.properties.map((item: any) => {
       if (item.expands.virtualRule) {
