@@ -2,7 +2,7 @@
     <div class="card j-table-card-box">
         <div
             class="card-warp"
-            :class="{ active: active ? 'active' : '' }"
+            :class="{ active: active ? 'active' : '', 'disabled': disabled }"
             @click="handleClick"
         >
             <div class="card-type" v-if="slots.type">
@@ -140,6 +140,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    disabled: {
+        type: Boolean,
+        default: false,
+    }
 });
 
 const getBackgroundColor = (code: string | number) => {
@@ -160,6 +164,7 @@ const handleClick = () => {
 .card {
     width: 100%;
     background-color: #fff;
+    
     .checked-icon {
         position: absolute;
         right: -22px;
@@ -190,14 +195,18 @@ const handleClick = () => {
         position: relative;
         border: 1px solid #e6e6e6;
         overflow: hidden;
+        cursor: pointer;
 
         &:hover {
-            cursor: pointer;
             box-shadow: 0 0 24px rgba(#000, 0.1);
-
             .card-mask {
                 visibility: visible;
             }
+        }
+
+        &.disabled {
+            filter: grayscale(100%);
+            cursor: not-allowed;
         }
 
         &.active {

@@ -10,7 +10,11 @@
         @cancel="_vis = false"
         :confirmLoading="loading"
     >
-        <pro-search :columns="columns" target="media" @search="handleSearch" />
+        <pro-search
+            :columns="columns"
+            target="media-bind"
+            @search="handleSearch"
+        />
 
         <JProTable
             ref="listRef"
@@ -18,8 +22,7 @@
             :columns="columns"
             :request="CascadeApi.queryChannelList"
             :defaultParams="{
-                pageSize: 10,
-                sorts: [{ name: 'name', order: 'desc' }],
+                sorts: [{ name: 'deviceName', order: 'asc' }, { name: 'name', order: 'asc' }],
                 terms: [
                     {
                         column: 'id',
@@ -38,12 +41,9 @@
             :params="params"
             :rowSelection="{
                 selectedRowKeys: _selectedRowKeys,
-                onChange: onSelectChange,
-            }"
-            @cancelSelect="_selectedRowKeys = []"
-            :pagination="{
-                showSizeChanger: true,
-                pageSizeOptions: ['10', '20', '50', '100'],
+                onSelectNone: onSelectNone,
+                onSelect: onSelect,
+                onSelectAll: onAllSelect,
             }"
         >
             <template #headerTitle>
@@ -67,7 +67,7 @@
 
 <script setup lang="ts">
 import CascadeApi from '@/api/media/cascade';
-import { message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
 import { PropType } from 'vue';
 
 const route = useRoute();
@@ -104,6 +104,7 @@ const columns = [
         title: '设备名称',
         dataIndex: 'deviceName',
         key: 'deviceName',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -112,6 +113,7 @@ const columns = [
         title: '通道名称',
         dataIndex: 'name',
         key: 'name',
+        ellipsis: true,
         search: {
             type: 'string',
             first: true,
@@ -121,6 +123,7 @@ const columns = [
         title: '安装地址',
         dataIndex: 'address',
         key: 'address',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -129,6 +132,7 @@ const columns = [
         title: '厂商',
         dataIndex: 'manufacturer',
         key: 'manufacturer',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -138,6 +142,7 @@ const columns = [
         dataIndex: 'status',
         key: 'status',
         scopedSlots: true,
+        width: 150,
         search: {
             type: 'select',
             options: [
@@ -164,14 +169,37 @@ const handleSearch = (e: any) => {
 const listRef = ref();
 const _selectedRowKeys = ref<string[]>([]);
 
-const onSelectChange = (keys: string[]) => {
-    _selectedRowKeys.value = [...keys];
+const onSelectNone = () => {
+    _selectedRowKeys.value = [];
+};
+
+const onSelect = (record: any, selected: boolean) => {
+    const _set = new Set([..._selectedRowKeys.value])
+    if (selected) {
+        _set.add(record.id)
+    } else {
+        _set.delete(record.id)
+    }
+    _selectedRowKeys.value = [..._set]
+};
+
+const onAllSelect = (selected: boolean, _: any, keys: any[]) => {
+    const _keys = keys.map(item => item.id) || []
+    const _set = new Set([..._selectedRowKeys.value])
+    _keys.map((i: any) => {
+        if(selected) {
+            _set.add(i)
+        } else {
+            _set.delete(i)
+        }
+    });
+    _selectedRowKeys.value = [..._set]
 };
 
 const loading = ref(false);
 const handleSave = async () => {
     if (!_selectedRowKeys.value.length) {
-        message.error('请勾选数据');
+        onlyMessage('请勾选数据', 'error');
         return;
     }
     loading.value = true;
@@ -181,11 +209,11 @@ const handleSave = async () => {
     );
     loading.value = false;
     if (resp.success) {
-        message.success('操作成功！');
+        onlyMessage('操作成功！');
         _vis.value = false;
         emit('submit');
     } else {
-        message.error('操作失败！');
+        onlyMessage('操作失败！', 'error');
     }
 };
 </script>

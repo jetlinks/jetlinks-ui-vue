@@ -134,6 +134,9 @@ export const postStream = function(url: string, data = {}, params = {}) {
 const showNotification = (message: string, description: string, key?: string, show: boolean = true) => {
   if (show) {
     Notification.error({
+      style: {
+        zIndex: 1040
+      },
       key,
       message: '',
       description

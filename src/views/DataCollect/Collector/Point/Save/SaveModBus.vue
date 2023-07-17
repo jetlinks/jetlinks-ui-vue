@@ -44,6 +44,7 @@
             <j-form-item
                 label="地址"
                 :name="['pointKey']"
+                validateFirst
                 :rules="[
                     ...ModBusRules.pointKey,
                     {
@@ -57,7 +58,7 @@
                     placeholder="请输入地址"
                     v-model:value="formData.pointKey"
                     :min="0"
-                    :max="999999999"
+                    :max="999999"
                     :precision="0"
                 />
             </j-form-item>
@@ -131,7 +132,7 @@
                     style="width: 100%"
                     placeholder="请输入小数保留位数"
                     :min="0"
-                    :max="255"
+                    :max="65535"
                     :precision="0"
                     v-model:value="
                         formData.configuration.codec.configuration.scale
@@ -220,7 +221,8 @@
                     placeholder="请输入采集频率"
                     v-model:value="formData.configuration.interval"
                     addon-after="ms"
-                    :max="9999999999999998"
+                    :max="2147483648"
+                    :min="0"
                 />
             </j-form-item>
 
@@ -378,8 +380,7 @@ const changeWriteByteCount = (value: Array<string>) => {
     formData.value.configuration.parameter.writeByteCount = value[0];
 };
 const changeFunction = (value: string) => {
-    formData.value.accessModes =
-        value === 'InputRegisters' ? ['read'] : ['read', 'write'];
+    formData.value.accessModes = ['InputRegisters', 'DiscreteInputs'].includes(value) ? ['read'] : ['read', 'write'];
 };
 
 const checkProvider = (_rule: Rule, value: string): Promise<any> =>

@@ -6,25 +6,23 @@
             @search="handleParams"
             style='margin-bottom: 0;'
         />
-        <FullPage>
+      <FullPage :extraHeight="24">
             <j-pro-table
                 ref="tableRef"
                 :columns="columns"
                 :request="table.requestFun"
                 :params="queryParams"
+                :scroll="{
+                    x:true,
+                    y:610,
+                }"
                 :rowSelection="{
                     selectedRowKeys: table._selectedRowKeys,
-                    onChange: table.onSelectChange,
+                    onSelect: table.onSelectChange,
+                    onSelectAll: selectAll,
+                    onSelectNone: () => table._selectedRowKeys = []
                 }"
-                @cancelSelect="table.cancelSelect"
                 model="TABLE"
-                :defaultParams="{
-                    pageSize: 10,
-                }"
-                :pagination="{
-                    showSizeChanger: true,
-                    pageSizeOptions: ['10', '20', '50', '100'],
-                }"
             >
                 <template #headerTitle>
                     <PermissionButton
@@ -91,7 +89,7 @@
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import AddBindUserDialog from './components/AddBindUserDialog.vue';
 import { getBindUserList_api, unBindUser_api } from '@/api/system/department';
-import { message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
 
 const permission = 'system/Department';
 
@@ -164,7 +162,6 @@ const table = reactive({
     _selectedRowKeys: [] as string[],
 
     requestFun: async (oParams: any) => {
-        table.cancelSelect();
         if (props.parentId) {
             const params = {
                 ...oParams,
@@ -203,18 +200,23 @@ const table = reactive({
     },
     unBind: (row?: any) => {
         const ids = row ? [row.id] : table._selectedRowKeys;
-        if (ids.length < 1) return message.warning('请勾选需要解绑的数据');
+        if (ids.length < 1) return onlyMessage('请勾选需要解绑的数据', 'warning');
 
         unBindUser_api(props.parentId, ids).then(() => {
-            message.success('操作成功');
+            onlyMessage('操作成功');
+            table._selectedRowKeys = []
             table.refresh();
         });
     },
-    onSelectChange: (keys: string[]) => {
-        table._selectedRowKeys = keys;
-    },
-    cancelSelect: () => {
-        table._selectedRowKeys = [];
+    onSelectChange: (row:any,selected:Boolean) => {
+        const arr = new Set(table._selectedRowKeys);
+        console.log(row)
+        if(selected){
+            arr.add(row.id)
+        }else{
+            arr.delete(row.id)
+        }
+        table._selectedRowKeys = [...arr.values()]
     },
     // 刷新列表
     refresh: () => {
@@ -224,10 +226,29 @@ const table = reactive({
 
 const dialogVisible = ref(false);
 
+const selectAll = (selected: Boolean, selectedRows: any,changeRows:any) => {
+    if (selected) {
+            changeRows.map((i: any) => {
+                if (!table._selectedRowKeys.includes(i.id)) {
+                    table._selectedRowKeys.push(i.id)
+                }
+            })
+        } else {
+            const arr = changeRows.map((item: any) => item.id)
+            const _ids: string[] = [];
+            table._selectedRowKeys.map((i: any) => {
+                if (!arr.includes(i)) {   
+                    _ids.push(i)
+                }
+            })
+            table._selectedRowKeys = _ids;
+        }     
+}
 watch(
     () => props.parentId,
     () => {
         table.refresh();
+        table._selectedRowKeys = []
     },
 );
 </script>

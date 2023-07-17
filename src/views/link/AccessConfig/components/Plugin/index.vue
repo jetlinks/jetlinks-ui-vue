@@ -43,19 +43,19 @@
                 <template #other>
                   <div class='plugin-other'>
                     <div class='plugin-id'>
-                      插件ID：
+                      <div class="plugin-text">插件ID：</div>
                       <div class='other-content'>
-                        <Ellipsis >
+                        <j-ellipsis>
                           {{ item.id }}
-                        </Ellipsis>
+                        </j-ellipsis>
                       </div>
                     </div>
                     <div class='plugin-version'>
-                      版本号：
+                     <div class="plugin-text"> 版本号：</div>
                       <div class='other-content'>
-                        <Ellipsis >
+                        <j-ellipsis>
                           {{ item.version }}
-                        </Ellipsis>
+                        </j-ellipsis>
                       </div>
                     </div>
                   </div>
@@ -420,15 +420,19 @@ queryPlugin()
     color: rgba(0, 0, 0, 0.85);
     opacity: .45;
     display: flex;
+
+    .plugin-text {
+      white-space: nowrap;
+    }
   }
 
   .plugin-id {
     width: 50%;
-    .other-content {
-      display: flex;
-      width: 0;
-      flex-grow: 1;
-    }
+    // .other-content {
+    //   display: flex;
+    //   width: 0;
+    //   flex-grow: 1;
+    // }
   }
 }
 

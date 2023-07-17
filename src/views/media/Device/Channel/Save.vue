@@ -8,6 +8,7 @@
         okText="确定"
         @ok="handleSubmit"
         @cancel="handleCancel"
+        :confirmLoading="loading"
     >
         <j-form ref="formRef" :model="formData" layout="vertical">
             <j-row :gutter="10">
@@ -167,8 +168,8 @@
 <script setup lang="ts">
 import ChannelApi from '@/api/media/channel';
 import { PropType } from 'vue';
-import { message } from 'jetlinks-ui-components';
 import type { Rule } from 'ant-design-vue/es/form';
+import { onlyMessage } from '@/utils/comm';
 
 const route = useRoute();
 
@@ -208,6 +209,7 @@ const formData = ref({
     media_username: '',
 });
 
+const loading = ref<boolean>(false)
 watch(
     () => props.channelData,
     (val: any) => {
@@ -279,17 +281,17 @@ const validateUrl = async (_rule: Rule, value: string) => {
 /**
  * 提交
  */
-const btnLoading = ref<boolean>(false);
 const handleSubmit = () => {
     formRef.value
         .validate()
         .then(async () => {
+            loading.value = true;
             const {
                 media_url,
                 media_password,
                 media_username,
                 manufacturer,
-                ptzType,
+                // ptzType,
                 ...extraFormData
             } = formData.value;
             if (media_url || media_password || media_username) {
@@ -299,20 +301,21 @@ const handleSubmit = () => {
                     media_username,
                 };
             }
-            btnLoading.value = true;
             const res = formData.value.id
-                ? await ChannelApi.update(formData.value.id, extraFormData)
-                : await ChannelApi.save(extraFormData);
-            btnLoading.value = false;
+                ? await ChannelApi.update(formData.value.id, extraFormData).finally(() => {loading.value = false;})
+                : await ChannelApi.save(extraFormData).finally(() => {loading.value = false;});
             if (res.success) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 _vis.value = false;
+                loading.value = false;
                 emit('submit');
             } else {
-                message.error('操作失败');
+                loading.value = false;
+                onlyMessage('操作失败', 'error');
             }
         })
         .catch((err: any) => {
+            loading.value = false;
             console.log('err: ', err);
         });
 };

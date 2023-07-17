@@ -1,6 +1,6 @@
 <template>
     <page-container>
-        <pro-search :columns="columns" target="search" @search="handleSearch" />
+        <pro-search :columns="columns" target="search-firmware-task" @search="handleSearch" />
         <j-pro-table
             ref="tableRef"
             model="TABLE"
@@ -8,7 +8,6 @@
             :request="task"
             :defaultParams="{
                 sorts: [{ name: 'createTime', order: 'desc' }],
-                terms: defaultParams,
             }"
             :params="params"
         >
@@ -125,7 +124,7 @@ const columns = [
     },
 ];
 
-const defaultParams = [
+const defaultParams =
     {
         terms: [
             {
@@ -133,8 +132,8 @@ const defaultParams = [
                 value: route.query.id,
             },
         ],
-    },
-];
+}
+
 
 const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
     if (!data) {
@@ -233,7 +232,10 @@ const saveChange = (value: boolean) => {
  * @param params
  */
 const handleSearch = (e: any) => {
-    params.value = e;
+      const query = {"terms":[
+        e,defaultParams
+      ]}
+      params.value = query
 };
 </script>
 

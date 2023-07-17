@@ -156,19 +156,26 @@
                                     </j-radio-button>
                                 </j-radio-group>
                             </j-form-item>
-                            <j-form-item label="设备厂商">
+                            <j-form-item label="设备厂商"  
+                                name="manufacturer"
+                                :rules="[{ max: 64, message: '最多可输入64位字符', trigger: 'change' }]">
                                 <j-input
                                     v-model:value="formData.manufacturer"
                                     placeholder="请输入设备厂商"
+                                   
                                 />
                             </j-form-item>
-                            <j-form-item label="设备型号">
+                            <j-form-item label="设备型号" 
+                                name="model"
+                                :rules="[{ max: 64, message: '最多可输入64位字符', trigger: 'change' }]">
                                 <j-input
                                     v-model:value="formData.model"
                                     placeholder="请输入设备型号"
                                 />
                             </j-form-item>
-                            <j-form-item label="固件版本">
+                            <j-form-item label="固件版本"
+                                name="firmware"
+                                :rules="[{ max: 64, message: '最多可输入64位字符', trigger: 'change' }]">
                                 <j-input
                                     v-model:value="formData.firmware"
                                     placeholder="请输入固件版本"
@@ -290,6 +297,7 @@
         <SaveProduct
             v-model:visible="saveProductVis"
             v-model:productId="formData.productId"
+            v-model:password="formData.others.access_pwd"
             :channel="formData.channel"
             @close="getProductList"
         />
@@ -297,8 +305,7 @@
 </template>
 
 <script setup lang="ts">
-import { getImage } from '@/utils/comm';
-import { message } from 'jetlinks-ui-components';
+import { getImage, onlyMessage } from '@/utils/comm';
 import DeviceApi from '@/api/media/device';
 import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
 import type { ProductType } from '@/views/media/Device/typings';
@@ -396,9 +403,11 @@ const handleSubmit = () => {
             : { id, streamMode, manufacturer, model, firmware, ...extraParams };
     } else {
         // 国标
-        params = !id
-            ? { others, id, ...extraParams }
-            : {
+        const getParmas = () =>{
+                if(others?.stream_mode){
+                    others.stream_mode = streamMode
+                }
+                return{
                   others,
                   id,
                   streamMode,
@@ -407,6 +416,10 @@ const handleSubmit = () => {
                   firmware,
                   ...extraParams,
               };
+            }
+        params = !id
+            ? { others, id, ...extraParams }
+            : getParmas()
     }
 
     formRef.value
@@ -417,7 +430,7 @@ const handleSubmit = () => {
                 ? await DeviceApi.save(params)
                 : await DeviceApi.update(params);
             if (res?.success) {
-                message.success('保存成功');
+                onlyMessage('保存成功');
                 history.back();
             }
         })

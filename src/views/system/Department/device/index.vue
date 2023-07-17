@@ -6,11 +6,15 @@
             @search="(params:any)=>queryParams = {...params}"
             style='margin-bottom: 0;'
         />
-        <FullPage>
+      <FullPage :extraHeight="24">
             <j-pro-table
                 ref="tableRef"
                 :request="table.requestFun"
                 :gridColumn="2"
+                :scroll="{
+                    x:true,
+                    y:610,
+                }"
                 :params="queryParams"
                 :rowSelection="{
                     // selectedRowKeys: table._selectedRowKeys.value,
@@ -93,25 +97,25 @@
                         </template>
                         <template #content>
                             <h3 class="card-item-content-title" style='margin-bottom: 18px;'>
-                              <Ellipsis style="width: calc(100% - 100px);"
-                              >
-                                {{ slotProps.name }}
-                              </Ellipsis>
+                                {{ slotProps.name }}  
                             </h3>
                             <j-row>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">ID</div>
+                                    <Ellipsis style="width: calc(100% - 20px);">
                                     <div
                                         style="cursor: pointer"
                                         class="card-item-content-value"
                                     >
                                         {{ slotProps.id }}
                                     </div>
+                                    </Ellipsis>
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
                                         资产权限
                                     </div>
+                                    <Ellipsis style="width: calc(100% - 20px);">
                                     <div
                                         style="cursor: pointer"
                                         class="card-item-content-value"
@@ -123,6 +127,7 @@
                                             )
                                         }}
                                     </div>
+                                    </Ellipsis>
                                 </j-col>
                             </j-row>
                         </template>
@@ -167,9 +172,9 @@
                 </template>
                 <template #registryTime="slotProps">
                     <span>{{
-                        dayjs(slotProps.registryTime).format(
+                        slotProps.registryTime ? dayjs(slotProps.registryTime).format(
                             'YYYY-MM-DD YY:mm:ss',
-                        )
+                        ) : '-'
                     }}</span>
                 </template>
                 <template #action="slotProps">
@@ -220,7 +225,7 @@ import PermissionButton from '@/components/PermissionButton/index.vue';
 
 import AddDeviceOrProductDialog from '../components/AddDeviceOrProductDialog.vue';
 import EditPermissionDialog from '../components/EditPermissionDialog.vue';
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import {
     getDeviceList_api,
     getPermission_api,
@@ -231,8 +236,7 @@ import {
 } from '@/api/system/department';
 import { intersection } from 'lodash-es';
 
-import type { dictType, optionsType } from '../typing';
-import { message } from 'jetlinks-ui-components';
+import type { dictType } from '../typing';
 import { useDepartmentStore } from '@/store/department';
 import dayjs from 'dayjs';
 
@@ -274,10 +278,10 @@ const columns = [
         search: {
             rename: 'productId$product-info',
             type: 'select',
-            handleValue(value: string) {
+            handleValue(value: string, data: any) {
                 return value && value.length ? [{
                     column: 'id',
-                    termType: 'in',
+                    termType: data?.termType === 'not' ? 'nin' : 'in',
                     value: `${value.toString()}`
                 }] : undefined;
             },
@@ -304,7 +308,6 @@ const columns = [
         key: 'permission',
         ellipsis: true,
         scopedSlots: true,
-        width: 300,
     },
     {
         title: '注册时间',
@@ -312,7 +315,6 @@ const columns = [
         key: 'registryTime',
         ellipsis: true,
         scopedSlots: true,
-        width: 200,
         search: {
             type: 'date',
         },
@@ -331,6 +333,7 @@ const columns = [
             ],
         },
         scopedSlots: true,
+        width:80
     },
 
     {
@@ -555,7 +558,7 @@ const table = {
     },
     clickEdit: async (row?: any) => {
         const ids = row ? [row.id] : [...table._selectedRowKeys.value];
-        if (ids.length < 1) return message.warning('请勾选需要编辑的数据');
+        if (ids.length < 1) return onlyMessage('请勾选需要编辑的数据', 'warning');
 
         table.defaultPermission = row ? row?.permission : intersection(...table.selectedRows.map(
             (item) => item.permission,
@@ -568,7 +571,7 @@ const table = {
     },
     clickUnBind: (row?: any) => {
         const ids = row ? [row.id] : [...table._selectedRowKeys.value];
-        if (ids.length < 1) return message.warning('请勾选需要解绑的数据');
+        if (ids.length < 1) return onlyMessage('请勾选需要解绑的数据', 'warning');
         const params = [
             {
                 targetType: 'org',
@@ -578,7 +581,7 @@ const table = {
             },
         ];
         unBindDeviceOrProduct_api('device', params).then(() => {
-            message.success('操作成功');
+            onlyMessage('操作成功');
             table.refresh();
         });
     },

@@ -42,8 +42,8 @@
 <script setup lang="ts">
 import StatusLabel from '../StatusLabel.vue';
 import { getDeviceList_api } from '@/api/home';
-import { message } from 'ant-design-vue';
 import moment from 'moment';
+import { onlyMessage } from '@/utils/comm';
 
 const emits = defineEmits(['confirm', 'update:visible']);
 const props = defineProps<{
@@ -53,7 +53,7 @@ const props = defineProps<{
 // 弹窗控制
 const confirm = () => {
     if (selectedKeys.value.length < 1) {
-        return message.warn('请选择设备');
+        return onlyMessage('请选择设备', 'warning');
     }
     emits('confirm', selectedKeys.value[0]);
     emits('update:visible', false);

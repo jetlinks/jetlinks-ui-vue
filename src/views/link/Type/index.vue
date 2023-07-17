@@ -3,7 +3,7 @@
         <div>
             <pro-search
                 :columns="columns"
-                target="search"
+                target="search-type"
                 @search="handleSearch"
             />
             <FullPage>
@@ -160,7 +160,7 @@
                     </template>
                     <template #shareCluster="slotProps">
                         {{
-                            slotProps.shareCluster === 'true'
+                            slotProps.shareCluster === true
                                 ? '共享配置'
                                 : '独立配置'
                         }}
@@ -378,8 +378,23 @@ const getDetails = (slotProps: Partial<Record<string, any>>) => {
     } else {
         !!cluster[0].configuration.publicHos && (head = '公网:');
     }
+    if( !shareCluster  && cluster.length > 1){
+        const contentItem2 = (cluster[0].configuration.publicHost ||
+              cluster[0].configuration.remoteHost) +
+          ':' +
+          (cluster[0].configuration.publicPort ||
+              cluster[0].configuration.remotePort)
+        let headItme2 ='远程'
+         !!cluster[0].configuration.publicHos && (headItme2 = '公网:');
+         if(cluster.length > 2){
+            return head + headers + content + " "  + headItme2 + headers + contentItem2 + '。。。'
+         } 
+         return  head + headers + content + " "  + headItme2 + headers + contentItem2 
+    }
     return head + headers + content;
 };
+
+
 
 const getSupports = async () => {
     const res: any = await supports();

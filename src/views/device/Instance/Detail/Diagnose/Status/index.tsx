@@ -1,4 +1,4 @@
-import { Badge, Button, message, Popconfirm, Space } from "jetlinks-ui-components"
+import { Badge, Button, Popconfirm, Space } from "jetlinks-ui-components"
 import TitleComponent from '@/components/TitleComponent/index.vue'
 import styles from './index.module.less'
 import type { ListProps } from './util'
@@ -14,6 +14,7 @@ import { deployDevice } from "@/api/initHome"
 import PermissionButton from '@/components/PermissionButton/index.vue'
 import { useMenuStore } from "@/store/menu"
 import BindParentDevice from '../../components/BindParentDevice/index.vue'
+import { onlyMessage } from "@/utils/comm"
 
 type TypeProps = 'network' | 'child-device' | 'media' | 'cloud' | 'channel'
 
@@ -128,7 +129,7 @@ const Status = defineComponent({
                                                                         unref(gateway)?.channelId,
                                                                     );
                                                                     if (res.status === 200) {
-                                                                        message.success('操作成功！');
+                                                                        onlyMessage('操作成功！');
                                                                         list.value = modifyArrayList(
                                                                             list.value,
                                                                             {
@@ -176,10 +177,10 @@ const Status = defineComponent({
                             resolve({});
                         }, time);
                     } else {
-                        message.error('请求发生错误')
+                        onlyMessage('请求发生错误', 'error')
                     }
                 } else {
-                    message.error('设备不含accessId')
+                    onlyMessage('设备不含accessId', 'error')
                 }
             }
         })
@@ -296,7 +297,7 @@ const Status = defineComponent({
                                                                 onConfirm: async () => {
                                                                     const resp = await startGateway(unref(device).accessId || '');
                                                                     if (resp.status === 200) {
-                                                                        message.success('操作成功！');
+                                                                        onlyMessage('操作成功！');
                                                                         list.value = modifyArrayList(
                                                                             list.value,
                                                                             {
@@ -328,10 +329,10 @@ const Status = defineComponent({
                                 resolve({});
                             }, time);
                         } else {
-                            message.error('请求发生错误')
+                            onlyMessage('请求发生错误', 'error')
                         }
                     } else {
-                        message.error('设备不含accessId')
+                        onlyMessage('设备不含accessId', 'error')
                     }
                 } else {
                     if (unref(gateway)?.state?.value === 'enabled') {
@@ -426,7 +427,7 @@ const Status = defineComponent({
                                                             onConfirm: async () => {
                                                                 const resp = await startGateway(unref(device).accessId || '');
                                                                 if (resp.status === 200) {
-                                                                    message.success('操作成功！');
+                                                                    onlyMessage('操作成功！');
                                                                     list.value = modifyArrayList(
                                                                         list.value,
                                                                         {
@@ -540,7 +541,7 @@ const Status = defineComponent({
                                                                 onConfirm: async () => {
                                                                     const resp = await _deploy(response?.result?.id || '');
                                                                     if (resp.status === 200) {
-                                                                        message.success('操作成功！');
+                                                                        onlyMessage('操作成功！');
                                                                         list.value = modifyArrayList(
                                                                             list.value,
                                                                             {
@@ -650,7 +651,7 @@ const Status = defineComponent({
                                                                 onConfirm: async () => {
                                                                     const resp = await _deployProduct(unref(device).productId || '');
                                                                     if (resp.status === 200) {
-                                                                        message.success('操作成功！');
+                                                                        onlyMessage('操作成功！');
                                                                         list.value = modifyArrayList(
                                                                             list.value,
                                                                             {
@@ -729,7 +730,7 @@ const Status = defineComponent({
                                                             const resp = await _deploy(unref(device)?.id || '');
                                                             if (resp.status === 200) {
                                                                 instanceStore.current.state = { value: 'offline', text: '离线' }
-                                                                message.success('操作成功！');
+                                                                onlyMessage('操作成功！');
                                                                 list.value = modifyArrayList(
                                                                     list.value,
                                                                     {
@@ -1510,7 +1511,7 @@ const Status = defineComponent({
                 list.value = [...cloudInitList];
                 arr = [diagnoseGateway, diagnoseProduct, diagnoseDevice, diagnoseCTWing, diagnoseOnenet];
             } else if (providerType === 'channel') {
-                message.error('未开发');
+                onlyMessage('未开发', 'error');
                 return;
             }
             if (arr.length > 0) {
@@ -1642,7 +1643,7 @@ const Status = defineComponent({
                                 }
                             }
                             if (flag) {
-                                message.success('操作成功！');
+                                onlyMessage('操作成功！');
                             }
                         }}>一键修复</Button>
                     }
@@ -1738,7 +1739,7 @@ const Status = defineComponent({
                                                                         onConfirm: async () => {
                                                                             const resp = await _deploy(response?.result?.id || '');
                                                                             if (resp.status === 200) {
-                                                                                message.success('操作成功！');
+                                                                                onlyMessage('操作成功！');
                                                                                 list.value = modifyArrayList(
                                                                                     list.value,
                                                                                     {

@@ -47,7 +47,7 @@
                             total: dataSource.length,
                             current: current,
                             pageSize: pageSize,
-                            pageSizeOptions: ['10', '20', '50', '100'],
+                            pageSizeOptions: ['12', '24', '48', '96'],
                             showSizeChanger: true,
                             hideOnSinglePage: false,
                             showTotal: (total: number, range: number) => `第 ${range[0]} - ${range[1]} 条/总共 ${total} 条`,
@@ -135,9 +135,9 @@
 <script setup lang="ts" name="SyncUser">
 import configApi from '@/api/notice/config';
 import { PropType } from 'vue';
-import { message } from 'jetlinks-ui-components';
 import type { ActionsType } from '@/views/device/Instance/typings';
 import { Form } from 'ant-design-vue';
+import { onlyMessage } from '@/utils/comm';
 
 const useForm = Form.useForm;
 
@@ -209,7 +209,7 @@ watch(
 const onTreeSelect = (keys: any) => {
   if (keys.length) {
     deptId.value = keys[0];
-    pageSize.value = 10;
+    pageSize.value = 12;
     current.value = 1;
   }
 };
@@ -268,7 +268,7 @@ const getActions = (
                     configApi
                         .unBindUser({ bindingId: data.bindId }, data.bindId)
                         .then(() => {
-                            message.success('操作成功');
+                            onlyMessage('操作成功');
                             getTableData();
                         });
                 },
@@ -298,12 +298,12 @@ const handleAutoBind = async () => {
 
     if (props.data.type === 'dingTalk') {
         configApi.dingTalkBindUser(params, props.data.id).then(() => {
-            message.success('操作成功');
+            onlyMessage('操作成功');
             getTableData();
         });
     } else if (props.data.type === 'weixin') {
         configApi.weChatBindUser(params, props.data.id).then(() => {
-            message.success('操作成功');
+            onlyMessage('操作成功');
             getTableData();
         });
     }
@@ -401,7 +401,7 @@ const getTableData = (terms?: any) => {
  * 前端分页
  */
 const current = ref(1);
-const pageSize = ref(10);
+const pageSize = ref(12);
 const handleTableChange = (pagination: any) => {
     current.value = pagination.current;
     pageSize.value = pagination.pageSize;
@@ -473,7 +473,7 @@ const handleBindSubmit = () => {
             configApi
                 .dingTalkBindUser([params], props.data.id)
                 .then(() => {
-                    message.success('操作成功');
+                    onlyMessage('操作成功');
                     bindVis.value = false;
                     getTableData();
                 })
@@ -484,7 +484,7 @@ const handleBindSubmit = () => {
             configApi
                 .weChatBindUser([params], props.data.id)
                 .then(() => {
-                    message.success('操作成功');
+                    onlyMessage('操作成功');
                     bindVis.value = false;
                     getTableData();
                 })

@@ -44,7 +44,6 @@
                 :columns="columns"
                 :request="deviceApi.list"
                 :defaultParams="{
-                    pageSize: 10,
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
                 :params="params"
@@ -58,10 +57,6 @@
                     }
                 }"
                 :alertRender="false"
-                :pagination="{
-                    showSizeChanger: true,
-                    pageSizeOptions: ['10', '20', '50', '100'],
-                }"
             >
                 <template #channelNumber="slotProps">
                     <span>{{ slotProps.channelNumber || 0 }}</span>
@@ -93,9 +88,9 @@ import { usePermissionStore } from '@/store/permission';
 import type { bootConfig, recommendList } from '@/views/home/typing';
 
 import deviceApi from '@/api/media/device';
-import { message } from 'jetlinks-ui-components';
 
 import { useMenuStore } from 'store/menu';
+import { onlyMessage } from '@/utils/comm';
 
 const menuStory = useMenuStore();
 
@@ -140,7 +135,7 @@ const deviceStepDetails: recommendList[] = [
             if (hasPermission('media/Device:view')) {
                 visible.value = true;
             } else {
-                message.warning('暂无权限，请联系管理员');
+                onlyMessage('暂无权限，请联系管理员', 'warning');
             }
         },
     },
@@ -159,6 +154,7 @@ const columns = [
         title: 'ID',
         dataIndex: 'id',
         key: 'id',
+        ellipsis:true,
         search: {
             type: 'string',
             defaultTermType: 'eq',
@@ -168,6 +164,7 @@ const columns = [
         title: '名称',
         dataIndex: 'name',
         key: 'name',
+        ellipsis:true,
         search: {
             type: 'string',
             first: true,
@@ -177,6 +174,7 @@ const columns = [
         title: '通道数量',
         dataIndex: 'channelNumber',
         key: 'channelNumber',
+        width:100,
         scopedSlots: true,
     },
     {
@@ -189,11 +187,13 @@ const columns = [
             options: [
                 { label: '在线', value: 'online' },
                 { label: '离线', value: 'offline' },
+                { label: '禁用', value: 'notActive'}
             ],
             handleValue: (v: any) => {
                 return v;
             },
         },
+        width:80
     },
 ];
 const params = ref<Record<string, any>>({});
@@ -218,7 +218,7 @@ const handleSubmit = () => {
             },
         );
     } else {
-        message.warning('请选择设备');
+        onlyMessage('请选择设备', 'warning');
     }
 };
 </script>

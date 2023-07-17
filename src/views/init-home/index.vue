@@ -67,8 +67,7 @@ import InitData from './InitData/index.vue';
 import { getInit, saveInit } from '@/api/initHome';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { FILE_UPLOAD } from '@/api/comm';
-import { LocalStore } from '@/utils/comm';
-import { message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
 import { useUserInfo } from '@/store/userInfo';
 const basicRef = ref();
 const roleRef = ref();
@@ -121,7 +120,7 @@ const submitData = async () => {
     loading.value = false;
     // 当前数据是否成功提交
     if (basicRes && menuRes && roleRes && initDataRes) {
-        message.success('保存成功');
+        onlyMessage('保存成功');
         //     // 记录初始化数据，跳转首页
         const res = await saveInit();
         if (res.status === 200) {

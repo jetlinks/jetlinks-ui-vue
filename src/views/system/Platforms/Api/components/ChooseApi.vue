@@ -3,7 +3,7 @@
         <div class="table">
             <j-pro-table
                 :columns="columns"
-                :dataSource="props.tableData"
+                :dataSource="_tableData"
                 :rowSelection="props.mode !== 'home' ? rowSelection : undefined"
                 noPagination
                 model="TABLE"
@@ -35,10 +35,10 @@ import {
     delOperations_api,
     updateOperations_api,
 } from '@/api/system/apiPage';
-import { message } from 'jetlinks-ui-components';
 import { modeType } from '../typing';
 import { useDepartmentStore } from '@/store/department';
 import { onlyMessage } from '@/utils/comm';
+import { uniqBy } from 'lodash-es';
 
 const department = useDepartmentStore();
 const emits = defineEmits([
@@ -69,6 +69,11 @@ const columns = [
         key: 'summary',
     },
 ];
+
+const _tableData = computed(() => {
+    return uniqBy(props.tableData, 'id') || []
+})
+
 const rowSelection = {
     // onSelect: (record: any) => {
     //     const targetId = record.id;
@@ -86,9 +91,10 @@ const rowSelection = {
     //         });
     //     }
     // },
-    onChange: (keys: string[]) => {
+    onChange: (keys: string[], _data: any[]) => {
+        const _keys = _data.map(i => i.id)
         // 当前节点表格数据id
-        const currenTableKeys = props.tableData.map((m: any) => m.id);
+        const currenTableKeys = _tableData.value.map((m: any) => m.id);
         // 当前表格, 原有选中的id
         const oldSelectedKeys = currenTableKeys.filter((key) =>
             props.sourceKeys.includes(key),
@@ -99,16 +105,16 @@ const rowSelection = {
         );
 
         // 取消选择的数据项
-        const removeKeys = oldSelectedKeys.filter((key) => !keys.includes(key));
+        const removeKeys = oldSelectedKeys.filter((key) => !_keys.includes(key));
         // 新增选择的项
-        const addKeys = keys.filter((key) => !oldSelectedKeys.includes(key));
+        const addKeys = _keys.filter((key) => !oldSelectedKeys.includes(key));
         // 缓存当前表格和其他表格改变的数据
-        emits('update:selectedRowKeys', [...otherSelectedKeys, ...keys]);
+        emits('update:selectedRowKeys', [...otherSelectedKeys, ..._keys]);
 
         // 新增选中/取消选中的数据
         const changed = {};
         [...addKeys, ...removeKeys].forEach((key: string) => {
-            changed[key] = props.tableData.find((f: any) => f.id === key);
+            changed[key] = _tableData.value.find((f: any) => f.id === key);
         });
         if (props.mode === 'appManger') {
             // 缓存当前表格和其他表格改变的数据
@@ -133,7 +139,7 @@ const save = async () => {
         //     delOperations_api(removeKeys)
         //         .finally(() => addOperations_api(addKeys))
         //         .then(() => {
-        //             message.success('操作成功');
+        //             onlyMessage('操作成功');
         //             emits('refresh');
         //         });
         // fix: bug#10829
@@ -141,7 +147,7 @@ const save = async () => {
             removeKeys.length && (await delOperations_api(removeKeys));
             const res = await addOperations_api(addKeys);
             if (res.success) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 emits('refresh');
             }
         } else {
@@ -151,18 +157,18 @@ const save = async () => {
     } else if (props.mode === 'appManger') {
         const removeItems = removeKeys.map((key) => ({
             id: key,
-            permissions: props.changedApis[key]?.security,
+            permissions: props.changedApis[key]?.security?props.changedApis[key]?.security:[],
         }));
         const addItems = addKeys.map((key) => ({
             id: key,
-            permissions: props.changedApis[key]?.security,
+            permissions: props.changedApis[key]?.security?props.changedApis[key]?.security:[],
         }));
         Promise.all([
             updateOperations_api(code, '_delete', { operations: removeItems }),
             updateOperations_api(code, '_add', { operations: addItems }),
         ]).then((resps) => {
             if (resps[0].status === 200 && resps[1].status === 200) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 emits('refresh');
             }
         });
@@ -173,7 +179,7 @@ watch(
     () => props.selectedRowKeys,
     (n) => {
         // console.log('props.selectedRowKeys: ', n);
-        rowSelection.selectedRowKeys.value = n;
+        rowSelection.selectedRowKeys.value = n
     },
 );
 </script>

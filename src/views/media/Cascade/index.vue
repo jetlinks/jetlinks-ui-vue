@@ -52,20 +52,26 @@
                             </slot>
                         </template>
                         <template #content>
-                            <h3 class="card-item-content-title">
+                            <Ellipsis style="width: calc(100% - 100px);">
+                            <span style="font-size: 16px;font-weight: 700">
                                 {{ slotProps.name }}
-                            </h3>
-                            <p>通道数量：{{ slotProps.count || 0 }}</p>
-                            <Ellipsis>
-                                <j-badge
-                                    :text="`sip:${slotProps.sipConfigs[0]?.sipId}@${slotProps.sipConfigs[0]?.hostAndPort}`"
-                                    :status="
-                                        slotProps.status?.value === 'enabled'
-                                            ? 'success'
-                                            : 'error'
-                                    "
-                                />
+                            </span>
                             </Ellipsis>
+                            <p>通道数量：{{ slotProps.count || 0 }}</p>
+                            <j-badge
+                                :status="
+                                    slotProps.status?.value === 'enabled'
+                                        ? 'success'
+                                        : 'error'
+                                "
+                                style="display: flex; align-items: center;"
+                            >
+                                <template #text>
+                                    <j-ellipsis>
+                                        {{ `sip:${slotProps.sipConfigs[0]?.sipId}@${slotProps.sipConfigs[0]?.hostAndPort}` }}
+                                    </j-ellipsis>
+                                </template>
+                            </j-badge>
                         </template>
                         <template #actions="item">
                             <PermissionButton
@@ -153,8 +159,7 @@
 <script setup lang="ts">
 import CascadeApi from '@/api/media/cascade';
 import type { ActionsType } from '@/views/device/Instance/typings';
-import { message } from 'jetlinks-ui-components';
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import Publish from './Publish/index.vue';
 
 import { useMenuStore } from 'store/menu';
@@ -171,6 +176,7 @@ const columns = [
         key: 'name',
         width: 200,
         fixed: 'left',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -180,12 +186,14 @@ const columns = [
         dataIndex: 'sipId',
         key: 'sipId',
         scopedSlots: true,
+        ellipsis: true,
     },
     {
         title: '上级SIP 地址',
         dataIndex: 'publicHost',
         key: 'publicHost',
         scopedSlots: true,
+        ellipsis: true,
     },
     {
         title: '通道数量',
@@ -353,10 +361,10 @@ const getActions = (
                             : await CascadeApi.enabled(data.id);
 
                     if (res.success) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         listRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },
@@ -376,10 +384,10 @@ const getActions = (
                 onConfirm: async () => {
                     const resp = await CascadeApi.del(data.id);
                     if (resp.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         listRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },

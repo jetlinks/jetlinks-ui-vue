@@ -3,7 +3,7 @@
         <div>
             <pro-search
                 :columns="columns"
-                target="search"
+                target="search-datacollect-channel"
                 @search="handleSearch"
             />
             <FullPage>
@@ -73,7 +73,7 @@
                                                 </j-tooltip>
                                             </div>
                                         </j-col>
-                                        <j-col :span="12">
+                                        <!-- <j-col :span="12">
                                             <div class="card-item-content-text">
                                                 地址
                                             </div>
@@ -97,6 +97,14 @@
                                                         }}</span
                                                     >
                                                 </j-tooltip>
+                                            </div>
+                                        </j-col> -->
+                                        <j-col :span="12">
+                                            <div class="card-item-content-text">
+                                                说明
+                                            </div>
+                                            <div class="card-item-content-text">
+                                                <j-ellipsis>{{slotProps.description}}</j-ellipsis>
                                             </div>
                                         </j-col>
                                     </j-row>

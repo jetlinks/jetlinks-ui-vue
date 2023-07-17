@@ -8,7 +8,7 @@
 <script setup lang="ts">
 import type { recordsItemType } from './typings';
 import playBackApi from '@/api/media/playback';
-import { message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
 
 interface Props {
     type: string;
@@ -46,7 +46,7 @@ const downLoadCloud = (item: recordsItemType) => {
         })
         .then((res) => {
             if (res.status === 200) {
-                message.success(
+                onlyMessage(
                     '操作成功。上传云端需要一定时间，请稍后查看云端数据',
                 );
             }

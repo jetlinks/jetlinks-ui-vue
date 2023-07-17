@@ -1,5 +1,5 @@
 <template>
-    <j-spin :spinning="loading" v-if="_metadata.length">
+    <j-spin :spinning="loading" v-if="_metadata?.length">
         <j-card :bordered="false">
             <template #title>
                 <TitleComponent data="点位映射"></TitleComponent>
@@ -129,11 +129,12 @@ import {
     edgeChannel,
     addDevice,
     editDevice,
+    saveDeviceMapping
 } from '@/api/device/instance';
 import MSelect from './MSelect.vue';
 import PatchMapping from './PatchMapping.vue';
-import { message } from 'jetlinks-ui-components';
 import { inject } from 'vue';
+import { onlyMessage } from '@/utils/comm';
 const columns = [
     {
         title: '名称',
@@ -183,6 +184,7 @@ let _metadata = ref();
 const loading = ref<boolean>(false);
 const channelList = ref([]);
 
+
 const modelRef = reactive({
     dataSource: [],
 });
@@ -225,7 +227,7 @@ const unbind = async (id: string) => {
             },
         );
         if (resp.status === 200) {
-            message.success('操作成功！');
+            onlyMessage('操作成功！');
             _emit('getEdgeMap');
         }
     }
@@ -248,7 +250,7 @@ const onSave = async () => {
     if (form.value) {
         formRef.value.validateFields().then(async () => {
             if (modelRef.dataSource.length === 0) {
-                message.error('请配置物模型');
+                onlyMessage('请配置物模型', 'error');
             } else {
                 channelList.value.forEach((item: any) => {
                     modelRef.dataSource.forEach((i: any) => {
@@ -274,6 +276,12 @@ const onSave = async () => {
                     const array = modelRef.dataSource.filter(
                         (item: any) => item.channelId,
                     );
+                    const params = {
+                      info: [
+                        { deviceId: resq.result?.id, deviceName: formData.name }
+                      ]
+                    }
+                    const res = await saveDeviceMapping(instanceStore.current.id, params)
                     const submitData = {
                         deviceId: instanceStore.current.parentId
                             ? instanceStore.current.parentId
@@ -290,7 +298,7 @@ const onSave = async () => {
 const save = async (item: any) => {
     const res = await saveEdgeMap(instanceStore.current.id, item);
     if (res.status === 200) {
-        message.success('保存成功');
+        onlyMessage('保存成功');
         _emit('close');
     }
 };

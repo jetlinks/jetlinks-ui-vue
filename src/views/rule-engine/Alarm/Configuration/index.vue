@@ -3,7 +3,7 @@
         <div>
             <pro-search
                 :columns="columns"
-                target="device-instance"
+                target="search-configuration"
                 @search="handleSearch"
             />
             <FullPage>
@@ -184,6 +184,7 @@
             </FullPage>
         </div>
     </page-container>
+    <HandTrigger @save="onSave" @close="visible = false" v-if="visible" :data="current" />
 </template>
 
 <script lang="ts" setup>
@@ -192,16 +193,16 @@ import {
     _enable,
     _disable,
     remove,
-    _execute,
     getScene,
 } from '@/api/rule-engine/configuration';
 import { queryLevel } from '@/api/rule-engine/config';
 import { Store } from 'jetlinks-store';
 import type { ActionsType } from '@/components/Table/index.vue';
-import { message } from 'jetlinks-ui-components';
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import encodeQuery from '@/utils/encodeQuery';
+import HandTrigger from './HandTrigger/index.vue';
+
 const params = ref<Record<string, any>>({});
 let isAdd = ref<number>(0);
 let title = ref<string>('');
@@ -209,7 +210,7 @@ const tableRef = ref<Record<string, any>>({});
 const menuStory = useMenuStore();
 const columns = [
     {
-        title: '名称',
+        title: '配置名称',
         dataIndex: 'name',
         key: 'name',
         search: {
@@ -278,17 +279,33 @@ const columns = [
             type: 'select',
             // defaultTermType: 'rule-bind-alarm',
             options: async () => {
-                const res = await getScene(
-                    encodeQuery({
-                        sorts: { createTime: 'desc' },
-                    }),
-                );
-                if (res.status === 200) {
-                    return res.result.map((item: any) => ({
-                        label: item.name,
-                        value: item.id,
-                    }));
+                const allData = await queryList({paging: false, sorts: [{ name: 'createTime', order: 'desc' }]})
+                const result = allData.result?.data as any[]
+                if (allData.success && result && result.length) {
+                  const sceneDataMap = new Map() // 用于去重
+                  result.forEach(item => {
+                    item.scene.forEach((a: any) => {
+                      sceneDataMap.set(a.id, {
+                        label: a.name,
+                        value: a.id
+                      })
+                    })
+                  })
+
+                  return [...sceneDataMap.values()]
                 }
+
+                // const res = await getScene(
+                //     encodeQuery({
+                //         sorts: { createTime: 'desc' },
+                //     }),
+                // );
+                // if (res.status === 200) {
+                //     return res.result.map((item: any) => ({
+                //         label: item.name,
+                //         value: item.id,
+                //     }));
+                // }
                 return [];
             },
         },
@@ -332,6 +349,9 @@ const columns = [
         scopedSlots: true,
     },
 ];
+const visible = ref<boolean>(false);
+const current = ref<any>({});
+
 const map = {
     product: '产品',
     device: '设备',
@@ -383,23 +403,9 @@ const getActions = (
                         ? '未启用,不能手动触发'
                         : '手动触发',
             },
-            popConfirm: {
-                title: '确定手动触发？',
-                onConfirm: async () => {
-                    const scene = (data.scene || [])
-                        .filter((item: any) => item?.triggerType === 'manual')
-                        .map((i) => {
-                            return { id: i?.id };
-                        });
-                    _execute(scene).then((res) => {
-                        if (res.status === 200) {
-                            message.success('操作成功');
-                            tableRef.value?.reload();
-                        } else {
-                            message.error('操作失败');
-                        }
-                    });
-                },
+            onClick: () => {
+                visible.value = true;
+                current.value = data
             },
             icon: 'LikeOutlined',
         },
@@ -443,10 +449,10 @@ const getActions = (
                         response = await _disable(data.id);
                     }
                     if (response && response.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         tableRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },
@@ -460,16 +466,17 @@ const getActions = (
                     data?.state?.value !== 'disabled'
                         ? '请先禁用该告警，再删除'
                         : '删除',
+                placement:"topLeft"
             },
             popConfirm: {
                 title: '确认删除?',
                 onConfirm: async () => {
                     const resp = await remove(data.id);
                     if (resp.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         tableRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },
@@ -480,6 +487,10 @@ const getActions = (
         (item) => item.key != 'tigger' || data.sceneTriggerType == 'manual',
     );
 };
+const onSave = () => {
+    visible.value = false;
+    tableRef.value?.reload();
+}
 const add = () => {
     menuStory.jumpPage('rule-engine/Alarm/Configuration/Save');
 };

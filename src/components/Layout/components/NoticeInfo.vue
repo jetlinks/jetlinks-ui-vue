@@ -1,57 +1,156 @@
 <template>
     <div class="notice-info-container">
-        <j-tabs :activeKey="'default'">
-            <j-tab-pane key="default" tab="未读消息">
-                <div class="no-data" v-if="props.data.length === 0">
-                    <img
-                        src="https://gw.alipayobjects.com/zos/rmsportal/sAuJeJzSKbUmHfBQRzmZ.svg"
-                        alt=""
+        <j-tabs
+            v-model:activeKey="activeKey"
+            :destroyInactiveTabPane="true"
+            @change="onChange"
+            v-if="tabs.length"
+        >
+            <j-tab-pane v-for="item in tabs" :key="item.key">
+                <template #tab>
+                    <NoticeTab
+                        :refresh="refreshObj[item.key]"
+                        :tab="item?.tab"
+                        :type="item.type"
                     />
-                </div>
-
-                <div v-else class="content">
-                    <j-scrollbar class="list" max-height="400">
-                        <div
-                            class="list-item"
-                            v-for="item in props.data"
-                            @click.stop="read(item.id)"
-                        >
-                            <h5>{{ item.topicName }}</h5>
-                            <p>{{ item.message }}</p>
+                </template>
+                <j-spin :spinning="loading">
+                    <div class="content">
+                        <j-scrollbar class="list" :max-height="450" v-if="list.length">
+                            <template v-for="i in list" :key="i.id">
+                                <NoticeItem
+                                    :data="i"
+                                    :type="item.key"
+                                    @action="emits('action')"
+                                    @refresh="onRefresh(item.key)"
+                                />
+                            </template>
+                            <div
+                                v-if="list.length < 12"
+                                style="
+                                    color: #666666;
+                                    text-align: center;
+                                    padding: 8px;
+                                "
+                            >
+                                这是最后一条数据了
+                            </div>
+                        </j-scrollbar>
+                        <div class="no-data" v-else>
+                            <j-empty />
                         </div>
-                    </j-scrollbar>
-                    <div class="btns">
-                        <span @click="read()">当前标记为已读</span>
-                        <span @click="jumpPage('account/NotificationRecord')"
-                            >查看更多</span
-                        >
+                        <div class="btns">
+                            <j-button type="link" @click="onMore(item.key)"
+                                >查看更多</j-button
+                            >
+                        </div>
                     </div>
-                </div>
+                </j-spin>
             </j-tab-pane>
         </j-tabs>
+        <div class="no-data" v-else>
+            <j-empty />
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { changeStatus_api } from '@/api/account/notificationRecord';
+import { getList_api } from '@/api/account/notificationRecord';
 import { useMenuStore } from '@/store/menu';
+import { useUserInfo } from '@/store/userInfo';
+import { cloneDeep } from 'lodash-es';
+import NoticeItem from './NoticeItem.vue';
+import NoticeTab from './NoticeTab.vue';
 
-const emits = defineEmits(['onAction']);
-const props = defineProps<{
-    data: any[];
-}>();
-const { jumpPage } = useMenuStore();
+const emits = defineEmits(['action']);
 
-const read = (id?: string) => {
-    const ids = id ? [id] : props.data.map((item) => item.id);
-    changeStatus_api('_read', ids).then((resp: any) => {
-        if (resp.status === 200) {
-            jumpPage('account/NotificationRecord', {
-                row: props.data.find((f: any) => f.id === id),
-            });
-            emits('onAction');
-        }
-    });
+type DataType = 'alarm' | 'system-monitor' | 'system-business';
+
+const refreshObj = ref({
+    'alarm': true,
+    'system-monitor': true,
+    'system-business': true,
+});
+
+const props = defineProps({
+    tabs: {
+        type: Array,
+        default: () => []
+    }
+})
+
+const loading = ref(false);
+const total = ref(0);
+const list = ref<any[]>([]);
+const activeKey = ref<DataType>(props.tabs?.[0]?.key || 'alarm');
+const menuStory = useMenuStore();
+const route = useRoute();
+
+const userInfo = useUserInfo();
+
+const getData = (type: string[]) => {
+    loading.value = true;
+    const params = {
+        sorts: [
+            {
+                name: 'notifyTime',
+                order: 'desc',
+            },
+        ],
+        pageSize: 12,
+        terms: [
+            {
+                terms: [
+                    {
+                        type: 'or',
+                        value: type,
+                        termType: 'in',
+                        column: 'topicProvider',
+                    },
+                ],
+            },
+        ],
+    };
+    getList_api(params)
+        .then((resp: any) => {
+            total.value = resp.result.total;
+            list.value = resp.result?.data || [];
+        })
+        .finally(() => (loading.value = false));
+};
+
+const onChange = (_key: string) => {
+    const type = props.tabs.find((item: any) => item.key === _key)?.type || [];
+    getData(type);
+};
+
+onMounted(async () => {
+    onChange(props.tabs?.[0]?.key || "alarm");
+});
+
+const onRefresh = (id: string) => {
+    const flag = cloneDeep(refreshObj.value[id]);
+    refreshObj.value = {
+        ...refreshObj.value,
+        [id]: !flag,
+    };
+};
+
+const onMore = (key: string) => {
+    // 判断当前是否为/account/center
+    if (route.path === '/account/center') {
+        userInfo.tabKey = 'StationMessage';
+        userInfo.other.tabKey = key;
+    } else {
+        menuStory.routerPush('account/center', {
+            tabKey: 'StationMessage',
+            other: {
+                tabKey: key,
+            },
+        });
+    }
+
+    emits('action');
 };
 </script>
 
@@ -81,7 +180,7 @@ const read = (id?: string) => {
 
     .content {
         .list {
-            max-height: 400px;
+            max-height: 450px;
             overflow: auto;
             padding: 0;
             margin: 0;
@@ -89,41 +188,12 @@ const read = (id?: string) => {
                 //隐藏或取消滚动条
                 display: none;
             }
-
-            .list-item {
-                padding: 12px 24px;
-                list-style: none;
-                border-bottom: 1px solid #f0f0f0;
-                cursor: pointer;
-                h5 {
-                    color: rgba(0, 0, 0, 0.85);
-                    font-size: 14px;
-                    font-weight: normal;
-                }
-                p {
-                    font-size: 12px;
-                    color: rgba(0, 0, 0, 0.45);
-                }
-
-                &:hover {
-                    background: #f0f5ff;
-                }
-            }
         }
         .btns {
             display: flex;
             height: 46px;
-            line-height: 46px;
-            span {
-                display: block;
-                width: 50%;
-                text-align: center;
-                cursor: pointer;
-
-                &:first-child {
-                    border-right: 1px solid #f0f0f0;
-                }
-            }
+            justify-content: center;
+            align-items: center;
         }
     }
 }

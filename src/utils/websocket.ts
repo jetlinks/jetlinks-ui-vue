@@ -43,7 +43,9 @@ export const initWebSocket = () => {
             const data = JSON.parse(msg.data)
 
             if (data.type === 'error') {
-                notification.error({ key: 'wserr', message: data.message })
+                notification.error({ key: 'wserr', message: data.message, style: {
+                    zIndex: 1040
+                } })
             }
 
             if (subs[data.requestId]) {

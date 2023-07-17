@@ -38,8 +38,8 @@
             <template #action="slotProps">
                 <AIcon
                     type="ExclamationCircleOutlined"
-                    style="color: #1d39c4; cursor: pointer"
-                    @click="handleDetail(slotProps.context)"
+                    :class="Object.keys(slotProps.context).length == 0 ? 'disableIcon' : 'Icon'"
+                    @click="handleDetail(slotProps)"
                 />
             </template>
         </JProTable>
@@ -51,6 +51,7 @@ import configApi from '@/api/notice/config';
 import { PropType } from 'vue';
 import moment from 'moment';
 import { Modal } from 'ant-design-vue';
+import Record from '../../Template/Log/components/Record.vue'
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
@@ -152,19 +153,46 @@ const handleError = (e: any) => {
 /**
  * 查看详情
  */
-const handleDetail = (e: any) => {
-    Modal.info({
+const handleDetail = (data: any) => {
+    if(Object.keys(data.context).length == 0){
+        Modal.info({
         title: '详情信息',
         content: h(
-            'p',
+            "p",
             {
+               
                 style: {
                     maxHeight: '300px',
                     overflowY: 'auto',
                 },
             },
-            JSON.stringify(e),
+            '模板中不存在变量'
         ),
     });
+    }else{
+        Modal.info({
+        title: '详情信息',
+        content: h(
+            Record,
+            {
+                data:data,
+                style: {
+                    maxHeight: '300px',
+                    overflowY: 'auto',
+                },
+            },
+        ),
+    });
+    }  
 };
 </script>
+<style lang="less" scoped>
+.disableIcon{
+    color:darkgrey ;
+    cursor:pointer;
+}
+.Icon{
+    color:#1d39c4;
+    cursor:pointer;
+}
+</style>

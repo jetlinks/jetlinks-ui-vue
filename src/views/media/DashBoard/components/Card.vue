@@ -65,7 +65,7 @@ const createChart = () => {
                 left: maxY > 100000 ? 90 : 50,
                 right: '5%',
                 top: '5%',
-                bottom: '5%',
+                bottom: '10%',
             },
             tooltip: {
                 trigger: 'axis',
@@ -199,7 +199,7 @@ watch(
     .chart,
     .no-data {
         width: 100%;
-        min-height: calc(100vh - 430px);
+        min-height: calc(100vh - 450px);
     }
     .no-data {
         display: flex;

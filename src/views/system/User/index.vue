@@ -3,7 +3,7 @@
         <div class="user-container">
             <pro-search
                 :columns="columns"
-                target="category"
+                target="system-user"
                 @search="handleParams"
             />
             <FullPage>
@@ -14,12 +14,7 @@
                     model="TABLE"
                     :params="queryParams"
                     :defaultParams="{
-                        pageSize: 10,
                         sorts: [{ name: 'createTime', order: 'desc' }],
-                    }"
-                    :pagination="{
-                        showSizeChanger: true,
-                        pageSizeOptions: ['10', '20', '50', '100'],
                     }"
                 >
                     <template #headerTitle>
@@ -132,7 +127,7 @@ import {
     changeUserStatus_api,
     deleteUser_api,
 } from '@/api/system/user';
-import { message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
 
 const permission = 'system/User';
 
@@ -186,7 +181,7 @@ const columns = [
             type: 'select',
             options: [
                 {
-                    label: '启用',
+                    label: '正常',
                     value: 1,
                 },
                 {
@@ -240,14 +235,14 @@ const table = {
             id,
         };
         changeUserStatus_api(params).then(() => {
-            message.success('操作成功');
+            onlyMessage('操作成功');
             table.refresh();
         });
     },
     // 删除
     clickDel: (id: string) => {
         deleteUser_api(id).then(() => {
-            message.success('操作成功');
+            onlyMessage('操作成功');
             table.refresh();
         });
     },

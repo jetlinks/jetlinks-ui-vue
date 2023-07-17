@@ -9,14 +9,10 @@
             :columns="columns"
             :request="(e:any) => templateApi.getHistory(e, data.id)"
             :defaultParams="{
-                pageSize: 5,
                 sorts: [{ name: 'notifyTime', order: 'desc' }],
                 terms: [{ column: 'notifyType$IN', value: data.type }],
             }"
             :params="params"
-            :pagination="{
-                pageSizeOptions: ['5', '10', '20', '50', '100'],
-            }"
         >
             <template #notifyTime="slotProps">
                 {{ moment(slotProps.notifyTime).format('YYYY-MM-DD HH:mm:ss') }}
@@ -38,8 +34,8 @@
             <template #action="slotProps">
                 <AIcon
                     type="ExclamationCircleOutlined"
-                    style="color: #1d39c4; cursor: pointer"
-                    @click="handleDetail(slotProps.context)"
+                    :class="Object.keys(slotProps.context).length == 0 ? 'disableIcon' : 'Icon'"
+                    @click="handleDetail(slotProps)"
                 />
             </template>
         </JProTable>
@@ -51,7 +47,7 @@ import templateApi from '@/api/notice/template';
 import { PropType } from 'vue';
 import moment from 'moment';
 import { Modal } from 'jetlinks-ui-components';
-
+import Record from './components/Record.vue'
 type Emits = {
     (e: 'update:visible', data: boolean): void;
 };
@@ -152,19 +148,46 @@ const handleError = (e: any) => {
 /**
  * 查看详情
  */
-const handleDetail = (e: any) => {
-    Modal.info({
+ const handleDetail = (data: any) => {
+    if(Object.keys(data.context).length == 0){
+        Modal.info({
         title: '详情信息',
         content: h(
-            'p',
+            "p",
             {
+               
                 style: {
                     maxHeight: '300px',
                     overflowY: 'auto',
                 },
             },
-            JSON.stringify(e),
+            '模板中不存在变量'
         ),
     });
+    }else{
+        Modal.info({
+        title: '详情信息',
+        content: h(
+            Record,
+            {
+                data:data,
+                style: {
+                    maxHeight: '300px',
+                    overflowY: 'auto',
+                },
+            },
+        ),
+    });
+    }  
 };
 </script>
+<style lang="less" scoped>
+.disableIcon{
+    color:darkgrey ;
+    cursor:pointer;
+}
+.Icon{
+    color:#1d39c4;
+    cursor:pointer;
+}
+</style>

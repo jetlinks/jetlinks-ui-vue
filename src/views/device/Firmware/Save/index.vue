@@ -282,6 +282,18 @@ const validatorVersionOrder = async (_: Record<string, any>, value: string) => {
     }
 };
 
+const validatorVersionValue = async (_rule:any,value:any) => { 
+    return new Promise (async(resolve,reject)=>{
+        const posReg = /^[1-9]\d*$/;
+        if(posReg.test(value.toString())){
+            return resolve('');
+        }else {
+            return reject('请输入1~99999之间的正整数');
+        }
+    }
+    )
+   
+}
 const { resetFields, validate, validateInfos } = useForm(
     formData,
     reactive({
@@ -297,6 +309,7 @@ const { resetFields, validate, validateInfos } = useForm(
         versionOrder: [
             { required: true, message: '请输入版本序号' },
             { validator: validatorVersionOrder, trigger: 'blur' },
+            { validator: validatorVersionValue, trigger: 'change'}
         ],
         signMethod: [{ required: true, message: '请选择签名方式' }],
         sign: [

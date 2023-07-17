@@ -17,7 +17,7 @@
             @change="handleChange"
             :showUploadList="false"
             class="upload-box"
-            :before-upload="beforeUpload"
+            :beforeUpload="beforeUpload"
         >
             <j-button type="primary">上传jar包</j-button>
         </j-upload>
@@ -53,12 +53,13 @@ const beforeUpload: UploadProps['beforeUpload'] = (file) => {
     const arr = file.name.split('.');
     const isFile = ['jar', 'zip'].includes(arr[arr.length - 1]); // file.type === 'application/zip' || file.type === 'application/javj-archive'
     if (!isFile) {
-        onlyMessage('请上传.zip.jar格式的文件', 'error');
         loading.value = false;
+        onlyMessage('请上传.zip.jar格式的文件', 'error');
     }
     return isFile;
 };
 const handleChange = async (info: UploadChangeParam) => {
+  if (!info.file.status) return
     loading.value = true;
     if (info.file.status === 'done') {
         loading.value = false;

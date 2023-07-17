@@ -3,7 +3,7 @@
         <div>
             <pro-search
                 :columns="query.columns"
-                target="device-instance"
+                target="rule-engine-instance"
                 @search="handleSearch"
             />
             <FullPage>
@@ -150,7 +150,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { InstanceItem } from './typings';
 import {
     queryList,
     startRule,
@@ -158,8 +157,7 @@ import {
     deleteRule,
 } from '@/api/rule-engine/instance';
 import type { ActionsType } from '@/components/Table/index.vue';
-import { getImage } from '@/utils/comm';
-import { message } from 'jetlinks-ui-components';
+import { getImage, onlyMessage } from '@/utils/comm';
 import Save from './Save/index.vue';
 import { SystemConst } from '@/utils/consts';
 import { useRouterParams } from '@/utils/hooks/useParams';
@@ -283,10 +281,10 @@ const getActions = (
                         response = await stopRule(data.id);
                     }
                     if (response && response.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         tableRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },
@@ -306,10 +304,10 @@ const getActions = (
                 onConfirm: async () => {
                     const resp = await deleteRule(data.id);
                     if (resp.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         tableRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },

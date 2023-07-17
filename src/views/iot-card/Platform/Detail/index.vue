@@ -16,7 +16,7 @@
                             required
                         >
                             <PlatformType
-                                :disabled="false"
+                                :disabled="showDisabled"
                                 :model="'singular'"
                                 :itemStyle="{
                                     display: 'flex',
@@ -41,18 +41,21 @@
                             <j-form-item label="App ID" name="appId">
                                 <j-input
                                     v-model:value="form.appId"
+                                    :disabled="showDisabled"
                                     placeholder="请输入App ID"
                                 />
                             </j-form-item>
                             <j-form-item label="Password" name="passWord">
                                 <j-input-password
                                     v-model:value="form.passWord"
+                                    :disabled="showDisabled"
                                     placeholder="请输入密码"
                                 />
                             </j-form-item>
                             <j-form-item label="接口地址" name="apiAddr">
                                 <j-input
                                     v-model:value="form.apiAddr"
+                                    :disabled="showDisabled"
                                     placeholder="请输入接口地址"
                                 />
                             </j-form-item>
@@ -62,18 +65,21 @@
                             <j-form-item label="用户id" name="userId">
                                 <j-input
                                     v-model:value="form.userId"
+                                    :disabled="showDisabled"
                                     placeholder="请输入用户id"
                                 />
                             </j-form-item>
                             <j-form-item label="密码" name="passWord">
                                 <j-input-password
                                     v-model:value="form.passWord"
+                                    :disabled="showDisabled"
                                     placeholder="请输入密码"
                                 />
                             </j-form-item>
                             <j-form-item label="secretKey" name="secretKey">
                                 <j-input
                                     v-model:value="form.secretKey"
+                                    :disabled="showDisabled"
                                     placeholder="请输入secretKey"
                                 />
                             </j-form-item>
@@ -83,18 +89,21 @@
                             <j-form-item label="App ID" name="appId">
                                 <j-input
                                     v-model:value="form.appId"
+                                    :disabled="showDisabled"
                                     placeholder="请输入App ID"
                                 />
                             </j-form-item>
                             <j-form-item label="App Secret" name="appSecret">
                                 <j-input
                                     v-model:value="form.appSecret"
+                                    :disabled="showDisabled"
                                     placeholder="请输入App Secret"
                                 />
                             </j-form-item>
                             <j-form-item label="创建者ID" name="openId">
                                 <j-input
                                     v-model:value="form.openId"
+                                    :disabled="showDisabled"
                                     placeholder="请输入创建者ID"
                                 />
                             </j-form-item>
@@ -132,9 +141,9 @@
 <script lang="ts" setup>
 import PlatformType from '@/views/iot-card/components/PlatformType.vue';
 import { queryById, save, update } from '@/api/iot-card/platform';
-import { message } from 'jetlinks-ui-components';
 import Doc from '../doc/index.vue';
 import { platformTypeList } from '../../data'
+import { onlyMessage } from '@/utils/comm';
 
 const router = useRouter();
 const route = useRoute();
@@ -182,6 +191,10 @@ const rules = {
     explain: [{ required: false, max: 200, message: '最多可输入200个字符' }],
 };
 
+const showDisabled = computed(() => {
+  return route.params.id !== ':id'
+})
+
 const getDetail = async () => {
     console.log(route.params)
     if (route.params.id === ':id') return;
@@ -219,7 +232,7 @@ const handleSave = async () => {
             ? await save(formData)
             : await update({ id: route.params.id, ...formData });
     if (res.status === 200) {
-        message.success('保存成功！');
+        onlyMessage('保存成功！');
         router.back();
     }
     saveBtnLoading.value = false;

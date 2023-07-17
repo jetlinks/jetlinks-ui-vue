@@ -23,34 +23,34 @@ export const AccountMenu = {
             name: 'account/center',
             code: 'account/center',
             meta: {
-                title: '基本设置',
+                title: '个人中心',
                 icon: '',
-                hideInMenu: false
+                hideInMenu: true
             },
             component: () => import('@/views/account/Center/index.vue')
         },
-        {
-            path: '/account/NotificationSubscription',
-            name: 'account/NotificationSubscription',
-            code: 'account/NotificationSubscription',
-            meta: {
-                title: '通知订阅',
-                icon: '',
-                hideInMenu: false
-            },
-            component: () => import('@/views/account/NotificationSubscription/index.vue')
-        },
-        {
-            path: '/account/NotificationRecord',
-            name: 'account/NotificationRecord',
-            code: 'account/NotificationRecord',
-            meta: {
-                title: '通知记录',
-                icon: '',
-                hideInMenu: false
-            },
-            component: () => import('@/views/account/NotificationRecord/index.vue')
-        },
+        // {
+        //     path: '/account/NotificationSubscription',
+        //     name: 'account/NotificationSubscription',
+        //     code: 'account/NotificationSubscription',
+        //     meta: {
+        //         title: '通知订阅',
+        //         icon: '',
+        //         hideInMenu: false
+        //     },
+        //     component: () => import('@/views/account/NotificationSubscription/index.vue')
+        // },
+        // {
+        //     path: '/account/NotificationRecord',
+        //     name: 'account/NotificationRecord',
+        //     code: 'account/NotificationRecord',
+        //     meta: {
+        //         title: '通知记录',
+        //         icon: '',
+        //         hideInMenu: false
+        //     },
+        //     component: () => import('@/views/account/NotificationRecord/index.vue')
+        // },
     ]
 }
 
@@ -78,6 +78,13 @@ export default [
             title: '授权页'
         },
         component: () => import('@/views/oauth/index.vue')
-    }
-
+    },
+    {
+        path: '/oauth/wechat',
+        meta: {
+            title: '微信授权页'
+        },
+        component: () => import('@/views/oauth/WeChat.vue')
+    },
+    AccountMenu
 ]

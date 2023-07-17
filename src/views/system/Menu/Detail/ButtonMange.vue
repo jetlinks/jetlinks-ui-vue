@@ -65,7 +65,7 @@
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import ButtonAddDialog from '../components/ButtonAddDialog.vue';
 import { getMenuInfo_api, saveMenuInfo_api } from '@/api/system/menu';
-import { message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
 
 const permission = 'system/Menu';
 // 路由
@@ -82,7 +82,7 @@ const dialogVisible = ref(false);
 const dialogTitle = ref<'查看' | '新增' | '编辑'>('新增');
 const openDialog = (mode: '查看' | '新增' | '编辑', row: object) => {
     if (!routeParams.id && !paramsId.value) {
-        return message.warning('请先新增菜单基本信息');
+        return onlyMessage('请先新增菜单基本信息', 'warning');
     }
     console.log(3);
 
@@ -138,7 +138,7 @@ const table = reactive({
             buttons,
         };
         saveMenuInfo_api(params).then(() => {
-            message.success('操作成功');
+            onlyMessage('操作成功');
             table.getList();
         });
     },

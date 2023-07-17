@@ -75,10 +75,11 @@
 </template>
 
 <script setup lang="ts">
-import { FormInstance, message } from 'ant-design-vue';
+import { FormInstance } from 'ant-design-vue';
 import { Rule } from 'ant-design-vue/es/form';
 import PermissChoose from '../components/PermissChoose.vue';
 import { saveMenuInfo_api } from '@/api/system/menu';
+import { onlyMessage } from '@/utils/comm';
 
 const emits = defineEmits(['confirm', 'update:visible']);
 const props = defineProps<{
@@ -111,7 +112,7 @@ const confirm = () => {
             loading.value = true;
             saveMenuInfo_api(params)
                 .then((resp) => {
-                    message.success('操作成功');
+                    onlyMessage('操作成功');
                     emits('confirm');
                     emits('update:visible', false);
                 })

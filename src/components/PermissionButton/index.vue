@@ -84,7 +84,7 @@ const props = defineProps({
     type: Object as PropType<PopconfirmProps>,
   },
   hasPermission: {
-    type: String || Array || Boolean,
+    type: [String , Array, Boolean],
   },
   style: {
     type: Object as PropType<CSSProperties>

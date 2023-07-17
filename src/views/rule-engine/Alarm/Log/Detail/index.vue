@@ -59,7 +59,6 @@ import { detail as configurationDetail } from '@/api/rule-engine/configuration';
 import { useRoute } from 'vue-router';
 import dayjs from 'dayjs';
 import type { ActionsType } from '@/components/Table/index.vue';
-import { message } from 'jetlinks-ui-components';
 import { useAlarmStore } from '@/store/alarm';
 import Info from './info.vue';
 import { storeToRefs } from 'pinia';

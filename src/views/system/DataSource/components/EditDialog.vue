@@ -196,9 +196,9 @@ import {
     saveDataSource_api,
 } from '@/api/system/dataSource';
 import { FormInstance } from 'ant-design-vue';
-import { message } from 'jetlinks-ui-components';
 import { Rule } from 'ant-design-vue/lib/form';
 import type { dictItemType, optionItemType, sourceItemType } from '../typing';
+import { onlyMessage } from '@/utils/comm';
 
 const emits = defineEmits(['confirm', 'cancel']);
 const props = defineProps<{
@@ -261,10 +261,16 @@ const validateAddress = (_rule: Rule, value: string): Promise<any> => {
 const getTypeOption = () => {
     getDataTypeDict_api().then((resp: any) => {
         const result = resp.result as dictItemType[];
-        form.typeOptions = result.map((item) => ({
-            label: item.name,
-            value: item.id,
-        }));
+        const options:any = []
+         result.forEach((item) => {
+            if(item.name !== 'redis'){
+                options.push({
+                label: item.name,
+                value: item.id,
+                })
+            }
+        });
+        form.typeOptions =  options
     });
 };
 
@@ -298,7 +304,7 @@ const confirm = () => {
         .then(async (_data: any) => {
             const resp = await saveDataSource_api({ ...props.data, ..._data });
             if (resp.status === 200) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 emits('confirm');
                 formRef.value?.resetFields();
             }

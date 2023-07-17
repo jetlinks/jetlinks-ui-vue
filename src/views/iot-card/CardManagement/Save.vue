@@ -103,7 +103,7 @@ import {
     add,
     edit,
 } from '@/api/iot-card/cardManagement';
-import { message } from 'jetlinks-ui-components';
+import { onlyMessage } from '@/utils/comm';
 import { OperatorList, TypeList } from '@/views/iot-card/data';
 
 const emit = defineEmits(['change']);
@@ -248,7 +248,7 @@ const handleOk = () => {
                     : await edit(toRaw(modelRef)).catch(err => err);
             btnLoading.value = false;
             if (resp.status === 200) {
-                message.success('操作成功')
+                onlyMessage('操作成功')
                 emit('change', true);
                 formRef.value.resetFields();
             }

@@ -199,8 +199,8 @@
                             validator: checkName,
                         },
                         {
-                            pattern: /^\w+$/,
-                            message: '名称只能由数字、字母、下划线、中划线组成',
+                            pattern: /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/,
+                            message: '名称只能由英文、汉字、下划线、数字组成',
                             trigger: 'change',
                         },
                     ]"
@@ -226,7 +226,6 @@ import {
 import { onlyMessage } from '@/utils/comm';
 import { randomString } from '@/utils/utils';
 import { FormInstance } from 'ant-design-vue';
-import { message } from 'jetlinks-ui-components';
 import { DataNode } from 'ant-design-vue/lib/tree';
 import _ from 'lodash';
 import { cloneDeep } from 'lodash';
@@ -400,7 +399,7 @@ const clickSave = () => {
         };
         saveTable_api(id, params).then((resp) => {
             if (resp.status === 200) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 queryTables(params.name);
             }
         });
@@ -445,8 +444,8 @@ watch(
             });
             leftData.treeData = [
                 {
-                    title: info.data.shareConfig.schema,
-                    key: info.data.shareConfig.schema,
+                    title: info.data.shareConfig?.schema,
+                    key: info.data.shareConfig?.schema,
                     root: true,
                     children: list.map((item) => ({
                         title: item.name,
@@ -461,8 +460,8 @@ watch(
         } else {
             leftData.treeData = [
                 {
-                    title: info.data.shareConfig.schema,
-                    key: info.data.shareConfig.schema,
+                    title: info.data.shareConfig?.schema,
+                    key: info.data.shareConfig?.schema,
                     root: true,
                     children: leftData.sourceTree.map((item) => ({
                         title: item.name,

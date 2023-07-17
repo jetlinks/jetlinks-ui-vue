@@ -43,7 +43,7 @@ export default {
         server.post<recordsItemType[]>(`/media/device/${deviceId}/${channelId}/records/in-server/files`, data),
 
     // 播放云端回放
-    playbackStart: (recordId: string) => `${BASE_API_PATH}/record/${recordId}.mp4?:X_Access_Token=${LocalStore.get(TOKEN_KEY)}`,
+    playbackStart: (recordId: string) => `${BASE_API_PATH}/media/record/${recordId}.mp4?:X_Access_Token=${LocalStore.get(TOKEN_KEY)}`,
 
-    downLoadFile: (recordId: string) => `${BASE_API_PATH}/record/${recordId}.mp4?download=true&:X_Access_Token=${LocalStore.get(TOKEN_KEY)}`
+    downLoadFile: (recordId: string) => `${BASE_API_PATH}/media/record/${recordId}.mp4?download=true&:X_Access_Token=${LocalStore.get(TOKEN_KEY)}`
 }

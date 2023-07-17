@@ -106,6 +106,7 @@ const functionData = computed(() => {
         format: datum.valueType?.format || undefined,
         options: handlePropertiesOptions(datum.valueType),
         value: undefined,
+        required: datum.expands?.required
       });
     }
   }
@@ -115,13 +116,16 @@ const functionData = computed(() => {
 
 const rules = [{
   validator(_: string, value: any) {
-    if (!value?.length && functionData.value.length) {
-      return Promise.reject('请输入功能值')
-    } else {
-      let hasValue = value.find((item: { name: string, value: any}) => item.value === undefined)
-      if (hasValue) {
-        const functionItem = functionData.value.find((item: any) => item.id === hasValue.name)
-        return Promise.reject(functionItem?.name ? `请输入${functionItem?.name}值` : '请输入功能值')
+    const arr = functionData.value.filter((i: any) => i?.required)
+    if(arr.length){
+      if (!value?.length) {
+        return Promise.reject('请输入功能值')
+      } else {
+        let hasValue = value.find((item: { name: string, value: any}) => item.value === undefined)
+        if (hasValue) {
+          const functionItem = arr.find((item: any) => item.id === hasValue.name)
+          return Promise.reject(functionItem?.name ? `请输入${functionItem?.name}值` : '请输入功能值')
+        }
       }
     }
     return Promise.resolve();

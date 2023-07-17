@@ -5,7 +5,7 @@
             :request="query"
             :params="_params"
             :bodyStyle="{ padding: '0 0 0 20px' }"
-            :scroll="{y : 400}"
+            :scroll="{y : 450}"
         >
             <template #headerTitle>
                 <j-input-search
@@ -85,16 +85,17 @@ import Detail from './Detail/index.vue';
 import Indicators from './Indicators.vue';
 import { getProperty } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
-import { message } from 'ant-design-vue';
 import { getWebSocket } from '@/utils/websocket';
 import { map } from 'rxjs/operators';
 import { queryDashboard } from '@/api/comm';
+import { onlyMessage } from '@/utils/comm';
 
 const columns = [
     {
         title: '名称',
         dataIndex: 'name',
         key: 'name',
+        ellipsis: true
     },
     {
         title: '值',
@@ -193,7 +194,7 @@ const getActions = (data: Partial<Record<string, any>>) => {
                         data.id,
                     );
                     if (resp.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                     }
                 }
             },

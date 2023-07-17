@@ -94,13 +94,18 @@
             </j-row>
             <j-row :gutter="24" v-if="form.IsShow('add', 'edit')">
                 <j-col :span="12">
-                    <j-form-item name="roleIdList" label="角色" class="flex">
+                    <j-form-item name="roleIdList" label="角色" class="flex" 
+                        :rules="[
+                            { required: form.data.username !== 'admin', message: '请选择角色' },
+                        ]"
+                    >
                         <j-select
                             v-model:value="form.data.roleIdList"
                             mode="multiple"
                             style="width: calc(100% - 40px)"
                             placeholder="请选择角色"
-                            :options="form.roleOptions"
+                            :options="_roleOptions"
+                            :disabled="form.data.username === 'admin'"
                         ></j-select>
 
                         <PermissionButton
@@ -118,7 +123,7 @@
                             show-search
                             style="width: calc(100% - 40px)"
                             placeholder="请选择组织"
-                            :tree-data="form.departmentOptions"
+                            :tree-data="_departmentOptions"
                             :fieldNames="{ label: 'name', value: 'id' }"
                             multiple
                             :filterTreeNode="
@@ -186,7 +191,6 @@
 <script setup lang="ts">
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import { FormInstance } from 'ant-design-vue';
-import { message } from 'jetlinks-ui-components';
 import {
     validateField_api,
     getRoleList_api,
@@ -200,7 +204,8 @@ import { Rule } from 'ant-design-vue/es/form';
 import { DefaultOptionType } from 'ant-design-vue/es/vc-tree-select/TreeSelect';
 import { AxiosResponse } from 'axios';
 import { passwordRegEx } from '@/utils/validate';
-import { filterSelectNode } from '@/utils/comm';
+import { filterSelectNode, onlyMessage } from '@/utils/comm';
+import { uniqBy } from 'lodash-es';
 
 const deptPermission = 'system/Department';
 const rolePermission = 'system/Role';
@@ -226,7 +231,7 @@ const confirm = () => {
         .then(() => form.submit())
         .then((resp: any) => {
             if (resp.status === 200) {
-                message.success('操作成功');
+                onlyMessage('操作成功');
                 emits('confirm');
                 emits('update:visible', false);
             }
@@ -275,6 +280,9 @@ const form = reactive({
     roleOptions: [] as optionType[],
     departmentOptions: [] as DefaultOptionType[],
 
+    _roleOptions: [] as optionType[],
+    _departmentOptions: [] as DefaultOptionType[],
+
     init: () => {
         form.getDepartmentList();
         form.getRoleList();
@@ -282,7 +290,6 @@ const form = reactive({
     },
     getUserInfo: () => {
         const id = props.data.id || '';
-        console.log(111);
 
         if (props.type === 'add') form.data = {} as formType;
         else if (props.type === 'reset') form.data = { id } as formType;
@@ -297,6 +304,10 @@ const form = reactive({
                         (item: dictType) => item.id,
                     ),
                 };
+                form._roleOptions = resp.result?.roleList?.map((i: any) => {
+                    return {label: i.name, value: i.id}
+                });
+                form._departmentOptions = resp.result?.orgList
                 nextTick(() => {
                     formRef.value?.clearValidate();
                 });
@@ -354,6 +365,15 @@ const form = reactive({
         };
     },
 });
+
+const _roleOptions = computed(() => {
+    return uniqBy([...form.roleOptions, ...form._roleOptions], 'value')
+})
+
+const _departmentOptions = computed(() => {
+    return uniqBy([...form.departmentOptions, ...form._departmentOptions], 'id')
+})
+
 form.init();
 
 interface AxiosResponseRewrite<T = any[]> extends AxiosResponse<T, any> {

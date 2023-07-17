@@ -46,15 +46,19 @@
                             </slot>
                         </template>
                         <template #content>
-                            <h3 class="card-item-content-title">
+                            <Ellipsis style="width: calc(100% - 100px);">
+                            <span style="font-size: 16px;font-weight: 700">
                                 {{ slotProps.name }}
-                            </h3>
+                            </span>
+                            </Ellipsis>
                             <j-row>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
                                         厂商
                                     </div>
-                                    <div>{{ slotProps.manufacturer }}</div>
+                                    <Ellipsis style="width: calc(100% - 20px);">
+                                        <div>{{ slotProps.manufacturer }}</div>
+                                    </Ellipsis>
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
@@ -66,7 +70,7 @@
                                     <div class="card-item-content-text">
                                         型号
                                     </div>
-                                    <Ellipsis>{{ slotProps.model }}</Ellipsis>
+                                    <Ellipsis style="width: calc(100% - 20px);">{{ slotProps.model }}</Ellipsis>
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
@@ -164,8 +168,7 @@
 <script setup lang="ts">
 import DeviceApi from '@/api/media/device';
 import type { ActionsType } from '@/views/device/Instance/typings';
-import { message } from 'jetlinks-ui-components';
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
 import { providerType } from './const';
 import encodeQuery from '@/utils/encodeQuery';
@@ -187,6 +190,7 @@ const columns = [
         search: {
             type: 'string',
         },
+        ellipsis: true,
     },
     {
         title: '名称',
@@ -196,12 +200,14 @@ const columns = [
             type: 'string',
             first: true,
         },
+        ellipsis: true,
     },
     {
         title: '接入方式',
         dataIndex: 'provider',
         key: 'provider',
         scopedSlots: true,
+        width:120,
         search: {
             type: 'select',
             options: PROVIDER_OPTIONS,
@@ -224,12 +230,14 @@ const columns = [
         search: {
             type: 'string',
         },
+        ellipsis: true,
     },
     {
         title: '产品名称',
         dataIndex: 'productId',
         key: 'productId',
         scopedSlots: true,
+        ellipsis: true,
         search: {
             type: 'select',
             options: () =>
@@ -375,7 +383,7 @@ const getActions = (
             onClick: async () => {
                 const res = await DeviceApi.updateChannels(data.id);
                 if (res.success) {
-                    message.success('通道更新成功');
+                    onlyMessage('通道更新成功');
                     listRef.value?.reload();
                 }
             },
@@ -393,10 +401,10 @@ const getActions = (
                 onConfirm: async () => {
                     const resp = await DeviceApi.del(data.id);
                     if (resp.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         listRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },

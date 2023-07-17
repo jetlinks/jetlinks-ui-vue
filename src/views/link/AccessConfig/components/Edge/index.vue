@@ -52,8 +52,8 @@
                             >
                                 <template #other>
                                     <div class="other">
-                                        <j-tooltip placement="topLeft">
-                                            <div
+                                        <j-tooltip placement="top" :title="addressesTip(item.addresses)">
+                                            <!-- <div
                                                 v-if="
                                                     (item.addresses || [])
                                                         .length > 1
@@ -69,7 +69,7 @@
                                                         :status="getColor(i)"
                                                     />{{ i.address }}
                                                 </div>
-                                            </div>
+                                            </div> -->
                                             <div
                                                 v-for="i in (
                                                     item.addresses || []
@@ -86,7 +86,7 @@
                                                         (item.addresses || [])
                                                             .length > 1
                                                     "
-                                                    >...</span
+                                                    >等{{ item.addresses.length }}条</span
                                                 >
                                             </div>
                                         </j-tooltip>
@@ -354,6 +354,14 @@ watch(
         immediate: true,
     },
 );
+
+const addressesTip = (data:any)=>{
+    let tip:any = ''
+    data.forEach((item:any)=>{
+        tip =  tip + " " +item.address 
+    })
+    return tip
+} 
 </script>
 
 <style lang="less" scoped>

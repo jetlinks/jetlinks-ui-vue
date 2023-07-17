@@ -35,11 +35,13 @@
                 />
             </j-col>
             <j-col :span="24" class="dash-board-bottom">
-                <Card
-                    title="播放数量(人次)"
-                    :chartData="chartData"
-                    @change="getPlayCount"
-                />
+                <full-page>
+                    <Card
+                        title="播放数量(人次)"
+                        :chartData="chartData"
+                        @change="getPlayCount"
+                    />
+                </full-page>
             </j-col>
         </j-row>
     </page-container>

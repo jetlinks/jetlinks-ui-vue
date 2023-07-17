@@ -12,8 +12,10 @@
 
 <script lang="ts" setup>
 import { getImage } from '@/utils/comm';
-import BaseMenu, { MESSAGE_SUBSCRIBE_MENU_DATA, USER_CENTER_MENU_DATA } from '../data/baseMenu'
+import BaseMenu, { USER_CENTER_MENU_DATA } from '../data/baseMenu'
 import { getSystemPermission, updateMenus } from '@/api/initHome';
+import { protocolList } from '@/utils/consts';
+import { getProviders } from '@/api/data-collect/channel';
 /**
  * 获取菜单数据
  */
@@ -36,6 +38,18 @@ const getSystemPermissionData = async () => {
         menuDatas.count = _count;
     }
 };
+
+/**
+ * 查询支持的协议
+ */
+let filterProtocolList: any[] = [];
+const getProvidersFn = async () => {
+    const res: any = await getProviders();
+    filterProtocolList = protocolList.filter((item) => {
+        return res.result?.find((val: any) => item.alias == val.id);
+    })
+}
+getProvidersFn();
 /**
  * 过滤菜单
  */
@@ -49,6 +63,9 @@ const filterMenu = (permissions: string[], menus: any[]) => {
         }
         if (item.children) {
             item.children = filterMenu(permissions, item.children);
+        }
+        if (!filterProtocolList.length && item.code == 'link/DataCollect') {
+            return false;
         }
         return isShow || !!item.children?.length;
     });
@@ -71,7 +88,8 @@ const menuCount = (menus: any[]) => {
 const initMenu = async () => {
     return new Promise(async (resolve) => {
       //  用户中心
-        const res = await updateMenus([...menuDatas.current!, USER_CENTER_MENU_DATA, MESSAGE_SUBSCRIBE_MENU_DATA]);
+        console.log([...menuDatas.current!, USER_CENTER_MENU_DATA]);
+        const res = await updateMenus([...menuDatas.current!, USER_CENTER_MENU_DATA]);
         if (res.status === 200) {
             resolve(true);
         } else {

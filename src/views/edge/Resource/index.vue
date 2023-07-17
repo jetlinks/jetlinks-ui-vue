@@ -44,10 +44,7 @@
                                         通讯协议
                                     </div>
                                     <Ellipsis>{{
-                                        options.find(
-                                            (i) =>
-                                                i.value === slotProps.category,
-                                        )?.label || slotProps.category
+                                        slotProps.category
                                     }}</Ellipsis>
                                 </j-col>
                                 <j-col :span="12">
@@ -97,8 +94,7 @@
                 </template>
                 <template #category="slotProps">
                     {{
-                        options.find((i) => i.value === slotProps.category)
-                            ?.label || slotProps.category
+                      slotProps.category
                     }}
                 </template>
                 <template #createTime="slotProps">
@@ -153,13 +149,12 @@
         />
     </page-container>
 </template>
-  
+
 <script lang="ts" setup>
 import { queryNoPagingPost } from '@/api/device/instance';
-import { message } from 'jetlinks-ui-components';
 import { ActionsType } from '@/views/device/Instance/typings';
 import { useMenuStore } from '@/store/menu';
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import dayjs from 'dayjs';
 import { query, _delete, _start, _stop } from '@/api/edge/resource';
 import Save from './Save/index.vue';
@@ -173,14 +168,6 @@ const defaultParams = { sorts: [{ name: 'createTime', order: 'desc' }] };
 const statusMap = new Map();
 statusMap.set('enabled', 'processing');
 statusMap.set('disabled', 'error');
-
-const options = [
-    { label: 'UA接入', value: 'OPC_UA' },
-    { label: 'Modbus TCP接入', value: 'MODBUS_TCP' },
-    { label: 'S7-200接入', value: 'snap7' },
-    { label: 'BACnet接入', value: 'BACNetIp' },
-    { label: 'MODBUS_RTU接入', value: 'MODBUS_RTU' },
-];
 
 const params = ref<Record<string, any>>({});
 const edgeResourceRef = ref<Record<string, any>>({});
@@ -211,7 +198,22 @@ const columns = [
         key: 'category',
         search: {
             type: 'select',
-            options: options,
+            options: () =>
+                new Promise((resolve) => {
+                    query({
+                        paging: false,
+                        sorts: [{ name: 'createTime', order: 'desc' }],
+                    }).then((resp: any) => {
+                      const arrMap = new Map()
+                      resp.result.data.forEach((item: any) => {
+                        arrMap.set(item.category, {
+                          label: item.category,
+                          value: item.category,
+                        })
+                      })
+                      resolve([...arrMap.values()]);
+                    });
+                }),
         },
     },
     {
@@ -223,7 +225,7 @@ const columns = [
             type: 'select',
             options: () =>
                 new Promise((resolve) => {
-                    queryNoPagingPost({
+                  query({
                         paging: false,
                         sorts: [
                             {
@@ -232,12 +234,14 @@ const columns = [
                             },
                         ],
                     }).then((resp: any) => {
-                        resolve(
-                            resp.result.map((item: any) => ({
-                                label: item.name,
-                                value: item.id,
-                            })),
-                        );
+                        const arrMap = new Map()
+                        resp.result.data.forEach((item: any) => {
+                          arrMap.set(item.sourceId, {
+                            label: item.sourceName,
+                            value: item.sourceId,
+                          })
+                        })
+                        resolve([...arrMap.values()]);
                     });
                 }),
         },
@@ -340,10 +344,10 @@ const getActions = (
                         response = await _start([data.id]);
                     }
                     if (response && response.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         edgeResourceRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },
@@ -363,10 +367,10 @@ const getActions = (
                 onConfirm: async () => {
                     const resp = await _delete(data.id);
                     if (resp.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         edgeResourceRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },
@@ -397,6 +401,4 @@ const onRefresh = () => {
 };
 </script>
 
-<style lang="less" scoped>
-</style>
-
+<style lang="less" scoped></style>

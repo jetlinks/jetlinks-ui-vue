@@ -3,7 +3,7 @@
         <div>
             <pro-search
                 :columns="columns"
-                target="search"
+                target="search-firmware"
                 @search="handleSearch"
             />
             <FullPage>
@@ -207,6 +207,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             popConfirm: {
                 title: '确认删除?',
                 okText: ' 确定',
+                placement: 'topLeft',
                 cancelText: '取消',
                 onConfirm: async () => {
                     handlDelete(data.id);

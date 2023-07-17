@@ -3,7 +3,7 @@
         <div>
             <pro-search
                 :columns="columns"
-                target="search"
+                target="search-link-access-config"
                 @search="handleSearch"
             />
             <FullPage>
@@ -57,7 +57,6 @@
                                     <Ellipsis
                                         style="
                                             width: calc(100% - 100px);
-                                            margin-bottom: 20px;
                                         "
                                     >
                                         <span class="card-title">
@@ -70,11 +69,17 @@
                                             v-if="slotProps.channelInfo"
                                             class="card-item-content-text"
                                         >
+                                        <Ellipsis
+                                        style="
+                                            width: calc(100% - 100px);
+                                        "
+                                    >
                                             <div
                                                 class="card-item-content-text-title"
                                             >
                                                 {{ slotProps.channelInfo.name }}
                                             </div>
+                                            </Ellipsis>
                                             <Ellipsis
                                                 style="
                                                     width: calc(100% - 10px);
@@ -113,16 +118,15 @@
                                             <Ellipsis
                                                 style="
                                                     width: calc(100% - 10px);
-                                                    display: flex;
-                                                    margin-top: 4px;
                                                 "
+                                                :lineClamp="2"
                                             >
-                                                <span>
+                                                <div>
                                                     {{
                                                         slotProps.protocolDetail
                                                             .name
                                                     }}
-                                                </span>
+                                                </div>
                                             </Ellipsis>
                                         </j-col>
                                     </j-row>

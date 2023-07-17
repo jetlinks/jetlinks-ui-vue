@@ -146,14 +146,13 @@ import {
     _undeploy,
     _deploy,
     _delete,
-    queryProductList,
     queryTypes,
 } from '@/api/northbound/dueros';
 import type { ActionsType } from '@/views/device/Instance/typings';
-import { getImage } from '@/utils/comm';
-import { message } from 'jetlinks-ui-components';
+import { getImage, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from 'store/menu';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
+import { queryNoPagingPost } from '@/api/device/product';
 
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -164,6 +163,7 @@ const columns = [
         title: '名称',
         dataIndex: 'name',
         key: 'name',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -174,9 +174,10 @@ const columns = [
         key: 'productName',
         search: {
             type: 'select',
+            rename: 'id',
             options: () =>
                 new Promise((resolve) => {
-                    queryProductList().then((resp: any) => {
+                    queryNoPagingPost({paging: false}).then((resp: any) => {
                         resolve(
                             resp.result.map((item: any) => ({
                                 label: item.name,
@@ -230,7 +231,7 @@ const columns = [
         title: '操作',
         key: 'action',
         fixed: 'right',
-        width: 160,
+        width: 180,
         scopedSlots: true,
     },
 ];
@@ -303,10 +304,10 @@ const getActions = (
                         response = await _deploy(data.id);
                     }
                     if (response && response.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         instanceRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },
@@ -326,10 +327,10 @@ const getActions = (
                 onConfirm: async () => {
                     const resp = await _delete(data.id);
                     if (resp.status === 200) {
-                        message.success('操作成功！');
+                        onlyMessage('操作成功！');
                         instanceRef.value?.reload();
                     } else {
-                        message.error('操作失败！');
+                        onlyMessage('操作失败！', 'error');
                     }
                 },
             },

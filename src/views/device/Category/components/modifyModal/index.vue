@@ -47,11 +47,12 @@
 </template>
 <script setup lang="ts" name="modifyModal">
 import { PropType } from 'vue';
-import { Form, message } from 'jetlinks-ui-components';
+import { Form } from 'jetlinks-ui-components';
 import { queryTree, saveTree, updateTree } from '@/api/device/category';
 import { ValidateErrorEntity } from 'ant-design-vue/es/form/interface';
 import { list } from '@/api/iot-card/home';
 import { number } from 'echarts';
+import { onlyMessage } from '@/utils/comm';
 
 const emits = defineEmits(['refresh']);
 const formRef = ref();
@@ -136,11 +137,11 @@ const submitData = async () => {
             }
             const res = await saveTree(addParams.value);
             if (res.status === 200) {
-                message.success('操作成功！');
+                onlyMessage('操作成功！');
                 visible.value = false;
                 emits('refresh');
             } else {
-                message.error('操作失败！');
+                onlyMessage('操作失败！', 'error');
             }
         } else if (props.isAdd === 2) {
             const id = updateObj.value.id;
@@ -152,11 +153,11 @@ const submitData = async () => {
             };
             const res = await updateTree(id, updateParams);
             if (res.status === 200) {
-                message.success('操作成功！');
+                onlyMessage('操作成功！');
                 visible.value = false;
                 emits('refresh');
             } else {
-                message.error('操作失败！');
+                onlyMessage('操作失败！', 'error');
             }
         }
     });
@@ -192,7 +193,7 @@ const show = async (row: any) => {
             visible.value = true;
         } else if (props.isChild === 2) {
             if (row.level === 5) {
-                message.warning('树形结构最多添加5层');
+                onlyMessage('树形结构最多添加5层', 'warning');
                 visible.value = false;
             } else {
                 addObj.value = row;

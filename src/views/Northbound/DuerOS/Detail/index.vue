@@ -6,6 +6,39 @@
                     <div class="left">
                         <div class="left-content">
                             <TitleComponent data="基本信息" />
+                            <j-alert
+                                v-if="_error && modelRef?.id"
+                                style="margin: 10px 0"
+                                type="warning"
+                            >
+                                <template #message>
+                                    <div
+                                        style="
+                                            display: flex;
+                                            justify-content: space-between;
+                                            align-items: center;
+                                        "
+                                    >
+                                        <span
+                                            style="
+                                                width: calc(100% - 100px);
+                                                text-align: center;
+                                            "
+                                            >{{ _error }}</span
+                                        >
+                                        <PermissionButton
+                                            :popConfirm="{
+                                                title: '确认启用',
+                                                onConfirm: onActiveProduct,
+                                            }"
+                                            size="small"
+                                            :hasPermission="'device/Product:action'"
+                                        >
+                                            立即启用
+                                        </PermissionButton>
+                                    </div>
+                                </template>
+                            </j-alert>
                             <j-form
                                 :layout="'vertical'"
                                 ref="formRef"
@@ -42,29 +75,22 @@
                                                     required: true,
                                                     message: '请选择产品',
                                                 },
+                                                {
+                                                    validator: _validator,
+                                                    trigger: 'change',
+                                                },
                                             ]"
                                         >
-                                            <j-select
+                                            <MSelect
+                                                v-model:value="modelRef.id"
+                                                :options="productList"
                                                 :disabled="
                                                     type !== 'edit' &&
                                                     modelRef.id &&
                                                     modelRef.id !== ':id'
                                                 "
-                                                placeholder="请选择产品"
-                                                v-model:value="modelRef.id"
-                                                show-search
                                                 @change="productChange"
-                                            >
-                                                <j-select-option
-                                                    v-for="item in productList"
-                                                    :key="item.id"
-                                                    :value="item.id"
-                                                    :label="item.name"
-                                                    >{{
-                                                        item.name
-                                                    }}</j-select-option
-                                                >
-                                            </j-select>
+                                            />
                                         </j-form-item>
                                     </j-col>
                                     <j-col :span="12">
@@ -147,11 +173,23 @@
                                                         : `动作映射${index + 1}`
                                                 "
                                             >
-                                                <template #extra
-                                                    ><AIcon
-                                                        type="DeleteOutlined"
-                                                        @click="delItem(index)"
-                                                /></template>
+                                                <template #extra>
+                                                    <div
+                                                        style="width: 20px"
+                                                        @click.stop
+                                                    >
+                                                        <j-popconfirm
+                                                            title="确认删除？"
+                                                            @confirm.prevent="
+                                                                delItem(index)
+                                                            "
+                                                        >
+                                                            <AIcon
+                                                                type="DeleteOutlined"
+                                                            />
+                                                        </j-popconfirm>
+                                                    </div>
+                                                </template>
                                                 <j-row :gutter="24">
                                                     <j-col :span="12">
                                                         <j-form-item
@@ -326,15 +364,25 @@
                                                         : `属性映射${index + 1}`
                                                 "
                                             >
-                                                <template #extra
-                                                    ><AIcon
-                                                        type="DeleteOutlined"
-                                                        @click="
-                                                            delPropertyItem(
-                                                                index,
-                                                            )
-                                                        "
-                                                /></template>
+                                                <template #extra>
+                                                    <div
+                                                        style="width: 20px"
+                                                        @click.stop
+                                                    >
+                                                        <j-popconfirm
+                                                            title="确认删除？"
+                                                            @confirm.prevent="
+                                                                delPropertyItem(
+                                                                    index,
+                                                                )
+                                                            "
+                                                        >
+                                                            <AIcon
+                                                                type="DeleteOutlined"
+                                                            />
+                                                        </j-popconfirm>
+                                                    </div>
+                                                </template>
                                                 <j-row :gutter="24">
                                                     <j-col :span="12">
                                                         <j-form-item
@@ -381,18 +429,19 @@
                                                                 index,
                                                                 'target',
                                                             ]"
-                                                            :rules="{
-                                                                required: true,
-                                                                message:
-                                                                    '请选择平台属性',
-                                                            }"
+                                                            :rules="[
+                                                                {
+                                                                    required: true,
+                                                                    message:
+                                                                        '请选择平台属性',
+                                                                },
+                                                            ]"
                                                         >
-                                                            <j-select
+                                                            <!-- <j-select
                                                                 placeholder="请选择平台属性"
                                                                 v-model:value="
                                                                     item.target
                                                                 "
-                                                                mode="tags"
                                                                 show-search
                                                             >
                                                                 <j-select-option
@@ -407,7 +456,18 @@
                                                                         i.name
                                                                     }}</j-select-option
                                                                 >
-                                                            </j-select>
+                                                            </j-select> -->
+                                                            <MSelect
+                                                                v-model:value="
+                                                                    item.target
+                                                                "
+                                                                type="target"
+                                                                :options="
+                                                                    getProductProperties(
+                                                                        item.target,
+                                                                    )
+                                                                "
+                                                            />
                                                         </j-form-item>
                                                     </j-col>
                                                 </j-row>
@@ -486,9 +546,11 @@ import {
     savePatch,
     detail,
 } from '@/api/northbound/dueros';
-import _ from 'lodash';
-import { message } from 'jetlinks-ui-components';
+import _, { cloneDeep } from 'lodash';
 import { useMenuStore } from '@/store/menu';
+import { onlyMessage } from '@/utils/comm';
+import MSelect from '../../components/MSelect/index.vue';
+import { _deploy } from '@/api/device/product';
 
 const menuStory = useMenuStore();
 const route = useRoute();
@@ -517,7 +579,7 @@ const modelRef = reactive({
     propertyMappings: [
         {
             source: undefined,
-            target: [],
+            target: undefined,
         },
     ],
     description: undefined,
@@ -530,6 +592,8 @@ const loading = ref<boolean>(false);
 const type = ref<'edit' | 'view'>('edit');
 const actionActiveKey = ref<string[]>(['0']);
 const propertyActiveKey = ref<string[]>(['0']);
+
+const _error = ref<string>('');
 
 const onPropertyCollChange = (_key: string[]) => {
     propertyActiveKey.value = _key;
@@ -569,25 +633,31 @@ const addItem = () => {
 
 const delItem = (index: number) => {
     modelRef.actionMappings.splice(index, 1);
+    if (!modelRef.actionMappings.length) {
+        addItem();
+    }
 };
 
 const addPropertyItem = () => {
     propertyActiveKey.value.push(String(modelRef.propertyMappings.length));
     modelRef.propertyMappings.push({
         source: undefined,
-        target: [],
+        target: undefined,
     });
 };
 
 const delPropertyItem = (index: number) => {
     modelRef.propertyMappings.splice(index, 1);
+    if (!modelRef.propertyMappings.length) {
+        addPropertyItem();
+    }
 };
 
 const productChange = (value: string) => {
-    modelRef.propertyMappings = modelRef.propertyMappings.map((item) => {
-        return { source: item.source, target: [] };
+    modelRef.propertyMappings = modelRef.propertyMappings?.map((item) => {
+        return { source: item.source, target: undefined };
     });
-    modelRef.actionMappings = modelRef.actionMappings.map((item) => {
+    modelRef.actionMappings = modelRef.actionMappings?.map((item) => {
         return {
             ...item,
             command: {
@@ -608,10 +678,10 @@ const productChange = (value: string) => {
 };
 
 const typeChange = () => {
-    modelRef.propertyMappings = modelRef.propertyMappings.map((item) => {
+    modelRef.propertyMappings = modelRef.propertyMappings?.map((item) => {
         return { source: undefined, target: item.target };
     });
-    modelRef.actionMappings = modelRef.actionMappings.map((item) => {
+    modelRef.actionMappings = modelRef.actionMappings?.map((item) => {
         return { ...item, action: undefined };
     });
 };
@@ -621,12 +691,20 @@ const findApplianceType = computed(() => {
     return typeList.value.find((item) => item.id === modelRef.applianceType);
 });
 
-const findProductMetadata = computed(() => {
+const findProduct = computed(() => {
     if (!modelRef.id) return;
     const _product = productList.value?.find(
         (item: any) => item.id === modelRef.id,
     );
-    return _product?.metadata && JSON.parse(_product.metadata || '{}');
+    return _product;
+});
+
+const findProductMetadata = computed(() => {
+    if (!modelRef.id) return;
+    return (
+        findProduct.value?.metadata &&
+        JSON.parse(findProduct.value?.metadata || '{}')
+    );
 });
 
 // 查询产品列表
@@ -645,49 +723,76 @@ const getTypes = async () => {
 };
 
 const getDuerOSProperties = (val: string) => {
-    console.log(val);
-    const arr = modelRef.propertyMappings.map((item) => item?.source) || [];
+    const arr = modelRef.propertyMappings?.map((item) => item?.source) || [];
     const checked = _.cloneDeep(arr);
     const _index = checked.findIndex((i) => i === val);
     // 去掉重复的
     checked.splice(_index, 1);
     const targetList = findApplianceType.value?.properties;
     const list = targetList?.filter(
-        (i: { id: string }) => !checked.includes(i?.id as any),
+        (i: { id: string }) => !checked?.includes(i?.id as any),
     );
     return list || [];
 };
 
 const getProductProperties = (val: string[]) => {
     const items =
-        modelRef.propertyMappings.map((item: { target: string[] }) =>
-            item?.target.map((j) => j),
-        ) || [];
-    const checked = _.flatMap(items);
+        modelRef.propertyMappings?.map((item: any) => item?.target) || [];
+    const checked = items.filter((i) => i);
     const _checked: any[] = [];
-    checked.map((_item) => {
-        if (!val.includes(_item)) {
+    checked?.map((_item) => {
+        if (!val?.includes(_item)) {
             _checked.push(_item);
         }
     });
     const sourceList = findProductMetadata.value?.properties;
     const list = sourceList?.filter(
-        (i: { id: string }) => !_checked.includes(i.id),
+        (i: { id: string }) => !_checked?.includes(i.id),
     );
     return list || [];
 };
 
 const getTypesActions = (val: string) => {
-    const items = modelRef.actionMappings.map((item) => item?.action) || [];
+    const items = modelRef.actionMappings?.map((item) => item?.action) || [];
     const checked = _.cloneDeep(items);
     const _index = checked.findIndex((i) => i === val);
     checked.splice(_index, 1);
     const actionsList = findApplianceType.value?.actions || [];
     const list = actionsList?.filter(
-        (i: { id: string; name: string }) => !checked.includes(i?.id as any),
+        (i: { id: string; name: string }) => !checked?.includes(i?.id as any),
     );
     return list || [];
 };
+
+const onActiveProduct = () => {
+    if (modelRef.id) {
+        _deploy(modelRef.id).then((resp) => {
+            if (resp.status === 200) {
+                onlyMessage('操作成功！');
+                getProduct(modelRef.id);
+                _error.value = '';
+            }
+        });
+    }
+};
+
+const _validator = (_rule: any, value: string): Promise<any> =>
+    new Promise((resolve, reject) => {
+        const _item = productList.value.find((item) => item.id === value);
+        if (!_item) {
+            productChange(value);
+            return reject('关联产品已被删除，请重新选择');
+        } else {
+            if (!_item?.state) {
+                _error.value = `当前选择的${_item.name}产品为禁用状态`;
+                // return reject(`当前选择的${_item.name}产品为禁用状态`)
+            } else {
+                _error.value = '';
+            }
+        }
+        return resolve('');
+    });
+
 const saveBtn = async () => {
     const tasks: any[] = [];
     for (let i = 0; i < command.value.length; i++) {
@@ -704,23 +809,33 @@ const saveBtn = async () => {
         .then(async (data: any) => {
             if (tasks.every((item) => item) && data) {
                 loading.value = true;
+                data.propertyMappings = data.propertyMappings?.map(
+                    (it: any) => {
+                        return {
+                            source: it.source,
+                            target: Array.isArray(it?.target)
+                                ? it?.target
+                                : [it?.target],
+                        };
+                    },
+                );
                 const resp = await savePatch(data).finally(() => {
                     loading.value = false;
                 });
                 if (resp.status === 200) {
-                    message.success('操作成功！');
+                    onlyMessage('操作成功！');
                     formRef.value.resetFields();
                     menuStory.jumpPage('Northbound/DuerOS');
                 }
             }
         })
         .catch((err: any) => {
-            const _arr = err.errorFields.map((item: any) => item.name);
-            _arr.map((item: string | any[]) => {
+            const _arr = err.errorFields?.map((item: any) => item.name);
+            _arr?.map((item: string | any[]) => {
                 if (item.length >= 3) {
                     if (
                         item[0] === 'propertyMappings' &&
-                        !propertyActiveKey.value.includes(item[1])
+                        !propertyActiveKey.value?.includes(item[1])
                     ) {
                         propertyActiveKey.value.push(item[1]);
                     }
@@ -738,16 +853,16 @@ watch(
     () => route.params?.id,
     async (newId) => {
         if (newId) {
-            getProduct(newId as string);
+            await getProduct(newId as string);
             getTypes();
             if (newId === ':id') return;
             const resp = await detail(newId as string);
             const _data: any = resp.result;
+            const _obj = cloneDeep(_data);
             if (_data) {
-                _data.applianceType = _data?.applianceType?.value;
+                _obj.applianceType = _obj?.applianceType?.value;
             }
-            Object.assign(modelRef, _data);
-            console.log(modelRef.propertyMappings);
+            Object.assign(modelRef, _obj);
         }
     },
     { immediate: true, deep: true },

@@ -10,7 +10,7 @@ import { useAlarmStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
 import { queryLevel } from '@/api/rule-engine/config';
 import { Store } from 'jetlinks-store';
-import  TableComponents  from './TabComponent/indev.vue';
+import  TableComponents  from './TabComponent/index.vue';
 const list = [
     {
         key: 'all',

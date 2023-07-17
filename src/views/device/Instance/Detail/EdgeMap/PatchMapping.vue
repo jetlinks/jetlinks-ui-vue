@@ -16,8 +16,9 @@
                         <j-tree
                             checkable
                             :height="300"
-                            :tree-data="dataSource"
+                            :tree-data="treeList"
                             :checkedKeys="checkedKeys"
+                            :load-data="onLoadData"
                             @check="onCheck"
                         />
                     </j-card>
@@ -56,12 +57,20 @@
 </template>
 
 <script lang="ts" setup>
-import { treeEdgeMap, saveEdgeMap } from '@/api/device/instance';
+import {
+    treeEdgeMap,
+    saveEdgeMap,
+    edgeChannel,
+    edgeCollector,
+    edgePoint,
+} from '@/api/device/instance';
+import { useInstanceStore } from '@/store/instance';
 import { message } from 'ant-design-vue/es';
+import type { TreeProps } from 'ant-design-vue';
 const _props = defineProps({
     metaData: {
         type: Array,
-        default: () => []
+        default: () => [],
     },
     deviceId: {
         type: String,
@@ -70,11 +79,12 @@ const _props = defineProps({
     edgeId: {
         type: String,
         default: '',
-    }
+    },
 });
 const _emits = defineEmits(['close', 'save']);
 
 const checkedKeys = ref<string[]>([]);
+const instanceStore = useInstanceStore();
 
 const leftList = ref<any[]>([]);
 const rightList = ref<any[]>([]);
@@ -119,6 +129,71 @@ const onRight = () => {
     rightList.value = leftList.value;
 };
 
+const treeList = ref<any[]>([]);
+const getChannel = async () => {
+    if (instanceStore.current?.parentId) {
+        loading.value = true;
+        const resp: any = await edgeChannel(instanceStore.current.parentId);
+        loading.value = false;
+        if (resp.status === 200) {
+            treeList.value = resp.result?.[0]?.map((item: any) => ({
+                ...item,
+                title: item.name,
+                key: item.id,
+                checkable: false,
+                type: 'channel',
+                parentId: '',
+                provider: item.provider,
+            }));
+        }
+    }
+};
+
+const onLoadData: TreeProps['loadData'] = (treeNode) => {
+
+    return new Promise(async (resolve) => {
+        if (treeNode.dataRef?.children) {
+            resolve();
+            return;
+        }
+        const params = {
+            terms: [
+                {
+                    terms: [
+                        {
+                            column:
+                                treeNode.type === 'channel'
+                                    ? 'channelId'
+                                    : 'collectorId',
+                            value: treeNode.key,
+                        },
+                    ],
+                },
+            ],
+        };
+        const res =
+            treeNode.type === 'channel'
+                ? await edgeCollector(
+                      <string>instanceStore.current.parentId,
+                      params,
+                  )
+                : await edgePoint(
+                      <string>instanceStore.current.parentId,
+                      params,
+                  );
+        (<any>treeNode.dataRef).children = res.result?.[0].map((item: any) => ({
+            ...item,
+            title: item.name,
+            key: item.id,
+            type: treeNode.type === 'channel' ? 'collector' : 'point',
+            parentId: treeNode.key,
+            checkable: treeNode.type === 'channel' ? true : false,
+            isLeaf: treeNode.type === 'channel' ? false : true,
+        }));
+        treeList.value = [...treeList.value];
+        resolve();
+    });
+};
 const _delete = (_key: string) => {
     const _index = rightList.value.findIndex((i) => i.key === _key);
     rightList.value.splice(_index, 1);
@@ -137,12 +212,16 @@ const handleClick = async () => {
                 collectorId: element.collectorId,
                 pointId: element.id,
                 metadataType: 'property',
-                metadataId: (_props.metaData as any[]).find((i: any) => i.name === element.name)
-                    ?.metadataId,
-                provider: dataSource.value.find((it: any) => it.id === item.parentId).provider,
+                metadataId: (_props.metaData as any[]).find(
+                    (i: any) => i.name === element.name,
+                )?.id,
+                provider: treeList.value.find(
+                    (it: any) => it.id === item.parentId,
+                )?.provider,
             }));
             params.push(...array);
         });
+        console.log(params);
         const filterParms = params.filter((item) => !!item.metadataId);
         if (filterParms && filterParms.length !== 0) {
             const res = await saveEdgeMap(_props.edgeId, {
@@ -165,7 +244,8 @@ const handleClose = () => {
 
 onMounted(() => {
     if (_props.edgeId) {
-        handleSearch();
+        // handleSearch();
+        getChannel();
     }
 });
 </script>

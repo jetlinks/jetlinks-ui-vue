@@ -112,6 +112,10 @@
                         ]"
                         :rules="[
                             {
+                                required: true,
+                                message: '请输入',
+                            },
+                            {
                                 pattern: regOnlyNumber,
                                 message: '请输入0或者正整数',
                             },
@@ -125,7 +129,8 @@
                             placeholder="请输入"
                             allowClear
                             addon-after="ms"
-                            :max="9999999999999998"
+                            :max="2147483647"
+                            :min="0"
                             :disabled="
                                 index !== 0 &&
                                 record.configuration[dataIndex].check
@@ -228,7 +233,7 @@ const checkLength = (_rule: Rule, value: string): Promise<any> =>
                 ? reject('最多可输入64个字符')
                 : resolve('');
         } else {
-            reject('请输入');
+            resolve('')
         }
     });
 
