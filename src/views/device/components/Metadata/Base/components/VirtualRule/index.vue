@@ -252,6 +252,13 @@ const options = computed(() => {
     return (dataSource?.value || []).filter((item: any) => item?.id !== props.value?.id);
 });
 
+const setInitVirtualRule = () => {
+  formData.virtualRule = {
+    triggerProperties: props.value?.expands?.virtualRule?.triggerProperties || ['*'],
+    rule: props.value?.expands?.virtualRule?.rule || initData.rule
+  }
+}
+
 const handleSearch = async () => {
     let resp: any = undefined;
     try {
@@ -272,12 +279,11 @@ const handleSearch = async () => {
           triggerProperties: resp.result.triggerProperties,
           rule: resp.result.rule,
         }
+      } else {
+        setInitVirtualRule()
       }
     } catch (err) {
-      formData.virtualRule = {
-        triggerProperties: props.value?.expands?.virtualRule?.triggerProperties || ['*'],
-        rule: props.value?.expands?.virtualRule?.rule || initData.rule
-      }
+      setInitVirtualRule()
     }
 };
 
