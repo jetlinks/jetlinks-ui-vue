@@ -55,8 +55,8 @@
                 required
             >
                 <Rule
-                    v-model:value="formData.virtualRule.rule.script"
-                    :virtualRule="_virtualRule.virtualRule.rule"
+                    v-model:value="formData.virtualRule.script"
+                    :virtualRule="_virtualRule.virtualRule"
                     :id="value.id"
                     :aggList="aggList"
                 />
@@ -67,7 +67,7 @@
                 required
             >
                 <j-select
-                    v-model:value="formData.virtualRule.rule.windowType"
+                    v-model:value="formData.virtualRule.windowType"
                     :options="[
                         { label: '无', value: 'undefined' },
                         { label: '时间窗口', value: 'time' },
@@ -79,26 +79,26 @@
                 />
             </j-form-item>
             <template
-                v-if="formData.virtualRule?.rule?.windowType !== 'undefined'"
+                v-if="formData.virtualRule?.windowType !== 'undefined'"
             >
                 <j-form-item
                     label="聚合函数"
-                    :name="['virtualRule', 'rule', 'aggType']"
+                    :name="['virtualRule', 'aggType']"
                     required
                 >
                     <j-select
-                        v-model:value="formData.virtualRule.rule.aggType"
+                        v-model:value="formData.virtualRule.aggType"
                         :options="aggList"
                         placeholder="请选择聚合函数"
                     />
                 </j-form-item>
                 <j-form-item
                     :label="
-                        formData.virtualRule?.rule?.windowType === 'time'
+                        formData.virtualRule?.windowType === 'time'
                             ? '窗口长度(s)'
                             : '窗口长度(次)'
                     "
-                    :name="['virtualRule', 'rule', 'window', 'span']"
+                    :name="['virtualRule', 'window', 'span']"
                     required
                     :rules="[
                         {
@@ -111,21 +111,21 @@
                         },
                     ]"
                 >
-                    <j-input-number
-                        v-model:value="formData.virtualRule.rule.window.span"
-                        placeholder="请输入窗口长度"
-                        style="width: 100%"
-                        :max="999999"
-                        :min="1"
-                    />
+<!--                    <j-input-number-->
+<!--                        v-model:value="formData.virtualRule.window.span"-->
+<!--                        placeholder="请输入窗口长度"-->
+<!--                        style="width: 100%"-->
+<!--                        :max="999999"-->
+<!--                        :min="1"-->
+<!--                    />-->
                 </j-form-item>
                 <j-form-item
                     :label="
-                        formData.virtualRule?.rule?.windowType === 'time'
+                        formData.virtualRule?.windowType === 'time'
                             ? '步长(s)'
                             : '步长(次)'
                     "
-                    :name="['virtualRule', 'rule', 'window', 'every']"
+                    :name="['virtualRule', 'window', 'every']"
                     required
                     :rules="[
                         {
@@ -140,7 +140,7 @@
                 >
                     <j-input-number
                         style="width: 100%"
-                        v-model:value="formData.virtualRule.rule.window.every"
+                        v-model:value="formData.virtualRule.window.every"
                         placeholder="请输入步长"
                         :max="999999"
                         :min="1"
@@ -182,16 +182,14 @@ const props = defineProps({
 
 const initData = {
     triggerProperties: ['*'],
-    rule: {
-        type: undefined,
-        script: '',
-        isVirtualRule: false,
-        windowType: 'undefined',
-        aggType: undefined,
-        window: {
-            span: undefined,
-            every: undefined,
-        },
+    type: undefined,
+    script: '',
+    isVirtualRule: false,
+    windowType: 'undefined',
+    aggType: undefined,
+    window: {
+      span: undefined,
+      every: undefined,
     },
 };
 
@@ -208,16 +206,14 @@ const formData = reactive<{
     type: string[];
     virtualRule?: {
         triggerProperties: string[];
-        rule: {
-            type: 'script' | 'window' | undefined;
-            script: string | undefined;
-            isVirtualRule: boolean;
-            windowType: string;
-            aggType: string | undefined;
-            window: {
-                span: number | undefined;
-                every: number | undefined;
-            };
+        type: 'script' | 'window' | undefined;
+        script: string | undefined;
+        isVirtualRule: boolean;
+        windowType: string;
+        aggType: string | undefined;
+        window: {
+          span: number | undefined;
+          every: number | undefined;
         };
     };
 }>({
@@ -228,7 +224,7 @@ const formData = reactive<{
 const dataSource = inject<Ref<any[]>>('_dataSource')
 
 const windowTypeChange = () => {
-  formData.virtualRule!.rule.window = {
+  formData.virtualRule!.window = {
     span: undefined,
     every: undefined
   }
@@ -253,9 +249,10 @@ const options = computed(() => {
 });
 
 const setInitVirtualRule = () => {
+  console.log(props.value?.expands?.virtualRule);
   formData.virtualRule = {
+    ...(props.value?.expands?.virtualRule || initData),
     triggerProperties: props.value?.expands?.virtualRule?.triggerProperties || ['*'],
-    rule: props.value?.expands?.virtualRule?.rule || initData.rule
   }
 }
 
@@ -277,7 +274,7 @@ const handleSearch = async () => {
       if (resp && resp.status === 200 && resp.result) {
         formData.virtualRule = {
           triggerProperties: resp.result.triggerProperties,
-          rule: resp.result.rule,
+          ...resp.result.rule,
         }
       } else {
         setInitVirtualRule()
@@ -308,8 +305,6 @@ watch(
     () => props.value,
     () => {
         formData.type = props.value.expands?.type;
-        if (props.value.virtualRule) {
-        }
     },
     { immediate: true, deep: true },
 );
@@ -319,7 +314,7 @@ watch(
     (newVal: SourceType) => {
         if (newVal === 'rule') {
             formData.virtualRule = initData;
-            console.log(formData.virtualRule);
+
             handleSearch();
         } else {
             formData.virtualRule = undefined;
@@ -332,16 +327,13 @@ watch(
 );
 
 const _virtualRule = computed(() => {
-    const flag = formData?.virtualRule?.rule?.windowType !== 'undefined';
+    const flag = formData?.virtualRule?.windowType !== 'undefined';
     return {
         type: formData?.type,
         virtualRule: {
             type: flag ? 'window' : 'script',
-            rule: {
-                ...formData?.virtualRule?.rule,
-                isVirtualRule: flag,
-                type: flag ? 'window' : 'script',
-            },
+            ...formData?.virtualRule,
+            isVirtualRule: flag,
             triggerProperties: formData?.virtualRule?.triggerProperties.includes('*')
                 ? []
                 : formData?.virtualRule?.triggerProperties,

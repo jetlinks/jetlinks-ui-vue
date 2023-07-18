@@ -433,26 +433,46 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         required: true,
         rules: target !== 'device' ? [
           {
-            validator: async (_: Record<string, any>, value: any) => {
+            callback: async (rule: any, value: any, dataSource: any[]) => {
               console.log('value', value)
-              if (value.source) {
-                if(value.source !== 'rule') {
-                  if(value.type?.length) {
-                    return Promise.resolve();
-                  } else {
-                    return Promise.reject('请选择读写类型');
-                  }
-                } else {
-                  if(value.virtualRule?.rule?.script) {
-                    return Promise.resolve();
-                  }else {
-                    return Promise.reject('请配置规则');
-                  }
+              const field = rule.field.split('.')
+              const fieldIndex = Number(field[1])
+
+              const values = dataSource.find((item, index) => index === fieldIndex)
+              const virtualRule = values.elements?.virtualRule
+              const source = value.source
+              const ids = (noEdit?.value?.id || []) as any[]
+
+              if (source) {
+                if (source !== 'rule' && !value.type?.length) {
+                  return Promise.reject('请选择读写类型');
+                } else if(!ids.includes(values.id) && virtualRule){
+                  return Promise.reject('请配置规则');
                 }
-              } else {
-                return Promise.reject('请选择属性来源');
+
+                return Promise.resolve()
               }
+
+              return Promise.reject('请选择属性来源');
             }
+            //   if (value.source) {
+            //     if(value.source !== 'rule') {
+            //       if(value.type?.length) {
+            //         return Promise.resolve();
+            //       } else {
+            //         return Promise.reject('请选择读写类型');
+            //       }
+            //     } else {
+            //       if(value.virtualRule?.script) {
+            //         return Promise.resolve();
+            //       }else {
+            //         return Promise.reject('请配置规则');
+            //       }
+            //     }
+            //   } else {
+            //     return Promise.reject('请选择属性来源');
+            //   }
+            // }
           },
         ]: []
       },
