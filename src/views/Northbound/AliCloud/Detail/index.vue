@@ -619,7 +619,7 @@ const _validator = (_rule: any, value: string): Promise<any> =>
         const _item = productList.value.find((item) => item.id === value);
         if(!modelRef.id || modelRef.id === ':id') {
             return resolve('');
-        } else if (!_item) {
+        } else if (!_item && value) {
             return reject('关联产品已被删除，请重新选择');
         }
         return resolve('');
