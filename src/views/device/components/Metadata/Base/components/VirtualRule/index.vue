@@ -111,13 +111,13 @@
                         },
                     ]"
                 >
-<!--                    <j-input-number-->
-<!--                        v-model:value="formData.virtualRule.window.span"-->
-<!--                        placeholder="请输入窗口长度"-->
-<!--                        style="width: 100%"-->
-<!--                        :max="999999"-->
-<!--                        :min="1"-->
-<!--                    />-->
+                    <j-input-number
+                        v-model:value="formData.virtualRule.window.span"
+                        :max="999999"
+                        :min="1"
+                        placeholder="请输入窗口长度"
+                        style="width: 100%"
+                    />
                 </j-form-item>
                 <j-form-item
                     :label="
