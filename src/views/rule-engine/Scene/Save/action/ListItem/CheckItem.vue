@@ -67,7 +67,7 @@ const checkDeviceDelete = async () => {
 
       if (item!.selectorValues!.length === 1 && hasDevice) {
         const deviceDetail = deviceResp?.result?.data?.[0]
-        metadata = JSON.parse(deviceDetail?.deriveMetadata || '{}') // 只选中一个设备，以设备物模型为准
+        metadata = JSON.parse(deviceDetail?.deriveMetadata || productDetail?.metadata || '{}') // 只选中一个设备，以设备物模型为准
       }
     }
     if (!hasDevice) { // 某一个设备被删除
@@ -139,9 +139,8 @@ const checkDeviceDelete = async () => {
   }
 
 
-  if (item!.message!.messageType === 'READ_PROPERTY' && item!.message!.properties && metadata.properties) {
+  if (item!.message!.messageType === 'READ_PROPERTY') {
     let hasProperties = false
-    console.log('checkDeviceDelete',item!.message!.properties, metadata)
     if (item!.message!.properties && metadata.properties?.length) {
       const propertiesKey = item!.message!.properties?.[0]
       hasProperties = metadata.properties?.some((item: any) => item.id === propertiesKey)
@@ -154,8 +153,7 @@ const checkDeviceDelete = async () => {
     }
 
   }
-  console.log('WRITE_PROPERTY',item, metadata)
-  if (item!.message!.messageType === 'WRITE_PROPERTY' && item!.message!.properties && metadata.properties) {
+  if (item!.message!.messageType === 'WRITE_PROPERTY') {
     let hasProperties = false
     const propertiesKey = Object.keys(item!.message!.properties!)?.[0]
     if (item!.message!.properties && metadata.properties?.length) {
@@ -169,7 +167,7 @@ const checkDeviceDelete = async () => {
     }
     // 判断值-内置参数
     const _value = item!.message!.properties?.[propertiesKey]
-    console.log('WRITE_PROPERTY',_value)
+
     if(_value.source === 'upper') {
       const _params = {
         branch: props.thenName,
@@ -248,7 +246,6 @@ const checkNoticeDelete = async () => {
           const itemType = variableDefinitionsMap.get(variableKey)
           let hasUser = false
 
-          console.log(itemType, notifyType)
           if (itemType === 'user') { // 微信用户，钉钉用户
             let resp = undefined;
             if (['dingTalk', 'weixin'].includes(notifyType)) {
@@ -319,8 +316,7 @@ const checkNoticeDelete = async () => {
 }
 
 const check = () => {
-  const _executor = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.executor
-  console.log('check', _executor)
+  const _executor = _data.value.branches![props.branchesName].then[props.thenName].actions?.[props.name]?.executor
   if (_executor === 'device' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.device) { // 设备输出，并且有值
     checkDeviceDelete()
   } else if (_executor === 'notify' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.notify) {

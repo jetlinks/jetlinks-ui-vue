@@ -90,7 +90,8 @@ const getJVMEcharts = async (val: any) => {
         const _jvmOptions = {};
         const _jvmXAxis = new Set();
         if (res.result?.length) {
-          const filterArray =  props.isNoCommunity ? res.result.filter((item : any) => item.data?.clusterNodeId === props.serviceId) : res.result
+          // const filterArray =  props.isNoCommunity ? res.result.filter((item : any) => item.data?.clusterNodeId === props.serviceId) : res.result
+          const filterArray =  res.result
           filterArray.forEach((item: any) => {
                 const value = item.data.value;
                 const memoryJvmHeapFree = value.memoryJvmHeapFree;

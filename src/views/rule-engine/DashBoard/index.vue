@@ -250,6 +250,7 @@ const getDashBoard = () => {
                 },
                 grid: {
                     top: '2%',
+                    left: 40,
                     bottom: 0,
                 },
                 tooltip: {
@@ -428,7 +429,7 @@ const selectChange = () => {
                 .filter((item: any) => item.group === 'alarmTrend')
                 .forEach((item: any) => {
                     xData.push(item.data.timeString);
-                    sData.push(item.data.value);
+                    sData.push(item.data.value * 100000);
                 });
             const maxY = sData.sort((a,b)=>{
                 return b-a
@@ -451,7 +452,7 @@ const selectChange = () => {
                 grid: {
                     top: '2%',
                     bottom: '5%',
-                    left:  maxY > 10000 ? '50px' : '40px',
+                    left:  maxY < 1000 ? '40px' : maxY.toString().length * 10,
                     right: '48px',
                 },
                 series: [

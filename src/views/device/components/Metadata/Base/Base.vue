@@ -395,19 +395,22 @@ const handleSaveClick = async (next?: Function) => {
       const virtual: any[] = [];
       const arr = resp.map((item: any) => {
         if(item.expands?.virtualRule) {
+          const triggerProperties = item.expands.virtualRule.triggerProperties
+          const rule = omit(item.expands.virtualRule, ['triggerProperties'])
           virtual.push({
-            ...item.expands.virtualRule,
+            triggerProperties,
+            rule,
+            type: rule.type,
             propertyId: item.id
           })
         }
-        // return {
-        //   ...item,
-        //   expands: {
-        //     ...item.expands,
-        //     virtualRule: undefined
-        //   }
-        // }
-        return item
+        return {
+          ...item,
+          expands: {
+            ...omit(item.expands, ['virtualRule'])
+          }
+        }
+        // return item
       })
       // 保存规则
       if(virtual.length) {
