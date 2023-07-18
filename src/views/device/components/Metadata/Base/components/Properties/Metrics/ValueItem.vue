@@ -10,18 +10,18 @@
     >
       <template #content>
         <j-form ref="formRef" :model="formData">
-          <j-form-item v-if="value.range === 'false'" name="value" :rule="[{ required: true, message: '请输入指标值'}]">
+          <j-form-item v-if="value.range === false" :rules="[{ required: true, message: '请输入指标值'}]" name="value">
             <Item v-model:value="formData.value" />
           </j-form-item>
           <div v-else class="data-table-boolean-item">
             <div class="data-table-boolean-item--value">
-              <j-form-item :name="['rangeValue', 0]" :rule="[{ required: true, message: '请输入指标值'}]">
+              <j-form-item :name="['rangeValue', 0]" :rules="[{ required: true, message: '请输入指标值'}]">
                 <Item v-model:value="formData.rangeValue[0]" />
               </j-form-item>
             </div>
             <div>-</div>
             <div class="data-table-boolean-item--value">
-              <j-form-item :name="['rangeValue', 1]" :rule="[{ required: true, message: '请输入指标值'}]">
+              <j-form-item :name="['rangeValue', 1]" :rules="[{ required: true, message: '请输入指标值'}, { validator: validator}]">
                 <Item v-model:value="formData.rangeValue[1]" />
               </j-form-item>
             </div>
@@ -38,6 +38,7 @@ import { reactive } from 'vue';
 import type { PropType } from 'vue';
 import Item from './item.vue'
 import {Form} from "jetlinks-ui-components";
+import {cloneDeep} from "lodash";
 
 type ValueType = number | Array<number | undefined> | undefined;
 
@@ -56,13 +57,14 @@ const emit = defineEmits<Emit>();
 const formItemContext = Form.useInjectFormItemContext();
 
 
+
 const formData = reactive<{
   value: ValueType;
   rangeValue: ValueType;
 }>({
   value: props.value?.range === false ? props.value?.value : undefined,
   rangeValue: props.value?.range === true
-      ? props.value?.value || [undefined, undefined]
+      ? cloneDeep(props.value?.value) || [undefined, undefined]
       : [undefined, undefined],
 });
 
@@ -75,6 +77,13 @@ const showText = computed(() => {
     return props.value?.value?.[0] ? props.value.value.join('-') : ''
   }
 })
+
+const validator = (_: any, value: any) => {
+  if (props.value.range && formData.rangeValue![0] >= formData.rangeValue![1]) {
+    return Promise.reject('需大于左侧数值')
+  }
+  return Promise.resolve()
+}
 
 const confirm = () => {
   return new Promise((resolve, reject) => {

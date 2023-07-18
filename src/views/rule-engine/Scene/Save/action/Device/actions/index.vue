@@ -268,7 +268,8 @@ watch(
     () => props.productDetail,
     (newVal) => {
         if (newVal?.id) {
-            if (props.values?.selector === 'fixed') {
+                console.log(props.values)
+            if (props.values?.selector === 'fixed' && props.values?.selectorValues?.length === 1) {
                 const id = props.values?.selectorValues?.[0]?.value;
                 if (id) {
                     detail(id).then((resp) => {
@@ -276,6 +277,7 @@ watch(
                             metadata.value = JSON.parse(
                                 resp.result?.metadata || '{}',
                             );
+                          console.log(metadata.value, resp.result?.metadata)
                         }
                     });
                 }

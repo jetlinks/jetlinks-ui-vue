@@ -147,15 +147,19 @@ const onSave = (dt: any) => {
 
 <style lang="less" scoped>
 .child-item {
-    padding: 5px 20px 0 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0px 1px 0px 0px #e2e2e2;
+    height: 68px;
+    background: linear-gradient(270deg, #ffffff 0%, #f1f6ff 99%);
+    border-radius: 4px;
+    border: 1px solid #ebeef3;
+    margin-bottom: 10px;
 
     .child-item-left {
         display: flex;
         align-items: center;
+        margin-left: 24px;
 
         div {
             display: flex;
@@ -172,6 +176,7 @@ const onSave = (dt: any) => {
 
     .child-item-right {
         display: flex;
+        margin-right: 16px;
     }
 }
 </style>

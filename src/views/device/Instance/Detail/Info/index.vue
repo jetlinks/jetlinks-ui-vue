@@ -11,35 +11,27 @@
                 编辑
             </PermissionButton>
         </template>
-        <j-descriptions-item label="设备ID">{{
-            instanceStore.current?.id
-        }}</j-descriptions-item>
-        <j-descriptions-item v-if='instanceStore.current?.accessProvider === "plugin_gateway"'>
-            <template #label>
-              <div>
-                第三方系统设备ID
-                <j-tooltip>
-                  <template #title>
-                    <p>通过调用SDK或HTTP请求的方式接入第三方系统设备数据时，第三方系统与平台当前设备对应的设备ID。</p>
-                    如双方ID值一致，则无需填写
-                  </template>
-                  <a-icon type='QuestionCircleOutlined' />
-                </j-tooltip>
-
-              </div>
-            </template>
-            <j-button v-if='!inklingDeviceId' type="link" @click='giveAnInkling'>映射</j-button>
-            <div v-else style='display: flex;justify-content: space-between;align-items: center;'>
-              <div style='flex: 1 1 auto;'>
-                <j-ellipsis>{{ inklingDeviceId }}</j-ellipsis>
-              </div>
-              <j-button type='link'>
-                <a-icon
-                  type='EditOutlined'
-                  @click='inkingVisible = true'
-                />
-              </j-button>
+        <j-descriptions-item label="设备ID">
+          <div style="display: flex">
+            <div style="flex: 1">
+              <j-ellipsis> {{ instanceStore.current?.id }} </j-ellipsis>
             </div>
+            <div v-if='instanceStore.current?.accessProvider === "plugin_gateway"'>
+              <j-tooltip>
+                <template #title>
+                  <p>通过调用SDK或HTTP请求的方式接入第三方系统设备数据时，第三方系统与平台当前设备对应的设备ID。</p>
+                  如双方ID值一致，则无需填写
+                </template>
+                <a v-if="!inklingDeviceId" type='link' @click='giveAnInkling'>
+                  未映射
+                </a>
+                <a v-else type='link' @click='inkingVisible = true'>
+                  已映射
+                </a>
+              </j-tooltip>
+            </div>
+
+          </div>
         </j-descriptions-item>
         <j-descriptions-item label="产品名称">{{
             instanceStore.current?.productName

@@ -25,6 +25,7 @@
                 style="height: 100%"
                 theme="vs"
                 v-model:modelValue="editorValue"
+                :registrationTypescript="typescriptTip"
             />
         </div>
         <div class="bottom">
@@ -112,10 +113,10 @@ import PermissionButton from '@/components/PermissionButton/index.vue';
 import { useFullscreen } from '@vueuse/core';
 import { useProductStore } from '@/store/product';
 import {
-    productCode,
-    getProtocal,
-    testCode,
-    saveProductCode,
+  productCode,
+  getProtocal,
+  testCode,
+  saveProductCode, queryProductCodeTips,
 } from '@/api/device/instance';
 import { isBoolean } from 'lodash';
 import { onlyMessage } from '@/utils/comm';
@@ -135,6 +136,9 @@ const resultValue = ref<any>({});
 const loading = ref<boolean>(false);
 const isTest = ref<boolean>(false);
 const editorValue = ref<string>('');
+const typescriptTip = reactive({
+  typescript: ''
+})
 
 const resStyle = computed(() =>
     isBoolean(resultValue.value.success)
@@ -168,6 +172,16 @@ const getTopic = async () => {
         topicList.value = item;
     }
 };
+
+const queryCodeTips = () => {
+  queryProductCodeTips(productStore.current.id).then(res => {
+    if (res.success) {
+      typescriptTip.typescript = res.result
+    }
+  })
+}
+
+
 //获取产品解析规则
 const getProductCode = async () => {
     const res: any = await productCode(productStore.current.id);
@@ -248,6 +262,7 @@ const debug = () => {
 onMounted(() => {
     getProductCode();
     getTopic();
+  queryCodeTips()
 });
 </script>
 
