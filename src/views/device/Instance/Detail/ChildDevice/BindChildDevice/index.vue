@@ -194,13 +194,22 @@ const handleOk = () => {
     if (instanceStore.current.accessProvider === 'official-edge-gateway') { // 网关设备
       queryDeviceMapping(instanceStore.current.id)
           .then(res => {
-            const arr = bindDeviceRef.value?._dataSource.filter(item => {
-              return !res.result?.[0]?.find(val => val.deviceId === item.id) && _selectedRowKeys.value.includes(item.id);
-            }).map(item => {
-              return {
-                deviceId: item.id,
-                deviceName: item.name
-              }
+            const arr = bindDeviceRef.value?._dataSource.filter((item: any) => {
+              return _selectedRowKeys.value.includes(item.id);
+            }).map((item: any) => {
+                const _item = res.result?.[0]?.find((val: any) => val.deviceId === item.id)
+                if(_item){
+                    return {
+                        id: _item.id,
+                        deviceId: _item.deviceId,
+                        deviceName: _item.deviceName
+                    }
+                }else {
+                    return {
+                        deviceId: item.id,
+                        deviceName: item.name
+                    }
+                }
             })
             return saveDeviceMapping(instanceStore.current.id, {info: arr})
           }).then(res => {
