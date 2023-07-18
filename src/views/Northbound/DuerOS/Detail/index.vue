@@ -779,7 +779,9 @@ const onActiveProduct = () => {
 const _validator = (_rule: any, value: string): Promise<any> =>
     new Promise((resolve, reject) => {
         const _item = productList.value.find((item) => item.id === value);
-        if (!_item) {
+        if(!modelRef.id || modelRef.id === ':id') {
+            return resolve('');
+        } else if (!_item) {
             productChange(value);
             return reject('关联产品已被删除，请重新选择');
         } else {
@@ -789,8 +791,8 @@ const _validator = (_rule: any, value: string): Promise<any> =>
             } else {
                 _error.value = '';
             }
+            return resolve('');
         }
-        return resolve('');
     });
 
 const saveBtn = async () => {
