@@ -779,18 +779,19 @@ const onActiveProduct = () => {
 const _validator = (_rule: any, value: string): Promise<any> =>
     new Promise((resolve, reject) => {
         const _item = productList.value.find((item) => item.id === value);
-        if (!_item) {
+        if(!modelRef.id || modelRef.id === ':id') {
+            return resolve('');
+        } else if (!_item && value) {
             productChange(value);
             return reject('关联产品已被删除，请重新选择');
         } else {
             if (!_item?.state) {
                 _error.value = `当前选择的${_item.name}产品为禁用状态`;
-                // return reject(`当前选择的${_item.name}产品为禁用状态`)
             } else {
                 _error.value = '';
             }
+            return resolve('');
         }
-        return resolve('');
     });
 
 const saveBtn = async () => {
