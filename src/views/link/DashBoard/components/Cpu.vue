@@ -92,7 +92,8 @@ const getCPUEcharts = async (val: any) => {
         const _cpuXAxis = new Set();
         if (res.result?.length) {
           // 根据服务节点来筛选数据
-          const filterArray = props.isNoCommunity ? res.result.filter((item : any) => item.data?.clusterNodeId === props.serviceId) : res.result
+          // const filterArray = props.isNoCommunity ? res.result.filter((item : any) => item.data?.clusterNodeId === props.serviceId) : res.result
+          const filterArray = res.result
           filterArray.forEach((item: any) => {
                 const value = item.data.value;
                 const nodeID = item.data.clusterNodeId;
