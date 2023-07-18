@@ -3835,10 +3835,10 @@ jetlinks-ui-components@^1.0.23:
     lodash-es "^4.17.21"
     monaco-editor "^0.35.0"
 
-jetlinks-ui-components@^1.0.24:
-  version "1.0.24"
-  resolved "http://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.24.tgz#e15551fb114e4cb8752db962423b3ca17d9389c1"
-  integrity sha512-TGyQ9SmdkoNkZScfYvfBF1/P1oBzXkxMuzR+DiNnof6CbSlYfPrkRsJIpOIZUjqg2o/6dyKLDK8gOxbxWm8wjA==
+jetlinks-ui-components@^1.0.25:
+  version "1.0.25"
+  resolved "http://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.25.tgz#b783da3fe05c1420b2ee5707868a67baa90559f7"
+  integrity sha512-4HJM9Wi8gFfBgYFPjCO7JpmEAXVtDUf5u5lnXTQUt1QkGh0QCzFSBGBIStFs6HE5oY3oIIS3ZWoAjvXElpnNZg==
   dependencies:
     "@vueuse/core" "^9.12.0"
     "@vueuse/router" "^9.13.0"

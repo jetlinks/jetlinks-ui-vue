@@ -11,7 +11,27 @@
                             ></j-input> </j-form-item
                     ></j-col>
                     <j-col :span="12">
-                        <j-form-item label="类型" name="targetType">
+                        <j-form-item name="targetType">
+                            <template #label>
+                                <j-space>
+                                    类型
+                                    <j-tooltip>
+                                        <template #title>
+                                            <div>产品：以产品维度告警，某产品下的多个设备异常仅发送一条告警。</div>
+                                            <div>设备：以设备维度告警，任何设备异常即发送一条告警。</div>
+                                            <div>组织：以组织维度告警，某组织下的多个设备异常仅发送一条告警。</div>
+                                            <div>其他：以场景联动维度告警，某场景下的多个设备异常仅发送一条告警。</div>
+                                        </template>
+                                        <AIcon
+                                            type="QuestionCircleOutlined"
+                                            style="
+                                                color: rgb(136, 136, 136);
+                                                font-size: 12px;
+                                            "
+                                        />
+                                    </j-tooltip>
+                                </j-space>
+                            </template>
                             <j-select
                                 :options="options"
                                 v-model:value="form.targetType"
@@ -91,13 +111,13 @@ let selectDisable = ref(false);
 const alarmConfigurationStore = useAlarmConfigurationStore();
 let { configurationData } = storeToRefs(alarmConfigurationStore);
 
-const emit = defineEmits(['change'])
+const emit = defineEmits(['change']);
 
 const queryData = () => {
     if (route.query?.id) {
         detail(route.query?.id).then((res) => {
             if (res.status === 200) {
-                emit('change', res?.result?.targetType)
+                emit('change', res?.result?.targetType);
                 form.value = res?.result;
                 // form.level = res?.result?.level;
                 // form.name = res?.result?.name;
@@ -209,7 +229,7 @@ const handleSave = async () => {
             if (res.status === 200) {
                 onlyMessage('操作成功,请配置关联的场景联动');
                 loading.value = false;
-              emit('change', form.value.targetType)
+                emit('change', form.value.targetType);
                 if (res.result?.id) {
                     menuStory.jumpPage(
                         'rule-engine/Alarm/Configuration/Save',
