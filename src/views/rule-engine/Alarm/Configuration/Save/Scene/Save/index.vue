@@ -7,6 +7,7 @@
         :width="1000"
         @cancel="closeModal"
         @ok="saveCorrelation"
+        :maskClosable="false"
     >
         <pro-search :columns="columns" @search="handleSearch" />
         <div style="height: 500px; overflow-y: auto">

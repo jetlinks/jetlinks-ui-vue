@@ -21,10 +21,9 @@
                         <j-collapse-panel
                             v-for="item in dataSource"
                             :key="item.provider"
-                            class="custom"
                             :header="item.name"
                         >
-                            <div class="child">
+                            <div>
                                 <template
                                     v-for="child in item.children"
                                     :key="child.id"
@@ -110,26 +109,32 @@ onMounted(() => {
 
 <style lang="less" scoped>
 .alert {
-    height: 40px;
     padding-left: 10px;
-    margin-bottom: 10px;
     color: #999999;
-    line-height: 40px;
-}
-.custom {
-    background: #F7F8FA;
-    border: 0;
-    overflow: hidden;
-    color: #333333;
-}
-.child {
-    background-color: white;
-    padding-bottom: 24px;
+    margin-bottom: 16px;
 }
 
 .content-collapse {
-    :deep(.ant-collapse-content > .ant-collapse-content-box) {
-        padding: 0;
+    :deep(.ant-collapse) {
+        border-color: #EBEEF3;
+        background-color: #fff;
+
+        .ant-collapse-item {
+            border: 1px solid #EBEEF3;
+            margin-bottom: 24px;
+        }
+
+        .ant-collapse-header {
+            background-color: #F7F8FA;
+            height: 42px;
+        }
+        .ant-collapse-content {
+            padding: 17px 21px 7px 21px;
+        }
+
+        .ant-collapse-content-box {
+            padding: 0;
+        }
     }
 }
 </style>

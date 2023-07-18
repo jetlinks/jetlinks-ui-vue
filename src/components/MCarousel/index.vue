@@ -8,9 +8,6 @@
         <div class="box-item" v-for="item in getData" :key="item.id">
             <slot name="card" v-bind="item"></slot>
         </div>
-        <div class="box-item">
-            <slot name="add"></slot>
-        </div>
         <div class="box-btn" v-if="(pageIndex + 1) * showLength < data.length">
             <div class="box-item-action" @click="onRight">
                 <AIcon type="RightOutlined" />
@@ -63,14 +60,13 @@ const onLeft = () => {
 .box {
     display: flex;
     align-items: center;
-    margin: 5px 0;
+    margin: 8px 0;
     .box-item {
-        margin: 0 6px;
-        max-width: 48px;
+        margin: 0 12px;
+        max-width: 60px;
     }
 
     .box-btn {
-        margin-right: 12px;
         .box-item-action {
             width: 12px;
             background-color: #F7F8FA;
@@ -79,6 +75,7 @@ const onLeft = () => {
             font-size: 12px;
             color: #666666;
             cursor: pointer;
+
             &:hover {
                 background-color: #EFF2FE;
                 color: @primary-color;
