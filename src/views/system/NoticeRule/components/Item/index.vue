@@ -1,6 +1,6 @@
 <template>
     <j-spin :spinning="spinning">
-        <div class="child-item" :class="{ border: !isLast }">
+        <div class="child-item">
             <div class="child-item-left">
                 <div style="color: #333333">
                     {{ data?.name }}
@@ -14,7 +14,10 @@
                         />
                     </j-tooltip>
                 </div>
-                <div class="child-item-left-auth" :class="{ disabled: !checked }">
+                <div
+                    class="child-item-left-auth"
+                    :class="{ disabled: !checked }"
+                >
                     <j-tooltip>
                         <template #title>
                             <span v-if="!update">暂无权限，请联系管理员</span>
@@ -27,9 +30,17 @@
                             type="text"
                             @click="onAuth"
                         >
-                            <span v-if="!auth.length" class="child-item-left-auth-lock" ><AIcon type="LockFilled" /></span>
-                            <span v-else class="child-item-left-auth-key"><AIcon type="KeyOutlined" /></span>
-                            <span class="child-item-left-auth-text">权限控制</span>
+                            <span
+                                v-if="!auth.length"
+                                class="child-item-left-auth-lock"
+                                ><AIcon type="LockFilled"
+                            /></span>
+                            <span v-else class="child-item-left-auth-key"
+                                ><AIcon type="KeyOutlined"
+                            /></span>
+                            <span class="child-item-left-auth-text"
+                                >权限控制</span
+                            >
                         </j-button>
                     </j-tooltip>
                 </div>
@@ -99,25 +110,15 @@
                     </template>
                 </MCarousel>
 
-                <div class="box-item-add">
-                    <div class="box-item-img">
-                        <j-tooltip
-                            :title="!add ? '暂无权限，请联系管理员' : ''"
-                        >
-                            <j-button
-                                :disabled="!add"
-                                type="text"
-                                @click="onAdd"
-                            >
-                                <AIcon
-                                    style="font-size: 20px"
-                                    type="PlusOutlined"
-                                />
-                            </j-button>
-                        </j-tooltip>
-                    </div>
-                    <div class="box-item-text"></div>
-                </div>
+                <j-tooltip :title="!add ? '暂无权限，请联系管理员' : ''">
+                    <j-button
+                        class="box-item-add"
+                        :disabled="!add"
+                        @click="onAdd"
+                    >
+                        <AIcon type="PlusOutlined" />
+                    </j-button>
+                </j-tooltip>
             </div>
         </div>
     </j-spin>
@@ -304,12 +305,15 @@ const onAction = (e: boolean) => {
                             role: {
                                 idList: [],
                             },
-                            permissions: props.provider === 'alarm' ? [
-                                {
-                                    id: 'alarm-config',
-                                    actions: ['query'],
-                                },
-                            ] : [],
+                            permissions:
+                                props.provider === 'alarm'
+                                    ? [
+                                          {
+                                              id: 'alarm-config',
+                                              actions: ['query'],
+                                          },
+                                      ]
+                                    : [],
                         },
                     },
                 ],
@@ -406,15 +410,19 @@ const onSave = (_data: any) => {
 
 <style lang="less" scoped>
 .child-item {
-    padding: 0 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 68px;
+    background: linear-gradient(270deg, #ffffff 0%, #f1f6ff 99%);
+    border-radius: 4px;
+    border: 1px solid #ebeef3;
+    margin-bottom: 10px;
 
     .child-item-left {
         display: flex;
         align-items: center;
-        height: 80px;
+        margin-left: 24px;
 
         div {
             display: flex;
@@ -435,19 +443,20 @@ const onSave = (_data: any) => {
                 color: #666666;
             }
             .child-item-left-auth-key {
-                color: #00C800;
+                color: #00c800;
                 font-size: 18px;
                 margin-right: 10px;
             }
 
-            .child-item-left-auth-lock{
+            .child-item-left-auth-lock {
                 color: @primary-color;
                 font-size: 18px;
                 margin-right: 10px;
             }
 
             &.disabled {
-                .child-item-left-auth-key, .child-item-left-auth-lock {
+                .child-item-left-auth-key,
+                .child-item-left-auth-lock {
                     color: #666666 !important;
                 }
             }
@@ -460,19 +469,14 @@ const onSave = (_data: any) => {
 
         .box-item {
             cursor: pointer;
-            width: 48px;
-            margin: 0 2px;
+            width: 100%;
             display: flex;
             justify-content: space-between;
             flex-direction: column;
             align-items: center;
             .box-item-img {
-                background-color: #fff;
                 width: 32px;
                 height: 32px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
             }
 
             .box-item-text {
@@ -485,21 +489,27 @@ const onSave = (_data: any) => {
 
         .box-item-add {
             cursor: pointer;
-            background-color: #f8f9fc;
-            // width: 54px;
+            background-color: #F7F8FA;
+            width: 54px;
             height: 54px;
             display: flex;
             align-items: center;
-            margin-left: 12px;
+            justify-content: center;
+            color: #666666;
+            border: none;
+            padding: 0;
+            border-radius: 0;
+            margin: 0 16px;
+
+            &:hover {
+                background-color: #eff2fe;
+                color: #2f54eb;
+            }
         }
 
         &.disabled {
             filter: grayscale(100%);
         }
-    }
-
-    &.border {
-        box-shadow: 0px 1px 0px 0px #e2e2e2;
     }
 }
 </style>
