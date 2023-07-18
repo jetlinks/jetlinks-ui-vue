@@ -33,6 +33,7 @@
 import { defineExpose, provide } from 'vue'
 import MetricValueItem from './ValueItem.vue'
 import {validatorConfig} from "@/views/device/components/Metadata/Base/columns";
+import BooleanSelect from "@/views/device/components/Metadata/Base/components/Properties/Metrics/BooleanSelect.vue";
 
 const props = defineProps({
   value: {
@@ -107,7 +108,6 @@ const columns: any = [
       rules: [
         {
           validator(_: any, value: any) {
-            console.log('指标配置', value)
             if (!value) {
               return Promise.reject('请配置指标')
             }
@@ -132,17 +132,11 @@ const newColumns = computed(() => {
         title: '指标值',
         dataIndex: 'range',
         width: 120,
-        type: 'booleanSelect',
+        type: 'components',
         components: {
-          props: {
-            trueText: '范围值',
-            trueValue: true,
-            falseText: '固定值',
-            falseValue: false,
-          }
+          name: BooleanSelect
         }
     })
-    console.log(data);
     return data
   }
   return columns

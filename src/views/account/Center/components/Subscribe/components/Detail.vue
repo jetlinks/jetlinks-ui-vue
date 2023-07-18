@@ -105,7 +105,7 @@ const handleSearch = async () => {
             );
         });
         if (_item) {
-            info.value = _item?.providerName || _item?.provider
+            info.value = _item?.providerName || _item?.thirdPartyUserId
         }
     }
 };

@@ -68,6 +68,7 @@
                 style="height: 100%"
                 theme="vs"
                 v-model:modelValue="editorValue"
+                :registrationTypescript="typescriptTip"
             />
         </div>
         <div class="bottom">
@@ -151,11 +152,11 @@ import PermissionButton from '@/components/PermissionButton/index.vue';
 import { useFullscreen } from '@vueuse/core';
 import { useInstanceStore } from '@/store/instance';
 import {
-    deviceCode,
-    getProtocal,
-    testCode,
-    saveDeviceCode,
-    delDeviceCode,
+  deviceCode,
+  getProtocal,
+  testCode,
+  saveDeviceCode,
+  delDeviceCode, queryCodeTips, queryProductCodeTips,
 } from '@/api/device/instance';
 import { message } from 'jetlinks-ui-components';
 import { isBoolean } from 'lodash';
@@ -178,6 +179,11 @@ const resultValue = ref<any>({});
 const loading = ref<boolean>(false);
 const isTest = ref<boolean>(false);
 const editorValue = ref<string>('');
+
+const typescriptTip = reactive({
+  typescript: ''
+})
+
 
 const color = computed(() => ({
     color: readOnly.value ? '#415ed1' : '#a6a6a6',
@@ -228,12 +234,24 @@ const getTopic = async () => {
         topicList.value = item;
     }
 };
+
+const queryCode = () => {
+  queryCodeTips(instanceStore.current.productId,
+      instanceStore.current.id,).then(res => {
+    if (res.success) {
+      typescriptTip.typescript = res.result
+    }
+  })
+}
+
 //获取设备解析规则
 const getDeviceCode = async () => {
     const res: any = await deviceCode(
         instanceStore.current.productId,
         instanceStore.current.id,
     );
+
+
     if (res.status === 200) {
         const item = res.result?.configuration?.script
             ? res.result?.configuration?.script
@@ -260,6 +278,7 @@ const test = async (dataTest: any) => {
         loading.value = false;
     }
 };
+
 
 //保存设备解析规则
 const save = async () => {
@@ -328,6 +347,7 @@ watch(() => instanceStore.current?.id, () => {
   if (instanceStore.current?.id) {
     getDeviceCode();
     getTopic();
+    queryCode()
   }
 }, { immediate: true })
 </script>

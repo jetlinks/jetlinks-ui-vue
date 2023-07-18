@@ -10,6 +10,8 @@
         v-else-if="['int', 'long', 'float', 'double'].includes(type)"
         v-model:value="myValue"
         :precision="0"
+        :max="2147483647"
+        :min="-2147483647"
         style="width: 100%"
         placeholder="请输入"
         @change="change"
@@ -31,6 +33,7 @@
     />
 </template>
 <script setup name="MetricValueItem">
+import { Form } from 'jetlinks-ui-components'
 
 const props = defineProps({
     value: {
@@ -40,11 +43,13 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:value'])
+const formItemContext = Form.useInjectFormItemContext();
 
 const type = inject('metricsType')
 const myValue = ref(props.value)
 
 const change = () => {
+    // formItemContext.onFieldChange()
     emit('update:value', myValue.value)
 }
 
