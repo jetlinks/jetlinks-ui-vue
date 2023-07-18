@@ -536,7 +536,7 @@ const onSave = (data: ActionsType, options: any) => {
   _data.value.branches![props.branchesName].then[props.thenName].actions.splice(props.name, 1, actionItem)
   checkItemRef.value?.formTouchOff?.()
   visible.value = false;
-  EventEmitter.emit(eventEmitterKey.value, data) // 发布消息
+  EventEmitter.emit(key!, data) // 发布消息
 };
 
 /**

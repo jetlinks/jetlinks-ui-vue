@@ -251,7 +251,8 @@ const options = computed(() => {
 const setInitVirtualRule = () => {
   console.log(props.value?.expands?.virtualRule);
   formData.virtualRule = {
-    ...(props.value?.expands?.virtualRule || initData),
+    ...initData,
+    ...(props.value?.expands?.virtualRule || {}),
     triggerProperties: props.value?.expands?.virtualRule?.triggerProperties || ['*'],
   }
 }
