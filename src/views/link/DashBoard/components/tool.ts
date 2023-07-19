@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import * as echarts from 'echarts';
 
 // export const getInterval = (type: string) => {
@@ -41,6 +41,8 @@ export const getTimeByType = (type: string) => {
             return dayjs().subtract(29, 'days');
         case 'year':
             return dayjs().subtract(365, 'days');
+        case 'day':
+            return dayjs().subtract(24, 'hours');
         default:
             return dayjs().startOf('day');
     }
@@ -58,14 +60,14 @@ export const networkParams = (val: any) => {
     let _time = '1h';
     let _limit = 12;
     let format = 'HH';
-
-    const dt = Number(val.time.time[1]) - Number(val.time.time[0]);
+    // @ts-ignore
+    const dt = dayjs(val.time.time[1]) - dayjs(val.time.time[0])
     const hour = 60 * 60 * 1000;
     const days = hour * 24;
     const months = days * 30;
     const year = 365 * days;
 
-    if (dt <= hour) {
+    if (dt <= (hour + 10)) {
         format = 'mm:ss';
         _time = '1m';
         _limit = 30;

@@ -38,18 +38,26 @@
                     v-if="isEmpty"
                     style="height: 200px; margin-top: 100px"
                 />
-                <div
-                    v-else
-                    ref="chartRef"
-                    style="width: 100%; height: 300px"
-                ></div>
+                <template v-else>
+                  <div style="height: 300px">
+                    <Echarts
+                        :options="echartsOptions"
+                    />
+                  </div>
+
+                  <ServerList
+                      v-if="serverOptions.length > 1"
+                      v-model:value="serverActive"
+                      :options="serverOptions"
+                      color="#2CB6E0"
+                  />
+                </template>
             </div>
         </div>
     </j-spin>
 </template>
 m
 <script lang="ts" setup name="Cpu">
-import * as echarts from 'echarts';
 import { dashboard } from '@/api/link/dashboard';
 import dayjs from 'dayjs';
 import {
@@ -60,7 +68,8 @@ import {
     typeDataLine,
 } from './tool.ts';
 import { DataType } from '../typings';
-
+import ServerList from './ServerList.vue'
+import Echarts from './echarts.vue'
 
 const props = defineProps({
   serviceId: {
@@ -80,10 +89,53 @@ const data = ref<DataType>({
     time: [null, null],
 });
 const isEmpty = ref(false);
+const serverActive = ref<string[]>([])
+const serverOptions = ref<string[]>([])
+const serverData = reactive({
+  xAxis: [],
+  data: []
+})
+
 const pickerTimeChange = () => {
     data.value.type = undefined;
 };
 
+const echartsOptions = computed(() => {
+  const series = serverActive.value.length
+          ? serverActive.value.map((key) => setOptions(serverData.data, key))
+          : typeDataLine
+  return {
+    xAxis: {
+      type: 'category',
+      boundaryGap: false,
+      data: arrayReverse(serverData.xAxis),
+    },
+    tooltip: {
+      trigger: 'axis',
+      valueFormatter: (value: any) => `${value}%`,
+    },
+    yAxis: {
+      type: 'value',
+    },
+    grid: {
+      left: '50px',
+      right: '50px',
+    },
+    dataZoom: [
+      {
+        type: 'inside',
+        start: 0,
+        end: 100,
+      },
+      {
+        start: 0,
+        end: 100,
+      },
+    ],
+    color: ['#2CB6E0'],
+    series: series
+  };
+})
 const getCPUEcharts = async (val: any) => {
     loading.value = true;
     const res: any = await dashboard(defulteParamsData('cpu', val));
@@ -129,50 +181,12 @@ const setOptions = (optionsData: any, key: string) => ({
 });
 
 const handleCpuOptions = (optionsData: any, xAxis: any) => {
-    if (optionsData.length === 0 && xAxis.length === 0) return;
-    const chart: any = chartRef.value;
-    if (chart) {
-        const myChart = echarts.init(chart);
-        const dataKeys = Object.keys(optionsData);
-        const options = {
-            xAxis: {
-                type: 'category',
-                boundaryGap: false,
-                data: arrayReverse(xAxis),
-            },
-            tooltip: {
-                trigger: 'axis',
-                valueFormatter: (value: any) => `${value}%`,
-            },
-            yAxis: {
-                type: 'value',
-            },
-            grid: {
-                left: '50px',
-                right: '50px',
-            },
-            dataZoom: [
-                {
-                    type: 'inside',
-                    start: 0,
-                    end: 100,
-                },
-                {
-                    start: 0,
-                    end: 100,
-                },
-            ],
-            color: ['#2CB6E0'],
-            series: dataKeys.length
-                ? dataKeys.map((key) => setOptions(optionsData, key))
-                : typeDataLine,
-        };
-        myChart.setOption(options);
-        window.addEventListener('resize', function () {
-            myChart.resize();
-        });
-    }
-};
+    const dataKeys = Object.keys(optionsData);
+    serverActive.value = dataKeys
+    serverOptions.value = dataKeys
+    serverData.xAxis = xAxis
+    serverData.data = optionsData
+}
 
 watch(
     () => data.value.type,

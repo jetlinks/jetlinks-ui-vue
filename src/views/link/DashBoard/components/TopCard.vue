@@ -1,43 +1,47 @@
 <template>
     <div>
-        <j-select
-            style="width: 300px; margin-bottom: 20px"
-            @change="serverIdChange"
-            :value="serverId"
-            :options="serverNodeOptions"
-            v-if="serverNodeOptions.length > 1"
-        ></j-select>
+
         <div class="dash-board">
+          <j-select
+              v-if="serverNodeOptions.length > 1"
+              :options="serverNodeOptions"
+              :value="serverId"
+              style="width: 300px; margin-bottom: 20px"
+              @change="serverIdChange"
+          ></j-select>
+          <div class="dash-board-items">
             <div class="dash-board-item">
-                <TopEchartsItemNode title="CPU使用率" :value="topValues.cpu" />
+              <TopEchartsItemNode :value="topValues.cpu" title="CPU使用率" />
             </div>
             <div class="dash-board-item">
-                <TopEchartsItemNode
-                    title="JVM内存"
-                    :max="topValues.jvmTotal"
-                    :bottom="`总JVM内存 ${topValues.jvmTotal}G`"
-                    formatter="G"
-                    :value="topValues.jvm"
-                />
+              <TopEchartsItemNode
+                  :bottom="`总JVM内存 ${topValues.jvmTotal}G`"
+                  :max="topValues.jvmTotal"
+                  :value="topValues.jvm"
+                  formatter="G"
+                  title="JVM内存"
+              />
             </div>
             <div class="dash-board-item">
-                <TopEchartsItemNode
-                    title="磁盘占用"
-                    :max="topValues.usageTotal"
-                    :bottom="`总磁盘大小 ${topValues.usageTotal}G`"
-                    formatter="G"
-                    :value="topValues.usage"
-                />
+              <TopEchartsItemNode
+                  :bottom="`总磁盘大小 ${topValues.usageTotal}G`"
+                  :max="topValues.usageTotal"
+                  :value="topValues.usage"
+                  formatter="G"
+                  title="磁盘占用"
+              />
             </div>
             <div class="dash-board-item">
-                <TopEchartsItemNode
-                    title="系统内存"
-                    :max="topValues.systemUsageTotal"
-                    :bottom="`系统内存 ${topValues.systemUsageTotal}G`"
-                    formatter="G"
-                    :value="topValues.systemUsage"
-                />
+              <TopEchartsItemNode
+                  :bottom="`系统内存 ${topValues.systemUsageTotal}G`"
+                  :max="topValues.systemUsageTotal"
+                  :value="topValues.systemUsage"
+                  formatter="G"
+                  title="系统内存"
+              />
             </div>
+          </div>
+
         </div>
     </div>
 </template>
@@ -115,6 +119,7 @@ const getData = () => {
 };
 
 onMounted(() => {
+  console.log('isNoCommunity')
     if (isNoCommunity) {
       serverNode().then((resp: any) => {
           if (resp.success) {
@@ -143,19 +148,21 @@ watch(
         emit('serviceChange', val)
     },
 );
+
 </script>
 
 <style lang="less" scoped>
 .dash-board {
-    display: flex;
-    flex-wrap: wrap;
-    height: 100%;
     background-color: #fff;
-    // box-shadow: 0px 2.73036px 5.46071px rgba(31, 89, 245, 0.2);
-    border-radius: 2px;
-    justify-content: space-between;
-    padding: 24px;
-    gap: 24px;
+  padding: 24px;
+    .dash-board-items {
+      display: flex;
+      flex-wrap: wrap;
+      border-radius: 2px;
+      justify-content: space-between;
+
+      gap: 24px;
+    }
     .dash-board-item {
         flex: 1;
         //margin: 24px 12px;
