@@ -20,6 +20,7 @@
                             :checkedKeys="checkedKeys"
                             :load-data="onLoadData"
                             @check="onCheck"
+                            v-model:expandedKeys="expandedKeys"
                         />
                     </j-card>
                     <div style="width: 100px">
@@ -120,7 +121,11 @@ const handleSearch = async () => {
     }
 };
 
+
+const expandedKeys = ref<string[]>([])
 const onCheck = (keys: string[], e: any) => {
+    // console.log(expandedKeys.push(e));
+    expandedKeys.value.push(e.node.id)
     checkedKeys.value = [...keys];
     leftList.value = e?.checkedNodes || [];
 };
