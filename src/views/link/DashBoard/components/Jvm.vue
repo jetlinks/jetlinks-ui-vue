@@ -20,15 +20,11 @@
                             style="margin-right: 10px"
                             v-model:value="data.type"
                         >
-                            <j-radio-button value="hour">
-                                最近1小时
-                            </j-radio-button>
-                            <j-radio-button value="today">
-                                今日
-                            </j-radio-button>
-                            <j-radio-button value="week">
-                                近一周
-                            </j-radio-button>
+                          <j-radio-button value="hour">
+                            最近1小时
+                          </j-radio-button>
+                          <j-radio-button value="day"> 最近24小时 </j-radio-button>
+                          <j-radio-button value="week"> 近一周 </j-radio-button>
                         </j-radio-group></template
                     >
                 </j-range-picker>
@@ -180,11 +176,11 @@ const echartsOptions = computed(() => {
       {
         type: 'inside',
         start: 0,
-        end: 100,
+        end: data.value.type !== 'hour' ? 10 : 100,
       },
       {
         start: 0,
-        end: 100,
+        end: data.value.type !== 'hour' ? 10 : 100,
       },
     ],
     color: ['#60DFC7'],
@@ -198,18 +194,20 @@ watch(
         if (value === undefined) return;
         const date = getTimeByType(value);
         data.value.time = [dayjs(date), dayjs(new Date())];
+
+      if (props.isNoCommunity) {
+        getJVMEcharts(data.value);
+      }
     },
     { immediate: true, deep: true },
 );
 
-watchEffect(() => {
-  const time = data.value.time
-  if (time && Array.isArray(time) && time.length === 2 && time[0]) {
-    if (!props.isNoCommunity || props.serviceId) {
-      getJVMEcharts(data.value);
-    }
-  }
-})
+// watchEffect(() => {
+//   const time = data.value.time
+//   if (time && Array.isArray(time) && time.length === 2 && time[0]) {
+//
+//   }
+// })
 
 </script>
 

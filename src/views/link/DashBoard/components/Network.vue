@@ -26,7 +26,7 @@
                         <j-radio-button value="hour">
                             最近1小时
                         </j-radio-button>
-                        <j-radio-button value="day"> 近24小时 </j-radio-button>
+                        <j-radio-button value="day"> 最近24小时 </j-radio-button>
                         <j-radio-button value="week"> 近一周 </j-radio-button>
                     </j-radio-group>
                     <j-range-picker
@@ -194,7 +194,7 @@ const echartsOptions = computed(() => {
     },
     grid: {
       left: '70px',
-      right: 10,
+      right: data.value.time.type === 'week' ? 50 :10,
       bottom: '24px',
       top: 24
     },
@@ -213,16 +213,18 @@ watch(
         if (value === undefined) return;
         const date = getTimeByType(value);
         data.value.time.time = [dayjs(date), dayjs(new Date())];
+
+        getNetworkEcharts(data.value);
     },
     { immediate: true, deep: true },
 );
 
-watchEffect(() => {
-  const time = data.value.time.time
-  if (time && Array.isArray(time) && time.length === 2 && time[0] && props.serviceId) {
-    getNetworkEcharts(data.value);
-  }
-})
+// watchEffect(() => {
+//   const time = data.value.time.time
+//   if (time && Array.isArray(time) && time.length === 2 && time[0] && props.serviceId) {
+//
+//   }
+// })
 
 </script>
 
