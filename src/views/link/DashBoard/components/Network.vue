@@ -220,7 +220,6 @@ watch(
 watchEffect(() => {
   const time = data.value.time.time
   if (time && Array.isArray(time) && time.length === 2 && time[0] && props.serviceId) {
-    console.log(data.value)
     getNetworkEcharts(data.value);
   }
 })
