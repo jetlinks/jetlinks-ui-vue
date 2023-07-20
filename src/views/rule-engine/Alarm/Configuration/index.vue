@@ -89,7 +89,7 @@
                                             告警级别
                                         </div>
                                         <div>
-                                            {{ (Store.get('default-level') || []).find((item: any) => item?.level === slotProps.level)?.title ||
+                                            {{ (defaultLevel || []).find((item: any) => item?.level === slotProps.level)?.title ||
             slotProps.level }}
                                         </div>
                                     </j-col>
@@ -124,11 +124,11 @@
                     <template #level="slotProps">
                         <j-tooltip
                             placement="topLeft"
-                            :title="(Store.get('default-level') || []).find((item) => item?.level === slotProps.level)?.title ||
+                            :title="(defaultLevel || []).find((item) => item?.level === slotProps.level)?.title ||
             slotProps.level"
                         >
                             <div class="ellipsis">
-                                {{ (Store.get('default-level') || []).find((item) => item?.level === slotProps.level)?.title ||
+                                {{ (defaultLevel || []).find((item) => item?.level === slotProps.level)?.title ||
             slotProps.level }}
                             </div>
                         </j-tooltip>
@@ -196,7 +196,6 @@ import {
     getScene,
 } from '@/api/rule-engine/configuration';
 import { queryLevel } from '@/api/rule-engine/config';
-import { Store } from 'jetlinks-store';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
@@ -352,6 +351,8 @@ const columns = [
 const visible = ref<boolean>(false);
 const current = ref<any>({});
 
+const defaultLevel = ref<any[]>([]);
+
 const map = {
     product: '产品',
     device: '设备',
@@ -380,7 +381,7 @@ const handleSearch = (e: any) => {
 const queryDefaultLevel = () => {
     queryLevel().then((res) => {
         if (res.status === 200) {
-            Store.set('default-level', res.result?.levels || []);
+            defaultLevel.value = res.result?.levels || [];
         }
     });
 };

@@ -12,8 +12,13 @@
 </template>
 
 <script lang="ts" setup>
-import { Store } from "jetlinks-store"
 import { resourceClustersById } from "@/api/link/type"
+import { useTypeStore } from "@/store/type"
+import { cloneDeep } from "lodash-es"
+import { storeToRefs } from "pinia"
+
+const _typeStore = useTypeStore()
+const { resourcesClusters } = storeToRefs(_typeStore)
 
 const props = defineProps({
     value: {
@@ -36,7 +41,7 @@ const host = ref<string>()
 const options = ref<any[]>([])
 
 const getResourcesClustersById = async (id: string) => {
-    const _value = Store.get('resourcesClusters')?.[id]
+    const _value = resourcesClusters.value?.[id]
     if(!_value){
         const resp = await resourceClustersById(id)
         if (resp.status === 200) {
@@ -44,15 +49,15 @@ const getResourcesClustersById = async (id: string) => {
             const checkedHost = [{ value: checked?.host, label: checked?.host }];
             options.value = checked ? checkedHost : []
 
-            const resourcesClusters = Store.get('resourcesClusters') || {}
-            resourcesClusters[id] = resp.result
-            Store.set('resourcesClusters', resourcesClusters)
+            const _resourcesClusters = cloneDeep(resourcesClusters.value)
+            _resourcesClusters[id] = resp.result
+            _typeStore.setResourcesClusters(_resourcesClusters)
             emit('valueChange', props.value)
         } else {
             options.value = []
         }
     } else {
-        const checked = Store.get('resourcesClusters')?.[id]?.[0]
+        const checked = resourcesClusters.value?.[id]?.[0]
         const checkedHost = [{ value: checked?.host, label: checked?.host }];
         options.value = checked ? checkedHost : []
     }

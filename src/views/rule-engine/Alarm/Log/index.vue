@@ -9,7 +9,6 @@ import { isNoCommunity } from '@/utils/utils';
 import { useAlarmStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
 import { queryLevel } from '@/api/rule-engine/config';
-import { Store } from 'jetlinks-store';
 import  TableComponents  from './TabComponent/index.vue';
 const list = [
     {
@@ -56,7 +55,6 @@ const { data }  = storeToRefs(alarmStore);
 const getDefaulitLevel = () => {
     queryLevel().then((res)=>{
         if(res.status === 200 ){
-            Store.set('default-level', res.result?.levels || []);
             data.value.defaultLevel = res.result?.levels || [];
         }
     })

@@ -111,7 +111,7 @@
             </j-tree>
             <j-empty v-else description="暂无数据" />
         </j-spin>
-        <Save v-if="visible" :data="current" @change="saveChange" />
+        <Save :channelListAll="channelListAll" v-if="visible" :data="current" @change="saveChange" />
     </div>
 </template>
 
@@ -124,7 +124,6 @@ import {
 } from '@/api/data-collect/collector';
 import Save from './Save/index.vue';
 import { onlyMessage } from '@/utils/comm';
-import { Store } from 'jetlinks-store';
 import _ from 'lodash';
 import { colorMap } from '../data.ts';
 
@@ -144,6 +143,7 @@ const searchValue = ref();
 const visible = ref(false);
 const current = ref({});
 const collectorAll = ref();
+const channelListAll = ref<any[]>([])
 
 const root = [
     {
@@ -274,8 +274,8 @@ const handleSearch = async (value: any) => {
 };
 const getChannelNoPaging = async () => {
 
-    const res = await queryChannelNoPaging();
-    Store.set('channelListAll', res.result);
+    const res: any = await queryChannelNoPaging();
+    channelListAll.value = res.result;
 };
 
 const treeSelect = (keys: string, e: any) => {

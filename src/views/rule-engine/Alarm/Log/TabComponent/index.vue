@@ -138,7 +138,6 @@ import { queryLevel } from '@/api/rule-engine/config';
 import Search from '@/components/Search';
 import { useAlarmStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
-import { Store } from 'jetlinks-store';
 import dayjs from 'dayjs';
 import type { ActionsType } from '@/components/Table';
 import SolveComponent from '../SolveComponent/index.vue';
@@ -149,10 +148,10 @@ const menuStory = useMenuStore();
 const tableRef = ref();
 const alarmStore = useAlarmStore();
 const { data } = storeToRefs(alarmStore);
+
 const getDefaulitLevel = () => {
     queryLevel().then((res) => {
         if (res.status === 200) {
-            Store.set('default-level', res.result?.levels || []);
             data.value.defaultLevel = res.result?.levels || [];
         }
     });
