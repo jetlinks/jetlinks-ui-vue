@@ -32,11 +32,11 @@
                                     value: '',
                                     type: 'or',
                                 },
-                            //     {
-                            //         column: 'parentId$not',
-                            //         value: detail.id,
-                            //         type: 'or',
-                            //     },
+                                //     {
+                                //         column: 'parentId$not',
+                                //         value: detail.id,
+                                //         type: 'or',
+                                //     },
                             ],
                         },
                         {
@@ -88,18 +88,24 @@
 </template>
 
 <script setup lang="ts" name="BindChildDevice">
-import { query, queryByParent, bindDevice, queryDeviceMapping, saveDeviceMapping } from '@/api/device/instance';
+import {
+    query,
+    queryByParent,
+    bindDevice,
+    queryDeviceMapping,
+    saveDeviceMapping,
+} from '@/api/device/instance';
 import moment from 'moment';
 import { useInstanceStore } from '@/store/instance';
 import { storeToRefs } from 'pinia';
 import { onlyMessage } from '@/utils/comm';
 
 const props = defineProps({
-  parentIds: {
-    type: Array,
-    default: () => []
-  }
-})
+    parentIds: {
+        type: Array,
+        default: () => [],
+    },
+});
 
 const instanceStore = useInstanceStore();
 const { detail } = storeToRefs(instanceStore);
@@ -176,13 +182,16 @@ const handleSearch = (e: any) => {
 
 const onSelectChange = (keys: string[], rows: string[]) => {
     _selectedRowKeys.value = [...keys];
-  console.log(rows)
-    _selectedRowMap.value = rows.map(item => ({ deviceId: item.id, deviceName: item.name}))
+    console.log(rows);
+    _selectedRowMap.value = rows.map((item) => ({
+        deviceId: item.id,
+        deviceName: item.name,
+    }));
 };
 
 const cancelSelect = () => {
     _selectedRowKeys.value = [];
-    _selectedRowMap.value = []
+    _selectedRowMap.value = [];
 };
 
 const handleOk = () => {
@@ -191,51 +200,57 @@ const handleOk = () => {
         return;
     }
     btnLoading.value = true;
-    if (instanceStore.current.accessProvider === 'official-edge-gateway') { // 网关设备
-      queryDeviceMapping(instanceStore.current.id)
-          .then(res => {
-            const arr = bindDeviceRef.value?._dataSource.filter((item: any) => {
-              return _selectedRowKeys.value.includes(item.id);
-            }).map((item: any) => {
-                const _item = res.result?.[0]?.find((val: any) => val.deviceId === item.id)
-                if(_item){
-                    return {
-                        id: _item.id,
-                        deviceId: _item.deviceId,
-                        deviceName: _item.deviceName
-                    }
-                }else {
-                    return {
-                        deviceId: item.id,
-                        deviceName: item.name
-                    }
+    if (instanceStore.current.accessProvider === 'official-edge-gateway') {
+        // 网关设备
+        queryDeviceMapping(instanceStore.current.id)
+            .then((res) => {
+                const arr = bindDeviceRef.value?._dataSource
+                    .filter((item) => {
+                        return (
+                            !res.result?.[0]?.find(
+                                (val) => val.deviceId === item.id,
+                            ) && _selectedRowKeys.value.includes(item.id)
+                        );
+                    })
+                    .map((item) => {
+                        return {
+                            deviceId: item.id,
+                            deviceName: item.name,
+                        };
+                    });
+                if(arr.length){
+                    return saveDeviceMapping(instanceStore.current.id, {
+                        info: arr,
+                    });
                 }
             })
-            return saveDeviceMapping(instanceStore.current.id, {info: arr})
-          }).then(res => {
-            emit('change', true);
-            cancelSelect();
-            onlyMessage('操作成功');
-          })
-          .finally(() => {
-            btnLoading.value = false;
-          });
+            .then((res) => {
+                return bindDevice(detail.value.id, _selectedRowKeys.value);
+            })
+            .then((res) => {
+                emit('change', true);
+                cancelSelect();
+                onlyMessage('操作成功');
+            })
+            .finally(() => {
+                btnLoading.value = false;
+            });
     } else {
-      bindDevice(detail.value.id, _selectedRowKeys.value).then(res => {
-        emit('change', true);
-        cancelSelect();
-        onlyMessage('操作成功');
-      }).finally(() => {
-        btnLoading.value = false;
-      });
+        bindDevice(detail.value.id, _selectedRowKeys.value)
+            .then((res) => {
+                emit('change', true);
+                cancelSelect();
+                onlyMessage('操作成功');
+            })
+            .finally(() => {
+                btnLoading.value = false;
+            });
     }
-
 };
 
 const handleCancel = () => {
     emit('change', false);
 };
-
 </script>
 
 <style scoped lang="less"></style>
