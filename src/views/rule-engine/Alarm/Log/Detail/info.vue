@@ -30,13 +30,11 @@
             <j-descriptions-item label="告警级别" :span="1">
                 <j-tooltip
                     placement="topLeft"
-                    :title="(Store.get('default-level') || []).find((item: any) => item?.level === data?.level)
-                ?.title || props.data?.level"
+                    :title="_level"
                 >
                     <Ellipsis>
                         <span>
-                            {{(Store.get('default-level') || []).find((item: any) => item?.level === data?.level)
-                ?.title || props.data?.level}}
+                            {{_level}}
                         </span>
                     </Ellipsis>
                 </j-tooltip>
@@ -60,8 +58,8 @@
 </template>
 
 <script lang="ts" setup>
+import { queryLevel } from '@/api/rule-engine/config';
 import dayjs from 'dayjs';
-import { Store } from 'jetlinks-store';
 import JsonViewer from 'vue-json-viewer';
 const props = defineProps({
     data: Object,
@@ -70,11 +68,24 @@ const props = defineProps({
 const data = computed(()=>{
     return JSON.parse(props.data?.alarmInfo);
 })
+const defaultLevel = ref<any[]>([])
 
 const emit = defineEmits(['close']);
 const closeModal = () => {
     emit('close');
 };
+
+const _level = computed(() => {
+    return (defaultLevel.value || []).find((item: any) => item?.level === props.data?.level)?.title || props.data?.level
+})
+
+onMounted(() => {
+    queryLevel().then((res)=>{
+        if(res.status === 200 ){
+            defaultLevel.value = res.result?.levels || [];
+        }
+    })
+})
 </script>
 <style lang="less" scoped>
 </style>

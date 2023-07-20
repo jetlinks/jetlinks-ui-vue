@@ -51,9 +51,6 @@
         <template #valueType="{ data }">
             {{ TypeStringMap[data.record.valueType?.type] }}
         </template>
-        <template #expands="{ data }">
-            {{ sourceMap?.[data.record?.expands?.source] || '' }}
-        </template>
         <template #inputs="{ data }">
           <InputParams v-model:value="data.record.inputs" />
         </template>
@@ -66,6 +63,9 @@
         <template #expands="{ data }" v-if="type === 'events'">
           {{ levelMap?.[data.record.expands?.level] || '-' }}
         </template>
+      <template v-else-if="type === 'properties'" #expands="{ data }">
+        {{ data.record.id && !data.record?.expands?.source ? '设备' : sourceMap?.[data.record?.expands?.source] || '' }}
+      </template>
         <template #properties="{ data }">
           <ConfigParams v-model:value="data.record.valueType" />
         </template>
@@ -80,7 +80,7 @@
         <template #other="{ data }">
           <j-tooltip
             v-if="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex)"
-            title="继承自产品物模型的数据不支持删除"
+            title="继承自产品物模型的数据不支持修改"
           >
 <!--            <ModelButton :disabled="true"/>-->
             <j-button :disabled="true" type="link" style="padding-left: 0;">

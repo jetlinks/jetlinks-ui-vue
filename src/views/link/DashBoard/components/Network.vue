@@ -26,7 +26,7 @@
                         <j-radio-button value="hour">
                             最近1小时
                         </j-radio-button>
-                        <j-radio-button value="today"> 今日 </j-radio-button>
+                        <j-radio-button value="day"> 最近24小时 </j-radio-button>
                         <j-radio-button value="week"> 近一周 </j-radio-button>
                     </j-radio-group>
                     <j-range-picker
@@ -47,11 +47,20 @@
                     v-if="isEmpty"
                     style="height: 250px; margin-top: 100px"
                 />
-                <div
-                    v-else
-                    ref="chartRef"
-                    style="width: 100%; height: 350px"
-                ></div>
+              <template v-else>
+                <div style="height: 300px">
+                  <Echarts
+                      :options="echartsOptions"
+                  />
+                </div>
+
+                <ServerList
+                    v-if="serverOptions.length > 1"
+                    v-model:value="serverActive"
+                    :options="serverOptions"
+                    color="#979AFF"
+                />
+              </template>
             </div>
         </div>
     </j-spin>
@@ -60,14 +69,15 @@
 <script lang="ts" setup name="Network">
 import { dashboard } from '@/api/link/dashboard';
 import {
-    getTimeByType,
-    typeDataLine,
-    areaStyle,
-    networkParams,
+  getTimeByType,
+  typeDataLine,
+  areaStyle,
+  networkParams, arrayReverse,
 } from './tool.ts';
 import dayjs from 'dayjs';
-import * as echarts from 'echarts';
 import { DataType } from '../typings.d';
+import ServerList from './ServerList.vue'
+import Echarts from './echarts.vue'
 
 const props = defineProps({
   serviceId: {
@@ -86,6 +96,13 @@ const data = ref<DataType>({
     },
 });
 const isEmpty = ref(false);
+const serverActive = ref<string[]>([])
+const serverOptions = ref<string[]>([])
+const serverData = reactive({
+  xAxis: [],
+  data: []
+})
+
 const pickerTimeChange = (value: any) => {
     data.value.time.type = undefined;
 };
@@ -97,7 +114,8 @@ const getNetworkEcharts = async (val: any) => {
         const _networkOptions = {};
         const _networkXAxis = new Set();
         if (resp.result.length) {
-          const filterArray = resp.result.filter((item : any) => item.data?.clusterNodeId === props.serviceId)
+          const filterArray = resp.result
+          // const filterArray = resp.result.filter((item : any) => item.data?.clusterNodeId === props.serviceId)
           filterArray.forEach((item: any) => {
                 const value = item.data.value;
                 const _data: Array<any> = [];
@@ -151,44 +169,43 @@ const setOptions = (data: any, key: string) => ({
 });
 
 const handleNetworkOptions = (optionsData: any, xAxis: any) => {
-    if (optionsData.length === 0 && xAxis.length === 0) return;
-    const chart: any = chartRef.value;
-    if (chart) {
-        const myChart = echarts.init(chart);
-        const dataKeys = Object.keys(optionsData);
-        const options = {
-            xAxis: {
-                type: 'category',
-                boundaryGap: false,
-                data: xAxis,
-            },
-            yAxis: {
-                type: 'value',
-                axisLabel: {
-                    formatter: (_value: any) => formatterData(_value),
-                },
-            },
-            grid: {
-                left: '70px',
-                right: 10,
-                bottom: '24px',
-                top: 24
-            },
-            tooltip: {
-                trigger: 'axis',
-                formatter: (_value: any) => networkValueRender(_value[0]),
-            },
-            color: ['#979AFF'],
-            series: dataKeys.length
-                ? dataKeys.map((key) => setOptions(optionsData, key))
-                : typeDataLine,
-        };
-        myChart.setOption(options);
-        window.addEventListener('resize', function () {
-            myChart.resize();
-        });
-    }
+  const dataKeys = Object.keys(optionsData);
+  serverActive.value = dataKeys
+  serverOptions.value = dataKeys
+  serverData.xAxis = xAxis
+  serverData.data = optionsData
 };
+
+const echartsOptions = computed(() => {
+  const series = serverActive.value.length
+      ? serverActive.value.map((key) => setOptions(serverData.data, key))
+      : typeDataLine
+  return {
+    xAxis: {
+      type: 'category',
+      boundaryGap: false,
+      data: serverData.xAxis,
+    },
+    yAxis: {
+      type: 'value',
+      axisLabel: {
+        formatter: (_value: any) => formatterData(_value),
+      },
+    },
+    grid: {
+      left: '70px',
+      right: data.value.time.type === 'week' ? 50 :10,
+      bottom: '24px',
+      top: 24
+    },
+    tooltip: {
+      trigger: 'axis',
+      formatter: (_value: any) => networkValueRender(_value[0]),
+    },
+    color: ['#979AFF'],
+    series: series
+  };
+})
 
 watch(
     () => data.value.time.type,
@@ -196,16 +213,18 @@ watch(
         if (value === undefined) return;
         const date = getTimeByType(value);
         data.value.time.time = [dayjs(date), dayjs(new Date())];
+
+        getNetworkEcharts(data.value);
     },
     { immediate: true, deep: true },
 );
 
-watchEffect(() => {
-  const time = data.value.time.time
-  if (time && Array.isArray(time) && time.length === 2 && time[0] && props.serviceId) {
-    getNetworkEcharts(data.value);
-  }
-})
+// watchEffect(() => {
+//   const time = data.value.time.time
+//   if (time && Array.isArray(time) && time.length === 2 && time[0] && props.serviceId) {
+//
+//   }
+// })
 
 </script>
 

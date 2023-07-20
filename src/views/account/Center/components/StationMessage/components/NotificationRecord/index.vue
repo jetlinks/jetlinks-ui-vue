@@ -15,11 +15,11 @@
             :bodyStyle="{ padding: 0 }"
             :defaultParams="defaultParams"
         >
-            <template #rightExtraRender>
+            <!-- <template #rightExtraRender>
                 <j-popconfirm title="确认全部已读？" @confirm="onAllRead">
                     <j-button type="primary">全部已读</j-button>
                 </j-popconfirm>
-            </template>
+            </template> -->
             <template #topicProvider="slotProps">
                 {{ slotProps.topicName }}
             </template>
@@ -240,14 +240,14 @@ watchEffect(() => {
     }
 });
 
-const onAllRead = async () => {
-    const resp = await changeAllStatus('_read', getType.value);
-    if (resp.status === 200) {
-        onlyMessage('操作成功！');
-        refresh();
-        user.updateAlarm();
-    }
-};
+// const onAllRead = async () => {
+//     const resp = await changeAllStatus('_read', getType.value);
+//     if (resp.status === 200) {
+//         onlyMessage('操作成功！');
+//         refresh();
+//         user.updateAlarm();
+//     }
+// };
 
 onMounted(() => {
     if (routerParams.params?.value.row) {

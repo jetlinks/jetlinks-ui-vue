@@ -59,7 +59,6 @@ import { DataTypeList, FileTypeList } from '@/views/device/data';
 import { DefaultOptionType, SelectValue } from 'ant-design-vue/es/select';
 import { PropType } from 'vue'
 import { getUnit } from '@/api/device/instance';
-import { Store } from 'jetlinks-store';
 import InputSelect from '@/components/InputSelect/index.vue';
 import BooleanParam from '@/components/Metadata/BooleanParam/index.vue'
 import EnumParam from '@/components/Metadata/EnumParam/index.vue'
@@ -140,7 +139,6 @@ const unit = reactive({
         value: item.id,
       }));
       // 缓存单位数据
-      Store.set('units', _data);
       unit.unitOptions = _data;
     })
   },

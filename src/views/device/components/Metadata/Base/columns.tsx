@@ -416,7 +416,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         name: Source,
         props: {
           noEdit: noEdit?.value?.source || [],
-          target: target
+          target: target,
         }
       },
       doubleClick(record){
@@ -434,7 +434,6 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         rules: target !== 'device' ? [
           {
             callback: async (rule: any, value: any, dataSource: any[]) => {
-              console.log('value', value)
               const field = rule.field.split('.')
               const fieldIndex = Number(field[1])
 
@@ -455,24 +454,6 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
 
               return Promise.reject('请选择属性来源');
             }
-            //   if (value.source) {
-            //     if(value.source !== 'rule') {
-            //       if(value.type?.length) {
-            //         return Promise.resolve();
-            //       } else {
-            //         return Promise.reject('请选择读写类型');
-            //       }
-            //     } else {
-            //       if(value.virtualRule?.script) {
-            //         return Promise.resolve();
-            //       }else {
-            //         return Promise.reject('请配置规则');
-            //       }
-            //     }
-            //   } else {
-            //     return Promise.reject('请选择属性来源');
-            //   }
-            // }
           },
         ]: []
       },
