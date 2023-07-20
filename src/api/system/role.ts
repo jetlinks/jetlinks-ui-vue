@@ -8,6 +8,10 @@ export const delRole_api = (id: string): Promise<any> => server.remove(`/role/${
 export const saveRole_api = (data: any): Promise<any> => server.post(`/role`, data);
 // 更新角色信息
 export const updateRole_api = (data: any): Promise<any> => server.patch(`/role`, data);
+
+// 更新角色信息
+export const editRole_api = (id: string, data: any): Promise<any> => server.put(`/role/${id}`, data);
+
 // 获取角色详细信息
 export const getRoleDetails_api = (id: string): Promise<any> => server.get(`/role/${id}`);
 // 获取角色对应的权限树
