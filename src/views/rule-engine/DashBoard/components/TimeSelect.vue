@@ -86,6 +86,8 @@ const getTimeByType = (type: string) => {
             return dayjs().subtract(29, 'days').valueOf();
         case 'year':
             return dayjs().subtract(365, 'days').valueOf();
+        case 'day':
+          return dayjs().subtract(24, 'hours').valueOf();
         default:
             return dayjs().startOf('day').valueOf();
     }

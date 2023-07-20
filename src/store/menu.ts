@@ -5,7 +5,7 @@ import { cloneDeep, isArray } from 'lodash-es'
 import { usePermissionStore } from './permission'
 import router from '@/router'
 import { onlyMessage } from '@/utils/comm'
-// import { AccountMenu, NotificationRecordCode, NotificationSubscriptionCode } from '@/router/menu'
+import { AccountMenu, NotificationRecordCode, NotificationSubscriptionCode } from '@/router/menu'
 import { USER_CENTER_MENU_CODE } from '@/utils/consts'
 import {isNoCommunity} from "@/utils/utils";
 
@@ -109,6 +109,7 @@ export const useMenuStore = defineStore({
           permission.permissions = {}
           const { menusData, silderMenus } = filterAsyncRouter(resultData)
 
+
           this.menus = findCodeRoute([...resultData]) // AccountMenu
           Object.keys(this.menus).forEach((item) => {
             const _item = this.menus[item]
@@ -125,7 +126,7 @@ export const useMenuStore = defineStore({
             }
           })
           // menusData.push(AccountMenu)
-          this.siderMenus = silderMenus.filter((item: { name: string }) => ![USER_CENTER_MENU_CODE].includes(item.name))
+          this.siderMenus = silderMenus.filter((item: { name: string }) => ![USER_CENTER_MENU_CODE, NotificationRecordCode, NotificationSubscriptionCode].includes(item.name))
           res(menusData)
         }
       })

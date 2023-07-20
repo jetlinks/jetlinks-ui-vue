@@ -42,6 +42,11 @@
                             <template #extra>
                                 <TimeSelect
                                     key="flow-static"
+                                    :quickBtnList="[
+                                        { label: '最近1小时', value: 'hour' },
+                                        { label: '最近24小时', value: 'day' },
+                                        { label: '近一周', value: 'week' },
+                                    ]"
                                     :type="'week'"
                                     @change="getEcharts"
                                 />
@@ -539,20 +544,25 @@ const getDevice = () => {
 };
 
 const getEcharts = (data: any) => {
-    let _time = '1h';
-    let format = 'HH';
+    let _time = '1m';
+    let format = 'M月dd日 HH:mm';
     let limit = 12;
     const dt = data.end - data.start;
     const hour = 60 * 60 * 1000;
     const days = hour * 24;
     const months = days * 30;
     const year = 365 * days;
-    if (dt <= days) {
-        limit = Math.abs(Math.ceil(dt / hour));
+    if (dt <= (hour + 10)) {
+        limit = 60
+        format = 'HH:mm';
+    } else if (dt > hour && dt <= days) {
+        _time = '1h'
+        limit = 24;
+
     } else if (dt > days && dt < year) {
         limit = Math.abs(Math.ceil(dt / days)) + 1;
         _time = '1d';
-        format = 'M月dd日';
+        format = 'M月dd日 HH:mm:ss';
     } else if (dt >= year) {
         limit = Math.abs(Math.floor(dt / months));
         _time = '1M';
