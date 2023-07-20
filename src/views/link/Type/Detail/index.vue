@@ -1143,9 +1143,10 @@ import {
 } from '../data';
 import { cloneDeep } from 'lodash-es';
 import type { FormData2Type, FormDataType } from '../type';
-import { Store } from 'jetlinks-store';
 import LocalAddressSelect from './LocalAddressSelect.vue';
 import { isNoCommunity } from '@/utils/utils';
+import { useTypeStore } from '@/store/type';
+import { storeToRefs } from 'pinia';
 
 const route = useRoute();
 const NetworkType = route.query.type as string;
@@ -1156,6 +1157,9 @@ const loading = ref(false);
 const formRef1 = ref<FormInstance>();
 const formRef2 = ref<FormInstance>();
 const shareCluster = ref(true);
+
+const _typeStore = useTypeStore()
+const { configRef, resourcesClusters } = storeToRefs(_typeStore)
 
 const formData = ref<FormDataType>({
     ...FormStates,
@@ -1198,7 +1202,7 @@ const filterPortOption = (input: string, option: any) => {
 
 const getPortList = (list: any[], id: string) => {
   const keys = dynamicValidateForm?.cluster?.map?.(item => item.configuration?.port) || []
-  console.log(dynamicValidateForm?.cluster, id, keys)
+//   console.log(dynamicValidateForm?.cluster, id, keys)
   return (list || []).filter(item => item.value === id || !keys.includes(item.value) )
 }
 
@@ -1251,7 +1255,7 @@ const changeType = (value: string) => {
 const updateClustersListIndex = () => {
     const { cluster } = dynamicValidateForm;
     const filters = cluster?.map((item) => item.serverId);
-    const newConfigRef = shareCluster.value ? Store.get('configRef')?.filter(
+    const newConfigRef = shareCluster.value ? (configRef.value || [])?.filter(
         (item: any) => !filters.includes(item.clusterNodeId),
     ) : configClustersList.value?.filter(
         (item: any) => !filters.includes(item.id),
@@ -1299,7 +1303,7 @@ const changeHost = (
         if(!flag){
             configuration.port = undefined;
         }
-        const checked = Store.get('resourcesClusters')?.[serverId || '']
+        const checked = resourcesClusters.value?.[serverId || '']
         if(checked){
             getPortOptions(checked, index)
         }
@@ -1387,14 +1391,15 @@ const getCertificates = async () => {
 };
 
 const getResourcesCurrent = () => {
-    resourcesCurrent().then((resp) => {
+    resourcesCurrent().then((resp: any) => {
         if (resp.status === 200) {
+            _typeStore.setConfigRef(resp.result || [])
+
             const clusterNodeId = resp.result?.[0]?.clusterNodeId
-            const resourcesClusters = Store.get('resourcesClusters') || {}
-            resourcesClusters[clusterNodeId] = resp.result
-            Store.set('resourcesClusters', resourcesClusters)
-            Store.set('configRef', resp.result);
-            getPortOptions(Store.get('resourcesClusters')?.[clusterNodeId]);
+            const _resourcesClusters = cloneDeep(resourcesClusters.value || {})
+            _resourcesClusters[clusterNodeId] = resp.result
+            _typeStore.setResourcesClusters(_resourcesClusters)
+            getPortOptions(resp.result);
         }
     });
 };
@@ -1422,11 +1427,6 @@ const getDetail = () => {
                         ...cloneDeep(Configuration), //防止编辑时，表单字段不完善，导致输入/选择框新出现时找不到
                         ...configuration,
                     };
-
-                    // const configRef = Store.get('configRef').filter(
-                    //     (item: any) => item.host === '0.0.0.0',
-                    // );
-                    // getPortOptions(configRef); //更新端口
                 } else {
                     dynamicValidateForm.cluster = cluster;
                     // const arr = cluster.map((item: any) => item.configuration.serverId)
@@ -1479,7 +1479,7 @@ watch(
     (value) => {
         formData.value.shareCluster = value;
         value
-            ? getPortOptions(Store.get('configRef'))
+            ? getPortOptions(configRef.value)
             : (portOptionsIndex.value[0] = []);
         updateClustersListIndex();
     },

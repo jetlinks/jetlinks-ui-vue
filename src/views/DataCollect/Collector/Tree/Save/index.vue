@@ -156,13 +156,10 @@
 </template>
 <script lang="ts" setup>
 import { save, update } from '@/api/data-collect/collector';
-import { Store } from 'jetlinks-store';
 import { LeftTreeRules } from '../../data';
 import type { FormInstance } from 'ant-design-vue';
 
 const loading = ref(false);
-const channelListAll = ref();
-const channelList = ref();
 const visibleEndian = ref(false);
 const visibleUnitId = ref(false);
 
@@ -171,12 +168,26 @@ const props = defineProps({
         type: Object,
         default: () => {},
     },
+    channelListAll: {
+        type: Array,
+        default: () => []
+    }
 });
 
 const emit = defineEmits(['change']);
 
 const id = props.data.id;
 const formRef = ref<FormInstance>();
+
+const _channelListAll = computed(() => {
+    return props.channelListAll || [];
+})
+const channelList = computed(() => {
+   return _channelListAll.value.map((item: any) => ({
+        value: item.id,
+        label: item.name,
+    }));
+})
 
 
 const endianData = computed(() => {
@@ -213,7 +224,7 @@ const formData = ref({
 const handleOk = async () => {
     const data = await formRef.value?.validate();
 
-    const { provider, name } = channelListAll.value.find(
+    const { provider, name } = _channelListAll.value.find(
         (item: any) => item.id === formData.value.channelId,
     );
     const params = {
@@ -252,14 +263,6 @@ const changeCardSelectEndian = (value: Array<string>) => {
 const changeCardSelectEndianIn = (value: Array<string>) => {
     formData.value.configuration.endianIn = value[0];
 };
-const getChannelNoPaging = async () => {
-    channelListAll.value = Store.get('channelListAll');
-    channelList.value = channelListAll.value.map((item) => ({
-        value: item.id,
-        label: item.name,
-    }));
-};
-getChannelNoPaging();
 
 const filterOption = (input: string, option: any) => {
     return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
@@ -268,7 +271,7 @@ const filterOption = (input: string, option: any) => {
 watch(
     () => formData.value.channelId,
     (value) => {
-        const dt = channelListAll.value.find((item) => item.id === value);
+        const dt = _channelListAll.value.find((item) => item.id === value);
         visibleUnitId.value = visibleEndian.value =
             dt?.provider && dt?.provider === 'MODBUS_TCP';
     },

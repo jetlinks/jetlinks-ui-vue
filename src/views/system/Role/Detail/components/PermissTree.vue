@@ -112,6 +112,7 @@ import {
 } from '@/utils/consts'
 import { isNoCommunity } from '@/utils/utils'
 import {permissionsGranted, useIndirectMenusMap} from "@/views/system/Role/Detail/components/util";
+import {NotificationSubscriptionCode} from "@/router/menu";
 
 const emits = defineEmits(['update:selectItems']);
 const route = useRoute();
@@ -279,12 +280,8 @@ function getAllPermiss() {
     getPrimissTree_api(id).then((resp) => {
         const _result = resp.result
         // 默认选中个人中心相关设置
-        tableData.value = _result.map((item: { code: string , buttons: any[], granted: boolean}) => {
-        //   if (item.code === USER_CENTER_MENU_CODE) {
-        //     item.granted = true
-        //     item.buttons = item.buttons.map( b => ({...b, granted: true, enabled: true}))
-        //   }
-          return item
+        tableData.value = _result.filter((item: { code: string , buttons: any[], granted: boolean}) => {
+          return (item.code !== NotificationSubscriptionCode)
         });
 
         treeToSimple(tableData.value); // 表格数据扁平化

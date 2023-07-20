@@ -42,6 +42,11 @@
                                 <TimeSelect
                                     key="flow-static"
                                     :type="'week'"
+                                    :quickBtnList="[
+                                        { label: '最近1小时', value: 'hour' },
+                                        { label: '最近24小时', value: 'day' },
+                                        { label: '近一周', value: 'week' },
+                                    ]"
                                     @change="initQueryTime"
                                 />
                             </template>
@@ -238,6 +243,7 @@ const getDashBoard = () => {
                 .filter((item) => item.group === '15day')
                 .map((item) => item.data)
                 .sort((a, b) => b.timestamp - a.timestamp);
+
             state.fifteenOptions = {
                 xAxis: {
                     type: 'category',
@@ -355,20 +361,25 @@ const initQueryTime = (data: any) => {
     selectChange();
 };
 const selectChange = () => {
-    let time = '1h';
-    let format = 'HH';
+    let time = '1m';
+    let format = 'M月dd日 HH:mm';
     let limit = 12;
     const dt = queryCodition.endTime - queryCodition.startTime;
     const hour = 60 * 60 * 1000;
     const day = hour * 24;
     const month = day * 30;
     const year = 365 * day;
-    if (dt <= day) {
-        limit = Math.abs(Math.ceil(dt / hour));
+
+    if (dt <= (hour + 10)) {
+      limit = 60
+      format = 'HH:mm';
+    } else if (dt > hour && dt <= day) {
+      time = '1h'
+      limit = 24;
     } else if (dt > day && dt < year) {
         limit = Math.abs(Math.ceil(dt / day)) + 1;
         time = '1d';
-        format = 'M月dd日';
+        format = 'M月dd日 HH:mm:ss';
     } else if (dt >= year) {
         limit = Math.abs(Math.floor(dt / month));
         time = '1M';
@@ -429,7 +440,7 @@ const selectChange = () => {
                 .filter((item: any) => item.group === 'alarmTrend')
                 .forEach((item: any) => {
                     xData.push(item.data.timeString);
-                    sData.push(item.data.value * 100000);
+                    sData.push(item.data.value);
                 });
             const maxY = sData.sort((a,b)=>{
                 return b-a
@@ -452,7 +463,7 @@ const selectChange = () => {
                 grid: {
                     top: '2%',
                     bottom: '5%',
-                    left:  maxY < 1000 ? '40px' : maxY.toString().length * 10,
+                    left:  maxY < 1000 ? 50 : maxY.toString().length * 10,
                     right: '48px',
                 },
                 series: [

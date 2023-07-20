@@ -82,11 +82,13 @@ const getTimeByType = (type: string) => {
         case 'hour':
             return dayjs().subtract(1, 'hours').valueOf();
         case 'week':
-            return dayjs().subtract(6, 'days').valueOf();
+            return dayjs().subtract(6, 'days').startOf('day').valueOf();
         case 'month':
             return dayjs().subtract(29, 'days').valueOf();
         case 'year':
             return dayjs().subtract(365, 'days').valueOf();
+      case 'day':
+            return dayjs().subtract(24, 'hours').valueOf();
         default:
             return dayjs().startOf('day').valueOf();
     }
