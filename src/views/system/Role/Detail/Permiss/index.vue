@@ -56,6 +56,7 @@ import { useMenuStore } from '@/store/menu';
 import {
     getRoleDetails_api,
     updateRole_api,
+    editRole_api,
     updatePrimissTree_api,
 } from '@/api/system/role';
 import { onlyMessage } from '@/utils/comm';
@@ -83,7 +84,7 @@ const form = reactive({
     },
     clickSave: () => {
         formRef.value?.validate().then(() => {
-            const updateRole = updateRole_api(form.data);
+            const updateRole = editRole_api(roleId, form.data);
             const updateTree = updatePrimissTree_api(roleId, {
                 menus: form.menus,
             });

@@ -28,7 +28,7 @@
                     </div>
                 </j-scrollbar>
             </template>
-            <j-button :disabled="!myValue" type="link" style="padding: 4px 8px">
+            <j-button style="padding: 4px 8px" type="link">
                 <AIcon type="EditOutlined" />
             </j-button>
         </j-popconfirm-modal>
@@ -146,7 +146,11 @@ const confirm = async () => {
 watch(
     () => props.value,
     () => {
+      if (props.value.id && !props.value?.expands?.source) {
+        myValue.value = 'device';
+      } else {
         myValue.value = props.value?.expands?.source || '';
+      }
         type.value = props.value?.expands?.type || [];
     },
     { immediate: true },

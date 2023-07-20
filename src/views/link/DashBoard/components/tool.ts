@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import * as echarts from 'echarts';
 
 // export const getInterval = (type: string) => {
@@ -36,11 +36,13 @@ export const getTimeByType = (type: string) => {
         case 'hour':
             return dayjs().subtract(1, 'hours');
         case 'week':
-            return dayjs().subtract(6, 'days');
+            return dayjs().subtract(6, 'days').startOf('day');
         case 'month':
             return dayjs().subtract(29, 'days');
         case 'year':
             return dayjs().subtract(365, 'days');
+        case 'day':
+            return dayjs().subtract(24, 'hours');
         default:
             return dayjs().startOf('day');
     }
@@ -57,26 +59,24 @@ export const arrayReverse = (data: string) => {
 export const networkParams = (val: any) => {
     let _time = '1h';
     let _limit = 12;
-    let format = 'HH';
-
-    const dt = Number(val.time.time[1]) - Number(val.time.time[0]);
+    let format = 'M月dd日 HH:mm';
+    // @ts-ignore
+    const dt = dayjs(val.time.time[1]) - dayjs(val.time.time[0])
     const hour = 60 * 60 * 1000;
     const days = hour * 24;
     const months = days * 30;
     const year = 365 * days;
 
-    if (dt <= hour) {
-        format = 'mm:ss';
-        _time = '1m';
-        _limit = 30;
-    } else if (dt > hour && dt <= days) {
-        _limit = Math.abs(Math.ceil(dt / hour));
-        _limit = 24;
+    if (dt <= (hour + 10)) {
         format = 'HH:mm';
+        _time = '1m';
+        _limit = 60;
+    } else if (dt > hour && dt <= days) {
+        _limit = 24;
     } else if (dt > days && dt <= months * 3) {
         _limit = Math.abs(Math.ceil(dt / days)) + 1;
         _time = '1d';
-        format = 'M月dd日';
+        format = 'M月dd日 HH:mm:ss';
     } else if (dt > months * 3 && dt < year) {
         _limit = Math.abs(Math.ceil(dt / months)) + 1;
         _time = '1M';
@@ -99,7 +99,7 @@ export const networkParams = (val: any) => {
                 from: Number(val.time.time[0]),
                 to: Number(val.time.time[1]),
                 limit: _limit,
-                format: 'YYYY-MM-dd HH:mm',
+                format: format,
             },
         },
     ];
