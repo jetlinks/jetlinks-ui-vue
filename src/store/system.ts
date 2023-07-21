@@ -13,6 +13,12 @@ type SystemStateType = {
         siderWidth: string | number | undefined; // 左侧菜单栏宽度
         headerHeight: string | number | undefined; // 头部高度
         collapsedWidth: string | number | undefined;
+    },
+    basicLayout: {
+        selectedKeys: string[],
+        openKeys: string[],
+        collapsed: boolean
+        pure: boolean
     }
 }
 
@@ -25,6 +31,12 @@ export const useSystem = defineStore('system', {
             siderWidth: 208, // 左侧菜单栏宽度
             headerHeight: 60, // 头部高度
             collapsedWidth: 48,
+        },
+        basicLayout: {
+            selectedKeys: [],
+            openKeys: [],
+            collapsed: false,
+            pure: false
         }
     }),
     actions: {

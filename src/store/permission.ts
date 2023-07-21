@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import {handleAuthMenu} from "@/utils/menu";
 
 export const usePermissionStore = defineStore({
   id: 'permission',
@@ -38,6 +39,18 @@ export const usePermissionStore = defineStore({
         }
         return false
       }
+    }
+  },
+  actions: {
+    setPermission(code: string, buttons: string[]) {
+      this.permissions[code] = buttons
+    },
+    cleanPermission() {
+      this.permissions = {}
+    },
+    handlePermission(data: any) {
+      this.cleanPermission()
+      handleAuthMenu(data, this.setPermission)
     }
   }
 })

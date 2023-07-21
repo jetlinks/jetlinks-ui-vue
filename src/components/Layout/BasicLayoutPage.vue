@@ -1,12 +1,12 @@
 <template>
     <j-pro-layout
         v-bind="layoutConf"
-        v-model:openKeys="state.openKeys"
-        v-model:collapsed="state.collapsed"
-        v-model:selectedKeys="state.selectedKeys"
+        v-model:collapsed="basicLayout.collapsed"
+        v-model:openKeys="basicLayout.openKeys"
+        v-model:selectedKeys="basicLayout.selectedKeys"
         :headerHeight='layout.headerHeight'
-        :pure="state.pure"
-        :breadcrumb="{ routes: breadcrumb }"
+        :breadcrumb="{ routes: breadcrumbs }"
+        :pure="basicLayout.pure"
         @backClick='routerBack'
     >
         <template #breadcrumbRender="slotProps">
@@ -25,9 +25,9 @@
                 <UserInfo />
             </div>
         </template>
-        <router-view v-slot="{ Component }">
-            <component :is="Component" />
-        </router-view>
+      <router-view v-slot="{ Component }">
+        <component :is="components || Component" />
+      </router-view>
     </j-pro-layout>
 </template>
 
@@ -54,14 +54,14 @@ const route = useRoute();
 const menu = useMenuStore();
 
 const system = useSystem();
-const {configInfo,layout} = storeToRefs(system);
+const {configInfo,layout, basicLayout} = storeToRefs(system);
 
 const layoutConf = reactive({
     theme: DefaultSetting.layout.theme,
     siderWidth: layout.value.siderWidth,
     logo: DefaultSetting.layout.logo,
     title: DefaultSetting.layout.title,
-    menuData: [...clearMenuItem(menu.siderMenus), AccountMenu],
+    menuData: [...menu.siderMenus, AccountMenu],
     // menuData: menu.siderMenus,
     splitMenus: true,
 });
@@ -72,87 +72,51 @@ watchEffect(() => {
     layoutConf.logo = configInfo.value.front?.logo || DefaultSetting.layout.logo;
 })
 
-const state = reactive<StateType>({
-    pure: false,
-    collapsed: false, // default value
-    openKeys: [],
-    selectedKeys: [],
-});
+const components = computed(() => {
+  const componentName = route.matched[route.matched.length - 1]?.components?.default?.name
+  if (componentName !== 'BasicLayoutPage') {
+    return route.matched[route.matched.length - 1]?.components?.default
+  }
+  return undefined
+})
+
+/**
+ * 面包屑
+ */
+const breadcrumbs = computed(() =>
+    {
+      const paths = router.currentRoute.value.matched
+
+      return paths.map((item, index) => {
+        return {
+          index,
+          isLast: index === (paths.length -1),
+          path: item.path,
+          breadcrumbName: (item.meta as any).title || '',
+        }
+      })
+    }
+);
 
 const routerBack = () => {
   router.go(-1)
 }
 
-const findRouteMeta = (code: string) => {
-  let meta = []
-  let menuItem: any = menu.menus[code]
-  while (menuItem) {
-    meta.unshift(menuItem)
-    if (menuItem.parentName) {
-      menuItem = menu.menus[menuItem.parentName]
-    } else {
-      menuItem = false
-    }
-  }
-  return meta
-}
 
 const jump = (item: any) => {
-  let path = history.state.back
-  if (path) {
-    // 包含query参数,清除？参数
-    if (path.includes('?')) {
-      const _path = path.split('?')[0]
-      path = _path === item.path ? path : item.path
-    } else if (path !== item.path) {
-      path = item.path
-    }
-  } else {
-    path = item.path
-  }
-
-  // jumpPage(slotProps.route.path)
-  router.push(path)
+  router.push(item.path)
 }
 
-const breadcrumb = computed(() =>
-  {
-    const paths = router.currentRoute.value.name as string
 
-    const metas = findRouteMeta(paths)
-    return metas.map((item, index) => {
-      return {
-        index,
-        isLast: index === (metas.length - 1),
-        path: item.path,
-        breadcrumbName: item.title || '',
-      };
-    })
+
+watchEffect(() => {
+  if (router.currentRoute) {
+    const paths = router.currentRoute.value.matched
+    basicLayout.value.selectedKeys = paths.map(item => item.path)
+    basicLayout.value.openKeys = paths.map(item => item.path)
+    console.log(paths) //
   }
-);
-
-watchEffect(() => {
-    if (router.currentRoute) {
-      const paths = router.currentRoute.value.name as string
-      if (paths) {
-        const _metas = findRouteMeta(paths)
-        state.selectedKeys = _metas.map(item => item.path)
-        state.openKeys = _metas.filter((r) => r !== router.currentRoute.value.path).map(item => item.path)
-      }
-    }
-});
-
-watchEffect(() => {
-    if (
-        route.query &&
-        'layout' in route.query &&
-        route.query.layout === 'false'
-    ) {
-        state.pure = true;
-    } else {
-        state.pure = false;
-    }
-});
+})
 
 const toDoc = () => window.open('http://doc.v2.jetlinks.cn/');
 </script>
