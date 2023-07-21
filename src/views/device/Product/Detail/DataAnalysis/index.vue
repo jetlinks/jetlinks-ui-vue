@@ -26,6 +26,7 @@
                 theme="vs"
                 v-model:modelValue="editorValue"
                 :registrationTypescript="typescriptTip"
+                :init="editorInit"
             />
         </div>
         <div class="bottom">
@@ -158,6 +159,30 @@ const result = computed(() =>
         ? JSON.stringify(resultValue.value.outputs?.[0])
         : resultValue.value.reason,
 );
+
+const editorInit = (editor: any, monaco: any) => {
+  monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+    noSemanticValidation: true,
+    noSyntaxValidation: false,
+  });
+
+  // compiler options
+  monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+    allowJs: true,
+    checkJs: true,
+    allowNonTsExtensions: true,
+    target: monaco.languages.typescript.ScriptTarget.ESNext,
+    strictNullChecks: false,
+    strictPropertyInitialization: true,
+    strictFunctionTypes: true,
+    strictBindCallApply: true,
+    useDefineForClassFields: true,//permit class static fields with private name to have initializer
+    moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+    module: monaco.languages.typescript.ModuleKind.CommonJS,
+    typeRoots: ["types"],
+    lib: ["esnext"]
+  });
+}
 
 //获取topic
 const getTopic = async () => {
