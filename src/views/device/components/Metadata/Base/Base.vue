@@ -456,7 +456,7 @@ const parentTabsChange = (next?: Function) => {
           (next as Function)?.()
         } else {// 右上角取消按钮
           const paths = router.currentRoute.value.matched
-          basicLayout.value.selectedKeys = paths.map(item => item.path)
+          // basicLayout.value.selectedKeys = paths.map(item => item.path)
           basicLayout.value.openKeys = paths.map(item => item.path)
         }
       }

@@ -3,7 +3,7 @@
         v-bind="layoutConf"
         v-model:collapsed="basicLayout.collapsed"
         v-model:openKeys="basicLayout.openKeys"
-        v-model:selectedKeys="basicLayout.selectedKeys"
+        :selectedKeys="basicLayout.selectedKeys"
         :headerHeight='layout.headerHeight'
         :breadcrumb="{ routes: breadcrumbs }"
         :pure="basicLayout.pure"
