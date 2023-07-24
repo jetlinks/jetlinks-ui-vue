@@ -164,7 +164,7 @@ const deviceList = ref([
         label: '网关子设备',
         value: 'childrenDevice',
         iconUrl: getImage('/device-type-2.png'),
-        tooltip: '作为网关的子设备，有网关代理连接到物联网平台',
+        tooltip: '作为网关的子设备，由网关代理连接到物联网平台',
     },
     {
         label: '网关设备',

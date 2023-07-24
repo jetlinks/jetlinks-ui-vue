@@ -22,7 +22,7 @@
                         <template #title>
                             <span v-if="!update">暂无权限，请联系管理员</span>
                             <div v-else>
-                                用于配制外层权限<br />未配置外层权限将执行通知方式中配置的权限<br />配置外层权限后将覆盖所有通知方式中配置的权限
+                                通过角色控制【{{ data.name }}】的所有的通知方式可被哪些用户订阅。
                             </div>
                         </template>
                         <j-button
@@ -129,6 +129,7 @@
         @save="onSave"
         :loading="loading"
         :provider="provider"
+        :name="data.name"
     />
     <Detail
         :data="current"
@@ -140,6 +141,7 @@
         :data="data?.grant?.role?.idList"
         @close="authVisible = false"
         @save="onAuthSave"
+        :name="data.name"
     />
 </template>
 
@@ -346,49 +348,53 @@ const onSwitchChange = (e: boolean) => {
     if (_checked) {
         onAction(e);
     } else {
-        Modal.confirm({
-            title: e
-                ? '开启后默认平台所有用户都能接收到该通知'
-                : '关闭后平台所有用户都不能接收到该通知',
-            cancelText: '取消',
-            okText: e ? '确认开启' : '确认关闭',
-            content: h(
-                'div',
-                {
-                    style: {
-                        display: 'flex',
-                        justifyContent: 'flex-end',
-                        marginTop: '20px',
-                    },
-                },
-                [
-                    h(
-                        Checkbox,
-                        {
-                            onChange: (_e: any) => {
-                                LocalStore.set(
-                                    user.userInfos?.username,
-                                    e
-                                        ? {
-                                              ..._value,
-                                              open: _e.target?.checked,
-                                          }
-                                        : {
-                                              ..._value,
-                                              close: _e.target?.checked,
-                                          },
-                                );
-                            },
+        if (e) {
+            onAction(e);
+        } else {
+            Modal.confirm({
+                title: e
+                    ? '开启后默认平台所有用户都能接收到该通知'
+                    : '关闭后平台所有用户都不能接收到该通知',
+                cancelText: '取消',
+                okText: e ? '确认开启' : '确认关闭',
+                content: h(
+                    'div',
+                    {
+                        style: {
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            marginTop: '20px',
                         },
-                        '不再提示',
-                    ),
-                ],
-            ),
-            onOk() {
-                onAction(e);
-            },
-            onCancel() {},
-        });
+                    },
+                    [
+                        h(
+                            Checkbox,
+                            {
+                                onChange: (_e: any) => {
+                                    LocalStore.set(
+                                        user.userInfos?.username,
+                                        e
+                                            ? {
+                                                  ..._value,
+                                                  open: _e.target?.checked,
+                                              }
+                                            : {
+                                                  ..._value,
+                                                  close: _e.target?.checked,
+                                              },
+                                    );
+                                },
+                            },
+                            '不再提示',
+                        ),
+                    ],
+                ),
+                onOk() {
+                    onAction(e);
+                },
+                onCancel() {},
+            });
+        }
     }
 };
 
@@ -489,7 +495,7 @@ const onSave = (_data: any) => {
 
         .box-item-add {
             cursor: pointer;
-            background-color: #F7F8FA;
+            background-color: #f7f8fa;
             width: 54px;
             height: 54px;
             display: flex;

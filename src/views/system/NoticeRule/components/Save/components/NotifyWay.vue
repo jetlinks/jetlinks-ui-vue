@@ -69,10 +69,12 @@ onMounted(() => {
                     iconUrl: iconMap.get(item.id),
                 };
             });
+            emit('update:value', options.value?.[0]?.value);
+            emit('update:name', options.value?.[0]?.label);
+            emit('change', {label: options.value?.[0]?.label, value: options.value?.[0]?.value});
         }
         loading.value = false;
     });
-    notifyType.value = props.value;
 });
 </script>
 
