@@ -114,6 +114,7 @@ const getNetworkEcharts = async (val: any) => {
         const _networkOptions = {};
         const _networkXAxis = new Set();
         if (resp.result.length) {
+          isEmpty.value = false;
           const filterArray = resp.result
           // const filterArray = resp.result.filter((item : any) => item.data?.clusterNodeId === props.serviceId)
           filterArray.forEach((item: any) => {
