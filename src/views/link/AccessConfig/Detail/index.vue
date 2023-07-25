@@ -139,7 +139,7 @@ const getTypeList = (result: Record<string, any>) => {
         } else if (item.id === 'OneNet' || item.id === 'Ctwing') {
             item.type = 'cloud';
             cloud.push(item);
-        } else if (item.id === 'modbus-tcp' || item.id === 'opc-ua') {
+        } else if (item.id === 'modbus-tcp' || item.id === 'opc-ua' || item.id === 'collector-gateway') {
             item.type = 'channel';
             channel.push(item);
         } else if (

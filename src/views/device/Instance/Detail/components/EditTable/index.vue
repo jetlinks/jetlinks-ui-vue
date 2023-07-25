@@ -28,14 +28,9 @@
                                     placeholder="请选择"
                                     allowClear
                                     :filter-option="filterOption"
+                                    :options="channelList"
+                                    @select="(_, option) => { record.provider = option.provider }"
                                 >
-                                    <j-select-option
-                                        v-for="item in channelList"
-                                        :key="item.value"
-                                        :value="item.value"
-                                        :label="item.label"
-                                        >{{ item.label }}</j-select-option
-                                    >
                                 </j-select>
                             </j-form-item>
                         </template>
@@ -269,6 +264,7 @@ const onSave = () => {
                 (i: any) => i.channelId,
             );
             if (arr && arr.length !== 0) {
+                console.log(arr)
                 const resp = await saveMapping(
                     instanceStore.current.id,
                     props.provider,

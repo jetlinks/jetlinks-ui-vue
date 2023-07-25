@@ -40,114 +40,111 @@
                     v-model:value="formData.name"
                 />
             </j-form-item>
-
-            <template v-if="provider === 'GATEWAY'">
-              <j-form-item
+            <j-form-item
+                v-if="provider === 'GATEWAY'"
                 label="通讯协议"
-                :name="['configuration', 'collectorProvider']"
+                :name="['collectorProvider']"
                 :rules="[{ required: true, message: '请选择通讯协议' }]"
             >
-                <j-select
-                    style="width: 100%"
-                    v-model:value="formData.configuration.collectorProvider"
-                    :options="providerListItems"
-                    placeholder="请选择通讯协议"
-                    allowClear
-                    show-search
-                    :filter-option="filterOption"
-                    :disabled="!!id"
-                />
+              <j-select
+                  style="width: 100%"
+                  v-model:value="formData.collectorProvider"
+                  :options="providerListItems"
+                  placeholder="请选择通讯协议"
+                  allowClear
+                  show-search
+                  :filter-option="filterOption"
+                  :disabled="!!id"
+              />
             </j-form-item>
-            </template>
-            <template v-else>
-              <j-form-item
-                  v-if="visibleUnitId"
-                  :name="['configuration', 'unitId']"
-                  :rules="LeftTreeRules.unitId"
-                  label="从机地址"
-              >
-                <j-input-number
-                    style="width: 100%"
-                    placeholder="请输入从机地址"
-                    v-model:value="formData.configuration.unitId"
-                    :min="0"
-                    :max="255"
-                />
-              </j-form-item>
-              <j-form-item
-                  :name="['configuration', 'inheritBreakerSpec', 'type']"
-                  :rules="LeftTreeRules.type"
-                  label="点位熔断处理"
-              >
-                <j-card-select
-                    :showImage="false"
-                    v-model:value="formData.configuration.inheritBreakerSpec.type"
-                    :options="[
-                        { label: '降频', value: 'LowerFrequency' },
-                        { label: '断开', value: 'Break' },
-                        { label: '忽略', value: 'Ignore' },
-                    ]"
-                    @change="changeCardSelectType"
-                />
-              </j-form-item>
-              <p style="color: #616161">
-                {{ getTypeTooltip(formData.configuration.inheritBreakerSpec.type) }}
-              </p>
-              <j-form-item
-                  v-if="visibleEndian"
-                  :name="['configuration', 'endian']"
-                  :rules="LeftTreeRules.endian"
-                  label="双字高低位切换"
-              >
-                <j-card-select
-                    :showImage="false"
-                    v-model:value="formData.configuration.endian"
-                    :options="[
-                        { label: 'AB', value: 'BIG' },
-                        { label: 'BA', value: 'LITTLE' },
-                    ]"
-                    @change="changeCardSelectEndian"
-                    :column="2"
-                />
-              </j-form-item>
-              <j-form-item
-                  v-if="visibleEndian"
-                  :name="['configuration', 'endianIn']"
-                  :rules="LeftTreeRules.endianIn"
-                  label="单字高低位切换"
-              >
-                <j-card-select
-                    :showImage="false"
-                    v-model:value="formData.configuration.endianIn"
-                    :options="[
-                        { label: 'AB', value: 'BIG' },
-                        { label: 'BA', value: 'LITTLE' },
-                    ]"
-                    @change="changeCardSelectEndianIn"
-                    :column="2"
-                />
-              </j-form-item>
-              <div v-if="visibleEndian" style="color: #616161">
-                <p>当前内存布局: {{ endianData }}</p>
-                <p>
-                  只有4字节数据类型(int32、ieee754 float)
-                  具有4种内存布局，其它只有ABCD、DCBA两种内存布局(以双字配置为准)
-                </p>
-              </div>
-              <j-form-item
-                  :name="['configuration', 'requsetTimeout']"
-                  label="请求超时时间配置"
-              >
-                <j-input-number
-                    style="width: 100%"
-                    placeholder="请输入请求超时时间配置"
-                    v-model:value="formData.configuration.requsetTimeout"
-                    addon-after="ms"
-                    :max="2147483648"
-                    :min="1"
-                />
-              </j-form-item>
-            </template>
+            <j-form-item
+                v-if="visibleUnitId"
+                :name="['configuration', 'unitId']"
+                :rules="LeftTreeRules.unitId"
+                label="从机地址"
+            >
+              <j-input-number
+                  style="width: 100%"
+                  placeholder="请输入从机地址"
+                  v-model:value="formData.configuration.unitId"
+                  :min="0"
+                  :max="255"
+              />
+            </j-form-item>
+            <j-form-item
+                v-if="provider !== 'GATEWAY'"
+                :name="['configuration', 'inheritBreakerSpec', 'type']"
+                :rules="LeftTreeRules.type"
+                label="点位熔断处理"
+            >
+              <j-card-select
+                  :showImage="false"
+                  v-model:value="formData.configuration.inheritBreakerSpec.type"
+                  :options="[
+                                      { label: '降频', value: 'LowerFrequency' },
+                                      { label: '断开', value: 'Break' },
+                                      { label: '忽略', value: 'Ignore' },
+                                  ]"
+                  @change="changeCardSelectType"
+              />
+            </j-form-item>
+            <p style="color: #616161" v-if="provider !== 'GATEWAY'">
+              {{ getTypeTooltip(formData.configuration.inheritBreakerSpec.type) }}
+            </p>
+            <j-form-item
+                v-if="visibleEndian"
+                :name="['configuration', 'endian']"
+                :rules="LeftTreeRules.endian"
+                label="双字高低位切换"
+            >
+            <j-card-select
+                :showImage="false"
+                v-model:value="formData.configuration.endian"
+                :options="[
+                                    { label: 'AB', value: 'BIG' },
+                                    { label: 'BA', value: 'LITTLE' },
+                                ]"
+                @change="changeCardSelectEndian"
+                :column="2"
+            />
+            </j-form-item>
+            <j-form-item
+                v-if="visibleEndian"
+                :name="['configuration', 'endianIn']"
+                :rules="LeftTreeRules.endianIn"
+                label="单字高低位切换"
+            >
+            <j-card-select
+                :showImage="false"
+                v-model:value="formData.configuration.endianIn"
+                :options="[
+                                    { label: 'AB', value: 'BIG' },
+                                    { label: 'BA', value: 'LITTLE' },
+                                ]"
+                @change="changeCardSelectEndianIn"
+                :column="2"
+            />
+            </j-form-item>
+            <div v-if="visibleEndian" style="color: #616161">
+            <p>当前内存布局: {{ endianData }}</p>
+            <p>
+              只有4字节数据类型(int32、ieee754 float)
+              具有4种内存布局，其它只有ABCD、DCBA两种内存布局(以双字配置为准)
+            </p>
+            </div>
+            <j-form-item
+                :name="['configuration', 'requsetTimeout']"
+                label="请求超时时间配置"
+            >
+            <j-input-number
+                style="width: 100%"
+                placeholder="请输入请求超时时间配置"
+                v-model:value="formData.configuration.requsetTimeout"
+                addon-after="ms"
+                :max="2147483648"
+                :min="1"
+            />
+            </j-form-item>
             <j-form-item label="说明" name="description">
                 <j-textarea
                     placeholder="请输入说明"
@@ -176,11 +173,10 @@
     </j-modal>
 </template>
 <script lang="ts" name="CollectorTreeSave" setup>
-import { save, update } from '@/api/data-collect/collector';
+import { save, update, getProviders } from '@/api/data-collect/collector';
 import { LeftTreeRules } from '../../data';
 import type { FormInstance } from 'ant-design-vue';
-import {cloneDeep} from "lodash-es";
-import {getProviders} from "@/api/data-collect/channel";
+import {cloneDeep, omit} from "lodash-es";
 import {protocolList} from "@/utils/consts";
 
 const loading = ref(false);
@@ -208,13 +204,7 @@ const providerListItems = ref()
 const geyProviderList = async () => {
   const resp: any = await getProviders();
   if (resp.success) {
-    const arr = resp.result.filter(
-        (item: any) =>  ['collector-gateway', 'modbus-tcp', 'opc-ua'].includes(item.id),
-    ).map((it: any) => it.id);
-    console.log(arr, protocolList)
-    providerListItems.value = protocolList.filter((item: any) =>
-        arr.includes(item.alias),
-    );
+    providerListItems.value = resp.result.map((item: any) => ({ label: item.name, value: item.id }))
   } else {
     providerListItems.value = []
   }
@@ -255,12 +245,12 @@ const endianData = computed(() => {
 const formData = ref({
     channelId: undefined,
     name: '',
+    collectorProvider: undefined,
     configuration: {
         unitId: '',
         type: 'LowerFrequency',
         endian: 'BIG',
         endianIn: 'BIG',
-        collectorProvider: undefined,
         requsetTimeout: 2000,
         inheritBreakerSpec: {
           type: 'LowerFrequency',
@@ -274,34 +264,52 @@ const formData = ref({
 });
 
 const handleOk = async () => {
-    const data = await formRef.value?.validate();
+    const _data: any = await formRef.value?.validate();
 
+    if (_data) {
+      const { name } = _channelListAll.value.find(
+          (item: any) => item.id === formData.value.channelId,
+      );
 
+      let _copyData = _data
 
-    const { name } = _channelListAll.value.find(
-        (item: any) => item.id === formData.value.channelId,
-    );
+      if (['GATEWAY'].includes(provider.value)) {
+        const copyData = cloneDeep(_data)
+        _copyData = omit(copyData, ['configuration', 'collectorProvider'])
 
-    if (['GATEWAY'].includes(data?.provider)) {
-      data.configuration.inheritBreakerSpec.type = 'Ignore'
-    }
+        _copyData.configuration = {
+          configuration: {
+            ..._data.configuration,
+            inheritBreakerSpec: {
+              type: 'Ignore'
+            }
+          },
+          collectorProvider: _data.collectorProvider
+        }
+      }
 
-    const params = {
-        ...data,
+      const params = {
+        ..._copyData,
         provider: provider.value,
         channelName: name,
         circuitBreaker: {
           type: 'Ignore'
         }
-    };
+      };
 
-    loading.value = true;
-    const response = !id
-        ? await save(params).catch(() => { success: false })
-        : await update(id, { ...props.data, ...params }).catch(() => { success: false });
-    loading.value = false;
-    if (response.success) {
-        emit('change', true);
+      loading.value = true;
+
+      try {
+        const response = !id
+            ? await save(params)
+            : await update(id, { ...props.data, ...params })
+        loading.value = false;
+        if (response.success) {
+          emit('change', true);
+        }
+      } catch (e) {
+        loading.value = false;
+      }
     }
 };
 
@@ -337,7 +345,7 @@ watch(
     (value) => {
         const dt = _channelListAll.value.find((item) => item.id === value);
         visibleUnitId.value = visibleEndian.value =
-            dt?.provider && dt?.provider === 'MODBUS_TCP';
+            dt?.provider && ['MODBUS_TCP', 'GATEWAY'].includes(dt?.provider);
     },
     { deep: true },
 );
@@ -347,7 +355,7 @@ watch(
     (value) => {
         if (value.id) {
           let copyValue = cloneDeep(value)
-          if (!copyValue?.configuration?.inheritBreakerSpec) {
+          if (!copyValue?.configuration?.inheritBreakerSpec && copyValue.provider !== 'GATEWAY') {
             copyValue.configuration = {
               ...copyValue.configuration,
               inheritBreakerSpec: {
@@ -356,12 +364,17 @@ watch(
             }
             copyValue.circuitBreaker.type = 'Ignore'
           }
-          formData.value = copyValue
 
-          const item = props.channelListAll.find(
-              (item: any) => item.id === formData.value.channelId,
-          );
-          provider.value = item?.provider
+          if (copyValue.provider === 'GATEWAY') {
+            formData.value = {
+              ...omit(copyValue, ['configuration']),
+              ...copyValue.configuration,
+            }
+          } else {
+            formData.value = copyValue
+          }
+
+          provider.value = copyValue?.provider
         };
     },
     { immediate: true, deep: true },
