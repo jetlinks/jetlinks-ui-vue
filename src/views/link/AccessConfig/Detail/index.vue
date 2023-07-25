@@ -14,40 +14,47 @@
                             <a @click="goBack">返回</a>
                         </div>
                       <template v-if="showType === 'network'">
-                        <Network
-                          v-if="provider.id !== 'plugin_gateway'"
-                          :bindProduct='bindProduct'
-                          :provider="provider"
-                          :data="data"
-                        />
                         <Plugin
-                          v-else
-                          :bindProduct='bindProduct'
-                          :provider="provider"
-                          :data="data"
+                            v-if="provider.id === 'plugin_gateway'"
+                            :bindProduct='bindProduct'
+                            :data="data"
+                            :provider="provider"
+                        />
+                        <GateWay
+                            v-else-if="provider.id === 'collector-gateway'"
+                            :bindProduct='bindProduct'
+                            :data="data"
+                            :provider="provider"
+                        />
+
+                        <Network
+                            v-else
+                            :bindProduct='bindProduct'
+                            :data="data"
+                            :provider="provider"
                         />
                       </template>
 
                         <Media
-                            v-if="showType === 'media'"
+                            v-else-if="showType === 'media'"
                             :bindProduct='bindProduct'
                             :provider="provider"
                             :data="data"
                         />
                         <Channel
-                            v-if="showType === 'channel'"
+                            v-else-if="showType === 'channel'"
                             :bindProduct='bindProduct'
                             :provider="provider"
                             :data="data"
                         />
                         <Edge
-                            v-if="showType === 'edge'"
+                            v-else-if="showType === 'edge'"
                             :bindProduct='bindProduct'
                             :provider="provider"
                             :data="data"
                         />
                         <Cloud
-                            v-if="showType === 'cloud'"
+                            v-else-if="showType === 'cloud'"
                             :bindProduct='bindProduct'
                             :provider="provider"
                             :data="data"
@@ -65,6 +72,7 @@ import Provider from '../components/Provider/index.vue';
 import Media from '../components/Media/index.vue';
 import Channel from '../components/Channel/index.vue';
 import Edge from '../components/Edge/index.vue';
+import GateWay from '../components/Edge/geteway.vue';
 import Cloud from '../components/Cloud/index.vue';
 import Plugin from '../components/Plugin/index.vue'
 import { getProviders, detail } from '@/api/link/accessConfig';

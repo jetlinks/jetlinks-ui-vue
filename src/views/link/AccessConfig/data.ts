@@ -14,6 +14,7 @@ ProtocolMapping.set('Ctwing', 'HTTP');
 ProtocolMapping.set('modbus-tcp', 'MODBUS_TCP');
 ProtocolMapping.set('opc-ua', 'OPC_UA');
 ProtocolMapping.set('edge-child-device', 'EdgeGateway');
+ProtocolMapping.set('collector-gateway', 'collector-gateway');
 ProtocolMapping.set('official-edge-gateway', 'MQTT');
 
 const NetworkTypeMapping = new Map();

@@ -27,6 +27,7 @@
                     show-search
                     :filter-option="filterOption"
                     :disabled="!!id"
+                    @select="channelSelect"
                 />
             </j-form-item>
             <j-form-item
@@ -39,12 +40,32 @@
                     v-model:value="formData.name"
                 />
             </j-form-item>
-            <j-form-item
-                label="从机地址"
-                :name="['configuration', 'unitId']"
-                v-if="visibleUnitId"
-                :rules="LeftTreeRules.unitId"
+
+            <template v-if="provider === 'GATEWAY'">
+              <j-form-item
+                label="通讯协议"
+                :name="['configuration', 'collectorProvider']"
+                :rules="[{ required: true, message: '请选择通讯协议' }]"
             >
+                <j-select
+                    style="width: 100%"
+                    v-model:value="formData.configuration.collectorProvider"
+                    :options="providerListItems"
+                    placeholder="请选择通讯协议"
+                    allowClear
+                    show-search
+                    :filter-option="filterOption"
+                    :disabled="!!id"
+                />
+            </j-form-item>
+            </template>
+            <template v-else>
+              <j-form-item
+                  v-if="visibleUnitId"
+                  :name="['configuration', 'unitId']"
+                  :rules="LeftTreeRules.unitId"
+                  label="从机地址"
+              >
                 <j-input-number
                     style="width: 100%"
                     placeholder="请输入从机地址"
@@ -52,12 +73,12 @@
                     :min="0"
                     :max="255"
                 />
-            </j-form-item>
-            <j-form-item
-                :name="['configuration', 'inheritBreakerSpec', 'type']"
-                :rules="LeftTreeRules.type"
-                label="点位熔断处理"
-            >
+              </j-form-item>
+              <j-form-item
+                  :name="['configuration', 'inheritBreakerSpec', 'type']"
+                  :rules="LeftTreeRules.type"
+                  label="点位熔断处理"
+              >
                 <j-card-select
                     :showImage="false"
                     v-model:value="formData.configuration.inheritBreakerSpec.type"
@@ -68,16 +89,16 @@
                     ]"
                     @change="changeCardSelectType"
                 />
-            </j-form-item>
-            <p style="color: #616161">
+              </j-form-item>
+              <p style="color: #616161">
                 {{ getTypeTooltip(formData.configuration.inheritBreakerSpec.type) }}
-            </p>
-            <j-form-item
-                label="双字高低位切换"
-                :name="['configuration', 'endian']"
-                v-if="visibleEndian"
-                :rules="LeftTreeRules.endian"
-            >
+              </p>
+              <j-form-item
+                  v-if="visibleEndian"
+                  :name="['configuration', 'endian']"
+                  :rules="LeftTreeRules.endian"
+                  label="双字高低位切换"
+              >
                 <j-card-select
                     :showImage="false"
                     v-model:value="formData.configuration.endian"
@@ -88,13 +109,13 @@
                     @change="changeCardSelectEndian"
                     :column="2"
                 />
-            </j-form-item>
-            <j-form-item
-                label="单字高低位切换"
-                :name="['configuration', 'endianIn']"
-                v-if="visibleEndian"
-                :rules="LeftTreeRules.endianIn"
-            >
+              </j-form-item>
+              <j-form-item
+                  v-if="visibleEndian"
+                  :name="['configuration', 'endianIn']"
+                  :rules="LeftTreeRules.endianIn"
+                  label="单字高低位切换"
+              >
                 <j-card-select
                     :showImage="false"
                     v-model:value="formData.configuration.endianIn"
@@ -105,18 +126,18 @@
                     @change="changeCardSelectEndianIn"
                     :column="2"
                 />
-            </j-form-item>
-            <div style="color: #616161" v-if="visibleEndian">
+              </j-form-item>
+              <div v-if="visibleEndian" style="color: #616161">
                 <p>当前内存布局: {{ endianData }}</p>
                 <p>
-                    只有4字节数据类型(int32、ieee754 float)
-                    具有4种内存布局，其它只有ABCD、DCBA两种内存布局(以双字配置为准)
+                  只有4字节数据类型(int32、ieee754 float)
+                  具有4种内存布局，其它只有ABCD、DCBA两种内存布局(以双字配置为准)
                 </p>
-            </div>
-            <j-form-item
-                label="请求超时时间配置"
-                :name="['configuration', 'requsetTimeout']"
-            >
+              </div>
+              <j-form-item
+                  :name="['configuration', 'requsetTimeout']"
+                  label="请求超时时间配置"
+              >
                 <j-input-number
                     style="width: 100%"
                     placeholder="请输入请求超时时间配置"
@@ -125,8 +146,8 @@
                     :max="2147483648"
                     :min="1"
                 />
-            </j-form-item>
-
+              </j-form-item>
+            </template>
             <j-form-item label="说明" name="description">
                 <j-textarea
                     placeholder="请输入说明"
@@ -154,11 +175,13 @@
         </template>
     </j-modal>
 </template>
-<script lang="ts" setup>
+<script lang="ts" name="CollectorTreeSave" setup>
 import { save, update } from '@/api/data-collect/collector';
 import { LeftTreeRules } from '../../data';
 import type { FormInstance } from 'ant-design-vue';
 import {cloneDeep} from "lodash-es";
+import {getProviders} from "@/api/data-collect/channel";
+import {protocolList} from "@/utils/consts";
 
 const loading = ref(false);
 const visibleEndian = ref(false);
@@ -179,17 +202,40 @@ const emit = defineEmits(['change']);
 
 const id = props.data.id;
 const formRef = ref<FormInstance>();
+const provider = ref()
+const providerListItems = ref()
+
+const geyProviderList = async () => {
+  const resp: any = await getProviders();
+  if (resp.success) {
+    const arr = resp.result.filter(
+        (item: any) =>  ['collector-gateway', 'modbus-tcp', 'opc-ua'].includes(item.id),
+    ).map((it: any) => it.id);
+    console.log(arr, protocolList)
+    providerListItems.value = protocolList.filter((item: any) =>
+        arr.includes(item.alias),
+    );
+  } else {
+    providerListItems.value = []
+  }
+}
 
 const _channelListAll = computed(() => {
     return props.channelListAll || [];
 })
+
 const channelList = computed(() => {
    return _channelListAll.value.map((item: any) => ({
+        provider: item.provider,
         value: item.id,
         label: item.name,
     }));
 })
 
+const channelSelect = (key: string, detail: any) => {
+  console.log(detail)
+  provider.value = detail.provider
+}
 
 const endianData = computed(() => {
     const { endian, endianIn } = formData.value.configuration;
@@ -214,6 +260,7 @@ const formData = ref({
         type: 'LowerFrequency',
         endian: 'BIG',
         endianIn: 'BIG',
+        collectorProvider: undefined,
         requsetTimeout: 2000,
         inheritBreakerSpec: {
           type: 'LowerFrequency',
@@ -229,13 +276,23 @@ const formData = ref({
 const handleOk = async () => {
     const data = await formRef.value?.validate();
 
-    const { provider, name } = _channelListAll.value.find(
+
+
+    const { name } = _channelListAll.value.find(
         (item: any) => item.id === formData.value.channelId,
     );
+
+    if (['GATEWAY'].includes(data?.provider)) {
+      data.configuration.inheritBreakerSpec.type = 'Ignore'
+    }
+
     const params = {
         ...data,
-        provider,
+        provider: provider.value,
         channelName: name,
+        circuitBreaker: {
+          type: 'Ignore'
+        }
     };
 
     loading.value = true;
@@ -294,16 +351,28 @@ watch(
             copyValue.configuration = {
               ...copyValue.configuration,
               inheritBreakerSpec: {
-                type: value.circuitBreaker.type
+                type: value.circuitBreaker?.type
               }
             }
             copyValue.circuitBreaker.type = 'Ignore'
           }
           formData.value = copyValue
+
+          const item = props.channelListAll.find(
+              (item: any) => item.id === formData.value.channelId,
+          );
+          provider.value = item?.provider
         };
     },
     { immediate: true, deep: true },
 );
+
+watchEffect(() => {
+  if (provider.value === 'GATEWAY') {
+    geyProviderList()
+  }
+})
+
 </script>
 
 <style lang="less" scoped>
