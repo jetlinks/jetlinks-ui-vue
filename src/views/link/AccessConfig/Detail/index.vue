@@ -141,7 +141,9 @@ const getTypeList = (result: Record<string, any>) => {
             cloud.push(item);
         } else if (item.id === 'modbus-tcp' || item.id === 'opc-ua' || item.id === 'collector-gateway') {
             item.type = 'channel';
-            channel.push(item);
+            if (item.id === 'collector-gateway') {
+              channel.push(item);
+            }
         } else if (
             item.id === 'official-edge-gateway' ||
             item.id === 'edge-child-device'
