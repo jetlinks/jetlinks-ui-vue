@@ -19,7 +19,7 @@
         <AIcon type="InfoCircleOutlined" />
         已规定固定收信人的模板在当前页面将被过滤
     </div>
-    <div style="height: 400px; overflow-y: auto">
+    <div style="max-height: 400px; overflow-y: auto">
         <JProTable
             :columns="columns"
             :request="(e) => handleData(e)"

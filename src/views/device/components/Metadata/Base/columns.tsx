@@ -302,22 +302,22 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       title: '输入参数',
       dataIndex: 'inputs',
       width: 120,
-      form: {
-        required: true,
-        rules: [{
-          callback(rule:any,value: any, dataSource: any[]) {
-            const field = rule.field.split('.')
-            const fieldIndex = Number(field[1])
-
-            const values = dataSource.find((item, index) => index === fieldIndex)
-
-            return validatorConfig({
-              type: 'object',
-              properties: values.inputs
-            }, true)
-          }
-        }]
-      },
+      // form: {
+      //   required: true,
+      //   rules: [{
+      //     callback(rule:any,value: any, dataSource: any[]) {
+      //       const field = rule.field.split('.')
+      //       const fieldIndex = Number(field[1])
+      //
+      //       const values = dataSource.find((item, index) => index === fieldIndex)
+      //
+      //       return validatorConfig({
+      //         type: 'object',
+      //         properties: values.inputs
+      //       }, true)
+      //     }
+      //   }]
+      // },
       control(newValue, oldValue) {
         if (newValue && !oldValue) {
           return true

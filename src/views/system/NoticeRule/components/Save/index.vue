@@ -11,11 +11,12 @@
                 <j-step v-for="(item, index) in stepList" :key="item">
                     <template #title>
                         {{ item
-                        }}<j-tooltip
-                            v-if="index === 4"
-                            >
+                        }}<j-tooltip v-if="index === 4">
                             <template #title>
-                                <span>内层权限配置<br />外层权限已配置的情况下，将取外层权限与当前页面分配权限的交集，向对应角色发送通知。<br />外层权限未配置的情况下，将按此处配置的权限发送通知。</span>
+                                <span>
+                                    通过角色控制【{{ name }}】下的【{{ showName }}通知】可被哪些用户订阅。<br />
+                                    注意：当前配置会被外层【{{ name }}】中的权限控制覆盖。
+                                </span>
                             </template>
                             <AIcon type="QuestionCircleOutlined"
                         /></j-tooltip>
@@ -32,6 +33,7 @@
             <template v-if="current === 0">
                 <NotifyWay
                     :value="formModel.channelProvider"
+                    v-model:name="showName"
                     @change="onWayChange"
                 />
             </template>
@@ -161,6 +163,10 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    name: {
+        type: String,
+        default: '',
+    },
 });
 
 const stepList = [
@@ -190,14 +196,15 @@ const formModel = reactive<{
 });
 const variableRef = ref();
 const formRef = ref();
+const showName = ref<string>('钉钉')
 
 const _getType = computed(() => {
-    if(['notifier-dingTalk'].includes(props.data?.channelProvider)) {
-        return ['user', 'tag']
+    if (['notifier-dingTalk'].includes(props.data?.channelProvider)) {
+        return ['user', 'tag'];
     } else {
-        return ['user', 'org', 'tag']
+        return ['user', 'org', 'tag'];
     }
-})
+});
 
 const _variableDefinitions = computed(() => {
     return variable.value.filter((item: any) => {

@@ -54,13 +54,13 @@
                 />
             </j-form-item>
             <j-form-item
-                :name="['circuitBreaker', 'type']"
+                :name="['configuration', 'inheritBreakerSpec', 'type']"
                 :rules="LeftTreeRules.type"
-                label="故障处理"
+                label="点位熔断处理"
             >
                 <j-card-select
                     :showImage="false"
-                    v-model:value="formData.circuitBreaker.type"
+                    v-model:value="formData.configuration.inheritBreakerSpec.type"
                     :options="[
                         { label: '降频', value: 'LowerFrequency' },
                         { label: '断开', value: 'Break' },
@@ -70,7 +70,7 @@
                 />
             </j-form-item>
             <p style="color: #616161">
-                {{ getTypeTooltip(formData.circuitBreaker.type) }}
+                {{ getTypeTooltip(formData.configuration.inheritBreakerSpec.type) }}
             </p>
             <j-form-item
                 label="双字高低位切换"
@@ -158,6 +158,7 @@
 import { save, update } from '@/api/data-collect/collector';
 import { LeftTreeRules } from '../../data';
 import type { FormInstance } from 'ant-design-vue';
+import {cloneDeep} from "lodash-es";
 
 const loading = ref(false);
 const visibleEndian = ref(false);
@@ -214,9 +215,13 @@ const formData = ref({
         endian: 'BIG',
         endianIn: 'BIG',
         requsetTimeout: 2000,
+        inheritBreakerSpec: {
+          type: 'LowerFrequency',
+        }
     },
     circuitBreaker: {
-        type: 'LowerFrequency',
+        // type: 'LowerFrequency',
+      type: 'Ignore'
     },
     description: '',
 });
@@ -243,19 +248,21 @@ const handleOk = async () => {
     }
 };
 
-const getTypeTooltip = (value: string) =>
-    value === 'LowerFrequency'
-        ? '连续20次采集异常后，降低采集频率至设定频率的1/10，故障处理后，采集频率将恢复至设定频率。'
-        : value === 'Break'
-        ? '连续10分钟异常，停止采集数据进入断开状态，设备重新启用后恢复采集状态。'
-        : '忽略异常，保持原采集频率超时时间为5s。';
+const getTypeTooltip = (value: string) => {
+  switch (value) {
+    case 'LowerFrequency': return '连续20次采集异常后，降低采集频率至设定频率的1/10，故障处理后，采集频率将恢复至设定频率。';
+    // case 'Break': return '连续10分钟异常，停止采集数据进入断开状态，设备重新启用后恢复采集状态。'
+    case 'Break': return '连续20次采集异常后，降低采集频率至设定频率的1/10，10分钟内未排除故障，将停止采集。'
+    default: return '忽略异常，保持设定采集频率。';
+  }
+}
 
 const handleCancel = () => {
     emit('change', false);
 };
 
 const changeCardSelectType = (value: Array<string>) => {
-    formData.value.circuitBreaker.type = value[0];
+  formData.value.configuration.inheritBreakerSpec.type = value[0];
 };
 const changeCardSelectEndian = (value: Array<string>) => {
     formData.value.configuration.endian = value[0];
@@ -281,7 +288,19 @@ watch(
 watch(
     () => props.data,
     (value) => {
-        if (value.id) formData.value = value;
+        if (value.id) {
+          let copyValue = cloneDeep(value)
+          if (!copyValue?.configuration?.inheritBreakerSpec) {
+            copyValue.configuration = {
+              ...copyValue.configuration,
+              inheritBreakerSpec: {
+                type: value.circuitBreaker.type
+              }
+            }
+            copyValue.circuitBreaker.type = 'Ignore'
+          }
+          formData.value = copyValue
+        };
     },
     { immediate: true, deep: true },
 );

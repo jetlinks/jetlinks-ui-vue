@@ -28,11 +28,14 @@
                     <template v-else>
                         <Detail
                             @unsubscribe="onUnSubscribe"
-                            @save="onSave"
-                            v-if="current?.channelProvider !== 'inside-mail' && popoverVisible"
+                            v-if="
+                                current?.channelProvider !== 'inside-mail' &&
+                                popoverVisible
+                            "
                             :current="current"
-                            :data="props.data"
-                            @close="popoverVisible = false"
+                            :data="data"
+                            @bindChange="onChange('bind')"
+                            @infoChange="onChange('info')"
                         />
                         <PermissionButton
                             v-else
@@ -51,12 +54,28 @@
                 {{ current?.name }}
             </j-ellipsis>
         </div>
+        <EditInfo
+            v-if="editInfoVisible"
+            :data="user.userInfos"
+            @close="editInfoVisible = false"
+            @save="onSave"
+        />
+        <Bind
+            @close="visible = false"
+            v-if="visible"
+            :data="data"
+            :current="current"
+            @save="onBindSave"
+        />
     </div>
 </template>
 
 <script lang="ts" setup>
 import { getImage } from '@/utils/comm';
 import Detail from './Detail.vue';
+import { useUserInfo } from '@/store/userInfo';
+import EditInfo from '../../EditInfo/index.vue';
+import Bind from './Bind.vue';
 
 const iconMap = new Map();
 iconMap.set('notifier-dingTalk', getImage('/notice-rule/dingtalk.png'));
@@ -81,19 +100,44 @@ const props = defineProps({
     },
     notifyChannels: {
         type: Array,
-        default: () => []
-    }
+        default: () => [],
+    },
 });
+const user = useUserInfo();
 const popoverVisible = ref<boolean>(false);
+
+const editInfoVisible = ref<boolean>(false);
+const visible = ref<boolean>(false);
+
+const onChange = (type: 'bind' | 'info') => {
+    if(type === 'bind'){
+        editInfoVisible.value = true
+    } else {
+        visible.value = true
+    }
+}
+
+const onSave = () => {
+    editInfoVisible.value = false;
+    user.getUserInfo();
+    emit('save', props.current);
+    popoverVisible.value = false;
+};
+
+const onBindSave = () => {
+    visible.value = false
+    emit('save', props.current);
+    popoverVisible.value = false;
+}
 
 const onUnSubscribe = (dt: any) => {
     emit('unsubscribe', dt);
-    popoverVisible.value = false
+    popoverVisible.value = false;
 };
 
 const onCheckChange = (dt: any) => {
-    emit('save', dt)
-    popoverVisible.value = false
+    emit('save', dt);
+    popoverVisible.value = false;
 };
 </script>
 

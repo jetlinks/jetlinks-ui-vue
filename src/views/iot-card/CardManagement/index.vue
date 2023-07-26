@@ -193,11 +193,11 @@
                                 <div class="progress-text">
                                     <div>
                                         {{
-                                            (
-                                                (slotProps.usedFlow /
+                                            slotProps.totalFlow ? (
+                                                 (slotProps.usedFlow /
                                                     slotProps.totalFlow) *
                                                 100
-                                            ).toFixed(2)
+                                            ).toFixed(2) : '0.00'
                                         }}
                                         %
                                     </div>
@@ -209,9 +209,9 @@
                                     :strokeColor="'#ADC6FF'"
                                     :showInfo="false"
                                     :percent="
-                                        (slotProps.usedFlow /
+                                        slotProps.totalFlow ? (slotProps.usedFlow /
                                             slotProps.totalFlow) *
-                                        100
+                                        100 : 0
                                     "
                                 />
                             </div>

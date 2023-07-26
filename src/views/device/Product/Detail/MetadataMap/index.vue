@@ -354,7 +354,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-    if (_delTag.value) {
+    if (_delTag.value && dataSourceCache.value.length) {
         // 保存数据
         const arr = dataSourceCache.value.filter((i: any) => i?.plugin).map((item: any) => {
             return {

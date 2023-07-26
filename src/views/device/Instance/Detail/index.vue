@@ -277,7 +277,7 @@ const initPage = async (newId: any) => {
 }
 
 onBeforeRouteUpdate((to: any) => {
-  if (to.params?.id!==instanceStore.current.id) {
+  if (to.params?.id!==instanceStore.current.id && to.name === 'device/Instance/Detail') {
     initPage(to.params?.id)
   }
 })
