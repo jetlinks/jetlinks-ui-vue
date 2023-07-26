@@ -39,8 +39,16 @@
                     <j-tag
                         class="tree-left-tag"
                         v-if="data.id !== '*'"
-                        :color="colorMap.get(data?.runningState?.value)"
-                        >{{ data?.runningState?.text }}</j-tag
+                        :color="
+                          data?.uniformState?.value === 'normal' || data?.state?.value === 'disabled' ?
+                          colorMap.get(data?.runningState?.value) :
+                          colorMap.get(data?.uniformState?.value)
+                        "
+                        >{{
+                        data?.uniformState?.value === 'normal' || data?.state?.value === 'disabled' ?
+                            data?.runningState?.text :
+                            data?.uniformState?.text
+                      }}</j-tag
                     >
                     <j-tag
                         class="tree-left-tag2"
@@ -117,7 +125,7 @@
 
 <script setup lang="ts" name="TreePage">
 import {
-    queryCollector,
+    queryCollectorTree,
     queryChannelNoPaging,
     update,
     remove,
@@ -245,7 +253,7 @@ const handleSearch = async (value: any) => {
         !!value && (params.value = value);
     }
     spinning.value = true;
-    const res: any = await queryCollector(params.value);
+    const res: any = await queryCollectorTree(params.value);
     if (res.status === 200) {
         if (clickSearch) {
             defualtDataSource.value = res.result;

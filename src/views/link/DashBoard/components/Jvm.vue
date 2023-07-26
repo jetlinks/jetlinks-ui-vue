@@ -103,6 +103,7 @@ const getJVMEcharts = async (val: any) => {
         const _jvmOptions = {};
         const _jvmXAxis = new Set();
         if (res.result?.length) {
+          isEmpty.value = false;
           // const filterArray =  props.isNoCommunity ? res.result.filter((item : any) => item.data?.clusterNodeId === props.serviceId) : res.result
           const filterArray =  res.result
           filterArray.forEach((item: any) => {

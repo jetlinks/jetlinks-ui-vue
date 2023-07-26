@@ -20,30 +20,58 @@
         <j-scrollbar v-if='deviceList.length'>
           <j-spin :spinning='deviceSpinning'>
             <div class='device-list-items'>
-              <div
-                v-for='item in deviceList'
-                :class='{
-                  "device-list-item": true,
-                  "active": checkKeys.includes(item.id),
-                  "disabled": disabledKeys.includes(item.id)
-                }'
-                @click='() => deviceClick(item.id, item)'
-              >
+              <template v-for='item in deviceList'>
                 <template v-if='disabledKeys.includes(item.id)'>
                   <j-tooltip
-                    title='该设备已绑定平台设备'
+                      title='该设备已绑定平台设备'
                   >
-                      <span class='item-title'>{{ item.id }}</span>
+                    <div
+                        :class='{
+                          "device-list-item": true,
+                          "active": checkKeys.includes(item.id),
+                          "disabled": disabledKeys.includes(item.id)
+                        }'
+                        @click='() => deviceClick(item.id, item)'
+                    >
+                      <div class='item-title'>
+                        <span class="title-name no-tooltip">
+                            {{item.name}}
+                        </span>
+                        <span class="title-id">
+                          ({{ item.id }})
+                        </span>
+                      </div>
+                    </div>
                   </j-tooltip>
                 </template>
-                <span v-else class='item-title'>
-                  {{ item.id }}
-                </span>
-                <a-icon
-                  v-if='checkKeys.includes(item.id)'
-                  type='CheckOutlined'
-                />
-              </div>
+                <div
+                    v-else
+                    :class='{
+                      "device-list-item": true,
+                      "active": checkKeys.includes(item.id),
+                      "disabled": disabledKeys.includes(item.id)
+                    }'
+                    @click='() => deviceClick(item.id, item)'
+                >
+
+                  <div class='item-title'>
+                    <span class="title-name">
+                      <j-ellipsis>
+                        {{item.name}}
+                      </j-ellipsis>
+                    </span>
+                    <span class="title-id">
+                      <j-ellipsis>
+                        ({{ item.id }})
+                      </j-ellipsis>
+                    </span>
+                  </div>
+                  <a-icon
+                      v-if='checkKeys.includes(item.id)'
+                      type='CheckOutlined'
+                  />
+                </div>
+              </template>
             </div>
           </j-spin>
         </j-scrollbar>
@@ -278,7 +306,31 @@ onMounted(() => {
       justify-content: space-between;
 
       > .item-title {
-        flex: 1 1 auto;
+        display: flex;
+        min-width: 0;
+        flex-grow: 1;
+        gap: 8px;
+
+        .title-name {
+          max-width: 70%;
+        }
+
+        .no-tooltip {
+          overflow: hidden;
+          vertical-align: bottom;
+          cursor: pointer;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          word-break: break-all;
+          max-height: 380px;
+          -webkit-line-clamp: 1;
+          text-overflow: ellipsis;
+        }
+
+        .title-id {
+          flex: 1 1 auto;
+          color: #a3a3a3;
+        }
       }
 
       &:hover {
@@ -288,6 +340,10 @@ onMounted(() => {
       &.active {
         background-color: rgba(153, 153, 153, 0.06);
         color: @primary-color;
+        .title-id {
+          color: @primary-color;
+          opacity: .8;
+        }
       }
 
       &.disabled {
