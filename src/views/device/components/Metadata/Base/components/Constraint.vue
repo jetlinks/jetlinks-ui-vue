@@ -12,6 +12,7 @@
 
 <script setup name="ConstraintSelect">
 import { set, get } from 'lodash-es'
+import {FULL_CODE} from "jetlinks-ui-components/es/DataTable";
 
 const props = defineProps({
   value: {
@@ -25,6 +26,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:value'])
+const fullRef = inject(FULL_CODE);
 
 const myValue = ref()
 

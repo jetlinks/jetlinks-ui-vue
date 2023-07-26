@@ -7,6 +7,7 @@
                     <j-radio-group
                         button-style="solid"
                         v-model:value="data.type"
+                        @change="() => { getNetworkEcharts(data) }"
                     >
                         <j-radio-button value="bytesRead">
                             上行
@@ -105,6 +106,7 @@ const serverData = reactive({
 
 const pickerTimeChange = (value: any) => {
     data.value.time.type = undefined;
+    getNetworkEcharts(data.value);
 };
 
 const getNetworkEcharts = async (val: any) => {
@@ -219,13 +221,6 @@ watch(
     },
     { immediate: true, deep: true },
 );
-
-// watchEffect(() => {
-//   const time = data.value.time.time
-//   if (time && Array.isArray(time) && time.length === 2 && time[0] && props.serviceId) {
-//
-//   }
-// })
 
 </script>
 

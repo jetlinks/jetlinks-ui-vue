@@ -16,6 +16,7 @@
                    label: a.text,
                    value: a.value,
             }))"
+            :get-popup-container="(node) => fullRef || node"
         />
       </template>
     </j-table>
@@ -29,6 +30,7 @@ import type { PropType } from "vue";
 import { defineExpose } from 'vue'
 import {getMetadataConfig, getMetadataDeviceConfig} from "@/api/device/product";
 import { omit } from 'lodash-es'
+import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
 
 const props = defineProps({
   type: {
@@ -47,7 +49,7 @@ const props = defineProps({
 
 const productStore = useProductStore()
 const deviceStore = useInstanceStore()
-
+const fullRef = inject(FULL_CODE);
 const config = ref<any>([])
 const configValue = ref(props.record?.expands)
 

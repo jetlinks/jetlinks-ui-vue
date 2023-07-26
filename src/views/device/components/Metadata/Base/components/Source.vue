@@ -4,17 +4,20 @@
             v-model:value="myValue"
             :options="PropertySource"
             placeholder="请选择来源"
-            @change="onChange"
             :disabled="disabled"
+            :get-popup-container="(node) => fullRef || node"
+            @change="onChange"
         >
         </j-select>
         <j-popconfirm-modal
             v-if="myValue != 'manual'"
-            @confirm="confirm"
             :bodyStyle="{
                 width: '450px',
                 height: myValue === 'rule' ? '300px' : '80px',
             }"
+            :get-popup-container="(node) => fullRef || node"
+            placement="topLeft"
+            @confirm="confirm"
         >
             <template #content>
                 <j-scrollbar v-if="myValue">
@@ -39,6 +42,7 @@
 import { isNoCommunity } from '@/utils/utils';
 import VirtualRule from './VirtualRule/index.vue';
 import { Form } from 'jetlinks-ui-components';
+import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
 
 const PropertySource: { label: string; value: string }[] = isNoCommunity
     ? [
@@ -71,6 +75,8 @@ type SourceType = 'device' | 'manual' | 'rule' | '';
 type Emit = {
     (e: 'update:value', data: Record<string, any>): void;
 };
+
+const fullRef = inject(FULL_CODE);
 
 const props = defineProps({
     value: {
