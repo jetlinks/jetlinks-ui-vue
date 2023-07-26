@@ -20,7 +20,7 @@
         <AIcon type="InfoCircleOutlined" />
         钉钉群机器人类型的配置在当前页面将被过滤
     </div>
-    <div style="height: 400px; overflow-y: auto">
+    <div style="max-height: 400px; overflow-y: auto">
         <JProTable
             :columns="columns"
             :request="query"

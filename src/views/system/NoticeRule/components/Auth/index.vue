@@ -6,6 +6,10 @@
         @cancel="emit('close')"
         @ok="onSave"
     >
+        <div class="alert">
+            <AIcon type="InfoCircleOutlined" />
+            通过角色控制【{{ name }}】的所有的通知方式可被哪些用户订阅。
+        </div>
         <Role v-model="_selectedRowKeys" :gridColumn="2" />
     </j-modal>
 </template>
@@ -20,6 +24,10 @@ const props = defineProps({
         type: Array as PropType<string[]>,
         default: () => [],
     },
+    name: {
+        type: String,
+        default: ''
+    }
 });
 
 const _selectedRowKeys = ref<string[]>([]);
@@ -32,3 +40,14 @@ const onSave = () => {
     emit('save', _selectedRowKeys.value);
 };
 </script>
+
+<style lang="less" scoped>
+.alert {
+    height: 40px;
+    padding: 0 20px 0 10px;
+    margin-bottom: 10px;
+    color: rgba(0, 0, 0, 0.55);
+    line-height: 40px;
+    background-color: #f6f6f6;
+}
+</style>

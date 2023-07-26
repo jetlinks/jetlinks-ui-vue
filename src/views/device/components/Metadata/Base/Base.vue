@@ -192,7 +192,7 @@ import type {
     ProductItem,
 } from '@/views/device/Product/typings';
 import type { PropType } from 'vue';
-import { onBeforeRouteLeave } from 'vue-router'
+import {useRouter, onBeforeRouteUpdate} from 'vue-router'
 import { useMetadata, useOperateLimits } from './hooks';
 import {TypeStringMap, useColumns} from './columns';
 import { levelMap, sourceMap, expandsType, limitsMap } from './utils';
@@ -211,6 +211,8 @@ import { Modal } from 'jetlinks-ui-components'
 import {EventEmitter} from "@/utils/utils";
 import {watch} from "vue";
 import {cloneDeep} from "lodash";
+import {useSystem} from "store/system";
+import {storeToRefs} from "pinia";
 
 const props = defineProps({
     target: {
@@ -228,6 +230,10 @@ const props = defineProps({
 });
 
 const _target = inject<'device' | 'product'>('_metadataType', props.target);
+
+const system = useSystem();
+const {basicLayout} = storeToRefs(system);
+const router = useRouter()
 
 const { data: metadata, noEdit, productNoEdit } = useMetadata(_target, props.type);
 const { hasOperate } = useOperateLimits(_target);
@@ -337,28 +343,11 @@ const handleAddClick = async (_data?: any, index?: number) => {
 
   const newObject = _data || getDataByType()
 
-  
-
-  // const data = [...dataSource.value];
-  //
-  // if (index !== undefined) {
-  //   //  校验
-  //   const _data = await tableRef.value.getData()
-  //   console.log(_data)
-  //   if (_data) {
-  //     data.splice(index + 1, 0, newObject);
-  //   }
-  // } else {
-  //     data.push(newObject);
-  // }
-  // dataSource.value = data
   const _addData = await tableRef.value.addItem(newObject, index)
   if (_addData.length === 1) {
     showLastDelete.value = true
   }
   showSave.value = true
-  // const _index = index !== undefined ? index + 1 : 0
-  // tableRef.value?.addItemAll?.(_index)
 };
 
 const copyItem = (record: any, index: number) => {
@@ -452,16 +441,24 @@ const tabsChange = inject('tabsChange')
 
 const parentTabsChange = (next?: Function) => {
   if (editStatus.value) {
-    Modal.confirm({
+    const modal = Modal.confirm({
       content: '页面改动数据未保存',
       okText: '保存',
       cancelText: '不保存',
       zIndex: 1400,
+      closable: true,
       onOk: () => {
         handleSaveClick(next as Function)
       },
-      onCancel: () => {
-        (next as Function)?.()
+      onCancel: (e: any) => {
+        if (!e.triggerCancel) { // 取消按钮
+          modal.destroy();
+          (next as Function)?.()
+        } else {// 右上角取消按钮
+          const paths = router.currentRoute.value.matched
+          // basicLayout.value.selectedKeys = paths.map(item => item.path)
+          basicLayout.value.openKeys = paths.map(item => item.path)
+        }
       }
     })
   } else {
@@ -479,7 +476,7 @@ watch(() => metadata.value, () => {
   dataSource.value = metadata.value
 }, { immediate: true })
 
-onBeforeRouteLeave((to, from, next) => {
+onBeforeRouteUpdate((to, from, next) => {
   parentTabsChange(next as Function)
 })
 

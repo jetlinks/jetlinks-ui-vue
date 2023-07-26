@@ -1,5 +1,5 @@
 <template>
-    <j-modal :width="'900px'" visible @cancel="emit('close')" :zIndex="1100">
+    <j-modal :maskClosable='false' :width="'900px'" visible @cancel="emit('close')" :zIndex="1100">
         <template v-if="getType === 'notifier-weixin'">
             <j-spin :spinning="loading">
                 <div class="code" style="height: 450px">
