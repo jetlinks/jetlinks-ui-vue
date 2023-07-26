@@ -12,7 +12,7 @@
                 />
             </j-col>
         </j-row>
-        <j-row :gutter="24">
+        <j-row :gutter="24" style="margin-top: 24px;">
             <j-col :span="24">
                 <Card />
             </j-col>
@@ -26,14 +26,19 @@ import Card from './components/Card.vue';
 import { getImage } from '@/utils/comm';
 import { queryCount } from '@/api/data-collect/dashboard';
 import { defaultParams, statusData } from './tool';
+import { useMenuStore } from '@/store/menu';
+
+const menuPermission = useMenuStore().hasMenu;
 
 const StatusData = ref(statusData);
 const getNumberData = () => {
     StatusData.value.forEach(async (item: any) => {
-        const res = await queryCount(item[0].type, {});
-        const resp = await queryCount(item[0].type, defaultParams);
-        item[0].total = res?.result;
-        item[0].value = resp?.result;
+        if(menuPermission(item[0]?.permission)) {
+            const res = await queryCount(item[0].type, {});
+            const resp = await queryCount(item[0].type, defaultParams);
+            item[0].total = res?.result;
+            item[0].value = resp?.result;
+        }
     });
 };
 onMounted(() => {

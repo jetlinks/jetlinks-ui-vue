@@ -384,7 +384,8 @@ const hasExtraChildren = (item: MenuItem, extraMenus: any ) => {
   if (extraItem) {
     return extraItem.children.map(e => ({
       ...e,
-      url: `${item.url}${e.url}`,
+      code: `${item.code}/${e.code}`,
+      url: `${item.url}/${e.code}`,
       isShow: false
     }))
   }
