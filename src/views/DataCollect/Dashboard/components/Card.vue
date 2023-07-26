@@ -83,6 +83,9 @@ const handleOptions = (x = [], y = []) => {
     const chart: any = chartRef.value;
     if (chart) {
         const myChart = echarts.init(chart);
+        const maxY: number = y.sort((a,b)=>{
+            return b-a
+        })?.[0]
         const options = {
             xAxis: {
                 type: 'category',
@@ -93,8 +96,8 @@ const handleOptions = (x = [], y = []) => {
                 type: 'value',
             },
             grid: {
-                left: '80px',
-                right: '50px',
+                left: maxY < 1000 ? 60 : maxY.toString().length * 10,
+                right: '60px',
             },
             tooltip: {
                 trigger: 'axis',
