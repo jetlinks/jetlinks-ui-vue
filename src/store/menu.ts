@@ -1,6 +1,11 @@
 import { defineStore } from 'pinia'
 import { queryOwnThree } from '@/api/system/menu'
-import {filterAsyncRouter, filterCommunityMenus, findCodeRoute, MenuItem} from '@/utils/menu'
+import {
+  handleMenus,
+  MenuItem,
+  handleSiderMenu,
+  getAsyncRoutesMap, handleMenusMap
+} from '@/utils/menu'
 import { cloneDeep, isArray } from 'lodash-es'
 import { usePermissionStore } from './permission'
 import router from '@/router'
@@ -32,14 +37,7 @@ const defaultOwnParams = [
 ]
 
 type MenuStateType = {
-  menus: {
-    [key: string]: {
-      buttons?: string[]
-      title: string
-      parentName: string
-      path: string
-    }
-  }
+  menus: any
   siderMenus: MenuItem[]
   params: Record<string, any>
 }
@@ -96,6 +94,10 @@ export const useMenuStore = defineStore({
           name, params, query, state: { params }
         })
     },
+    handleMenusMapById(item: { code: string, path: string}) {
+      const { name, path } = item
+      this.menus[name] = {path}
+    },
     queryMenuTree(isCommunity = false): Promise<any[]> {
       return new Promise(async (res) => {
         //过滤非集成的菜单
@@ -106,18 +108,12 @@ export const useMenuStore = defineStore({
           // if (!isNoCommunity) {
           //   resultData = filterCommunityMenus(resultData)
           // }
-          permission.permissions = {}
-          const { menusData, silderMenus } = filterAsyncRouter(resultData)
-
-
-          this.menus = findCodeRoute([...resultData]) // AccountMenu
-          Object.keys(this.menus).forEach((item) => {
-            const _item = this.menus[item]
-            if (_item.buttons?.length) {
-              permission.permissions[item] = _item.buttons
-            }
-          })
-
+          const components = getAsyncRoutesMap()
+          const menusData = handleMenus(cloneDeep(resultData), components)
+          permission.handlePermission(resultData)
+          const silderMenus = handleSiderMenu(cloneDeep(resultData))
+          // const { menusData, silderMenus } = filterAsyncRouter(resultData)
+          handleMenusMap(cloneDeep(menusData), this.handleMenusMapById)
           menusData.push({
             path: '/',
             redirect: menusData[0]?.path,
@@ -125,6 +121,7 @@ export const useMenuStore = defineStore({
               hideInMenu: true
             }
           })
+          // console.log(menusData)
           // menusData.push(AccountMenu)
           this.siderMenus = silderMenus.filter((item: { name: string }) => ![USER_CENTER_MENU_CODE, NotificationRecordCode, NotificationSubscriptionCode].includes(item.name))
           res(menusData)
