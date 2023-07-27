@@ -3,6 +3,7 @@
       body-style="padding-top:4px;width:600px;"
       placement="topRight"
       :disabled="disabled"
+      :get-popup-container="(node) => fullRef || node"
       @confirm="confirm"
       @cancel="cancel"
       @visibleChange="visibleChange"
@@ -27,6 +28,7 @@
                            label: a.text,
                            value: a.value,
                     }))"
+                    :get-popup-container="(node) => fullRef || node"
                 />
               </template>
             </j-table>
@@ -63,6 +65,7 @@ import {useInstanceStore} from "store/instance";
 import {getMetadataConfig, getMetadataDeviceConfig} from "@/api/device/product";
 import ModelButton from '@/views/device/components/Metadata/Base/components/ModelButton.vue'
 import {omit} from "lodash-es";
+import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
 
 const props = defineProps({
   value: {
@@ -82,6 +85,8 @@ const props = defineProps({
     default: undefined
   },
 })
+
+const fullRef = inject(FULL_CODE);
 
 const type = inject('_metadataType')
 
