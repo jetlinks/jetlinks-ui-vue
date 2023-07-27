@@ -472,7 +472,7 @@ export const handleMenusMap = (menuData: any[], cb: (data: any) => void) => {
 }
 
 const hideInMenu = (code: string) => {
-  return ['account-center', 'message-subscribe'].includes(code)
+  return ['account-center', 'account-center', 'message-subscribe'].includes(code)
 }
 
 export const handleSiderMenu = (menuData: any[]) => {
