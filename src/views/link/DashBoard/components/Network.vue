@@ -73,6 +73,7 @@ import {
   getTimeByType,
   typeDataLine,
   areaStyle,
+  colorNetwork,
   networkParams, arrayReverse,
 } from './tool.ts';
 import dayjs from 'dayjs';
@@ -168,7 +169,7 @@ const setOptions = (data: any, key: string) => ({
     name: key,
     type: 'line',
     smooth: true,
-    areaStyle,
+    // areaStyle,
 });
 
 const handleNetworkOptions = (optionsData: any, xAxis: any) => {
@@ -205,7 +206,7 @@ const echartsOptions = computed(() => {
       trigger: 'axis',
       formatter: (_value: any) => networkValueRender(_value[0]),
     },
-    color: ['#979AFF'],
+    color: colorNetwork,
     series: series
   };
 })
