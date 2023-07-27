@@ -341,7 +341,6 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
             const fieldIndex = Number(field[1])
 
             const values = dataSource.find((item, index) => index === fieldIndex)
-
             return validatorConfig(values.output)
           }
         }]

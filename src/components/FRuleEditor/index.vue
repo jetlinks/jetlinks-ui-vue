@@ -5,6 +5,7 @@
         visible
         width="70vw"
         title="编辑规则"
+        :getContainer="(node) => fullRef || node"
         @cancel="handleCancel"
         :destroyOnClose="true"
     >
@@ -57,6 +58,7 @@
 import Editor from './Editor/index.vue';
 import Debug from './Debug/index.vue';
 import Operator from './Operator/index.vue';
+import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
 
 interface Emits {
     (e: 'save', data: string | undefined): void;
@@ -73,6 +75,7 @@ const props = defineProps({
 
 const _value = ref<string | undefined>(props.value);
 const _disabled = ref<boolean>(true);
+const fullRef = inject(FULL_CODE);
 
 const handleCancel = () => {
     emit('close');
