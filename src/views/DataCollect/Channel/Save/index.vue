@@ -239,7 +239,9 @@ const handleOk = async () => {
       params.configuration.deviceName = formData.value.configuration.deviceName
     }
 
-
+    params.circuitBreaker = {
+      type: 'Ignore'
+    }
 
     loading.value = true;
     const response = !id
