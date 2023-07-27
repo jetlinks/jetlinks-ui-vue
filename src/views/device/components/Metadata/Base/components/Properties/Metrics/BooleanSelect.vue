@@ -5,11 +5,13 @@
           { label: '固定值', value: 'false' },
           { label: '范围值', value: 'true' },
       ]"
+      :get-popup-container="(node) => fullRef || node"
       @select="select"
   />
 </template>
 
 <script name="BooleanSelect" setup>
+import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
 
 const props = defineProps({
   value: {
@@ -17,8 +19,10 @@ const props = defineProps({
     default: () => ({})
   }
 })
+
 const emit = defineEmits(['update:value'])
 
+const fullRef = inject(FULL_CODE);
 const myValue = ref()
 const select = (e) => {
   emit('update:value', {

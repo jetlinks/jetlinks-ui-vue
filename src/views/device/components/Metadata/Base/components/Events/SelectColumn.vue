@@ -3,6 +3,7 @@
       v-model:value="value"
       :options="options"
       :placeholder="placeholder"
+      :getPopupContainer="(node) => fullRef || node"
       @change="change"
   />
 </template>
@@ -10,7 +11,7 @@
 <script setup lang="ts" name="SelectColumnn">
 import type { PropType } from 'vue';
 import { ref, watch } from 'vue';
-
+import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
 
 type Emits = {
   (e: 'update:value', data: Record<string, any>): void;
@@ -18,6 +19,8 @@ type Emits = {
 };
 
 type SizeType = 'small' | 'middle' | 'large' | undefined;
+
+const fullRef = inject(FULL_CODE);
 const emit = defineEmits<Emits>();
 const props = defineProps({
   value: {

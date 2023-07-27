@@ -8,6 +8,7 @@
             :options="options"
             allowClear
             style="width: 100%"
+            :getPopupContainer="getPopupContainer"
             @change='selectChange'
         />
         <j-time-picker
@@ -16,6 +17,7 @@
           allowClear
           valueFormat="HH:mm:ss"
           style="width: 100%"
+          :getPopupContainer="getPopupContainer"
           @change='timeChange'
         />
         <j-date-picker
@@ -25,6 +27,7 @@
             showTime
             valueFormat="YYYY-MM-DD HH:mm:ss"
             style="width: 100%"
+            :getPopupContainer="getPopupContainer"
             @change='dateChange'
         />
         <j-input-number
@@ -93,6 +96,7 @@
             cancel-text="取消"
             v-model:visible="modalVis"
             width="700px"
+            :getPopupContainer="getPopupContainer"
             @cancel="modalVis = false"
             @ok="handleItemModalSubmit"
             :zIndex='1100'
@@ -149,6 +153,10 @@ const props = defineProps({
     placeholder: {
         type: String,
         default: () => '',
+    },
+    getPopupContainer: {
+        type: Function,
+        default: undefined
     }
 });
 // type Props = {
