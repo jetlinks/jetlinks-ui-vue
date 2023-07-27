@@ -104,12 +104,12 @@ const handleData = (data: any[], type: string) => {
 const handleSearch = async () => {
     loading.value = true;
     const resp = await treeMapping({
-        terms: [
-            {
-                column: 'provider',
-                value: _props.type,
-            },
-        ],
+        // terms: [
+        //     {
+        //         column: 'provider',
+        //         value: _props.type,
+        //     },
+        // ],
     });
     loading.value = false;
     if (resp.status === 200) {

@@ -347,7 +347,7 @@ const handleOk = async () => {
       address: data?.pointKey,
     };
 
-    if (props.data.provider === 'GATEWAY') {
+    if (props.data.provider === 'COLLECTOR_GATEWAY') {
       const configuration = cloneDeep(params.configuration)
       params.configuration = {
         configuration: configuration,
@@ -447,12 +447,12 @@ watch(
 watch(
     () => props.data,
     (value) => {
-        if (value.id && ['MODBUS_TCP', 'GATEWAY'].includes(value.provider)) {
+        if (value.id && ['MODBUS_TCP', 'COLLECTOR_GATEWAY'].includes(value.provider)) {
             const _value: any = cloneDeep(value);
             const { writeByteCount, byteCount } =
-            props.data.provider === 'GATEWAY' ? _value.configuration.configuration.parameter: _value.configuration.parameter;
+            props.data.provider === 'COLLECTOR_GATEWAY' ? _value.configuration.configuration.parameter: _value.configuration.parameter;
 
-          if (props.data.provider === 'GATEWAY') {
+          if (props.data.provider === 'COLLECTOR_GATEWAY') {
             formData.value = {
               ...omit(_value, ['configuration']),
               ..._value.configuration,

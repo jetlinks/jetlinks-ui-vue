@@ -41,7 +41,7 @@
                 />
             </j-form-item>
             <j-form-item
-                v-if="provider === 'GATEWAY'"
+                v-if="provider === 'COLLECTOR_GATEWAY'"
                 label="通讯协议"
                 :name="['collectorProvider']"
                 :rules="[{ required: true, message: '请选择通讯协议' }]"
@@ -72,7 +72,7 @@
               />
             </j-form-item>
             <j-form-item
-                v-if="provider !== 'GATEWAY'"
+                v-if="provider !== 'COLLECTOR_GATEWAY'"
                 :name="['configuration', 'inheritBreakerSpec', 'type']"
                 :rules="LeftTreeRules.type"
                 label="点位熔断处理"
@@ -88,7 +88,7 @@
                   @change="changeCardSelectType"
               />
             </j-form-item>
-            <p style="color: #616161" v-if="provider !== 'GATEWAY'">
+            <p style="color: #616161" v-if="provider !== 'COLLECTOR_GATEWAY'">
               {{ getTypeTooltip(formData.configuration.inheritBreakerSpec.type) }}
             </p>
             <j-form-item
@@ -273,7 +273,7 @@ const handleOk = async () => {
 
       let _copyData = _data
 
-      if (['GATEWAY'].includes(provider.value)) {
+      if (['COLLECTOR_GATEWAY'].includes(provider.value)) {
         const copyData = cloneDeep(_data)
         _copyData = omit(copyData, ['configuration', 'collectorProvider'])
 
@@ -345,7 +345,7 @@ watch(
     (value) => {
         const dt = _channelListAll.value.find((item) => item.id === value);
         visibleUnitId.value = visibleEndian.value =
-            dt?.provider && ['MODBUS_TCP', 'GATEWAY'].includes(dt?.provider);
+            dt?.provider && ['MODBUS_TCP', 'COLLECTOR_GATEWAY'].includes(dt?.provider);
     },
     { deep: true },
 );
@@ -355,7 +355,7 @@ watch(
     (value) => {
         if (value.id) {
           let copyValue = cloneDeep(value)
-          if (!copyValue?.configuration?.inheritBreakerSpec && copyValue.provider !== 'GATEWAY') {
+          if (!copyValue?.configuration?.inheritBreakerSpec && copyValue.provider !== 'COLLECTOR_GATEWAY') {
             copyValue.configuration = {
               ...copyValue.configuration,
               inheritBreakerSpec: {
@@ -365,7 +365,7 @@ watch(
             copyValue.circuitBreaker.type = 'Ignore'
           }
 
-          if (copyValue.provider === 'GATEWAY') {
+          if (copyValue.provider === 'COLLECTOR_GATEWAY') {
             formData.value = {
               ...omit(copyValue, ['configuration']),
               ...copyValue.configuration,
@@ -381,7 +381,7 @@ watch(
 );
 
 watchEffect(() => {
-  if (provider.value === 'GATEWAY') {
+  if (provider.value === 'COLLECTOR_GATEWAY') {
     geyProviderList()
   }
 })

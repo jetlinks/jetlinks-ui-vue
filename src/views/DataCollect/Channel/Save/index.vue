@@ -93,7 +93,7 @@
                 />
             </j-form-item>
             <j-form-item
-                v-if="formData.provider === 'GATEWAY'"
+                v-if="formData.provider === 'COLLECTOR_GATEWAY'"
                 :name="['configuration','deviceId']"
                 :rules="[{ required: true, message: '请选择网关设备'}]"
                 label="选择网关设备"
@@ -235,7 +235,7 @@ const formData = ref<FormDataType>(cloneDeep(FormState));
 
 const handleOk = async () => {
     const params: any = await formRef.value?.validate();
-    if (params?.provider === 'GATEWAY') {
+    if (params?.provider === 'COLLECTOR_GATEWAY') {
       params.configuration.deviceName = formData.value.configuration.deviceName
     }
 
