@@ -36,25 +36,38 @@
                     <Ellipsis class="tree-left-title">
                         {{ name }}
                     </Ellipsis>
+<!--                    <j-tag-->
+<!--                        class="tree-left-tag"-->
+<!--                        v-if="data.id !== '*'"-->
+<!--                        :color="-->
+<!--                          data?.uniformState?.value === 'normal' || data?.state?.value === 'disabled' ?-->
+<!--                          colorMap.get(data?.runningState?.value) :-->
+<!--                          colorMap.get(data?.uniformState?.value)-->
+<!--                        "-->
+<!--                        >{{-->
+<!--                        data?.uniformState?.value === 'normal' || data?.state?.value === 'disabled' ?-->
+<!--                            data?.runningState?.text :-->
+<!--                            data?.uniformState?.text-->
+<!--                      }}</j-tag-->
+<!--                    >-->
                     <j-tag
                         class="tree-left-tag"
                         v-if="data.id !== '*'"
-                        :color="
-                          data?.uniformState?.value === 'normal' || data?.state?.value === 'disabled' ?
-                          colorMap.get(data?.runningState?.value) :
-                          colorMap.get(data?.uniformState?.value)
-                        "
-                        >{{
-                        data?.uniformState?.value === 'normal' || data?.state?.value === 'disabled' ?
-                            data?.runningState?.text :
-                            data?.uniformState?.text
-                      }}</j-tag
+                        :color="colorMap.get(data?.uniformState?.value)"
+                    >{{ data?.uniformState?.text }}</j-tag
                     >
                     <j-tag
                         class="tree-left-tag2"
                         v-if="data.id !== '*'"
-                        :color="colorMap.get(data?.state?.value)"
-                        >{{ data?.state?.text }}</j-tag
+                        :color="
+                          data?.state?.value === 'disabled' ? colorMap.get(data?.runningState?.value) :
+                          colorMap.get(data?.state?.value)
+                        "
+                        >
+                      {{
+                        data?.state?.text
+                      }}
+                    </j-tag
                     >
                     <span
                         v-if="data.id !== '*'"
