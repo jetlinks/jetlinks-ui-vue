@@ -90,6 +90,14 @@ const columns: any = [
     form: {
       required: true,
       rules: [
+        {
+          callback(rule:any,value: any) {
+            if (!value) {
+              return Promise.reject('请输入指标名称')
+            }
+            return Promise.resolve()
+          }
+        },
         { max: 64, message: '最多可输入64个字符' },
       ]
     },
@@ -107,11 +115,11 @@ const columns: any = [
       required: true,
       rules: [
         {
-          validator(_: any, value: any) {
+          callback(rule:any,value: any) {
             if (!value) {
               return Promise.reject('请配置指标')
             }
-            return validatorConfig(value, true)
+            return Promise.resolve()
           }
         },
       ]
@@ -148,7 +156,7 @@ const addItem = () => {
   const data = {
     id: undefined,
     name: undefined,
-    range: 'false',
+    range: false,
     value: undefined,
   }
 

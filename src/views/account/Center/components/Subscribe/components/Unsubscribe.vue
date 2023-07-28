@@ -1,5 +1,5 @@
 <template>
-    <j-modal :width="'384px'" visible @cancel="emit('close')" :footer="null">
+    <j-modal :maskClosable='false' :width="'384px'" visible @cancel="emit('close')" :footer="null">
         <template v-if="getType === 'notifier-dingTalk'">
             <div class="tip">请先绑定钉钉账号</div>
         </template>

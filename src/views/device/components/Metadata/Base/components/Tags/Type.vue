@@ -7,6 +7,7 @@
         { label: '写', value: 'write'},
         { label: '上报', value: 'report'},
       ]"
+      :get-popup-container="(node) => fullRef || node"
       placeholder="请选择读写类型"
       @change="onChange"
   />
@@ -15,6 +16,7 @@
 <script setup lang="ts">
 
 import type {PropType} from "vue";
+import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
 
 type Emit = {
 (e: 'update:value', data: any): void
@@ -28,7 +30,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<Emit>()
-
+const fullRef = inject(FULL_CODE);
 const myValue = ref<Array<string>>([])
 
 const onChange = () =>{

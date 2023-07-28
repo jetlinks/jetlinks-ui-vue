@@ -70,7 +70,7 @@
                 </j-alert>
             </div>
         </template>
-        <j-scrollbar height="400px">
+        <j-scrollbar :height="gridColumn <= 2 ? '320px' : '250px'">
             <j-pro-table
                 ref="tableRef"
                 :columns="columns"

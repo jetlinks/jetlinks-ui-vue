@@ -21,29 +21,14 @@
             >
         </div>
     </div>
-    <EditInfo
-        v-if="editInfoVisible"
-        :data="user.userInfos"
-        @close="editInfoVisible = false"
-        @save="onSave"
-    />
-    <Bind
-        @close="visible = false"
-        v-if="visible"
-        :data="props.data"
-        :current="current"
-        @save="onBindSave"
-    />
 </template>
 
 <script lang="ts" setup>
 import { getIsBindThird } from '@/api/account/notificationSubscription';
 import { useUserInfo } from '@/store/userInfo';
-import EditInfo from '../../EditInfo/index.vue';
-import Bind from './Bind.vue';
 
 const user = useUserInfo();
-const emit = defineEmits(['save', 'unsubscribe', 'close']);
+const emit = defineEmits(['infoChange', 'unsubscribe', 'bindChange']);
 const info = ref<any>(null);
 const props = defineProps({
     data: {
@@ -58,38 +43,22 @@ const props = defineProps({
     },
 });
 
-const editInfoVisible = ref<boolean>(false);
-const visible = ref<boolean>(false);
-
 const getType = computed(() => {
     return props.current?.channelProvider;
 });
 
 const onBind = () => {
     if (
-        ['notifier-voice', 'notifier-sms', 'notifier-email'].includes(
+        !['notifier-voice', 'notifier-sms', 'notifier-email'].includes(
             props.current?.channelProvider,
         )
     ) {
-        editInfoVisible.value = true;
+        emit('infoChange')
     } else {
-        visible.value = true
+        emit('bindChange')
     }
     
 };
-
-const onSave = () => {
-    editInfoVisible.value = false;
-    user.getUserInfo();
-    emit('save', props.current);
-    emit('close')
-};
-
-const onBindSave = () => {
-    visible.value = false
-    emit('save', props.current);
-    emit('close')
-}
 
 const handleSearch = async () => {
     if (
@@ -114,16 +83,6 @@ onMounted(() => {
     handleSearch()
 })
 
-// watch(
-//     () => props.current,
-//     () => {
-//         handleSearch();
-//     },
-//     {
-//         immediate: true,
-//         deep: true,
-//     },
-// );
 </script>
 
 <style lang="less" scoped>

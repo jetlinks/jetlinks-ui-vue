@@ -123,7 +123,7 @@ export const useMenuStore = defineStore({
           })
           // console.log(menusData)
           // menusData.push(AccountMenu)
-          this.siderMenus = silderMenus.filter((item: { name: string }) => ![USER_CENTER_MENU_CODE, NotificationRecordCode, NotificationSubscriptionCode].includes(item.name))
+          this.siderMenus = silderMenus
           res(menusData)
         }
       })

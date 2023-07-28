@@ -7,6 +7,7 @@
                     <j-radio-group
                         button-style="solid"
                         v-model:value="data.type"
+                        @change="() => { getNetworkEcharts(data) }"
                     >
                         <j-radio-button value="bytesRead">
                             上行
@@ -72,6 +73,7 @@ import {
   getTimeByType,
   typeDataLine,
   areaStyle,
+  colorNetwork,
   networkParams, arrayReverse,
 } from './tool.ts';
 import dayjs from 'dayjs';
@@ -105,6 +107,7 @@ const serverData = reactive({
 
 const pickerTimeChange = (value: any) => {
     data.value.time.type = undefined;
+    getNetworkEcharts(data.value);
 };
 
 const getNetworkEcharts = async (val: any) => {
@@ -114,6 +117,7 @@ const getNetworkEcharts = async (val: any) => {
         const _networkOptions = {};
         const _networkXAxis = new Set();
         if (resp.result.length) {
+          isEmpty.value = false;
           const filterArray = resp.result
           // const filterArray = resp.result.filter((item : any) => item.data?.clusterNodeId === props.serviceId)
           filterArray.forEach((item: any) => {
@@ -165,7 +169,7 @@ const setOptions = (data: any, key: string) => ({
     name: key,
     type: 'line',
     smooth: true,
-    areaStyle,
+    // areaStyle,
 });
 
 const handleNetworkOptions = (optionsData: any, xAxis: any) => {
@@ -202,7 +206,7 @@ const echartsOptions = computed(() => {
       trigger: 'axis',
       formatter: (_value: any) => networkValueRender(_value[0]),
     },
-    color: ['#979AFF'],
+    color: colorNetwork,
     series: series
   };
 })
@@ -218,13 +222,6 @@ watch(
     },
     { immediate: true, deep: true },
 );
-
-// watchEffect(() => {
-//   const time = data.value.time.time
-//   if (time && Array.isArray(time) && time.length === 2 && time[0] && props.serviceId) {
-//
-//   }
-// })
 
 </script>
 
