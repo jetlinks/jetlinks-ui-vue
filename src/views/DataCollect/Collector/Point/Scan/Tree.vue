@@ -15,6 +15,8 @@
                 checkable
                 @check="onCheck"
                 :height="600"
+                :showLine="{ showLeafIcon: false }"
+                :show-icon="true"
             >
                 <template #title="{ name, key }">
                     <span

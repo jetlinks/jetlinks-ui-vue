@@ -7,6 +7,7 @@
                     <j-radio-group
                         button-style="solid"
                         v-model:value="data.type"
+                        @change="changeType"
                     >
                         <j-radio-button value="bytesRead">
                             上行
@@ -105,8 +106,11 @@ const serverData = reactive({
 
 const pickerTimeChange = (value: any) => {
     data.value.time.type = undefined;
+    getNetworkEcharts(data.value);
 };
-
+const changeType = (value:any) =>{
+    getNetworkEcharts(data.value);
+} 
 const getNetworkEcharts = async (val: any) => {
     loading.value = true;
     const resp: any = await dashboard(networkParams(val));
@@ -212,6 +216,7 @@ watch(
     () => data.value.time.type,
     (value) => {
         if (value === undefined) return;
+        console.log(value);
         const date = getTimeByType(value);
         data.value.time.time = [dayjs(date), dayjs(new Date())];
 

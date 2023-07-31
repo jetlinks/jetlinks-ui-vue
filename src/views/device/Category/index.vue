@@ -107,6 +107,10 @@ const query = reactive({
             key: 'sortIndex',
             search: {
                 type: 'number',
+                componentProps:{
+                    precision:0,
+                    min:0
+                }
             },
             scopedSlots: true,
         },

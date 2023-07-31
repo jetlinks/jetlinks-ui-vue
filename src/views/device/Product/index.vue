@@ -306,6 +306,7 @@ const getActions = (
 
             icon: 'icon-xiazai',
             onClick: () => {
+                console.log(data);
                 const extra = omit(data, [
                     'transportProtocol',
                     'protocolName',
@@ -314,7 +315,7 @@ const getActions = (
                     'accessProvider',
                     'messageProtocol',
                 ]);
-                downloadObject(extra, '产品');
+                downloadObject(extra, data.name+'产品');
             },
         },
         {
@@ -388,7 +389,6 @@ const beforeUpload = (file: any) => {
     reader.readAsText(file);
     reader.onload = async (result) => {
         const text = result.target?.result;
-        console.log('text: ', text);
         if (!file.type.includes('json')) {
             onlyMessage('请上传json格式文件', 'error');
             return false;
@@ -398,7 +398,7 @@ const beforeUpload = (file: any) => {
             // 设置导入的产品状态为未发布
             data.state = 0;
             if (Array.isArray(data)) {
-                onlyMessage('请上传json格式文件', 'error');
+                onlyMessage('文件内容不能为空', 'error');
                 return false;
             }
             delete data.state;

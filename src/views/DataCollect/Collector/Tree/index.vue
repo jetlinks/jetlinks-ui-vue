@@ -31,6 +31,8 @@
                 :height="660"
                 @select='treeSelect'
                 defaultExpandAll
+                :showLine="{ showLeafIcon: false }"
+                :show-icon="true"
             >
                 <template #title="{ name, data }">
                     <Ellipsis class="tree-left-title">
