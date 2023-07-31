@@ -20,7 +20,7 @@
                     <template #headerTitle>
                         <j-space>
                             <PermissionButton
-                                v-if="data?.provider == 'MODBUS_TCP'"
+                                v-if="['MODBUS_TCP', 'COLLECTOR_GATEWAY'].includes(data?.provider)"
                                 type="primary"
                                 @click="handlAdd"
                                 hasPermission="DataCollect/Collector:add"

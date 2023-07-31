@@ -417,6 +417,21 @@ const findDetailRouteItem = (item: any, components: any) => {
   return []
 }
 
+const findSaveRouteItem = (item: any, components: any) => {
+  const { code, url } = item
+  const Component = components[`${item.code}/Save`]
+  if (Component) {
+    return [{
+      url: `${url}/detail/:id`,
+      code: `${code}/Save`,
+      component: Component,
+      name: '详情信息',
+      isShow: false
+    }]
+  }
+  return []
+}
+
 export const handleMenus = (menuData: any[], components: any, level: number = 1) => {
   if (menuData && menuData.length) {
     return menuData.map(item => {
@@ -434,8 +449,8 @@ export const handleMenus = (menuData: any[], components: any, level: number = 1)
       const extraRoute = hasExtraChildren(item, extraRouteObj)
       const detail_components = findDetailRouteItem(item, components)
 
-
       if (extraRoute && !isApp) { // 包含额外的子路由
+        console.log(extraRoute)
         route.children = route.children ? [...route.children, ...extraRoute] : extraRoute
       }
 

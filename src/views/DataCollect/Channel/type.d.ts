@@ -1,6 +1,6 @@
 export interface ConfigurationType {
     port: string | undefined;
-    host: string | undefined;;
+    host: string | undefined;
     username: string;
     password: string;
     endpoint: string,
@@ -8,7 +8,8 @@ export interface ConfigurationType {
     securityMode: string | undefined,
     certId: string | undefined,
     authType: string | undefined,
-
+    deviceId: string | undefined,
+    deviceName: string | undefined,
 }
 
 export interface FormDataType {

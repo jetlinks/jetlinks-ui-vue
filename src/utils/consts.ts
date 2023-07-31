@@ -55,4 +55,5 @@ export const USER_CENTER_MENU_BUTTON_CODE = 'user-center-passwd-update'
 export const protocolList = [
     { label: 'OPC-UA', value: 'OPC_UA', alias: 'opc-ua' },
     { label: 'Modbus/TCP', value: 'MODBUS_TCP', alias: 'modbus-tcp' },
+    { label: 'GATEWAY', value: 'COLLECTOR_GATEWAY', alias: 'collector-gateway' },
 ]

@@ -151,17 +151,11 @@
                                                 /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/,
                                             message: '请输入正确的IP地址',
                                         },
-                                        {
-                                          max: 65535,
-                                          message: '请输入1~65535之间的正整数'
-                                        },
-                                        {
-                                          min: 1,
-                                          message: '请输入1~65535之间的正整数'
-                                        },
+
                                     ]"
+                                    :validateFirst="true"
                                 >
-                                    <j-input-number
+                                    <j-input
                                         style="width: 105%"
                                         v-model:value="
                                             formState.hostPort.publicHost
@@ -176,12 +170,8 @@
                             <j-col :span="6">
                                 <j-form-item
                                     :name="['hostPort', 'publicPort']"
-                                    :rules="[
-                                        {
-                                            required: true,
-                                            message: '输入端口',
-                                        },
-                                    ]"
+                                    :rules="rules.publicPort"
+                                    :validateFirst="true"
                                 >
                                     <div class="form-label"></div>
 
@@ -597,6 +587,15 @@ const clustersList = ref([]);
 const dynamicValidateForm = reactive<{ cluster: Form2[] }>({
     cluster: [],
 });
+
+const rules = {
+  publicPort: [
+    {
+      required: true,
+      message: '输入端口',
+    }
+  ]
+}
 
 const removeCluster = (item: Form2) => {
     let index = dynamicValidateForm.cluster.indexOf(item);
