@@ -111,7 +111,7 @@ const query = reactive({
             scopedSlots: true,
         },
         {
-            title: '描述',
+            title: '说明',
             key: 'description',
             dataIndex: 'description',
             search: {

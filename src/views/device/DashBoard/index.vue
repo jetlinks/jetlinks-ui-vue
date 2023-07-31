@@ -214,7 +214,7 @@ getDeviceData();
  */
 const getOnline = () => {
     const startTime = dayjs().subtract(0, 'days').startOf('day').format('YYYY-MM-DD HH:mm:ss');
-    const endTime = dayjs().subtract(0, 'days').endOf('day').format('YYYY-MM-DD HH:mm:ss');
+    const endTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
 
     dashboard([
         {
@@ -481,7 +481,7 @@ const setDevMesChartOption = (
 //今日设备消息量
 const getDevice = () => {
   const startTime = dayjs().subtract(0, 'days').startOf('day').format('YYYY-MM-DD HH:mm:ss');
-  const endTime = dayjs().subtract(0, 'days').endOf('day').format('YYYY-MM-DD HH:mm:ss');
+  const endTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
 
     dashboard([
         {
