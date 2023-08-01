@@ -4,23 +4,17 @@
             <div
                 :span="8"
                 class="select-item"
-                @click="currentView = 'device'"
+                v-for="item in list"
+                :key="item.id"
+                @click="currentView = item.id"
+                :class="{
+                    active: currentView === item.id,
+                }"
             >
-                <img :src="getImage(`/home/home-view/device${currentView === 'device' ? '-active' : ''}.png`)" alt="" />
-            </div>
-            <div
-                :span="8"
-                class="select-item"
-                @click="currentView = 'ops'"
-            >
-                <img :src="getImage(`/home/home-view/ops${currentView === 'ops' ? '-active' : ''}.png`)" alt="" />
-            </div>
-            <div
-                :span="8"
-                class="select-item"
-                @click="currentView = 'comprehensive'"
-            >
-                <img :src="getImage(`/home/home-view/comprehensive${currentView === 'comprehensive' ? '-active' : ''}.png`)" alt="" />
+                <div class="select-item-box">
+                    <div class="title">{{ item.name }}</div>
+                </div>
+                <img :src="getImage(`/home/home-view/${item.id}.png`)" alt="" />
             </div>
         </div>
         <div class="btn">
@@ -35,6 +29,20 @@ import { getImage, onlyMessage } from '@/utils/comm';
 
 const currentView = ref<string>('');
 const isApiUser = ref<boolean>();
+const list = [
+    {
+        id: 'device',
+        name: '设备接入视图',
+    },
+    {
+        id: 'ops',
+        name: '运营管理视图',
+    },
+    {
+        id: 'comprehensive',
+        name: '综合管理视图',
+    },
+];
 
 function getViews() {
     // 判断是否是api用户 不是则获取选中的视图
@@ -82,10 +90,36 @@ onMounted(() => {
         .select-item {
             cursor: pointer;
             width: 30%;
+            border-radius: 14px;
+            overflow: hidden;
+            color: #333333;
+
+            .select-item-box {
+                position: relative;
+                width: 100%;
+                .title {
+                    position: absolute;
+                    top: 36px;
+                    left: 36px;
+                    font-size: 24px;
+                }
+            }
 
             img {
                 width: 100%;
+                height: 100%;
                 background-size: cover;
+            }
+
+            &.active {
+                border: 1px solid @primary-color-active;
+                color: @primary-color-active;
+            }
+
+            &:hover {
+                box-shadow: 0px 3px 6px -4px rgba(0, 0, 0, 0.12),
+                    0px 6px 16px 0px rgba(0, 0, 0, 0.08),
+                    0px 9px 16px 8px rgba(0, 0, 0, 0.1);
             }
         }
     }
