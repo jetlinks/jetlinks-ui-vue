@@ -45,7 +45,7 @@
                     v-if="serverOptions.length > 1"
                     v-model:value="serverActive"
                     :options="serverOptions"
-                    color="#60DFC7"
+                    :color="colorJvm"
                 />
               </template>
             </div>
@@ -61,7 +61,8 @@ import {
     arrayReverse,
     typeDataLine,
     areaStyleJvm,
-    defulteParamsData,
+    colorJvm,
+    defaultParamsData
 } from './tool.ts';
 import { DataType } from '../typings';
 import ServerList from './ServerList.vue'
@@ -98,7 +99,7 @@ const pickerTimeChange = () => {
 
 const getJVMEcharts = async (val: any) => {
     loading.value = true;
-    const res: any = await dashboard(defulteParamsData('jvm', val));
+    const res: any = await dashboard(defaultParamsData('jvm', val));
     if (res.success) {
         const _jvmOptions = {};
         const _jvmXAxis = new Set();
@@ -142,7 +143,7 @@ const setOptions = (optionsData: any, key: string) => ({
     type: 'line',
     smooth: true,
     symbol: 'none',
-    areaStyle: areaStyleJvm,
+    // areaStyle: areaStyleJvm(_index),
 });
 const handleJVMOptions = (optionsData: any, xAxis: any) => {
   const dataKeys = Object.keys(optionsData);
@@ -184,7 +185,7 @@ const echartsOptions = computed(() => {
         end: data.value.type !== 'hour' ? 10 : 100,
       },
     ],
-    color: ['#60DFC7'],
+    color: colorJvm,
     series: series
   }
 })

@@ -6,6 +6,7 @@
     <j-popconfirm-modal
         :show-cancel="false"
         body-style="width: 300px"
+        :get-popup-container="(node) => fullRef || node"
         @confirm="confirm"
     >
       <template #content>
@@ -39,6 +40,7 @@ import type { PropType } from 'vue';
 import Item from './item.vue'
 import {Form} from "jetlinks-ui-components";
 import {cloneDeep} from "lodash";
+import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
 
 type ValueType = number | Array<number | undefined> | undefined;
 
@@ -55,7 +57,7 @@ const props = defineProps({
 
 const emit = defineEmits<Emit>();
 const formItemContext = Form.useInjectFormItemContext();
-
+const fullRef = inject(FULL_CODE);
 
 
 const formData = reactive<{
@@ -89,6 +91,7 @@ const confirm = () => {
   return new Promise((resolve, reject) => {
     formRef.value.validate().then(() => {
       const value = props.value.range === true ? formData.rangeValue : formData.value
+      console.log('confirm',value, props.value)
       emit('update:value', {
         ...props.value,
         value: value

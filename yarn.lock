@@ -3738,10 +3738,25 @@ jetlinks-store@^0.0.3:
   resolved "https://registry.npmjs.org/jetlinks-store/-/jetlinks-store-0.0.3.tgz"
   integrity sha512-AZf/soh1hmmwjBZ00fr1emuMEydeReaI6IBTGByQYhTmK1Zd5pQAxC7WLek2snRAn/HHDgJfVz2hjditKThl6Q==
 
-jetlinks-ui-components@^1.0.23, jetlinks-ui-components@^1.0.26:
+jetlinks-ui-components@^1.0.23:
   version "1.0.26"
   resolved "http://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.26.tgz#26896c578396b09d49649ac87c3943491af3a9ae"
   integrity sha512-HkLk52C6pDKe/Ca9O4w34h1/PrC7GdBUheiicPOX2V/Lc49N+WzI9wmrCd82XBm8MocPM4gAOJxNaTxY20EO9w==
+  dependencies:
+    "@vueuse/core" "^9.12.0"
+    "@vueuse/router" "^9.13.0"
+    ant-design-vue "^3.2.15"
+    colorpicker-v3 "^2.10.2"
+    jetlinks-ui-components "^1.0.23"
+    lodash-es "^4.17.21"
+    monaco-editor "^0.40.0"
+    sortablejs "^1.15.0"
+    vuedraggable "^4.1.0"
+
+jetlinks-ui-components@^1.0.28:
+  version "1.0.28"
+  resolved "http://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.28.tgz#443df6fc65ecd0bfbc19eb12bff8d10c0ff6a129"
+  integrity sha512-+RmSq4LFoH/TODAELhUxK/YeqCvbnqjgT6C5mZyIM1veARbVyUEiIJ3+dDOLL42Sm/fbNTJ2IQH4PYeVAeTU9g==
   dependencies:
     "@vueuse/core" "^9.12.0"
     "@vueuse/router" "^9.13.0"

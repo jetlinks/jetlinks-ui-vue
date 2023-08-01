@@ -477,7 +477,11 @@ watch(() => metadata.value, () => {
   dataSource.value = metadata.value
 }, { immediate: true })
 
-onBeforeRouteUpdate((to, from, next) => {
+onBeforeRouteUpdate((to, from, next) => { // 设备管理内路由跳转
+  parentTabsChange(next as Function)
+})
+
+onBeforeRouteLeave((to, from, next) => { // 设备管理外路由跳转
   parentTabsChange(next as Function)
 })
 

@@ -6,6 +6,8 @@
         width="770px"
         @cancel="emits('close')"
         :confirmLoading="loading"
+        :zIndex="1100"
+        :maskClosable='false'
     >
         <j-form :model="form" layout="vertical" ref="formRef">
             <j-row :gutter="24">
@@ -66,7 +68,7 @@
                         :rules="[
                             {
                                 pattern: /^1[3456789]\d{9}$/,
-                                message: '请输入正确手机号',
+                                message: '请输入正确的手机号',
                             },
                         ]"
                     >
