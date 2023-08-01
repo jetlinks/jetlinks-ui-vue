@@ -36,9 +36,12 @@
                     </j-space>
                 </template>
             </template>
-            <!-- <template v-else-if="column.dataIndex === 'name'">
-                <j-input :value="record[column.dataIndex]" />
-            </template> -->
+            <template v-else-if="column.dataIndex === 'name'">
+                <j-input
+                    :disabled="record.flag"
+                    v-model:value="record[column.dataIndex]"
+                />
+            </template>
             <template v-else>
                 {{ record[column.dataIndex] }}
             </template>
@@ -49,7 +52,7 @@
 <script lang="ts" setup>
 import channelApi from '@/api/media/channel';
 import { onlyMessage } from '@/utils/comm';
-import { isNumber } from 'lodash-es';
+import { isNumber, unionBy } from 'lodash-es';
 import { PropType } from 'vue';
 
 type Item = { id: string | number; name: string; flag?: boolean };
@@ -86,39 +89,71 @@ const init = new Array(50).fill(0).map((_, index) => {
 });
 
 const dataSource = ref<Item[]>(init);
-const loading = ref(false)
+const loading = ref(false);
 
-const handleSearch = (id: string) => {
-    channelApi.opFunction(id, 'QueryPreset').then((resp) => {
-        if (resp.status === 200) {
-            dataSource.value = init.map((item) => {
-                const _item = (resp.result?.[0] || []).find(
-                    (i: any) => i.id === item.id,
-                );
-                if (_item) {
-                    return {
-                        ..._item,
-                        flag: true,
-                    };
-                }
-                return item;
-            });
-        }
+const handleSearch = async (id: string, arr: Item[]) => {
+    const resp = await channelApi.opFunction(id, 'QueryPreset');
+    if (resp.status === 200) {
+        dataSource.value = unionBy([ ...arr, ...init], 'id').map((item) => {
+            const _item = (resp.result?.[0] || []).find(
+                (i: any) => i.id === item.id,
+            );
+            if (_item) {
+                return {
+                    ..._item,
+                    flag: true,
+                };
+            }
+            return item;
+        });
+    }
+};
+
+const saveInfo = async (preset: Item[]) => {
+    const resp = await channelApi.update(props.data.id, {
+        id: props.data.id,
+        address: props.data.address,
+        channelId: props.data.channelId,
+        description: props.data.description,
+        deviceId: props.data.deviceId,
+        name: props.data.name,
+        manufacturer: props.data.manufacturer,
+        ptzType: props.data.ptzType?.value || 0,
+        others: {
+            ...props.data?.others,
+            preset
+        },
     });
+    if (resp.status === 200) {
+        console.log(resp);
+    }
 };
 
 const onFunction = (id: string, functionId: string, params: any) => {
-    loading.value = true
-    channelApi.opFunction(id, functionId, params).then((resp) => {
-        if (resp.status === 200) {
-            onlyMessage('操作成功！')
-            if (props.data?.deviceId) {
-                handleSearch(props.data?.deviceId);
+    loading.value = true;
+    channelApi
+        .opFunction(id, functionId, params)
+        .then(async (resp) => {
+            if (resp.status === 200) {
+                onlyMessage('操作成功！');
+                const preset = dataSource.value.map((item) => {
+                    return {
+                        id: item.id,
+                        name: item.name,
+                    };
+                });
+                if (params?.operation === 'SET') {
+                    // 保存名称
+                    await saveInfo(preset);
+                }
+                if (props.data?.deviceId) {
+                    await handleSearch(props.data?.deviceId, preset);
+                }
             }
-        }
-    }).finally(() => {
-        loading.value = false
-    })
+        })
+        .finally(() => {
+            loading.value = false;
+        });
 };
 
 const onSetting = (obj: Item) => {
@@ -155,7 +190,7 @@ watch(
     () => props.data.deviceId,
     () => {
         if (props.data?.deviceId) {
-            handleSearch(props.data?.deviceId);
+            handleSearch(props.data?.deviceId, props.data?.others?.preset);
         }
     },
     {

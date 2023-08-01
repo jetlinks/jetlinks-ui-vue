@@ -3,9 +3,10 @@
     <j-modal
         v-model:visible="_vis"
         title="播放"
-        width="1200px"
+        :width="_type ? 1200 : 900"
         :maskClosable="false"
         @ok="_vis = false"
+        :destroyOnClose="true"
     >
         <template #closeIcon>
           <j-button :disabled="type === 'share'" type="text"><AIcon type="CloseOutlined" /></j-button>
@@ -45,10 +46,7 @@
                                     <j-menu @click="recordStart">
                                         <j-menu-item
                                             key="true"
-                                            v-if="
-                                                route.query.type !==
-                                                'fixed-media'
-                                            "
+                                            v-if="_type"
                                         >
                                             <span style="padding-right: 12px"
                                                 >本地存储</span
@@ -102,7 +100,7 @@
                     autoplay
                 />
             </div>
-            <div class="media-live-actions">
+            <div class="media-live-actions" v-if="_type">
                 <div class="actions-tool">
                     <MediaTool
                         @onMouseDown="handleMouseDown"
@@ -185,6 +183,10 @@ const showTool = ref(false);
 const showToolLock = ref(false);
 
 const visible = ref(false);
+
+const _type = computed(() => {
+  return route.query.type !== 'fixed-media'
+})
 
 const speedList = [
     { label: '高', value: 180 },
