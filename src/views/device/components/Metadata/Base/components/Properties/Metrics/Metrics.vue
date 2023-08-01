@@ -116,7 +116,7 @@ const columns: any = [
       rules: [
         {
           callback(rule:any,value: any) {
-            if (!value) {
+            if (!value || (Array.isArray(value) && value.some(item => !item))) {
               return Promise.reject('请配置指标')
             }
             return Promise.resolve()
