@@ -3753,10 +3753,10 @@ jetlinks-ui-components@^1.0.23:
     sortablejs "^1.15.0"
     vuedraggable "^4.1.0"
 
-jetlinks-ui-components@^1.0.27:
-  version "1.0.27"
-  resolved "http://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.27.tgz#03a2a9ba49d669c6d63e6c5d5b144f31a27253df"
-  integrity sha512-I9A05UXUtjRsSWU/jgRDfDNeCv2ZV21/PV4FEV3UG5bQOYa1/CvL7Lr7F7iB1m4Hjn9mnXTqAQ2pU11b6T2U8Q==
+jetlinks-ui-components@^1.0.28:
+  version "1.0.28"
+  resolved "http://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.28.tgz#443df6fc65ecd0bfbc19eb12bff8d10c0ff6a129"
+  integrity sha512-+RmSq4LFoH/TODAELhUxK/YeqCvbnqjgT6C5mZyIM1veARbVyUEiIJ3+dDOLL42Sm/fbNTJ2IQH4PYeVAeTU9g==
   dependencies:
     "@vueuse/core" "^9.12.0"
     "@vueuse/router" "^9.13.0"
