@@ -26,6 +26,7 @@
                         : '新增',
                 }"
               @click="handleAddClick()"
+              placement="topRight"
           >
             新增
           </PermissionButton>

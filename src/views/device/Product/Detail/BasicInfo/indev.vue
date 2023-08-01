@@ -29,11 +29,11 @@
         <j-descriptions-item label="接入方式">
             <PermissionButton
                     type="link"
-                    style="width:100%"
+                    style="width:100%;padding:0"
                     @click="changeTables"
                     hasPermission="device/Product:update"
                     >
-                    <div>
+                    <div style="white-space: normal">
                     <Ellipsis>{{
                         productStore.current.accessName
                             ? productStore.current.accessName

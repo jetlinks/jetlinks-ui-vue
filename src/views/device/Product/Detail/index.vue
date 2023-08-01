@@ -91,6 +91,7 @@
                         : undefined
                 "
                 hasPermission="device/Product:update"
+                placement="topRight"
                 >应用配置</PermissionButton
             >
         </template>
