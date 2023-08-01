@@ -389,6 +389,8 @@ const beforeUpload = (file: any) => {
     reader.readAsText(file);
     reader.onload = async (result) => {
         const text = result.target?.result;
+        console.log('text: ', text);
+        console.log(file);
         if (!file.type.includes('json')) {
             onlyMessage('请上传json格式文件', 'error');
             return false;
@@ -409,7 +411,7 @@ const beforeUpload = (file: any) => {
             }
             return true;
         } catch {
-            // onlyMessage('请上传json格式文件', 'error');
+            onlyMessage('请上传json格式文件', 'error');
         }
         return true;
     };

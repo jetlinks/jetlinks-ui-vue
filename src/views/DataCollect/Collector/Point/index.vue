@@ -542,7 +542,7 @@ const getQuantity = (item: Partial<Record<string, any>>) => {
 };
 const getAddress = (item: Partial<Record<string, any>>) => {
     const { address } = item.configuration?.parameter || '';
-    return !!address ? address + '(地址)' : '';
+    return (!!address || address === 0) ? address + '(地址)' : '';
 };
 const getScaleFactor = (item: Partial<Record<string, any>>) => {
     const { scaleFactor } = item.configuration?.codec?.configuration || '';

@@ -26,18 +26,22 @@
         <j-descriptions-item label="设备类型">{{
             productStore.current.deviceType?.text
         }}</j-descriptions-item>
-
         <j-descriptions-item label="接入方式">
             <PermissionButton
-                type="link"
-                @click="changeTables"
-                hasPermission="device/Product:update"
-                >{{
-                    productStore.current.accessName
-                        ? productStore.current.accessName
-                        : '配置接入方式'
-                }}</PermissionButton
-            >
+                    type="link"
+                    style="width:100%"
+                    @click="changeTables"
+                    hasPermission="device/Product:update"
+                    >
+                    <div>
+                    <Ellipsis>{{
+                        productStore.current.accessName
+                            ? productStore.current.accessName
+                            : '配置接入方式'
+                    }}</Ellipsis>
+                    </div>
+                    </PermissionButton
+                >
         </j-descriptions-item>
         <j-descriptions-item label="创建时间">{{
             dayjs(productStore.current.createTime).format('YYYY-MM-DD HH:mm:ss')
