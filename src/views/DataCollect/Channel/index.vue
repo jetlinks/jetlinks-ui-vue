@@ -204,8 +204,7 @@ const columns = [
             type: 'select',
             options: [
                 { label: '运行中', value: 'running' },
-                { label: '部分错误', value: 'partialError' },
-                { label: '错误', value: 'failed' },
+                { label: '已停止', value: 'stopped' },
             ],
         },
     },
