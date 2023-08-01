@@ -7,23 +7,20 @@
                 <div
                     :span="8"
                     class="select-item"
-                    @click="selectValue = 'device'"
+                    v-for="item in list"
+                    :key="item.id"
+                    @click="selectValue = item.id"
+                    :class="{
+                        active: selectValue === item.id,
+                    }"
                 >
-                    <img :src="getImage(`/home/home-view/device${selectValue === 'device' ? '-active' : ''}.png`)" alt="" />
-                </div>
-                <div
-                    :span="8"
-                    class="select-item"
-                    @click="selectValue = 'ops'"
-                >
-                    <img :src="getImage(`/home/home-view/ops${selectValue === 'ops' ? '-active' : ''}.png`)" alt="" />
-                </div>
-                <div
-                    :span="8"
-                    class="select-item"
-                    @click="selectValue = 'comprehensive'"
-                >
-                    <img :src="getImage(`/home/home-view/comprehensive${selectValue === 'comprehensive' ? '-active' : ''}.png`)" alt="" />
+                    <div class="select-item-box">
+                        <div class="select-title">{{ item.name }}</div>
+                    </div>
+                    <img
+                        :src="getImage(`/home/home-view/${item.id}.png`)"
+                        alt=""
+                    />
                 </div>
             </div>
             <div class="btn">
@@ -37,6 +34,21 @@
 import { setView_api } from '@/api/home';
 import { getImage } from '@/utils/comm';
 import { useUserInfo } from '@/store/userInfo';
+
+const list = [
+    {
+        id: 'device',
+        name: '设备接入视图',
+    },
+    {
+        id: 'ops',
+        name: '运营管理视图',
+    },
+    {
+        id: 'comprehensive',
+        name: '综合管理视图',
+    },
+];
 
 const user = useUserInfo();
 const emits = defineEmits(['refresh']);
@@ -89,10 +101,36 @@ watch(
             .select-item {
                 cursor: pointer;
                 width: 30%;
+                border-radius: 14px;
+                overflow: hidden;
+                color: #333333;
+
+                .select-item-box {
+                    position: relative;
+                    width: 100%;
+                    .select-title {
+                        position: absolute;
+                        top: 36px;
+                        left: 36px;
+                        font-size: 24px;
+                    }
+                }
 
                 img {
                     width: 100%;
+                    height: 100%;
                     background-size: cover;
+                }
+
+                &.active {
+                    border: 1px solid @primary-color-active;
+                    color: @primary-color-active;
+                }
+
+                &:hover {
+                    box-shadow: 0px 3px 6px -4px rgba(0, 0, 0, 0.12),
+                        0px 6px 16px 0px rgba(0, 0, 0, 0.08),
+                        0px 9px 16px 8px rgba(0, 0, 0, 0.1);
                 }
             }
         }
