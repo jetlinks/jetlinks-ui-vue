@@ -38,6 +38,9 @@ const type = {
 };
 
 export const validatorConfig = (value: any, isObject: boolean = false) => {
+
+  console.log(value)
+
   if (!value) {
     return Promise.resolve()
   }
@@ -53,7 +56,7 @@ export const validatorConfig = (value: any, isObject: boolean = false) => {
     return Promise.reject('请添加参数')
   }
 
-  if (value.type === 'file' && !value.fileType) {
+  if (value.type === 'file' && (!value.fileType || !Object.keys(value.fileType).length)) {
     return Promise.reject('请选择文件类型')
   }
 

@@ -446,12 +446,10 @@ export const handleMenus = (menuData: any[], components: any, level: number = 1)
       }
 
       route.component = findComponents(item.code, level, isApp, components)
-      console.log(`isApp:${isApp}`, route)
       const extraRoute = hasExtraChildren(item, extraRouteObj)
       const detail_components = findDetailRouteItem(item, components)
 
       if (extraRoute && !isApp) { // 包含额外的子路由
-        console.log(extraRoute)
         route.children = route.children ? [...route.children, ...extraRoute] : extraRoute
       }
 
