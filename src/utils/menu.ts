@@ -368,10 +368,10 @@ const findComponents = (code: string, level: number, isApp: boolean, components:
   const myComponents = components[code]
   if (level === 1) { // BasicLayoutPage
     return myComponents ? () => myComponents() : BasicLayoutPage
-  } else if (level === 2) { // BlankLayoutPage or components
-    return myComponents ? () => myComponents() : BlankLayoutPage
   } else if (isApp){ // iframe
     return () => Iframe
+  } else if (level === 2) { // BlankLayoutPage or components
+    return myComponents ? () => myComponents() : BlankLayoutPage
   } else if(myComponents) { // components
     return () => myComponents()
   }
@@ -446,6 +446,7 @@ export const handleMenus = (menuData: any[], components: any, level: number = 1)
       }
 
       route.component = findComponents(item.code, level, isApp, components)
+      console.log(`isApp:${isApp}`, route)
       const extraRoute = hasExtraChildren(item, extraRouteObj)
       const detail_components = findDetailRouteItem(item, components)
 
