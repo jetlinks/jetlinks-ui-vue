@@ -419,6 +419,9 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         }
       },
       doubleClick(record){
+        if (record.expands.source === 'rule') {
+          return true
+        }
         return !isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'expands')
       },
       form: {
