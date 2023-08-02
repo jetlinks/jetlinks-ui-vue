@@ -56,7 +56,7 @@
                         class="tree-left-tag"
                         v-if="data.id !== '*'"
                         :color="colorMap.get(data?.uniformState?.value)"
-                    >{{ data?.uniformState?.text }}</j-tag
+                    >{{ data?.pointNumber === 0 ? '--' : (data?.uniformState?.value === 'normal' ? '运行中' : data?.uniformState?.text) }}</j-tag
                     >
                     <j-tag
                         class="tree-left-tag2"
@@ -67,7 +67,7 @@
                         "
                         >
                       {{
-                        data?.state?.text
+                        data?.state?.value === 'disabled' ? '禁用' : '运行中'
                       }}
                     </j-tag
                     >
