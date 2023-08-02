@@ -437,16 +437,6 @@ const columns = [
         key: 'runningState',
         search: {
             type: 'select',
-            // options: [
-            //     {
-            //         label: '运行中',
-            //         value: 'running',
-            //     },
-            //     {
-            //         label: '已停止',
-            //         value: 'stopped',
-            //     },
-            // ],
             options: async() =>{
                 const resq:any = await getStates();
                 if(resq.status === 200){
