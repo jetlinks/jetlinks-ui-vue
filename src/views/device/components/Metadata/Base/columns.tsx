@@ -440,7 +440,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
               if (source) {
                 if (source !== 'rule' && !value.type?.length) {
                   return Promise.reject('请选择读写类型');
-                } else if(!ids.includes(values.id) && virtualRule){
+                } else if(!ids.includes(values.id) && !virtualRule){
                   return Promise.reject('请配置规则');
                 }
 
@@ -538,7 +538,9 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       },
       form: {
         required: true,
-        rules: [{
+        rules: [
+          { required: true, message: '请选择读写类型' },
+          {
           callback(rule:any,value: any, dataSource: any[]) {
             const field = rule.field.split('.')
             const fieldIndex = Number(field[1])
