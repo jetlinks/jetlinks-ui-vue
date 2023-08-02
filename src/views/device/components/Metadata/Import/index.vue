@@ -195,7 +195,7 @@ import { useProductStore } from '@/store/product';
 import { FILE_UPLOAD } from '@/api/comm';
 import { getToken, onlyMessage } from '@/utils/comm';
 import { useMetadataStore } from '@/store/metadata';
-import { omit, uniqBy } from 'lodash-es';
+import { omit } from 'lodash-es';
 import { Modal } from 'jetlinks-ui-components';
 
 const route = useRoute();
@@ -258,11 +258,16 @@ const loadData = async () => {
 loadData();
 
 const beforeUpload: UploadProps['beforeUpload'] = (file) => {
-    const reader = new FileReader();
-    reader.readAsText(file);
-    reader.onload = (json) => {
-        formModel.import = json.target?.result;
-    };
+    if(file.type === 'application/json') {
+        const reader = new FileReader();
+        reader.readAsText(file);
+        reader.onload = (json) => {
+            onlyMessage('操作成功！')
+            formModel.import = json.target?.result;
+        };
+    } else {
+        onlyMessage('请上传json文件', 'error')
+    }
 };
 const fileChange = (info: UploadChangeParam) => {
     if (info.file.status === 'done') {
@@ -273,10 +278,18 @@ const fileChange = (info: UploadChangeParam) => {
     }
 };
 
+const uniqArray = (arr: any[]) => {
+  const _map = new Map();
+  for(let item of arr) {
+    _map.set(item.id, item)
+  }
+  return [..._map.values()]
+}
+
 const operateLimits = (mdata: DeviceMetadata) => {
     hasVirtualRule.value = false;
     const obj: DeviceMetadata = { ...mdata };
-    const old = JSON.parse(instanceStore.detail?.metadata || '{}');
+    const old = JSON.parse((props.type === 'device' ? instanceStore.detail?.metadata : productStore.detail?.metadata) || '{}');
     const fid = instanceStore.detail?.features?.map((item) => item.id);
     const _data: DeviceMetadata = {
       properties: [],
@@ -284,10 +297,10 @@ const operateLimits = (mdata: DeviceMetadata) => {
       functions: [],
       tags: []
     }
-    _data.properties = uniqBy([...(obj?.properties || []), ...(old?.properties || [])], 'id')
-    _data.events = uniqBy([...(obj?.events || []), ...(old?.events || [])], 'id')
-    _data.functions = uniqBy([...(obj?.functions || []), ...(old?.functions || [])], 'id')
-    _data.tags = uniqBy([...(obj?.tags || []), ...(old?.tags || [])], 'id')
+    _data.properties = uniqArray([...(old?.properties || []), ...uniqArray(obj?.properties || [])])
+    _data.events = uniqArray([...(old?.events || []), ...uniqArray(obj?.events || [])])
+    _data.functions = uniqArray([...(old?.functions || []), ...uniqArray(obj?.functions || [])])
+    _data.tags = uniqArray([...(old?.tags || []), ...uniqArray(obj?.tags || [])])
 
     if (fid?.includes('eventNotModifiable')) {
        _data.events = old?.events || [];

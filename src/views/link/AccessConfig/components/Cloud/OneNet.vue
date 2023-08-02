@@ -41,7 +41,6 @@
                                                 </j-tooltip>
                                             </template>
                                             <j-input
-                                                disabled
                                                 v-model:value="
                                                     formState.apiAddress
                                                 "
@@ -450,7 +449,7 @@ const formRef1 = ref<FormInstance>();
 const formRef2 = ref<FormInstance>();
 
 const formState = ref<FormState>({
-    apiAddress: 'https://api.heclouds.com/',
+    apiAddress: 'http://api.zj.cmcconenet.com/',
     apiKey: '',
     validateToken: '',
     aesKey: '',

@@ -31,7 +31,6 @@
                                             ]"
                                         >
                                             <j-input
-                                                disabled
                                                 v-model:value="
                                                     formState.apiAddress
                                                 "
