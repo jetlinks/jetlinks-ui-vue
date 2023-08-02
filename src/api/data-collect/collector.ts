@@ -62,3 +62,5 @@ export const scanOpcUAList = (data: any) =>
 export const queryTypeList = () => server.get(`/data-collect/opc/data-types`);
 
 export const getProviders = () => server.get('/data-collect/channel/gateway/codec/providers')
+
+export const getStates = () => server.get('/dictionary/running-state/items')

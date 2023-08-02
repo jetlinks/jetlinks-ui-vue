@@ -304,9 +304,9 @@ const getProvidersList = async () => {
     if (resp.status === 200) {
         const arr = resp.result
             .filter(
-                (item: any) =>  ['collector-gateway', 'modbus-tcp', 'opc-ua'].includes(item.id),
+                (item: any) =>  ['GATEWAY', 'Modbus/TCP', 'opc-ua'].includes(item.name),
             )
-            .map((it: any) => it.id);
+            .map((it: any) => it.name);
         const providers: any = protocolList.filter((item: any) =>
             arr.includes(item.alias),
         );

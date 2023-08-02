@@ -143,11 +143,12 @@
 <script lang="ts" setup name="DataCollectPage">
 import type { ActionsType } from '@/components/Table/index';
 import { getImage } from '@/utils/comm';
-import { query, remove, update } from '@/api/data-collect/channel';
+import { query, remove, update ,getProviders} from '@/api/data-collect/channel';
 import { onlyMessage } from '@/utils/comm';
 import { StatusColorEnum, updateStatus } from './data';
 import { useMenuStore } from 'store/menu';
 import Save from './Save/index.vue';
+import { protocolList } from '@/utils/consts';
 import _ from 'lodash';
 
 const menuStory = useMenuStore();
@@ -174,10 +175,20 @@ const columns = [
         ellipsis: true,
         search: {
             type: 'select',
-            options: [
-                { label: 'OPC_UA', value: 'OPC_UA' },
-                { label: 'MODBUS_TCP', value: 'MODBUS_TCP' },
-            ],
+            options: async() =>{
+                const resp: any = await getProviders();
+                if (resp.status === 200) {
+        const arr = resp.result
+            .filter(
+                (item: any) =>  ['GATEWAY', 'Modbus/TCP', 'opc-ua'].includes(item.name),
+            )
+            .map((it: any) => it.name);
+        const providers: any = protocolList.filter((item: any) =>
+            arr.includes(item.alias),
+        );
+        return providers
+    }
+            }
         },
     },
     {
