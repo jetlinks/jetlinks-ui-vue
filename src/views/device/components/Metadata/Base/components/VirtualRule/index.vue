@@ -64,7 +64,7 @@
             </j-form-item>
             <j-form-item
                 label="窗口"
-                :name="['virtualRule', 'rule', 'windowType']"
+                :name="['virtualRule', 'windowType']"
                 required
             >
                 <j-select
@@ -333,8 +333,8 @@ const _virtualRule = computed(() => {
     return {
         type: formData?.type,
         virtualRule: {
-            type: flag ? 'window' : 'script',
             ...formData?.virtualRule,
+            type: flag ? 'window' : 'script',
             isVirtualRule: flag,
             triggerProperties: formData?.virtualRule?.triggerProperties.includes('*')
                 ? []
