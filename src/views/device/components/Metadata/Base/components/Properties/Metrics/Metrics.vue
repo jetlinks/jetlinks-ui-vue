@@ -78,7 +78,7 @@ const columns: any = [
         { max: 64, message: '最多可输入64个字符' },
         {
           pattern: /^[a-zA-Z0-9_\-]+$/,
-          message: 'ID只能由数字、字母、下划线、中划线组成',
+          message: '标识只能由数字、字母、下划线、中划线组成',
         },
       ]
     },
@@ -116,7 +116,7 @@ const columns: any = [
       rules: [
         {
           callback(rule:any,value: any) {
-            if (!value) {
+            if (!value || (Array.isArray(value) && value.some(item => !item))) {
               return Promise.reject('请配置指标')
             }
             return Promise.resolve()

@@ -168,7 +168,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
           { max: 64, message: '最多可输入64个字符' },
           {
             pattern: /^[a-zA-Z0-9_\-]+$/,
-            message: 'ID只能由数字、字母、下划线、中划线组成',
+            message: '标识只能由数字、字母、下划线、中划线组成',
           },
         ]
       },
@@ -419,14 +419,10 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         }
       },
       doubleClick(record){
-        if (target !== 'device') {
+        if (record.expands.source === 'rule') {
           return true
-        } else {
-          if (record.expands.source === 'rule') {
-            return true
-          }
-          return !isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'expands')
         }
+        return !isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'expands')
       },
       form: {
         required: true,

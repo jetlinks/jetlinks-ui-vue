@@ -105,9 +105,9 @@ const type = ref<string>('');
 const virtualRuleRef = ref<any>(null);
 
 const disabled = computed(() => {
-    if (props.target === 'device') {
-        return true;
-    }
+    // if (props.target === 'device') {
+    //     return true;
+    // }
     return props.noEdit?.length
         ? props.noEdit.includes(props.value._sortIndex)
         : false;

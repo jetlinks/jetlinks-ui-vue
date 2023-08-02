@@ -209,14 +209,16 @@ const doLogin = () => {
 const initPage = async () => {
   let redirectUrl
   // 获取url中的配置信息
+  const paramsIndex = location.hash.indexOf('?')
+  const params = new URLSearchParams(location.hash.slice(paramsIndex))
   const items = {
-    client_id: getQueryVariable('client_id'),
-    state: getQueryVariable('state'),
-    redirect_uri: decodeURIComponent(getQueryVariable('redirect_uri')),
-    response_type: getQueryVariable('response_type'),
-    scope: getQueryVariable('scope'),
+    client_id: params.get('client_id'),
+    state: params.get('state'),
+    redirect_uri: decodeURIComponent(params.get('redirect_uri')!),
+    response_type: params.get('response_type'),
+    scope: params.get('scope'),
   }
-  const item = getQueryVariable('internal');
+  const item = params.get('internal');
   if (items.redirect_uri) {
     const origin = items.redirect_uri.split('/').slice(0, 3)
     const url = `${origin.join('/')}${items.redirect_uri?.split('redirect=')[1]}`
@@ -226,11 +228,11 @@ const initPage = async () => {
   // 获取用户信息
   getLoginUser({
     ...items,
-    internal: getQueryVariable('internal'),
+    internal: params.get('internal'),
     redirect_uri: redirectUrl,
   })
 
-  internal.value = item
+  internal.value = item!
   params.value = {
     ...items,
     redirect_uri: redirectUrl,
