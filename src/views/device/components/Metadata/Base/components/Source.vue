@@ -18,11 +18,13 @@
             :get-popup-container="(node) => fullRef || node"
             placement="topLeft"
             @confirm="confirm"
+            @visibleChange="visibleChange"
         >
             <template #content>
                 <j-scrollbar v-if="myValue">
                     <div style="padding: 0 10px">
                         <VirtualRule
+                            v-if="visible"
                             :value="value"
                             :source="myValue"
                             :dataSource="dataSource"
@@ -103,6 +105,11 @@ const formItemContext = Form.useInjectFormItemContext();
 const myValue = ref<SourceType>('');
 const type = ref<string>('');
 const virtualRuleRef = ref<any>(null);
+const visible = ref(false)
+
+const visibleChange = (e: boolean) => {
+    visible.value = e
+}
 
 const disabled = computed(() => {
     // if (props.target === 'device') {
@@ -148,6 +155,16 @@ const confirm = async () => {
         }
     });
 };
+
+const cancel = () => {
+    if (props.value.id && !props.value?.expands?.source) {
+        myValue.value = 'device';
+      } else {
+        myValue.value = props.value?.expands?.source || '';
+      }
+        type.value = props.value?.expands?.type || [];
+        console.log('取消', myValue.value);
+}
 
 watch(
     () => props.value,
