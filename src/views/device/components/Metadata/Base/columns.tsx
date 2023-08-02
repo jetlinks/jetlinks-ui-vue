@@ -426,21 +426,21 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       },
       form: {
         required: true,
-        rules: target !== 'device' ? [
+        rules: [
           {
             callback: async (rule: any, value: any, dataSource: any[]) => {
               const field = rule.field.split('.')
               const fieldIndex = Number(field[1])
 
               const values = dataSource.find((item, index) => index === fieldIndex)
-              const virtualRule = values.elements?.virtualRule
+              const virtualRule = values.expands?.virtualRule
               const source = value.source
               const ids = (noEdit?.value?.id || []) as any[]
 
               if (source) {
-                if (source !== 'rule' && !value.type?.length) {
+                if (source === 'device' && !value.type?.length) {
                   return Promise.reject('请选择读写类型');
-                } else if(!ids.includes(values.id) && !virtualRule){
+                } else if( source === 'rule' && !virtualRule){
                   return Promise.reject('请配置规则');
                 }
 
@@ -450,7 +450,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
               return Promise.reject('请选择属性来源');
             }
           },
-        ]: []
+        ]
       },
       control(newValue, oldValue) {
         if (newValue && !oldValue) {
