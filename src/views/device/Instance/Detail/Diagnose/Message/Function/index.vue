@@ -177,7 +177,7 @@ const funcChange = (val: string) => {
 };
 
 const saveBtn = async () => {
-    const _inputs = await inputsRef.value.onSave();
+    const _inputs = await inputsRef.value?.onSave();
     console.log(_inputs)
     if(!_inputs){
         return 

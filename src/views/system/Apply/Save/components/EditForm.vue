@@ -1773,7 +1773,7 @@ function clickSave() {
         }
 
         //独立应用-api客户端 id?clientId:appId
-        if (params.provider === 'internal-standalone') {
+        if (['internal-standalone', 'third-party'].includes(params.provider)) {
             if (params.integrationModes.includes('apiClient')) {
                 params.id = params.apiClient.authConfig.oauth2.clientId;
             }
@@ -1806,7 +1806,6 @@ function clickSave() {
                 key: m.label,
             }));
         }
-
         loading.value = true;
         const request = routeQuery.id
             ? updateApp_api(routeQuery.id as string, params)

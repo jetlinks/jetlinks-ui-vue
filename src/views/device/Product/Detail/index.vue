@@ -23,11 +23,13 @@
                             v-if="productStore.current.state === 1"
                             okText="确定"
                             cancelText="取消"
+                            :disabled="!permissionStore.hasPermission('device/Product:action')"
                         >
                             <j-switch
                                 :checked="productStore.current.state === 1"
                                 checked-children="正常"
                                 un-checked-children="禁用"
+                                :disabled="!permissionStore.hasPermission('device/Product:action')"
                             />
                         </j-popconfirm>
                         <j-popconfirm
@@ -36,6 +38,7 @@
                             v-if="productStore.current.state === 0"
                             okText="确定"
                             cancelText="取消"
+                            :disabled="!permissionStore.hasPermission('device/Product:action')"
                         >
                             <j-switch
                                 :unCheckedValue="
@@ -43,6 +46,7 @@
                                 "
                                 checked-children="正常"
                                 un-checked-children="禁用"
+                                :disabled="!permissionStore.hasPermission('device/Product:action')"
                             />
                         </j-popconfirm>
                     </div>
@@ -87,6 +91,7 @@
                         : undefined
                 "
                 hasPermission="device/Product:update"
+                placement="topRight"
                 >应用配置</PermissionButton
             >
         </template>
@@ -124,7 +129,9 @@ import { getImage, handleParamsToString, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import {EventEmitter} from "@/utils/utils";
+import { usePermissionStore } from '@/store/permission';
 
+const permissionStore = usePermissionStore()
 const menuStory = useMenuStore();
 const route = useRoute();
 const checked = ref<boolean>(true);

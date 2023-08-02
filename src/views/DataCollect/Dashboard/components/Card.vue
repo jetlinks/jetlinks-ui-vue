@@ -83,7 +83,8 @@ const handleOptions = (x = [], y = []) => {
     const chart: any = chartRef.value;
     if (chart) {
         const myChart = echarts.init(chart);
-        const maxY: number = y.sort((a,b)=>{
+        const _y =  [...y];
+        const maxY: number = _y.sort((a,b)=>{
             return b-a
         })?.[0]
         const options = {

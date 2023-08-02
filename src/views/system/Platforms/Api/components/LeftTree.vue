@@ -7,8 +7,9 @@
             :tree-data="treeData"
             @select="clickSelectItem"
             v-model:selected-keys="selectedKeys"
-            showLine
             class="left-tree-container"
+            :showLine="{ showLeafIcon: false }"
+            :show-icon="true"
         >
             <template #title="{ name }">
                 {{ name }}

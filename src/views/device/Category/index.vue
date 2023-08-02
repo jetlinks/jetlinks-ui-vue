@@ -107,11 +107,15 @@ const query = reactive({
             key: 'sortIndex',
             search: {
                 type: 'number',
+                componentProps:{
+                    precision:0,
+                    min:0
+                }
             },
             scopedSlots: true,
         },
         {
-            title: '描述',
+            title: '说明',
             key: 'description',
             dataIndex: 'description',
             search: {

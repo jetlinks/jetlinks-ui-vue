@@ -19,6 +19,8 @@
                             :tree-data="dataSource"
                             :checkedKeys="checkedKeys"
                             @check="onCheck"
+                            :showLine="{ showLeafIcon: false }"
+                            :show-icon="true"
                         />
                     </j-card>
                     <div style="width: 100px">

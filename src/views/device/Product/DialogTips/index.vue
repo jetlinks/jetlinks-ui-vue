@@ -101,6 +101,10 @@ defineExpose({
     }
     .product-id {
         margin: 10px 15px 10px 0px;
+        max-width: 520px;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
     }
     .product-btn {
         margin: 10px 0px 10px 0;

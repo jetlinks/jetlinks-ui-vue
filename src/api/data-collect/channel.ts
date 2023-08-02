@@ -11,7 +11,7 @@ export const save = (data: any) => server.post(`/data-collect/channel`, data);
 export const update = (id: string, data: any) =>
     server.put(`/data-collect/channel/${id}`, data);
 
-export const getProviders = () => server.get(`/gateway/device/providers`);
+export const getProviders = () => server.get(`/data-collect/channel/providers`);
 
 export const queryOptionsList = (type: string) =>
     server.get(`/data-collect/opc/${type}`);

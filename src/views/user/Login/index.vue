@@ -137,7 +137,7 @@
                             </div>
                         </div>
                     </div>
-                    <div v-if="basis.recommend" class="bottom">
+                    <div v-if="basis.recommend === 'true'" class="bottom">
                         <div class="view">
                             JETLINKS团队全新力作可视化大屏系统
                         </div>

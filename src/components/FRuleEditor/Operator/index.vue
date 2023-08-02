@@ -15,6 +15,8 @@
                     :field-names="{ title: 'name', key: 'id' }"
                     auto-expand-parent
                     :tree-data="data"
+                    :showLine="{ showLeafIcon: false }"
+                    :show-icon="true"
                 >
                     <template #title="node">
                         <div class="node">

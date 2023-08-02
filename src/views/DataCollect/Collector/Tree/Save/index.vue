@@ -134,16 +134,16 @@
             </div>
             <j-form-item
                 :name="['configuration', 'requsetTimeout']"
-                label="请求超时时间配置"
+                :rules="LeftTreeRules.requsetTimeout"
             >
-            <j-input-number
-                style="width: 100%"
-                placeholder="请输入请求超时时间配置"
-                v-model:value="formData.configuration.requsetTimeout"
-                addon-after="ms"
-                :max="2147483648"
-                :min="1"
-            />
+                <j-input-number
+                    style="width: 100%"
+                    placeholder="请输入请求超时时间配置"
+                    v-model:value="formData.configuration.requsetTimeout"
+                    addon-after="ms"
+                    :max="60000"
+                    :min="2000"
+                />
             </j-form-item>
             <j-form-item label="说明" name="description">
                 <j-textarea
