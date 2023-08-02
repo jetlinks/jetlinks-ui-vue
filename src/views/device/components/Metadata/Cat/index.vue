@@ -97,6 +97,7 @@ const handleConvertMetadata = (key: Key) => {
       convertMetadata('to', 'alink', JSON.parse(metadata.value)).then(res => {
         if (res.status === 200) {
           value.value = JSON.stringify(res.result)
+          monacoValue.value = JSON.stringify(res.result)
         }
       });
     }
