@@ -419,14 +419,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         }
       },
       doubleClick(record){
-        if (target !== 'device') {
-          return true
-        } else {
-          if (record.expands.source === 'rule') {
-            return true
-          }
-          return !isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'expands')
-        }
+        return !isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'expands')
       },
       form: {
         required: true,

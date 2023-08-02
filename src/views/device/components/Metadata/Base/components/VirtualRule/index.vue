@@ -57,6 +57,7 @@
                 <Rule
                     v-model:value="formData.virtualRule.script"
                     :virtualRule="_virtualRule.virtualRule"
+                    :propertiesOptions="options"
                     :id="value.id"
                     :aggList="aggList"
                 />
