@@ -178,6 +178,7 @@
                                     </div>
                                     <div class="image">
                                         <j-image width="100%" :src="img6" />
+                                        <div class="desc">填写OneNet网关相关参数</div>
                                     </div>
                                     <div>
                                         5、IOT端添加设备，在设备实例页面为每一台设备设置唯一的IMEI、IMSI码（需与OneNet平台中的值一致）
@@ -207,10 +208,7 @@
                                         <j-descriptions-item label="参数"
                                             >说明</j-descriptions-item
                                         >
-                                        <j-descriptions-item label="推送地址url"
-                                            >推送实例的名称</j-descriptions-item
-                                        >
-                                        <j-descriptions-item label="推送地址">
+                                        <j-descriptions-item label="推送地址url">
                                             用于接收OneNet推送设备数据的物联网平台地址:
                                             <div style="word-wrap: break-word">
                                                 {{
@@ -218,10 +216,10 @@
                                                 }}
                                             </div>
                                         </j-descriptions-item>
-                                        <j-descriptions-item label="token">
+                                        <j-descriptions-item label="Token">
                                             自定义token,可用于验证请求是否来自OneNet
                                         </j-descriptions-item>
-                                        <j-descriptions-item label="aesKey">
+                                        <j-descriptions-item label="AESKey">
                                             采用AES加密算法对推送的数据进行数据加密，AesKey为加密秘钥
                                         </j-descriptions-item>
                                     </j-descriptions>
@@ -253,10 +251,10 @@
                                         <j-descriptions-item label="apiKey"
                                             >OneNet平台中具体产品的Master-APIkey</j-descriptions-item
                                         >
-                                        <j-descriptions-item label="通知令牌">
+                                        <j-descriptions-item label="通知Token">
                                             填写OneNet数据推送配置中设置的Token
                                         </j-descriptions-item>
-                                        <j-descriptions-item label="艾斯钥匙">
+                                        <j-descriptions-item label="aesKey">
                                             若OneNet数据推送配置了消息加密，此处填写OneNet端数据推送配置中设置的AESkey
                                         </j-descriptions-item>
                                     </j-descriptions>
@@ -653,5 +651,12 @@ watch(
 .form-label {
     height: 30px;
     padding-bottom: 8px;
+}
+
+.desc {
+    width: 100%;
+    text-align: center;
+    color: rgb(138, 143, 141);
+    margin-top: 10px;
 }
 </style>
