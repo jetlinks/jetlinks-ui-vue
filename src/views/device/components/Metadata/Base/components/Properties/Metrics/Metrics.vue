@@ -59,6 +59,7 @@ const columns: any = [
     dataIndex: 'id',
     width: 120,
     type: 'text',
+    placement: 'Left',
     form: {
       required: true,
       rules: [{
