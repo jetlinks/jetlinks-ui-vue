@@ -6,7 +6,10 @@
             :options="typeOptions"
         />
         <template v-if="source === 'rule'">
-            <j-form-item :name="['virtualRule', 'triggerProperties']" required>
+            <j-form-item :name="['virtualRule', 'triggerProperties']" :rules="[{
+                required: true,
+                message: '请选择触发属性'
+            }]">
                 <template #label>
                     触发属性
                     <j-tooltip>
@@ -23,7 +26,7 @@
                 <j-select
                     v-model:value="formData.virtualRule.triggerProperties"
                     mode="multiple"
-                    placeholder="请选择属性"
+                    placeholder="请选择触发属性"
                     show-search
                     max-tag-count="responsive"
                 >
