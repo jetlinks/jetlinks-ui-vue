@@ -128,7 +128,7 @@
                         </template>
                     </MediaTool>
                 </div>
-                <Preset :data="data" />
+                <Preset :data="data" @refresh="onRefresh" />
             </div>
         </div>
         <template #footer>
@@ -151,6 +151,7 @@ import Preset from './Preset.vue';
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
+    (e: 'refresh'): void;
 };
 const emit = defineEmits<Emits>();
 
@@ -314,6 +315,10 @@ const handleMouseUp = () => {
 const onShare = () => {
     visible.value = true;
 };
+
+const onRefresh = () => {
+    emit('refresh')
+}
 
 watch(
     () => _vis.value,

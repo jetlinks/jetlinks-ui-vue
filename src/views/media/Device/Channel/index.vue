@@ -130,7 +130,7 @@
             :channelData="channelData"
             @submit="listRef.reload()"
         />
-        <Live v-model:visible="playerVis" :data="playData" />
+        <Live v-model:visible="playerVis" :data="playData" @refresh="listRef.reload()" />
     </page-container>
 </template>
 

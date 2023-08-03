@@ -396,11 +396,11 @@ const beforeUpload = (file: any) => {
             return false;
         }
         try {
-            const data = JSON.parse(text || '{}');
+            const data = JSON.parse(text);
             // 设置导入的产品状态为未发布
             data.state = 0;
             if (Array.isArray(data)) {
-                onlyMessage('文件内容不能为空', 'error');
+                onlyMessage('请上传正确格式文件', 'error');
                 return false;
             }
             delete data.state;
@@ -411,7 +411,7 @@ const beforeUpload = (file: any) => {
             }
             return true;
         } catch {
-            onlyMessage('请上传json格式文件', 'error');
+            onlyMessage('请上传正确格式文件', 'error');
         }
         return true;
     };

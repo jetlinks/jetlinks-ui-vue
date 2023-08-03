@@ -101,7 +101,9 @@
                 <j-col
                     :span="24"
                     v-if="
-                        modelRef.type === 'INVOKE_FUNCTION' && modelRef.function && modelRef.inputs.length
+                        modelRef.type === 'INVOKE_FUNCTION' &&
+                        modelRef.function &&
+                        modelRef.inputs.length
                     "
                 >
                     <!-- <j-form-item
@@ -169,7 +171,7 @@ const funcChange = (val: string) => {
                 name: item.name,
                 value: undefined,
                 valueType: item?.valueType?.type,
-                required: item?.expands?.required
+                required: item?.expands?.required,
             };
         });
         modelRef.inputs = list;
@@ -177,46 +179,38 @@ const funcChange = (val: string) => {
 };
 
 const saveBtn = async () => {
-    const _inputs = await inputsRef.value?.onSave();
-    console.log(_inputs)
-    if(!_inputs){
-        return 
-    }
-    formRef.value.validate().then(async () => {
-        const values = toRaw(modelRef);
-        let _inputs: any[] = [];
+    const _data = await formRef.value?.validate();
+    if (!_data) return;
+    const values = toRaw(modelRef);
+    if (values.type === 'READ_PROPERTY') {
+        await readProperties(instanceStore.current?.id || '', [
+            values.properties,
+        ]);
+    } else if (values.type === 'WRITE_PROPERTY') {
+        await settingProperties(instanceStore.current?.id || '', {
+            [values.properties || '']: values.propertyValue,
+        });
+    } else {
         if (modelRef.inputs.length) {
-            _inputs = modelRef.inputs.filter((i: any) => !i.value && i?.required);
-            if (_inputs.length) {
+            const _inputs = await inputsRef.value?.onSave();
+            if (!_inputs) {
                 return;
             }
         }
 
-        if (values.type === 'INVOKE_FUNCTION') {
-            const list = (modelRef?.inputs || [])?.filter((it: any) => !!it.value);
-            const obj = {};
-            list.map((it: any) => {
-                obj[it.id] = it.value;
-            });
-            await executeFunctions(
-                instanceStore.current.id || '',
-                values?.function || '',
-                {
-                    ...obj,
-                },
-            );
-        } else {
-            if (values.type === 'READ_PROPERTY') {
-                await readProperties(instanceStore.current?.id || '', [
-                    values.properties,
-                ]);
-            } else {
-                await settingProperties(instanceStore.current?.id || '', {
-                    [values.properties || '']: values.propertyValue,
-                });
-            }
-        }
-    });
+        const list = (modelRef?.inputs || [])?.filter((it: any) => !!it.value);
+        const obj = {};
+        list.map((it: any) => {
+            obj[it.id] = it.value;
+        });
+        await executeFunctions(
+            instanceStore.current.id || '',
+            values?.function || '',
+            {
+                ...obj,
+            },
+        );
+    }
 };
 
 defineExpose({ saveBtn });

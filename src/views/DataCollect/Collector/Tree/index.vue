@@ -94,7 +94,7 @@
                                         ? '启用'
                                         : '禁用',
                             }"
-                            :disabled="data?.runningState?.value === 'stopped'"
+                            :disabled="data?.runningState?.value === 'stopped' && data?.state?.value!== 'disabled'"
                             hasPermission="DataCollect/Collector:action"
                             :popConfirm="{
                                 title:
