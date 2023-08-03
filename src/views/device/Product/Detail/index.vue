@@ -8,47 +8,68 @@
         <template #title>
             <div>
                 <div style="display: flex; align-items: center">
-                    <a-tooltip>
+                    <j-tooltip>
                         <template #title>{{
                             productStore.current.name
                         }}</template>
                         <div class="productDetailHead">
                             {{ productStore.current.name }}
                         </div>
-                    </a-tooltip>
-                    <div style="margin: -5px 0 0 20px">
-                        <j-popconfirm
-                            title="确认禁用"
-                            @confirm="handleUndeploy"
-                            v-if="productStore.current.state === 1"
-                            okText="确定"
-                            cancelText="取消"
-                            :disabled="!permissionStore.hasPermission('device/Product:action')"
-                        >
-                            <j-switch
-                                :checked="productStore.current.state === 1"
-                                checked-children="正常"
-                                un-checked-children="禁用"
+                    </j-tooltip>
+                    <div style="margin: -5px 0 0 20px" v-if="permissionStore.hasPermission('device/Product:action')">
+                            <j-popconfirm
+                                title="确认禁用"
+                                @confirm="handleUndeploy"
+                                v-if="productStore.current.state === 1"
+                                okText="确定"
+                                cancelText="取消"
                                 :disabled="!permissionStore.hasPermission('device/Product:action')"
-                            />
-                        </j-popconfirm>
-                        <j-popconfirm
-                            title="确认启用"
-                            @confirm="handleDeploy"
-                            v-if="productStore.current.state === 0"
-                            okText="确定"
-                            cancelText="取消"
-                            :disabled="!permissionStore.hasPermission('device/Product:action')"
-                        >
-                            <j-switch
-                                :unCheckedValue="
-                                    productStore.current.state === 0
-                                "
-                                checked-children="正常"
-                                un-checked-children="禁用"
+                            >
+                                <j-switch
+                                    :checked="productStore.current.state === 1"
+                                    checked-children="正常"
+                                    un-checked-children="禁用"
+                                    :disabled="!permissionStore.hasPermission('device/Product:action')"
+                                />
+                            </j-popconfirm>
+                            <j-popconfirm
+                                title="确认启用"
+                                @confirm="handleDeploy"
+                                v-if="productStore.current.state === 0"
+                                okText="确定"
+                                cancelText="取消"
                                 :disabled="!permissionStore.hasPermission('device/Product:action')"
-                            />
-                        </j-popconfirm>
+                            >
+                                <j-switch
+                                    :unCheckedValue="
+                                        productStore.current.state === 0
+                                    "
+                                    checked-children="正常"
+                                    un-checked-children="禁用"
+                                    :disabled="!permissionStore.hasPermission('device/Product:action')"
+                                />
+                            </j-popconfirm>
+                    </div>
+                    <div style="margin: -5px 0 0 20px" v-else>
+                        <j-tooltip>
+                            <template #title>暂无权限，请联系管理员</template>
+                                <j-switch
+                                    v-if="productStore.current.state === 1"
+                                    :checked="productStore.current.state === 1"
+                                    checked-children="正常"
+                                    un-checked-children="禁用"
+                                    :disabled="!permissionStore.hasPermission('device/Product:action')"
+                                />
+                                <j-switch
+                                    v-if="productStore.current.state === 0"
+                                    :unCheckedValue="
+                                        productStore.current.state === 0
+                                    "
+                                    checked-children="正常"
+                                    un-checked-children="禁用"
+                                    :disabled="!permissionStore.hasPermission('device/Product:action')"
+                                />
+                            </j-tooltip>
                     </div>
                 </div>
             </div>

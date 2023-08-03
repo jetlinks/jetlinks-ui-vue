@@ -45,6 +45,7 @@
                     placement: hasOperate('add', type) ? 'topRight' : 'top',
                 }"
               @click="handleSaveClick()"
+              placement="topRight"
           >
             保存
           </PermissionButton>
