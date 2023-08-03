@@ -162,29 +162,41 @@
                                 <div class="doc">
                                     <h1>操作指引：</h1>
                                     <div>
-                                        1、OneNet端创建产品、设备，并配置HTTP推送
+                                        1、登录OneNet平台创建产品、设备，并配置HTTP的全局推送
                                     </div>
                                     <div>
-                                        2、IOT端创建类型为OneNet的设备接入网关
-                                    </div>
-                                    <div>
-                                        3、IOT端创建产品，选中接入方式为OneNet类型的设备接入网关，填写Master-APIkey（OneNet端的产品Key）
+                                        2、获取OneNet平台的产品Key
                                     </div>
                                     <div class="image">
                                         <j-image width="100%" :src="img5" />
                                     </div>
                                     <div>
-                                        4、IOT端添加设备，在设备实例页面为每一台设备设置唯一的IMEI、IMSI码（需与OneNet平台中的值一致）
+                                        3、IOT端创建类型为OneNet的设备接入网关
+                                    </div>
+                                    <div>
+                                        4、IOT端创建产品，选中接入方式为OneNet类型的设备接入网关，填写Master-APIkey（OneNet端的产品Key）
                                     </div>
                                     <div class="image">
                                         <j-image width="100%" :src="img6" />
                                     </div>
-                                    <h1>HTTP推送配置说明</h1>
+                                    <div>
+                                        5、IOT端添加设备，在设备实例页面为每一台设备设置唯一的IMEI、IMSI码（需与OneNet平台中的值一致）
+                                    </div>
                                     <div class="image">
-                                        <j-image width="100%" :src="img" />
+                                        <j-image width="100%" :src="img7" />
+                                    </div>
+                                    <h1>HTTP推送配置说明</h1>
+                                    <div>
+                                        1、点击<b>数据推送&gt;HTTP推送&gt;添加全局推送</b>
+                                    </div>
+                                    <div class="image">
+                                        <j-image width="100%" :src="img8" />
                                     </div>
                                     <div>
-                                        HTTP推送配置路径：应用开发&gt;数据推送
+                                        2、填写全局推送相关参数
+                                    </div>
+                                    <div class="image">
+                                        <j-image width="100%" :src="img9" />
                                     </div>
                                     <j-descriptions
                                         bordered
@@ -195,26 +207,40 @@
                                         <j-descriptions-item label="参数"
                                             >说明</j-descriptions-item
                                         >
-                                        <j-descriptions-item label="实例名称"
+                                        <j-descriptions-item label="推送地址url"
                                             >推送实例的名称</j-descriptions-item
                                         >
                                         <j-descriptions-item label="推送地址">
-                                            用于接收OneNet推送设备数据的地址物联网平台地址:
+                                            用于接收OneNet推送设备数据的物联网平台地址:
                                             <div style="word-wrap: break-word">
                                                 {{
                                                     `${origin}/api/one-net/${randomString()}/notify`
                                                 }}
                                             </div>
                                         </j-descriptions-item>
-                                        <j-descriptions-item label="Token">
+                                        <j-descriptions-item label="token">
                                             自定义token,可用于验证请求是否来自OneNet
                                         </j-descriptions-item>
-                                        <j-descriptions-item label="消息加密">
+                                        <j-descriptions-item label="aesKey">
                                             采用AES加密算法对推送的数据进行数据加密，AesKey为加密秘钥
                                         </j-descriptions-item>
                                     </j-descriptions>
 
+                                    <j-alert
+                                        message="注意："
+                                        style="margin-top: 15px;"
+                                        type="warning"
+                                    >
+                                    <template #description>
+                                        <span>
+                                            开发者在OneNet物联网平台添加全局推送参数前，需要在JetLinks物联网平台添加OneNet接入网关且OneNet接入网关中的通知Token参数需要和OneNet物联网平台全局推送参数中的Token保持一致，否则OneNet物联网平台添加全局推送检验不通过，提示
+                                            <span style="color: red">validate fail: validate token fail.</span>
+                                        </span>
+                                    </template>
+                                    </j-alert>
+
                                     <h1>设备接入网关配置说明</h1>
+
                                     <j-descriptions
                                         bordered
                                         size="small"
@@ -225,13 +251,13 @@
                                             >说明</j-descriptions-item
                                         >
                                         <j-descriptions-item label="apiKey"
-                                            >OneNet平台中具体产品的Key</j-descriptions-item
+                                            >OneNet平台中具体产品的Master-APIkey</j-descriptions-item
                                         >
-                                        <j-descriptions-item label="通知Token">
+                                        <j-descriptions-item label="通知令牌">
                                             填写OneNet数据推送配置中设置的Token
                                         </j-descriptions-item>
-                                        <j-descriptions-item label="aesKey">
-                                            若OneNet数据推送配置了消息加密，此处填写OneNet端数据推送配置中设置的aesKey
+                                        <j-descriptions-item label="艾斯钥匙">
+                                            若OneNet数据推送配置了消息加密，此处填写OneNet端数据推送配置中设置的AESkey
                                         </j-descriptions-item>
                                     </j-descriptions>
                                     <h1>其他说明</h1>
@@ -410,9 +436,11 @@ import { useMenuStore } from 'store/menu';
 
 const menuStory = useMenuStore();
 const origin = window.location.origin;
-const img5 = getImage('/network/05.jpg');
-const img6 = getImage('/network/06.jpg');
-const img = getImage('/network/OneNet.jpg');
+const img5 = getImage('/network/05.jpeg');
+const img6 = getImage('/network/06.png');
+const img7 = getImage('/network/07.jpeg');
+const img8 = getImage('/network/08.png');
+const img9 = getImage('/network/09.png');
 
 interface FormState {
     apiAddress: string;

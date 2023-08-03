@@ -68,7 +68,10 @@
             <j-form-item
                 label="窗口"
                 :name="['virtualRule', 'windowType']"
-                required
+                :rules="[{
+                    required: true,
+                    message: '请选择窗口类型'
+                }]"
             >
                 <j-select
                     v-model:value="formData.virtualRule.windowType"
@@ -88,7 +91,10 @@
                 <j-form-item
                     label="聚合函数"
                     :name="['virtualRule', 'aggType']"
-                    required
+                    :rules="[{
+                        required: true,
+                        message: '请选择聚合函数'
+                    }]"
                 >
                     <j-select
                         v-model:value="formData.virtualRule.aggType"
@@ -111,7 +117,7 @@
                         },
                         {
                             pattern: /^\d+$/,
-                            message: '请输入0-999999之间的正整数',
+                            message: '请输入1-999999之间的正整数',
                         },
                     ]"
                 >
@@ -138,7 +144,7 @@
                         },
                         {
                             pattern: /^\d+$/,
-                            message: '请输入0-999999之间的正整数',
+                            message: '请输入1-999999之间的正整数',
                         },
                     ]"
                 >

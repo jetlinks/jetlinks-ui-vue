@@ -101,6 +101,7 @@ const handleSearch = async (id: string, arr: Item[]) => {
             if (_item) {
                 return {
                     ..._item,
+                    name: item.name,
                     flag: true,
                 };
             }
@@ -124,9 +125,9 @@ const saveInfo = async (preset: Item[]) => {
             preset
         },
     });
-    if (resp.status === 200) {
-        console.log(resp);
-    }
+    // if (resp.status === 200) {
+    //     console.log(resp);
+    // }
 };
 
 const onFunction = (id: string, functionId: string, params: any) => {
