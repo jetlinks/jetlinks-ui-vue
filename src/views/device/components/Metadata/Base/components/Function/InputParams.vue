@@ -4,7 +4,7 @@
       <span>{{ TypeStringMap[data.record.valueType?.type] }}</span>
     </template>
     <template #required="{ data }">
-      <span>{{ data.record.expands?.required ? "是": '否' }}</span>
+      <span>{{ data.record.expands?.required ? "必填": '不必填' }}</span>
     </template>
     <template #config="{ data }">
       <ConfigModal v-model:value="data.record.valueType" :showOther="false" />
