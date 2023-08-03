@@ -50,7 +50,7 @@
                 </j-select>
             </j-form-item>
             <j-form-item
-                :name="['virtualRule', 'rule', 'script']"
+                :name="['virtualRule', 'script']"
                 label="计算规则"
                 required
             >
