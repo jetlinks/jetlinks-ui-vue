@@ -63,6 +63,8 @@ const props = defineProps({
     },
 });
 
+const emits = defineEmits(['refresh'])
+
 const columns = [
     {
         title: '序号',
@@ -125,9 +127,9 @@ const saveInfo = async (preset: Item[]) => {
             preset
         },
     });
-    // if (resp.status === 200) {
-    //     console.log(resp);
-    // }
+    if (resp.status === 200) {
+        emits('refresh')
+    }
 };
 
 const onFunction = (id: string, functionId: string, params: any) => {
