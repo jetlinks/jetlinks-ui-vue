@@ -104,7 +104,7 @@
                 :rules="[
                     {
                         required: true,
-                        message: '请上传文件',
+                        message: '请上传json格式的文件',
                     },
                 ]"
             >
@@ -266,7 +266,7 @@ const beforeUpload: UploadProps['beforeUpload'] = (file) => {
             formModel.import = json.target?.result;
         };
     } else {
-        onlyMessage('请上传json文件', 'error')
+        onlyMessage('请上传json格式的文件', 'error')
     }
 };
 const fileChange = (info: UploadChangeParam) => {
