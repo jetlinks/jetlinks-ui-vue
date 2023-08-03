@@ -8,7 +8,7 @@
       @cancel="cancel"
       @visibleChange="visibleChange"
   >
-    <template #content>
+    <template v-if="visible" #content>
       <j-scrollbar height="350"   v-if="showMetrics || config.length > 0">
         <j-collapse v-model:activeKey="activeKey">
           <j-collapse-panel v-for="(item, index) in config" :key="'store_'+index" :header="item.name">
@@ -189,6 +189,7 @@ const confirm = () => {
 }
 
 const visibleChange = (e: boolean) => {
+  visible.value = e
   if (e) {
     configValue.value = omit(props.value, ['source', 'type', 'metrics', 'required'])
     getConfig()

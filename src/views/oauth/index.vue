@@ -151,6 +151,7 @@ const changeAccount = () => {
 const getLoginUser = async (data?: any) => {
   if (getToken()) { // 未登录
     const res = await getMe_api()
+    console.log(params.value)
     if (res.success) {
       userName.value = res.result?.user.name
       isLogin.value = true
@@ -177,16 +178,16 @@ const getLoginUser = async (data?: any) => {
   }
 }
 
-const getQueryVariable = (variable: any) => {
+const getQueryVariable = (): Map<string, string> => {
   const query = window.location.search.substring(1);
   const vars = query.split('&');
+  const maps = new Map()
   for (let i = 0; i < vars.length; i++) {
     const pair = vars[i].split('=');
-    if (pair[0] === variable) {
-      return pair[1];
-    }
+    const [key, value] = pair
+    maps.set(key, value)
   }
-  return '';
+  return maps;
 }
 
 const doLogin = () => {
@@ -210,7 +211,7 @@ const initPage = async () => {
   let redirectUrl
   // 获取url中的配置信息
   const paramsIndex = location.hash.indexOf('?')
-  const params = new URLSearchParams(location.hash.slice(paramsIndex))
+  const params = getQueryVariable()
   const items = {
     client_id: params.get('client_id'),
     state: params.get('state'),
@@ -225,18 +226,20 @@ const initPage = async () => {
     // redirectUrl = `${items.redirect_uri?.split('redirect_uri=')[0]}?redirect=${url}`
     redirectUrl = items.redirect_uri
   }
+
+  console.log(params)
+  internal.value = item!
+  params.value = {
+    ...items,
+    redirect_uri: redirectUrl,
+  }
+
   // 获取用户信息
   getLoginUser({
     ...items,
     internal: params.get('internal'),
     redirect_uri: redirectUrl,
   })
-
-  internal.value = item!
-  params.value = {
-    ...items,
-    redirect_uri: redirectUrl,
-  }
 }
 
 const getSettingDetail = () => {
