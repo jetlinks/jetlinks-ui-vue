@@ -197,7 +197,7 @@ const tabs = {
 watch(
     () => route.params.id,
     (newId) => {
-        if (newId) {
+        if (newId && route.name === 'device/Product/Detail') {
             productStore.reSet();
             productStore.tabActiveKey = 'Info';
             productStore.refresh(newId as string);
