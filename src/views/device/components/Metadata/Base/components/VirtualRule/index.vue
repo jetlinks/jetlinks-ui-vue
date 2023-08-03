@@ -259,41 +259,41 @@ const options = computed(() => {
 });
 
 const setInitVirtualRule = () => {
-  console.log(props.value?.expands?.virtualRule);
   formData.virtualRule = {
     ...initData,
     ...(props.value?.expands?.virtualRule || {}),
-    triggerProperties: props.value?.expands?.virtualRule?.triggerProperties || ['*'],
+    triggerProperties: props.value?.expands?.virtualRule?.triggerProperties?.length ? props.value?.expands?.virtualRule?.triggerProperties : ['*']
   }
 }
 
-const handleSearch = async () => {
-    let resp: any = undefined;
-    try {
-      if (target === 'product') {
-        resp = await queryProductVirtualProperty(
-            productStore.current?.id,
-            props.value?.id,
-        );
-      } else {
-        resp = await queryDeviceVirtualProperty(
-            instanceStore.current?.productId,
-            instanceStore.current?.id,
-            props.value?.id,
-        );
-      }
-      if (resp && resp.status === 200 && resp.result) {
-        formData.virtualRule = {
-          triggerProperties: resp.result.triggerProperties,
-          ...resp.result.rule,
-        }
-      } else {
-        setInitVirtualRule()
-      }
-    } catch (err) {
-      setInitVirtualRule()
-    }
-};
+// const handleSearch = async () => {
+//     let resp: any = undefined;
+//     try {
+//       if (target === 'product') {
+//         resp = await queryProductVirtualProperty(
+//             productStore.current?.id,
+//             props.value?.id,
+//         );
+//       } else {
+//         resp = await queryDeviceVirtualProperty(
+//             instanceStore.current?.productId,
+//             instanceStore.current?.id,
+//             props.value?.id,
+//         );
+//       }
+//       if (resp && resp.status === 200 && resp.result) {
+//         console.log(resp.result)
+//         formData.virtualRule = {
+//           triggerProperties: resp.result.triggerProperties?.length ? resp.result.triggerProperties : ['*'],
+//           ...resp.result.rule,
+//         }
+//       } else {
+//         setInitVirtualRule()
+//       }
+//     } catch (err) {
+//       setInitVirtualRule()
+//     }
+// };
 
 const queryAggType = () => {
     getStreamingAggType().then((resp) => {
@@ -326,7 +326,8 @@ watch(
         if (newVal === 'rule') {
             formData.virtualRule = initData;
 
-            handleSearch();
+            // handleSearch();
+            setInitVirtualRule()
         } else {
             formData.virtualRule = undefined;
         }
