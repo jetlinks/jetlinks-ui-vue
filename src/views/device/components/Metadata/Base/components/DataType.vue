@@ -86,6 +86,7 @@ const columns = [{
   dataIndex: 'id',
   type: 'text',
   width: 100,
+  placement: 'Left',
   form: {
     required: true,
     rules: [{
